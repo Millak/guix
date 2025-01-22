@@ -24401,9 +24401,9 @@ useful for bioinformatic analysis.")
            go-github-com-kr-pretty))
     (synopsis "Step store for biogo")))
 
-(define-public go-github-com-biogo-hts-bam
+(define-public go-github-com-biogo-hts
   (package
-    (name "go-github-com-biogo-hts-bam")
+    (name "go-github-com-biogo-hts")
     (version "1.4.4")
     (source (origin
               (method git-fetch)
@@ -24416,91 +24416,22 @@ useful for bioinformatic analysis.")
                 "1vkcqxyajghx5p5j7g2i376nbsxh8q2smk0smlv8mi34yr7hlw5b"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/biogo/hts/bam"
-       #:unpack-path "github.com/biogo/hts"))
-    (propagated-inputs
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/biogo/hts"
+      ;; Tests try to get samples from <https://github.com/samtools/htslib>.
+      #:test-flags #~(list "-skip" "TestHasEOF|TestRead")))
+    (native-inputs
      (list go-gopkg-in-check-v1))
-    (home-page "https://github.com/biogo/hts")
-    (synopsis "HTS BAM module for biogo")
-    (description "This package provides tools for handling BAM files.")
-    (license license:bsd-3)))
-
-(define-public go-github-com-biogo-hts-sam
-  (package
-    (inherit go-github-com-biogo-hts-bam)
-    (name "go-github-com-biogo-hts-sam")
-    (arguments
-     '(#:import-path "github.com/biogo/hts/sam"
-       #:unpack-path "github.com/biogo/hts"))
     (propagated-inputs
-     (list go-gopkg-in-check-v1))
-    (synopsis "HTS SAM module for biogo")
-    (description "This package provides tools for handling SAM files.")))
-
-(define-public go-github-com-biogo-hts-tabix
-  (package
-    (inherit go-github-com-biogo-hts-bam)
-    (name "go-github-com-biogo-hts-tabix")
-    (arguments
-     '(#:import-path "github.com/biogo/hts/tabix"
-       #:unpack-path "github.com/biogo/hts"))
-    (propagated-inputs
-     (list go-gopkg-in-check-v1))
-    (synopsis "HTS Tabix module for biogo")
-    (description "This package provides tools for handling Tabix files.")))
-
-(define-public go-github-com-biogo-hts-bgzf
-  (package
-    (inherit go-github-com-biogo-hts-bam)
-    (name "go-github-com-biogo-hts-bgzf")
-    (arguments
-     '(#:import-path "github.com/biogo/hts/bgzf"
-       #:unpack-path "github.com/biogo/hts"))
-    (propagated-inputs
-     (list go-gopkg-in-check-v1))
-    (synopsis "HTS bgzf module for biogo")
-    (description "This package provides tools for handling bgzf files.")))
-
-(define-public go-github-com-biogo-hts-cram
-  (package
-    (inherit go-github-com-biogo-hts-bam)
-    (name "go-github-com-biogo-hts-cram")
-    (arguments
-     '(#:import-path "github.com/biogo/hts/cram"
-       #:unpack-path "github.com/biogo/hts"
-       #:tests? #false)) ;require network access
-    (propagated-inputs
-     (list go-gopkg-in-check-v1
-           go-github-com-ulikunitz-xz
+     (list go-github-com-ulikunitz-xz
            go-github-com-kortschak-utter))
-    (synopsis "HTS CRAM module for biogo")
-    (description "This package provides tools for handling CRAM files.")))
-
-(define-public go-github-com-biogo-hts-csi
-  (package
-    (inherit go-github-com-biogo-hts-bam)
-    (name "go-github-com-biogo-hts-csi")
-    (arguments
-     '(#:import-path "github.com/biogo/hts/csi"
-       #:unpack-path "github.com/biogo/hts"))
-    (propagated-inputs
-     (list go-gopkg-in-check-v1))
-    (synopsis "Coordinate sorted indexing for biogo")
-    (description "This package implements CSIv1 and CSIv2 coordinate sorted
-indexing.")))
-
-(define-public go-github-com-biogo-hts-fai
-  (package
-    (inherit go-github-com-biogo-hts-bam)
-    (name "go-github-com-biogo-hts-fai")
-    (arguments
-     '(#:import-path "github.com/biogo/hts/fai"
-       #:unpack-path "github.com/biogo/hts"))
-    (propagated-inputs
-     (list go-gopkg-in-check-v1))
-    (synopsis "Fasta sequence file index handling for biogo")
-    (description "This package implements FAI fasta sequence file index
-handling.")))
+    (home-page "https://github.com/biogo/hts")
+    (synopsis "HTS module for biogo")
+    (description
+     "This package provides tools for handling BAM, SAM, Tabix, bgzf, CRAM,
+CSIv1, CSIv2 and FAI files.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-biogo-biogo
   (package
@@ -24524,7 +24455,7 @@ handling.")))
            go-github-com-biogo-store-kdtree
            go-github-com-biogo-store-llrb
            go-github-com-biogo-store-step
-           go-github-com-biogo-hts-bam
+           go-github-com-biogo-hts
            go-github-com-biogo-graph))
     (home-page "https://github.com/biogo/biogo")
     (synopsis "Bioinformatics library for Go")
