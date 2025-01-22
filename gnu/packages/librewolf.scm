@@ -21,7 +21,7 @@
 ;;; Copyright © 2021, 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2023 Tomas Volf <wolf@wolfsden.cz>
-;;; Copyright © 2023 Ian Eure <ian@retrospec.tv>
+;;; Copyright © 2023, 2024, 2025 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;;
@@ -126,7 +126,7 @@
       (file-name (git-file-name "firefox-l10n" commit))
       (sha256 (base32 "0g778fnxg5mkqm3rgryzl64f3n4pczngjdlby07vh2dycvmlyga8")))))
 
-(define* (make-librewolf-source #:key version firefox-hash librewolf-hash)
+(define* (make-librewolf-source #:key version firefox-hash librewolf-hash l10n)
   (let* ((ff-src (firefox-source-origin
                   (car (string-split version #\-))
                   firefox-hash))
@@ -182,7 +182,7 @@
                  (substitute* "scripts/librewolf-patches.py"
                    (("l10n_dir = Path(\"..\", \"l10n\")")
                     (string-append
-                     "l10n_dir = \"" #+firefox-l10n "\""))))
+                     "l10n_dir = \"" #+l10n "\""))))
 
                ;; Run the build script
                (invoke "make" "all")
@@ -214,6 +214,7 @@
       #:version version
       #:firefox-hash "0q6cqfnwc2x09frdvsndmhck8ixrnbl281j9rqw5w8bd7fd2qas9"
       #:librewolf-hash "1xf7gx3xm3c7dhch9gwpb0xp11lcyim1nrbm8sjljxdcs7iq9jy4"))
+      #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
      (list
