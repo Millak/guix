@@ -10,6 +10,7 @@
 ;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -558,22 +559,20 @@ automated testing of HDL code.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/nickg/nvc.git")
-                     (commit (string-append "r" version))))
-              (file-name (string-append name "-" version "-checkout"))
+                    (url "https://github.com/nickg/nvc")
+                    (commit (string-append "r" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "1bcilpdd6qg0vwvbwjb4rcs0j051sc53yalxsgz8r8gm123ck40j"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:out-of-source? #t
-       #:configure-flags
-       '("--enable-vhpi")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'clean-up
-           (lambda _
-             (delete-file "autogen.sh"))))))
+     (list #:out-of-source? #t
+           #:configure-flags #~(list "--enable-vhpi")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'clean-up
+                          (lambda _
+                            (delete-file "autogen.sh"))))))
     (native-inputs
      (list automake
            autoconf
