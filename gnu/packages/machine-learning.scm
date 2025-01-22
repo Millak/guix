@@ -4538,7 +4538,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
 (define-public fbgemm
   (package
     (name "fbgemm")
-    (version "0.7.0")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4547,14 +4547,12 @@ TensorFlow.js, PyTorch, and MediaPipe.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dzw9w82ca0hss1lvshix6piwsd0k11lyq9pzm8yg8k7j56hmyig"))
-              (patches (search-patches "fbgemm-use-system-libraries.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(delete-file-recursively "third_party"))))
+                "1a5g5f32377fad99xsfggqkwvl7vh5gc1wj77swa06x06lc1qwyw"))
+              (patches (search-patches "fbgemm-use-system-libraries.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:cmake cmake-3.30
       #:configure-flags
       ''("-DFBGEMM_LIBRARY_TYPE=shared")
       ;; Tests require AVX2 or AVX-512 instructions
