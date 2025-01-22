@@ -22212,8 +22212,8 @@ patterns.")
       (license license:gpl3))))
 
 (define-public r-voltron
-  (let ((commit "9f9415c72e9347f578a166981842d33e43b0466d")
-        (revision "1"))
+  (let ((commit "bbd7abb72681ae6dc91cb2f8fe4f3ce3a246f56b")
+        (revision "2"))
     (package
       (name "r-voltron")
       (version (git-version "0.2.0" revision commit))
@@ -22225,14 +22225,29 @@ patterns.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0bvvpj96ix2ij6034dfrh7za1lvf73qxqsdvbs2wrpc931s18q32"))))
+          (base32 "1h5m2r2hdp73yqsz60wq1sf98dbsqpx155qlxbxnzvhc0l8hjshd"))))
       (properties `((upstream-name . "VoltRon")))
       (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; By default VoltRon will use Basilisk, which uses Conda to set
+            ;; up a Python environment.  We override the fallback default
+            ;; here.  Users can still override the location of the Python
+            ;; interpreter with the option "voltron.python.path".
+            (add-after 'unpack 'do-not-use-conda
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "R/conversion.R"
+                  (("return\\(NULL\\)")
+                   (string-append "Sys.setenv(GUIX_PYTHONPATH=\""
+                                  (getenv "GUIX_PYTHONPATH")
+                                  "\"); return(\""
+                                  (search-input-file inputs "/bin/python3")
+                                  "\")"))))))))
       (inputs
        (list opencv
-             ;; These Python inputs would be fetched by Basilisk via Conda.
-             ;; We add these inputs in anticipation of an upstream change to
-             ;; allow for a Conda-free use of the package.
+             ;; These Python inputs are used via reticulate.
              python
              python-numpy
              python-pandas
@@ -22245,8 +22260,7 @@ patterns.")
              python-tifffile
              python-zarr
              zlib))
-      (propagated-inputs (list r-basilisk
-                               r-data-table
+      (propagated-inputs (list r-data-table
                                r-dplyr
                                r-ebimage
                                r-ggplot2
@@ -22257,6 +22271,7 @@ patterns.")
                                r-irlba
                                r-magick
                                r-matrix
+                               r-pizzarr
                                r-rann
                                r-rcdt
                                r-rcpp
@@ -22264,6 +22279,7 @@ patterns.")
                                r-rcpparmadillo
                                r-reshape2
                                r-reticulate
+                               r-rhdf5
                                r-rjson
                                r-rlang
                                r-s4arrays
