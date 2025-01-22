@@ -5,7 +5,7 @@
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2023 Zongyuan Li <zongyuan.li@c0x0o.me>
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024, 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2024 Jean-Pierre De Jesus DIAZ <jean@foundation.xyz>
 ;;;
@@ -468,7 +468,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
 (define-public podman
   (package
     (name "podman")
-    (version "5.3.1")
+    (version "5.3.2")
     (outputs '("out" "docker"))
     (properties
       `((output-synopsis "docker" "docker alias for podman")))
@@ -479,7 +479,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
              (url "https://github.com/containers/podman")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1315rqsfiwq4i2vvdzb6nkwbvgwimsj7f71ma1svvqhp8kbly04h"))
+        (base32 "100jjj3fjb2mlx6hdj8gm4c1khcfrrf67rvm3r1nz7p007pkx4yg"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
