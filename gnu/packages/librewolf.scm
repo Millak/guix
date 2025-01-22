@@ -570,10 +570,13 @@
                                        (string-append (assoc-ref inputs
                                                                  lib-name)
                                                       "/lib"))
-                                     '("mesa" "libpng-apng" "libnotify" "libva"
-                                       "pulseaudio" "gtk+" "pipewire"
-                                       ;; For U2F and WebAuthn
-                                       "eudev")))
+                                     '("eudev" ; For U2F and WebAuthn
+                                       "libnotify"
+                                       "libpng-apng"
+                                       "libva"
+                                       "mesa"
+                                       "pipewire" ; For sharing on Wayland
+                                       "pulseaudio")))
 
                               ;; VA-API is run in the RDD (Remote Data Decoder) sandbox
                               ;; and must be explicitly given access to files it needs.
@@ -584,11 +587,12 @@
                               ;; runpaths of the needed libraries to add everything to
                               ;; LD_LIBRARY_PATH.  These will then be accessible in the
                               ;; RDD sandbox.
-                              (rdd-whitelist (map (cut string-append <> "/")
-                                                  (delete-duplicates (append-map
-                                                                      runpaths-of-input
-                                                                      '("mesa"
-                                                                        "ffmpeg")))))
+                              (rdd-whitelist
+                               (map (cut string-append <> "/")
+                                    (delete-duplicates
+                                     (append-map runpaths-of-input
+                                                 '("mesa"
+                                                   "ffmpeg")))))
                               (gtk-share (string-append (assoc-ref inputs
                                                                    "gtk+")
                                                         "/share")))
