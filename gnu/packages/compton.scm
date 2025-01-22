@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -143,10 +144,17 @@ performance).
            xcb-util-image
            xprop))
     (native-inputs
-     (list pkg-config xorgproto ruby-asciidoctor))
+     (append
+       (list pkg-config xorgproto)
+       (if (supported-package? ruby-asciidoctor)
+           (list ruby-asciidoctor)
+           '())))
     (arguments
      (list #:build-type "release"
-           #:configure-flags #~'("-Dwith_docs=true")
+           #:configure-flags
+           (if (this-package-native-input "ruby-asciidoctor")
+               #~'("-Dwith_docs=true")
+               #~'("-Dwith_docs=false"))
            #:phases
            #~(modify-phases %standard-phases
                ;; This file would be patched by 'patch-dot-desktop-files but
