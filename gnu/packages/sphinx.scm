@@ -348,22 +348,25 @@ Apple help books.")
 (define-public python-sphinx-click
   (package
     (name "python-sphinx-click")
-    (version "4.0.3")
+    (version "6.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx-click" version))
        (sha256
         (base32
-         "1nqy3b7wr64rbmdp7kpi723az53a89y6250h46i505g1rw0czam1"))))
-    (build-system python-build-system)
+         "0ns6mfiw4q6g0kh11dfyzpn0rkjq9v4f3w8ry0pn5in03lr69mpm"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "pytest" "-vv" "tests")))))))
-    (native-inputs (list python-pbr python-pytest python-wheel))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build-system
+            (lambda _
+              ;; The build system is confused about this top level directory,
+              ;; so we delete it.
+              (delete-file-recursively "releasenotes"))))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-click python-docutils python-sphinx))
     (home-page "https://github.com/click-contrib/sphinx-click")
     (synopsis "Sphinx extension that documents click applications")
