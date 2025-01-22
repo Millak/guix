@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2018 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
@@ -78,6 +78,14 @@
           (add-after 'unpack 'set-CC
             (lambda _
               (setenv "CC" #$(cc-for-target))))
+          #$@(if (this-package-native-input "ruby-asciidoctor")
+                 #~()
+                 #~((add-after 'unpack 'adjust-makefile
+                      (lambda _
+                        (substitute* "doc/Makefile.in"
+                          (("install:")
+                           (string-append "install:\n\n"
+                                          "not-install:")))))))
           (add-after 'unpack 'stay-inside-out
             ;; Simply setting CHRONYVARDIR to something nonsensical at install
             ;; time would result in nonsense file names in man pages.
@@ -93,7 +101,11 @@
                 (copy-recursively "examples"
                                   (string-append doc "/examples"))))))))
     (native-inputs
-     (list bison ruby-asciidoctor pkg-config))
+     (append (list bison
+                   pkg-config)
+             (if (supported-package? ruby-asciidoctor)
+                 (list ruby-asciidoctor)
+                 '())))
     (inputs
      (list gnutls libcap libseccomp nettle))
     (home-page "https://chrony-project.org/")
