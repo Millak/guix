@@ -1614,11 +1614,19 @@ void LocalStore::createUser(const std::string & userName, uid_t userId)
 {
     auto dir = settings.nixStateDir + "/profiles/per-user/" + userName;
 
-    createDirs(dir);
-    if (chmod(dir.c_str(), 0755) == -1)
-	throw SysError(format("changing permissions of directory '%s'") % dir);
-    if (chown(dir.c_str(), userId, -1) == -1)
-	throw SysError(format("changing owner of directory '%s'") % dir);
+    auto created = createDirs(dir);
+    if (!created.empty()) {
+	if (chmod(dir.c_str(), 0755) == -1)
+	    throw SysError(format("changing permissions of directory '%s'") % dir);
+
+	/* The following operation requires CAP_CHOWN or can be handled
+	   manually by a user with CAP_CHOWN.  */
+	if (chown(dir.c_str(), userId, -1) == -1) {
+	    rmdir(dir.c_str());
+	    string message = strerror(errno);
+	    printMsg(lvlInfo, format("failed to change owner of directory '%1%' to %2%: %3%") % dir % userId % message);
+	}
+    }
 }
 
 

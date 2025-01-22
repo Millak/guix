@@ -79,7 +79,7 @@
   ;; time, 'guix substitute' is called by guix-daemon as root and stores its
   ;; cached data in /var/guix/….  However, when invoked from 'guix challenge'
   ;; as a user, it stores its cache in ~/.cache.
-  (if (zero? (getuid))
+  (if (getenv "_NIX_OPTIONS")                     ;invoked by guix-daemon
       (or (and=> (getenv "XDG_CACHE_HOME")
                  (cut string-append <> "/guix/substitute"))
           (string-append %state-directory "/substitute/cache"))

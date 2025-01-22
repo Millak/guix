@@ -858,6 +858,20 @@
          (call-with-input-file (derivation->output-path drv)
            get-string-all))))
 
+(test-assert "builder is outside the store"
+  ;; Ensure that attempts to build derivations whose builder is outside the
+  ;; store are rejected.  This is a protection against attacks similar to
+  ;; CVE-2019-5736, which abuse the fact that /proc/self/exe can be opened
+  ;; even when it presents itself as a symlink to a file not in the chroot.
+  (let* ((builder (add-file-tree-to-store %store
+                                          `("builder" symlink "/proc/self/exe")))
+         (drv (derivation %store "attempt-to-run-guix-daemon" builder '()
+                          #:env-vars
+                          '(("LD_PRELOAD" . "attacker-controlled.so")))))
+    (guard (c ((store-protocol-error? c) c))
+      (build-derivations %store (list drv))
+      #f)))
+
 
 (define %coreutils
   (false-if-exception

@@ -877,6 +877,7 @@ files, configuration, and services.
 @section Setting Up the Daemon
 
 @cindex daemon
+@cindex build daemon
 During installation, the @dfn{build daemon} that must be running
 to use Guix has already been set up and you can run @command{guix}
 commands in your terminal program, @pxref{Getting Started}:
@@ -921,20 +922,38 @@ pre-built binaries.
 @cindex build environment
 In a standard multi-user setup, Guix and its daemon---the
 @command{guix-daemon} program---are installed by the system
-administrator; @file{/gnu/store} is owned by @code{root} and
-@command{guix-daemon} runs as @code{root}.  Unprivileged users may use
-Guix tools to build packages or otherwise access the store, and the
-daemon will do it on their behalf, ensuring that the store is kept in a
-consistent state, and allowing built packages to be shared among users.
+administrator.  Unprivileged users may use Guix tools to build packages
+or otherwise access the store, and the daemon will do it on their
+behalf, ensuring that the store is kept in a consistent state, and
+allowing built packages to be shared among users.
+
+There are currently two ways to set up and run the build daemon:
+
+@enumerate
+@item
+running @command{guix-daemon} as ``root'', letting it run build
+processes as unprivileged users taken from a pool of build users---this
+is the historical approach;
+
+@item
+running @command{guix-daemon} as a separate unprivileged user, relying
+on Linux's @dfn{unprivileged user namespace} functionality to set up
+isolated environments---this is the option chosen when installing Guix
+on a systemd-based distribution with the installation script
+(@pxref{Binary Installation}).
+@end enumerate
+
+The sections below describe each of these two configurations in more
+detail and summarize the kind of build isolation they provide.
+
+@unnumberedsubsubsec Daemon Running as Root
 
 @cindex build users
 When @command{guix-daemon} runs as @code{root}, you may not want package
 build processes themselves to run as @code{root} too, for obvious
 security reasons.  To avoid that, a special pool of @dfn{build users}
 should be created for use by build processes started by the daemon.
-These build users need not have a shell and a home directory: they will
-just be used when the daemon drops @code{root} privileges in build
-processes.  Having several such users allows the daemon to launch
+Having several such users allows the daemon to launch
 distinct build processes under separate UIDs, which guarantees that they
 do not interfere with each other---an essential feature since builds are
 regarded as pure functions (@pxref{Introduction}).
@@ -977,11 +996,45 @@ file to @file{/etc/init}.}:
 # guix-daemon --build-users-group=guixbuild
 @end example
 
+In this setup, @file{/gnu/store} is owned by @code{root}.
+
+@unnumberedsubsubsec Daemon Running Without Privileges
+
+@cindex rootless build daemon
+@cindex unprivileged build daemon
+@cindex build daemon, unprivileged
+The second and preferred option is to run @command{guix-daemon}
+@emph{as an unprivileged user}.  It has the advantage of reducing the
+harm that can be done should a build process manage to exploit a
+vulnerability in the daemon.  This option requires the use of Linux's
+unprivileged user namespace mechanism; today it is available and enabled
+by most GNU/Linux distributions but can still be disabled.  The
+installation script automatically determines whether this option is
+available on your system (@pxref{Binary Installation}).
+
+When using this option, you only need to create one user account, and
+@command{guix-daemon} will run with the authority of that account:
+
+@example
+# groupadd --system guix-daemon
+# useradd -g guix-daemon -G guix-daemon              \
+          -d /var/empty -s $(which nologin)          \
+          -c "Guix daemon privilege separation user" \
+          --system guix-daemon
+@end example
+
+In this configuration, @file{/gnu/store} is owned by the
+@code{guix-daemon} user.
+
+@unnumberedsubsubsec The Isolated Build Environment
+
 @cindex chroot
-@noindent
-This way, the daemon starts build processes in a chroot, under one of
-the @code{guixbuilder} users.  On GNU/Linux, by default, the chroot
-environment contains nothing but:
+@cindex build environment isolation
+@cindex isolated build environment
+@cindex hermetic build environment
+In both cases, the daemon starts build processes without privileges in
+an @emph{isolated} or @emph{hermetic} build environment---a ``chroot''.
+On GNU/Linux, by default, the build environment contains nothing but:
 
 @c Keep this list in sync with libstore/build.cc! -----------------------
 @itemize
@@ -1015,7 +1068,7 @@ environment variable is set to the non-existent
 @file{/homeless-shelter}.  This helps to highlight inappropriate uses of
 @env{HOME} in the build scripts of packages.
 
-All this usually enough to ensure details of the environment do not
+All this is usually enough to ensure details of the environment do not
 influence build processes.  In some exceptional cases where more control
 is needed---typically over the date, kernel, or CPU---you can resort to
 a virtual build machine (@pxref{build-vm, virtual build machines}).
@@ -1034,14 +1087,6 @@ The daemon also honors the @env{http_proxy} and @env{https_proxy}
 environment variables for HTTP and HTTPS downloads it performs, be it
 for fixed-output derivations (@pxref{Derivations}) or for substitutes
 (@pxref{Substitutes}).
-
-If you are installing Guix as an unprivileged user, it is still possible
-to run @command{guix-daemon} provided you pass @option{--disable-chroot}.
-However, build processes will not be isolated from one another, and not
-from the rest of the system.  Thus, build processes may interfere with
-each other, and may access programs, libraries, and other files
-available on the system---making it much harder to view them as
-@emph{pure} functions.
 
 
 @node Daemon Offload Setup
@@ -1567,10 +1612,17 @@ needs.
 @item --disable-chroot
 Disable chroot builds.
 
-Using this option is not recommended since, again, it would allow build
-processes to gain access to undeclared dependencies.  It is necessary,
-though, when @command{guix-daemon} is running under an unprivileged user
-account.
+@quotation Warning
+Using this option is not recommended since it allows build processes to
+gain access to undeclared dependencies, to interfere with one another,
+and more generally to do anything that can be done with the authority of
+build users or that of the daemon---which includes at least the ability
+to tamper with any file in the store!
+
+You may find it necessary, though, when support for Linux unprivileged
+user namespaces is missing (@pxref{Build Environment Setup}).  Use at
+your own risk!
+@end quotation
 
 @item --log-compression=@var{type}
 Compress build logs according to @var{type}, one of @code{gzip},

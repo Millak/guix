@@ -744,6 +744,10 @@ private:
 
     friend int childEntry(void *);
 
+    /* Pipe to notify readiness to the child process when using unprivileged
+       user namespaces.  */
+    Pipe readiness;
+
     /* Check that the derivation outputs all exist and register them
        as valid. */
     void registerOutputs();
@@ -1619,6 +1623,24 @@ int childEntry(void * arg)
 }
 
 
+/* UID and GID of the build user inside its own user namespace.  */
+static const uid_t guestUID = 30001;
+static const gid_t guestGID = 30000;
+
+/* Initialize the user namespace of CHILD.  */
+static void initializeUserNamespace(pid_t child,
+				    uid_t hostUID = getuid(),
+				    gid_t hostGID = getgid())
+{
+    writeFile("/proc/" + std::to_string(child) + "/uid_map",
+	      (format("%d %d 1") % guestUID % hostUID).str());
+
+    writeFile("/proc/" + std::to_string(child) + "/setgroups", "deny");
+
+    writeFile("/proc/" + std::to_string(child) + "/gid_map",
+	      (format("%d %d 1") % guestGID % hostGID).str());
+}
+
 void DerivationGoal::startBuilder()
 {
     auto f = format(
@@ -1682,7 +1704,7 @@ void DerivationGoal::startBuilder()
 	   then an attacker could create in it a hardlink to a root-owned file
 	   such as /etc/shadow.  If 'keepFailed' is true, the daemon would
 	   then chown that hardlink to the user, giving them write access to
-	   that file.  */
+	   that file.  See CVE-2021-27851.  */
 	tmpDir += "/top";
 	if (mkdir(tmpDir.c_str(), 0700) == 1)
 	    throw SysError("creating top-level build directory");
@@ -1799,7 +1821,7 @@ void DerivationGoal::startBuilder()
         if (mkdir(chrootRootDir.c_str(), 0750) == -1)
             throw SysError(format("cannot create ‘%1%’") % chrootRootDir);
 
-        if (chown(chrootRootDir.c_str(), 0, buildUser.getGID()) == -1)
+        if (buildUser.enabled() && chown(chrootRootDir.c_str(), 0, buildUser.getGID()) == -1)
             throw SysError(format("cannot change ownership of ‘%1%’") % chrootRootDir);
 
         /* Create a writable /tmp in the chroot.  Many builders need
@@ -1818,8 +1840,8 @@ void DerivationGoal::startBuilder()
             (format(
                 "nixbld:x:%1%:%2%:Nix build user:/:/noshell\n"
                 "nobody:x:65534:65534:Nobody:/:/noshell\n")
-                % (buildUser.enabled() ? buildUser.getUID() : getuid())
-                % (buildUser.enabled() ? buildUser.getGID() : getgid())).str());
+                % (buildUser.enabled() ? buildUser.getUID() : guestUID)
+                % (buildUser.enabled() ? buildUser.getGID() : guestGID)).str());
 
         /* Declare the build user's group so that programs get a consistent
            view of the system (e.g., "id -gn"). */
@@ -1854,7 +1876,7 @@ void DerivationGoal::startBuilder()
         createDirs(chrootStoreDir);
         chmod_(chrootStoreDir, 01775);
 
-        if (chown(chrootStoreDir.c_str(), 0, buildUser.getGID()) == -1)
+        if (buildUser.enabled() && chown(chrootStoreDir.c_str(), 0, buildUser.getGID()) == -1)
             throw SysError(format("cannot change ownership of ‘%1%’") % chrootStoreDir);
 
         foreach (PathSet::iterator, i, inputPaths) {
@@ -1960,14 +1982,36 @@ void DerivationGoal::startBuilder()
     if (useChroot) {
 	char stack[32 * 1024];
 	int flags = CLONE_NEWPID | CLONE_NEWNS | CLONE_NEWIPC | CLONE_NEWUTS | SIGCHLD;
-	if (!fixedOutput) flags |= CLONE_NEWNET;
+	if (!fixedOutput) {
+	    flags |= CLONE_NEWNET;
+	}
+	if (!buildUser.enabled() || getuid() != 0) {
+	    flags |= CLONE_NEWUSER;
+	    readiness.create();
+	}
+
 	/* Ensure proper alignment on the stack.  On aarch64, it has to be 16
 	   bytes.  */
-	pid = clone(childEntry,
+ 	pid = clone(childEntry,
 		    (char *)(((uintptr_t)stack + sizeof(stack) - 8) & ~(uintptr_t)0xf),
 		    flags, this);
-	if (pid == -1)
-	    throw SysError("cloning builder process");
+	if (pid == -1) {
+	    if ((flags & CLONE_NEWUSER) != 0 && getuid() != 0)
+		/* 'clone' fails with EPERM on distros where unprivileged user
+		   namespaces are disabled.  Error out instead of giving up on
+		   isolation.  */
+		throw SysError("cannot create process in unprivileged user namespace");
+	    else
+		throw SysError("cloning builder process");
+	}
+
+	readiness.readSide.close();
+	if ((flags & CLONE_NEWUSER) != 0) {
+	     /* Initialize the UID/GID mapping of the child process.  */
+	     initializeUserNamespace(pid);
+	     writeFull(readiness.writeSide, (unsigned char*)"go\n", 3);
+	}
+	readiness.writeSide.close();
     } else
 #endif
     {
@@ -2013,23 +2057,37 @@ void DerivationGoal::runChild()
 
         _writeToStderr = 0;
 
+	if (readiness.writeSide >= 0) readiness.writeSide.close();
+
+	if (readiness.readSide >= 0) {
+	     /* Wait for the parent process to initialize the UID/GID mapping
+		of our user namespace.  */
+	     char str[20] = { '\0' };
+	     readFull(readiness.readSide, (unsigned char*)str, 3);
+	     readiness.readSide.close();
+	     if (strcmp(str, "go\n") != 0)
+		  throw Error("failed to initialize process in unprivileged user namespace");
+	}
+
         restoreAffinity();
 
         commonChildInit(builderOut);
 
 #if CHROOT_ENABLED
         if (useChroot) {
-            /* Initialise the loopback interface. */
-            AutoCloseFD fd(socket(PF_INET, SOCK_DGRAM, IPPROTO_IP));
-            if (fd == -1) throw SysError("cannot open IP socket");
+	    if (!fixedOutput) {
+		/* Initialise the loopback interface. */
+		AutoCloseFD fd(socket(PF_INET, SOCK_DGRAM, IPPROTO_IP));
+		if (fd == -1) throw SysError("cannot open IP socket");
 
-            struct ifreq ifr;
-            strcpy(ifr.ifr_name, "lo");
-            ifr.ifr_flags = IFF_UP | IFF_LOOPBACK | IFF_RUNNING;
-            if (ioctl(fd, SIOCSIFFLAGS, &ifr) == -1)
-                throw SysError("cannot set loopback interface flags");
+		struct ifreq ifr;
+		strcpy(ifr.ifr_name, "lo");
+		ifr.ifr_flags = IFF_UP | IFF_LOOPBACK | IFF_RUNNING;
+		if (ioctl(fd, SIOCSIFFLAGS, &ifr) == -1)
+		    throw SysError("cannot set loopback interface flags");
 
-            fd.close();
+		fd.close();
+	    }
 
             /* Set the hostname etc. to fixed values. */
             char hostname[] = "localhost";
@@ -2180,6 +2238,27 @@ void DerivationGoal::runChild()
 	    /* Remount root as read-only.  */
             if (mount("/", "/", 0, MS_BIND | MS_REMOUNT | MS_RDONLY, 0) == -1)
                 throw SysError(format("read-only remount of build root '%1%' failed") % chrootRootDir);
+
+	    if (getuid() != 0) {
+		/* Create a new mount namespace to "lock" previous mounts.
+		   See mount_namespaces(7).  */
+		auto uid = getuid();
+		auto gid = getgid();
+
+		if (unshare(CLONE_NEWNS | CLONE_NEWUSER) == -1)
+		    throw SysError(format("creating new user and mount namespaces"));
+
+		initializeUserNamespace(getpid(), uid, gid);
+
+		/* Check that mounts within the build environment are "locked"
+		   together and cannot be separated from within the build
+		   environment namespace.  Since
+		   umount(2) is documented to fail with EINVAL when attempting
+		   to unmount one of the mounts that are locked together,
+		   check that this is what we get.  */
+		int ret = umount(tmpDirInSandbox.c_str());
+		assert(ret == -1 && errno == EINVAL);
+	    }
         }
 #endif
 
@@ -2262,6 +2341,7 @@ void DerivationGoal::runChild()
         writeFull(STDERR_FILENO, "\n");
 
         /* Execute the program.  This should not return. */
+	string builderBasename;
         if (isBuiltin(drv)) {
             try {
                 logType = ltFlat;
@@ -2285,11 +2365,28 @@ void DerivationGoal::runChild()
                 writeFull(STDERR_FILENO, "error: " + string(e.what()) + "\n");
                 _exit(1);
             }
-        }
+        } else {
+	    /* Ensure that the builder is within the store.  This prevents
+	       users from using /proc/self/exe (or a symlink to it) as their
+	       builder, which could allow them to overwrite the guix-daemon
+	       binary (CVE-2019-5736).
+
+	       This attack is possible even if the target of /proc/self/exe is
+	       outside the chroot (it's as if it were a hard link), though it
+	       requires that its ELF interpreter and dependencies be in the
+	       chroot.
+
+	       Note: 'canonPath' throws if 'drv.builder' cannot be resolved
+	       within the chroot.  */
+	    builderBasename = baseNameOf(drv.builder);
+	    drv.builder = canonPath(drv.builder, true);
+
+	    if (!isInStore(drv.builder))
+		throw Error(format("derivation builder '%1%' is outside the store") % drv.builder);
+	}
 
         /* Fill in the arguments. */
         Strings args;
-        string builderBasename = baseNameOf(drv.builder);
         args.push_back(builderBasename);
         foreach (Strings::iterator, i, drv.args)
             args.push_back(rewriteHashes(*i, rewritesToTmp));
@@ -2476,8 +2573,16 @@ void DerivationGoal::registerOutputs()
             if (buildMode == bmRepair)
               replaceValidPath(path, actualPath);
             else
-              if (buildMode != bmCheck && rename(actualPath.c_str(), path.c_str()) == -1)
-                throw SysError(format("moving build output `%1%' from the chroot to the store") % path);
+		if (buildMode != bmCheck) {
+		    if (S_ISDIR(st.st_mode))
+			/* Change mode on the directory to allow for
+			   rename(2).  */
+			chmod(actualPath.c_str(), st.st_mode | 0700);
+		    if (rename(actualPath.c_str(), path.c_str()) == -1)
+			throw SysError(format("moving build output `%1%' from the chroot to the store") % path);
+		    if (S_ISDIR(st.st_mode) && chmod(path.c_str(), st.st_mode) == -1)
+			throw SysError(format("restoring permissions on directory `%1%'") % actualPath);
+		}
           }
           if (buildMode != bmCheck) actualPath = path;
         }
@@ -2736,16 +2841,46 @@ void DerivationGoal::deleteTmpDir(bool force)
             // Change the ownership if clientUid is set. Never change the
             // ownership or the group to "root" for security reasons.
             if (settings.clientUid != (uid_t) -1 && settings.clientUid != 0) {
-                _chown(tmpDir, settings.clientUid,
-                       settings.clientGid != 0 ? settings.clientGid : -1);
+		uid_t uid = settings.clientUid;
+		gid_t gid = settings.clientGid != 0 ? settings.clientGid : -1;
+		bool reown = false;
+
+		/* First remove setuid/setgid bits.  */
+		secureFilePerms(tmpDir);
+
+		try {
+		    _chown(tmpDir, uid, gid);
+
+		    if (getuid() != 0) {
+			/* If, without being root, the '_chown' call above
+			   succeeded, then it means we have CAP_CHOWN.  Retake
+			   ownership of tmpDir itself so it can be renamed
+			   below.  */
+			reown = true;
+		    }
+
+		} catch (SysError & e) {
+		    /* When running as an unprivileged user and without
+		       CAP_CHOWN, we cannot chown the build tree.  Print a
+		       message and keep going.  */
+		    printMsg(lvlInfo, format("cannot change ownership of build directory '%1%': %2%")
+			     % tmpDir % strerror(e.errNo));
+		}
 
 		if (top != tmpDir) {
+		    if (reown) chown(tmpDir.c_str(), getuid(), getgid());
+
 		    // Rename tmpDir to its parent, with an intermediate step.
 		    string pivot = top + ".pivot";
 		    if (rename(top.c_str(), pivot.c_str()) == -1)
 			throw SysError("pivoting failed build tree");
 		    if (rename((pivot + "/top").c_str(), top.c_str()) == -1)
 			throw SysError("renaming failed build tree");
+
+		    if (reown)
+			/* Running unprivileged but with CAP_CHOWN.  */
+			chown(top.c_str(), uid, gid);
+
 		    rmdir(pivot.c_str());
 		}
             }
