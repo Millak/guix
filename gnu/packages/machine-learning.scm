@@ -5160,7 +5160,7 @@ Note: currently this package does not provide GPU support.")
 (define-public python-pytorch-geometric
   (package
     (name "python-pytorch-geometric")
-    (version "2.4.0")
+    (version "2.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5169,7 +5169,7 @@ Note: currently this package does not provide GPU support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hrs579asjsph16hyb4ablkbgfwd5j9y5s6ny7ahn3qrbkl2ji1g"))))
+                "0dbxz9d22vzm7fr9kgg66hj3sf8ag2ly8qky58cxvn1hyjl5h3v7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5183,6 +5183,8 @@ Note: currently this package does not provide GPU support.")
              ;; These all fail with a size mismatch error such as
              ;; RuntimeError: shape '[-1, 2, 1, 1]' is invalid for input of size 3
              "--ignore=test/explain/algorithm/test_captum_explainer.py"
+             ;; Requires the nonfree MKL on CPU.
+             "--ignore=test/nn/models/test_graph_unet.py"
              "-k" (string-append
                    ;; Permissions error
                    "not test_packaging"
