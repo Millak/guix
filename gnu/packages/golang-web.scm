@@ -8954,6 +8954,28 @@ metrics SDK.")
     (description "This package is a Go Implementation of WireGuard.")
     (license license:expat)))
 
+(define-public go-gopkg-in-go-jose-go-jose-v2
+  (package
+    (inherit go-github-com-go-jose-go-jose-v3)
+    (name "go-gopkg-in-go-jose-go-jose-v2")
+    (version "2.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-jose/go-jose")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0frg4g9gyqdgf7h0xai9771a47ndb0zqbw0rp5yk0dswsq1vk4kq"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-go-jose-go-jose-v3)
+       ((#:import-path _) "gopkg.in/go-jose/go-jose.v2")))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-gopkg-in-alecthomas-kingpin-v2))))
+
 ;; This to satisfy alternative import path.
 (define-public go-gopkg-in-jcmturner-rpc-v1
   (package
