@@ -3632,6 +3632,8 @@ more tangible.")
     (arguments
      (list
       #:import-path "github.com/d4l3k/messagediff"))
+    (propagated-inputs
+     (list go-golang-org-x-net))
     (home-page "https://github.com/d4l3k/messagediff")
     (synopsis "Diff arbitrary Go structs")
     (description
