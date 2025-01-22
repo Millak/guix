@@ -5530,6 +5530,37 @@ and common image transformations for computer vision.")
 Python.")
     (license license:bsd-3)))
 
+(define-public python-geomloss
+  (package
+    (name "python-geomloss")
+    (version "0.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "geomloss" version))
+       (sha256
+        (base32 "1szsjpcwjlvqiiws120fwn581a6hs8gm9si8c75v40ahbh44f729"))))
+    (build-system pyproject-build-system)
+    ;; There are no automated tests.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list python-numpy python-pytorch))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://www.kernel-operations.io/geomloss/")
+    (synopsis
+     "Geometric loss functions between point clouds, images and volumes")
+    (description
+     "The GeomLoss library provides efficient GPU implementations for:
+
+@itemize
+@item Kernel norms (also known as Maximum Mean Discrepancies).
+@item Hausdorff divergences, which are positive definite generalizations of
+the Chamfer-ICP loss and are analogous to log-likelihoods of Gaussian Mixture
+Models.
+@item Debiased Sinkhorn divergences, which are affordable yet positive and
+definite approximations of Optimal Transport (Wasserstein) distances.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
