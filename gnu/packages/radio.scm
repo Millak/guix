@@ -13,7 +13,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Ryan Tolboom <ryan@using.tech>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Andy Tai <atai@atai.org>
 ;;; Copyright © 2024 Noisytoot <ron@noisytoot.org>
 ;;;
@@ -1711,7 +1711,10 @@ weak-signal conditions.")
         (base32 "1lw9q7ggh2jlasipl3v5pkbabysjr6baw15lnmg664ah3fwdrvnx"))))
     (build-system qt-build-system)
     (native-inputs
-     (list asciidoc gfortran pkg-config qttools-5 ruby-asciidoctor))
+     (append (list asciidoc gfortran pkg-config qttools-5)
+             (if (supported-package? ruby-asciidoctor)
+                 (list ruby-asciidoctor)
+                 '())))
     (inputs
      (list
       boost
@@ -1724,7 +1727,10 @@ weak-signal conditions.")
       qtmultimedia-5
       qtserialport-5))
     (arguments
-     `(#:tests? #f)) ; No test suite
+     `(,@(if (this-package-native-input "ruby-asciidoctor")
+             '()
+             `(#:configure-flags '("-DWSJT_GENERATE_DOCS=OFF")))
+       #:tests? #f)) ; No test suite
     (synopsis "Weak-signal ham radio communication program, forked from WSJTX")
     (description
      "JTDX means \"JT,T10 and FT8 and FT4 modes for DXing\", it is being
