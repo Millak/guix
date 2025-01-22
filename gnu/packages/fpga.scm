@@ -77,9 +77,8 @@
   #:use-module (gnu packages version-control))
 
 (define-public abc
-
- (let ((commit "707442e0915dd7fdbfc5742b04ef16429373075a")
-       (revision "3"))
+ (let ((commit "d5e1a5d445f68bdb4895bb735b9568e5f4738c13")
+       (revision "4"))
   (package
     (name "abc")
     (version (git-version "0.0" revision commit))
@@ -91,7 +90,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04wi0917cp9j9vsbmi00sb7914qspkz2d1113mkgjmmql6mq9gch"))))
+                "0b3qdljcr7dznqr3zxihx9vp6ng6a6pnaqhasblc03rnpp83y1w4"))))
     (build-system gnu-build-system)
     (inputs
      (list readline))
