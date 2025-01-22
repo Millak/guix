@@ -154,7 +154,7 @@
                       #+(canonical-package xz)
                       #+(canonical-package sed)
                       #+(canonical-package grep)
-                      #+(canonical-package gzip)
+                      #+(canonical-package pigz)
                       #+(canonical-package tar)))
                (set-path-environment-variable
                 "PYTHONPATH"
@@ -194,26 +194,28 @@
         "torbrowser-compare-paths.patch"
         "librewolf-use-system-wide-dir.patch")))))
 
-;; Define the versions of rust needed to build librewolf, trying to match
-;; upstream.  See the file taskcluster/ci/toolchain/rust.yml at
-;; https://searchfox.org under the particular firefox release, like
-;; mozilla-esr102.
-(define rust-librewolf rust) ; 1.75 is the default in Guix, 1.65 is the minimum.
+;;; Define the versions of rust needed to build firefox, trying to match
+;;; upstream.  See table at [0], `Uses' column for the specific version.
+;;; Using `rust' will likely lead to a newer version then listed in the table,
+;;; but since in Guix only the latest packaged Rust is officially supported,
+;;; it is a tradeoff worth making.
+;;; 0: https://firefox-source-docs.mozilla.org/writing-rust-code/update-policy.html
+(define rust-librewolf rust-1.81)
 
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20241130102406")
+(define %librewolf-build-id "20250121184331")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "133.0-1")
+    (version "134.0.1-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "0q6cqfnwc2x09frdvsndmhck8ixrnbl281j9rqw5w8bd7fd2qas9"
-      #:librewolf-hash "1xf7gx3xm3c7dhch9gwpb0xp11lcyim1nrbm8sjljxdcs7iq9jy4"))
+      #:firefox-hash "1rb54b62zcmhabmx3rsd5badv9wwih6h19a0g80c03qgwwy8b8g3"
+      #:librewolf-hash "0bcjk3pkyq2w39n022kcpl8nqd8ng9653jc8gklfrfw9avwmpmk2"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
@@ -666,7 +668,7 @@
                   gtk+
                   gtk+-2
                   hunspell
-                  icu4c-73
+                  icu4c-75
                   jemalloc
                   libcanberra
                   libevent
