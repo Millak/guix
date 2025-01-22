@@ -35,7 +35,7 @@
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
@@ -6167,44 +6167,38 @@ that require it.")
     (license license:expat)))
 
 (define-public sysdig
-  ;; Use the latest commit for now, as the latest 0.36.1 release does not yet
-  ;; support the falcosecurity-libs 0.16 API.
-  (let ((commit "598ad292b659425e475e5814d9e92c3c29188480")
-        (revision "0"))
-    (package
-      (name "sysdig")
-      (version (git-version "0.36.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/draios/sysdig")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0yyins3rb286dfibadfwwp2gwmdj7fsz3pdkpdvx05yvdqfkqds7"))
-                (patches
-                 (search-patches "sysdig-shared-falcosecurity-libs.patch"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list #:tests? #f                ;no test suite
-             #:configure-flags
-             #~(list "-DUSE_BUNDLED_DEPS=OFF"
-                     ;; Already built and part of falcosecurity-libs, but
-                     ;; needed for the 'HAS_MODERN_BPF' define.
-                     "-DBUILD_SYSDIG_MODERN_BPF=ON"
-                     #$(string-append "-DSYSDIG_VERSION=" version))))
-      (native-inputs (list pkg-config))
-      (inputs
-       (list falcosecurity-libs
-             luajit
-             ncurses
-             nlohmann-json
-             yaml-cpp
-             zlib))
-      (home-page "https://github.com/draios/sysdig")
-      (synopsis "System exploration and troubleshooting tool")
-      (description "Sysdig is a simple tool for deep system visibility, with
+  (package
+    (name "sysdig")
+    (version "0.40.0-alpha6")           ;for the 0.20 patch to apply
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/draios/sysdig")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0pxmx3by0lckw7zv54wrg0cr13j1mhk2z0x4qachrf2mz5qjq2cd"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:configure-flags
+           #~(list "-DUSE_BUNDLED_DEPS=OFF"
+                   ;; Already built and part of falcosecurity-libs, but
+                   ;; needed for the 'HAS_MODERN_BPF' define.
+                   "-DBUILD_SYSDIG_MODERN_BPF=ON"
+                   #$(string-append "-DSYSDIG_VERSION=" version))))
+    (native-inputs (list pkg-config))
+    (inputs
+     (list falcosecurity-libs
+           luajit
+           ncurses
+           nlohmann-json
+           yaml-cpp
+           zlib))
+    (home-page "https://github.com/draios/sysdig")
+    (synopsis "System exploration and troubleshooting tool")
+    (description "Sysdig is a simple tool for deep system visibility, with
 native support for containers.  It combines features of multiple system
 administration tools such as the @command{strace}, @command{tcpdump},
 @command{htop}, @command{iftop} and @command{lsof} into a single interface.
@@ -6222,7 +6216,7 @@ Bash aliases can be added to your @file{~/.bash_profile} file, for example:
 alias sysdig=sudo sysdig --modern-bpf
 alias cysdig=sudo csysdig --modern-bpf
 ")                                      ;XXX no @example Texinfo support
-      (license license:asl2.0))))
+    (license license:asl2.0)))
 
 (define-public fail2ban
   (package
