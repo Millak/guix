@@ -5,7 +5,7 @@
 htmlxrefversion=2025-01-22.18; # UTC
 
 # Copyright 2010-2020, 2022 Free Software Foundation, Inc.
-# 
+#
 # Copying and distribution of this file, with or without modification,
 # are permitted in any medium without royalty provided the copyright
 # notice and this notice are preserved.
@@ -24,10 +24,10 @@ htmlxrefversion=2025-01-22.18; # UTC
 # - follow the naming convention for nodes described at
 # http://www.gnu.org/software/texinfo/manual/texinfo/html_node/HTML-Xref.html
 #   This is what makeinfo and texi2html implement.
-# 
+#
 # Unless the above criteria are met, it's not possible to generate
 # reliable cross-manual references.
-# 
+#
 # For information on automatically generating all the useful formats for
 # a manual to put on the web, see
 # http://www.gnu.org/prep/maintain/html_node/Manuals-on-Web-Pages.html.
