@@ -447,7 +447,7 @@ and the ICD.")
     (inputs
      (list glslang libxrandr vulkan-loader wayland wayland-protocols))
     (native-inputs
-     (list googletest pkg-config python volk vulkan-headers))
+     (list googletest pkg-config python vulkan-volk vulkan-headers))
     (arguments
      `(#:configure-flags (list "-DBUILD_TESTS=ON")
        #:phases (modify-phases %standard-phases
@@ -639,9 +639,9 @@ can assist development by enabling developers to verify their applications corre
 use the Vulkan API.")
     (license license:asl2.0)))
 
-(define-public volk
+(define-public vulkan-volk
   (package
-    (name "volk")
+    (name "vulkan-volk")
     (version "1.3.280.0")
     (source (origin
               (method git-fetch)
