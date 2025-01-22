@@ -1796,8 +1796,7 @@ focused on DXing and being shaped by community of DXers.JTDX")
      (list asciidoc
            gfortran
            pkg-config
-           qttools-5
-           ruby-asciidoctor))
+           qttools-5))
     (inputs
      (list boost
            fftw
