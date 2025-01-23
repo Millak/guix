@@ -1751,6 +1751,47 @@ shape.  This package provides an @code{htmlwidget} for building streamgraph
 visualizations.")
       (license license:expat))))
 
+(define-public r-vitesscer
+  (let ((commit "0096880c1b7b7afb42a26277e34508b4cce815bd")
+        (revision "1"))
+    (package
+      (name "r-vitesscer")
+      (version (git-version "0.99.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vitessce/vitessceR")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0axragpfl9xz7a10wx7n2j88lcv64kzi4ixkr6s69x3xa2fmlvay"))))
+      (properties `((upstream-name . "vitessceR")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-delayedarray
+                               r-future
+                               r-htmlwidgets
+                               r-httpuv
+                               r-jsonlite
+                               r-matrix
+                               r-mime
+                               r-plumber
+                               r-r6
+                               r-s4vectors
+                               r-stringi
+                               r-stringr))
+      (native-inputs (list r-knitr r-testthat))
+      (home-page "https://github.com/vitessce/vitessceR")
+      (synopsis "Create interactive Single-cell visualizations")
+      (description
+       "This package provides an R API and @code{htmlwidget} facilitating
+interactive visualization of spatial single-cell data with Vitessce.  The R
+API contains classes and functions for loading single-cell data stored in
+compatible on-disk formats.  The @code{htmlwidget} is a wrapper around the
+Vitessce JavaScript library and can be used in the Viewer tab of RStudio or
+Shiny apps.")
+      (license license:expat))))
+
 (define-public r-wasabi
   (let ((commit "8c33cabde8d18c2657cd6e38e7cb834f87cf9846")
         (revision "1"))
