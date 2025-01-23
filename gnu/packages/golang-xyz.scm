@@ -16271,47 +16271,8 @@ go files.  This mechanism was first used in Kubernetes code-generator and is
 split out here for ease of reuse and maintainability.")
     (license license:asl2.0)))
 
-(define-public go-k8s-io-klog
-  (package
-    (name "go-k8s-io-klog")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kubernetes/klog")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1cgannfmldcrcksb2wqdn2b5qabqyxl9r25w9y4qbljw24hhnlvn"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "k8s.io/klog"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Disable test requiring write access to creat test files.
-                  (("TestRollover") "OffTestRollover"))))))))
-    (propagated-inputs
-     (list go-github-com-go-logr-logr))
-    (home-page "https://github.com/kubernetes/klog")
-    (synopsis "Leveled execution logs for Go")
-    (description
-     "Package klog implements logging analogous to the Google-internal C++
-INFO/ERROR/V setup.  It provides functions @code{Info}, @code{Warning},
-@code{Error}, @code{Fatal}, plus formatting variants such as @code{Infof}.  It
-also provides V-style logging controlled by the @code{-v} and
-@code{-vmodule=file=2} flags.  It's a is a permanent fork of
-@code{https://github.com/golang/glog}.")
-    (license license:asl2.0)))
-
 (define-public go-k8s-io-klog-v2
   (package
-    (inherit go-k8s-io-klog)
     (name "go-k8s-io-klog-v2")
     (version "2.130.1")
     (source
@@ -16341,7 +16302,19 @@ also provides V-style logging controlled by the @code{-v} and
           (add-after 'unpack 'remove-examples
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "examples")))))))))
+                (delete-file-recursively "examples")))))))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr))
+    (home-page "https://github.com/kubernetes/klog")
+    (synopsis "Leveled execution logs for Go")
+    (description
+     "Package klog implements logging analogous to the Google-internal C++
+INFO/ERROR/V setup.  It provides functions @code{Info}, @code{Warning},
+@code{Error}, @code{Fatal}, plus formatting variants such as @code{Infof}.  It
+also provides V-style logging controlled by the @code{-v} and
+@code{-vmodule=file=2} flags.  It's a is a permanent fork of
+@code{https://github.com/golang/glog}.")
+    (license license:asl2.0)))
 
 (define-public go-k8s-io-utils
   (package
