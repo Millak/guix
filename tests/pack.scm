@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017-2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2021, 2023, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
@@ -34,14 +34,15 @@
   #:use-module ((guix build utils) #:select (%store-directory))
   #:use-module (gnu packages)
   #:use-module ((gnu packages base) #:select (libc-utf8-locales-for-target
-                                              hello))
+                                              hello glibc))
   #:use-module (gnu packages bootstrap)
   #:use-module ((gnu packages package-management) #:select (rpm))
   #:use-module ((gnu packages compression) #:select (squashfs-tools))
   #:use-module ((gnu packages debian) #:select (dpkg))
-  #:use-module ((gnu packages guile) #:select (guile-sqlite3))
+  #:use-module ((gnu packages guile) #:select (guile-sqlite3 guile-3.0))
   #:use-module ((gnu packages gnupg) #:select (guile-gcrypt))
   #:use-module ((gnu packages linux) #:select (fakeroot))
+  #:use-module ((ice-9 textual-ports) #:select (get-string-all))
   #:use-module (srfi srfi-64))
 
 (define %store
@@ -347,36 +348,64 @@
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
          (profile -> (profile
-                      (content (packages->manifest (list %bootstrap-guile hello)))
+                      ;; When using '--appimage-extract-and-run', the dynamic
+                      ;; linker is necessary, hence glibc below.
+                      (content (packages->manifest (list hello glibc)))
                       (hooks '())
                       (locales? #f)))
          (image   (self-contained-appimage "hello-appimage" profile
                                            #:entry-point "bin/hello"
                                            #:extra-options
-                                           (list #:relocatable? #t)))
+                                           '(#:relocatable? #t)))
          (check   (gexp->derivation
                    "check-appimage"
-                   #~(invoke #$image))))
-      (built-derivations (list check))))
+                   (with-imported-modules '((guix build utils))
+                     #~(begin
+                         (use-modules (ice-9 popen)
+                                      (guix build utils))
+                         (let ((pipe (open-pipe* OPEN_READ
+                                                 #$image "--appimage-extract-and-run")))
+                           (call-with-output-file #$output
+                             (lambda (port)
+                               (dump-port pipe port)))
+                           (exit (status:exit-val (close-pipe pipe)))))))))
+      (mbegin %store-monad
+        (built-derivations (list (pk 'APPIMAGE-drv check)))
+        (return (string=? (call-with-input-file (derivation->output-path check)
+                            get-string-all)
+                          "Hello, world!\n")))))
 
   (unless store (test-skip 1))
   (test-assertm "appimage + localstatedir"
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
          (profile -> (profile
-                      (content (packages->manifest (list %bootstrap-guile hello)))
+                      ;; When using '--appimage-extract-and-run', the dynamic
+                      ;; linker is necessary, hence glibc below.
+                      (content (packages->manifest (list guile-3.0 glibc)))
                       (hooks '())
                       (locales? #f)))
-         (image   (self-contained-appimage "hello-appimage" profile
-                                           #:entry-point "bin/hello"
+         (image   (self-contained-appimage "guile-appimage" profile
+                                           #:entry-point "bin/guile"
                                            #:localstatedir? #t
                                            #:extra-options
-                                           (list #:relocatable? #t)))
+                                           '(#:relocatable? #t)))
          (check   (gexp->derivation
-                   "check-appimage"
+                   "check-appimage-with-localstatedir"
                    #~(begin
-                       (invoke #$image)))))
-      (built-derivations (list check))))
+                       (system* #$image "--appimage-extract-and-run" "-c"
+                                (object->string
+                                 `(call-with-output-file #$output
+                                    (lambda (port)
+                                      (display "Hello from Guile!\n"
+                                               port)))))
+                       (system* #$image "--appimage-extract")
+                       (exit (file-exists? "squashfs-root/var/guix/db/db.sqlite"))))))
+      (mbegin %store-monad
+        (built-derivations (list (pk 'APPIMAGE-drv check)))
+        (return (string=? (call-with-input-file (derivation->output-path check)
+                            get-string-all)
+                          "Hello from Guile!\n")))))
 
   (unless store (test-skip 1))
   (test-assertm "deb archive with symlinks and control files"
