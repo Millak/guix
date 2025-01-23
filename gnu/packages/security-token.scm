@@ -980,14 +980,14 @@ devices.")
 (define-public ausweisapp
   (package
     (name "ausweisapp")
-    (version "2.1.0")
+    (version "2.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/Governikus/AusweisApp/releases"
                                   "/download/" version "/AusweisApp-" version ".tar.gz"))
               (sha256
                (base32
-                "1jzxfybjrc3byw42bqjvn1nsn7vbgcl8y94sywjy6vaj3a58hy36"))))
+                "1rbbgr90ivay1sh8sarp0nd1p8zdyfscjjwg8jdi2ig61jr795zf"))))
 
     (build-system qt-build-system)
     (native-inputs
@@ -1019,7 +1019,7 @@ devices.")
      "This application is developed and issued by the German government to be
 used for online authentication with electronic German ID cards and residence
 titles.  To use this app, a supported RFID card reader or NFC-enabled smart
-phone is required.")
+phone and a running pcscd service are required.")
     (license license:eupl1.2)))
 
 (define-deprecated/public ausweisapp2 ausweisapp
