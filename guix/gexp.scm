@@ -5,6 +5,7 @@
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1151,7 +1152,7 @@ derivations--e.g., code evaluated for its side effects."
                            #:key
                            system (target 'current)
                            hash hash-algo recursive?
-                           (env-vars '())
+                           (env-vars '(("LC_CTYPE" . "C.UTF-8")))
                            (modules '())
                            (module-path %load-path)
                            (guile-for-build (%guile-for-build))
@@ -2020,6 +2021,8 @@ imported modules in its search path.  Look up EXP's modules in MODULE-PATH."
                       (gexp
                        (call-with-output-file (ungexp output)
                          (lambda (port)
+                           (set-port-encoding! port "UTF-8")
+
                            ;; Note: that makes a long shebang.  When the store
                            ;; is /gnu/store, that fits within the 128-byte
                            ;; limit imposed by Linux, but that may go beyond
@@ -2118,6 +2121,7 @@ resulting store file holds references to all these."
   (define builder
     (gexp (call-with-output-file (ungexp output "out")
             (lambda (port)
+              (set-port-encoding! port "UTF-8")
               (display (string-append (ungexp-splicing text)) port)))))
 
   (gexp->derivation name builder
