@@ -39,6 +39,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 Marco Baggio <guix@mawumag.com>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
+;;; Copyright © 2024 Tor-björn Claesson <tclaesson@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -13722,6 +13723,28 @@ uncertainty, unit) for @acronym{SI, International System of Units} and non-SI
 units, plus unit conversions based on the data from @acronym{NIST, National
 Institute of Standards and Technology}, USA.")
     (license license:gpl3+)))
+
+(define-public r-numero
+  (package
+    (name "r-numero")
+    (version "1.9.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Numero" version))
+       (sha256
+        (base32 "04pf6x7qmgkfyj98c23maxcvlwwwfw6jas7l72xp0713lyndjl15"))))
+    (properties `((upstream-name . "Numero")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-knitr r-rmarkdown))
+    (home-page "https://cran.r-project.org/package=Numero")
+    (synopsis "Statistical framework to define subgroups in complex datasets")
+    (description
+     "The package includes the necessary functions to construct a
+self-organizing map of data, to evaluate the statistical signifcance of the
+observed data patterns, and to visualize the results.")
+    (license license:gpl2+)))
 
 (define-public r-stabs
   (package
