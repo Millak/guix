@@ -7764,6 +7764,30 @@ page dashboard or a multi-page template, where the navigation menu is
 contained in the navigation bar.")
     (license license:gpl2+)))
 
+(define-public r-spdl
+  (package
+    (name "r-spdl")
+    (version "0.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "spdl" version))
+       (sha256
+        (base32 "185qzlwac7acq126xpvcd71nv25zgkrdr8m73gv2sn1zxj78hyid"))))
+    (properties `((upstream-name . "spdl")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcppspdlog))
+    (home-page "https://github.com/eddelbuettel/spdl")
+    (synopsis "Easier use of RcppSpdlog functions via wrapper")
+    (description
+     "Logging functions in @code{RcppSpdlog} provide access to the logging
+functionality from the spdlog C++ library.  This package offers shorter
+convenience wrappers for the R functions which match the C++ functions, namely
+via, say, @code{spdl::debug()} at the debug level.  The actual formatting is
+done by the @code{fmt::format()} function from the fmtlib library (that is
+also @code{std::format()} in C++20 or later).")
+    (license license:gpl2+)))
+
 (define-public r-spelling
   (package
     (name "r-spelling")
