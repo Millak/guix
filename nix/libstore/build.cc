@@ -50,6 +50,9 @@
 #if HAVE_SCHED_H
 #include <sched.h>
 #endif
+#if HAVE_SYS_PRCTL_H
+#include <sys/prctl.h>
+#endif
 
 
 #define CHROOT_ENABLED HAVE_CHROOT && HAVE_SYS_MOUNT_H && defined(MS_BIND) && defined(MS_PRIVATE)
@@ -2075,6 +2078,12 @@ void DerivationGoal::runChild()
 
 #if CHROOT_ENABLED
         if (useChroot) {
+# if HAVE_SYS_PRCTL_H
+	    /* Drop ambient capabilities such as CAP_CHOWN that might have
+	       been granted when starting guix-daemon.  */
+	    prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_CLEAR_ALL, 0, 0, 0);
+# endif
+
 	    if (!fixedOutput) {
 		/* Initialise the loopback interface. */
 		AutoCloseFD fd(socket(PF_INET, SOCK_DGRAM, IPPROTO_IP));
