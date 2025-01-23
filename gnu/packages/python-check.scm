@@ -316,6 +316,29 @@ Avocado machine readable outputs this one is streamlined (per test results).
 Python code formatter \"black\".")
     (license license:expat)))
 
+(define-public python-pytest-freezer
+  (package
+    (name "python-pytest-freezer")
+    (version "0.4.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_freezer" version))
+       (sha256
+        (base32 "0an8y6ri3bhij4137gphdw2yg6rq7if4nb1qjj7zjsy4kjy1dgr1"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core))
+    (propagated-inputs
+     (list python-freezegun
+           python-pytest))
+    (home-page "https://github.com/pytest-dev/pytest-freezer/")
+    (synopsis "Pytest plugin providing a fixture interface for spulec/freezegun")
+    (description
+     "Pytest plugin providing a fixture interface for
+@url{https://github.com/spulec/freezegun, freezegun}.")
+    (license license:expat)))
+
 (define-public python-beartype
   (package
     (name "python-beartype")
