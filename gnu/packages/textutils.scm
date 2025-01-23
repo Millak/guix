@@ -69,6 +69,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
@@ -1495,9 +1496,7 @@ of a Unix terminal to HTML code.")
 (define-public vale
   (package
     (name "vale")
-    ;; Newer versions requires <github.com/smacker/go-tree-sitter> which is
-    ;; quite a large project to pack.
-    (version "3.4.2")
+    (version "3.9.4")
     (source
      (origin
        (method git-fetch)
@@ -1505,17 +1504,12 @@ of a Unix terminal to HTML code.")
              (url "https://github.com/errata-ai/vale")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "15f8ggh7hpfmfpszl9qkdfz19kds6gg6x5dgcqy0v6jrcsdbgpgp"))
-       (file-name (git-file-name name version))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Module name has been changed upstream.
-            (substitute* (find-files "." "\\.go$")
-              (("github.com/antonmedv/expr") "github.com/expr-lang/expr"))))))
+        (base32 "009gyrn2mi7bg10v6mqrr6c6ii5l2vbhs7mvh7g4xxgqhaqzpbhp"))
+       (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.23
       #:install-source? #f
       #:embed-files #~(list ".*\\.gob")
       #:import-path "github.com/errata-ai/vale/cmd/vale"
@@ -1525,24 +1519,20 @@ of a Unix terminal to HTML code.")
       ;; dial tcp: lookup raw.githubusercontent.com on [::1]:53: read udp
       ;; [::1]:52621->[::1]:53: read: connection refused.
       #:test-flags
-      #~(list "-skip"
-              (string-join
-               (list "TestLibrary"
-                     "TestLocalComplete"
-                     "TestLocalDir"
-                     "TestLocalOnlyStyles"
-                     "TestLocalZip"
-                     "TestNoPkgFound"
-                     "TestV3Pkg")
-               "|"))
+      #~(list "-skip" (string-join
+                       (list "TestLibrary"
+                             "TestNoPkgFound"
+                             "TestSymlinkFixture")
+                       "|"))
+      #:test-subdirs
+      #~(list "../../...") ; test whole libary, starting from import-path
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list go-github-com-masterminds-sprig-v3
-           go-github-com-adrg-strutil
+     (list go-github-com-adrg-strutil
            go-github-com-adrg-xdg
            go-github-com-bmatcuk-doublestar-v4
            go-github-com-d5-tengo-v2
@@ -1550,16 +1540,20 @@ of a Unix terminal to HTML code.")
            go-github-com-errata-ai-regexp2
            go-github-com-expr-lang-expr
            go-github-com-gobwas-glob
+           go-github-com-jdkato-go-tree-sitter-julia
            go-github-com-jdkato-twine
-           go-github-com-karrick-godirwalk
-           go-github-com-mholt-archiver-v3
+           go-github-com-masterminds-sprig-v3
            go-github-com-mitchellh-mapstructure
            go-github-com-niklasfasching-go-org
            go-github-com-olekukonko-tablewriter
            go-github-com-otiai10-copy
+           go-github-com-pelletier-go-toml-v2
            go-github-com-pterm-pterm
            go-github-com-remeh-sizedwaitgroup
+           go-github-com-smacker-go-tree-sitter
            go-github-com-spf13-pflag
+           go-github-com-stretchr-testify
+           go-github-com-tomwright-dasel-v2
            go-github-com-yuin-goldmark
            go-golang-org-x-exp
            go-golang-org-x-net
