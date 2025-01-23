@@ -2965,6 +2965,35 @@ levels that works by wrapping the standard @code{log} library.")
 dependencies and is intended to be used in long running processes.")
     (license license:expat)))
 
+(define-public go-github-com-clbanning-mxj-v2
+  (package
+    (name "go-github-com-clbanning-mxj-v2")
+    (version "2.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/clbanning/mxj")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kdh9cdq0x9jk5vzn2k489w7k88rdwf1b87yzhr7jbkchh2nh608"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; XXX: find out why
+      #:import-path "github.com/clbanning/mxj/v2"
+      #:test-subdirs #~(list ".")))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (home-page "https://github.com/clbanning/mxj")
+    (synopsis "Decode / encode XML in Golang")
+    (description
+     "This package implements a functionality to marshal/unmarshal XML to/from
+@code{map[string]interface{}} values (and JSON); extract/modify values from
+maps by key or key-path, including wildcards.")
+    (license license:expat)))
+
 (define-public go-github-com-cli-safeexec
   (package
     (name "go-github-com-cli-safeexec")
