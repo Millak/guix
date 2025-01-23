@@ -8874,6 +8874,33 @@ code using Rcpp or RcppArmadillo.  Functions are available that return a
 distributions, Armadillo vectors and matrices.")
     (license license:gpl2+)))
 
+(define-public r-rcppint64
+  (package
+    (name "r-rcppint64")
+    (version "0.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RcppInt64" version))
+       (sha256
+        (base32 "1h4lshkn3p3c7swygbpmkg0pa80xcp3f9alck5q4bmml61hicwjk"))))
+    (properties `((upstream-name . "RcppInt64")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-tinytest))
+    (home-page "https://github.com/eddelbuettel/rcppint64")
+    (synopsis
+     "Rcpp-based helper functions to pass Int64 values between R and C++")
+    (description
+     "@code{int64} values can be created and accessed via the @code{bit64}
+package and its @code{integer64} class which package the @code{int64}
+representation cleverly into a @code{double}.  The @code{nanotime} package
+builds on this to support nanosecond-resolution timestamps.  This package
+helps conversions between R and C++ via several helper functions provided via
+a single header file.  A complete example client package is included as an
+illustration.")
+    (license license:gpl2+)))
+
 (define-public r-rcppml
   (package
     (name "r-rcppml")
