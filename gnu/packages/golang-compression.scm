@@ -347,11 +347,19 @@ Supported archive formats:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vfn01gd3hcpbj6gb4ig3pw6bv0g4j5780awr0fv4kf9id8gjvyy"))))
+        (base32 "0vfn01gd3hcpbj6gb4ig3pw6bv0g4j5780awr0fv4kf9id8gjvyy"))
+       (snippet
+        ;; XXX: fiano uses this package as library only, cmd requires very
+        ;; additional not packed and dated inputs. Overwrite with
+        ;; go-github-com-pierrec-lz4-v4 when fiano is updated.
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "cmd")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/pierrec/lz4"))
+    (native-inputs
+     (list go-github-com-frankban-quicktest))
     (home-page "https://github.com/pierrec/lz4")
     (synopsis "LZ4 compression in pure Go")
     (description
