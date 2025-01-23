@@ -8188,6 +8188,36 @@ and stop units of work, which may receive @code{Close} signals from many clients
 as work arounds until issues are addressed in the official distribution.")
     (license license:bsd-3)))
 
+(define-public go-github-com-jdkato-go-tree-sitter-julia
+  (package
+    (name "go-github-com-jdkato-go-tree-sitter-julia")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jdkato/go-tree-sitter-julia")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17xr33vvrqsl0v1xzb3ya99anhg5zf04kp6wfk1m3iqi904ff0am"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/jdkato/go-tree-sitter-julia"))
+    (propagated-inputs
+     (list go-github-com-smacker-go-tree-sitter))
+    (home-page "https://github.com/jdkato/go-tree-sitter-julia")
+    (synopsis "Julia grammar for tree sitter")
+    (description
+     "This package provides a Julia grammar for
+@url{https://github.com/tree-sitter/tree-sitter, tree-sitter} bindings in
+Golang.")
+    ;; It's a component of Vale, written by the same author and does not
+    ;; provide license.
+    (license license:unlicense)))
+
 (define-public go-github-com-jdkato-twine
   (package
     (name "go-github-com-jdkato-twine")
