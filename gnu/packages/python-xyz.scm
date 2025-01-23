@@ -7111,27 +7111,25 @@ JavaScript-like message boxes.  Types of dialog boxes include:
 (define-public python-pympler
   (package
     (name "python-pympler")
-    (home-page "https://pythonhosted.org/Pympler/")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Pympler" version))
-              (sha256
-               (base32
-                "1ynkqpv2akldmvkll5vh5zhwj433s1d59iv0f76lygyak4silgwr"))))
-    (build-system python-build-system)
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pympler" version))
+       (sha256
+        (base32 "090403k1wvqyddjwbla4843dylysrkd8yw7i62222b4rp1y8dahy"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'skip-broken-test
-            (lambda _
-              ;; FIXME: This test fails for no good reason:
-              ;; https://github.com/pympler/pympler/issues/153
-              (substitute* "test/muppy/test_tracker.py"
-                (("^([[:blank:]]+)def test_stracker_create_summary" all indent)
-                 (string-append indent "@unittest.skipIf(True, \
-'Fails on Guix too for unknown reasons')\n" all))))))))
+      ;; One test fails with error: 'function (test.muppy.test_summary.func)'
+      ;; != 'function (muppy.test_summary.func)'.
+      ;; See <https://github.com/pympler/pympler/issues/134>.
+      #:test-flags #~(list "-k" "not test_repr_function")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://pythonhosted.org/Pympler/")
     (synopsis "Measure, monitor and analyze memory behavior")
     (description
      "Pympler is a development tool to measure, monitor and analyze
