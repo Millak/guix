@@ -323,7 +323,7 @@ menu to select one of the installed operating systems.")
        (delete "lvm2" "mdadm" "fuse" "console-setup")))
     (native-inputs
      (modify-inputs (package-native-inputs grub)
-       (delete "help2man" "texinfo" "parted" "qemu" "xorriso")))
+       (delete "help2man" "texinfo" "parted" "qemu" "qemu-minimal" "xorriso")))
     (arguments
      (substitute-keyword-arguments (package-arguments grub)
        ((#:tests? _ #t) #f)
@@ -413,7 +413,7 @@ menu to select one of the installed operating systems.")
     (native-inputs
      ;; The tests are skipped in this package so we remove some test dependencies.
      (modify-inputs (package-native-inputs grub)
-       (delete "parted" "qemu" "xorriso")))
+       (delete "parted" "qemu" "qemu-minimal" "xorriso")))
     (arguments
      ;; TODO: Tests need a UEFI firmware for qemu. There is one at
      ;; https://github.com/tianocore/edk2/tree/master/OvmfPkg .
