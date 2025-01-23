@@ -1711,6 +1711,9 @@ TARGET, a GNU triplet."
                        (system base target)
                        (system base compile))
 
+          ;; Best effort.  The locale is not installed when cross-compiling.
+          (false-if-exception (setlocale LC_CTYPE "C.UTF-8"))
+
           (define modules
             (getenv "modules"))
 
