@@ -7237,33 +7237,44 @@ e.g. filters, callbacks and errbacks can all be promises.")
 (define-public python-virtualenv
   (package
     (name "python-virtualenv")
-    (version "20.28.0")
+    (version "20.29.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "virtualenv" version))
        (sha256
         (base32
-         "1aj980vffl4mpq4j67f7a0j07rlm8jp5yw8xh3m8fywfpdi3571c"))))
+         "0dfwnn8i1y33kgxhi4xyhsj4yr5vsin7zf9c343bcbyk700rgf5q"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; These tests require Internet access.
-     (list #:test-flags '(list "-k" "not test_seed_link_via_app_data")))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list
+                     ;; These tests require Internet access.
+                     "not test_seed_link_via_app_data"
+                     ;; AssertionError: assert 'python' in ['python3',
+                     ;; 'python3.11'].
+                     ;; 
+                     ;; PythonInfo() returns: 'system_executable':
+                     ;; '/gnu/store/...-python-wrapper-3.11.11/bin/python'
+                     "test_fallback_existent_system_executable")
+                    " and not "))))
     (native-inputs
-     (list python-covdefaults
-           python-coverage
-           python-flaky
+     (list python-flaky
            python-hatch-vcs
            python-hatchling
            python-packaging
            python-pytest
            python-pytest-env
+           python-pytest-freezer
            python-pytest-mock
            python-pytest-timeout
            python-setuptools
            python-time-machine))
     (propagated-inputs
-     (list python-distlib python-filelock python-importlib-metadata
+     (list python-distlib
+           python-filelock
            python-platformdirs))
     (home-page "https://virtualenv.pypa.io/")
     (synopsis "Virtual Python environment builder")
