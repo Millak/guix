@@ -17062,8 +17062,6 @@ linter that verifies correct usage of Fx."))))
       #:import-path "github.com/hashicorp/go-hclog/hclogvet"
       #:unpack-path "github.com/hashicorp/go-hclog"
       #:install-source? #f))
-    (propagated-inputs
-     (list go-golang-org-x-tools))
     (description
      "@code{hclogvet} is a @code{go vet} tool for checking that the
 Trace/Debug/Info/Warn/Error methods on @code{hclog.Logger} are used
