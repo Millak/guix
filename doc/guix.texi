@@ -12477,7 +12477,8 @@ Return an object representing a text file called @var{name} with the given
 This is the declarative counterpart of @code{text-file}.
 @end deffn
 
-@deffn {Procedure} computed-file name gexp [#:local-build? #t] [#:options '()]
+@deffn {Procedure} computed-file @var{name} @var{gexp} @
+  [#:guile] [#:local-build? #t] [#:options '()]
 Return an object representing the store item @var{name}, a file or
 directory computed by @var{gexp}.  When @var{local-build?} is true (the
 default), the derivation is built locally.  @var{options} is a list of
@@ -12488,7 +12489,7 @@ This is the declarative counterpart of @code{gexp->derivation}.
 
 @deffn {Monadic Procedure} gexp->script @var{name} @var{exp} @
   [#:guile (default-guile)] [#:module-path %load-path] @
-  [#:system (%current-system)] [#:target #f]
+  [#:system (%current-system)] [#:target 'current]
 Return an executable script @var{name} that runs @var{exp} using
 @var{guile}, with @var{exp}'s imported modules in its search path.
 Look up @var{exp}'s modules in @var{module-path}.
@@ -12525,8 +12526,8 @@ This is the declarative counterpart of @code{gexp->script}.
 
 @deffn {Monadic Procedure} gexp->file @var{name} @var{exp} @
             [#:set-load-path? #t] [#:module-path %load-path] @
-            [#:splice? #f] @
-            [#:guile (default-guile)]
+            [#:splice? #f] [#:guile (default-guile)] @
+            [#:system (%current-system)] [#:target 'current]
 Return a derivation that builds a file @var{name} containing @var{exp}.
 When @var{splice?}  is true, @var{exp} is considered to be a list of
 expressions that will be spliced in the resulting file.
