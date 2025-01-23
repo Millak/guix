@@ -5573,15 +5573,12 @@ JSON, XML, properties, CSV and TSV.")
     (inherit go-github-com-mikefarah-yq-v4)
     (name "yq")
     (arguments
-     (list #:install-source? #f
-           #:import-path "github.com/mikefarah/yq/v4"
-           #:test-subdirs #~(list ".") ; XXX: try to enable all tests
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'rename-binary
-                 (lambda _
-                   (rename-file (string-append #$output "/bin/v4")
-                                (string-append #$output "/bin/yq")))))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-mikefarah-yq-v4)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:import-path _) "github.com/mikefarah/yq")))
     (propagated-inputs '())
     (inputs (package-propagated-inputs go-github-com-mikefarah-yq-v4))))
 
