@@ -1716,34 +1716,6 @@ completely backwards compatible with @code{golang.org/x/crypto}, the official
 package.")
     (license license:bsd-3)))
 
-(define-public go-github-com-quic-go-qtls-go1-20
-  (package
-    (name "go-github-com-quic-go-qtls-go1-20")
-    (version "0.4.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/quic-go/qtls-go1-20")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "069rknxpg7d0dmxc4akq2mw7wm5bi0420nshykf2iclvmbcg9ajh"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      ;; XXX: panic: qtls.ClientSessionState doesn't match, with Golang 1.20+.
-      #:go go-1.20
-      #:import-path "github.com/quic-go/qtls-go1-20"))
-    (propagated-inputs
-     (list go-golang-org-x-crypto
-           go-golang-org-x-sys))
-    (home-page "https://github.com/quic-go/qtls-go1-20")
-    (synopsis "TLS 1.3 for QUIC")
-    (description "Go standard library TLS 1.3 implementation, modified for
-QUIC.  For Go 1.20.")
-    (license license:expat)))
-
 (define-public go-github-com-refraction-networking-utls
   (package
     (name "go-github-com-refraction-networking-utls")
