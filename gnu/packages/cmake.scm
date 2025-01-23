@@ -8,7 +8,7 @@
 ;;; Copyright © 2017, 2018, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2020, 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -45,6 +45,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
+  #:use-module (guix build-system python)
   #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages)
   #:use-module (gnu packages backup)
@@ -56,6 +57,8 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages serialization)
@@ -443,6 +446,42 @@ and workspaces that can be used in the compiler environment of your choice.")
     (native-search-paths '())
     (search-paths
      (package-native-search-paths cmake-minimal))))
+
+(define-public cmakelang
+  (package
+    (name "cmakelang")
+    (version "0.6.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cmakelang" version))
+       (sha256
+        (base32 "0zz6g1ignqanl4ja9f5nrlk5f3mvv7cp5y9yswjd0m06n23jx603"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f        ;no test data in pypi archive
+                     #:phases #~(modify-phases %standard-phases
+                                  (add-after 'unpack 'adjust-setup.py
+                                    (lambda _
+                                      (substitute* "setup.py"
+                                        (("cmakelang/doc/README.rst")
+                                         "README.rst")))))))
+    (inputs (list python-jinja2 python-pyyaml python-six))
+    (home-page "https://github.com/cheshirekow/cmake_format/")
+    (synopsis "Language tools for CMake (format, lint, etc.)")
+    (description "The cmakelang project provides quality assurance (QA) tools
+for CMake:
+@table @command
+@item cmake-annotate
+generate pretty HTML from your listfiles
+@item cmake-format
+format your listfiles nicely
+@item cmake-lint
+check your listfiles for problems
+@item ctest-to
+parse a ctest output tree and translate it into a more structured
+format (either JSON or XML).
+@end table")
+    (license license:gpl3+)))
 
 (define-public corrosion
   (package
