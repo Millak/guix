@@ -39482,6 +39482,31 @@ book @emph{Nondetects and Data Analysis: Statistics for Censored
 Environmental Data}.")
     (license license:gpl2+)))
 
+(define-public r-nanotime
+  (package
+    (name "r-nanotime")
+    (version "0.3.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "nanotime" version))
+       (sha256
+        (base32 "19q8xklkdp8jsq1hjj78wzr0q00fy8z5p2skyz2xlzvam3555pnb"))))
+    (properties
+     `((upstream-name . "nanotime")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bit64 r-rcpp r-rcppcctz r-rcppdate r-zoo))
+    (native-inputs (list r-tinytest tzdata-for-tests))
+    (home-page "https://github.com/eddelbuettel/nanotime")
+    (synopsis "Nanosecond-resolution time support for R")
+    (description
+     "Full 64-bit resolution date and time functionality with nanosecond
+granularity is provided, with easy transition to and from the standard POSIXct
+type.  Three additional classes offer interval, period and duration
+functionality for nanosecond-resolution timestamps.")
+    (license license:gpl2+)))
+
 (define-public r-naturalsort
   (package
    (name "r-naturalsort")
