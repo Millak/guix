@@ -5528,14 +5528,17 @@ you'd expect.")
                 "0s7c8r6y5jv6wda2v3k47hawfdr9j3rwk717l6byvh5qsbbml0vd"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/mikefarah/yq/v4"
-           #:test-subdirs #~(list ".") ; XXX: try to enable all tests
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'remove-binary
-                 (lambda _
-                   (delete-file-recursively
-                    (string-append #$output "/bin")))))))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/mikefarah/yq/v4"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests need this.
+          (add-after 'unpack 'fix-access-to-doc
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each make-file-writable
+                          (find-files "./pkg/yqlib/doc" "\\.md"))))))))
     (propagated-inputs
      (list go-github-com-a8m-envsubst
            go-github-com-alecthomas-participle-v2
