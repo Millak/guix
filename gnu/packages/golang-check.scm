@@ -666,6 +666,30 @@ programming language}.  It integrates well with Go's built-in @code{testing}
 package, but can be used in other contexts too.")
     (license license:asl2.0)))
 
+(define-public go-github-com-golangplus-fmt
+  (package
+    (name "go-github-com-golangplus-fmt")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golangplus/fmt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07d5kxz0f8ss3v46y0c8jg02sagi0wlaaijhjzzp0r462jyzqii7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; failing with new Golang compiler.
+      #:import-path "github.com/golangplus/fmt"))
+    (home-page "https://github.com/golangplus/fmt")
+    (synopsis "Additions to Go's standard @code{fmt} package")
+    (description
+     "This package provides additions to Go's stdlib @code{fmt}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-golangplus-testing
   (package
     (name "go-github-com-golangplus-testing")
