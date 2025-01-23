@@ -1359,6 +1359,35 @@ transport data and for performing public transport journey queries.")
 for scanner hardware.")
     (license license:lgpl3+)))
 
+(define-public libksane
+  (package
+    (name "libksane")
+    (version "24.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                             "/src/libksane-" version ".tar.xz"))
+       (sha256
+        (base32 "1sv81mpai350196x5sskvf2qsq2abmvjpv28zy7n8cy31if931ga"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list ki18n
+           ksanecore
+           ktextwidgets
+           kwallet
+           kwidgetsaddons))
+    (home-page "https://invent.kde.org/graphics/libksane")
+    (synopsis "Library providing QWidget with logic to interface scanners")
+    (description
+     "Libksane is a Qt-based interface for SANE library to control flat
+scanners.")
+    (license license:lgpl3+)))
+
 (define-public snorenotify
   (package
     (name "snorenotify")
