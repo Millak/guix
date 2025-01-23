@@ -414,6 +414,11 @@ sys_create_store()
     cd "$tmp_path"
     _msg_info "Installing /var/guix and /gnu..."
     # Strip (skip) the leading ‘.’ component, which fails on read-only ‘/’.
+    #
+    # TODO: Eventually extract with ‘--owner=guix-daemon’ when installing
+    # and unprivileged guix-daemon service; for now, this script may install
+    # from both an old release that does not support unprivileged guix-daemon
+    # and a new release that does, so ‘chown -R’ later if needed.
     tar --extract --strip-components=1 --file "$pkg" -C /
 
     _msg_info "Linking the root user's profile"
@@ -441,38 +446,95 @@ sys_delete_store()
     rm -rf ~root/.config/guix
 }
 
+create_account()
+{
+    local user="$1"
+    local group="$2"
+    local supplementary_groups="$3"
+    local comment="$4"
+
+    if id "$user" &>/dev/null; then
+	_msg_info "user '$user' is already in the system, reset"
+	usermod -g "$group" -G "$supplementary_groups"	\
+		-d /var/empty -s "$(which nologin)"	\
+		-c "$comment" "$user"
+    else
+	useradd -g "$group" -G "$supplementary_groups"	\
+		-d /var/empty -s "$(which nologin)"	\
+		-c "$comment" --system "$user"
+	_msg_pass "user added <$user>"
+    fi
+}
+
+install_unprivileged_daemon()
+{ # Return true when installing guix-daemon running without privileges.
+    [ "$INIT_SYS" = systemd ] && \
+	grep -q "User=guix-daemon" \
+	     ~root/.config/guix/current/lib/systemd/system/guix-daemon.service
+}
+
 sys_create_build_user()
 { # Create the group and user accounts for build users.
 
     _debug "--- [ ${FUNCNAME[0]} ] ---"
-
-    if getent group guixbuild > /dev/null; then
-        _msg_info "group guixbuild exists"
-    else
-        groupadd --system guixbuild
-        _msg_pass "group <guixbuild> created"
-    fi
 
     if getent group kvm > /dev/null; then
         _msg_info "group kvm exists and build users will be added to it"
         local KVMGROUP=,kvm
     fi
 
-    for i in $(seq -w 1 10); do
-        if id "guixbuilder${i}" &>/dev/null; then
-            _msg_info "user is already in the system, reset"
-            usermod -g guixbuild -G guixbuild"$KVMGROUP"     \
-                    -d /var/empty -s "$(which nologin)" \
-                    -c "Guix build user $i"             \
-                    "guixbuilder${i}";
-        else
-            useradd -g guixbuild -G guixbuild"$KVMGROUP"     \
-                    -d /var/empty -s "$(which nologin)" \
-                    -c "Guix build user $i" --system    \
-                    "guixbuilder${i}";
-            _msg_pass "user added <guixbuilder${i}>"
-        fi
-    done
+    if install_unprivileged_daemon
+    then
+	_msg_info "installing guix-daemon to run as an unprivileged user"
+
+	# Installing guix-daemon to run as a non-root user requires
+	# unprivileged user namespaces.
+	if [ -f /proc/sys/kernel/unprivileged_userns_clone ] \
+	       && [ "$(cat /proc/sys/kernel/unprivileged_userns_clone)" -ne 1 ]
+	then
+	    echo 1 > /proc/sys/kernel/unprivileged_userns_clone || \
+		_err "failed to enable unprivileged user namespaces"
+
+	    _msg_warn "Unprivileged user namespaces were disabled and have been enabled now."
+	    _msg_warn "This Linux feature is required by guix-daemon.  To enable it permanently, run:"
+	    _msg_warn '  echo 1 > /proc/sys/kernel/unprivileged_userns_clone'
+	    _msg_warn "from the relevant startup script."
+	fi
+
+
+	if getent group guix-daemon > /dev/null; then
+	    _msg_info "group guix-daemon exists"
+	else
+	    groupadd --system guix-daemon
+	    _msg_pass "group guix-daemon created"
+	fi
+
+	create_account guix-daemon guix-daemon		\
+		       guix-daemon$KVMGROUP		\
+		       "Unprivileged Guix Daemon User"
+
+	# ‘tar xf’ creates root:root files.  Change that.
+	chown -R guix-daemon:guix-daemon /gnu /var/guix
+	chown -R root:root /var/guix/profiles/per-user/root
+
+	# The unprivileged daemon cannot create the log directory by itself.
+	mkdir -p /var/log/guix
+	chown guix-daemon:guix-daemon /var/log/guix
+	chmod 755 /var/log/guix
+    else
+	if getent group guixbuild > /dev/null; then
+            _msg_info "group guixbuild exists"
+	else
+            groupadd --system guixbuild
+            _msg_pass "group <guixbuild> created"
+	fi
+
+	for i in $(seq -w 1 10); do
+	    create_account "guixbuilder${i}" "guixbuild"	\
+	                   "guixbuild${KVMGROUP}"		\
+			   "Guix build user $i"
+	done
+    fi
 }
 
 sys_delete_build_user()
@@ -486,6 +548,14 @@ sys_delete_build_user()
     _msg_info "delete group guixbuild"
     if getent group guixbuild &>/dev/null; then
         groupdel -f guixbuild
+    fi
+
+    _msg_info "remove guix-daemon user"
+    if id guix-daemon &>/dev/null; then
+	userdel -f guix-daemon
+    fi
+    if getent group guix-daemon &>/dev/null; then
+	groupdel -f guix-daemon
     fi
 }
 
@@ -529,11 +599,11 @@ sys_enable_guix_daemon()
 
               # Install after guix-daemon.service to avoid a harmless warning.
               # systemd .mount units must be named after the target directory.
-              # Here we assume a hard-coded name of /gnu/store.
-              install_unit gnu-store.mount
+	      install_unit gnu-store.mount
 
               systemctl daemon-reload &&
-                  systemctl start  guix-daemon; } &&
+                  systemctl start guix-daemon &&
+	          systemctl start gnu-store.mount; } &&
                 _msg_pass "enabled Guix daemon via systemd"
             ;;
         sysv-init)
@@ -654,6 +724,10 @@ project's build farms?"; then
 		&& guix archive --authorize < "$key" \
 		&& _msg_pass "Authorized public key for $host"
 	done
+	if id guix-daemon &>/dev/null; then
+	    # /etc/guix/acl must be readable by the unprivileged guix-daemon.
+	    chown -R guix-daemon:guix-daemon /etc/guix
+	fi
     else
         _msg_info "Skipped authorizing build farm public keys"
     fi
