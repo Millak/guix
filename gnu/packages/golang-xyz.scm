@@ -14440,6 +14440,41 @@ supported by the time package
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-tomwright-dasel-v2
+  (package
+    (name "go-github-com-tomwright-dasel-v2")
+    (version "2.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TomWright/dasel")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qh32gq0x0lc4j4w326skxw4nblf2v71ychd8dk6h3ra5d22bbmy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:embed-files #~(list ".*\\.xml")
+      #:import-path "github.com/tomwright/dasel/v2"))
+    (propagated-inputs
+     (list go-github-com-alecthomas-chroma-v2
+           go-github-com-clbanning-mxj-v2
+           go-github-com-pelletier-go-toml-v2
+           go-github-com-spf13-cobra
+           go-golang-org-x-net
+           go-golang-org-x-text
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/tomwright/dasel")
+    (synopsis "Tool to work with JSON, TOML, YAML, XML and CSV files")
+    (description
+     "Dasel (short for data-selector) allows you to query and modify data
+structures using selector strings.  It's similar to @code{jq}/@code{yq}, but
+supports JSON, YAML, TOML, XML and CSV with zero runtime dependencies.")
+    (license license:expat)))
+
 (define-public go-github-com-twpayne-go-shell
   (package
     (name "go-github-com-twpayne-go-shell")
