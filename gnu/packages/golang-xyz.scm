@@ -16951,7 +16951,7 @@ helpful utility functions, and makes testing fairly easy.")
 (define-public go-zgo-at-zstd
   (package
     (name "go-zgo-at-zstd")
-    (version "0.0.0-20240922235538-9a93b98b4725")
+    (version "0.0.0-20241125224656-49fafbb06ca9")
     (source
      (origin
        (method git-fetch)
@@ -16960,21 +16960,12 @@ helpful utility functions, and makes testing fairly easy.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06nqiv1pkqnnqa3v6rlf0qfxgfd63vi4vv36acq54dxswxhcasaz"))))
+        (base32 "1hwvv685vv003j4ry6b791fmz5fz0ff57pq64s9s57zqxaxn8jrv"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "zgo.at/zstd"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Replace when go-build-system supports nested path.
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v"
-                          "-skip" "TestExists"
-                          "./..."))))))))
+      #:test-flags #~(list "-skip" "TestExists/4|TestDiffMatch/3")))
     (home-page "https://github.com/arp242/zstd")
     (synopsis "Extensions to Go's standard library")
     (description
