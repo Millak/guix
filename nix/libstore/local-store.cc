@@ -79,12 +79,12 @@ LocalStore::LocalStore(bool reserveSpace)
         createSymlink(profilesDir, gcRootsDir + "/profiles");
     }
 
-    /* Optionally, create directories and set permissions for a
-       multi-user install. */
+    Path perUserDir = profilesDir + "/per-user";
+    createDirs(perUserDir);
+
+    /* Optionally, set permissions for a multi-user install.  */
     if (getuid() == 0 && settings.buildUsersGroup != "") {
 
-        Path perUserDir = profilesDir + "/per-user";
-        createDirs(perUserDir);
         if (chmod(perUserDir.c_str(), 0755) == -1)
             throw SysError(format("could not set permissions on '%1%' to 755")
                            % perUserDir);
