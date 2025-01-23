@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,6 +103,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages samba)
+  #:use-module (gnu packages scanner)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
@@ -1330,6 +1332,32 @@ multi-floor indoor maps.")
      "This package provides a library for accessing realtime public
 transport data and for performing public transport journey queries.")
     (license (list license:lgpl2.0+))))
+
+(define-public ksanecore
+  (package
+    (name "ksanecore")
+    (version "24.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                             "/src/ksanecore-" version ".tar.xz"))
+       (sha256
+        (base32 "0bh7i2qh5jdxfgy122vbwin7g46s16kdmam6szj14zc1ggnhqvfb"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list ki18n
+           sane-backends))
+    (home-page "https://invent.kde.org/libraries/ksanecore")
+    (synopsis "Library providing logic to interface scanners")
+    (description
+     "KSaneCore is a library that provides a Qt interface for the SANE library
+for scanner hardware.")
+    (license license:lgpl3+)))
 
 (define-public snorenotify
   (package
