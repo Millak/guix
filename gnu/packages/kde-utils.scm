@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2024, 2025 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
@@ -1125,43 +1125,51 @@ remind you to take a break now and then.")
 (define-public smb4k
   (package
     (name "smb4k")
-    (version "3.2.5")
+    (version "3.2.92")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://sourceforge.net/projects/smb4k/files/"
-                           version "/smb4k-" version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference (url "https://invent.kde.org/network/smb4k")
+                           (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1d53yl02wrfl6wl2h4a30qiirs44qmfkfsr1kjv69fqhbqp2cszs"))))
+        (base32 "0bgiqv5jwyk68wa32yiqyl4vxcnpk3p0iw7xlsihcn4i599zwmpq"))))
     (build-system qt-build-system)
+    (arguments (list
+                #:qtbase qtbase
+                #:configure-flags #~(list "-DSMB4K_WITH_WS_DISCOVERY=ON")))
     (native-inputs
-     (list extra-cmake-modules kdoctools-5))
+     (list extra-cmake-modules kdoctools))
     (inputs
-     (list kauth-5
-           kconfig-5
-           kconfigwidgets-5
-           kcompletion-5
-           kcoreaddons-5
-           kcrash-5
-           kdbusaddons-5
-           kdnssd-5
-           ki18n-5
-           kiconthemes-5
-           kio-5
-           kjobwidgets-5
-           knotifications-5
-           knotifyconfig-5
-           ktextwidgets-5
-           kwallet-5
-           kwidgetsaddons-5
-           kwindowsystem-5
-           kxmlgui-5
+     (list breeze-icons ;; default icon set
+           kauth
+           kcompletion
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           kdnssd
+           kdsoap-qt6
+           kdsoap-ws-discovery-client
+           ki18n
+           kiconthemes
+           kio
+           kirigami
+           kjobwidgets
+           knotifications
+           knotifyconfig
+           kstatusnotifieritem
+           ktextwidgets
+           kwallet
+           kwidgetsaddons
+           kwindowsystem
+           kxmlgui
+           libplasma
+           qtdeclarative
+           qtkeychain-qt6
            samba
-           breeze-icons ;; default icon set
-           plasma-framework
-           qtbase-5
-           qtdeclarative-5
-           solid-5))
+           solid))
     (home-page "https://apps.kde.org/smb4k/")
     (synopsis "Samba (SMB) share advanced browser")
     (description "Smb4K is an network neighborhood browser for the KDE
