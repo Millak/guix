@@ -2371,7 +2371,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "4.1.1")
+    (version "4.3")
     (source
      (origin
        (method git-fetch)
@@ -2380,7 +2380,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1vcgzip0w4mdnaj49s539nlnkc8mnxw4idzy2935nx83p1p0l6xg"))
+       (sha256 (base32 "1hfdhanbdfjxv2n355m6b9n0ihxgcdlgxgnsqz5f6q59957fcyiw"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively
@@ -2393,7 +2393,7 @@ mining.")
                       "external/src/robin-hood-hashing")))))
     (build-system cmake-build-system)
     (inputs
-     (list cppzmq curl gss libuv rapidjson robin-hood-hashing zeromq))
+     (list cppzmq curl libuv rapidjson robin-hood-hashing zeromq))
     (arguments
      (list ; FIXME: Linking fails when LTO is activated.
            #:configure-flags #~(list "-DWITH_LTO=OFF")
