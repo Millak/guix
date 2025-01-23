@@ -8828,6 +8828,31 @@ and Francois (2011, JSS), and the book by Eddelbuettel (2013, Springer); see
 @code{citation(\"Rcpp\")} for details on these last two.")
     (license license:gpl2+)))
 
+(define-public r-rcppcctz
+  (package
+    (name "r-rcppcctz")
+    (version "0.2.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RcppCCTZ" version))
+       (sha256
+        (base32 "1wmbyaj08fbl4g47aq0mfkkvqwpah3d2j94fzc813dijxlsi847l"))))
+    (properties
+     `((upstream-name . "RcppCCTZ")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-tinytest tzdata-for-tests))
+    (home-page "https://github.com/eddelbuettel/rcppcctz")
+    (synopsis "Rcpp bindings for the CCTZ library")
+    (description
+     "Rcpp access to the CCTZ timezone library is provided.  CCTZ is a C++
+library for translating between absolute and civil times using the rules of a
+time zone.  The CCTZ source code is included in this package.")
+    (license (list license:gpl2+
+                   license:asl2.0)))) ;for CCTZ
+
 (define-public r-rcppdate
   (package
     (name "r-rcppdate")
