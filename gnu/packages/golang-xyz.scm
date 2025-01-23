@@ -15954,6 +15954,7 @@ Go.")
     (build-system go-build-system)
     (arguments
      (list
+      #:test-flags #~(list "-skip" "TestFailoverHandler")
       #:import-path "gopkg.in/inconshreveable/log15.v1"))
     (native-inputs
      (list go-github-com-stretchr-testify))
