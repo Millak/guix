@@ -13562,10 +13562,10 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
       #:test-flags #~(list "-skip" "TestGenManSeeAlso")
       #:import-path "github.com/spf13/cobra"))
     (native-inputs
-     (list go-github-com-go-md2man
-           go-gopkg-in-yaml-v3))
+     (list go-gopkg-in-yaml-v3))
     (propagated-inputs
-     (list go-github-com-spf13-pflag))
+     (list go-github-com-go-md2man
+           go-github-com-spf13-pflag))
     (home-page "https://github.com/spf13/cobra")
     (synopsis "Go library for creating CLI applications")
     (description
