@@ -2163,30 +2163,6 @@ be performed.")
 of building man pages.")
     (license license:expat)))
 
-(define-public go-github-com-cention-sany-utf7
-  (package
-    (name "go-github-com-cention-sany-utf7")
-    (version "0.0.0-20170124080048-26cad61bd60a")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/cention-sany/utf7")
-                    (commit (go-version->git-ref version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1jy15ryfcln1iwchrksqyrnyfy41gisymm4f9sr1d73ja029bznm"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/cention-sany/utf7"))
-    (propagated-inputs (list go-golang-org-x-text))
-    (home-page "https://github.com/cention-sany/utf7")
-    (synopsis "UTF-7 for Go")
-    (description
-     "The utf7 package provides support for the obsolete UTF-7 text
-encoding in Go.")
-    (license license:bsd-3)))
-
 (define-public go-golang-org-rainycape-unidecode
   (let ((commit "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c")
         (revision "1"))
