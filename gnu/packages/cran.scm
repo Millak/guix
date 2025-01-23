@@ -8098,6 +8098,29 @@ coordinates.")
 complex non-linear objective function with a very large number of optima.")
     (license license:gpl2)))
 
+(define-public r-geojsonr
+  (package
+    (name "r-geojsonr")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "geojsonR" version))
+       (sha256
+        (base32 "10li5xj0vx6a86nccwql4inwfbjycvaxqfbjdp4h1p5qxyibnls3"))))
+    (properties `((upstream-name . "geojsonR")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-r6 r-rcpp r-rcpparmadillo))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/mlampros/geojsonR")
+    (synopsis "GeoJson processing toolkit")
+    (description
+     "This package includes functions for processing @code{GeoJson} objects
+relying on RFC 7946.  The geojson encoding is based on json11, a tiny JSON
+library for C++11.  Furthermore, the source code is exported in R through the
+Rcpp and @code{RcppArmadillo} packages.")
+    (license license:expat)))
+
 (define-public r-geos
   (package
     (name "r-geos")
