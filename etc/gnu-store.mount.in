@@ -2,10 +2,9 @@
 Description=Read-only @storedir@ for GNU Guix
 DefaultDependencies=no
 ConditionPathExists=@storedir@
-Before=guix-daemon.service
 
 [Install]
-WantedBy=guix-daemon.service
+WantedBy=multi-user.target
 
 [Mount]
 What=@storedir@

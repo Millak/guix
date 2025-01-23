@@ -5,11 +5,29 @@
 [Unit]
 Description=Build daemon for GNU Guix
 
+# Start before 'gnu-store.mount' to get a writable view of the store.
+Before=gnu-store.mount
+
 [Service]
 ExecStart=@localstatedir@/guix/profiles/per-user/root/current-guix/bin/guix-daemon \
-    --build-users-group=guixbuild --discover=no \
+    --discover=no \
     --substitute-urls='@GUIX_SUBSTITUTE_URLS@'
-Environment='GUIX_LOCPATH=@localstatedir@/guix/profiles/per-user/root/guix-profile/lib/locale' LC_ALL=en_US.utf8
+Environment='GUIX_STATE_DIRECTORY=@localstatedir@/guix' 'GUIX_LOCPATH=@localstatedir@/guix/profiles/per-user/root/guix-profile/lib/locale' LC_ALL=en_US.utf8
+
+# Run under a dedicated unprivileged user account.
+User=guix-daemon
+
+# Bind-mount the store read-write in a private namespace, to counter the
+# effect of 'gnu-store.mount'.
+PrivateMounts=true
+BindPaths=@storedir@
+
+# Provide the CAP_CHOWN capability so that guix-daemon can create and chown
+# /var/guix/profiles/per-user/$USER and also chown failed build directories
+# when using '--keep-failed'.  Note that guix-daemon explicitly drops ambient
+# capabilities before executing build processes so they don't inherit them.
+AmbientCapabilities=CAP_CHOWN
+
 StandardOutput=journal
 StandardError=journal
 
