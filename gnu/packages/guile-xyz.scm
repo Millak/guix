@@ -6480,16 +6480,16 @@ This module implements this interface by use of Guile's dynamic FFI.")
 (define-public guile-goblins
   (package
     (name "guile-goblins")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://spritely.institute/files/releases"
+       (uri (string-append "https://files.spritely.institute/releases"
                            "/guile-goblins/guile-goblins-"
                            version ".tar.gz"))
        (sha256
         (base32
-         "1gqyx8mq54dcs8waxjidk6xk43b2dfnw3hrbs22z6pnd9rdaj7wd"))))
+         "1dyxh8xvl8f707dzfzckz4343z1iwfp7v6wwyryn5psy86gq328z"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -6498,7 +6498,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
      (list pkg-config texinfo))
     (inputs (list guile-3.0))
     (propagated-inputs
-     (list guile-fibers guile-gcrypt guile-gnutls))
+     (list guile-fibers guile-gnutls guile-websocket))
     (home-page "https://spritely.institute/goblins")
     (synopsis "Distributed programming environment for Guile")
     (description
