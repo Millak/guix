@@ -8828,6 +8828,30 @@ and Francois (2011, JSS), and the book by Eddelbuettel (2013, Springer); see
 @code{citation(\"Rcpp\")} for details on these last two.")
     (license license:gpl2+)))
 
+(define-public r-rcppdate
+  (package
+    (name "r-rcppdate")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RcppDate" version))
+       (sha256
+        (base32 "1cnhvbgqfcjrwm1rx6bhhj4yf4dipcp6g1hjv1qa86pmxzyjp3dn"))))
+    (properties `((upstream-name . "RcppDate")))
+    (build-system r-build-system)
+    (home-page "https://github.com/eddelbuettel/rcppdate")
+    (synopsis "date C++ header library for date and time functionality")
+    (description
+     "This package provides a header-only C++ library is provided with support
+for dates, time zones, ISO weeks, Julian dates, and Islamic dates.
+@code{date} offers extensive date and time functionality for the C++11, C++14
+and C++17 standards.  A slightly modified version has been accepted (along
+with @file{tz.h}) as part of C++20.  This package regroups all header files
+from the upstream repository so that other R packages can use them in their
+C++ code.")
+    (license license:gpl2+)))
+
 (define-public r-rcppde
   (package
     (name "r-rcppde")
