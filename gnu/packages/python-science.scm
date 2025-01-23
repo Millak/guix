@@ -1643,7 +1643,7 @@ doing practical, real world data analysis in Python.")
             (lambda _
               (copy-recursively
                (string-append #$output
-                              "/lib/python3.10/site-packages/pandas/_libs")
+                              "/lib/python3.11/site-packages/pandas/_libs")
                "pandas/_libs"))))))
     (propagated-inputs
      (list python-dateutil

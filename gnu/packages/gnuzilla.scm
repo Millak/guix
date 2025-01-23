@@ -1662,7 +1662,7 @@ their corresponding VERSION, SOURCE and LOCALES variables."
                 (setenv "MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE" "system")
                 (setenv "GUIX_PYTHONPATH"
                         (string-append (getcwd)
-                                       "/obj/_virtualenvs/build/lib/python3.10/site-packages"))
+                                       "/obj/_virtualenvs/build/lib/python3.11/site-packages"))
                 (setenv "BUILD_BACKENDS" "FasterMake,RecursiveMake")))
             (replace 'build             ;build and install data files
               (lambda* (#:key outputs #:allow-other-keys)

@@ -919,7 +919,7 @@ parsers")
           ;; unmaintained clone of <https://github.com/ircdocs/parser-tests>
           ;; which is packed in Guix as python-irc-parser-tests.  Tests data
           ;; (YAML files) are distributed as Python package and located in
-          ;; <lib/python3.10/site-packages/parser_tests/data/>.
+          ;; <lib/python3.11/site-packages/parser_tests/data/>.
           (add-before 'check 'install-testcases-data
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)

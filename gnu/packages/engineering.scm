@@ -5342,7 +5342,7 @@ and mogan.")
                (("'\" [+] python_path [+]")
                 (string-append "'\" + std::string(\""
                                (assoc-ref outputs "out")
-                               "/lib/python3.10/site-packages"
+                               "/lib/python3.11/site-packages"
                                "\") +")))))
           (add-before 'check 'prepare-checks
             (lambda _

@@ -2702,7 +2702,7 @@ execution of any hook written in any language before every commit.")
     (native-search-paths
      (list (search-path-specification
             (variable "HGEXTENSIONPATH")
-            (files '("lib/python3.10/site-packages/hgext3rd")))))
+            (files '("lib/python3.11/site-packages/hgext3rd")))))
     (home-page "https://www.mercurial-scm.org/")
     (synopsis "Decentralized version control system")
     (description
