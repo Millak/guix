@@ -39482,6 +39482,38 @@ book @emph{Nondetects and Data Analysis: Statistics for Censored
 Environmental Data}.")
     (license license:gpl2+)))
 
+(define-public r-nanoarrow
+  (package
+    (name "r-nanoarrow")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "nanoarrow" version))
+       (sha256
+        (base32 "0wad6dvc7f4z9ll0v5mvqlvk2waf2wfhpnd3sckxsjfpg2s1an6b"))))
+    (properties `((upstream-name . "nanoarrow")))
+    (build-system r-build-system)
+    (native-inputs (list r-arrow
+                         r-bit64
+                         r-blob
+                         r-hms
+                         r-jsonlite
+                         r-testthat
+                         r-tibble
+                         r-vctrs
+                         r-withr))
+    (home-page "https://arrow.apache.org/nanoarrow/latest/r/")
+    (synopsis "Interface to the nanoarrow C library")
+    (description
+     "This package provides an R interface to the @code{nanoarrow} C library
+and the Apache Arrow application binary interface.  Functions to import and
+export @code{ArrowArray}, @code{ArrowSchema}, and @code{ArrowArrayStream} C
+structures to and from R objects are provided alongside helpers to facilitate
+zero-copy data transfer among R bindings to libraries implementing the Arrow C
+data interface.")
+    (license license:asl2.0)))
+
 (define-public r-nanotime
   (package
     (name "r-nanotime")
