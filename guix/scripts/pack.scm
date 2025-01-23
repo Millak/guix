@@ -1018,15 +1018,22 @@ generating the AppImage.  Valid compressors are: ~a~%")
              compressor-name
              %valid-compressors)))
 
+  (define database
+    (and localstatedir?
+         (file-append (store-database (list profile))
+                      "/db/db.sqlite")))
+
   (define builder
     (with-extensions (list guile-gcrypt)
       (with-imported-modules (source-module-closure
                               '((guix build store-copy)
-                                (guix build utils))
+                                (guix build utils)
+                                (gnu build install))
                               #:select? not-config?)
         #~(begin
             (use-modules (guix build utils)
                          (guix build store-copy)
+                         (gnu build install)
                          (rnrs io ports)
                          (srfi srfi-1)
                          (srfi srfi-26))
@@ -1060,6 +1067,10 @@ generating the AppImage.  Valid compressors are: ~a~%")
                (string-append appdir "/" #$name ".desktop")
                #:name #$name
                #:exec #$entry-point)
+              ;; Install database and gc roots.
+              (when #+database
+                ;; Initialize /var/guix.
+                (install-database-and-gc-roots appdir #+database profile))
               ;; Compress the AppDir.
               (invoke #+(file-append squashfs-tools "/bin/mksquashfs") appdir
                       squashfs "-root-owned" "-noappend"
