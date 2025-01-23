@@ -13392,6 +13392,31 @@ that object type.  Optionally, you can specify an application to use.  On
 GNU/Linux, this is a proxy for the @command{xdg-open} command.")
     (license license:expat)))
 
+(define-public go-github-com-smacker-go-tree-sitter
+  (package
+    (name "go-github-com-smacker-go-tree-sitter")
+    (version "0.0.0-20240827094217-dd81d9e9be82")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smacker/go-tree-sitter")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15c7w5dv7zvhvgrf71fp5l74mjkiniqgz2cbv024pmkcwsvv48yj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smacker/go-tree-sitter"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/smacker/go-tree-sitter")
+    (synopsis "Golang bindings for tree-sitter")
+    (description
+     "This package provides a bindings for
+@url{https://github.com/tree-sitter/tree-sitter, tree-sitter} in Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-songgao-water
   (package
     (name "go-github-com-songgao-water")
