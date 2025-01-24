@@ -1,0 +1,53 @@
+Remove tests that fail with Pytest 8:
+
+https://github.com/nvbn/thefuck/issues/1438
+https://issues.guix.gnu.org/75464
+
+diff -ruN a/tests/test_utils.py b/tests/test_utils.py
+--- a/tests/test_utils.py	1970-01-01 00:00:01.000000000 +0000
++++ b/tests/test_utils.py	2025-01-22 12:21:07.045281481 +0000
+@@ -233,44 +233,3 @@
+         assert fn() == 'test'
+         assert shelve == {key: {'etag': '0', 'value': 'test'}}
+ 
+-
+-class TestGetValidHistoryWithoutCurrent(object):
+-    @pytest.fixture(autouse=True)
+-    def fail_on_warning(self):
+-        warnings.simplefilter('error')
+-        yield
+-        warnings.resetwarnings()
+-
+-    @pytest.fixture(autouse=True)
+-    def history(self, mocker):
+-        mock = mocker.patch('thefuck.shells.shell.get_history')
+-        #  Passing as an argument causes `UnicodeDecodeError`
+-        #  with newer py.test and python 2.7
+-        mock.return_value = ['le cat', 'fuck', 'ls cat',
+-                             'diff x', 'nocommand x', u'café ô']
+-        return mock
+-
+-    @pytest.fixture(autouse=True)
+-    def alias(self, mocker):
+-        return mocker.patch('thefuck.utils.get_alias',
+-                            return_value='fuck')
+-
+-    @pytest.fixture(autouse=True)
+-    def bins(self, mocker):
+-        callables = list()
+-        for name in ['diff', 'ls', 'café']:
+-            bin_mock = mocker.Mock(name=name)
+-            bin_mock.configure_mock(name=name, is_dir=lambda: False)
+-            callables.append(bin_mock)
+-        path_mock = mocker.Mock(iterdir=mocker.Mock(return_value=callables))
+-        return mocker.patch('thefuck.utils.Path', return_value=path_mock)
+-
+-    @pytest.mark.parametrize('script, result', [
+-        ('le cat', ['ls cat', 'diff x', u'café ô']),
+-        ('diff x', ['ls cat', u'café ô']),
+-        ('fuck', ['ls cat', 'diff x', u'café ô']),
+-        (u'cafe ô', ['ls cat', 'diff x', u'café ô']),
+-    ])
+-    def test_get_valid_history_without_current(self, script, result):
+-        command = Command(script, '')
+-        assert get_valid_history_without_current(command) == result

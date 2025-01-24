@@ -3856,7 +3856,8 @@ plug-in architecture to allow monitoring other system metrics.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "18ipa1bm6q1n5drbi8i65726hhqhl1g41390lfqrc11hkbvv443d"))
-       (patches (search-patches "thefuck-test-environ.patch"))))
+       (patches (search-patches "thefuck-test-environ.patch"
+                                "thefuck-remove-broken-tests.patch"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
