@@ -320,9 +320,8 @@ and metadata, and the journal with querying and full text search.")
       `(,@%glib-or-gtk-build-system-modules
         (guix build python-build-system))
       #:modules
-      '((guix build glib-or-gtk-build-system)
-        ((guix build python-build-system) #:prefix python:)
-        (guix build utils))
+      `(((guix build python-build-system) #:prefix python:)
+        ,@%glib-or-gtk-build-system-default-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-build-system
