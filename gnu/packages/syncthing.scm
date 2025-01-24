@@ -213,20 +213,18 @@ notification area icon for Syncthing.  Supported Syncthing features:
   (deprecated-package "qsyncthingtray" syncthing-gtk))
 
 (define-public go-github-com-syncthing-notify
-  (let ((commit "69c7a957d3e261f9744f46b3dd4d608d8480ad90")
-        (revision "5"))
     (package
       (name "go-github-com-syncthing-notify")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20210616190510-c6b7342338d2")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                        (url "https://github.com/syncthing/notify")
-                       (commit commit)))
+                       (commit (go-version->git-ref version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1mmdzyfnmjabyhbipl4bggw4w5nlxyyjp0d93qd824kj07kmsr1f"))))
+                  "1mw7kxj0smcf4vgpxai7m9vncdx2d3blxqy13hffvza0fxnwkv37"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path "github.com/syncthing/notify"))
@@ -236,4 +234,4 @@ notification area icon for Syncthing.  Supported Syncthing features:
       (description "This package provides @code{notify}, a file system event
 notification library in Go.")
       (home-page "https://github.com/syncthing/notify")
-      (license expat))))
+      (license expat)))
