@@ -65,6 +65,7 @@
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2024 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4671,6 +4672,29 @@ network.")
      "The ngtcp2 project is an effort to implement the RFC9000 (IETF)
 QUIC protocol.")
     (license license:expat)))
+
+(define-public yaz
+  (package
+    (name "yaz")
+    (version "5.34.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.indexdata.com/pub/yaz/yaz-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1h54vda4rgisih309jbdzs6d5vk5mfv5ca9csdbwwrg8hgjbjk6f"))))
+    (build-system gnu-build-system)
+    (home-page "https://www.indexdata.com/resources/software/yaz/")
+    (synopsis "Z39.50 toolkit for C")
+    (description
+     "YAZ is a C/C++ library for information retrieval applications using
+@uref{https://www.loc.gov/z3950/, Z39.50},
+@uref{https://www.loc.gov/standards/sru/, SRU} or
+@uref{https://solr.apache.org/, Solr Web Service} protocols for information
+retrieval.  It also offers @uref{https://zoom.z3950.org/, ZOOM} API
+implementing them.")
+    (license license:bsd-3)))
 
 (define-public yggdrasil
   (package
