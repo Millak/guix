@@ -108,10 +108,8 @@
                            (guix build cmake-build-system)
                            (guix build qt-build-system)
                            (guix build qt-utils))
-      #:modules '((guix build glib-or-gtk-build-system)
-                  ((guix build qt-build-system)
-                   #:prefix qt:)
-                  (guix build utils))
+      #:modules `(((guix build qt-build-system) #:prefix qt:)
+                  ,@%glib-or-gtk-build-system-default-modules)
       #:configure-flags
       #~(list "--with-im-config-data"
               "--with-imsettings-data"
