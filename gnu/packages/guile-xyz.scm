@@ -3294,21 +3294,22 @@ is no support for parsing block and inline level HTML.")
       #:configure-flags
       #~(list
          "--with-sendmail=/run/privileged/bin/sendmail -t")
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'check 'adjust-tests
-                     (lambda _
-                       (substitute* "tests/job-specifier.scm"
-                         ;; (getpw) fails with "entry not found" in the build
-                         ;; environment, so pass an argument.
-                         (("\\(getpw\\)")
-                          "(getpwnam (getuid))")
-                         ;; The build environment lacks an entry for root in
-                         ;; /etc/passwd.
-                         (("\\(getpw 0\\)")
-                          "(getpwnam \"nobody\")")
-                         ;; FIXME: Skip the 4 faulty tests (see above).
-                         (("\\(test-equal \"next-year\"" all)
-                          (string-append "(test-skip 4)\n" all))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'adjust-tests
+            (lambda _
+              (substitute* "tests/job-specifier.scm"
+                ;; (getpw) fails with "entry not found" in the build
+                ;; environment, so pass an argument.
+                (("\\(getpw\\)")
+                 "(getpwnam (getuid))")
+                ;; The build environment lacks an entry for root in
+                ;; /etc/passwd.
+                (("\\(getpw 0\\)")
+                 "(getpwnam \"nobody\")")
+                ;; FIXME: Skip the 4 faulty tests (see above).
+                (("\\(test-equal \"next-year\"" all)
+                 (string-append "(test-skip 4)\n" all))))))))
     (native-inputs (list autoconf
                          automake
                          guile-3.0    ;for 'guild compile'
