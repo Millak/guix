@@ -6325,7 +6325,7 @@ w3c webidl files and a binding configuration file.")
                   (ice-9 match)
                   (srfi srfi-1)
                   (sxml simple)
-                  ,@%glib-or-gtk-build-system-modules)
+                  ,@%glib-or-gtk-build-system-default-modules)
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
