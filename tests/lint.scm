@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
@@ -448,31 +448,29 @@
      (check-inputs-should-be-native pkg))))
 
 (test-equal
-    "inputs: python-setuptools should not be an input at all (input)"
-  "'python-setuptools' should probably not be an input at all"
+    "inputs: python-pip should not be an input at all (input)"
+  "'python-pip' should probably not be an input at all"
   (single-lint-warning-message
    (let ((pkg (dummy-package "x"
-                             (inputs `(("python-setuptools"
-                                        ,python-setuptools))))))
+                             (inputs `(("python-pip" ,python-pip))))))
      (check-inputs-should-not-be-an-input-at-all pkg))))
 
 (test-equal
-    "inputs: python-setuptools should not be an input at all (native-input)"
-  "'python-setuptools' should probably not be an input at all"
+    "inputs: python-pip should not be an input at all (native-input)"
+  "'python-pip' should probably not be an input at all"
   (single-lint-warning-message
    (let ((pkg (dummy-package "x"
                              (native-inputs
-                              `(("python-setuptools"
-                                 ,python-setuptools))))))
+                              `(("python-pip" ,python-pip))))))
      (check-inputs-should-not-be-an-input-at-all pkg))))
 
 (test-equal
-    "inputs: python-setuptools should not be an input at all (propagated-input)"
-  "'python-setuptools' should probably not be an input at all"
+    "inputs: python-pip should not be an input at all (propagated-input)"
+  "'python-pip' should probably not be an input at all"
   (single-lint-warning-message
    (let ((pkg (dummy-package "x"
                              (propagated-inputs
-                              `(("python-setuptools" ,python-setuptools))))))
+                              `(("python-pip" ,python-pip))))))
      (check-inputs-should-not-be-an-input-at-all pkg))))
 
 (test-assert "input labels: no warnings"
