@@ -310,7 +310,7 @@ integrate Windows applications into your desktop.")
 (define-public wine-staging-patchset-data
   (package
     (name "wine-staging-patchset-data")
-    (version "9.0")
+    (version "10.0")
     (source
      (origin
        (method git-fetch)
@@ -319,7 +319,7 @@ integrate Windows applications into your desktop.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xdinbj9byihy8snv6h1mcb79rh35zwhhld4g7mjg0k2wvjgskwl"))))
+        (base32 "17lslhmad0z5im0xlan5xwsnfvnxzi6iaj8bc51sc9sslfhwlv6j"))))
     (build-system trivial-build-system)
     (native-inputs
      (list coreutils))
@@ -365,7 +365,7 @@ integrate Windows applications into your desktop.")
                              "wine-" wine-version ".tar.xz"))
          (file-name (string-append name "-" wine-version ".tar.xz"))
          (sha256
-          (base32 "1vm61hrkinjqicxidhbhq3j8sb1iianfypdvjmnvgxcmac50kzbw")))))
+          (base32 "009nmi0z60ilrlrxjj9msdqk2n2wp0jcdnflkh7b7bzgyzsv7q65")))))
     (inputs (modify-inputs (package-inputs wine)
               (prepend autoconf ; for autoreconf
                        ffmpeg
@@ -389,6 +389,9 @@ integrate Windows applications into your desktop.")
                          inputs
                          "/share/wine-staging/staging/patchinstall.py")
                         "DESTDIR=."
+                        ;; Broken upstream, does not apply.
+                        ;; TODO: Remove once fixed.
+                        "-W" "server-Stored_ACLs"
                         "--all")))
             (add-after 'apply-wine-staging-patches 'patch-SHELL
               (assoc-ref #$phases 'patch-SHELL))))))
@@ -424,6 +427,8 @@ integrated into the main branch.")
                          inputs
                          "/share/wine-staging/staging/patchinstall.py")
                         "DESTDIR=."
+                        ;; Note: Keep in sync with wine-staging.
+                        "-W" "server-Stored_ACLs"
                         "--all")))
             (add-after 'apply-wine-staging-patches 'patch-SHELL
               (assoc-ref #$phases 'patch-SHELL))))))
