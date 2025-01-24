@@ -227,10 +227,8 @@ focuses especially on Korean input (Hangul, Hanja, ...).")
         (guix build qt-build-system)
         (guix build qt-utils))
        #:modules
-       ((guix build glib-or-gtk-build-system)
-        ((guix build qt-build-system)
-         #:prefix qt:)
-        (guix build utils))
+       (((guix build qt-build-system) #:prefix qt:)
+        ,@%glib-or-gtk-build-system-default-modules)
        #:configure-flags
        (list
         ;; FIXME
