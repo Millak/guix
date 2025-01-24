@@ -140,7 +140,12 @@ Otherwise the picture in IMAGE is just copied."
                              (svg->png #+image #$output
                                        #:width #$width
                                        #:height #$height))
-                           (copy-file #+image #$output))))))
+                           (copy-file #+image #$output))))
+                 ;; Work around a bug in grafts where different versions of
+                 ;; guile-cairo are loaded from (gnu build svg).
+                 ;; As seen in https://issues.guix.gnu.org/47115#23 and
+                 ;; in https://issues.guix.gnu.org/75510.
+                 #:options '(#:graft? #f)))
 
 (define* (grub-background-image config)
   "Return the GRUB background image defined in CONFIG or #f if none was found.
