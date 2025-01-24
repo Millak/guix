@@ -8125,26 +8125,28 @@ of flash storage.")
 (define-public libseccomp
   (package
     (name "libseccomp")
-    (version "2.5.4")
+    (version "2.6.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/seccomp/libseccomp/"
-                                  "releases/download/v" version
-                                  "/libseccomp-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/seccomp/libseccomp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nyb3lspc5bsirpsx89vah3n54pmwlgxrwsfaxl01kq50i004afq"))))
+                "189yh66aj3z3jvns739qbj504f3mcl3w44pxxizw877pbj3kal11"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'check 'skip-load-test
-                    (lambda _
-                      ;; This test does a native system call and fails when
-                      ;; run under QEMU user-mode emulation.  Just skip it.
-                      (delete-file "tests/52-basic-load.tests"))))))
+     (list
+      #:configure-flags #~(list "--disable-static")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'skip-load-test
+                     (lambda _
+                       ;; This test does a native system call and fails when
+                       ;; run under QEMU user-mode emulation.  Just skip it.
+                       (delete-file "tests/52-basic-load.tests"))))))
     (native-inputs
-     (list gperf which))
+     (list autoconf automake gperf libtool which))
     (synopsis "Interface to Linux's seccomp syscall filtering mechanism")
     (description "The libseccomp library provides an easy to use, platform
 independent, interface to the Linux Kernel's syscall filtering mechanism.  The
