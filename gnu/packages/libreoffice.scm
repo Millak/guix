@@ -916,7 +916,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
                   (ice-9 textual-ports)
                   (srfi srfi-1)
                   (srfi srfi-26)
-                  ,@%glib-or-gtk-build-system-modules)
+                  ,@%glib-or-gtk-build-system-default-modules)
       #:tests? #f                       ; Building the tests already fails.
       #:phases
       #~(modify-phases %standard-phases
