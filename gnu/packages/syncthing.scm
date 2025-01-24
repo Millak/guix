@@ -213,25 +213,26 @@ notification area icon for Syncthing.  Supported Syncthing features:
   (deprecated-package "qsyncthingtray" syncthing-gtk))
 
 (define-public go-github-com-syncthing-notify
-    (package
-      (name "go-github-com-syncthing-notify")
-      (version "0.0.0-20210616190510-c6b7342338d2")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/syncthing/notify")
-                       (commit (go-version->git-ref version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1mw7kxj0smcf4vgpxai7m9vncdx2d3blxqy13hffvza0fxnwkv37"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/syncthing/notify"))
-      (propagated-inputs
-       (list go-golang-org-x-sys))
-      (synopsis "File system event notification library")
-      (description "This package provides @code{notify}, a file system event
-notification library in Go.")
-      (home-page "https://github.com/syncthing/notify")
-      (license expat)))
+  (package
+    (name "go-github-com-syncthing-notify")
+    (version "0.0.0-20210616190510-c6b7342338d2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/syncthing/notify")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mw7kxj0smcf4vgpxai7m9vncdx2d3blxqy13hffvza0fxnwkv37"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/syncthing/notify"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/syncthing/notify")
+    (synopsis "File system event notification library")
+    (description
+     "This package provides @code{notify}, a file system event notification
+library in Go.")
+    (license expat)))
