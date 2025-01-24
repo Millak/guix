@@ -3291,6 +3291,9 @@ is no support for parsing block and inline level HTML.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:configure-flags
+      #~(list
+         "--with-sendmail=/run/privileged/bin/sendmail -t")
       #:phases #~(modify-phases %standard-phases
                    (add-before 'check 'adjust-tests
                      (lambda _
