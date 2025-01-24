@@ -9722,11 +9722,15 @@ writing C extensions for Python as easy as Python itself.")
 (define-public python-numpy
   (package
     (name "python-numpy")
-    ;; XXX: Any other versions up to 1.26.4 failed to build with error similar
-    ;; to: 'fenv_t' has not been declared in '::' 58 | using ::fenv_t;
-    ;; See <https://github.com/numpy/numpy/issues/21075#issuecomment-1047976197>,
-    ;; <https://github.com/numpy/numpy/issues/24318>.
-    (version "1.24.4")
+    ;; XXX: Starting from v1.26.0 the project includes a vendored-meson which
+    ;; is needed for SIMD and BLAS/LAPACK features that are not yet available
+    ;; in upstream Meson.
+    ;;
+    ;; See:
+    ;; - URL <https://raw.githubusercontent.com/numpy/numpy>
+    ;; - commit :: 2f3549c9d7c5048621568e431c86bc7530742723
+    ;; - file <doc/source/building/understanding_meson.rst>
+    (version "1.26.2")
     (source
      (origin
        (method url-fetch)
@@ -9735,7 +9739,7 @@ writing C extensions for Python as easy as Python itself.")
              version "/numpy-" version ".tar.gz"))
        (sha256
         (base32
-         "0qwldmkq5bns561ppkz7psphc4jqfj5j1x4dhq0i8r4qwjjf7xc0"))))
+         "1snknqb4hmv6b720nsaz21g7h6z1ikdvnsqyy5vmgavnfr23hmzn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -9744,6 +9748,18 @@ writing C extensions for Python as easy as Python itself.")
                   (ice-9 format))
       #:phases
       #~(modify-phases %standard-phases
+          ;; XXX: It fails with an issue "'fenv_t' has not been declared..."
+          ;; when the gfortran header is used.  Remove gfortran from
+          ;; CPLUS_INCLUDE_PATH as a workaround.  Taken from
+          ;; <https://issues.guix.gnu.org/73439#45>.
+          (add-after 'set-paths 'hide-gfortran
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gfortran (assoc-ref inputs "gfortran")))
+                (setenv "CPLUS_INCLUDE_PATH"
+                        (string-join
+                         (delete (string-append gfortran "/include/c++")
+                                 (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                         ":")))))
           (add-before 'build 'parallelize-build
             (lambda _
               (setenv "NPY_NUM_BUILD_JOBS"
@@ -9827,7 +9843,6 @@ include_dirs = ~:*~a/include~%"
      (list gfortran
            meson-python
            pkg-config
-           python-cython ;; overwrite Cython from meson-python
            python-hypothesis
            python-mypy
            python-pytest
