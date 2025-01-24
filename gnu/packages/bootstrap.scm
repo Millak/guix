@@ -333,6 +333,10 @@ or false to signal an error."
      ((string=? system "powerpc64-linux") "/lib/ld64.so.1")
      ((string=? system "alpha-linux") "/lib/ld-linux.so.2")
 
+     ;; TODO: Remove it when we support native loongarch64 build.
+     ((string=? system "loongarch64-linux")
+      "/lib/ld-linux-loongarch-lp64d.so.1")
+
      ;; TODO: Differentiate between x86_64-linux-gnu and x86_64-linux-gnux32.
      ((string=? system "x86_64-linux-gnux32") "/lib/ld-linux-x32.so.2")
 
