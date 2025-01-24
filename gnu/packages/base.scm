@@ -902,6 +902,7 @@ the store.")
         ;; "glibc-allow-kernel-2.6.32.patch"
         "glibc-reinstate-prlimit64-fallback.patch"
         "glibc-supported-locales.patch"
+        "glibc-2.40-CVE-2025-0.patch"
         "glibc-2.37-hurd-clock_t_centiseconds.patch"
         "glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch"
         "glibc-hurd-mach-print.patch"
