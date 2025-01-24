@@ -427,7 +427,8 @@ string such as \"xz\".  Otherwise return #f."
      (let ((extension (file-extension file)))
        ;; FILE might be "example-1.2-checkout", in which case we want to
        ;; ignore the extension.
-       (and (or (string-contains extension "z")
+       (and (string? extension)
+            (or (string-contains extension "z")
                 (string-contains extension "tar"))
             extension)))))
 
