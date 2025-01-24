@@ -31,7 +31,7 @@
 ;;; Copyright © 2019, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
@@ -5032,7 +5032,7 @@ Logitech Unifying Receiver.")
                  (commit "92522b3ec39ad4cdef4756dc303d99741ec7fe20")))
            (file-name (git-file-name "lynis-sdk" version))
            (sha256
-            (base32 "05qq4395x8f0kyl1ppm74npsf8sb3hhgz0ck4fya91sy6a26b4ja"))))))
+            (base32 "1mwvimgmnzbk6kf8dzhgkidb2zigay9dpirihydc758fvjic4bdl"))))))
     (arguments
      (list
       #:phases
