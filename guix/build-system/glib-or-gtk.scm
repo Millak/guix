@@ -30,7 +30,8 @@
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix packages)
-  #:export (%glib-or-gtk-build-system-modules
+  #:export (%glib-or-gtk-build-system-default-modules
+            %glib-or-gtk-build-system-modules
             glib-or-gtk-build
             glib-or-gtk-cross-build
             glib-or-gtk-build-system)
@@ -64,7 +65,7 @@
 ;;
 ;; Code:
 
-(define %default-modules
+(define %glib-or-gtk-build-system-default-modules
   ;; Build-side modules made available in the build environment.
   '((guix build glib-or-gtk-build-system)
     (guix build utils)))
@@ -144,7 +145,7 @@
                             (glib-or-gtk-wrap-excluded-outputs ''())
                             (system (%current-system))
                             (imported-modules %glib-or-gtk-build-system-modules)
-                            (modules %default-modules)
+                            (modules %glib-or-gtk-build-system-default-modules)
                             allowed-references
                             disallowed-references)
   "Build SOURCE with INPUTS.  See GNU-BUILD for more details."
@@ -219,7 +220,7 @@
                                   (system (%current-system))
                                   (build (nix-system->gnu-triplet system))
                                   (imported-modules %glib-or-gtk-build-system-modules)
-                                  (modules %default-modules)
+                                  (modules %glib-or-gtk-build-system-default-modules)
                                   allowed-references
                                   disallowed-references)
   "Cross-build SOURCE with INPUTS.  See GNU-BUILD for more details."
