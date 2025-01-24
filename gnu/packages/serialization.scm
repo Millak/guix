@@ -423,6 +423,24 @@ that implements both the msgpack and msgpack-rpc specifications.")
     (inputs
      `(("lua" ,lua-5.2)))))
 
+(define-public libcsv
+  (package
+    (name "libcsv")
+    (version "3.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/libcsv/libcsv/libcsv-"
+                                  version "/libcsv-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1r6pxdxrc3vfil1f9ng1dblm82asdqz6hkz7dj4vkkh3p0f47h6r"))))
+    (build-system gnu-build-system)
+    (home-page "http://sourceforge.net/projects/libcsv/")
+    (synopsis "CSV parser and writer library")
+    (description
+     "This package provides a C library for parsing and writing CSV data.")
+    (license license:lgpl2.1+)))
+
 (define-public libscfg
   (package
     (name "libscfg")
