@@ -38866,6 +38866,23 @@ profile.  It supports:
 Currently, Linux is the only platform supported by this library.")
     (license license:expat)))
 
+(define-public python-dbus-fast
+  (package
+    (name "python-dbus-fast")
+    (version "2.30.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dbus_fast" version))
+       (sha256
+        (base32 "1cx71lbw716smpr4vsc9d421v45s36hcqj2z95nl3wm2yhan6ac7"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-cython python-poetry-core python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/bluetooth-devices/dbus-fast")
+    (synopsis "Faster version of dbus-next")
+    (description "This package provides a faster version of dbus-next.")
+    (license license:expat)))
 (define-public python-clrprint
   (package
     (name "python-clrprint")
