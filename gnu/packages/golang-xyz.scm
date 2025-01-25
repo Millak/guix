@@ -17529,6 +17529,38 @@ tools."))))
                     "\nThis package provides an command line interface (CLI)
 tool."))))
 
+(define-public go-toml
+  (package
+    (inherit go-github-com-pelletier-go-toml-v2)
+    (name "go-toml")
+    (arguments
+     (list
+      #:tests? #f ; tested in the library
+      #:install-source? #f
+      #:unpack-path "github.com/pelletier/go-toml"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda arguments
+              (for-each
+               (lambda (cmd)
+                 (apply (assoc-ref %standard-phases 'build)
+                        `(,@arguments #:import-path ,cmd)))
+               (list "github.com/pelletier/go-toml/cmd/tomljson"
+                     "github.com/pelletier/go-toml/cmd/tomll"))))
+          (replace 'install
+            (lambda arguments
+              (for-each
+               (lambda (cmd)
+                 (apply (assoc-ref %standard-phases 'install)
+                        `(,@arguments #:import-path ,cmd)))
+               (list "github.com/pelletier/go-toml/cmd/tomljson"
+                     "github.com/pelletier/go-toml/cmd/tomll")))))))
+    (description
+     (string-append (package-description go-github-com-pelletier-go-toml-v2)
+                    "\nThis package provides command line interface (CLI)
+tools."))))
+
 (define-public go-tomlv
   (package
     (inherit go-github-com-burntsushi-toml)
