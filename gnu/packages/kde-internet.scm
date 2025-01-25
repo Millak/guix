@@ -517,3 +517,88 @@ features including but not limited to torrent downloading and seeding, torrent
 creation and downloaded data verification, magnet links, advanced peer
 management, IP blocking lists.")
     (license license:gpl2+)))
+
+(define-public ruqola
+  (package
+    (name "ruqola")
+    (version "2.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/ruqola/ruqola-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0w05ww6dn1xfmz67i3avkzdlcrb575hjad2lnm2cxd0jds0b1bg5"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-home-directory
+                 (lambda _
+                   (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list karchive
+           kcodecs
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           ki18n
+           kiconthemes
+           kidletime
+           kio
+           knotifications
+           knotifyconfig
+           kstatusnotifieritem
+           ksyntaxhighlighting
+           ktextaddons
+           ktextwidgets
+           kwidgetsaddons
+           kxmlgui
+           plasma-activities
+           prison
+           purpose
+           qtkeychain-qt6
+           qtwebsockets
+           qtnetworkauth
+           qtmultimedia
+           qtsvg
+           sonnet))
+    (home-page "https://apps.kde.org/ruqola/")
+    (synopsis "Rocket.Chat client")
+    (description
+     "Ruqola is a @uref{https://www.rocket.chat/, Rocket.Chat} client for KDE
+desktop.  It supports:
+@itemize
+@item direct and thread messaging,
+@item @acronym{OTR, Off-the-Record} messages,
+@item individual and group channels,
+@item autotranslate support,
+@item emojis,
+@item videos,
+@item GIFs,
+@item uploading auttachments,
+@item searching messages in a room,
+@item showing unread message information,
+@item discussion rooms and configuring them,
+@item storing messages in a local database,
+@item exporting messages,
+@item importing/exporting accounts,
+@item registering and configuring accounts,
+@item two-factor authentication via TOTP or email,
+@item multiple accounts,
+@item auto-away,
+@item blocking/unblocking users,
+@item administrator settings,
+@item console moderation,
+@item message URL previews,
+@item channel list styles,
+@item forwarding messages,
+@item Rocket.Chat marketplace,
+@item notifications,
+@item replying directly from the notification and
+@item DND image to websites or local folder.
+@end itemize")
+    (license (list license:lgpl2.1+ license:gpl2+))))
