@@ -2142,27 +2142,6 @@ characters with their ASCII approximations.")
     (description "@code{gg} is a library for rendering 2D graphics in pure Go.")
     (license license:expat)))
 
-(define-public go-github-com-surge-glog
-    (package
-      (name "go-github-com-surge-glog")
-      (version "0.0.0-20141108051140-2578deb2b95c")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/surge/glog")
-                       (commit (go-version->git-ref version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1bxcwxvsvr2hfpjz9hrrn0wrgykwmrbyk567102k3vafw9xdcwk4"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/surge/glog"))
-      (home-page "https://github.com/surge/glog")
-      (synopsis "Leveled execution logs for Go")
-      (description "Leveled execution logs for Go.")
-      (license license:asl2.0)))
-
 (define-public go-github-com-twpayne-go-vfsafero
   (package
     (name "go-github-com-twpayne-go-vfsafero")
