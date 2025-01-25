@@ -13088,6 +13088,30 @@ logging.")
      "This package implements column-formatted output for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-sabhiram-go-gitignore
+  (package
+    (name "go-github-com-sabhiram-go-gitignore")
+    (version "0.0.0-20210923224102-525f6e181f06")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sabhiram/go-gitignore")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "197giv3snczvbihzvkja5pq53yw5fc516rnjm71hni8gawb8jmh3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sabhiram/go-gitignore"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/sabhiram/go-gitignore")
+    (synopsis "Gitignore parser for Go")
+    (description "A @command{.gitignore} parser for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-sahilm-fuzzy
   (package
     (name "go-github-com-sahilm-fuzzy")
