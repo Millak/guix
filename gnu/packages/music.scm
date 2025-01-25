@@ -4373,7 +4373,8 @@ your music.")
            python-musicbrainzngs
            python-requests
            python-six
-           python-unidecode))
+           python-unidecode
+           python-typing-extensions))
     (home-page "https://github.com/unrblt/beets-bandcamp")
     (synopsis "Bandcamp plugin for beets")
     (description
