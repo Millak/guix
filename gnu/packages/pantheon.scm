@@ -30,6 +30,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages photo)
@@ -257,6 +258,52 @@ from elementary OS and is designed for the Pantheon desktop environment (but can
 also be used on others.")
     (home-page "https://elementary.io/open-source")
     (license license:lgpl2.1+)))
+
+(define-public pantheon-screenshot
+  (package
+    (name "pantheon-screenshot")
+    (version "8.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elementary/screenshot")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h3xv0pckkkgvqkk6fxssydq9gmncapaf1hx4n7j19jcvhwx65da"))))
+    (build-system meson-build-system)
+    (arguments
+      (list
+        #:glib-or-gtk? #t
+        #:phases
+          #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-schema-cache-generation
+                 (lambda _ (setenv "DESTDIR" "/")))
+               (add-after 'install 'install-symlinks
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((bin (string-append #$output
+                                              "/bin/io.elementary.screenshot"))
+                          (link (string-append #$output
+                                               "/bin/pantheon-screenshot")))
+                     (symlink bin link)))))))
+    (native-inputs (list desktop-file-utils
+                         gettext-minimal ;for msgfmt
+                         `(,glib "bin")
+                         pkg-config
+                         vala))
+    (inputs (list granite
+                  gtk
+                  libcanberra
+                  libgee
+                  libportal
+                  libhandy))
+    (propagated-inputs (list glib))
+    (synopsis "Screenshot tool")
+    (description "pantheon-screenshot is a screenshot tool designed for
+the Pantheon desktop environment.")
+    (home-page "https://elementary.io/open-source")
+    (license license:lgpl3)))
 
 (define-public pantheon-stylesheet
   (package
