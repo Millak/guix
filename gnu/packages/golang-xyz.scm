@@ -12314,6 +12314,7 @@ programs that use traditional command lines.")
     (arguments
      (list
       #:import-path "github.com/pelletier/go-toml/v2"
+      #:parallel-tests? #f
       #:test-flags
       #~(list "-short"
               "-count" "1"
