@@ -12252,7 +12252,7 @@ programs that use traditional command lines.")
   (package
     (inherit go-github-com-pelletier-go-toml)
     (name "go-github-com-pelletier-go-toml-v2")
-    (version "2.2.2")
+    (version "2.2.3")
     (source
      (origin
        (method git-fetch)
@@ -12261,7 +12261,7 @@ programs that use traditional command lines.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gimgz33yxmvj0nmy56yy7zq4ay8j55ir8pfzmgwga7npgpzspk7"))))
+        (base32 "0hqxj34d49snvc2m6lxfjxks3z9sic9xbb6w49ajrqbzy953spzs"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/pelletier/go-toml/v2"))
