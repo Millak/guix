@@ -157,7 +157,7 @@
 ;;; Copyright © 2024 Rick Huijzer <ikbenrickhuyzer@gmail.com>
 ;;; Copyright © 2024 Peter Kannewitz <petre-vps@posteo.net>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
-;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2024, 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
 ;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
@@ -501,6 +501,32 @@ package.  It is not useful on its own, only as a dependency for awkward.")
 including arbitrary-length lists, records, mixed types, and missing data,
 using NumPy-like idioms.")
     (license license:bsd-3)))
+
+(define-public python-bresenham
+  (package
+    (name "python-bresenham")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/encukou/bresenham")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07h04l50y35rhp13mqis61d1dkd7426q1gdfy5hd6rcgcfv15kxd"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/encukou/bresenham")
+    (synopsis "Implementation of Bresenham's line drawing algorithm")
+    (description
+     "This package provides a Python implementation of
+@url{https://en.wikipedia.org/wiki/Bresenham's_line_algorithm, Bresenham's
+line drawing algorithm}.")
+    (license license:expat)))
 
 (define-public python-distance
   (package
