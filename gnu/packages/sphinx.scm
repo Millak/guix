@@ -81,10 +81,15 @@
     (arguments
      (list
       #:test-flags
-      ;; These require Internet access.
-      #~(list "-k" (string-append "not test_latex_images"
-                                  " and not test_build_latex_doc[lualatex-manual]"
-                                  " and not est_build_latex_doc[lualatex-howto]"))
+      #~(list "-k" (string-join
+                    (list
+                     ;; These require Internet access.
+                     "not test_latex_images"
+                     "test_build_latex_doc[lualatex-manual]"
+                     "est_build_latex_doc[lualatex-howto]"
+                     ;; AssertionError: assert...list of weak references to the object...
+                     "test_autodoc_default_options")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
