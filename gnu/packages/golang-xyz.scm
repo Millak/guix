@@ -5114,6 +5114,30 @@ defined output to the standard output.")
 with Go structs.")
     (license license:expat)))
 
+(define-public go-github-com-fatih-structtag
+  (package
+    (name "go-github-com-fatih-structtag")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fatih/structtag")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09a9pycvkf384v5f47ff4q33bjbzpx6kbkn23za1gcwc96466sk3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fatih/structtag"))
+    (home-page "https://github.com/fatih/structtag")
+    (synopsis "Parse and modify Go struct field tags")
+    (description
+     "This package provides an easy way of parsing and manipulating struct tag fields.
+Please vendor the library as it might change in future versions.")
+    (license license:bsd-3)))
+
 ;; XXX: This repository has been archived by the owner on Nov 9, 2017. It is
 ;; now read-only.
 (define-public go-github-com-flynn-archive-go-shlex
