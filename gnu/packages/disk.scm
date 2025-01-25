@@ -1213,7 +1213,11 @@ to create devices with respective mappings for the ATARAID sets discovered.")
                             (false-if-exception
                              (search-input-file inputs
                                                 (string-append "sbin/" program)))
-                            program)))))))))
+                            (begin
+                              (format (current-warning-port)
+                                      "warning: program ~s left unpatched~%"
+                                      program)
+                              program))))))))))
     (native-inputs
      (list gobject-introspection
            pkg-config
