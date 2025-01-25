@@ -195,6 +195,34 @@ desktop.")
     (synopsis "Desktop calendar")
     (description "This package provides a desktop calendar app designed for
 elementary OS.")
+    (license license:gpl3+)))
+
+(define-public pantheon-icons
+  (package
+    (name "pantheon-icons")
+    (version "8.1.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/elementary/icons")
+               (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1yvjisvcjdpgibnc5l5cm16rw53zffinp1pvknlllz8wcdylqnss"))))
+    (build-system meson-build-system)
+    (arguments
+      (list #:configure-flags #~(list "-Dvolume_icons=false"
+                                      "-Dpalettes=false")))
+    (native-inputs (list gettext-minimal ;for msgfmt
+                         librsvg
+                         xcursorgen))
+    (propagated-inputs (list hicolor-icon-theme))
+    (synopsis "Named, vector icons for the pantheon desktop")
+    (description
+     "pantheon-icons is an original set of vector icons designed
+for elementary OS and its desktop environment: Pantheon.")
+    (home-page "https://elementary.io/open-source")
     (license license:gpl3)))
 
 (define-public pantheon-photos
