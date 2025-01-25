@@ -839,7 +839,7 @@ architecture (x86_64) using 32-bit data types?"
 (define* (target-64bit? #:optional (system (or (%current-target-system)
                                                (%current-system))))
   (any (cut string-prefix? <> system) '("x86_64" "aarch64" "mips64"
-                                        "powerpc64" "riscv64")))
+                                        "powerpc64" "riscv64" "loongarch64")))
 
 (define* (target-little-endian? #:optional (target (or (%current-target-system)
                                                        (%current-system))))
