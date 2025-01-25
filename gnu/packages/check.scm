@@ -1446,31 +1446,6 @@ syntax validation, ...
 for every Python test framework.  It supports nose, py.test, and unittest.")
     (license license:bsd-2)))
 
-(define-public python-parameterized-next
-  (package
-    (inherit python-parameterized)
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "parameterized" version))
-       (sha256
-        (base32 "1c89vc40zj5aj2zvbvw875wqpyf0x6xrqhm3q5jg797g5hkhbjbz"))))
-    (build-system pyproject-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (substitute* "parameterized/test.py"
-                 (("import mock") "from unittest import mock"))
-               (invoke "python3" "-m" "unittest")))))))
-    (native-inputs
-     (list python-jinja2
-           python-setuptools
-           python-wheel))))
-
 (define-public python-minimock
   (package
     (name "python-minimock")
