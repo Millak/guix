@@ -2758,6 +2758,8 @@ Newton-Raphson power flow solvers in the C++ library lightsim2grid, and the
     (native-inputs (list python-nbmake
                          python-pytest
                          python-pytest-xdist
+                         python-setuptools
+                         python-wheel
                          unzip))
     (propagated-inputs (list python-matplotlib
                              python-pandapower
