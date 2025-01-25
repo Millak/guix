@@ -38907,6 +38907,24 @@ Currently, Linux is the only platform supported by this library.")
 client library.")
     (license license:expat)))
 
+(define-public python-ndeflib
+  (package
+    (name "python-ndeflib")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ndeflib" version))
+       (sha256
+        (base32 "122a8prbcj070y3fl82kvxmbciv36hj1h1d448l6zcdrb22q4mhx"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://ndeflib.readthedocs.io/")
+    (synopsis "NFC Data Exchange Format decoder and encoder.")
+    (description "This package provides a NFC (Near-Field Communication)
+Data Exchange Format decoder and encoder.")
+    (license license:isc)))
+
 (define-public python-clrprint
   (package
     (name "python-clrprint")
