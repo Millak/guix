@@ -150,6 +150,7 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages groff)
@@ -5512,7 +5513,6 @@ disk utilization, priority, username, state, and exit code.")
      (list
       #:install-source? #f
       #:import-path "github.com/linuxboot/fiano"
-      #:unpack-path "github.com/linuxboot/fiano"
       #:phases
       #~(modify-phases %standard-phases
           ;; XXX: Replace this part when it's implemented in go-build-system.
@@ -5524,10 +5524,7 @@ disk utilization, priority, username, state, and exit code.")
                          (string-append import-path "/cmds/" cmd)))
                (list "cbfs"
                      "create-ffs"
-                     ;; TODO: Not packed yet in guix, long jorney:
-                     ;; - github.com/tjfoc/gmsm
-                     ;;
-                     ;; "fittool"
+                     "fittool"
                      "fmap"
                      "fspinfo"
                      "glzma"
@@ -5542,20 +5539,14 @@ disk utilization, priority, username, state, and exit code.")
                    (invoke "go" "test" "-v"
                            (string-append import-path dir "/...")))
                  (list "/pkg/bytes"
-                       ;; TODO: Not packed yet in Guix, long jorney:
-                       ;; - github.com/jedib0t
-                       ;;
-                       ;; "/pkg/amd"
+                       "/pkg/amd"
                        "/pkg/cbfs"
                        "/pkg/compression"
                        "/pkg/fmap"
                        "/pkg/fsp"
                        "/pkg/guid"
                        "/pkg/guid2english"
-                       ;; TODO: Not packed yet in Guix, long jorney:
-                       ;; - github.com/tjfoc/gmsm
-                       ;;
-                       ;; "/pkg/intel"
+                       "/pkg/intel"
                        "/pkg/knownguids"
                        "/pkg/log"
                        "/pkg/uefi"
@@ -5582,7 +5573,7 @@ disk utilization, priority, username, state, and exit code.")
                    (install-file cmd bindir))
                  (list "cbfs"
                        "create-ffs"
-                       ;; "fittool"
+                       "fittool"
                        "fmap"
                        "fspinfo"
                        "glzma"
@@ -5591,11 +5582,18 @@ disk utilization, priority, username, state, and exit code.")
                        "utk"))))))))
     (inputs
      (list go-github-com-dustin-go-humanize
+           go-github-com-fatih-camelcase
            go-github-com-hashicorp-go-multierror
+           go-github-com-jedib0t-go-pretty-v6
            go-github-com-jessevdk-go-flags
+           go-github-com-klauspost-compress
            go-github-com-pierrec-lz4
            go-github-com-spf13-pflag
+           go-github-com-stretchr-testify
+           go-github-com-tjfoc-gmsm
            go-github-com-ulikunitz-xz
+           go-github-com-xaionaro-go-bytesextra
+           go-github-com-xaionaro-gosrc
            go-golang-org-x-text))
     (home-page "https://github.com/linuxboot/fiano")
     (synopsis "UEFI image editor")
