@@ -218,6 +218,17 @@ hierarchical form with variable field lengths.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          #$@(if (target-loongarch64?)
+                 #~((add-after 'unpack 'update-config-scripts
+                      (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                        ;; Replace outdated config.guess and config.sub.
+                        (for-each (lambda (file)
+                                    (install-file
+                                     (search-input-file
+                                      (or native-inputs inputs)
+                                      (string-append "/bin/" file)) "."))
+                                  '("config.guess" "config.sub")))))
+                 #~())
           (add-after 'install 'use-other-outputs
             (lambda _
               (let ((doc (string-append #$output:doc "/share/"))
@@ -242,7 +253,10 @@ hierarchical form with variable field lengths.")
     (synopsis "C parser for XML")
     (inputs (list xz))
     (propagated-inputs (list zlib)) ; libxml2.la says '-lz'.
-    (native-inputs (list perl))
+    (native-inputs (append (if (target-loongarch64?)
+                               (list config)
+                               '())
+                           (list perl)))
     (native-search-paths
      (list $SGML_CATALOG_FILES $XML_CATALOG_FILES))
     (search-paths native-search-paths)
