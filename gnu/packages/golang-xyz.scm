@@ -5064,6 +5064,30 @@ in a consistent state and never represent an in-progress write.")
 Alphanum Algorithm} developed by Dave Koelle in Go.")
     (license license:bsd-3)))
 
+(define-public go-github-com-fatih-camelcase
+  (package
+    (name "go-github-com-fatih-camelcase")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fatih/camelcase")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z7rw6f5j97dkzqya257dqlxf3cm8zl508081gmnr4bsjhkwpz2l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fatih/camelcase"))
+    (home-page "https://github.com/fatih/camelcase")
+    (synopsis "Split a camelcase word into a slice of words in Go")
+    (description
+     "Package camelcase is a micro package to split the words of a camelcase type
+string into a slice of words.")
+    (license license:expat)))
+
 (define-public go-github-com-fatih-color
   (package
     (name "go-github-com-fatih-color")
