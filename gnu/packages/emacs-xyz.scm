@@ -40147,14 +40147,14 @@ provides an easy way to bind keys under a configurable prefix key.")
 (define-public emacs-spacious-padding
   (package
     (name "emacs-spacious-padding")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/spacious-padding-"
                            version ".tar"))
        (sha256
-        (base32 "0x5bsyd6b1d3bzrsrpf9nvw7xj5ch114m2dilq64bg8y2db3452z"))))
+        (base32 "0czx4w6vm56blvc26gymmijvcqhvmrlakqwlks1prckgnkgsvcpx"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/protesilaos/spacious-padding")
     (synopsis "Increase the padding or spacing of frames and windows")
