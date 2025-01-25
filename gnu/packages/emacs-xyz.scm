@@ -19098,6 +19098,36 @@ Denote files that goes beyond using the standard Dired Emacs command to
 view your Denote directory.")
     (license license:gpl3+)))
 
+(define-public emacs-denote-explore
+  (package
+    (name "emacs-denote-explore")
+    (version "3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pprevos/denote-explore")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0773691jxyv039y407c8dppkky41b3icacavddcv9m8v481763b7"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-denote emacs-dash))
+    (home-page "https://github.com/pprevos/denote-explore")
+    (synopsis "Analyse and visualise a collection of Denote notes")
+    (description
+     "The Denote Explore package provides auxiliary functions to
+maintain and explore your collection of Denote files.  Denote Explore provides
+four groups of Emacs commands:
+@enumerate
+@item Summary statistics: Count and visualize notes, attachments and keywords.
+@item Random walks: Generate new ideas using Serendipity.
+@item Janitor: Manage your Denote collection.
+@item Visualisations: Visualise your Denote network as a network
+graph.  (Optional dependencies GraphViz, D3js, to be acquired separately!)
+@end enumerate")
+    (license license:gpl3+)))
+
 (define-public emacs-logos
   (package
     (name "emacs-logos")
