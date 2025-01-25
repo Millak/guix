@@ -35,7 +35,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022, 2023 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022, 2023, 2025 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Theofilos Pechlivanis <theofilos.pechlivanis@gmail.com>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
@@ -2717,7 +2717,11 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
        (sha256
         (base32 "139ahp08kci8asmv35bcibbnkfr5s1ff5j84n490s47ibsglk4yi"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pyproj python-pytest unzip))
+    (native-inputs (list python-pyproj
+                         python-pytest
+                         python-setuptools
+                         python-wheel
+                         unzip))
     (propagated-inputs (list python-deepdiff
                              python-geojson
                              python-networkx
