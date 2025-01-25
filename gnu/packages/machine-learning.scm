@@ -583,7 +583,7 @@ Performance is achieved by using the LLVM JIT compiler.")
   (deprecated-package "guile-aiscm-next" guile-aiscm))
 
 (define-public llama-cpp
-  (let ((tag "b4137"))
+  (let ((tag "b4549"))
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -595,7 +595,7 @@ Performance is achieved by using the LLVM JIT compiler.")
                (commit tag)))
          (file-name (git-file-name name tag))
          (sha256
-          (base32 "0agm0188f9y2pr15v83a2fm0k9b8wag96qb3ryq4l2g6nkysiqlj"))))
+          (base32 "1xf2579q0r8nv06kj8padi6w9cv30w58vdys65nq8yzm3dy452a1"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -630,9 +630,8 @@ Performance is achieved by using the LLVM JIT compiler.")
               ;; run in Guix build environment
               (lambda _
                 (substitute* '("examples/eval-callback/CMakeLists.txt")
-                  (("add_test") "#add_test"))
-                (substitute* '("examples/eval-callback/CMakeLists.txt")
-                  (("set_property") "#set_property"))))
+                  (("COMMAND llama-eval-callback")
+                   "COMMAND true llama-eval-callback"))))
             (add-before 'install 'install-python-scripts
               (lambda _
                 (let ((bin (string-append #$output "/bin/")))
