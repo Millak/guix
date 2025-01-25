@@ -22637,19 +22637,27 @@ are synchronized with data exchanges on \"channels\".")
 (define-public python-objgraph
   (package
     (name "python-objgraph")
-    (version "3.4.1")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "objgraph" version))
        (sha256
-        (base32
-         "19qmqsh984zq1rzzjy4vqnmviaqnymcyl8h7z99pnicbgwnm2adz"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-graphviz))
+        (base32 "1n0swlq11w36r2p6x7b4y0zz10dgzpdc8qasyk3y68kl1zsg5f80"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "tests.py"
+              ;; AssertionError: [0, 1, 2] not found in [[], [], [], [], [],
+              ;; [], [], [], [], [], [], [], ...
+              "-k" "not test_at_addrs")))
     (native-inputs
-     (list python-mock graphviz))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list graphviz))
     (home-page "https://mg.pov.lt/objgraph/")
     (synopsis "Draw Python object reference graphs with graphviz")
     (description
