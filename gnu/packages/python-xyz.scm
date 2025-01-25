@@ -22653,11 +22653,12 @@ are synchronized with data exchanges on \"channels\".")
               ;; [], [], [], [], [], [], [], ...
               "-k" "not test_at_addrs")))
     (native-inputs
-     (list python-pytest
+     (list graphviz
+           python-pytest
            python-setuptools
            python-wheel))
     (propagated-inputs
-     (list graphviz))
+     (list python-graphviz))
     (home-page "https://mg.pov.lt/objgraph/")
     (synopsis "Draw Python object reference graphs with graphviz")
     (description
