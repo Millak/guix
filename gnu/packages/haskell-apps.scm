@@ -297,7 +297,7 @@ to @code{cabal repl}).")
 (define-public git-annex
   (package
     (name "git-annex")
-    (version "10.20241031")
+    (version "10.20250115")
     (source
      (origin
        ;; hackage release doesn't include everything needed for extra bits.
@@ -307,7 +307,7 @@ to @code{cabal repl}).")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x05mgxwn8a1czc98bp242828khw94f232slfbzvx86xx0z3c3d9"))))
+        (base32 "0xkx7jgfcv6cpdhpjjgpiyqj95jdajzw2hn49bsb03vz8lf9dif9"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "git-annex")))
     (arguments
@@ -364,7 +364,9 @@ to @code{cabal repl}).")
                                            (getcwd) "/dist/build/git-annex"))
              (when tests?
                (with-directory-excursion "dist/build/git-annex"
-                 (symlink "git-annex" "git-annex-shell"))
+                 (symlink "git-annex" "git-annex-shell")
+                 (symlink "git-annex" "git-remote-annex")
+                 (symlink "git-annex" "git-remote-tor-annex"))
                (invoke "git-annex" "test"))))
          (add-after 'check 'unpatch-shell-and-rebuild
            (lambda args
