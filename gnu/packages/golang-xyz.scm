@@ -15357,6 +15357,31 @@ edges and self-loops are not permitted.
 (including private/unexported) of a structure.")
     (license license:cc0)))
 
+(define-public go-github-com-xaionaro-go-bytesextra
+  (package
+    (name "go-github-com-xaionaro-go-bytesextra")
+    (version "0.0.0-20220103144954-846e454ddea9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xaionaro-go/bytesextra")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zggis1mdrfnashngg5hc6a6r6glcxzgj87ali7qdi02bnrl8s9i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xaionaro-go/bytesextra"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/xaionaro-go/bytesextra")
+    (synopsis "Golang library for bytes I/O")
+    (description
+     "This packae provides @code{io.ReadWriteSeeker} implementation for
+@code{[]byte}.")
+    (license license:cc0)))
+
 (define-public go-github-com-xdg-go-stringprep
   (package
     (name "go-github-com-xdg-go-stringprep")
