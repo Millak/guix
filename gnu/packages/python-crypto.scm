@@ -446,19 +446,33 @@ blake3, a cryptographic hash function.")
          "1yxqfb5131wahjyw9pxz03bq476rcfx62s6k53xx4cqbzzgdaqkq"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'adjust-test
-                 (lambda _
-                   ;; Newer PyOpenSSL no longer separates extensions with
-                   ;; newline (this can be removed for >1.3.0).
-                   (substitute* "test/test_certauth.py"
-                     (("7334\\\\n, DNS")
-                      "7334, DNS")))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list
+                     ;; Those tests uses PKCS12, which has been removed in
+                     ;; pyopenssl 23.3.0:
+                     "not test_custom_not_before_not_after"
+                     "test_ca_cert_in_mem"
+                     ;; Those tests try to download certificates:
+                     "test_file_wildcard"
+                     "test_file_wildcard_subdomains"
+                     "test_in_mem_parent_wildcard_cert"
+                     "test_in_mem_parent_wildcard_cert_at_tld"
+                     "test_in_mem_parent_wildcard_cert_2")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-test
+            (lambda _
+              ;; Newer PyOpenSSL no longer separates extensions with
+              ;; newline (this can be removed for >1.3.0).
+              (substitute* "test/test_certauth.py"
+                (("7334\\\\n, DNS") "7334, DNS")))))))
     (propagated-inputs
      (list python-pyopenssl python-tldextract))
     (native-inputs
-     (list python-pytest-cov))
+     (list python-pytest-cov python-setuptools python-wheel))
     (home-page "https://github.com/ikreymer/certauth")
     (synopsis "Certificate authority creation tool")
     (description "This package provides a small library, built on top of
