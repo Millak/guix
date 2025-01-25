@@ -2143,18 +2143,15 @@ characters with their ASCII approximations.")
     (license license:expat)))
 
 (define-public go-github-com-surge-glog
-  (let ((commit "2578deb2b95c665e6b1ebabf304ce2085c9e1985")
-        (revision "1"))
     (package
       (name "go-github-com-surge-glog")
-      (version (git-version "0.0.0" revision commit))
+      (version "0.0.0-20141108051140-2578deb2b95c")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                        (url "https://github.com/surge/glog")
-                       (commit commit)))
-                (file-name (string-append "go-github-com-surge-glog-"
-                                          version "-checkout"))
+                       (commit (go-version->git-ref version))))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "1bxcwxvsvr2hfpjz9hrrn0wrgykwmrbyk567102k3vafw9xdcwk4"))))
@@ -2164,7 +2161,7 @@ characters with their ASCII approximations.")
       (home-page "https://github.com/surge/glog")
       (synopsis "Leveled execution logs for Go")
       (description "Leveled execution logs for Go.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-github-com-twpayne-go-vfsafero
   (package
