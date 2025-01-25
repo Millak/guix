@@ -38883,6 +38883,30 @@ Currently, Linux is the only platform supported by this library.")
     (synopsis "Faster version of dbus-next")
     (description "This package provides a faster version of dbus-next.")
     (license license:expat)))
+
+(define-public python-bleak
+  (package
+    (name "python-bleak")
+    (version "0.22.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bleak" version))
+       (sha256
+        (base32 "0p04kk84vjmfv2pl1lichaaq8rc9xdm9sgd5g9r5gr2pjv0w6j9i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:tests? #f)) ; no tests
+    (propagated-inputs (list python-async-timeout
+                        python-dbus-fast
+                        python-typing-extensions))
+    (native-inputs (list python-poetry-core))
+    (home-page "https://github.com/hbldh/bleak")
+    (synopsis "Bluetooth Low Energy platform Agnostic Klient")
+    (description "This package provides a Bluetooth Low Energy platform-agnostic
+client library.")
+    (license license:expat)))
+
 (define-public python-clrprint
   (package
     (name "python-clrprint")
