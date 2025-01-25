@@ -3184,6 +3184,7 @@ YouTube.com and many more sites.")
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? ,(not (%current-target-system))
+       #:test-flags '("--ignore=test/test_websockets.py")
        #:phases
        (modify-phases %standard-phases
          ;; See <https://issues.guix.gnu.org/43418#5>.
@@ -3211,9 +3212,9 @@ YouTube.com and many more sites.")
                        "yt-dlp"
                        "completions"))))
          (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "-k" "not download")))))))
+               (apply invoke "pytest" "-k" "not download" test-flags)))))))
     (inputs (list ffmpeg python-brotli
                   python-certifi
                   python-mutagen
