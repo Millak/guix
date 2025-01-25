@@ -12312,7 +12312,18 @@ programs that use traditional command lines.")
         (base32 "0hqxj34d49snvc2m6lxfjxks3z9sic9xbb6w49ajrqbzy953spzs"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/pelletier/go-toml/v2"))
+     (list
+      #:import-path "github.com/pelletier/go-toml/v2"
+      #:test-flags
+      #~(list "-short"
+              "-count" "1"
+              "-skip" "FuzzUnmarshal") ; for benchmark
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-benchmarks
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/benchmark")))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs '())))
