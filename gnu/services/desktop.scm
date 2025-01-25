@@ -152,6 +152,7 @@
             gnome-desktop-configuration-shell
             gnome-desktop-configuration-utilities
             gnome-desktop-configuration-extra-packages
+            gnome-desktop-configuration-polkit-ignorelist
             gnome-desktop-configuration-udev-ignorelist
             gnome-desktop-service
             gnome-desktop-service-type
