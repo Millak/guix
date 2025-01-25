@@ -594,18 +594,6 @@ system mounts, etc.  This is similar to the 'sysvinit' target in systemd."
                                          (@ (ice-9 rdelim) read-string))))
                          '()))
 
-                   (define (now)
-                     (car (gettimeofday)))
-
-                   (define (sleep* n)
-                     ;; Really sleep N seconds.
-                     ;; Work around <http://bugs.gnu.org/19581>.
-                     (define start (now))
-                     (let loop ((elapsed 0))
-                       (when (> n elapsed)
-                         (sleep (- n elapsed))
-                         (loop (- (now) start)))))
-
                    (define lset= (@ (srfi srfi-1) lset=))
 
                    (display "sending all processes the TERM signal\n")
@@ -614,7 +602,7 @@ system mounts, etc.  This is similar to the 'sysvinit' target in systemd."
                        (begin
                          ;; Easy: terminate all of them.
                          (kill -1 SIGTERM)
-                         (sleep* #$grace-delay)
+                         (sleep #$grace-delay)
                          (kill -1 SIGKILL))
                        (begin
                          ;; Kill them all except OMITTED-PIDS.  XXX: We would
@@ -622,30 +610,17 @@ system mounts, etc.  This is similar to the 'sysvinit' target in systemd."
                          ;; processes, like 'killall5' does, but that seems
                          ;; unreliable.
                          (kill-except omitted-pids SIGTERM)
-                         (sleep* #$grace-delay)
+                         (sleep #$grace-delay)
                          (kill-except omitted-pids SIGKILL)
                          (delete-file #$%do-not-kill-file)))
 
                    (let wait ()
-                     ;; Reap children, if any, so that we don't end up with
-                     ;; zombies and enter an infinite loop.
-                     (let reap-children ()
-                       (define result
-                         (false-if-exception
-                          (waitpid WAIT_ANY (if (null? omitted-pids)
-                                                0
-                                                WNOHANG))))
-
-                       (when (and (pair? result)
-                                  (not (zero? (car result))))
-                         (reap-children)))
-
                      (let ((pids (processes)))
                        (unless (lset= = pids (cons 1 omitted-pids))
                          (format #t "waiting for process termination\
  (processes left: ~s)~%"
                                  pids)
-                         (sleep* 2)
+                         (sleep 1)
                          (wait))))
 
                    (display "all processes have been terminated\n")
