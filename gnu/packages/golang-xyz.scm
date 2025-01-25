@@ -15283,6 +15283,32 @@ edges and self-loops are not permitted.
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-xaionaro-go-unsafetools
+  (package
+    (name "go-github-com-xaionaro-go-unsafetools")
+    (version "0.0.0-20241024014258-a46e1ce3763e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xaionaro-go/unsafetools")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "153qlgq5sjg3gsw5v6an0mck8v5pmxf5mnys41ykp97yqp53mgcp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xaionaro-go/unsafetools"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/xaionaro-go/unsafetools")
+    (synopsis "Access to private/unexported fields of a structure")
+    (description
+     "This package provides function @code{FieldByName} to access to any field
+(including private/unexported) of a structure.")
+    (license license:cc0)))
+
 (define-public go-github-com-xdg-go-stringprep
   (package
     (name "go-github-com-xdg-go-stringprep")
