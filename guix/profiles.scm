@@ -1230,8 +1230,12 @@ MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
                         (setq native-comp-eln-load-path
                               (mapcan (lambda (dir)
                                         (if (equal dir needle)
-                                            (nconc ',native-comp-dirs
-                                                   (list dir))
+                                            ;; Note: needle may be found
+                                            ;; multiple times, so don't use
+                                            ;; destructive procedures like
+                                            ;; nconc.
+                                            (append ',native-comp-dirs
+                                                    (list dir))
                                             (list dir)))
                                       native-comp-eln-load-path))))
                    port)
