@@ -287,7 +287,8 @@ music." )
      (list python-cython-3
            python-pytest
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-wheel))
     (inputs
      (list fontconfig
            mesa))
