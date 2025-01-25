@@ -752,14 +752,14 @@ HID-Class devices.")
 (define-public python-hidapi
   (package
     (name "python-hidapi")
-    (version "0.7.99.post21")
+    (version "0.14.0.post2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hidapi" version))
        (sha256
         (base32
-         "15ws59zdrxahf3k7z5rcrwc4jgv1307anif8ixm2cyb9ask1mgp0"))
+         "1b2q4kpzvfbbdy5xjh5nas3ymg7gspqai5dla6fk16h5dfx9f3kc"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -795,7 +795,7 @@ HID-Class devices.")
     (inputs
      (list hidapi libusb eudev))
     (native-inputs
-     (list python-cython))
+     (list python-cython pkg-config))
     (home-page "https://github.com/trezor/cython-hidapi")
     (synopsis "Cython interface to hidapi")
     (description "This package provides a Cython interface to @code{hidapi}.")
