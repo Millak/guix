@@ -38925,6 +38925,28 @@ client library.")
 Data Exchange Format decoder and encoder.")
     (license license:isc)))
 
+(define-public python-nfcpy
+  (package
+    (name "python-nfcpy")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nfcpy" version))
+       (sha256
+        (base32 "0sxgp298i8y17i9drp8sclxx0i3vn0wgh5ajs2arw7cy2780igg5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:tests? #f)) ; Tests use nfc.ndef even though that has been removed.
+    (propagated-inputs (list python-libusb1 python-ndeflib python-pydes
+                             python-pyserial))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/nfcpy/nfcpy")
+    (synopsis "Python module for Near-Field Communication.")
+    (description "This package provides a Python module for Near-Field
+Communication.")
+    (license license:eupl1.1)))
+
 (define-public python-clrprint
   (package
     (name "python-clrprint")
