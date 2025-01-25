@@ -1,0 +1,90 @@
+This patch is from upstream and shouldn't be needed in the next release.
+https://github.com/ericwa/ericw-tools/commit/c9570260fa895dde5a21272d76f9a3b05d59efdd.patch
+
+From c9570260fa895dde5a21272d76f9a3b05d59efdd Mon Sep 17 00:00:00 2001
+From: Eric Wasylishen <ewasylishen@gmail.com>
+Date: Sun, 30 May 2021 23:12:17 -0600
+Subject: [PATCH] gcc 11: pass constant to offsetof
+
+---
+ common/polylib.cc |  5 ++++-
+ qbsp/util.cc      |  5 ++++-
+ qbsp/winding.cc   |  4 +++-
+ vis/vis.cc        | 10 ++++++++--
+ 4 files changed, 19 insertions(+), 5 deletions(-)
+
+diff --git a/common/polylib.cc b/common/polylib.cc
+index 6397b3107..c8e1afbff 100644
+--- a/common/polylib.cc
++++ b/common/polylib.cc
+@@ -230,7 +230,10 @@ polylib::CopyWinding(const winding_t * w)
+     int size;
+     winding_t *c;
+ 
+-    size = offsetof(winding_t, p[w->numpoints]);
++    //size = offsetof(winding_t, p[w->numpoints]);
++    size = offsetof(winding_t, p[0]);
++    size += w->numpoints * sizeof(w->p[0]);
++
+     c = static_cast<winding_t *>(malloc(size));
+     memcpy(c, w, size);
+     return c;
+diff --git a/qbsp/util.cc b/qbsp/util.cc
+index e8baf7205..16c9077f1 100644
+--- a/qbsp/util.cc
++++ b/qbsp/util.cc
+@@ -53,7 +53,10 @@ AllocMem(int Type, int cElements, bool fZero)
+         if (cElements > MAX_POINTS_ON_WINDING)
+             Error("Too many points (%d) on winding (%s)", cElements, __func__);
+ 
+-        cSize = offsetof(winding_t, points[cElements]) + sizeof(int);
++        //cSize = offsetof(winding_t, points[cElements]) + sizeof(int);
++        cSize = offsetof(winding_t, points[0]);
++        cSize += cElements * sizeof(static_cast<winding_t*>(nullptr)->points[0]);
++        cSize += sizeof(int);
+ 
+         // Set cElements to 1 so bookkeeping works OK
+         cElements = 1;
+diff --git a/qbsp/winding.cc b/qbsp/winding.cc
+index 1af1d096c..6e286c387 100644
+--- a/qbsp/winding.cc
++++ b/qbsp/winding.cc
+@@ -106,7 +106,9 @@ CopyWinding(const winding_t *w)
+     winding_t *c;
+ 
+     c = (winding_t *)AllocMem(WINDING, w->numpoints, false);
+-    size = offsetof(winding_t, points[w->numpoints]);
++    //size = offsetof(winding_t, points[w->numpoints]);
++    size = offsetof(winding_t, points[0]);
++    size += w->numpoints * sizeof(w->points[0]);
+     memcpy(c, w, size);
+ 
+     return c;
+diff --git a/vis/vis.cc b/vis/vis.cc
+index 9fb0ea9ea..ec43a8a5f 100644
+--- a/vis/vis.cc
++++ b/vis/vis.cc
+@@ -127,7 +127,10 @@ NewWinding(int points)
+     if (points > MAX_WINDING)
+         Error("%s: %i points", __func__, points);
+ 
+-    size = offsetof(winding_t, points[points]);
++    //size = offsetof(winding_t, points[points]);
++    size = offsetof(winding_t, points[0]);
++    size += points * sizeof(w->points[0]);
++
+     w = static_cast<winding_t *>(malloc(size));
+     memset(w, 0, size);
+ 
+@@ -178,7 +181,10 @@ CopyWinding(const winding_t * w)
+     int size;
+     winding_t *c;
+ 
+-    size = offsetof(winding_t, points[w->numpoints]);
++    //size = offsetof(winding_t, points[w->numpoints]);
++    size = offsetof(winding_t, points[0]);
++    size += w->numpoints * sizeof(w->points[0]);
++
+     c = static_cast<winding_t *>(malloc(size));
+     memcpy(c, w, size);
+     return c;

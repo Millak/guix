@@ -1,0 +1,34 @@
+This patch is from upstream and shouldn't be needed in the next release.
+https://github.com/ericwa/ericw-tools/commit/982ef5276bb231ded12c45a686b0875594175774.patch
+
+From 982ef5276bb231ded12c45a686b0875594175774 Mon Sep 17 00:00:00 2001
+From: Bryan Haley <bryanmhaley@gmail.com>
+Date: Mon, 28 Mar 2022 22:05:28 -0700
+Subject: [PATCH] Add check for SSE2 in light.cc (#328)
+
+---
+ light/light.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/light/light.cc b/light/light.cc
+index 7e23d040f..c00844643 100644
+--- a/light/light.cc
++++ b/light/light.cc
+@@ -33,7 +33,7 @@
+ #include <common/polylib.hh>
+ #include <common/bsputils.hh>
+ 
+-#ifdef HAVE_EMBREE
++#if defined(HAVE_EMBREE) && defined (__SSE2__)
+ #include <xmmintrin.h>
+ //#include <pmmintrin.h>
+ #endif
+@@ -255,7 +255,7 @@ LightThread(void *arg)
+ {
+     const mbsp_t *bsp = (const mbsp_t *)arg;
+ 
+-#ifdef HAVE_EMBREE
++#if defined(HAVE_EMBREE) && defined (__SSE2__)
+     _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
+ //    _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
+ #endif

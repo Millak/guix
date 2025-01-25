@@ -2603,6 +2603,74 @@ scripted in a Python-like language.")
     (license (list license:expat        ; code
                    license:cc-by4.0)))) ; documentation
 
+(define-public ericw-tools
+  (package
+    (name "ericw-tools")
+    (version "0.18.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url "https://github.com/ericwa/ericw-tools")
+                           (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11sap7qv0rlhw8q25azvhgjcwiql3zam09q0gim3i04cg6fkh0vp"))
+       (patches
+        (search-patches "ericw-tools-add-check-for-sse2-in-light.cc.patch"
+                        "ericw-tools-gcc-11-pass-const-to-offsetof.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DENABLE_LIGHTPREVIEW=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-copying-embree-files
+                 (lambda _
+                   ;; Tries to copy files from embree, disable it.
+                   (substitute* "light/CMakeLists.txt"
+                     (("install\\\(FILES \\$\\{EMBREE")
+                      "#install(FILES ${EMBREE"))))
+               (add-after 'install 'rename-binaries
+                 (lambda _
+                   ;; Rename binaries to prevent collisions with other
+                   ;; packages.
+                   (rename-file (string-append #$output "/bin/bspinfo")
+                                (string-append #$output "/bin/qbspinfo"))
+                   (rename-file (string-append #$output "/bin/bsputil")
+                                (string-append #$output "/bin/qbsputil"))
+                   (rename-file (string-append #$output "/bin/light")
+                                (string-append #$output "/bin/qlight"))
+                   (rename-file (string-append #$output "/bin/vis")
+                                (string-append #$output "/bin/qvis"))))
+               (add-after 'install-license-files 'clean-up-bin-directory
+                 (lambda _
+                   ;; Install target copies text documents to #$output/bin, move
+                   ;; them to #$output/share/doc.
+                   (delete-file (string-append #$output "/bin/gpl_v3.txt"))
+                   (rename-file
+                    (string-append #$output "/bin/changelog.txt")
+                    (string-append #$output "/share/doc/"
+                                   #$(package-name this-package) "-"
+                                   #$(package-version this-package)
+                                   "/changelog.txt"))
+                   (rename-file
+                    (string-append #$output "/bin/README.md")
+                    (string-append #$output "/share/doc/"
+                                   #$(package-name this-package) "-"
+                                   #$(package-version this-package)
+                                   "/README.md")))))
+           #:tests? #f)) ; No tests
+    (inputs (list embree-2))
+    (home-page "https://ericwa.github.io/ericw-tools/")
+    (synopsis "Map compiling tools for Quake/Hexen 2")
+    (description
+     "This package provides a collection of command line utilities used for
+building Quake maps as well as working with various Quake file formats.  The
+utilities include @command{qbsp} for building the geometry, @command{qvis} for
+calculating visibility, @command{qlight} for lighting, @command{bspinfo} for
+getting information, and @command{bsputil} for basic editing of data in a map
+file.")
+    (license license:gpl2+)))
+
 (define-public eureka
   (package
     (name "eureka")
