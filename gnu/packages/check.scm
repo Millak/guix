@@ -1413,24 +1413,32 @@ syntax validation, ...
 (define-public python-parameterized
   (package
     (name "python-parameterized")
-    (version "0.8.1")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "parameterized" version))
        (sha256
-        (base32 "0p1vhfw552rgd7gb2vy4l4l4k8mnbdz7f3chgzvk0r0qsqvzzfs1"))))
-    (build-system python-build-system)
+        (base32 "1c89vc40zj5aj2zvbvw875wqpyf0x6xrqhm3q5jg797g5hkhbjbz"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "nosetests" "-v")
-                          (format #t "test suite not run~%"))
-                      #t)))))
+     (list
+      #:test-flags #~(list "parameterized/test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "parameterized/test.py"
+                ;; It's taken from NixOS package definition.
+                ;; <https://github.com/wolever/parameterized/issues/167>,
+                ;; <https://github.com/wolever/parameterized/pull/162>.
+                (("assert_equal\\(missing, \\[\\])") "")
+                (("assertRaisesRegexp") "assertRaisesRegex")))))))
     (native-inputs
-     (list python-mock python-nose))
+     (list python-pytest
+           python-mock
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/wolever/parameterized")
     (synopsis "Parameterized testing with any Python test framework")
     (description
