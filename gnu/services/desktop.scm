@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2017, 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2020, 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -1547,7 +1547,7 @@ dependencies by filtering out the ignorelist."
           (union-build #$output
                        (search-path-as-list
                         (list "lib/udev" "libexec/udev")
-                        (list #$@(gnome-profile config)))
+                        (list #$@(gnome-profile config #:transitive? #t)))
                        #:create-all-directories? #t)
           (for-each
            (lambda (pattern)
@@ -1572,7 +1572,7 @@ rules."
           (union-build output
                        (search-path-as-list
                         (list "share/polkit-1")
-                        (list #$@(gnome-profile config)))
+                        (list #$@(gnome-profile config #:transitive? #t)))
                        #:create-all-directories? #t)
           (for-each
            (lambda (pattern)
@@ -1581,21 +1581,34 @@ rules."
               (find-files output pattern)))
            (list #$@(gnome-desktop-configuration-polkit-ignorelist config))))))))
 
-(define (gnome-profile config)
-  "Return a list of packages propagated through CONFIG."
-  (append
-   (gnome-desktop-configuration-core-services config)
-   (gnome-desktop-configuration-shell config)
-   (gnome-desktop-configuration-utilities config)
-   (let ((gnome-meta (gnome-desktop-configuration-gnome config)))
-     (if (maybe-value-set? gnome-meta)
-         (begin
-           (warning
-            (gnome-desktop-configuration-source-location config)
-            (G_ "Using a meta-package for gnome-desktop is discouraged.~%"))
-           (list gnome-meta))
-         (list)))
-   (gnome-desktop-configuration-extra-packages config)))
+(define* (gnome-profile config #:key transitive?)
+  "Return the list of the packages specified in CONFIG.  When TRANSITIVE? is
+#t, also include their transitive propagated inputs.  If there are transitive
+inputs using non-default outputs, they are returned as gexp-input objects."
+  (define gnome-packages
+    (append
+     (gnome-desktop-configuration-core-services config)
+     (gnome-desktop-configuration-shell config)
+     (gnome-desktop-configuration-utilities config)
+     (let ((gnome-meta (gnome-desktop-configuration-gnome config)))
+       (if (maybe-value-set? gnome-meta)
+           (begin
+             (warning
+              (gnome-desktop-configuration-source-location config)
+              (G_ "Using a meta-package for gnome-desktop is discouraged.~%"))
+             (list gnome-meta))
+           (list)))
+     (gnome-desktop-configuration-extra-packages config)))
+  (if transitive?
+      (append gnome-packages
+              (append-map (compose (cut map (match-lambda ;discard labels
+                                              ((_ pkg) pkg)
+                                              ((_ pkg out)
+                                               (gexp-input pkg out)))
+                                        <>)
+                                   package-transitive-propagated-inputs)
+                          gnome-packages))
+      gnome-packages))
 
 (define gnome-desktop-service-type
   (service-type
