@@ -1782,3 +1782,23 @@ against (name, birthdate, etc.)
 in different situations.
 @end enumerate")
     (license license:expat)))
+
+(define-public python-pydes
+  (package
+    (name "python-pydes")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyDes" version))
+       (sha256
+        (base32 "04lh71f47y04vspfrdrq6a0hn060ibxvdp5z1pcr0gmqs8hqxaz2"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "http://twhiteman.netfirms.com/des.html")
+    (synopsis
+     "Pure python implementation of the DES and TRIPLE DES encryption algorithms")
+    (description
+     "This package provides a pure Python implementation of the DES and
+TRIPLE DES encryption algorithms.")
+    (license license:public-domain)))
