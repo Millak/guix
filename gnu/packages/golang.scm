@@ -2068,17 +2068,15 @@ be performed.")
       (license license:unlicense))))
 
 (define-public go-github-com-sabhiram-go-gitignore
-  (let ((commit "525f6e181f062064d83887ed2530e3b1ba0bc95a")
-        (revision "1"))
     (package
       (name "go-github-com-sabhiram-go-gitignore")
-      (version (git-version "1.0.2" revision commit))
+      (version "0.0.0-20210923224102-525f6e181f06")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/sabhiram/go-gitignore")
-               (commit commit)))
+               (commit (go-version->git-ref version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
@@ -2092,7 +2090,7 @@ be performed.")
       (home-page "https://github.com/sabhiram/go-gitignore")
       (synopsis "Gitignore parser for Go")
       (description "A @command{.gitignore} parser for Go.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-go-md2man
   (package
