@@ -4110,7 +4110,7 @@ text search extension.")
 (define-public python-sqlite-utils
   (package
     (name "python-sqlite-utils")
-    (version "3.32.1")
+    (version "3.38")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -4119,7 +4119,7 @@ text search extension.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qf9zwn9gdkx8825klicwkw8zj5wpidd8csdhjxvybq56nkgnrpm"))))
+                "1rai8rbw5drxppypyl3r8j9gr12278h3snkj7l280zkskbxxh7hf"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
