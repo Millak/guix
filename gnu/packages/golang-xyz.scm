@@ -15382,6 +15382,38 @@ edges and self-loops are not permitted.
 @code{[]byte}.")
     (license license:cc0)))
 
+(define-public go-github-com-xaionaro-gosrc
+  (let ((commit "3fdf8476a735bd7ddd90579862e2e548787b17b6")
+        (revision "0"))
+    (package
+      (name "go-github-com-xaionaro-gosrc")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/xaionaro-go/gosrc")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0j0y0r0nj39537x7yk9yfc3k6dqbw14b65ykjnbmsxkhpjjpxf3v"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/xaionaro-go/gosrc"))
+      (native-inputs
+       (list go-github-com-stretchr-testify))
+      (propagated-inputs
+       (list go-github-com-xaionaro-go-unsafetools
+             go-github-com-fatih-structtag))
+      (home-page "https://github.com/xaionaro-go/gosrc")
+      (synopsis "Parse Go packages to handy structures")
+      (description
+       "This package just simplifies working with @code{go/*} packages to parse
+a source code. Initially the package was written to simplify code
+generation.")
+      (license license:cc0))))
+
 (define-public go-github-com-xdg-go-stringprep
   (package
     (name "go-github-com-xdg-go-stringprep")
