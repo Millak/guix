@@ -1610,6 +1610,28 @@ inputs using non-default outputs, they are returned as gexp-input objects."
                           gnome-packages))
       gnome-packages))
 
+(define (gnome-setuid-programs config)
+  "Return the list of setuid programs found within the packages specified in
+CONFIG, a <gnome-desktop-configuration> object."
+  ;; spice-gtk provides polkit actions for USB redirection in GNOME Boxes; set
+  ;; its usb-acl-helper script setuid automatically when the gnome-boxes or
+  ;; spice-gtk packages are added to one of the gnome-desktop-configuration
+  ;; fields.
+  (let* ((gnome-packages (gnome-profile config #:transitive? #t))
+         (spice-gtk (find (compose (cut string=? "spice-gtk" <>)
+                                   package-name
+                                   (match-lambda ;disregard potential output
+                                     ((? package? p) p)
+                                     ((? gexp-input? p)
+                                      (gexp-input-thing p))))
+                          gnome-packages))
+         (files `(,@(if spice-gtk
+                        (list (file-append
+                               spice-gtk
+                               "/libexec/spice-client-glib-usb-acl-helper"))
+                        '()))))
+    (map file-like->setuid-program files)))
+
 (define gnome-desktop-service-type
   (service-type
    (name 'gnome-desktop)
@@ -1618,6 +1640,8 @@ inputs using non-default outputs, they are returned as gexp-input objects."
                              gnome-udev-configuration-files)
           (service-extension polkit-service-type
                              gnome-polkit-settings)
+          (service-extension privileged-program-service-type
+                             gnome-setuid-programs)
           (service-extension profile-service-type
                              gnome-profile)))
    (default-value (gnome-desktop-configuration))

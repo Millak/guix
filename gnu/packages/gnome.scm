@@ -39,7 +39,7 @@
 ;;; Copyright © 2019, 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2019 Jonathan Frederickson <jonathan@terracrypt.net>
-;;; Copyright © 2019-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;; Copyright © 2019, 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -12813,22 +12813,38 @@ integrate seamlessly with the GNOME desktop.")
            libxml2
            qemu-minimal                 ;for qemu-img
            sparql-query
-           spice-gtk
            tracker
            vte
            webkitgtk-for-gtk3))
+    (propagated-inputs
+     ;; Propagating spice-gtk is necessary so that the gnome-desktop-service
+     ;; type configures the polkit actions necessary for the USB redirection
+     ;; feature to work when gnome-boxes added as a extra GNOME package.
+     (list spice-gtk))
     (home-page "https://wiki.gnome.org/Apps/Boxes")
     (synopsis "View, access, and manage remote and virtual systems")
     (description "GNOME Boxes is a simple application to view, access, and
 manage remote and virtual systems.  Note that this application requires the
 @code{libvirt} and @code{virtlog} daemons to run.  Use the command
 @command{info '(guix) Virtualization Services'} to learn how to configure
-these services on the Guix System.  If you do not use the
-@code{gnome-desktop-service-type}, you will also want to extend the
-@code{polkit-service-type} with the @code{spice-gtk} package, as well as
-configure the @file{libexec/spice-client-glib-usb-acl-helper} executable of
-@code{spice-gtk} as setuid, to make it possible to redirect USB devices as a
-non-privileged user.")
+these services on the Guix System.
+
+To make it possible to redirect USB devices as a non-privileged user, some
+extra configuration is necessary: if you use the
+@code{gnome-desktop-service-type}, you should add the @code{gnome-boxes}
+package to the @code{extra-packages} field of the
+@code{gnome-desktop-configuration}, for example:
+@lisp
+(service gnome-desktop-service-type
+         (gnome-desktop-configuration
+          (extra-packages (list gnome-boxes gnome-essential-extras))))
+@end lisp
+If you do @emph{not} use the @code{gnome-desktop-service-type}, you will need
+manually extend the @code{polkit-service-type} with the @code{spice-gtk}
+package, as well as configure the
+@file{libexec/spice-client-glib-usb-acl-helper} executable of @code{spice-gtk}
+as setuid, to make it possible to redirect USB devices as a non-privileged
+user.")
     (license (list
               ;; For data/icons/empty-boxes.png.
               license:cc-by2.0
