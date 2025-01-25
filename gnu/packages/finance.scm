@@ -1051,21 +1051,28 @@ of Bitcoin BIP-0039.")
 (define-public python-ledgerblue
   (package
     (name "python-ledgerblue")
-    (version "0.1.44")
+    (version "0.1.54")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "ledgerblue" version))
         (sha256
           (base32
-            "0nbfa5i9ww7jsfc8cgy0r229pq2a1vj4xvn8mz0nxl7mx1wykqm4"))))
-    (build-system python-build-system)
+            "0ghpvxgih1zarp788qi1xh5xmprv6yhaxglfbix4974i7r4pszqy"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f)) ; no tests
+    (native-inputs
+     (list python-setuptools python-wheel))
     (propagated-inputs
-     (list python-ecpy
+     (list python-bleak
+           python-pyelftools
+           python-pycryptodome
+           python-ecpy
            python-future
+           python-gnupg
            python-hidapi
+           python-nfcpy
            python-pillow
            python-protobuf
            python-pycryptodomex
