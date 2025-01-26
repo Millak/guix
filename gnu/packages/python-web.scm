@@ -794,22 +794,19 @@ API rules.")
 (define-public python-frozenlist
   (package
     (name "python-frozenlist")
-    (version "1.2.0")
+    ;; XXX: Any newer versions fail to build, check why.
+    (version "1.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "frozenlist" version))
        (sha256
-        (base32 "1pkr23by7pk9lsmsh0wiqirpkq3f1f08b0615nbzysn51bk1n838"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "tests")))))))
-    (native-inputs (list python-pytest))
+        (base32 "0sispcpras096fxrd0i35qs25fqy4r0x8v1d6f40pag845bwbg2q"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/aio-libs/frozenlist")
     (synopsis "List-like data structure for Python")
     (description "@code{frozenlist.FrozenList} is a list-like structure which
