@@ -59,6 +59,8 @@
 ;;; Copyright © 2024 Javier Olaechea <pirata@gmail.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -126,6 +128,7 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-vcs)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages groff)
@@ -979,6 +982,125 @@ the date of the most recent commit that modified them
 \"foreign\" branch before merging
 @end itemize")
     (license license:gpl3+)))
+
+(define-public git-spice
+  (package
+    (name "git-spice")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/abhinav/git-spice")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yvnd5a3ql905jrxh0sq9sdcfmyq38fsbqx0zbhxbd4rgs8hv5s3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "go.abhg.dev/gs"
+      #:install-source? #f
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; XXX: Tests failing with various reasons; requiring
+               ;; networking config or write access, or outbound access, check
+               ;; if some of them may be fixed.
+               (list "TestDeviceFlowAuthenticator"
+                     "TestScript/auth_detect_forge"
+                     "TestScript/auth_explicit_forge"
+                     "TestScript/auth_insecure_storage"
+                     "TestScript/auth_prompt_forge"
+                     "TestScript/branch_split_reassign_submitted"
+                     "TestScript/branch_submit_ambiguous_branch"
+                     "TestScript/branch_submit_by_name"
+                     "TestScript/branch_submit_config_no_publish"
+                     "TestScript/branch_submit_create_update"
+                     "TestScript/branch_submit_detect_existing"
+                     "TestScript/branch_submit_detect_existing_conflict"
+                     "TestScript/branch_submit_detect_existing_upstream_name"
+                     "TestScript/branch_submit_force_push"
+                     "TestScript/branch_submit_long_body"
+                     "TestScript/branch_submit_many_upstream_names_taken"
+                     "TestScript/branch_submit_multiple_commits"
+                     "TestScript/branch_submit_multiple_pr_templates"
+                     "TestScript/branch_submit_navigation_.*_out_multiple"
+                     "TestScript/branch_submit_needs_restack"
+                     "TestScript/branch_submit_no_editor"
+                     "TestScript/branch_submit_no_publish"
+                     "TestScript/branch_submit_pr_template"
+                     "TestScript/branch_submit_pr_template_cache_invalidation"
+                     "TestScript/branch_submit_pr_template_no_body"
+                     "TestScript/branch_submit_pr_template_prompt"
+                     "TestScript/branch_submit_recover_prepared"
+                     "TestScript/branch_submit_remote_prompt"
+                     "TestScript/branch_submit_rename"
+                     "TestScript/branch_submit_rename_base"
+                     "TestScript/branch_submit_update_pr_is_closed"
+                     "TestScript/branch_submit_update_pr_is_merged"
+                     "TestScript/branch_submit_upstream_name"
+                     "TestScript/branch_submit_upstream_name_wrong_remote"
+                     "TestScript/branch_submit_use_git_editor"
+                     "TestScript/branch_submit_web"
+                     "TestScript/branch_submit_web_opt_out"
+                     "TestScript/downstack_submit"
+                     "TestScript/issue369_branch_.*_case_insensitive"
+                     "TestScript/issue369_branch_.*_remote_update"
+                     "TestScript/issue398_repo_sync_many_merged"
+                     "TestScript/repo_sync_after_merging_renamed_branch"
+                     "TestScript/repo_sync_detached_head"
+                     "TestScript/repo_sync_detect_externally_created_prs"
+                     "TestScript/repo_sync_external_pr_head_mismatch"
+                     "TestScript/repo_sync_manual_pull_merged_pr"
+                     "TestScript/repo_sync_merged_pr"
+                     "TestScript/repo_sync_remote_already_deleted"
+                     "TestScript/repo_sync_restack"
+                     "TestScript/repo_sync_trunk_dirty_tree"
+                     "TestScript/repo_sync_trunk_no_prs"
+                     "TestScript/repo_sync_unpushed_commits"
+                     "TestScript/stack_submit"
+                     "TestScript/stack_submit_update_leave_draft"
+                     "TestScript/stack_submit_web"
+                     "TestScript/upstack_submit_main")
+               "|"))))
+    (native-inputs
+     (list git-minimal ; for tests in testdata/scripts
+           go-github-com-alecthomas-kong
+           go-github-com-buildkite-shellwords
+           go-github-com-charmbracelet-bubbles
+           go-github-com-charmbracelet-bubbletea
+           go-github-com-charmbracelet-lipgloss
+           go-github-com-charmbracelet-log
+           go-github-com-cli-browser
+           go-github-com-creack-pty
+           go-github-com-dustin-go-humanize
+           go-github-com-mattn-go-isatty
+           go-github-com-rogpeppe-go-internal
+           go-github-com-sahilm-fuzzy
+           go-github-com-shurcool-githubv4
+           go-github-com-stretchr-testify
+           go-github-com-tidwall-gjson
+           go-github-com-vito-midterm
+           go-github-com-xanzy-go-gitlab
+           go-github-com-zalando-go-keyring
+           go-go-abhg-dev-komplete
+           go-go-abhg-dev-requiredfield
+           go-go-abhg-dev-testing-stub
+           go-go-uber-org-mock
+           go-golang-org-x-oauth2
+           go-gopkg-in-dnaeon-go-vcr-v4
+           go-gopkg-in-yaml-v3
+           go-pgregory-net-rapid))
+    (home-page "https://go.abhg.dev/gs")
+    (synopsis "Manage stacks of Git branches")
+    (description
+     "git-spice (@code{gs}) is a command line tool for stacking Git branches,
+a collection of branches expecting the trunk has a base branch.  It manages
+and navigates stacks of branches, conveniently modifies and rebases them also
+provides an integration with GitHub and GitLab.")
+    (license license:gpl3)))
 
 (define-public got
   (package
@@ -3812,7 +3934,7 @@ will reconstruct the object along its delta-base chain and return it.")
 (define-public git-lfs
   (package
     (name "git-lfs")
-    (version "3.4.0")
+    (version "3.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3821,13 +3943,14 @@ will reconstruct the object along its delta-base chain and return it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ljjs8kyznp2ifkqdcd9q3550sknyx5qxx247icwkd9djjq7x74m"))))
+                "09ry2nq5bpdxk446dyhc0d6d85wy5x2i5ckwwg9r00a3zdp5v4ry"))))
     (build-system go-build-system)
     (arguments
      (list
       #:embed-files #~(list "children" "nodes" "text")
       #:import-path "github.com/git-lfs/git-lfs"
       #:install-source? #f
+      #:test-flags #~(list "-skip" "TestHistoryRewriterUpdatesRefs")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-/bin/sh
@@ -3863,24 +3986,25 @@ will reconstruct the object along its delta-base chain and return it.")
                (list ronn-ng ruby-asciidoctor)
                '())))
     (propagated-inputs
-     (list go-github-com-xeipuuv-gojsonschema
-           go-github-com-xeipuuv-gojsonreference
-           go-github-com-xeipuuv-gojsonpointer
+     (list go-github-com-avast-retry-go
+           go-github-com-dpotapov-go-spnego
+           go-github-com-git-lfs-gitobj-v2
+           go-github-com-git-lfs-go-netrc
+           go-github-com-git-lfs-pktline
+           go-github-com-git-lfs-wildmatch-v2
+           go-github-com-jmhodges-clock
+           go-github-com-leonelquinteros-gotext
+           go-github-com-mattn-go-isatty
+           go-github-com-olekukonko-ts
+           go-github-com-pkg-errors
+           go-github-com-rubyist-tracerx
+           go-github-com-spf13-cobra
+           go-github-com-ssgelm-cookiejarparser
+           go-github-com-stretchr-testify
+           go-github-com-xeipuuv-gojsonschema
            go-golang-org-x-net
            go-golang-org-x-sync
-           go-github-com-ssgelm-cookiejarparser
-           go-github-com-rubyist-tracerx
-           go-github-com-olekukonko-ts
-           go-github-com-leonelquinteros-gotext
-           go-github-com-git-lfs-wildmatch-v2
-           go-github-com-git-lfs-pktline
-           go-github-com-git-lfs-go-netrc
-           go-github-com-git-lfs-gitobj-v2
-           go-github-com-dpotapov-go-spnego
-           go-github-com-avast-retry-go
-           go-github-com-mattn-go-isatty
-           go-github-com-pkg-errors
-           go-github-com-spf13-cobra))
+           go-golang-org-x-sys))
     (home-page "https://git-lfs.github.com/")
     (synopsis "Git extension for versioning large files")
     (description
@@ -4055,59 +4179,6 @@ of machine readable.  This helps improve code quality and helps you spot
 defects faster.")
     (license license:expat)))
 
-(define-public go-github-com-go-git-go-git-v5
-  (package
-    (name "go-github-com-go-git-go-git-v5")
-    (version "5.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/go-git/go-git")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1vkcmhh2qq8c38sjbnzf0wvg2rzr19wssaq177bsvrjwj1xz1qbs"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:tests? #f ;requires network connection
-      #:import-path "github.com/go-git/go-git/v5"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'setup
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let* ((git #$(this-package-native-input "git"))
-                     (git-bin (string-append git "/bin"))
-                     (git-exe (string-append git-bin "/git")))
-                (setenv "GIT_DIST_PATH=" git)
-                (setenv "GIT_EXEC_PATH=" git-bin)
-                (setenv "HOME" (getcwd))
-                (invoke git-exe "config" "--global" "user.email" "gha@example.com")
-                (invoke git-exe "config" "--global" "user.name" "GitHub Actions")))))))
-    (propagated-inputs
-     (list go-github-com-alcortesm-tgz
-           go-github-com-emirpasic-gods
-           go-github-com-go-git-gcfg
-           go-github-com-go-git-go-billy-v5
-           go-github-com-go-git-go-git-fixtures-v4
-           go-github-com-imdario-mergo
-           go-github-com-jbenet-go-context
-           go-github-com-kevinburke-ssh-config
-           go-github-com-mitchellh-go-homedir
-           go-github-com-sergi-go-diff
-           go-github-com-xanzy-ssh-agent
-           go-golang-org-x-crypto
-           go-golang-org-x-net
-           go-golang-org-x-text
-           go-gopkg-in-check-v1
-           go-gopkg-in-warnings))
-    (native-inputs (list git))
-    (home-page "https://github.com/go-git/")
-    (synopsis "Git implementation library")
-    (description "This package provides a Git implementation library.")
-    (license license:asl2.0)))
-
 (define-public gita
   (let ((commit "e41b504dca90a25e9be27f296da7ce22e5782893")
         (revision "1"))
@@ -4171,7 +4242,7 @@ If several repos are related, it helps to see their status together.")
 (define-public ghq
   (package
     (name "ghq")
-    (version "1.6.2")
+    (version "1.7.1")
     (home-page "https://github.com/x-motemen/ghq")
     (source (origin
               (method git-fetch)
@@ -4181,7 +4252,7 @@ If several repos are related, it helps to see their status together.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00rrm0gykmj60i0lnr4js6d4193c92zm3cimimb03xva4n9frvxw"))))
+                "0ai3klp3fm5r0idnml5pm55wcvkav3w0s11snlmr0ab1ki8m9sg5"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -4204,13 +4275,14 @@ If several repos are related, it helps to see their status together.")
     (native-inputs
      (list git-minimal))
     (inputs
-     (list go-github-com-songmu-gitconfig
-           go-github-com-mattn-go-isatty
+     (list go-github-com-mattn-go-isatty
            go-github-com-motemen-go-colorine
            go-github-com-saracen-walker
+           go-github-com-songmu-gitconfig
            go-github-com-urfave-cli-v2
            go-golang-org-x-net
-           go-golang-org-x-sync))
+           go-golang-org-x-sync
+           go-golang-org-x-text))
     (synopsis "Manage remote repository clones")
     (description
      "@code{ghq} provides a way to organize remote repository clones, like

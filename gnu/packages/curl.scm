@@ -49,8 +49,9 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages logging)
@@ -201,47 +202,50 @@ tunneling, and so on.")
        (prepend libssh2)))
     (properties `((hidden? . #t)))))
 
+;; XXX: It looks like unmaintained, last time updated in 2018.
 (define-public kurly
   (package
     (name "kurly")
     (version "1.2.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://gitlab.com/davidjpeacock/kurly.git")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "003jv2k45hg2svhjpy5253ccd250vi2r17x2zhm51iw54kgwxipm"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/davidjpeacock/kurly")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "003jv2k45hg2svhjpy5253ccd250vi2r17x2zhm51iw54kgwxipm"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "gitlab.com/davidjpeacock/kurly"
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-documentation
-           (lambda* (#:key import-path outputs #:allow-other-keys)
-             (let* ((source (string-append "src/" import-path))
-                    (out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version))
-                    (man (string-append out "/share/man/man1")))
-               (with-directory-excursion source
-                 (install-file "README.md" doc)
-                 (mkdir-p man)
-                 (copy-file "doc/kurly.man"
-                            (string-append man "/kurly.1")))
-               #t))))))
+     (list
+      #:install-source? #f
+      #:import-path "gitlab.com/davidjpeacock/kurly"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-documentation
+            (lambda* (#:key import-path #:allow-other-keys)
+              (let* ((source (string-append "src/" import-path))
+                     (doc (string-append #$output "/share/doc/"
+                                         #$name "-" #$version))
+                     (man (string-append #$output "/share/man/man1")))
+                (with-directory-excursion source
+                  (install-file "README.md" doc)
+                  (mkdir-p man)
+                  (copy-file "doc/kurly.man"
+                             (string-append man "/kurly.1")))))))))
     (inputs
-     (list go-github-com-alsm-ioprogress go-github-com-aki237-nscjar
+     (list go-github-com-alsm-ioprogress
+           go-github-com-aki237-nscjar
            go-github-com-urfave-cli))
-    (synopsis "Command-line HTTP client")
-    (description "kurly is an alternative to the @code{curl} program written in
-Go.  kurly is designed to operate in a similar manner to curl, with select
-features.  Notably, kurly is not aiming for feature parity, but common flags and
-mechanisms particularly within the HTTP(S) realm are to be expected.  kurly does
-not offer a replacement for libcurl.")
     (home-page "https://gitlab.com/davidjpeacock/kurly")
+    (synopsis "Command-line HTTP client")
+    (description
+     "kurly is an alternative to the @code{curl} program written in Go.  kurly
+is designed to operate in a similar manner to curl, with select features.
+Notably, kurly is not aiming for feature parity, but common flags and
+mechanisms particularly within the HTTP(S) realm are to be expected.  kurly
+does not offer a replacement for libcurl.")
     (license license:asl2.0)))
 
 (define-public guile-curl

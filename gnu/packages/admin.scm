@@ -70,6 +70,7 @@
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 nathan <nathan_mail@nborghese.com>
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
+;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
@@ -148,7 +149,10 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
@@ -284,6 +288,53 @@ digest algorithms that are used to check the integrity of files.  All of the
 usual file attributes can be checked for inconsistencies.")
     (home-page "https://aide.github.io/")
     (license license:gpl2+)))
+
+(define-public hetznercloud-cli
+  (package
+    (name "hetznercloud-cli")
+    (version "1.49.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hetznercloud/cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mgd1rv0i18h7jbzl034ffpfxvnjirp60qwxsjpfy42jh1d8xbjm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; XXX: figure out hot to enable them
+      #:install-source? #f
+      #:import-path "github.com/hetznercloud/cli/cmd/hcloud"
+      #:unpack-path "github.com/hetznercloud/cli"))
+    (native-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-cheggaaa-pb-v3
+           go-github-com-dustin-go-humanize
+           go-github-com-fatih-color
+           go-github-com-fatih-structs
+           go-github-com-goccy-go-yaml
+           go-github-com-guptarohit-asciigraph
+           go-github-com-hetznercloud-hcloud-go-v2
+           go-github-com-jedib0t-go-pretty-v6
+           go-github-com-spf13-cast
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-github-com-stretchr-testify
+           go-github-com-swaggest-assertjson
+           go-go-uber-org-mock
+           go-golang-org-x-crypto
+           go-golang-org-x-term))
+    (home-page "https://github.com/hetznercloud/cli")
+    (synopsis "Command-line interface for the Hetzner Cloud service")
+    (description
+     "This package provides the @code{hcloud} binary, a command-line interface
+for interacting with the @url{https://www.hetzner.com/,Hetzner Cloud}
+service.")
+    (license license:expat)))
 
 (define-public progress
   (package
@@ -5463,7 +5514,6 @@ disk utilization, priority, username, state, and exit code.")
      (list
       #:install-source? #f
       #:import-path "github.com/linuxboot/fiano"
-      #:unpack-path "github.com/linuxboot/fiano"
       #:phases
       #~(modify-phases %standard-phases
           ;; XXX: Replace this part when it's implemented in go-build-system.
@@ -5475,10 +5525,7 @@ disk utilization, priority, username, state, and exit code.")
                          (string-append import-path "/cmds/" cmd)))
                (list "cbfs"
                      "create-ffs"
-                     ;; TODO: Not packed yet in guix, long jorney:
-                     ;; - github.com/tjfoc/gmsm
-                     ;;
-                     ;; "fittool"
+                     "fittool"
                      "fmap"
                      "fspinfo"
                      "glzma"
@@ -5493,20 +5540,14 @@ disk utilization, priority, username, state, and exit code.")
                    (invoke "go" "test" "-v"
                            (string-append import-path dir "/...")))
                  (list "/pkg/bytes"
-                       ;; TODO: Not packed yet in Guix, long jorney:
-                       ;; - github.com/jedib0t
-                       ;;
-                       ;; "/pkg/amd"
+                       "/pkg/amd"
                        "/pkg/cbfs"
                        "/pkg/compression"
                        "/pkg/fmap"
                        "/pkg/fsp"
                        "/pkg/guid"
                        "/pkg/guid2english"
-                       ;; TODO: Not packed yet in Guix, long jorney:
-                       ;; - github.com/tjfoc/gmsm
-                       ;;
-                       ;; "/pkg/intel"
+                       "/pkg/intel"
                        "/pkg/knownguids"
                        "/pkg/log"
                        "/pkg/uefi"
@@ -5533,7 +5574,7 @@ disk utilization, priority, username, state, and exit code.")
                    (install-file cmd bindir))
                  (list "cbfs"
                        "create-ffs"
-                       ;; "fittool"
+                       "fittool"
                        "fmap"
                        "fspinfo"
                        "glzma"
@@ -5542,11 +5583,18 @@ disk utilization, priority, username, state, and exit code.")
                        "utk"))))))))
     (inputs
      (list go-github-com-dustin-go-humanize
+           go-github-com-fatih-camelcase
            go-github-com-hashicorp-go-multierror
+           go-github-com-jedib0t-go-pretty-v6
            go-github-com-jessevdk-go-flags
+           go-github-com-klauspost-compress
            go-github-com-pierrec-lz4
            go-github-com-spf13-pflag
+           go-github-com-stretchr-testify
+           go-github-com-tjfoc-gmsm
            go-github-com-ulikunitz-xz
+           go-github-com-xaionaro-go-bytesextra
+           go-github-com-xaionaro-gosrc
            go-golang-org-x-text))
     (home-page "https://github.com/linuxboot/fiano")
     (synopsis "UEFI image editor")
@@ -5701,7 +5749,7 @@ FIFO and UNIX interprocess communication.")
 (define-public runitor
   (package
     (name "runitor")
-    (version "0.8.0")
+    (version "1.3.0-build.4")
     (source
       (origin
         (method git-fetch)
@@ -5710,7 +5758,7 @@ FIFO and UNIX interprocess communication.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0vjfbyrbp5ywgzdz9j3x0qgjvnq7nw7193x8v9yy6k2cih1zsacn"))))
+          (base32 "00l83jcjmf5kcq8yzq575kk6ljkkr2xhm5cx27zzb1yhxn93xj7n"))))
     (build-system go-build-system)
     (arguments
      `(#:unpack-path "bdd.fi/x/runitor"
@@ -6353,7 +6401,7 @@ file or files to several hosts.")
 (define-public doctl
   (package
     (name "doctl")
-    (version "1.94.0")
+    (version "1.120.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6362,7 +6410,12 @@ file or files to several hosts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a221n0x7qrq0dbhhf1saya2g7jyy1798k3rhy9nzyvqzc4vnd0x"))))
+                "12fgymgiv6894ghar7ljg69hb7mi18pa2a74sp7fyymqvyhiv6z9"))
+              (snippet
+               ;; TODO: Unbundle more.
+               #~(begin (use-modules (guix build utils))
+                        (for-each delete-file-recursively
+                                  (list "vendor/golang.org"))))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/digitalocean/doctl/cmd/doctl"
@@ -6392,6 +6445,17 @@ file or files to several hosts.")
                                        "/etc/fish/completions/doctl.fish")
                    (install-completion "zsh"
                                        "/etc/zsh/site-functions/_doctl"))))))
+    (native-inputs
+     (list go-golang-org-x-crypto
+           go-golang-org-x-mod
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text
+           go-golang-org-x-time
+           go-golang-org-x-tools))
     (home-page "https://github.com/digitalocean/doctl")
     (synopsis "Command line client for DigitalOcean")
     (description

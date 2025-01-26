@@ -49,7 +49,6 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages geo)
-  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages perl)
@@ -696,7 +695,7 @@ choosing.")
      (list
       #:import-path "github.com/antonmedv/countdown"))
     (native-inputs
-     (list go-github.com-nsf-termbox-go))
+     (list go-github-com-nsf-termbox-go))
     (home-page "https://github.com/antonmedv/countdown")
     (synopsis "Counts to zero with a text user interface")
     (description

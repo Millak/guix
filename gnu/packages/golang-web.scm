@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
+;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
@@ -34,6 +35,8 @@
 ;;; Copyright © 2024 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,6 +68,7 @@
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages ipfs)
+  #:use-module (gnu packages prometheus)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web))
 
@@ -84,6 +88,52 @@
 ;;;
 ;;; Libraries:
 ;;;
+
+(define-public go-0xacab-org-leap-obfsvpn
+  (package
+    (name "go-0xacab-org-leap-obfsvpn")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://0xacab.org/leap/obfsvpn.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iq3m2j6m9n1h9rkysaj97nnqx65fn7vz9jskl4qa4rwh002pv3d"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; It's the same project.
+            (substitute* (find-files "." "\\.go$")
+              (("git.torproject.org/pluggable-transports/goptlib.git")
+               (string-append "gitlab.torproject.org/tpo/anti-censorship"
+                              "/pluggable-transports/goptlib")))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "0xacab.org/leap/obfsvpn"))
+    (native-inputs
+     (list go-github-com-spf13-pflag
+           go-github-com-spf13-viper))
+    (propagated-inputs
+     (list go-github-com-labstack-echo-v4
+           go-github-com-quic-go-quic-go
+           go-github-com-sirupsen-logrus
+           go-github-com-xtaci-kcp-go-v5
+           go-gitlab-com-yawning-obfs4-git
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib))
+    (home-page "https://0xacab.org/leap/obfsvpn")
+    (synopsis "OBFS4 client and server proxies")
+    (description
+     "The @@code{obfsvpn} module contains a Go package that provides server
+and client components to use variants of the obfs4 obfuscation protocol.  It
+is intended to be used as a drop-in Pluggable Transport for @code{OpenVPN}
+connections
+(although it can be used for other, more generic purposes).")
+    (license license:bsd-2)))
 
 (define-public go-cloud-google-com-go-compute-metadata
   (package
@@ -111,6 +161,33 @@
 API service accounts for Go.")
     (license license:asl2.0)))
 
+(define-public go-git-sr-ht-adnano-go-gemini
+  (package
+    (name "go-git-sr-ht-adnano-go-gemini")
+    (version "0.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~adnano/go-gemini")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xxcljhk9abjjdcl1dnxaq7qwvl13rq51bwps5nxlkib7fxgbyyl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~adnano/go-gemini"))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://git.sr.ht/~adnano/go-gemini")
+    (synopsis "Gemini protocol in Go")
+    (description
+     "The @code{gemini} package implements the Gemini protocol in Go.  It
+provides an API similar to that of NET/HTTP to facilitate the development of
+Gemini clients and servers.")
+    (license license:expat)))
+
 (define-public go-git-sr-ht-emersion-gqlclient
   (package
     (name "go-git-sr-ht-emersion-gqlclient")
@@ -126,7 +203,13 @@ API service accounts for Go.")
         (base32 "0x64kcryawdr0daq1w6fada60zqrddw75yi397835b9ij7wb5gmh"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "git.sr.ht/~emersion/gqlclient"))
+     (list
+      #:embed-files #~(list "prelude.graphql")
+      #:import-path "git.sr.ht/~emersion/gqlclient"))
+    ;; For the CLI.
+    (native-inputs
+     (list go-github-com-dave-jennifer
+           go-github-com-vektah-gqlparser-v2))
     (home-page "https://git.sr.ht/~emersion/gqlclient")
     (synopsis "GraphQL client and code generator")
     (description
@@ -169,6 +252,31 @@ API service accounts for Go.")
      "Package jmap implements JMAP Core protocol as defined in
 @url{https://rfc-editor.org/rfc/rfc8620.html,RFC 8620} published on July
 2019.")
+    (license license:expat)))
+
+(define-public go-github-com-aki237-nscjar
+  (package
+    (name "go-github-com-aki237-nscjar")
+    (version "0.0.0-20210417074043-bbb606196143")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aki237/nscjar")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vbagy9g795b17lnnkkm2f3pcrkxrzc4qbzc656g2cdkdprdyb4m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aki237/nscjar"))
+    (home-page "https://github.com/aki237/nscjar")
+    (synopsis "Handle Netscape / Mozilla cookies")
+    (description
+     "@code{nscjar} is a Go library used to parse and output
+Netscape/Mozilla's old-style cookie files.  It also implements a simple cookie
+jar struct to manage the cookies added to the cookie jar.")
     (license license:expat)))
 
 (define-public go-github-com-alexliesenfeld-health
@@ -310,6 +418,34 @@ that of BeautifulSoup.")
 the parse trees produced by the html package.")
     (license license:bsd-2)))
 
+(define-public go-github-com-armon-go-socks5
+  (package
+    (name "go-github-com-armon-go-socks5")
+    (version "0.0.0-20160902184237-e75332964ef5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/armon/go-socks5")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "104w10jf0wlxyxi35hf6frndgf0ybz21h54xjmnkivpb6slycpyq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/armon/go-socks5"))
+    (native-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/armon/go-socks5")
+    (synopsis "SOCKS5 server in Golang")
+    (description
+     "This package provides the @code{socks5} package that implements a
+@url{http://en.wikipedia.org/wiki/SOCKS,SOCKS5 server}.  SOCKS (Secure
+Sockets) is used to route traffic between a client and server through an
+intermediate proxy layer.  This can be used to bypass firewalls or NATs.")
+    (license license:expat)))
+
 (define-public go-github-com-audriusbutkevicius-pfilter
   (package
     (name "go-github-com-audriusbutkevicius-pfilter")
@@ -425,7 +561,7 @@ functions.")
 (define-public go-github-com-aws-aws-sdk-go-v2
   (package
     (name "go-github-com-aws-aws-sdk-go-v2")
-    (version "1.30.5")
+    (version "1.32.0")
     (source
      (origin
        (method git-fetch)
@@ -434,11 +570,22 @@ functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mxm3j8xwlzjqhdw515kwzzhnfr325s08ry73chjbdw6qb940lb1"))))
+        (base32 "1iflf2ski7vm2z78wdmbrqpchc3qr50macnf965wmdyfinvx58wn"))
+       ;; XXX: It contains a lot of sub packages defined with go.mod, consider
+       ;; to pack them separately.
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/aws/aws-sdk-go-v2/service/sqs
+            (for-each delete-file-recursively
+                      (list "service/sqs"))))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/aws/aws-sdk-go-v2"))
+      #:import-path "github.com/aws/aws-sdk-go-v2"
+      #:test-subdirs #~(list ".")))
     (propagated-inputs
      (list go-github-com-jmespath-go-jmespath
            go-github-com-aws-smithy-go))
@@ -463,21 +610,29 @@ functions.")
 (define-public go-github-com-aws-aws-sdk-go-v2-credentials
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-credentials")
-    (version "1.17.27")
+    (version "1.17.48")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/aws/aws-sdk-go-v2")
-             (commit (string-append "credentials/v" version))))
+             (commit (go-version->git-ref version
+                                          #:subdir "credentials"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jdj7wim98g80hjbw3av7ffrr3dqxzbygprmhjs0cxc16cw62wj7"))))
+        (base32 "1n3spqncpw6w11pwkqaiq7jyv6dv0229jsbshibg24l2g3accdqi"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/aws/aws-sdk-go-v2/credentials"
-      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "test\\.go")
+                  (("/bin/sleep") (which "sleep")))))))))
     (propagated-inputs
      (list go-github-com-google-go-cmp
            go-github-com-aws-smithy-go))
@@ -520,6 +675,86 @@ credentials sources.")
     (propagated-inputs
      (list go-github-com-aws-smithy-go))))
 
+(define-public go-github-com-aws-aws-sdk-go-v2-service-secretsmanager
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-service-secretsmanager")
+    (version "1.34.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-sdk-go-v2")
+             (commit (go-version->git-ref version
+                                          #:subdir "service/secretsmanager"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n3spqncpw6w11pwkqaiq7jyv6dv0229jsbshibg24l2g3accdqi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/secretsmanager"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS Secrets Manager service")
+    (description
+     "Package secretsmanager provides the API client, operations, and
+parameter types for AWS Secrets Manager.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-aws-sdk-go-v2-service-sqs
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-service-sqs")
+    (version "1.37.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-sdk-go-v2")
+             (commit (go-version->git-ref version
+                                          #:subdir "service/sqs"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "158mgp8czzkhjdwli2wciwqihs56jp879ahjdjyy8c6fn0g3xdvb"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "service" "sqs")
+            (delete-all-but "." "service")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/sqs"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-smithy-go
+           go-github-com-aws-aws-sdk-go-v2))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS Golang SDK for Simple Queue Service")
+    (description
+     "Package sqs provides the API client, operations, and parameter types for
+Amazon Simple Queue Service.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aws-aws-sdk-go-v2-service-sso
   (package
     (inherit go-github-com-aws-aws-sdk-go-v2)
@@ -556,25 +791,148 @@ credentials sources.")
 (define-public go-github-com-aws-smithy-go
   (package
     (name "go-github-com-aws-smithy-go")
-    (version "1.21.0")
+    (version "1.22.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/aws/smithy-go")
-             (commit "v1.21.0")))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pcq9d154l41c4k23q6ri51ba5i2kc8ihrv4sgkv4q59cw70rspi"))))
+        (base32 "16jbv7cyj85048f4kcrib8k2yif165sc099h0aklal5dwlf85xcg"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/aws/smithy-go/aws-http-auth
+            ;; - github.com/aws/smithy-go/codegen
+            ;; - github.com/aws/smithy-go/metrics/smithyotelmetrics
+            ;; - github.com/aws/smithy-go/tracing/smithyoteltracing
+            (for-each delete-file-recursively
+                      (list "aws-http-auth"
+                            "codegen"
+                            "metrics/smithyotelmetrics"
+                            "tracing/smithyoteltracing"))))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/aws/smithy-go"))
-    (propagated-inputs
-     (list go-github-com-jmespath-go-jmespath go-github-com-google-go-cmp))
+     (list
+      #:import-path "github.com/aws/smithy-go"))
     (home-page "https://github.com/aws/smithy-go")
     (synopsis "Smithy code generators for Go")
     (description
      "Package smithy provides the core components for a Smithy SDK.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-smithy-go-aws-http-auth
+  (package
+    (name "go-github-com-aws-smithy-go-aws-http-auth")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/smithy-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "aws-http-auth"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iy9rlcj6qwy58rrddbvqy38lzw9d7y1i2d3mvf3f3z4i6rkwvd4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/aws/smithy-go/aws-http-auth"
+      #:unpack-path "github.com/aws/smithy-go"))
+    (home-page "https://github.com/aws/smithy-go")
+    (synopsis "Consumable SigV4 and SigV4a request signing")
+    (description
+     "This package implements generically consumable SigV4 and SigV4a request
+signing.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-smithy-go-codegen
+  (package
+    (name "go-github-com-aws-smithy-go-codegen")
+    (version "0.0.0-20241226171254-10fbeed6f845")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/smithy-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "codegen"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16jbv7cyj85048f4kcrib8k2yif165sc099h0aklal5dwlf85xcg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/aws/smithy-go/codegen"
+      #:unpack-path "github.com/aws/smithy-go"))
+    (home-page "https://github.com/aws/smithy-go")
+    (synopsis "Smithy code generators for Golang")
+    (description
+     "This package provides Gradle templates for Smithy code generators.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-smithy-go-metrics-smithyotelmetrics
+  (package
+    (name "go-github-com-aws-smithy-go-metrics-smithyotelmetrics")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/smithy-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "metrics/smithyotelmetrics"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16jbv7cyj85048f4kcrib8k2yif165sc099h0aklal5dwlf85xcg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/smithy-go/metrics/smithyotelmetrics"
+      #:unpack-path "github.com/aws/smithy-go"))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel)) ; for go.opentelemetry.io/otel/metric
+    (home-page "https://github.com/aws/smithy-go")
+    (synopsis "AWS Smithy OTEL metrics adapter")
+    (description
+     "Package smithyotelmetrics implements a Smithy client metrics adapter for
+the OTEL Go SDK.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-smithy-go-tracing-smithyoteltracing
+  (package
+    (name "go-github-com-aws-smithy-go-tracing-smithyoteltracing")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/smithy-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "tracing/smithyoteltracing"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16jbv7cyj85048f4kcrib8k2yif165sc099h0aklal5dwlf85xcg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/smithy-go/tracing/smithyoteltracing"
+      #:unpack-path "github.com/aws/smithy-go"))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel))
+    (home-page "https://github.com/aws/smithy-go")
+    (synopsis "AWS Smithy OTEL tracing adapter")
+    (description
+     "Package smithyoteltracing implements a Smithy client tracing adapter for
+the OTEL Go SDK.")
     (license license:asl2.0)))
 
 (define-public go-github-com-aymerick-douceur
@@ -631,6 +989,72 @@ credentials sources.")
 Manager,NTLM}/Negotiate authentication over HTTP.")
     (license license:expat)))
 
+(define-public go-github-com-babolivier-go-doh-client
+  (package
+    (name "go-github-com-babolivier-go-doh-client")
+    (version "0.0.0-20201028162107-a76cff4cb8b6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/babolivier/go-doh-client")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ca72jz5d5wf5hkcjiwrjvh4fp9p0nqhgwyx9p3vq9sdrx524d21"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/babolivier/go-doh-client"))
+    (home-page "https://github.com/babolivier/go-doh-client")
+    (synopsis "DNS over HTTPS client implementation written in Golang")
+    (description
+     "Package doh implements client operations for @code{DoH} (DNS over HTTPS)
+lookups.  It implements looking up the following records:
+@itemize
+@item A
+@item AAAA
+@item CNAME
+@item MX
+@item NS
+@item TXT
+@item SRV
+@item SOA
+@item PTR
+@end itemize")
+    (license license:gpl3)))
+
+(define-public go-github-com-beevik-ntp
+  (package
+    (name "go-github-com-beevik-ntp")
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/beevik/ntp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n2mr4nnbsv5f0w3hkk3kmyn3wd2xqi5zxgcm8s50fdizk0nqmi9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/beevik/ntp"
+      ;; Tests requir access to <0.beevik-ntp.pool.ntp.org:53>.
+      #:test-flags #~(list "-skip" "TestOnlineQuery|TestOnlineTime")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/beevik/ntp")
+    (synopsis "NTP client package for Golang")
+    (description
+     "Package ntp provides an implementation of a Simple NTP (SNTP) client
+capable of querying the current time from a remote NTP server as specified in
+@url{https://rfc-editor.org/rfc/rfc5905.html, RFC 5905}.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-bep-golibsass
   (package
     (name "go-github-com-bep-golibsass")
@@ -686,6 +1110,34 @@ Manager,NTLM}/Negotiate authentication over HTTP.")
     (synopsis "Easy to use Go bindings for LibSass")
     (description
      "This package provides SCSS compiler support for Go applications.")
+    (license license:expat)))
+
+(define-public go-github-com-bradenhilton-mozillainstallhash
+  (package
+    (name "go-github-com-bradenhilton-mozillainstallhash")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bradenhilton/mozillainstallhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j54ssnvk2vy77g23zrhi9acwblnamj63i7wmmdnb89fjg0xc9km"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bradenhilton/mozillainstallhash"))
+    (propagated-inputs
+     (list go-github-com-bradenhilton-cityhash
+           go-golang-org-x-text))
+    (home-page "https://github.com/bradenhilton/mozillainstallhash")
+    (synopsis "Generates the hash used in installs of Mozilla software")
+    (description
+     "This package provides a functionality to get the hash used to
+differentiate between installs of Mozilla software in @code{installs.ini} and
+@code{profiles.ini}.")
     (license license:expat)))
 
 (define-public go-github-com-caddyserver-certmagic
@@ -968,6 +1420,32 @@ API.  See the full Circonus API Documentation at
 @url{https://login.circonus.com/resources/api} for more information.")
     (license license:bsd-3)))
 
+(define-public go-github-com-cli-browser
+  (package
+    (name "go-github-com-cli-browser")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cli/browser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f54ap2a4df32bwrwqsasfsikkxngkk4wr2wfbsns4lf0yymra6k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cli/browser"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/cli/browser")
+    (synopsis "Helpers to open URLs, files, or readers in a web browser")
+    (description
+     "Package browser provides helpers to open files, readers, and URLs in a
+browser window.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-coder-websocket
   (package
     (name "go-github-com-coder-websocket")
@@ -980,10 +1458,19 @@ API.  See the full Circonus API Documentation at
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "172v9mqghswf50ga512qghb6ii0ivz5fi2iyjzdnbm42g0cr4fjj"))))
+        (base32 "172v9mqghswf50ga512qghb6ii0ivz5fi2iyjzdnbm42g0cr4fjj"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/coder/websocket/internal/thirdparty
+            (delete-file-recursively "internal/thirdparty")))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/coder/websocket"))
+    (native-inputs
+     (list go-golang-org-x-time)) ; for examples
     (home-page "https://github.com/coder/websocket")
     (synopsis "WebSocket library for Go")
     (description
@@ -1071,7 +1558,7 @@ Any}.")
 (define-public go-github-com-coreos-go-oidc
   (package
     (name "go-github-com-coreos-go-oidc")
-    (version "2.2.1")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1080,14 +1567,16 @@ Any}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11m6slbpi33ynffml7812piq4anhjlf1qszjlsf26f5y7x3qh8n5"))))
+        (base32 "180wnxiim622v17xcnrjrg9g07mg4xizmlxxyrl9p42is0abi9c8"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/coreos/go-oidc"))
+    (native-inputs
+     (list go-golang-org-x-net))
     (propagated-inputs
      (list go-github-com-pquerna-cachecontrol
            go-golang-org-x-oauth2
-           go-gopkg-in-square-go-jose-v2))
+           go-gopkg-in-go-jose-go-jose-v2))
     (home-page "https://github.com/coreos/go-oidc")
     (synopsis "OpenID Connect support for Go")
     (description
@@ -1150,6 +1639,7 @@ Any}.")
     (arguments
      (list
       #:import-path "github.com/cretz/bine"
+      #:test-subdirs #~(list "tests/..." "torutil/...")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
@@ -1233,6 +1723,167 @@ client in Golang.")
     (native-inputs
      (modify-inputs (package-native-inputs go-github-com-datadog-datadog-go)
        (append go-github-com-golang-mock)))))
+
+(define-public go-github-com-davecgh-go-xdr
+  (package
+    (name "go-github-com-davecgh-go-xdr")
+    (version "0.0.0-20161123171359-e6a2ba005892")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/davecgh/go-xdr")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0vifrz4iil4r7k8sz5iqlfbh80ysgs5abp2simgyhsbrkxrrsrrd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/davecgh/go-xdr/xdr2"
+      #:unpack-path "github.com/davecgh/go-xdr"))
+    (home-page "https://github.com/davecgh/go-xdr")
+    (synopsis "Pure Go implementation of the XDR standard")
+    (description
+     "@code{go-xdr} implements the data representation portion of the External
+Data Representation (XDR) standard protocol as specified in RFC
+4506 (obsoletes RFC 1832 and RFC 1014) in pure Go.")
+    (license license:isc)))
+
+(define-public go-github-com-docker-go-connections
+  (package
+    (name "go-github-com-docker-go-connections")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/docker/go-connections")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0svfa9g4xvbn87l5kiww1jkijmci9g5821wjp81xz1rfp13cqrk8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/docker/go-connections"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;;  Unable to verify certificate 1: x509: certificate signed by
+               ;;  unknown authority.
+               (list "TestConfigClientExclusiveRootPools"
+                     "TestConfigServerExclusiveRootPools")
+               "|"))))
+    (home-page "https://github.com/docker/go-connections")
+    (synopsis "Networking library for Go")
+    (description
+     "This package provides a library to work with network connections in the
+Go language.  In particular it provides tools to deal with network address
+translation (NAT), proxies, sockets, and transport layer security (TLS).")
+    (license license:asl2.0)))
+
+(define-public go-github-com-dpotapov-go-spnego
+  (package
+    (name "go-github-com-dpotapov-go-spnego")
+    (version "0.0.0-20220426193508-b7f82e4507db")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dpotapov/go-spnego")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rpcgzkqhdwfsi8a9f9qar16i663pdx3gvwd6c0vfppy7qjmpjfr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dpotapov/go-spnego"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-jcmturner-gokrb5-v8
+           go-golang-org-x-net))
+    (home-page "https://github.com/dpotapov/go-spnego")
+    (synopsis "HTTP calls with Kerberos authentication")
+    (description
+     "The package extends Go's HTTP Transport allowing Kerberos
+authentication through Negotiate mechanism (see
+@url{https://tools.ietf.org/html/rfc4559, RFC4559}).")
+    (license license:expat)))
+
+(define-public go-github-com-elazarl-goproxy
+  (package
+    (name "go-github-com-elazarl-goproxy")
+    (version "0.0.0-20241221210044-9faedc2f9e9f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elazarl/goproxy")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j3v0y18igr3wy9vbwyg19fzy12jc41kmpfcz2jh1dnk6kxn2n67"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/elazarl/goproxy"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Networking or curl are required.
+                       (list "TestCurlMinusP"
+                             "TestSimpleHttpRequest"
+                             "TestBasicConnectAuthWithCurl"
+                             "TestBasicAuthWithCurl"
+                             "TestConstantImageHandler"
+                             "TestImageHandler"
+                             "TestReplaceImage")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/elazarl/goproxy")
+    (synopsis "HTTP proxy library for Go")
+    (description
+     "GoProxy is a library to create a customized HTTP/HTTPS proxy server
+using Go (aka Golang), with several configurable settings available.  The
+target of this project is to offer an optimized proxy server, usable with
+reasonable amount of traffic, yet customizable and programmable.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-ema-qdisc
+  (package
+    (name "go-github-com-ema-qdisc")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ema/qdisc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v2k2z1xjxfa0qrrnafvb51dxwxm0s3nbsi6n64cm2rylxjskfmy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ema/qdisc"))
+    (propagated-inputs
+     (list go-github-com-mdlayher-netlink))
+    (home-page "https://github.com/ema/qdisc")
+    (synopsis "Queuing discipline information via netlink")
+    (description
+     "Package @code{qdisc} allows getting queuing discipline information via
+netlink,similarly to what @code{tc -s qdisc show} does.")
+    (license license:expat)))
 
 (define-public go-github-com-emersion-go-imap
   (package
@@ -1504,9 +2155,9 @@ for Go.")
 RFC 5321.")
     (license license:expat)))
 
-(define-public go-github-com-emicklei-go-restful
+(define-public go-github-com-emicklei-go-restful-v3
   (package
-    (name "go-github-com-emicklei-go-restful")
+    (name "go-github-com-emicklei-go-restful-v3")
     (version "3.4.0")
     (source
      (origin
@@ -1519,12 +2170,20 @@ RFC 5321.")
         (base32 "0m1y5a6xr6hmdj77afrvyh2llkbhn1166lcrgis654shl8zs9qhz"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/emicklei/go-restful"))
+     (list
+      #:import-path "github.com/emicklei/go-restful"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
     (home-page "https://github.com/emicklei/go-restful")
     (synopsis "Build REST-style web services using Go")
-    (description "This package provides @code{go-restful}, which helps
-developers to use @code{http} methods explicitly and in a way that's
-consistent with the HTTP protocol definition.")
+    (description
+     "This package provides @code{go-restful}, which helps developers to use
+@code{http} methods explicitly and in a way that's consistent with the HTTP
+protocol definition.")
     (license license:expat)))
 
 (define-public go-github-com-evanphx-json-patch
@@ -1579,7 +2238,7 @@ metrics (i.e. response time, bytes written, and http status code) from your
 application's http.Handlers.")
     (license license:expat)))
 
-;; This project looks like domain or abandoned, see
+;; This project looks like dormant or abandoned, see
 ;; <https://github.com/francoispqt/gojay/issues/150>.
 (define-public go-github-com-francoispqt-gojay
   (package
@@ -1601,15 +2260,55 @@ application's http.Handlers.")
       ;; <https://github.com/francoispqt/gojay/issues/173>.
       #:tests? (and (not (%current-target-system))
                     (target-x86-64?))
-      #:import-path "github.com/francoispqt/gojay"))
+      #:import-path "github.com/francoispqt/gojay"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestMessage_Unmarshal"
+                             "TestMessage_Marshal"
+                             "TestGenerator_Generate")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "benchmarks" "examples"))))))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-go-errors-errors ; for CLI build
+           go-github-com-stretchr-testify
+           go-github-com-viant-assertly   ; for CLI build
+           go-github-com-viant-toolbox))  ; for CLI build
     (home-page "https://github.com/francoispqt/gojay")
     (synopsis "JSON encoder/decoder with powerful stream API for Golang")
     (description
      "GoJay is a performant JSON encoder/decoder for Golang.  It has a simple
 API and doesn't use reflection.  It relies on small interfaces to
 decode/encode structures and slices.")
+    (license license:expat)))
+
+(define-public go-github-com-gaissmai-bart
+  (package
+    (name "go-github-com-gaissmai-bart")
+    (version "0.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gaissmai/bart")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rnbmykmkl0c1fzz4vkv7q72l7hl2xpmalbm41f4lifdjscx5nk7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gaissmai/bart"))
+    (propagated-inputs
+     (list go-github-com-bits-and-blooms-bitset))
+    (home-page "https://github.com/gaissmai/bart")
+    (synopsis "Balanced Routing Table in Golang")
+    (description "This package provides a Balanced-Routing-Table (BART).")
     (license license:expat)))
 
 (define-public go-github-com-gatherstars-com-jwz
@@ -1641,6 +2340,51 @@ algorithm originally designed for use in
 Golang.")
     (license license:asl2.0)))
 
+(define-public go-github-com-getkin-kin-openapi
+  (package
+    (name "go-github-com-getkin-kin-openapi")
+    (version "0.128.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/getkin/kin-openapi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "162hxwqywpbmfybyj1m0s4a0nxx0qldx90k49d2mf52xps1jp5p2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/getkin/kin-openapi"
+      #:test-flags
+      ;; They try to access network.
+      #~(list "-skip" "TestIssue495WithDraft04|TestExtraSiblingsInRemoteRef")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-openapi-jsonpointer
+           go-github-com-gorilla-mux
+           go-github-com-invopop-yaml
+           go-github-com-mohae-deepcopy
+           go-github-com-perimeterx-marshmallow
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/getkin/kin-openapi")
+    (synopsis "OpenAPI 3.0 and Swagger v2 implementation for Golang")
+    (description
+     "This package implements a functionality for parsing, converting and
+validating
+@url{https://github.com/OAI/OpenAPI-Specification/blob/main/versions/2.0.md,
+OpenAPI v2.0},
+@url{https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md,
+OpenAPI v3.0} and
+@url{https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md,
+OpenAPI v3.1}.")
+    (license license:expat)))
+
 ;; TODO: This repository has been archived by the owner on Aug 30, 2023. It is
 ;; now read-only. The raven-go SDK is no longer maintained and was superseded
 ;; by the sentry-go
@@ -1670,6 +2414,83 @@ Golang.")
 logging system.")
       (license license:bsd-3))))
 
+(define-public go-github-com-gin-contrib-sse
+  (package
+    (name "go-github-com-gin-contrib-sse")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gin-contrib/sse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "072nq91a65n5xvwslqjyvydfd0mfpnvb3vwjyfvmzm1ym96wr1nd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gin-contrib/sse"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/gin-contrib/sse")
+    (synopsis "Server-Sent Events implementation in Golang")
+    (description
+     "@acronym{Server-sent events, SSE} is a technology where a browser
+receives automatic updates from a server via HTTP connection.  The SSE
+@code{EventSource} API is
+@url{http://www.w3.org/TR/2009/WD-eventsource-20091029/,standardized as part
+of HTML5[1] by the W3C}.")
+    (license license:expat)))
+
+(define-public go-github-com-gin-gonic-gin
+  (package
+    (name "go-github-com-gin-gonic-gin")
+    (version "1.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gin-gonic/gin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01xjvw2d46b77jnszgbwqbdzh9jx7y3h5ik3q30y9dn9gaq5mhks"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gin-gonic/gin"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-bytedance-sonic
+           go-github-com-gin-contrib-sse
+           go-github-com-go-playground-validator-v10
+           go-github-com-goccy-go-json
+           go-github-com-json-iterator-go
+           go-github-com-mattn-go-isatty
+           go-github-com-pelletier-go-toml-v2
+           go-github-com-ugorji-go-codec
+           go-golang-org-x-net
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/gin-gonic/gin")
+    (synopsis "HTTP web framework")
+    (description
+     "This package provides a Golang web framework wit martini-like API.
+
+Features:
+@itemize
+@item zero allocation router
+@item middleware support
+@item crash-free
+@item JSON validation
+@item routes grouping
+@item error management
+@item rendering built-in
+@item extendable
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-go-chi-chi-v5
   (package
     (name "go-github-com-go-chi-chi-v5")
@@ -1693,6 +2514,31 @@ logging system.")
 decompose request handling into many smaller layers.")
     (license license:expat)))
 
+(define-public go-github-com-go-http-utils-headers
+  (package
+    (name "go-github-com-go-http-utils-headers")
+    (version "0.0.0-20181008091004-fed159eddc2a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-http-utils/headers")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19h2sffi04hr56qxkag2baa17v91x4vp1a1zkm9rqr846xqwspvm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-http-utils/headers"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/go-http-utils/headers")
+    (synopsis "HTTP header constants for Golang")
+    (description
+     "This package provides HTTP header constants.")
+    (license license:expat)))
+
 (define-public go-github-com-go-jose-go-jose-v3
   (package
     (name "go-github-com-go-jose-go-jose-v3")
@@ -1705,15 +2551,23 @@ decompose request handling into many smaller layers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kbkplhzqv9ai28r4smhdsxxwh20d96srr3am37pwwnh48ivwch8"))))
+        (base32 "0kbkplhzqv9ai28r4smhdsxxwh20d96srr3am37pwwnh48ivwch8"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separatly:
+            ;;
+            ;; - github.com/go-jose/go-jose/jose-util
+            (delete-file-recursively "jose-util")))))
     (build-system go-build-system)
     (arguments
-     '( #:import-path "github.com/go-jose/go-jose/v3"))
-    (propagated-inputs
-     (list go-golang-org-x-crypto))
+     (list
+      #:import-path "github.com/go-jose/go-jose/v3"))
     (native-inputs
      (list go-github-com-google-go-cmp
            go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
     (home-page "https://github.com/go-jose/go-jose")
     (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")
     (description
@@ -1740,10 +2594,10 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
      (list
       #:import-path "github.com/go-jose/go-jose/v4"))))
 
-(define-public go-github-com-go-ldap-ldap
+(define-public go-github-com-go-ldap-ldap-v3
   (package
-    (name "go-github-com-go-ldap-ldap")
-    (version "3.4.8")
+    (name "go-github-com-go-ldap-ldap-v3")
+    (version "3.4.9")
     (source
      (origin
        (method git-fetch)
@@ -1752,26 +2606,35 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fbmhlc8ss5vn6zz0iiifvy4pm0mwaf13qpz70k83mmnv9vrv16x"))))
+        (base32 "0qcm4piyk7l5n3kplcism0y7zp40xcfmjl04hw1s276qqf7vi6hg"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/go-ldap/ldap/v3"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-failing-tests
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file
-                          ;; FAIL <...> LDAP Result Code 200 "Network Error":
-                          ;; dial tcp: lookup ldap.itd.umich.edu on <...>
-                          (list "ldap_test.go"))))))))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestCompare"
+                             "TestExtendedRequest_WhoAmI"
+                             "TestExtendedRequest_FastBind"
+                             "TestMatchDNError"
+                             "TestMultiGoroutineSearch"
+                             "TestSearch"
+                             "TestSearchAsync"
+                             "TestSearchAsyncAndCancel"
+                             "TestSearchStartTLS"
+                             "TestSearchWithPaging"
+                             "TestSecureDialURL"
+                             "TestStartTLS"
+                             "TestTLSConnectionState"
+                             "TestUnsecureDialURL")
+                       "|"))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-azure-go-ntlmssp
            go-github-com-go-asn1-ber-asn1-ber
-           go-github-com-google-uuid))
+           go-github-com-google-uuid
+           go-github-com-jcmturner-gokrb5-v8))
     (home-page "https://github.com/go-ldap/ldap")
     (synopsis "LDAP v3 functionality for Go")
     (description "This package provides basic LDAP v3 functionality in the Go
@@ -2236,6 +3099,58 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
               ;; For the WebAuthn's fork: LICENSE.
               license:bsd-3))))
 
+(define-public go-github-com-gobwas-httphead
+  (package
+    (name "go-github-com-gobwas-httphead")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gobwas/httphead")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "106l8ml5yihld3rrf45q5fhlsx64hrpj2dsvnnm62av4ya5nf0gb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gobwas/httphead"))
+    (home-page "https://github.com/gobwas/httphead")
+    (synopsis "Tiny HTTP header value parsing library in Golang")
+    (description
+     "Package httphead contains utils for parsing HTTP and HTTP-grammar
+compatible text protocols headers.")
+    (license license:expat)))
+
+(define-public go-github-com-gobwas-ws
+  (package
+    (name "go-github-com-gobwas-ws")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gobwas/ws")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nqgb75cizx11igwjqx6b6mlzl7yxy6x683m9aaalgcx9n1qxan7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gobwas/ws"))
+    (propagated-inputs
+     (list go-github-com-gobwas-httphead
+           go-github-com-gobwas-pool))
+    (home-page "https://github.com/gobwas/ws")
+    (synopsis "Tiny WebSocket library for Golang")
+    (description
+     "Package ws implements a client and server for the @code{WebSocket}
+protocol as specified in @url{https://rfc-editor.org/rfc/rfc6455.html, RFC
+6455}.")
+    (license license:expat)))
+
 (define-public go-github-com-goccy-go-json
   (package
     (name "go-github-com-goccy-go-json")
@@ -2259,6 +3174,95 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
     (description
      "Fast JSON encoder/decoder compatible with encoding/json for Go.")
     (license license:expat)))
+
+(define-public go-github-com-gofiber-fiber-v2
+  (package
+    (name "go-github-com-gofiber-fiber-v2")
+    (version "2.52.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gofiber/fiber")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12gr7a38dd02p7b9fimrk16ybxfp93krh7wah0jzc0v6syjmzfi0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gofiber/fiber/v2"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "Test_Proxy_DoRedirects_TooManyRedirects"
+                     "Test_Proxy_Do_WithRealURL"
+                     "Test_Proxy_DoRedirects_RestoreOriginalURL"
+                     "Test_Proxy_Do_WithRedirect")
+               "|"))))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth
+           go-github-com-tinylib-msgp
+           go-github-com-valyala-bytebufferpool
+           go-github-com-valyala-fasthttp
+           go-golang-org-x-sys))
+    (home-page "https://github.com/gofiber/fiber")
+    (synopsis "Express inspired web framework written in Golang")
+    (description
+     "Package fiber is an @code{https://github.com/expressjs/express, Express}
+inspired web framework built on top of Fasthttp, the fastest HTTP engine for
+Go.  Designed to ease things up for fast development with zero memory
+allocation and performance in mind.")
+    (license license:expat)))
+
+(define-public go-github-com-gogo-protobuf
+  (package
+    (name "go-github-com-gogo-protobuf")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gogo/protobuf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dfv1bhx5zhb5bsj5sj757nkacf2swp1ajpcyj9d0b37n602m18a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/gogo/protobuf"
+      ;; protoc: exec: "protoc-min-version": executable file not found in $PATH
+      ;; err = exec: "protoc": executable file not found in $PATH:
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "TestDashFilename"
+                     "TestEmbedMarshaler"
+                     "TestGolden"
+                     "TestParameters"
+                     "TestPopulateWarning"
+                     "TestRepeatedEmbed"
+                     "TestStdTypesGoString"
+                     "TestTakesTooLongToDebug")
+               "|"))))
+    (home-page "https://github.com/gogo/protobuf")
+    (synopsis "Protocol Buffers for Go with Gadgets")
+    (description "Gogoprotobuf is a fork of golang/protobuf with extra code
+generation features.  This code generation is used to achieve:
+@itemize
+@item fast marshalling and unmarshalling
+@item more canonical Go structures
+@item goprotobuf compatibility
+@item less typing by optionally generating extra helper code
+@item peace of mind by optionally generating test and benchmark code
+@item other serialization formats
+@end itemize")
+    (license license:bsd-3)))
 
 (define-public go-github-com-golang-groupcache
   (package
@@ -2287,10 +3291,10 @@ replacement for memcached in many cases.  It provides a data loading mechanism
 with caching and de-duplication that works across a set of peer processes.")
     (license license:asl2.0)))
 
-(define-public go-github-com-google-go-github
+(define-public go-github-com-google-go-github-v31
   (package
-    (name "go-github-com-google-go-github")
-    (version "26.1.3")
+    (name "go-github-com-google-go-github-v31")
+    (version "31.0.0")
     (source
      (origin
        (method git-fetch)
@@ -2299,12 +3303,30 @@ with caching and de-duplication that works across a set of peer processes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x0zz1vcmllp6r6l2qin9b2llm5cxbf6n84rf99h8wrmhvzs2ipi"))))
+        (base32 "0bcybmr341hnp8k630pi4dcgia7561yzqc874l4c3nl4bc9rkh5j"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/google/go-github/scrape
+            ;; - github.com/google/go-github/update-urls
+            (delete-file-recursively "scrape")
+            (delete-file-recursively "update-urls")))))
     (build-system go-build-system)
     (arguments
-     `(#:tests? #f ;application/octet-stream instead of text/plain
-       #:import-path "github.com/google/go-github/v26/github"
-       #:unpack-path "github.com/google/go-github/v26"))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/google/go-github/v31"
+      ;; repos_releases_test.go:449: Header.Get("Content-Type") returned
+      ;; "application/octet-stream", want "text/plain; charset=utf-8"
+      #:test-flags #~(list "-skip" "TestRepositoriesService_UploadReleaseAsset")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")))))))
     (propagated-inputs
      (list go-github-com-google-go-querystring
            go-golang-org-x-crypto
@@ -2319,7 +3341,7 @@ GitHub API v3.")
 ;; For chezmoi-1.8.10
 (define-public go-github-com-google-go-github-v33
   (package
-    (inherit go-github-com-google-go-github)
+    (inherit go-github-com-google-go-github-v31)
     (name "go-github-com-google-go-github-v33")
     (version "33.0.0")
     (source
@@ -2330,14 +3352,52 @@ GitHub API v3.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nzwgvaa9k1ky3sfynib6nhalam9dx66h5lxff334m9kk3rf5nn0"))))
+        (base32 "1nzwgvaa9k1ky3sfynib6nhalam9dx66h5lxff334m9kk3rf5nn0"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/google/go-github/scrape
+            (delete-file-recursively "scrape")
+            (delete-file-recursively "update-urls")))))
     (arguments
      (substitute-keyword-arguments
-         (package-arguments go-github-com-google-go-github)
-       ((#:unpack-path _ "github.com/google/go-github/v26")
-        "github.com/google/go-github/v33")
-       ((#:import-path _ "github.com/google/go-github/v26/github")
-        "github.com/google/go-github/v33/github")))))
+         (package-arguments go-github-com-google-go-github-v31)
+       ((#:import-path _) "github.com/google/go-github/v33")))))
+
+(define-public go-github-com-google-go-github-v50
+  (package
+    (inherit go-github-com-google-go-github-v31)
+    (name "go-github-com-google-go-github-v50")
+    (version "50.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/go-github")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11qzikm988zfzs6g70lbdjfhw7kdndagahg0q2bkn2ibq2c47xxp"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/google/go-github/scrape
+            (delete-file-recursively "scrape")
+            (delete-file-recursively "update-urls")))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-google-go-github-v31)
+       ((#:import-path _) "github.com/google/go-github/v50")))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-google-go-querystring
+           go-github-com-protonmail-go-crypto
+           go-golang-org-x-oauth2))))
 
 (define-public go-github-com-google-go-querystring
   (package
@@ -2381,7 +3441,15 @@ parameters.")
         (base32 "048qwm2n0wrpql4qqgd7jyynn3gk069yvqbxnshlayzmbhf87ls4"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/google/gopacket"))
+     (list
+      #:import-path "github.com/google/gopacket"
+      ;; XXX: pfring/pfring.go:14:10: fatal error: pfring.h: No such file or
+      ;; directory. Check how to fix all tests.
+      #:test-subdirs #~(list ".")))
+    (propagated-inputs
+     (list go-github-com-vishvananda-netlink
+           go-golang-org-x-net
+           go-golang-org-x-sys))
     (home-page "https://github.com/google/gopacket")
     (synopsis "Packet processing capabilities library")
     (description
@@ -2537,6 +3605,30 @@ web applications.")
 incoming requests with their respective handler.")
     (license license:bsd-3)))
 
+(define-public go-github-com-gorilla-schema
+  (package
+    (name "go-github-com-gorilla-schema")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gorilla/schema")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16gk174mybvz0gg2w1wmpc96jhhi94i1vvclyzr3qkv7s6gadifn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gorilla/schema"))
+    (home-page "https://github.com/gorilla/schema")
+    (synopsis "Fills a struct with form values")
+    (description
+     "This package implements a functionality to fills a struct with form
+values.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-gorilla-securecookie
   (package
     (name "go-github-com-gorilla-securecookie")
@@ -2590,7 +3682,7 @@ sessions, flash messages, custom backends, and more.")
 (define-public go-github-com-gorilla-websocket
   (package
     (name "go-github-com-gorilla-websocket")
-    (version "1.5.0")
+    (version "1.5.3")
     (home-page "https://github.com/gorilla/websocket")
     (source
      (origin
@@ -2600,7 +3692,7 @@ sessions, flash messages, custom backends, and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xrr6snvs9g1nzxxg05w4i4pq6k1xjljl5mvavd838qc468n118i"))))
+        (base32 "1k84plbz6bxarbdrdcsrm9vhiy971prpvfnkcpsfv2q4ac80ccmx"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/gorilla/websocket"))
@@ -2610,32 +3702,35 @@ protocol.")
     (license license:bsd-2)))
 
 (define-public go-github-com-gregjones-httpcache
-  (let ((commit "901d90724c7919163f472a9812253fb26761123d")
-        (revision "0"))
-    (package
-      (name "go-github-com-gregjones-httpcache")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/gregjones/httpcache")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "05r0xq51vfb55di11m7iv19341d73f7in33vq1ihcqs1nffdwiq0"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/gregjones/httpcache"))
-      (home-page "https://github.com/gregjones/httpcache")
-      (synopsis "Transport for @code{http.Client} that will cache responses")
-      (description
-       "Package @code{httpcache} provides a @code{http.RoundTripper}
-implementation that works as a mostly @url{https://tools.ietf.org/html/rfc7234, RFC 7234}
-compliant cache for HTTP responses.  It is only suitable for use as a
-\"private\" cache (i.e. for a web-browser or an API-client and not for a
-shared proxy).")
-      (license license:expat))))
+  (package
+    (name "go-github-com-gregjones-httpcache")
+    (version "0.0.0-20190611155906-901d90724c79")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gregjones/httpcache")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05r0xq51vfb55di11m7iv19341d73f7in33vq1ihcqs1nffdwiq0"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/gregjones/httpcache"))
+    (propagated-inputs
+     (list go-github-com-peterbourgon-diskv
+           go-github-com-syndtr-goleveldb
+           go-github-com-bradfitz-gomemcache
+           go-github-com-gomodule-redigo))
+    (home-page "https://github.com/gregjones/httpcache")
+    (synopsis "Transport for @code{http.Client} that will cache responses")
+    (description
+     "Package @code{httpcache} provides a @code{http.RoundTripper}
+implementation that works as a mostly
+@url{https://tools.ietf.org/html/rfc7234, RFC 7234} compliant cache for HTTP
+responses.  It is only suitable for use as a \"private\" cache (i.e. for a
+web-browser or an API-client and not for a shared proxy).")
+    (license license:expat)))
 
 (define-public go-github-com-hashicorp-go-cleanhttp
   (package
@@ -2694,6 +3789,122 @@ automatic retries and exponential backoff.  It is a thin wrapper over the
 standard @code{net/http} client library and exposes nearly the same public
 API.")
     (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-go-sockaddr
+  (package
+    (name "go-github-com-hashicorp-go-sockaddr")
+    (version "1.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-sockaddr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ajcffaqxrbqyg00b04a1ia7np0180x7z5q3bcxqxm0smqqag54z"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "cmd/sockaddr/vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-sockaddr"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Tests require network set-up or fail randomly.
+               (list "TestGetDefaultInterface"
+                     "TestGetDefaultInterfaces"
+                     "TestGetIfAddrs"
+                     "TestGetPrivateIP"
+                     "TestGetPrivateIPs"
+                     "TestGetPrivateInterfaces"
+                     "TestSockAddr_IPAddrs_IPAddrsByNetworkSize/0"
+                     "TestSockAddr_Parse")
+               "|"))))
+    (propagated-inputs
+     (list go-github-com-hashicorp-errwrap
+           go-github-com-mitchellh-cli
+           go-github-com-mitchellh-go-wordwrap
+           go-github-com-ryanuber-columnize))
+    (home-page "https://github.com/hashicorp/go-sockaddr")
+    (synopsis "IP Address/UNIX Socket convenience functions for Golang")
+    (description
+     "This package provides an implementation of the UNIX socket family data
+types and related helper functions.")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-yamux
+  (package
+    (name "go-github-com-hashicorp-yamux")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/yamux")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c46zdj94lv28sb9rmhinzcckl72vs3gwm197nsa80ca3b161yi6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/yamux"))
+    (home-page "https://github.com/hashicorp/yamux")
+    (synopsis "Golang connection multiplexing library")
+    (description
+     "Yamux (Yet another Multiplexer) relies on an underlying connection to
+provide reliability and ordering, such as TCP or Unix domain sockets, and
+provides stream-oriented multiplexing.  It is inspired by SPDY but is not
+interoperable with it.
+
+Features:
+@itemize
+@item streams can be opened by either client or server
+@item useful for nat traversal
+@item server-side push support
+@item avoid starvation
+@item back-pressure to prevent overwhelming a receiver
+@item enables persistent connections over a load balancer
+@item enables thousands of logical streams with low overhead
+@end itemize")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hetznercloud-hcloud-go-v2
+  (package
+    (name "go-github-com-hetznercloud-hcloud-go-v2")
+    (version "2.17.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hetznercloud/hcloud-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rmrp100clcymz6j741dpvx217d6ljnfqn9qfndlmy9rwi64ih8h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/hetznercloud/hcloud-go/v2"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-jmattheis-goverter
+           go-github-com-prometheus-client-golang
+           go-github-com-vburenin-ifacemaker
+           go-golang-org-x-crypto
+           go-golang-org-x-net))
+    (home-page "https://github.com/hetznercloud/hcloud-go")
+    (synopsis "Golang library for the Hetzner Cloud API")
+    (description
+     "This package provides a library for the Hetzner Cloud API.")
+    (license license:expat)))
 
 (define-public go-github-com-hjson-hjson-go-v4
   (package
@@ -2917,7 +4128,7 @@ authenticated identities and their attributes.")
 (define-public go-github-com-jcmturner-gokrb5-v8
   (package
     (name "go-github-com-jcmturner-gokrb5-v8")
-    (version "8.4.2")
+    (version "8.4.4")
     (source
      (origin
        (method git-fetch)
@@ -2926,7 +4137,7 @@ authenticated identities and their attributes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w9d1pa3r6qmdblk25bghf78ncs03l15l1sxnh4n536c356rzq4b"))))
+        (base32 "1rv495j8j2x6avw5hqpf7rpiakr5gdsx6pv8rfn0ff7vi35zfa62"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/jcmturner/gokrb5/v8"
@@ -2940,10 +4151,8 @@ authenticated identities and their attributes.")
            go-github-com-jcmturner-dnsutils-v2
            go-github-com-jcmturner-gofork
            go-github-com-jcmturner-goidentity-v6
-           go-github-com-jcmturner-rpc-v2-mstypes
-           go-github-com-jcmturner-rpc-v2-ndr
-           go-golang-org-x-crypto
-           go-golang-org-x-net))
+           go-github-com-jcmturner-rpc-v2
+           go-golang-org-x-crypto))
     (home-page "https://github.com/jcmturner/gokrb5")
     (synopsis "Pure Go Kerberos library for clients and services")
     (description "This package provides a pure Go Kerberos library.  It
@@ -2963,6 +4172,61 @@ On the server side, the library provides a HTTP handler wrapper implements
 SPNEGO Kerberos authentication, as well as a HTTP handler wrapper decodes
 Microsoft AD PAC authorization data.")
     (license license:asl2.0)))
+
+(define-public go-github-com-jcmturner-rpc
+  (package
+    (name "go-github-com-jcmturner-rpc")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jcmturner/rpc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hkmvf8qdcifnzym8kv1xhq7lq0wpr0i6gzff159lh9xn0wfg175"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/jcmturner/rpc.v1"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/jcmturner/rpc")
+    (synopsis "Remote Procedure Call libraries")
+    (description
+     "This package provides a partial Go implementation of the Remote Call
+Procedure libraries, presented in
+@@url{http://pubs.opengroup.org/onlinepubs/9629399/,CDE 1.1: Remote Procedure
+Call}.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-jcmturner-rpc-v2
+  (package
+    (inherit go-github-com-jcmturner-rpc)
+    (name "go-github-com-jcmturner-rpc-v2")
+    (version "2.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jcmturner/rpc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nm4j2nwcszghldw39rwdx2hr56i1lybfpv33y4gd67w6qcqbpsi"))))
+    (arguments
+     (list
+      #:import-path "github.com/jcmturner/rpc/v2"
+      #:unpack-path "github.com/jcmturner/rpc"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
+    (propagated-inputs
+     (list go-golang-org-x-net))))
 
 (define-public go-github-com-jhillyerd-enmime
   (package
@@ -3115,7 +4379,11 @@ controlled.  It is based on netlink messages.")
         (base32 "1c8f0hxm18wivx31bs615x3vxs2j3ba0v6vxchsjhldc8kl311bz"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/json-iterator/go"))
+     (list
+      #:import-path "github.com/json-iterator/go"
+      #:test-flags
+      ;; XXX: Try to skip just "Test_symmetric/map[test.stringKeyType]string".
+      #~(list "-skip" "Test_symmetric")))
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-google-gofuzz
@@ -3157,6 +4425,32 @@ jsoniter and variable type declarations (if any).  jsoniter interfaces gives
 router.")
     (license license:bsd-3)))
 
+(define-public go-github-com-kolo-xmlrpc
+  (package
+    (name "go-github-com-kolo-xmlrpc")
+    (version "0.0.0-20220921171641-a4b6fa1dd06b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kolo/xmlrpc")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nhcnqycdc52k4ymdd4g2chcimsnvr86m0yx13ws91qxs5pgs9d2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kolo/xmlrpc"))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (home-page "https://github.com/kolo/xmlrpc")
+    (synopsis "Implementation of XMLRPC protocol in Golang")
+    (description
+     "This package provides an implementation of client side part of XMLRPC
+protocol in Go language.")
+    (license license:expat)))
+
 (define-public go-github-com-koron-go-ssdp
   (package
     (name "go-github-com-koron-go-ssdp")
@@ -3174,28 +4468,19 @@ router.")
     (arguments
      (list
       #:import-path "github.com/koron/go-ssdp"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Test requiring network setup.
-                  (("TestAdvertise_Alive") "OffTestAdvertise_Alive")
-                  (("TestAdvertise_Bye") "OffTestAdvertise_Bye")
-                  (("TestAnnounceAlive") "OffTestAnnounceAlive")
-                  (("TestAnnounceBye") "OffTestAnnounceBye")
-                  (("TestInterfaces") "OffTestInterfaces")
-                  (("TestSearch_Request") "OffTestSearch_Request")
-                  (("TestSearch_Response") "OffTestSearch_Response")
-                  (("TestSearch_ServiceRawHeader") "OffTestSearch_ServiceRawHeader")))))
-          ;; XXX: Run all tests, workaround for go-build-system's lack of Go
-          ;; modules support.
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Tests requiring network setup.
+               (list "TestAdvertise_Alive"
+                     "TestAdvertise_Bye"
+                     "TestAnnounceAlive"
+                     "TestAnnounceBye"
+                     "TestInterfaces"
+                     "TestSearch_Request"
+                     "TestSearch_Response"
+                     "TestSearch_ServiceRawHeader")
+               "|"))))
     (propagated-inputs
      (list go-golang-org-x-net))
     (home-page "https://github.com/koron/go-ssdp")
@@ -3204,6 +4489,134 @@ router.")
      "@code{go-ssdp} is a @url{https://tools.ietf.org/html/draft-cai-ssdp-v1-03,
 @acronym{Simple Service Discovery Protocol, SSDP}} library for Golang.")
     (license license:expat)))
+
+(define-public go-github-com-kortschak-wol
+  (package
+    (name "go-github-com-kortschak-wol")
+    (version "0.0.0-20200729010619-da482cc4850a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kortschak/wol")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16qyy1c1q5cxcnwdzl69v49pjmyxha4i88fsg0g83gwdyapzsyln"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kortschak/wol"))
+    (home-page "https://github.com/kortschak/wol")
+    (synopsis "Wake On LAN client")
+    (description
+     "Package wol provides a Wake On LAN function.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-labbsr0x-goh
+  (package
+    (name "go-github-com-labbsr0x-goh")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/labbsr0x/goh")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06yrd6ih6r0rkxyn88b66gfarjxsqmi3wzi8cgsxskq7mbah0iyp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/labbsr0x/goh"))
+    (propagated-inputs
+     (list go-github-com-go-cmd-cmd
+           go-github-com-go-errors-errors
+           go-github-com-sirupsen-logrus))
+    (home-page "https://github.com/labbsr0x/goh")
+    (synopsis "Utility library for writing web hooks")
+    (description
+     "This package provides an utility library for writing extremely simple
+webhooks in Golang.")
+    (license license:expat)))
+
+(define-public go-github-com-labstack-echo-v4
+  (package
+    (name "go-github-com-labstack-echo-v4")
+    (version "4.13.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/labstack/echo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i4w36f1k17bykc24dzr2ng5zpsyysfg5bzfvlbrphxxzhsngxdy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/labstack/echo/v4"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-labstack-gommon
+           go-github-com-valyala-fasttemplate
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-time))
+    (home-page "https://echo.labstack.com/")
+    (synopsis "High performance, minimalist Go web framework")
+    (description
+     "Package echo implements a high performance, minimalist Go web framework.
+Features:
+@itemize
+@item optimized HTTP router which smartly prioritize routes
+@item build robust and scalable RESTful APIs
+@item group APIs
+@item extensible middleware framework
+@item define middleware at root, group or route level
+@item data binding for JSON, XML and form payload
+@item handy functions to send variety of HTTP responses
+@item centralized HTTP error handling
+@item template rendering with any template engine
+@item define your format for the logger
+@item highly customizable
+@item automatic TLS via Let’s Encrypt
+@item HTTP/2 support
+@end itemize")
+    (license license:expat)))
+
+(define-public go-github-com-levigross-grequests
+  (package
+    (name "go-github-com-levigross-grequests")
+    (version "0.0.0-20231203190023-9c307ef1f48d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/levigross/grequests")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13r24vrcgfkps8r09crjlhsywpxs8bnnmlgn5qhbhqiqag754xdc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; most of them need network access
+      #:embed-files #~(list "children" "nodes" "text")
+      #:import-path "github.com/levigross/grequests"))
+    (propagated-inputs
+     (list go-github-com-google-go-querystring
+           go-golang-org-x-net))
+    (home-page "https://github.com/levigross/grequests")
+    (synopsis "Requests library for Golang")
+    (description
+     "Package grequests implements a friendly API over Go's existing
+@code{net/http} library.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-libdns-libdns
   (package
@@ -3557,10 +4970,36 @@ It is inspired by SPDY but is not interoperable with it.")
 intends to be compatible with Avahi.")
     (license license:expat)))
 
+(define-public go-github-com-macronut-go-tproxy
+  (package
+    (name "go-github-com-macronut-go-tproxy")
+    (version "0.0.0-20190726054950-ef7efd7f24ed")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FutureProtocolLab/go-tproxy")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jibsg0xhsn0h1jq4g9qd4nr58w43y8majlwfri9ffk2cbfrwqdr"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "example"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/macronut/go-tproxy"))
+    (home-page "https://github.com/FutureProtocolLab/go-tproxy")
+    (synopsis "Linux Transparent Proxy library")
+    (description
+     "Golang TProxy provides an easy to use wrapper for the Linux Transparent
+Proxy functionality.")
+    (license license:expat)))
+
 (define-public go-github-com-mailru-easyjson
   (package
     (name "go-github-com-mailru-easyjson")
-    (version "0.7.7")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -3569,11 +5008,19 @@ intends to be compatible with Avahi.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0clifkvvy8f45rv3cdyv58dglzagyvfcqb63wl6rij30c5j2pzc1"))))
+        (base32 "00if9lpfy7bz853snqp7zgg76pn4mgpkk42h0riahcwk5v19jrcv"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/mailru/easyjson"))
+      #:import-path "github.com/mailru/easyjson"
+      ;; XXX: All tests in "tests" directory fail, figure out why.
+      #:test-subdirs #~(list ".")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-benchmarks
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "benchmark")))))))
     (propagated-inputs
      (list go-github-com-josharian-intern))
     (home-page "https://github.com/mailru/easyjson")
@@ -3712,6 +5159,93 @@ supported by HTTP PATCH method, allowing for standards based partial updates
 via REST APIs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-mattn-go-xmlrpc
+  (package
+    (name "go-github-com-mattn-go-xmlrpc")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-xmlrpc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hv843qf8lzyn01mgk4lwwhirzpzpz33a1cz2ws998shhvq75dvg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/go-xmlrpc"))
+    (home-page "https://github.com/mattn/go-xmlrpc")
+    (synopsis "XML RPC interface for Golang")
+    (description
+     "This package implements XML RPC interface for Go programming
+language.")
+    (license license:expat)))
+
+(define-public go-github-com-mdlayher-ethtool
+  (package
+    (name "go-github-com-mdlayher-ethtool")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/ethtool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pwm4cg1yf364k0c4i0jrrvgn82k14b163xcvnm3bvpglfbcy2ks"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/ethtool"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-josharian-native
+           go-github-com-mdlayher-genetlink
+           go-github-com-mdlayher-netlink
+           go-golang-org-x-sys))
+    (home-page "https://github.com/mdlayher/ethtool")
+    (synopsis "Control of the Linux ethtool generic netlink interface")
+    (description
+     "Package ethtool allows control of the Linux ethtool generic netlink
+interface. as it's described in
+@url{https://www.kernel.org/doc/html/latest/networking/ethtool-netlink.html,
+ethtool-netlink}.")
+    (license license:expat)))
+
+(define-public go-github-com-mdlayher-genetlink
+  (package
+    (name "go-github-com-mdlayher-genetlink")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/genetlink")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vppn8071nh8pnbyq9769j1zcgq76iadd5fry90xkmfq429if356"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/genetlink"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-mdlayher-netlink
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/mdlayher/genetlink")
+    (synopsis "Generic netlink interactions and data types")
+    (description
+     "Package genetlink implements generic netlink interactions and data
+types.")
+    (license license:expat)))
+
 (define-public go-github-com-mdlayher-netlink
   (package
     (name "go-github-com-mdlayher-netlink")
@@ -3724,21 +5258,20 @@ via REST APIs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pxd0qn73jr9n64gkp2kd8q8x7xgssm3v8a68vkh88al55g8jkma"))))
+        (base32 "1pxd0qn73jr9n64gkp2kd8q8x7xgssm3v8a68vkh88al55g8jkma"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Cycles with go-github-com-jsimonetti-rtnetlink.
+            (delete-file-recursively "internal/integration")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/mdlayher/netlink"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "_test\\.go$")
-                  ;; failed to start command "ip": exec: "ip": executable file
-                  ;; not found in $PATH
-                  (("TestIntegrationConnSetBuffersSyscallConn")
-                   "OffTestIntegrationConnSetBuffersSyscallConn"))))))))
+      #:test-flags
+      ;; Test fails to start command "ip": exec: "ip": executable file not
+      ;; found in $PATH
+      #~(list "-skip" "TestIntegrationConnSetBuffersSyscallConn")))
     (propagated-inputs
      (list go-github-com-google-go-cmp
            go-github-com-josharian-native
@@ -3779,6 +5312,68 @@ sockets (AF_NETLINK).")
      "This package provides a low-level network connection type which
 integrates with Go's runtime network poller to provide asynchronous I/O and
 deadline support.")
+    (license license:expat)))
+
+(define-public go-github-com-mdlayher-vsock
+  (package
+    (name "go-github-com-mdlayher-vsock")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/vsock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pnhxz9jz25469gnd5p9a8jl10w3affcjxlvzhlni2c434s3l6kx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/vsock"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-mdlayher-socket
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/mdlayher/vsock")
+    (synopsis "Access to Linux VM sockets for Golang")
+    (description
+     "Package vsock provides access to Linux VM sockets (AF_VSOCK) for
+communication between a hypervisor and its virtual machines.")
+    (license license:expat)))
+
+(define-public go-github-com-mdlayher-wifi
+  (package
+    (name "go-github-com-mdlayher-wifi")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mdlayher/wifi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18h5n58gr3i4jbf7c4hfvx3w87bjjiaavcnpcl0j310bgrc6dnzi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/wifi"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-mdlayher-genetlink
+           go-github-com-mdlayher-netlink
+           go-golang-org-x-crypto
+           go-golang-org-x-sys))
+    (home-page "https://github.com/mdlayher/wifi")
+    (synopsis "Access to IEEE 802.11 WiFi device actions")
+    (description
+     "Package wifi provides access to IEEE 802.11 @code{WiFi} device
+operations on Linux using nl80211.")
     (license license:expat)))
 
 (define-public go-github-com-mholt-acmez
@@ -4154,6 +5749,35 @@ multistream-select protocol.  The protocol is defined at
 2616} HTTP/1.1 standard.")
     (license license:bsd-3)))
 
+(define-public go-github-com-nrdcg-goinwx
+  (package
+    (name "go-github-com-nrdcg-goinwx")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nrdcg/goinwx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ld3spdi7q8cf4hf0wnbl7gyw2k8n4wp03fqncjx2gw2nsjng684"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nrdcg/goinwx"))
+    (propagated-inputs
+     (list
+      go-github-com-fatih-structs
+      go-github-com-kolo-xmlrpc
+      go-github-com-mitchellh-mapstructure))
+    (home-page "https://github.com/nrdcg/goinwx")
+    (synopsis "INWX Go API client")
+    (description
+     "This go library implements some parts of the official
+@url{https://www.inwx.com/en/help/apidoc, INWX XML-RPC API}.")
+    (license license:expat)))
+
 (define-public go-github-com-nwidger-jsoncolor
   (package
     (name "go-github-com-nwidger-jsoncolor")
@@ -4179,6 +5803,32 @@ multistream-select protocol.  The protocol is defined at
 @code{Marshal} and @code{MarshalIndent} functions and @code{Encoder} type
 which produce colorized output using github.com/fatih/color.")
     (license license:expat)))
+
+(define-public go-github-com-nytimes-gziphandler
+  (package
+    (name "go-github-com-nytimes-gziphandler")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nytimes/gziphandler")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rhrjlw220hnymzfccm0yir3pc9dpj7h3gwzhzq2cbsb3hhsqvyy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/NYTimes/gziphandler"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/NYTimes/gziphandler")
+    (synopsis "Middleware to gzip HTTP responses")
+    (description
+     "This is a tiny Go package which wraps HTTP handlers to transparently
+gzip the response body, for clients which support it.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-opentracing-contrib-go-stdlib
   (package
@@ -4342,6 +5992,37 @@ higher-level API for doing so.")
     (description
      "Common enterprise features for the Go programming language.")
     (license license:cc0)))
+
+(define-public go-github-com-perimeterx-marshmallow
+  (package
+    (name "go-github-com-perimeterx-marshmallow")
+    (version "1.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PerimeterX/marshmallow")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jxpjfyshcbrmj9qmj3sr21va6kw7hs55w2gaz9118jd861s6mbw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/perimeterx/marshmallow"))
+    (native-inputs
+     (list go-github-com-go-test-deep))
+    (propagated-inputs
+     (list go-github-com-mailru-easyjson
+           go-github-com-ugorji-go-codec))
+    (home-page "https://github.com/perimeterx/marshmallow")
+    (synopsis "JSON unmarshalling in Golang")
+    (description
+     "This package provides a simple API to perform JSON unmarshalling.
+It supports unmarshalling of some known and some unknown fields with zero
+performance overhead.  While unmarshalling, it allows fully retaining the
+original data and access it via a typed struct and a dynamic map.")
+    (license license:expat)))
 
 (define-public go-github-com-pion-datachannel
   (package
@@ -4849,6 +6530,28 @@ Protocol,SCTP} as specified in
            go-golang-org-x-crypto
            go-golang-org-x-net))))
 
+(define-public go-github-com-pion-stun-v3
+  (package
+    (inherit go-github-com-pion-stun-v2)
+    (name "go-github-com-pion-stun-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (inherit (package-source go-github-com-pion-stun))
+       (uri (git-reference
+             (url "https://github.com/pion/stun")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yavl76y0fida9f1jfdmzdg7rm5jhp6kvdgn3smsf93jad1vbr2x"))))
+    (arguments
+     (list
+      #:import-path "github.com/pion/stun/v3"))
+    (propagated-inputs
+     (list go-github-com-pion-dtls-v3
+           go-github-com-pion-logging
+           go-github-com-pion-transport-v3))))
+
 (define-public go-github-com-pion-transport
   (package
     (name "go-github-com-pion-transport")
@@ -4900,7 +6603,14 @@ throughout the @url{https://github.com/pion, Pion} modules.")
         (base32 "0g5pg6mz61blprccxzysbwldkil84qgwp6404lsp4m9wh44312hf"))))
     (arguments
      (list
-      #:import-path "github.com/pion/transport/v2"))
+      #:import-path "github.com/pion/transport/v2"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-module-paths
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\.go$")
+                  (("github.com/pion/transport/v3") import-path))))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -5144,7 +6854,7 @@ dependant.")
 (define-public go-github-com-pkg-sftp
   (package
     (name "go-github-com-pkg-sftp")
-    (version "1.13.6")
+    (version "1.13.7")
     (source
      (origin
        (method git-fetch)
@@ -5153,7 +6863,7 @@ dependant.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n35lzfrnrffjqy34ny6gxs27kq81s67ply6q8s1g19mhfzm6my7"))))
+        (base32 "0hhnsl327acwlmvp8wk4x1ml2mi6gdrdwm1dh9666n2cj9d8yj24"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -5210,7 +6920,11 @@ Caching.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/pquerna/ffjson"))
+      #:import-path "github.com/pquerna/ffjson"
+      #:test-subdirs #~(list "fflib/v1/...")))
+    (native-inputs
+     (list go-github-com-google-gofuzz
+           go-github-com-stretchr-testify))
     (home-page "https://github.com/pquerna/ffjson")
     (synopsis "Faster JSON for Golang")
     (description
@@ -5351,26 +7065,24 @@ the Go standard library}.")
       #:import-path "github.com/quic-go/quic-go"
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: Figure out why some tests fail.
-          (add-after 'unpack 'remove-failing-tests
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file
-                          (list "integrationtests/self/timeout_test.go"
-                                "server_test.go")))))
           ;; Test steps are taken from GitHub Actions -
-          ;; <https://github.com/quic-go/quic-go/blob/v0.42.0/.github/workflows/unit.yml>.
+          ;; <https://github.com/quic-go/quic-go/blob/v0.42.0/
+          ;; .github/workflows/unit.yml>.
           (replace 'check
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (when tests?
                 (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "ginkgo" "-r" "-v"
-                          (string-append "--procs="
-                                         (number->string (parallel-job-count)))
-                          "--randomize-all"
-                          "--randomize-suites"
-                          "--skip-package"
-                          "integrationtests"))))))))
+                  (setenv "TIMESCALE_FACTOR" "10")
+                  (invoke "ginkgo" "-r" "-v" "--no-color"
+                          (string-append
+                           "--procs=" (number->string
+                                       ;; All tests passed on 16 threads
+                                       ;; mathine, but fail on
+                                       ;; ci.guix.gnu.org.
+                                       (if (> (parallel-job-count) 17)
+                                           16
+                                           (parallel-job-count))))
+                          "--skip-package=integrationtests"))))))))
     (native-inputs
      (list go-ginkgo
            go-github-com-onsi-ginkgo-v2
@@ -5407,7 +7119,9 @@ protocol.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/quic-go/webtransport-go"))
+      #:import-path "github.com/quic-go/webtransport-go"
+      ;; Error: "68" is not greater than "80"
+      #:test-flags #~(list "-skip" "TestDatagrams")))
     (native-inputs
      (list go-go-uber-org-mock
            go-github-com-stretchr-testify))
@@ -5422,6 +7136,59 @@ on @@url{https://github.com/quic-go/quic-go,quic-go}.  It currently implements
 @@url{https://www.ietf.org/archive/id/draft-ietf-webtrans-http3-02.html,draft-02}
 of the specification.")
     (license license:expat)))
+
+(define-public go-github-com-rcrowley-go-metrics
+  (package
+    (name "go-github-com-rcrowley-go-metrics")
+    (version "0.0.0-20201227073835-cf1acfcdf475")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rcrowley/go-metrics")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s7zab04slz07c7l4h2cqz62qnqah69r6p157vvbd7725a7wzkr0"))))
+    (build-system go-build-system)
+    (arguments
+     ;; Arbitrary precision tests are known to be broken on aarch64, ppc64le
+     ;; and s390x. See: https://github.com/rcrowley/go-metrics/issues/249
+     `(#:tests? ,(not (string-prefix? "aarch64" (or (%current-target-system)
+                                                    (%current-system))))
+       #:import-path "github.com/rcrowley/go-metrics"))
+    (propagated-inputs
+     (list go-github-com-stathat-go))
+    (home-page "https://github.com/rcrowley/go-metrics")
+    (synopsis "Go port of Coda Hale's Metrics library")
+    (description
+     "This package provides a Go implementation of Coda Hale's Metrics
+library.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-realclientip-realclientip-go
+  (package
+    (name "go-github-com-realclientip-realclientip-go")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/realclientip/realclientip-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mg3nrb4b1q38q9j1diz4pl2nqpa3ay45gi81i6ma3bvss8v7ri3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/realclientip/realclientip-go"))
+    (home-page "https://github.com/realclientip/realclientip-go")
+    (synopsis "Go reference implementation of \"real\" client IP algorithms")
+    (description
+     "Package realclientip provides strategies for obtaining the \"real\"
+client IP from HTTP requests.")
+    (license license:bsd-0)))
 
 (define-public go-github-com-rs-cors
   (package
@@ -5501,6 +7268,45 @@ per host/process
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-safchain-ethtool
+  (package
+    (name "go-github-com-safchain-ethtool")
+    (version "0.5.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/safchain/ethtool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01q0qfyksnhd4a2w2824yzdmyb4g4xr0y2z4ffnpbzz1wp60rydg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/safchain/ethtool"
+      #:test-flags
+      ;; Unable to retrieve driver from any interface of this system.
+      #~(list "-skip"
+              (string-join
+               (list "TestCmdGet"
+                     "TestCmdGetMapped"
+                     "TestMsglvlGet"
+                     "TestStats"
+                     "TestDriverName"
+                     "TestBusInfo")
+               "|"))))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/safchain/ethtool")
+    (synopsis "Ethtool library for Golang")
+    (description
+     "The ethtool package aims to provide a library that implements easy
+access to the Linux SIOCETHTOOL ioctl operations.  It can be used to retrieve
+information from a network device such as statistics, driver related
+information or even the peer of a VETH interface.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sherclockholmes-webpush-go
   (package
     (name "go-github-com-sherclockholmes-webpush-go")
@@ -5526,6 +7332,56 @@ per host/process
      "Web Push API Encryption with
 @url{https://datatracker.ietf.org/doc/html/draft-ietf-webpush-vapid-01, VAPID}
 support.")
+    (license license:expat)))
+
+(define-public go-github-com-shurcool-githubv4
+  (package
+    (name "go-github-com-shurcool-githubv4")
+    (version "0.0.0-20240429030203-be2daab69064")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shurcooL/githubv4")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kkvqwv0waa8hj1jr9b4nvz8rmslqpchidl7gs9bplrkl3fvsxn6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shurcooL/githubv4"))
+    (propagated-inputs
+     (list go-github-com-shurcool-graphql
+           go-golang-org-x-oauth2))
+    (home-page "https://github.com/shurcooL/githubv4")
+    (synopsis "Client library for GitHub GraphQL API v4")
+    (description
+     "Package githubv4 is a client library for accessing GitHub @code{GraphQL}
+API v4.")
+    (license license:expat)))
+
+(define-public go-github-com-shurcool-graphql
+  (package
+    (name "go-github-com-shurcool-graphql")
+    (version "0.0.0-20230722043721-ed46e5a46466")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shurcooL/graphql")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12cq16qak217bkpklqsmqhl42gz8cpadpzqw6fsivc3ambjpqdry"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shurcooL/graphql"))
+    (home-page "https://github.com/shurcooL/graphql")
+    (synopsis "GraphQL client")
+    (description
+     "Package graphql provides a @code{GraphQL} client implementation.")
     (license license:expat)))
 
 (define-public go-github-com-shurcool-httpfs
@@ -5646,10 +7502,60 @@ provided @code{http.FileSystem}.")
      "Package jsonrpc2 provides a Go implementation of JSON-RPC 2.0.")
     (license license:expat)))
 
+(define-public go-github-com-ssgelm-cookiejarparser
+  (package
+    (name "go-github-com-ssgelm-cookiejarparser")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ssgelm/cookiejarparser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fnm53br0cg3iwzniil0lh9w4xd6xpzfypwfpdiammfqavlqgcw4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:embed-files #~(list "children" "nodes" "text")
+      #:import-path "github.com/ssgelm/cookiejarparser"))
+    (propagated-inputs (list go-golang-org-x-net))
+    (home-page "https://github.com/ssgelm/cookiejarparser")
+    (synopsis "Parse a curl cookiejar with Go")
+    (description
+     "This package is a Go library that parses a curl (netscape) cookiejar
+file into a Go http.CookieJar.")
+    (license license:expat)))
+
+(define-public go-github-com-stathat-go
+  (package
+    (name "go-github-com-stathat-go")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stathat/go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zzlsl24dyr202qkr2pay22m6d0gb7ssms77wgdx0r0clgm7dihw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/stathat/go"))
+    (home-page "https://github.com/stathat/go")
+    (synopsis "Post statistics to StatHat")
+    (description
+     "This is a Go package for posting to a @url{https://www.stathat.com/,
+StatHat} account.")
+    (license license:expat)))
+
 (define-public go-github-com-tdewolff-minify-v2
   (package
     (name "go-github-com-tdewolff-minify-v2")
-    (version "2.12.7")
+    (version "2.21.2")
     (source
      (origin
        (method git-fetch)
@@ -5658,7 +7564,7 @@ provided @code{http.FileSystem}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qhslaq885zbqs83nvbi29yh09b89kkb6ycami8lz28wkwrlayap"))))
+        (base32 "0vhblx1xim14i4npglzdp9hpjz92q2k29wbf9kp9m7id9cm7c7l9"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -5673,13 +7579,18 @@ provided @code{http.FileSystem}.")
                      (format #f "src/~a/~a" import-path dir)
                    (make-file-writable "hash.go")
                    (format #t "Generating `hash.go' for ~a...~%" dir)
-                   (invoke "go" "generate")))
+                   (invoke "go" "generate" "-v" "-n")))
                '("css" "html" "svg")))))))
+    ;; For tests and the CLI.
+    (native-inputs
+     (list go-github-com-djherbis-atime
+           go-github-com-fsnotify-fsnotify
+           go-github-com-matryer-try
+           go-github-com-tdewolff-argp
+           go-github-com-tdewolff-hasher ; to generate go files
+           go-github-com-tdewolff-test))
     (propagated-inputs
      (list go-github-com-tdewolff-parse-v2))
-    (native-inputs
-     (list go-github-com-tdewolff-hasher
-           go-github-com-tdewolff-test))
     (home-page "https://go.tacodewolff.nl/minify")
     (synopsis "Go minifiers for web formats")
     (description
@@ -5690,7 +7601,7 @@ an interface to implement any other minifier.")
 (define-public go-github-com-tdewolff-parse-v2
   (package
     (name "go-github-com-tdewolff-parse-v2")
-    (version "2.6.6")
+    (version "2.7.19")
     (source
      (origin
        (method git-fetch)
@@ -5699,7 +7610,7 @@ an interface to implement any other minifier.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dqki9ima079k9a3l72igmx5dml8qsl9z8rzw8a433f4gjhlv320"))))
+        (base32 "17yswndnxgdj425h5q25wfvchjxnjf6nxyx76k9yn12r16arbl44"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -5725,6 +7636,95 @@ an interface to implement any other minifier.")
      "This package contains several lexers and parsers written in Go.")
     (license license:expat)))
 
+(define-public go-github-com-tetratelabs-wabin
+  (package
+    (name "go-github-com-tetratelabs-wabin")
+    (version "0.0.0-20230304001439-f6f874872834")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tetratelabs/wabin")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "195bh4n2ba3rbgzcb1h7zi93dr0k38qxhg8m0laa0z41vl9i0igm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tetratelabs/wabin"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Replace when go-build-system supports nested path.
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key import-path tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "test" "-v" "./..."))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/tetratelabs/wabin")
+    (synopsis "WebAssembly Binary Format in Go")
+    (description
+     "This package provides @code{WebAssembly} a @code{WebAssembly} data model
+and binary encoder.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-tetratelabs-wazero
+  (package
+    (name "go-github-com-tetratelabs-wazero")
+    (version "1.8.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tetratelabs/wazero")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xchvrkp6m729x3jknj3qwms4w2b2q8kcwyxhkmagms43yg4ykm5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (for-each delete-file-recursively
+                      (list
+                       ;; This directory holds the wazero site's source code.
+                       "site"
+                       ;; Windows related MSI packaging files.
+                       "packaging"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tetratelabs/wazero"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestHugePageConfigs"
+                             "TestRun"
+                             "TestRun/3_1"
+                             "Test_cli"
+                             "Test_cli/cargo-wasi"
+                             "Test_cli/cargo-wasi/test.txt"
+                             "Test_cli/cargo-wasi/testcases/test.txt"
+                             "Test_cli/tinygo"
+                             "Test_cli/tinygo/test.txt"
+                             "Test_cli/tinygo/testcases/test.txt"
+                             "Test_cli/zig"
+                             "Test_cli/zig-cc"
+                             "Test_cli/zig-cc/test.txt"
+                             "Test_cli/zig-cc/testcases/test.txt"
+                             "Test_cli/zig/test.txt")
+                       "|"))))
+    (home-page "https://github.com/tetratelabs/wazero")
+    (synopsis "Zero dependency WebAssembly runtime for Go")
+    (description
+     "wazero is a WebAssembly Core Specification
+@url{https://www.w3.org/TR/2019/REC-wasm-core-1-20191205/,1.0} and
+@code{https://www.w3.org/TR/2022/WD-wasm-core-2-20220419/,2.0} compliant
+runtime.  It has zero dependencies, and doesn't rely on CGO.  This means you
+can run applications in other languages and still keep cross compilation.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-tv42-httpunix
   (let ((commit "2ba4b9c3382c77e7b9ea89d00746e6111d142a22")
         (revision "0"))
@@ -5748,6 +7748,34 @@ an interface to implement any other minifier.")
       (description "This package is a Go library to talk HTTP over Unix domain
 sockets.")
       (license license:expat))))
+
+(define-public go-github-com-txthinking-socks5
+  (package
+    (name "go-github-com-txthinking-socks5")
+    (version "0.0.0-20230325130024-4230056ae301")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/txthinking/socks5")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zbwczxwmx8ngs6s0bnb0v73jvx96m9ll753zfgcns8fvvgdi2lb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/txthinking/socks5"))
+    (propagated-inputs
+     (list go-github-com-miekg-dns
+           go-github-com-patrickmn-go-cache
+           go-github-com-txthinking-runnergroup))
+    (home-page "https://github.com/txthinking/socks5")
+    (synopsis "SOCKSv5 protocol Golang library")
+    (description
+     "This package provides a SOCKS protocol version 5 library with full
+TCP/UDP and IPv4/IPv6 support.")
+    (license license:expat)))
 
 (define-public go-github-com-ucarion-urlpath
   (package
@@ -5809,7 +7837,7 @@ encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
 (define-public go-github-com-valyala-fasthttp
   (package
     (name "go-github-com-valyala-fasthttp")
-    (version "1.39.0")
+    (version "1.58.0")
     (source
      (origin
        (method git-fetch)
@@ -5818,11 +7846,17 @@ encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12qwx0yk7wjj25v4fswgmj28r69gk94kqdmzavca8k9f0yznniz1"))))
+        (base32 "0r823fikgyhnmcn322anhs3ivkbzhdgbywvwi81v9kvfhi35plli"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/valyala/fasthttp"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network set up is required.
+                       (list "TestClientConfigureClientFailed"
+                             "TestDialer_GetDialFunc")
+                       "|"))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -5846,6 +7880,132 @@ encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
      "This package provides a Go module @code{fasthttp} which may be used as
 replacement for native @code{net/http} module.")
     (license license:expat)))
+
+(define-public go-github-com-valyala-tcplisten
+  (package
+    (name "go-github-com-valyala-tcplisten")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/valyala/tcplisten")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fv5hxmq1jwrjn1rdjvbmjrrkb601zcdh01qhx6d8l7ss6n05zb8"))))
+    (build-system go-build-system)
+    (arguments
+     ;; NOTE: (Sharlatan-20211218T165504+0000): Tests failing:
+     ;;
+     ;;   tcplisten_test.go:56: cannot create listener 0 using Config
+     ;;   &tcplisten.Config{ReusePort:false, DeferAccept:false, FastOpen:false,
+     ;;   Backlog:32}: lookup ip6-localhost on [::1]:53: read udp
+     ;;   [::1]:33932->[::1]:53: read: connection refused
+     ;;
+     '(#:tests? #f
+       #:import-path "github.com/valyala/tcplisten"))
+    (home-page "https://github.com/valyala/tcplisten")
+    (synopsis "Customizable TCP net.Listener for Go")
+    (description
+     "@code{tcplisten} provides customizable TCP net.Listener with various
+performance-related options.")
+    (license license:expat)))
+
+(define-public go-github-com-vektah-gqlparser-v2
+  (package
+    (name "go-github-com-vektah-gqlparser-v2")
+    (version "2.5.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vektah/gqlparser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hrzm9f3kvcblff4hypf1p95kxsv5pww7vcghhw2jb7r8r4kmdf0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/vektah/gqlparser/v2"))
+    (native-inputs
+     (list go-github-com-andreyvit-diff
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-agnivade-levenshtein
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/vektah/gqlparser")
+    (synopsis "Port of the parser from @code{graphql-js} into golang")
+    (description
+     "This is a parser for GraphQL, written to mirror the
+@url{https://github.com/graphql/graphql-js, graphql-js} reference
+implementation as closely while remaining idiomatic and easy to use.")
+    (license license:expat)))
+
+(define-public go-github-com-vishvananda-netlink
+  (package
+    (name "go-github-com-vishvananda-netlink")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vishvananda/netlink")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ckwb1ml7i2ccdd7kzc04s839naf4arlxav2ip5kf4rm4xhba9g7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; The tests are unsupported on all architectures except x86_64-linux:
+      ;; cannot use 0xabcdef99 (untyped int constant 2882400153) as int value
+      ;; in struct literal (overflows)
+      #:tests? (and (not (%current-target-system)) (target-x86-64?))
+      #:test-flags
+      ;; One test fails with error: operation not permitted.
+      #~(list "-skip" "TestSocketXDPGetInfo")
+      #:import-path "github.com/vishvananda/netlink"))
+    (propagated-inputs
+     (list go-github-com-vishvananda-netns
+           go-golang-org-x-sys))
+    (home-page "https://github.com/vishvananda/netlink")
+    (synopsis "Simple netlink library for Go")
+    (description
+     "The netlink package provides a simple netlink library for Go.  Netlink
+is the interface a user-space program in Linux uses to communicate with the
+kernel.  It can be used to add and remove interfaces, set IP addresses and
+routes, and configure IPsec.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-vishvananda-netns
+  (package
+    (name "go-github-com-vishvananda-netns")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vishvananda/netns")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f96fbmjq93msdfxmicnypnn2lzvi7jrxy82fiyd9gwxdapfd061"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests fail with error: operation not permitted.
+      #:test-flags #~(list "-skip" "TestGetNewSetDelete|TestThreaded")
+      #:import-path "github.com/vishvananda/netns"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/vishvananda/netns")
+    (synopsis "Simple network namespace handling for Go")
+    (description
+     "The netns package provides a simple interface for handling network
+namespaces in Go.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-whyrusleeping-cbor
   (package
@@ -5988,6 +8148,34 @@ missing it.  It address the issues
 @url{https://github.com/golang/go/issues/68082, #68082}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-xdg-go-scram
+  (package
+    (name "go-github-com-xdg-go-scram")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xdg-go/scram")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bkznny84fdn4sy3wq5680v424glsq9nh2169qy51213bah6by84"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xdg-go/scram"))
+    (propagated-inputs
+     (list go-github-com-xdg-go-stringprep
+           go-github-com-xdg-go-pbkdf2))
+    (home-page "https://github.com/xdg-go/scram")
+    (synopsis "Go implementation of RFC-5802")
+    (description
+     "Package scram provides client and server implementations of the
+@acronym{Salted Challenge Response Authentication Mechanism, SCRAM} described
+in RFC-5802 and RFC-7677.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-xeipuuv-gojsonpointer
   (let ((commit "4e3ac2762d5f479393488629ee9370b50873b3a6")
         (revision "0"))
@@ -6073,6 +8261,87 @@ programming language.")
 programming language, which supports draft-04, draft-06 and draft-07.")
     (license license:asl2.0)))
 
+(define-public go-github-com-xo-dburl
+  (package
+    (name "go-github-com-xo-dburl")
+    (version "0.23.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xo/dburl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yxyfrm45dqd26513r2cvgkqfsclijsfzqrckbw45wydk45mq442"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xo/dburl"))
+    (home-page "https://github.com/xo/dburl")
+    (synopsis
+     "URL style mechanism for parsing and opening SQL database connection strings")
+    (description
+     "Package dburl provides a standard, @code{net/url.URL} style mechanism
+for parsing and opening SQL database connection strings for Go.  Provides
+standardized way to parse and open @@url{#URL,URL}'s for popular databases
+@code{PostgreSQL}, @code{MySQL}, SQLite3, Oracle Database, Microsoft SQL
+Server, in addition to most other SQL databases with a publicly available Go
+driver.")
+    (license license:expat)))
+
+(define-public go-github-com-xtaci-kcp-go-v5
+  (package
+    (name "go-github-com-xtaci-kcp-go-v5")
+    (version "5.6.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xtaci/kcp-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17jqgl2zdra9rz8ap3zlrk7ljnm316gd4dy4cimlk2641n8r5bjx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xtaci/kcp-go/v5"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-klauspost-reedsolomon
+           go-github-com-pkg-errors
+           go-github-com-templexxx-xorsimd
+           go-github-com-tjfoc-gmsm
+           go-github-com-xtaci-lossyconn
+           go-golang-org-x-crypto
+           go-golang-org-x-net))
+    (home-page "https://github.com/xtaci/kcp-go")
+    (synopsis "Crypto-Secure Reliable-UDP Library with FEC")
+    (description
+     "This package provides smooth, resilient, ordered, error-checked and
+anonymous delivery of streams over UDP packets.
+Features:
+@itemize
+@item designed for latency-sensitive scenarios
+@item cache-friendly and memory-optimized design
+@item handles >5K concurrent connections on a single commodity server
+@item compatible with @code{net.Conn} and @code{net.Listener}, serving as a
+drop-in replacement for @code{net.TCPConn}
+@item @acronym{Forward Error Correction, FEC} support with
+@url{https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction,
+Reed-Solomon Codes}
+@item packet-level encryption support with @code{3DES}, @code{AES},
+@code{Blowfish}, @code{Cast5}, @code{PBKDF2}, @code{SM4}, @code{Salsa20},
+@code{TEA}, @code{Twofish}, and @code{XTEA}
+@item only a fixed number of goroutines are created for the entire server
+application
+@item compatible with @url{https://github.com/skywind3000, skywind3000}'s C
+version with various improvements
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-xtaci-lossyconn
   (package
     (name "go-github-com-xtaci-lossyconn")
@@ -6123,6 +8392,192 @@ reliability and ordering, such as TCP or
 multiplexing.  The original intention of this library is to power the
 connection management for @url{https://github.com/xtaci/kcp-go,kcp-go}.")
     (license license:expat)))
+
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-geoip
+  (package
+    (name "go-gitlab-torproject-org-tpo-anti-censorship-geoip")
+    (version "0.0.0-20210928150955-7ce4b3d98d01")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://gitlab.torproject.org/tpo/anti-censorship/geoip.git")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i7dc717w1g7hk7488vscqxj0a10af6fz9jczxxsfyxagynfzqcq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gitlab.torproject.org/tpo/anti-censorship/geoip"))
+    (propagated-inputs
+     (list go-github-com-smartystreets-goconvey))
+    (home-page "https://gitlab.torproject.org/tpo/anti-censorship/geoip")
+    (synopsis "GeoIP go library that uses the tor geoipdb")
+    (description
+     "This code is for loading database data that maps IP addresses to
+countries for collecting and presenting statistics on snowflake use that might
+alert us to censorship events.")
+    (license license:bsd-3)))
+
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+  (package
+    (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jw9vlvlx7rrl366kwz47414aciw3r37lwg6h4jq8cj5hb4bqnd9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib"))
+    (home-page "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib")
+    (synopsis "Go pluggable transports library")
+    (description "GoPtLib is a library for writing Tor pluggable transports in
+Go.")
+    (license license:cc0)))
+
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-ptutil
+  (package
+    (name
+     "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-ptutil")
+    (version "0.0.0-20240710081135-6c4d8ed41027")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append
+                   "https://gitlab.torproject.org/tpo/anti-censorship"
+                   "/pluggable-transports/ptutil.git"))
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h7ssgsny6abhpycgks1kvqzvd20s081n39j5yxjjr7zn495ysdc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path
+      "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/ptutil"))
+    (propagated-inputs
+     (list go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-google-golang-org-protobuf))
+    (home-page
+     "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/ptutil")
+    (synopsis "Collection of utilities for Pluggable Transports")
+    (description
+     "This package provides a collection of utilities for Pluggable Transports.")
+    (license license:bsd-3)))
+
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2
+  (package
+    (name
+     "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2")
+    (version "2.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append
+                   "https://gitlab.torproject.org/tpo/anti-censorship"
+                   "/pluggable-transports/snowflake"))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14ypgzj6c6vjw9s85wf2vdfa9l06iandx7gz90i3w6r65q2cp6vj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Project provides a Go library and also CLI builds.
+      #:skip-build? #t
+      #:import-path
+      "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2"
+      ;; panic: empty transcript [recovered]
+      #:test-flags #~(list "-skip" "TestQueuePacketConnWriteToKCP")))
+    (native-inputs
+     (list go-github-com-golang-mock
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-service-sqs
+           go-github-com-golang-mock
+           go-github-com-gorilla-websocket
+           go-github-com-miekg-dns
+           go-github-com-pion-ice-v2
+           go-github-com-pion-sdp-v3
+           go-github-com-pion-stun-v3
+           go-github-com-pion-transport-v2
+           go-github-com-pion-webrtc-v3
+           go-github-com-prometheus-client-golang
+           go-github-com-realclientip-realclientip-go
+           go-github-com-refraction-networking-utls
+           go-github-com-smartystreets-goconvey
+           go-github-com-stretchr-testify
+           go-github-com-txthinking-socks5
+           go-github-com-xtaci-kcp-go-v5
+           go-github-com-xtaci-smux
+           go-gitlab-torproject-org-tpo-anti-censorship-geoip
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-ptutil
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page
+     "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake")
+    (synopsis "Pluggable Transport using WebRTC, inspired by Flashproxy")
+    (description
+     "Pluggable Transport using @code{WebRTC}, inspired by Flashproxy and
+adheres to the pluggable transports v2.1 Go AP.
+This package provides:
+@itemize
+@item @code{broker} contains code for the Snowflake broker
+@item @code{doc} contains Snowflake documentation and manpages
+@item @code{client} contains the Tor pluggable transport client and client
+library code
+@item @code{common} contains generic libraries used by multiple pieces of
+Snowflake
+@item @code{proxy} contains code for the Go standalone Snowflake proxy
+@item @code{probetest} contains code for a NAT probetesting service
+@item @code{server} contains the Tor pluggable transport server and server
+library code
+@end itemize")
+    (license license:bsd-3)))
+
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel
+  (package
+    (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel")
+    (version "0.0.0-20240711104640-e64b1b3562f3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nvd0qp1mdy7w32arnkhghxm5k2g6gy33cxlarxc6vdm4yh6v5nv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel"))
+    (propagated-inputs
+     (list go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib))
+    (home-page "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel")
+    (synopsis "Go WebTunnel Pluggable Transport")
+    (description
+     "WebTunnel is a Go Pluggable Transport that attempts to imitate web
+browsing activities based on HTTP Upgrade (HTTPT).")
+    (license license:bsd-2)))
 
 (define-public go-go-opentelemetry-io-otel
   (package
@@ -6180,7 +8635,9 @@ connection management for @url{https://github.com/xtaci/kcp-go,kcp-go}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "go.opentelemetry.io/otel"))
+      #:import-path "go.opentelemetry.io/otel"
+      ;; Error: Both arguments must be pointers.
+      #:test-flags #~(list "-skip" "TestTraceProviderDelegatesSameInstance")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -6197,19 +8654,20 @@ go.opentelemetry.io/otel, go.opentelemetry.io/otel/metric and
 go.opentelemetry.io/otel/trace.")
     (license license:asl2.0)))
 
-(define-public go-go-opentelemetry-io-otel-sdk
+(define-public go-go-opentelemetry-io-otel-log
   (package
-    (name "go-go-opentelemetry-io-otel-sdk")
-    (version "1.30.0")
+    (name "go-go-opentelemetry-io-otel-log")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/open-telemetry/opentelemetry-go")
-             (commit (go-version->git-ref version #:subdir "sdk"))))
+             (commit (go-version->git-ref version
+                                          #:subdir "log"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mpkwz2ryah5j2fb835pdw9084nwhr6fj3jig2mnvwwnsymp2bvy"))
+        (base32 "0sb36qyq389fif9qp5iiqp6w41dfcwi95gb0bsbvznvijhd8c1cc"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
@@ -6231,7 +8689,63 @@ go.opentelemetry.io/otel/trace.")
                                   (delete-file-recursively item)
                                   (delete-file item)))
                             items))))
-            (delete-all-but "." "sdk")))))
+            (delete-all-but "." "log")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/log"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr
+           go-go-opentelemetry-io-otel))
+    (home-page "https://go.opentelemetry.io/otel")
+    (synopsis "OpenTelemetry Logs API")
+    (description
+     "This package is intended to be used by bridges between existing logging
+libraries and OpenTelemetry.  Users should not directly use this package as a
+logging library.  Instead, install one of the bridges listed in the
+[registry], and use the associated logging library.")
+    (license license:asl2.0)))
+
+(define-public go-go-opentelemetry-io-otel-sdk
+  (package
+    (name "go-go-opentelemetry-io-otel-sdk")
+    (version "1.33.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go")
+             (commit (go-version->git-ref version #:subdir "sdk"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sb36qyq389fif9qp5iiqp6w41dfcwi95gb0bsbvznvijhd8c1cc"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "." "sdk")
+            (delete-file-recursively "sdk/log")
+            (delete-file-recursively "sdk/metric")))))
     (build-system go-build-system)
     (arguments
      (list
@@ -6249,6 +8763,123 @@ go.opentelemetry.io/otel/trace.")
     (synopsis "OpenTelemetry Golang SDK")
     (description
      "This package provides OpenTelemetry Otel SDK.")
+    (license license:asl2.0)))
+
+(define-public go-go-opentelemetry-io-otel-sdk-log
+  (package
+    (name "go-go-opentelemetry-io-otel-sdk-log")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "sdk/log"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sb36qyq389fif9qp5iiqp6w41dfcwi95gb0bsbvznvijhd8c1cc"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "sdk" "log")
+            (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/sdk/log"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr
+           go-github-com-go-logr-stdr
+           go-github-com-google-go-cmp
+           go-go-opentelemetry-io-otel-log
+           go-go-opentelemetry-io-otel-sdk))
+    (home-page "https://go.opentelemetry.io/otel")
+    (synopsis "OpenTelemetry Log SDK library")
+    (description "Package log provides the @code{OpenTelemetry} Logs SDK.")
+    (license license:asl2.0)))
+
+(define-public go-go-opentelemetry-io-otel-sdk-metric
+  (package
+    (name "go-go-opentelemetry-io-otel-sdk-metric")
+    (version "1.33.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "sdk/metric"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sb36qyq389fif9qp5iiqp6w41dfcwi95gb0bsbvznvijhd8c1cc"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "sdk" "metric")
+            (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/sdk/metric"
+      #:unpack-path "go.opentelemetry.io/otel"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestGlobalInstRegisterCallback"
+                             "TestMeterProviderDelegation")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr
+           go-github-com-go-logr-stdr
+           go-github-com-google-go-cmp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk))
+    (home-page "https://go.opentelemetry.io/otel")
+    (synopsis "OpenTelemetry Metric SDK library")
+    (description
+     "Package metric provides an implementation of the @code{OpenTelemetry}
+metrics SDK.")
     (license license:asl2.0)))
 
 (define-public go-golang-org-x-oauth2
@@ -6325,41 +8956,165 @@ go.opentelemetry.io/otel/trace.")
     (description "This package is a Go Implementation of WireGuard.")
     (license license:expat)))
 
-;; XXX: This repository has been archived by the owner on Feb 27, 2023. It is
-;; now read-only and it is DEPRECATED.
-(define-public go-gopkg-in-square-go-jose-v2
+(define-public go-gopkg-in-go-jose-go-jose-v2
   (package
-    (name "go-gopkg-in-square-go-jose-v2")
-    (version "2.6.0")
+    (inherit go-github-com-go-jose-go-jose-v3)
+    (name "go-gopkg-in-go-jose-go-jose-v2")
+    (version "2.6.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/square/go-jose")
+             (url "https://github.com/go-jose/go-jose")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b1nhqxfmhzwrfk7pkvp2w3z3d0pf5ir00vizmy2d4xdbnldn70r"))))
+        (base32 "0frg4g9gyqdgf7h0xai9771a47ndb0zqbw0rp5yk0dswsq1vk4kq"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-go-jose-go-jose-v3)
+       ((#:import-path _) "gopkg.in/go-jose/go-jose.v2")))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-gopkg-in-alecthomas-kingpin-v2))))
+
+;; This to satisfy alternative import path.
+(define-public go-gopkg-in-jcmturner-rpc-v1
+  (package
+    (inherit go-github-com-jcmturner-rpc)
+    (name "go-gopkg-in-jcmturner-rpc-v1")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-jcmturner-rpc)
+       ((#:import-path _) "gopkg.in/jcmturner/rpc.v1")))))
+
+;; This to satisfy alternative import path.
+(define-public go-gopkg-in-jcmturner-rpc-v2
+  (package
+    (inherit go-github-com-jcmturner-rpc-v2)
+    (name "go-gopkg-in-jcmturner-rpc-v2")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-jcmturner-rpc-v2)
+       ((#:tests? _ #t) #f)
+       ((#:import-path _) "gopkg.in/jcmturner/rpc.v2")))))
+
+(define-public go-k8s-io-kube-openapi
+  (package
+    (name "go-k8s-io-kube-openapi")
+    (version "0.0.0-20241212222426-2c72e554b1e7")
+    ;; XXX: Unbundle third_party in pkg.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kubernetes/kube-openapi")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0crd349jd210bh68ic70pqmdkfns7cix2qhsa6pfya6kbvschyf9"))
+       ;; XXX: test/integration contains submodule with it's own go.mod.
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Keeping just testdata.
+            (for-each delete-file-recursively
+                      (list "test/integration/builder"
+                            "test/integration/builder3"
+                            "test/integration/openapiconv"
+                            "test/integration/pkg/generated"
+                            "test/integration/testutil"
+                            "test/integration/import.go"
+                            "test/integration/integration_suite_test.go"))))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; XXX: We strongly encourage users of square/go-jose to migrate to v3
-      ;; of go-jose/go-jose. No support, security fixes or updates will be
-      ;; delivered to the v1/v2 branches in the Square repository.
-      #:tests? #f
-      #:import-path "gopkg.in/square/go-jose.v2"))
-    (propagated-inputs
-     (list go-golang-org-x-crypto))
+      #:go go-1.23
+      #:import-path "k8s.io/kube-openapi"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)))) ; no go files in project's root
     (native-inputs
-     (list go-github-com-google-go-cmp
+     (list go-github-com-getkin-kin-openapi
+           go-github-com-google-gofuzz
+           go-github-com-onsi-ginkgo-v2
+           go-github-com-onsi-gomega
            go-github-com-stretchr-testify))
-    (home-page "https://gopkg.in/square/go-jose.v2")
-    (synopsis "Implementation of JOSE standards (JWE, JWS, JWT) in Go")
+    (propagated-inputs
+     (list go-github-com-emicklei-go-restful-v3
+           go-github-com-go-openapi-jsonreference
+           go-github-com-go-openapi-swag
+           go-github-com-google-gnostic-models
+           go-github-com-google-go-cmp
+           go-github-com-google-uuid
+           go-github-com-munnerz-goautoneg
+           go-github-com-nytimes-gziphandler
+           go-github-com-spf13-pflag
+           go-golang-org-x-tools
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3
+           go-k8s-io-gengo-v2
+           go-k8s-io-klog-v2
+           go-k8s-io-utils
+           go-sigs-k8s-io-json
+           go-sigs-k8s-io-structured-merge-diff-v4
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/kubernetes/kube-openapi")
+    (synopsis "Kubernetes OpenAPI spec generation & serving")
     (description
-     "This package aims to provide an implementation of the Javascript Object
-Signing and Encryption set of standards.  This includes support for JSON Web
-Encryption, JSON Web Signature, and JSON Web Token standards.")
+     "This package implements a Kubernetes OpenAPI discovery spec generation,
+providing support a subset of OpenAPI features to satisfy kubernetes use-cases
+but implement that subset with little to no assumption about the structure of
+the code or routes.")
     (license license:asl2.0)))
+
+(define-public go-modernc-org-httpfs
+  (package
+    (name "go-modernc-org-httpfs")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/httpfs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01q5rvhxmrd45h0ljh4185wlly7rxv6vvh28d2shsyan4nj67zf1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/httpfs"))
+    (home-page "https://gitlab.com/cznic/httpfs")
+    (synopsis "HTTP file system implementation in Golang")
+    (description
+     "Package httpfs implements @code{http.FileSystem} on top of a
+@code{map[string]string}.")
+    (license license:bsd-3)))
+
+(define-public go-modernc-org-token
+  (package
+    (name "go-modernc-org-token")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/token")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vvnnfppmgq7hxmw18dx90fg6khwnxpwn9kwwf0hwxsckxfb5icv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/token"))
+    (home-page "https://modernc.org/token")
+    (synopsis "Variant of the Golang stdlib package @code{token}")
+    (description
+     "Package token is variant of the stdlib package token with types
+@code{FileSet} and Token removed.")
+    (license license:bsd-3)))
 
 (define-public go-mvdan-cc-xurls-v2
   (package
@@ -6377,7 +9132,8 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "mvdan.cc/xurls/v2"))
+      #:import-path "mvdan.cc/xurls/v2"
+      #:test-flags #~(list "-skip" "TestScript/version")))
     (propagated-inputs
      (list go-github-com-rogpeppe-go-internal
            go-golang-org-x-mod
@@ -6420,6 +9176,85 @@ protocol.")
 ;;; Executables:
 ;;;
 
+(define-public go-jose-util
+  (package
+    (name "go-jose-util")
+    (version "0.0.0-20240226165647-31202557b449")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-jose/go-jose")
+             (commit (go-version->git-ref version
+                                          #:subdir "jose-util"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19kr2r9nnrnixpmpp37p5adnxc92bc3gzqz7rpybgaly2wfssz0q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/go-jose/go-jose/jose-util"
+      #:unpack-path "github.com/go-jose/go-jose"))
+    (native-inputs
+     (list go-github-com-go-jose-go-jose-v3
+           go-gopkg-in-alecthomas-kingpin-v2))
+    (home-page "https://github.com/go-jose/go-jose")
+    (synopsis "JOSE CLI")
+    (description
+     "The @code{jose-util} command line utility allows for encryption,
+decryption,signing and verification of JOSE messages.  Its main purpose is to
+facilitate dealing with JOSE messages when testing or debugging.")
+    (license license:asl2.0)))
+
+(define-public go-gojay
+  (package
+    (inherit go-github-com-francoispqt-gojay)
+    (name "go-gojay")
+    (arguments
+     (list
+      #:tests? #f ; already tested in the library
+      #:install-source? #f
+      #:import-path "github.com/francoispqt/gojay/gojay"
+      #:unpack-path "github.com/francoispqt/gojay"))
+    (description
+     "This package provides a command line tool to generate gojay's marshaling
+and unmarshaling interface implementation for custom struct type(s).")))
+
+(define-public go-gqlclient
+  (package
+    (inherit go-git-sr-ht-emersion-gqlclient)
+    (name "go-gqlclient")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-git-sr-ht-emersion-gqlclient)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:phases _ '%standard-phases)
+        #~(modify-phases %standard-phases
+            (replace 'build
+              (lambda arguments
+                (for-each
+                 (lambda (cmd)
+                   (apply (assoc-ref %standard-phases 'build)
+                          `(,@arguments #:import-path ,cmd)))
+                 (list "git.sr.ht/~emersion/gqlclient/cmd/gqlclient"
+                       "git.sr.ht/~emersion/gqlclient/cmd/gqlclientgen"
+                       "git.sr.ht/~emersion/gqlclient/cmd/gqlintrospect"))))
+            (replace 'install
+              (lambda arguments
+                (for-each
+                 (lambda (cmd)
+                   (apply (assoc-ref %standard-phases 'install)
+                          `(,@arguments #:import-path ,cmd)))
+                 (list "git.sr.ht/~emersion/gqlclient/cmd/gqlclient"
+                       "git.sr.ht/~emersion/gqlclient/cmd/gqlclientgen"
+                       "git.sr.ht/~emersion/gqlclient/cmd/gqlintrospect"))))))))
+    (description
+     "This package provides command line tools: @code{gqlclient},
+@code{gqlclientgen}, and @code{gqlintrospect}.  For the Golang libriray, see
+go-git-sr-ht-emersion-gqlclient package.")))
+
 (define-public go-html2text
   (package
     (inherit go-github-com-jaytaylor-html2text)
@@ -6455,19 +9290,44 @@ go-github-com-multiformats-go-multiaddr-dns.")))
     (inherit go-github-com-tdewolff-minify-v2)
     (name "go-minify")
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-tdewolff-minify-v2)
-       ((#:install-source? _ #t) #f)
-       ((#:import-path _ "github.com/tdewolff/minify/v2")
-        "github.com/tdewolff/minify/cmd/minify")))
-    (inputs
-     (list go-github-com-djherbis-atime
-           go-github-com-dustin-go-humanize
-           go-github-com-fsnotify-fsnotify
-           go-github-com-matryer-try
-           go-github-com-spf13-pflag))
+     (list
+      #:install-source?  #f
+      #:tests? #f ; tested in the library
+      #:import-path "github.com/tdewolff/minify/cmd/minify"
+      #:unpack-path "github.com/tdewolff/minify"))
     (description "This package provides a CLI binary executible built from
 go-github-com-tdewolff-minify-v2 source.")))
+
+(define-public gron
+  (package
+    (name "gron")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tomnomnom/gron")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sj34b6yv0qigy3aq7qmwf8bqxp1a8qh9p10lzkpw58s1c0iyh36"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/tomnomnom/gron"))
+    (native-inputs
+     (list go-github-com-fatih-color
+           go-github-com-mattn-go-colorable
+           go-github-com-nwidger-jsoncolor
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/tomnomnom/gron")
+    (synopsis "Transform JSON to make it easier to grep")
+    (description
+     "This package transforms JSON into discrete assignments to make it easier
+to use line-based tools such as grep to search for what you want and see the
+absolute \"path\" to it.")
+    (license license:expat)))
 
 (define-public xurls
   (package

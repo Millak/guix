@@ -29,6 +29,8 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-xyz))
 
 ;;; Commentary:
@@ -80,6 +82,9 @@ the @code{c2go} tool at
     (arguments
      (list
       #:import-path "github.com/dsnet/compress"
+      #:test-subdirs
+      #~(list "brotli/..." "bzip2/..." "flate" "internal" "internal/prefix"
+              "internal/testutil" "xflate/...")
       #:phases
       #~(modify-phases %standard-phases
           ;; Testdata directories contains some compressed files requiring
@@ -163,7 +168,7 @@ library included in the stdlib, and supports GIF, TIFF and PDF.")
 (define-public go-github-com-klauspost-compress
   (package
     (name "go-github-com-klauspost-compress")
-    (version "1.13.1")
+    (version "1.17.11")
     (source
      (origin
        (method git-fetch)
@@ -172,20 +177,11 @@ library included in the stdlib, and supports GIF, TIFF and PDF.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ydnf9rizlhm8rilh14674qqx272sbwbkjx06xn9pqvy6mmn2r3r"))))
+        (base32 "1i8r1xiba62nng651p4razxg1kw1910sl4grm7axm2g4q8s3i298"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/klauspost/compress"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'reset-gzip-timestamps 'fix-permissions
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Provide write permissions on gzip files so that
-             ;; reset-gzip-timestamps has sufficient permissions.
-             (for-each make-file-writable
-                       (find-files (assoc-ref outputs "out") ".gz$")))))))
-    (propagated-inputs
-     (list go-github-com-golang-snappy))
+     (list
+      #:import-path "github.com/klauspost/compress"))
     (home-page "https://github.com/klauspost/compress")
     (synopsis "Go compression library")
     (description "@code{compress} provides various compression algorithms.")
@@ -351,11 +347,19 @@ Supported archive formats:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vfn01gd3hcpbj6gb4ig3pw6bv0g4j5780awr0fv4kf9id8gjvyy"))))
+        (base32 "0vfn01gd3hcpbj6gb4ig3pw6bv0g4j5780awr0fv4kf9id8gjvyy"))
+       (snippet
+        ;; XXX: fiano uses this package as library only, cmd requires very
+        ;; additional not packed and dated inputs. Overwrite with
+        ;; go-github-com-pierrec-lz4-v4 when fiano is updated.
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "cmd")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/pierrec/lz4"))
+    (native-inputs
+     (list go-github-com-frankban-quicktest))
     (home-page "https://github.com/pierrec/lz4")
     (synopsis "LZ4 compression in pure Go")
     (description
@@ -383,7 +387,85 @@ LZ4 data blocks.  The implementation is based on the reference C
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/pierrec/lz4/v4"))))
+      #:import-path "github.com/pierrec/lz4/v4"))
+    ;; For CLI.
+    (native-inputs
+     (list go-code-cloudfoundry-org-bytefmt
+           go-github-com-pierrec-cmdflag
+           go-github-com-schollz-progressbar-v3))))
+
+(define-public go-github-com-saracen-fastzip
+  (package
+    (name "go-github-com-saracen-fastzip")
+    (version "0.1.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/saracen/fastzip")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h63lhbwkga920n6lrh1ccfps2k4c3dn2pqap0i6mvjk6dba95s0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/saracen/fastzip"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-klauspost-compress
+           go-github-com-saracen-zipextra
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/saracen/fastzip")
+    (synopsis "Zip archiver and extractor with a focus on speed")
+    (description
+     "Fastzip is an opinionated Zip archiver and extractor with a focus on
+speed.
+Features:
+@itemize
+@item archiving and extraction of files and directories can only occur within
+a specified directory
+@item permissions, ownership (uid, gid on linux/unix) and modification times
+are preserved
+@item buffers used for copying files are recycled to reduce allocations
+@item files are archived and extracted concurrently
+@item by default, @code{github.com/klauspost/compress/flate} library is used
+for compression and decompression
+@end itemize")
+    (license license:expat)))
+
+(define-public go-github-com-saracen-zipextra
+  (package
+    (name "go-github-com-saracen-zipextra")
+    (version "0.0.0-20220303013732-0187cb0159ea")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/saracen/zipextra")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j24jdi5495nfq08xm6yjr9s32z13x6y961ry1ihhhgi6s8zdddj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/saracen/zipextra"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "zipextra_example_test.go")))))))
+    (home-page "https://github.com/saracen/zipextra")
+    (synopsis "Encoding and decoding ZIP archive format's \"Extra Fields\"")
+    (description
+     "This package provides a library for encoding and decoding ZIP archive
+format's \"Extra Fields\".  The intention is to eventually support and provide
+a low-level API for the majority of PKWARE's and Info-ZIP's extra fields.")
+    (license license:expat)))
 
 (define-public go-github-com-ulikunitz-xz
   (package
@@ -466,10 +548,6 @@ tool."))))
       #:install-source? #f
       #:import-path "github.com/pierrec/lz4/cmd/lz4c"
       #:unpack-path "github.com/pierrec/lz4"))
-    (native-inputs
-     (list go-code-cloudfoundry-org-bytefmt
-           go-github-com-pierrec-cmdflag
-           go-github-com-schollz-progressbar-v3))
     (description
      (string-append (package-description go-github-com-pierrec-lz4-v4)
                     "  This package provides an additional command line

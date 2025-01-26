@@ -990,34 +990,6 @@ minimalistic.")
       (home-page "https://www.uninformativ.de/git/xiate/file/README.html")
       (license license:expat))))
 
-(define-public go-github.com-nsf-termbox-go
-  (let ((commit "288510b9734e30e7966ec2f22b87c5f8e67345e3")
-        (revision "1"))
-    (package
-      (name "go-github.com-nsf-termbox-go")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/nsf/termbox-go")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0hdyisfaf8yb55h3p03p4sbq19546mp9fy28f2kn659mycmhxqk4"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/nsf/termbox-go"))
-      (propagated-inputs
-       (list go-github-com-mattn-go-runewidth))
-      (synopsis "@code{termbox} provides a minimal API for text-based user
-interfaces")
-      (description
-       "Termbox is a library that provides a minimalistic API which allows the
-programmer to write text-based user interfaces.")
-      (home-page "https://github.com/nsf/termbox-go")
-      (license license:expat))))
-
 (define-public go-github-com-junegunn-fzf
   (package
     (name "go-github-com-junegunn-fzf")

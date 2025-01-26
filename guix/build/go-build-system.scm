@@ -98,6 +98,10 @@
 ;; * Remove module packages, only offering the full Git repos? This is
 ;; more idiomatic, I think, because Go downloads Git repos, not modules.
 ;; What are the trade-offs?
+;; * Figurie out how to passthrough --verbosity option to "build" and "check"
+;; procedures.
+;; * Implement test-backend option, which would be similar to pyproject's
+;; one, allowing to provide custom test runner.
 ;;
 ;; [0] `go build`:
 ;; https://golang.org/cmd/go/#hdr-Compile_packages_and_dependencies
@@ -283,35 +287,71 @@ unpacking."
                 (_ #f))
               inputs))))
 
-(define* (build #:key import-path build-flags (parallel-build? #t)
+(define* (build #:key
+                build-flags
+                skip-build?
+                import-path
+                (parallel-build? #t)
+                (verbosity 1)
                 #:allow-other-keys)
   "Build the package named by IMPORT-PATH."
-  (let* ((njobs (if parallel-build? (parallel-job-count) 1)))
+  (let* ((njobs (if parallel-build? (parallel-job-count) 1))
+         ;; Utilizing GOFLAGS for flexible build options passthrough, refer
+         ;; for more examples to online documentation of Golang
+         ;; <https://go.dev/src/cmd/go/testdata/script/goflags.txt>.
+         (goflags (string-join
+                   (list
+                    ;; Print the name of packages (pathes) as they are compiled.
+                    "-v"
+                    ;; Print each command as it is invoked. When enabled, it
+                    ;; generates a lot of noisy logs which makes identifying
+                    ;; build failures harder to determine.
+                    (if (> verbosity 1) "-x" ""))
+                   " ")))
+    (setenv "GOFLAGS" goflags)
     (setenv "GOMAXPROCS" (number->string njobs)))
 
   (with-throw-handler
-    #t
+      #t
     (lambda _
-      (apply invoke "go" "install"
-              "-v" ; print the name of packages as they are compiled
-              "-x" ; print each command as it is invoked
-              ;; Respectively, strip the symbol table and debug
-              ;; information, and the DWARF symbol table.
-              "-ldflags=-s -w"
-              "-trimpath"
-              `(,@build-flags ,import-path)))
+      (if skip-build?
+          (begin
+            (format #t "Build is skipped, no go files in project's root.~%")
+            #t)
+          (apply invoke "go" "install"
+                 ;; Respectively, strip the symbol table and debug
+                 ;; information, and the DWARF symbol table.
+                 "-ldflags=-s -w"
+                 ;; Remove all file system paths from the resulting
+                 ;; executable.  Instead of absolute file system paths, the
+                 ;; recorded file names will begin either a module
+                 ;; path@version (when using modules), or a plain import path
+                 ;; (when using the standard library, or GOPATH).
+                 "-trimpath"
+                 `(,@build-flags ,import-path))))
+
     (lambda (key . args)
       (display (string-append "Building '" import-path "' failed.\n"
                               "Here are the results of `go env`:\n"))
       (invoke "go" "env"))))
 
-(define* (check #:key tests? import-path test-flags (parallel-tests? #t)
+(define* (check #:key
+                tests?
+                import-path
+                test-flags
+                test-subdirs
+                (parallel-tests? #t)
                 #:allow-other-keys)
   "Run the tests for the package named by IMPORT-PATH."
   (when tests?
     (let* ((njobs (if parallel-tests? (parallel-job-count) 1)))
       (setenv "GOMAXPROCS" (number->string njobs)))
-    (apply invoke "go" "test" `(,import-path ,@test-flags)))
+    (apply invoke "go" "test"
+           `(,@(map (lambda (dir)
+                      (format #f "~a~:[/~;~]~a"
+                              import-path (string-null? dir) dir))
+                    test-subdirs)
+             ,@test-flags)))
   #t)
 
 (define* (install #:key install-source? outputs import-path unpack-path #:allow-other-keys)

@@ -204,8 +204,10 @@ commit hash and its date rather than a proper release tag."
                    (import-path "")
                    (unpack-path "")
                    (build-flags ''())
+                   (skip-build? #f)
                    (tests? #t)
                    (test-flags ''())
+                   (test-subdirs ''("..."))
                    (parallel-build? #t)
                    (parallel-tests? #t)
                    (allow-go-reference? #f)
@@ -238,8 +240,10 @@ commit hash and its date rather than a proper release tag."
                     #:import-path #$import-path
                     #:unpack-path #$unpack-path
                     #:build-flags #$build-flags
+                    #:skip-build? #$skip-build?
                     #:tests? #$tests?
                     #:test-flags #$test-flags
+                    #:test-subdirs #$test-subdirs
                     #:parallel-build? #$parallel-build?
                     #:parallel-tests? #$parallel-tests?
                     #:allow-go-reference? #$allow-go-reference?
@@ -263,8 +267,10 @@ commit hash and its date rather than a proper release tag."
                          (import-path "")
                          (unpack-path "")
                          (build-flags ''())
+                         (skip-build? #f)
                          (tests? #f)              ; nothing can be done
                          (test-flags ''())
+                         (test-subdirs ''("..."))
                          (allow-go-reference? #f)
                          (system (%current-system))
                          (goarch (first (go-target target)))
@@ -315,8 +321,10 @@ commit hash and its date rather than a proper release tag."
                     #:import-path #$import-path
                     #:unpack-path #$unpack-path
                     #:build-flags #$build-flags
+                    #:skip-build? #$skip-build?
                     #:tests? #$tests?
                     #:test-flags #$test-flags
+                    #:test-subdirs #$test-subdirs
                     #:make-dynamic-linker-cache? #f ;cross-compiling
                     #:allow-go-reference? #$allow-go-reference?
                     #:inputs %build-inputs))))

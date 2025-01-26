@@ -34,6 +34,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz))
@@ -129,7 +130,7 @@ registry.")
 (define-public go-github-com-prometheus-client-golang
   (package
     (name "go-github-com-prometheus-client-golang")
-    (version "1.19.1")
+    (version "1.20.5")
     (source
      (origin
        (method git-fetch)
@@ -138,15 +139,27 @@ registry.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mx5q221pbkx081ycf1lp8sxz513220ya8qczkkvab943cwlcarv"))))
+        (base32 "1q3n22p5ic22xzha6mffh0m0jzbxrkyjrcmnxsnanl61jwb4rkpw"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - dagger
+            ;; - .bingo - fake module
+            (delete-file-recursively "dagger")
+            (delete-file-recursively ".bingo")))))
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       ;; XXX: Check if the most of the tests may be enabled:
       ;; api/prometheus/v1/api_test.go:1063:23: cannot use 1634644800304
       ;; (untyped int constant) as int value in map literal (overflows)
       #:tests? (target-64bit?)
       #:import-path "github.com/prometheus/client_golang"
+      ;; Assertion fails in one test.
+      #:test-flags #~(list "-skip" "TestHandler")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples-and-tutorials
@@ -155,19 +168,14 @@ registry.")
                 (for-each delete-file-recursively
                           (list "api/prometheus/v1/example_test.go"
                                 "examples"
-                                "tutorial")))))
-          ;; XXX: Workaround for go-build-system's lack of Go modules support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+                                "tutorials"))))))))
     (propagated-inputs
      (list go-github-com-beorn7-perks
            go-github-com-cespare-xxhash-v2
-           go-github-com-davecgh-go-spew
+           go-github-com-google-go-cmp
            go-github-com-json-iterator-go
+           go-github-com-klauspost-compress
+           go-github-com-kylelemons-godebug
            go-github-com-prometheus-client-model
            go-github-com-prometheus-common
            go-github-com-prometheus-procfs
@@ -213,7 +221,7 @@ Prometheus metrics.")
 (define-public go-github-com-prometheus-common
   (package
     (name "go-github-com-prometheus-common")
-    (version "0.55.0")
+    (version "0.61.0")
     (source
      (origin
        (method git-fetch)
@@ -222,7 +230,7 @@ Prometheus metrics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bsbxil7qz8rhckhv0844nmn38g7i7347cjv5m6na47hbdpi0rqh"))
+        (base32 "0wng61rzvh27s2rlaadvjbffwgpn74p1wjrz6insl57k1pg3cmcn"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -289,16 +297,17 @@ metrics.")
 (define-public go-github-com-prometheus-common-assets
   (package
     (name "go-github-com-prometheus-common-assets")
-    (version "0.55.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/prometheus/common")
-             (commit (string-append "v" version))))
+             (commit (go-version->git-ref version
+                                          #:subdir "assets"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bsbxil7qz8rhckhv0844nmn38g7i7347cjv5m6na47hbdpi0rqh"))))
+        (base32 "0r7sym4yaysbkc5anyypl57v9ay0a1flq00j85j7lcficl2scwrs"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -369,7 +378,7 @@ from the default AWS credential chain.")
 (define-public go-github-com-prometheus-community-pro-bing
   (package
     (name "go-github-com-prometheus-community-pro-bing")
-    (version "0.4.1")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -378,15 +387,19 @@ from the default AWS credential chain.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yz4cf1qrm1jrzw2yd5p08663hynk4ihlf5mi2fn6irnzh343a7b"))))
+        (base32 "19757nqz0cpq7ir2w5xgjxpblhmkpk0j7spfw4j68agavbx6hxpm"))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; Tests requiring network setup.
+      ;; Tests requiring network setup, and root access.
       #:test-flags
-      #~(list "-skip" (string-append "TestNewPingerValid"
-                                     "|TestSetIPAddr"
-                                     "|TestSetResolveTimeout"))
+      #~(list "-skip"
+              (string-join
+               (list "TestNewPingerValid"
+                     "TestSetIPAddr"
+                     "TestSetInterfaceName"
+                     "TestSetResolveTimeout")
+               "|"))
       #:import-path "github.com/prometheus-community/pro-bing"))
     (propagated-inputs
      (list go-github-com-google-uuid
@@ -402,7 +415,7 @@ Protocol,ICMP} echo (ping) functionality.")
 (define-public go-github-com-prometheus-exporter-toolkit
   (package
     (name "go-github-com-prometheus-exporter-toolkit")
-    (version "0.11.0")
+    (version "0.13.2")
     (source
      (origin
        (method git-fetch)
@@ -411,7 +424,7 @@ Protocol,ICMP} echo (ping) functionality.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n46jw3b13g355iv8phxxnnci7a877y5dscc1rlj3rpz4vy6yfzx"))))
+        (base32 "05k4sfrc1zs96iprgnap0gd42vwfq47j6vg2bv83nckcv731gmiv"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -433,6 +446,7 @@ Protocol,ICMP} echo (ping) functionality.")
      (list go-github-com-alecthomas-kingpin-v2
            go-github-com-coreos-go-systemd-v22
            go-github-com-go-kit-log
+           go-github-com-mdlayher-vsock
            ; Imported for go-github-com-prometheus-common to break the cycle.
            go-github-com-prometheus-client-golang
            go-github-com-prometheus-common
@@ -494,10 +508,30 @@ Protocol,ICMP} echo (ping) functionality.")
 kernel, and process metrics from the @file{/proc} pseudo file system.")
     (license license:asl2.0)))
 
+;; To make it compatible with node_exporter, see
+;; <https://github.com/prometheus/node_exporter/issues/3143>.
+(define-public go-github-com-prometheus-procfs-next
+  (let ((commit "24ab3d8d880d820115eef19f7b0c2c38fffd6a25")
+        (revision "0"))
+    (hidden-package
+     (package
+       (inherit go-github-com-prometheus-procfs)
+       (name "go-github-com-prometheus-procfs")
+       (version (git-version "0.15.2" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/prometheus/procfs")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "0fv3f83q5wigbpl6mdpk4k7bj8jabc81rap0ym95l7rpw93cdlim"))))))))
+
 (define-public go-github-com-prometheus-statsd-exporter
   (package
     (name "go-github-com-prometheus-statsd-exporter")
-    (version "0.27.1")
+    (version "0.28.0")
     (source
      (origin
        (method git-fetch)
@@ -506,7 +540,7 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y8n02h46q22wkcm2yy62bzsi9hxrarmvjamfpn2sygqhbb1pv38"))))
+        (base32 "0h7ypmsx1j6x1p5wdj03i3jzwms7ab03asn2capl1gg6x07k57w7"))))
     (build-system go-build-system)
     (arguments
      (list

@@ -713,59 +713,6 @@ around TangentOrg’s libmemcached library, and can be used as a drop-in
 replacement for the @code{python-memcached} library.")
     (license license:bsd-3)))
 
-(define-public go-github-com-bradfitz-gomemcache
-  (package
-    (name "go-github-com-bradfitz-gomemcache")
-    (version "0.0.0-20190913173617-a41fca850d0b")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/bradfitz/gomemcache")
-               (commit (go-version->git-ref version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "18qpds6xr73jy80pj7l3pc1l1ndcy3va2dl8fzk17bgwg49sxwfz"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;; Fixes the 'untyped-int -> string of one rune' issue.
-            ;; https://github.com/golang/go/issues/32479
-            (substitute* "memcache/memcache_test.go"
-              (("string\\(0x7f") "string(rune(0x7f)"))))))
-    (build-system go-build-system)
-    (arguments
-     '(#:unpack-path "github.com/bradfitz/gomemcache"
-       #:import-path "github.com/bradfitz/gomemcache/memcache"))
-    (home-page "https://github.com/bradfitz/gomemcache")
-    (synopsis "Memcache client library in Go")
-    (description
-     "This is a memcache client library for the Go programming language.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-couchbase-gomemcached
-  (package
-    (name "go-github-com-couchbase-gomemcached")
-    (version "0.1.4")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/couchbase/gomemcached")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "10w74gc05x5naspls39sv2r92krrg31mk266w3lyqqwc0s3fxysl"))))
-    (build-system go-build-system)
-    (arguments '(#:import-path "github.com/couchbase/gomemcached"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (home-page "https://github.com/couchbase/gomemcached")
-    (synopsis "Memcached binary protocol toolkit for go")
-    (description
-     "This package provides memcache client and server functionality.")
-    (license license:expat)))
-
 (define-public litecli
  (package
   (name "litecli")
@@ -3030,32 +2977,6 @@ one-to-one, while still providing an idiomatic interface.")
      "Package rdb implements parsing and encoding of the Redis RDB file format.")
     (license license:expat)))
 
-(define-public go-github-com-gomodule-redigo
-  (package
-    (name "go-github-com-gomodule-redigo")
-    (version "1.8.8")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/gomodule/redigo")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0wplaaxg7f6c6c08gdp33l48hygn8gq1rhlnjzr1c9qcggsm07k1"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:unpack-path "github.com/gomodule/redigo"
-       #:import-path "github.com/gomodule/redigo/redis"))
-    (native-inputs
-     (list go-github-com-stretchr-testify
-           redis))
-    (home-page "https://github.com/gomodule/redigo")
-    (synopsis "Go client for Redis")
-    (description
-     "Redigo is a Go client for the Redis database.")
-    (license license:asl2.0)))
-
 (define-public kyotocabinet
   (package
     (name "kyotocabinet")
@@ -3675,34 +3596,6 @@ file format to other databases such as MySQL, Oracle, Sybase, PostgreSQL,
 etc., and an SQL engine for performing simple SQL queries.")
     (license (list license:lgpl2.0
                    license:gpl2+))))
-
-(define-public go-gopkg-in-mgo-v2
-  (package
-    (name "go-gopkg-in-mgo-v2")
-    (version "2.0.0-20190816093944-a6b53ec6cb22")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://gopkg.in/mgo.v2")
-               (commit (go-version->git-ref version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "1lgvwxsbmdrf4938qkxl56wbwgbphk2qqnmpf73qdmlv4qsg14na"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:tests? #f      ; Tests try to use a running mongodb server.
-       #:import-path "gopkg.in/mgo.v2"))
-    (propagated-inputs
-     (list go-gopkg.in-tomb.v2))
-    (inputs
-     (list cyrus-sasl))
-    (native-inputs
-     (list go-gopkg-in-check-v1))
-    (home-page "https://gopkg.in/mgo.v2")
-    (synopsis "MongoDB driver for Go")
-    (description "This package provides a MongoDB driver for Go.")
-    (license license:bsd-2)))
 
 (define-public python-lmdb
   (package
@@ -5803,7 +5696,17 @@ compatible with SQLite using a graphical user interface.")
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/lighttiger2505/sqls"))
+      #:import-path "github.com/lighttiger2505/sqls"
+      ;; XXX: Try to enable more or all tests.
+      #:test-subdirs #~(list "ast/..."
+                             "dialect/..."
+                             "parser/..."
+                             "internal/completer"
+                             "internal/config/..."
+                             "internal/database"
+                             "internal/debug"
+                             "internal/formatter"
+                             "internal/lsp")))
     (native-inputs
      (list go-github-com-google-go-cmp
            go-github-com-go-sql-driver-mysql

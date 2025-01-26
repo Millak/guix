@@ -54,6 +54,9 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)               ;libnotify
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages ncurses)
@@ -62,6 +65,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages prometheus)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
@@ -521,27 +525,92 @@ Metrics can be exposed through a standalone web server, or through Twisted,
 WSGI and the node exporter textfile collector.")
     (license license:asl2.0)))
 
-(define-public go-github-com-prometheus-node-exporter
-  (package
-    (name "go-github-com-prometheus-node-exporter")
-    (version "0.18.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/prometheus/node_exporter")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0s3sp1gj86p7npxl38hkgs6ymd3wjjmc5hydyg1b5wh0x3yvpx07"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/prometheus/node_exporter"))
-    (synopsis "Prometheus exporter for hardware and OS metrics")
-    (description "Prometheus exporter for metrics exposed by *NIX kernels,
+(define-public prometheus-node-exporter
+  ;; The latest release is failing to build, use the latest commit from the
+  ;; master branch.
+  (let ((commit "b8aac7c92e2d7f3dea56b2d4802d4ef3ee29c3cc")
+        (revision "0"))
+    (package
+      (name "prometheus-node-exporter")
+      (version (git-version "1.8.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/prometheus/node_exporter")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0n2s2z168xzp6i0ihaqvvs8zinp1iqld45c6lj89x7wjv8m741j3"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:install-source? #f
+        #:build-flags
+        #~(list (string-append
+                 "-ldflags="
+                 "-X github.com/prometheus/common/version.Version=" #$version
+                 " -X github.com/prometheus/common/version.Revision=" #$revision
+                 " -X github.com/prometheus/common/version.Branch=master"
+                 " -X github.com/prometheus/common/version.BuildUser=guix"
+                 " -X github.com/prometheus/common/version.BuildDate=n/a"))
+        #:embed-files #~(list "landing_page.css" "landing_page.html")
+        #:import-path "github.com/prometheus/node_exporter"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'pre-check
+              (lambda* (#:key tests? import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "./ttar" "-C" "collector/fixtures"
+                          "-x" "-f" "collector/fixtures/sys.ttar")
+                  (invoke "./ttar" "-C" "collector/fixtures"
+                          "-x" "-f" "collector/fixtures/udev.ttar"))))
+            (add-after 'check 'post-check
+              (lambda* (#:key tests? import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (for-each delete-file-recursively
+                            (list "collector/fixtures/sys"
+                                  "collector/fixtures/sys.ttar"
+                                  "collector/fixtures/udev"
+                                  "collector/fixtures/udev.ttar"))))))))
+      (propagated-inputs
+       (list go-github-com-alecthomas-kingpin-v2
+             go-github-com-beevik-ntp
+             go-github-com-coreos-go-systemd-v22
+             go-github-com-dennwc-btrfs
+             go-github-com-ema-qdisc
+             go-github-com-go-kit-log
+             go-github-com-godbus-dbus-v5
+             go-github-com-hashicorp-go-envparse
+             go-github-com-hodgesds-perf-utils
+             go-github-com-josharian-native
+             go-github-com-jsimonetti-rtnetlink
+             go-github-com-mattn-go-xmlrpc
+             go-github-com-mdlayher-ethtool
+             go-github-com-mdlayher-netlink
+             go-github-com-mdlayher-wifi
+             go-github-com-jsimonetti-rtnetlink-v2
+             go-github-com-opencontainers-selinux
+             go-github-com-prometheus-client-golang
+             go-github-com-prometheus-client-model
+             go-github-com-prometheus-common
+             go-github-com-prometheus-community-go-runit
+             go-github-com-prometheus-exporter-toolkit
+             go-github-com-prometheus-procfs-next
+             go-github-com-safchain-ethtool
+             go-golang-org-x-exp
+             go-golang-org-x-sys
+             go-howett-net-plist))
+      (home-page "https://github.com/prometheus/node_exporter")
+      (synopsis "Prometheus exporter for hardware and OS metrics")
+      (description
+       "Prometheus exporter for metrics exposed by *NIX kernels,
 written in Go with pluggable metric collectors.")
-    (home-page "https://github.com/prometheus/node_exporter")
-    (license license:asl2.0)))
+      (license license:asl2.0))))
+
+(define-public go-github-com-prometheus-node-exporter
+  (deprecated-package "go-github-com-prometheus-node-exporter"
+                      prometheus-node-exporter))
 
 (define-public temper-exporter
   (let ((commit "a87bbab19c05609d62d9e4c7941178700c1ef84d")

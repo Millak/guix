@@ -1,7 +1,9 @@
-From bc22f7d43c12c5f79c71b0319666e71f29d61322 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Jakub=20K=C4=85dzio=C5=82ka?= <kuba@kadziolka.net>
-Date: Mon, 25 May 2020 18:53:04 +0200
+From a0e422b11a65d63bd435c96bee3cd08f06bb8ec8 Mon Sep 17 00:00:00 2001
+From: Sharlatan Hellseher <sharlatanus@gmail.com>
+Date: Mon, 23 Dec 2024 01:59:10 +0000
 Subject: [PATCH] Disable self-update.
+
+For exercism cli V3.5.4.
 
 Based on a Fedora patch by Elliott Sales de Andrade.
 ---
@@ -9,13 +11,13 @@ Based on a Fedora patch by Elliott Sales de Andrade.
  1 file changed, 1 insertion(+), 43 deletions(-)
 
 diff --git a/cli/cli.go b/cli/cli.go
-index 4312eb0..5f62297 100644
+index fe113ec..3baa4b0 100644
 --- a/cli/cli.go
 +++ b/cli/cli.go
 @@ -10,13 +10,10 @@ import (
  	"io"
- 	"io/ioutil"
  	"net/http"
+ 	"os"
 -	"runtime"
  	"strings"
  	"time"
@@ -75,5 +77,4 @@ index 4312eb0..5f62297 100644
  
  func (c *CLI) fetchLatestRelease() error {
 -- 
-2.26.2
-
+2.46.0

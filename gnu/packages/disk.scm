@@ -71,7 +71,6 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
-  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphics)
@@ -1324,7 +1323,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
 (define-public lf
   (package
     (name "lf")
-    (version "31")
+    (version "33")
     (source
      (origin
        (method git-fetch)
@@ -1333,7 +1332,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
              (commit (string-append "r" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03icsf4c3j7295s1d8s6srz5gf09a3lghgw3zfcd86p03zhkzsaf"))))
+        (base32 "1jmqf27ysi35n3hqahlzs5hym7i4w1mplklrvv0lc0baddzx7av8"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1341,10 +1340,13 @@ on your file system and offers to remove it.  @command{rmlint} can find:
       #:import-path "github.com/gokcehan/lf"))
     (native-inputs
      (list go-github-com-djherbis-times
+           go-github-com-fsnotify-fsnotify
            go-github-com-gdamore-tcell-v2
            go-github-com-mattn-go-runewidth
+           go-github-com-xuanwo-go-locale
+           go-golang-org-x-sys
            go-golang-org-x-term
-           go-gopkg-in-djherbis-times-v1))
+           go-golang-org-x-text))
     (home-page "https://github.com/gokcehan/lf")
     (synopsis "Console file browser similar to Ranger")
     (description

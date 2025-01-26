@@ -49,7 +49,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
-  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages perl)
@@ -436,36 +436,44 @@ configured to show the current time in different timezones.")
       (license license:bsd-3))))
 
 (define-public hebcal
-  (let ((commit "2384bb88dc1a41a4a5ae57a29fb58b2dd49a475d")
-        (revision "0"))
-    (package
-      (name "hebcal")
-      (version (git-version "5.3.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/hebcal/hebcal")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "12rv3b51jb7wcjwmmizz9jkw7gh37yklys4xncvpzgxdkkfgmmjx"))))
-      (build-system go-build-system)
-      (arguments
-       (list #:import-path "github.com/hebcal/hebcal"))
-      (inputs
-       (list go-github-com-hebcal-hebcal-go
-             go-github-com-pborman-getopt))
-      (synopsis "Perpetual Jewish Calendar program")
-      (description
-       "Hebcal is a program for converting between Hebrew and Gregorian
-dates, and generating lists of Jewish holidays for a given year.
-Shabbat, holiday candle lighting, and havdalah times are approximated
-using your location.
+  (package
+    (name "hebcal")
+    (version "5.8.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hebcal/hebcal")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a1b9jip1ha6bzv6xg9fx47q167yzgbxjvrp5zngv175nzl9427j"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/hebcal/hebcal"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; taken from Makefile
+          (add-after 'unpack 'set-defautl-city
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (with-output-to-file "dcity.go"
+                  (lambda ()
+                    (format #t "package main~%var defaultCity = ~s~%"
+                            "Paris")))))))))
+    (inputs
+     (list go-github-com-hebcal-hebcal-go
+           go-github-com-pborman-getopt-v2))
+    (home-page "https://github.com/hebcal/hebcal")
+    (synopsis "Perpetual Jewish Calendar program")
+    (description
+     "Hebcal is a program for converting between Hebrew and Gregorian dates,
+and generating lists of Jewish holidays for a given year.  Shabbat, holiday
+candle lighting, and havdalah times are approximated using your location.
 
-It can also show daily prayer times, the weekly Torah reading, and
-the daily leaf of Talmud.  The program can help with counting of the
-Omer or with calculation of Hebrew yahrzeits, birthdays, or
-anniversaries.")
-      (home-page "https://github.com/hebcal/hebcal")
-      (license license:gpl2+))))
+It can also show daily prayer times, the weekly Torah reading, and the daily
+leaf of Talmud.  The program can help with counting of the Omer or with
+calculation of Hebrew yahrzeits, birthdays, or anniversaries.")
+      (license license:gpl2+)))

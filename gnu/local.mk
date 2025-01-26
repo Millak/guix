@@ -342,6 +342,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/golang-compression.scm		\
   %D%/packages/golang-crypto.scm	      	\
   %D%/packages/golang-maths.scm		\
+  %D%/packages/golang-vcs.scm	        	\
   %D%/packages/golang-web.scm	        	\
   %D%/packages/golang-xyz.scm	        	\
   %D%/packages/gperf.scm			\
@@ -1507,8 +1508,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/go-fix-script-tests.patch			\
   %D%/packages/patches/go-gopkg-in-yaml-v3-32bit.patch		\
   %D%/packages/patches/go-github-com-golang-snappy-32bit-test.patch \
-  %D%/packages/patches/go-github-com-urfave-cli-fix-tests.patch \
-  %D%/packages/patches/go-github-com-urfave-cli-v2-fix-tests.patch \
   %D%/packages/patches/go-github-com-warpfork-go-wish-fix-tests.patch \
   %D%/packages/patches/go-github-com-wraparound-wrap-free-fonts.patch \
   %D%/packages/patches/go-skip-gc-test.patch			\

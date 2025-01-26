@@ -215,6 +215,21 @@ applications.")
        (sha256
         (base32 "0r1d0l3mmb90956wl97vqlb3cdhax7jkqa95hvx9b380g93a08py"))))
     (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/nats-io/nats-server"
+      ;; The test logic is taken from project's GitHub Actions workflow file
+      ;; <.github/workflows/tests.yaml>.
+      #:test-flags
+      #~(list "-count=1" "-vet=off" "-failfast"
+              "-skip" (string-join
+                       (list "TestHTTPHost"
+                             "TestSysLogger"
+                             "TestLogMaxArchives")
+                       "|") )
+      #:test-subdirs
+      #~(list "conf/..." "internal/..." "logger/..." "test/...")))
     (inputs
      (list go-github-com-klauspost-compress
            go-github-com-minio-highwayhash
@@ -226,10 +241,6 @@ applications.")
            go-golang-org-x-crypto
            go-golang-org-x-sys
            go-golang-org-x-time))
-    (arguments
-     (list
-      #:import-path "github.com/nats-io/nats-server"
-      #:install-source? #f))
     (home-page "https://github.com/nats-io/nats-server")
     (synopsis "High performance message broker")
     (description

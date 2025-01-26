@@ -47,7 +47,6 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
-  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
@@ -320,7 +319,8 @@ Currently available boards include:
                  (with-directory-excursion bin
                    (rename-file "v1" "gotypist"))))))))
       (native-inputs
-       (list go-github-com-gizak-termui go-github-com-stretchr-testify))
+       (list go-github-com-gizak-termui-v3
+             go-github-com-stretchr-testify))
       (home-page "https://github.com/KappaDistributive/gotypist")
       (synopsis "Simple typing trainer for text terminals")
       (description
@@ -1111,7 +1111,7 @@ machine, and more.")
 (define-public exercism
   (package
     (name "exercism")
-    (version "3.1.0")
+    (version "3.5.4")
     (source
      (origin
        (method git-fetch)
@@ -1121,7 +1121,7 @@ machine, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ah5v4pqq31bvj7s4rg3jyjn7jwxa15w31cn4c317gsqmi0n8rzl"))
+         "0shh84g7j977kn9kcm09rj3lz6a3y5qq9yvklsldgb9zvass5szd"))
        (patches (search-patches "exercism-disable-self-update.patch"))))
     (build-system go-build-system)
     (arguments

@@ -81,8 +81,8 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
-  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages image)
@@ -576,7 +576,7 @@ It supports JPEG, PNG and GIF formats.")
 (define-public pixterm
   (package
     (name "pixterm")
-    (version "1.3.1")
+    (version "1.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -585,14 +585,14 @@ It supports JPEG, PNG and GIF formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fm6c0mjz6zillqjirnjjf7mkrax1gyfcv6777i07ms3bnv0pcii"))))
+                "08x0pwnl3cyq5f29fxj379p9klzxl85p8jq2595xdz3mhb3pkgsg"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/eliukblau/pixterm/cmd/pixterm"
+     '(#:install-source? #f
+       #:import-path "github.com/eliukblau/pixterm/cmd/pixterm"
        #:unpack-path "github.com/eliukblau/pixterm"))
     (inputs (list go-github-com-disintegration-imaging
                   go-github-com-lucasb-eyer-go-colorful
-                  go-golang-org-x-crypto
                   go-golang-org-x-image
                   go-golang-org-x-term))
     (home-page "https://github.com/eliukblau/pixterm")

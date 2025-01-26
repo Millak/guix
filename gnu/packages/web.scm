@@ -370,12 +370,6 @@ and its related documentation.")
                #$version))
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: Replace when go-build-system supports nested path.
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./...")))))
           (add-after 'install 'install-manpage
             (lambda* (#:key import-path #:allow-other-keys)
               (let ((man1 (string-append #$output "/share/man/man1/"))
@@ -402,8 +396,7 @@ and its related documentation.")
            go-golang-org-x-net
            go-golang-org-x-oauth2
            go-golang-org-x-term
-           go-golang-org-x-text
-           go-mvdan-cc-xurls-v2))
+           go-golang-org-x-text))
     (home-page "https://miniflux.app/")
     (synopsis "Minimalist and opinionated feed reader")
     (description
@@ -1961,7 +1954,7 @@ UTS#46.")
 (define-public esbuild
   (package
     (name "esbuild")
-    (version "0.14.0")
+    (version "0.24.0")
     (source
      (origin
        (method git-fetch)
@@ -1970,43 +1963,28 @@ UTS#46.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09r1xy0kk6c9cpz6q0mxr4why373pwxbm439z2ihq3k1d5kk7x4w"))
+        (base32 "1j99m7rdql6iq3llrr8bm85hq34ssc8bmb6vhwr1ibgspjl0jd3k"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Remove prebuilt binaries
-           (delete-file-recursively "npm")
-           #t))))
+        #~(begin
+            ;; Remove prebuilt binaries
+            (delete-file-recursively "npm")))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/evanw/esbuild/cmd/esbuild"
-       #:unpack-path "github.com/evanw/esbuild"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? unpack-path #:allow-other-keys)
-             (when tests?
-               ;; The "Go Race Detector" is only supported on 64-bit
-               ;; platforms, this variable disables it.
-               ;; TODO: Causes too many rebuilds, rewrite to limit to x86_64,
-               ;; aarch64 and ppc64le.
-               ,(if (target-riscv64?)
-                  `(setenv "ESBUILD_RACE" "")
-                  `(unless ,(target-64bit?)
-                     (setenv "ESBUILD_RACE" "")))
-               (with-directory-excursion (string-append "src/" unpack-path)
-                 (invoke "make" "test-go")))
-             #t)))))
+     (list
+      #:import-path "github.com/evanw/esbuild/cmd/esbuild"
+      #:unpack-path "github.com/evanw/esbuild"
+      #:test-flags #~(list #$(if (target-64bit?) "-race" "-short"))
+      ;; Test subdirectories are compiled from #:import-path.
+      #:test-subdirs #~(list "../../internal/..." "../../pkg/..." )))
     (inputs
-     `(("golang.org/x/sys" ,go-golang-org-x-sys)))
-    (native-inputs
-     `(("github.com/kylelemons/godebug" ,go-github-com-kylelemons-godebug)))
+     (list go-golang-org-x-sys-for-esbuild))
     (home-page "https://esbuild.github.io/")
     (synopsis "Bundler and minifier tool for JavaScript and TypeScript")
     (description
-     "The esbuild tool provides a unified bundler, transpiler and
-minifier.  It packages up JavaScript and TypeScript code, along with JSON
-and other data, for distribution on the web.")
+     "The esbuild tool provides a unified bundler, transpiler and minifier.
+It packages up JavaScript and TypeScript code, along with JSON and other data,
+for distribution on the web.")
     (license license:expat)))
 
 (define-public tinyproxy
@@ -5550,13 +5528,17 @@ you'd expect.")
                 "0s7c8r6y5jv6wda2v3k47hawfdr9j3rwk717l6byvh5qsbbml0vd"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/mikefarah/yq/v4"
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'remove-binary
-                 (lambda _
-                   (delete-file-recursively
-                    (string-append #$output "/bin")))))))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/mikefarah/yq/v4"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests need this.
+          (add-after 'unpack 'fix-access-to-doc
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each make-file-writable
+                          (find-files "./pkg/yqlib/doc" "\\.md"))))))))
     (propagated-inputs
      (list go-github-com-a8m-envsubst
            go-github-com-alecthomas-participle-v2
@@ -5591,14 +5573,12 @@ JSON, XML, properties, CSV and TSV.")
     (inherit go-github-com-mikefarah-yq-v4)
     (name "yq")
     (arguments
-     (list #:install-source? #f
-           #:import-path "github.com/mikefarah/yq/v4"
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'rename-binary
-                 (lambda _
-                   (rename-file (string-append #$output "/bin/v4")
-                                (string-append #$output "/bin/yq")))))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-mikefarah-yq-v4)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:import-path _) "github.com/mikefarah/yq")))
     (propagated-inputs '())
     (inputs (package-propagated-inputs go-github-com-mikefarah-yq-v4))))
 
@@ -9011,7 +8991,7 @@ Anonip can also be uses as a Python module in your own Python application.")
          "0kckcwvqklavd855np9aq5js6mg84isrlwchr504yigwma0sm7hm"))))
     (build-system go-build-system)
     (propagated-inputs
-     (list go-github-com-robfig-cron go-golang-org-x-time))
+     (list go-github-com-robfig-cron-v3 go-golang-org-x-time))
     (arguments
      `(#:import-path "github.com/tsileo/poussetaches"))
     (home-page "https://github.com/tsileo/poussetaches")

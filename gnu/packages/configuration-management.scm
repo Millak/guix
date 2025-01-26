@@ -25,9 +25,9 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-vcs)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
-  #:use-module (gnu packages version-control)
   #:use-module (gnu packages textutils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -100,7 +100,7 @@
            go-github-com-spf13-viper
            go-github-com-stretchr-testify
            go-github-com-twpayne-go-shell
-           go-github-com-twpayne-go-vfs
+           go-github-com-twpayne-go-vfs-1.0.1
            go-github-com-twpayne-go-vfsafero
            go-github-com-twpayne-go-xdg-v3
            go-github-com-zalando-go-keyring

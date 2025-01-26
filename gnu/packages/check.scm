@@ -32,6 +32,7 @@
 ;;; Copyright © 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Josh Marshall <joshua.r.marshall.1991@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -1124,6 +1125,53 @@ generation.")
 similar to unit tests.")
     (license license:asl2.0)))
 
+(define-public gotestsum
+  (package
+    (name "gotestsum")
+    (version "1.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gotestyourself/gotestsum")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fx92jh6ay4rk1ljbgp9b2m4fafqwy0a19q7lhdabgb1j8dvgxvs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gotest.tools/gotestsum"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "TestE2E_IgnoresWarnings"
+                     "TestE2E_MaxFails_EndTestRun"
+                     "TestScanTestOutput_TestTimeoutPanicRace/panic-race-2")
+               "|"))
+      ;; Run just unit test, integration tests from "testjson" require: run
+      ;; 'go test . -update' to automatically update
+      ;; testdata/summary/with-run-id to the new expected value.'
+      #:test-subdirs #~(list "cmd/..." "internal/...")))
+    (native-inputs
+     (list go-github-com-bitfield-gotestdox
+           go-github-com-dnephin-pflag
+           go-github-com-fatih-color
+           go-github-com-fsnotify-fsnotify
+           go-github-com-google-go-cmp
+           go-github-com-google-shlex
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-tools
+           go-gotest-tools-v3))
+    (synopsis "Go test runner with output optimized for humans")
+    (description "This package provides a @code{go test} runner with output
+optimized for humans, JUnit XML for CI integration, and a summary of the
+test results.")
+    (home-page "https://github.com/gotestyourself/gotestsum")
+    (license license:asl2.0)))
+
 (define-public greatest
   (package
    (name "greatest")
@@ -1301,7 +1349,7 @@ but it works for any C/C++ project.")
 (define-public actionlint
   (package
     (name "actionlint")
-    (version "1.7.2")
+    (version "1.7.6")
     (source
      (origin
        (method git-fetch)
@@ -1310,7 +1358,7 @@ but it works for any C/C++ project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rgsxv4clgfyl4gr8bjk81p4b87c6hr34flxzw6011h0vjc54n7x"))))
+        (base32 "1waq9v48pbys8b8qmmvl0wi77jzri033fh8194gcwfzipvxb6y9l"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1322,13 +1370,16 @@ but it works for any C/C++ project.")
       #:unpack-path "github.com/rhysd/actionlint"))
     ;; XXX: Install Man page, wrap with shellcheck and pyflakes.
     (native-inputs
-     (list go-github-com-fatih-color
+     (list go-github-com-bmatcuk-doublestar-v4
+           go-github-com-fatih-color
+           go-github-com-google-go-cmp
            go-github-com-mattn-go-colorable
            go-github-com-mattn-go-runewidth
-           go-github-com-robfig-cron
+           go-github-com-mattn-go-shellwords
+           go-github-com-robfig-cron-v3
+           go-github-com-yuin-goldmark
            go-golang-org-x-sync
-           go-golang-org-x-sync
-           go-github-com-google-go-cmp
+           go-golang-org-x-sys
            go-gopkg-in-yaml-v3))
     (home-page "https://rhysd.github.io/actionlint/")
     (synopsis "Static checker for GitHub Actions workflow files")
