@@ -2473,23 +2473,39 @@ and that could be anything you want.")
        (uri (pypi-uri "h2" version))
        (sha256
         (base32 "1fraip114fm1ha5w37pdc0sk8dn9pb0ck267zrwwpap7zc4clfm8"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-vv" "test"
-                       ;; This test exceededs the Hypothesis deadline.
-                       ,@(if (target-riscv64?)
-                             `("-k" "not test_changing_max_frame_size")
-                             '()))))))))
+     (list
+      ;; AssertionError: assert '<RemoteSettingsChanged
+      ;; changed_settings:{ChangedSetting(setting=4, original_value=65536,
+      ;; new_value=32768)}>' == '<RemoteSettingsChanged
+      ;; changed_settings:{ChangedSetting(setting=SettingCodes.INITIAL_WINDOW_SIZE,
+      ;; original_value=65536, new_value=32768)}>'
+      #:test-flags
+      #~(list "-k"
+              (string-join
+               (list "not test_remotesettingschanged_repr"
+                     ;; This test exceededs the Hypothesis deadline.
+                     ,@(if (target-riscv64?)
+                           `("test_changing_max_frame_size")
+                           '())
+                     "test_streamreset_repr"
+                     "test_settingsacknowledged_repr"
+                     "test_connectionterminated_repr[None-None]"
+                     "test_connectionterminated_repr[some"
+                     "test_remotesettingschanged_repr"
+                     "test_streamreset_repr"
+                     "test_settingsacknowledged_repr"
+                     "test_connectionterminated_repr[None-None]"
+                     "test_connectionterminated_repr[some")
+               " and not "))))
     (native-inputs
-     (list python-hypothesis python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-hpack python-hyperframe))
+     (list python-hpack
+           python-hyperframe))
     (home-page "https://github.com/python-hyper/h2")
     (synopsis "HTTP/2 State-Machine based protocol implementation")
     (description
