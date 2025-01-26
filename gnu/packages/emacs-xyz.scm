@@ -9276,7 +9276,7 @@ the speedbar window.")
 (define-public emacs-shell-switcher
   (package
     (name "emacs-shell-switcher")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -9285,7 +9285,7 @@ the speedbar window.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ia7sdip4hl27avckv3qpqgm3k4ynvp3xxq1cy53bqfzzx0gcria"))))
+        (base32 "0py95c6i7bffidwkwld1j1h2isyq7psna2kz81jigzz0wi885pjr"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/DamienCassou/shell-switcher")
     (synopsis "Provide fast switching between shell buffers")
