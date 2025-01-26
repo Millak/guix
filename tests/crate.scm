@@ -53,6 +53,7 @@
 ;; 	intermediate-b ^1.0.0
 ;; 	leaf-alice     ^0.7
 ;; 	leaf-bob       ^3
+;; 	leaf-bob       3 (build-dependency)
 ;; 	intermediate-c 1 (dev-dependency)
 ;;
 ;; intermediate-a-1.0.40
@@ -223,6 +224,11 @@
        \"crate_id\": \"leaf-bob\",
        \"kind\": \"normal\",
        \"req\": \"^3\"
+     },
+     {
+       \"crate_id\": \"leaf-bob\",
+       \"kind\": \"build\",
+       \"req\": \"3\"
      },
      {
        \"crate_id\": \"intermediate-c\",
@@ -932,6 +938,8 @@
                                  ('unquote rust-intermediate-b-1))
                                 ("rust-leaf-alice"
                                  ('unquote 'rust-leaf-alice-0.7))
+                                ("rust-leaf-bob"
+                                 ('unquote rust-leaf-bob-3))
                                 ("rust-leaf-bob"
                                  ('unquote rust-leaf-bob-3)))
                                #:cargo-development-inputs
