@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -446,6 +447,29 @@
 (define have-guile-semver?
   (false-if-exception (resolve-interface '(semver))))
 
+(define rust-leaf-bob-3
+  (package
+    (name "rust-leaf-bob")
+    (version "3.0.1")
+    (source #f)
+    (build-system #f)
+    (home-page #f)
+    (synopsis #f)
+    (description #f)
+    (license #f)))
+
+(define rust-leaf-bob-3.0.2-yanked
+  (package
+    (name "rust-leaf-bob")
+    (version "3.0.2")
+    (source #f)
+    (properties '((crate-version-yanked? . #t)))
+    (build-system #f)
+    (home-page #f)
+    (synopsis #f)
+    (description #f)
+    (license #f)))
+
 
 (test-begin "crate")
 
@@ -509,6 +533,66 @@
            (string=? test-source-hash hash))
           (x
            (pk 'fail x #f)))))
+
+(unless have-guile-semver? (test-skip 1))
+(test-assert "crate->guix-package-marks-missing-packages"
+  (mock
+   ((gnu packages) find-packages-by-name
+    (lambda* (name #:optional version)
+      (match name
+        ("rust-leaf-bob"
+         (list rust-leaf-bob-3.0.2-yanked))
+        (_ '()))))
+   (mock
+    ((guix http-client) http-fetch
+     (lambda (url . rest)
+       (match url
+         ("https://crates.io/api/v1/crates/intermediate-b"
+          (open-input-string test-intermediate-b-crate))
+         ("https://crates.io/api/v1/crates/intermediate-b/1.2.3/download"
+          (set! test-source-hash
+                (bytevector->nix-base32-string
+                 (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
+          (open-input-string "empty file\n"))
+         ("https://crates.io/api/v1/crates/intermediate-b/1.2.3/dependencies"
+          (open-input-string test-intermediate-b-dependencies))
+         ("https://crates.io/api/v1/crates/leaf-bob"
+          (open-input-string test-leaf-bob-crate))
+         ("https://crates.io/api/v1/crates/leaf-bob/3.0.1/download"
+          (set! test-source-hash
+                (bytevector->nix-base32-string
+                 (gcrypt-sha256 (string->bytevector "empty file\n" "utf-8"))))
+          (open-input-string "empty file\n"))
+         (_ (error "Unexpected URL: " url)))))
+    (match (crate->guix-package "intermediate-b" #:mark-missing? #t)
+      ((define-public 'rust-intermediate-b-1
+         (package
+           (name "rust-intermediate-b")
+           (version "1.2.3")
+           (source
+            (origin
+              (method url-fetch)
+              (uri (crate-uri "intermediate-b" version))
+              (file-name
+               (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                (?  string? hash)))))
+           (build-system cargo-build-system)
+           (arguments
+            ('quasiquote
+             (#:skip-build? #t
+              #:cargo-inputs
+              (($ <comment> ";; rust-leaf-bob-3\n" #f)))))
+           (home-page "http://example.com")
+           (synopsis "summary")
+           (description "This package provides summary.")
+           (license (list license:expat license:asl2.0))))
+       #t)
+      (x
+       (pk 'fail
+           (pretty-print-with-comments (current-output-port) x)
+           #f))))))
 
 (unless have-guile-semver? (test-skip 1))
 (test-assert "crate-recursive-import"
@@ -883,29 +967,6 @@
 
 
 
-(define rust-leaf-bob-3
-  (package
-    (name "rust-leaf-bob")
-    (version "3.0.1")
-    (source #f)
-    (build-system #f)
-    (home-page #f)
-    (synopsis #f)
-    (description #f)
-    (license #f)))
-
-(define rust-leaf-bob-3.0.2-yanked
-  (package
-    (name "rust-leaf-bob")
-    (version "3.0.2")
-    (source #f)
-    (properties '((crate-version-yanked? . #t)))
-    (build-system #f)
-    (home-page #f)
-    (synopsis #f)
-    (description #f)
-    (license #f)))
-
 (unless have-guile-semver? (test-skip 1))
 (test-assert "crate-recursive-import-honors-existing-packages"
   (mock

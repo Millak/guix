@@ -156,6 +156,7 @@ use in an 'inputs' field of a package definition."
 
   (map (match-lambda
          ((input version) (make-input input version))
+         ((? blank? comment) comment)
          (input (make-input input #f)))
        names))
 
@@ -194,11 +195,16 @@ and LICENSE."
   (define (format-inputs inputs)
     (map
      (match-lambda
-      ((name version yanked)
-       (list (crate-name->package-name name)
-             (if yanked
-                 (string-append version "-yanked")
-                 (version->semver-prefix version)))))
+      ((name missing version yanked)
+       (let ((input (list (crate-name->package-name name)
+                          (if yanked
+                              (string-append version "-yanked")
+                              (version->semver-prefix version)))))
+         (if missing
+             (comment
+               (string-append ";; " (string-join input "-") "\n")
+               #f)
+             input))))
      inputs))
 
   (let* ((port (http-fetch (crate-uri name version)))
@@ -318,7 +324,8 @@ priority."
 
 (define* (crate->guix-package
           crate-name
-          #:key version include-dev-deps? allow-yanked? #:allow-other-keys)
+          #:key version include-dev-deps? allow-yanked? mark-missing?
+          #:allow-other-keys)
   "Fetch the metadata for CRATE-NAME from crates.io, and return the
 `package' s-expression corresponding to that package, or #f on failure.
 When VERSION is specified, convert it into a semver range and attempt to fetch
@@ -358,13 +365,13 @@ look up the development dependencs for the given crate."
   ;; If no non-yanked existing package version was found, check the upstream
   ;; versions.  If a non-yanked upsteam version exists, use it instead,
   ;; otherwise use the existing package version, provided it exists.
-  (define (dependency-name+version+yanked dep)
+  (define (dependency-name+missing+version+yanked dep)
     (let* ((name (crate-dependency-id dep))
                  (req (crate-dependency-requirement dep))
                  (existing-version
                   (find-package-version name req allow-yanked?)))
       (if (and existing-version (not (second existing-version)))
-          (cons name existing-version)
+          (cons* name #f existing-version)
           (let* ((crate (lookup-crate* name))
                  (ver (find-crate-version crate req)))
             (if existing-version
@@ -374,14 +381,15 @@ look up the development dependencs for the given crate."
                         (begin
                           (warning (G_ "~A: version ~a is no longer yanked~%")
                                    name (first existing-version))
-                          (cons name existing-version))
+                          (cons* name #f existing-version))
                         (list name
+                              #f
                               (crate-version-number ver)
                               (crate-version-yanked? ver)))
                     (begin
                       (warning (G_ "~A: using existing version ~a, which was yanked~%")
                                name (first existing-version))
-                      (cons name existing-version)))
+                      (cons* name #f existing-version)))
                 (begin
                   (unless ver
                     (leave (G_ "~A: no version found for requirement ~a~%") name req))
@@ -389,6 +397,7 @@ look up the development dependencs for the given crate."
                       (warning (G_ "~A: imported version ~a was yanked~%")
                                name (crate-version-number ver)))
                   (list name
+                        mark-missing?
                         (crate-version-number ver)
                         (crate-version-yanked? ver))))))))
 
@@ -400,14 +409,14 @@ look up the development dependencs for the given crate."
   ;; sort and map the dependencies to a list containing
   ;; pairs of (name version)
   (define (sort-map-dependencies deps)
-    (sort (map dependency-name+version+yanked
+    (sort (map dependency-name+missing+version+yanked
                deps)
-          (match-lambda* (((name _ _) ...)
+          (match-lambda* (((name _ _ _) ...)
                           (apply string-ci<? name)))))
 
-  (define (remove-yanked-info deps)
+  (define (remove-missing+yanked-info deps)
     (map
-     (match-lambda ((name version yanked)
+     (match-lambda ((name missing version yanked)
                     (list name version)))
      deps))
 
@@ -438,8 +447,8 @@ look up the development dependencs for the given crate."
                           #:license (and=> (crate-version-license version*)
                                            string->license))
          (append
-          (remove-yanked-info cargo-inputs)
-          (remove-yanked-info cargo-development-inputs))))
+          (remove-missing+yanked-info cargo-inputs)
+          (remove-missing+yanked-info cargo-development-inputs))))
       (values #f '())))
 
 (define* (crate-recursive-import

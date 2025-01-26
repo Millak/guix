@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,6 +55,9 @@ Import and convert the crates.io package for PACKAGE-NAME.\n"))
   (display (G_ "
       --allow-yanked     allow importing yanked crates if no alternative
                          satisfying the version requirement is found"))
+  (display (G_ "
+      --mark-missing     comment out the desired dependency if no
+                         sufficient package exists for it"))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
@@ -80,6 +84,9 @@ Import and convert the crates.io package for PACKAGE-NAME.\n"))
          (option '("allow-yanked") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'allow-yanked #t result)))
+         (option '("mark-missing") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'mark-missing #t result)))
          %standard-import-options))
 
 
@@ -112,7 +119,8 @@ Import and convert the crates.io package for PACKAGE-NAME.\n"))
                    #:allow-yanked? (assoc-ref opts 'allow-yanked))
                   (crate->guix-package
                    name #:version version #:include-dev-deps? #t
-                   #:allow-yanked? (assoc-ref opts 'allow-yanked)))
+                   #:allow-yanked? (assoc-ref opts 'allow-yanked)
+                   #:mark-missing? (assoc-ref opts 'mark-missing)))
          ((or #f '())
           (leave (G_ "failed to download meta-data for package '~a'~%")
                  (if version

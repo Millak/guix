@@ -124,7 +124,7 @@ Copyright @copyright{} 2023 Thomas Ieong@*
 Copyright @copyright{} 2023 Saku Laesvuori@*
 Copyright @copyright{} 2023 Graham James Addis@*
 Copyright @copyright{} 2023, 2024 Tomas Volf@*
-Copyright @copyright{} 2024 Herman Rimm@*
+Copyright @copyright{} 2024, 2025 Herman Rimm@*
 Copyright @copyright{} 2024 Matthew Trzcinski@*
 Copyright @copyright{} 2024 Richard Sent@*
 Copyright @copyright{} 2024 Dariqq@*
@@ -14687,6 +14687,10 @@ imported as well.
 @item --allow-yanked
 If no non-yanked version of a crate is available, use the latest yanked
 version instead instead of aborting.
+@item --mark-missing
+If a crate dependency is not (yet) packaged, make the corresponding
+input in @code{#:cargo-inputs} or @code{#:cargo-development-inputs} into
+a comment.
 @end table
 
 @item elm
