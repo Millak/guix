@@ -21595,7 +21595,7 @@ Emacs.")
 (define-public emacs-eglot
   (package
     (name "emacs-eglot")
-    (version "1.17")
+    (version "1.18")
     (source
      (origin
        (method url-fetch)
@@ -21603,14 +21603,16 @@ Emacs.")
                            ".tar"))
        (sha256
         (base32
-         "1can988d7qdn0dj4wg8adjz1s9j5yin8bcp7ylhq1pr327d5flky"))))
+         "1zqs498yn3i8wn045jgq9nw4pddiyrwwgyq39mndzvgvi1j6a431"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-eldoc
+     (list emacs-compat
+           emacs-eldoc
            emacs-external-completion
            emacs-jsonrpc
            emacs-project
            emacs-seq
+           emacs-track-changes
            emacs-xref))
     (home-page "https://github.com/joaotavora/eglot")
     (synopsis "Client for Language Server Protocol (LSP) servers")
