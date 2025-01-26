@@ -13366,7 +13366,7 @@ versions utilizing Consult's internal API.")
 (define-public emacs-consult-eglot
   (package
     (name "emacs-consult-eglot")
-    (version "0.3.0")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13374,7 +13374,7 @@ versions utilizing Consult's internal API.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0mn9d87m05bhqrw7sscx4a2a5h7gkqyhv06a80ky9vbzlfjfk6hh"))
+                "0y3n161kfa4a791jh70n6k1s6vyv55lr3ly8zz2zww5gxkx8m137"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-consult emacs-eglot))
