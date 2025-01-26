@@ -31965,37 +31965,25 @@ one-off scripts.")
 (define-public python-cached-property
   (package
     (name "python-cached-property")
-    (version "1.5.2")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "cached-property" version))
+       (uri (pypi-uri "cached_property" version))
        (sha256
-        (base32
-         "0c51i6yzg6dlq6zhk4c6nv33mg8gv05kkan36k9b5jzf71c7b9cz"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; https://github.com/pydanny/cached-property/issues/131
-         ;; recent versions of freezegun break one test
-         (add-after 'unpack 'disable-broken-test
-           (lambda _
-             (substitute* "tests/test_cached_property.py"
-               (("def test_threads_ttl_expiry\\(self\\)" m)
-                (string-append "@unittest.skip(\"Disabled by Guix\")\n"
-                               "    " m)))
-             #t)))))
+        (base32 "0hbni4q15n8wspdj48j6xvg977pgm1r5wwjq3x7hxvp30mqn2ka8"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-freezegun))
-    (home-page
-     "https://github.com/pydanny/cached-property")
-    (synopsis
-     "Decorator for caching properties in classes")
+     (list python-freezegun
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/pydanny/cached-property")
+    (synopsis "Decorator for caching properties in classes")
     (description
      "This package provides a decorator which makes caching
-time-or-computationally-expensive properties quick and easy and works in Python
-2 or 3.")
+time-or-computationally-expensive properties quick and easy and works in
+Python 2 or 3.")
     (license license:bsd-3)))
 
 (define-public python-folium
