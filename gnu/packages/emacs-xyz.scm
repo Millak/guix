@@ -16616,55 +16616,46 @@ window edge.")
     (license license:gpl3+)))
 
 (define-public emacs-visual-replace
-  (package
-    (name "emacs-visual-replace")
-    ;; XXX: when updating version, please ensure substitution in install-info
-    ;; phase is still accurate.
-    (version "1.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/szermatt/visual-replace")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bvaw44mkiz6yq1r5hvayfp0iaxqcwbzihdrbizyynm4qjzspca1"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:tests? #t
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'check 'add-test-dir-to-emacs-load-path
-                     (lambda _
-                       (setenv "EMACSLOADPATH"
-                               (string-append (getcwd) "/test:"
-                                              (getenv "EMACSLOADPATH")))))
-                   (add-after 'install 'install-info
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let* ((out (assoc-ref outputs "out"))
-                              (info-dir (string-append out "/share/info")))
-                         (invoke "eldev" "build" "--force"
-                                 "visual-replace.texi")
-                         (with-directory-excursion "docs/build/texinfo"
-                           (substitute* "visual-replace.texi"
-                             ;; XXX: Undo damage caused by sphinx-build
-                             (("visual-replace ([^,]+), Jan 01, 1970" _ ver)
-                              (string-append "visual-replace " ver))
-                             (("@copyright\\{\\} 2020-1970")
-                              "@copyright{} 2020-2024"))
-                           (invoke "make" "info")
-                           (install-file "./visual-replace.info" info-dir)
-                           (copy-recursively "./visual-replace-figures"
-                                             (string-append info-dir
-                                              "/visual-replace-figures")))))))
-      #:test-command #~(list "eldev" "--use-emacsloadpath" "-dtTC" "test")))
-    (native-inputs (list emacs-eldev python-sphinx texinfo))
-    (home-page "https://github.com/szermatt/visual-replace")
-    (synopsis
-     "Alternate interface for @code{replace-string} and @code{query-replace}")
-    (description
-     "@code{visual-replace} provides an alternate interface for search and
+  (let ((commit "17d693fd5b5ba0597230a3cdc78f5e6a285d4700")
+        (revision "1"))
+    (package
+      (name "emacs-visual-replace")
+      ;; XXX: when updating version, please ensure substitution in install-info
+      ;; phase is still accurate.
+      (version (git-version "1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/szermatt/visual-replace")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1jn94ivfalgiw6lfx8hqgq08qffrsq6lcydcxv6b41k04gkwm0yr"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:phases #~(modify-phases %standard-phases
+                     (add-before 'check 'add-test-dir-to-emacs-load-path
+                       (lambda _
+                         (setenv "EMACSLOADPATH"
+                                 (string-append (getcwd) "/test:"
+                                                (getenv "EMACSLOADPATH")))))
+                     (add-after 'install 'install-info
+                       (lambda _
+                         (let ((info-dir (string-append #$output "/share/info")))
+                           (invoke "makeinfo" "--no-split"
+                                   "-o" "visual-replace.info"
+                                   "visual-replace.texi")
+                           (install-file "./visual-replace.info" info-dir)))))
+        #:test-command #~(list "eldev" "--use-emacsloadpath" "-dtTC" "test")))
+      (native-inputs (list emacs-eldev emacs-turtles texinfo))
+      (home-page "https://github.com/szermatt/visual-replace")
+      (synopsis
+       "Alternate interface for @code{replace-string} and @code{query-replace}")
+      (description
+       "@code{visual-replace} provides an alternate interface for search and
 replacement commands that supports previews.  The interface also allows one to
 edit both the query-text and its replacement in the same minibuffer prompt.
 The interface covers the following commands:
@@ -16675,7 +16666,7 @@ The interface covers the following commands:
 @item @code{query-replace}
 @item @code{query-replace-regexp}
 @end enumerate")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-writeroom
   (package
