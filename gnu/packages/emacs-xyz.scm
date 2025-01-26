@@ -12839,7 +12839,7 @@ built-in custom themes.")
 (define-public emacs-gruvbox-theme
   (package
     (name "emacs-gruvbox-theme")
-    (version "1.30.1")
+    (version "1.30.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12848,7 +12848,7 @@ built-in custom themes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dgjf86i8179l1nsjyc20chysqmy8yhphpd5lzv2ypx79l4z3jka"))))
+                "1bnmp9nbpsrnxhn6v81533xcb9hx043wf86n5hwj9mpacl5ic33y"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-autothemer))
