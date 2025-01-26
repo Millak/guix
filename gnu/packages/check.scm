@@ -4381,23 +4381,25 @@ directories and files.")
 (define-public python-pytest-regressions
   (package
     (name "python-pytest-regressions")
-    (version "2.5.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-regressions" version))
+       (uri (pypi-uri "pytest_regressions" version))
        (sha256
-        (base32 "1nbg20m83jsj9p12fm4qn5b7hc3vqb5h5fzfi6zvmwygq627i341"))))
+        (base32 "0pph1935rq180ax0szwwf3c6zq2v40snypagr49914i31570cc2c"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Do not fail on warning.
+      ;; DeprecationWarning: module 'sre_constants' is deprecated
+      #:test-flags #~(list "-W" "ignore::DeprecationWarning")))
     (native-inputs
-     (list python-matplotlib
-           python-numpy
+     (list python-numpy
            python-pandas
-           python-pillow
-           python-restructuredtext-lint
+           python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-pytest))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-pytest-datadir
            python-pyyaml))
