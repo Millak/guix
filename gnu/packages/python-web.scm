@@ -8443,19 +8443,19 @@ Swagger.")
 (define-public python-manuel
   (package
     (name "python-manuel")
-    (version "1.10.1")
+    (version "1.13.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "manuel" version))
         (sha256
          (base32
-          "1bdzay7j70fly5fy6wbdi8fbrxjrrlxnxnw226rwry1c8a351rpy"))))
-    (build-system python-build-system)
+          "0nl8psji3fizbxw34gdg22dndlg9lf5f56mnh1vr4vgsx06i4qsx"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-six))
+     (list python-setuptools))
     (native-inputs
-     (list python-zope-testing))
+     (list python-setuptools python-wheel python-zope-testing))
     (home-page "https://pypi.org/project/manuel/")
     (synopsis "Build tested documentation")
     (description
