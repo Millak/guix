@@ -580,6 +580,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
                       "gnu/packages/gnome.scm"
                       "gnu/packages/gnome-xyz.scm"
                       "gnu/packages/webkit.scm"
+                      "gnu/services/desktop.scm"
                       "guix/build/glib-or-gtk-build-system.scm"
                       "guix/build/meson-build-system.scm")))
 
