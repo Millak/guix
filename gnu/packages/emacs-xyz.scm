@@ -27408,7 +27408,7 @@ and doesn't require memorisation of commands.
 (define-public emacs-logview
   (package
     (name "emacs-logview")
-    (version "0.19.1.1")
+    (version "0.19.1")
     (source
      (origin
        (method git-fetch)
@@ -27419,7 +27419,7 @@ and doesn't require memorisation of commands.
        (sha256
         (base32 "0qgkmjw5prc5zrsccdmh9wfr1fyk9jfdfnqn6ldsbi7jhbr71366"))))
     (propagated-inputs
-     (list emacs-datetime emacs-extmap))
+     (list emacs-compat emacs-datetime emacs-extmap))
     (build-system emacs-build-system)
     (home-page "https://github.com/doublep/logview/")
     (synopsis "Emacs mode for viewing log files")
