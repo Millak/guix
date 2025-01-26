@@ -18734,20 +18734,26 @@ libmagic.")))
       #~(list "-n" (number->string (parallel-job-count))
               "-m" "not flaky"
               "-k"
-              (string-append
-               ;; The two "break_01" tests have been failing on
-               ;; Python 3.10:
-               ;; <https://github.com/fabioz/PyDev.Debugger/issues/222>.
-               "not test_set_pydevd_break_01 "
-               ;; the GUI event loop requires an X server.
-               "and not test_gui_event_loop_custom "
-               ;; This test validates that 'pydevd' is not in the
-               ;; exception message, but it is due to being part
-               ;; of the build file name present in the message.
-               "and not test_evaluate_exception_trace "
-               ;; This test fail with TimeoutError, no message on stderr.
-               "and not test_soft_terminate "
-               "and not test_debugger_case_deadlock_interrupt_thread"))
+              (string-join
+               (list
+                ;; The two "break_01" tests have been failing on
+                ;; Python 3.10:
+                ;; <https://github.com/fabioz/PyDev.Debugger/issues/222>.
+                "not test_set_pydevd_break_01 "
+                ;; the GUI event loop requires an X server.
+                "test_gui_event_loop_custom"
+                ;; This test validates that 'pydevd' is not in the
+                ;; exception message, but it is due to being part
+                ;; of the build file name present in the message.
+                "test_evaluate_exception_trace"
+                ;; This test fail with TimeoutError, no message on stderr.
+                "test_soft_terminate"
+                "test_debugger_case_deadlock_interrupt_thread"
+                ;; subprocess.CalledProcessError
+                ;; Python 3.11/3.12 specific issue:
+                ;; <https://github.com/fabioz/PyDev.Debugger/issues/284>.
+                "test_find_main_thread_id")
+               " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-tests
