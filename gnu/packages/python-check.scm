@@ -2897,7 +2897,7 @@ help in debugging failures and optimizing the scheduler to improve speed.")
 (define-public python-pytest-subprocess
   (package
     (name "python-pytest-subprocess")
-    (version "1.5.2")
+    (version "1.5.3")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -2907,17 +2907,17 @@ help in debugging failures and optimizing the scheduler to improve speed.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1mncfyn0vkbf7d03zc8wmv7nl354ck5i9gfblp9220ihc52whhy0"))))
+         "1yb5y6dqzf6k5a07yzdpw8w50bm7zbsdvv06ii7c7vyg9wx5iw6y"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-anyio
-                         python-coverage
-                         python-docutils
-                         python-nox
-                         python-pygments
-                         python-pytest
-                         python-pytest-asyncio
-                         python-pytest-rerunfailures
-                         python-wheel))
+    (native-inputs
+     (list python-anyio
+           python-docutils
+           python-pygments
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-rerunfailures
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/aklajnert/pytest-subprocess")
     (synopsis "Fake subprocess for Pytest")
     (description
