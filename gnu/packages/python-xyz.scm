@@ -116,7 +116,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
-;;; Copyright © 2022 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2022, 2024, 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2022 drozdov <drozdov@portalenergy.tech>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022, 2023 Wamm K. D. <jaft.r@outlook.com>
@@ -157,7 +157,6 @@
 ;;; Copyright © 2024 Rick Huijzer <ikbenrickhuyzer@gmail.com>
 ;;; Copyright © 2024 Peter Kannewitz <petre-vps@posteo.net>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
-;;; Copyright © 2024, 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
 ;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
@@ -38359,6 +38358,43 @@ and to reference instance methods using weak-references.")
 Additionally, it includes a number of subclasses useful for implementing async
 and threaded programming in python, such as async/await.")
     (license license:expat)))
+
+(define-public python-pypubsub
+  (package
+    (name "python-pypubsub")
+    (version "4.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/schollii/pypubsub")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02j74w28wzmdvxkk8i561ywjgizjifq3hgcl080yj0rvkd3wivlb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests/suite"
+                  (invoke "py.test"))))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/schollii/pypubsub")
+    (synopsis "Python publish-subcribe library")
+    (description
+     "This library provides a publish-subscribe API to facilitate event-based
+or message-based architecture in a single-process application.  It is centered
+on the notion of a topic - senders publish messages of a given topic, and
+listeners subscribe to messages of a given topic, all inside the same
+process.")
+    (license license:bsd-2)))
 
 (define-public python-queuelib
   (package
