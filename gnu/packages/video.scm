@@ -6084,29 +6084,29 @@ transitions, and effects and then export your film to many common formats.")
         (base32 "1cxwa1gzjb5y0640wmdssdjny5wr4r70a6nih65zsqgv223ydfb2"))))
     (build-system qt-build-system)
     (arguments
-     `(#:tests? #f                      ;there are no tests
+     (list
+      #:tests? #f                      ;there are no tests
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (add-after 'unpack 'patch-executable-paths
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda _
              ;; Shotcut expects ffmpeg and melt executables in the shotcut
              ;; directory.  Use full store paths.
-             (let* ((ffmpeg (assoc-ref inputs "ffmpeg"))
-                    (mlt (assoc-ref inputs "mlt")))
+             (let ((ffmpeg #$(this-package-input "ffmpeg"))
+                    (mlt #$(this-package-input "mlt")))
                (substitute* "src/jobs/ffmpegjob.cpp"
                  (("\"ffmpeg\"") (string-append "\"" ffmpeg "/bin/ffmpeg\"")))
                (substitute* "src/jobs/meltjob.cpp"
                  (("\"melt\"") (string-append "\"" mlt "/bin/melt\""))
                  (("\"melt-7\"") (string-append "\"" mlt "/bin/melt-7\""))))))
          (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (frei0r (assoc-ref inputs "frei0r-plugins"))
-                    (jack (assoc-ref inputs "jack"))
-                    (ladspa (assoc-ref inputs "ladspa"))
-                    (mlt (assoc-ref inputs "mlt"))
-                    (sdl2 (assoc-ref inputs "sdl2")))
-               (wrap-program (string-append out "/bin/shotcut")
+           (lambda _
+             (let ((frei0r #$(this-package-input "frei0r-plugins"))
+                    (jack #$(this-package-input "jack"))
+                    (ladspa #$(this-package-input "ladspa"))
+                    (mlt #$(this-package-input "mlt"))
+                    (sdl2 #$(this-package-input "sdl2")))
+               (wrap-program (string-append #$output "/bin/shotcut")
                  `("FREI0R_PATH" ":" =
                    (,(string-append frei0r "/lib/frei0r-1")))
                  `("LADSPA_PATH" ":" =
