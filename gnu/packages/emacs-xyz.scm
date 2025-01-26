@@ -16597,7 +16597,7 @@ window edge.")
     (name "emacs-visual-replace")
     ;; XXX: when updating version, please ensure substitution in install-info
     ;; phase is still accurate.
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -16606,7 +16606,7 @@ window edge.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05s21qhq23mmv8in88qxfbq79h26j14vcw5pc112sjr1a4fl5306"))))
+        (base32 "1bvaw44mkiz6yq1r5hvayfp0iaxqcwbzihdrbizyynm4qjzspca1"))))
     (build-system emacs-build-system)
     (arguments
      (list
