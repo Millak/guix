@@ -50,10 +50,10 @@ Import and convert the crates.io package for PACKAGE-NAME.\n"))
   (display (G_ "
       --recursive-dev-dependencies
                          include dev-dependencies recursively"))
+  (newline)
   (display (G_ "
-      --allow-yanked
-                         allow importing yanked crates if no alternative
-                         satisfying the version requirement exists"))
+      --allow-yanked     allow importing yanked crates if no alternative
+                         satisfying the version requirement is found"))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
