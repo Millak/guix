@@ -21104,7 +21104,7 @@ and lambdas.")
 (define-public emacs-org2web
   (package
     (name "emacs-org2web")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -21113,7 +21113,7 @@ and lambdas.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wsvfn409a2ivbich8b8zqza78sprirg4bl7igx536ydqclmi0n7"))))
+        (base32 "103fzmadgd93x1y0c6xsdjx70z0jkwpvj0xnkybdancxz4ba8p9l"))))
     (build-system emacs-build-system)
     (arguments
      (list
