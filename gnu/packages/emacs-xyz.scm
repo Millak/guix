@@ -30917,7 +30917,7 @@ execute its commands and resize images.")
 (define-public emacs-synosaurus
   (package
     (name "emacs-synosaurus")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -30927,7 +30927,7 @@ execute its commands and resize images.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "14dd6p89pmpf1w3nx4f9mzm4sn2b64nicws436ck7pmp223pwciv"))))
+         "1bkd989712wj5mpk6i3pqp0j19ajnqpw2vcz2r1l0fb91n382d3y"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list wordnet))
