@@ -9928,6 +9928,24 @@ algorithm.  Patiencediff provides a good balance of performance, nice output for
 humans, and implementation simplicity.")
     (license license:gpl2+)))
 
+(define-public python-merge3
+  (package
+    (name "python-merge3")
+    (version "0.0.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "merge3" version))
+       (sha256
+        (base32 "1brb97v24i5ym3cfxsv416a0m1n78s1aqllmwg4xymjdv09w5snk"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/breezy-team/merge3")
+    (synopsis "Python implementation of 3-way merge")
+    (description
+     "This Python library implements 3-way merge for text.")
+    (license license:gpl2+)))
+
 (define-public python-wmctrl
   (package
     (name "python-wmctrl")
