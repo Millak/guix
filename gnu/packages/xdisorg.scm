@@ -66,6 +66,7 @@
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Spencer Peters <spencerpeters@protonmail.com>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,6 +91,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system scons)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -148,6 +150,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages tex)
@@ -2682,6 +2685,43 @@ terminal) to unlock the computer.  It is an alternative to @command{vlock -an},
 written to overcome vlock's limitations regarding hibernate and suspend.")
     (home-page "https://github.com/xyb3rt/physlock")
     (license license:gpl2+)))
+
+(define-public python-pyclip
+  (package
+    (name "python-pyclip")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spyoungtech/pyclip")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10q698snlid09jmlvsqlljj2r0w6cixncjcgbhnjqp7w0hva8wyj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xorg-server
+            (lambda _
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel
+           xorg-server-for-tests))
+    (propagated-inputs
+     (list wl-clipboard
+           xclip))
+    (home-page "https://github.com/spyoungtech/pyclip")
+    (synopsis "Cross-platform clipboard module for Python")
+    (description
+     "This library implements cross-platform clipboard utilities supporting
+both binary and text data.")
+    (license license:asl2.0)))
 
 (define-public python-pyperclip
   (package
