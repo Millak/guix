@@ -1574,42 +1574,7 @@ Library.")
   (make-clang-toolchain clang-18 libomp-18))
 
 (define-public llvm-19
-  (package
-    (inherit llvm-15)
-    (version "19.1.4")
-    (source (llvm-monorepo version))
-    (arguments
-     (substitute-keyword-arguments (package-arguments llvm-15)
-       ((#:modules modules '((guix build cmake-build-system)
-                             (guix build utils)))
-        (if (%current-target-system)
-            `((ice-9 regex)
-              (srfi srfi-1)
-              (srfi srfi-26)
-              ,@modules)
-            modules))
-       ((#:configure-flags cf #~'())
-        (if (%current-target-system)
-            ;; Use a newer version of llvm-tblgen and add the new
-            ;; configure-flag needed for cross-building.
-            #~(cons* (string-append "-DLLVM_TABLEGEN="
-                                    #+(file-append this-package
-                                                   "/bin/llvm-tblgen"))
-                     (string-append "-DLLVM_NATIVE_TOOL_DIR="
-                                    #+(file-append this-package "/bin"))
-                     (string-append "-DLLVM_HOST_TRIPLE="
-                                    #$(%current-target-system))
-                     (remove
-                       (cut string-match
-                            "-DLLVM_(DEFAULT_TARGET|TARGET_ARCH|TABLEGEN).*" <>)
-                       #$cf))
-            cf))
-       ;; The build daemon goes OOM on i686-linux on this phase.
-       ((#:phases phases #~'%standard-phases)
-        (if (target-x86-32?)
-            #~(modify-phases #$phases
-                (delete 'make-dynamic-linker-cache))
-            phases))))))
+  (make-llvm "19.1.4"))
 
 (define-public clang-runtime-19
   (clang-runtime-from-llvm llvm-19))
