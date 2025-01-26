@@ -10244,6 +10244,29 @@ tupfiles, such as rule definitions, user-defined variables, macros, flags, bin
 variables, and so on.  The mode also allows you to execute Tup commands.")
     (license license:gpl3+)))
 
+(define-public emacs-turtles
+  (package
+    (name "emacs-turtles")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/szermatt/turtles")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gwnsrfiiizcrcccbs3pyx030wydg6xmh7vy9r7lvbh8hmxghbyg"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://github.com/szermatt/turtles")
+    (synopsis "Library for writing ERT-based tests")
+    (description
+     "This package helps writing ERT-based tests that check how Emacs renders
+buffers and windows. The ERT tests can be run interactively or in batch
+mode.")
+    (license license:gpl3+)))
+
 (define-public emacs-combobulate
   (let ((commit "c7e4670a3047c0b58dff3746577a5c8e5832cfba")
         (revision "1"))
