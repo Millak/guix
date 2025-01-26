@@ -33755,29 +33755,28 @@ JavaScript.")
       (license license:gpl3+))))
 
 (define-public emacs-jsdoc
-  (let ((commit "10ccff7a5cec6fd2f4484c1d55347634e5b46432")) ;version bump
-    (package
-      (name "emacs-jsdoc")
-      (version "0.4.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/isamert/jsdoc.el")
-               (commit commit)))
-         (sha256
-          (base32 "0j99rax3n905ya0ya42093pl8q7kcb8xx2qz6b918f7d8q0mr44n"))
-         (file-name (git-file-name name version))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-dash
-             emacs-s
-             tree-sitter-javascript))
-      (home-page "https://github.com/isamert/jsdoc.el")
-      (synopsis "Inserts JSDoc function comments/typedefs easily")
-      (description "This package provides an easy way to insert JSDoc function
+  (package
+    (name "emacs-jsdoc")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/isamert/jsdoc.el")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0j99rax3n905ya0ya42093pl8q7kcb8xx2qz6b918f7d8q0mr44n"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-dash
+           emacs-s
+           tree-sitter-javascript))
+    (home-page "https://github.com/isamert/jsdoc.el")
+    (synopsis "Inserts JSDoc function comments/typedefs easily")
+    (description "This package provides an easy way to insert JSDoc function
 comments and typedefs using Emacs' builtin tree-sitter.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-prettier
   (let ((commit "e9b73e81d3e1642aec682195f127a42dfb0b5774")
