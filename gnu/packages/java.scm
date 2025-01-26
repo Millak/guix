@@ -21,6 +21,7 @@
 ;;; Copyright © 2022, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2187,14 +2188,15 @@ build process and its dependencies, whereas Make uses Makefile format.")
         (base32 "0lpbnb4dq4azmsvlhp6khq1gy42kyqyjv8gww74g5lm2y6blm4fa"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--enable-debuginfo"
-                               "--disable-static"
-                               ,@(if (target-64bit?)
-                                     `("--enable-64bit")
-                                     '())
-                               ,@(if (target-riscv64?)
-                                     `("--disable-abiflags")
-                                     '()))))
+     (list #:configure-flags
+           #~(list "--enable-debuginfo"
+                   "--disable-static"
+                   #$@(if (target-64bit?)
+                          #~("--enable-64bit")
+                          #~())
+                   #$@(if (target-riscv64?)
+                          #~("--disable-abiflags")
+                          #~()))))
     (synopsis "ANTLR C Library")
     (description "LIBANTLR3C provides run-time C libraries for ANTLR3 (ANother
 Tool for Language Recognition v3).")
