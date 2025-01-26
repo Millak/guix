@@ -2190,8 +2190,11 @@ build process and its dependencies, whereas Make uses Makefile format.")
      `(#:configure-flags (list "--enable-debuginfo"
                                "--disable-static"
                                ,@(if (target-64bit?)
-                                  `("--enable-64bit")
-                                  '()))))
+                                     `("--enable-64bit")
+                                     '())
+                               ,@(if (target-riscv64?)
+                                     `("--disable-abiflags")
+                                     '()))))
     (synopsis "ANTLR C Library")
     (description "LIBANTLR3C provides run-time C libraries for ANTLR3 (ANother
 Tool for Language Recognition v3).")
