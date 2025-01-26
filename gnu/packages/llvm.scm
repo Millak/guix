@@ -616,6 +616,11 @@ output), and Binutils.")
                          #~((string-append "-DLLVM_TABLEGEN="
                                     #+(file-append this-package
                                                    "/bin/llvm-tblgen"))
+                            #$@(if (version>=? version "16.0")
+                                   #~((string-append
+                                        "-DLLVM_NATIVE_TOOL_DIR="
+                                        #+(file-append this-package "/bin")))
+                                   #~())
                             #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
                                              (%current-target-system))
                             #$(string-append "-DLLVM_TARGET_ARCH=" llvm-target-arch)
@@ -648,7 +653,12 @@ output), and Binutils.")
                                                         "/share")))
                   (mkdir-p opt-viewer-share)
                   (rename-file (string-append #$output "/share/opt-viewer")
-                               opt-viewer-share)))))))
+                               opt-viewer-share))))
+            ;; The build daemon goes OOM on i686-linux on this phase.
+            #$@(if (and (version>=? version "16.0")
+                        (target-x86-32?))
+                   #~((delete 'make-dynamic-linker-cache))
+                   #~()))))
       (native-inputs (list python-wrapper perl))
       (inputs (list libffi))
       (propagated-inputs (list zlib))     ;to use output from llvm-config
@@ -1432,40 +1442,7 @@ Library.")
                    #:patches '("clang-3.5-libc-search-path.patch")))
 
 (define-public llvm-16
-  (package
-    (inherit llvm-15)
-    (version "16.0.6")
-    (source (llvm-monorepo version))
-    (arguments
-     (substitute-keyword-arguments (package-arguments llvm-15)
-       ((#:modules modules '((guix build cmake-build-system)
-                             (guix build utils)))
-        (if (%current-target-system)
-            `((ice-9 regex)
-              (srfi srfi-1)
-              (srfi srfi-26)
-              ,@modules)
-            modules))
-       ((#:configure-flags cf #~'())
-        (if (%current-target-system)
-            ;; Use a newer version of llvm-tblgen and add the new
-            ;; configure-flag needed for cross-building.
-            #~(cons* (string-append "-DLLVM_TABLEGEN="
-                                    #+(file-append this-package
-                                                   "/bin/llvm-tblgen"))
-                     (string-append "-DLLVM_NATIVE_TOOL_DIR="
-                                    #+(file-append this-package "/bin"))
-                     (remove
-                       (cut string-match
-                            "-DLLVM_TABLEGEN.*" <>)
-                       #$cf))
-            cf))
-       ;; The build daemon goes OOM on i686-linux on this phase.
-       ((#:phases phases #~'%standard-phases)
-        (if (target-x86-32?)
-            #~(modify-phases #$phases
-                (delete 'make-dynamic-linker-cache))
-            phases))))))
+  (make-llvm "16.0.6"))
 
 (define-public clang-runtime-16
   (clang-runtime-from-llvm llvm-16))
