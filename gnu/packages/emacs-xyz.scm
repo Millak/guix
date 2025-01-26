@@ -19240,7 +19240,7 @@ using a convenient notation.")
   (let ((commit "c3f4583b0767e7f8c38c83ed29af40af8ba3bdfa")) ;version bump
     (package
       (name "emacs-beframe")
-      (version "1.2.1")
+      (version "1.3.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -19249,7 +19249,7 @@ using a convenient notation.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1j9v85wxahnm2h828c8dbjm0f81j9pxlf54dgcw443cl0kwcda9c"))))
+                  "0vmmvy56ngaf5k6xfb1fglyqayc5zp823clsr8skgzy2xb72zs60"))))
       (build-system emacs-build-system)
       (arguments
        (list
