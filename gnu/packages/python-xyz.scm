@@ -30744,26 +30744,19 @@ functions and classes.")
 (define-public python-toolz
   (package
     (name "python-toolz")
-    (version "0.11.2")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "toolz" version))
        (sha256
         (base32
-         "0cxwlh8dz8gq0l0bzchjnqqwhdp261nfd958ppqm518k2mg2scbb"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--doctest-modules"
-                       "--pyargs" "toolz")))))))
+         "00ks0jhl1jwm9576c5sh10pnla8ni21yvg4kcxasr627l3cy71ic"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/pytoolz/toolz/")
     (synopsis "List processing tools and functional utilities")
     (description
