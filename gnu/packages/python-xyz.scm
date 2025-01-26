@@ -22527,22 +22527,18 @@ own code, responding to click events and updating clock every second.")
 (define-public python-tblib
   (package
     (name "python-tblib")
-    (version "1.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "tblib" version))
-              (sha256
-               (base32
-                "0i136n5pydmd202254wzrdbspkw0br0c9mbxhfs9hpfbahvyx6r2"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "py.test" "-vv" "tests" "README.rst"))))))
+    (version "2.0.0") ; XXX: higher versions fail on 'check phase
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tblib" version))
+       (sha256
+        (base32 "1mzcf0fp7267yya9ni5qlr8dj190hsnmyxz0cszgi2y0fbr31px6"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-six))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/ionelmc/python-tblib")
     (synopsis "Traceback serialization library")
     (description
