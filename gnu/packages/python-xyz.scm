@@ -9905,22 +9905,28 @@ readable format.")
 (define-public python-patiencediff
   (package
     (name "python-patiencediff")
-    (version "0.2.0")
+    (version "0.2.15")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "patiencediff" version))
         (sha256
          (base32
-          "0yjk50lsd4gnllxls925xbcdxwvmda37w2a1shk0p1nvl3fcha6q"))))
-    (build-system python-build-system)
+          "012jjgkkpk563l1mgj2ax4z32h0l558adhr2qa3chfrfsgpi22fh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   ;; Fails because bin/patiencediff expects two files to diff
+                   (delete 'sanity-check))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://www.breezy-vcs.org/")
     (synopsis "Python implementation of the patiencediff algorithm")
     (description
      "This package contains a Python implementation of the @code{patiencediff}
 algorithm.  Patiencediff provides a good balance of performance, nice output for
 humans, and implementation simplicity.")
-    (license license:gpl2)))
+    (license license:gpl2+)))
 
 (define-public python-wmctrl
   (package
