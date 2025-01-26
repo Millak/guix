@@ -1790,7 +1790,7 @@ maintenance releases.")
 (define-public dhcpcd
   (package
     (name "dhcpcd")
-    (version "10.0.6")
+    (version "10.1.0")
     (source
      (origin
        (method git-fetch)
@@ -1799,7 +1799,7 @@ maintenance releases.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07n7d5wsmy955i6l8rkcmxhgxjygj2cxgpw79id2hx9w41fbkl5l"))))
+        (base32 "0g519093032y3hxmy5xml4dk20qhbk9s1rlhb1lgyiscw663vn22"))))
     (inputs (list bash-minimal coreutils-minimal eudev sed))
     (build-system gnu-build-system)
     (arguments
