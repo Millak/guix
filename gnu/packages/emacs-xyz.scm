@@ -3708,14 +3708,14 @@ project root.")
 (define-public emacs-relint
   (package
     (name "emacs-relint")
-    (version "2.0")
+    (version "2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "relint-" version ".tar"))
        (sha256
-        (base32 "0r89b5yk5lp92k4gnr0sx6ccilqzpv6kd5csqhxydk0xmqh8rsff"))))
+        (base32 "0ikml87y0k85qd92m3l1gkzjd9ng3mhjfk19w15ln0w801351cq0"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-xr))
     (home-page "https://github.com/mattiase/relint")
