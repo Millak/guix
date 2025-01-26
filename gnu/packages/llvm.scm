@@ -621,9 +621,13 @@ output), and Binutils.")
                                         "-DLLVM_NATIVE_TOOL_DIR="
                                         #+(file-append this-package "/bin")))
                                    #~())
-                            #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
-                                             (%current-target-system))
-                            #$(string-append "-DLLVM_TARGET_ARCH=" llvm-target-arch)
+                            #$@(if (version>=? version "17.0")
+                                 #~((string-append "-DLLVM_HOST_TRIPLE="
+                                                   #$(%current-target-system)))
+                                 #~((string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
+                                                   #$(%current-target-system))
+                                    (string-append "-DLLVM_TARGET_ARCH="
+                                                   #$llvm-target-arch)))
                             #$(string-append "-DLLVM_TARGETS_TO_BUILD="
                                              (system->llvm-target)))))
                       (raise (condition
@@ -1473,42 +1477,7 @@ Library.")
   (make-clang-toolchain clang-16 libomp-16))
 
 (define-public llvm-17
-  (package
-    (inherit llvm-15)
-    (version "17.0.6")
-    (source (llvm-monorepo version))
-    (arguments
-     (substitute-keyword-arguments (package-arguments llvm-15)
-       ((#:modules modules '((guix build cmake-build-system)
-                             (guix build utils)))
-        (if (%current-target-system)
-            `((ice-9 regex)
-              (srfi srfi-1)
-              (srfi srfi-26)
-              ,@modules)
-            modules))
-       ((#:configure-flags cf #~'())
-        (if (%current-target-system)
-            ;; Use a newer version of llvm-tblgen and add the new
-            ;; configure-flag needed for cross-building.
-            #~(cons* (string-append "-DLLVM_TABLEGEN="
-                                    #+(file-append this-package
-                                                   "/bin/llvm-tblgen"))
-                     (string-append "-DLLVM_NATIVE_TOOL_DIR="
-                                    #+(file-append this-package "/bin"))
-                     (string-append "-DLLVM_HOST_TRIPLE="
-                                    #$(%current-target-system))
-                     (remove
-                       (cut string-match
-                            "-DLLVM_(DEFAULT_TARGET|TARGET_ARCH|TABLEGEN).*" <>)
-                       #$cf))
-            cf))
-       ;; The build daemon goes OOM on i686-linux on this phase.
-       ((#:phases phases #~'%standard-phases)
-        (if (target-x86-32?)
-            #~(modify-phases #$phases
-                (delete 'make-dynamic-linker-cache))
-            phases))))))
+    (make-llvm "17.0.6"))
 
 (define-public clang-runtime-17
   (clang-runtime-from-llvm llvm-17))
