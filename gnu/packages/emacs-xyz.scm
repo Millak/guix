@@ -33742,7 +33742,7 @@ JavaScript.")
   (let ((commit "10ccff7a5cec6fd2f4484c1d55347634e5b46432")) ;version bump
     (package
       (name "emacs-jsdoc")
-      (version "0.3")
+      (version "0.4.0")
       (source
        (origin
          (method git-fetch)
@@ -33750,7 +33750,7 @@ JavaScript.")
                (url "https://github.com/isamert/jsdoc.el")
                (commit commit)))
          (sha256
-          (base32 "0cbchri4117wjcnlk3npi4x1sfx248vck1q61cis8drrrz4c8jyp"))
+          (base32 "0j99rax3n905ya0ya42093pl8q7kcb8xx2qz6b918f7d8q0mr44n"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (propagated-inputs
