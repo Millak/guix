@@ -1823,7 +1823,7 @@ before interacting with non-free LLMs.")
 (define-public emacs-magit
   (package
     (name "emacs-magit")
-    (version "4.1.3")
+    (version "4.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1832,7 +1832,7 @@ before interacting with non-free LLMs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nggfqywxdnnzaw4vqn1m6h8qklyp7cwbaxxsnkr5pjcwn5nz69v"))))
+        (base32 "0zmrd6xlrvlr0i1a75xwlknmyx4hvpfxaqjkl61n12gd8598ji1j"))))
     (build-system emacs-build-system)
     (arguments
      (list
