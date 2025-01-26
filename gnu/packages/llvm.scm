@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2021-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -1518,6 +1518,30 @@ Library.")
     (source (llvm-monorepo version))
     (arguments
      (substitute-keyword-arguments (package-arguments llvm-15)
+       ((#:modules modules '((guix build cmake-build-system)
+                             (guix build utils)))
+        (if (%current-target-system)
+            `((ice-9 regex)
+              (srfi srfi-1)
+              (srfi srfi-26)
+              ,@modules)
+            modules))
+       ((#:configure-flags cf #~'())
+        (if (%current-target-system)
+            ;; Use a newer version of llvm-tblgen and add the new
+            ;; configure-flag needed for cross-building.
+            #~(cons* (string-append "-DLLVM_TABLEGEN="
+                                    #+(file-append this-package
+                                                   "/bin/llvm-tblgen"))
+                     (string-append "-DLLVM_NATIVE_TOOL_DIR="
+                                    #+(file-append this-package "/bin"))
+                     (string-append "-DLLVM_HOST_TRIPLE="
+                                    #$(%current-target-system))
+                     (remove
+                       (cut string-match
+                            "-DLLVM_(DEFAULT_TARGET|TARGET_ARCH|TABLEGEN).*" <>)
+                       #$cf))
+            cf))
        ;; The build daemon goes OOM on i686-linux on this phase.
        ((#:phases phases #~'%standard-phases)
         (if (target-x86-32?)
