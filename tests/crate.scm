@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1030,7 +1030,7 @@
                    (method url-fetch)
                    (uri (crate-uri "leaf-bob" version))
                    (file-name
-                    (string-append name "-" version ".tar.gz"))
+                    (string-append name "-" version "-yanked.tar.gz"))
                    (sha256
                     (base32
                      (?  string? hash)))))
@@ -1050,7 +1050,7 @@
                    (method url-fetch)
                    (uri (crate-uri "leaf-bob" version))
                    (file-name
-                    (string-append name "-" version ".tar.gz"))
+                    (string-append name "-" version "-yanked.tar.gz"))
                    (sha256
                     (base32
                      (?  string? hash)))))
