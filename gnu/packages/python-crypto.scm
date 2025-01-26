@@ -11,7 +11,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2019, 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2019, 2022, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016, 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -57,6 +57,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-tls)
@@ -455,13 +456,7 @@ blake3, a cryptographic hash function.")
                      ;; Those tests uses PKCS12, which has been removed in
                      ;; pyopenssl 23.3.0:
                      "not test_custom_not_before_not_after"
-                     "test_ca_cert_in_mem"
-                     ;; Those tests try to download certificates:
-                     "test_file_wildcard"
-                     "test_file_wildcard_subdomains"
-                     "test_in_mem_parent_wildcard_cert"
-                     "test_in_mem_parent_wildcard_cert_at_tld"
-                     "test_in_mem_parent_wildcard_cert_2")
+                     "test_ca_cert_in_mem")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -474,7 +469,7 @@ blake3, a cryptographic hash function.")
     (propagated-inputs
      (list python-pyopenssl python-tldextract))
     (native-inputs
-     (list python-pytest-cov python-setuptools python-wheel))
+     (list nss-certs-for-test python-pytest-cov python-setuptools python-wheel))
     (home-page "https://github.com/ikreymer/certauth")
     (synopsis "Certificate authority creation tool")
     (description "This package provides a small library, built on top of
