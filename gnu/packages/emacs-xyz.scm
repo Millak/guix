@@ -8369,14 +8369,14 @@ configuration, cache, and other data.")
 (define-public emacs-standard-themes
   (package
     (name "emacs-standard-themes")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/standard-themes-"
                            version ".tar"))
        (sha256
-        (base32 "0x7fphd36kwg4vfwix5rq7260xl6x6cjfwsq11rj4af30sm4hlfn"))))
+        (base32 "0qdld75vcfhsn2l0xips52vrlp5q7ss3973hd722h2gp1wddn5f7"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/protesilaos/standard-themes")
     (synopsis "Like the default Emacs theme but more consistent")
