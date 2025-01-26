@@ -36525,8 +36525,8 @@ Emacs.")
     (license license:gpl3+)))
 
 (define-public emacs-ssh-config-mode
-  (let ((commit "4c1dfa57d452cb5654453bf186c8ff63e1e71b56")
-        (revision "1"))
+  (let ((commit "d0596f5fbeab3d2c3c30eb83527316403bc5b2f7")
+        (revision "2"))
     (package
       (name "emacs-ssh-config-mode")
       (version (git-version "8.0" revision commit))
@@ -36540,7 +36540,7 @@ Emacs.")
          (file-name (git-file-name name commit))
          (sha256
           (base32
-           "0crglfdazzckizbwzmgl2rn6j85avfzkr1q7ijxd17rp2anvr9bd"))))
+           "1xs9ixp2bgbn2whjpj7l1n15fklivfh7544sgai61225jprckyak"))))
       (build-system emacs-build-system)
       (arguments '(#:include '("\\.el$" "\\.txt$")))
       (home-page
