@@ -18946,14 +18946,14 @@ editing nginx config files.")
 (define-public emacs-stream
   (package
     (name "emacs-stream")
-    (version "2.3.0")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "stream-" version ".tar"))
        (sha256
-        (base32 "1jvk5j0wn2f4dxnyqji85f8cgbpyrxk02mz5dzyw4xlqr0d9zc9n"))))
+        (base32 "16wl1q7wikk0wyzfwjz16azq025dx4wdh1j9q0nadi68ygxi172b"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/stream.html")
     (synopsis "Implementation of streams for Emacs")
