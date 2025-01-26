@@ -25494,14 +25494,14 @@ JPEG2000 and GIF files in pure Python.")
 (define-public python-argcomplete
   (package
     (name "python-argcomplete")
-    (version "3.2.2")
+    (version "3.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "argcomplete" version))
        (sha256
         (base32
-         "18h023ma2m2gw8w8dm2pvv4k0vpli94293jl57p2ch4vln79xr7k"))))
+         "14jkqmc4nhp1vxkiha7mv7zlvqiyzyjsfzbvihlvpbnqvq7gaay1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -25516,11 +25516,8 @@ JPEG2000 and GIF files in pure Python.")
                   "def __disable_test_console_script"))
                (invoke "python3" "./test/test.py" "-v")))))))
     (native-inputs
-     (list python-coverage
-           python-mypy
-           python-pexpect
-           python-setuptools
-           python-setuptools-scm
+     (list python-pexpect
+           python-hatchling
            python-wheel
            tcsh
            fish
