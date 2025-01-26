@@ -63,6 +63,7 @@
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -184,7 +185,7 @@
 (define-public breezy
   (package
     (name "breezy")
-    (version "3.2.2")
+    (version "3.3.9")
     (source
      (origin
        (method url-fetch)
@@ -196,51 +197,106 @@
        (snippet '(for-each delete-file (find-files "." "\\pyx.c$")))
        (sha256
         (base32
-         "1md4b6ajawf5h50fqizmjj0g833ihc674dh7fn0mvl4d412nwyhq"))
-       (patches (search-patches "breezy-fix-gio.patch"))))
-    (build-system python-build-system)
+         "1n6mqd1iy50537kb4lsr52289yyr1agmkxpchxlhb9682zr8nn62"))))
+    (build-system cargo-build-system)
     (arguments
      (list
-      #:tests? #f                       ;FIXME: the test suite hangs
+      #:cargo-inputs (list rust-lazy-static-1
+                           rust-pyo3-0.22
+                           rust-regex-1)
+      #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        ((guix build python-build-system) #:prefix py:)
+        (guix build utils))
+      #:imported-modules
+      `(,@%cargo-build-system-modules
+        ,@%python-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'ensure-no-mtimes-pre-1980
+            (assoc-ref py:%standard-phases 'ensure-no-mtimes-pre-1980))
+          (add-after 'ensure-no-mtimes-pre-1980 'enable-bytecode-determinism
+            (assoc-ref py:%standard-phases 'enable-bytecode-determinism))
+          (add-after 'enable-bytecode-determinism 'ensure-no-cythonized-files
+            (assoc-ref py:%standard-phases 'ensure-no-cythonized-files))
           (add-after 'unpack 'patch-test-shebangs
             (lambda _
               (substitute* (append (find-files "breezy/bzr/tests")
                                    (find-files "breezy/tests"))
                 (("#!/bin/sh")
                  (format #f "#!~a" (which "sh"))))))
-          (replace 'check
+          (add-before 'build 'adjust-for-python-3.10
+            (lambda _
+              (substitute* '("breezy/doc_generate/__init__.py"
+                             "breezy/tests/test_selftest.py")
+                ;; AttributeError: module 'datetime' has no attribute 'UTC'
+                ;; This only works for python >= 3.11
+                (("datetime.UTC") "datetime.timezone.utc"))))
+          (replace 'build
+            (assoc-ref py:%standard-phases 'build))
+          (delete 'check)             ;moved after the install phase
+          (replace 'install
+            (assoc-ref py:%standard-phases 'install))
+          (add-after 'install 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (add-after 'add-install-to-pythonpath 'add-install-to-path
+            (assoc-ref py:%standard-phases 'add-install-to-path))
+          (add-after 'add-install-to-path 'install-completion
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out  (assoc-ref outputs "out"))
+                     (bash (string-append out "/share/bash-completion"
+                                          "/completions")))
+                (install-file "contrib/bash/brz" bash))))
+          (add-after 'add-install-to-path 'wrap
+            (assoc-ref py:%standard-phases 'wrap))
+          (add-after 'wrap 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;; The test_read_bundle tests fails with "TypeError: a
-                ;; bytes-like object is required, not '_ResultTuple'" (see:
-                ;; https://bugs.launchpad.net/brz/+bug/1968415/comments/4).
-                (substitute* "breezy/bzr/tests/__init__.py"
-                  (("'test_read_bundle'," all)
-                   (string-append "# " all)))
                 (setenv "BZR_EDITOR" "nano")
-                (setenv "HOME" "/tmp")
-                (invoke "testr" "init")
-                (invoke "testr" "run")))))))
-    (native-inputs
-     (list nano                         ;for tests
-           python-cython
-           python-docutils
-           python-subunit
-           python-testrepository))
-    (inputs
-     (list gettext-minimal
-           python-configobj
-           python-dulwich
-           python-fastbencode
-           python-fastimport
-           python-launchpadlib
-           python-paramiko
-           python-patiencediff
-           python-pycryptodome
-           python-pygobject
-           python-pygpgme))
+                (invoke "brz" "selftest" "--verbose" "--parallel=fork"
+                        ;; This test hangs
+                        "-x" "breezy.tests.blackbox.test_serve"
+                        ;; No GnuPG key results for pattern: bazaar@example.com
+                        "-x" "breezy.tests.test_gpg"
+                        ;; compgen: command not found
+                        "-x" "bash_completion"
+                        ;; No such file or directory: '/etc/mtab'
+                        "-x" "breezy.tests.blackbox.test_diff.TestExternalDiff.test_external_diff"
+                        ;; Value "/etc/ssl/certs/ca-certificates.crt" is not valid for "ssl.ca_certs"
+                        "-x" "breezy.tests.test_https_urllib.CaCertsConfigTests.test_default_exists"
+                        ;; Unknown Failure
+                        "-x" "breezy.tests.test_plugins.TestLoadPluginAt.test_compiled_loaded"
+                        "-x" "breezy.tests.test_plugins.TestPlugins.test_plugin_get_path_pyc_only"
+                        "-x" "breezy.tests.test_selftest.TestActuallyStartBzrSubprocess.test_start_and_stop_bzr_subprocess_send_signal"))))
+          (add-before 'strip 'rename-pth-file
+            (assoc-ref py:%standard-phases 'rename-pth-file)))))
+    (native-inputs (list gettext-minimal
+                         python-wrapper
+                         python-cython
+                         python-setuptools
+                         python-setuptools-gettext
+                         python-setuptools-rust
+                         python-tomli
+                         python-wheel
+                         ;; tests
+                         nano
+                         python-testtools
+                         python-packaging
+                         python-subunit))
+    (inputs (list python-configobj
+                  python-dulwich
+                  python-fastbencode
+                  python-fastimport
+                  python-launchpadlib
+                  python-merge3
+                  python-paramiko
+                  python-gpg
+                  python-patiencediff
+                  python-pygithub
+                  python-pyyaml
+                  python-tzlocal
+                  python-urllib3))
     (home-page "https://www.breezy-vcs.org/")
     (synopsis "Decentralized revision control system")
     (description
