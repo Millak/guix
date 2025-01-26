@@ -6116,7 +6116,7 @@ transitions, and effects and then export your film to many common formats.")
                  `("PATH" ":" prefix
                    ,(list (string-append mlt "/bin"))))))))))
     (native-inputs
-     (list pkg-config python-wrapper qttools))
+     (list pkg-config python-wrapper qttools vulkan-headers))
     (inputs
      (list bash-minimal
            ffmpeg
@@ -6124,13 +6124,15 @@ transitions, and effects and then export your film to many common formats.")
            frei0r-plugins
            jack-1
            ladspa
+           libxkbcommon
            mlt
            pulseaudio
            qtbase
            qtcharts
            qtdeclarative
            qtmultimedia
-           sdl2))
+           sdl2
+           vulkan-loader))
     (home-page "https://www.shotcut.org/")
     (synopsis "Video editor built on the MLT framework")
     (description
