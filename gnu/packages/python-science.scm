@@ -3431,6 +3431,7 @@ machine learning algorithms based on GPs.")
     (arguments (list #:tests? #f))      ;no test suite
     (propagated-inputs (list python-pandas python-pyyaml python-scipy
                              python-tables))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/lawrennd/ods")
     (synopsis "Python software for Open Data Science")
     (description "This package provides utilities and tools for open data
