@@ -27931,6 +27931,25 @@ Git.")
 Rust Python extensions implemented with @code{PyO3} or @code{rust-cpython}.")
     (license license:expat)))
 
+(define-public python-setuptools-gettext
+  (package
+    (name "python-setuptools-gettext")
+    (version "0.1.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "setuptools_gettext" version))
+       (sha256
+        (base32 "0b0d74cwa9lk32cajzpxxg9nwm5hch17xc6bzg6i4iqsygprkw23"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-tomli
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/breezy-team/setuptools-gettext")
+    (synopsis "Setuptools plugin for gettext")
+    (description "This package provides a plugin for Setuptools for gettext.")
+    (license license:gpl2+)))
+
 (define-public python-pyclipper
   (package
     (name "python-pyclipper")
