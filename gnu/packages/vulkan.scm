@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
@@ -363,7 +363,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
      (list
       ;; As many as 23 tests are expected to fail per architecture.
       ;; Limit the tests to those architectures tested upstream.
-      #:tests? (and (%current-system)
+      #:tests? (and (not (%current-target-system))
                     (target-x86?))
       #:configure-flags
       #~(list (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
