@@ -29755,7 +29755,7 @@ user-space file systems in Python.")
 (define-public pybind11
   (package
     (name "pybind11")
-    (version "2.8.1")
+    (version "2.13.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -29763,7 +29763,7 @@ user-space file systems in Python.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "10hrkrh78sk7k0ydw1ghmp7gvpwmkby0l2s0kf2iaj9sz0vijkhs"))
+                "1dbnki0pnky39kr04afd9ks597bzjc530zbk33jjss53nfvdvlj8"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
