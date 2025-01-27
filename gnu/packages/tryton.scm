@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,24 +24,29 @@
 (define-module (gnu packages tryton)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages finance)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix utils)
-  #:use-module (guix build-system python))
+  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject))
 
 (define (guix-trytonpath-search-path version)
   "Generate a GUIX_TRYTOND_MODULES_PATH search path specification, using
@@ -58,41 +64,49 @@ installed in the same environments.  Collecting only paths actually containing
 (define-public trytond
   (package
     (name "trytond")
-    (version "6.2.10")
+    (version "7.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond" version))
        (sha256
-        (base32 "0s53ig8snbs9936h99pwa0lwhcrd3j3cbpwlmf90mf1chrif7zca"))
-       (patches (search-patches "trytond-add-egg-modules-to-path.patch"
-                                "trytond-add-guix_trytond_path.patch"))))
-    (build-system python-build-system)
+        (base32 "1bwa631qz07k6s5fbki3ph6sx0ch9yss2q4sa1jb67z6angiwv5f"))
+       (patches (search-patches "trytond-add-guix_trytond_path.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; "modules" is [None], but should be a list of modules.
+              "not ModuleTestCase"
+                            ;; fixture 'self' not found
+                            " and not test_method"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'preparations
+           (lambda _
+             (setenv "DB_NAME" ":memory:")
+             (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-dateutil
            python-defusedxml
            python-genshi
            python-lxml
-           python-magic
            python-passlib
            python-polib
-           python-psycopg2
            python-relatorio
            python-sql
-           python-werkzeug-1.0 ;setup.py requires werkzeug<2
-           python-wrapt))
+           python-werkzeug))
     (native-inputs
-     (list python-mock python-pillow))
+     (list python-pillow
+           python-pydot
+           python-pytest
+           python-setuptools
+           python-wheel
+           tzdata-for-tests))
     (native-search-paths
      (list (guix-trytonpath-search-path (package-version python))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'preparations
-           (lambda _
-             (setenv "DB_NAME" ":memory:")
-             (setenv "HOME" "/tmp")
-             #t)))))
     (home-page "https://www.tryton.org/")
     (synopsis "Tryton Server")
     (description "Tryton is a three-tier high-level general purpose
