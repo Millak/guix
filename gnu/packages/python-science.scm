@@ -3353,9 +3353,15 @@ it can be used for displaying many qualitatively different samples.")
                (base32
                 "1ywc2jzj40m6wmq227j3snxvp4434s0m1xk1abg6v6mr87pv2sa9"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-decorator python-numpy python-scipy
-                             python-six))
-    (native-inputs (list python-nose))
+    (native-inputs
+     (list python-nose
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-decorator
+           python-numpy
+           python-scipy
+           python-six))
     (home-page "https://github.com/sods/paramz")
     (synopsis "The Parameterization Framework")
     (description
