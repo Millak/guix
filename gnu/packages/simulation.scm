@@ -559,39 +559,41 @@ some support for generating and analysing traffic scenarios..")
     (name "python-fenics-dijitso")
     (version "2019.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "fenics-dijitso" version))
-        (sha256
-          (base32
-            "0lhqsq8ypdak0ahr2jnyvg07yrqp6wicjxi6k56zx24wp3qg60sc"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fenics-dijitso" version))
+       (sha256
+        (base32 "0lhqsq8ypdak0ahr2jnyvg07yrqp6wicjxi6k56zx24wp3qg60sc"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'mpi-setup
+            #$%openmpi-setup)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (with-directory-excursion "test"
+                  ;; Disable parallel tests to avoid race condition.  See
+                  ;; https://github.com/pytest-dev/pytest-cov/issues/237.
+                  (substitute* "runtests.sh"
+                    (("for p in 1 4 8 16; do") "for p in 1; do"))
+                  (invoke "./runtests.sh"))))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (inputs
      (list openmpi python-numpy))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-mpi4py))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'mpi-setup
-           ,%openmpi-setup)
-         (replace 'check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "HOME" "/tmp")
-             (with-guix-pytest-plugin inputs
-               (with-directory-excursion "test"
-                 ;; Disable parallel tests to avoid race condition.  See
-                 ;; https://github.com/pytest-dev/pytest-cov/issues/237.
-                 (substitute* "runtests.sh"
-                   (("for p in 1 4 8 16; do")
-                    "for p in 1; do"))
-                 (invoke "./runtests.sh"))))))))
     (home-page "https://bitbucket.org/fenics-project/dijitso/")
     (synopsis "Distributed just-in-time building of shared libraries")
     (description
-      "Dijitso provides a core component of the @code{FEniCS} framework,
+     "Dijitso provides a core component of the @code{FEniCS} framework,
 namely the just-in-time compilation of C++ code that is generated from
 Python modules.  It is called from within a C++ library, using ctypes
 to import the dynamic shared library directly.
