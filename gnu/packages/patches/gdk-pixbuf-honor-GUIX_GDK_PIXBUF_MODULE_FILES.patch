@@ -1,0 +1,34 @@
+This patch makes gdk-pixbuf look for additional modules in a list of files
+specified by the environment variable "GUIX_GDK_PIXBUF_MODULE_FILES".
+
+A similiar patch for "GDK_PIXBUF_MODULE_FILES" had been sent to upstream:
+  https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/merge_requests/180
+
+We use a "GUIX_" prefixed one to avoid breaking foreign programs:
+  https://issues.guix.gnu.org/63853
+  https://issues.guix.gnu.org/75523
+
+Upstream-status: N/A
+---
+diff --git a/gdk-pixbuf/gdk-pixbuf-io.c b/gdk-pixbuf/gdk-pixbuf-io.c
+index e1df590..913ce89 100644
+--- a/gdk-pixbuf/gdk-pixbuf-io.c
++++ b/gdk-pixbuf/gdk-pixbuf-io.c
+@@ -670,6 +670,17 @@ gdk_pixbuf_io_init (void)
+ 	gboolean ret;
+ 
+ 	gdk_pixbuf_io_init_builtin ();
++
++        /* Load modules from GUIX_GDK_PIXBUF_MODULE_FILES. */
++        gchar *module_files_env = g_getenv ("GUIX_GDK_PIXBUF_MODULE_FILES");
++        if (module_files_env) {
++            gchar **module_files = g_strsplit (module_files_env,
++                                               G_SEARCHPATH_SEPARATOR_S, 0);
++            for (int i = 0; module_files[i] != NULL; i++)
++                gdk_pixbuf_io_init_modules (module_files[i], NULL);
++            g_strfreev (module_files);
++        }
++
+ #ifdef USE_GMODULE
+ 	module_file = gdk_pixbuf_get_module_file ();
+ #endif

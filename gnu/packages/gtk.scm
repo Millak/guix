@@ -726,7 +726,10 @@ highlighting and other features typical of a source code editor.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1iz392vrlrnb92hrak697bgndsbkrcxhqxilxn6f99xr8ls5nl5r"))))
+                "1iz392vrlrnb92hrak697bgndsbkrcxhqxilxn6f99xr8ls5nl5r"))
+              (patches
+               (search-patches
+                "gdk-pixbuf-honor-GUIX_GDK_PIXBUF_MODULE_FILES.patch"))))
     (build-system meson-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -780,9 +783,8 @@ highlighting and other features typical of a source code editor.")
      ;; This file is produced by the gdk-pixbuf-loaders-cache-file
      ;; profile hook.
      (list (search-path-specification
-            (variable "GDK_PIXBUF_MODULE_FILE")
+            (variable "GUIX_GDK_PIXBUF_MODULE_FILES")
             (files (list %gdk-pixbuf-loaders-cache-file))
-            (separator #f)              ;single valued
             (file-type 'regular))))
     (synopsis "Image loading library")
     (description "GdkPixbuf is a library that loads image data in various
