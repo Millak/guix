@@ -160,7 +160,9 @@ sources.")
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
                   (setenv "HOME" "/tmp")
-                  (invoke "src/minetestserver" "--run-unittests"))))))))
+                  (setenv "MINETEST_GAME_PATH"
+                          (string-append (getcwd) "/../source/games"))
+                  (invoke "../source/bin/luantiserver" "--run-unittests"))))))))
     (inputs
      (modify-inputs (package-inputs minetest)
        (delete "libjpeg-turbo"
