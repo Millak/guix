@@ -3520,23 +3520,27 @@ data.")
     (license license:expat)))
 
 (define-public python-deepdish
+  ;; XXX: The project may no longer be compatible with the version of NumPy
+  ;; packed in Guix (now 1.24.4), use the latest commit containing fixes.
+  ;; See: <https://github.com/uchicago-cs/deepdish/issues/50>.
+  ;; However, there is a maintained fork that appears to be a good
+   ;; replacement: https://github.com/portugueslab/flammkuchen.
+  (let ((commit "3f2dff7a03f1b31f6924b665ad5b8c299329c1cd")
+        (revision "0"))
   (package
     (name "python-deepdish")
-    (version "0.3.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "deepdish" version))
-              (sha256
-               (base32
-                "1wqzwh3y0mjdyba5kfbvlamn561d3afz50zi712c7klkysz3mzva"))))
+    (version (git-version "0.3.7" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uchicago-cs/deepdish")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1n3r6z5zd18kdmzyg1gkm9lqi573szlxbls1ck5wjn4a14ar9fw3"))))
     (arguments
-     ;; XXX: The project may no longer be compatible with the version of
-     ;; numpy packed in Guix.
-     ;; See: https://github.com/uchicago-cs/deepdish/issues/50.
-     ;;
-     ;; However, there is a maintained fork that appears to be a good
-     ;; replacement: https://github.com/portugueslab/flammkuchen.
-     ;;
      ;; Disable few failing tests to pass the build.
      (list #:test-flags
            #~(list "-k" (string-append "not test_pad"
@@ -3555,9 +3559,16 @@ data.")
 import six
 ")))))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pandas python-setuptools python-wheel))
-    (propagated-inputs (list python-numpy python-scipy python-six
-                             python-tables))
+    (native-inputs
+     (list python-pytest
+           python-pandas
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy
+           python-six
+           python-tables))
     (home-page "https://github.com/uchicago-cs/deepdish")
     (synopsis "Python library for HDF5 file saving and loading")
     (description
@@ -3566,7 +3577,7 @@ The primary feature of deepdish is its ability to save and load all kinds of
 data as HDF5.  It can save any Python data structure, offering the same ease
 of use as pickling or @code{numpy.save}, but with the language
 interoperability offered by HDF5.")
-    (license license:bsd-3)))
+    (license license:bsd-3))))
 
 (define-public python-simple-pid
   (package
