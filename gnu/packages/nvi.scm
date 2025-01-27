@@ -71,6 +71,8 @@
           ,@(if (%current-target-system)
                 '("vi_cv_sprintf_count=yes")
                 '()))
+        #:make-flags (list "CFLAGS=-g -O2 -Wno-incompatible-pointer-types\
+ -Wno-implicit-function-declaration")
         #:phases
         (modify-phases %standard-phases
           (add-before 'configure 'fix-configure
