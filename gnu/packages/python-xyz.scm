@@ -27016,16 +27016,15 @@ functionality removed from @code{packaging}.")
        (sha256
         (base32
          "09nhrz80dfm60nssbvjgz4czzy4yzfa8gxczcdlzbgcnnvm914vb"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-lxml python-genshi))
-    (native-inputs
-     (list python-magic))
+     (list python-lxml python-magic python-genshi))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://relatorio.tryton.org/")
     (synopsis "Templating library able to output ODT and PDF files")
     (description "Relatorio is a templating library which provides a way to
-     easily output ODT, ODS, PNG, SVG and several other kinds of files.  Support
-     for more filetypes can be easily added by creating plugins for them.")
+easily output ODT, ODS, PNG, SVG and several other kinds of files.  Support
+for more filetypes can be easily added by creating plugins for them.")
     (license license:gpl3+)))
 
 (define-public python-radon
