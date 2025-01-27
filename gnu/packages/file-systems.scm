@@ -15,6 +15,7 @@
 ;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Julian Flake <flake@uni-koblenz.de>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1391,10 +1392,22 @@ APFS.")
                                 (("/usr/lib")
                                  (string-append out "/lib"))
                                 (("/etc/")
-                                 (string-append out "/etc/"))))
-                            (substitute* "client/Makefile.am"
-                              (("/usr/lib")
-                               "@libdir@")))))))
+                                 (string-append out "/etc/")))
+                              (substitute* (cons "data/org.opensuse.Snapper.service"
+                                                 (find-files "scripts/" "\\.sh"))
+                                (("/usr/bin/snapper")
+                                 (string-append out "/bin/snapper"))
+                                (("/usr/sbin/snapperd")
+                                 (string-append out "/sbin/snapperd"))
+                                (("/sbin/btrfs")
+                                 (which "btrfs")))
+                              (substitute* "scripts/snapper-hourly"
+                                (("PATH=.*$")
+                                 (format #f "PATH=~a/sbin:~a/bin\n"
+                                         out out)))
+                              (substitute* (find-files "." "Makefile.am")
+                                (("/usr/lib")
+                                 "@libdir@"))))))))
     (home-page "https://snapper.io")
     (native-inputs
      (list glibc-locales autoconf automake libtool pkg-config))
