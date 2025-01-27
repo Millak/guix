@@ -238,7 +238,7 @@ command line, without displaying a keyboard at all.")
 (define-public aquamarine
   (package
     (name "aquamarine")
-    (version "0.5.1")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -247,7 +247,7 @@ command line, without displaying a keyboard at all.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m4yjpdkp8czfn897376d0pjba3l5iwfj1b9rv44p37r7j8za6qv"))))
+                "1agxqlcg3hqgvnm7ypna0lqrsi1ggyhscivjifiwi6b7y6465cim"))))
     (build-system cmake-build-system)
     (arguments
      (list #:cmake cmake-3.30
