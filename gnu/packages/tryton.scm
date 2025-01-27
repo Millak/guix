@@ -118,30 +118,33 @@ and security.")
 (define-public tryton
   (package
     (name "tryton")
-    (version "6.2.7")
+    (version "7.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tryton" version))
        (sha256
-        (base32 "1bvwkrj2mmnddaif60g2np2jpx8lq5ka32xlhd4rlnshnbryrm5q"))))
-    (build-system python-build-system)
+        (base32 "0q0qa4pjbpc0h8r9hlnm5dh315w5i7mzqpdrlw1c8qvigpl1rf7g"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'change-home
-           (lambda _
-             ;; Change from /homeless-shelter to /tmp for write permission.
-             (setenv "HOME" "/tmp")))
-         (add-after 'install 'wrap-gi-python
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out               (assoc-ref outputs "out"))
-                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
-               (wrap-program (string-append out "/bin/tryton")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'change-home
+            (lambda _
+              ;; Change from /homeless-shelter to /tmp for write permission.
+              (setenv "HOME" "/tmp")))
+          (add-after 'install 'wrap-gi-python
+            (lambda _
+              (let ((gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
+                (wrap-program (string-append #$output "/bin/tryton")
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (native-inputs
      (list `(,glib "bin")
-           gobject-introspection))
+           gobject-introspection
+           python-pytest
+           python-setuptools
+           python-wheel))
     (inputs (list bash-minimal))        ;for wrap-program
     (propagated-inputs
      (list (librsvg-for-system)
