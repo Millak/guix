@@ -26,7 +26,7 @@
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
-;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023-2025 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -567,7 +567,7 @@ output), and Binutils.")
     ("16.0.6" . "0jxmapg7shwkl88m4mqgfjv4ziqdmnppxhjz6vz51ycp2x4nmjky")
     ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")
     ("18.1.8" . "1l9wm0g9jrpdf309kxjx7xrzf13h81kz8bbp0md14nrz38qll9la")
-    ("19.1.4" . "0y5kavrx13ylpzhci520hm7fgnzyj46mbz7dw3z9h5xi0py5lbda")))
+    ("19.1.7" . "18hkfhsm88bh3vnj21q7f118vrcnf7z6q1ylnwbknyb3yvk0343i")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"
@@ -581,7 +581,7 @@ output), and Binutils.")
                  "clang-17.0-link-dsymutil-latomic.patch"))
     ("18.1.8" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))
-    ("19.1.4" . ("clang-18.0-libc-search-path.patch"
+    ("19.1.7" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))))
 
 (define (llvm-monorepo version)
@@ -1574,7 +1574,7 @@ Library.")
   (make-clang-toolchain clang-18 libomp-18))
 
 (define-public llvm-19
-  (make-llvm "19.1.4"))
+  (make-llvm "19.1.7"))
 
 (define-public clang-runtime-19
   (clang-runtime-from-llvm llvm-19))
@@ -1589,7 +1589,7 @@ Library.")
                     (package-version llvm-19)))
      (sha256
       (base32
-       "19jgfdiwjx36d42219s6kdanwiapjdj49nnv8pn3vp74pgn0p7g0")))))
+       "1rqv769nvr07a9n1sgwbq5rm411x31kyq3ngls800m90z25hh2s3")))))
 
 (define-public libomp-19
   (package
