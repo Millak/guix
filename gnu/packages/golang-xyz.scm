@@ -15819,7 +15819,11 @@ Go host programs.")
     (arguments
      (list
       #:skip-build? #t
-      #:import-path "github.com/zclconf/go-cty"))
+      #:import-path "github.com/zclconf/go-cty"
+      #:test-flags
+      ;; Tests fail on non 64bit systems: unexpected error: invalid index:
+      ;; value must be a whole number, between -2147483648 and 2147483647.
+      #~(list #$@(if (not (target-64bit?)) '("-skip" "TestElement") '()))))
     (native-inputs
      (list go-github-com-google-go-cmp))
     (propagated-inputs
