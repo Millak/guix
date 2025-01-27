@@ -172,6 +172,12 @@
           (add-after 'install 'check-post-install
             (assoc-ref %standard-phases 'check))
           (delete 'check))))
+    ;; use for cross-compiling.
+    (native-search-paths
+     (list (search-path-specification
+            (variable "ECM_DIR")
+            (separator #f)
+            (files '("share/ECM")))))
     ;; optional dependencies - to save space, we do not add these inputs.
     ;; Sphinx > 1.2:
     ;;   Required to build Extra CMake Modules documentation in Qt Help format.
