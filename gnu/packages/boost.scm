@@ -70,7 +70,7 @@
     (version "1.83.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://boostorg.jfrog.io/artifactory/main/release/"
+              (uri (string-append "https://archives.boost.io/release/"
                                   version "/source/boost_"
                                   (version-with-underscores version) ".tar.bz2"))
               (patches
