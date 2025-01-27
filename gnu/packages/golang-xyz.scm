@@ -12313,6 +12313,10 @@ programs that use traditional command lines.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; XXX: Tests hang in CI without any error trace, causing the built to
+      ;; fail, find out why.  They pass just fine during local build on AMD
+      ;; Ryzen 7 3800X.
+      #:tests? #f
       #:import-path "github.com/pelletier/go-toml/v2"
       #:parallel-tests? #f
       #:test-flags
