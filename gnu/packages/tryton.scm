@@ -162,19 +162,20 @@ and security.")
 (define-public python-proteus
   (package
     (name "python-proteus")
-    (version "6.2.3")
+    (version "7.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "proteus" version))
        (sha256
-        (base32 "0xx8kqzgs66rgz6bk5favnjs0akz6znz81vmjwpwp2wpq7094fsr"))))
-    (build-system python-build-system)
+        (base32 "1q3d0hkvmfsmxbx2qqp8zpslyy11mzwh0q2dkrh958yfyrzi1550"))))
+    (build-system pyproject-build-system)
     ;; Tests require python-trytond-party which requires python-proteus.
     (arguments
      `(#:tests? #f))
     (propagated-inputs
      (list python-dateutil python-defusedxml))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "http://www.tryton.org/")
     (synopsis "Library to access a Tryton server as a client")
     (description
