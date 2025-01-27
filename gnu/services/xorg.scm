@@ -1291,7 +1291,7 @@ argument.")))
                          ;; the corresponding line in /etc/profile.
                          "XCURSOR_PATH=/run/current-system/profile/share/icons"
                          (string-append
-                          "GDK_PIXBUF_MODULE_FILE="
+                          "GUIX_GDK_PIXBUF_MODULE_FILES="
                           #$gnome-shell "/" #$%gdk-pixbuf-loaders-cache-file)
                          (string-append
                           "GDM_WAYLAND_SESSION="

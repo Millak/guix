@@ -1,6 +1,6 @@
 From: Josselin Poiret <dev@jpoiret.xyz>
 Date: Tue, 23 Nov 2021 18:39:39 +0000
-Subject: [PATCH] Make GDM pass GDK_PIXBUF_MODULE_FILE to sessions
+Subject: [PATCH] Make GDM pass GUIX_GDK_PIXBUF_MODULE_FILES to sessions
 diff --git a/daemon/gdm-launch-environment.c b/daemon/gdm-launch-environment.c
 index 932c3e8a..a50dcc8c 100644
 --- a/daemon/gdm-launch-environment.c
@@ -9,7 +9,7 @@ index 932c3e8a..a50dcc8c 100644
                  "WINDOWPATH",
                  "XCURSOR_PATH",
                  "XDG_CONFIG_DIRS",
-+                "GDK_PIXBUF_MODULE_FILE",
++                "GUIX_GDK_PIXBUF_MODULE_FILES",
                  NULL
          };
          char *system_data_dirs;
