@@ -3426,18 +3426,24 @@ machine learning algorithms based on GPs.")
 (define-public python-pods
   (package
     (name "python-pods")
-    (version "0.1.14")
+    (version "0.1.17")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pods" version))
        (sha256
-        (base32 "157xxs12qbnz1g6agy0a4dqhsa4msbqryrxpg5w3r3pb8gxdl4dh"))))
+        (base32 "1z57jdwml2jzr2dq20p7pzx3ayhajgfd2d0xqjvgzx576hp2z1ac"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no test suite
-    (propagated-inputs (list python-pandas python-pyyaml python-scipy
-                             python-tables))
-    (native-inputs (list python-setuptools python-wheel))
+    ;; Tests depend on Nose framework and try to download test data from
+    ;; <https://github.com/SheffieldML/GPmat>.
+    (arguments (list #:tests? #f))
+    (native-inputs
+     (list python-poetry-core))
+    (propagated-inputs
+     (list python-pandas
+           python-pyyaml
+           python-scipy
+           python-tables))
     (home-page "https://github.com/lawrennd/ods")
     (synopsis "Python software for Open Data Science")
     (description "This package provides utilities and tools for open data
