@@ -8075,7 +8075,8 @@ some graphical niceities, and numerous bug-fixes and other improvements.")
        ,@(strip-keyword-arguments '(#:make-flags #:phases)
                                   (package-arguments quakespasm))))
     (inputs (modify-inputs (package-inputs quakespasm)
-              (prepend vulkan-headers vulkan-loader)))
+              (prepend vulkan-headers vulkan-loader)
+              (replace "sdl2" sdl2-2.0)))
     (description "vkquake is a modern engine for id software's Quake 1.
 It includes support for 64 bit CPUs, custom music playback, a new sound driver,
 some graphical niceities, and numerous bug-fixes and other improvements.")
