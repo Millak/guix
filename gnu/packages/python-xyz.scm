@@ -39789,6 +39789,35 @@ write text fast, and for various text generation, statistics, and modeling tasks
                (base32
                 "0mikjfvq26kh8asnn9v55z41pap4c5ypymqnwwi4xkavc3mzyda2"))))))
 
+(define-public python-whenever
+  (package
+    (name "python-whenever")
+    (version "0.6.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "whenever" version))
+       (sha256
+        (base32 "1diqibiv07i0q4sqqd1qw4bbzmp84zlrfv8lmlc395b5czwpf5pj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  ;; Use the pure python version
+                  (add-before 'build 'setenv
+                    (lambda _
+                      (setenv "WHENEVER_NO_BUILD_RUST_EXT" "1"))))))
+    (propagated-inputs (list python-tzdata))
+    (native-inputs (list python-setuptools python-setuptools-rust python-wheel))
+    (home-page "https://whenever.readthedocs.io/")
+    (synopsis "Modern datetime library for Python")
+    (description "Modern datetime library for Python.  Supports:
+@itemize
+@item DST-safe arithmetic
+@item Nanosecond precision
+@item Date arithmetic
+@end itemize")
+    (license license:expat)))
+
 (define-public python-xmp-toolkit
   (package
     (name "python-xmp-toolkit")
