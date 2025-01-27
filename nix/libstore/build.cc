@@ -2107,8 +2107,15 @@ void DerivationGoal::runChild()
                     createDirs(dirOf(target));
                     writeFile(target, "");
                 }
+
+		/* Extra flags passed with MS_BIND are ignored, hence the
+		   extra MS_REMOUNT.  */
                 if (mount(source.c_str(), target.c_str(), "", MS_BIND, 0) == -1)
                     throw SysError(format("bind mount from `%1%' to `%2%' failed") % source % target);
+		if (source.compare(0, settings.nixStore.length(), settings.nixStore) == 0) {
+		     if (mount(source.c_str(), target.c_str(), "", MS_BIND | MS_REMOUNT | MS_RDONLY, 0) == -1)
+			  throw SysError(format("read-only remount of `%1%' failed") % target);
+		}
             }
 
             /* Bind a new instance of procfs on /proc to reflect our
