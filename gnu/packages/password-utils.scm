@@ -1073,10 +1073,7 @@ using password-store through rofi interface:
                        (("#clibpoard_backend=xclip")
                         "clipboard_backend=wl-clipboard")
                        (("#backend=xdotool")
-                        "backend=wtype"))
-                     (substitute* "rofi-pass"
-                       (("/etc")
-                        (string-append #$output "/etc")))))
+                        "backend=wtype"))))
             ;; Use Wayland related tools instead.
             (replace 'wrap-path
               (lambda* (#:key inputs #:allow-other-keys)
