@@ -61,6 +61,7 @@
 ;;; Copyright © 2023, 2024 Luis Felipe López Acevedo <sirgazil@zoho.com>
 ;;; Copyright © 2024 Christina O'Donnell <cdo@mutix.org>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty10@gmail.com>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -242,7 +243,7 @@ in print.  With attention to detail for high resolution rendering.")
 (define-public font-intel-one-mono
   (package
     (name "font-intel-one-mono")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -251,7 +252,7 @@ in print.  With attention to detail for high resolution rendering.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0w9isn8az1k3a3q4m2llwnryy79i5v30dx1hfaf90x0zkj98ky5h"))))
+                "1snwxpcdxl62z1mcax19bmsmbw0hi6m0cqkxqz79ydynfch95sd0"))))
     (outputs '("out" "ttf" "woff"))
     (build-system font-build-system)
     (home-page "https://github.com/intel/intel-one-mono")
