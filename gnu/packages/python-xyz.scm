@@ -21707,6 +21707,29 @@ GnuPG encryption, and more.  It also supports management of Amazon's
 CloudFront content delivery network.")
     (license license:gpl2+)))
 
+(define-public python-securetar
+  (package
+    (name "python-securetar")
+    (version "2025.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pvizeli/securetar")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b9m29j4mjiv7925wrbiyj6vyx7m9qmdz40zqd4vgxhz4pq6x3xw"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel python-pytest))
+    (propagated-inputs (list python-cryptography))
+    (home-page "https://github.com/pvizeli/securetar")
+    (synopsis "Python module to handle tarfile backups")
+    (description
+     "This library provides a streaming wrapper around python tarfile and allow
+secure handling files and support encryption.")
+    (license license:asl2.0)))
+
 (define-public python-pkgconfig
   (package
     (name "python-pkgconfig")
