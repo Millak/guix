@@ -1,0 +1,60 @@
+mandoc upstream does not support zstd compression.  However, Guix uses zstd
+compression for its man pages, therefore — without support for this
+compression method — mandoc would be quite useless.  Hence, this patchset uses
+zlibWrapper from the zstd project to add zstd compression support to mandoc.
+
+Upstream-status: https://inbox.vuxu.org/mandoc-discuss/Z5i0H+XrKVrZqAXB@asta-kit.de/T/#t
+
+diff -upr mandoc-1.14.6.orig/Makefile mandoc-1.14.6/Makefile
+--- mandoc-1.14.6.orig/Makefile	2025-01-11 16:20:31.511129163 +0100
++++ mandoc-1.14.6/Makefile	2025-01-11 19:16:35.924788821 +0100
+@@ -251,7 +251,12 @@ LIBMANDOC_OBJS	 = $(LIBMAN_OBJS) \
+ 		   msec.o \
+ 		   preconv.o \
+ 		   read.o \
+-		   tag.o
++		   tag.o \
++		   zstd_zlibwrapper.o \
++		   gzclose.o \
++		   gzlib.o \
++		   gzread.o \
++		   gzwrite.o
+ 
+ ALL_COBJS	 = compat_err.o \
+ 		   compat_fts.o \
+Only in mandoc-1.14.6: Makefile.orig
+diff -upr mandoc-1.14.6.orig/configure mandoc-1.14.6/configure
+--- mandoc-1.14.6.orig/configure	2025-01-11 16:20:31.511129163 +0100
++++ mandoc-1.14.6/configure	2025-01-11 19:16:35.924788821 +0100
+@@ -430,7 +430,7 @@ fi
+ [ "${FATAL}" -eq 0 ] || exit 1
+ 
+ # --- LDADD ---
+-LDADD="${LDADD} ${LD_NANOSLEEP} ${LD_RECVMSG} ${LD_OHASH} -lz"
++LDADD="${LDADD} ${LD_NANOSLEEP} ${LD_RECVMSG} ${LD_OHASH} -lz -lzstd"
+ echo "selected LDADD=\"${LDADD}\"" 1>&2
+ echo "selected LDADD=\"${LDADD}\"" 1>&3
+ echo 1>&3
+Only in mandoc-1.14.6: configure.orig
+diff -upr mandoc-1.14.6.orig/read.c mandoc-1.14.6/read.c
+--- mandoc-1.14.6.orig/read.c	2025-01-11 16:35:03.825441715 +0100
++++ mandoc-1.14.6/read.c	2025-01-11 19:16:35.924788821 +0100
+@@ -37,7 +37,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+-#include <zlib.h>
++#include <zstd_zlibwrapper.h>
+ 
+ #include "mandoc_aux.h"
+ #include "mandoc.h"
+@@ -627,7 +627,7 @@ mparse_open(struct mparse *curp, const char *file)
+ 	int		  fd, save_errno;
+ 
+ 	cp = strrchr(file, '.');
+-	curp->gzip = (cp != NULL && ! strcmp(cp + 1, "gz"));
++	curp->gzip = (cp != NULL && (! strcmp(cp + 1, "gz") || ! strcmp(cp + 1, "zst")));
+ 
+ 	/* First try to use the filename as it is. */
+ 
+Only in mandoc-1.14.6: read.c.orig

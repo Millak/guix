@@ -37,6 +37,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system ruby)
   #:use-module (guix utils)
+  #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages dbm)
@@ -273,30 +274,47 @@ pages into HTML format.")
               (method url-fetch)
               (uri (string-append "https://mandoc.bsd.lv/snapshots/mandoc-"
                                   version ".tar.gz"))
+              (patches (search-patches "mandoc-support-zstd-compression.patch"))
               (sha256
                (base32
                 "174x2x9ws47b14lm339j6rzm7mxy1j3qhh484khscw0yy1qdbw4b"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "regress"
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'set-prefix
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (substitute* "configure"
-                        (("^CC=.*")
-                         (string-append "CC=" ,(cc-for-target) "\n"))
-                        (("^DEFCFLAGS=\\\\\"")
-                         "DEFCFLAGS=\"-O2 ")
-                        (("^UTF8_LOCALE=.*")      ;used for tests
-                         "UTF8_LOCALE=en_US.UTF-8\n")
-                        (("^MANPATH_(BASE|DEFAULT)=.*" _ which)
-                         (string-append "MANPATH_" which "="
-                                        "/run/current-system/profile/share/man\n"))
-                        (("^PREFIX=.*")
-                         (string-append "PREFIX=" (assoc-ref outputs "out")
-                                        "\n"))))))))
+      (list
+        #:test-target "regress"
+        #:make-flags
+        #~(list "VPATH=./zstd-src/zlibWrapper"
+                (string-join
+                  (list "CFLAGS=-DZWRAP_USE_ZSTD=1"
+                        "-I./zstd-src/zlibWrapper")
+                  " "))
+        #:phases
+        #~(modify-phases %standard-phases
+                         (add-after 'unpack 'unpack-zstd
+                           (lambda _
+                             (mkdir "zstd-src")
+                             (invoke "tar" "--strip-components=1" "-C"
+                                     "zstd-src" "-xf" #$(package-source zstd))))
+                         (add-before 'configure 'set-prefix
+                           (lambda* (#:key outputs #:allow-other-keys)
+                             (substitute*
+                               "configure"
+                               (("^CC=.*")
+                                (string-append "CC=" #$(cc-for-target) "\n"))
+                               (("^DEFCFLAGS=\\\\\"")
+                                "DEFCFLAGS=\"-O2 ")
+                               (("^UTF8_LOCALE=.*")      ;used for tests
+                                "UTF8_LOCALE=en_US.UTF-8\n")
+                               (("^MANPATH_(BASE|DEFAULT)=.*" _ which)
+                                (string-append
+                                  "MANPATH_" which "="
+                                  "/run/current-system/profile/share/man\n"))
+                               (("^PREFIX=.*")
+                                (string-append "PREFIX="
+                                               (assoc-ref outputs "out")
+                                               "\n"))))))))
     (native-inputs (list (libc-utf8-locales-for-target) perl)) ;used to run tests
-    (inputs (list zlib))
+    (inputs (list zlib (list zstd "lib")))
     (native-search-paths
      (list (search-path-specification
             (variable "MANPATH")
