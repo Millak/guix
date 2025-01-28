@@ -8,7 +8,7 @@
 ;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Raoul Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2021, 2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2021, 2022, 2024, 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018-2024 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
@@ -24109,7 +24109,7 @@ single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
 (define-public ccwl
   (package
     (name "ccwl")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
@@ -24117,7 +24117,7 @@ single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "0za710mcn9di1njli3dk3660n3836ip8b4msb8f958498va95y7j"))))
+         "1vnkj34400kj77xavdr0cry0vm2fmk40vf7cwca61q3jl3h7hl2c"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0") ; to prevent guild warnings
