@@ -1095,9 +1095,7 @@
       ((graft)
        (and (eq? (graft-origin graft)
                  (package-derivation %store dep))
-            (eq? (run-with-store %store
-                   (graft-replacement graft))
-                 (package-derivation %store new)))))))
+            (eq? (graft-replacement graft) new))))))
 
 ;; XXX: This test would require building the cross toolchain just to see if it
 ;; needs grafting, which is obviously too expensive, and thus disabled.
@@ -1134,9 +1132,7 @@
       ((graft)
        (and (eq? (graft-origin graft)
                  (package-derivation %store dep))
-            (eq? (run-with-store %store
-                   (graft-replacement graft))
-                 (package-derivation %store new)))))))
+            (eq? (graft-replacement graft) new))))))
 
 (test-assert "package-grafts, same replacement twice"
   (let* ((new  (dummy-package "dep"
@@ -1161,9 +1157,7 @@
                  (package-derivation %store
                                      (package (inherit dep)
                                               (replacement #f))))
-            (eq? (run-with-store %store
-                   (graft-replacement graft))
-                 (package-derivation %store new)))))))
+            (eq? (graft-replacement graft) new))))))
 
 (test-assert "package-grafts, dependency on several outputs"
   ;; Make sure we get one graft per output; see <https://bugs.gnu.org/41796>.
@@ -1183,9 +1177,9 @@
       ((graft1 graft2)
        (and (eq? (graft-origin graft1) (graft-origin graft2)
                  (package-derivation %store p0))
-            (eq? (run-with-store %store (graft-replacement graft1))
-                 (run-with-store %store (graft-replacement graft2))
-                 (package-derivation %store p0*))
+            (eq? (graft-replacement graft1)
+                 (graft-replacement graft2)
+                 p0*)
             (string=? "lib"
                       (graft-origin-output graft1)
                       (graft-replacement-output graft1))
@@ -1262,14 +1256,10 @@
       ((graft1 graft2)
        (and (eq? (graft-origin graft1)
                  (package-derivation %store p1 #:graft? #f))
-            (eq? (run-with-store %store
-                   (graft-replacement graft1))
-                 (package-derivation %store p1r))
+            (eq? (graft-replacement graft1) p1r)
             (eq? (graft-origin graft2)
                  (package-derivation %store p2 #:graft? #f))
-            (eq? (run-with-store %store
-                   (graft-replacement graft2))
-                 (package-derivation %store p2r #:graft? #t)))))))
+            (eq? (graft-replacement graft2) p2r))))))
 
 ;;; XXX: Nowadays 'graft-derivation' needs to build derivations beforehand to
 ;;; find out about their run-time dependencies, so this test is no longer

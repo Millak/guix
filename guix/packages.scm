@@ -1818,15 +1818,13 @@ graft, and #f otherwise."
          (if replacement
              (mcached eq? (=> %package-graft-cache)
                       (mlet %store-monad ((orig (package->derivation package system
-                                                                     #:graft? #f))
-                                          (new -> (package->derivation replacement system
-                                                                       #:graft? #t)))
-                        ;; Keep NEW as a monadic value so that its computation
-                        ;; is delayed until necessary.
+                                                                     #:graft? #f)))
+                        ;; Keep REPLACEMENT as a package so that its
+                        ;; derivation is computed only when necessary.
                         (return (graft
                                   (origin orig)
                                   (origin-output output)
-                                  (replacement new)
+                                  (replacement replacement)
                                   (replacement-output output))))
                       package output system)
              (return #f))))
@@ -1842,16 +1840,13 @@ graft, and #f otherwise."
          (if replacement
              (mlet %store-monad ((orig (package->cross-derivation package
                                                                   target system
-                                                                  #:graft? #f))
-                                 (new -> (package->cross-derivation replacement
-                                                                    target system
-                                                                    #:graft? #t)))
-               ;; Keep NEW as a monadic value so that its computation
-               ;; is delayed until necessary.
+                                                                  #:graft? #f)))
+               ;; Keep REPLACEMENT as a package so that its derivation is
+               ;; computed only when necessary.
                (return (graft
                          (origin orig)
                          (origin-output output)
-                         (replacement new)
+                         (replacement replacement)
                          (replacement-output output))))
              (return #f))))
       (_
