@@ -3051,9 +3051,18 @@ various ways that may be running with too much privilege.")
                 "0gcrzcb4g7f994n6nws26g6x15yjija1gyzd359sjv7r3xj1z9p9"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:make-flags
-           #~(list "BUILD_INFO=\"(Guix)\"")))
-    (inputs (list libcap-ng))
+     (list
+      #:make-flags
+      #~(list "BUILD_INFO=\"(Guix)\"")
+      #:configure-flags
+      #~(list (format #f "--with-scriptpath=~{~a:~}$PATH"
+                      (map (lambda (pkg)
+                             (in-vicinity pkg "bin"))
+                           '#$(list (this-package-input "coreutils-minimal")
+                                    (this-package-input "sed")))))))
+    (inputs (list coreutils-minimal
+                  libcap-ng
+                  sed))
     (home-page "https://www.smartmontools.org/")
     (synopsis "S.M.A.R.T. harddisk control and monitoring tools")
     (description
