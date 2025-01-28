@@ -11984,10 +11984,9 @@ container image format spec (OCI Image Format).")
     (arguments
      (list
       #:import-path "github.com/opencontainers/runtime-spec"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build)
-          (delete 'check))))
+      #:skip-build? #t))
+    (native-inputs
+     (list go-github-com-xeipuuv-gojsonschema))
     (home-page "https://github.com/opencontainers/runtime-spec")
     (synopsis "OCI specs implementation in Golang")
     (description
