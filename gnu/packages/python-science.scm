@@ -652,6 +652,55 @@ logic, also known as grey logic.")
      "Scikit-image is a collection of algorithms for image processing.")
     (license license:bsd-3)))
 
+(define-public python-scikit-misc
+  (package
+    (name "python-scikit-misc")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scikit_misc" version))
+       (sha256
+        (base32 "18sj7qa3kk4pqh3rzg2c64lf03nciv9cf985yh1h2kpqqndgdhf5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "--pyargs" "skmisc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            (lambda _
+              (call-with-output-file "skmisc/_version.py"
+                (lambda (port)
+                  (display (string-append "__version__ = \"" #$version "\"")
+                           port)))
+              (substitute* "meson.build"
+                (("^  version: run_command.*")
+                 (string-append "  version: '" #$version "',\n")))
+              (substitute* "pyproject.toml"
+                (("dynamic = \\['version'\\]")
+                 (string-append "version = \"" #$version "\""))))))))
+    (propagated-inputs (list meson-python
+                             python-numpy
+                             python-numpydoc
+                             python-spin
+                             python-twine))
+    (native-inputs (list gfortran
+                         pkg-config
+                         python-cython-3
+                         python-meson-python
+                         python-numpy
+                         python-pytest
+                         python-pytest-cov
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://has2k1.github.io/scikit-misc/stable")
+    (synopsis "Miscellaneous tools for scientific computing.")
+    (description "This package provides miscellaneous tools for data analysis
+and scientific computing.")
+    (license license:bsd-3)))
+
 (define-public python-scikit-opt
   (package
     (name "python-scikit-opt")
