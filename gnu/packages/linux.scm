@@ -920,7 +920,11 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
     ("CONFIG_VIRTIO_MMIO" . m)
     ("CONFIG_FUSE_FS" . m)
     ("CONFIG_CIFS" . m)
-    ("CONFIG_9P_FS" . m)))
+    ("CONFIG_9P_FS" . m)
+    ;; Disable the EFI pstore storage backend to avoid causing
+    ;; unrecoverable failures on some EFI systems:
+    ;; https://lists.gnu.org/archive/html/help-guix/2025-01/msg00173.html
+    ("CONFIG_EFI_VARS_PSTORE_DEFAULT_DISABLE" . #t)))
 
 (define (config->string options)
   (string-join (map (match-lambda
