@@ -30481,9 +30481,8 @@ codecs for use in data storage and communication applications.")
               ;; but occasionally fail.  They fail pretty reliably on the
               ;; build farm.
               "-k" (string-append "not test_lazy_loader and not open_array"
-                                  ;; TODO: remove this on python-team branch.
-                                  ;; This only fails on the master branch.
-                                  " and not test_encode_decode_array_dtype_shape_v3"))
+                                  ;; File not found.
+                                  " and not test_filesystem_path"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-version
