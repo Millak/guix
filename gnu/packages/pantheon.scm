@@ -283,7 +283,7 @@ desktop environment (originally from elementary OS).")
 (define-public pantheon-terminal
   (package
     (name "pantheon-terminal")
-    (version "6.1.2")
+    (version "6.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -292,11 +292,11 @@ desktop environment (originally from elementary OS).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x3gzghnfx4a1q2zhra4dysc0pm1zvlfdxj96qhfb627pz16iv4k"))))
+                "142nwx2jc7ks529dk8dqhgs39gdqh6bc7gv9b10qdfm81bwqjkjv"))))
     (build-system meson-build-system)
     (arguments
      (list
-      #:tests? #f      ; Tests invole launching the terminal.
+      #:tests? #f      ; Tests involve launching the terminal.
       #:glib-or-gtk? #t
       #:phases
       #~(modify-phases %standard-phases
