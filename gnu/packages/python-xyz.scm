@@ -23401,6 +23401,9 @@ strings require only one extra byte in addition to the strings themselves.")
                      "test_omit_default_roundtrip"
                      "test_optional_field_roundtrip"
                      "test_renaming"
+                     ;; 'utf-8' codec can't encode character '\ud800' in
+                     ;; position 0: surrogates not allowed
+                     "test_simple_classes"
                      ;; This test fails with an assertion error on the build
                      ;; farm, but not on my laptop.
                      "test_nodefs_generated_unstructuring_cl"
