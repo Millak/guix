@@ -96,7 +96,7 @@
                          python-pytest-jupyter
                          python-pytest-tornasync
                          python-requests
-                         python-requests-unixsocket
+                         python-requests-unixsocket2
                          python-testpath))
     (home-page "https://github.com/jupyter/nbclassic")
     (synopsis "Jupyter Notebook as a Jupyter Server extension")

@@ -19461,7 +19461,7 @@ convert an @code{.ipynb} notebook file into various static formats including:
            python-pytest
            python-pytest-cov
            python-requests
-           python-requests-unixsocket
+           python-requests-unixsocket2
            python-setuptools
            python-wheel))
     (home-page "https://jupyter.org/")

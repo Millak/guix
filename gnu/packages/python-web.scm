@@ -2052,7 +2052,7 @@ other HTTP libraries.")
            python-pytest-mock
            python-requests
            python-requests-toolbelt
-           python-requests-unixsocket
+           python-requests-unixsocket2
            python-setuptools
            python-setuptools-scm
            python-trustme
@@ -4644,57 +4644,32 @@ than Python’s urllib2 library.")
 python-requests.")
     (license license:isc)))
 
-(define-public python-requests-unixsocket
+(define-public python-requests-unixsocket2
   (package
-    (name "python-requests-unixsocket")
-    (version "0.2.0")
+    (name "python-requests-unixsocket2")
+    (version "0.4.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "requests-unixsocket" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/thelabnyc/requests-unixsocket2")
+             (commit (string-append "v" version))))
        (sha256
-        (base32 "1sn12y4fw1qki5gxy9wg45gmdrxhrndwfndfjxhpiky3mwh1lp4y"))))
+        (base32 "0vy0c1xwwmm6xqabhl2j7zqgsldvcs8ar547nk5r9l2yb7gngzjk"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; TypeError: HTTPConnection.request() got an unexpected keyword
-      ;; argument 'chunked'
-      #~(list "-k" (string-append "not test_unix_domain_adapter_ok"
-                                  " and not test_unix_domain_adapter_url_with_query_params"
-                                  " and not test_unix_domain_adapter_connection_error"
-                                  " and not test_unix_domain_adapter_monkeypatch"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'skip-pep8
-            (lambda _
-              (substitute* "pytest.ini"
-                (("--pep8") "")))))))
     (native-inputs
-     (list python-apipkg
-           python-appdirs
-           python-execnet
-           python-packaging
-           python-pep8
-           python-py
-           python-pyparsing
-           python-pytest
-           python-pytest-cache
-           python-pytest-pep8
-           python-setuptools
-           python-six
-           python-waitress
-           python-wheel))
+     (list python-poetry-core python-pytest python-waitress))
     (propagated-inputs
-     (list python-pbr
-           python-requests
-           python-urllib3))
-    (home-page "https://github.com/msabramo/requests-unixsocket")
+     (list python-pbr python-requests))
+    (home-page "https://gitlab.com/thelabnyc/requests-unixsocket2")
     (synopsis "Talk HTTP via a UNIX domain socket")
     (description
      "This Python package lets you use the @code{requests} library to talk
 HTTP via a UNIX domain socket.")
     (license license:asl2.0)))
+
+(define-public python-requests-unixsocket
+  (deprecated-package "python-requests-unixsocket" python-requests-unixsocket2))
 
 (define-public python-requests_ntlm
   (package
