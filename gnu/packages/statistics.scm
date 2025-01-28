@@ -1009,24 +1009,18 @@ and a lot more.")
 (define-public python-patsy
   (package
     (name "python-patsy")
-    (version "0.5.2")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "patsy" version))
               (sha256
                (base32
-                "17dn72519gvwifw3i8mzwlslxmxkl8ihzfrxg1iblsk70iwdwlsh"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "pytest" "-vv")))))))
+                "1i60b6s8zj0w2ks63ip4mr8z14p6pixp76rm9q2qr0gc3qwsk1p7"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-numpy python-scipy python-six))
+     (list python-numpy python-scipy))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-pytest-cov python-setuptools python-wheel))
     (home-page "https://github.com/pydata/patsy")
     (synopsis "Describe statistical models and build design matrices")
     (description
