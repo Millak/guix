@@ -33691,14 +33691,18 @@ library.  Only the high-level API is bound.")
 (define-public python-frozendict
   (package
     (name "python-frozendict")
-    (version "2.3.4")
+    (version "2.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "frozendict" version))
        (sha256
-        (base32 "0y3zn57i1q5192f7l4w2z2zsy3rrx50g563msaq954r58s1v3d0m"))))
-    (build-system python-build-system)
+        (base32 "13ib358v66c9ykfz3plpxcs96ca6vkx8w84sjv26zlpvf1jd2z6z"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/Marco-Sulla/python-frozendict")
     (synopsis "Simple immutable mapping for Python")
     (description
