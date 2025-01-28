@@ -57,6 +57,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages algebra)
@@ -98,6 +99,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages profiling)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
@@ -673,7 +675,7 @@ imaging.  It supports several HDR and LDR image formats, and it can:
 (define-public mcomix
   (package
     (name "mcomix")
-    (version "2.0.2")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
@@ -681,17 +683,19 @@ imaging.  It supports several HDR and LDR image formats, and it can:
                            "mcomix-" version ".tar.gz"))
        (sha256
         (base32
-         "0n0akk3njsm0paqxfbxqycwhwy6smjg0rhlcz5r7r82n7rqx0f7g"))))
-    (build-system python-build-system)
+         "09y4nhlcqvvhz0wscx4zpqxmyhiwh8wrjnhk52awxhzvgyx6wa7r"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-wheel))
     (inputs
      (list p7zip python python-pillow python-pygobject python-pycairo gtk+))
     (arguments
      (list
-      #:imported-modules `(,@%python-build-system-modules
+      #:imported-modules `(,@%pyproject-build-system-modules
                            (guix build glib-or-gtk-build-system))
-      #:modules '((guix build python-build-system)
+      #:modules '((guix build pyproject-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build utils))
+      #:tests? #f                       ;no tests
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
