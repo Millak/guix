@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021-2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -467,6 +467,15 @@
        (string=? result
                  (string-append (derivation->output-path drv)
                                 "/bin/touch"))))))
+
+(test-assert "with-parameters + store item"
+  (let* ((file (add-text-to-store %store "hello.txt" "Hello, world!"))
+         (obj (with-parameters ((%current-system "aarch64-linux"))
+                file))
+         (lowered (run-with-store %store
+                    (lower-object obj))))
+    (string=? lowered file)))
+
 (test-equal "let-system"
   (list `(begin ,(%current-system) #t) '(system-binding)
         'low '() '())

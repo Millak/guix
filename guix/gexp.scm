@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -747,7 +747,12 @@ x86_64-linux when COREUTILS is lowered."
                    (target (if (memq %current-target-system parameters)
                                (%current-target-system)
                                target)))
-               (lower-object (thunk) system #:target target))))))))
+               (match (thunk)
+                 ((? struct? obj)
+                  (lower-object obj system #:target target))
+                 (obj                             ;store item
+                  (with-monad %store-monad
+                    (return obj)))))))))))
 
   expander => (lambda (parameterized lowered output)
                 (match (parameterized-bindings parameterized)
@@ -758,10 +763,13 @@ x86_64-linux when COREUTILS is lowered."
                      (with-fluids* fluids
                        (map (lambda (thunk) (thunk)) values)
                        (lambda ()
-                         ;; Delegate to the expander of the wrapped object.
-                         (let* ((base   (thunk))
-                                (expand (lookup-expander base)))
-                           (expand base lowered output)))))))))
+                         (match (thunk)
+                           ((? struct? base)
+                            ;; Delegate to the expander of the wrapped object.
+                            (let ((expand (lookup-expander base)))
+                              (expand base lowered output)))
+                           (obj                   ;store item
+                            obj)))))))))
 
 
 ;;;
