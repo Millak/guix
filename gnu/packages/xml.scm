@@ -2040,3 +2040,29 @@ syntax of @code{xml:lang}, @code{xml:spec}, @code{xml:base}, and @code{xml:id} i
 schema language defined by the XML Schema Recommendation Second Edition of 28 October
 2004.")
     (license license:w3c)))
+
+(define-public xmlpatch
+  (package
+    (name "xmlpatch")
+    (version "0.4.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ufz/xmlpatch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10kjg7lz9p4xnv96053mj18dmc7lj7iqzx98z3aagnw6hfwdri7f"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")))
+    (native-inputs (list pkg-config))
+    (inputs (list libxml2 glib))
+    (home-page "https://xmlpatch.sourceforge.net")
+    (synopsis "XML patch library")
+    (description
+     "XML Patch is a C++ library and command-line interface
+(the @command{xml-diff} and @command{xml-patch} commands) for patching XML
+files with XPath expressions.")
+    (license license:lgpl2.1+)))
