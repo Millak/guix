@@ -424,7 +424,7 @@ and will take advantage of multiple processor cores where possible.")
 (define-public libtorrent-rasterbar
   (package
     (name "libtorrent-rasterbar")
-    (version "2.0.10")
+    (version "2.0.11")
     (source
      (origin
        (method url-fetch)
@@ -433,7 +433,7 @@ and will take advantage of multiple processor cores where possible.")
                        "releases/download/v" version "/"
                        "libtorrent-rasterbar-" version ".tar.gz"))
        (sha256
-        (base32 "0pc8rbcp7njbx8m02z47pcbbwcp5cjggbgq4sfjc19dc3n65p4zw"))))
+        (base32 "0v8yrxzc7piw5lrpgkb50b4p16ic1sl4pyj0rkkasaag1xc5inzh"))))
     (build-system cmake-build-system)
     (arguments
      (list
