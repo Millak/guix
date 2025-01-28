@@ -24155,8 +24155,10 @@ aligner.")
     (arguments
      (list
        #:test-flags
-       ;; XXX: these two tests fail for unknown reasons
-       '(list "-k" "not test_perfect_fit and not test_perfect_fit_2d")
+       '(list "--pyargs" "scvelo/core"
+              ;; XXX: these two tests fail for unknown reasons
+              "-k"
+              "not test_perfect_fit and not test_perfect_fit_2d")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'matplotlib-compatibility
@@ -24167,17 +24169,7 @@ aligner.")
            ;; Numba needs a writable dir to cache functions.
            (add-before 'check 'set-numba-cache-dir
              (lambda _
-               (setenv "NUMBA_CACHE_DIR" "/tmp")))
-           (replace 'check
-             (lambda* (#:key tests? test-flags #:allow-other-keys)
-               (when tests?
-                 ;; The discovered test file names must match the names of the
-                 ;; compiled files, so we cannot run the tests from
-                 ;; /tmp/guix-build-*.
-                 (with-directory-excursion
-                     (string-append #$output
-                                    "/lib/python3.11/site-packages/scvelo/core/tests/")
-                   (apply invoke "pytest" "-v" test-flags))))))))
+               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs
      (list python-anndata
            python-hnswlib
