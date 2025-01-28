@@ -926,7 +926,7 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "3.6.0")            ;for ffmpeg 6 support
+    (version "3.7.1")            ;for ffmpeg 6 support
     (source
      (origin
        (method git-fetch)
@@ -935,7 +935,7 @@ engineers, musicians, soundtrack editors and composers.")
              (commit (string-append "Audacity-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mdszrdv54737krsdbip84qc0anz83nsbz1hcnymwa09rrcrrlv4"))
+        (base32 "0f5lgj9phpgw07x0bd9wclsb4r0bn9358va70kkvq6rak6m9vb20"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
