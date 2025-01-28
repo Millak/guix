@@ -64,13 +64,6 @@
        (sha256
         (base32 "1qrhzazq10dz64y9mawr3ns595fsdhrj1wvbb42xhmcl66r1xq8a"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      ;; Because python-jsonschema has an old python-webcolor.  Remove this
-      ;; when python-team branch is merged.
-      '(modify-phases %standard-phases
-         (delete 'sanity-check))))
     (propagated-inputs (list python-argon2-cffi
                              python-ipykernel
                              python-ipython-genutils
