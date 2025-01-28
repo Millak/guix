@@ -2161,9 +2161,7 @@ strings into words like a POSIX or Windows shell would.")
     (arguments
      (list
       #:import-path "github.com/BurntSushi/graphics-go"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build)))) ; no go files in project's root
+      #:skip-build? #t))
     (home-page "https://github.com/BurntSushi/graphics-go")
     (synopsis "Graphics library for the Golang")
     (description
@@ -6399,9 +6397,7 @@ This package contains a series of small enhancements and additions.")
     (arguments
      (list
       #:import-path "github.com/google/gnostic-models"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build)))) ; no go files in project's root
+      #:skip-build? #t))
     (propagated-inputs
      (list go-google-golang-org-protobuf
            go-gopkg-in-yaml-v3))
@@ -8319,21 +8315,8 @@ Golang.")
     (arguments
      (list
       #:import-path "github.com/jdkato/twine"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* "nlp/segment/segment_test.go"
-                  (("TestGoldenRules") "OffTestGoldenRules")))))
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t
+      #:test-flags #~(list "-skip" "TestGoldenRules")))
     (propagated-inputs
      (list go-github-com-montanaflynn-stats
            go-github-com-neurosnap-sentences
@@ -9783,15 +9766,7 @@ textwrap.dedent)} in Python.")
     (arguments
      (list
       #:import-path "github.com/lithammer/fuzzysearch"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Replace when go-build-system supports nested path.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t))
     (propagated-inputs (list go-golang-org-x-text))
     (home-page "https://github.com/lithammer/fuzzysearch")
     (synopsis "Tiny and fast fuzzy search in Go")
@@ -9817,14 +9792,7 @@ library bevacqua/fuzzysearch.")
     (arguments
      (list
       #:import-path "github.com/liyue201/gostl"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://github.com/liyue201/gostl")
@@ -10492,16 +10460,7 @@ other directories.  It is optimized for filewalking.")
     (arguments
      (list
       #:import-path "github.com/matttproud/golang_protobuf_extensions/v2"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Activate when go-build-system supports submodules.
-          (delete 'build)
-          ;; XXX: Replace when go-build-system supports nested path.
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t))
     (propagated-inputs
      (list go-github-com-golang-protobuf
            go-google-golang-org-protobuf))
@@ -11228,16 +11187,7 @@ used to generate extensive test matrixes among other things.")
     (arguments
      (list
       #:import-path "github.com/muesli/reflow"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t))
     (propagated-inputs
      (list go-github-com-mattn-go-runewidth))
     (home-page "https://github.com/muesli/reflow/")
@@ -14079,22 +14029,8 @@ suffix comparison, rather than the string-based or tree-based approaches.")
     (arguments
      (list
       #:import-path "github.com/syndtr/goleveldb"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; XXX Failing on i686-linux:
-                  ;; failed on input 0xde6d70588e18c85b, 0x85261e67
-                  (("TestBatchHeader") "OffTestBatchHeader")))))
-          ;; XXX: Replace when go-build-system supports nested path.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t
+      #:test-flags #~(list "-skip" "TestBatchHeader")))
     (propagated-inputs
      (list go-github-com-onsi-gomega
            go-github-com-onsi-ginkgo
