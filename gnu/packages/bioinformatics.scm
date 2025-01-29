@@ -19098,6 +19098,9 @@ implementation differs in these ways:
                             " and not scanpy.get._aggregated.aggregate"
                             " and not scanpy.plotting._tools.scatterplots.spatial"
 
+                            ;; One difference in a long array.
+                            " and not test_cell_demultiplexing"
+
                             ;; These try to connect to the network
                             " and not test_scrublet_plots"
                             " and not test_plot_rank_genes_groups_gene_symbols"
