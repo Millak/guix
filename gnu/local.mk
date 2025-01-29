@@ -618,6 +618,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/rrdtool.scm			\
   %D%/packages/rsync.scm			\
   %D%/packages/ruby.scm				\
+  %D%/packages/ruby-check.scm				\
   %D%/packages/ruby-xyz.scm				\
   %D%/packages/rush.scm				\
   %D%/packages/rust.scm				\
