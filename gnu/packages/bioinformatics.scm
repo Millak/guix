@@ -103,6 +103,7 @@
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
@@ -134,6 +135,7 @@
   #:use-module (gnu packages node)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -6585,6 +6587,64 @@ implementation} is intended to be feature complete and to provide comprehensive
 validation of CWL files as well as provide other tools related to working with
 CWL descriptions.")
     (license license:asl2.0)))
+
+(define-public ravanan
+  (package
+    (name "ravanan")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/arunisaac/ravanan/releases/download/v"
+                    version "/ravanan-" version ".tar.lz"))
+              (sha256
+               (base32
+                "163r3iyqfdwd3bizm36axfsvnppqwqd6zxl2vwf7sq0lcgl2zx5p"))))
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "prefix=" #$output)
+                   (string-append "NODE=" (search-input-file %build-inputs "bin/node")))
+           #:modules `(((guix build guile-build-system)
+                        #:select (target-guile-effective-version))
+                       ,@%default-gnu-imported-modules)
+           #:phases
+           (with-imported-modules `((guix build guile-build-system)
+                                    ,@%default-gnu-imported-modules)
+             #~(modify-phases %standard-phases
+                 (delete 'configure)
+                 (add-after 'install 'wrap
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (let ((out (assoc-ref outputs "out"))
+                           (effective-version (target-guile-effective-version)))
+                       (wrap-program (string-append out "/bin/ravanan")
+                         `("GUILE_LOAD_PATH" prefix
+                           (,(string-append out "/share/guile/site/" effective-version)
+                            ,(getenv "GUILE_LOAD_PATH")))
+                         `("GUILE_LOAD_COMPILED_PATH" prefix
+                           (,(string-append out "/lib/guile/"
+                                            effective-version "/site-ccache")
+                            ,(getenv "GUILE_LOAD_COMPILED_PATH")))))))))))
+    (inputs
+     (list bash-minimal
+           node
+           guile-3.0
+           guile-filesystem
+           guile-gcrypt
+           guile-json-4
+           guile-libyaml
+           guix))
+    (native-inputs
+     (list lzip))
+    (build-system gnu-build-system)
+    (home-page "https://github.com/arunisaac/ravanan")
+    (synopsis "High-reproducibility CWL runner powered by Guix")
+    (description "ravanan is a @acronym{CWL, Common Workflow Language}
+implementation that is powered by GNU Guix and provides strong reproducibility
+guarantees.  ravanan provides strong caching of intermediate results so the
+same step of a workflow is never run twice.  ravanan captures logs from every
+step of the workflow for easy tracing back in case of job failures.  ravanan
+currently runs on single machines and on slurm via its API.")
+    (license license:gpl3+)))
 
 (define-public python-dendropy
   (package
