@@ -52,6 +52,7 @@
 ;;; Copyright © 2024 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2024 Alec Barreto <mrh57@posteo.net>
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1048,7 +1049,7 @@ that augment Guile's support for handling files and their names.")
 (define-public guile-swayer
   (package
     (name "guile-swayer")
-    (version "0.3.0")
+    (version "0.4.1")
     (home-page "https://github.com/ebeem/guile-swayer")
     (source
      (origin
@@ -1057,11 +1058,10 @@ that augment Guile's support for handling files and their names.")
              (url "https://github.com/ebeem/guile-swayer")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (snippet '(delete-file "manifest.scm"))
        (sha256
-        (base32 "16npa337rp0s9rg4fc749b1nq6kfxj77pdd1qfh9xdrb1n0w7awi"))))
-    (native-inputs (list guile-3.0))
-    (build-system guile-build-system)
+        (base32 "14w126444jsbpqyhic1ibg1zwzmai9hlnzdk4gg1cj7fclq6vxpb"))))
+    (native-inputs (list autoconf automake guile-3.0 pkg-config))
+    (build-system gnu-build-system)
     (synopsis "Extensible Guile bindings for SwayWM")
     (description
      "This package provides extensible Guile bindings for the Sway window
