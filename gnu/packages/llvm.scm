@@ -2071,30 +2071,31 @@ requirements according to version 1.1 of the OpenCL specification.")
 (define-public python-llvmlite
   (package
     (name "python-llvmlite")
-    (version "0.42.0")
+    (version "0.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "llvmlite" version))
        (sha256
         (base32
-         "0jl50faakmv131x6qx5kyp89a4lfpmkkz64bv9bz9hqc7hj0jazr"))))
+         "1m4lzja9xy82bhwa914p49pkbjckjc5nraspj7nsnl6ilmk7srh7"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-compiler/linker-flags
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((llvm (assoc-ref inputs "llvm")))
-               ;; Refer to ffi/Makefile.linux.
-               (setenv "CPPFLAGS" "-fPIC")
-               (setenv "LDFLAGS" (string-append "-Wl,-rpath="
-                                                llvm "/lib"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-compiler/linker-flags
+            (lambda _
+              (let ((llvm #$(this-package-input "llvm")))
+                ;; Refer to ffi/Makefile.linux.
+                (setenv "CPPFLAGS" "-fPIC")
+                (setenv "LDFLAGS" (string-append "-Wl,-rpath="
+                                                 llvm "/lib"))))))))
     (native-inputs (list python-setuptools python-wheel))
     (inputs
      (list
       (let* ((patches-commit
-              "530bed8f4b872d22a7089167d16198f373442d86")
+              "c52dd17d97aa5f3698cf7f8152b8f6551c10132a")
              (patch-uri (lambda (name)
                           (string-append
                            "https://raw.githubusercontent.com/numba/"
@@ -2105,36 +2106,24 @@ requirements according to version 1.1 of the OpenCL specification.")
              (patch-origin (lambda (name hash)
                              (origin (method url-fetch)
                                      (uri (patch-uri name))
-                                     (sha256 (base32 hash))
-                                     (modules '((ice-9 ftw)
-                                                (guix build utils)))
-                                     (snippet
-                                      '(let ((file (car
-                                                    (scandir "."
-                                                             (lambda (name)
-                                                               (not
-                                                                (member name
-                                                                        (quote
-                                                                         ("." "..")))))))))
-                                         (substitute* file
-                                           (("llvm-14.0.6.src/") "llvm/")))))))
+                                     (sha256 (base32 hash)))))
              (arch-independent-patches
               (list (patch-origin
-                     "llvm14-clear-gotoffsetmap.patch"
-                     "1gzs959hmh4wankalhg7idbhqjpk9q678bphhwfy308appf9c339")
+                     "llvm15-clear-gotoffsetmap.patch"
+                     "097iypk4l1shyrhb72msjnl7swlc78nsnb7lv507rl0vs08n6j94")
                     (patch-origin
-                     "llvm14-remove-use-of-clonefile.patch"
-                     "1wd156yjdshzh67dfk7c860hpx3nf5mn59sgmgb7lv1c55i6w97x")
+                     "llvm15-remove-use-of-clonefile.patch"
+                     "01qxzr15q3wh1ikbfi8jcs83fh27fs2w6damf7giybs6gx4iynnd")
                     (patch-origin
-                     "llvm14-svml.patch"
-                     "1dx1mgd36m0d1x6acd9ky9allvqhshjcbhfb5vj9sizk9bm1ipsr"))))
+                     "llvm15-svml.patch"
+                     "15n5vph2m7nd0jlf75n3h63h89m1kf4zn4s2jd1xmjrs848lgg87"))))
         (package
-          (inherit llvm-14)
+          (inherit llvm-15)
           (source
            (origin
-             (inherit (package-source llvm-14))
+             (inherit (package-source llvm-15))
              (patches (append arch-independent-patches
-                              (origin-patches (package-source llvm-14))))))))))
+                              (origin-patches (package-source llvm-15))))))))))
     (home-page "https://llvmlite.pydata.org")
     (synopsis "Wrapper around basic LLVM functionality")
     (description
