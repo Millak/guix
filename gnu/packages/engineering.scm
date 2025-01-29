@@ -200,7 +200,7 @@
      "@code{cutecom} is a graphical serial terminal, like @code{minicom}.  It is
 aimed mainly at hardware developers or other people who need a terminal to talk to
 their devices.")
-    (license license:gpl3)))
+    (license license:gpl3+)))
 
 (define-public librecad
   (package
