@@ -1,0 +1,24 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2025-01-29
+License: Expat
+
+diff -ru orig/llama.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp llama.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+--- orig/llama.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp	2025-01-29 06:24:10.922476480 +0100
++++ llama.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp	2025-01-29 06:26:45.973357439 +0100
+@@ -7317,9 +7317,13 @@
+ }
+ 
+ static int ggml_vk_get_device_count() {
+-    ggml_vk_instance_init();
+-
+-    return vk_instance.device_indices.size();
++    try {
++        ggml_vk_instance_init();
++        return vk_instance.device_indices.size();
++    } catch (const vk::SystemError& e) {
++        std::cerr << "ggml_vulkan: Error: System error" << std::endl;
++        return 0;
++    }
+ }
+ 
+ static void ggml_vk_get_device_description(int device, char * description, size_t description_size) {

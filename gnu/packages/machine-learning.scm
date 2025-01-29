@@ -595,12 +595,15 @@ Performance is achieved by using the LLVM JIT compiler.")
                (commit tag)))
          (file-name (git-file-name name tag))
          (sha256
-          (base32 "1xf2579q0r8nv06kj8padi6w9cv30w58vdys65nq8yzm3dy452a1"))))
+          (base32 "1xf2579q0r8nv06kj8padi6w9cv30w58vdys65nq8yzm3dy452a1"))
+         (patches
+          (search-patches "llama-cpp-vulkan-optional.patch"))))
       (build-system cmake-build-system)
       (arguments
        (list
         #:configure-flags
         #~(list "-DBUILD_SHARED_LIBS=ON"
+                "-DGGML_VULKAN=ON"
                 "-DGGML_BLAS=ON"
                 "-DGGML_BLAS_VENDOR=OpenBLAS"
                 (string-append "-DBLAS_INCLUDE_DIRS="
@@ -625,10 +628,15 @@ Performance is achieved by using the LLVM JIT compiler.")
                              (guix build python-build-system))
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp"
+                 (("\"/bin/sh\"")
+                  (string-append "\"" (search-input-file inputs "/bin/sh") "\"")))))
             (add-after 'unpack 'disable-unrunable-tests
-              ;; test-eval-callback downloads ML model from network, cannot
-              ;; run in Guix build environment
               (lambda _
+                ;; test-eval-callback downloads ML model from network, cannot
+                ;; run in Guix build environment
                 (substitute* '("examples/eval-callback/CMakeLists.txt")
                   (("COMMAND llama-eval-callback")
                    "COMMAND true llama-eval-callback"))))
@@ -658,8 +666,8 @@ Performance is achieved by using the LLVM JIT compiler.")
                                        (string-append (assoc-ref outputs "out")
                                                       "/bin")
                                        "^test-")))))))
-      (inputs (list python))
-      (native-inputs (list pkg-config))
+      (inputs (list python vulkan-headers vulkan-loader))
+      (native-inputs (list pkg-config shaderc bash))
       (propagated-inputs
        (list python-numpy python-pytorch python-sentencepiece openblas))
       (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
