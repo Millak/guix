@@ -745,8 +745,7 @@ logic programs based on clingo.")
                              python-jsonschema
                              python-networkx
                              python-setuptools))
-    (native-inputs (list dot2tex graphviz python-pylint python-pytest
-                         python-wheel))
+    (native-inputs (list dot2tex graphviz python-pytest python-wheel))
     (home-page "https://github.com/potassco/clingraph")
     (synopsis "Visualizer for graphs defined as logic programs")
     (description

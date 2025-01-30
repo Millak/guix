@@ -2241,7 +2241,6 @@ mainly implemented in user space.")
      (list python-avocado-framework
            python-flake8
            python-isort
-           python-pylint
            python-setuptools
            python-setuptools-scm
            python-wheel))
