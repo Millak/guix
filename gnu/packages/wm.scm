@@ -813,7 +813,8 @@ subscribe to events.")
      (list
       ;; A lot of tests fail despite Xvfb and writable temp/cache space.
       #:tests? #f
-      #:test-flags '("--ignore=test/widgets/test_widget_init_configure.py")
+      #:test-flags
+      #~(list "--ignore=test/widgets/test_widget_init_configure.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
@@ -865,7 +866,9 @@ subscribe to events.")
             python-pytest
             python-pytest-cov
             python-psutil
+            python-setuptools
             python-setuptools-scm
+            python-wheel
             xorg-server-for-tests))
     (home-page "http://qtile.org")
     (synopsis "Hackable tiling window manager written and configured in Python")
