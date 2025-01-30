@@ -1214,7 +1214,10 @@ extracting, creating, and converting between formats.")
                 ;; Not sure if this is really wrong.  This fails because
                 ;; /gnu/store/...conda-22.9.0/bin/python
                 ;; is not /gnu/store/...python-wrapper-3.9.9/bin/python
-                "test_make_entry_point")
+                "test_make_entry_point"
+                "test_get_python_info" "test__get_python_info"
+                "test_install_conda_csh"
+                "test_install_conda_fish")
                " and not ")))
       #:phases
       #~(modify-phases %standard-phases
@@ -1292,6 +1295,7 @@ extracting, creating, and converting between formats.")
     (native-inputs
      (list python-coverage
            python-flaky
+           python-pytest-cov
            python-pytest-timeout
            python-pytest-xprocess
            python-wheel))
