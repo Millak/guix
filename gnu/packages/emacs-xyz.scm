@@ -4410,6 +4410,28 @@ directories or regex patterns.")
 the @code{Dracula} theme for Emacs and the @code{Gloom} theme for Atom.")
       (license license:expat))))
 
+(define-public emacs-reverso
+  (let ((commit "d1b39da3c7df1541f98435f3172a7ff4f3123634")
+        (revision "0"))
+    (package
+      (name "emacs-reverso")
+      (version (git-version "0.1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/SqrtMinusOne/reverso.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1fpk5wyzlssfrm4jbsrflxvlfn80yh6y1nh63ml8barf1nypsx55"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-fedi emacs-request emacs-transient))
+      (home-page "https://github.com/SqrtMinusOne/reverso.el")
+      (synopsis "Translation, grammar checking, context search")
+      (description "Reverso is an emacs client for the reverso.net service.")
+      (license license:gpl3+))))
+
 (define-public emacs-bbdb
   (package
     (name "emacs-bbdb")
