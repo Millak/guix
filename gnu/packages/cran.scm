@@ -3007,7 +3007,7 @@ similar rank-based tests for equal probability distributions due to Neuhauser
                (("^PKG_LIBS=.*")
                 (string-append "PKG_LIBS="
                                (assoc-ref inputs "libnode")
-                               "/lib/libnode.so.115\n")))
+                               "/lib/libnode.so.127\n")))
              (setenv "INCLUDE_DIR"
                      (string-append
                       (assoc-ref inputs "libnode")
