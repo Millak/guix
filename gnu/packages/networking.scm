@@ -60,7 +60,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;; Copyright © 2024 Alexey Abramov <levenson@mmer.org>
@@ -112,6 +112,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -4751,6 +4752,43 @@ IPv6 Internet connectivity - it also works over IPv4.")
      ;; version. This exception does not (and cannot) modify any license terms
      ;; which apply to the Application, with which you must still comply
      license:lgpl3)))
+
+(define-public yggtray
+  (package
+    (name "yggtray")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/the-nexi/yggtray")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cl30da6s3zgvrbccrma9p3j870dsrzjcacdgn4wpvpjiab8b4p4"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No tests.
+      #:modules '((guix build cmake-build-system)
+                  (guix build qt-utils)
+                  (guix build utils))
+      #:imported-modules `(,@%cmake-build-system-modules (guix build qt-utils))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'wrap-qt
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (wrap-qt-program "yggtray"
+                                        #:output #$output
+                                        #:inputs inputs))))))
+    (native-inputs (list cmake-minimal doxygen))
+    (inputs (list bash-minimal qtbase-5 qtwayland-5 yggdrasil))
+    (home-page "https://github.com/the-nexi/yggtray")
+    (synopsis "Yggdrasil tray and control panel")
+    (description
+     "@code{yggtray} is an @url{https://yggdrasil-network.github.io/, Yggdrasil} tray
+and control panel.  It allows the user to configure, run and control the Yggdrasil
+daemon.")
+    (license license:gpl3+)))
 
 (define-public nebula
   (package
