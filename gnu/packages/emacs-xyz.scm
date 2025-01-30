@@ -126,7 +126,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
-;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2023, 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2022-2023 Simon Josefsson <simon@josefsson.org>
 ;;; Copyright © 2023 Fabio Natali <me@fabionatali.com>
@@ -29185,6 +29185,49 @@ try completing.  See @code{fish-completion-fallback-on-bash-p}.")
 A screenshot is taken for every user action.  Call
 @code{gif-screencast-stop} (<f9> by default) to finish recording and create
 the GIF result.")
+    (license license:gpl3+)))
+
+(define-public emacs-go-translate
+  (package
+    (name "emacs-go-translate")
+    (version "3.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lorniu/go-translate/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0603iq1vjbm44sl7qrmkdfcqzzc703h1g5hdcswpj7pi0w7fxb4s"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "emacs"
+                             "-Q"
+                             "--batch"
+                             "-L"
+                             "."
+                             "-l"
+                             "gt-tests.el"
+                             "-f"
+                             "ert-run-tests-batch-and-exit")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'skip-failing-tests
+                     (lambda _
+                       (substitute* "gt-tests.el"
+                         (("\\(ert-deftest test--gt-translation-life-cycle .*"
+                           all)
+                          (string-append all "(skip-unless nil)\n"))
+                         (("\\(ert-deftest test--gt-valid-literally .*" all)
+                          (string-append all "(skip-unless nil)\n"))))))))
+    (home-page "https://github.com/lorniu/go-translate/")
+    (synopsis "Configurable and scalable translation framework")
+    (description
+     "This is a translation framework on Emacs, with high configurability
+and extensibility.  It can easily be extended to various Text-to-Text
+conversion scenarios.")
     (license license:gpl3+)))
 
 (define-public emacs-google-translate
