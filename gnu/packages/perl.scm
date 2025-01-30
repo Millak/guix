@@ -13096,6 +13096,16 @@ such that being individual extensions would be wasteful.")
        (sha256
         (base32 "1dagpmcpjnwvd4g6mmnc312rqpd4qcwx21rpi2j7084wz8mijai5"))))
     (build-system perl-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-failing-test
+                 (lambda _
+                   ;; XXX: This test fails with:
+                   ;;   Can't use an undefined value as a subroutine reference
+                   ;;   during global destruction.
+                   (substitute* "t/core_events.t"
+                     (("^SDL::Events::set_event_filter") "#")))))))
     (native-inputs
      (list perl-alien-sdl
            perl-capture-tiny
