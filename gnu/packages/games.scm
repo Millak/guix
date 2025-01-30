@@ -3716,7 +3716,7 @@ a C library, so they can easily be integrated into other programs.")
 (define-public taisei
   (package
     (name "taisei")
-    (version "1.4")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
@@ -3724,15 +3724,14 @@ a C library, so they can easily be integrated into other programs.")
                            "taisei/releases/download/v" version
                            "/taisei-" version ".tar.xz"))
        (sha256
-        (base32 "1glrr99xiyz674d1izgvmk9w1zxanc94d34pacd0wya66bbml0nc"))))
+        (base32 "19sgm175clkvpcv0b9p4jkjpfxqw0kyl2i5p8w63kwzqcjp9m1jx"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:build-type "release" ;comment out for bug-reporting (and cheats)
       #:configure-flags #~(list "-Dr_default=gles30"
-                                "-Dr_gles20=true"
-                                "-Dr_gles30=true"
-                                "-Dshader_transpiler=true")))
+                                "-Dr_gles30=enabled"
+                                "-Dshader_transpiler=enabled")))
     (native-inputs
      (list pkg-config
            python
