@@ -1241,7 +1241,6 @@ private network between hosts on the internet.")
     (native-inputs
      (list python-setuptools-scm
            ;; For tests only.
-           python-flake8
            python-mock
            python-poetry-core
            python-pytest-cov

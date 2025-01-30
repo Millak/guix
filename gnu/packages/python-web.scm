@@ -3217,7 +3217,7 @@ origin than that of the web application.")
     (propagated-inputs
      (list python-orderedmultidict python-six))
     (native-inputs
-     (list python-flake8 python-pytest python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/gruns/furl")
     (synopsis "URL manipulation in Python")
     (description "Furl provides an easy-to-use alternative to the

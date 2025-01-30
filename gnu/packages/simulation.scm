@@ -1506,7 +1506,6 @@ counters and tunnels).")
      (list pkg-config
            python-coverage
            python-decorator
-           python-flake8
            python-pkgconfig
            python-pytest
            python-setuptools

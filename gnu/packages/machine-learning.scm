@@ -1597,7 +1597,6 @@ learning.")
                ((",!=1.12\\.\\*") "")))))))
     (propagated-inputs (list python-numpy python-scipy))
     (native-inputs (list python-autograd
-                         python-flake8
                          python-flake8-bugbear
                          python-isort
                          python-matplotlib
@@ -6465,8 +6464,7 @@ and Numpy.")
     (build-system pyproject-build-system)
     (arguments '(#:tests? #false)) ;requires pyro
     (native-inputs
-     (list python-flake8
-           python-ipython
+     (list python-ipython
            python-pytest
            python-setuptools
            python-sphinx

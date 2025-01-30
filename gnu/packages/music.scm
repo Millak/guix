@@ -4062,6 +4062,7 @@ formats, looking up tracks through metadata and audio fingerprints.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags '(list "--ignore=tests/quality/test_flake8.py")
        #:phases
        #~(modify-phases %standard-phases
            (add-before 'check 'remove-hypothesis-deadlines
@@ -4072,8 +4073,7 @@ formats, looking up tracks through metadata and audio fingerprints.")
                  (("( +)@given" all spaces)
                   (string-append spaces "@settings(deadline=None)\n" all))))))))
     (native-inputs
-     (list python-flake8
-           python-hypothesis
+     (list python-hypothesis
            python-pytest
            python-setuptools
            python-wheel))

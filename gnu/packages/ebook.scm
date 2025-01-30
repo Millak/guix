@@ -173,7 +173,6 @@ with Microsoft Compiled HTML (CHM) files.")
      (list bash-minimal
            cmake
            pkg-config
-           python-flake8
            python-pyqt-builder
            qtbase ; for qmake
            xdg-utils

@@ -2899,8 +2899,7 @@ demultiplexing step.")
            python-scipy
            python-tqdm))
     (native-inputs
-     (list python-flake8
-           python-poetry-core
+     (list python-poetry-core
            python-pytest))
     (home-page "https://github.com/JonathanShor/DoubletDetection")
     (synopsis
