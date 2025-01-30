@@ -4392,7 +4392,7 @@ TkDiff is included for browsing and merging your changes.")
 (define-public git-filter-repo
   (package
     (name "git-filter-repo")
-    (version "2.38.0")
+    (version "2.45.0")
     (source
      (origin
        (method git-fetch)
@@ -4402,7 +4402,7 @@ TkDiff is included for browsing and merging your changes.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1al43zpw1mdfy9i05w4xw178abypjwnkk52lqvmbl19lr1l47r4i"))
+         "03sjxscj7pkldvwcvlqi6k79rcxkd2fyy1rjvpwyp4jgni5kddkx"))
        ;; Modified from <https://github.com/newren/git-filter-repo/pull/477>.
        ;; Used with 'unpack-git-source phase.
        (patches (search-patches "git-filter-repo-generate-doc.patch"))))
