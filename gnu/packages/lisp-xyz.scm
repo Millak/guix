@@ -13619,11 +13619,11 @@ interface for MySQL, PostgreSQL and SQLite.")
   (sbcl-package->ecl-package sbcl-dbi))
 
 (define-public sbcl-dbus
-  (let ((commit "24b452df3a45ca5dc95015500f34baad175c981a")
-        (revision "1"))
+  (let ((commit "8bba6a0942232e9d7fa915b33bbe32dfedc5abb9")
+        (revision "2"))
     (package
       (name "sbcl-dbus")
-      (version (git-version "20190408" revision commit))
+      (version (git-version "20231105" revision commit))
       (home-page "https://github.com/death/dbus")
       (source
        (origin
@@ -13631,10 +13631,10 @@ interface for MySQL, PostgreSQL and SQLite.")
          (uri (git-reference
                (url home-page)
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-dbus" version))
          (sha256
           (base32
-           "0fw2q866yddbf23nk9pxphm9gsasx35vjyss82xzvndnjmzlqfl5"))))
+           "1y880074m9g0swxrzpbplmkdxc6r62gzyigglf4x2i0zyss3gf65"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
