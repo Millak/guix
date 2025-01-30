@@ -3826,8 +3826,7 @@ build applications with traitlets in combination with the scipy stack.")
           ;; module 'trimesh' has no attribute '__main__'.
           (delete 'sanity-check))))
     (native-inputs
-     (list python-coveralls
-           python-pyinstrument
+     (list python-pyinstrument
            python-pytest))
     (propagated-inputs
      (list ;; python-cascadio       ; not packed yet, optional
