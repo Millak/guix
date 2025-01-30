@@ -4434,7 +4434,12 @@ TkDiff is included for browsing and merging your changes.")
                  #:source #+(package-source git))
                 (for-each
                  (cut install-file <> doc-source)
-                 (find-files "." "asciidoc\\.conf$|manpage.*\\.xsl$"))
+                 (find-files "." "asciidoc\\.conf\\.in$|manpage.*\\.xsl$"))
+                ;; These attributes are probably not needed.
+                (with-directory-excursion doc-source
+                  (substitute* "asciidoc.conf.in"
+                    (("@GIT_(VERSION|DATE)@") ""))
+                  (rename-file "asciidoc.conf.in" "asciidoc.conf"))
                 (chdir old-path)
                 (delete-file-recursively "git-source"))))
           (add-before 'build 'set-pythondir

@@ -1,4 +1,4 @@
-From 56e6857e71d2b2a2236625f3c8b112bd40a8b164 Mon Sep 17 00:00:00 2001
+From d44e90189f3dfc47b86a457cb3493478207fa14d Mon Sep 17 00:00:00 2001
 From: Josselin Poiret <dev@jpoiret.xyz>
 Date: Fri, 16 Feb 2024 00:21:06 +0800
 Subject: [PATCH] Add documentation generation.
@@ -53,13 +53,13 @@ index 0000000..d81ffbe
 +man: man1/git-filter-repo.1
 +html: html/git-filter-repo.html
 diff --git a/Makefile b/Makefile
-index a443450..d965ae5 100644
+index 3330a1d..801da8f 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -20,21 +20,10 @@ test:
+@@ -21,21 +21,10 @@ test:
  fixup_locale:
  	sed -ie s%@@LOCALEDIR@@%$(localedir)% git-filter-repo
-
+ 
 -# People installing from tarball will already have man1/git-filter-repo.1 and
 -# html/git-filter-repo.html.  But let's support people installing from a git
 -# clone too; for them, just cheat and snag a copy of the built docs that I
@@ -67,7 +67,7 @@ index a443450..d965ae5 100644
 -snag_docs: Documentation/man1/git-filter-repo.1 Documentation/html/git-filter-repo.html
 +doc:
 +	$(MAKE) -C Documentation man html
-
+ 
 -Documentation/man1/git-filter-repo.1:
 -	mkdir -p Documentation/man1
 -	git show origin/docs:man1/git-filter-repo.1 >Documentation/man1/git-filter-repo.1
@@ -78,11 +78,9 @@ index a443450..d965ae5 100644
 -
 -install: snag_docs #fixup_locale
 +install: doc #fixup_locale
- 	install -Dm0755 git-filter-repo "$(DESTDIR)/$(bindir)/git-filter-repo"
- 	install -dm0755 "$(DESTDIR)/$(pythondir)"
+ 	$(INSTALL) -Dm0755 git-filter-repo "$(DESTDIR)/$(bindir)/git-filter-repo"
+ 	$(INSTALL) -dm0755 "$(DESTDIR)/$(pythondir)"
  	ln -sf "$(bindir)/git-filter-repo" "$(DESTDIR)/$(pythondir)/git_filter_repo.py"
-
-base-commit: cbc6535694380d3a3bf3e5c96410d4ce7e8de94f
---
-2.41.0
+-- 
+2.47.1
 
