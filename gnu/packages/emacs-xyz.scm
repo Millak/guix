@@ -151,6 +151,7 @@
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2024 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2024 Divya Ranjan Pattanaik <divya@subvertising.org>
+;;; Copyright © 2025 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
@@ -32916,6 +32917,32 @@ used to link to certain Magit buffers.  Use the command
 Later you can insert it into an Org buffer using the command
 @code{org-insert-link}.")
     (license license:gpl3+)))
+
+(define-public emacs-orgit-forge
+  (package
+    (name "emacs-orgit-forge")
+    (version "1.0.0")
+    (home-page "https://github.com/magit/orgit-forge")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xcv7kqsrv39rk8fjd2sbl2wrr8mdb6y1xipifki4q7mry1c6v6w"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-compat
+           emacs-forge
+           emacs-magit
+           emacs-orgit))
+    (synopsis "Org links to Forge issue buffers")
+    (description
+     "This package defines the Org link type @code{orgit-topic}, which can be
+used to link to Forge topic buffers.")
+    (license license:gpl3)))
 
 (define-public emacs-amx
   (package
