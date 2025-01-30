@@ -1062,7 +1062,13 @@ the @code{(bffe)} module as the entry point.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1vyk0g0gci4z9psisb8h50zi3j1nwfdg1jw3j76cxv0brln0v3fw"))))
+         "1vyk0g0gci4z9psisb8h50zi3j1nwfdg1jw3j76cxv0brln0v3fw"))
+       ;; `iter_fields' is no longer available in python-urllib (propagated from
+       ;; python-requests).
+       (modules '((guix build utils)))
+       (snippet
+        #~(substitute* "binstar_client/requests_ext.py"
+            (("iter_fields") "iter_field_objects")))))
     (build-system pyproject-build-system)
     (arguments
      (list
