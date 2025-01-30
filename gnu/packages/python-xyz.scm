@@ -3061,7 +3061,7 @@ using a dot syntax, for example: @code{dictionary['deeply.nested.key']}.")
                (base32
                 "1shyvajayyzbkp9dihb4mz835jnkp0kqqbyjfqci6v43da6q2kd2"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-flake8 python-pydocstyle
+    (propagated-inputs (list python-flake8
                              python-pytest python-pytest-cov))
     (native-inputs (list python-flit-core))
     (home-page "https://github.com/rasterio/affine")
@@ -10211,8 +10211,7 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
          "04n95h0cqnsrdyh1gv0abh2i5ynyrq2wfqpppx9djp7mxr9y9226"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pycodestyle
-           python-pyflakes
+     (list python-pyflakes
            python-pytest
            python-pytest-cov
            python-setuptools
@@ -10616,7 +10615,6 @@ Server (PLS).")
            python-jedi
            python-lsp-jsonrpc
            python-pluggy
-           python-pycodestyle
            python-pydocstyle
            python-ujson
            python-whatthepatch
@@ -24516,8 +24514,7 @@ the point of maximum curvature.")
       ;; Dropp check of flake8 in tests.
       #~(list "-k" "not test_file_does_not_exist")))
     (native-inputs
-     (list python-pycodestyle
-           python-poetry-core
+     (list python-poetry-core
            python-pyflakes
            python-pylint
            python-pytest
