@@ -7744,9 +7744,7 @@ DNS protocol library for all Trust-DNS projects.")
         ("rust-tokio" ,rust-tokio-0.2)
         ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-futures" ,rust-futures-0.3)
-        ("rust-tokio" ,rust-tokio-0.2))))))
+       (("rust-env-logger" ,rust-env-logger-0.7))))))
 
 (define-public rust-trust-dns-proto-0.7
   (package
