@@ -802,13 +802,13 @@ subscribe to events.")
 (define-public qtile
   (package
     (name "qtile")
-    (version "0.23.0")
+    (version "0.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qtile" version))
        (sha256
-        (base32 "1v8rxm2xg2igxv6gwa78wrkxzgfxmxfgflbjdp4fm7cxjdx3zrpa"))))
+        (base32 "0zd2bh4mvgwjxkkwn3angkaqzm7ldcmzg3gdc098jzzlf90fmywm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -854,10 +854,12 @@ subscribe to events.")
      (list python-cairocffi
            python-cffi
            python-dateutil
-           python-dbus-next
+           python-dbus-fast
            python-iwlib
            python-keyring
+           python-libcst
            python-mpd2
+           python-pygobject
            python-pyxdg
            python-xcffib))
     (native-inputs
