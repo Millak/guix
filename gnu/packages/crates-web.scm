@@ -5078,8 +5078,13 @@ that integrates with Rust idioms.")
         ("rust-waker-fn" ,rust-waker-fn-1))
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-futures" ,rust-futures-0.3)
         ("rust-indicatif" ,rust-indicatif-0.15)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
         ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-tempfile" ,rust-tempfile-3)
         ("rust-test-case" ,rust-test-case-1)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2))))))
 
