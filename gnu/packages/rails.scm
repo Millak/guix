@@ -952,8 +952,8 @@ already included in Rails.")
            #~(modify-phases %standard-phases
                (add-after 'extract-gemspec 'relax-requirements
                  (lambda _
-                   (delete-file "gemfiles/rails_7_propshaft.gemfile.lock")
-                   (substitute* "gemfiles/rails_7_propshaft.gemfile"
+                   (delete-file "gemfiles/rails_7_1_propshaft.gemfile.lock")
+                   (substitute* "gemfiles/rails_7_1_propshaft.gemfile"
                      ((".*gem \"byebug\".*") "")
                      ;; Remove appraisal, and add tzinfo-data, which needs to
                      ;; be in the Gemfile to become available.
@@ -964,16 +964,21 @@ already included in Rails.")
                      ((".*gem \"webdrivers\".*") ""))))
                (add-before 'check 'set-BUNDLE_GEMFILE
                  (lambda _
-                   ;; The default Gemfile is for Rails 6.
                    (setenv "BUNDLE_GEMFILE"
-                           "gemfiles/rails_7_propshaft.gemfile")))
+                           "gemfiles/rails_7_1_propshaft.gemfile")))
                (add-before 'check 'disable-problematic-tests
                  (lambda _
+                   ;; All bin/importmap invocation fail.
+                   ;; At least one requires networking.
+                   (delete-file "test/commands_test.rb")
+                   ;; Bundler, probably requires networking
+                   (delete-file "test/installer_test.rb")
                    ;; The integration tests require networking; disable them.
                    (delete-file "test/npm_integration_test.rb")
                    (delete-file "test/packager_integration_test.rb"))))))
     (native-inputs
-     (list ruby-capybara
+     (list git-minimal/pinned
+           ruby-capybara
            ruby-propshaft
            ruby-rails
            ruby-rexml
