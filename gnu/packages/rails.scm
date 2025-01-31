@@ -1141,16 +1141,8 @@ previous options, like Sprockets.")
                 (with-directory-excursion "test"
                   ;; This test requires 'rails' and Bundler.
                   (delete-file "application/server_test.rb")
-                  ;; These tests are incompatible with MiniTest 5.17 (see:
-                  ;; https://github.com/rails/rails/issues/47657).
-                  (skip-tests "generators_test.rb"
-                              "test_invoke_with_config_values"
-                              "test_simple_invoke"
-                              "test_should_give_higher_preference_to_rails_generators"
-                              "test_nested_fallbacks_for_generators"
-                              "test_fallbacks_for_generators_on_invoke"
-                              "test_invoke_with_default_values"
-                              "test_invoke_with_nested_namespaces")
+                  ;; These depends on firefox or chrome.
+                  (delete-file "application/system_test_case_test.rb")
                   ;; These tests requires the assets which we lack.
                   (delete-file "application/assets_test.rb")
                   (delete-file "railties/generators_test.rb")
@@ -1159,12 +1151,31 @@ previous options, like Sprockets.")
                               ;; shebang and fails.
                               "test_shebang_when_is_the_same_as_default_use_env")
                   (skip-tests "generators/app_generator_test.rb"
-                              ;; This test requires networking.
+                              ;; These tests requires networking.
+                              "test_app_update_create_new_framework_defaults"
+                              "test_app_update_does_not_change_config_target_version"
+                              "test_app_update_does_not_change_app_name_when_app_name_\
+is_hyphenated_name"
+                              "test_app_update_does_not_create_rack_cors"
+                              "test_app_update_does_not_generate_bootsnap_contents_\
+when_skip_bootsnap_is_given"
+                              "test_app_update_does_not_remove_rack_cors_if_already_present"
+                              "test_app_update_does_not_generate_manifest_config_\
+when_propshaft_is_used"
+                              "test_app_update_does_not_generate_action_cable_\
+contents_when_skip_action_cable_is_given"
+                              "test_app_update_preserves_propshaft"
+                              "test_app_update_preserves_skip_action_mailbox"
+                              "test_app_update_preserves_skip_action_text"
+                              "test_app_update_preserves_skip_system_test"
+                              "test_app_update_preserves_skip_test"
+                              "test_application_name_is_detected_if_it_exists_and_app_folder_renamed"
                               "test_template_from_url"
                               ;; This test requires Bundler.
                               "test_generation_use_original_bundle_environment"
-                              ;; This test requires assets.
+                              ;; These tests require assets.
                               "test_css_option_with_cssbundling_gem"
+                              "test_css_option_with_asset_pipeline_sass"
                               ;; These tests require the rails/command
                               ;; namespace provided by the 'ruby-rails'
                               ;; package, which depends on this one.
@@ -1183,10 +1194,11 @@ mountable_engine"
                    "test_generate_application_job_when_does_not_exist_in_mountable_engine"
                    "test_run_default"
                    ;; This test expects a /usr/bin/env shebang.
-                   "test_shebang")
-                  ;; The following generator tests require assets.
-                  (skip-tests "generators/plugin_test_runner_test.rb"
-                              "test_run_default")
+                   "test_shebang"
+                   ;; This test requires Bundler.
+                   "test_plugin_passes_generated_test")
+                  ;; The following tests require Gemfile or .bundle in their setup.
+                  (delete-file "generators/plugin_test_runner_test.rb")
                   (skip-tests
                    "generators/scaffold_controller_generator_test.rb"
                    "test_controller_tests_pass_by_default_inside_full_engine"
@@ -1200,9 +1212,8 @@ mountable_engine"
                    "test_scaffold_tests_pass_by_default_inside_full_engine"
                    "test_scaffold_tests_pass_by_default_inside_namespaced_\
 mountable_engine")
-                  (skip-tests "generators/test_runner_in_engine_test.rb"
-                              "test_run_default"
-                              "test_rerun_snippet_is_relative_path")
+                  ;; Tests in this file require Bundler.
+                  (delete-file "generators/test_runner_in_engine_test.rb")
                   ;; The actions_test tests depend on assets or the rails gem.
                   (delete-file "generators/actions_test.rb")
                   (skip-tests "engine/commands_test.rb"
@@ -1218,9 +1229,16 @@ mountable_engine")
                               "test_generated_scaffold_works_with_rails_test"
                               "test_load_fixtures_when_running_test_suites"
                               "test_run_in_parallel_with_unmarshable_exception"
-                              "test_run_in_parallel_with_unknown_object")
+                              "test_run_in_parallel_with_unknown_object"
+                              "test_system_tests_are_run_through_rake_test_when_given_in_TEST"
+                              "test_reset_sessions_before_rollback_on_system_tests"
+                              "test_reset_sessions_on_failed_system_test_screenshot"
+                              "test_parallel_testing_when_schema_is_not_up_to_date"
+                              "test_failed_system_test_screenshot_should_be_\
+taken_before_other_teardown")
                   (skip-tests
                    "application/test_test.rb"
+                   "schema for all the models is loaded when tests are run in eager load context"
                    "automatically synchronizes test schema after rollback"
                    "hooks for plugins"
                    "sql structure migrations when adding column to existing table"
@@ -1234,9 +1252,9 @@ mountable_engine")
                   (delete-file "application/rake/dbs_test.rb")
                   (delete-file "application/rake/migrations_test.rb")
                   (delete-file "application/rake/multi_dbs_test.rb")
-                  (skip-tests "engine/test_test.rb"
-                              "automatically synchronize test schema")
                   (skip-tests "isolation/abstract_unit.rb" "use_postgresql")
+                  ;; Requires rails gem.
+                  (delete-file "engine/test_test.rb")
                   (skip-tests "railties/engine_test.rb"
                               "active_storage:install task works within engine"
                               "active_storage:update task works within engine"
@@ -1249,21 +1267,20 @@ mountable_engine")
                               "setting priority for engines with config.railties_order")
                   ;; This test requires a database server or networking.
                   (delete-file "application/bin_setup_test.rb")
-                  (skip-tests "application/middleware/cache_test.rb"
-                              ;; This test produces "miss, store" instead of
-                              ;; "fresh".
-                              "test_cache_works_with_expires"
-                              ;; This one produces "miss" instead of "stale,
-                              ;; valid, store".
-                              "test_cache_works_with_etags"
-                              ;; Likewise.
-                              "test_cache_works_with_last_modified")
                   (skip-tests "application/initializers/frameworks_test.rb"
                               ;; These tests are either broken, or rely on
                               ;; database availability
                               "expire schema cache dump if the version can't be checked because the database is unhealthy"
                               "does not expire schema cache dump if check_schema_cache_dump_version is false and the database unhealthy"
-                              "does not expire schema cache dump if check_schema_cache_dump_version is false")))))
+                              "does not expire schema cache dump if check_schema_cache_dump_version is false")
+                  (skip-tests "commands/credentials_test.rb"
+                              "edit command does not display save confirmation message if interrupted")
+                  (skip-tests "commands/encrypted_test.rb"
+                              "edit command does not display save confirmation message if interrupted")
+                  (skip-tests "commands/routes_test.rb"
+                              "rails routes with expanded option")
+                  (skip-tests "commands/server_test.rb"
+                              "test_served_url_when_server_prints_it")))))
           (add-before 'check 'set-paths
             (lambda _
               (setenv "PATH" (string-append (getenv "PATH") ":"
@@ -1293,14 +1310,15 @@ mountable_engine")
            ruby-pg
            ruby-selenium-webdriver
            ruby-sprockets-rails
-           ruby-webrick
            sqlite))
     (propagated-inputs
      (list ruby-actionpack
            ruby-activesupport
            ruby-method-source
+           ruby-rackup-1
            ruby-rake
            ruby-thor
+           ruby-webrick
            ruby-zeitwerk))
     (synopsis "Rails internals, including application bootup and generators")
     (description "@code{railties} provides the core Rails internals including
