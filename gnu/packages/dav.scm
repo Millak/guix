@@ -144,7 +144,6 @@ CardDAV server with a local folder or file.")
     (native-inputs
      (list python-pytest
            python-pytest-flake8
-           python-pytest-isort
            python-setuptools
            python-waitress
            python-wheel))
