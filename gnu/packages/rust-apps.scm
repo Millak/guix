@@ -3317,7 +3317,6 @@ support, watch support (like @command{top}) and a tree view.")
     (arguments
      `(#:install-source? #f
        #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.71)
-                       ("rust-clap-complete" ,rust-clap-complete-4)
                        ("rust-env-logger" ,rust-env-logger-0.10)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-proc-macro2" ,rust-proc-macro2-1)
