@@ -17912,7 +17912,7 @@ though the later has not yet been packaged for Guix.")
 (define-public anystyle
   (package
     (name "anystyle")
-    (version "1.3.2")
+    (version "1.4.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17920,7 +17920,7 @@ though the later has not yet been packaged for Guix.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0yigfyn0n255nc53nx40yqak11dm4fva46hx5db177jh7mnksjd6"))
+                "10jx830mx9vh7rsz87ndvz8w5b5azd9s231vwyb0dqxs921v6qwy"))
               (file-name (git-file-name name version))))
     (build-system ruby-build-system)
     (propagated-inputs
@@ -17928,7 +17928,8 @@ though the later has not yet been packaged for Guix.")
            ruby-bibtex-ruby
            ruby-gli))
     (native-inputs
-     (list txt2man))
+     (list ruby-gdbm
+           txt2man))
     (arguments
      (list
       #:modules
