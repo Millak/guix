@@ -7524,14 +7524,14 @@ file or directories are modified.")
 (define-public ruby-spinach
   (package
     (name "ruby-spinach")
-    (version "0.11.0")
+    (version "0.12.0")
     (home-page "https://github.com/codegram/spinach")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "spinach" version))
               (sha256
                (base32
-                "1mv053mqz9c8ngqa6wp1ymk2fax6j0yqzax6918akrdr7c3fx3c6"))))
+                "1v9nvpvlgjx698dc4q2p1l45sxm5fjjzfxayrkyzb9nv0q0xfjsp"))))
     (build-system ruby-build-system)
     (arguments
        ;; FIXME: Disable tests altogether because they depend on 'capybara'
@@ -7539,7 +7539,7 @@ file or directories are modified.")
        ;; capybara is available.
        '(#:tests? #f))
     (propagated-inputs
-     (list ruby-colorize ruby-gherkin-ruby ruby-json))
+     (list ruby-colorize ruby-gherkin-ruby))
     (synopsis "Gherkin-based BDD framework")
     (description
      "Spinach is a high-level @acronym{BDD, Behavior-driven development}
