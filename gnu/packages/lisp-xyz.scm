@@ -16635,6 +16635,37 @@ Heap.")
 (define-public ecl-funds
   (sbcl-package->ecl-package sbcl-funds))
 
+(define-public sbcl-fuzzy-match
+  (let ((commit "e46ca41ef4641461f7be006782e3cfdcf73ba98a")
+        (revision "1"))
+    (package
+      (name "sbcl-fuzzy-match")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vindarel/fuzzy-match")
+               (commit commit)))
+         (file-name (git-file-name "cl-fuzzy-match" version))
+         (sha256
+          (base32 "1lawndmzkl6f9sviy7ngn2s3xkc4akp8l505kvpslaz6qq0ayyqv"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-cl-str
+                    sbcl-mk-string-metrics))
+      (home-page "https://github.com/vindarel/fuzzy-match")
+      (synopsis "Common Lisp library for fuzzy matching")
+      (description
+       "From a string input and a list of candidates, return the most relevant
+candidates first.")
+      (license license:expat))))
+
+(define-public cl-fuzzy-match
+  (sbcl-package->cl-source-package sbcl-fuzzy-match))
+
+(define-public ecl-fuzzy-match
+  (sbcl-package->ecl-package sbcl-fuzzy-match))
+
 (define-public sbcl-fxml
   ;; No release.
   (let ((commit "a0e73bb48ef03adea94a55986cc27f522074c8e1"))
