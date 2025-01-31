@@ -1523,7 +1523,8 @@ asynchronous request/response operations.")
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.17))
        #:cargo-development-inputs
-       (("rust-actix-testing" ,rust-actix-testing-1))))))
+       (("rust-actix-testing" ,rust-actix-testing-1)
+        ("rust-bytes" ,rust-bytes-0.5))))))
 
 (define-public rust-actix-utils-3
   (package
