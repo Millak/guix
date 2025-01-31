@@ -10027,6 +10027,32 @@ wallclock and object allocation samplers.")
     (home-page "https://github.com/tmm1/stackprof")
     (license license:expat)))
 
+(define-public ruby-bindex
+  (package
+    (name "ruby-bindex")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "bindex" version))
+       (sha256
+        (base32 "0zmirr3m02p52bzq4xgksq4pn8j641rx5d4czk68pv9rqnfwq7kv"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:test-target "default"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'avoid-bundler
+                 (lambda _
+                   (substitute* "Rakefile"
+                     (("^Bundler::.*") "")))))))
+    (native-inputs (list bundler ruby-rake-compiler))
+    (synopsis "Bindings for Ruby exceptions")
+    (description
+     "This package provides bindings for any kind of Ruby exceptions.")
+    (home-page "https://github.com/gsamokovarov/bindex")
+    (license license:expat)))
+
 (define-public ruby-binding-of-caller
   (package
     (name "ruby-binding-of-caller")
