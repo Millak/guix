@@ -1195,18 +1195,18 @@ interactions.")
 (define-public ruby-rspec
   (package
     (name "ruby-rspec")
-    (version "3.12.0")
+    (version "3.13.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rspec" version))
               (sha256
                (base32
-                "171rc90vcgjl8p1bdrqa92ymrj8a87qf6w20x05xq29mljcigi6c"))))
+                "14xrp8vq6i9zx37vh0yp4h9m0anx9paw200l1r5ad9fmq559346l"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
     (propagated-inputs
-     (list ruby-rspec-core ruby-rspec-mocks ruby-rspec-expectations))
+     (list ruby-rspec-core ruby-rspec-expectations ruby-rspec-mocks))
     (synopsis "Behavior-driven development framework for Ruby")
     (description "RSpec is a behavior-driven development (BDD) framework for
 Ruby.  This meta-package includes the RSpec test runner, along with the
