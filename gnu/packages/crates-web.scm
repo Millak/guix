@@ -562,11 +562,18 @@
        (uri (crate-uri "actix-http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06chrs9asbxmxzgiw5sw7ky97yrin9g88nmd6w407a6y9z668rn1"))))
-    ;; XXX: The crate fails to't build with with the same error as
-    ;; rust-actix-connect.  Skip build for now.
+        (base32 "06chrs9asbxmxzgiw5sw7ky97yrin9g88nmd6w407a6y9z668rn1"))
+       (modules '((guix build utils)))
+       ;; Crate chrono stopped using the Duration struct of crate time.
+       ;; See: https://github.com/actix/actix-web/issues/3135
+       (snippet #~(substitute* '("src/cookie/builder.rs"
+                                 "src/cookie/jar.rs"
+                                 "src/cookie/mod.rs"
+                                 "src/cookie/parse.rs")
+                    (("use chrono::Duration") "use time::Duration")))))
     (arguments
-     `(#:skip-build? #true
+     ;; Cargo fails to compile two different actix-http v1.0.1.
+     `(#:tests? #f
        #:cargo-inputs
        (("rust-actix-codec" ,rust-actix-codec-0.2)
         ("rust-actix-connect" ,rust-actix-connect-1)
@@ -610,7 +617,15 @@
         ("rust-slab" ,rust-slab-0.4)
         ("rust-time" ,rust-time-0.1))
        #:cargo-development-inputs
-       (("rust-actix-http-test" ,rust-actix-http-test-1))))))
+       (("rust-actix-connect" ,rust-actix-connect-1)
+        ("rust-actix-http-test" ,rust-actix-http-test-1)
+        ("rust-actix-server" ,rust-actix-server-1)
+        ("rust-actix-tls" ,rust-actix-tls-1)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-rustls" ,rust-rustls-0.16)
+        ("rust-serde-derive" ,rust-serde-derive-1))))))
 
 (define-public rust-actix-http-0.2
   (package
