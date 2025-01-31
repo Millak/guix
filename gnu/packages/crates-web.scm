@@ -3851,7 +3851,11 @@ requests and responses.")
        (uri (crate-uri "http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1w81s4bcbmcj9bjp7mllm8jlz6b31wzvirz8bgpzbqkpwmbvn730"))))
+        (base32 "1w81s4bcbmcj9bjp7mllm8jlz6b31wzvirz8bgpzbqkpwmbvn730"))
+       (modules '((guix build utils)))
+       ;; Tests pass with indexmap 1.9.3.
+       (snippet #~(substitute* "Cargo.toml"
+                    (("<=1.8") "1.8")))))
     (arguments
      `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
@@ -3859,7 +3863,7 @@ requests and responses.")
         ("rust-itoa" ,rust-itoa-1))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-indexmap" ,rust-indexmap-1.8)
+        ("rust-indexmap" ,rust-indexmap-1)
         ("rust-quickcheck" ,rust-quickcheck-0.9)
         ("rust-rand" ,rust-rand-0.7)
         ("rust-seahash" ,rust-seahash-3)
