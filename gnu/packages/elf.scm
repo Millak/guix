@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Daniel Maksymow <daniel.maksymow@tuta.io>
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
@@ -35,7 +36,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
-  #:use-module ((guix licenses) #:select (gpl3+ lgpl3+ lgpl2.0+ lgpl2.1 gpl2 bsd-2))
+  #:use-module ((guix licenses) #:select (gpl2+ gpl3+ lgpl3+ lgpl2.0+ lgpl2.1 gpl2 bsd-2))
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
@@ -49,6 +50,28 @@
   #:use-module (gnu packages xml)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
+
+(define-public chrpath
+  (package
+    (name "chrpath")
+    (version "0.18")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/pere/chrpath")
+                    (commit (string-append "release_" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0n7fp6xm660m8inaadlblh7zr8izyc3x39bfdqi6rj1kn0vmzra6"))))
+    (build-system gnu-build-system)
+    (native-inputs (list automake autoconf))
+    (home-page "https://codeberg.org/pere/chrpath")
+    (synopsis "Utility for editing the RPATH or RUNPATH of ELF binaries")
+    (description "@code{chrpath} allows listing, changing or removing the
+dynamic library load path (RPATH and RUNPATH) of compiled programs and
+libraries.")
+    (license gpl2+)))
 
 (define-public elfutils
   (package
