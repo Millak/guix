@@ -358,7 +358,7 @@ an almost zero-configuration persistence layer for applications.")
 (define-public ruby-rspec-rails
   (package
     (name "ruby-rspec-rails")
-    (version "6.0.1")
+    (version "7.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -367,7 +367,7 @@ an almost zero-configuration persistence layer for applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wmrpwv2vgrwmby01pld6r6sdfa265lb6pd3fp2kifs40nn7ff6b"))))
+                "1ixm9h2sdd8varnkyxccxhp9dyr8fxk6q5ibrkrk2c83v2xa7bjc"))))
     (build-system ruby-build-system)
     (arguments
      (list
