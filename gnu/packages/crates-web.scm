@@ -8020,8 +8020,7 @@ other queries.")
         ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.18.0-alpha.2)
         ("rust-webpki-roots" ,rust-webpki-roots-0.18))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-futures" ,rust-futures-0.3))))))
+       (("rust-env-logger" ,rust-env-logger-0.7))))))
 
 (define-public rust-trust-dns-resolver-0.11
   (package
