@@ -826,9 +826,6 @@ allowing files to be attached to ActiveRecord models.")
            ruby-activejob
            ruby-activesupport
            ruby-mail
-           ruby-net-imap
-           ruby-net-pop
-           ruby-net-smtp
            ruby-rails-dom-testing))
     (synopsis "Work with emails using the controller/view pattern")
     (description
