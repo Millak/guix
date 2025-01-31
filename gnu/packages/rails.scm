@@ -369,8 +369,7 @@ an almost zero-configuration persistence layer for applications.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "1ixm9h2sdd8varnkyxccxhp9dyr8fxk6q5ibrkrk2c83v2xa7bjc"))))
+               (base32 "1ixm9h2sdd8varnkyxccxhp9dyr8fxk6q5ibrkrk2c83v2xa7bjc"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -393,6 +392,13 @@ an almost zero-configuration persistence layer for applications.")
                 ((", :git => \"https://github.com/rspec.*")
                  "\n"))
               (setenv "RAILS_VERSION" #$%ruby-rails-version)
+              (substitute* '("Gemfile-rails-dependencies"
+                             "example_app_generator/generate_app.rb")
+                (("'sqlite3', .*")
+                 (string-append
+                  "'sqlite3', '~> "
+                  #$(package-version
+                     (this-package-native-input "ruby-sqlite3")) "'")))
               (substitute* "rspec-rails.gemspec"
                 (("'aruba',    '~> 0.14.12'")
                  "'aruba',    '>= 0.14.12'")
