@@ -3316,7 +3316,7 @@ interfaces.")
                      (("\\<(hyprland-share-picker)\\>" _ cmd)
                       (string-append #$output "/bin/" cmd))))))))
     (native-inputs
-     (list gcc-13 hyprwayland-scanner pkg-config))
+     (list gcc-14 hyprwayland-scanner pkg-config))
     (inputs
      (list bash-minimal
            grim
