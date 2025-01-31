@@ -11051,18 +11051,12 @@ Server (PLS).")
     (arguments
      (list
       #:test-flags
-      #~(list "-c" "/dev/null"           ;avoid coverage
-              "--ignore-glob" "**/test_autopep8_format.py"  ;avoid autopep8 dep
-              "-k"
-              (string-append
-               "not " (string-join
-                       (list "test_concurrent_ws_requests" ; flaky
-                             "test_pyqt_completion" ; avoid pyqt5
-                             "test_pandas_completion" ; avoid pandas
-                             ;; test_missing_message requests write permission
-                             ;; in /dev/cache.
-                             "test_missing_message")
-                       " and not ")))
+      '(list "--ignore-glob" "**/test_autopep8_format.py"  ;avoid autopep8 dep
+             "-k"
+             (string-append
+              "not test_concurrent_ws_requests "  ; flaky
+              "and not test_pyqt_completion "  ; avoid pyqt5
+              "and not test_pandas_completion"))  ; avoid pandas
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-HOME
@@ -22288,9 +22282,7 @@ interfaces.")
               (substitute* "pyproject.toml"
                 ;; Fix version string
                 (("dynamic = \\[\"version\"\\]")
-                 (string-append "version = \"" #$version "\""))
-                ;; Just run pytest with no frills
-                (("addopts = \"-l.*") ""))))
+                 (string-append "version = \"" #$version "\"")))))
           ;; XXX Our python-hypothesis package is too old.
           (add-after 'unpack 'compatibility
             (lambda _
@@ -30871,10 +30863,6 @@ For the most part it's transliterated from C, the major differences are:
          ;; Don't get hung up on Windows test failures.
          '(delete-file "blessed/win_terminal.py"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Avoid python-pytest-coverage
-      #:test-flags '(list "-c /dev/null")))
     (propagated-inputs (list python-six python-wcwidth))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/jquast/blessed")

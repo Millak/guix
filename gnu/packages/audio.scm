@@ -8261,8 +8261,7 @@ Home Page}.")
      (list
       #:test-flags
       ;; Ignore --mpl flag.
-      '(list "-c" "/dev/null"
-             "-k" (string-append
+      '(list "-k" (string-append
                    ;; Resampling tests require python-samplerate.
                    "not resample"
                    ;; These tests use Pooch and download data files.

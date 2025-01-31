@@ -2022,7 +2022,6 @@ between dataframe libraries.
       ;; tests: 121 passed, 1 deselected, 3 warnings
       #:test-flags
       #~(list "--pyargs" "ndindex"
-              "-c" "/dev/null" ;avoid coverage
               "-k" "not test_iter_indices_matmul") ; flaky
       #:phases
       #~(modify-phases %standard-phases

@@ -2783,8 +2783,7 @@ that is then compared to a @code{csrftoken} hidden form field or a
     (arguments
      (list
       #:test-flags
-      '(list "-c" "/dev/null"           ;ignore coverage-related options
-             "-k"
+      '(list "-k"
              (string-append
               ;; XXX: Some tests fail because of "Exceptions from Trio nursery"
               "not (test_lifespan_manager[trio-None-None-StartupFailed]"
@@ -3895,10 +3894,7 @@ CSS3 that adds programming capabilities and some other syntactic sugar.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; Prevent running the flake8 and black pytest plugins, which only tests
-      ;; style and frequently causes harmless failures.
-      '(list "-o" "addopts=''" "tests")
+      #:test-flags '(list "tests")
       #:phases
       '(modify-phases %standard-phases
          (add-before 'check 'pre-check
@@ -5339,10 +5335,6 @@ OpenAI API.")
       '(list "-k" "not test_array_prefixitems_invalid")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-coverage-pytest-options
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("^--cov.*") ""))))
           ;; See https://github.com/python-openapi/openapi-schema-validator/issues/204
           (add-after 'unpack 'relax-requirements
             (lambda _
@@ -5386,13 +5378,7 @@ JSON Schema Specification Draft 2020-12.
      (list
       ;; These tests attempt to fetch resources from the Internet
       #:test-flags '(list "--ignore-glob=tests/integration/validation/**"
-                          "-k" "not example")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-coverage-pytest-options
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("^--cov.*") "")))))))
+                          "-k" "not example")))
     (native-inputs
      (list python-poetry-core
            python-pytest))
@@ -5431,9 +5417,6 @@ compliance with the specification.")
      (list
       #:test-flags
       '(list "tests/unit"
-             ;; Ignore Pytest configuration in setup.cfg that adds
-             ;; unwanted flake8 and coverage options.
-             "-c" "/dev/null"
              "-k" "not test_chars_valid")))
     (native-inputs (list python-django
                          python-falcon
@@ -9773,17 +9756,6 @@ simplified fork of html5lib.")
        (sha256
         (base32 "1j2fcr217rsvkipsg6zjq03rl64rxnvb5hqqpx0dv58fhspvkywk"))))
     (build-system pyproject-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-linters
-           ;; Their check fails; none of our business.
-           (lambda _
-             (substitute* '("setup.py" "pyproject.toml")
-               (("'pytest-flake8',") "")
-               (("'pytest-isort',") "")
-               (("--flake8") "")
-               (("--isort") "")))))))
     (propagated-inputs
      (list python-tinycss2))
     (native-inputs
@@ -13000,14 +12972,6 @@ accessing the Twitter API.")
        (sha256
         (base32 "1h5ifv8g9dc9m07vj4v7dfalam83v38545d845vvgys1gan1pscd"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-coverage-pytest-options
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("--no-cov-on-fail") "")))))))
     (native-inputs
      (list python-poetry-core
            python-pytest

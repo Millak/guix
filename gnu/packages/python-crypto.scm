@@ -325,7 +325,6 @@ do what is needed for client/server Kerberos authentication based on
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags '(list "-c" "/dev/null") ;avoid extra test dependencies
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'workaround-test-failure
