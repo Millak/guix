@@ -3686,7 +3686,7 @@ This package is the fork of hsetroot by Hyriand.")
 (define-public hyprcursor
   (package
     (name "hyprcursor")
-    (version "0.1.10")
+    (version "0.1.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3695,10 +3695,10 @@ This package is the fork of hsetroot by Hyriand.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rdn03ln7pqcwp8h4nmi7nc489q8y25dd3v4paq8ykvwzhvs3a1n"))))
+                "0k050802bpgdn1hnrfgadxs54hx0zak3y3jzbjnsb69i6ayydr1c"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))      ;TODO: No themes currently packaged.
-    (native-inputs (list gcc-13 pkg-config))
+    (native-inputs (list gcc-14 pkg-config))
     (inputs (list cairo hyprlang (librsvg-for-system) libzip tomlplusplus))
     (home-page "https://standards.hyprland.org/hyprcursor/")
     (synopsis "Cursor theme format")
