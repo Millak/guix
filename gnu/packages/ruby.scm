@@ -11259,38 +11259,6 @@ name and provides query methods such as @code{RubyEngine.mri?}.")
     (home-page "https://github.com/janlelis/ruby_engine")
     (license license:expat)))
 
-(define-public ruby-turn
-  (package
-    (name "ruby-turn")
-    (version "0.9.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "turn" version))
-       (sha256
-        (base32
-         "1691rc2sq04cw8mxxh340k2j04ll90kwgcy8ddrp6rligmfrf8fw"))))
-    (build-system ruby-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Tests fail because turn changes its environment so can no longer
-         ;; find test/unit.  Instead simply test if the executable runs
-         ;; without issue.
-         (replace 'check
-           (lambda _
-             (invoke "ruby" "-Ilib" "bin/turn" "-h"))))))
-    (propagated-inputs
-     (list ruby-ansi ruby-minitest-4))
-    (synopsis "Alternate set of alternative runners for MiniTest")
-    (description
-     "TURN provides a set of alternative runners for MiniTest which are both
-colorful and informative.  TURN displays each test on a separate line with
-failures being displayed immediately instead of at the end of the tests.  Note
-that TURN is no longer being maintained.")
-    (home-page "https://rubygems.org/gems/turn")
-    (license license:expat)))
-
 (define-public ruby-mimemagic
   (package
     (name "ruby-mimemagic")
