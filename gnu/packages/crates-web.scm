@@ -289,7 +289,8 @@
         ("rust-trust-dns-resolver" ,rust-trust-dns-resolver-0.18.0-alpha.2)
         ("rust-webpki" ,rust-webpki-0.21))
        #:cargo-development-inputs
-       (("rust-actix-testing" ,rust-actix-testing-1))))))
+       (("rust-actix-testing" ,rust-actix-testing-1)
+        ("rust-bytes" ,rust-bytes-0.5))))))
 
 (define-public rust-actix-connect-0.2
   (package
