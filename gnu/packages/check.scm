@@ -2956,7 +2956,6 @@ mypy plugins.")
                            "and not upstream_url"))))
     (native-inputs
      (list python-pytest
-           python-pytest-black
            python-pytest-checkdocs
            python-pytest-cov
            python-pytest-enabler
