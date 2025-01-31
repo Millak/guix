@@ -17740,15 +17740,15 @@ the power of the built-in @code{OptionParser}.")
 (define-public ruby-anystyle-data
   (package
     (name "ruby-anystyle-data")
-    (version "1.2.0")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/inukshuk/anystyle-data")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (sha256
                (base32
-                "025mxa7r9d7izqn6bc1wr40ijp64da0jh211prlpjl6svilgd6rm"))
+                "1jh880310m3gjdrk4m8rwwnsf0824zkf26clpr8p64sac2fyy907"))
               (snippet
                ;; remove pre-built file
                #~(delete-file "lib/anystyle/data/dict.txt.gz"))
