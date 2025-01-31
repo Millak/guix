@@ -2142,10 +2142,9 @@ built on the Actix ecosystem.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1idacmq7n3irmdjkbxc5kdwspxk9w1gip94pcmfk7wky3m6isq6p"))))
-    ;; XXX: The crate fails to't build with with the same error as
-    ;; rust-actix-connect.  Skip build for now.
     (arguments
-     `(#:skip-build? #true
+     ;; The actix-web crate used may be too recent.
+     `(#:tests? #f
        #:cargo-inputs
        (("rust-actix-codec" ,rust-actix-codec-0.2)
         ("rust-actix-http" ,rust-actix-http-1)
@@ -2165,9 +2164,18 @@ built on the Actix ecosystem.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.6))
        #:cargo-development-inputs
-       (("rust-actix-http-test" ,rust-actix-http-test-1)
+       (("rust-actix-connect" ,rust-actix-connect-1)
+        ("rust-actix-http" ,rust-actix-http-1)
+        ("rust-actix-http-test" ,rust-actix-http-test-1)
+        ("rust-actix-server" ,rust-actix-server-1)
+        ("rust-actix-tls" ,rust-actix-tls-1)
+        ("rust-actix-utils" ,rust-actix-utils-1)
         ("rust-actix-web" ,rust-actix-web-2)
-        ("rust-brotli" ,rust-brotli-3))))))
+        ("rust-brotli" ,rust-brotli-3)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-webpki" ,rust-webpki-0.21))))))
 
 (define-public rust-awc-0.2
   (package
