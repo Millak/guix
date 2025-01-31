@@ -799,10 +799,7 @@ allowing files to be attached to ActiveRecord models.")
            ruby-activerecord
            ruby-activestorage
            ruby-activesupport
-           ruby-mail
-           ruby-net-imap
-           ruby-net-pop
-           ruby-net-smtp))
+           ruby-mail))
     (synopsis "Receive and process incoming emails in Rails applications")
     (description
      "ActionMailbox receives and processes incoming emails in Rails applications.")
