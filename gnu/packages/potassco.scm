@@ -162,7 +162,8 @@ satisfiability checking (SAT).")
                #~(begin
                    (delete-file-recursively "clasp")
                    (delete-file-recursively "libgringo/gen")
-                   (delete-file-recursively "third_party")))
+                   (delete-file-recursively "third_party")
+                   (delete-file "libpyclingo/_clingo.c")))
               (sha256
                (base32
                 "1mxl3gwx55sf2ifcb92mfy989c50yqpnq0d0r2mxdqr0riy40hjb"))))
@@ -442,13 +443,10 @@ Lua code.")))
           (guix build utils)))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
-            (add-after 'unpack 'fix-failing-tests
+            (add-after 'unpack 'generate-sources
               (lambda _
-                (substitute* "libpyclingo/clingo/tests/test_conf.py"
-                  (("ctl\\.solve\\(on_statistics=on_statistics\\)" all)
-                   (string-append
-                    all
-                    "; self.skipTest(\"You shall not fail.\")")))))
+                (with-directory-excursion "libpyclingo"
+                  (invoke "python" "compile.py" "c"))))
             (add-after 'install 'install-distinfo
               (lambda* (#:key inputs outputs #:allow-other-keys)
                 (with-directory-excursion (python:site-packages inputs outputs)
