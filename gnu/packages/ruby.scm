@@ -2115,7 +2115,11 @@ enforcing & linting tool.")
 (define-public ruby-rubocop-rspec
   (package
     (inherit ruby-rubocop-rspec-minimal)
-    (arguments '(#:test-target "spec"))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments ruby-rubocop-rspec-minimal)
+       ((#:tests? _ #f) #t)
+       ((#:test-target _ "test") "spec")))
     (native-inputs
      (list ruby-bump
            ruby-rack
@@ -2127,7 +2131,8 @@ enforcing & linting tool.")
     (propagated-inputs
      (list ruby-rubocop
            ruby-rubocop-ast
-           ruby-rubocop-capybara))))
+           ruby-rubocop-capybara
+           ruby-rubocop-factory-bot))))
 
 (define-public ruby-rubocop-packaging
   (package
