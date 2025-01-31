@@ -347,7 +347,10 @@ serialization, internationalization, and testing.")
     (native-inputs
      (list tzdata-for-tests
            ruby-mini-portile-2))
-    (propagated-inputs (list ruby-activemodel ruby-activesupport ruby-sqlite3))
+    (propagated-inputs (list ruby-activemodel
+                             ruby-activesupport
+                             ruby-sqlite3
+                             ruby-timeout))
     (synopsis "Ruby library to connect to relational databases")
     (description
      "Active Record connects classes to relational database table to establish
