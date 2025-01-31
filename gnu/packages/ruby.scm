@@ -2645,18 +2645,18 @@ routes to be nested or stacked on top of each other.")
 (define-public ruby-ci-reporter
   (package
     (name "ruby-ci-reporter")
-    (version "2.0.0")
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "ci_reporter" version))
               (sha256
                (base32
-                "17fm20jmw3ajdryhkkxpjahcfx7bgswqzxrskivlkns2718ayyyg"))))
+                "0qcafasmjjr8a5gzr4k92ncm6h2943skwllhjzwz8spawdwc7dla"))))
     (build-system ruby-build-system)
     (arguments
      `(#:test-target "rspec"))
     (propagated-inputs
-     (list ruby-builder))
+     (list ruby-builder ruby-rexml))
     (native-inputs
      (list bundler ruby-rspec))
     (synopsis "Generate XML reports of runs test")
