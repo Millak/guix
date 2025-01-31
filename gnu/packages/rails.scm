@@ -607,8 +607,30 @@ explicit cache control given to render")
 
                   (skip-tests "dispatch/system_testing/driver_test.rb"
                               ;; These tests require Firefox.
+                              "initializing the driver with a headless firefox"
                               "define extra capabilities using headless_firefox"
-                              "define extra capabilities using firefox")
+                              "define extra capabilities using firefox"
+                              ;; These tests require Chrome.
+                              "initializing the driver with a browser"
+                              "initializing the driver with a headless chrome"
+                              "define extra capabilities using headless_chrome"
+                              "define extra capabilities using chrome"
+                              ;; This test requires geckodriver.
+                              "does not define extra capabilities")
+
+                  ;; These depends on firefox or chrome.
+                  (delete-file "dispatch/system_testing/system_test_case_test.rb")
+                  (delete-file "dispatch/system_testing/screenshot_helper_test.rb")
+
+                  ;; Small translation errors.
+                  (skip-tests "abstract/translation_test.rb" "\
+test_translate_marks_translation_with_missing_nested_html_key_as_safe" "\
+test_translate_marks_translation_with_missing_html_key_as_safe")
+
+                  ;; IPSpoofAttackError
+                  (skip-tests "dispatch/request_test.rb"
+                              "remote ip spoof detection"
+                              "remote ip v6 spoof detection")
 
                   (skip-tests "dispatch/session/cache_store_test.rb"
                               ;; This test fails with: "NoMethodError:
