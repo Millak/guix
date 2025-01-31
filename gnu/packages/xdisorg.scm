@@ -3709,7 +3709,7 @@ This package is the fork of hsetroot by Hyriand.")
 (define-public hyprpicker
   (package
     (name "hyprpicker")
-    (version "0.4.1")
+    (version "0.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3718,7 +3718,7 @@ This package is the fork of hsetroot by Hyriand.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11r06c62dqj81r27qhf36f3smnjyk3vz8naa655m8khv4qqvmvc2"))))
+                "1jnncnsrb8h3driryj27mnamh5fqs0sys6xmfwsyg4qx3dgb6s89"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;No tests.
@@ -3730,7 +3730,7 @@ This package is the fork of hsetroot by Hyriand.")
                      (("wl-copy" cmd)
                       (search-input-file
                        inputs (string-append "bin/" cmd)))))))))
-    (native-inputs (list gcc-13 hyprwayland-scanner pkg-config))
+    (native-inputs (list gcc-14 hyprwayland-scanner pkg-config))
     (inputs
      (list cairo
            hyprutils
