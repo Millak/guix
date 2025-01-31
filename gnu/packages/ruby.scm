@@ -700,13 +700,13 @@ notebook).")
 (define-public ruby-rspec-core
   (package
     (name "ruby-rspec-core")
-    (version "3.12.1")
+    (version "3.13.2")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rspec-core" version))
               (sha256
                (base32
-                "0da45cvllbv39sdbsl65vp5djb2xf5m10mxc9jm7rsqyyxjw4h1f"))))
+                "001kazj244cb6fbkmh7ap74csbr78717qaskqzqpir1q8xpdmywl"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
