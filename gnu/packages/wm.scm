@@ -400,8 +400,9 @@ commands (lock/unlock/before-sleep) and inhibit.")
                       (search-input-file
                        inputs (string-append "bin/" cmd))))
                    (substitute* '("src/Compositor.cpp"
+                                  "src/xwayland/XWayland.cpp"
                                   "src/managers/VersionKeeperManager.cpp")
-                     (("!executableExistsInPath.*\".") "false")
+                     (("!NFsUtils::executableExistsInPath.*\".") "false")
                      (("hyprland-update-screen" cmd)
                       (search-input-file inputs (in-vicinity "bin" cmd)))))))))
     (native-inputs
