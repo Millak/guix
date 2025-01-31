@@ -2390,6 +2390,7 @@ to save time in the following ways:
     (build-system ruby-build-system)
     (arguments
      (list
+      #:ruby ruby-3.1
       #:test-target "spec"
       #:phases
       #~(modify-phases %standard-phases
