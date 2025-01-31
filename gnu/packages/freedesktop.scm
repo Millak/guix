@@ -1387,7 +1387,7 @@ Python.")
 (define-public hyprwayland-scanner
   (package
     (name "hyprwayland-scanner")
-    (version "0.4.2")
+    (version "0.4.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1396,11 +1396,11 @@ Python.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r7ay4zjkfyr0xd73wz99qhnqjq7nma98gm51wm9lmai4igw90qw"))))
+                "1bnckwj7hh4k4knlyprybi1fmy9vda2h492hw6yska2shfzp6jvy"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))      ;No tests.
     (inputs (list pugixml))
-    (native-inputs (list gcc-13 pkg-config))
+    (native-inputs (list gcc-14 pkg-config))
     (home-page "https://github.com/hyprwm/hyprwayland-scanner")
     (synopsis "Hyprland implementation of @code{wayland-scanner}")
     (description
