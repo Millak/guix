@@ -1926,7 +1926,8 @@ the Actix ecosystem.")
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
        (("rust-actix-rt" ,rust-actix-rt-1)
-        ("rust-actix-web" ,rust-actix-web-3))))))
+        ("rust-actix-web" ,rust-actix-web-3)
+        ("rust-futures-util" ,rust-futures-util-0.3))))))
 
 (define-public rust-actix-web-codegen-0.1
   (package
