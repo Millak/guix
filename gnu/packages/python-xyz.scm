@@ -8065,7 +8065,6 @@ PDF, PNG, EPS and SVG).")
                 "0lawjm736vs86wlnxc3qqh37l11z0yx81xq3dmrw33m86kaq2bh3"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest
-                         python-pytest-mypy
                          python-pytest-timeout
                          python-redis
                          python-setuptools

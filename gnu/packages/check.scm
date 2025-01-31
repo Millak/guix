@@ -2957,7 +2957,6 @@ mypy plugins.")
      (list python-pytest
            python-pytest-checkdocs
            python-pytest-enabler
-           python-pytest-mypy
            python-setuptools
            python-wheel))
     (propagated-inputs
