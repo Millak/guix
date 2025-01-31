@@ -683,7 +683,9 @@ applications.  These work with any Rack-compatible server.")
             (lambda _
               ;; There are multiple client test failures (see:
               ;; https://github.com/rails/rails/issues/47617).
-              (delete-file "test/client_test.rb")))
+              (delete-file "test/client_test.rb")
+              ;; This requires yarn.
+              (delete-file "test/javascript_package_test.rb")))
           (add-before 'check 'start-redis
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -694,7 +696,8 @@ applications.  These work with any Rack-compatible server.")
            ruby-pg
            ruby-puma
            ruby-redis
-           ruby-websocket-client-simple))
+           ruby-websocket-client-simple
+           ruby-zeitwerk))
     (propagated-inputs
      (list ruby-actionpack
            ruby-activesupport
