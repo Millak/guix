@@ -4051,28 +4051,37 @@ It is a low-dependency variant of ruby-hydra.")
 (define-public ruby-shindo
   (package
     (name "ruby-shindo")
-    (version "0.3.10")
+    (version "0.3.11")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "shindo" version))
               (sha256
                (base32
-                "0qnqixhi0g8v44v13f3gynpbvvw6xqi1wajsxdjsx5rhzizfsj91"))))
+                "1wccg3a4g3agfyszipkdnbcgsazcfwdbz1gv51q8m17m9plvpzdp"))))
     (build-system ruby-build-system)
     (arguments
      (list
-      #:test-target "shindo_tests"
+      #:test-target "tests"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-tests
             (lambda _
               (substitute* "tests/tests_helper.rb"
-                (("-rubygems") ""))
-              (substitute* "Rakefile"
-                (("system \"shindo") "system \"./bin/shindo")
-                ;; This test doesn't work, so we disable it.
-                (("fail \"The build_error test should fail") "#")
-                ((" -rubygems") "")))))))
+                (("-rrubygems") ""))))
+          ;; Move the 'check phase to after 'install, to use installed shindo.
+          (delete 'check)
+          (add-after 'install 'configure-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "GEM_PATH"
+                        (string-append
+                         (getenv "GEM_PATH") ":"
+                         #$output "/lib/ruby/vendor_ruby"))
+                (setenv "PATH"
+                        (string-append
+                         (getenv "PATH") ":" #$output "/bin")))))
+          (add-after 'configure-tests 'check
+            (assoc-ref %standard-phases 'check)))))
     (propagated-inputs
      (list ruby-formatador))
     (synopsis "Simple depth first Ruby testing")
