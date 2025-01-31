@@ -2154,7 +2154,7 @@ built on the Actix ecosystem.")
 (define-public rust-awc-0.2
   (package
     (inherit rust-awc-2)
-    (name "rust-awc-2")
+    (name "rust-awc")
     (version "0.2.8")
     (source
      (origin
