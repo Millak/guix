@@ -5401,7 +5401,7 @@ of the InventorXt GUI component toolkit.")
 (define-public hyprland-qtutils
   (package
     (name "hyprland-qtutils")
-    (version "0.1.1")
+    (version "0.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5410,7 +5410,7 @@ of the InventorXt GUI component toolkit.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02ymf8xypnxhknb3d0bxbp96hargwrg9syb9xs3va3rmx909r7b6"))))
+                "010p7b2asjb09vpr1jwjmvqzyd6dv2a9acl5jz0xdikbp1mwfvzn"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f ;There are no tests.
