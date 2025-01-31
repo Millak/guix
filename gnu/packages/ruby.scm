@@ -6949,7 +6949,7 @@ for select languages.")
 (define-public ruby-cuke-modeler
   (package
     (name "ruby-cuke-modeler")
-    (version "3.19.0")
+    (version "3.20.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6958,12 +6958,17 @@ for select languages.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bizla3k124lj4r7f2k5cdfm2sawzd6rdmb6rgbkbng2fygxsjib"))))
+                "0xbnx1blxm4kfhfwfh58n2ja40p2kfw8hbbz60dlzvghz25vcwy6"))))
     (build-system ruby-build-system)
     (arguments
      (list #:test-target "default"
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'improve-reproducibility
+                 (lambda _
+                   (substitute*
+                       "testing/rspec/spec/unit/cuke_modeler_unit_spec.rb"
+                     (("#\\{Time.now.year\\}") ""))))
                (add-after 'unpack 'relax-requirements
                  (lambda _
                    (substitute* "Gemfile"
@@ -6971,7 +6976,15 @@ for select languages.")
                      ;; particular reason (see:
                      ;; https://github.com/enkessler/cuke_modeler/issues/14).
                      (("'cucumber', '2.2.0'")
-                      "'cucumber', '>= 2.2.0'"))
+                      "'cucumber', '>= 2.2.0'")
+                     (("^gherkin_major_version_used = .*")
+                      (string-append
+                       "gherkin_major_version_used = "
+                       #$(car
+                          (string-split
+                           (package-version
+                            (this-package-input "ruby-cucumber-gherkin")) #\.))
+                       "\n")))
                    ;; Disable Bundler.
                    (substitute* "bin/console"
                      (("require 'bundler/setup'") ""))
