@@ -8231,7 +8231,7 @@ as sample rate, determining whether an audio file is silent, and much more.")
     (propagated-inputs
      (list python-numba python-numpy python-scipy python-six))
     (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/bmcfee/resampy")
     (synopsis "Efficient signal resampling")
     (description
@@ -8287,7 +8287,6 @@ Home Page}.")
      (list python-matplotlib
            python-packaging
            python-pytest
-           python-pytest-cov
            python-resampy
            python-setuptools
            python-wheel))

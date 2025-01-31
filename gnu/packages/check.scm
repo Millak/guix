@@ -1882,7 +1882,6 @@ http server.")
     (arguments (list #:tests? #false)) ;no tests included
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-setuptools
            python-wheel
            python-xmlschema))
@@ -2957,7 +2956,6 @@ mypy plugins.")
     (native-inputs
      (list python-pytest
            python-pytest-checkdocs
-           python-pytest-cov
            python-pytest-enabler
            python-pytest-flake8
            python-pytest-mypy

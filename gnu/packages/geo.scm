@@ -1124,7 +1124,6 @@ for seismology.")
     (inputs (list gdal))
     (native-inputs (list python-cython
                          python-pytest
-                         python-pytest-cov
                          python-setuptools
                          python-tomli
                          python-versioneer

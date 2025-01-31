@@ -4767,7 +4767,6 @@ savings are consistently > 5x.")
                          python-mock
                          python-mpi4py
                          python-pytest
-                         python-pytest-cov
                          python-pytest-timeout
                          python-setuptools
                          python-wheel))

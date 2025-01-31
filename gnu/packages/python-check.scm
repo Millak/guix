@@ -367,7 +367,7 @@ Python with a fluent API.")
     (build-system pyproject-build-system)
     (arguments (list #:build-backend "pdm.backend"))
     (native-inputs
-     (list python-pytest python-pdm-backend python-sybil python-pytest-cov))
+     (list python-pytest python-pdm-backend python-sybil))
     (home-page "https://public.readthedocs.io/")
     (synopsis "@code{@@public} decorator for populating @code{__all__}")
     (description
@@ -5184,7 +5184,6 @@ files using JSON Schema.")
            python-httplib2
            python-httpx
            python-pytest
-           python-pytest-cov
            python-pytest-aiohttp
            python-pytest-asyncio
            python-pytest-httpbin

@@ -1226,7 +1226,6 @@ private network between hosts on the internet.")
            ;; For tests only.
            python-hatchling
            python-mock
-           python-pytest-cov
            python-pytest-runner
            ;; For documentation only.
            python-sphinx

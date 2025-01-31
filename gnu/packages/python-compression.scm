@@ -1064,7 +1064,7 @@ efficient as possible on all supported Python versions.")
         (base32 "1snsczv5v2fvndxi8hbgd42ghhiwc20cdz8dz3xpw4rdh8q41nd0"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/pR0Ps/zipstream-ng")
     (synopsis "Streamable zip file generator")
     (description

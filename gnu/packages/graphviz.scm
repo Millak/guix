@@ -246,7 +246,6 @@ layout algorithms.")
      (list graphviz
            python-defusedxml
            python-pytest
-           python-pytest-cov
            python-setuptools
            python-typing-extensions))
     (propagated-inputs

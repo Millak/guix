@@ -245,7 +245,6 @@ seamlessly with your desktop environment.")
     (native-inputs
      (list nss-certs-for-test
            python-pytest
-           python-pytest-cov
            python-pytest-mock
            python-pytest-recording
            python-pytest-retry

@@ -499,7 +499,6 @@ to code blocks.")
     (native-inputs
      (list python-flit-core
            python-pytest
-           python-pytest-cov
            python-pytest-regressions))
     (propagated-inputs
      (list python-sphinx))

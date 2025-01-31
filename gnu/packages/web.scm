@@ -5911,7 +5911,6 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
     (native-inputs
      (list python-poetry-core
            python-pytest
-           python-pytest-cov
            python-pytest-mock))
     (home-page "https://github.com/4dn-dcic/tibanna")
     (synopsis "Tibanna runs portable workflows on the AWS Cloud")
@@ -9589,7 +9588,7 @@ program and as a web server.")
     (arguments
      (list #:test-flags #~(list "tests.py" "anonip.py")))
     (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/DigitaleGesellschaft/Anonip")
     (synopsis "Anonymize IP addresses in log files")
     (description

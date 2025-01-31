@@ -1030,7 +1030,6 @@ suite of the @code{psautohint} package.")
     (native-inputs
      (list psautohint-font-data
            python-pytest
-           python-pytest-cov
            python-pytest-xdist
            python-setuptools-scm
            python-setuptools

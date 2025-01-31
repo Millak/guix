@@ -431,7 +431,7 @@ powerful language for representing information.")
                (("^Requires-Dist: isodate .*")
                 "Requires-Dist: isodate (>=0.6.0)\n")))))))
     (native-inputs
-     (list python-poetry-core python-pytest python-pytest-cov))
+     (list python-poetry-core python-pytest))
     (propagated-inputs
       (list python-html5lib python-isodate python-pyparsing))
     (home-page "https://github.com/RDFLib/rdflib")

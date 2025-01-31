@@ -797,8 +797,7 @@ indexes.")
            python-hatchling
            python-hatch-vcs
            python-httpx
-           python-pytest
-           python-pytest-cov))
+           python-pytest))
     (home-page "https://github.com/devpi/devpi")
     (synopsis "API to create and use a devpi server process")
     (description
@@ -1649,7 +1648,6 @@ not require C extensions or system dependencies.")
            python-pydantic
            python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-pytest-env
            python-pytest-mock
            python-pytest-rerunfailures
@@ -3572,8 +3570,7 @@ other HTTP libraries.")
     (arguments
      (list
       #:test-flags
-      #~(list "--cov=cheroot"
-              ;; Tests are flaky in parallel invocation.
+      #~(list ;; Tests are flaky in parallel invocation.
               ;; "--numprocesses=auto"
               "--doctest-modules"
               "--showlocals"
@@ -3599,7 +3596,6 @@ other HTTP libraries.")
            python-portend
            python-pyopenssl
            python-pypytools
-           python-pytest-cov
            python-pytest-mock
            python-requests
            python-requests-toolbelt
@@ -3712,7 +3708,6 @@ program would be built.")
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-pytest-localserver
            python-pytest-socket
            python-setuptools
@@ -3918,7 +3913,6 @@ CSS3 that adds programming capabilities and some other syntactic sugar.")
            python-pymongo
            python-pytest
            python-pytest-benchmark
-           python-pytest-cov
            python-pytest-enabler
            python-setuptools
            python-setuptools-scm
@@ -4302,7 +4296,6 @@ support for merging, minifying and compiling CSS and Javascript files.")
     (native-inputs
      (list python-poetry-core
            python-pytest
-           python-pytest-cov
            python-pytest-mock))
     (propagated-inputs
      (list python-babel
@@ -5793,7 +5786,6 @@ RFC6455, regardless of your programming paradigm.")
                          python-poetry-core
                          python-pytest
                          python-pytest-asyncio
-                         python-pytest-cov
                          python-pytest-trio
                          python-trio))
     (home-page "https://gitlab.com/pgjones/hypercorn/")
@@ -7012,8 +7004,9 @@ WebSocket usage in Python programs.")
     (propagated-inputs
      (list python-requests))
     (native-inputs
-     (list python-pytest python-pytest-cov
-           python-setuptools python-wheel))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/ithaka/apiron")
     (synopsis "Python wrapper for interacting with RESTful APIs")
     (description
@@ -7284,8 +7277,6 @@ adapter for use with the Requests library.")
      (list python-async-timeout
            python-pytest
            python-pytest-asyncio
-           python-pytest-cov
-           python-pytest-mock
            python-setuptools
            python-siosocks
            python-trustme))
@@ -7443,8 +7434,7 @@ used as authentication in IMAP mail servers.")
        (sha256
         (base32 "0aa38lpa6s1k56v7w7kw2w4l159kaz4gn03m698a8hfdjkx92fb5"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-pytest-cov python-mock
-                         python-setuptools))
+    (native-inputs (list python-pytest python-mock python-setuptools))
     (propagated-inputs (list python-cryptography python-pyjwt python-blinker))
     (home-page "https://github.com/oauthlib/oauthlib")
     (synopsis "OAuth implementation for Python")
@@ -9797,7 +9787,7 @@ simplified fork of html5lib.")
     (propagated-inputs
      (list python-tinycss2))
     (native-inputs
-     (list python-flit python-pytest-cov python-pytest-runner))
+     (list python-flit python-pytest-runner))
     (home-page "https://cssselect2.readthedocs.io/")
     (synopsis "CSS selectors for Python ElementTree")
     (description "@code{cssselect2} is a straightforward implementation of
@@ -9942,7 +9932,6 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
            python-httpx
            python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-setuptools
            python-uvloop))
     (propagated-inputs
@@ -10544,7 +10533,7 @@ Plus all the standard features of requests:
     (propagated-inputs
      (list python-certauth python-gevent python-websocket-client))
     (native-inputs
-     (list python-mock python-pytest-cov python-waitress python-setuptools))
+     (list python-mock python-waitress python-setuptools))
     (home-page "https://github.com/webrecorder/wsgiprox")
     (synopsis "HTTP/S proxy with WebSockets over WSGI")
     (description
@@ -10587,7 +10576,6 @@ designated prefix.")
     (native-inputs
      ;; These inputs are required for the test suite.
      (list python-httpbin
-           python-pytest-cov
            python-requests
            python-setuptools
            python-wheel
@@ -11753,7 +11741,6 @@ Encoding for HTTP.")
     (native-inputs
      (list procps ;for ps when running tests
            python-pytest
-           python-pytest-cov
            python-pytest-mock
            python-passlib
            python-setuptools
@@ -12189,7 +12176,6 @@ client for Python.")
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-pytest-trio
            python-setuptools))
     (propagated-inputs (list python-trio))
@@ -13430,7 +13416,6 @@ resources using Web Application Description Language (WADL) files as guides.")
            python-pretend
            python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-pytest-httpx
            python-requests-mock
            python-setuptools

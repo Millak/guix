@@ -3089,7 +3089,7 @@ Hankaku (half-width character) and Zenkaku (full-width character)")
         (base32 "04hnrdcf03g1s0x3sr72sh9gnszz6kyfsl9dg8a4n0zvvhn6z5yz"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-asyncio
+     (list python-pytest python-pytest-asyncio
            python-setuptools python-wheel))
     (propagated-inputs (list python-typing-extensions))
     (home-page "https://github.com/aio-libs/janus/")
@@ -5434,7 +5434,6 @@ applications and between systems.")
                          python-hypothesis
                          python-packaging
                          python-pytest
-                         python-pytest-cov
                          python-shapely
                          python-wheel))
     (home-page "https://github.com/rasterio/rasterio")
@@ -5465,8 +5464,7 @@ with Numpy and SciPy.")
     (native-inputs
      (list python-freezegun
            python-poetry-core
-           python-pytest
-           python-pytest-cov))
+           python-pytest))
     (propagated-inputs
      (list python-funcy
            python-humanize
@@ -7585,7 +7583,7 @@ variables.")
      ;; "CovReportWarning: Failed to generate report: No data to report."
      (list #:tests? #f))
     (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-bson python-pyyaml))
     (home-page "https://gitlab.com/d3v-t00lz/pymarshal")
     (synopsis "Pythonic implementation of Golang struct (un)marshalling")
@@ -8067,7 +8065,6 @@ PDF, PNG, EPS and SVG).")
                 "0lawjm736vs86wlnxc3qqh37l11z0yx81xq3dmrw33m86kaq2bh3"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest
-                         python-pytest-cov
                          python-pytest-mypy
                          python-pytest-timeout
                          python-redis
@@ -8349,8 +8346,11 @@ processing tasks.")
     (propagated-inputs
      (list python-matplotlib python-numpy python-pandas python-scipy))
     (native-inputs
-     (list python-setuptools python-setuptools-scm
-           python-pytest python-pytest-cov python-wheel tzdata))
+     (list python-setuptools
+           python-setuptools-scm
+           python-pytest
+           python-wheel
+           tzdata))
     (home-page "https://github.com/has2k1/mizani")
     (synopsis "Create data visualizations in Python")
     (description
@@ -10492,7 +10492,6 @@ SFTP.  It has the following main usages:
     (native-inputs
      (list python-approvaltests
            python-pytest
-           python-pytest-cov
            python-pytest-mockito
            python-robotframework
            python-setuptools))
@@ -10699,7 +10698,6 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
     (native-inputs
      (list python-pyflakes
            python-pytest
-           python-pytest-cov
            python-setuptools
            python-setuptools-scm
            python-wheel))
@@ -14273,7 +14271,6 @@ any machine that can run Python.")
       (list pkg-config
             python-cython
             python-pytest
-            python-pytest-cov
             python-setuptools
             python-wheel))
     (inputs
@@ -14311,7 +14308,6 @@ ManimPango is internally used in Manim to render (non-LaTeX) text.")
            python-numpy
            python-pikepdf
            python-pytest
-           python-pytest-cov
            python-pytest-runner
            python-sphinx
            python-sphinx-rtd-theme))
@@ -16402,7 +16398,6 @@ command pipeline functionality.")
            python-mock
            python-pyrsistent
            python-pytest
-           python-pytest-cov
            python-pytest-django
            python-pytest-localserver
            python-setuptools
@@ -17668,7 +17663,6 @@ functional languages.")
      (list python-hatchling
            python-hatch-vcs
            python-pytest
-           python-pytest-cov
            python-pytest-lazy-fixtures
            python-setuptools-scm))
     (propagated-inputs
@@ -22400,7 +22394,6 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
      (list python-hatch-vcs
            python-hatchling
            python-pytest
-           python-pytest-cov
            python-pytest-mock
            python-setuptools
            python-wheel))
@@ -23117,7 +23110,9 @@ Xon/Xoff.  The port is accessed in RAW mode.")
       #:test-flags
       '(list "--ignore=pymemcache/test/test_compression.py")))
     (native-inputs
-     (list python-faker python-pytest python-pytest-cov python-setuptools
+     (list python-faker
+           python-pytest
+           python-setuptools
            python-wheel))
     (home-page "https://github.com/pinterest/pymemcache")
     (synopsis "Comprehensive, fast, pure Python memcached client")
@@ -23323,7 +23318,6 @@ for Kivy, the multitouch application platform.")
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-pytest-timeout
            python-setuptools
            python-wheel))
@@ -30714,7 +30708,6 @@ and not test_transcript")))
      (list python-pyperclip python-wcwidth))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-pytest-mock
            python-setuptools
            python-setuptools-scm
@@ -33309,7 +33302,7 @@ defined in POSIX.1-2001 and POSIX.1-2008.")
                                 "python-pyan3-fix-absolute-path-bug.patch"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-jinja2))
     (home-page "https://github.com/Technologicat/pyan")
@@ -34661,7 +34654,6 @@ for styling strings in the terminal.")
     (native-inputs
      (list python-hatchling
            python-pytest
-           python-pytest-cov
            python-pyyaml))
     (home-page "https://github.com/andrew-d/python-multipart")
     (synopsis "Streaming multipart parser for Python")
@@ -34710,7 +34702,6 @@ features of the Psycopg database driver.")
     (native-inputs
       (list bash
             python-pytest
-            python-pytest-cov
             python-pytest-timeout
             python-setuptools
             python-setuptools-scm

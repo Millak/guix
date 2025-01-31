@@ -1303,7 +1303,6 @@ compression parameters used by Gzip.")
     (native-inputs
      (list python-flexmock
            python-pytest
-           python-pytest-cov
            python-setuptools
            python-wheel))
     (inputs

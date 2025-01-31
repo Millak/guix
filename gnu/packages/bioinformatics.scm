@@ -2290,7 +2290,6 @@ version = ~s
                   (delete-file-recursively
                    (string-append #$output "/.pytest_cache")))))))))
     (native-inputs (list python-pytest
-                         python-pytest-cov
                          python-pytest-datadir
                          python-pytest-doctestplus
                          python-recommonmark
@@ -3866,7 +3865,6 @@ raw/ed14e050b2b75e7f4ddb73d512fbe928bbdb2b85")
            python-scipy))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-pytest-datadir
            python-pytest-doctestplus
            python-setuptools
@@ -4292,7 +4290,6 @@ e.g. microbiome samples, genomes, metagenomes.")
     (native-inputs
      (list python-cython
            python-pytest
-           python-pytest-cov
            python-setuptools
            python-wheel))
     (propagated-inputs

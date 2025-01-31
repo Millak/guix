@@ -984,7 +984,6 @@ the JupyterLab CSS variables.")
            python-openapi-spec-validator
            python-pytest
            python-pytest-console-scripts
-           python-pytest-cov
            python-pytest-jupyter
            python-pytest-timeout
            python-requests-mock
@@ -1236,7 +1235,6 @@ are interactive HTML widgets for Jupyter notebooks and the IPython kernel.")
     (native-inputs (list python-ansi2html
                          python-hatchling
                          python-pytest-console-scripts
-                         python-pytest-cov
                          python-pytest-xdist
                          python-tornado))
     (home-page "https://github.com/jupyterlite/jupyterlite")
@@ -1342,7 +1340,6 @@ and a default CommManager that can be used.")
            python-flaky
            python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-testpath
            python-xmltodict))
     (home-page "https://jupyter.org")
@@ -1645,7 +1642,6 @@ Docker registry.")
      (list python-jupyter-packaging
            python-nbval
            python-pytest
-           python-pytest-cov
            python-setuptools))
     (home-page "https://github.com/vidartf/ipydatawidgets")
     (synopsis "Widgets to help facilitate reuse of large datasets across widgets")

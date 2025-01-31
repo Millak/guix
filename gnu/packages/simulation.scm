@@ -796,7 +796,6 @@ some support for generating and analysing traffic scenarios..")
                   (invoke "./runtests.sh"))))))))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-setuptools
            python-wheel))
     (inputs

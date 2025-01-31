@@ -1175,7 +1175,7 @@ inference (VI) algorithms.")
     (propagated-inputs
      (list python-numpy python-scipy))
     (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/pydata/patsy")
     (synopsis "Describe statistical models and build design matrices")
     (description
@@ -1787,7 +1787,6 @@ functions.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-cffi python-packaging python-six))
     (native-inputs (list python-pytest
-                         python-pytest-cov
                          python-pytest-mock
                          python-setuptools
                          python-wheel

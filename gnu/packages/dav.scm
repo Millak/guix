@@ -143,7 +143,6 @@ CardDAV server with a local folder or file.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-pytest-flake8
            python-pytest-isort
            python-setuptools
@@ -244,7 +243,6 @@ efficient syncing
      (list python-aioresponses
            python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-pytest-httpserver
            python-setuptools
            python-setuptools-scm

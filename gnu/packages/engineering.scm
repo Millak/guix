@@ -2484,7 +2484,6 @@ Newton-Raphson power flow solvers in the C++ library lightsim2grid, and the
                          python-networkx
                          python-openpyxl
                          python-pytest
-                         python-pytest-cov ; --cov runs by default on skrf
                          python-pytest-mock
                          python-pyvisa
                          python-setuptools

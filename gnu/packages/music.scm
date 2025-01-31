@@ -5572,7 +5572,6 @@ can receive input from a MIDI keyboard.")
            python-gcovr
            python-packaging
            python-pytest
-           python-pytest-cov
            python-pytest-runner))
     (inputs
      (list alsa-lib

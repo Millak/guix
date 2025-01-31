@@ -11656,7 +11656,6 @@ for dealing with particle data and a few related utility functions.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy python-scipy))
     (native-inputs (list python-pytest
-                         python-pytest-cov
                          python-pytest-doctestplus
                          python-setuptools-scm
                          python-wheel))

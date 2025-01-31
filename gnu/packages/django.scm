@@ -1313,7 +1313,6 @@ server headers required for Cross-Origin Resource Sharing (CORS).")
            python-mock
            python-msgpack
            python-pytest
-           python-pytest-cov
            python-pytest-django
            python-pytest-mock
            python-setuptools
