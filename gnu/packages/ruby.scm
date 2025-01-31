@@ -17120,37 +17120,6 @@ protocol.")
       (home-page "https://github.com/imanel/websocket-ruby")
       (license license:expat))))
 
-(define-public ruby-pry-rescue
-  (package
-    (name "ruby-pry-rescue")
-    (version "1.5.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (rubygems-uri "pry-rescue" version))
-        (sha256
-          (base32 "1wn72y8y3d3g0ng350ld92nyjln012432q2z2iy9lhwzjc4dwi65"))))
-    (build-system ruby-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'nuke-bad-test
-           (lambda _
-             (substitute* "spec/source_location_spec.rb"
-               (("time = Time.now") "skip")))))))
-    (native-inputs
-     (list ruby-rspec
-            ruby-pry-stack-explorer))
-    (propagated-inputs
-     (list ruby-interception
-            ruby-pry))
-    (home-page
-      "https://github.com/ConradIrwin/pry-rescue")
-    (synopsis "Start Pry session for rescue")
-    (description "Pry-Rescue allows you to wrap code, to open a pry session at
-any unhandled exceptions.")
-    (license license:expat)))
-
 (define-public ruby-braintree
   (package
     (name "ruby-braintree")
