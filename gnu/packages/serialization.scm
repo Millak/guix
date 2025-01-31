@@ -747,7 +747,6 @@ RPC system.  Think JSON, except binary.  Or think Protocol Buffers, except faste
     (native-inputs (list python-attrs
                          python-gcovr
                          python-msgpack
-                         python-mypy
                          python-pytest
                          python-setuptools-scm
                          python-versioneer

@@ -1899,7 +1899,6 @@ Python file for configuration.")
     (native-inputs
      (list python-beartype
            python-feedparser
-           python-mypy
            python-pandas
            python-pytest
            python-setuptools

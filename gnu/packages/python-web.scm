@@ -1386,7 +1386,6 @@ of a fake DNS resolver.")
            python-fastapi
            python-jedi
            python-jinja2
-           python-mypy
            python-numpy
            python-pillow
            python-pydantic
@@ -2424,7 +2423,9 @@ stream is an enhanced asynchronous iterable.")
                (base32 "146mhkn3zp2bqf7j6r3chdlvfzgs5x1lrnqahsllgjdyl20bshy3"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-mypy python-pytest python-pytest-asyncio python-setuptools
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools
            python-wheel))
     (home-page "https://github.com/django/asgiref/")
     (synopsis "ASGI specs, helper code, and adapters")
