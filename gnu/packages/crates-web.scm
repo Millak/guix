@@ -7263,8 +7263,7 @@ the Trust-DNS client to use DNS over HTTPS.")
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.18))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-futures" ,rust-futures-0.3))))))
+       (("rust-env-logger" ,rust-env-logger-0.7))))))
 
 (define-public rust-trust-dns-https-0.3
   (package
