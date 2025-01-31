@@ -4850,7 +4850,8 @@ is known as @url{http://www.ietf.org/rfc/rfc2821.txt, RFC2821}.")
                      ;; The cli_spec.rb test fails non-deterministically with
                      ;; a Errno::EISDIR error (see:
                      ;; https://github.com/jordansissel/pleaserun/issues/155)
-                     (invoke "rspec" "--exclude-pattern" "cli_spec.rb")))))))
+                     (invoke "rspec" "--exclude-pattern"
+                             "spec/pleaserun/cli_spec.rb")))))))
     (native-inputs (list ruby-flores ruby-rspec))
     (propagated-inputs (list ruby-cabin
                              ruby-clamp
