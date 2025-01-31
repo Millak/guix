@@ -17809,100 +17809,97 @@ the power of the built-in @code{OptionParser}.")
     (license license:bsd-2)))
 
 (define-public ruby-anystyle
-  (let ((commit "50f1dd547d28ab4b830e45d70e840cb1898a37b0")
-        (revision "1"))
-    ;; Releases point to specific commits, but recent releases haven't been
-    ;; tagged in Git.  Meanwhile, the rubygems archive lacks tests.
-    (package
-      (name "ruby-anystyle")
-      (version (git-version "1.3.14" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/inukshuk/anystyle")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "0f4qcrywl1kl6qysn24lj3yp85ln4i7za7b7ld2fglyzwcggxwb0"))
-                (snippet
-                 ;; There is an optional dependency on
-                 ;; <https://github.com/feedbackmine/language_detector>, which
-                 ;; seems like it was intended to be free software, but
-                 ;; doesn't have a clear license statement.  Maybe someone can
-                 ;; do more sleuthing, or else find a replacement?  See also
-                 ;; <https://github.com/inukshuk/anystyle/issues/186>.  For
-                 ;; now, patch it out, but leave a pointer to follow up.
-                 #~(begin
-                     (use-modules (guix build utils))
-                     (substitute* "Gemfile"
-                       (("gem 'language_detector', github: '[^']*'" orig)
-                        (string-append "# " orig " # unclear license")))
-                     (substitute* "spec/anystyle/parser_spec.rb"
-                       (("language: 'en'," orig)
-                        (string-append "# " orig " # no lanugage_detector")))))
-                (patches
-                 (search-patches
-                  "ruby-anystyle-fix-dictionary-populate.patch"))
-                (file-name (git-file-name name version))))
-      (build-system ruby-build-system)
-      (propagated-inputs
-       (list ruby-anystyle-data
-             ruby-bibtex-ruby
-             ruby-namae
-             ruby-wapiti))
-      (native-inputs
-       (list ruby-byebug
-             ruby-citeproc
-             ruby-edtf
-             ruby-rspec
-             ruby-unicode-scripts))
-      (arguments
-       (list
-        #:test-target "spec"
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'extract-gemspec 'avoid-bundler
-              (lambda args
-                (substitute* "Rakefile"
-                  (("require 'bundler" orig)
-                   (string-append "# " orig " # patched for Guix"))
-                  (("Bundler\\.setup" orig)
-                   (string-append "true # " orig " # patched for Guix")))))
-            (add-after 'replace-git-ls-files 'replace-another-git-ls-files
-              (lambda args
-                (substitute* "anystyle.gemspec"
-                  (("`git ls-files spec`")
-                   "`find spec -type f | sort`"))))
-            (add-after 'wrap 'populate-dictionaries
-              (lambda args
-                ;; We must initialize these files here, or they will never be
-                ;; usable with the default settings. A more flexible approach
-                ;; might use something like `Gem.find_files()` or
-                ;; XDG_DATA_DIRS.
-                (with-output-to-file "initialize-dictionaries.rb"
-                  (lambda ()
-                    (display "
+  (package
+    (name "ruby-anystyle")
+    (version "1.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/inukshuk/anystyle")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "0xhy7wj8v7iahikck6vxbdpncaz5w2gb11b32kmvg5ckgi2kz23p"))
+              (snippet
+               ;; There is an optional dependency on
+               ;; <https://github.com/feedbackmine/language_detector>, which
+               ;; seems like it was intended to be free software, but
+               ;; doesn't have a clear license statement.  Maybe someone can
+               ;; do more sleuthing, or else find a replacement?  See also
+               ;; <https://github.com/inukshuk/anystyle/issues/186>.  For
+               ;; now, patch it out, but leave a pointer to follow up.
+               #~(begin
+                   (use-modules (guix build utils))
+                   (substitute* "Gemfile"
+                     (("gem 'language_detector', github: '[^']*'" orig)
+                      (string-append "# " orig " # unclear license")))
+                   (substitute* "spec/anystyle/parser_spec.rb"
+                     (("language: 'en'," orig)
+                      (string-append "# " orig " # no lanugage_detector")))))
+              (patches
+               (search-patches
+                "ruby-anystyle-fix-dictionary-populate.patch"))
+              (file-name (git-file-name name version))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-anystyle-data
+           ruby-bibtex-ruby
+           ruby-namae
+           ruby-wapiti))
+    (native-inputs
+     (list ruby-byebug
+           ruby-citeproc
+           ruby-edtf
+           ruby-gdbm
+           ruby-rspec
+           ruby-unicode-scripts))
+    (arguments
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'avoid-bundler
+            (lambda args
+              (substitute* "Rakefile"
+                (("require 'bundler" orig)
+                 (string-append "# " orig " # patched for Guix"))
+                (("Bundler\\.setup" orig)
+                 (string-append "true # " orig " # patched for Guix")))))
+          (add-after 'replace-git-ls-files 'replace-another-git-ls-files
+            (lambda args
+              (substitute* "anystyle.gemspec"
+                (("`git ls-files spec`")
+                 "`find spec -type f | sort`"))))
+          (add-after 'wrap 'populate-dictionaries
+            (lambda args
+              ;; We must initialize these files here, or they will never be
+              ;; usable with the default settings. A more flexible approach
+              ;; might use something like `Gem.find_files()` or
+              ;; XDG_DATA_DIRS.
+              (with-output-to-file "initialize-dictionaries.rb"
+                (lambda ()
+                  (display "\
 require 'anystyle/dictionary' # must come before 'anystyle/data'
 require 'anystyle/data'
 [:marshal, :gdbm].each do |adapter|
   AnyStyle::Dictionary.create({adapter: adapter}).open().close()
 end
 ")))
-                (let* ((old-gems (getenv "GEM_PATH"))
-                       (new-gems (string-append #$output
-                                                "/lib/ruby/vendor_ruby:"
-                                                old-gems)))
-                  (dynamic-wind
-                    (lambda ()
-                      (setenv "GEM_PATH" new-gems))
-                    (lambda ()
-                      (invoke "ruby" "initialize-dictionaries.rb"))
-                    (lambda ()
-                      (setenv "GEM_PATH" old-gems)))))))))
-      (home-page "https://anystyle.io")
-      (synopsis "Fast and smart citation reference parsing (Ruby library)")
-      (description
-       "AnyStyle is a very fast and smart parser for academic reference lists
+              (let* ((old-gems (getenv "GEM_PATH"))
+                     (new-gems (string-append #$output
+                                              "/lib/ruby/vendor_ruby:"
+                                              old-gems)))
+                (dynamic-wind
+                  (lambda ()
+                    (setenv "GEM_PATH" new-gems))
+                  (lambda ()
+                    (invoke "ruby" "initialize-dictionaries.rb"))
+                  (lambda ()
+                    (setenv "GEM_PATH" old-gems)))))))))
+    (home-page "https://anystyle.io")
+    (synopsis "Fast and smart citation reference parsing (Ruby library)")
+    (description
+     "AnyStyle is a very fast and smart parser for academic reference lists
 and bibliographies.  AnyStyle uses powerful machine learning heuristics based
 on Conditional Random Fields and aims to make it easy to train the model with
 data that is relevant to your parsing needs.
@@ -17910,7 +17907,7 @@ data that is relevant to your parsing needs.
 This package provides the Ruby module @code{AnyStyle}.  AnyStyle can also be
 used via the @command{anystyle} command-line utility or a web application,
 though the later has not yet been packaged for Guix.")
-      (license license:bsd-2))))
+    (license license:bsd-2)))
 
 (define-public anystyle
   (package
