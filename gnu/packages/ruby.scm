@@ -12276,14 +12276,17 @@ subprocess.")
 (define-public ruby-bcrypt
   (package
     (name "ruby-bcrypt")
-    (version "3.1.18")
+    (version "3.1.20")
     ;; FIXME: Unbundle the bcrypt library used.
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "bcrypt" version))
-              (sha256
-               (base32
-                "048z3fvcknqx7ikkhrcrykxlqmf9bzc7l0y5h1cnvrc9n2qf0k8m"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bcrypt-ruby/bcrypt-ruby")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q6h8kmjb34hg6qjv31v374n3cavv00drsfyzv6nybdwipgyg62i"))))
     (build-system ruby-build-system)
     (arguments (list #:test-target "default")) ;compile + spec
     (native-inputs (list ruby-rake-compiler ruby-rspec))
