@@ -919,7 +919,7 @@ support for YAML, to optimize and cache expensive computations.")
 (define ruby-importmap-rails-bootstrap
   (package
     (name "ruby-importmap-rails-bootstrap")
-    (version "1.1.5")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -928,7 +928,7 @@ support for YAML, to optimize and cache expensive computations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d8pqqqrvsnm8rpr7qkpcxpscif61xymi509v1c62laadvhcmklg"))))
+                "1mv223davpm0z50i787yiy49fiakd8ay5slmimyrg5cl3cjrvzm9"))))
     (build-system ruby-build-system)
     (arguments (list #:tests? #f))             ;avoid all extra dependencies
     ;; Leave out ruby-railties, for bootstrapping purposes.
