@@ -1012,18 +1012,18 @@ eq(1)\\}}.")
 (define-public ruby-rspec-mocks
   (package
     (name "ruby-rspec-mocks")
-    (version "3.12.4")
+    (version "3.13.2")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rspec-mocks" version))
               (sha256
                (base32
-                "1dcfh85m3ksir6n8gydsal4d85chpww1b2nahb05nl8xhgh0r2ij"))))
+                "1vxxkb2sf2b36d8ca2nq84kjf85fz4x7wqcvb8r6a5hfxxfk69r3"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
     (propagated-inputs
-     (list ruby-rspec-support ruby-diff-lcs))
+     (list ruby-diff-lcs ruby-rspec-support))
     (synopsis "RSpec stubbing and mocking library")
     (description "Rspec-mocks provides RSpec's \"test double\" framework, with
 support for stubbing and mocking.")
