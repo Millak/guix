@@ -9877,7 +9877,7 @@ services library.")
 (define-public ruby-fog-xml
   (package
     (name "ruby-fog-xml")
-    (version "0.1.4")
+    (version "0.1.5")
     (source (origin
               (method git-fetch)        ; for tests
               (uri (git-reference
@@ -9886,7 +9886,7 @@ services library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d0n201qzcjxis5wb26bi3s7yfhlmqkwsl6lb9w4szq3b8l1xbwn"))))
+                "1v896k9j44axhgvwjvk1j0amy27a9fm6ynv656fxqa1m2wib6dzh"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -9900,7 +9900,7 @@ services library.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "bundle" "exec" "rake")))))))
-    (native-inputs (list ruby-minitest-4 ruby-turn ruby-pry ruby-coveralls))
+    (native-inputs (list ruby-minitest ruby-pry ruby-coveralls))
     (propagated-inputs (list ruby-fog-core ruby-nokogiri))
     (synopsis "XML parsing tools used by @code{fog} providers")
     (description "This package containse the XML parsing tools shared between
