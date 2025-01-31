@@ -342,7 +342,7 @@ or musca).
                 "1622iz8bl8mi7gj2sc2jq6z7622l7l2izj1l9ajwj2mxpwpkdhbs"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f)) ;No tests.
-    (native-inputs (list gcc-13 pkg-config))
+    (native-inputs (list gcc-14 pkg-config))
     (inputs
      (list hyprlang
            hyprutils
