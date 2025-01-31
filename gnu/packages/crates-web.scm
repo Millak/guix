@@ -3143,7 +3143,7 @@ for sync managers.")
        (sha256
         (base32 "0qn457y8xh03p7c7cpk76r22gqpyqxc58g5022j3iya7d0j4rcx5"))))
     (arguments
-     `(#:skip-build? #t ;; TODO missing indirect dependency
+     `(#:skip-build? #t ; Missing development dependencies.
        #:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-bytes" ,rust-bytes-0.4)
@@ -3160,14 +3160,14 @@ for sync managers.")
         ("rust-hex" ,rust-hex-0.2)
         ("rust-quickcheck" ,rust-quickcheck-0.4)
         ("rust-rand" ,rust-rand-0.3)
-        ;;("rust-rustls" ,rust-rustls-0.12) requires 0.5
+        ;; ("rust-rustls" ,rust-rustls-0.12)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-tokio" ,rust-tokio-0.1)
-        ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
+        ;; ("rust-tokio-rustls" ,rust-tokio-rustls-0.5)
         ("rust-walkdir" ,rust-walkdir-1)
-        ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
+        ;; ("rust-webpki-roots" ,rust-webpki-roots-0.14)
+        ("rust-webpki" ,rust-webpki-0.18))))))
 
 (define-public rust-h3-0.0.6
   (package
