@@ -771,7 +771,7 @@ which allows user interfaces to be specified entirely as a logic program.")
                (base32
                 "1k8y3pm3w81n2appfl98drv1hpgjjqi2hxb1aa52y2m831lir38s"))))
     (build-system pyproject-build-system)
-    (inputs (list python-clingo))
+    (propagated-inputs (list python-clingo))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://potassco.org/clintest/")
     (synopsis "Test framework for clingo programs")
