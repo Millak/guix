@@ -97,7 +97,6 @@
      (list memcached
            redis
            ruby-builder
-           ruby-connection-pool
            ruby-dalli
            ruby-hiredis
            ruby-libxml
@@ -107,9 +106,13 @@
            ruby-rexml
            tzdata-for-tests))
     (propagated-inputs
-     (list ruby-concurrent
+     (list ruby-benchmark
+           ruby-concurrent
+           ruby-connection-pool
            ruby-i18n
            ruby-minitest
+           ruby-msgpack
+           ruby-securerandom
            ruby-tzinfo
            ruby-tzinfo-data))
     (synopsis "Ruby on Rails utility library")
