@@ -7300,7 +7300,8 @@ the Trust-DNS client to use DNS over HTTPS.")
         ("rust-webpki" ,rust-webpki-0.19)
         ("rust-webpki-roots" ,rust-webpki-roots-0.16))
        #:cargo-development-inputs
-       (("rust-tokio" ,rust-tokio-0.1))))))
+       (("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-tokio" ,rust-tokio-0.1))))))
 
 (define-public rust-trust-dns-native-tls-0.20
   (package
