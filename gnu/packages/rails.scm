@@ -392,9 +392,7 @@ an almost zero-configuration persistence layer for applications.")
               (substitute* "Gemfile-rspec-dependencies"
                 ((", :git => \"https://github.com/rspec.*")
                  "\n"))
-              (substitute* "Gemfile-rails-dependencies"
-                (("gem 'puma', '< 6.0.0'")
-                 "gem 'puma', '>= 6.0.0'"))
+              (setenv "RAILS_VERSION" #$%ruby-rails-version)
               (substitute* "rspec-rails.gemspec"
                 (("'aruba',    '~> 0.14.12'")
                  "'aruba',    '>= 0.14.12'")
@@ -407,6 +405,8 @@ an almost zero-configuration persistence layer for applications.")
                  "`find lib -type f |sort`"))))
           (add-before 'check 'patch-tests
             (lambda _
+              ;; Requires chrome or firefox.
+              (delete-file "spec/rspec/rails/example/system_example_group_spec.rb")
               (substitute* "spec/rspec/rails_spec.rb"
                 (("`git ls-files -z`")
                  "`find . -type f -not -regex '.*\\.gem$' -print0 | \
