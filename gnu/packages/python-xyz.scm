@@ -17122,13 +17122,22 @@ native modules.")
     (version "0.21")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "immutables" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MagicStack/immutables")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0jpw9nr2mbzqykigjhqa3a095bx7krwsnmjcxcpj944p8kqglpxm"))))
+        (base32 "1p5g20y7di5xglk6yyhb010vdmz73q9fsxpq0cm2gksp8mj856y1"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'remove-mypy-dependency
+                          (lambda _
+                            (delete-file "tests/test_mypy.py")
+                            (delete-file "tests/conftest.py"))))))
     (native-inputs
-     (list python-mypy python-pytest python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/MagicStack/immutables")
     (synopsis "High-performance immutable mapping type for Python")
     (description
