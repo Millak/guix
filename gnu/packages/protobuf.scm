@@ -587,7 +587,7 @@ source files.")
 (define-public ruby-protobuf
   (package
     (name "ruby-protobuf")
-    (version "3.10.7")
+    (version "3.10.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -596,7 +596,7 @@ source files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12hp1clg83jfl35x1h2ymzpj5w83wrnqw7hjfc6mqa8lsvpw535r"))))
+                "1d6fihqwrq46sg5vjm0nps8bbin7zcbz5m358wgzh76iapwij2rq"))))
     (build-system ruby-build-system)
     (arguments
      (list
