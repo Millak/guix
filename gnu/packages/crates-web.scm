@@ -756,7 +756,7 @@ during testing.")
 (define-public rust-actix-http-test-0.2
   (package
     (inherit rust-actix-http-test-1)
-    (name "rust-actix-http-test-2")
+    (name "rust-actix-http-test")
     (version "0.2.5")
     (source
      (origin
