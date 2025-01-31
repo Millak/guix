@@ -808,18 +808,18 @@ standard diff-like tool.")
 (define-public ruby-rspec-expectations
   (package
     (name "ruby-rspec-expectations")
-    (version "3.12.2")
+    (version "3.13.3")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rspec-expectations" version))
               (sha256
                (base32
-                "03ba3lfdsj9zl00v1yvwgcx87lbadf87livlfa5kgqssn9qdnll6"))))
+                "0n3cyrhsa75x5wwvskrrqk56jbjgdi2q1zx0irllf0chkgsmlsqf"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
     (propagated-inputs
-     (list ruby-rspec-support ruby-diff-lcs))
+     (list ruby-diff-lcs ruby-rspec-support))
     (synopsis "RSpec expectations library")
     (description "Rspec-expectations provides a simple API to express expected
 outcomes of a code example.")
