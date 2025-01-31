@@ -1867,17 +1867,17 @@ written in C.")
 (define-public ruby-prawn-svg
   (package
     (name "ruby-prawn-svg")
-    (version "0.32.0")
+    (version "0.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "prawn-svg" version))
        (sha256
-        (base32
-         "0mbxzw7r7hv43db9422flc24ib9d8bdy1nasbni2h998jc5a5lb6"))))
+        (base32 "008p1p334h3019x5w5bqvwgmly3g5n08s63va1261nwyvfb955jv"))))
     (build-system ruby-build-system)
     (arguments
-     (list #:phases
+     (list #:test-target "spec"
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'do-not-use-bundler
                  (lambda _
@@ -1891,7 +1891,7 @@ written in C.")
                      (delete-file "spec/prawn/svg/interface_spec.rb")
                      (invoke "rspec" "-Ilib" "-rprawn-svg")))))))
     (native-inputs (list ruby-rspec))
-    (propagated-inputs (list ruby-css-parser ruby-prawn))
+    (propagated-inputs (list ruby-css-parser ruby-matrix ruby-prawn ruby-rexml))
     (synopsis "SVG renderer for the Prawn PDF library")
     (description "This library allows rendering Scalable Vector Graphics (SVG)
 graphics directly into a Portable Document Format (PDF) document using the
