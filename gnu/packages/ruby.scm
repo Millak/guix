@@ -4991,6 +4991,24 @@ Soundex, Metaphone, Double Metaphone, Porter Stemming.")
     (home-page "https://github.com/threedaymonk/text")
     (license license:expat)))
 
+(define-public ruby-gdbm
+  (package
+    (name "ruby-gdbm")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "gdbm" version))
+       (sha256
+        (base32 "0xxygf50b2fvy8lcn2vip27vq32p607d3lwd1diplvkajijq8q8b"))))
+    (build-system ruby-build-system)
+    (arguments '(#:tests? #f))  ; No bundled tests.
+    (inputs (list gdbm))
+    (synopsis "Ruby extension for GNU dbm")
+    (description "This package provides a Ruby extension for GNU dbm.")
+    (home-page "https://github.com/ruby/gdbm")
+    (license license:bsd-2)))
+
 (define-public ruby-gettext
   (package
     (name "ruby-gettext")
