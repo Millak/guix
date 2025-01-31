@@ -3970,7 +3970,8 @@ HTTP request or response body.")
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
-        ("rust-http" ,rust-http-0.2))))))
+        ("rust-http" ,rust-http-0.2)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))))))
 
 (define-public rust-http-body-0.3
   (package
