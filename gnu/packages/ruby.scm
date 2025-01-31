@@ -1962,7 +1962,7 @@ loader for the file type associated with a filename extension, and it augments
 (define-public ruby-treetop
   (package
     (name "ruby-treetop")
-    (version "1.6.10")
+    (version "1.6.12")
     (source
      (origin
        (method git-fetch)               ;no test suite in distributed gem
@@ -1972,7 +1972,7 @@ loader for the file type associated with a filename extension, and it augments
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1dmk94z6ivhrz5hsq68vl5vgydhkz89n394rha1ymddw3rymbfcv"))))
+         "0cgs6f9z0a9dq5fc03710zsch4gmh1771wq36mq81qsql4x9vksf"))))
     (build-system ruby-build-system)
     (arguments
      `(#:test-target "spec"))
