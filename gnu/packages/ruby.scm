@@ -11512,7 +11512,7 @@ neither too verbose nor too minimal.")
 (define-public ruby-sqlite3
   (package
     (name "ruby-sqlite3")
-    (version "1.6.3")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)        ;for tests
@@ -11522,13 +11522,34 @@ neither too verbose nor too minimal.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ijj8z8fpk2lczydkxv71k250g5gd8ip8klsscxc9f16b01gh9qs"))))
+         "1fanv7bv5lszd5g752yy8nmpjhrl9gqwbbkbis2xbh83y96f2zfm"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:gem-flags #~(list "--" "--enable-system-libraries")
+      #:modules '((guix build ruby-build-system)
+                  (guix build utils)
+                  (ice-9 rdelim)
+                  (ice-9 textual-ports))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              ;; Don't try to format C code, remove rubocop-rake.
+              (delete-file "rakelib/format.rake")
+              ;; Don't try to run valgrind-like memory tests.
+              ;; This cuts all lines after Minitest::TestTask.create
+              (with-atomic-file-replacement
+               "rakelib/test.rake"
+               (lambda (in out)
+                 (let loop ()
+                   (let ((line (read-line in)))
+                     (cond
+                      ((eof-object? line) #f)
+                      ((string-prefix? "Minitest::TestTask.create" line) #f)
+                      (else
+                       (format out "~a~%" line)
+                       (loop)))))))))
           (delete 'check)
           (add-after 'install 'check
             (lambda* (#:key tests? #:allow-other-keys)
@@ -11543,7 +11564,6 @@ neither too verbose nor too minimal.")
      (list sqlite))
     (native-inputs
      (list ruby-hoe
-           ruby-ruby-memcheck
            ruby-rake-compiler
            ruby-rake-compiler-dock))
     (synopsis "Interface with SQLite3 databases")
