@@ -1483,7 +1483,7 @@ Stimulus can be used.")
     (propagated-inputs
      (list ruby-actionview ruby-activemodel ruby-arel ruby-skiptrace ruby-railties))
     (native-inputs
-     (list bundler ruby-rails ruby-mocha ruby-simplecov))
+     (list bundler ruby-bindex ruby-rails ruby-mocha ruby-simplecov))
     (synopsis "Debugging tool for your Ruby on Rails applications")
     (description
      "This package allows you to create an interactive Ruby session in your
