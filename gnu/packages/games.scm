@@ -30,7 +30,7 @@
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Madalin Ionel-Patrascu <madalinionel.patrascu@mdc-berlin.de>
@@ -10715,6 +10715,36 @@ full of enemies that can hurt it, obstacles and food to be eaten.  The goal of
 the game is to stay alive and collect prizes.  The robot program conveniently
 may be written in a plain text file in the Scheme programming language.")
     (license license:gpl3+)))
+
+(define-public li-ri
+  (package
+    (name "li-ri")
+    (version "3.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/petitlapin/Li-Ri")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fd5hl9qhgvyix51la8sl34jzk4mcin8sai05gidy2r2grb1dy4s"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #false              ;no tests
+           #:configure-flags
+           #~(list "-DUSE_SYSTEM_SIMPLEINI=ON"
+                   (string-append "-DLIRI_DATA_DIR=" #$output "/share/Li-ri/"))))
+    (native-inputs (list pkg-config))
+    (inputs (list sdl2 sdl2-mixer simpleini))
+    (home-page "https://github.com/petitlapin/Li-Ri")
+    (synopsis "Toy train simulation game")
+    (description
+     "Li-Ri is a game in which you drive a wooden toy steam locomotive
+across many levels and collect all the coaches to win.")
+    ;; Source files mention "either version 2 or version 3" for GPL
+    ;; license.  Desktop file is licensed under CC0 terms.
+    (license (list license:gpl2 license:gpl3 license:cc0))))
 
 (define-public ri-li
   (package
