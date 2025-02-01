@@ -4754,41 +4754,46 @@ IPv6 Internet connectivity - it also works over IPv4.")
      license:lgpl3)))
 
 (define-public yggtray
-  (package
-    (name "yggtray")
-    (version "0.1.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/the-nexi/yggtray")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0cl30da6s3zgvrbccrma9p3j870dsrzjcacdgn4wpvpjiab8b4p4"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:tests? #f ;No tests.
-      #:modules '((guix build cmake-build-system)
-                  (guix build qt-utils)
-                  (guix build utils))
-      #:imported-modules `(,@%cmake-build-system-modules (guix build qt-utils))
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'install 'wrap-qt
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       (wrap-qt-program "yggtray"
-                                        #:output #$output
-                                        #:inputs inputs))))))
-    (native-inputs (list cmake-minimal doxygen))
-    (inputs (list bash-minimal qtbase-5 qtwayland-5 yggdrasil))
-    (home-page "https://github.com/the-nexi/yggtray")
-    (synopsis "Yggdrasil tray and control panel")
-    (description
-     "@code{yggtray} is an @url{https://yggdrasil-network.github.io/, Yggdrasil} tray
+  (let ((version "0.1.6")
+        (revision "1")
+        ;; Version 0.1.6 introduced a change that forced installation to "/usr".
+        ;; This regression is fixed in the following commit.
+        (commit "dc2bd76cbf2fd6b4577bf35b125d51229302c3cc"))
+    (package
+      (name "yggtray")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/the-nexi/yggtray")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09j9s66bszy8nmvbc3gxgknfqrbf7li2y9lnnidxslra4m9l0vn0"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f ;No tests.
+        #:modules '((guix build cmake-build-system)
+                    (guix build qt-utils)
+                    (guix build utils))
+        #:imported-modules `(,@%cmake-build-system-modules (guix build qt-utils))
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'install 'wrap-qt
+                       (lambda* (#:key inputs #:allow-other-keys)
+                         (wrap-qt-program "yggtray"
+                                          #:output #$output
+                                          #:inputs inputs))))))
+      (native-inputs (list cmake-minimal doxygen))
+      (inputs (list bash-minimal qtbase-5 qttools-5 qtwayland-5 yggdrasil))
+      (home-page "https://github.com/the-nexi/yggtray")
+      (synopsis "Yggdrasil tray and control panel")
+      (description
+       "@code{yggtray} is an @url{https://yggdrasil-network.github.io/, Yggdrasil} tray
 and control panel.  It allows the user to configure, run and control the Yggdrasil
 daemon.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public nebula
   (package
