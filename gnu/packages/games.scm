@@ -1728,7 +1728,7 @@ The game features:
 (define-public freedoom
   (package
     (name "freedoom")
-    (version "0.12.1")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -1737,7 +1737,7 @@ The game features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mq60lfwaaxmch7hsz8403pwafnlsmsd5z2df2j77ppwndwcrypb"))))
+        (base32 "01fwzwi4a68n26d627dkcn85jz854mc3zfnzzkvinmx9yy3z5qmq"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags
