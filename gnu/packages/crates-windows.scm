@@ -971,9 +971,9 @@ See winapi for types and constants.")
     (build-system cargo-build-system)
     ;; This package depends unconditionally on these two crates.
     (arguments
-     `(#:cargo-inputs
-       (("winapi-i686-pc-windows-gnu" ,rust-winapi-i686-pc-windows-gnu-0.4)
-        ("winapi-x86-64-pc-windows-gnu" ,rust-winapi-x86-64-pc-windows-gnu-0.4))))
+     (list #:cargo-inputs
+           (list rust-winapi-i686-pc-windows-gnu-0.4
+                 rust-winapi-x86-64-pc-windows-gnu-0.4)))
     (inputs
      (list rust-winapi-i686-pc-windows-gnu-0.4
            rust-winapi-x86-64-pc-windows-gnu-0.4))
