@@ -19503,28 +19503,64 @@ a (typically) noncontiguous set of text.")
 Additionally it can display the number of unread emails in the mode line.")
       (license license:gpl3+))))
 
-(define-public emacs-mu4e-column-faces
+(define-public emacs-org-notify
   (package
-    (name "emacs-mu4e-column-faces")
-    (version "20221213.2206")
+    (name "emacs-org-notify")
+    (version "0.1.1")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Alexander-Miller/mu4e-column-faces.git")
-             (commit "1bbb646ea07deb1bd2daa4c6eb36e0f65aac40b0")))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/org-notify-" version
+                           ".tar"))
        (sha256
-        (base32 "12cb37lj8j1fd5kp3gbnzgknb57j5l8xgrnhb60ysff66m1mbrr7"))))
+        (base32 "1vg0h32x5lc3p5n71m23q8mfdd1fq9ffmy9rsm5rcdphfk8s9x5l"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list mu))
-    (home-page "https://github.com/Alexander-Miller/mu4e-column-faces")
-    (synopsis "Faces for individual mu4e columns")
+    (home-page "https://github.com/p-m/org-notify")
+    (synopsis "Notifications for Org-mode")
     (description
-     "This package provides a minor mode for individual column faces in mu4e's
-mail overview.")
+     "This package allows you to get notifications when there is something
+to do (for org mode).
+
+Sometimes, you need a reminder a few days before a deadline, e.g. to buy a
+present for a birthday, and then another notification one hour before to have
+enough time to choose the right clothes.
+
+For other events, e.g. rolling the dustbin to the roadside once per week, you
+probably need another kind of notification strategy.
+
+This package tries to satisfy the various needs.
+
+In order to activate this package, you must add the following code into your
+.emacs or .emacs.d configuration:
+
+@lisp
+(require org-notify)
+(org-notify-start)
+@end lisp")
     (license license:gpl3+)))
+
+(define-public emacs-mu4e-column-faces
+  (package
+   (name "emacs-mu4e-column-faces")
+   (version "20221213.2206")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/Alexander-Miller/mu4e-column-faces.git")
+           (commit "1bbb646ea07deb1bd2daa4c6eb36e0f65aac40b0")))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32 "12cb37lj8j1fd5kp3gbnzgknb57j5l8xgrnhb60ysff66m1mbrr7"))))
+   (build-system emacs-build-system)
+   (propagated-inputs
+    (list mu))
+   (home-page "https://github.com/Alexander-Miller/mu4e-column-faces")
+   (synopsis "Faces for individual mu4e columns")
+   (description
+    "This package provides a minor mode for individual column faces in mu4e's
+mail overview.")
+   (license license:gpl3+)))
 
 (define-public emacs-mu4e-jump-to-list
   (let ((commit "358bba003543b49ffa266e503e54aebd0ebe614b")
