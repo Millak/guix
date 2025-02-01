@@ -61919,9 +61919,8 @@ tools for implementation.")
          (base32
           "0jzdgszfa4bliigiy4hi66k7fs3gfwi2qxn8vik84ph77fwdwvvs"))))
     ;; This version is a 0.3 API wrapper around the 0.4 version.
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rand-core" ,rust-rand-core-0.4))))))
+    (arguments (list #:tests? #f
+                     #:cargo-inputs (list rust-rand-core-0.4)))))
 
 (define-public rust-rand-core-0.2
   (package
