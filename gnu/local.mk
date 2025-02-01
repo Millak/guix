@@ -2163,7 +2163,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/r-httpuv-1.6.6-unvendor-libuv.patch	\
   %D%/packages/patches/r-sapa-lapack.patch			\
   %D%/packages/patches/r-sgloptim.patch				\
-  %D%/packages/patches/ri-li-modernize_cpp.patch		\
   %D%/packages/patches/ripperx-missing-file.patch		\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\
   %D%/packages/patches/rtags-separate-rct.patch			\
