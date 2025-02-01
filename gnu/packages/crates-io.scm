@@ -57948,9 +57948,7 @@ possibly blocking tasks.")
         (base32
          "06sb1cxpkc8lx56s76c95cfljs0513nsnn35wd6w79sblwcxpdwp"))))
     (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("log" ,rust-log-0.4))))
+    (arguments (list #:cargo-inputs (list rust-log-0.4)))
     (home-page "https://github.com/dominicparga/progressing")
     (synopsis "Counting progress-bar for Rust")
     (description
