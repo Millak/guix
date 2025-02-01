@@ -11,7 +11,7 @@
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 Raymond Nicholson <rain1@openmailbox.org>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
-;;; Copyright © 2016, 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016, 2018-2023, 2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
@@ -9578,6 +9578,32 @@ be small and simple, so it's good for embedded systems.  It's also more or less
 compatible with Python's ConfigParser style of .INI files, including RFC
 822-style multi-line syntax and name: value entries.")
     (license license:bsd-3)))
+
+(define-public simpleini
+  (let ((commit "6048871ea9ee0ec24be5bd099d161a10567d7dc2")
+        (revision "1"))
+    (package
+      (name "simpleini")
+      (version (git-version "4.22" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/brofield/simpleini")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1szaflnrzw1zx9v5g6mbbiaf9wfglp4n4jjq2793k9ryz3qxil9j"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:configure-flags #~(list "-DSIMPLEINI_USE_SYSTEM_GTEST=ON")))
+      (native-inputs (list googletest))
+      (home-page "https://github.com/brofield/simpleini")
+      (synopsis "Simple API to read and write INI-style files")
+      (description
+       "SimpleIni provides a simple API to read and write INI-style
+configuration files.  It supports data files in ASCII, MBCS and Unicode.")
+      (license license:expat))))
 
 (define-public xfsprogs
   (package
