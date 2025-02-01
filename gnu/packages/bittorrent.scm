@@ -476,7 +476,7 @@ desktops.")
 (define-public libtorrent-rasterbar-1.2
   (package
     (inherit libtorrent-rasterbar)
-    (version "1.2.19")
+    (version "1.2.20")
     (source
      (origin
        (method url-fetch)
@@ -485,7 +485,7 @@ desktops.")
                        "releases/download/v" version "/"
                        "libtorrent-rasterbar-" version ".tar.gz"))
        (sha256
-        (base32 "03p4nvsll568zlyqifid0cn135sg5whbk7g48gkbapnw92ayks7f"))))))
+        (base32 "1z5rdynzxcm6wb7v48ssfbwjairbjacb8rjix5fn70fw4668xgyc"))))))
 
 (define-public qbittorrent
   (package
