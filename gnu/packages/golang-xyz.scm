@@ -17736,6 +17736,30 @@ structure.")
      "This package provides a way to check whether two Go source directories
 contain equivalent code.")
     (license license:asl2.0)))
+(define-public go-github-com-sosodev-duration
+  (package
+    (name "go-github-com-sosodev-duration")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sosodev/duration")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gbdx0gvlc2bh1q3204l8cfcfqk9qj859xxk3gnkr3f5kv914d71"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sosodev/duration"))
+    (home-page "https://github.com/sosodev/duration")
+    (synopsis "Parsing durations")
+    (description
+     "This package provides a Go module for parsing
+@@url{https://en.wikipedia.org/wiki/ISO_8601#Durations,ISO 8601 durations} and
+converting them to the often much more useful @@code{time.Duration}.")
+    (license license:expat)))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
