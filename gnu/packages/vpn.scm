@@ -804,17 +804,7 @@ others.")
                (("\"openconnect\"")
                 (string-append "\""
                                (search-input-file inputs "/sbin/openconnect")
-                               "\"")))))
-         (add-after 'check 'wrap-qt-process-path
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/openconnect-sso"))
-                    (qt-process-path
-                     (search-input-file inputs
-                                        "/lib/qt5/libexec/QtWebEngineProcess")))
-               (wrap-program bin
-                 #:sh (search-input-file inputs "bin/bash")
-                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
+                               "\""))))))))
     (inputs
      (list openconnect
            poetry
