@@ -210,12 +210,12 @@
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "134.0.1-1")
+    (version "134.0.2-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "1rb54b62zcmhabmx3rsd5badv9wwih6h19a0g80c03qgwwy8b8g3"
-      #:librewolf-hash "0bcjk3pkyq2w39n022kcpl8nqd8ng9653jc8gklfrfw9avwmpmk2"
+      #:firefox-hash "09yxacfcklgjqbqvcac32llwmlb16d9jhfp2mif9qs7s2gzvfvkc"
+      #:librewolf-hash "1qa3crgazfvmsqx8dm0k78yk9cb11w1lf74x6x8ixjq5ifsdh1ws"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
