@@ -17686,6 +17686,31 @@ editor.")
       #:import-path "github.com/client9/misspell/cmd/misspell"
       #:unpack-path "github.com/client9/misspell"))))
 
+(define-public go-github-com-go-viper-mapstructure-v2
+  (package
+    (name "go-github-com-go-viper-mapstructure-v2")
+    (version "2.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-viper/mapstructure")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x13x2s0vkikmn5wcarxskhr6c90s64nkbsgjsh7g9sh4v31n5yw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-viper/mapstructure/v2"
+      #:unpack-path "github.com/go-viper/mapstructure/v2"))
+    (home-page "https://github.com/go-viper/mapstructure")
+    (synopsis "Go type converters")
+    (description
+     "Package mapstructure exposes functionality to convert one arbitrary Go type into
+another, typically to convert a map[string]interface{} into a native Go
+structure.")
+    (license license:expat)))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
