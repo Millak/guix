@@ -243,18 +243,7 @@ translation engines.")
         (base32 "0gimz1k5yzkmpn4mq1dfvx3x5n6y7jmm74npy2mn3mdmi9lrg6hh"))))
     (build-system qt-build-system)
     (arguments
-     (list #:qtbase qtbase
-           #:phases
-           #~(modify-phases %standard-phases
-             (add-after 'install 'wrap-qt-process-path
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out"))
-                        (bin (string-append out "/bin/akregator"))
-                        (qt-process-path
-                         (search-input-file
-                          inputs "/lib/qt6/libexec/QtWebEngineProcess")))
-                   (wrap-program bin
-                     `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
+     (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
