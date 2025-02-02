@@ -93,11 +93,7 @@
     `(,(if (>= (string->number qt-major-version) 6)
            "QML_IMPORT_PATH"
            "QML2_IMPORT_PATH")
-      prefix directory ,(format #f "/lib/qt~a/qml" qt-major-version))
-    ;; QTWEBENGINEPROCESS_PATH accepts a single value, which makes 'exact the
-    ;; most suitable environment variable type for it.
-    `("QTWEBENGINEPROCESS_PATH" = regular
-      ,(format #f "/lib/qt~a/libexec/QtWebEngineProcess" qt-major-version)))))
+      prefix directory ,(format #f "/lib/qt~a/qml" qt-major-version)))))
 
 (define* (wrap-qt-program* program #:key sh inputs output-dir
                            qt-wrap-excluded-inputs
