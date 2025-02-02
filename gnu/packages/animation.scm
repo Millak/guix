@@ -538,6 +538,7 @@ and vector graphics.")
       (arguments
        (list #:tests? #f)) ; no rule for check
       (inputs (list zlib freetype giflib libjpeg-turbo lame))
+      (native-inputs (list perl))
       (home-page "http://www.swftools.org")
       (synopsis "Collection of utilities for working with Adobe Flash files")
 
