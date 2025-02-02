@@ -169,17 +169,6 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
            qtbase
            xapian
            qtwebengine))
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'wrap-executable
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (wrap-program (string-append #$output
-                                                "/bin/khelpcenter")
-                     `("QTWEBENGINEPROCESS_PATH" =
-                       (,(search-input-file
-                          inputs
-                          "lib/qt6/libexec/QtWebEngineProcess")))))))))
     (home-page "https://apps.kde.org/khelpcenter/")
     (synopsis "KDE documentation viewer")
     (description "KHelpCenter uses meta data files which describe the
