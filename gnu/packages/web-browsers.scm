@@ -575,7 +575,7 @@ interface.")
            python-pyqtwebengine-6
            python-tldextract
            ;; While qtwebengine is provided by python-pyqtwebengine-6, it's
-           ;; included here so we can wrap QTWEBENGINEPROCESS_PATH.
+           ;; included here so we can wrap QTWEBENGINE_RESOURCES_PATH.
            qtwebengine))
     (arguments
      `(;; FIXME: With the existence of qtwebengine, tests can now run.  But
@@ -636,10 +636,7 @@ interface.")
              (wrap-program (search-input-file outputs "bin/qutebrowser")
                `("QTWEBENGINE_RESOURCES_PATH" =
                  (,(search-input-directory
-                    inputs "/share/qt6/resources")))
-               `("QTWEBENGINEPROCESS_PATH" =
-                 (,(search-input-file
-                    inputs "/lib/qt6/libexec/QtWebEngineProcess")))))))))
+                    inputs "/share/qt6/resources")))))))))
     (home-page "https://qutebrowser.org/")
     (synopsis "Minimal, keyboard-focused, vim-like web browser")
     (description "qutebrowser is a keyboard-focused browser with a minimal
