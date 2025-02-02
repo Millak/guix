@@ -2110,8 +2110,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-paste-remove-timing-test.patch	\
   %D%/packages/patches/python-pyan3-fix-absolute-path-bug.patch \
   %D%/packages/patches/python-pyan3-fix-positional-arguments.patch \
-  %D%/packages/patches/python-pysmt-fix-pow-return-type.patch	\
-  %D%/packages/patches/python-pysmt-fix-smtlib-serialization-test.patch	\
   %D%/packages/patches/python-pytorch-fix-codegen.patch		\
   %D%/packages/patches/python-pytorch-runpath.patch		\
   %D%/packages/patches/python-pytorch-system-libraries.patch	\

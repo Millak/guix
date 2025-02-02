@@ -161,6 +161,7 @@
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
 ;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
+;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36101,19 +36102,17 @@ SMT solvers and is built on top of the Z3 solver.")
 (define-public python-pysmt
   (package
     (name "python-pysmt")
-    (version "0.9.5")
+    (version "0.9.6")
     (source
      (origin
        ;; Fetching from Git as pypi release doesn't include all test files.
        (method git-fetch)
-       (patches (search-patches "python-pysmt-fix-pow-return-type.patch"
-                 "python-pysmt-fix-smtlib-serialization-test.patch"))
        (uri (git-reference
              (url "https://github.com/pysmt/pysmt")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hrxv23y5ip4ijfx5pvbwc2fq4zg9jz42wc9zqgqm0g0mjc9ckvh"))))
+        (base32 "0jiw8pa6hfh9ajr953q187qgpdnk3bvaa3wmrxs8ilw5jc41sq8y"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
