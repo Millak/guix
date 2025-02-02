@@ -181,6 +181,7 @@
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lisp)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
@@ -2175,6 +2176,71 @@ destroying an ancient book using a special wand.")
     ;; guichan (BSD-3).  The "Coercri" library is released under the Boost
     ;; license.  The whole package is released under GPLv3+.
     (license license:gpl3+)))
+
+(define-public ghosthop
+  (let ((commit "9fefc22830ff8fde484452d7a249f4c54feec0fc")
+        (revision "1"))
+    (package
+      (name "ghosthop")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/gcmas/ghosthop.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "021awll73bgjk61r6y6cbqn0dpmki9jp627km7yhx5px15panslq"))
+         (modules '((guix build utils)))
+         (snippet '(delete-file-recursively "vendor"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        ;; 'ghosthop' loads 'asset' and 'scm' from the current directory.
+        #~'(("ghosthop" "opt/ghosthop/")
+            ("asset" "opt/ghosthop/")
+            ("scm" "opt/ghosthop/"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'build
+              ;; Avoid its Makefile to build with system libraries.
+              (lambda* (#:key inputs #:allow-other-keys)
+                (with-output-to-file "rlbind.c"
+                  (lambda ()
+                    (invoke "repl" "rlbind.scm")))
+                (invoke #$(cc-for-target)
+                        "-o" "ghosthop"
+                        "-O3" "-lm" "-lraylib"
+                        (search-input-file inputs "/share/s7/s7.c")
+                        "rlbind.c" "src/init.c")
+                (invoke #$(strip-for-target) "ghosthop")))
+            (add-after 'install 'install-launcher
+              ;; Create a launcher script for 'ghosthop'.
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (bindir (string-append out "/bin"))
+                       (gamedir (string-append out "/opt/ghosthop"))
+                       (launcher (string-append bindir "/ghosthop"))
+                       (bash (search-input-file inputs "/bin/bash")))
+                  (mkdir (dirname launcher))
+                  (with-output-to-file launcher
+                    (lambda ()
+                      (format #t "#!~a~%" bash)
+                      (format #t "cd ~a~%" gamedir)
+                      (format #t "exec -a ghosthop ~a~%"
+                              (string-append gamedir "/ghosthop"))))
+                  (chmod launcher #o755)))))))
+      (native-inputs (list s7))
+      (inputs (list bash-minimal raylib))
+      (home-page "https://gitlab.com/gcmas/ghosthop")
+      (synopsis "Puzzle game with colored rules")
+      (description "This is a small puzzle game made for the 2024 Spring Lisp
+Game Jam.  The objective is to reach the goal by assigning rules to colors.")
+      (license (list license:gpl3+            ;code and other assets
+                     license:cc-by-sa3.0))))) ;music
 
 (define-public gnome-2048
   (package
