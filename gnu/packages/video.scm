@@ -6036,19 +6036,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
                     (lambda _
                       ;; src/classes/info.py "needs" to create several
                       ;; directories in $HOME when loaded during build
-                      (setenv "HOME" "/tmp")))
-                  (add-after 'install 'wrap-program
-                    (lambda* (#:key outputs inputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out"))
-                            (qtwebengine-process-path
-                             (search-input-file
-                              inputs "/lib/qt5/libexec/QtWebEngineProcess")))
-                        (wrap-qt-program "openshot-qt"
-                                         #:output out #:inputs inputs)
-                        ;; Help the program discover QtWebEngine at runtime.
-                        (wrap-program (string-append out "/bin/openshot-qt")
-                          `("QTWEBENGINEPROCESS_PATH" =
-                            (,qtwebengine-process-path)))))))))
+                      (setenv "HOME" "/tmp"))))))
     (home-page "https://www.openshot.org/")
     (synopsis "Video editor")
     (description "OpenShot takes your videos, photos, and music files and
