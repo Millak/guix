@@ -17904,6 +17904,48 @@ converting them to the often much more useful @@code{time.Duration}.")
     "This package provides a Go implementation to calculate Levenshtein
 Distance.")
    (license license:expat)))
+
+(define-public go-github-com-vektah-gqlparser-v2
+  (package
+    (name "go-github-com-vektah-gqlparser-v2")
+    (version "2.5.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vektah/gqlparser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hrzm9f3kvcblff4hypf1p95kxsv5pww7vcghhw2jb7r8r4kmdf0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/vektah/gqlparser/v2"
+      #:unpack-path "github.com/vektah/gqlparser/v2"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'embed
+            (lambda _
+              ;; <https://groups.google.com/g/golang-nuts/c/GgSbsG4wGCU> says
+              ;; that the file to be embedded must not be a symlink.
+              ;; We symlink all the things.  That won't end well.
+              (invoke "cp" "-L"
+                      "src/github.com/vektah/gqlparser/v2/validator/prelude.graphql"
+                      "src/github.com/vektah/gqlparser/v2/validator/prelude.graphql.x")
+              (delete-file "src/github.com/vektah/gqlparser/v2/validator/prelude.graphql")
+              (rename-file "src/github.com/vektah/gqlparser/v2/validator/prelude.graphql.x"
+                           "src/github.com/vektah/gqlparser/v2/validator/prelude.graphql"))))))
+    (propagated-inputs (list go-gopkg-in-yaml-v3
+                             go-github-com-stretchr-testify
+                             go-github-com-andreyvit-diff
+                             go-github-com-agnivade-levenshtein))
+    (home-page "https://github.com/vektah/gqlparser")
+    (synopsis "GraphQL parser for Go")
+    (description
+     "This is a parser for GraphQL, written to mirror the graphql-js reference
+implementation as closely while remaining idiomatic and easy to use.")
+    (license license:expat)))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
