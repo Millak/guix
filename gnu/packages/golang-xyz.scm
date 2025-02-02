@@ -17711,6 +17711,31 @@ editor.")
 another, typically to convert a map[string]interface{} into a native Go
 structure.")
     (license license:expat)))
+
+(define-public go-github-com-kevinmbeaulieu-eq-go-eq-go
+  (package
+    (name "go-github-com-kevinmbeaulieu-eq-go-eq-go")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kevinmbeaulieu/eq-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gc2r1yrjg206swlx1vrvb92s2m1y6752yhbh869h2m47q2p4y38"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:unpack-path "github.com/kevinmbeaulieu/eq-go"
+      #:import-path "github.com/kevinmbeaulieu/eq-go/eq-go"))
+    (home-page "https://github.com/kevinmbeaulieu/eq-go")
+    (synopsis "eq[uivalent]-go")
+    (description
+     "This package provides a way to check whether two Go source directories
+contain equivalent code.")
+    (license license:asl2.0)))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
