@@ -9628,15 +9628,7 @@ It contains the code shared by all Kiwix ports.")
            (lambda* (#:key outputs #:allow-other-keys)
              (invoke "qmake"
                      (string-append "PREFIX="
-                                    (assoc-ref outputs "out")))))
-         (add-after 'install 'wrap-qt-process-path
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/kiwix-desktop"))
-                    (qt-process-path (search-input-file
-                                      inputs "/lib/qt5/libexec/QtWebEngineProcess")))
-               (wrap-program bin
-                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
+                                    (assoc-ref outputs "out"))))))))
     (inputs
      (list bash-minimal
            curl
