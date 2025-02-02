@@ -7221,12 +7221,12 @@ from that to the system kernel's @file{/dev/random} machinery.")
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
-           #~(list (string-append "DESTDIR=" #$output)
+           #~(list "CC=gcc"
+                   (string-append "DESTDIR=" #$output)
                    (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
-                   "libdir=/lib"
-                   "docdir=/share/doc/cpupower"
+                   "docdir=/share/doc/cpupower" ;drop default ‘packages/’
                    "confdir=$(docdir)/examples"
-                   ;; The Makefile recommends the following changes
+                   ;; The Makefile recommends the following changes.
                    "DEBUG=false"
                    "PACKAGE_BUGREPORT=bug-guix@gnu.org")
            #:tests? #f                  ; no tests
@@ -7240,10 +7240,11 @@ from that to the system kernel's @file{/dev/random} machinery.")
                  (lambda _
                    (substitute* "Makefile"
                      (("/usr/") "/")
-                     (("/bin/(install|pwd)" _ command) command))
+                     (("/bin/(install)" _ command) command))
                    (substitute* "bench/Makefile"
                      (("\\$\\(CC\\) -o") "$(CC) $(LDFLAGS) -o")))))))
-    (native-inputs (list gettext-minimal))
+    (native-inputs (list gettext-minimal
+		         which))        ;to find gettext
     (inputs (list pciutils))
     (home-page (package-home-page linux-libre))
     (synopsis "CPU frequency and voltage scaling tools for Linux")
