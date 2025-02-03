@@ -17712,9 +17712,9 @@ another, typically to convert a map[string]interface{} into a native Go
 structure.")
     (license license:expat)))
 
-(define-public go-github-com-kevinmbeaulieu-eq-go-eq-go
+(define-public go-github-com-kevinmbeaulieu-eq-go
   (package
-    (name "go-github-com-kevinmbeaulieu-eq-go-eq-go")
+    (name "go-github-com-kevinmbeaulieu-eq-go")
     (version "1.0.0")
     (source
      (origin
