@@ -1822,8 +1822,9 @@ Analysis and Reporting Technology) functionality.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://github.com/storaged-project/udisks/releases/download/udisks-"
-                    version "/udisks-" version ".tar.bz2"))
+                    "https://github.com/storaged-project/" name
+                    "/releases/download/" name "-" version "/"
+                    name "-" version ".tar.bz2"))
               (sha256
                (base32
                 "1klf5pcr9yg8g88mwwh3q2j0idfwd8hfr2q6nknhsm02yv638mxp"))))
