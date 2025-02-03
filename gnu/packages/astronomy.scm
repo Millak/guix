@@ -401,7 +401,7 @@ rendering of the atmosphere model and examine its properties.
 (define-public casacore
   (package
     (name "casacore")
-    (version "3.4.0")
+    (version "3.6.1")
     (source
      (origin
        (method git-fetch)
@@ -410,7 +410,7 @@ rendering of the atmosphere model and examine its properties.
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "05ar5gykgh4dm826xplj5ri5rw7znhxrvin2l67a3mjwfys7r2a0"))
+         "0ja0ss1cjfx9j2pnmqzr51ipxrfij7i2c4bq4nqkgaxfk5q447i5"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -458,7 +458,18 @@ rendering of the atmosphere model and examine its properties.
             (lambda _
               (substitute* "build-tools/casacore_assay"
                 (("QSUBP=.*$") "QSUBP=\n")
-                (("YODP=.*$") "YODP=\n")))))))
+                (("YODP=.*$") "YODP=\n"))))
+          ;; XXX: It fails to find the stdlib types when the gfortran header
+          ;; is used.  Remove gfortran from CPLUS_INCLUDE_PATH as a
+          ;; workaround.  Taken from <https://issues.guix.gnu.org/73439#45>.
+          (add-after 'set-paths 'hide-gfortran
+            (lambda _
+              (let ((gfortran #$(this-package-input "gfortran")))
+                (setenv "CPLUS_INCLUDE_PATH"
+                        (string-join
+                         (delete (string-append gfortran "/include/c++")
+                                 (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                         ":"))))))))
     (native-inputs
      (list bison
            boost
@@ -469,6 +480,7 @@ rendering of the atmosphere model and examine its properties.
            fftw
            fftwf
            gfortran
+           gsl
            hdf5
            ncurses
            openblas
