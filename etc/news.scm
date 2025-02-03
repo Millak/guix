@@ -35,6 +35,17 @@
 (channel-news
  (version 0)
 
+  (entry (commit "616ae36e0f557cecb4abe58c5b0973b9428d25e0")
+        (title
+         (en "Kernel persistent storage in UEFI disabled"))
+        (body
+          (en "The linux-libre kernel's persistent storage (pstore) mechanism
+can use UEFI non-volative memory to store information that would otherwise be
+lost, such as kernel panic logs.  However, this can permanently fill the
+non-volatile memory on some hardware implementations, breaking the ability to
+reconfigure Guix System.  Therefore, this mechanism has been disabled by default
+in the build-time kernel configuration.  Users can re-enable it if desired.")))
+
  (entry (commit "f40eff02413c20cdb6200d90cbb7f674cea475fd")
         (title
          (en "Linux-libre 6.13 now available"))
