@@ -19898,11 +19898,17 @@ privacy---often the result of host name lookups is in local cache, so
 external name servers do not even need to be queried.
 @end defvar
 
-@cindex syslog
-@cindex logging
+@cindex syslog, with external syslogd
+@cindex logging, syslog
 @defvar syslog-service-type
-Type of the service that runs the syslog daemon, whose value is a
-@code{<syslog-configuration>} object.
+Type of the service that runs the syslog daemon (@command{syslogd}),
+whose value is a @code{<syslog-configuration>} object (see below).
+
+@quotation Note
+This service is redundant with and for the most part superseded by
+@code{shepherd-system-log-service-type} (@pxref{shepherd-system-log, the
+Shepherd system log}).
+@end quotation
 @end defvar
 
 To have a modified @code{syslog-configuration} come into effect after
@@ -46866,6 +46872,7 @@ herd schedule timer at 07:00 -- mpg123 Music/alarm.mp3
 on the @code{timer} service.
 @end defvar
 
+@anchor{shepherd-system-log}
 @cindex system log service, from Shepherd
 @cindex syslogd, Shepherd system log service
 @defvar shepherd-system-log-service-type
@@ -46876,6 +46883,8 @@ traditionally implemented by @command{syslogd} programs.
 
 The value of services of this type must be a
 @code{system-log-configuration} record, as described below.
+
+This service is part of @code{%base-services} (@pxref{Base Services}).
 @end defvar
 
 @c %start of fragment
