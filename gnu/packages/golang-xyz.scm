@@ -17754,11 +17754,11 @@ contain equivalent code.")
      (list
       #:import-path "github.com/sosodev/duration"))
     (home-page "https://github.com/sosodev/duration")
-    (synopsis "Parsing durations")
+    (synopsis "ISO 8601 duration parsing in Golang")
     (description
-     "This package provides a Go module for parsing
-@@url{https://en.wikipedia.org/wiki/ISO_8601#Durations,ISO 8601 durations} and
-converting them to the often much more useful @@code{time.Duration}.")
+     "This package provides a functionality for parsing
+@url{https://en.wikipedia.org/wiki/ISO_8601#Durations, ISO 8601 durations} and
+converting them to the @code{time.Duration} type.")
     (license license:expat)))
 
 ;;;
