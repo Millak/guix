@@ -17879,31 +17879,6 @@ converting them to the often much more useful @@code{time.Duration}.")
       #:unpack-path "github.com/dgryski/trifles"
       #:import-path "github.com/dgryski/trifles/leven"))))
 
-(define-public go-github-com-agnivade-levenshtein
-  (package
-   (name "go-github-com-agnivade-levenshtein")
-   (version "1.2.0")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/agnivade/levenshtein")
-           (commit (string-append "v" version))))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32 "0vg9aj9k4qv96nqqp261qrm9g7kj0axqhv3mm9qvw932l72943hn"))))
-   (build-system go-build-system)
-   (arguments
-    (list
-     #:import-path "github.com/agnivade/levenshtein"))
-   (propagated-inputs (list go-github-com-dgryski-trifles-leven
-                            go-github-com-arbovm-levenshtein))
-   (home-page "https://github.com/agnivade/levenshtein")
-   (synopsis "Levenshtein Distance")
-   (description
-    "This package provides a Go implementation to calculate Levenshtein
-Distance.")
-   (license license:expat)))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
