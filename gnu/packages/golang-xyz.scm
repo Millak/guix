@@ -5960,6 +5960,31 @@ the library more lightweight.")
          (package-arguments go-github-com-go-task-slim-sprig)
        ((#:import-path _) "github.com/go-task/slim-sprig/v3")))))
 
+(define-public go-github-com-go-viper-mapstructure-v2
+  (package
+    (name "go-github-com-go-viper-mapstructure-v2")
+    (version "2.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-viper/mapstructure")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x13x2s0vkikmn5wcarxskhr6c90s64nkbsgjsh7g9sh4v31n5yw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-viper/mapstructure/v2"))
+    (home-page "https://github.com/go-viper/mapstructure")
+    (synopsis "Go type converters")
+    (description
+     "Package mapstructure exposes functionality to convert one arbitrary Go
+type into another, typically to convert a @code{map[string]interface{}} into a
+native Go structure.")
+    (license license:expat)))
+
 (define-public go-github-com-go-yaml-yaml
   (package
     (name "go-github-com-go-yaml-yaml")
@@ -8952,6 +8977,31 @@ word-splitting rules.")
 parser attempts to preserve comments in a given file, so you can manipulate a
 @file{ssh_config} file from a program.")
     (license license:expat)))
+
+(define-public go-github-com-kevinmbeaulieu-eq-go
+  (package
+    (name "go-github-com-kevinmbeaulieu-eq-go")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kevinmbeaulieu/eq-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gc2r1yrjg206swlx1vrvb92s2m1y6752yhbh869h2m47q2p4y38"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/kevinmbeaulieu/eq-go"))
+    (home-page "https://github.com/kevinmbeaulieu/eq-go")
+    (synopsis "Compare Golang source directories")
+    (description
+     "This package provides a way to check whether two Go source directories
+contain equivalent code.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-keybase-dbus
   (package
@@ -13612,6 +13662,31 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
      "Quant provides an interface for image color quantizers.")
     (license license:expat)))
 
+(define-public go-github-com-sosodev-duration
+  (package
+    (name "go-github-com-sosodev-duration")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sosodev/duration")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gbdx0gvlc2bh1q3204l8cfcfqk9qj859xxk3gnkr3f5kv914d71"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sosodev/duration"))
+    (home-page "https://github.com/sosodev/duration")
+    (synopsis "ISO 8601 duration parsing in Golang")
+    (description
+     "This package provides a functionality for parsing
+@url{https://en.wikipedia.org/wiki/ISO_8601#Durations, ISO 8601 durations} and
+converting them to the @code{time.Duration} type.")
+    (license license:expat)))
+
 (define-public go-github-com-spf13-afero
   (package
     (name "go-github-com-spf13-afero")
@@ -17685,81 +17760,6 @@ editor.")
       #:tests? #f
       #:import-path "github.com/client9/misspell/cmd/misspell"
       #:unpack-path "github.com/client9/misspell"))))
-
-(define-public go-github-com-go-viper-mapstructure-v2
-  (package
-    (name "go-github-com-go-viper-mapstructure-v2")
-    (version "2.2.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/go-viper/mapstructure")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1x13x2s0vkikmn5wcarxskhr6c90s64nkbsgjsh7g9sh4v31n5yw"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/go-viper/mapstructure/v2"))
-    (home-page "https://github.com/go-viper/mapstructure")
-    (synopsis "Go type converters")
-    (description
-     "Package mapstructure exposes functionality to convert one arbitrary Go
-type into another, typically to convert a @code{map[string]interface{}} into a
-native Go structure.")
-    (license license:expat)))
-
-(define-public go-github-com-kevinmbeaulieu-eq-go
-  (package
-    (name "go-github-com-kevinmbeaulieu-eq-go")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kevinmbeaulieu/eq-go")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0gc2r1yrjg206swlx1vrvb92s2m1y6752yhbh869h2m47q2p4y38"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/kevinmbeaulieu/eq-go"))
-    (home-page "https://github.com/kevinmbeaulieu/eq-go")
-    (synopsis "Compare Golang source directories")
-    (description
-     "This package provides a way to check whether two Go source directories
-contain equivalent code.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-sosodev-duration
-  (package
-    (name "go-github-com-sosodev-duration")
-    (version "1.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/sosodev/duration")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1gbdx0gvlc2bh1q3204l8cfcfqk9qj859xxk3gnkr3f5kv914d71"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/sosodev/duration"))
-    (home-page "https://github.com/sosodev/duration")
-    (synopsis "ISO 8601 duration parsing in Golang")
-    (description
-     "This package provides a functionality for parsing
-@url{https://en.wikipedia.org/wiki/ISO_8601#Durations, ISO 8601 durations} and
-converting them to the @code{time.Duration} type.")
-    (license license:expat)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
