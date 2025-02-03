@@ -446,6 +446,7 @@ described at @url{https://xxhash.com/}.")
     (arguments
      (list
       #:import-path "github.com/cespare/xxhash/v2"
+      #:test-subdirs #~(list "xxhsum/..." ".")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
