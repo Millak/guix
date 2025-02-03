@@ -31,6 +31,7 @@
   #:use-module ((guix diagnostics)
                 #:select (define-with-syntax-properties formatted-message))
   #:use-module (gnu services)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services herd)
   #:use-module (gnu packages admin)
   #:use-module (ice-9 match)
@@ -83,6 +84,17 @@
             user-processes-service-type
             shepherd-timer-service-type
             shepherd-transient-service-type
+
+            system-log-configuration
+            system-log-configuration?
+            system-log-configuration-provision
+            system-log-configuration-requirement
+            system-log-configuration-message-destination
+            system-log-configuration-date-format
+            system-log-configuration-history-size
+            system-log-configuration-max-silent-time
+
+            shepherd-system-log-service-type
 
             assert-valid-graph))
 
@@ -658,3 +670,87 @@ herd spawn transient -E SSH_AUTH_SOCK=$SSH_AUTH_SOCK -- \\
 
 This runs @command{rsync} in the background, as a service that you can inspect
 with @command{herd status} and stop with @command{herd stop}.")))
+
+
+;;;
+;;; System log.
+;;;
+
+(define (gexp-or-false? x)
+  (or (gexp? x) (not x)))
+
+(define (gexp-or-integer? x)
+  (or (gexp? x) (integer? x)))
+
+(define (gexp-or-string? x)
+  (or (gexp? x) (string? x)))
+
+(define (gexp-or-string-or-false? x)
+  (or (gexp-or-string? x) (not x)))
+
+(define-configuration/no-serialization system-log-configuration
+  (provision
+   (list-of-symbols '(system-log syslogd))
+   "The name(s) of the system log service.")
+  (requirement
+   (list-of-symbols '(root-file-system))
+   "Dependencies of the system log service.")
+  (kernel-log-file
+   (gexp-or-string-or-false #~(kernel-log-file))
+   "File from which kernel messages are read, @file{/dev/kmsg} by default.")
+  (message-destination
+   (gexp-or-false #f)
+   "This gexp must evaluate to a procedure that, when passed a log message,
+returns the list of files to write it to; @code{#f} is equivalent to using
+@code{(default-message-destination-procedure)}.  @xref{System Log Service,,,
+shepherd, The GNU Shepherd Manual}, for information on how to write that
+procedure.")
+  (date-format
+   (gexp-or-string #~default-logfile-date-format)
+   "String or string-valued gexp specifying how to format timestamps in log
+file.  It must be a valid string for @code{strftime} (@pxref{Time,,, guile,
+GNU Guile Reference Manual}), including delimiting space---e.g., @code{\"%c
+\"} for a format identical to that of traditional syslogd implementations.")
+  (history-size
+   (gexp-or-integer #~(default-log-history-size))
+   "Number of logging messages kept in memory for the purposes of making them
+available to @command{herd status system-log}.")
+  (max-silent-time
+   (gexp-or-integer #~(default-max-silent-time))
+   "Time after which a mark is written to log files if nothing was logged
+during that time frame."))
+
+(define shepherd-system-log-service-type
+  (shepherd-service-type
+   'shepherd-system-log
+   (lambda (config)
+     (match-record config <system-log-configuration>
+       (provision requirement message-destination
+        date-format history-size max-silent-time)
+       (shepherd-service
+        (documentation "Shepherd's built-in system log (syslogd).")
+        (provision (system-log-configuration-provision config))
+        (requirement (system-log-configuration-requirement config))
+        (modules '((shepherd service system-log)
+                   ((shepherd support) #:select (default-logfile-date-format))
+                   ((shepherd logger) #:select (default-log-history-size))))
+        (free-form
+         #~(system-log-service #:provision '#$provision
+                               #:requirement '#$requirement
+
+                               ;; XXX: As of Shepherd 1.0.1,
+                               ;; 'default-message-destination-procedure' is not
+                               ;; exported, hence this conditional.
+                               #$@(match message-destination
+                                    (#f #~())
+                                    (value #~(#:message-destination #$value)))
+
+                               #:date-format #$date-format
+                               #:history-size #$history-size
+                               #:max-silent-time #$max-silent-time)))))
+   (system-log-configuration)
+   (description
+    "The Shepherd's @code{system-log} service plays the role of traditional
+@command{syslogd} program, reading data logged by daemons to @file{/dev/log}
+and writing it to several files in @file{/var/log} according to user-provided
+dispatching rules.")))

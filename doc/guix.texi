@@ -46047,6 +46047,62 @@ herd schedule timer at 07:00 -- mpg123 Music/alarm.mp3
 on the @code{timer} service.
 @end defvar
 
+@cindex system log service, from Shepherd
+@cindex syslogd, Shepherd system log service
+@defvar shepherd-system-log-service-type
+This service implements a @dfn{system log}, reading messages
+applications send to @file{/dev/log} and writing them to files or
+terminals according to user-defined rules.  It provides functionality
+traditionally implemented by @command{syslogd} programs.
+
+The value of services of this type must be a
+@code{system-log-configuration} record, as described below.
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} system-log-configuration
+Available @code{system-log-configuration} fields are:
+
+@table @asis
+@item @code{provision} (default: @code{(system-log syslogd)}) (type: list-of-symbols)
+The name(s) of the system log service.
+
+@item @code{requirement} (default: @code{(root-file-system)}) (type: list-of-symbols)
+Dependencies of the system log service.
+
+@item @code{kernel-log-file} (type: gexp-or-string-or-false)
+File from which kernel messages are read, @file{/dev/kmsg} by default.
+
+@item @code{message-destination} (default: @code{#f}) (type: gexp-or-false)
+This gexp must evaluate to a procedure that, when passed a log message,
+returns the list of files to write it to; @code{#f} is equivalent to
+using @code{(default-message-destination-procedure)}.  @xref{System Log
+Service,,,shepherd,The GNU Shepherd Manual}, for information on how to
+write that procedure.
+
+@item @code{date-format} (type: gexp-or-string)
+String or string-valued gexp specifying how to format timestamps in log
+file.  It must be a valid string for @code{strftime} (@pxref{Time,,,
+guile,GNU Guile Reference Manual}), including delimiting space---e.g.,
+@code{"%c "} for a format identical to that of traditional syslogd
+implementations.
+
+@item @code{history-size} (type: gexp-or-integer)
+Number of logging messages kept in memory for the purposes of making
+them available to @command{herd status system-log}.
+
+@item @code{max-silent-time} (type: gexp-or-integer)
+Time after which a mark is written to log files if nothing was logged
+during that time frame.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 @defvar %shepherd-root-service
 This service represents PID@tie{}1.
 @end defvar
