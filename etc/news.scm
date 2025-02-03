@@ -35,6 +35,12 @@
 (channel-news
  (version 0)
 
+ (entry (commit "f40eff02413c20cdb6200d90cbb7f674cea475fd")
+        (title
+         (en "Linux-libre 6.13 now available"))
+        (body
+         (en "The 6.13 linux-libre series is now available in GNU Guix.")))
+
  (entry (commit "0aa45f18543552f2396414ab130dab40f8969d27")
         (title
          (en "New @code{%base-home-services} variable for Guix Home")
