@@ -6450,3 +6450,21 @@ diverse set of reference environments (formerly Gym).")
     "This package provides a toolkit for making machine learning and data
 analysis applications in C++.")
    (license license:boost1.0)))
+
+;; This will build dlib in the process of building python-dlib--and that
+;; seems to be intended by upstream.  Well, at least it probably optimizes
+;; better that way.
+(define-public python-dlib
+  (package
+   (inherit dlib)
+   (name "python-dlib")
+   (build-system pyproject-build-system)
+   (arguments
+    `(#:phases
+      (modify-phases %standard-phases
+                     (add-after 'unpack 'subst
+                                (lambda _
+                                  (substitute* "tools/python/CMakeLists.txt"
+                                               (("add_subdirectory[(][.][.]/[.][.]/dlib/external/pybind11 pybind11_build[)]")
+                                                "find_package(pybind11 CONFIG)")))))))
+   (native-inputs (list python-setuptools python-wheel cmake-minimal perl pkg-config pybind11))))
