@@ -17702,14 +17702,13 @@ editor.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/go-viper/mapstructure/v2"
-      #:unpack-path "github.com/go-viper/mapstructure/v2"))
+      #:import-path "github.com/go-viper/mapstructure/v2"))
     (home-page "https://github.com/go-viper/mapstructure")
     (synopsis "Go type converters")
     (description
-     "Package mapstructure exposes functionality to convert one arbitrary Go type into
-another, typically to convert a map[string]interface{} into a native Go
-structure.")
+     "Package mapstructure exposes functionality to convert one arbitrary Go
+type into another, typically to convert a @code{map[string]interface{}} into a
+native Go structure.")
     (license license:expat)))
 
 (define-public go-github-com-kevinmbeaulieu-eq-go
