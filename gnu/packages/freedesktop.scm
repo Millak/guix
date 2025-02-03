@@ -1912,7 +1912,6 @@ Analysis and Reporting Technology) functionality.")
       #~(list "--enable-man"
               "--enable-available-modules" ; Such as lvm2, btrfs, etc.
               "--localstatedir=/var"
-              "--enable-fhs-media"    ;mount devices in /media, not /run/media
               (string-append "--with-html-dir=" #$output:doc
                              "/share/doc/udisks/html")
               (string-append "--with-udevdir=" #$output "/lib/udev"))
