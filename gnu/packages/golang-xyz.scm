@@ -17728,14 +17728,15 @@ structure.")
     (build-system go-build-system)
     (arguments
      (list
-      #:unpack-path "github.com/kevinmbeaulieu/eq-go"
-      #:import-path "github.com/kevinmbeaulieu/eq-go/eq-go"))
+      #:skip-build? #t
+      #:import-path "github.com/kevinmbeaulieu/eq-go"))
     (home-page "https://github.com/kevinmbeaulieu/eq-go")
-    (synopsis "eq[uivalent]-go")
+    (synopsis "Compare Golang source directories")
     (description
      "This package provides a way to check whether two Go source directories
 contain equivalent code.")
     (license license:asl2.0)))
+
 (define-public go-github-com-sosodev-duration
   (package
     (name "go-github-com-sosodev-duration")
