@@ -158,8 +158,14 @@ registry.")
       ;; (untyped int constant) as int value in map literal (overflows)
       #:tests? (target-64bit?)
       #:import-path "github.com/prometheus/client_golang"
-      ;; Assertion fails in one test.
-      #:test-flags #~(list "-skip" "TestHandler")
+      #:test-flags
+      #~(list "-skip" (string-append
+                       ;; Test fails with Assertion error.
+                       "TestHandler"
+                       ;; Test fails on aarch64-linux system.
+                       #$@(if (not (target-x86-64?))
+                              '("|TestProcessCollector")
+                              '())))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples-and-tutorials
