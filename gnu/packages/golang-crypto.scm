@@ -431,7 +431,7 @@ described at @url{https://xxhash.com/}.")
   (package
     (inherit go-github-com-cespare-xxhash)
     (name "go-github-com-cespare-xxhash-v2")
-    (version "2.1.2")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -440,7 +440,7 @@ described at @url{https://xxhash.com/}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f3wyr9msnnz94szrkmnfps9wm40s5sp9i4ak0kl92zcrkmpy29a"))
+        (base32 "1fhpn8iwb0p44sqi1hflgxpvy83krpi8gd0dd66m7756wszy3g6r"))
        (modules '((guix build utils)))
        (snippet '(delete-file-recursively "xxhashbench"))))
     (arguments
