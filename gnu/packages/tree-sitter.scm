@@ -676,6 +676,13 @@ which will be used as a snippet in origin."
      #:repository-url "https://github.com/6cdh/tree-sitter-scheme"
      #:commit commit)))
 
+(define-public tree-sitter-sway
+  (tree-sitter-grammar
+   "sway" "Sway"
+   "016zq8jbyy0274qyr38f6kvvllzgni0w7742vlbkmpv8d2blr7xj"
+   "1.0.0"
+   #:repository-url "https://github.com/FuelLabs/tree-sitter-sway"))
+
 (define-public tree-sitter-racket
   ;; No tags
   (let ((commit "1a5df0206b25a05cb1b35a68d2105fc7493df39b")
