@@ -3852,7 +3852,10 @@ using Guix System.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libogg libshout libtheora libvorbis speex))
+     (list libshout))
+    (propagated-inputs
+     ;; In Requires.private of shout-idjc.pc.
+     (list libogg libtheora libvorbis speex))
     (home-page "https://idjc.sourceforge.io/")
     (synopsis "Broadcast streaming library with IDJC extensions")
     (description "This package provides libshout plus IDJC extensions.")
