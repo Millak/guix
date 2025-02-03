@@ -2053,6 +2053,38 @@ Applications} formats (such as @file{.image} datasets).  This implementation
 is independent of and does not use @code{casacore}.")
     (license license:lgpl2.0)))
 
+(define-public python-casacore
+  (package
+    (name "python-casacore")
+    (version "3.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python_casacore" version))
+       (sha256
+        (base32 "10dva4b3mz0n885d1n91dyzmwj1gwn6mcwd2qrm678kfdccarhfx"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list boost
+           cmake-minimal
+           python-pytest
+           python-scikit-build-core
+           python-setuptools-scm))
+    (inputs
+     (list casacore
+           cfitsio
+           hdf5
+           openblas
+           wcslib))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://casacore.github.io/python-casacore")
+    (synopsis "Python wrapper for Casacore")
+    (description
+     "This package provides a wrapper around @code{casacore}, the radio
+astronomy library.")
+    (license license:gpl3+)))
+
 (define-public python-ccdproc
   (package
     (name "python-ccdproc")
