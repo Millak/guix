@@ -25,6 +25,7 @@
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2037,40 +2038,42 @@ the boot loader configuration.")
 (define-public flatpak
   (package
     (name "flatpak")
-    (version "1.14.10")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                            version "/flatpak-" version ".tar.xz"))
        (sha256
-        (base32 "1k91v0csghiis8gjpcvpx534qbyaj81dfisabbc0ld97h68cggbb"))
+        (base32 "0ajbz8ms4h5nyjr59hv9z8vaimj4f3p51v8idmy14qnbmmjwa2nb"))
        (patches
         (search-patches "flatpak-fix-fonts-icons.patch"
                         "flatpak-fix-path.patch"
                         "flatpak-fix-icon-validation.patch"
                         "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
-
-    ;; Wrap 'flatpak' so that GIO_EXTRA_MODULES is set, thereby allowing GIO to
-    ;; find the TLS backend in glib-networking.
-    (build-system glib-or-gtk-build-system)
-
+    (build-system meson-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list
-         "--with-curl"
-         "--enable-documentation=no" ;; FIXME
-         "--enable-system-helper=no"
-         "--localstatedir=/var"
-         (string-append "--with-system-bubblewrap="
+         "-Dsystem_helper=disabled"
+         "-Dlocalstatedir=/var"
+         (string-append "-Dsystem_bubblewrap="
                         (assoc-ref %build-inputs "bubblewrap")
                         "/bin/bwrap")
-         (string-append "--with-system-dbus-proxy="
+         (string-append "-Dsystem_dbus_proxy="
                         (assoc-ref %build-inputs "xdg-dbus-proxy")
                         "/bin/xdg-dbus-proxy"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "tests/test-matrix/meson.build"
+                ;; The following tests fail with error message related to fusermount3
+                ;; failing an unmount operation ("No such file or directory").
+                (("^.*test-http-utils.*$") "")
+                (("^.*test-summaries@system.wrap.*$") "")
+                (("^.*test-prune.*$") ""))))
           (add-after 'unpack 'fix-tests
             (lambda* (#:key inputs #:allow-other-keys)
               (copy-recursively
@@ -2101,20 +2104,24 @@ cp -r /tmp/locale/*/en_US.*")))
                      (store (dirname out)))
                 (substitute* "icon-validator/validate-icon.c"
                   (("@storeDir@") store)))))
-          ;; Many tests fail for unknown reasons, so we just run a few basic
-          ;; tests.
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                (invoke "make" "check"
-                        "TESTS=tests/test-basic.sh tests/test-config.sh
-                        testcommon")))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Set $HOME to writable location for testcommon tests.
+              (setenv "HOME" "/tmp")))
+          (add-after 'install 'wrap-flatpak
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((flatpak (string-append #$output "/bin/flatpak"))
+                    (glib-networking (assoc-ref inputs "glib-networking")))
+                (wrap-program flatpak
+                  ;; Allow GIO to find TLS backend.
+                  `("GIO_EXTRA_MODULES" prefix
+                    (,(string-append glib-networking "/lib/gio/modules"))))))))))
     (native-inputs
      (list bison
            dbus ; for dbus-daemon
            gettext-minimal
            `(,glib "bin") ; for glib-mkenums + gdbus-codegen
+           gtk-doc
            (libc-utf8-locales-for-target)
            gobject-introspection
            libcap
@@ -2126,6 +2133,7 @@ cp -r /tmp/locale/*/en_US.*")))
     (inputs
      (list appstream
            appstream-glib
+           bash-minimal
            bubblewrap
            curl
            dconf
