@@ -577,8 +577,10 @@ over the Internet in an HTTP and CDN friendly way;
     ;; un-bundle them.
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/rclone/rclone"
-       #:install-source? #f))
+     (list
+      #:import-path "github.com/rclone/rclone"
+      #:install-source? #f
+      #:test-subdirs #~(list ".")))
     (synopsis "@code{rsync} for cloud storage")
     (description "@code{Rclone} is a command line program to sync files and
 directories to and from different cloud storage providers.
