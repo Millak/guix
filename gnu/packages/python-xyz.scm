@@ -27332,18 +27332,18 @@ functionality like full case-folding for case-insensitive matches in Unicode.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (substitute* '("OpenGL/platform/ctypesloader.py")
                (("filenames_to_try = \\[\\]") "filenames_to_try = [name]"))
-             (substitute* '("OpenGL/platform/glx.py" "tests/check_glut_load.py")
-               (("'GL'")
-                (string-append "'" (assoc-ref inputs "mesa") "/lib/libGL.so'"))
+             (substitute* '("OpenGL/platform/glx.py"
+                            "OpenGL/platform/egl.py"
+                            "OpenGL/platform/osmesa.py"
+                            "OpenGL/platform/darwin.py"
+                            "tests/check_glut_load.py")
                (("'GLU'")
                 (string-append "'" (assoc-ref inputs "glu") "/lib/libGLU.so'"))
                (("'glut',")
                 (string-append "'" (assoc-ref inputs "freeglut") "/lib/libglut.so',"))
-               (("'GLESv1_CM'")
-                (string-append "'" (assoc-ref inputs "mesa") "/lib/libGLESv1_CM.so'"))
-               (("'GLESv2'")
-                (string-append "'" (assoc-ref inputs "mesa") "/lib/libGLESv2.so'")))
-               ;; Not providing libgle. It seems to be very old.
+               (("'(GL|EGL|GLESv1_CM|GLESv2|OSMesa)'" all gl-library)
+                (string-append "'" (assoc-ref inputs "mesa") (string-append "/lib/lib" gl-library ".so'"))))
+             ;; Not providing libgle. It seems to be very old.
              #t)))))
     (home-page "https://pyopengl.sourceforge.net")
     (synopsis "Standard OpenGL bindings for Python")
