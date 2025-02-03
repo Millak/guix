@@ -6308,12 +6308,10 @@ throughout GNOME for API documentation).")
      (list mesa
            cairo
            pango
-           gstreamer
-           gst-plugins-base
            wayland))
     (arguments
      `(#:disallowed-references (,xorg-server-for-tests)
-       #:configure-flags (list "--enable-cogl-gst"
+       #:configure-flags (list "--enable-cogl-gst=no" ;broken and unmaintained
                                "--enable-wayland-egl-platform"
                                "--enable-wayland-egl-server"
 
