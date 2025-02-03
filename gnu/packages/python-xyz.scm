@@ -7263,6 +7263,31 @@ important tasks for becoming a daemon process:
     ;; Only setup.py is gpl3+, everything else is apache 2.0 licensed.
     (license (list license:asl2.0 license:gpl3+))))
 
+(define-public python-elevate
+  (package
+    (name "python-elevate")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "elevate" version))
+       (sha256
+        (base32 "02g23lxzzl64j1b4fsnrdxqiahl9lnrqyxpqwcfzn0g33px1kbak"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'clean-up
+           (lambda _
+             ;; Uses stuff we don't have.
+             (delete-file "elevate/windows.py"))))))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/barneygale/elevate")
+    (synopsis "Python library for requesting root privileges")
+    (description "This package provides a Python library for requesting
+root privileges.")
+    (license license:expat)))
+
 (define-public python-annotated-types
   (package
     (name "python-annotated-types")
