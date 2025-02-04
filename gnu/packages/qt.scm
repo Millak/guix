@@ -6176,7 +6176,7 @@ including @i{fix-its} for automatic refactoring.")
 (define-public qt-creator
   (package
     (name "qt-creator")
-    (version "14.0.1")
+    (version "15.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -6207,7 +6207,7 @@ including @i{fix-its} for automatic refactoring.")
                             ((".*marketplace/marketplace.qbs.*") ""))))
               (sha256
                (base32
-                "0zc9z4zzypqd1q49p4ckwbgxqcnnsc11jgsys6wli1ppmvzmn2zn"))))
+                "04sprj9m5zq5m5sc6wjm4ilhz6qfrawnxa2vl8618riadgbsxr7j"))))
     (outputs '("out" "debug"))
     (build-system qt-build-system)
     (arguments
