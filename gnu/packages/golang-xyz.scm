@@ -13548,6 +13548,41 @@ is undetermined, a customizable spinner is shown.")
 It's typically used for testing responses with larger data bodies.")
     (license license:expat)))
 
+(define-public go-github-com-sereal-sereal-go-sereal
+  (package
+    (name "go-github-com-sereal-sereal-go-sereal")
+    (version "0.0.0-20241017075749-134ea28a101c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Sereal/Sereal")
+             (commit (go-version->git-ref version
+                                          #:subdir "Go/sereal"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16ig2v82kq3zpi04qvnd4a1swxyadd0pcp3886kq7ag29jq3p1na"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Sereal/Sereal/Go/sereal"
+      #:unpack-path "github.com/Sereal/Sereal"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-datadog-zstd
+           go-github-com-davecgh-go-spew
+           go-github-com-dchest-siphash
+           go-github-com-dgryski-go-ddmin
+           go-github-com-golang-snappy
+           go-github-com-google-go-cmp))
+    (home-page "https://github.com/Sereal/Sereal")
+    (synopsis "Binary serialization and deserialization Golang library")
+    (description
+     "Package sereal implements the @code{Sereal}, an efficient,
+compact-output,binary and feature-rich serialization protocol.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-sergi-go-diff
   (package
     (name "go-github-com-sergi-go-diff")
