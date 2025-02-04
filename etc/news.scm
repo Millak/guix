@@ -37,6 +37,43 @@
 (channel-news
  (version 0)
 
+ (entry (commit "c83bfc0415ba928b746362915d67600cdbb5da62")
+        (title
+         (en "Guix System switches to the Shepherd's system log")
+         (de "Guix System wechselt zu Shepherds Systemprotokoll")
+         (fr "Guix System passe au journal système de Shepherd")
+        (body
+         (en "The default system log used on Guix System and part of
+@code{%base-services} has been switched from the @command{syslogd} command of
+GNU@tie{}Inetutils to the new built-in @code{system-log} service found in
+version 1.0 of the Shepherd.
+
+The advantages of this change are the fact that @code{system-log} can start
+logging earlier after boot and stop shortly before shutdown, along with full
+integration with the rest of @command{shepherd}, in particular with the new
+@code{log-rotation} service.")
+         (de "Das vorgegebene Systemprotokoll, das auf Guix System benutzt
+wird und Teil von @code{%base-services} ist, wurde ausgetauscht und anstelle
+des Befehls @command{syslogd} aus den GNU@tie{}Inetutils wird der neue, in
+Version 1.0 von Shepherd eingebaute @code{system-log}-Dienst benutzt.
+
+Die Vorteile dieser Änderung sind, dass @code{system-log} schon früher nach
+dem Start Protokolle aufnehmen kann, kurz vor dem Herunterfahren damit aufhört
+und außerdem mit dem Rest von @command{shepherd} voll integriert ist,
+insbesondere mit dem neuen Dienst @code{log-rotation} zur
+Protokollrotation.")
+         (fr "Le journal système par défaut sur Guix System, qui fait partie
+de @code{%base-services}, est passé de la commande @command{syslogd} de
+GNU@tie{}Inetutils au nouveau service @code{system-log} fourni par la version
+1.0 du Shepherd.
+
+Les avantages de ce changement sont le fait que @code{system-log} peut
+commencer à enregistrer les journaux plus tôt pendant la séquence de
+démarrage et s'arrêter plus tard au moment de l'arrêt, ainsi que son
+intégration complète avec le reste de @command{shepherd}, en particulier avec
+le nouveau service @code{log-rotation}."))))
+
+
  (entry (commit "0753a17ddf6f4fab98b93c25f1a93b97ff9e46bb")
         (title
          (en "The @command{guix deploy} command now supports the Hetzner Cloud
