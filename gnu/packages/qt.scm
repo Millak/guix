@@ -3576,14 +3576,16 @@ and binaries removed, and adds modular support for using system libraries.")
 (define-public qtwebengine
   (package
     (name "qtwebengine")
-    (version "6.7.2")
+    (version "6.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "1lgz0mj9lw4ii1c8nkbr0ll02xzx8i6n7wvvn21f72sdb5smhxf7"))
+         "00j8wlz6fbg4ivkc6w7dbc67835hv7w74sfrshdb75y12rzri5gz"))
+       (patches
+        (search-patches "qtwebengine-fix-system-libvpx.patch"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -3607,7 +3609,6 @@ and binaries removed, and adds modular support for using system libraries.")
                     "base/third_party/nspr"
                     "base/third_party/superfasthash"
                     "base/third_party/symbolize"
-                    "base/third_party/xdg_mime"
                     "base/third_party/xdg_user_dirs"
                     "net/third_party/mozilla_security_manager"
                     "net/third_party/nss"
@@ -3658,6 +3659,7 @@ additional_readme_paths.json"
                     "third_party/devtools-frontend/src/front_end/third_party/chromium"
                     "third_party/devtools-frontend/src/front_end/third_party/codemirror"
                     "third_party/devtools-frontend/src/front_end/third_party/codemirror.next"
+                    "third_party/devtools-frontend/src/front_end/third_party/csp_evaluator"
                     "third_party/devtools-frontend/src/front_end/third_party/diff"
                     "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat"
                     "third_party/devtools-frontend/src/front_end/third_party/lighthouse"
@@ -3733,6 +3735,7 @@ vscode.web-custom-data"
                     "third_party/libxml"
                     "third_party/libyuv"
                     "third_party/libzip" ;BSD-3
+                    "third_party/lit"
                     "third_party/lottie"
                     "third_party/lss"
                     "third_party/mako"
@@ -3838,8 +3841,6 @@ vscode.web-custom-data"
                     "v8/third_party/v8/builtins")))
 
              (with-directory-excursion "src/3rdparty"
-               (delete-file-recursively "ninja")
-
                (with-directory-excursion "chromium"
                  ;; Delete bundled software and binaries that were not
                  ;; explicitly preserved above.
@@ -3865,10 +3866,15 @@ linux/libcurl_wrapper.h"
                      "third_party/analytics/google-analytics-bundle.js"
                    (lambda (port)
                      (const #t)))))
-             ;; Do not enable support for loading the Widevine DRM plugin.
-             (substitute* "src/core/CMakeLists.txt"
-               (("enable_widevine=true")
-                "enable_widevine=false")))))))
+              (substitute* "src/core/CMakeLists.txt"
+                (("enable_widevine=true")
+                 (string-join
+                  '(;; Do not enable support for loading the Widevine DRM
+                    ;; plugin.
+                    "enable_widevine=false"
+                    ;; Link pulseaudio directly instead of using dlopen.
+                    "link_pulseaudio=true")
+                  "\n"))))))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3885,7 +3891,6 @@ linux/libcurl_wrapper.h"
               ;; disable it.
               "-DQT_FEATURE_webengine_printing_and_pdf=OFF"
               "-DQT_FEATURE_webengine_pepper_plugins=OFF" ;widevine
-              "-DQT_FEATURE_system_ffmpeg=ON"
 
               ;; The webenginedriver feature is disabled, otherwise the RUNPATH
               ;; validation phase fails.
@@ -3978,13 +3983,14 @@ linux/libcurl_wrapper.h"
      (modify-inputs (package-native-inputs qtwebengine-5)
        (delete "python2" "python2-six")
        (replace "node" node-lts)
-       (append clang-15
-               lld-as-ld-wrapper-15
+       (append clang-18
+               lld-as-ld-wrapper-18
                python-wrapper
                python-beautifulsoup4
                python-html5lib)))
     (inputs
      (modify-inputs (package-inputs qtwebengine-5)
+       (replace "ffmpeg" ffmpeg)
        (replace "icu4c" icu4c-75)
        (replace "re2" re2-next)
        (replace "qtmultimedia" qtmultimedia)
