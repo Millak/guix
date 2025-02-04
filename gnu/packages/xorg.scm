@@ -1206,6 +1206,17 @@ themselves.")
     (description "Xorg Generic PCI access library.")
     (license license:x11)))
 
+;;; A static libpciaccess is required by hurd and netdde.
+(define-public libpciaccess-static
+  (package/inherit libpciaccess
+    (name "libpciaccess-static")
+    (arguments
+     (substitute-keyword-arguments (package-arguments libpciaccess)
+       ((#:configure-flags flags)
+        #~(cons "-Ddefault_library=static" #$flags))))
+    (propagated-inputs
+     (list zlib (list zlib "static")))))
+
 (define-public libpthread-stubs
   (package
     (name "libpthread-stubs")
