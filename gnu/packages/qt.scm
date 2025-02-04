@@ -1647,14 +1647,14 @@ with JavaScript and C++.")))
 (define-public qtdeclarative
   (package
     (name "qtdeclarative")
-    (version "6.7.2")
+    (version "6.8.2")
     ;; TODO: Package 'masm' and unbundle from sources.
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "16drp7yjsm50cvsyww9xk15hzf2csax02vpbv0jx8hlcmyhwnaac"))
+                "0mkd6hqvg21dg63022iq1b6sskp2s5wfchsifc4mkdcbvim8fk8l"))
               (patches (search-patches "qtdeclarative-disable-qmlcache.patch"))))
     (outputs '("out" "debug"))
     (build-system cmake-build-system)
@@ -1770,7 +1770,10 @@ with JavaScript and C++.")))
                     "tst_dom_all"
                     "tst_qmlls"
                     "tst_qmllscompletions"
-
+                    ;; This test fails with comparing 'importPaths' between:
+                    ;;   /tmp/guix-build-.../lib/qt6/qml
+                    ;;   /gnu/store/......../lib/qt6/qml
+                    "test_generate_qmlls_ini"
                     ;; This test fails starting with 6.6.3 (see:
                     ;; https://bugreports.qt.io/browse/QTBUG-123748), for
                     ;; unknown reasons.
