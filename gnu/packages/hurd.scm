@@ -311,6 +311,17 @@ Hurd-minimal package which are needed for both glibc and GCC.")
 (define %add-to-hurd-subdirs
   (list "libmachdevdde" "libddekit"))
 
+;;; A static libpciaccess is required by hurd and netdde.
+(define libpciaccess-static
+  (package
+    (inherit libpciaccess)
+    (arguments
+     (substitute-keyword-arguments (package-arguments libpciaccess)
+       ((#:configure-flags flags)
+        #~(cons "-Ddefault_library=static" #$flags))))
+    (propagated-inputs
+     (list zlib (list zlib "static")))))
+
 (define-public hurd
   (package
     (name "hurd")
@@ -572,7 +583,7 @@ exec ${system}/rc \"$@\"
      `(("libgcrypt" ,libgcrypt)                  ;for /hurd/random
        ("libdaemon" ,libdaemon)                  ;for /bin/console --daemonize
        ("unifont" ,unifont)
-       ("libpciaccess" ,libpciaccess)
+       ("libpciaccess" ,libpciaccess-static)
 
        ;; For NFS support
        ("libtirpc" ,libtirpc/hurd)
@@ -700,7 +711,7 @@ implementing them.")
                  (install-file "netdde" hurd)
                  (install-file "netdde.static" hurd)))))))
       (inputs
-       (list hurd libpciaccess zlib `(,zlib "static")))
+       (list hurd libpciaccess-static zlib `(,zlib "static")))
       (native-inputs
        `(("coreutils" ,coreutils)
          ("gawk" ,gawk)
