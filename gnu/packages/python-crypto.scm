@@ -30,6 +30,7 @@
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +63,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages lsof)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages password-utils)
   #:use-module (gnu packages pkg-config)
@@ -1338,41 +1340,28 @@ Password-Authenticated Key Exchange algorithm.")
 (define-public python-txtorcon
   (package
     (name "python-txtorcon")
-    (version "23.0.0")
+    (version "24.8.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "txtorcon" version))
               (sha256
                (base32
-                "09a3k4g90pvs0q006ighka7xic39nnnk9bfrka23g4b8cynzy982"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'disable-failing-tests
-                          (lambda _
-                            ;; These tests fail
-                            (substitute* "test/test_router.py"
-                              (("\\W+def test_countrycode\\(self\\):" all)
-                               (string-append
-                                "    from unittest import skip as _skip\n"
-                                "    @_skip('Fails during Guix build')\n" all))
-                              (("\\W+def test_get_location_private\\(self\\):"
-                                all)
-                               (string-append
-                                "    @_skip('Fails during Guix build')\n" all)))
-                            ;; This test errors out
-                            (substitute* "test/test_util.py"
-                              (("\\W+def test_real_addr\\(self\\):" all)
-                               (string-append
-                                "    @_skip('Fails during Guix build')\n" all))))))))
-    (propagated-inputs (list python-automat
-                             python-idna
-                             python-incremental
-                             python-pyopenssl
-                             python-service-identity
-                             python-twisted
-                             python-zope-interface))
-    (native-inputs (list python-mock))
+                "1l4ajw4h7nay4vmllh6cs7zh3hnh8vj4yvgfnq3m734wil9ikzmy"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list lsof))
+    (propagated-inputs
+     (list python-automat
+           python-idna
+           python-incremental
+           python-pyopenssl
+           python-service-identity
+           python-twisted
+           python-zope-interface))
     (home-page "https://github.com/meejah/txtorcon")
     (synopsis "Twisted-based Tor controller client")
     (description "This package provides a Twisted-based Tor controller client,
