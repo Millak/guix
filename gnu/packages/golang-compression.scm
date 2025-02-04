@@ -29,9 +29,11 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
-  #:use-module (gnu packages golang-xyz))
+  #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages pkg-config))
 
 ;;; Commentary:
 ;;;
@@ -64,6 +66,38 @@ It was translated from the reference implementation
 the @code{c2go} tool at
 @url{https://github.com/andybalholm/c2go,https://github.com/andybalholm/c2go}.")
     (license license:expat)))
+
+(define-public go-github-com-datadog-zstd
+  (package
+    (name "go-github-com-datadog-zstd")
+    (version "1.5.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DataDog/zstd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hri68jd5yh9kxy4bj2b4rfi7jz74zl20d4hk7rwcwykpgk90qid"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; These flags need to be applied in the final application as well to
+      ;; build with system's libzstd,
+      #:build-flags #~(list "-tags" "external_libzstd")
+      #:test-flags #~(list "-tags" "external_libzstd")
+      #:import-path "github.com/DataDog/zstd"))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list (list zstd "lib")))
+    (home-page "https://github.com/DataDog/zstd")
+    (synopsis "Zstd Golang wrapper")
+    (description
+     "This package provides a Go wrapper to
+@url{https://github.com/facebook/zstd, zstd} C library.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-dsnet-compress
   (package
