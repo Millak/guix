@@ -41,6 +41,7 @@
 ;;; Copyright © 2023, 2024 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 宋文武 <iyzsong@envs.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5045,7 +5046,10 @@ protocol.")
     (build-system gnu-build-system)
     (outputs '("out" "doc"))                      ;5.5 MiB of man pages
     (propagated-inputs
-      (list libxau libxdmcp))
+      (append (list libxau libxdmcp)
+              (if (target-hurd?)
+                  (list libpthread-stubs)         ;still checked on Hurd
+                  '())))
     (inputs
       (list xcb-proto
             check))                               ;for tests
@@ -5056,7 +5060,15 @@ protocol.")
                                "--disable-static"
                                (string-append "--mandir="
                                               (assoc-ref %outputs "doc")
-                                              "/share/man"))))
+                                              "/share/man"))
+       #:phases ,(if (target-hurd?)
+                     '(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-PATH_MAX
+                          (lambda _
+                            ;; Hurd doesn't define PATH_MAX.
+                            (substitute* "src/xcb_util.c"
+                              (("PATH_MAX") "4096")))))
+                     '%standard-phases)))
     (home-page "https://xcb.freedesktop.org/")
     (synopsis "The X C Binding (XCB) library")
     (description
