@@ -921,6 +921,8 @@ if HAVE_GUILE_SSH
 
 GNU_SYSTEM_MODULES +=         			\
   %D%/machine/digital-ocean.scm			\
+  %D%/machine/hetzner.scm			\
+  %D%/machine/hetzner/http.scm			\
   %D%/machine/ssh.scm
 
 endif HAVE_GUILE_SSH

@@ -44877,6 +44877,135 @@ Whether or not the droplet should be created with IPv6 networking.
 @end table
 @end deftp
 
+@deftp {Data Type} hetzner-configuration
+This is the data type describing the server that should be created for a
+machine with an @code{environment} of
+@code{hetzner-environment-type}. It allows you to configure deployment
+to a @acronym{VPS, virtual private server} hosted by
+@uref{https://www.hetzner.com, Hetzner}.
+
+@table @asis
+
+@item @code{allow-downgrades?} (default: @code{#f})
+Whether to allow potential downgrades.
+
+@item @code{authorize?} (default: @code{#t})
+If true, the public signing key @code{"/etc/guix/signing-key.pub"} of
+the machine that invokes @command{guix deploy} will be added to the
+operating system ACL keyring of the target machine.
+
+@item @code{build-locally?} (default: @code{#t})
+If true, system derivations will be built on the machine that invokes
+@command{guix deploy}, otherwise derivations are build on the target
+machine.  Set this to @code{#f} if the machine you are deploying from
+has a different architecture than the target machine and you can't build
+derivations for the target architecture by other means, like offloading
+(@pxref{Daemon Offload Setup}) or emulation
+(@pxref{transparent-emulation-qemu, Transparent Emulation with QEMU}).
+
+@item @code{delete?} (default: @code{#t})
+If true, the server will be deleted when an error happens in the
+provisioning phase. If false, the server will be kept in order to debug
+any issues.
+
+@item @code{labels} (default: @code{'()})
+A user defined alist of key/value pairs attached to the SSH key and the
+server on the Hetzner API.  Keys and values must be strings,
+e.g. @code{'(("environment" . "development"))}.  For more information,
+see @uref{https://docs.hetzner.cloud/#labels, Labels}.
+
+@item @code{location} (default: @code{"fsn1"})
+The name of a @uref{https://docs.hetzner.com/cloud/general/locations,
+location} to create the server in.  For example, @code{"fsn1"}
+corresponds to the Hetzner site in Falkenstein, Germany, while
+@code{"sin"} corresponds to its site in Singapore.
+
+@item @code{server-type} (default: @code{"cx42"})
+The name of the
+@uref{https://docs.hetzner.com/cloud/servers/overview#server-types,
+server type} this virtual server should be created with.  For example,
+@code{"cx42"} corresponds to a x86_64 server that has 8 VCPUs, 16 GB of
+memory and 160 GB of storage, while @code{"cax31"} to the AArch64
+equivalent.  Other server types and their current prices can be found
+@uref{https://www.hetzner.com/cloud/#pricing, here}.
+
+@item @code{ssh-key}
+The file name of the SSH private key to use to authenticate with the
+remote host.
+
+@end table
+
+When deploying a machine for the first time, the following steps are
+taken to provision a server for the machine on the
+@uref{https://www.hetzner.com/cloud, Hetzner Cloud} service:
+
+@itemize
+
+@item
+Create the SSH key of the machine on the Hetzner API.
+
+@item
+Create a server for the machine on the Hetzner API.
+
+@item
+Format the root partition of the disk using the file system of the
+machine's operating system.  Supported file systems are btrfs and ext4.
+
+@item
+Install a minimal Guix operating system on the server using the
+@uref{https://docs.hetzner.com/cloud/servers/getting-started/rescue-system,
+rescue mode}.  This minimal system is used to install the machine's
+operating system, after rebooting.
+
+@item
+Reboot the server and apply the machine's operating system on the
+server.
+
+@end itemize
+
+Once the server has been provisioned and SSH is available, deployment
+continues by delegating it to the @code{managed-host-environment-type}.
+
+Servers on the Hetzner Cloud service can be provisioned on the AArch64
+architecture using UEFI boot mode, or on the x86_64 architecture using
+BIOS boot mode.  The @code{(gnu machine hetzner)} module exports the
+@code{%hetzner-os-arm} and @code{%hetzner-os-x86} operating systems that
+are compatible with those two architectures, and can be used as a base
+for defining your custom operating system.
+
+The following example shows the definition of two machines that are
+deployed on the Hetzner Cloud service.  The first one uses the
+@code{%hetzner-os-arm} operating system to run a server with 16 shared
+vCPUs and 32 GB of RAM on the @code{aarch64} architecture, the second
+one uses the @code{%hetzner-os-x86} operating system on a server with 16
+shared vCPUs and 32 GB of RAM on the @code{x86_64} architecture.
+
+@lisp
+(use-modules (gnu machine)
+             (gnu machine hetzner))
+
+(list (machine
+       (operating-system %hetzner-os-arm)
+       (environment hetzner-environment-type)
+       (configuration (hetzner-configuration
+                       (server-type "cax41")
+                       (ssh-key "/home/charlie/.ssh/id_rsa"))))
+      (machine
+       (operating-system %hetzner-os-x86)
+       (environment hetzner-environment-type)
+       (configuration (hetzner-configuration
+                       (server-type "cpx51")
+                       (ssh-key "/home/charlie/.ssh/id_rsa")))))
+@end lisp
+
+@vindex GUIX_HETZNER_API_TOKEN
+Passing this file to @command{guix deploy} with the environment variable
+@env{GUIX_HETZNER_API_TOKEN} set to a valid Hetzner
+@uref{https://docs.hetzner.com/cloud/api/getting-started/generating-api-token,
+API key} should provision two machines for you.
+
+@end deftp
+
 @node Running Guix in a VM
 @section Running Guix in a Virtual Machine
 

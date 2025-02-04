@@ -81,6 +81,8 @@ gnu/installer/steps.scm
 gnu/installer/timezone.scm
 gnu/installer/user.scm
 gnu/installer/utils.scm
+gnu/machine/hetzner.scm
+gnu/machine/hetzner/http.scm
 gnu/machine/ssh.scm
 gnu/packages/bootstrap.scm
 guix/build/utils.scm

@@ -567,6 +567,8 @@ SCM_TESTS =					\
   tests/import-utils.scm			\
   tests/inferior.scm				\
   tests/lint.scm				\
+  tests/machine/hetzner.scm                     \
+  tests/machine/hetzner/http.scm                 \
   tests/minetest.scm				\
   tests/modules.scm				\
   tests/monads.scm				\
