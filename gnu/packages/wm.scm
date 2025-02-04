@@ -1377,7 +1377,7 @@ the XDG Autostart specification.")
 (define-public fnott
   (package
     (name "fnott")
-    (version "1.7.0")
+    (version "1.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1386,7 +1386,7 @@ the XDG Autostart specification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x3wfqkkz6lf9w00nl5mchcw04gx884jxxz6f7z3fxpsjx582nr9"))))
+                "1061p4vxm0nb5pk5q5dw3kpj4q6kzw70skd3zijfjwdb6fkayh8b"))))
     (build-system meson-build-system)
     (arguments `(#:build-type "release"
                  #:phases
@@ -1401,7 +1401,7 @@ the XDG Autostart specification.")
            tllist
            scdoc))
     (inputs
-     (list wlroots-0.16 wayland fcft dbus libpng))
+     (list wlroots wayland fcft dbus libpng))
     (home-page "https://codeberg.org/dnkl/fnott")
     (synopsis "Keyboard driven and lightweight Wayland notification daemon")
     (description "Fnott is a keyboard driven and lightweight notification daemon
