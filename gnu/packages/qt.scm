@@ -2044,21 +2044,13 @@ Vulkan, OpenGL and other main graphic APIs.")
 (define-public qtmultimedia
   (package
     (name "qtmultimedia")
-    (version "6.7.2")
+    (version "6.8.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1lsiarvag8lr4a1apa466xz56b1znjncy8wz5hyiv6nbb88kby4f"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (delete-file-recursively
-                   "examples/multimedia/spectrum/3rdparty")
-                  ;; We also prevent the spectrum example from being built.
-                  (substitute* "examples/multimedia/multimedia.pro"
-                    (("spectrum") "#"))))))
+                "0s8mxd7pwm9v8x5qa3h6124w91k0zjbbah6h9b68n5bvq3yn3x9l"))))
     (build-system cmake-build-system)
     (arguments
      (list
