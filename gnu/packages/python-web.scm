@@ -62,7 +62,7 @@
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
@@ -6844,22 +6844,28 @@ correct URLs for Python according to RFCs 3986 and 3987.")
 (define-public python-treq
   (package
     (name "python-treq")
-    (version "18.6.0")
+    (version "24.9.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "treq" version))
         (sha256
          (base32
-          "0j4zwq9p1c9piv1vc66nxcv9s6hdinf90jwkbsm91k14npv9zq4i"))))
-    (build-system python-build-system)
+          "1a7yrq2m7hf77fia4fc0c6zanvwnykpgirdbs1cyvr7k0k27znhm"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-httpbin
+           python-pytest
+           python-service-identity
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-attrs
-           python-idna
+           python-hyperlink
            python-incremental
            python-requests
-           python-service-identity
-           python-twisted))
+           python-twisted
+           python-typing-extensions))
     (home-page "https://github.com/twisted/treq")
     (synopsis "Requests-like API built on top of twisted.web's Agent")
     (description "This package provides an HTTP library inspired by
