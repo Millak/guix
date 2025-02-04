@@ -1572,6 +1572,44 @@ collections.  It was based on
 @url{https://github.com/chriso/validator.js,validator.js}.")
     (license license:expat)))
 
+(define-public go-github-com-asdine-storm-v3
+  (package
+    (name "go-github-com-asdine-storm-v3")
+    (version "3.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/asdine/storm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07913m4nxy7cbc9q6ldqvxx60rh32b4djyvcp9bxwbb3c4al3fh4"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; It requires v4 but import it as v1.
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/vmihailenco/msgpack")
+               "github.com/vmihailenco/msgpack/v4"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/asdine/storm/v3"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf
+           go-github-com-sereal-sereal-go-sereal
+           go-github-com-vmihailenco-msgpack-v4
+           go-go-etcd-io-bbolt))
+    (home-page "https://github.com/asdine/storm")
+    (synopsis "BoltDB toolkit for Golang")
+    (description
+     "Storm is a toolkit for @url{https://github.com/coreos/bbolt, BoltDB},
+providing various methods to work with it.")
+    (license license:expat)))
+
 (define-public go-github-com-atotto-clipboard
   (package
     (name "go-github-com-atotto-clipboard")
