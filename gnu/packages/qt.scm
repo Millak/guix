@@ -1828,13 +1828,13 @@ with Bluetooth and NFC.")))
 (define-public qtconnectivity
   (package
     (name "qtconnectivity")
-    (version "6.7.2")
+    (version "6.8.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1s08djgzhh5p9ij0hxbrrcx9n7r7f0ba6pr9793mdsgh8ar23lwf"))))
+                "0al1a86q0cd1xrs1f7wsk3cjq74yvrvw3wk4c3ynkhsa107145z6"))))
     (build-system cmake-build-system)
     (native-inputs
      (list perl pkg-config qtdeclarative))
