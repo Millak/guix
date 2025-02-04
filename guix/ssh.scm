@@ -103,7 +103,8 @@ actual key does not match."
                            host-key
                            (compression %compression)
                            (timeout 3600)
-                           (connection-timeout 10))
+                           (connection-timeout 10)
+                           (strict-host-key-check? #t))
   "Open an SSH session for HOST and return it.  IDENTITY specifies the file
 name of a private key to use for authenticating with the host.  When USER,
 PORT, or IDENTITY are #f, use default values or whatever '~/.ssh/config'
@@ -116,6 +117,9 @@ host key is different from HOST-KEY.
 Error out if connection establishment takes more than CONNECTION-TIMEOUT
 seconds.  Install TIMEOUT as the maximum time in seconds after which a read or
 write operation on a channel of the returned session is considered as failing.
+
+If STRICT-HOST-KEY-CHECK? is #f, strict host key checking is turned off for
+the new session.
 
 Throw an error on failure."
   (let ((session (make-session #:user user
@@ -137,7 +141,8 @@ Throw an error on failure."
 
                                ;; Speed up RPCs by creating sockets with
                                ;; TCP_NODELAY.
-                               #:nodelay #t)))
+                               #:nodelay #t
+                               #:stricthostkeycheck strict-host-key-check?)))
 
     ;; Honor ~/.ssh/config.
     (session-parse-config! session)
@@ -149,13 +154,14 @@ Throw an error on failure."
            (authenticate-server* session host-key)
 
            ;; Authenticate against ~/.ssh/known_hosts.
-           (match (authenticate-server session)
-             ('ok #f)
-             (reason
-              (raise (formatted-message (G_ "failed to authenticate \
+           (when strict-host-key-check?
+             (match (authenticate-server session)
+               ('ok #f)
+               (reason
+                (raise (formatted-message (G_ "failed to authenticate \
 server at '~a': ~a")
-                                        (session-get session 'host)
-                                        reason)))))
+                                          (session-get session 'host)
+                                          reason))))))
 
        ;; Use public key authentication, via the SSH agent if it's available.
        (match (userauth-public-key/auto! session)
