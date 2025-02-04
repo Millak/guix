@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2023 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2015, 2025 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015-2019, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -763,13 +763,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
   (package
     (inherit qtbase-5)
     (name "qtbase")
-    (version "6.7.2")
+    (version "6.8.2")
     (source (origin
               (inherit (package-source qtbase-5))
               (uri (qt-url name version))
               (sha256
                (base32
-                "16bmfrjfxjajs6sqg1383ihhfwwf69ihkpnpvsajh5pv21g2mwn5"))
+                "01gy1p8zvxq8771x6iqkrc7s3kzdddgf1i7xj656w7j1dp746801"))
               (modules '((guix build utils)))
               (snippet
                ;; corelib uses bundled harfbuzz, md4, md5, sha3
@@ -783,14 +783,14 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                "qtbase-absolute-runpath.patch"
                                "qtbase-qmake-use-libname.patch"
                                "qtbase-qmlimportscanner-qml-import-path.patch"
-                               "qtbase-find-tools-in-PATH.patch"
                                "qtbase-qmake-fix-includedir.patch"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments qtbase-5)
        ((#:configure-flags _ ''())
         `(let ((out (assoc-ref %outputs "out")))
-           (list "-DQT_BUILD_TESTS=ON"
+           (list "-GNinja"              ;officially supported
+                 "-DQT_BUILD_TESTS=ON"
                  (string-append "-DINSTALL_ARCHDATADIR=" out "/lib/qt6")
                  (string-append "-DINSTALL_DATADIR=" out "/share/qt6")
                  (string-append "-DINSTALL_DOCDIR=" out "/share/doc/qt6")
@@ -823,6 +823,16 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                  "-DBUILD_WITH_PCH=OFF")))
        ((#:phases phases)
         #~(modify-phases #$phases
+            (replace 'build
+              (lambda* (#:key parallel-build? #:allow-other-keys)
+                (apply invoke "cmake" "--build" "."
+                       (if parallel-build?
+                           `("--parallel" ,(number->string
+                                            (parallel-job-count)))
+                           '()))))
+            (replace 'install
+              (lambda _
+                (invoke "cmake" "--install" ".")))
             (add-after 'unpack 'honor-CMAKE_PREFIX_PATH
               (lambda _
                 ;; The configuration files for other Qt packages are searched
@@ -842,8 +852,12 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 ;; 'qmlimportscanner' from qtdeclarative work out of the
                 ;; box.
                 (substitute* "cmake/QtConfig.cmake.in"
-                  (("(set\\(QT_ADDITIONAL_PACKAGES_PREFIX_PATH )\"\"" _ head)
-                   (string-append head "\"$ENV{CMAKE_PREFIX_PATH}\"")))))
+                  (("set\\(QT_ADDITIONAL_HOST_PACKAGES_PREFIX_PATH" below)
+                   (string-append "
+if(QT_ADDITIONAL_PACKAGES_PREFIX_PATH STREQUAL \"\")
+  cmake_path(CONVERT $ENV{CMAKE_PREFIX_PATH} TO_CMAKE_PATH_LIST
+    QT_ADDITIONAL_PACKAGES_PREFIX_PATH)
+endif()\n" below)))))
             (delete 'patch-bin-sh)
             (delete 'patch-xdg-open)
             ;; Some tests fail to build on i686-linux
@@ -882,7 +896,8 @@ tst_qt_cmake_create.cpp"
             (delete 'do-not-capture-python) ;move after patch-source-shebangs
             (add-after 'patch-source-shebangs 'do-not-capture-python
               (lambda _
-                (substitute* '("mkspecs/features/uikit/devices.py"
+                (substitute* '("libexec/qt-android-runner.py"
+                               "mkspecs/features/uikit/devices.py"
                                "util/testrunner/qt-testrunner.py"
                                "util/testrunner/sanitizer-testrunner.py")
                   (((which "python3"))
@@ -1061,6 +1076,14 @@ tst_qt_cmake_create.cpp"
                        ;; "/home", "/etc" or "/root" and fail.
                        "tst_qcompleter"
                        "tst_qfiledialog"
+                       ;; The following tests fail with: "Generation of UI
+                       ;; files were triggered in the second build", but could
+                       ;; pass in `guix shell --container`.
+                       "test_qt_add_ui_1"
+                       "test_qt_add_ui_2"
+                       "test_qt_add_ui_6"
+                       "test_qt_add_ui_8"
+                       "test_qt_add_ui_9"
                        ;; This test is susceptible to the 600 ms timeout used:
                        "tst_qpauseanimation")
                       #$@(cond
@@ -1149,11 +1172,17 @@ tst_qt_cmake_create.cpp"
                  (string-append #$output "/tests"))))))))
     (native-inputs
      (modify-inputs (package-native-inputs qtbase-5)
-       (prepend tzdata-for-tests
+       (prepend ninja                   ;CMake Generator, also used for tests
+                tzdata-for-tests
                 wayland-protocols
                 xvfb-run)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs qtbase-5)
+       ;; Required by Qt6GuiDependencies.cmake.
+       (prepend libxkbcommon vulkan-headers)))
     (inputs
      (modify-inputs (package-inputs qtbase-5)
+       (delete "libxkbcommon")          ;qtbase-5 use libxkbcommon-1.5
        (prepend at-spi2-core
                 bash-minimal
                 coreutils-minimal
