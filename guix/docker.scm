@@ -276,7 +276,7 @@ added to image as a layer."
        (let* ((head-layers
                (map
                 (lambda (file)
-                  (tar "cf" "layer.tar" file)
+                  (tar "-cf" "layer.tar" file)
                   (seal-layer))
                 head))
               (tail-layer
