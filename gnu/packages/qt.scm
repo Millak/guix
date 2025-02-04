@@ -2167,20 +2167,24 @@ compositor libraries.")))
 (define-public qtwayland
   (package
     (name "qtwayland")
-    (version "6.7.2")
+    (version "6.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
-       (patches (search-patches
-                 "qtwayland-6-update-wayland-xml.patch"))
        (sha256
-        (base32 "0nwa59g1wk7fkym837pkw312abjb376gx44rpd5d8jv4vphmg852"))))
+        (base32 "0iwnvjas5vqzi48finff72iqnl5hal48qba64kwjnpr911wiaijy"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'update-wayland.xml
+                 ;; Upstream commit: c2f61bc47baacf2e6a44c6c3c4e4cbf0abfa4095
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (copy-file (search-input-file
+                               inputs "/share/wayland/wayland.xml")
+                              "src/3rdparty/protocol/wayland/wayland.xml")))
                (add-after 'unpack 'disable-failing-tests
                  (lambda _
                    ;; FIXME: tst_seatv4::animatedCursor() fails here.
