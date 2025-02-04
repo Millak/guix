@@ -5339,7 +5339,8 @@ color-related widgets.")
                 "0q3ky0fai3wr8kr1q82vdg5byhbn5sfdymmb554afpi72zyxcgkd"))))
     (build-system cmake-build-system)
     (inputs
-     (list clang-toolchain
+     ;; pyside-2 fails with clang>=16, pyside-6 needs llvm>=14.
+     (list clang-toolchain-15
            libxml2
            libxslt
            python-wrapper
@@ -5399,7 +5400,7 @@ color-related widgets.")
   (package
     (inherit python-shiboken-2)
     (name "python-shiboken-6")
-    (version "6.7.2")
+    (version "6.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://qt/QtForPython/pyside6/PySide6-"
@@ -5407,7 +5408,7 @@ color-related widgets.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1iv8wfc5sfx5xr4b3bhbaqagx8qidx5wl1kzvifsmjbqdq6hsars"))))
+                "1y0jq5wl2ffzgwz3k8x1w3img7m0ryqfjlr837iijh9z82mfj8l4"))))
     (build-system cmake-build-system)
     (inputs
      (modify-inputs (package-inputs python-shiboken-2)
