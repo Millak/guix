@@ -2818,13 +2818,13 @@ also contains functionality to support data models and executable content.")
 (define-public qtpositioning
   (package
     (name "qtpositioning")
-    (version "6.7.2")
+    (version "6.8.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "073v10z1axmqydrvdka9g69wr117kzhvci9sjr110swgmbq0j002"))))
+                "1rdqbp4yxzyd3c77bf4y9klvbvv1pimg4zqmw6kncr4k9r7ncc6z"))))
     (build-system cmake-build-system)
     (arguments
      (list
