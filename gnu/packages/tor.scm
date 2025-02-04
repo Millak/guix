@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
 ;;; Copyright © 2025 Danial Behzadi <dani.behzi@ubuntu.com>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -449,17 +450,26 @@ Potential client and exit connections are scrubbed of sensitive information.")
          "0is50z3v0mw9am31zizblq5ai30vz83qp6qsdingbn7f7cqzldmh"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools python-wheel
+     (list python-pytest
+           python-setuptools
+           python-wheel
            (list glib "bin")))       ; for glib-compile-schemas.
     (inputs
      (list python-fire
            python-pygobject
+           python-pysocks
            python-requests
            python-stem
            python-termcolor))
     (arguments
      (list
-      #:tests? #f                   ; no test suite.
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list "not test_local"
+                          "test_network"
+                          "test_obfs"
+                          "test_stop_do")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-man-page
@@ -469,7 +479,7 @@ Potential client and exit connections are scrubbed of sensitive information.")
           (add-after 'install 'install-bash-completion
             (lambda _
               (let ((bash-completion
-                      (string-append #$output "/share/bash-completion/completions")))
+                     (string-append #$output "/share/bash-completion/completions")))
                 (install-file "data/completion/bash/tractor" bash-completion))))
           (add-after 'install 'install-gschema
             (lambda _
