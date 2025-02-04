@@ -16789,7 +16789,7 @@ that uses the standard completion function completing-read.")
 (define-public emacs-yaml
   (package
     (name "emacs-yaml")
-    (version "0.5.5")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -16798,7 +16798,7 @@ that uses the standard completion function completing-read.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qq9jr1ihk1b5wfvppyvb8c2pq2gma9wysggd22iln4nqz2mjc81"))))
+        (base32 "1wbsmfnrbbsdsp5xnn3rmk7cws7ri9kn309ii4dnihjbr8s865jh"))))
     (build-system emacs-build-system)
     (arguments
      (list
