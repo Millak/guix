@@ -2198,7 +2198,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/qemu-fix-agent-paths.patch 		\
   %D%/packages/patches/qrcodegen-cpp-cmake.patch		\
   %D%/packages/patches/qtbase-absolute-runpath.patch		\
-  %D%/packages/patches/qtbase-find-tools-in-PATH.patch		\
   %D%/packages/patches/qtbase-qmake-fix-includedir.patch 	\
   %D%/packages/patches/qtbase-qmlimportscanner-qml-import-path.patch 	\
   %D%/packages/patches/qtbase-moc-ignore-gcc-macro.patch	\
