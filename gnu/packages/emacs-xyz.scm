@@ -5362,7 +5362,7 @@ of bibliographic references.")
 (define-public emacs-corfu
   (package
     (name "emacs-corfu")
-    (version "1.6")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
@@ -5371,7 +5371,7 @@ of bibliographic references.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11n8qdjpavvy0s1zhxzxxvcv5i07gsjs02ad7fj51p7j8y4hjvym"))))
+        (base32 "0yyc64bfqpsjs5iwgwxm171sg85al4mzj4pv3qd4cpmkgmamrrv3"))))
     (build-system emacs-build-system)
     (arguments
      (list
