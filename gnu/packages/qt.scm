@@ -2985,15 +2985,21 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")))
 (define-public qtnetworkauth
   (package
     (name "qtnetworkauth")
-    (version "6.7.2")
+    (version "6.8.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0w7l5lhhxhg9x1rd66727gwkpzi6l7wmyc0c4qrfp2g5rx7q42bz"))))
+                "1mxlam2fzh8arfq7iypsvlk4h2pbj41f5a7ibakap1zc4ysv95fl"))))
     (build-system cmake-build-system)
-    (arguments (list #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")))
+    (arguments
+     (list #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda _
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs (list perl))
     (inputs (list qtbase))
     (home-page (package-home-page qtbase))
