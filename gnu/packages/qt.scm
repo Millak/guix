@@ -3011,13 +3011,13 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")
 (define-public qtremoteobjects
   (package
     (name "qtremoteobjects")
-    (version "6.7.2")
+    (version "6.8.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "10vlkg5v5hc8fwiw9x06d84z6cs4i5kxm652si3lwvvxma0np40b"))))
+                "0adnbqdppawy4k8j5d87h59v9mdfhdrj4yfbhy0vy2qvw7nx6anh"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3029,7 +3029,12 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")
               (setenv "QT_QPA_PLATFORM" "offscreen")))
           (delete 'check)               ;move after the install phase
           (add-after 'install 'check
-            (assoc-ref %standard-phases 'check))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest" "-E"
+                        ;; This test fails with "invalid index", but could
+                        ;; pass in `guix shell --container'.
+                        "tst_modelview"))))
           (add-before 'check 'prepare-for-tests
             (lambda _
               (setenv "QML_IMPORT_PATH"
