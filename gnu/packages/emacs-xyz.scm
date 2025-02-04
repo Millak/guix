@@ -6954,6 +6954,39 @@ them whenever another command is invoked.")
 a command.")
     (license license:gpl3+)))
 
+(define-public emacs-khardel
+  (package
+    (name "emacs-khardel")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DamienCassou/khardel")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gqijnmj24phryi6n74iq410k0637j0li1ncdymxhk3bdmp4mb40"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (emacs-substitute-variables "khardel.el"
+                     ("khardel-command"
+                      (search-input-file inputs "/bin/khard"))))))))
+    (inputs
+     (list khard))
+    (propagated-inputs
+     (list emacs-yaml-mode))
+    (home-page "https://github.com/DamienCassou/khardel")
+    (synopsis "Emacs interface to Khard")
+    (description
+     "Khardel provide an Emacs integration with Khard, a console application
+to search and edit contacts in vCard format.")
+    (license license:gpl3+)))
+
 (define-public emacs-ligature
   (let ((commit "3d1460470736777fd8329e4bb4ac359bf4f1460a")
         (revision "1"))
