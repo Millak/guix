@@ -14899,8 +14899,58 @@ queue.")
     (description "Choose types at compile-time via boolean constants.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-config-0.14
+  (package
+    (name "rust-config")
+    (version "0.14.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pyzr665pq6xcq3f6j1670v5xxk465n2bbkzn9hzycradlcqymv8"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--" "--skip=value::tests::test_i64")
+           #:cargo-inputs
+           (list rust-async-trait-0.1
+                 rust-convert-case-0.6
+                 rust-indexmap-2
+                 rust-json5-0.4
+                 rust-nom-7
+                 rust-pathdiff-0.2
+                 rust-ron-0.8
+                 rust-rust-ini-0.20
+                 rust-serde-1
+                 rust-serde-json-1
+                 rust-toml-0.8
+                 rust-yaml-rust2-0.8)
+           #:cargo-development-inputs
+           (list rust-chrono-0.4
+                 rust-float-cmp-0.9
+                 rust-futures-0.3
+                 rust-glob-0.3
+                 rust-log-0.4
+                 rust-notify-6
+                 rust-reqwest-0.11
+                 rust-serde-derive-1
+                 rust-temp-env-0.3
+                 rust-tokio-1
+                 rust-warp-0.3)))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/mehcode/config-rs")
+    (synopsis "Layered configuration system for Rust applications")
+    (description
+     "This package provides a layered configuration system for Rust
+applications.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-config-0.13
   (package
+    (inherit rust-config-0.14)
     (name "rust-config")
     (version "0.13.4")
     (source
@@ -14915,7 +14965,6 @@ queue.")
         '(begin (substitute* "Cargo.toml"
                   (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
                    (string-append "\"^" version)))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
                        ("rust-indexmap" ,rust-indexmap-1)
@@ -14938,15 +14987,7 @@ queue.")
                                    ("rust-serde-derive" ,rust-serde-derive-1)
                                    ("rust-temp-env" ,rust-temp-env-0.2)
                                    ("rust-tokio" ,rust-tokio-1)
-                                   ("rust-warp" ,rust-warp-0.3))))
-    (native-inputs (list pkg-config))
-    (inputs (list openssl))
-    (home-page "https://github.com/mehcode/config-rs")
-    (synopsis "Layered configuration system for Rust applications")
-    (description
-     "This package provides a layered configuration system for Rust
-applications.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-warp" ,rust-warp-0.3))))))
 
 (define-public rust-config-0.11
   (package
