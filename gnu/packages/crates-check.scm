@@ -534,6 +534,24 @@ criterion.")
 select the mock struct at compile time.  Used with the Mockall crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-nextest-workspace-hack-0.1
+  (package
+    (name "rust-nextest-workspace-hack")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nextest-workspace-hack" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cxjiwja0idhd8as3drl2wgk5y7f84k2rrk67pbxk7kkk1m881nr"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/nextest-rs/nextest")
+    (synopsis "workspace-hack package")
+    (description
+     "This package provides a workspace-hack package, managed by hakari.")
+    (license license:cc0)))
+
 (define-public rust-quickcheck-1
   (package
     (name "rust-quickcheck")
