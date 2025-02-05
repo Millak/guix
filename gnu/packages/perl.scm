@@ -33,7 +33,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 Evgeny Pisemsky <mail@pisemsky.site>
-;;; Copyright © 2022, 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2022, 2023, 2024, 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
@@ -12766,6 +12766,25 @@ attribute names.")
 dynamic linking mechanisms available on many platforms.  Its primary purpose is
 to implement cheap automatic dynamic loading of Perl modules.")
     (license (package-license perl))))
+
+(define-public perl-xstring
+  (package
+    (name "perl-xstring")
+    (version "0.005")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/A/AT/ATOOMIC/XString-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "117q718hlw6gi9zy16ssm0pf0lll4l20hg77395bmrmf35fgaizj"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/XString")
+    (synopsis "Isolated string helpers from @samp{B}")
+    (description
+     "XString provides the @samp{B} string helpers in one isolated
+package.  Right now only @code{cstring} and @code{perlstring} are available.")
+    (license license:perl-license)))
 
 (define-public perl-xs-object-magic
   (package
