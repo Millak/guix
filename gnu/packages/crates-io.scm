@@ -44559,6 +44559,33 @@ async Rust environment e.g. any async server.")
     (description "This package provides a multimap implementation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-mukti-metadata-0.3
+  (package
+    (name "rust-mukti-metadata")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mukti-metadata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1s71fs2v0phf4hhgac4j6cc38hpq968l1cfbyw7phf8fipg6dyi6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:phases
+       ;; tests require artifacts from git workspace to build
+       (modify-phases %standard-phases
+         (delete 'check))
+       #:cargo-inputs (("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/nextest-rs/mukti")
+    (synopsis "Metadata for mukti release manager")
+    (description
+     "This package provides metadata for mukti release manager.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-multimap-0.8
   (package
     (name "rust-multimap")
