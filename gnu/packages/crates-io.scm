@@ -25332,6 +25332,34 @@ supported in purely NFA-based implementations.")
                                    ("rust-matches" ,rust-matches-0.1)
                                    ("rust-quickcheck" ,rust-quickcheck-1))))))
 
+(define-public rust-fancy-regex-0.10
+  (package
+    (inherit rust-fancy-regex-0.14)
+    (name "rust-fancy-regex")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fancy-regex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rn7wfihsk877h3kwzzm99ykflfkhg039l4synm9algs8qnsny06"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (arguments
+     (list #:cargo-inputs
+           (list rust-bit-set-0.5
+                 rust-regex-1)
+           #:cargo-development-inputs
+           (list rust-bitflags-1
+                 rust-criterion-0.3
+                 rust-half-1
+                 rust-matches-0.1
+                 rust-quickcheck-1)))))
+
 (define-public rust-fancy-regex-0.7
   (package
     (inherit rust-fancy-regex-0.11)
