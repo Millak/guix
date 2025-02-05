@@ -1129,6 +1129,52 @@ While it does not seek to mirror all of find's powerful functionality, it provid
 defaults for 80% of the use cases.")
      (license (list license:expat license:asl2.0))))
 
+(define-public forgejo-cli
+  (package
+    (name "forgejo-cli")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "forgejo-cli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a3f10317fv0qmwnv53vzs5dilax0xqhix3idrgjz4rcvjs42d25"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:cargo-inputs
+           (list rust-auth-git2-0.5
+                 rust-base64ct-1
+                 rust-cfg-if-1
+                 rust-clap-4
+                 rust-comrak-0.26
+                 rust-crossterm-0.27
+                 rust-directories-5
+                 rust-eyre-0.6
+                 rust-forgejo-api-0.5
+                 rust-futures-0.3
+                 rust-git2-0.19
+                 rust-hyper-1
+                 rust-hyper-util-0.1
+                 rust-open-5
+                 rust-rand-0.8
+                 rust-semver-1
+                 rust-serde-1
+                 rust-serde-json-1
+                 rust-sha256-1
+                 rust-soft-assert-0.1
+                 rust-time-0.3
+                 rust-tokio-1
+                 rust-url-2
+                 rust-uuid-1)))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.8 libssh2 openssl zlib))
+    (home-page "https://codeberg.org/Cyborus/forgejo-cli/")
+    (synopsis "CLI tool for Forgejo")
+    (description "This package provides a CLI tool for Forgejo.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public gitoxide
   (package
     (name "gitoxide")
