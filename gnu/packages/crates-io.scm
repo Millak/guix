@@ -15488,6 +15488,37 @@ this to write Rust programs which can be customized by end users easily.")
      "This package provides a terminal and console abstraction for Rust.")
     (license license:expat)))
 
+(define-public rust-console-api-0.8
+  (package
+    (name "rust-console-api")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "console-api" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mr8xkzcb7mrcm2ca0ah1sj21rhpk207klscnql884hdrdg76c40"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; This test will fail if source is not commited into a git repo.
+     ;; Using git-fetch instead of url-fetch for package source requires
+     ;; pulling in all the dependencies for the Cargo.lock.
+     `(#:cargo-test-flags '("--" "--skip=bootstrap")
+       #:cargo-inputs (("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-prost" ,rust-prost-0.13)
+                       ("rust-prost-build" ,rust-prost-build-0.13)
+                       ("rust-prost-types" ,rust-prost-types-0.13)
+                       ("rust-tonic" ,rust-tonic-0.12)
+                       ("rust-tonic-build" ,rust-tonic-build-0.12)
+                       ("rust-tracing-core" ,rust-tracing-core-0.1))))
+    (native-inputs (list protobuf git))
+    (home-page "https://github.com/tokio-rs/console/blob/main/console-api")
+    (synopsis "Protobuf wire format bindings for the Tokio console.")
+    (description "This package provides Protobuf wire format bindings for
+the Tokio console.")
+    (license license:expat)))
+
 (define-public rust-console-error-panic-hook-0.1
   (package
     (name "rust-console-error-panic-hook")
