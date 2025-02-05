@@ -673,7 +673,7 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
 (define-public hyprgraphics
   (package
     (name "hyprgraphics")
-    (version "0.1.1")
+    (version "0.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -684,7 +684,7 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
               (snippet #~(substitute* "CMakeLists.txt" (("libjxl_cms") "")))
               (sha256
                (base32
-                "19vk1c1hli5921ai3ik6pbyixih7fhn1010injxi8dpjak6cjlhl"))))
+                "1ah29rrxhkds4wmw0n1id9ibg1xjqg3n54n40b0qas1y9jiqbbak"))))
     (build-system cmake-build-system)
     (native-inputs (list gcc-14 pkg-config))
     (arguments (list #:cmake cmake-3.30))
@@ -693,7 +693,8 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
                   libjpeg-turbo
                   libjxl
                   libwebp
-                  pixman))
+                  pixman
+                  spng))
     (home-page "https://wiki.hyprland.org/Hypr-Ecosystem/hyprgraphics/")
     (synopsis "Hyprland graphics/resource utilities")
     (description
