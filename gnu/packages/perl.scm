@@ -7022,6 +7022,29 @@ implementation of these functions only serves as a fallback in case the C
 portions of this module couldn't be compiled on this machine.")
     (license (package-license perl))))
 
+(define-public perl-list-someutils-xs
+  (package
+    (name "perl-list-someutils-xs")
+    (version "0.58")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/D/DR/DROLSKY/List-SomeUtils-XS-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "15xjnkjj4yxv1qn9krsbkzzkm51hibg2k3lf5767j6s848k4v7jg"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-list-someutils perl-test-warnings
+                         perl-test-leaktrace))
+    (home-page "https://metacpan.org/release/List-SomeUtils-XS")
+    (synopsis "XS implementation for @code{List::SomeUtils}")
+    (description
+     "@code{List::SomeUtils::XS} is a XS implementation for
+@code{List::SomeUtils}.  There are no user-facing parts here.  See
+@code{List::SomeUtils} for API details.")
+    (license license:artistic2.0)))
+
 (define-public perl-mailtools
   (package
     (name "perl-mailtools")
