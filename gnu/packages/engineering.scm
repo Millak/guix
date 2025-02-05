@@ -4256,9 +4256,17 @@ G-code instructions for FFF printers or PNG layers for mSLA 3D printers.")
        (uri (pypi-uri "wireviz" version))
        (sha256
         (base32 "1qbh0pknpymc42k4661b8ghbfk9him75xx57siyrl9is5s6as98f"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-click python-graphviz python-pillow python-pyyaml))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in git checkout or PyPI archive
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (inputs
+     (list python-click
+           python-graphviz
+           python-pillow
+           python-pyyaml))
     (home-page "https://github.com/wireviz/WireViz")
     (synopsis "Easily document cables and wiring harnesses")
     (description
