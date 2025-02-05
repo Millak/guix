@@ -20600,8 +20600,9 @@ exist.
 The user to use for running the greeter.
 
 @item @code{default-session-command} (default: @code{(greetd-agreety-session)})
-Can be either @code{greetd-agreety-session}, @code{greetd-wlgreet-sway-session} or
-@code{gexp->script} like object to use as greeter.
+Can be either @code{greetd-agreety-session},
+@code{greetd-wlgreet-sway-session}, @code{greetd-gtkgreet-sway-session}
+or a file-like object to use as greeter.
 
 @end table
 @end deftp
@@ -20717,7 +20718,7 @@ Here is an example of a greetd configuration that uses wlgreet and Sway:
    (terminals
     (list (greetd-terminal-configuration
            ;; Sway requires seatd service.
-           (extra-shepherd-requirement '(seatd))
+           (shepherd-requirement '(seatd))
            (terminal-vt "1")
            (terminal-switch #t)
            (default-session-command
@@ -20726,6 +20727,50 @@ Here is an example of a greetd configuration that uses wlgreet and Sway:
               ;; Optional extra sway configuration.
               (local-file "sway-greetd.conf"))))))))
 @end lisp
+@end deftp
+
+@deftp {Data Type} greetd-gtkgreet-sway-session
+Configuration record for the gtkgreet greetd greeter.  It can be used as
+follows:
+
+@lisp
+  (greetd-configuration
+   ;; The graphical greeter requires additional groups membership.
+   (greeter-supplementary-groups (list "video" "input" "seat"))
+   (terminals
+    (list (greetd-terminal-configuration
+           ;; Sway requires the seatd service.
+           (shepherd-requirement '(seatd))
+           (terminal-vt "1")
+           (terminal-switch #t)
+           (default-session-command
+            (greetd-gtkgreet-sway-session
+             (command
+              (greetd-user-session
+               ;; Optionally signal to .bashrc that we want the Wayland
+               ;; compositor.
+               (xdg-session-type "wayland")))))))))
+@end lisp
+
+@table @asis
+@item @code{sway} (default: @code{sway})
+The package providing the @command{sway} and @command{swaymsg} commands.
+
+@item @code{sway-configuration} (default: @code{#f})
+Extra file-like configuration for sway to be included before executing
+the greeter.
+
+@item @code{gtkgreet} (default: @code{gtkgreet})
+The package providing the @command{gtkgreet} command.
+
+@item @code{gtkgreet-style} (default: @code{#f})
+Extra file-like CSS stylesheet to customize the GTK look.
+
+@item @code{command} (default: @code{(greetd-user-session)})
+The command to be started by @command{gtkgreet} on successful login, an
+instance of @code{greetd-user-session}.
+
+@end table
 @end deftp
 
 @node Scheduled Job Execution

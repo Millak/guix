@@ -279,6 +279,7 @@
             greetd-wlgreet-session  ; deprecated
             greetd-wlgreet-configuration
             greetd-wlgreet-sway-session
+            greetd-gtkgreet-sway-session
 
             %base-services))
 
@@ -3709,6 +3710,41 @@ to handle."
        (make-greetd-sway-greeter-command
         sway
         (make-greetd-wlgreet-sway-session-sway-config s))))))
+
+(define-record-type* <greetd-gtkgreet-sway-session>
+  greetd-gtkgreet-sway-session make-greetd-gtkgreet-sway-session
+  greetd-gtkgreet-sway-session?
+  (sway greetd-gtkgreet-sway-session-sway (default sway))
+  (sway-configuration greetd-gtkgreet-sway-session-sway-configuration
+                      (default #f))
+  (gtkgreet greetd-gtkgreet-sway-session-gtkgreet (default gtkgreet))
+  (gtkgreet-style greetd-gtkgreet-sway-session-gtkgreet-style (default #f))
+  (command greetd-gtkgreet-sway-session-command
+           (default (greetd-user-session))))
+
+(define (make-greetd-gtkgreet-sway-session-sway-config session)
+  (match-record session <greetd-gtkgreet-sway-session>
+                (sway sway-configuration gtkgreet gtkgreet-style command)
+    (let ((gtkgreet-bin (file-append gtkgreet "/bin/gtkgreet"))
+          (swaymsg-bin (file-append sway "/bin/swaymsg")))
+      (mixed-text-file
+       "gtkgreet-sway-config"
+       (if sway-configuration
+           #~(string-append "include " #$sway-configuration "\n")
+           "")
+       "xwayland disable\n"
+       "exec \"" gtkgreet-bin " -l"
+       (if gtkgreet-style #~(string-append " -s " #$gtkgreet-style) "")
+       " -c " command "; " swaymsg-bin " exit\"\n"))))
+
+(define-gexp-compiler (greetd-gtkgreet-sway-session-compiler
+                       (session <greetd-gtkgreet-sway-session>)
+                       system target)
+  (match-record session <greetd-gtkgreet-sway-session> (sway)
+    (lower-object
+     (make-greetd-sway-greeter-command
+      sway
+      (make-greetd-gtkgreet-sway-session-sway-config session)))))
 
 (define-record-type* <greetd-terminal-configuration>
   greetd-terminal-configuration make-greetd-terminal-configuration
