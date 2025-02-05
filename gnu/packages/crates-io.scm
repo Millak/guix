@@ -78216,8 +78216,31 @@ defining a struct.")
         ("rust-structmeta-derive" ,rust-structmeta-derive-0.1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-structmeta-derive-0.3
+  (package
+    (name "rust-structmeta-derive")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "structmeta-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z12r4v2d3272hxqxclnr1kn2kp07qsy5aswm4ynrzwhlmjhnahm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/frozenlib/structmeta")
+    (synopsis "Derive macro for structmeta crate")
+    (description
+     "This package provides a derive macro for the structmeta crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-structmeta-derive-0.2
   (package
+    (inherit rust-structmeta-derive-0.3)
     (name "rust-structmeta-derive")
     (version "0.2.0")
     (source
@@ -78231,13 +78254,7 @@ defining a struct.")
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-2))
-       #:cargo-development-inputs (("rust-syn" ,rust-syn-2))))
-    (home-page "https://github.com/frozenlib/structmeta")
-    (synopsis "Derive macro for structmeta crate")
-    (description
-     "This package provides a derive macro for the structmeta crate.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-syn" ,rust-syn-2))))))
 
 (define-public rust-structmeta-derive-0.1
   (package
