@@ -62049,6 +62049,38 @@ to write.")
          (base32
           "1q6za3v78hsspisc197bg3g7rpc989qycy8ypr8ap8igv10ikl51"))))))
 
+(define-public rust-quick-junit-0.5
+  (package
+    (name "rust-quick-junit")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quick-junit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mxczpzhcnj3gkd22q448339lln6i1md0fhhaxr325hs769sdl9y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-newtype-uuid" ,rust-newtype-uuid-1)
+                       ("rust-quick-xml" ,rust-quick-xml-0.37)
+                       ("rust-strip-ansi-escapes" ,rust-strip-ansi-escapes-0.2)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs
+       (("rust-goldenfile" ,rust-goldenfile-1)
+        ("rust-owo-colors" ,rust-owo-colors-4)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-test-strategy" ,rust-test-strategy-0.4))))
+    (home-page "https://github.com/nextest-rs/quick-junit")
+    (synopsis "Data model and serializer for JUnit/XUnit XML")
+    (description
+     "This package provides a data model and serializer for JUnit and
+XUnit XML.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-quick-xml-0.37
   (package
     (name "rust-quick-xml")
