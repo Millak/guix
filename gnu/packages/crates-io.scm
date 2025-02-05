@@ -21235,6 +21235,30 @@ common subsequence.  The diff algorithms include Myer's diff and Patience
 diff.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-diffus-derive-0.10
+  (package
+    (name "rust-diffus-derive")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diffus-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a7sgbzhqa7gk3xhvkci91myc86gkwxs04vfxbl8f64y7l1jsfmr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ;build only works in the git cargo workspace
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/distil/diffus")
+    (synopsis "Find the difference between data structure instances")
+    (description
+     "This package lets you find the difference between two instances of
+any data structure.  Supports derive on structs and enums.")
+    (license license:asl2.0)))
+
 (define-public rust-dircpy-0.3
   (package
     (name "rust-dircpy")
