@@ -2120,7 +2120,7 @@ of the style used by the Git version control system.")
 (define-public perl-config-ini
   (package
     (name "perl-config-ini")
-    (version "0.025")
+    (version "0.029")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2128,7 +2128,7 @@ of the style used by the Git version control system.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0clphq6a17chvb663fvjnxqvyvh26g03x0fl4bg9vy4ibdnzg2v2"))))
+                "1spxzpwpwspw7cwkkg97rf0dafmjl95cv43xj1568402fdx7kghb"))))
     (build-system perl-build-system)
     (inputs
      (list perl-mixin-linewise perl-perlio-utf8_strict perl-sub-exporter))
