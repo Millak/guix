@@ -7418,7 +7418,7 @@ comes with a script called @samp{perlver}.")
 (define-public perl-mixin-linewise
   (package
     (name "perl-mixin-linewise")
-    (version "0.108")
+    (version "0.111")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7426,7 +7426,7 @@ comes with a script called @samp{perlver}.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1wmfr19w9y8qys7b32mnj1vmps7qwdahqas71a9p62ac8xw0dwkx"))))
+                "1nq1gc4320djn5mqgk55v2vjm3zwq36wq7b365f2kdg9di8qi3nj"))))
     (build-system perl-build-system)
     (inputs
      (list perl-perlio-utf8_strict perl-sub-exporter))
