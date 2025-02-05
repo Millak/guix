@@ -30891,6 +30891,30 @@ and loading crate.")
         ("rust-plain" ,rust-plain-0.2)
         ("rust-scroll" ,rust-scroll-0.11))))))
 
+(define-public rust-goldenfile-1
+  (package
+    (name "rust-goldenfile")
+    (version "1.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "goldenfile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a74vvxyrkj0gyv5x01cmsmz5hrggskqmkk543wz6z2ky31g2bv7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-scopeguard" ,rust-scopeguard-1)
+                       ("rust-similar-asserts" ,rust-similar-asserts-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-yansi" ,rust-yansi-1))))
+    (home-page "https://github.com/calder/rust-goldenfile")
+    (synopsis "Simple goldenfile testing library")
+    (description
+     "Testing library that compares generated files against prior
+generated golden files.")
+    (license license:expat)))
+
 (define-public rust-graphql-client-0.14
   (package
     (name "rust-graphql-client")
