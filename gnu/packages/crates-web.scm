@@ -11,6 +11,7 @@
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6565,6 +6566,38 @@ on high performance, interoperability, and flexibility.")
     (synopsis "Codegen module of @code{tonic} gRPC implementation")
     (description
      "This package provides a codegen module of `tonic` @code{gRPC} implementation.")
+    (license license:expat)))
+
+(define-public rust-tonic-web-0.12
+  (package
+    (name "rust-tonic-web")
+    (version "0.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tonic-web" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0n2bhgs57kvqsk1z2fr1izcrrrbnfgda0pjargf3dmqsh0hdv6aj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.22)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-http" ,rust-http-1)
+                       ("rust-http-body" ,rust-http-body-1)
+                       ("rust-http-body-util" ,rust-http-body-util-0.1)
+                       ("rust-pin-project" ,rust-pin-project-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+                       ("rust-tonic" ,rust-tonic-0.12)
+                       ("rust-tower-http" ,rust-tower-http-0.5)
+                       ("rust-tower-layer" ,rust-tower-layer-0.3)
+                       ("rust-tower-service" ,rust-tower-service-0.3)
+                       ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/hyperium/tonic")
+    (synopsis "grpc-web protocol translation for tonic services")
+    (description
+     "This package provides grpc-web protocol translation for tonic
+services.")
     (license license:expat)))
 
 (define-public rust-tower-0.5
