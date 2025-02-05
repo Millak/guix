@@ -46718,6 +46718,28 @@ structures.")
     (license (list license:expat
                    license:asl2.0))))
 
+(define-public rust-newtype-uuid-1
+  (package
+    (name "rust-newtype-uuid")
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "newtype-uuid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17922xw05gxdx1rnxzp183yp4mw7pkq27ljslmw65034xzi831sc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-schemars" ,rust-schemars-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/oxidecomputer/newtype-uuid")
+    (synopsis "Newtype wrapper around UUIDs")
+    (description
+     "This package provides a newtype wrapper around UUIDs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-nftables-0.5
   (package
     (name "rust-nftables")
