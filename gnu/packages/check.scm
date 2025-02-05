@@ -54,6 +54,7 @@
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2024, 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
+;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -77,6 +78,9 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages crates-check)
+  #:use-module (gnu packages crates-graphics)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -116,6 +120,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
@@ -254,6 +259,56 @@ with an API heavily modelled on high level Behavior-Driver Development framework
 like Jasmine or Mocha.")
     (home-page "https://ebassi.github.io/mutest/mutest.md.html")
     (license license:expat)))
+
+(define-public cargo-nextest
+  (package
+    (name "cargo-nextest")
+    (version "0.9.87")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-nextest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02aq4wmrnwlm2amjqpwv0k58mw5kbwkxgj2z1d6qydxfrrm50k1d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-camino" ,rust-camino-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-color-eyre" ,rust-color-eyre-0.6)
+        ("rust-dialoguer" ,rust-dialoguer-0.11)
+        ("rust-duct" ,rust-duct-0.13)
+        ("rust-enable-ansi-support" ,rust-enable-ansi-support-0.2)
+        ("rust-guppy" ,rust-guppy-0.17)
+        ("rust-itertools" ,rust-itertools-0.13)
+        ("rust-miette" ,rust-miette-7)
+        ("rust-nextest-filtering" ,rust-nextest-filtering-0.12)
+        ("rust-nextest-metadata" ,rust-nextest-metadata-0.12)
+        ("rust-nextest-runner" ,rust-nextest-runner-0.70)
+        ("rust-nextest-workspace-hack" ,rust-nextest-workspace-hack-0.1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-owo-colors" ,rust-owo-colors-4)
+        ("rust-pathdiff" ,rust-pathdiff-0.2)
+        ("rust-quick-junit" ,rust-quick-junit-0.5)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-shell-words" ,rust-shell-words-1)
+        ("rust-supports-color" ,rust-supports-color-3)
+        ("rust-supports-unicode" ,rust-supports-unicode-3)
+        ("rust-swrite" ,rust-swrite-0.1)
+        ("rust-thiserror" ,rust-thiserror-2)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))
+       #:cargo-development-inputs
+       (("rust-camino-tempfile" ,rust-camino-tempfile-1))))
+    (inputs (list pkg-config zlib (list zstd "lib")))
+    (home-page "https://github.com/nextest-rs/nextest")
+    (synopsis "next-generation test runner for Rust")
+    (description
+     "This package provides a next-generation test runner for Rust.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public check
   (package
