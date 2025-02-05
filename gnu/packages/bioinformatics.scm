@@ -2793,6 +2793,15 @@ from single-cell RNA-sequencing.")
        (sha256
         (base32 "15lxgncrnsx1hapfx78pvx4rjx5d48hqixdnacdy55d84myfmrym"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              ;; License field should not be empty.
+              (substitute* "pyproject.toml"
+                (("^license = \"\"") "")))))))
     (propagated-inputs (list python-numpy
                              python-pandas
                              python-scikit-learn
