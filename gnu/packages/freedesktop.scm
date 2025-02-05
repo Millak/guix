@@ -1367,7 +1367,7 @@ Python.")
 (define-public hyprland-protocols
   (package
     (name "hyprland-protocols")
-    (version "0.6.1")
+    (version "0.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1376,7 +1376,7 @@ Python.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01nlkznq9gkkz3q2y1m1q5v4rz0qdrxsngxbnpxarnmbg4is18lm"))))
+                "17044wvfgcj7sks1dvhsbycp3ls82g1wadi3hzd6n9bhpszrpzz6"))))
     (build-system meson-build-system)
     (home-page "https://github.com/hyprwm/hyprland-protocols")
     (synopsis "Wayland protocol extensions for Hyprland")
