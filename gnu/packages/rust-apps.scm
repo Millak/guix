@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
@@ -537,6 +537,94 @@ the terminal.")
     (synopsis "Find unused dependencies in Cargo.toml")
     (description "@code{cargo-machete} finds unused dependencies in Cargo.toml.")
     (license (list license:expat license:asl2.0))))
+
+(define-public codeberg-cli
+  (package
+    (name "codeberg-cli")
+    (version "0.4.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "codeberg-cli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1irqikkpkrvsafkn1pkhpikj9inhkx4xks74hsc87x2ai94h49f9"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:install-source? #f
+       #:cargo-inputs
+       (list rust-anyhow-1
+             rust-chrono-0.4
+             rust-clap-4
+             rust-clap-complete-4
+             rust-comfy-table-7
+             rust-config-0.14
+             rust-derive-new-0.7
+             rust-dirs-5
+             rust-forgejo-api-0.4
+             rust-git2-0.19
+             rust-indicatif-0.17
+             rust-inquire-0.7
+             rust-itertools-0.13
+             rust-serde-1
+             rust-serde-json-1
+             rust-strum-0.26
+             rust-termsize-0.1
+             rust-time-0.3
+             rust-tokio-1
+             rust-toml-0.8
+             rust-tracing-0.1
+             rust-tracing-subscriber-0.3
+             rust-url-2
+             rust-webbrowser-1)
+       #:cargo-development-inputs (list rust-insta-1)
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-extras
+             (lambda* (#:key native-inputs outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (share (string-append out "/share"))
+                      (bash-completions-dir
+                       (string-append out "/etc/bash_completion.d/"))
+                      (zsh-completions-dir
+                       (string-append share "/zsh/site-functions"))
+                      (fish-completions-dir
+                       (string-append share "/fish/vendor_completions.d"))
+                      (elvish-completions-dir
+                       (string-append share "/elvish/lib"))
+                      (berg (if #$(%current-target-system)
+                                (search-input-file native-inputs "/bin/berg")
+                                (string-append out "/bin/berg"))))
+                 (for-each mkdir-p
+                           (list bash-completions-dir
+                                 zsh-completions-dir
+                                 fish-completions-dir
+                                 elvish-completions-dir))
+                 (with-output-to-file
+                   (string-append bash-completions-dir "/berg")
+                   (lambda _ (invoke berg "completion" "bash")))
+                 (with-output-to-file
+                   (string-append zsh-completions-dir "/_berg")
+                   (lambda _ (invoke berg "completion" "zsh")))
+                 (with-output-to-file
+                   (string-append fish-completions-dir "/berg.fish")
+                   (lambda _ (invoke berg "completion" "fish")))
+                 (with-output-to-file
+                   (string-append elvish-completions-dir "/berg")
+                   (lambda _ (invoke berg "completion" "elvish")))))))))
+    (native-inputs
+     (append
+       (if (%current-target-system)
+           (list this-package)
+           '())
+      (list pkg-config)))
+    (inputs (list libgit2-1.8 libssh2 openssl zlib))
+    (home-page "https://codeberg.org/Aviac/codeberg-cli")
+    (synopsis "CLI Tool for codeberg similar to gh and glab")
+    (description
+     "This package provides CLI Tool for codeberg similar to gh and glab.")
+    (license license:agpl3+)))
 
 (define-public complgen
   (package
