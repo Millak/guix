@@ -7428,7 +7428,7 @@ comes with a script called @samp{perlver}.")
                (base32
                 "1nq1gc4320djn5mqgk55v2vjm3zwq36wq7b365f2kdg9di8qi3nj"))))
     (build-system perl-build-system)
-    (inputs
+    (propagated-inputs
      (list perl-perlio-utf8_strict perl-sub-exporter))
     (home-page "https://metacpan.org/release/Mixin-Linewise")
     (synopsis "Write your linewise code for handles; this does the rest")
