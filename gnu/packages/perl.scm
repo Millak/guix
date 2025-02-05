@@ -7008,7 +7008,7 @@ commonly needed functionality on lists which is not going to go into
     (build-system perl-build-system)
     (native-inputs
      (list perl-test-leaktrace))
-    (inputs
+    (propagated-inputs
      (list perl-exporter-tiny perl-module-implementation))
     (home-page "https://metacpan.org/release/List-SomeUtils")
     (synopsis "Provide the stuff missing in List::Util")
