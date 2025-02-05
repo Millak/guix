@@ -1823,7 +1823,7 @@ before interacting with non-free LLMs.")
 (define-public emacs-magit
   (package
     (name "emacs-magit")
-    (version "4.2.0")
+    (version "4.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1832,7 +1832,7 @@ before interacting with non-free LLMs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zmrd6xlrvlr0i1a75xwlknmyx4hvpfxaqjkl61n12gd8598ji1j"))))
+        (base32 "1xz68154qmik4xs3ldl1gv87rb3famgd73k0174xbsr48d40ccyg"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -1897,7 +1897,7 @@ before interacting with non-free LLMs.")
     (propagated-inputs
      ;; Note: the 'git-commit' and 'magit-section' dependencies are part of
      ;; magit itself.
-     (list emacs-compat emacs-dash emacs-transient emacs-with-editor))
+     (list emacs-compat emacs-transient emacs-with-editor emacs-llama))
     (home-page "https://magit.vc/")
     (synopsis "Emacs interface for the Git version control system")
     (description
