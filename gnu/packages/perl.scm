@@ -2130,7 +2130,7 @@ of the style used by the Git version control system.")
                (base32
                 "1spxzpwpwspw7cwkkg97rf0dafmjl95cv43xj1568402fdx7kghb"))))
     (build-system perl-build-system)
-    (inputs
+    (propagated-inputs
      (list perl-mixin-linewise perl-perlio-utf8_strict perl-sub-exporter))
     (home-page "https://metacpan.org/release/Config-INI")
     (synopsis "Simple .ini-file format reader and writer")
