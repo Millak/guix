@@ -11449,6 +11449,25 @@ parsing with Serde.")
     (description "This package provides deserialization schemas for Cargo.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-caseless-0.2
+  (package
+    (name "rust-caseless")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "caseless" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n75pz65q9zn5rqq2xlw43dkq69rljnsd73nzpnwi1j08l3xavwb"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs (list rust-unicode-normalization-0.1)))
+    (home-page "https://github.com/unicode-rs/rust-caseless")
+    (synopsis "Unicode caseless matching")
+    (description "This package provides unicode caseless matching.")
+    (license license:expat)))
+
 (define-public rust-casey-0.4
   (package
     (name "rust-casey")
