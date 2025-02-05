@@ -31718,6 +31718,37 @@ support.")
     (description "This package provides custom derive support for gumdrop.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-guppy-summaries-0.7
+  (package
+    (name "rust-guppy-summaries")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "guppy-summaries" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ap7yqccwhd65xh0njbvaggpk81bgjiwy4a8fm43nlc7ynw3kl4b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-camino" ,rust-camino-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-diffus" ,rust-diffus-0.10)
+        ("rust-guppy-workspace-hack" ,rust-guppy-workspace-hack-0.1)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-toml" ,rust-toml-0.5))
+       #:cargo-development-inputs
+       (("rust-infoc" ,rust-indoc-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/guppy-rs/guppy")
+    (synopsis "Build summaries for Cargo, created by guppy")
+    (description
+     "This package provides build summaries for Cargo, created by guppy.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-guppy-workspace-hack-0.1
   (package
     (name "rust-guppy-workspace-hack")
