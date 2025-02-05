@@ -9818,6 +9818,35 @@ object and tying it, @code{Readonly} simply flips the @code{SvREADONLY} bit in
 the scalar's @code{FLAGS} structure.")
     (license license:perl-license)))
 
+(define-public perl-ref-util
+  (package
+    (name "perl-ref-util")
+    (version "0.204")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/A/AR/ARC/Ref-Util-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1q85y5lzgl8wz5qnz3j6mch2fmllr668h54wszaz6i6gp8ysfps1"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-readonly))
+    (propagated-inputs (list perl-ref-util-xs))
+    (home-page "https://metacpan.org/release/Ref-Util")
+    (synopsis "Utility functions for checking references")
+    (description
+     "@code{Ref::Util} introduces several functions to help identify references in
+a smarter (and usually faster) way.  The difference with conventional approach:
+@itemize
+@item No comparison against a string constant
+@item Supports blessed variables
+@item Supports tied variables and magic
+@item Ignores overloading
+@item Ignores subtle types
+@item Usually faster
+@end itemize")
+    (license license:x11)))
+
 (define-public perl-ref-util-xs
   (package
     (name "perl-ref-util-xs")
