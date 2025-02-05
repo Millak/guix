@@ -5988,6 +5988,27 @@ they're not available.")
     (description "Write files atomically to a file system.")
     (license license:bsd-3)))
 
+(define-public rust-atomicwrites-0.4
+  (package
+    (name "rust-atomicwrites")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "atomicwrites" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qrkr9jz43y8g767c3249g4w4pzv43bk3hyza66y6pv43f6vpw9y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))))
+    (home-page "https://github.com/untitaker/rust-atomicwrites")
+    (synopsis "Atomic file-writes")
+    (description "This package provides atomic file-writes.")
+    (license license:expat)))
+
 (define-public rust-atomig-0.4
   (package
     (name "rust-atomig")
