@@ -29239,15 +29239,10 @@ the GIF result.")
     (arguments
      (list
       #:tests? #t
-      #:test-command #~(list "emacs"
-                             "-Q"
-                             "--batch"
-                             "-L"
-                             "."
-                             "-l"
-                             "gt-tests.el"
-                             "-f"
-                             "ert-run-tests-batch-and-exit")
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-L" "."
+                             "-l" "gt-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")
       #:phases #~(modify-phases %standard-phases
                    (add-before 'check 'skip-failing-tests
                      (lambda _
@@ -29255,7 +29250,8 @@ the GIF result.")
                          (("\\(ert-deftest test--gt-translation-life-cycle .*"
                            all)
                           (string-append all "(skip-unless nil)\n"))
-                         (("\\(ert-deftest test--gt-valid-literally .*" all)
+                         (("\\(ert-deftest test--gt-valid-literally .*"
+                           all)
                           (string-append all "(skip-unless nil)\n"))))))))
     (home-page "https://github.com/lorniu/go-translate/")
     (synopsis "Configurable and scalable translation framework")
