@@ -15608,6 +15608,59 @@ the browser's console.")
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
         ("rust-web-sys" ,rust-web-sys-0.3))))))
 
+(define-public rust-console-subscriber-0.4
+  (package
+    (name "rust-console-subscriber")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "console-subscriber" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00badn9pjwbfd985vc7ngl7ai6mc3q58c3q43i5izlscdafalfb5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; Ensure tokio_unstable is added to env, so that tokio-console
+         ;; features get added to build.
+         (add-before 'build 'enable-tokio-unstable
+           (lambda _
+             (setenv "RUSTFLAGS"
+                     (string-append (or (getenv "RUSTFLAGS") "")
+                                    ;; Pad to not clobber other args.
+                                    " --cfg tokio_unstable ")))))
+       #:cargo-inputs
+       (("rust-console-api" ,rust-console-api-0.8)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-futures-task" ,rust-futures-task-0.3)
+        ("rust-hdrhistogram" ,rust-hdrhistogram-7)
+        ("rust-humantime" ,rust-humantime-2)
+        ("rust-hyper-util" ,rust-hyper-util-0.1)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-prost" ,rust-prost-0.13)
+        ("rust-prost-types" ,rust-prost-types-0.13)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thread-local" ,rust-thread-local-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+        ("rust-tonic" ,rust-tonic-0.12)
+        ("rust-tonic-web" ,rust-tonic-web-0.12)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-core" ,rust-tracing-core-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page
+     "https://github.com/tokio-rs/console/blob/main/console-subscriber")
+    (synopsis
+     "`tracing-subscriber::Layer` to collect Tokio console telemetry")
+    (description
+     "This package provides a `tracing-subscriber::Layer` for collecting
+Tokio console telemetry.")
+    (license license:expat)))
+
 (define-public rust-const-cstr-0.3
   (package
     (name "rust-const-cstr")
