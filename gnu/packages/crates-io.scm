@@ -31740,6 +31740,53 @@ support.")
     (description "This package provides custom derive support for gumdrop.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-guppy-0.17
+  (package
+    (name "rust-guppy")
+    (version "0.17.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "guppy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07kkvi1ijw9scjimivmc7c1585xzdmq8cjqvb4p1w1nbvml547nh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-camino" ,rust-camino-1)
+        ("rust-cargo-metadata" ,rust-cargo-metadata-0.19)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-debug-ignore" ,rust-debug-ignore-1)
+        ("rust-fixedbitset" ,rust-fixedbitset-0.4)
+        ("rust-guppy-summaries" ,rust-guppy-summaries-0.7)
+        ("rust-guppy-workspace-hack" ,rust-guppy-workspace-hack-0.1)
+        ("rust-indexmap" ,rust-indexmap-2)
+        ("rust-itertools" ,rust-itertools-0.13)
+        ("rust-nested" ,rust-nested-0.1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pathdiff" ,rust-pathdiff-0.2)
+        ("rust-petgraph" ,rust-petgraph-0.6)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-proptest-derive" ,rust-proptest-derive-0.5)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-target-spec" ,rust-target-spec-3)
+        ("rust-toml" ,rust-toml-0.5))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/guppy-rs/guppy")
+    (synopsis "Track and query Cargo dependency graphs")
+    (description
+     "This package lets you track and query Cargo dependency graphs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-guppy-summaries-0.7
   (package
     (name "rust-guppy-summaries")
