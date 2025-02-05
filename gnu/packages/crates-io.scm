@@ -81567,6 +81567,33 @@ tools.")
      "This package lets you evaluate Cargo.toml target specifications.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-target-spec-miette-0.4
+  (package
+    (name "rust-target-spec-miette")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "target-spec-miette" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bkcp7ff3z8kccfays45pv8ya4g66lld6srgzn2gic7fwd04yxa1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-guppy-workspace-hack" ,rust-guppy-workspace-hack-0.1)
+        ("rust-insta" ,rust-insta-1)
+        ("rust-miette" ,rust-miette-7)
+        ("rust-target-spec" ,rust-target-spec-3))
+       #:cargo-development-inputs
+       (("rust-datatest-stable" ,rust-datatest-stable-0.3))))
+    (home-page "https://github.com/guppy-rs/guppy")
+    (synopsis "Target-spec errors with the miette library")
+    (description
+     "This package provides target-spec error integration with the
+miette library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-target-triple-0.1
   (package
     (name "rust-target-triple")
