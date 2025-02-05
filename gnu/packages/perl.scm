@@ -10250,7 +10250,7 @@ word-characters are compared lexically.")
 (define-public perl-specio
   (package
     (name "perl-specio")
-    (version "0.38")
+    (version "0.49")
     (source
      (origin
        (method url-fetch)
@@ -10258,16 +10258,30 @@ word-characters are compared lexically.")
                            "Specio-" version ".tar.gz"))
        (sha256
         (base32
-         "1s5xd9awwrzc94ymimjkxqs6jq513wwlmwwarxaklvg2hk4lps0l"))))
+         "1by79pab88avvwv3r8sm78wsml1jssq3kc5yvk4fyf1p5ck6cmz8"))))
     (build-system perl-build-system)
+    (native-inputs (list perl-pathtools ;contains File::Spec
+                         perl-test-needs
+                         perl-xstring
+                         ;; optional test requirements
+                         perl-moo-2
+                         perl-moose
+                         perl-namespace-autoclean))
     (propagated-inputs
-     (list perl-devel-stacktrace
+     (list perl-carp
+           perl-clone
+           perl-devel-stacktrace
            perl-eval-closure
+           perl-exporter
            perl-module-runtime
            perl-mro-compat
-           perl-role-tiny
+           perl-ref-util
+           perl-role-tiny-2 ;contains Role::Tiny::With
+           perl-scalar-list-utils ;contains List::Util and Scalar::Util
+           perl-sub-quote
            perl-test-fatal
-           perl-test-needs))
+           perl-test-simple ;contains Test::More
+           perl-try-tiny))
     (home-page "https://metacpan.org/release/Specio")
     (synopsis "Classes for representing type constraints and coercion")
     (description "The Specio distribution provides classes for representing type
