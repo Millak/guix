@@ -1935,7 +1935,7 @@ bindings for Python, Java, OCaml and more.")
      (list capstone))))
 
 
-(define-public python-esptool-3.0
+(define-public python-esptool
   (package
     (name "python-esptool")
     (version "3.0")
