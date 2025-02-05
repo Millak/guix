@@ -80009,6 +80009,25 @@ executed by swayipc.")
 sway's IPC interface.")
     (license license:expat)))
 
+(define-public rust-swrite-0.1
+  (package
+    (name "rust-swrite")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "swrite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00vsicglylq4qq6dc497jdgzfnxi5mh7padwxijnvh1d1giyqgvz"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rusticstuff/swrite")
+    (synopsis "Infallible alternatives to write! for Strings")
+    (description
+     "This package provides infallible alternatives to write! and
+writeln! for Strings.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sxd-document-0.3
   (package
     (name "rust-sxd-document")
