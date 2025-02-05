@@ -938,8 +938,8 @@ as well as pick-place files.")
 
 (define-public translate2geda
   ;; There has been no formal release yet.
-  (let ((commit "4c19e7eefa338cea8f1ee999ea8b37f8d0698169")
-        (revision "1"))
+  (let ((commit "2ec576e608a6f6eead5f6bc1952234d9874703c7")
+        (revision "2"))
     (package
       (name "translate2geda")
       (version (git-version "0" revision commit))
@@ -951,7 +951,7 @@ as well as pick-place files.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1h062bbpw8nk0jamkya1k4lsgaia796jyviiz2gkdi6k1bxhwgpa"))))
+                  "0pcwbnp25fjzznzw97d233awa4j0sdfi06wza45rsp8nx1ri7a7k"))))
       (build-system ant-build-system)
       (arguments
        (list #:tests? #f ; there are no tests
