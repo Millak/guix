@@ -34459,18 +34459,18 @@ a trait for tuples.")
 (define-public rust-include-dir-macros-0.7
   (package
     (name "rust-include-dir-macros")
-    (version "0.7.3")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "include_dir_macros" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "0gsa6z58wxgw9j58w60wyjpk2nv3pd86kimw2akwyzpmbi5jhfdi"))))
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "include_dir_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0x8smnf6knd86g69p19z5lpfsaqp8w0nx14kdpkz1m8bxnkqbavw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1))))
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1))))
     (home-page "https://github.com/Michael-F-Bryan/include_dir")
     (synopsis "Procedural macro used by include_dir")
     (description "The procedural macro used by include_dir.")
