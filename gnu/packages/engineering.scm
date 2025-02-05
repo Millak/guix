@@ -1909,14 +1909,13 @@ bindings for Python, Java, OCaml and more.")
   (package
     (inherit capstone)
     (name "python-capstone")
-    (propagated-inputs
-     (list capstone))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+       #~(modify-phases %standard-phases
          (add-after 'unpack 'chdir-and-fix-setup-py
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda _
              (chdir "bindings/python")
              ;; Do not build the library again, because we already have it.
              (substitute* "setup.py" ((".*   build_libraries.*") ""))
@@ -1924,13 +1923,13 @@ bindings for Python, Java, OCaml and more.")
              ;; library.
              (substitute* "capstone/__init__.py"
                (("pkg_resources.resource_filename.*")
-                (string-append "'" (dirname (search-input-file
-                                             inputs "lib/libcapstone.so"))
-                               "',\n")))))
+                (format #f "'~a/lib',~%" #$(this-package-input "capstone"))))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "make" "check")))))))))
+               (invoke "make" "check")))))))
+    (propagated-inputs
+     (list capstone))))
 
 
 (define-public python-esptool-3.0
