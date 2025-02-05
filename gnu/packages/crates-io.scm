@@ -34785,6 +34785,43 @@ data efficiently.")
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.5))))))
 
+(define-public rust-inquire-0.7
+  (package
+    (name "rust-inquire")
+    (version "0.7.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "inquire" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0an1bjs0yklk990d7ni65znmirs99p01wld221affw5g64qgkp8g"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           (list rust-bitflags-2
+                 rust-chrono-0.4
+                 rust-console-0.15
+                 rust-crossterm-0.25
+                 rust-dyn-clone-1
+                 rust-fuzzy-matcher-0.3
+                 rust-fxhash-0.2
+                 rust-newline-converter-0.3
+                 rust-once-cell-1
+                 rust-tempfile-3
+                 rust-termion-2
+                 rust-unicode-segmentation-1
+                 rust-unicode-width-0.1)
+           #:cargo-development-inputs
+           (list rust-chrono-0.4
+                 rust-rstest-0.18)))
+    (home-page "https://github.com/mikaelmello/inquire")
+    (synopsis "Library for building interactive prompts on terminals")
+    (description
+     "This package provides a library for building interactive prompts on
+terminals.")
+    (license license:expat)))
+
 (define-public rust-insta-1
   (package
     (name "rust-insta")
