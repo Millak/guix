@@ -28628,6 +28628,36 @@ references by lifting access permissions into the trait system.")
     (description "Handling fragments of UTF-8.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-future-queue-0.3
+  (package
+    (name "rust-future-queue")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "future-queue" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rmjyqy5z87pwghvikmxn18mgdbr6k3w7zmx5qf12h8smrlamlf0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-fnv" ,rust-fnv-1)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-maplit" ,rust-maplit-1)
+        ("rust-proptest-derive" ,rust-proptest-derive-0.3)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-stream" ,rust-tokio-stream-0.1))))
+    (home-page "https://github.com/nextest-rs/future-queue")
+    (synopsis "Adapters to manage a weighted queue of futures")
+    (description
+     "This package provides adapters to manage a queue of futures, where
+each future can have a different weight.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-futures-0.3
   (package
     (name "rust-futures")
