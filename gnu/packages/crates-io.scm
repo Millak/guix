@@ -71195,6 +71195,30 @@ dropped.")
 in stable Rust.")
     (license license:asl2.0)))
 
+(define-public rust-self-replace-1
+  (package
+    (name "rust-self-replace")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "self-replace" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1drganasvf5b0x6c9g60jkfhzjc9in3r6cznjfw0lhmbbrdq3v03"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;crate does not package test dependencies
+       #:cargo-inputs (("rust-fastrand" ,rust-fastrand-2)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))))
+    (home-page "https://github.com/mitsuhiko/self-replace")
+    (synopsis "Allow executables to replace or uninstall themselves")
+    (description
+     "This package provides an utility crate that allows executables to
+replace or uninstall themselves.")
+    (license license:asl2.0)))
+
 (define-public rust-selinux-0.4
   (package
     (name "rust-selinux")
