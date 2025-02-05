@@ -16,6 +16,7 @@
 ;;; Copyright © 2018 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2020 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -236,7 +237,7 @@ Built using @code{Test::Builder}, it was designed to work with other
     (build-system perl-build-system)
     (native-inputs
      (list perl-module-build))
-    (inputs
+    (propagated-inputs
      (list perl-test-class perl-test-most perl-module-runtime
            perl-try-tiny perl-mro-compat))
     (home-page "https://metacpan.org/release/Test-Class-Most")
