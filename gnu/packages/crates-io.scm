@@ -83087,8 +83087,36 @@ logging and/or tracing infrastructure before running tests.")
      "This package provides supporting procedural macro crate for test-log.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-test-strategy-0.4
+  (package
+    (name "rust-test-strategy")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "test-strategy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06z0slp3ckxfsynq3772jy1dlasv3pa2kmii90ccqm1zbvs1mx1b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-structmeta" ,rust-structmeta-0.3)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/frozenlib/test-strategy")
+    (synopsis "Macro to write higher-order strategies in proptest")
+    (description
+     "This package provides a procedural macro to easily write higher-order
+strategies in proptest.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-test-strategy-0.3
   (package
+    (inherit rust-test-strategy-0.4)
     (name "rust-test-strategy")
     (version "0.3.1")
     (source
@@ -83106,13 +83134,7 @@ logging and/or tracing infrastructure before running tests.")
                        ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1)
                                    ("rust-tokio" ,rust-tokio-1)
-                                   ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/frozenlib/test-strategy")
-    (synopsis "Macro to write higher-order strategies in proptest")
-    (description
-     "This package provides a procedural macro to easily write higher-order
-strategies in proptest.")
-    (license (list license:expat license:asl2.0))))
+                                   ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-test-strategy-0.2
   (package
