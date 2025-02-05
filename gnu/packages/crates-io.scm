@@ -46460,6 +46460,25 @@ processing library for Rust.")
 in Rust that can compile to WebAssembly.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-nested-0.1
+  (package
+    (name "rust-nested")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nested" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17lwhdw0z8c4g00yfdasxh4zc5dq1ccylmbb0n1zw1wgcc7l4aya"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/tafia/nested")
+    (synopsis "Memory efficient container for nested collections")
+    (description
+     "This package provides a memory efficient container for nested
+collections (like @code{Vec<String>} or @code{Vec<Vec<T>>}).")
+    (license license:expat)))
+
 (define-public rust-net2-0.2
   (package
     (name "rust-net2")
