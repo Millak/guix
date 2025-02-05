@@ -595,6 +595,35 @@ select the mock struct at compile time.  Used with the Mockall crate.")
      "This package provides a filtering DSL for cargo-nextest.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-nextest-metadata-0.12
+  (package
+    (name "rust-nextest-metadata")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nextest-metadata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cx6cdzbgmf5imjcb6vpm6xpdx5nrl3w079m0vm7la0chj21yn7d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--lib") ; doctests fail
+       #:cargo-inputs
+       (("rust-camino" ,rust-camino-1)
+        ("rust-nextest-workspace-hack" ,rust-nextest-workspace-hack-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smol-str" ,rust-smol-str-0.3)
+        ("rust-target-spec" ,rust-target-spec-3))
+       #:cargo-development-inputs (("rust-test-case" ,rust-test-case-3))))
+    (home-page "https://github.com/nextest-rs/nextest")
+    (synopsis "Structured access to nextest machine-readable output")
+    (description
+     "This package provides structured access to nextest
+machine-readable output.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-nextest-workspace-hack-0.1
   (package
     (name "rust-nextest-workspace-hack")
