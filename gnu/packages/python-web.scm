@@ -357,6 +357,40 @@ caching server.")
 Async mode for @url{https://domainconnect.org/, Domain Connect protocol}.")
     (license license:expat)))
 
+(define-public python-domain-connect-dyndns
+  (package
+    (name "python-domain-connect-dyndns")
+    (version "0.0.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "domain-connect-dyndns" version))
+       (sha256
+        (base32 "0srrblcb64bp7k5cqqivx4kykqdkmmzmspxwv66vix9k7wxdwqzx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Check and sanity-check phases require /etc/resolv.conf, which is not
+      ;; present in container.
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases (delete 'sanity-check))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-dnspython
+           python-domain-connect
+           python-requests
+           python-validators))
+    (home-page "https://github.com/Domain-Connect/DomainConnectDDNS-Python")
+    (synopsis "Domain Connect Dynamic DNS in Python")
+    ;; Project lacks meaningful description in README, see
+    ;; <https://github.com/Domain-Connect/DomainConnectDDNS-Python/issues/43>.
+    (description
+     "Python client library for Dynamic DNS using
+@url{https://www.domainconnect.org/, Domain Connect} protocol.")
+    (license license:expat)))
+
 (define-public python-eventlet
   (package
     (name "python-eventlet")
