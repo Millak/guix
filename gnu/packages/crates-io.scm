@@ -14603,8 +14603,46 @@ Rust compiler.")
 minutes, seconds.")
     (license license:bsd-3)))
 
+(define-public rust-comrak-0.26
+  (package
+    (name "rust-comrak")
+    (version "0.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "comrak" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a87w6c0xkfml7rg1v34rhlcknr811s11mi9xsjgazf58dwbcnir"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-caseless" ,rust-caseless-0.2)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-derive-builder" ,rust-derive-builder-0.20)
+                       ("rust-emojis" ,rust-emojis-0.6)
+                       ("rust-entities" ,rust-entities-1)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-shell-words" ,rust-shell-words-1)
+                       ("rust-slug" ,rust-slug-0.1)
+                       ("rust-syntect" ,rust-syntect-5)
+                       ("rust-typed-arena" ,rust-typed-arena-2)
+                       ("rust-unicode-categories" ,rust-unicode-categories-0.1)
+                       ("rust-xdg" ,rust-xdg-2))
+       #:cargo-development-inputs (("rust-ntest" ,rust-ntest-0.9)
+                                   ("rust-toml" ,rust-toml-0.7))))
+    (home-page "https://github.com/kivikakk/comrak")
+    (synopsis "GitHub flavoured Markdown parser and formatter")
+    (description
+     "This package provides a 100% CommonMark-compatible GitHub flavoured
+Markdown parser and formatter written in Rust.")
+    (license license:bsd-2)))
+
 (define-public rust-comrak-0.18
   (package
+    (inherit rust-comrak-0.26)
     (name "rust-comrak")
     (version "0.18.0")
     (source
@@ -14614,7 +14652,6 @@ minutes, seconds.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "157838s5bpjihg4a563hpbqr6a6080570g25pqi6026abdlsaaj8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
                        ("rust-clap" ,rust-clap-4)
@@ -14630,13 +14667,7 @@ minutes, seconds.")
                        ("rust-unicode-categories" ,rust-unicode-categories-0.1)
                        ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs (("rust-ntest" ,rust-ntest-0.9)
-                                   ("rust-propfuzz" ,rust-propfuzz-0.0.1))))
-    (home-page "https://hrzn.ee/kivikakk/comrak")
-    (synopsis "GitHub flavoured Markdown parser and formatter")
-    (description
-     "This package provides a 100% CommonMark-compatible GitHub flavoured
-Markdown parser and formatter written in Rust.")
-    (license license:bsd-2)))
+                                   ("rust-propfuzz" ,rust-propfuzz-0.0.1))))))
 
 (define-public rust-concat-idents-1
   (package
