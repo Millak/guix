@@ -80405,6 +80405,29 @@ writing colored text to a terminal.")
 color of the terminal.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-terminal-prompt-0.2
+  (package
+    (name "rust-terminal-prompt")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "terminal-prompt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xk3y4m2qysa8sxb46h79f9qxh8m6x0s6ipzbnysq4198yriha2p"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           (list rust-libc-0.2
+                 rust-winapi-0.3)))
+    (home-page "https://github.com/de-vri-es/terminal-prompt-rs")
+    (synopsis "Library for prompting data on the terminal")
+    (description
+     "This package provides a tiny library for prompting sensitive or
+non-sensitive data on the terminal.")
+    (license license:bsd-2)))
+
 (define-public rust-terminal-size-0.4
   (package
     (name "rust-terminal-size")
