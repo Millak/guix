@@ -19678,6 +19678,28 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
 the Debug trait manually.")
     (license license:expat)))
 
+(define-public rust-debug-ignore-1
+  (package
+    (name "rust-debug-ignore")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "debug-ignore" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08gwdny6124ggy4hyli92hdyiqc5j2z9lqhbw81k0mgljcfyvrzz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/sunshowers-code/debug-ignore")
+    (synopsis "Newtype to skip a field while printing Debug output")
+    (description
+     "This package provides a newtype wrapper that causes a field to be
+skipped while printing out Debug output.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-debug-unreachable-0.1
   (package
     (name "rust-debug-unreachable")
