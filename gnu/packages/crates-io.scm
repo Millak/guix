@@ -10649,6 +10649,28 @@ brightness between monitors.")
     (description "This package provides a UTF-8 paths.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-camino-tempfile-1
+  (package
+    (name "rust-camino-tempfile")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "camino-tempfile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hk3a8x7950qg9vfl9fjwxyjd659fq6wvchrz4kx9r41z9am146b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-camino" ,rust-camino-1)
+                       ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/camino-rs/camino-tempfile")
+    (synopsis "Manage temporary files and directories with UTF-8 paths")
+    (description
+     "This package provides a library for managing temporary files and
+directories, with UTF-8 paths.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-canonical-path-2
   (package
     (name "rust-canonical-path")
