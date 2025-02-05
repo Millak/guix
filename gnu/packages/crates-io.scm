@@ -39,7 +39,7 @@
 ;;; Copyright © 2023, 2024 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;; Copyright © 2023 Daniel Ziltener <dziltener@lyrion.ch>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
-;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024, 2025 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
@@ -81482,6 +81482,35 @@ tools.")
        (sha256
         (base32 "15gax4765vm2inh45m7cvaf4mgd2mb2mn0i87np0i1d95qhla822"))))
     (arguments '())))
+
+(define-public rust-target-spec-3
+  (package
+    (name "rust-target-spec")
+    (version "3.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "target-spec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zsib85z6863kjv10x8pbjc2cyr7g60p5kxpcdqyvdy8zmvbq06s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-expr" ,rust-cfg-expr-0.17)
+        ("rust-guppy-workspace-hack" ,rust-guppy-workspace-hack-0.1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-target-lexicon" ,rust-target-lexicon-0.12)
+        ("rust-unicode-ident" ,rust-unicode-ident-1))
+       #:cargo-development-inputs (("rust-test-case" ,rust-test-case-3)
+                                   ("rust-toml" ,rust-toml-0.5))))
+    (home-page "https://github.com/guppy-rs/guppy")
+    (synopsis "Evaluate Cargo.toml target specifications")
+    (description
+     "This package lets you evaluate Cargo.toml target specifications.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-target-triple-0.1
   (package
