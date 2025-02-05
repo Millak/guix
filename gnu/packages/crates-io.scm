@@ -5414,6 +5414,35 @@ futures.")
     (description "This package provides recursion for async functions in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-async-scoped-0.9
+  (package
+    (name "rust-async-scoped")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-scoped" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h47p4is1i5bvsy1i5mdlk521cdjznclxwgfab2gzvckln70fhj0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  ;; compilation errors in test module
+                  (delete 'check))
+       #:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-pin-project" ,rust-pin-project-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-femme" ,rust-femme-2)
+                                   ("rust-log" ,rust-log-0.4))))
+    (home-page "https://github.com/rmanoka/async-scoped")
+    (synopsis "Spawn scoped async futures for async_std and tokio")
+    (description
+     "This package provides spawn scoped (non static) asynchronous futures
+for async_std and tokio runtimes.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-async-session-3
   (package
     (name "rust-async-session")
