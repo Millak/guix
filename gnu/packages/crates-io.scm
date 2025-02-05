@@ -37960,6 +37960,26 @@ language tags.")
     (description "Lazy static regular expressions checked at compile time.")
     (license license:expat)))
 
+(define-public rust-lazy-regex-2
+  (package
+    (inherit rust-lazy-regex-3)
+    (name "rust-lazy-regex")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lazy-regex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m1mhaf7d488jx3gcy4yvmywi4zphpjqrs59gm5q39lfqqiw8qzz"))))
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--" "--skip=src/lib.rs - (line 139)")
+           #:cargo-inputs
+           (list rust-lazy-regex-proc-macros-2
+                 rust-once-cell-1
+                 rust-regex-1)))))
+
 (define-public rust-lazy-regex-proc-macros-3
   (package
     (name "rust-lazy-regex-proc-macros")
