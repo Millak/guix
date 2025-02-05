@@ -47,6 +47,7 @@
 ;;; Copyright © 2021, 2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021, 2022, 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
+;;; Copyright © 2021 Mekeor Melire <mekeor.melire@gmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022, 2023, 2025 Felix Gruber <felgru@posteo.net>
@@ -1463,6 +1464,34 @@ Model} (SAM) templates into AWS CloudFormation templates.")
      "The AWS X-Ray SDK for Python enables Python developers to record and
 emit information from within their applications to the AWS X-Ray service.")
     (license license:asl2.0)))
+
+(define-public python-publicsuffixlist
+  (package
+    (name "python-publicsuffixlist")
+    (version "1.0.2.20250202")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "publicsuffixlist" version))
+       (sha256
+        (base32 "0llam7g7sv08lcfgy18iph8br8ldjmy2qbjaykc9pd3z4iisb0yd"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (home-page "https://github.com/ko-zu/psl")
+    (synopsis "Public suffix list for Python")
+    (description
+     "This package provides an implementation of
+@url{https://publicsuffix.org/, Public Suffix List } as Python library.
+
+Features:
+@itemize
+@item supports IDN (unicode and punycoded)
+@item shipped with built-in PSL and an updater script
+@item written in Pure Python with no library dependencies
+@end itemize")
+    (license license:mpl2.0)))
 
 (define-public python-python3-saml
   (package
