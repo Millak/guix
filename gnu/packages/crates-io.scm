@@ -61884,6 +61884,32 @@ to write.")
         (base32
          "1kckgj8qscpi23y62zrfmni73k6h78nvhs3z9myiwq9q7g3b2l3z"))))))
 
+(define-public rust-quick-xml-0.23
+  (package
+    (inherit rust-quick-xml-0.26)
+    (name "rust-quick-xml")
+    (version "0.23.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quick-xml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1slry2g2wrj38fnzj9ybzq9wjyknrfg25x5vzfpzn5b8kj2zrfhi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            ;; test files not included
+                            "--skip=sample_1_full" "--skip=sample_2_full")
+       #:cargo-inputs (("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde-value" ,rust-serde-value-0.7))))))
+
 (define-public rust-quick-xml-0.22
   (package
     (inherit rust-quick-xml-0.27)
