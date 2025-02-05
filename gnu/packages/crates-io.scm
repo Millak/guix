@@ -75812,6 +75812,29 @@ package provides derive macros.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-snake-case-0.3
+  (package
+    (name "rust-snake-case")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "snake_case" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v4f132rk9wxiw8hb3kgnixirzr8kbfhg2lgsf4b85vbg02a0jfn"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "Cargo.toml" (("readme =.*") "")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/emilk/snake_case")
+    (synopsis "String-like type only containing non-empty snake_case")
+    (description
+     "This package provides @code{SnakeCase}, a String-like type that
+can only contain valid non-empty snake_case.")
+    (license license:expat)))
+
 (define-public rust-snap-1
   (package
     (name "rust-snap")
