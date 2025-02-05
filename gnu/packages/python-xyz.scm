@@ -600,6 +600,29 @@ comparison operators, as defined in the original
 edit distance algorithm for Python in Cython for high performance.")
     (license license:bsd-3)))
 
+(define-public python-takethetime
+  (package
+    (name "python-takethetime")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "TakeTheTime" version))
+       (sha256
+        (base32 "1y9gzqb9l1f2smx8783ccjzjvby5mphshgrfks7s75mml59h9qyv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; tests are time dependent and not provided in PyPI
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (home-page "https://github.com/ErikBjare/TakeTheTime")
+    (synopsis "Timing chunks of code")
+    (description
+     "This package implements a functionality for time taking using context
+managers.")
+    (license license:expat)))
+
 (define-public python-trubar
   (package
     (name "python-trubar")
