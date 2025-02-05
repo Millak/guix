@@ -34696,6 +34696,25 @@ with compile-time deflation and runtime lazy inflation.")
 crate.")
     (license license:asl2.0)))
 
+(define-public rust-indent-write-2
+  (package
+    (name "rust-indent-write")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "indent_write" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hqjp80argdskrhd66g9sh542yxy8qi77j6rc69qd0l7l52rdzhc"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Lucretiel/indent-write")
+    (synopsis "Write adapters to add indentation")
+    (description
+     "This package provides simple Write adapters to add line
+indentation.")
+    (license license:mpl2.0)))
+
 (define-public rust-indenter-0.3
   (package
     (name "rust-indenter")
