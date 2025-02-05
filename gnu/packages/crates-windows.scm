@@ -956,6 +956,29 @@ See winapi for types and constants.")
     (description "Safe bindings to Windows Cryptography API: Next Generation")
     (license license:bsd-3)))
 
+(define-public rust-win32job-2
+  (package
+    (name "rust-win32job")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "win32job" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g1blsb7ixrqjicykx82rvrymcydlsdgfwzb61x88iyrazsinasv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rusty-fork" ,rust-rusty-fork-0.3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-windows" ,rust-windows-0.52))))
+    (home-page "https://github.com/ohadravid/win32job-rs")
+    (synopsis "Safe API for Windows job objects")
+    (description
+     "This package provides a safe API for Windows job objects.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-winapi-0.3
   (package
     (name "rust-winapi")
