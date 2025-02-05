@@ -37983,6 +37983,26 @@ language tags.")
     (description "This package provides proc macros for the lazy_regex crate.")
     (license license:expat)))
 
+(define-public rust-lazy-regex-proc-macros-2
+  (package
+    (inherit rust-lazy-regex-proc-macros-3)
+    (name "rust-lazy-regex-proc-macros")
+    (version "2.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lazy-regex-proc_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08hwc7w6y20v32p08swg9ar9p86gawas4bp60zi8bkjniwdw3pwf"))))
+    (arguments
+     (list #:tests? #f  ; cannot find macro `regex` in this scope
+           #:cargo-inputs
+           (list rust-proc-macro2-1
+                 rust-quote-1
+                 rust-regex-1
+                 rust-syn-1)))))
+
 (define-public rust-lazy-static-1
   (package
     (name "rust-lazy-static")
