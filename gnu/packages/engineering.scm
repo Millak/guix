@@ -1909,7 +1909,7 @@ bindings for Python, Java, OCaml and more.")
   (package
     (inherit capstone)
     (name "python-capstone")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -1928,6 +1928,9 @@ bindings for Python, Java, OCaml and more.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "make" "check")))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
      (list capstone))))
 
