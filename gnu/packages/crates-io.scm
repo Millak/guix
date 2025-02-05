@@ -22766,8 +22766,35 @@ Emacs' support for dynamic modules.")
     (description "This package provides a library for parsing .eml files.")
     (license license:asl2.0)))
 
+(define-public rust-emojis-0.6
+  (package
+    (name "rust-emojis")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "emojis" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x02bixi1f8kjk8g5qsrwpwznpya65yh5gy8p8wja7qq3zgz3qcr"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           (list rust-phf-0.11
+                 rust-serde-1)
+           #:cargo-development-inputs
+           (list rust-serde-json-1
+                 rust-toml-0.5)))
+    (home-page "https://github.com/rossmacarthur/emojis")
+    (synopsis "Lookup emoji in O(1) time")
+    (description
+     "Lookup emoji in O(1) time, access metadata and @code{GitHub} shortcodes,
+iterate over all emoji, and more.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-emojis-0.5
   (package
+    (inherit rust-emojis-0.6)
     (name "rust-emojis")
     (version "0.5.3")
     (source
@@ -22777,15 +22804,8 @@ Emacs' support for dynamic modules.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0pdrhzlx53ksb41dx3qjl6qg9nj711vj28r8d92pv0lij5sbq1rl"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-phf" ,rust-phf-0.11))))
-    (home-page "https://github.com/rossmacarthur/emojis")
-    (synopsis "Lookup emoji in O(1) time")
-    (description
-     "Lookup emoji in O(1) time, access metadata and @code{GitHub} shortcodes,
-iterate over all emoji, and more.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-phf" ,rust-phf-0.11))))))
 
 (define-public rust-empfindung-0.2
   (package
