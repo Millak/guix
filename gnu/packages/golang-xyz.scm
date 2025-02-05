@@ -2834,10 +2834,6 @@ package provides an API for comparing Golden files.")
     (arguments
      (list
       #:import-path "github.com/cheggaaa/pb/v3"
-      #:unpack-path "github.com/cheggaaa/pb"))
-    (arguments
-     (list
-      #:import-path "github.com/cheggaaa/pb/v3"
       #:unpack-path "github.com/cheggaaa/pb"))))
 
 (define-public go-github-com-chzyer-logex
