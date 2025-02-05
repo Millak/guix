@@ -45664,6 +45664,33 @@ feed reader.")
     ;; No copyright headers in the source code.  LICENSE indicates gpl3.
     (license license:gpl3)))
 
+(define-public rust-newline-converter-0.3
+  (package
+    (name "rust-newline-converter")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "newline-converter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zyw2hyjl89rj1zmp9n8fq69pbfp9zl1cbal73agxjxixjbv1dj7"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           (list rust-unicode-segmentation-1)
+           #:cargo-development-inputs
+           (list rust-criterion-0.4
+                 rust-fancy-regex-0.10
+                 rust-lazy-regex-2
+                 rust-once-cell-1
+                 rust-quickcheck-1)))
+    (home-page
+     "https://github.com/spitfire05/rnc/tree/master/crates/newline-converter")
+    (synopsis "Newline byte converter library")
+    (description "This package provides a newline byte converter library.")
+    (license license:expat)))
+
 (define-public rust-newsblur-api-0.1
   (package
     (name "rust-newsblur-api")
