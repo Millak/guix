@@ -92373,8 +92373,60 @@ for Wasm in browsers.")
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
         ("rust-web-sys" ,rust-web-sys-0.3))))))
 
+(define-public rust-webbrowser-1
+  (package
+    (name "rust-webbrowser")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "webbrowser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dgmn2fwxzyraq2pp5g4hwj852qmvw0i2b14apw0y4ann7my37za"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--"
+                  "--skip=os::tests_xdg::test_xdg_open_local_file"
+                  "--skip=tests::test_existence_default"
+                  "--skip=tests::test_local_file_abs_path"
+                  "--skip=tests::test_local_file_rel_path"
+                  "--skip=tests::test_local_file_uri"
+                  "--skip=tests::test_open_default")
+           #:cargo-inputs
+           (list rust-block2-0.5
+                 rust-core-foundation-0.10
+                 rust-home-0.5
+                 rust-jni-0.21
+                 rust-log-0.4
+                 rust-ndk-context-0.1
+                 rust-objc2-0.5
+                 rust-objc2-foundation-0.2
+                 rust-url-2
+                 rust-web-sys-0.3)
+           #:cargo-development-inputs
+           (list rust-actix-files-0.6
+                 rust-actix-web-4
+                 rust-crossbeam-channel-0.5
+                 rust-env-logger-0.9
+                 rust-ndk-glue-0.7
+                 rust-rand-0.8
+                 rust-serial-test-0.10
+                 rust-tokio-1
+                 rust-urlencoding-2)))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
+    (home-page "https://github.com/amodm/webbrowser-rs")
+    (synopsis "Open URLs in web browsers available on a platform")
+    (description
+     "Webbrowser-rs is a Rust library to open URLs in the web browsers
+available on a platform.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-webbrowser-0.8
   (package
+    (inherit rust-webbrowser-1)
     (name "rust-webbrowser")
     (version "0.8.15")
     (source
@@ -92384,7 +92436,6 @@ for Wasm in browsers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "12zw844al9kf32p5llv6dbqzaky9fa3ng497i3sk8mj0m5sswryv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--"
                             "--skip=os::tests_xdg::test_xdg_open_local_file"
@@ -92411,15 +92462,7 @@ for Wasm in browsers.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-serial-test" ,rust-serial-test-0.10)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-urlencoding" ,rust-urlencoding-2))))
-    (native-inputs (list pkg-config))
-    (inputs (list (list zstd "lib")))
-    (home-page "https://github.com/amodm/webbrowser-rs")
-    (synopsis "Open URLs in web browsers available on a platform")
-    (description
-     "Webbrowser-rs is a Rust library to open URLs in the web browsers
-available on a platform.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-urlencoding" ,rust-urlencoding-2))))))
 
 (define-public rust-wee-alloc-0.4
   (package
