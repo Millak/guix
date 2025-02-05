@@ -78173,8 +78173,32 @@ for your structs.")
 for your structs.")
     (license license:expat)))
 
+(define-public rust-structmeta-0.3
+  (package
+    (name "rust-structmeta")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "structmeta" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0afk0s9paazsvyvsirxvbnqp3blhdck3fmfhdw7xf209skc7a59f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-structmeta-derive" ,rust-structmeta-derive-0.3)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/frozenlib/structmeta")
+    (synopsis "Parse Rust's attribute arguments by defining a struct")
+    (description "This package lets you parse Rust's attribute arguments by
+defining a struct.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-structmeta-0.2
   (package
+    (inherit rust-structmeta-0.3)
     (name "rust-structmeta")
     (version "0.2.0")
     (source
@@ -78190,12 +78214,7 @@ for your structs.")
                        ("rust-quote" ,rust-quote-1)
                        ("rust-structmeta-derive" ,rust-structmeta-derive-0.2)
                        ("rust-syn" ,rust-syn-2))
-       #:cargo-development-inputs (("rust-syn" ,rust-syn-2))))
-    (home-page "https://github.com/frozenlib/structmeta")
-    (synopsis "Parse Rust's attribute arguments by defining a struct")
-    (description "This package lets you parse Rust's attribute arguments by
-defining a struct.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-syn" ,rust-syn-2))))))
 
 (define-public rust-structmeta-0.1
   (package
