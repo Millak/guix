@@ -137,6 +137,37 @@
         ("rust-serial-test" ,rust-serial-test-3)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-auth-git2-0.5
+  (package
+    (name "rust-auth-git2")
+    (version "0.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "auth-git2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "149p4485g7js5a0lnblgw549mhy62rkdh4ib63kky09b46pva41q"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; use of undeclared crate or module `log`
+           #:cargo-inputs
+           (list rust-dirs-5
+                 rust-git2-0.19
+                 rust-log-0.4
+                 rust-terminal-prompt-0.2)
+           #:cargo-development-inputs
+           (list rust-assert2-0.3
+                 rust-clap-4
+                 rust-env-logger-0.10
+                 rust-git2-0.19)))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.8 libssh2 zlib))
+    (home-page "https://github.com/de-vri-es/auth-git2-rs")
+    (synopsis "Authentication for `git2`")
+    (description "This package provides Authentication for `git2`.")
+    (license license:bsd-2)))
+
 (define-public rust-forgejo-api-0.5
   (package
     (name "rust-forgejo-api")
