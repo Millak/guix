@@ -2583,6 +2583,51 @@ cell types and subtypes.")
 and sequence consensus.")
     (license license:expat)))
 
+(define-public python-cnmf
+  (package
+    (name "python-cnmf")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cnmf" version))
+       (sha256
+        (base32 "0aic8cwj6riykcfgl6v2x3si5z04gaknkh5a8lcyv1qh4s1gx3d3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests in git checkout and PyPI archive
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-envs
+            (lambda _
+              (setenv "MPLCONFIGDIR" "/tmp")
+              ;; Numba needs a writable dir to cache functions.
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-anndata
+           python-fastcluster
+           python-matplotlib
+           python-numba
+           python-numpy
+           python-palettable
+           python-pandas
+           python-pyyaml
+           python-scanpy
+           python-scikit-learn
+           python-scipy))
+    (home-page "https://github.com/dylkot/cNMF")
+    (synopsis "Consensus NMF for scRNA-Seq data")
+    (description
+     "This tool offers a pipeline for inferring gene expression programs from
+scRNA-Seq. It takes a count matrix (N cells X G genes) as input and produces
+a (K x G) matrix of gene expression programs (GEPs) and a (N x K) matrix
+specifying the usage of each program for each cell in the data.")
+    (license license:expat)))
+
 (define-public python-cyvcf2
   (package
     (name "python-cyvcf2")
