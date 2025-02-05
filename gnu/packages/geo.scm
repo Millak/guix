@@ -4038,3 +4038,105 @@ cloud data (produced by 3D imaging systems such as laser scanners),
 attributes associated with 3D point data (color and intensity),
 and 2D images (photos taken using a 3D imaging system).")
     (license license:boost1.0)))
+
+(define-public cloudcompare
+  (package
+    (name "cloudcompare")
+    (version "2.13.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CloudCompare/CloudCompare")
+             (commit (string-append "v" version))
+             ;; TODO: External source code could be unbundled.
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wck05zbfkw7cg8h6fjiinjzrsk55858qg0k2m5rmr9dfdzjbzbb"))))
+    (inputs (list qtbase-5
+                  qtsvg-5
+                  qtlocation-5
+                  qttools-5
+                  gdal
+                  laszip
+                  xerces-c
+                  libe57format
+                  zlib))
+    (native-inputs (list xvfb-run))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list
+                           ;; Options
+                           "-DOPTION_BUILD_CCVIEWER=NO"
+                           "-DBUILD_TESTING=ON"
+                           "-DOPTION_USE_SHAPE_LIB=YES"
+                           "-DOPTION_USE_DXF_LIB=YES"
+                           "-DOPTION_USE_GDAL=YES"
+                           ;; Shaders
+                           ;; At least one shader is needed
+                           "-DPLUGIN_GL_QEDL=YES"
+                           "-DPLUGIN_GL_QSSAO=YES"
+                           ;; IO
+                           "-DPLUGIN_IO_QCORE=YES"
+                           "-DPLUGIN_IO_QADDITIONAL=NO"
+                           "-DPLUGIN_IO_QCSV_MATRIX=NO"
+                           ;; No guix package for DRACO
+                           "-DPLUGIN_IO_QDRACO=NO"
+                           "-DPLUGIN_IO_QE57=YES"
+                           ;; No guix package for FBX
+                           "-DPLUGIN_IO_QFBX=NO"
+                           ;; laszip replaces PDAL in CloudCompare 2.13
+                           "-DPLUGIN_IO_QLAS=YES"
+                           "-DPLUGIN_IO_QPDAL=NO"
+                           "-DPLUGIN_IO_QPHOTOSCAN=YES"
+                           ;; No guix package for Riegl RDBlib
+                           "-DPLUGIN_IO_QRDB=NO"
+                           "-DPLUGIN_IO_QSTEP=NO"
+                           ;; Plugins
+                           "-DPLUGIN_STANDARD_QANIMATION=YES"
+                           "-DQANIMATION_WITH_FFMPEG_SUPPORT=NO"
+                           "-DPLUGIN_STANDARD_QBROOM=YES"
+                           ;; Compilation error
+                           "-DPLUGIN_STANDARD_QCANUPO=YES"
+                           "-DPLUGIN_STANDARD_QCLOUDLAYERS=YES"
+                           "-DPLUGIN_STANDARD_QCOLORIMETRIC_SEGMENTER=YES"
+                           "-DPLUGIN_STANDARD_QCOMPASS=YES"
+                           ;; Only for Windows at the moment
+                           "-DPLUGIN_STANDARD_QCORK=NO"
+                           "-DPLUGIN_STANDARD_QCSF=YES"
+                           "-DPLUGIN_STANDARD_QFACETS=YES"
+                           ;; Error with eigen
+                           "-DPLUGIN_STANDARD_QHOUGH_NORMALS=NO"
+                           "-DPLUGIN_STANDARD_QHPR=YES"
+                           ;; Need qtWebSocket engine
+                           "-DPLUGIN_STANDARD_QJSONRPC=NO"
+                           "-DPLUGIN_STANDARD_QM3C2=YES"
+                           ;; Need PCL lib
+                           "-DPLUGIN_STANDARD_MASONRY_QAUTO_SEG=NO"
+                           "-DPLUGIN_STANDARD_MASONRY_QMANUAL_SEG=NO"
+                           "-DPLUGIN_STANDARD_QPCL=NO"
+                           ;; Need CGAL
+                           "-DPLUGIN_STANDARD_QMESH_BOOLEAN=NO"
+                           "-DPLUGIN_STANDARD_QMPLANE=YES"
+                           "-DPLUGIN_STANDARD_QPCV=NO"
+                           "-DPLUGIN_STANDARD_QPOISSON_RECON=YES"
+                           "-DPLUGIN_STANDARD_QRANSAC_SD=YES"
+                           "-DPLUGIN_STANDARD_QSRA=YES")
+      #:build-type "Release"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (invoke "xvfb-run" "make" "test"))))))
+    (home-page "https://cloudcompare.org/")
+    (synopsis "Point cloud processing software")
+    (description
+     "CloudCompare is a 3D point cloud (and triangular mesh) processing
+software.  It was originally designed to perform comparison between two
+3D point clouds (such as the ones obtained with a laser scanner) or between
+a point cloud and a triangular mesh.  It relies on an octree structure that
+is highly optimized for this particular use-case.  It is also meant to deal
+with huge point clouds.")
+    (license license:gpl2+)))
