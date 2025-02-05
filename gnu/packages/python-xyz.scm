@@ -578,6 +578,37 @@ comparison operators, as defined in the original
 @url{http://goessner.net/articles/JsonPath/, JSONPath} proposal.")
     (license license:asl2.0)))
 
+(define-public python-multiplex
+  (package
+    (name "python-multiplex")
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/dankilman/multiplex")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a662liqhiya47i6vrz3q03w08viqg3wj5j3g58mz175hcdcmmmv"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-asyncio))
+    (propagated-inputs
+     (list python-aiofiles
+           python-aiostream
+           python-click
+           python-easy-ansi
+           python-pyte))
+    (home-page "https://github.com/dankilman/multiplex")
+    (synopsis "Parallel stream of outputs from multiple processes")
+    (description
+     "This package provides a functionality to view output of multiple
+processes, in parallel, in the console, with an interactive TUI.")
+    (license license:expat)))
+
 (define-public python-pyxdameraulevenshtein
   (package
     (name "python-pyxdameraulevenshtein")
