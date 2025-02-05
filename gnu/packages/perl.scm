@@ -6796,6 +6796,26 @@ that aims to be compatible with the Uniforum message translations system as
 implemented for example in GNU gettext.")
     (license license:gpl3+)))
 
+(define-public perl-lib-relative
+  (package
+    (name "perl-lib-relative")
+    (version "1.002")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/D/DB/DBOOK/lib-relative-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "12x7r08y04ml02wawhnk7j8zcb0ijd6vwy1yc0bnjh3w2qah4iz4"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/lib-relative")
+    (synopsis "Add paths relative to the current file to @code{@@INC}")
+    (description
+     "@code{lib::relative} module proposes a more straightforward method than
+adding a path to @code{@@INC}: take a path relative to the current
+file, absolutize it, and add it to @code{@@INC}.")
+    (license license:artistic2.0)))
+
 (define-public perl-lingua-en-sentence
   (package
     (name "perl-lingua-en-sentence")
