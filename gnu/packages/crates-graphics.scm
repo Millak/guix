@@ -1269,6 +1269,26 @@ Direct Rendering Manager} format fourcc.")
      `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.66)
                        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
+(define-public rust-enable-ansi-support-0.2
+  (package
+    (name "rust-enable-ansi-support")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "enable-ansi-support" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q5wv5b9inh7kzc2464ch51ffk920f9yb0q9xvvlp9cs5apg6kxa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.42))))
+    (home-page "https://github.com/sunshowers-code/enable-ansi-support")
+    (synopsis "Enable ANSI escape code support on Windows 10")
+    (description
+     "This package provides ANSI escape code support on Windows 10.")
+    (license license:expat)))
+
 (define-public rust-enterpolation-0.2
   (package
     (name "rust-enterpolation")
