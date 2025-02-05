@@ -64582,6 +64582,27 @@ from another process.")
 using tokio's @code{RwLock}")
     (license license:mpl2.0)))
 
+(define-public rust-recursion-0.5
+  (package
+    (name "rust-recursion")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "recursion" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wc8x5340scj9fl281nydgwrpzbbdffj764pw6zppkcchlk58w4z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-futures" ,rust-futures-0.3)
+                       ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/inanna-malick/recursion")
+    (synopsis "Cache-aware stack safe recursion")
+    (description
+     "This package provides cache-aware stack safe recursion.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-recvmsg-1
   (package
     (name "rust-recvmsg")
