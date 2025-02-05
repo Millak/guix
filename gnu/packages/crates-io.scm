@@ -21235,6 +21235,41 @@ common subsequence.  The diff algorithms include Myer's diff and Patience
 diff.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-diffus-0.10
+  (package
+    (name "rust-diffus")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "diffus" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lsn5h1mfa8x7bfg9yqgr52p7drigpwgm5q8qh4r07dmfd5g43rw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  ;; Cargo toml specifies a readme path that only
+                  ;; exists in the git checkout
+                  (add-after 'unpack 'omit-absent-readme
+                    (lambda _
+                      (substitute* "Cargo.toml"
+                        (("readme = \"../README.md\"")
+                         "")))))
+       #:cargo-inputs (("rust-diffus-derive" ,rust-diffus-derive-0.10)
+                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-snake-case" ,rust-snake-case-0.3)
+                       ("rust-uuid" ,rust-uuid-0.5))))
+    (home-page "https://github.com/distil/diffus")
+    (synopsis "Find the difference between data structure instances")
+    (description
+     "This package lets you find the difference between two instances
+of any data structure.  Supports Collections, Strings, Maps, etc.  Uses
+LCS where applicable.  Also supports derive via `diffus-derive`.")
+    (license license:asl2.0)))
+
 (define-public rust-diffus-derive-0.10
   (package
     (name "rust-diffus-derive")
