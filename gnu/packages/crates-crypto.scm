@@ -17,6 +17,7 @@
 ;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +49,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-apple)
   #:use-module (gnu packages crates-check)
+  #:use-module (gnu packages crates-compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages crates-windows)
@@ -6604,3 +6606,27 @@ rand_core.")
      "This package provides a Rust implementation of @code{ZeroMQ's} Z85
 encoding mechanism with padding.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-zipsign-api-0.1
+  (package
+    (name "rust-zipsign-api")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zipsign-api" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z30vzhhhd1va9z7ksdw8x8f6y8jb200h2ryk85wvnx9mm3aa4v4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.22)
+                       ("rust-ed25519-dalek" ,rust-ed25519-dalek-2)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-zip" ,rust-zip-2))))
+    (home-page "https://github.com/Kijewski/zipsign")
+    (synopsis "Sign and verify zip files with an ed25519 signing key")
+    (description
+     "This package lets you sign and verify `.zip` and `.tar.gz` files
+using an ed25519 signing key.")
+    (license (list license:asl2.0))))
