@@ -321,6 +321,42 @@ server process.")
 caching server.")
     (license license:expat)))
 
+(define-public python-domain-connect
+  (package
+    (name "python-domain-connect")
+    (version "0.0.11")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/Domain-Connect/domainconnect_python")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dhqbx15h074g51mj73j9hlyvb11isjnj4s9ih5kbw1g4vf1q1jk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Check and sanity-check phases require /etc/resolv.conf, which is not
+      ;; present in container.
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases (delete 'sanity-check))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-cryptography
+           python-dnspython
+           python-future
+           python-publicsuffix
+           python-publicsuffixlist))
+    (home-page "https://github.com/Domain-Connect/domainconnect_python")
+    (synopsis "Client library for Domain Connect protocol")
+    (description
+     "This package provides a Service Provider functionality in both Sync and
+Async mode for @url{https://domainconnect.org/, Domain Connect protocol}.")
+    (license license:expat)))
+
 (define-public python-eventlet
   (package
     (name "python-eventlet")
