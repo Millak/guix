@@ -80503,6 +80503,29 @@ return values to @code{std::io::Result} to indicate success or failure.")
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-termsize-0.1
+  (package
+    (name "rust-termsize")
+    (version "0.1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termsize" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zb80dcqngbvw1mgkdsagwx6hvcsxr1zpql5bf6n0wn14mfgy4bg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags '(list "--"
+                                     "--skip=imp::tests::test_shell"
+                                     "--skip=tests::test_get")
+           #:cargo-inputs (list rust-libc-0.2
+                                rust-winapi-0.3)))
+    (home-page "https://github.com/softprops/termsize")
+    (synopsis "Retrieves terminal size")
+    (description "This package retrieves terminal size.")
+    (license license:expat)))
+
 (define-public rust-termtree-0.5
   (package
     (name "rust-termtree")
