@@ -52,7 +52,7 @@
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
-;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2024, 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -97,6 +97,8 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages perl-check)
+  #:use-module (gnu packages php)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
@@ -121,6 +123,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
@@ -3878,6 +3881,74 @@ tests.  The output format is JSON.")
     (description
      "Trompeloeil is a thread-safe header-only mocking framework for C++11/14.")
     (license license:boost1.0)))
+
+(define-public tidyall
+  (package
+    (name "tidyall")
+    (version "0.84")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/D/DR/DROLSKY/Code-TidyAll-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "1xxil8yfbd4nizwaaris07sp441nhx3ixr4qj13l1x6pxphi9h5k"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'remove-command-line-tool)
+                   (add-after 'install 'wrap-programs
+                     (lambda _
+                       (wrap-program (string-append #$output "/bin/tidyall")
+                         (list "PERL5LIB" ":"
+                               'prefix
+                               (list (getenv "PERL5LIB")
+                                     (string-append #$output
+                                                    "/lib/perl5/site_perl")))))))))
+    (native-inputs (list perl-test-class-most
+                         perl-test-differences
+                         perl-test-fatal
+                         perl-test-warnings
+                         perl-lib-relative
+                         php))
+    (inputs (list bash-minimal))
+    (propagated-inputs (list perl-capture-tiny
+                             perl-config-ini
+                             perl-timedate
+                             perl-file-which
+                             perl-ipc-run3
+                             perl-ipc-system-simple
+                             perl-list-compare
+                             perl-list-someutils
+                             perl-log-any
+                             perl-module-runtime
+                             perl-moo-2
+                             perl-path-tiny
+                             perl-scope-guard
+                             perl-specio
+                             perl-specio-library-path-tiny
+                             perl-text-diff
+                             perl-time-duration-parse
+                             perl-try-tiny
+                             perl-parallel-forkmanager
+                             perl-file-pushd))
+    (home-page "https://metacpan.org/release/Code-TidyAll")
+    (synopsis "Engine for tidyall, your all-in-one code tidier and validator")
+    (description
+     "@command{tidyall} makes a lot of code tidiers and validators available
+from a single unified interface.  You can run @command{tidyall} on a
+single file or on an entire project hierarchy, and configure which
+tidiers/validators are applied to which files.  @command{tidyall} will
+back up files beforehand, and for efficiency will only consider files
+that have changed since they were last processed.
+
+Note that if you see some missing tidier or validator modules error,
+you can let tidyall load them after install them.  For example, one
+can run @code{guix shell perl-perl-tidy perl} in advance to load
+@code{Perl::Tidy}.")
+    (license license:perl-license)))
 
 (define-public unittest-cpp
   (package
