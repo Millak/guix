@@ -14118,28 +14118,29 @@ and 1.0.")
 (define-public rust-comfy-table-7
   (package
     (name "rust-comfy-table")
-    (version "7.1.0")
+    (version "7.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "comfy-table" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11i6sm6vznv9982hqpbrba43vfd7vv7zqzlywdc4qykvdhyh8r3w"))))
+        (base32 "1nd4ns4vimypk554vqjww3iq14mdjbaawn5q1jl6w9j3nvknbw94"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-console" ,rust-console-0.15)
-        ("rust-crossterm" ,rust-crossterm-0.27)
-        ("rust-strum" ,rust-strum-0.25)
-        ("rust-strum-macros" ,rust-strum-macros-0.25)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       (("rust-ansi-str" ,rust-ansi-str-0.8)
+        ("rust-console" ,rust-console-0.15)
+        ("rust-crossterm" ,rust-crossterm-0.28)
+        ("rust-strum" ,rust-strum-0.26)
+        ("rust-strum-macros" ,rust-strum-macros-0.26)
+        ("rust-unicode-width" ,rust-unicode-width-0.2))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.5)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-proptest" ,rust-proptest-1)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-rstest" ,rust-rstest-0.18))))
+        ("rust-rstest" ,rust-rstest-0.23))))
     (home-page "https://github.com/nukesor/comfy-table")
     (synopsis "Library for building tables with automatic content wrapping")
     (description
