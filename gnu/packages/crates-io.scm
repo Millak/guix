@@ -71304,6 +71304,43 @@ in stable Rust.")
 replace or uninstall themselves.")
     (license license:asl2.0)))
 
+(define-public rust-self-update-0.41
+  (package
+    (name "rust-self-update")
+    (version "0.41.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "self_update" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rcdma359wic71km5n139rx61zn0fhz3k7r6aacc300k0rq3k6j6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-either" ,rust-either-1)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-hyper" ,rust-hyper-1)
+                       ("rust-indicatif" ,rust-indicatif-0.17)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-quick-xml" ,rust-quick-xml-0.23)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-reqwest" ,rust-reqwest-0.12)
+                       ("rust-self-replace" ,rust-self-replace-1)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-tar" ,rust-tar-0.4)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-urlencoding" ,rust-urlencoding-2)
+                       ("rust-zip" ,rust-zip-2)
+                       ("rust-zipsign-api" ,rust-zipsign-api-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/jaemk/self_update")
+    (synopsis "Updates for standalone executables")
+    (description
+     "This package provides self-updating for standalone executables.")
+    (license license:expat)))
+
 (define-public rust-selinux-0.4
   (package
     (name "rust-selinux")
