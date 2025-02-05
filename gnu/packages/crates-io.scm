@@ -19339,6 +19339,39 @@ hexadecimal, base32, and base64.")
     (description "This package provides Custom derive for the databake crate.")
     (license license:unicode)))
 
+(define-public rust-datatest-stable-0.3
+  (package
+    (name "rust-datatest-stable")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "datatest-stable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "109r4iaib8w01wn3vn4x035fzr2y7d78dhl0k5rs6c9h80ybpsqr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            ;; These tests require unpackaged artifacts.
+                            "--skip=integration" "--skip=run_example"
+                            "--skip=unix::run_example_with_colons")
+       #:cargo-inputs (("rust-camino" ,rust-camino-1)
+                       ("rust-fancy-regex" ,rust-fancy-regex-0.14)
+                       ("rust-include-dir" ,rust-include-dir-0.7)
+                       ("rust-libtest-mimic" ,rust-libtest-mimic-0.8)
+                       ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs
+       (("rust-camino-tempfile" ,rust-camino-tempfile-1)
+        ("rust-include-dir" ,rust-include-dir-0.7)
+        ("rust-fs-extra" ,rust-fs-extra-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/nextest-rs/datatest-stable")
+    (synopsis "Data-driven tests that work on stable Rust")
+    (description
+     "This package provides data-driven tests that work on stable Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dateparser-0.1
   (package
     (name "rust-dateparser")
