@@ -137,6 +137,43 @@
         ("rust-serial-test" ,rust-serial-test-3)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-forgejo-api-0.4
+  (package
+    (name "rust-forgejo-api")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "forgejo-api" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bc1m39g3i8mm70cf35hcqh898xpm2y4x819y8qfaaw6pnhg90pn"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; Wants to run against a forgejo instance.
+           #:cargo-inputs
+           (list rust-base64ct-1
+                 rust-bytes-1
+                 rust-reqwest-0.11
+                 rust-serde-1
+                 rust-serde-json-1
+                 rust-soft-assert-0.1
+                 rust-thiserror-1
+                 rust-time-0.3
+                 rust-tokio-1
+                 rust-url-2
+                 rust-zeroize-1)
+           #:cargo-development-inputs
+           (list rust-eyre-0.6
+                 rust-reqwest-0.11
+                 rust-tokio-1)))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://codeberg.org/Cyborus/forgejo-api")
+    (synopsis "Interface to Forgejo's Web API")
+    (description "This package provides an interface to Forgejo's Web API.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-git-testament-0.2
   (package
     (name "rust-git-testament")
