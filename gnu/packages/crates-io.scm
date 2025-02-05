@@ -74785,6 +74785,23 @@ maximal amount of configuration possible intended.")
      "You can write SOCKS proxy clients with this crate.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-soft-assert-0.1
+  (package
+    (name "rust-soft-assert")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "soft_assert" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15vxbp1j0n908yffvm3xacbcdl212j7k95md85ai663jxb3pw2dm"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Cyborus04/soft_assert")
+    (synopsis "Non-panicking assertions")
+    (description "This package provides non-panicking assertions.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sourcemap-6
   (package
     (name "rust-sourcemap")
