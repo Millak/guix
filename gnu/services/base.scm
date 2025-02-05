@@ -16,7 +16,7 @@
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hui Lu <luhuins@163.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 muradm <mail@muradm.net>
+;;; Copyright © 2021, 2025 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2022 ( <paren@disroot.org>
@@ -274,8 +274,10 @@
             greetd-service-type
             greetd-configuration
             greetd-terminal-configuration
+            greetd-user-session
             greetd-agreety-session
-            greetd-wlgreet-session
+            greetd-wlgreet-session  ; deprecated
+            greetd-wlgreet-configuration
             greetd-wlgreet-sway-session
 
             %base-services))
@@ -3393,87 +3395,220 @@ to handle."
 ;;; greetd-service-type -- minimal and flexible login manager daemon
 ;;;
 
+(define-record-type* <greetd-user-session>
+  greetd-user-session make-greetd-user-session greetd-user-session?
+  (command greetd-user-session-command (default (file-append bash "/bin/bash")))
+  (command-args greetd-user-session-command-args (default '("-l")))
+  (extra-env greetd-user-session-extra-env (default '()))
+  (xdg-session-type greetd-user-session-xdg-session-type (default "tty"))
+  (xdg-env? greetd-user-session-xdg-env? (default #t)))
+
+(define (make-greetd-user-session-command config)
+  (match-record config <greetd-user-session>
+                (command command-args extra-env)
+                (program-file
+                 "greetd-user-session-command"
+                 #~(begin
+                     (use-modules (ice-9 match))
+                     (for-each (match-lambda ((var . val) (setenv var val)))
+                               (quote (#$@extra-env)))
+                     (apply execl #$command #$command
+                            (list #$@command-args))))))
+
+(define (make-greetd-xdg-user-session-command config)
+  (match-record config <greetd-user-session>
+                (command command-args extra-env xdg-session-type)
+                (program-file
+                 "greetd-xdg-user-session-command"
+                 #~(begin
+                     (use-modules (ice-9 match))
+                     (let* ((username (getenv "USER"))
+                            (useruid (passwd:uid (getpwuid username)))
+                            (useruid (number->string useruid)))
+                       (setenv "XDG_SESSION_TYPE" #$xdg-session-type)
+                       (setenv "XDG_RUNTIME_DIR"
+                               (string-append "/run/user/" useruid)))
+                     (for-each (match-lambda ((var . val) (setenv var val)))
+                               (quote (#$@extra-env)))
+                     (apply execl #$command #$command
+                            (list #$@command-args))))))
+
+(define-gexp-compiler (greetd-user-session-compiler
+                       (session <greetd-user-session>)
+                       system target)
+  (lower-object
+   ((if (greetd-user-session-xdg-env? session)
+        make-greetd-xdg-user-session-command
+        make-greetd-user-session-command) session)))
+
 (define-record-type* <greetd-agreety-session>
-  greetd-agreety-session make-greetd-agreety-session
-  greetd-agreety-session?
-  (agreety greetd-agreety (default greetd))
-  (command greetd-agreety-command (default (file-append bash "/bin/bash")))
-  (command-args greetd-agreety-command-args (default '("-l")))
-  (extra-env greetd-agreety-extra-env (default '()))
-  (xdg-env? greetd-agreety-xdg-env? (default #t)))
+  greetd-agreety-session make-greetd-agreety-session greetd-agreety-session?
+  (agreety greetd-agreety-session-agreety (default greetd))
+  (command greetd-agreety-session-command
+           (default (greetd-user-session))
+           (sanitize warn-greetd-agreety-session-command-type))
+  (command-args greetd-agreety-command-args
+                (default #nil)
+                (sanitize warn-deprecated-greetd-agreety-command-args))
+  (extra-env greetd-agreety-extra-env
+             (default #nil)
+             (sanitize warn-deprecated-greetd-agreety-extra-env))
+  (xdg-env? greetd-agreety-xdg-env?
+            (default #nil)
+            (sanitize warn-deprecated-greetd-agreety-xdg-env?)))
 
-(define (greetd-agreety-tty-session-command config)
-  (match-record config <greetd-agreety-session>
-    (command command-args extra-env)
-    (program-file
-     "agreety-tty-session-command"
-     #~(begin
-         (use-modules (ice-9 match))
-         (for-each (match-lambda ((var . val) (setenv var val)))
-                   (quote (#$@extra-env)))
-         (apply execl #$command #$command (list #$@command-args))))))
+(define (warn-deprecated-greetd-agreety-command-args value)
+  (unless (nil? value)
+    (warn-about-deprecation
+     'command-args #f
+     #:replacement '<greetd-user-seesion>))
+  value)
 
-(define (greetd-agreety-tty-xdg-session-command config)
-  (match-record config <greetd-agreety-session>
-    (command command-args extra-env)
-    (program-file
-     "agreety-tty-xdg-session-command"
-     #~(begin
-         (use-modules (ice-9 match))
-         (let*
-             ((username (getenv "USER"))
-              (useruid (passwd:uid (getpwuid username)))
-              (useruid (number->string useruid)))
-           (setenv "XDG_SESSION_TYPE" "tty")
-           (setenv "XDG_RUNTIME_DIR" (string-append "/run/user/" useruid)))
-         (for-each (match-lambda ((var . val) (setenv var val)))
-                   (quote (#$@extra-env)))
-         (apply execl #$command #$command (list #$@command-args))))))
+(define (warn-deprecated-greetd-agreety-extra-env value)
+  (unless (nil? value)
+    (warn-about-deprecation
+     'extra-env #f
+     #:replacement '<greetd-user-seesion>))
+  value)
+
+(define (warn-deprecated-greetd-agreety-xdg-env? value)
+  (unless (nil? value)
+    (warn-about-deprecation
+     'xdg-env? #f
+     #:replacement '<greetd-user-seesion>))
+  value)
+
+(define-deprecated/alias greetd-agreety greetd-agreety-session-agreety)
+(define-deprecated/alias greetd-agreety-command greetd-agreety-session-command)
+
+(define (warn-greetd-agreety-session-command-type value)
+  (unless (greetd-user-session? value)
+    (warn-about-deprecation
+     "arbitrary command" #f
+     #:replacement '<greetd-user-session>))
+  value)
+
+(define (greetd-agreety-session-to-user-session session default-command)
+  (let ((command (greetd-agreety-session-command session))
+        (command-args (or (greetd-agreety-command-args session)
+                          (greetd-user-session-command-args default-command)))
+        (extra-env (or (greetd-agreety-extra-env session)
+                       (greetd-user-session-extra-env default-command)))
+        (xdg-env? (or (greetd-agreety-xdg-env? session)
+                      (greetd-user-session-xdg-env? default-command))))
+    (greetd-user-session
+     (command command)
+     (command-args command-args)
+     (extra-env extra-env)
+     (xdg-env? xdg-env?))))
 
 (define-gexp-compiler (greetd-agreety-session-compiler
                        (session <greetd-agreety-session>)
                        system target)
-  (let ((agreety (file-append (greetd-agreety session)
-                              "/bin/agreety"))
-        (command ((if (greetd-agreety-xdg-env? session)
-                      greetd-agreety-tty-xdg-session-command
-                      greetd-agreety-tty-session-command)
-                  session)))
+  (let* ((agreety
+          (file-append (greetd-agreety-session-agreety session) "/bin/agreety"))
+         (command
+          (greetd-agreety-session-command session))
+         (command
+          (if (greetd-user-session? command)
+              command
+              (greetd-agreety-session-to-user-session
+               session
+               (greetd-user-session)))))
     (lower-object
-     (program-file "agreety-command"
-       #~(execl #$agreety #$agreety "-c" #$command)))))
+     (program-file
+      "agreety-wrapper"
+      #~(execl #$agreety #$agreety "-c" #$command)))))
 
-(define-record-type* <greetd-wlgreet-session>
-  greetd-wlgreet-session make-greetd-wlgreet-session
-  greetd-wlgreet-session?
-  (wlgreet greetd-wlgreet (default wlgreet))
+(define (make-greetd-sway-greeter-command sway sway-config)
+  (let ((sway-bin (file-append sway "/bin/sway")))
+    (program-file
+     "greeter-sway-command"
+     (with-imported-modules '((guix build utils))
+       #~(begin
+           (use-modules (guix build utils))
+
+           (let* ((username (getenv "USER"))
+                  (user (getpwnam username))
+                  (useruid (passwd:uid user))
+                  (usergid (passwd:gid user))
+                  (useruid-s (number->string useruid))
+                  ;; /run/user/<greeter-user-uid> won't exist yet
+                  ;; this will contain WAYLAND_DISPLAY socket file
+                  ;; and log-file below
+                  (user-home-dir "/tmp/.greeter-home")
+                  (user-xdg-runtime-dir (string-append user-home-dir "/run"))
+                  (user-xdg-cache-dir (string-append user-home-dir "/cache"))
+                  (log-file (string-append (number->string (getpid)) ".log"))
+                  (log-file (string-append user-home-dir "/" log-file)))
+             (for-each (lambda (d)
+                         (mkdir-p d)
+                         (chown d useruid usergid) (chmod d #o700))
+                       (list user-home-dir
+                             user-xdg-runtime-dir
+                             user-xdg-cache-dir))
+             (setenv "HOME" user-home-dir)
+             (setenv "XDG_CACHE_DIR" user-xdg-cache-dir)
+             (setenv "XDG_RUNTIME_DIR" user-xdg-runtime-dir)
+             (dup2 (open-fdes log-file
+                              (logior O_CREAT O_WRONLY O_APPEND) #o640) 1)
+             (dup2 1 2)
+             (execl #$sway-bin #$sway-bin "-d" "-c" #$sway-config)))))))
+
+(define-record-type* <greetd-wlgreet-configuration>
+  greetd-wlgreet-configuration make-greetd-wlgreet-configuration
+  greetd-wlgreet-configuration?
+  (output-mode greetd-wlgreet-configuration-output-mode (default "all"))
+  (scale greetd-wlgreet-configuration-scale (default 1))
+  (background greetd-wlgreet-configuration-background (default '(0 0 0 0.9)))
+  (headline greetd-wlgreet-configuration-headline (default '(1 1 1 1)))
+  (prompt greetd-wlgreet-configuration-prompt (default '(1 1 1 1)))
+  (prompt-error greetd-wlgreet-configuration-prompt-error (default '(1 1 1 1)))
+  (border greetd-wlgreet-configuration-border (default '(1 1 1 1)))
+  (wlgreet greetd-wlgreet
+           (default #nil)
+           (sanitize warn-deprecated-greetd-wlgreet))
   (command greetd-wlgreet-command
-           (default (file-append sway "/bin/sway")))
-  (command-args greetd-wlgreet-command-args (default '()))
-  (output-mode greetd-wlgreet-output-mode (default "all"))
-  (scale greetd-wlgreet-scale (default 1))
-  (background greetd-wlgreet-background (default '(0 0 0 0.9)))
-  (headline greetd-wlgreet-headline (default '(1 1 1 1)))
-  (prompt greetd-wlgreet-prompt (default '(1 1 1 1)))
-  (prompt-error greetd-wlgreet-prompt-error (default '(1 1 1 1)))
-  (border greetd-wlgreet-border (default '(1 1 1 1)))
-  (extra-env greetd-wlgreet-extra-env (default '())))
+           (default #nil)
+           (sanitize warn-deprecated-greetd-wlgreet-command))
+  (command-args greetd-wlgreet-command-args
+                (default #nil)
+                (sanitize warn-deprecated-greetd-wlgreet-command-args))
+  (extra-env greetd-wlgreet-extra-env
+             (default #nil)
+             (sanitize warn-deprecated-greetd-wlgreet-extra-env)))
 
-(define (greetd-wlgreet-wayland-session-command session)
-  (program-file "wlgreet-session-command"
-    #~(let* ((username (getenv "USER"))
-             (useruid (number->string
-                       (passwd:uid (getpwuid username))))
-             (command #$(greetd-wlgreet-command session)))
-        (use-modules (ice-9 match))
-        (setenv "XDG_SESSION_TYPE" "wayland")
-        (setenv "XDG_RUNTIME_DIR" (string-append "/run/user/" useruid))
-        (for-each (lambda (env) (setenv (car env) (cdr env)))
-                  '(#$@(greetd-wlgreet-extra-env session)))
-        (apply execl command command
-               (list #$@(greetd-wlgreet-command-args session))))))
+(define-deprecated/alias greetd-wlgreet-session greetd-wlgreet-configuration)
 
-(define (make-wlgreet-config-color section-name color)
+(define (warn-deprecated-greetd-wlgreet value)
+  (unless (nil? value)
+    (warn-about-deprecation
+     'wlgreet #f
+     #:replacement '<greetd-wlgreet-sway-session>))
+  value)
+
+(define (warn-deprecated-greetd-wlgreet-command value)
+  (unless (nil? value)
+    (warn-about-deprecation
+     'command #f
+     #:replacement '<greetd-wlgreet-sway-session>))
+  value)
+
+(define (warn-deprecated-greetd-wlgreet-command-args value)
+  (unless (nil? value)
+    (warn-about-deprecation
+     'command-args #f
+     #:replacement '<greetd-wlgreet-sway-session>))
+  value)
+
+(define (warn-deprecated-greetd-wlgreet-extra-env value)
+  (unless (nil? value)
+    (warn-about-deprecation
+     'extra-env #f
+     #:replacement '<greetd-wlgreet-sway-session>))
+  value)
+
+(define (make-greetd-wlgreet-config-color section-name color)
   (match color
     ((red green blue opacity)
      (string-append
@@ -3483,76 +3618,103 @@ to handle."
       "blue = " (number->string blue) "\n"
       "opacity = " (number->string opacity) "\n"))))
 
-(define (make-wlgreet-configuration-file session)
-  (let ((command (greetd-wlgreet-wayland-session-command session))
-        (output-mode (greetd-wlgreet-output-mode session))
-        (scale (greetd-wlgreet-scale session))
-        (background (greetd-wlgreet-background session))
-        (headline (greetd-wlgreet-headline session))
-        (prompt (greetd-wlgreet-prompt session))
-        (prompt-error (greetd-wlgreet-prompt-error session))
-        (border (greetd-wlgreet-border session)))
-    (mixed-text-file "wlgreet.toml"
-      "command = \"" command "\"\n"
-      "outputMode = \"" output-mode "\"\n"
-      "scale = " (number->string scale) "\n"
-      (apply string-append
-             (map (match-lambda
-                    ((section-name . color)
-                     (make-wlgreet-config-color section-name color)))
-                  `(("background" . ,background)
-                    ("headline" . ,headline)
-                    ("prompt" . ,prompt)
-                    ("prompt-error" . ,prompt-error)
-                    ("border" . ,border)))))))
+(define (make-greetd-wlgreet-config command color)
+  (match-record color <greetd-wlgreet-configuration>
+    (output-mode scale background headline prompt prompt-error border)
+    (mixed-text-file
+     "wlgreet.toml"
+     "command = \"" command "\"\n"
+     "outputMode = \"" output-mode "\"\n"
+     "scale = " (number->string scale) "\n"
+     (apply string-append
+            (map (match-lambda
+                   ((section-name . color)
+                    (make-greetd-wlgreet-config-color section-name color)))
+                 `(("background" . ,background)
+                   ("headline" . ,headline)
+                   ("prompt" . ,prompt)
+                   ("prompt-error" . ,prompt-error)
+                   ("border" . ,border)))))))
 
 (define-record-type* <greetd-wlgreet-sway-session>
   greetd-wlgreet-sway-session make-greetd-wlgreet-sway-session
   greetd-wlgreet-sway-session?
-  (wlgreet-session greetd-wlgreet-sway-session-wlgreet-session       ;<greetd-wlgreet-session>
-                   (default (greetd-wlgreet-session)))
-  (sway greetd-wlgreet-sway-session-sway (default sway))             ;<package>
-  (sway-configuration greetd-wlgreet-sway-session-sway-configuration ;file-like
-                      (default (plain-file "wlgreet-sway-config" ""))))
+  (sway greetd-wlgreet-sway-session-sway (default sway))
+  (sway-configuration greetd-wlgreet-sway-session-sway-configuration
+                      (default #f))
+  (wlgreet greetd-wlgreet-sway-session-wlgreet (default wlgreet))
+  (wlgreet-configuration greetd-wlgreet-sway-session-wlgreet-configuration
+                         (default (greetd-wlgreet-configuration)))
+  (command greetd-wlgreet-sway-session-command (default (greetd-user-session)))
+  (wlgreet-session
+   greetd-wlgreet-sway-session-wlgreet-session
+   (default #nil)
+   (sanitize warn-deprecated-greetd-wlgreet-sway-session-wlgreet-session)))
 
-(define (make-wlgreet-sway-configuration-file session)
-  (let* ((wlgreet-session (greetd-wlgreet-sway-session-wlgreet-session session))
-         (wlgreet-config (make-wlgreet-configuration-file wlgreet-session))
-         (wlgreet (file-append (greetd-wlgreet wlgreet-session) "/bin/wlgreet"))
-         (sway-config (greetd-wlgreet-sway-session-sway-configuration session))
-         (swaymsg (file-append (greetd-wlgreet-sway-session-sway session)
-                               "/bin/swaymsg")))
-    (mixed-text-file "wlgreet-sway.conf"
-      "include " sway-config "\n"
-      "xwayland disable\n"
-      "exec \"" wlgreet " --config " wlgreet-config "; "
-      swaymsg " exit\"\n")))
+(define (warn-deprecated-greetd-wlgreet-sway-session-wlgreet-session value)
+  (unless (nil? value)
+    (warn-about-deprecation
+     'wlgreet-session #f
+     #:replacement 'wlgreet-configuration))
+  value)
+
+(define (make-greetd-wlgreet-sway-session-sway-config session)
+  (match-record session <greetd-wlgreet-sway-session>
+                (sway sway-configuration wlgreet wlgreet-configuration command)
+    (let ((wlgreet-bin (file-append wlgreet "/bin/wlgreet"))
+          (wlgreet-config-file
+           (make-greetd-wlgreet-config command wlgreet-configuration))
+          (swaymsg-bin (file-append sway "/bin/swaymsg")))
+      (mixed-text-file
+       "wlgreet-sway-config"
+       (if sway-configuration
+           #~(string-append "include " #$sway-configuration "\n")
+           "")
+       "xwayland disable\n"
+       "exec \"" wlgreet-bin " --config " wlgreet-config-file
+       "; " swaymsg-bin " exit\"\n"))))
+
+(define (greetd-wlgreet-session-to-config session config)
+  (let* ((wlgreet (or (greetd-wlgreet config)
+                      (greetd-wlgreet-sway-session-wlgreet session)))
+         (default-command (greetd-wlgreet-sway-session-command session))
+         (command (or (greetd-wlgreet-command config)
+                      (greetd-user-session-command default-command)))
+         (command-args (or (greetd-wlgreet-command-args config)
+                           (greetd-user-session-command-args default-command)))
+         (extra-env (or (greetd-wlgreet-extra-env config)
+                        (greetd-user-session-extra-env default-command))))
+    (greetd-wlgreet-sway-session
+     (sway (greetd-wlgreet-sway-session-sway session))
+     (sway-configuration
+      (greetd-wlgreet-sway-session-sway-configuration session))
+     (wlgreet wlgreet)
+     (wlgreet-configuration config)
+     (command
+      (greetd-user-session
+       (command command)
+       (command-args command-args)
+       (extra-env extra-env))))))
 
 (define-gexp-compiler (greetd-wlgreet-sway-session-compiler
                        (session <greetd-wlgreet-sway-session>)
                        system target)
-  (let ((sway (file-append (greetd-wlgreet-sway-session-sway session)
-                           "/bin/sway"))
-        (config (make-wlgreet-sway-configuration-file session)))
-    (lower-object
-     (program-file "wlgreet-sway-session-command"
-       #~(let* ((log-file (open-output-file
-                           (string-append "/tmp/sway-greeter."
-                                          (number->string (getpid))
-                                          ".log")))
-                (username (getenv "USER"))
-                (useruid (number->string (passwd:uid (getpwuid username)))))
-           ;; redirect stdout/err to log-file
-           (dup2 (fileno log-file) 1)
-           (dup2 1 2)
-           (sleep 1) ;give seatd/logind some time to start up
-           (setenv "XDG_RUNTIME_DIR" (string-append "/run/user/" useruid))
-           (execl #$sway #$sway "-d" "-c" #$config))))))
+  (let ((s (if (nil? (greetd-wlgreet-sway-session-wlgreet-session session))
+               session
+               (greetd-wlgreet-session-to-config
+                session
+                (greetd-wlgreet-sway-session-wlgreet-session session)))))
+    (match-record s <greetd-wlgreet-sway-session> (sway)
+      (lower-object
+       (make-greetd-sway-greeter-command
+        sway
+        (make-greetd-wlgreet-sway-session-sway-config s))))))
 
 (define-record-type* <greetd-terminal-configuration>
   greetd-terminal-configuration make-greetd-terminal-configuration
   greetd-terminal-configuration?
   (greetd greetd-package (default greetd))
+  (shepherd-requirement greetd-shepherd-requirement (default '()))
   (config-file-name greetd-config-file-name (thunked)
                     (default (default-config-file-name this-record)))
   (log-file-name greetd-log-file-name (thunked)
@@ -3625,7 +3787,8 @@ to handle."
          (name "greeter")
          (group "greeter")
          (supplementary-groups (greetd-greeter-supplementary-groups config))
-         (system? #t))))
+         (system? #t)
+         (create-home-directory? #f))))
 
 (define (make-greetd-pam-mount-conf-file config)
   (computed-file
@@ -3675,6 +3838,11 @@ to handle."
                              (list optional-pam-mount))))
            pam))))))
 
+(define (greetd-run-user-activation config)
+  #~(let ((d "/run/user"))
+      (mkdir d #o755)
+      (chmod d #o755)))
+
 (define (greetd-shepherd-services config)
   (map
    (lambda (tc)
@@ -3682,10 +3850,12 @@ to handle."
          ((greetd-bin (file-append (greetd-package tc) "/sbin/greetd"))
           (greetd-conf (make-greetd-terminal-configuration-file tc))
           (greetd-log (greetd-log-file-name tc))
-          (greetd-vt (greetd-terminal-vt tc)))
+          (greetd-vt (greetd-terminal-vt tc))
+          (greetd-requirement (greetd-shepherd-requirement tc)))
        (shepherd-service
         (documentation "Minimal and flexible login manager daemon")
-        (requirement '(pam user-processes host-name udev virtual-terminal))
+        (requirement `(pam user-processes host-name udev virtual-terminal
+                           ,@greetd-requirement))
         (provision (list (symbol-append
                           'term-tty
                           (string->symbol (greetd-terminal-vt tc)))))
@@ -3706,6 +3876,7 @@ login manager daemon.")
     (list
      (service-extension account-service-type greetd-accounts)
      (service-extension file-system-service-type (const %greetd-file-systems))
+     (service-extension activation-service-type greetd-run-user-activation)
      (service-extension etc-service-type greetd-etc-service)
      (service-extension pam-root-service-type greetd-pam-service)
      (service-extension shepherd-root-service-type greetd-shepherd-services)))

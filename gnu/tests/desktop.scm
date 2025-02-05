@@ -141,13 +141,21 @@
                  (terminal-vt "2")
                  (default-session-command
                    (greetd-agreety-session
-                    (extra-env '(("MY_VAR" . "1")))
-                    (xdg-env? #f))))
+                    (command
+                     (greetd-user-session
+                      (extra-env '(("MY_VAR" . "1")))
+                      (xdg-env? #f))))))
                 ;; we can use different shell instead of default bash
                 (greetd-terminal-configuration
                  (terminal-vt "3")
                  (default-session-command
-                   (greetd-agreety-session (command (file-append zsh "/bin/zsh")))))
+                   (greetd-agreety-session
+                    (command
+                     (greetd-user-session
+                      (command (file-append zsh "/bin/zsh"))
+                      (command-args '("-l"))
+                      (extra-env '(("MY_VAR" . "1")))
+                      (xdg-env? #f))))))
                 ;; we can use any other executable command as greeter
                 (greetd-terminal-configuration
                  (terminal-vt "4")
