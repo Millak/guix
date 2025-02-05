@@ -44,7 +44,7 @@
 ;;; Copyright © 2021 WinterHound <winterhound@yandex.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 muradm <mail@muradm.net>
+;;; Copyright © 2021, 2025 muradm <mail@muradm.net>
 ;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -6051,6 +6051,28 @@ that runs on a Wayland compositor such as @command{sway}.  It
 is implemented with pure Wayland APIs, so it does not depend
 on a GUI toolkit.")
     (license license:gpl3)))
+
+(define-public gtkgreet
+  (package
+    (name "gtkgreet")
+    (version "0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~kennylevinsen/gtkgreet")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bqxz39lc8vh6bkirvrbn2lgf1qz5b04lfwgp5xa1ki1bnm5i80q"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config scdoc))
+    (inputs (list gtk+ gtk-layer-shell json-c))
+    (synopsis "GTK-based greeter for greetd")
+    (description
+     "GTK-based greeter for greetd, to be run under a compositor such as Cage.")
+    (home-page "https://git.sr.ht/~kennylevinsen/gtkgreet")
+    (license license:gpl3+)))
 
 (define-public libseat
   (package
