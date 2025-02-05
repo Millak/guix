@@ -31581,6 +31581,24 @@ support.")
     (description "This package provides custom derive support for gumdrop.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-guppy-workspace-hack-0.1
+  (package
+    (name "rust-guppy-workspace-hack")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "guppy-workspace-hack" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "106pg6ifjq92rz5xbbv0aw4xchl1fkikpjry72p0nxczv620cqlj"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/facebookincubator/cargo-guppy")
+    (synopsis "workspace-hack package")
+    (description
+     "This package provides a workspace-hack package, managed by hakari.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-half-2
   (package
     (name "rust-half")
