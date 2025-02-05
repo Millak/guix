@@ -9,7 +9,7 @@
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
-;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
+;;; Copyright © 2024, 2025 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,7 +36,11 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
-  #:use-module (gnu packages crates-io))
+  #:use-module (gnu packages crates-compression)
+  #:use-module (gnu packages crates-crypto)
+  #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-web)
+  #:use-module (gnu packages crates-windows))
 
 (define-public rust-criterion-0.5
   (package
@@ -532,6 +536,63 @@ criterion.")
     (description
      "This crate makes it even easier to use mocking by providing a way to
 select the mock struct at compile time.  Used with the Mockall crate.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-nextest-filtering-0.12
+  (package
+    (name "rust-nextest-filtering")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nextest-filtering" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fz7w2qsmh98c246x16l9j5xypsj1nbc715wszajjkjiv7hbibvy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--" "--exact"
+                            ;; artifacts not packaged
+                            "--skip=test_binary_query"
+                            "--skip=test_expr_binary"
+                            "--skip=test_expr_binary_id_glob"
+                            "--skip=test_expr_deps"
+                            "--skip=test_expr_kind"
+                            "--skip=test_expr_kind_partial"
+                            "--skip=test_expr_package_contains"
+                            "--skip=test_expr_package_equal"
+                            "--skip=test_expr_package_regex"
+                            "--skip=test_expr_platform"
+                            "--skip=test_expr_rdeps"
+                            "--skip=test_expr_test"
+                            "--skip=test_expr_test_difference::with_and_not"
+                            "--skip=test_expr_test_difference::with_minus"
+                            "--skip=test_expr_test_intersect::with_ampersand"
+                            "--skip=test_expr_test_intersect::with_and"
+                            "--skip=test_expr_test_not"
+                            "--skip=test_expr_test_union::with_or"
+                            "--skip=test_expr_test_union::with_pipe"
+                            "--skip=test_expr_test_union::with_plus"
+                            "--skip=test_expr_with_no_matching_packages")
+       #:cargo-inputs
+       (("rust-globset" ,rust-globset-0.4)
+        ("rust-guppy" ,rust-guppy-0.17)
+        ("rust-miette" ,rust-miette-7)
+        ("rust-nextest-metadata" ,rust-nextest-metadata-0.12)
+        ("rust-nextest-workspace-hack" ,rust-nextest-workspace-hack-0.1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-recursion" ,rust-recursion-0.5)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.8)
+        ("rust-test-strategy" ,rust-test-strategy-0.4)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-winnow" ,rust-winnow-0.6)
+        ("rust-xxhash-rust" ,rust-xxhash-rust-0.8))
+       #:cargo-development-inputs (("rust-test-case" ,rust-test-case-3))))
+    (home-page "https://github.com/nextest-rs/nextest")
+    (synopsis "Filtering DSL for cargo-nextest")
+    (description
+     "This package provides a filtering DSL for cargo-nextest.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-nextest-workspace-hack-0.1
