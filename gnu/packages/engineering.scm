@@ -954,24 +954,26 @@ as well as pick-place files.")
                   "1h062bbpw8nk0jamkya1k4lsgaia796jyviiz2gkdi6k1bxhwgpa"))))
       (build-system ant-build-system)
       (arguments
-       `(#:tests? #f ; there are no tests
-         #:jar-name "translate2geda.jar"
-         #:source-dir "."
-         #:main-class "translate2geda"
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'install 'install-bin
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (wrapper (string-append bin "/translate2geda")))
-                 (mkdir-p bin)
-                 (with-output-to-file wrapper
+       (list #:tests? #f ; there are no tests
+             #:jar-name "translate2geda.jar"
+             #:source-dir "."
+             #:main-class "translate2geda"
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'install 'install-bin
                    (lambda _
-                     (format #t "#!/bin/sh~%exec ~a -jar ~a/share/java/translate2geda.jar"
-                             (which "java") out)))
-                 (chmod wrapper #o555))
-               #t)))))
+                     (let* ((bin (string-append #$output "/bin"))
+                            (wrapper (string-append bin "/translate2geda"))
+                            (jar "/share/java/translate2geda.jar"))
+                       (mkdir-p bin)
+                       (with-output-to-file wrapper
+                         (lambda _
+                           (format #t
+                                   "#!/bin/sh~%exec ~a -jar ~a~a~%"
+                                   (which "java")
+                                   #$output
+                                   jar)))
+                       (chmod wrapper #o555)))))))
       (home-page "https://github.com/erichVK5/translate2geda")
       (synopsis "Utility for converting symbol and footprint formats to gEDA")
       (description
