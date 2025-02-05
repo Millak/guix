@@ -93982,6 +93982,27 @@ algorithm in Rust.")
 pure rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-yaml-rust2-0.8
+  (package
+    (inherit rust-yaml-rust2-0.9)
+    (name "rust-yaml-rust2")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "yaml-rust2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y0mf6n1jnf88xqfv5ppicnm5jg3fl57dmp9vd2v2bvg9q61c0l9"))))
+    (arguments
+     (list #:cargo-inputs
+           (list rust-arraydeque-0.5
+                 rust-encoding-rs-0.8
+                 rust-hashlink-0.8)
+           #:cargo-development-inputs
+           (list rust-libtest-mimic-0.3
+                 rust-quickcheck-1)))))
+
 (define-public rust-yansi-1
   (package
     (name "rust-yansi")
