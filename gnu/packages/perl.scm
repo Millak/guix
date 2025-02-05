@@ -10293,6 +10293,29 @@ all.  Instead, you can explicitly check a value against a type, and optionally
 coerce values to that type.")
     (license license:artistic2.0)))
 
+(define-public perl-specio-library-path-tiny
+  (package
+    (name "perl-specio-library-path-tiny")
+    (version "0.05")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/D/DR/DROLSKY/Specio-Library-Path-Tiny-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0lbsqb3l5ra2k6481dkc7m1zk92fjpwnvgvql1k2rsyspjwhppv0"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-file-pushd perl-test-fatal))
+    (propagated-inputs (list perl-path-tiny perl-specio))
+    (home-page "https://metacpan.org/release/Specio-Library-Path-Tiny")
+    (synopsis "Types and coercions for Specio")
+    (description
+     "This library provides a set of @code{Path::Tiny} types and coercions for
+Specio.  These types can be used with @code{Moose}, @code{Moo},
+@code{Params::ValidationCompiler}, and other modules.")
+    (license license:asl2.0)))
+
 (define-public perl-spiffy
   (package
     (name "perl-spiffy")
