@@ -35881,7 +35881,18 @@ text-property translator.")
         (base32
          "14n9bq0vxz6gnd5d8nzfc327647iww7gxly43rd4lw7fza8dk380"))))
     (build-system emacs-build-system)
-    (arguments (list #:exclude #~(list "emacs-devel.el")))
+    (arguments
+     (list #:include
+           #~(list "org-noter-core.el"
+                   "org-noter.el"
+                   "org-noter-test-utils.el"
+                   "modules/org-noter-pdf.el"
+                   "modules/org-noter-djvu.el"
+                   "modules/org-noter-nov.el"
+                   "modules/org-noter-org-roam.el"
+                   "modules/org-noter-pdf.el")
+           #:exclude
+           #~(list "emacs-devel.el")))
     (native-inputs (list emacs-log4e emacs-with-simulated-input))
     (propagated-inputs (list emacs-org))
     (home-page "https://github.com/org-noter/org-noter")
