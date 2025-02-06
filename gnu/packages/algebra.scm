@@ -240,6 +240,15 @@ the real span of the lattice.")
      (base32
       "1pch6bk76f1i6cwwgm7hhxi5h71m52lqayp4mnyj0jmjk406bhdp"))))
 
+(define pari-seadata-small
+  ;; version from 2009-06-18
+  (origin
+    (method url-fetch)
+    (uri "https://pari.math.u-bordeaux.fr/pub/pari/packages/seadata-small.tgz")
+    (sha256
+     (base32
+      "13qafribxwkz8h3haa0cng7arz0kh7398br4y7vqs9ib8w9yjnxz"))))
+
 (define-public pari-gp
   (package
     (name "pari-gp")
@@ -265,9 +274,10 @@ the real span of the lattice.")
               (invoke "./Configure"
                       "--mt=pthread"
                       (string-append "--prefix=" #$output))))
-          (add-after 'install 'install-galdata
+          (add-after 'install 'install-data
             (lambda _
               (invoke "tar" "-xvf" #$pari-galdata)
+              (invoke "tar" "-xvf" #$pari-seadata-small)
               (copy-recursively "data/" (string-append
                                          #$output
                                          "/share/pari")))))))
