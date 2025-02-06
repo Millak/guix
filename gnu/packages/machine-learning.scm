@@ -1841,21 +1841,20 @@ than 8 bits, and at the end only some significant 8 bits are kept.")
 (define-public dlib
   (package
     (name "dlib")
-    (version "19.20")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://dlib.net/files/dlib-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "139jyi19qz37wwmmy48gil9d1kkh2r3w3bwdzabha6ayxmba96nz"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Delete ~13MB of bundled dependencies.
-                  (delete-file-recursively "dlib/external")
-                  (delete-file-recursively "docs/dlib/external")
-                  #t))))
+    (version "19.24.6")
+    (source
+     (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/davisking/dlib.git")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "11j86nxkj78v8xdx2s80mfplq4j0rs0y0iidqgma12b2pdk3p486"))
+      (modules '((guix build utils)))
+      (snippet
+       '(begin
+          (delete-file-recursively "dlib/external")))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
@@ -1891,20 +1890,25 @@ than 8 bits, and at the end only some significant 8 bits are kept.")
                #t)))
          (replace 'check
            (lambda _
-             ;; No test target, so we build and run the unit tests here.
-             (let ((test-dir (string-append "../dlib-" ,version "/dlib/test")))
-               (with-directory-excursion test-dir
-                 (invoke "make" "-j" (number->string (parallel-job-count)))
-                 (invoke "./dtest" "--runall"))
-               #t))))))
+             ;; XXX: This causes a rebuild--however, trying to run the tests
+             ;; without rebuilding causes a lot of errors.
+             ;; Also, the official way is to rebuild.
+             (mkdir "../source/dlib/test/build")
+             (with-directory-excursion "../source/dlib/test/build"
+               (invoke "cmake" "-DBUILD_SHARED_LIBS=ON" "..")
+               (invoke "cmake" "--build" "." "--config" "Release")
+               (invoke "./dtest" "--runall")))))))
     (native-inputs
      (list pkg-config
            ;; For tests.
            libnsl))
     (inputs
-     `(("giflib" ,giflib)
+     `(("ffmpeg" ,ffmpeg)
+       ("giflib" ,giflib)
        ("libjpeg" ,libjpeg-turbo)
+       ("libjxl" ,libjxl-0.10)
        ("libpng" ,libpng)
+       ("libwebp" ,libwebp)
        ("libx11" ,libx11)
        ("openblas" ,openblas)
        ("zlib" ,zlib)))
@@ -6409,47 +6413,6 @@ performance library of basic building blocks for deep learning applications.")
      "This package provides a standard API for reinforcement learning and a
 diverse set of reference environments (formerly Gym).")
     (license license:expat)))
-
-(define-public dlib
-  (package
-   (name "dlib")
-   (version "19.24.6")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/davisking/dlib.git")
-           (commit (string-append "v" version))))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32 "11j86nxkj78v8xdx2s80mfplq4j0rs0y0iidqgma12b2pdk3p486"))
-     (modules '((guix build utils)))
-     (snippet
-      '(begin
-         (delete-file-recursively "dlib/external")))))
-   (build-system cmake-build-system)
-   (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-                     (add-after 'unpack 'chdir
-                                (lambda _
-                                  (chdir "dlib")))
-                     (replace 'check
-                              (lambda _
-                                ;; Following the instructions on the website.
-                                (mkdir "../dlib/test/build")
-                                (with-directory-excursion "../dlib/test/build"
-                                                          (invoke "cmake" "..")
-                                                          (invoke "cmake" "--build" "." "--config" "Release")
-                                                          (invoke "./dtest" "--runall")))))))
-   (inputs (list libpng libjpeg-turbo openblas zlib libjxl))
-   (home-page "https://github.com/davisking/dlib")
-   (synopsis
-    "Toolkit for making machine learning and data analysis applications")
-   (description
-    "This package provides a toolkit for making machine learning and data
-analysis applications in C++.")
-   (license license:boost1.0)))
 
 ;; This will build dlib in the process of building python-dlib--and that
 ;; seems to be intended by upstream.  Well, at least it probably optimizes
