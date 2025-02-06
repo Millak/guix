@@ -665,10 +665,8 @@ GUIX_LOCPATH="$GUIX_PROFILE/lib/locale${GUIX_LOCPATH:+:}$GUIX_LOCPATH"
 # searches 'Info-default-directory-list'.
 export INFOPATH="$_GUIX_PROFILE/share/info:$GUIX_PROFILE/share/info:$INFOPATH"
 
-GUIX_PROFILE="$HOME/.guix-home/profile"
-[ -f "$GUIX_PROFILE/etc/profile" ] && . "$GUIX_PROFILE/etc/profile"
-[ -L "$GUIX_PROFILE" ] && \
-GUIX_LOCPATH="$GUIX_PROFILE/lib/locale${GUIX_LOCPATH:+:}$GUIX_LOCPATH"
+# NOTE: Guix Home handles its own profile initialization in ~/.profile. See
+# info '(guix) Configuring the Shell'.
 
 export GUIX_LOCPATH
 
