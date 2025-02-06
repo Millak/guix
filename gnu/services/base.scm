@@ -3875,9 +3875,11 @@ to handle."
            pam))))))
 
 (define (greetd-run-user-activation config)
-  #~(let ((d "/run/user"))
-      (mkdir d #o755)
-      (chmod d #o755)))
+  #~(begin
+      (use-modules (guix build utils))
+      (let ((d "/run/user"))
+        (mkdir-p d)
+        (chmod d #o755))))
 
 (define (greetd-shepherd-services config)
   (map
