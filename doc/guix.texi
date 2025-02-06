@@ -29,7 +29,7 @@ Copyright @copyright{} 2014, 2015, 2016 Alex Kost@*
 Copyright @copyright{} 2015, 2016 Mathieu Lirzin@*
 Copyright @copyright{} 2014 Pierre-Antoine Rault@*
 Copyright @copyright{} 2015 Taylan Ulrich Bayırlı/Kammer@*
-Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021, 2023 Leo Famulari@*
+Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021, 2023, 2025 Leo Famulari@*
 Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus@*
 Copyright @copyright{} 2016 Ben Woodcroft@*
 Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
@@ -136,6 +136,7 @@ Copyright @copyright{} 2024 Troy Figiel@*
 Copyright @copyright{} 2024 Sharlatan Hellseher@*
 Copyright @copyright{} 2024 45mg@*
 Copyright @copyright{} 2025 Sören Tempel@*
+Copyright @copyright{} 2025 Rostislav Svoboda@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -3978,7 +3979,14 @@ finding out about non-deterministic package builds (@pxref{Invoking guix
 challenge}).  Similarly, the @option{--check} option of @command{guix
 build} allows users to check whether previously-installed substitutes
 are genuine by rebuilding them locally (@pxref{build-check,
-@command{guix build --check}}).
+@command{guix build --check}}).  To force a full rebuild of a package
+(ignoring security updates via grafts (@pxref{Security Updates}), if any
+grafts exist—which is not always the case), use @option{--check}
+together with @option{--no-grafts} (@pxref{Common Build Options,
+@option{--no-grafts}}).  Because grafts are built as their own
+derivation, if the package you want to rebuild is subject to being
+grafted, merely using @option{--check} will only rebuild the grafting
+derivation, and not actually recompile the package.
 
 In the future, we want Guix to have support to publish and retrieve
 binaries to/from other users, in a peer-to-peer fashion.  If you would
