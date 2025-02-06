@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2015, 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2015, 2016, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2020, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
@@ -202,13 +202,16 @@ a flexible and convenient way.")
            ;; Groff is needed at build time for troff, grops, soelim, etc.
            groff))
     (inputs
-     (list gdbm
-           groff-minimal
-           less
-           libpipeline
-           libseccomp
-           util-linux
-           zstd))
+     (append
+       (list gdbm
+             groff-minimal
+             less
+             libpipeline)
+       (if (target-linux?)
+           (list libseccomp)
+           '())
+       (list util-linux
+             zstd)))
     (native-search-paths
      (list (search-path-specification
             (variable "MANPATH")
