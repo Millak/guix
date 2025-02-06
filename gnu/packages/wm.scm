@@ -2122,7 +2122,7 @@ narrow the items to those matching the tokens in the input.")
 (define-public sway
   (package
     (name "sway")
-    (version "1.10")
+    (version "1.10.1")
     (source
      (origin
        (method git-fetch)
@@ -2131,7 +2131,7 @@ narrow the items to those matching the tokens in the input.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f8mdvpv9w44r91944s90s0cssqvgmnhi4zxn4xa4xllg3z98drz"))))
+        (base32 "175px3446mkm8015dhs1c4ia4a275hyfpvr6jnyghnx1rf9m06xq"))))
     (build-system meson-build-system)
     (arguments
      (list
