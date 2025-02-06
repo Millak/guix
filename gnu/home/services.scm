@@ -281,6 +281,10 @@ GUIX_PROFILE=\"$HOME_ENVIRONMENT/profile\"
 PROFILE_FILE=\"$GUIX_PROFILE/etc/profile\"
 [ -f $PROFILE_FILE ] && . $PROFILE_FILE
 
+case $GUIX_LOCPATH in
+  *$GUIX_PROFILE/lib/locale*) ;;
+  *) export GUIX_LOCPATH=$GUIX_PROFILE/lib/locale:$GUIX_LOCPATH ;;
+esac
 case $XDG_DATA_DIRS in
   *$GUIX_PROFILE/share*) ;;
   *) export XDG_DATA_DIRS=$GUIX_PROFILE/share:$XDG_DATA_DIRS ;;
