@@ -6358,6 +6358,41 @@ DocView mode, and revisiting those PDF files later using the same mode will
 restore the saved place.")
     (license license:gpl3+)))
 
+(define-public emacs-org-pdftools
+  (let ((revision "0")
+        (commit "4e420233a153a9c4ab3d1a7e1d7d3211c836f0ac"))
+    (package
+      (name "emacs-org-pdftools")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/fuxialexander/org-pdftools.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0n8apjqlm7rs66l635szvsvc4qn8m147g07rgkd30a4v4m24mj8x"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+               (add-after 'unpack 'setenv
+                 (lambda _
+                   (substitute* "org-pdftools.el"
+                    ;; Fix a small typo.
+                    (("let [(]pdf-isearch-narrow-to-page t[)]")
+                     "let ((pdf-isearch-narrow-to-page t))"))
+                   (setenv "HOME" "/tmp"))))))
+      (propagated-inputs (list emacs-org-noter emacs-pdf-tools))
+      ;(native-inputs (list emacs-log4e emacs-with-simulated-input))
+      (synopsis "Org mode PDF tools (for doc-view, nov.el and pdf-tools)")
+      (description "This package provides org-mode PDF tools (for builtin
+doc-view and for pdf-view), for example to be able to store links to a page
+in a PDF into an org file.")
+      (home-page "https://github.com/fuxialexander/org-pdftools")
+      (license license:gpl3+))))
+
 (define-public emacs-sakura-theme
   (package
     (name "emacs-sakura-theme")
