@@ -896,15 +896,14 @@ the store.")
 
 (define %glibc-patches
   (list "glibc-ldd-powerpc.patch"
-        "glibc-2.38-ldd-x86_64.patch"
+        "glibc-2.41-ldd-x86_64.patch"
         "glibc-2.40-dl-cache.patch"
         "glibc-2.37-versioned-locpath.patch"
         ;; "glibc-allow-kernel-2.6.32.patch"
         "glibc-reinstate-prlimit64-fallback.patch"
         "glibc-supported-locales.patch"
-        "glibc-2.40-CVE-2025-0.patch"
         "glibc-2.37-hurd-clock_t_centiseconds.patch"
-        "glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch"
+        "glibc-2.41-hurd-local-clock_gettime_MONOTONIC.patch"
         "glibc-hurd-mach-print.patch"
         "glibc-hurd-gettyent.patch"
         "glibc-hurd-getauxval.patch"))
@@ -914,13 +913,13 @@ the store.")
   ;; version 2.28, GNU/Hurd used a different glibc branch.
   (package
    (name "glibc")
-   (version "2.40")
+   (version "2.41")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
             (sha256
              (base32
-              "18h50b0zm8dkpzj81w033v99rbxiykk3v697yr4dfqwjbqbr1a0r"))
+              "00g95047sshv0zxk9ja3mi7lzwi8wh8qx0nxngbvgmj5yli6p8m5"))
             (patches (map search-patch %glibc-patches))))
    (properties `((lint-hidden-cve . ("CVE-2024-2961"
                                      "CVE-2024-33601" "CVE-2024-33602"
@@ -1669,7 +1668,6 @@ command.")
        (patches
         (append (origin-patches (package-source glibc))
                 (search-patches "glibc-hurd-pthread_setcancelstate.patch"
-                                "glibc-hurd64-fault.patch"
                                 "glibc-hurd64-intr-msg-clobber.patch"
                                 "glibc-hurd64-gcc-14.2-tls-bug.patch")))))))
 
