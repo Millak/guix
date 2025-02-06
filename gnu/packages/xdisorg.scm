@@ -2103,7 +2103,7 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
 (define-public rofi
   (package
     (name "rofi")
-    (version "1.7.5")
+    (version "1.7.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/davatorium/rofi/"
@@ -2111,7 +2111,7 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
                                   version "/rofi-" version ".tar.xz"))
               (sha256
                (base32
-                "138c4bl60p7namsb2pk8q5cdlxbdkli7zny192vk5jv5s5kczzya"))
+                "0pk5a38rhci6mm0p9zjrmb7ixczhbdwqirw840h682rf9660mn9a"))
               (snippet
                #~(begin
                    ;; Delete pre-generated files.
@@ -2139,6 +2139,7 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
            startup-notification
            xcb-util
            xcb-util-cursor
+           xcb-util-keysyms
            xcb-util-wm
            xcb-util-xrm))
     (native-search-paths
