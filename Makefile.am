@@ -1083,8 +1083,9 @@ SUPPORTED_SYSTEMS ?= x86_64-linux i686-linux armhf-linux aarch64-linux \
 BINARY_TARBALLS =							\
   $(foreach system,$(SUPPORTED_SYSTEMS),guix-binary.$(system).tar.xz)
 
-# Systems supported by Guix System.
-GUIX_SYSTEM_SUPPORTED_SYSTEMS ?= x86_64-linux i686-linux
+# Systems supported by the Guix System installer.
+# A Hurd install happens from a Linux installer image.
+GUIX_SYSTEM_INSTALLER_SYSTEMS ?= x86_64-linux i686-linux
 
 # Systems for which we build Guix VMs.
 GUIX_SYSTEM_VM_SYSTEMS ?= x86_64-linux
@@ -1145,10 +1146,10 @@ release: dist-with-updated-version all
 # Build 'current-guix' to speed things up for the next step.
 	$(top_builddir)/pre-inst-env guix build				\
 	      -e '((@ (gnu packages package-management) current-guix))'	\
-	      $(call system_flags,$(GUIX_SYSTEM_SUPPORTED_SYSTEMS))	\
+	      $(call system_flags,$(GUIX_SYSTEM_INSTALLER_SYSTEMS))	\
 	      -v1 --no-grafts --fallback
 # Generate the ISO installation images.
-	for system in $(GUIX_SYSTEM_SUPPORTED_SYSTEMS) ; do				\
+	for system in $(GUIX_SYSTEM_INSTALLER_SYSTEMS) ; do				\
 	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//'`" ;		\
 	  image=`$(top_builddir)/pre-inst-env						\
 	    guix system image -t iso9660						\
@@ -1212,7 +1213,7 @@ assert-no-store-file-names:
 	  exit 1 ;								\
 	fi
 
-# Make sure important substitutes are available.  Check only the primary
+# Make sure installer substitutes are available.  Check only the primary
 # server so that '--display-missing' doesn't print two lists.
 assert-binaries-available: $(GOBJECTS)
 	$(AM_V_at)$(top_builddir)/pre-inst-env				\
