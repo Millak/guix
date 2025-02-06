@@ -110,12 +110,27 @@ GPG_SIGNING_KEYS[127547]=27D586A4F8900854329FF09F1260E46482E63562 # maxim
 
 _err()
 { # All errors go to stderr.
-    printf "[%s]: %s\n" "$(date +%s.%3N)" "$1"
+    printf "[%s]: ${ERR}%s\n" "$(date +%s.%3N)" "$1"
 }
 
 _msg()
 { # Default message to stdout.
     printf "[%s]: %s\n" "$(date +%s.%3N)" "$1"
+}
+
+_msg_pass()
+{
+    _msg "$PAS$1"
+}
+
+_msg_warn()
+{
+    _msg "$WAR$1"
+}
+
+_msg_info()
+{
+    _msg "$INF$1"
 }
 
 _debug()
@@ -127,7 +142,7 @@ _debug()
 
 die()
 {
-    _err "${ERR}$*"
+    _err "$*"
     exit 1
 }
 
@@ -154,7 +169,7 @@ chk_require()
 
     [ "${#warn}" -ne 0 ] && die "Missing commands: ${warn[*]}."
 
-    _msg "${PAS}verification of required commands completed"
+    _msg_pass "verification of required commands completed"
 }
 
 add_init_sys_require()
@@ -195,7 +210,7 @@ Would you like me to fetch it for you?"; then
         fi
 	# If we reach this point, the key is (still) missing.  Report further
 	# missing keys, if any, but then abort the installation.
-        _err "${ERR}Missing OpenPGP public key ($gpg_key_id).
+        _err "Missing OpenPGP public key ($gpg_key_id).
 Fetch it with this command:
 
   wget \"https://sv.gnu.org/people/viewgpg.php?user_id=$user_id\" -O - | \
@@ -227,24 +242,24 @@ chk_term()
 chk_init_sys()
 { # Return init system type name.
     if [[ $(/sbin/init --version 2>/dev/null) =~ upstart ]]; then
-        _msg "${INF}init system is: upstart"
+        _msg_info "init system is: upstart"
         INIT_SYS="upstart"
         return 0
     elif [[ $(systemctl 2>/dev/null) =~ -\.mount ]]; then
-        _msg "${INF}init system is: systemd"
+        _msg_info "init system is: systemd"
         INIT_SYS="systemd"
         return 0
     elif [[ -f /etc/init.d/cron && ! -h /etc/init.d/cron ]]; then
-        _msg "${INF}init system is: sysv-init"
+        _msg_info "init system is: sysv-init"
         INIT_SYS="sysv-init"
         return 0
     elif [[ $(openrc --version 2>/dev/null) =~ \(OpenRC ]]; then
-        _msg "${INF}init system is: OpenRC"
+        _msg_info "init system is: OpenRC"
         INIT_SYS="openrc"
         return 0
     else
         INIT_SYS="NA"
-        _err "${ERR}Init system could not be detected."
+        _err "Init system could not be detected."
     fi
 }
 
@@ -291,12 +306,12 @@ chk_sys_nscd()
 { # Check if nscd is up and suggest to start it or install it
     if [ "$(type -P pidof)" ]; then
         if [ ! "$(pidof nscd)" ]; then
-            _msg "${WAR}We recommend installing and/or starting your distribution 'nscd' service"
-            _msg "${WAR}Please read 'info guix \"Application Setup\"' about \"Name Service Switch\""
+            _msg_warn "We recommend installing and/or starting your distribution 'nscd' service"
+            _msg_warn "Please read 'info guix \"Application Setup\"' about \"Name Service Switch\""
         fi
     else
-        _msg "${INF}We cannot determine if your distribution 'nscd' service is running"
-        _msg "${INF}Please read 'info guix \"Application Setup\"' about \"Name Service Switch\""
+        _msg_info "We cannot determine if your distribution 'nscd' service is running"
+        _msg_info "Please read 'info guix \"Application Setup\"' about \"Name Service Switch\""
     fi
 }
 
@@ -334,7 +349,7 @@ guix_get_bin_list()
     default_ver="guix-binary-${latest_ver}.${ARCH_OS}"
 
     if [[ "${#bin_ver_ls}" -ne "0" ]]; then
-        _msg "${PAS}Release for your system: ${default_ver}"
+        _msg_pass "Release for your system: ${default_ver}"
     else
         die "Could not obtain list of Guix releases."
     fi
@@ -352,21 +367,21 @@ guix_get_bin()
 
     _debug "--- [ ${FUNCNAME[0]} ] ---"
 
-    _msg "${INF}Downloading Guix release archive"
+    _msg_info "Downloading Guix release archive"
 
     wget --help | grep -q '\--show-progress' \
         && wget_args=("--no-verbose" "--show-progress")
 
     if wget "${wget_args[@]}" -P "$dl_path" \
             "${url}/${bin_ver}.tar.xz" "${url}/${bin_ver}.tar.xz.sig"; then
-        _msg "${PAS}download completed."
+        _msg_pass "download completed."
     else
         die "could not download ${url}/${bin_ver}.tar.xz."
     fi
 
     pushd "${dl_path}" >/dev/null
     if gpg --verify "${bin_ver}.tar.xz.sig" >/dev/null 2>&1; then
-        _msg "${PAS}Signature is valid."
+        _msg_pass "Signature is valid."
         popd >/dev/null
     else
         die "could not verify the signature."
@@ -382,18 +397,18 @@ sys_create_store()
 
     if [[ -e /var/guix && -e /gnu ]]; then
         if [ -n "$GUIX_ALLOW_OVERWRITE" ]; then
-            _msg "${WAR}Overwriting existing installation!"
+            _msg_warn "Overwriting existing installation!"
         else
             die "A previous Guix installation was found.  Refusing to overwrite."
         fi
     fi
 
     cd "$tmp_path"
-    _msg "${INF}Installing /var/guix and /gnu..."
+    _msg_info "Installing /var/guix and /gnu..."
     # Strip (skip) the leading ‘.’ component, which fails on read-only ‘/’.
     tar --extract --strip-components=1 --file "$pkg" -C /
 
-    _msg "${INF}Linking the root user's profile"
+    _msg_info "Linking the root user's profile"
     mkdir -p ~root/.config/guix
     ln -sf /var/guix/profiles/per-user/root/current-guix \
        ~root/.config/guix/current
@@ -403,18 +418,18 @@ sys_create_store()
     # effective linting.
     # shellcheck disable=SC1091
     source "${GUIX_PROFILE}/etc/profile"
-    _msg "${PAS}activated root profile at ${GUIX_PROFILE}"
+    _msg_pass "activated root profile at ${GUIX_PROFILE}"
 }
 
 sys_delete_store()
 {
-    _msg "${INF}removing /var/guix"
+    _msg_info "removing /var/guix"
     rm -rf /var/guix
 
-    _msg "${INF}removing /gnu"
+    _msg_info "removing /gnu"
     rm -rf /gnu
 
-    _msg "${INF}removing ~root/.config/guix"
+    _msg_info "removing ~root/.config/guix"
     rm -rf ~root/.config/guix
 }
 
@@ -424,20 +439,20 @@ sys_create_build_user()
     _debug "--- [ ${FUNCNAME[0]} ] ---"
 
     if getent group guixbuild > /dev/null; then
-        _msg "${INF}group guixbuild exists"
+        _msg_info "group guixbuild exists"
     else
         groupadd --system guixbuild
-        _msg "${PAS}group <guixbuild> created"
+        _msg_pass "group <guixbuild> created"
     fi
 
     if getent group kvm > /dev/null; then
-        _msg "${INF}group kvm exists and build users will be added to it"
+        _msg_info "group kvm exists and build users will be added to it"
         local KVMGROUP=,kvm
     fi
 
     for i in $(seq -w 1 10); do
         if id "guixbuilder${i}" &>/dev/null; then
-            _msg "${INF}user is already in the system, reset"
+            _msg_info "user is already in the system, reset"
             usermod -g guixbuild -G guixbuild"$KVMGROUP"     \
                     -d /var/empty -s "$(which nologin)" \
                     -c "Guix build user $i"             \
@@ -447,7 +462,7 @@ sys_create_build_user()
                     -d /var/empty -s "$(which nologin)" \
                     -c "Guix build user $i" --system    \
                     "guixbuilder${i}";
-            _msg "${PAS}user added <guixbuilder${i}>"
+            _msg_pass "user added <guixbuilder${i}>"
         fi
     done
 }
@@ -460,7 +475,7 @@ sys_delete_build_user()
         fi
     done
 
-    _msg "${INF}delete group guixbuild"
+    _msg_info "delete group guixbuild"
     if getent group guixbuild &>/dev/null; then
         groupdel -f guixbuild
     fi
@@ -486,7 +501,7 @@ sys_enable_guix_daemon()
                  /etc/init/ &&
                   configure_substitute_discovery /etc/init/guix-daemon.conf &&
                   start guix-daemon; } &&
-                _msg "${PAS}enabled Guix daemon via upstart"
+                _msg_pass "enabled Guix daemon via upstart"
             ;;
         systemd)
             { install_unit()
@@ -511,7 +526,7 @@ sys_enable_guix_daemon()
 
               systemctl daemon-reload &&
                   systemctl start  guix-daemon; } &&
-                _msg "${PAS}enabled Guix daemon via systemd"
+                _msg_pass "enabled Guix daemon via systemd"
             ;;
         sysv-init)
             { mkdir -p /etc/init.d;
@@ -524,7 +539,7 @@ sys_enable_guix_daemon()
               update-rc.d guix-daemon defaults &&
                   update-rc.d guix-daemon enable &&
                   service guix-daemon start; } &&
-                _msg "${PAS}enabled Guix daemon via sysv"
+                _msg_pass "enabled Guix daemon via sysv"
             ;;
         openrc)
             { mkdir -p /etc/init.d;
@@ -536,15 +551,15 @@ sys_enable_guix_daemon()
 
               rc-update add guix-daemon default &&
                   rc-service guix-daemon start; } &&
-                _msg "${PAS}enabled Guix daemon via OpenRC"
+                _msg_pass "enabled Guix daemon via OpenRC"
             ;;
         NA|*)
-            _msg "${ERR}unsupported init system; run the daemon manually:"
+            _err "unsupported init system; run the daemon manually:"
             echo "  ~root/.config/guix/current/bin/guix-daemon --build-users-group=guixbuild"
             ;;
     esac
 
-    _msg "${INF}making the guix command available to other users"
+    _msg_info "making the guix command available to other users"
 
     [ -e "$local_bin" ] || mkdir -p "$local_bin"
     ln -sf "${var_guix}/bin/guix"  "$local_bin"
@@ -570,28 +585,28 @@ sys_delete_guix_daemon()
 
     case "$INIT_SYS" in
         upstart)
-            _msg "${INF}stopping guix-daemon"
+            _msg_info "stopping guix-daemon"
             stop guix-daemon
-            _msg "${INF}removing guix-daemon"
+            _msg_info "removing guix-daemon"
             rm /etc/init/guix-daemon.conf
             ;;
 
         systemd)
             if [ -f /etc/systemd/system/guix-daemon.service ]; then
-                _msg "${INF}disabling guix-daemon"
+                _msg_info "disabling guix-daemon"
                 systemctl disable guix-daemon
-                _msg "${INF}stopping guix-daemon"
+                _msg_info "stopping guix-daemon"
                 systemctl stop guix-daemon
-                _msg "${INF}removing guix-daemon"
+                _msg_info "removing guix-daemon"
                 rm -f /etc/systemd/system/guix-daemon.service
             fi
 
             if [ -f /etc/systemd/system/gnu-store.mount ]; then
-                _msg "${INF}disabling gnu-store.mount"
+                _msg_info "disabling gnu-store.mount"
                 systemctl disable gnu-store.mount
-                _msg "${INF}stopping gnu-store.mount"
+                _msg_info "stopping gnu-store.mount"
                 systemctl stop gnu-store.mount
-                _msg "${INF}removing gnu-store.mount"
+                _msg_info "removing gnu-store.mount"
                 rm -f /etc/systemd/system/gnu-store.mount
             fi
             systemctl daemon-reload
@@ -603,16 +618,16 @@ sys_delete_guix_daemon()
             rm -rf /etc/init.d/guix-daemon
             ;;
         NA|*)
-            _msg "${ERR}unsupported init system; disable, stop and remove the daemon manually:"
+            _err "unsupported init system; disable, stop and remove the daemon manually:"
             echo "  ~root/.config/guix/current/bin/guix-daemon --build-users-group=guixbuild"
             ;;
     esac
 
 
-    _msg "${INF}removing $local_bin/guix"
+    _msg_info "removing $local_bin/guix"
     rm -f "$local_bin"/guix
 
-    _msg "${INF}removing $info_path/guix*"
+    _msg_info "removing $info_path/guix*"
     rm -f "$info_path"/guix*
 }
 
@@ -629,10 +644,10 @@ project's build farms?"; then
 	    local key=~root/.config/guix/current/share/guix/$host.pub
 	    [ -f "$key" ] \
 		&& guix archive --authorize < "$key" \
-		&& _msg "${PAS}Authorized public key for $host"
+		&& _msg_pass "Authorized public key for $host"
 	done
     else
-        _msg "${INF}Skipped authorizing build farm public keys"
+        _msg_info "Skipped authorizing build farm public keys"
     fi
 }
 
@@ -715,7 +730,7 @@ sys_create_shell_completion()
         ln -sf ${var_guix}/etc/bash_completion.d/guix-daemon "$bash_completion";
         ln -sf ${var_guix}/share/zsh/site-functions/_guix "$zsh_completion";
         ln -sf ${var_guix}/share/fish/vendor_completions.d/guix.fish "$fish_completion"; } &&
-        _msg "${PAS}installed shell completion"
+        _msg_pass "installed shell completion"
 }
 
 sys_delete_shell_completion()
@@ -726,7 +741,7 @@ sys_delete_shell_completion()
     zsh_completion=/usr/share/zsh/site-functions
     fish_completion=/usr/share/fish/vendor_completions.d
 
-    _msg "${INF}removing shell completion"
+    _msg_info "removing shell completion"
 
     rm -f "$bash_completion"/guix;
     rm -f "$bash_completion"/guix-daemon;
@@ -753,7 +768,7 @@ if [ -n "$GUIX_ENVIRONMENT" ]; then
 fi
 ' >> "$bashrc"
     done
-    _msg "${PAS}Bash shell prompt successfully customized for Guix"
+    _msg_pass "Bash shell prompt successfully customized for Guix"
 }
 
 sys_maybe_setup_selinux()
@@ -782,17 +797,17 @@ sys_maybe_setup_selinux()
 
 sys_delete_init_profile()
 {
-    _msg "${INF}removing /etc/profile.d/guix.sh"
+    _msg_info "removing /etc/profile.d/guix.sh"
     rm -f /etc/profile.d/guix.sh
 }
 
 sys_delete_user_profiles()
 {
-    _msg "${INF}removing ~root/.guix-profile"
+    _msg_info "removing ~root/.guix-profile"
     rm -f ~root/.guix-profile
     rm -rf ~root/.cache/guix
 
-    _msg "${INF}removing .guix-profile, .cache/guix and .config/guix of all /home users"
+    _msg_info "removing .guix-profile, .cache/guix and .config/guix of all /home users"
     rm -rf /home/*/{.guix-profile,{.cache,.config}/guix}
 }
 
@@ -841,8 +856,8 @@ EOF
     if [ "$char" ]; then
 	echo
 	echo "...that ($char) was not a return!"
-	_msg "${WAR}Use newlines to automate installation, e.g.: yes '' | ${0##*/}"
-	_msg "${WAR}Any other method is unsupported and likely to break in future."
+	_msg_warn "Use newlines to automate installation, e.g.: yes '' | ${0##*/}"
+	_msg_warn "Any other method is unsupported and likely to break in future."
     fi
 }
 
@@ -861,7 +876,7 @@ main_install()
     chk_sys_arch
     chk_sys_nscd
 
-    _msg "${INF}system is ${ARCH_OS}"
+    _msg_info "system is ${ARCH_OS}"
 
     umask 0022
     tmp_path="$(mktemp -t -d guix.XXXXXX)"
@@ -874,7 +889,7 @@ main_install()
         if ! [[ $GUIX_BINARY_FILE_NAME =~ $ARCH_OS ]]; then
             _err "$ARCH_OS not in ${GUIX_BINARY_FILE_NAME}; aborting"
         fi
-        _msg "${INF}Using manually provided binary ${GUIX_BINARY_FILE_NAME}"
+        _msg_info "Using manually provided binary ${GUIX_BINARY_FILE_NAME}"
         GUIX_BINARY_FILE_NAME=$(realpath "$GUIX_BINARY_FILE_NAME")
     fi
 
@@ -887,14 +902,14 @@ main_install()
     sys_create_shell_completion
     sys_customize_bashrc
 
-    _msg "${INF}cleaning up ${tmp_path}"
+    _msg_info "cleaning up ${tmp_path}"
     rm -r "${tmp_path}"
 
-    _msg "${PAS}Guix has successfully been installed!"
-    _msg "${INF}Run 'info guix' to read the manual."
+    _msg_pass "Guix has successfully been installed!"
+    _msg_info "Run 'info guix' to read the manual."
 
     # Required to source /etc/profile in desktop environments.
-    _msg "${INF}Please log out and back in to complete the installation."
+    _msg_info "Please log out and back in to complete the installation."
  }
 
 main_uninstall()
@@ -908,7 +923,7 @@ main_uninstall()
     chk_init_sys
     chk_sys_arch
 
-    _msg "${INF}system is ${ARCH_OS}"
+    _msg_info "system is ${ARCH_OS}"
 
     # stop the build, package system.
     sys_delete_guix_daemon
@@ -922,12 +937,12 @@ main_uninstall()
     sys_delete_shell_completion
 
     # these directories are created on the fly during usage.
-    _msg "${INF}removing /etc/guix"
+    _msg_info "removing /etc/guix"
     rm -rf /etc/guix
-    _msg "${INF}removing /var/log/guix"
+    _msg_info "removing /var/log/guix"
     rm -rf /var/log/guix
 
-    _msg "${PAS}Guix has successfully been uninstalled!"
+    _msg_pass "Guix has successfully been uninstalled!"
 }
 
 main()
