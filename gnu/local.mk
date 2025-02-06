@@ -1464,7 +1464,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-2.39-git-updates.patch	\
   %D%/packages/patches/glibc-2.39-fmod-libm-a.patch		\
   %D%/packages/patches/glibc-2.40-dl-cache.patch		\
-  %D%/packages/patches/glibc-2.40-CVE-2025-0.patch		\
   %D%/packages/patches/glibc-CVE-2019-7309.patch		\
   %D%/packages/patches/glibc-CVE-2019-9169.patch		\
   %D%/packages/patches/glibc-CVE-2019-19126.patch		\
@@ -1475,7 +1474,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-bootstrap-system-2.2.5.patch 	\
   %D%/packages/patches/glibc-bootstrap-system-2.16.0.patch 	\
   %D%/packages/patches/glibc-bootstrap-system.patch		\
-  %D%/packages/patches/glibc-2.39-bootstrap-system.patch	\
+  %D%/packages/patches/glibc-2.41-bootstrap-system.patch	\
   %D%/packages/patches/glibc-cross-objcopy.patch		\
   %D%/packages/patches/glibc-cross-objdump.patch		\
   %D%/packages/patches/glibc-dl-cache.patch			\
@@ -1483,9 +1482,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-hurd-clock_gettime_monotonic.patch	\
   %D%/packages/patches/glibc-2.31-hurd-clock_gettime_monotonic.patch	\
   %D%/packages/patches/glibc-2.37-hurd-clock_t_centiseconds.patch	\
-  %D%/packages/patches/glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch	\
+  %D%/packages/patches/glibc-2.41-hurd-local-clock_gettime_MONOTONIC.patch	\
   %D%/packages/patches/glibc-2.37-versioned-locpath.patch	\
-  %D%/packages/patches/glibc-2.38-ldd-x86_64.patch		\
+  %D%/packages/patches/glibc-2.41-ldd-x86_64.patch		\
   %D%/packages/patches/glibc-hurd-clock_t_centiseconds.patch	\
   %D%/packages/patches/glibc-hurd-getauxval.patch		\
   %D%/packages/patches/glibc-hurd-gettyent.patch		\
@@ -1493,7 +1492,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-hurd-pthread_setcancelstate.patch	\
   %D%/packages/patches/glibc-hurd-signal-sa-siginfo.patch	\
   %D%/packages/patches/glibc-hurd64-gcc-14.2-tls-bug.patch	\
-  %D%/packages/patches/glibc-hurd64-fault.patch			\
   %D%/packages/patches/glibc-hurd64-intr-msg-clobber.patch	\
   %D%/packages/patches/glibc-ldd-powerpc.patch			\
   %D%/packages/patches/glibc-ldd-x86_64.patch			\
