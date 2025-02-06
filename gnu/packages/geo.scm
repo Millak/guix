@@ -26,6 +26,7 @@
 ;;; Copyright © 2024 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2025 Mattia Bunel <mattia.bunel@ehess.fr>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2025 Lars Bilke <lars.bilke@ufz.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3686,6 +3687,41 @@ Grosser Reiseplaner, Routeplaner Europa 2007, Map + Route.")
 @code{LAZ} files.  The @code{LAS} format is a file format designed for the
 interchange and archiving of lidar point cloud data.")
     (license license:asl2.0)))
+
+(define-public tetgen
+  (package
+    (name "tetgen")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+         "https://wias-berlin.de/software/tetgen/1.5/src/tetgen1.6.0.tar.gz")
+       (sha256
+        (base32 "0fff0l6i3xfjlm0zkcgyyhwndp8i5d615mydyb21yirsplgfddc7"))))
+    (build-system cmake-build-system)
+    (arguments
+      (list
+        #:tests? #f ;; no test suite
+        #:configure-flags #~(list "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+         (replace 'install ;; no install target
+           (lambda _
+             (install-file "tetgen"
+                           (string-append #$output "/bin"))))
+         ;; Do not create etc/ld.so.cache. It is a bit mysterious why
+         ;; we have this phase in the first place.
+         (delete 'make-dynamic-linker-cache))))
+    (home-page "https://wias-berlin.de/software/tetgen/")
+    (synopsis
+     "Quality Tetrahedral Mesh Generator and 3D Delaunay Triangulator")
+    (description
+     "TetGen is a program to generate tetrahedral meshes of any 3D
+polyhedral domains.  TetGen generates exact constrained Delaunay
+tetrahedralizations, boundary conforming Delaunay meshes, and Voronoi
+partitions.")
+    (license license:agpl3+)))
 
 (define-public libe57format
   (package
