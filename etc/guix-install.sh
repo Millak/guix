@@ -51,8 +51,8 @@
 # installation required the user to extract Guix packs under /gnu to
 # satisfy its dependencies.
 
-if [ "x$BASH_VERSION" = "x" ]
-then
+# shellcheck disable=2268 # try to support vintage shells
+if [ "x$BASH_VERSION" = "x" ]; then
     exec bash "$0" "$@"
 fi
 
@@ -85,6 +85,7 @@ REQUIRE=(
 
 # Add variables using form FOO_INIT_REQUIRE when init system FOO dependencies
 # should be checked.
+# shellcheck disable=2034 # interpolated by add_init_sys_require
 SYSV_INIT_REQUIRE=(
     "daemonize"
 )
@@ -159,7 +160,7 @@ chk_require()
 add_init_sys_require()
 { # Add the elements of FOO_INIT_SYS to REQUIRE
     local init_require="${INIT_SYS}_REQUIRE[@]"
-    if [[ ! -z "$init_require" ]]; then
+    if [[ -n "$init_require" ]]; then
         # Have to add piecemeal because ${!foo[@]} performs direct array key
         # expansion, not indirect plain array expansion.
         for r in "${!init_require}"; do
@@ -398,7 +399,9 @@ sys_create_store()
        ~root/.config/guix/current
 
     GUIX_PROFILE=~root/.config/guix/current
-    # shellcheck disable=SC1090
+    # The profile just prepends to search paths, which is not needed for
+    # effective linting.
+    # shellcheck disable=SC1091
     source "${GUIX_PROFILE}/etc/profile"
     _msg "${PAS}activated root profile at ${GUIX_PROFILE}"
 }
@@ -435,12 +438,12 @@ sys_create_build_user()
     for i in $(seq -w 1 10); do
         if id "guixbuilder${i}" &>/dev/null; then
             _msg "${INF}user is already in the system, reset"
-            usermod -g guixbuild -G guixbuild${KVMGROUP}     \
+            usermod -g guixbuild -G guixbuild"$KVMGROUP"     \
                     -d /var/empty -s "$(which nologin)" \
                     -c "Guix build user $i"             \
                     "guixbuilder${i}";
         else
-            useradd -g guixbuild -G guixbuild${KVMGROUP}     \
+            useradd -g guixbuild -G guixbuild"$KVMGROUP"     \
                     -d /var/empty -s "$(which nologin)" \
                     -c "Guix build user $i" --system    \
                     "guixbuilder${i}";
@@ -453,7 +456,7 @@ sys_delete_build_user()
 {
     for i in $(seq -w 1 10); do
         if id -u "guixbuilder${i}" &>/dev/null; then
-            userdel -f guixbuilder${i}
+            userdel -f guixbuilder"$i"
         fi
     done
 
@@ -559,7 +562,7 @@ sys_delete_guix_daemon()
     local local_bin
     local var_guix
 
-    _debug "--- [ $FUNCNAME ] ---"
+    _debug "--- [ ${FUNCNAME[0]} ] ---"
 
     info_path="/usr/local/share/info"
     local_bin="/usr/local/bin"
@@ -703,7 +706,7 @@ sys_create_shell_completion()
 
     { # Just in case
         for dir_shell in $bash_completion $zsh_completion $fish_completion; do
-            [ -d "$dir_shell" ] || mkdir -p $dir_shell
+            [ -d "$dir_shell" ] || mkdir -p "$dir_shell"
         done;
 
         # Don't use globing here as we also need to delete the files when
@@ -737,8 +740,10 @@ sys_customize_bashrc()
 
     for bashrc in /home/*/.bashrc /root/.bashrc; do
         test -f "$bashrc" || continue
+        # shellcheck disable=SC2016 # intended search for variable reference
         grep -Fq '$GUIX_ENVIRONMENT' "$bashrc" && continue
         cp "${bashrc}" "${bashrc}.bak"
+        # shellcheck disable=SC2016,SC2028 # intended literal shell output
         echo '
 # Automatically added by the Guix install script.
 if [ -n "$GUIX_ENVIRONMENT" ]; then
@@ -788,11 +793,7 @@ sys_delete_user_profiles()
     rm -rf ~root/.cache/guix
 
     _msg "${INF}removing .guix-profile, .cache/guix and .config/guix of all /home users"
-    for user in `ls -1 /home`; do
-        rm -f /home/$user/.guix-profile
-        rm -rf /home/$user/.cache/guix
-        rm -rf /home/$user/.config/guix
-    done
+    rm -rf /home/*/{.guix-profile,{.cache,.config}/guix}
 }
 
 welcome()
@@ -940,7 +941,7 @@ main()
         if [ '--uninstall' = "${uninstall_flag}" ]; then
             main_uninstall
         else
-            echo "unsupported parameters: $@"
+            echo "unsupported parameters: $*"
             exit 1
         fi
     fi
