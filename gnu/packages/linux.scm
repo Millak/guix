@@ -4897,12 +4897,14 @@ to the in-kernel OOM killer.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1f6lz57igi7iw2ls3fpzgw42bfznam4nf9368h7x8yf1mb737yxz"))
-              (patches (search-patches "eudev-rules-directory.patch"))
-              (modules '((guix build utils)))))
+                "1f6lz57igi7iw2ls3fpzgw42bfznam4nf9368h7x8yf1mb737yxz"))))
     (build-system gnu-build-system)
     (arguments
      (list
+      ;; The binary should be built to look for its rules under
+      ;; /etc/udev/rules.d, which is where the udev-shepherd-service keeps
+      ;; them.
+      #:make-flags #~(list "udevrulesdir=/etc/udev/rules.d")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'bootstrap 'patch-file-names
@@ -4946,7 +4948,20 @@ to the in-kernel OOM killer.")
                 ;; such that Libtool looks for it in the usual places.
                 (substitute* (string-append #$output "/lib/libudev.la")
                   (("old_library=.*")
-                   "old_library=''\n"))))))
+                   "old_library=''\n")))))
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys #:rest args)
+              ;; Although the runtime udevrulesdir is set to
+              ;; /etc/udev/rules.d, the package should provide its default
+              ;; rules under $libdir/udev/rules.d.
+              (let* ((default-udev-rules.d (string-append #$output
+                                                          "/lib/udev/rules.d"))
+                     (make-flags (cons (string-append "udevrulesdir="
+                                                      default-udev-rules.d)
+                                       (delete "udevrulesdir=/etc/udev/rules.d"
+                                               make-flags))))
+                (apply (assoc-ref %standard-phases 'install)
+                       `(,@args #:make-flags ,make-flags))))))
       #:configure-flags
       #~(list "--enable-manpages"
               ;; By default, autoconf uses $prefix/etc. The udev-service-type
@@ -4954,9 +4969,9 @@ to the in-kernel OOM killer.")
               ;; descriptions.
               "--sysconfdir=/etc")))
     (native-search-paths
-      (list (search-path-specification
-              (variable "UDEV_HWDB_PATH")
-              (files '("lib/udev/hwdb.d")))))
+     (list (search-path-specification
+            (variable "UDEV_HWDB_PATH")
+            (files '("lib/udev/hwdb.d")))))
     (native-inputs
      (list autoconf
            automake
@@ -4974,7 +4989,7 @@ to the in-kernel OOM killer.")
      ;; When linked against libblkid, eudev can populate /dev/disk/by-label
      ;; and similar; it also installs the '60-persistent-storage.rules' file,
      ;; which contains the rules to do that.
-     (list `(,util-linux "lib") ;for blkid
+     (list `(,util-linux "lib")         ;for blkid
            kmod))
     (outputs '("out" "static"))
     (home-page "https://github.com/eudev-project/eudev")

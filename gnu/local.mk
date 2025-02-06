@@ -1251,7 +1251,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/erlang-man-path.patch			\
   %D%/packages/patches/esmini-use-pkgconfig.patch		\
   %D%/packages/patches/esmtp-add-lesmtp.patch		\
-  %D%/packages/patches/eudev-rules-directory.patch		\
   %D%/packages/patches/exercism-disable-self-update.patch	\
   %D%/packages/patches/expat-CVE-2024-45490.patch	\
   %D%/packages/patches/expat-CVE-2024-45491.patch	\

@@ -2562,7 +2562,6 @@ item of PACKAGES."
                          (list udevd)
                          #:environment-variables
                          (cons*
-                          "EUDEV_RULES_DIRECTORY=/etc/udev/rules.d"
                           (string-append "LINUX_MODULE_DIRECTORY="
                                          (getenv "LINUX_MODULE_DIRECTORY"))
                           (default-environment-variables)))))
