@@ -315,6 +315,19 @@ chk_sys_nscd()
     fi
 }
 
+chk_existing()
+{ # Avoid clobbering existing installations.
+    _debug "--- [ ${FUNCNAME[0]} ] ---"
+
+    if [[ -e /var/guix && -e /gnu ]]; then
+        if [ -n "$GUIX_ALLOW_OVERWRITE" ]; then
+            _msg_warn "Overwriting existing installation!"
+        else
+            die "A previous Guix installation was found.  Refusing to overwrite."
+        fi
+    fi
+}
+
 # Configure substitute discovery according to user's preferences.
 # $1 is the installed service file to edit.
 configure_substitute_discovery() {
@@ -392,16 +405,6 @@ sys_create_store()
 { # Unpack and install /gnu/store and /var/guix
     local pkg="$1"
     local tmp_path="$2"
-
-    _debug "--- [ ${FUNCNAME[0]} ] ---"
-
-    if [[ -e /var/guix && -e /gnu ]]; then
-        if [ -n "$GUIX_ALLOW_OVERWRITE" ]; then
-            _msg_warn "Overwriting existing installation!"
-        else
-            die "A previous Guix installation was found.  Refusing to overwrite."
-        fi
-    fi
 
     cd "$tmp_path"
     _msg_info "Installing /var/guix and /gnu..."
@@ -875,6 +878,7 @@ main_install()
     chk_gpg_keyring
     chk_sys_arch
     chk_sys_nscd
+    chk_existing
 
     _msg_info "system is ${ARCH_OS}"
 
