@@ -652,10 +652,12 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 # `guix pull` profile
 GUIX_PROFILE="$HOME/.config/guix/current"
 export PATH="$GUIX_PROFILE/bin${PATH:+:}$PATH"
-# Add to INFOPATH so the latest Guix documentation is available to info
-# readers. When INFOPATH is unset, add a trailing colon so that Emacs searches
-# 'Info-default-directory-list'.
+# Add to INFOPATH and MANPATH so the latest Guix documentation is available to
+# info and man readers.  When INFOPATH is unset, add a trailing colon so Emacs
+# searches 'Info-default-directory-list'.  When MANPATH is unset, add a
+# trailing colon so the system default search path is used.
 export INFOPATH="$GUIX_PROFILE/share/info:$INFOPATH"
+export MANPATH="$GUIX_PROFILE/share/man:$MANPATH"
 # Expose the latest Guix modules to Guile so guix shell and repls spawned by
 # e.g. Geiser work out of the box.
 export GUILE_LOAD_PATH="$GUIX_PROFILE/share/guile/site/3.0${GUILE_LOAD_PATH:+:}$GUILE_LOAD_PATH"
@@ -669,13 +671,17 @@ if [ -L "$GUIX_PROFILE" ]; then
   # see info '(guix) Application Setup'
   export GUIX_LOCPATH="$GUIX_PROFILE/lib/locale${GUIX_LOCPATH:+:}$GUIX_LOCPATH"
 
-  # INFOPATH may be handled by $GUIX_PROFILE/etc/profile if the user installs
-  # an info reader via Guix. If the user doesn’t, explicitly add to INFOPATH
-  # so documentation for software from ‘guix install’ is available to the
-  # system info reader.
+  # Documentation search paths may be handled by $GUIX_PROFILE/etc/profile if
+  # the user installs info and man readers via Guix.  If the user doesn’t,
+  # explicitly add to them so documentation for software from ‘guix install’
+  # is available to the system info and man readers.
   case $INFOPATH in
     *$GUIX_PROFILE/share/info*) ;;
     *) export INFOPATH="$GUIX_PROFILE/share/info:$INFOPATH" ;;
+  esac
+  case $MANPATH in
+    *$GUIX_PROFILE/share/man*) ;;
+    *) export MANPATH="$GUIX_PROFILE/share/man:$MANPATH"
   esac
 fi
 
