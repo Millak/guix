@@ -159,7 +159,6 @@
 
             mate-desktop-configuration
             mate-desktop-configuration?
-            mate-desktop-service
             mate-desktop-service-type
 
             lxqt-desktop-configuration
