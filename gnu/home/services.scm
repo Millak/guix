@@ -275,7 +275,8 @@ exported."
                            (lambda (port)
                              (set-port-encoding! port "UTF-8")
                              (display "\
-HOME_ENVIRONMENT=$HOME/.guix-home
+# NOTE: Set HOME_ENVIRONMENT before sourcing (home-shell-profile-service-type ensures
+# ~/.profile does)
 GUIX_PROFILE=\"$HOME_ENVIRONMENT/profile\"
 PROFILE_FILE=\"$GUIX_PROFILE/etc/profile\"
 [ -f $PROFILE_FILE ] && . $PROFILE_FILE
@@ -300,6 +301,9 @@ case $XCURSOR_PATH in
   *$GUIX_PROFILE/share/icons*) ;;
   *) export XCURSOR_PATH=$GUIX_PROFILE/share/icons:$XCURSOR_PATH ;;
 esac
+
+# Keep the shell environment clean.
+unset GUIX_PROFILE PROFILE_FILE
 
 " port)
                              (display
