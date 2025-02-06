@@ -82,7 +82,7 @@ function interface, and a symbolic debugger.")
 (define-public smlnj
   (package
     (name "smlnj")
-    (version "110.99.2")
+    (version "110.99.7.1")
     (source #f)  ; Sources are passed as native-inputs.
     (supported-systems '("x86_64-linux" "i686-linux"))
     (build-system gnu-build-system)
@@ -236,99 +236,99 @@ function interface, and a symbolic debugger.")
           `("boot.x86-unix"
             ,(smlnj-file version
                          "boot.x86-unix.tgz"
-                         "117dq1g387vcy1105dlpw770gzrg423jng89ynraiy6kiaalvbcq"))
+                         "0nl71scc4q1jlwikfph9r01fs5nhqaiikbxq732y0199mwwlqhjm"))
           `("boot.amd64-unix"
             ,(smlnj-file version
                          "boot.amd64-unix.tgz"
-                         "0cbaz8sxp30y2a4blm0pzk9aa1g9jj65d6d7kydvn0w7m22rjjff")))
+                         "0m6p8zlcxd11c0zswma4bbh0wxi9f8926b21ddqhypnkrbq061xa")))
        ("config"
         ,(smlnj-file version
                      "config.tgz"
-                     "1sq60frd66kv807bahsyxda355qq67zvvb4sr1d72cv6capv5nsg"))
+                     "108j8hk6zk9nf25hw53b3ig64gysj518v5997b0c06syjfnnpc3y"))
        ("cm"
         ,(smlnj-file version
                      "cm.tgz"
-                     "087yy9k9vyyvhb24rni6js7s8iqbs8vjm9kjd9s311swjd66qhjc"))
+                     "0sh69rswnaarycm2i5v9piv9725ld62pxs4q4q4xw7nggmqfw4pq"))
        ("compiler"
         ,(smlnj-file version
                      "compiler.tgz"
-                     "149vrmiba0dqggr15axqqzzfmd0kx7kchlr49gii6hw5dal6vqnn"))
+                     "0qr1wghnld085bf55ygd0iwdqsyi39x7wjl2m36d8saymagc1lzm"))
        ("runtime"
         ,(smlnj-file version
                      "runtime.tgz"
-                     "0c3q7qr2i3r91sx9p3z1ar7gvyk6qsm5gcbpbyj6l67qzn192yc3"))
+                     "11f05pd5rgkn4k3apnb9zbimkqg6z2plmd2550zph3n8sq883fax"))
        ("system"
         ,(smlnj-file version
                      "system.tgz"
-                     "0aflnqh9zi9f8vs9pjlxysxplrwl98aiaxx4n41sba4m1r30n0za"))
+                     "0aj6vrbmpziqf50x7gggzkvijhny9xrwqmjjrqxq2rkywy41k1i2"))
        ("MLRISC"
         ,(smlnj-file version
                      "MLRISC.tgz"
-                     "1kkga7r7qnw09s8yhqbhrq8gxf6c8x0fiwsbwkr8ls6xwv48sp74"))
+                     "0svwsnpzcb1hiwfsjmh53wa2qsry3ycpk907jj1ggdz52vwj1p96"))
        ("smlnj-lib"
         ,(smlnj-file version
                      "smlnj-lib.tgz"
-                     "14fvqgn580k3ylvfhbkwv4cw87ipggq548r7jzp8fzfn2h6wdl01"))
+                     "04vhn7rvji05x4ms887xzwrm9bkd3164k9hhc885a6pdlrp7632f"))
        ("old-basis"
         ,(smlnj-file version
                      "old-basis.tgz"
-                     "11j7a0sxyd1kwxjvxnarab5vc3x43gl90m07wxm37fd4jbfd1fn1"))
+                     "04ihh23vgrlqq4smxnnnh4k1xclqfmzz9430hc9d0w87ccy13hbm"))
        ("ckit"
         ,(smlnj-file version
                      "ckit.tgz"
-                     "1fbfjb2fhr6zkcz5jhqh3888zska6vffndyqwvk6rpbcl7an8niq"))
+                     "1ym96jg6a4x9nvbd2jsn6dy47nvdi92h5nlbdkxyzqf58r772ab7"))
        ("nlffi"
         ,(smlnj-file version
                      "nlffi.tgz"
-                     "0p5z77x295xfh71481kbd5pwis52kv03vxpad4pzkpk0l6smcgmj"))
+                     "1q60lnhggxyhzdh7d9119mg5avfz1ax89lciwpd20alrjwjvkwv7"))
        ("cml"
         ,(smlnj-file version
                      "cml.tgz"
-                     "13xchaamwanxhwklsgkn1rmkr044h9qsj0rbr9c7pm903yivdwcn"))
+                     "1z5qc52i5k4a7144fmska0kawibrr5xsbvb0ppl98sqyzj34wa3r"))
        ("eXene"
         ,(smlnj-file version
                      "eXene.tgz"
-                     "0p4snql0a1a952h98ma9ybmp7z1q305mz859b0mxhsg3jdrzl9wb"))
+                     "05fwzpks5whwgvfa9wd70rwrym1r6z8i79vbvipnncqz794nywr5"))
        ("ml-lpt"
         ,(smlnj-file version
                      "ml-lpt.tgz"
-                     "0m00vglg95apdpzsy6qv88izj5ai4ibylxni01an75xpnxyy5qbg"))
+                     "1dlwl3b1kz1968yj2razsqvyv6pmz3ripg84rv8nvlj02sknw8p7"))
        ("ml-lex"
         ,(smlnj-file version
                      "ml-lex.tgz"
-                     "1pmi5qwjcf1h5nfi7d4vvm7cf90g6dlk2mqikj0y9c464ia1l2jc"))
+                     "1jjbs7zvzvajiz8zb1bz9k2i1w3przhk6q76964hg4y2zghi74kq"))
        ("ml-yacc"
         ,(smlnj-file version
                      "ml-yacc.tgz"
-                     "1zla2m1rn8r8k85ps9r2mw38xkh276j7aqv9f69v55102hchx13p"))
+                     "0s53cgjs8zk16qywb18l08ycanfzycrl3bbm0177a1y0y2y1q5zx"))
        ("ml-burg"
         ,(smlnj-file version
                      "ml-burg.tgz"
-                     "14cqasasa273x09phykzjgk1wl6vrkdcwrdi39hnacp443cilz7x"))
+                     "085i565maijp5mmyrcg7cg3ff75iw6c2wmjldgq1psbsjlymv7ni"))
        ("pgraph"
         ,(smlnj-file version
                      "pgraph.tgz"
-                     "183fv61xlac5kpxn5m4iqgdvc2xb1chlxy5ip4i25x589bh4b5k9"))
+                     "1vlb6hlicxf806z216x33qmx0mi3f8kgddp6jwqxxwbxlzpwa2h6"))
        ("trace-debug-profile"
         ,(smlnj-file version
                      "trace-debug-profile.tgz"
-                     "1k0w581kr43mpjzm7778xgx1rpz45aq1h80jdr6jls5vz3k8ia18"))
+                     "08p9j4n3x2xnfksl8xkfr6ajynpfbcgsrcv5w98ri0akvny9dc6p"))
        ("heap2asm"
         ,(smlnj-file version
                      "heap2asm.tgz"
-                     "0p9s42acngxh0401wm6fqs3im3rzzw9sh448x38zhdi47h8h1m9n"))
+                     "0qzqnagpyfipgzkds8jxix9riaps591dnwa4nw7wb3b2pm7xpqm8"))
        ("smlnj-c"
         ,(smlnj-file version
                      "smlnj-c.tgz"
-                     "054b1nhg5yk2jj01p11k08qzq8zc9jzg4mbgkcmcqaq7axp1rnxm"))
+                     "194vzb5ig373np2lnldsq66pdwzf3wsjrmhhc1bpyfw6h5z1g82p"))
        ("doc"
         ,(smlnj-file version
                      "doc.tgz"
-                     "0s35zrxdj76wzdz7c1i8ij00n6lfll4vjnypsy2j17q1maw7fq8j"))
+                     "0b9z1dhicg14dmb04zrla6jrmcv2pb08i5bvgw9pns0gvqzc5iyb"))
        ("asdl"
         ,(smlnj-file version
                      "asdl.tgz"
-                     "0mad2df5pmkdsb69gflxma6m6i3gla6hdmjjnkzk76pagpr8zb0m"))))
+                     "1dzhc56m23gylj3jwgxg7qlbx4sh8wklraj1j4mic6dn4jqyqcvh"))))
     (home-page "https://www.smlnj.org")
     (synopsis "Standard ML of New Jersey interactive compiler")
     (description
