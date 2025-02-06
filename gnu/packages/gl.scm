@@ -186,7 +186,10 @@ the X-Consortium license.")
                 "0zjs1h9w30gajq9lndzvjsa26rsmr1081lb1fbpbj10yhcdcsc79"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-static")))
+     `(#:configure-flags
+       '("--disable-static"
+         ;; XXX: FTVectoriser.cpp: conversion from ‘unsigned char*’ to ‘char*’
+         "CXXFLAGS=-fpermissive")))
     ;; The pkg-config file lists "freetype2" as Requires.private.
     (propagated-inputs (list freetype))
     (inputs (list libx11 mesa glu))
