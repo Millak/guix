@@ -289,26 +289,27 @@ more.")
                 "15bvgklv77kvkl8dizriqblfir6rid5nm79ymi3m2fvpd7wf77qy"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0")
-       #:modules (((guix build guile-build-system)
-                   #:select (target-guile-effective-version))
-                  ,@%default-gnu-modules)
-       #:imported-modules ((guix build guile-build-system)
-                           ,@%default-gnu-imported-modules)
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'wrap-guilescript
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (bin (string-append out "/bin"))
-                             (version (target-guile-effective-version))
-                             (scm (string-append "/share/guile/site/" version))
-                             (go (string-append "/lib/guile/" version "/site-ccache")))
-                        (wrap-program (string-append bin "/guilescript")
-                          `("GUILE_LOAD_PATH" prefix
-                            (,(string-append out scm)))
-                          `("GUILE_LOAD_COMPILED_PATH" prefix
-                            (,(string-append out go)))))
-                      #t)))))
+     (list #:make-flags #~(list "GUILE_AUTO_COMPILE=0")
+           #:modules `(((guix build guile-build-system)
+                        #:select (target-guile-effective-version))
+                       ,@%default-gnu-modules)
+           #:imported-modules `((guix build guile-build-system)
+                                ,@%default-gnu-imported-modules)
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'wrap-guilescript
+                          (lambda _
+                            (let* ((bin (string-append #$output "/bin"))
+                                   (version (target-guile-effective-version))
+                                   (scm (string-append "/share/guile/site/"
+                                                       version))
+                                   (go (string-append "/lib/guile/"
+                                                      version
+                                                      "/site-ccache")))
+                              (wrap-program (string-append bin "/guilescript")
+                                `("GUILE_LOAD_PATH" prefix
+                                  (,(string-append #$output scm)))
+                                `("GUILE_LOAD_COMPILED_PATH" prefix
+                                  (,(string-append #$output go))))))))))
     (native-inputs (list autoconf automake pkg-config))
     (inputs (list guile-3.0 bash-minimal))
     (home-page "https://github.com/aconchillo/guilescript")
