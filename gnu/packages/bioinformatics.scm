@@ -15770,7 +15770,7 @@ dispersal.  Its output can be processed by treeannotator (from the
     (native-inputs
      (list python-wrapper swig))
     (inputs
-     (list boost
+     (list boost-for-mysql
            cgal
            gsl
            hdf5
