@@ -15768,8 +15768,7 @@ dispersal.  Its output can be processed by treeannotator (from the
                   "-E" (format #f "'(~a)'" (string-join disabled-tests "|")))
             ";"))))))
     (native-inputs
-     `(("python" ,python-wrapper)
-       ("swig" ,swig)))
+     (list python-wrapper swig))
     (inputs
      (list boost
            cgal
