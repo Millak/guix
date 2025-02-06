@@ -25100,7 +25100,7 @@ environments to a system.
 @item @code{enlightenment-desktop-service-type} adds Enlightenment,
 @item @code{lxqt-desktop-service-type} adds LXQt,
 @item @code{mate-desktop-service-type} adds MATE, and
-@item @code{xfce-desktop-service} adds Xfce.
+@item @code{xfce-desktop-service-type} adds Xfce.
 @end itemize
 
 These service types add ``metapackages'' such as @code{gnome} or
@@ -25320,7 +25320,7 @@ them by default.  To add GNOME, Xfce or MATE, just @code{cons} them onto
   ...
   ;; cons* adds items to the list given as its last argument.
   (services (cons* (service gnome-desktop-service-type)
-                   (service xfce-desktop-service)
+                   (service xfce-desktop-service-type)
                    %desktop-services))
   ...)
 @end lisp

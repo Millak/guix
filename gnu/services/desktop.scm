@@ -176,7 +176,6 @@
 
             xfce-desktop-configuration
             xfce-desktop-configuration?
-            xfce-desktop-service
             xfce-desktop-service-type
 
             x11-socket-directory-service ;deprecated
