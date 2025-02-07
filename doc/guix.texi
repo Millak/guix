@@ -2595,8 +2595,9 @@ unless your configuration specifies otherwise
 @node After System Installation
 @section After System Installation
 
-Success, you've now booted into Guix System!  You can upgrade the system
-whenever you want by running:
+Success, you've now booted into Guix System!  Login to the system using
+the non-@code{root} user that you created during installation.  You can
+upgrade the system whenever you want by running:
 
 @example
 guix pull
