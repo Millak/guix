@@ -4145,6 +4145,25 @@ supports concurrent serializable transactions.")
 on throughput and hit ratio performance.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public go-github-com-dgraph-io-ristretto-v2
+  (package
+    (inherit go-github-com-dgraph-io-ristretto)
+    (name "go-github-com-dgraph-io-ristretto-v2")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dgraph-io/ristretto")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q65y9psk8vnrsjlmaqhc8l3fwpsh23wrr4cjz8jfnph45hhh4jk"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-dgraph-io-ristretto)
+       ((#:import-path _) "github.com/dgraph-io/ristretto/v2")))))
+
 (define-public go-github-com-dgryski-go-linebreak
   (package
     (name "go-github-com-dgryski-go-linebreak")
