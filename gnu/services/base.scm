@@ -3750,7 +3750,7 @@ to handle."
   greetd-terminal-configuration make-greetd-terminal-configuration
   greetd-terminal-configuration?
   (greetd greetd-package (default greetd))
-  (shepherd-requirement greetd-shepherd-requirement (default '()))
+  (extra-shepherd-requirement greetd-extra-shepherd-requirement (default '()))
   (config-file-name greetd-config-file-name (thunked)
                     (default (default-config-file-name this-record)))
   (log-file-name greetd-log-file-name (thunked)
@@ -3889,7 +3889,7 @@ to handle."
           (greetd-conf (make-greetd-terminal-configuration-file tc))
           (greetd-log (greetd-log-file-name tc))
           (greetd-vt (greetd-terminal-vt tc))
-          (greetd-requirement (greetd-shepherd-requirement tc)))
+          (greetd-requirement (greetd-extra-shepherd-requirement tc)))
        (shepherd-service
         (documentation "Minimal and flexible login manager daemon")
         (requirement `(pam user-processes host-name udev virtual-terminal
