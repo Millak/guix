@@ -763,14 +763,14 @@ source files.")
 (define-public node-lts
   (package
     (inherit node-bootstrap)
-    (version "22.12.0")
+    (version "22.14.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.gz"))
               (sha256
                (base32
-                "1qrcn9hm85bmh81ircaa0vmxrqmiip1iwczvpsyn9sdn0b0ffmri"))
+                "12msprh604s6qdsgwymxw4kl8ivaldbaydf4v37lbp02aznk2kkc"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -787,11 +787,7 @@ source files.")
                               "deps/nghttp2"
                               "deps/ngtcp2"
                               "deps/uv"
-                              "deps/zlib"))
-                  (substitute* "Makefile"
-                    ;; Remove references to bundled software.
-                    (("deps/uv/uv.gyp") "")
-                    (("deps/zlib/zlib.gyp") ""))))))
+                              "deps/zlib"))))))
     (arguments
      (substitute-keyword-arguments (package-arguments node-bootstrap)
        ((#:configure-flags configure-flags)
@@ -909,6 +905,14 @@ source files.")
                            "test/parallel/test-process-initgroups.js"
                            "test/parallel/test-process-setgroups.js"
                            "test/parallel/test-process-uid-gid.js"))))
+           (add-after 'delete-problematic-tests 'patch-problematic-tests
+             (lambda _
+               ;; XXX: These tests seem to not work by default
+               (substitute*
+                   '("test/parallel/test-http2-premature-close.js"
+                     "test/parallel/test-http2-invalid-last-stream-id.js")
+                 (("client\\.connect\\(address\\)")
+                  "client.connect(address.port)"))))
            (add-after 'delete-problematic-tests 'replace-llhttp-sources
              (lambda* (#:key inputs #:allow-other-keys)
                ;; Replace pre-generated llhttp sources
