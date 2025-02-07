@@ -23,6 +23,7 @@
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
+;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -658,6 +659,36 @@ times and detect flakyness.")
 tests at the granularity of individual test cases, which can be run in
 parallel and on multiple machines.")
       (license license:expat))))
+
+(define-public python-pytest-snapshot
+  (package
+    (name "python-pytest-snapshot")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-snapshot" version))
+       (sha256
+        (base32 "1wxp9pv5yqpj3fk450ld1mjhhdxyvssgi6gqxyghz1iyphx3q0f7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Skip failing test. Related upstream issue:
+      ;; <https://github.com/joseph-roitman/pytest-snapshot/issues/71>.
+      #:test-flags #~(list "-k" "not test_assert_match_failure_bytes")))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-pytest))
+    (home-page "https://github.com/joseph-roitman/pytest-snapshot")
+    (synopsis "Pytest plugin for snapshot testing")
+    (description
+     "This package provides a plugin for snapshot testing with pytest.  It can
+be used to test that the value of an expression does not change
+unexpectedly.")
+    (license license:expat)))
 
 (define-public python-testfixtures
   (package
