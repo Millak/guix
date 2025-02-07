@@ -22428,6 +22428,30 @@ Bioconductor S4 data structures, namely the @code{DataFrame} and
 frames with arbitrary sets of columns.")
       (license license:expat))))
 
+(define-public r-imagearray
+  (let ((commit "78b4b18d4326aca8aecb2cf01b019c5809078310")
+        (revision "1"))
+    (package
+      (name "r-imagearray")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/BIMSBbioinfo/ImageArray")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0lqcvp0xrvi5c5v31cjvcbjcyrd2wssc948fvndarvg0vhvgqw71"))))
+      (properties `((upstream-name . "ImageArray")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-delayedarray r-hdf5array r-magick r-s4arrays
+                               r-zarrarray))
+      (home-page "https://github.com/BIMSBbioinfo/ImageArray")
+      (synopsis "DelayedArray based image operations")
+      (description "@code{DelayedArray} based image operations.")
+      (license license:expat))))
+
 (define-public r-velocyto
   (let ((commit "d7790346cb99f49ab9c2b23ba70dcf9d2c9fc350")
         (revision "1"))
