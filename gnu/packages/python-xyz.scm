@@ -27321,30 +27321,36 @@ functionality like full case-folding for case-insensitive matches in Unicode.")
         (base32
          "09syrsfrcknr1k2wmj05gfd5d0dyjfxzbipzbd0agv9775vwi9lf"))))
     (build-system python-build-system)
-    (inputs
-     (list mesa freeglut glu))
     (arguments
-     `(#:tests? #f ; Tests fail: AttributeError: 'GLXPlatform' object has no
-                                        ;attribute 'OSMesa'
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* '("OpenGL/platform/ctypesloader.py")
-               (("filenames_to_try = \\[\\]") "filenames_to_try = [name]"))
-             (substitute* '("OpenGL/platform/glx.py"
-                            "OpenGL/platform/egl.py"
-                            "OpenGL/platform/osmesa.py"
-                            "OpenGL/platform/darwin.py"
-                            "tests/check_glut_load.py")
-               (("'GLU'")
-                (string-append "'" (assoc-ref inputs "glu") "/lib/libGLU.so'"))
-               (("'glut',")
-                (string-append "'" (assoc-ref inputs "freeglut") "/lib/libglut.so',"))
-               (("'(GL|EGL|GLESv1_CM|GLESv2|OSMesa)'" all gl-library)
-                (string-append "'" (assoc-ref inputs "mesa") (string-append "/lib/lib" gl-library ".so'"))))
-             ;; Not providing libgle. It seems to be very old.
-             #t)))))
+     (list
+      ;; Tests fail: AttributeError: 'GLXPlatform' object has no attribute 'OSMesa'
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-paths
+            (lambda _
+              (substitute* '("OpenGL/platform/ctypesloader.py")
+                (("filenames_to_try = \\[\\]") "filenames_to_try = [name]"))
+              (substitute* '("OpenGL/platform/glx.py"
+                             "OpenGL/platform/egl.py"
+                             "OpenGL/platform/osmesa.py"
+                             "OpenGL/platform/darwin.py"
+                             "tests/check_glut_load.py")
+                (("'GLU'")
+                 (format #f "'~a/~a'" #$(this-package-input "glu")
+                         "lib/libGLU.so"))
+                (("'glut',")
+                 (format #f "'~a/~a'," #$(this-package-input "freeglut")
+                         "lib/libglut.so"))
+                (("'(GL|EGL|GLESv1_CM|GLESv2|OSMesa)'" all gl-library)
+                 (format #f "'~a/~a'" #$(this-package-input "mesa")
+                         (string-append "lib/lib" gl-library ".so"))))
+              ;; Not providing libgle. It seems to be very old.
+              )))))
+    (inputs
+     (list freeglut
+           glu
+           mesa))
     (home-page "https://pyopengl.sourceforge.net")
     (synopsis "Standard OpenGL bindings for Python")
     (description
