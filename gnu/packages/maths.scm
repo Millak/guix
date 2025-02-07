@@ -10758,7 +10758,7 @@ the Wolfram language.")
 (define-public python-mathics-core
   (package
     (name "python-mathics-core")
-    (version "7.0.0")
+    (version "8.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10767,7 +10767,7 @@ the Wolfram language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hhk2qq6swnprf9hliazwi3858sv3b3015g0mnm4ycdk5fsc7y57"))))
+                "1ymxwbjj51kplw94q17ha2cjs9vhv4b1cqd131mw1b5sxdrlig59"))))
     (arguments
      `(;; <https://github.com/pytest-dev/pytest/pull/10173> is missing .closed
        #:test-flags '("-s")
@@ -10776,15 +10776,21 @@ the Wolfram language.")
          (add-after 'unpack 'patch-bugs
            (lambda _
              (substitute* "pyproject.toml"
+              (("\"data/*.json\",")
+              "\"data/*.json\", \"data/operator-tables.json\",")
               (("\"autoload/\\*.m\",")
                ;; They forgot to install autoload/rules/*.m
                "\"autoload/*.m\", \"autoload/rules/*.m\","))
              ;; Prevent internet access by tests.
              (substitute* "mathics/builtin/files_io/files.py"
               (("https://raw.githubusercontent.com/Mathics3/mathics-core/master/README.rst")
-               (string-append (getcwd) "/README.rst")))))
+               (string-append (getcwd) "/README.rst")))
+             ;; setup.py has some weird acrobatics that cannot work right.
+             (invoke "mathics3-generate-operator-json-table" "-o"
+                     "mathics/data/operator-tables.json")))
          (add-before 'check 'prepare-check
            (lambda* (#:key inputs outputs #:allow-other-keys)
+             ;(copy-file "operator-tables.json" "mathics/data/operator-tables.json")
              ; Doesn't work: (add-installed-pythonpath inputs outputs)
              (setenv "PYTHONPATH" (getcwd))))
          (add-before 'check 'prepare-locales
@@ -10798,6 +10804,8 @@ the Wolfram language.")
     (propagated-inputs (list python-mpmath
                              python-pint
                              python-palettable
+                             python-pympler
+                             python-stopit
                              python-sympy
                              python-numpy
                              python-mathics-scanner
