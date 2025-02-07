@@ -480,9 +480,9 @@ without requiring the source code to be rewritten.")
                                                 ;  when heavily loaded)
 
 (define-public guile-next
-  (let ((version "3.0.9")
+  (let ((version "3.0.10")
         (revision "0")
-        (commit "3b76a30e3ca1f0b7ee7944836c2fc5660596b3bd"))
+        (commit "5d3f561d7dbcee370dc764cd5ba4210c62ce13de"))
     (package
       (inherit guile-3.0)
       (name "guile-next")
@@ -496,7 +496,7 @@ without requiring the source code to be rewritten.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1cgyjz1x8zpfhsw8gsqkak1lnmi780gps6874ks0bi8dwk0lwx6f"))))
+                  "1k2brrff9ygikcm7s6bp5yii72a0jihxd67wgszzqkwbjhyk9acb"))))
       (arguments
        (substitute-keyword-arguments (package-arguments guile-3.0)
          ((#:phases phases '%standard-phases)
@@ -511,9 +511,6 @@ without requiring the source code to be rewritten.")
                   (call-with-output-file ".tarball-version"
                     (lambda (port)
                       (display #$version port)))))
-              (add-before 'check 'skip-failing-tests
-                (lambda _
-                  (delete-file "test-suite/tests/version.test")))
               #$@(if (target-hurd?)
                      #~((delete 'patch-posix-spawn-usage))
                      #~())))))
