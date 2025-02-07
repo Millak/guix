@@ -1748,7 +1748,7 @@ command.")
     (name "tzdata")
     ;; This package should be kept in sync with python-pytz and python-tzdata
     ;; in (gnu packages time).
-    (version "2023d")
+    (version "2025a")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -1756,7 +1756,7 @@ command.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "1wq858ip55ijnlrffnnadq7vw0x93ywxghgfxh68r2qa1fbj3jnv"))))
+               "1l7hnlgc4wgy2gmaj5zmswpzbyq23h7vsndnw2zhwibw5k3wnpsd"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f
@@ -1817,17 +1817,14 @@ command.")
                      (delete-file-recursively
                       (string-append out "/share/zoneinfo-leaps")))))
                (delete 'configure))))
-    (inputs `(("_"
-               ;; Note: The "_" label above is here to avoid a full rebuild.
-               ;; TODO: Remove it on next rebuild cycle.
-               ,(origin
-                  (method url-fetch)
-                  (uri (string-append
-                        "https://data.iana.org/time-zones/releases/tzcode"
-                        version ".tar.gz"))
-                  (sha256
-                   (base32
-                    "07hn7hn2klw4dfyr673ril2nrk18198hbfv25gljsvc833hzk9g9"))))))
+    (inputs (list (origin
+                    (method url-fetch)
+                    (uri (string-append
+                          "https://data.iana.org/time-zones/releases/tzcode"
+                          version ".tar.gz"))
+                    (sha256
+                     (base32
+                      "0qahpwp1zlyvi7qrlm4r74pmj3c7sx3jlg9xw2siwj3nkzapk5hi")))))
     (home-page "https://www.iana.org/time-zones")
     (synopsis "Database of current and historical time zones")
     (description "The Time Zone Database (often called tz or zoneinfo)
