@@ -10815,13 +10815,13 @@ to Wolfram.")
 (define-public python-mathicsscript
   (package
     (name "python-mathicsscript")
-    (version "7.0.0")
+    (version "8.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mathicsscript" version))
        (sha256
-        (base32 "15ppg8sj03j63664npdqiv1lfk2mqnrqjb5817zjyy04z9s0kp7l"))))
+        (base32 "12si397b9ap5ibvbap72bvkmssh8hdap8jbmdmhsj1qdb1axrac4"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:phases
