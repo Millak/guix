@@ -22572,7 +22572,36 @@ patterns.")
                                r-shinyjs
                                r-sp
                                r-stringr
-                               r-uwot))
+                               r-uwot
+
+                               ;; Suggested packages
+                               r-anndata
+                               r-anndatar
+                               r-arrow
+                               r-bpcells
+                               r-circlize
+                               r-codetools
+                               r-complexheatmap
+                               r-delayedarray
+                               r-deseq2
+                               r-geojsonr
+                               r-ggforce
+                               r-ggnewscale
+                               r-glmgampoi
+                               r-hdf5array
+                               r-hdf5dataframe
+                               r-hdf5r
+                               r-imagearray
+                               r-music
+                               r-rstudioapi
+                               r-seurat
+                               r-seuratobject
+                               r-singlecellexperiment
+                               r-spacexr
+                               r-spatialexperiment
+                               r-vitesscer
+                               r-xml
+                               r-zarrdataframe))
       (native-inputs (list pkg-config r-testthat))
       (home-page "https://github.com/BIMSBbioinfo/VoltRon")
       (synopsis "VoltRon for spatial data integration and analysis")
