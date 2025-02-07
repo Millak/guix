@@ -216,6 +216,7 @@
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages game-development)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages geo)
@@ -27320,11 +27321,18 @@ functionality like full case-folding for case-insensitive matches in Unicode.")
        (sha256
         (base32
          "09syrsfrcknr1k2wmj05gfd5d0dyjfxzbipzbd0agv9775vwi9lf"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Tests fail: AttributeError: 'GLXPlatform' object has no attribute 'OSMesa'
-      #:tests? #f
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; XXX: Check why these test fail.
+                    (list "not test_get_read_fb_binding"
+                          "test_get_version"
+                          "test_glCallLists_twice2"
+                          "test_lookupint"
+                          "test_pointers")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'fix-paths
@@ -27347,6 +27355,11 @@ functionality like full case-folding for case-insensitive matches in Unicode.")
                          (string-append "lib/lib" gl-library ".so"))))
               ;; Not providing libgle. It seems to be very old.
               )))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-pygame
+           python-wheel))
     (inputs
      (list freeglut
            glu
