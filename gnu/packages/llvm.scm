@@ -1870,6 +1870,9 @@ misuse of libraries outside of the store.")))
 (define-public lld-as-ld-wrapper-15
   (make-lld-wrapper lld-15 #:lld-as-ld? #t))
 
+(define-public lld-as-ld-wrapper-18
+  (make-lld-wrapper lld-18 #:lld-as-ld? #t))
+
 (define-public lld-as-ld-wrapper
   (make-lld-wrapper lld #:lld-as-ld? #t))
 
