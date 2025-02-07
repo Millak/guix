@@ -2017,7 +2017,7 @@ perform the opening handshake in HTTP.")
 (define-public libpsl
   (package
     (name "libpsl")
-    (version "0.21.1")
+    (version "0.21.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/rockdaboot/libpsl/"
@@ -2025,13 +2025,12 @@ perform the opening handshake in HTTP.")
                                   "/libpsl-" version ".tar.gz"))
               (sha256
                (base32
-                "0k0d46bbh1jj2ll369f134vciplrzbqkg7fv9m62bl6lzghy2v5c"))))
+                "0272v94h89pg4zr9h47qdzy1m28y1v6xwm7nng0g6a5ix3m9rk0x"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-
-       ;; For tests.
-       ("python" ,python-wrapper)))
+     (list pkg-config
+           ;; For tests.
+           python-minimal))
     (inputs
      (list libidn2 libunistring))
     (home-page "https://github.com/rockdaboot/libpsl")
