@@ -13276,6 +13276,38 @@ The generated output can be graphically summarized using the built-in plotting
 function.")
       (license license:gpl2))))
 
+(define-public r-music
+  (let ((commit "f21fe67f5670d5e9fca0ad7550abaae3423eb59c")
+        (revision "2"))
+    (package
+      (name "r-music")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/xuranw/MuSiC")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05q72sml35sw3rd0lyg7r9r3470q47x5dsjn4bpgzl99s5d76llx"))))
+      (properties `((upstream-name . "MuSiC")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-biobase
+                               r-ggplot2
+                               r-matrix
+                               r-mcmcpack
+                               r-nnls
+                               r-singlecellexperiment
+                               r-toast))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/xuranw/MuSiC")
+      (synopsis "Multi-subject single cell deconvolution")
+      (description
+       "MuSiC is a deconvolution method that utilizes cross-subject scRNA-seq
+to estimate cell type proportions in bulk RNA-seq data.")
+      (license license:gpl3+))))
+
 (define-public r-sleuth
   (package
     (name "r-sleuth")
