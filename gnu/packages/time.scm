@@ -226,14 +226,14 @@ you will remove support for the pytz-specific interface.")
   (package
     (name "python-pytz")
     ;; This package should be kept in sync with tzdata in (gnu packages base).
-    (version "2023.3.post1")
+    (version "2025.1")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "pytz" version))
       (sha256
        (base32
-        "0yrxykwhk18x22lp0hjlj98mgnzrzlclz8kxam5vl7jap6zdskvv"))))
+        "13hpf2my8mgqkr38ch7s3rym9zz60m6pq87rcn7b46155az45ny2"))))
     (build-system python-build-system)
     (home-page "http://pythonhosted.org/pytz")
     (synopsis "Python timezone library")
