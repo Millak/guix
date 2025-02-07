@@ -4513,14 +4513,14 @@ set of three modules.")))
 (define-public python-pyqt-builder
   (package
     (name "python-pyqt-builder")
-    (version "1.16.4")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyqt_builder" version))
        (sha256
         (base32
-         "1pxgcqk9qf0qvszllb467v2cmr6ngksfr2caz1a2xgkrwcdf85a5"))))
+         "13l4aw8cgi062c8srmnazlzw4y6g1v4bqi39ia9azq0wzjm316ff"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools
                          python-setuptools-scm-next
