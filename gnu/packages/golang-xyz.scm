@@ -4099,7 +4099,7 @@ supports concurrent serializable transactions.")
 (define-public go-github-com-dgraph-io-ristretto
   (package
     (name "go-github-com-dgraph-io-ristretto")
-    (version "0.1.1")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -4108,7 +4108,7 @@ supports concurrent serializable transactions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mjni3zaxvjvw5c7nh4sij13sslg92x9xi3ykxzbv2s6g2ynigss"))))
+        (base32 "0lp6plhiskdpka44qlcw1x90nknccnkj1bnmxyxhzm8knx8c5yvw"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -4128,13 +4128,7 @@ supports concurrent serializable transactions.")
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "benchmarks")
-                (delete-file-recursively "contrib"))))
-          ;; XXX: Replace when go-build-system supports nested path.
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+                (delete-file-recursively "contrib")))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
