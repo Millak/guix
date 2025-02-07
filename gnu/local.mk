@@ -1297,6 +1297,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/fenics-dolfin-boost.patch		\
   %D%/packages/patches/fenics-dolfin-config-slepc.patch		\
   %D%/packages/patches/fenics-dolfin-hdf5-version-check.patch	\
+  %D%/packages/patches/ffmpeg-add-av_stream_get_first_dts-for-chromium.patch	\
   %D%/packages/patches/ffmpeg-jami-change-RTCP-ratio.patch	\
   %D%/packages/patches/ffmpeg-jami-rtp_ext_abs_send_time.patch	\
   %D%/packages/patches/ffmpeg-jami-libopusdec-enable-FEC.patch	\
