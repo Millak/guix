@@ -29958,27 +29958,25 @@ accept and reject GitHub pull requests.")
       (license license:gpl3+))))
 
 (define-public emacs-pr-review
-  (let ((revision "0")
-        (commit "9fa4ef4d1922cbd6dd37b631ea05aed0ef358178"))
-    (package
-      (name "emacs-pr-review")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/blahgeek/emacs-pr-review.git")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1cm92263jqvq2lg378xqi8ikbqw98lxjpsl29sja2xg2wf6p7gml"))))
-      (build-system emacs-build-system)
-      (propagated-inputs (list emacs-magit emacs-ghub emacs-markdown-mode))
-      (synopsis "Review GitHub Pull Requests")
-      (description "This package provides a way to review GitHub Pull
+  (package
+    (name "emacs-pr-review")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/blahgeek/emacs-pr-review.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1cm92263jqvq2lg378xqi8ikbqw98lxjpsl29sja2xg2wf6p7gml"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-magit emacs-ghub emacs-markdown-mode))
+    (synopsis "Review GitHub Pull Requests")
+    (description "This package provides a way to review GitHub Pull
 Requests from magit.")
-      (home-page "https://github.com/blahgeek/emacs-pr-review/")
-      (license license:gpl3+))))
+    (home-page "https://github.com/blahgeek/emacs-pr-review/")
+    (license license:gpl3+)))
 
 (define-public emacs-deadgrep
   (package
