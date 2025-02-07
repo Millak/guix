@@ -22560,6 +22560,35 @@ datasets.  @code{VoltRon} visualizes and analyzes regions of interests (ROIs),
 spots, cells and even molecules.")
       (license license:expat))))
 
+(define-public r-zarrdataframe
+  (let ((commit "fa89bd272ebc33a90edd4016c6f87f966102a4f5")
+        (revision "1"))
+    (package
+      (name "r-zarrdataframe")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/BIMSBbioinfo/ZarrDataFrame")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "121vyqwyg773l77xvx0rvrf0dyn26g3b01v42pz0a8lj4qmk86vn"))))
+      (properties `((upstream-name . "ZarrDataFrame")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-biocgenerics r-delayedarray r-pizzarr
+                               r-s4vectors r-zarrarray))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/BIMSBbioinfo/ZarrDataFrame")
+      (synopsis "Bioconductor-friendly Bindings for Zarr")
+      (description
+       "This package implements bindings for zarr store that are compatible
+with Bioconductor S4 data structures, namely the @code{DataFrame} and
+@code{DelayedArray}.  This allows Zarr-backed data to be easily used as data
+frames with arbitrary sets of columns.")
+      (license license:expat))))
+
 (define-public r-zarrarray
   (let ((commit "508d87193b20feba8cd24fa96b33e1bc9cc49958")
         (revision "1"))
