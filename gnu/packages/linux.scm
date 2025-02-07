@@ -8708,14 +8708,14 @@ re-use code and to avoid re-inventing the wheel.")
 (define-public libnftnl
   (package
     (name "libnftnl")
-    (version "1.2.6")
+    (version "1.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://netfilter.org/libnftnl/"
                            "libnftnl-" version ".tar.xz"))
        (sha256
-        (base32 "1x3pqxclpxcw8x5qx0vyi7znf9xwlkqsfd9sy4cxlir1v4nfmsnf"))))
+        (base32 "15ddcyp91lxjh2wfi8xicjpffhn9rpiqsa8djbkqvc69npbabzip"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -8736,15 +8736,16 @@ used by nftables.")
 ;; This is used in iptables, which contributes to rust.  We're pinning this
 ;; variant to avoid accidental rebuilds of rust.
 (define-public libnftnl/pinned
-  (package (inherit libnftnl)
-    (version "1.2.3")
+  (package
+    (inherit libnftnl)
+    (version "1.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://netfilter.org/libnftnl/"
-                           "libnftnl-" version ".tar.bz2"))
+                           "libnftnl-" version ".tar.xz"))
        (sha256
-        (base32 "0m82bmh8i24hwxmz7rxwxjll4904ghd2b1x1p5h8algrg6dyl5p9"))))
+        (base32 "15ddcyp91lxjh2wfi8xicjpffhn9rpiqsa8djbkqvc69npbabzip"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
