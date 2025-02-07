@@ -731,6 +731,10 @@ Tini is integrated with Docker.")
 (define-public docker-registry
   (package
     (name "docker-registry")
+    ;; XXX: The project ships a "vendor" directory containing all
+    ;; dependencies, consider to review and package them.  The Golang library
+    ;; is packaged in (gnu packges golang-xyz) as
+    ;; go-github-com-docker-distribution.
     (version "2.8.3")
     (source (origin
               (method git-fetch)
@@ -745,6 +749,12 @@ Tini is integrated with Docker.")
     (arguments
      (list
       #:import-path "github.com/docker/distribution"
+      #:test-subdirs #~(list "configuration"
+                             "context"
+                             "health"
+                             "manifest"
+                             "notifications/..."
+                             "uuid")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir-to-src
