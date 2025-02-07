@@ -374,6 +374,24 @@ annotations on struct fields.  It came as a spin-off from
 commands.")
     (license license:expat)))
 
+(define-public go-git-sr-ht-rjarry-go-opt-v2
+  (package
+    (inherit go-git-sr-ht-rjarry-go-opt)
+    (name "go-git-sr-ht-rjarry-go-opt-v2")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~rjarry/go-opt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1092926vcgkhp2yjpvlx7g7q60j0bbkkq6n4v1nv2mapxvrs7xjf"))))
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~rjarry/go-opt/v2"))))
+
 (define-public go-git-sr-ht-rockorager-tcell-term
   (package
     (name "go-git-sr-ht-rockorager-tcell-term")
