@@ -15335,7 +15335,12 @@ Never try to download missing OpenPGP keys.  Instead just bail out.
 
 @item interactive
 When a package signed with an unknown OpenPGP key is encountered, ask
-the user whether to download it or not.  This is the default behavior.
+the user whether to download it or not.
+
+@item auto
+Automatically selects the @code{interactive} policy when the standard
+input is connected to a pseudo terminal (TTY), else @code{always}.  This
+is the default behavior.
 @end table
 
 @item --key-server=@var{host}

@@ -314,14 +314,14 @@ than that of PACKAGE."
                                         #$output)))))
 
 (define* (download-tarball store url signature-url
-                           #:key (key-download 'interactive) key-server)
+                           #:key (key-download 'auto) key-server)
   "Download the tarball at URL to the store; check its OpenPGP signature at
 SIGNATURE-URL, unless SIGNATURE-URL is false.  On success, return the tarball
 file name; return #f on failure (network failure or authentication failure).
 
 KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
-values: 'interactive' (default), 'always', and 'never'; KEY-SERVER specifies
-the OpenPGP key server where the key should be looked up."
+values: 'auto' (default), 'always', 'interactive' and 'never'; KEY-SERVER
+specifies the OpenPGP key server where the key should be looked up."
   (let ((tarball (download-to-store store url)))
     (if (not signature-url)
         tarball
@@ -512,12 +512,12 @@ SOURCE, an <upstream-source>."
 (define* (package-update store package
                          #:optional (updaters (force %updaters))
                          #:key (version #f)
-                         (key-download 'interactive) key-server)
+                         (key-download 'auto) key-server)
   "Return the new version, the file name of the new version tarball, and input
 changes for PACKAGE; return #f (three values) when PACKAGE is up-to-date;
 raise an error when the updater could not determine available releases.
 KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
-values: 'always', 'never', and 'interactive' (default).
+values: 'always', 'auto' (default), 'never', and 'interactive'.
 
 When VERSION is specified, update PACKAGE to that version, even if that is a
 downgrade."

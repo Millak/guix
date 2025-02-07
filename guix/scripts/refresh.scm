@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2023 Maxim Cournoyer maxim.cournoyer@gmail.com>
+;;; Copyright © 2023, 2025 Maxim Cournoyer maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -193,8 +193,9 @@ specified with `--select'.\n"))
   (display (G_ "
       --key-download=POLICY
                          handle missing OpenPGP keys according to POLICY:
-                         'always', 'never', and 'interactive', which is also
-                         used when 'key-download' is not specified"))
+                         'auto', 'always', 'never', and 'interactive'.
+                         When left unspecified, the default policy is 'auto',
+                         which automatically selects interactive or always."))
   (newline)
   (display (G_ "
   -L, --load-path=DIR    prepend DIR to the package module search path"))
@@ -364,12 +365,12 @@ update would trigger a complete rebuild."
            (package-name package)))
 
 (define* (update-package store package version updaters
-                         #:key (key-download 'interactive) key-server
+                         #:key (key-download 'auto) key-server
                          warn?)
   "Update the source file that defines PACKAGE with the new version.
 KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
-values: 'interactive' (default), 'always', and 'never'.  When WARN? is true,
-warn about packages that have no matching updater."
+values: 'auto' (default), interactive', 'always', and 'never'.  When WARN? is
+true, warn about packages that have no matching updater."
   (if (lookup-updater package updaters)
       (let ((version output source
                      (package-update store package updaters

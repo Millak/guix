@@ -2,7 +2,7 @@
 ;;; Copyright © 2010, 2011, 2013, 2014, 2016, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +26,8 @@
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 i18n)
   #:use-module (srfi srfi-1)
+  #:use-module ((srfi srfi-34) #:select (raise))
+  #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module ((guix utils) #:select (config-directory))
   #:use-module ((guix build utils) #:select (mkdir-p))
@@ -201,7 +203,7 @@ GnuPG's default/configured one.  The key is added to KEYRING."
 
 (define* (gnupg-verify* sig file
                         #:key
-                        (key-download 'interactive)
+                        (key-download 'auto)
                         server
                         (keyring (current-keyring)))
   "Like `gnupg-verify', but try downloading the public key if it's missing.
@@ -210,9 +212,29 @@ Return two values: 'valid-signature and a fingerprint/name pair upon success,
 'invalid-signature with a fingerprint if the signature is invalid.
 
 KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
-values: 'always', 'never', and 'interactive' (default).  Return a
+values: 'auto', 'always', 'never', and 'interactive' The default policy is
+auto, which automatically selects the interactive policy when a TTY is
+connected to the standard input, or the always policy otherwise.  Return a
 fingerprint/user name pair on success and #f otherwise."
-  (let ((status (gnupg-verify sig file)))
+  (let* ((interactive? (isatty? (current-input-port)))
+         ;; Validate or compute (in the case of 'auto) the KEY-DOWNLOAD
+         ;; argument.
+         (key-download (match key-download
+                         ('auto (if interactive?
+                                    'interactive
+                                    'always))
+                         ('interactive
+                          (unless interactive?
+                            (raise (formatted-message
+                                    (G_ "cannot use interactive policy\
+ without TTY input")))))
+                         ((or 'always 'never)
+                          key-download)
+                         (_
+                          (raise (formatted-message
+                                  (G_ "invalid key-download policy: ~a")
+                                  key-download)))))
+         (status (gnupg-verify sig file)))
     (match (gnupg-status-good-signature? status)
       ((fingerprint . user)
        (values 'valid-signature (cons fingerprint user)))
@@ -236,7 +258,10 @@ fingerprint/user name pair on success and #f otherwise."
                     (format #t (G_ "Would you like to add this key \
 to keyring '~a'?~%")
                             keyring)
-                    (read-line))))
+                    (match (read-line)
+                      ((? eof-object?)
+                       (error "read-line unexpectedly returned #<eof>"))
+                      (other other)))))
              (string-match (locale-yes-regexp) answer)))
 
          (case key-download
@@ -244,7 +269,7 @@ to keyring '~a'?~%")
             (values 'missing-key missing))
            ((always)
             (download-and-try-again))
-           (else
+           (else                        ;interactive
             (if (receive?)
                 (download-and-try-again)
                 (values 'missing-key missing)))))))))

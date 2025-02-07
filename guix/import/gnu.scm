@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,7 +54,7 @@
         '("xz" "lz" "bz2" "tbz2" "gz" "tgz" "Z")))
 
 (define* (gnu-package->sexp package release
-                            #:key (key-download 'interactive))
+                            #:key (key-download 'auto))
   "Return the 'package' sexp for the RELEASE (a <gnu-release>) of PACKAGE (a
 <gnu-package>), or #f upon failure.  Use KEY-DOWNLOAD as the OpenPGP key
 download policy (see 'download-tarball' for details.)"
@@ -106,7 +106,7 @@ download policy (see 'download-tarball' for details.)"
        #f))))
 
 (define* (gnu->guix-package name
-                            #:key (key-download 'interactive)
+                            #:key (key-download 'auto)
                             #:allow-other-keys)
   "Return the package declaration for NAME as an s-expression.  Use
 KEY-DOWNLOAD as the OpenPGP key download policy (see 'download-tarball' for

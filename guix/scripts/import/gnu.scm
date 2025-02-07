@@ -35,7 +35,7 @@
 ;;;
 
 (define %default-options
-  '((key-download . interactive)))
+  '((key-download . auto)))
 
 (define (show-help)
   (display (G_ "Usage: guix import gnu [OPTION...] PACKAGE
@@ -44,8 +44,8 @@ Return a package declaration template for PACKAGE, a GNU package.\n"))
   (display (G_ "
       --key-download=POLICY
                          handle missing OpenPGP keys according to POLICY:
-                         'always', 'never', and 'interactive', which is also
-                         used when 'key-download' is not specified"))
+                         'auto' (default), 'always', 'never', and
+                         'interactive'"))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
@@ -66,7 +66,7 @@ Return a package declaration template for PACKAGE, a GNU package.\n"))
          (option '("key-download") #t #f          ;from (guix scripts refresh)
                  (lambda (opt name arg result)
                    (match arg
-                     ((or "interactive" "always" "never")
+                     ((or "auto" "interactive" "always" "never")
                       (alist-cons 'key-download (string->symbol arg)
                                   result))
                      (x

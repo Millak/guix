@@ -284,7 +284,7 @@ complete -f -c guix -n '__fish_guix_using_command refresh' -l list-updaters -d '
 complete -f -c guix -n '__fish_guix_using_command refresh' -l list-dependent -d 'list top-level dependent packages that would need to be rebuilt as a result of upgrading PACKAGE'
 complete -f -c guix -n '__fish_guix_using_command refresh' -a "--key-server=" -d 'use HOST as the OpenPGP key server'
 complete -f -c guix -n '__fish_guix_using_command refresh' -a "--gpg=" -d 'use COMMAND as the GnuPG 2.x command'
-complete -f -c guix -n '__fish_guix_using_command refresh' -a "--key-download=" -d 'handle missing OpenPGP keys according to POLICY.' --exclusive --arguments "always never interactive"
+complete -f -c guix -n '__fish_guix_using_command refresh' -a "--key-download=" -d 'handle missing OpenPGP keys according to POLICY.' --exclusive --arguments "always auto never interactive"
 
 #### publish
 set -l remotecommands port= listen= user= compression ttl= repl
@@ -321,7 +321,7 @@ set -l remotecommands import gnu nix pypi cpan hackage elpa gem cran crate texli
 complete -f -c guix -n '__fish_guix_needs_command' -a import -d 'Run IMPORTER with ARGS'
 ##### import gnu
 complete -f -c guix -n '__fish_guix_using_command import; and not __fish_seen_subcommand_from $remotecommands' -a gnu -d 'Return a package declaration template for PACKAGE, a GNU package.'
-complete -f -c guix -n '__fish_guix_using_command import; and __fish_seen_subcommand_from gnu' -a "--key-download=" -d 'handle missing OpenPGP keys according to POLICY: "always", "never", and "interactive", which is also used when "key-download" is not specified.'
+complete -f -c guix -n '__fish_guix_using_command import; and __fish_seen_subcommand_from gnu' -a "--key-download=" -d 'handle missing OpenPGP keys according to POLICY: "always", "auto", "never", and "interactive", which is also used when "key-download" is not specified.'
 ##### import pypi
 complete -f -c guix -n '__fish_guix_using_command import; and not __fish_seen_subcommand_from $remotecommands' -a pypi -d 'Import and convert the PyPI package for PACKAGE-NAME.'
 ##### import cpan
