@@ -2052,6 +2052,7 @@ understanding different BRDFs (and other component functions).")
                             "/include")
              (string-append "--x-libraries=" (assoc-ref %build-inputs "libx11")
                             "/lib")
+             "CXXFLAGS=-fpermissive"    ;from ‘unsigned char*’ to ‘char*’
              "--disable-examples")
        #:phases
        (modify-phases %standard-phases
