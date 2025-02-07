@@ -10696,17 +10696,37 @@ architecture.")
 (define-public python-mathics-scanner
   (package
     (name "python-mathics-scanner")
-    (version "1.3.1")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/Mathics3/mathics-scanner.git")
-             (commit "1.3.1")))
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1i632v3f64q3v1i0p0x850mjhgad49fl24dl6r20r4wa1mhalmp0"))))
+         "0y34kzqha5wp6n8cyvhhz47mq33x9kwi8ibj67q6pf08qslg154n"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare
+            (lambda _
+              ;; They forgot to update the version number.
+              (substitute* "mathics_scanner/version.py"
+               (("__version__=\"[^\"]*\"")
+                (string-append "__version__=\"" #$version "\"")))
+              (invoke "bash" "./admin-tools/make-JSON-tables.sh")
+              ;; Missing installation of "operators.yml".
+              (substitute* "pyproject.toml"
+               (("\"data/named-characters.yml\",")
+                "\"data/named-characters.yml\", \"data/operators.yml\","))
+              ;; Would cause a crash at runtime every time you select
+              ;; anything when running build_tables.py .
+              (substitute* "mathics_scanner/generate/build_tables.py"
+               (("\"operator-to-amslatex\",") "")))))))
     (propagated-inputs (list python-chardet python-click python-pyyaml))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://mathics.org/")
