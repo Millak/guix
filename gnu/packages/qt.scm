@@ -4479,13 +4479,19 @@ itself.")
 (define-public python-pyqtwebengine-6
   (package
     (inherit python-pyqtwebengine)
-    (version "6.7.0")
+    (version "6.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyQt6_WebEngine" version))
        (sha256
-        (base32 "00ahqmdgyfw21nhymarrskx723fakkkq2s4mvvspbqnrnsnwgvb8"))))
+        (base32 "1wiz5wn84wpb23lm8sphrw56df0ljyp5b3xiqa11i95n4ak5w134"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Fix missing include for QVariant.
+        '(substitute* "sip/QtWebEngineCore/qwebengineframe.sip"
+           (("#include <qwebengineframe\\.h>" all)
+            (string-append "#include <qvariant.h>\n" all))))))
     (native-inputs (list python python-sip python-pyqt-builder
                          ;; qtbase is required for qmake
                          qtbase))
