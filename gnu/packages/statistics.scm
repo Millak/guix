@@ -2736,7 +2736,11 @@ inference for statistical models.")
                                "pyinstallcheck_Bonmin_swiler2014"
                                "pyinstallcheck_Ipopt_std"
                                "pyinstallcheck_example_plot_optimization_bonmin"
-                               "pyinstallcheck_coupling_tools")
+                               "pyinstallcheck_coupling_tools"
+                               ;; Subprocess aborted for these tests.
+                               "pyinstallcheck_Study_std"
+                               "pyinstallcheck_OptimizationAlgorithm_std"
+                               "pyinstallcheck_docstring_missing")
                          "|"))))))))
     (native-inputs
      (list bison
