@@ -10740,13 +10740,13 @@ the Wolfram language.")
 (define-public python-mathics-pygments
   (package
     (name "python-mathics-pygments")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mathics_pygments" version))
        (sha256
-        (base32 "1q54c8mb9pgw8ncbs9hln183nxvvxq0d8495c8zakccsfswvznx2"))))
+        (base32 "1iagdic8f0yjx01kdds40jfcxcpdbrd3i0ywydl01dhyyvd2yjk9"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-mathics-scanner python-pygments))
     (native-inputs (list python-setuptools python-wheel))
