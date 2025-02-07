@@ -798,6 +798,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "ian@retrospec.tv")
   mozilla emacs)
 
+(define-member (person "Zheng Junjie"
+                       "z572@z572.online")
+  core-packages qt)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
