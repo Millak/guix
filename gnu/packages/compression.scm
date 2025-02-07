@@ -1776,79 +1776,78 @@ or junctions, and always follows hard links.")
                "lib"                    ;1.2MiB shared library and headers
                "static"))               ;1.2MiB static library
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-command-file-names
-           ;; Don't require hard requirements to be in $PATH.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (our (lambda (name) (string-append out "/bin/" name))))
-               (substitute* "programs/zstdgrep"
-                 (("(:-)(grep)" _ prefix command)
-                  (string-append prefix (which command)))
-                 (("(:-)(zstdcat)" _ prefix command)
-                  (string-append prefix (our command))))
-               (substitute* "programs/zstdless"
-                 (("zstdcat" command)
-                  (our command))))))
-         (delete 'configure)            ;no configure script
-         (add-after 'install 'adjust-library-locations
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (assoc-ref outputs "lib"))
-                    (static (assoc-ref outputs "static"))
-                    (shared-libs (string-append lib "/lib"))
-                    (static-libs (string-append static "/lib")))
-               (mkdir-p static-libs)
-               ;; This is based on the win64 release zip file from zstd.
-               ,@(if (target-mingw?)
-                     `((for-each delete-file (find-files out "\\.so"))
-                       (for-each delete-file (find-files shared-libs "\\.so"))
-                       (rename-file (string-append shared-libs "/libzstd.a")
-                                    (string-append static-libs "/libzstd_static.lib"))
-                       (delete-file-recursively
-                        (string-append shared-libs "/pkgconfig"))
-                       ;; no binary for interpreter `sh' found in $PATH
-                       (delete-file (string-append out "/bin/zstdgrep"))
-                       (delete-file (string-append out "/bin/zstdless"))
-                       (delete-file (string-append out "/share/man/man1/zstdgrep.1"))
-                       (delete-file (string-append out "/share/man/man1/zstdless.1")))
-                     `(;; Move the static library to its own output to save ~1MiB.
-                       (for-each (lambda (ar)
-                                   (link ar (string-append static-libs "/"
-                                                           (basename ar)))
-                                   (delete-file ar))
-                                 (find-files shared-libs "\\.a$"))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-command-file-names
+                 ;; Don't require hard requirements to be in $PATH.
+                 (lambda _
+                   (let* ((our (lambda (name) (string-append #$output "/bin/" name))))
+                     (substitute* "programs/zstdgrep"
+                       (("(:-)(grep)" _ prefix command)
+                        (string-append prefix (which command)))
+                       (("(:-)(zstdcat)" _ prefix command)
+                        (string-append prefix (our command))))
+                     (substitute* "programs/zstdless"
+                       (("zstdcat" command)
+                        (our command))))))
+               (delete 'configure)            ;no configure script
+               (add-after 'install 'adjust-library-locations
+                 (lambda _
+                   (let* ((out #$output)
+                          (lib #$output:lib)
+                          (static #$output:static)
+                          (shared-libs (string-append lib "/lib"))
+                          (static-libs (string-append static "/lib")))
+                     (mkdir-p static-libs)
+                     ;; This is based on the win64 release zip file from zstd.
+                     #$@(if (target-mingw?)
+                            #~((for-each delete-file (find-files out "\\.so"))
+                               (for-each delete-file (find-files shared-libs "\\.so"))
+                               (rename-file (string-append shared-libs "/libzstd.a")
+                                            (string-append static-libs "/libzstd_static.lib"))
+                               (delete-file-recursively
+                                (string-append shared-libs "/pkgconfig"))
+                               ;; no binary for interpreter `sh' found in $PATH
+                               (delete-file (string-append out "/bin/zstdgrep"))
+                               (delete-file (string-append out "/bin/zstdless"))
+                               (delete-file (string-append out "/share/man/man1/zstdgrep.1"))
+                               (delete-file (string-append out "/share/man/man1/zstdless.1")))
+                            #~(;; Move the static library to its own output to save ~1MiB.
+                               (for-each (lambda (ar)
+                                           (link ar (string-append static-libs "/"
+                                                                   (basename ar)))
+                                           (delete-file ar))
+                                         (find-files shared-libs "\\.a$"))
 
-                       ;; Make sure the pkg-config file refers to the right output.
-                       (substitute* (string-append shared-libs "/pkgconfig/libzstd.pc")
-                         (("^prefix=.*")
-                          ;; Note: The .pc file expects a trailing slash for 'prefix'.
-                          (string-append "prefix=" lib "/\n")))))))))
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "prefix=" (assoc-ref %outputs "out"))
-             (string-append "libdir=" (assoc-ref %outputs "lib") "/lib")
-             (string-append "includedir=" (assoc-ref %outputs "lib") "/include")
-             ,@(if (target-mingw?)
-                   `(;; See the note in the Makefile.
-                     "TARGET_SYSTEM=Windows"
-                     ;; Don't try to link with pthread.
-                     "THREAD_LD="
-                     ;; This isn't picked up correctly in the Makefiles.
-                     "EXT=.exe")
-                   '())
-             ;; Auto-detection is over-engineered and buggy.
-             "PCLIBDIR=lib"
-             "PCINCDIR=include"
-             ;; Skip auto-detection of, and creating a dependency on, the build
-             ;; environment's ‘xz’ for what amounts to a dubious feature anyway.
-             "HAVE_LZMA=0"
-             ;; Not currently detected, but be explicit & avoid surprises later.
-             "HAVE_LZ4=0"
-             "HAVE_ZLIB=0")
-       #:tests? ,(not (or (target-hurd?)
-                          (%current-target-system)))))
+                               ;; Make sure the pkg-config file refers to the right output.
+                               (substitute* (string-append shared-libs "/pkgconfig/libzstd.pc")
+                                 (("^prefix=.*")
+                                  ;; Note: The .pc file expects a trailing slash for 'prefix'.
+                                  (string-append "prefix=" lib "/\n")))))))))
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "prefix=" #$output)
+                   (string-append "libdir=" #$output:lib "/lib")
+                   (string-append "includedir=" #$output:lib "/include")
+                   #$@(if (target-mingw?)
+                          `(;; See the note in the Makefile.
+                            "TARGET_SYSTEM=Windows"
+                            ;; Don't try to link with pthread.
+                            "THREAD_LD="
+                            ;; This isn't picked up correctly in the Makefiles.
+                            "EXT=.exe")
+                          '())
+                   ;; Auto-detection is over-engineered and buggy.
+                   "PCLIBDIR=lib"
+                   "PCINCDIR=include"
+                   ;; Skip auto-detection of, and creating a dependency on, the build
+                   ;; environment's ‘xz’ for what amounts to a dubious feature anyway.
+                   "HAVE_LZMA=0"
+                   ;; Not currently detected, but be explicit & avoid surprises later.
+                   "HAVE_LZ4=0"
+                   "HAVE_ZLIB=0")
+           #:tests? (not (or (target-hurd?)
+                             (%current-target-system)))))
     (home-page "https://facebook.github.io/zstd/")
     (synopsis "Zstandard real-time compression algorithm")
     (description "Zstandard (@command{zstd}) is a lossless compression algorithm
