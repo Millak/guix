@@ -22560,6 +22560,36 @@ datasets.  @code{VoltRon} visualizes and analyzes regions of interests (ROIs),
 spots, cells and even molecules.")
       (license license:expat))))
 
+(define-public r-zarrarray
+  (let ((commit "508d87193b20feba8cd24fa96b33e1bc9cc49958")
+        (revision "1"))
+    (package
+      (name "r-zarrarray")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/BIMSBbioinfo/ZarrArray")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0fz7zj9ixmz6yh709cd55abc5378b549cx454cgk274nhp24xdbr"))))
+      (properties `((upstream-name . "ZarrArray")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-biocgenerics
+                               r-delayedarray
+                               r-iranges
+                               r-matrix
+                               r-pizzarr
+                               r-s4arrays
+                               r-s4vectors
+                               r-sparsearray))
+      (home-page "https://github.com/BIMSBbioinfo/ZarrArray")
+      (synopsis "Zarr backend for DelayedArray objects")
+      (description "Zarr backend for @code{DelayedArray} objects.")
+      (license license:expat))))
+
 (define-public methyldackel
   (package
     (name "methyldackel")
