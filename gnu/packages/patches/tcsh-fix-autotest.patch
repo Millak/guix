@@ -1,11 +1,15 @@
 --- tests/commands.at
 +++ tests/commands.at
-@@ -921,26 +921,27 @@ AT_CLEANUP
- TCSH_UNTESTED([notify])
- 
+@@ -1084,27 +1084,28 @@
+ dnl	onintr
+ dnl
  
 -AT_SETUP([onintr])
--
+-AT_KEYWORDS([commands])
++# XXX This test does not work: "fail" is printed on stdout.
++#AT_SETUP([onintr])
++#AT_KEYWORDS([commands])
+ 
 -AT_DATA([onintr.csh],
 -[[onintr label
 -kill -INT $$
@@ -23,10 +27,7 @@
 -OK
 -])
 -
--AT_CLEANUP
-+# XXX This test does not work: "fail" is printed on stdout.
-+#AT_SETUP([onintr])
-+#
+-AT_CLEANUP()
 +#AT_DATA([onintr.csh],
 +#[[onintr label
 +#kill -INT $$
@@ -44,28 +45,13 @@
 +#OK
 +#])
 +#
-+#AT_CLEANUP
++#AT_CLEANUP()
  
  
- AT_SETUP([popd])
---- tests/lexical.at
-+++ tests/lexical.at
-@@ -35,9 +35,9 @@ AT_CHECK([if [ ! -t 0 ]; then exit 77; fi],, [Skipping comment tests])
- AT_CHECK([echo 'echo OK@%:@comment' | tcsh -f], , [OK
- ])
- 
--AT_CHECK([tcsh -f -c 'echo @%:@no comment'], ,
--[@%:@no comment
--])
-+#AT_CHECK([tcsh -f -c 'echo @%:@no comment'], ,
-+#[@%:@no comment
-+#])
- 
- AT_DATA([comment2.csh],
- [[echo testing...@%:@\
+ dnl
 --- tests/variables.at
 +++ tests/variables.at
-@@ -666,7 +666,8 @@ set listflags=(-xA $cwd/args.sh)
+@@ -963,7 +963,8 @@
  ls-F -something .
  ]])
  AT_DATA([args.sh],
@@ -75,8 +61,8 @@
  ]])
  chmod a+x args.sh
  AT_CHECK([tcsh -f listflags.csh], ,
-@@ -728,55 +729,57 @@ TCSH_UNTESTED([$ oid])
- AT_SETUP([$ owd])
+@@ -1144,21 +1145,22 @@
+ AT_KEYWORDS([variables])
  
  AT_DATA([owd.csh],
 -[[echo $owd
@@ -105,10 +91,13 @@
 +CWD/a/b
  ])
  
- AT_CLEANUP
- 
+ AT_CLEANUP()
+@@ -1168,36 +1170,37 @@
+ dnl	$ path
+ dnl
  
 -AT_SETUP([$ path])
+-AT_KEYWORDS([variables])
 -
 -mkdir subdir
 -AT_DATA([script.sh],
@@ -136,9 +125,10 @@
 -. foo . bar .
 -])
 -
--AT_CLEANUP
+-AT_CLEANUP()
 +# XXX Not sure why this does not work. "home" is printed out twice on stdout.
 +#AT_SETUP([$ path])
++#AT_KEYWORDS([variables])
 +#
 +#mkdir subdir
 +#AT_DATA([script.sh],
@@ -166,7 +156,7 @@
 +#. foo . bar .
 +#])
 +#
-+#AT_CLEANUP
++#AT_CLEANUP()
  
  
- AT_SETUP([$ printexitvalue])
+ dnl
