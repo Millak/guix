@@ -165,13 +165,13 @@ expressions.")
   (package
     (name "python-tzdata")
     ;; This package should be kept in sync with tzdata in (gnu packages base).
-    (version "2023.4")
+    (version "2025.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tzdata" version))
        (sha256
-        (base32 "1ja8c6ybwhbzr37a0r56g4j555gxzss4k5irfwn54ra7557wjm6x"))
+        (base32 "156nh5d0fagghgyz54ymbd4cnr6z05w8iiin2syjinwcx04lk294"))
        (modules '((guix build utils)))
        (snippet #~(delete-file-recursively "src/tzdata/zoneinfo"))))
     (build-system pyproject-build-system)
