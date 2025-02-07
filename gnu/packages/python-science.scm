@@ -1199,6 +1199,8 @@ indices of @code{ndarrays}.")
               " and not test_read_non_existent"
               ;; Unknown failures
               " and not test_switch_options"
+              ;; These fail with: td64 doesn't return NotImplemented, see numpy#17017
+              " and not test_nat_comparisons"
               ;; Crashes
               " and not test_bytes_exceed_2gb"
               ;; get_subplotspec() returns None; possibly related to
