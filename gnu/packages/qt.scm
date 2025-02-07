@@ -4406,13 +4406,13 @@ contain over 620 classes.")
   (package
     (inherit python-pyqt5-sip)
     (name "python-pyqt6-sip")
-    (version "13.8.0")
+    (version "13.10.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "PyQt6_sip" version))
+       (uri (pypi-uri "pyqt6_sip" version))
        (sha256
-        (base32 "1m39znwza9yypyd93i5mxd9pbf6zn9qdajczpm953awwdlywyx1g"))))
+        (base32 "0l2kmsj2mvc3rpzfmmb5xlfzcmblx469wm1vabndj5fk1ddaknnn"))))
     (synopsis "Sip module support for PyQt6")
     (description
      "SIP is used to write self contained extension modules, i.e. without a
