@@ -22399,6 +22399,35 @@ duplicates, samblaster will require approximately 20MB of memory per 1M read
 pairs.")
     (license license:expat)))
 
+(define-public r-hdf5dataframe
+  (let ((commit "1cdb905b1f6af3339938de3e1ca407908bc93e47")
+        (revision "1"))
+    (package
+      (name "r-hdf5dataframe")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/BIMSBbioinfo/HDF5DataFrame")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1pk22h56x873gahj2nwnwxzyq5a27h363mxk1491irypvk78dpn9"))))
+      (properties `((upstream-name . "HDF5DataFrame")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-biocgenerics r-delayedarray r-hdf5array
+                               r-rhdf5 r-s4vectors))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/BIMSBbioinfo/HDF5DataFrame")
+      (synopsis "Bioconductor-friendly bindings for Parquet")
+      (description
+       "This package implements bindings for h5 files that are compatible with
+Bioconductor S4 data structures, namely the @code{DataFrame} and
+@code{DelayedArray}.  This allows HDF5-backed data to be easily used as data
+frames with arbitrary sets of columns.")
+      (license license:expat))))
+
 (define-public r-velocyto
   (let ((commit "d7790346cb99f49ab9c2b23ba70dcf9d2c9fc350")
         (revision "1"))
