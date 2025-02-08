@@ -495,13 +495,13 @@ system, and the core design of Django is reused in Grantlee.")
 (define-public qtbase-5
   (package
     (name "qtbase")
-    (version "5.15.15")
+    (version "5.15.16")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "18bbg5ids7j8vk7mp0bcrik22mafcfq4a2smgjlwnkk9rzz43yg5"))
+                "14hm0kyp1y8lsc6wn3bsy28i6zf8l9b6f81pm1mqn18qih2iaj5h"))
               ;; Use TZDIR to avoid depending on package "tzdata".
               (patches (search-patches "qtbase-5-use-TZDIR.patch"
                                        "qtbase-moc-ignore-gcc-macro.patch"
@@ -544,10 +544,7 @@ system, and the core design of Django is reused in Grantlee.")
            libxfixes
            libxi
            libxinerama
-           ;; Use libxkbcommon-1.5 as 1.6.0 removed keysyms referenced in the
-           ;; qtbase source.
-           ;; TODO: Check if libxkbcommon can be used on next update.
-           libxkbcommon-1.5
+           libxkbcommon
            libxml2
            libxrandr
            libxrender
@@ -1200,7 +1197,7 @@ tst_qt_cmake_create.cpp"
        (prepend libxkbcommon vulkan-headers)))
     (inputs
      (modify-inputs (package-inputs qtbase-5)
-       (delete "libxkbcommon")          ;qtbase-5 use libxkbcommon-1.5
+       (delete "libxkbcommon")
        (prepend at-spi2-core
                 bash-minimal
                 coreutils-minimal
