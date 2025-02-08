@@ -2855,7 +2855,7 @@ position on a map.  In addition, you can use to the API to retrieve satellite
 information and perform area based monitoring.")
     (license (package-license qtbase))))
 
-(define-public qtpurchasing
+(define-public qtpurchasing-5
   (package
     (inherit qtsvg-5)
     (name "qtpurchasing")
