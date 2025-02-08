@@ -246,7 +246,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
 (define glib-minimal
   (package
     (name "glib")
-    (version "2.82.1")
+    (version "2.83.3")
     (source
      (origin
        (method url-fetch)
@@ -255,7 +255,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                        name "/" (string-take version 4) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "19l98kdv6d4363minliw0imvxh4qfdw5im988knf8bpm1d2391j7"))
+        (base32 "139jpar5f5qjxkf3knvqq1kgdxgsrxqqmybw4yaaagrfpcc57inh"))
        (patches
         (search-patches "glib-appinfo-watch.patch"
                         "glib-skip-failing-test.patch"))
@@ -333,7 +333,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                      ;; assertion failed (last_thread_id <= thread_id): (3 <= 2)
                      #~((substitute* "glib/tests/thread-pool-slow.c"
                           (("^   g_assert_cmpint \\(last_thread_id.*" all)
-                          (string-append "//" all "\n"))))
+                           (string-append "//" all "\n"))))
                      #~())
               #$@(if (system-hurd?)
                      '((with-directory-excursion "gio/tests"
@@ -480,7 +480,9 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
               ;; outputs.
               (substitute*
                   (list (search-input-file outputs "lib/pkgconfig/gio-2.0.pc")
-                        (search-input-file outputs "lib/pkgconfig/glib-2.0.pc"))
+                        (search-input-file outputs "lib/pkgconfig/glib-2.0.pc")
+                        (search-input-file outputs
+                                           "lib/pkgconfig/girepository-2.0.pc"))
                 (("^bindir=.*")
                  "")
                 (("=\\$\\{bindir\\}/")
