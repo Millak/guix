@@ -1977,13 +1977,13 @@ recognition API for devices.")))
   (package
     (inherit qtsvg-5)
     (name "qtmultimedia")
-    (version "5.15.15")
+    (version "5.15.16")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1y6pzw9rrcp2v1bxqj1i58k07p7r59fx3sawbv50a3j0s80sid57"))
+                "0d0pfki9hqrfsm3ap607pjsbhqqnqnkk05cgqmg40vp49cgcx8f8"))
               (modules '((guix build utils)))
               (snippet
                '(begin
