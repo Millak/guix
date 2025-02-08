@@ -1858,14 +1858,14 @@ which highly leverage existing libraries in the larger LLVM project.")
 (define-public libcxx
   (package
     (name "libcxx")
-    (version (package-version llvm-15))
+    (version (package-version llvm-19))
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #f
       #:configure-flags
-      #~(list "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi"
+      #~(list "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi;libunwind"
               "-DCMAKE_C_COMPILER=clang"
               "-DCMAKE_CXX_COMPILER=clang++"
               ;; libc++.so is actually a GNU ld style linker script, however,
@@ -1894,7 +1894,7 @@ which highly leverage existing libraries in the larger LLVM project.")
                         (getenv "CPLUS_INCLUDE_PATH"))
                 #t))))))
     (native-inputs
-     (list clang llvm python))
+     (list clang-19 libunwind-headers llvm python))
     (home-page "https://libcxx.llvm.org")
     (synopsis "C++ standard library")
     (description
