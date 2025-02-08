@@ -2303,13 +2303,13 @@ interacting with serial ports from within Qt.")
   (package
     (inherit qtsvg-5)
     (name "qtserialbus")
-    (version "5.15.15")
+    (version "5.15.16")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0dsmrxksl8n47p2lz7mw9d3ia7g4aj096c09cqq22f4bg1syvfkb"))))
+                "1dpa1sgd86ia3cl69ac0jb54ykifvklarf3m7rbfsckm6r3hfq4d"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases '%standard-phases)
