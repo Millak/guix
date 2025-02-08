@@ -68,20 +68,32 @@ etwa die Systemarchitektur, den VPS-Typ usw.@: wählen.")))
 
   (entry (commit "616ae36e0f557cecb4abe58c5b0973b9428d25e0")
         (title
-         (en "Kernel persistent storage in UEFI disabled"))
+         (en "Kernel persistent storage in UEFI disabled")
+         (de "Im Kernel wurde persistenter Speicher in UEFI abgeschaltet"))
         (body
-          (en "The linux-libre kernel's persistent storage (pstore) mechanism
+         (en "The linux-libre kernel's persistent storage (pstore) mechanism
 can use UEFI non-volative memory to store information that would otherwise be
 lost, such as kernel panic logs.  However, this can permanently fill the
 non-volatile memory on some hardware implementations, breaking the ability to
 reconfigure Guix System.  Therefore, this mechanism has been disabled by default
-in the build-time kernel configuration.  Users can re-enable it if desired.")))
+in the build-time kernel configuration.  Users can re-enable it if desired.")
+         (de "Im Kernel Linux-libre kann nicht flüchtiger Speicher eines UEFI
+als persistenter Speicher (pstore) benutzt werden, um Informationen zu
+behalten, die andernfalls nicht mehr einsehbar wären, wie Protokolle einer
+Kernel Panic.  Jedoch kann dadurch der nicht flüchtige Speicher auf manchen
+Hardware-Implementierungen dauerhaft gefüllt werden, wodurch weiteres
+Rekonfigurieren eines Guix System unmöglich wird.  Daher wurde dieser
+Mechanismus in der Vorgabeeinstellung neu erstellter Kernels abgeschaltet.
+Interessierte Benutzer können ihn wieder aktivieren.")))
 
  (entry (commit "f40eff02413c20cdb6200d90cbb7f674cea475fd")
         (title
-         (en "Linux-libre 6.13 now available"))
+         (en "Linux-libre 6.13 now available")
+         (de "Linux-libre 6.13 jetzt verfügbar"))
         (body
-         (en "The 6.13 linux-libre series is now available in GNU Guix.")))
+         (en "The 6.13 linux-libre series is now available in GNU Guix.")
+         (de "Die Versionsreihe 6.13 von Linux-libre ist ab jetzt in GNU Guix
+verfügbar.")))
 
  (entry (commit "0aa45f18543552f2396414ab130dab40f8969d27")
         (title
