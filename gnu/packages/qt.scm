@@ -2292,7 +2292,7 @@ interacting with serial ports from within Qt.")))
 interacting with serial ports from within Qt.")
     (license (package-license qtbase))))
 
-(define-public qtserialbus
+(define-public qtserialbus-5
   (package
     (inherit qtsvg-5)
     (name "qtserialbus")
