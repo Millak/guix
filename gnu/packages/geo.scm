@@ -1738,7 +1738,7 @@ Unidata/UCAR UDUNITS-2 library, and the cftime calendar functionality.")
 (define-public tegola
   (package
     (name "tegola")
-    (version "0.16.0")
+    (version "0.21.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1747,7 +1747,7 @@ Unidata/UCAR UDUNITS-2 library, and the cftime calendar functionality.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mjfn0izf1lj402845mx0cv9fald8s5443q35y16d9crqf3i6mav"))
+                "1f5l7b372dfyibawhcnlz700z11a0dxqd7kr731nwfmhwz2v3438"))
               (modules '((guix build utils)))
               ;; TODO: Unbundle more when missing packages are available.
               (snippet #~(with-directory-excursion "vendor"
