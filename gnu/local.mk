@@ -2146,7 +2146,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/pulseview-glib-2.68.patch		\
   %D%/packages/patches/pybugz-encode-error.patch		\
   %D%/packages/patches/pybugz-stty.patch			\
-  %D%/packages/patches/pyqt-configure.patch			\
   %D%/packages/patches/python-2-deterministic-build-info.patch	\
   %D%/packages/patches/python-2.7-adjust-tests.patch		\
   %D%/packages/patches/python-2.7-expat-compat.patch		\
