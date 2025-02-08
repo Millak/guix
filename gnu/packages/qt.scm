@@ -1945,7 +1945,7 @@ recognition API for devices.")))
 (define-public qtsensors-5
   (package
     (inherit qtsvg-5)
-    (name "qtsensors-5")
+    (name "qtsensors")
     (version "5.15.10")
     (source (origin
               (method url-fetch)
@@ -5510,7 +5510,7 @@ color-related widgets.")
                                           "qtquickcontrols2"
                                           "qtscript"
                                           "qtscxml"
-                                          "qtsensors-5"
+                                          "qtsensors"
                                           "qtspeech"
                                           "qtsvg"
                                           "qttools"
