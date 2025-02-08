@@ -400,6 +400,7 @@ buffers.")
            lcms                         ;optional, color management
            libheif                      ;optional, HEIF + AVIF support
            libmng                       ;optional, MNG support
+           libxpm                       ;optional, XPM support
            (librsvg-for-system)         ;optional, SVG support
            libxcursor                   ;optional, Mouse Cursor support
            openexr-2                    ;optional, EXR support
