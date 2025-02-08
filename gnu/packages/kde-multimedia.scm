@@ -156,7 +156,16 @@ This package is part of the KDE multimedia module.")
                (base32 "0gvwsxlrwn2s6i4agmwa0r1lq1fybfyxv933g2z3n76qnn9mkbrb"))))
     (build-system qt-build-system)
     (arguments
-     (list #:qtbase qtbase))
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-yt-dlp-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/application.cpp"
+                     (("findExecutable\\(u\"yt-dlp\"")
+                      (string-append "findExecutable(u\""
+                                     (search-input-file inputs "bin/yt-dlp")
+                                     "\""))))))))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
