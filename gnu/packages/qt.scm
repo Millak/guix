@@ -1946,13 +1946,13 @@ recognition API for devices.")))
   (package
     (inherit qtsvg-5)
     (name "qtsensors")
-    (version "5.15.10")
+    (version "5.15.16")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "00gzb7xcifi3ib5adi7s6h5wvc6v4f48nwb4g1pm0zq9sv22lg6d"))))
+                "04j00nckxgp5d26qkx1kwy1sjmgbc9sn8p36n6dfyscxzljw6p6d"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:parallel-tests? _ #f) #f)    ; can lead to race condition
