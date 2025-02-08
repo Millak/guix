@@ -1535,7 +1535,7 @@ integration with a custom editor as well as a ready-to-use
     (native-inputs
      (list extra-cmake-modules perl qttools-5
            ;; Optional, for compile-time validation of syntax definition files:
-           qtxmlpatterns))
+           qtxmlpatterns-5))
     (inputs
      (list qtbase-5))))
 
@@ -4705,7 +4705,7 @@ library.")
            qtbase-5
            qtdeclarative-5
            qtscript-5
-           qtxmlpatterns
+           qtxmlpatterns-5
            solid-5
            sonnet-5))
     (arguments

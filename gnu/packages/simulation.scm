@@ -188,7 +188,7 @@
                          qtsvg-5
                          qttools-5
                          qtwebengine-5
-                         qtxmlpatterns
+                         qtxmlpatterns-5
                          utfcpp
                          vtk
                          xz))

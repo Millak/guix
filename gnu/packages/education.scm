@@ -601,7 +601,7 @@ specialized device.")
            qtsvg-5
            qtwebchannel-5
            qtwebengine-5
-           qtxmlpatterns
+           qtxmlpatterns-5
            quazip-5
            sdl
            zlib))
@@ -735,7 +735,7 @@ charts.")
            qtgraphicaleffects
            qtquickcontrols2-5
            qtx11extras
-           qtxmlpatterns))
+           qtxmlpatterns-5))
     (home-page "https://edu.kde.org/ktouch/")
     (synopsis "Touch typing tutor")
     (description

@@ -1000,8 +1000,8 @@ settings (aliasing, linear interpolation and cubic interpolation).")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/hydrogen-music/hydrogen")
-             (commit version)))
+              (url "https://github.com/hydrogen-music/hydrogen")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1i5gz5zck8s0kskjgnx9c75gh7zx0kbjsqzl2765f99p9svprirq"))))
@@ -1031,7 +1031,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
            pulseaudio
            qtbase-5
            qtsvg-5
-           qtxmlpatterns
+           qtxmlpatterns-5
            qtwayland-5
            zlib))
     (home-page "http://hydrogen-music.org/")

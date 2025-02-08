@@ -1569,7 +1569,7 @@ XLSX document format.")
      (list qtbase-5))
     (synopsis "Qt5 build for the qxlsx library")))
 
-(define-public qtxmlpatterns
+(define-public qtxmlpatterns-5
   (package (inherit qtsvg-5)
     (name "qtxmlpatterns")
     (version "5.15.15")
@@ -3065,7 +3065,7 @@ processes or computers.")
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs (list qtbase-5))
-    (native-inputs (list perl qtdeclarative-5 qtmultimedia-5 qtxmlpatterns))
+    (native-inputs (list perl qtdeclarative-5 qtmultimedia-5 qtxmlpatterns-5))
     (synopsis "Qt Speech module")
     (description "The Qt Speech module enables a Qt application to support
 accessibility features such as text-to-speech, which is useful for end-users
@@ -4311,7 +4311,7 @@ module provides support functions to the automatically generated code.")
        ("qtwebchannel-5" ,qtwebchannel-5)
        ("qtwebsockets-5" ,qtwebsockets-5)
        ("qtx11extras" ,qtx11extras)
-       ("qtxmlpatterns" ,qtxmlpatterns)))
+       ("qtxmlpatterns" ,qtxmlpatterns-5)))
     (arguments
       (list
        #:tests? #f ; No tests.
@@ -5351,7 +5351,7 @@ color-related widgets.")
            libxslt
            python-wrapper
            qtbase-5
-           qtxmlpatterns))
+           qtxmlpatterns-5))
     (arguments
      (list
       #:tests? #f
@@ -5461,7 +5461,7 @@ color-related widgets.")
            qtwebengine-5
            qtwebsockets-5
            qtx11extras
-           qtxmlpatterns))
+           qtxmlpatterns-5))
     (propagated-inputs
      (list python-shiboken-2))
     (native-inputs

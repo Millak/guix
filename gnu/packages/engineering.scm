@@ -3561,7 +3561,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            qtwebengine
            qtwayland
            qtx11extras
-           qtxmlpatterns
+           qtxmlpatterns-5
            sqlite
            tbb-2020                     ; Same version as opencascade-occt
            vtk

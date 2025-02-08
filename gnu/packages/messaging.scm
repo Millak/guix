@@ -1500,7 +1500,7 @@ default.")
                   qtquickcontrols2-5
                   qtsvg-5
                   qtmultimedia-5
-                  qtxmlpatterns
+                  qtxmlpatterns-5
                   qqc2-desktop-style
                   qxmpp
                   sonnet
