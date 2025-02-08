@@ -11,9 +11,9 @@ Author: Stephen Kitt <skitt@debian.org>
 
 --- a/bfd/peXXigen.c
 +++ b/bfd/peXXigen.c
-@@ -77,6 +77,9 @@
+@@ -74,6 +74,9 @@
+ #include <wchar.h>
  #include <wctype.h>
- #endif
  
 +#include <errno.h>
 +#include <limits.h>
@@ -21,46 +21,37 @@ Author: Stephen Kitt <skitt@debian.org>
  /* NOTE: it's strange to be including an architecture specific header
     in what's supposed to be general (to PE/PEI) code.  However, that's
     where the definitions are, and they don't vary per architecture
-@@ -876,9 +879,36 @@
- 
-   /* Use a real timestamp by default, unless the no-insert-timestamp
-      option was chosen.  */
--  if ((pe_data (abfd)->timestamp) == -1)
--    H_PUT_32 (abfd, time (0), filehdr_out->f_timdat);
--  else
-+  if ((pe_data (abfd)->timestamp) == -1) {
-+    time_t now;
-+    char *source_date_epoch;
-+    unsigned long long epoch;
-+    char *endptr;
-+
-+    now = time (NULL);
-+    source_date_epoch = getenv("SOURCE_DATE_EPOCH");
-+    if (source_date_epoch) {
-+      errno = 0;
-+      epoch = strtoull(source_date_epoch, &endptr, 10);
-+      if ((errno == ERANGE && (epoch == ULLONG_MAX || epoch == 0))
-+          || (errno != 0 && epoch == 0)) {
-+        _bfd_error_handler("Environment variable $SOURCE_DATE_EPOCH: strtoull: %s\n",
-+                           strerror(errno));
-+      } else if (endptr == source_date_epoch) {
-+        _bfd_error_handler("Environment variable $SOURCE_DATE_EPOCH: No digits were found: %s\n",
-+                           endptr);
-+      } else if (*endptr != '\0') {
-+        _bfd_error_handler("Environment variable $SOURCE_DATE_EPOCH: Trailing garbage: %s\n",
-+                           endptr);
-+      } else if (epoch > ULONG_MAX) {
-+        _bfd_error_handler("Environment variable $SOURCE_DATE_EPOCH: value must be smaller than or equal to: %lu but was found to be: %llu\n",
-+                           ULONG_MAX, epoch);
-+      } else {
-+        now = epoch;
+@@ -842,6 +845,30 @@
+   if ((pe_data (abfd)->timestamp) == -1)
+     {
+       time_t now = bfd_get_current_time (0);
++      char *source_date_epoch;
++      unsigned long long epoch;
++      char *endptr;
++      source_date_epoch = getenv("SOURCE_DATE_EPOCH");
++      if (source_date_epoch) {
++        errno = 0;
++        epoch = strtoull(source_date_epoch, &endptr, 10);
++        if ((errno == ERANGE && (epoch == ULLONG_MAX || epoch == 0))
++            || (errno != 0 && epoch == 0)) {
++          _bfd_error_handler("Environment variable $SOURCE_DATE_EPOCH: strtoull: %s\n",
++                             strerror(errno));
++        } else if (endptr == source_date_epoch) {
++          _bfd_error_handler("Environment variable $SOURCE_DATE_EPOCH: No digits were found: %s\n",
++                             endptr);
++        } else if (*endptr != '\0') {
++          _bfd_error_handler("Environment variable $SOURCE_DATE_EPOCH: Trailing garbage: %s\n",
++                             endptr);
++        } else if (epoch > ULONG_MAX) {
++          _bfd_error_handler("Environment variable $SOURCE_DATE_EPOCH: value must be smaller than or equal to: %lu but was found to be: %llu\n",
++                             ULONG_MAX, epoch);
++        } else {
++          now = epoch;
++        }
 +      }
-+    }
-+    H_PUT_32 (abfd, now, filehdr_out->f_timdat);
-+  } else
-     H_PUT_32 (abfd, pe_data (abfd)->timestamp, filehdr_out->f_timdat);
- 
-   PUT_FILEHDR_SYMPTR (abfd, filehdr_in->f_symptr,
+       H_PUT_32 (abfd, now, filehdr_out->f_timdat);
+     }
+   else
 --- a/ld/pe-dll.c
 +++ b/ld/pe-dll.c
 @@ -27,6 +27,8 @@
@@ -72,46 +63,37 @@ Author: Stephen Kitt <skitt@debian.org>
  #include <time.h>
  
  #include "ld.h"
-@@ -1218,9 +1220,36 @@
- 
-   memset (edata_d, 0, edata_sz);
- 
--  if (pe_data (abfd)->timestamp == -1)
--    H_PUT_32 (abfd, time (0), edata_d + 4);
--  else
-+  if (pe_data (abfd)->timestamp == -1) {
-+    time_t now;
-+    char *source_date_epoch;
-+    unsigned long long epoch;
-+    char *endptr;
-+
-+    now = time(NULL);
-+    source_date_epoch = getenv("SOURCE_DATE_EPOCH");
-+    if (source_date_epoch) {
-+      errno = 0;
-+      epoch = strtoull(source_date_epoch, &endptr, 10);
-+      if ((errno == ERANGE && (epoch == ULLONG_MAX || epoch == 0))
-+	  || (errno != 0 && epoch == 0)) {
-+	einfo("Environment variable $SOURCE_DATE_EPOCH: strtoull: %s\n",
-+	      strerror(errno));
-+      } else if (endptr == source_date_epoch) {
-+	einfo("Environment variable $SOURCE_DATE_EPOCH: No digits were found: %s\n",
-+	      endptr);
-+      } else if (*endptr != '\0') {
-+	einfo("Environment variable $SOURCE_DATE_EPOCH: Trailing garbage: %s\n",
-+	      endptr);
-+      } else if (epoch > ULONG_MAX) {
-+	einfo("Environment variable $SOURCE_DATE_EPOCH: value must be smaller than or equal to: %lu but was found to be: %llu\n",
-+	      ULONG_MAX, epoch);
-+      } else {
-+	now = epoch;
+@@ -1254,6 +1256,30 @@
+   if (pe_data (abfd)->timestamp == -1)
+     {
+       time_t now = bfd_get_current_time (0);
++      char *source_date_epoch;
++      unsigned long long epoch;
++      char *endptr;
++      source_date_epoch = getenv("SOURCE_DATE_EPOCH");
++      if (source_date_epoch) {
++        errno = 0;
++        epoch = strtoull(source_date_epoch, &endptr, 10);
++        if ((errno == ERANGE && (epoch == ULLONG_MAX || epoch == 0))
++            || (errno != 0 && epoch == 0)) {
++          einfo("Environment variable $SOURCE_DATE_EPOCH: strtoull: %s\n",
++                strerror(errno));
++        } else if (endptr == source_date_epoch) {
++          einfo("Environment variable $SOURCE_DATE_EPOCH: No digits were found: %s\n",
++                endptr);
++        } else if (*endptr != '\0') {
++          einfo("Environment variable $SOURCE_DATE_EPOCH: Trailing garbage: %s\n",
++                endptr);
++        } else if (epoch > ULONG_MAX) {
++          einfo("Environment variable $SOURCE_DATE_EPOCH: value must be smaller than or equal to: %lu but was found to be: %llu\n",
++                ULONG_MAX, epoch);
++        } else {
++          now = epoch;
++        }
 +      }
-+    }
-+    H_PUT_32 (abfd, now, edata_d + 4);
-+  } else
-     H_PUT_32 (abfd, pe_data (abfd)->timestamp, edata_d + 4);
- 
-   if (pe_def_file->version_major != -1)
+       H_PUT_32 (abfd, now, edata_d + 4);
+     }
+   else
 --- a/ld/emultempl/pe.em
 +++ b/ld/emultempl/pe.em
 @@ -304,7 +304,7 @@
