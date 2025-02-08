@@ -2710,13 +2710,13 @@ not available.")))
   (package
     (inherit qtsvg-5)
     (name "qtgraphicaleffects")
-    (version "5.15.15")
+    (version "5.15.16")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1w7xr8m4mff6l07fh2582f92i4rlpz50w6wc65ic46ldjpifb8q9"))))
+                "02k43w1sg6a05aiandxyzrxsz8dc8f95lh1s3gc550zk6wvq31fi"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
