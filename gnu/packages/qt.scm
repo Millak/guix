@@ -2415,13 +2415,13 @@ OpenGL ES 2.0 and can be used in HTML5 canvas elements")))
   (package
     (inherit qtsvg-5)
     (name "qtwebview")
-    (version "5.15.15")
+    (version "5.15.16")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "00xf8yif4vvyi29jnvp7w1m77aliyrfrl2ldgpchh1kgvxjv2rcf"))))
+                "1k54k42aiibjwpgw3pw02zc5awlci280xmkww88jynwvhdzvgk95"))))
     (native-inputs (list perl))
     (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Display web content in a QML application")
