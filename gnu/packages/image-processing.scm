@@ -9,7 +9,7 @@
 ;;; Copyright © 2018 Lprndn <guix@lprndn.info>
 ;;; Copyright © 2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2021, 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2024, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Oleh Malyi <astroclubzp@gmail.com>
@@ -829,14 +829,14 @@ due to its architecture which automatically parallelises the image workflows.")
 (define-public gmic
   (package
     (name "gmic")
-    (version "3.4.3")
+    (version "3.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gmic.eu/files/source/gmic_"
                            version ".tar.gz"))
        (sha256
-        (base32 "01s512sdhj8h5kyfx6y0lglm9x7kd99jwd8xmn5wca19vc31v5br"))))
+        (base32 "056wapzi0nbqr72m39y220ijl86ncla14l9bmw92wyajgblbd4sq"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
