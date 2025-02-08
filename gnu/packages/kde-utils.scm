@@ -732,7 +732,7 @@ with support for QR scanning.")
                     qtquickcontrols2-5
                     qtgraphicaleffects
                     qtdeclarative-5
-                    qtgamepad
+                    qtgamepad-5
                     qtlocation-5))
       (propagated-inputs (list gstreamer))
       (home-page "https://apps.kde.org/kirogi/")
