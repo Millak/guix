@@ -7792,33 +7792,28 @@ format.")
 (define-public python-doc8
   (package
     (name "python-doc8")
-    (version "0.8.0")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "doc8" version))
        (sha256
         (base32
-         "0hw5w8mpgsp51qg8nnq28p7y1jiksvz7a0axnn5bkgss3af9zy1d"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-v"))
-             #t)))))
-    (propagated-inputs
-     (list python-chardet python-docutils python-restructuredtext-lint
-           python-six python-stevedore))
+         "162b6lff5pcd4sp6sfm5fds8kllnx7ipzbyvi3irgk718h0z698j"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-testtools python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-docutils
+           python-pygments
+           python-restructuredtext-lint
+           python-stevedore
+           python-tomli))
     (home-page "https://launchpad.net/doc8")
-    (synopsis
-     "Style checker for Sphinx (or other) RST documentation")
+    (synopsis "Style checker for Sphinx (or other) RST documentation")
     (description
      "Doc8 is an opinionated style checker for reStructured Text and plain
 text styles of documentation.")
