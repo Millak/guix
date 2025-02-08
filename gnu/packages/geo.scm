@@ -27,6 +27,7 @@
 ;;; Copyright © 2025 Mattia Bunel <mattia.bunel@ehess.fr>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 Lars Bilke <lars.bilke@ufz.de>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -97,6 +98,10 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
@@ -1742,13 +1747,54 @@ Unidata/UCAR UDUNITS-2 library, and the cftime calendar functionality.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mjfn0izf1lj402845mx0cv9fald8s5443q35y16d9crqf3i6mav"))))
+                "1mjfn0izf1lj402845mx0cv9fald8s5443q35y16d9crqf3i6mav"))
+              (modules '((guix build utils)))
+              ;; TODO: Unbundle more when missing packages are available.
+              (snippet #~(with-directory-excursion "vendor"
+                           (for-each delete-file-recursively
+                                     '("github.com/aws"
+                                       "github.com/beorn7"
+                                       "github.com/BurntSushi"
+                                       "github.com/gofrs"
+                                       "github.com/golang/protobuf"
+                                       "github.com/google"
+                                       "github.com/go-test"
+                                       "github.com/jmespath"
+                                       "github.com/mattn/go-sqlite3"
+                                       "github.com/spf13"
+                                       "golang.org/x/crypto"
+                                       "golang.org/x/sys"
+                                       "golang.org/x/text"
+                                       "golang.org/x/tools"
+                                       "google.golang.org/protobuf"
+                                       "go.uber.org"))))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/go-spatial/tegola/cmd/tegola"
        #:unpack-path "github.com/go-spatial/tegola"
-       #:build-flags '(,(string-append "-ldflags=-X github.com/go-spatial/tegola/internal/build.Version=" version))
+       #:build-flags '(,(string-append "\
+-ldflags=-X github.com/go-spatial/tegola/internal/build.Version=" version))
        #:install-source? #f))
+    (inputs
+     (list go-github-com-aws-aws-lambda-go
+           go-github-com-aws-aws-sdk-go
+           go-github-com-beorn7-perks
+           go-github-com-burntsushi-toml
+           go-github-com-gofrs-uuid
+           go-github-com-golang-protobuf
+           go-github-com-google-uuid
+           go-github-com-go-test-deep
+           go-github-com-jmespath-go-jmespath
+           go-github-com-mattn-go-sqlite3
+           go-github-com-spf13-pflag
+           go-golang-org-x-crypto
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           go-golang-org-x-tools
+           go-google-golang-org-protobuf
+           go-go-uber-org-atomic
+           go-go-uber-org-multierr
+           go-go-uber-org-zap))
     (home-page "https://tegola.io")
     (synopsis "Vector tile server for maps")
     (description "Tegola is a free vector tile server written in Go.  Tegola
