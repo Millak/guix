@@ -18,11 +18,10 @@ Index: glibc-2.27/sysdeps/mach/clock_gettime.c
 ===================================================================
 --- glibc-2.27.orig/sysdeps/mach/clock_gettime.c
 +++ glibc-2.27/sysdeps/mach/clock_gettime.c
-@@ -31,6 +31,10 @@ __clock_gettime (clockid_t clock_id, str
+@@ -31,6 +31,9 @@ __clock_gettime (clockid_t clock_id, str
    switch (clock_id) {
  
      case CLOCK_REALTIME:
-+    case CLOCK_MONOTONIC:
 +    case CLOCK_MONOTONIC_RAW:
 +    case CLOCK_REALTIME_COARSE:
 +    case CLOCK_MONOTONIC_COARSE:
