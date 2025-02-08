@@ -1191,7 +1191,7 @@ translation scripting.")
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list qtbase-5 qtdeclarative-5 qtscript iso-codes/pinned))))
+     (list qtbase-5 qtdeclarative-5 qtscript-5 iso-codes/pinned))))
 
 (define-public kidletime
   (package
@@ -4039,7 +4039,7 @@ KIO enabled infrastructure.")
                   libxslt
                   qtbase-5
                   qtdeclarative-5
-                  qtscript
+                  qtscript-5
                   qtx11extras
                   sonnet-5
                   `(,util-linux "lib")  ; libmount
@@ -4704,7 +4704,7 @@ library.")
            perl
            qtbase-5
            qtdeclarative-5
-           qtscript
+           qtscript-5
            qtxmlpatterns
            solid-5
            sonnet-5))

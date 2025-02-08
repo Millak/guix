@@ -464,7 +464,7 @@ applications on Wayland.")
      ;; Optional: lcov and cccc, both are for code coverage
      (list doxygen))
     (inputs
-     (list qtbase-5 qtdeclarative-5 qtscript))
+     (list qtbase-5 qtdeclarative-5 qtscript-5))
     (build-system cmake-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -2639,7 +2639,7 @@ the Qt community.")
     ;; LICENSES/Qt-GPL-exception-1.0.txt).
     (license (list license:gpl3))))
 
-(define-public qtscript
+(define-public qtscript-5
   (package
     (inherit qtsvg-5)
     (name "qtscript")
@@ -5451,7 +5451,7 @@ color-related widgets.")
            qtmultimedia-5
            qtquickcontrols-5
            qtquickcontrols2-5
-           qtscript
+           qtscript-5
            qtscxml-5
            qtsensors-5
            qtspeech-5

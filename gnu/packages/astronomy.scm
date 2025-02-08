@@ -9104,7 +9104,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            qtlocation-5
            qtmultimedia-5
            qtpositioning
-           qtscript ; the last v5 left to rename
+           qtscript-5
            qtserialport-5
            qttranslations
            qtwayland-5

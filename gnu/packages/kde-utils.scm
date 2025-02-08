@@ -1130,7 +1130,7 @@ either be created or generated from a image.")
            qca
            qtbase-5
            qtdeclarative-5
-           qtscript))
+           qtscript-5))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

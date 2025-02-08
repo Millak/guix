@@ -317,7 +317,7 @@ setting @env{LUA_PATH} and @env{LUA_CPATH} in glirc's run-time environment.")
            qca
            qtbase-5
            qtmultimedia-5
-           qtscript
+           qtscript-5
            qtsvg-5
            snorenotify
            sonnet
