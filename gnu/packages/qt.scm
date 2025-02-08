@@ -2330,13 +2330,13 @@ and others.")))
 (define-public qtwebchannel-5
   (package (inherit qtsvg-5)
     (name "qtwebchannel")
-    (version "5.15.15")
+    (version "5.15.16")
     (source (origin
              (method url-fetch)
              (uri (qt-url name version))
              (sha256
               (base32
-               "1y4c5xj0cxpsadr1fnpxy9f4a664kbc18ipk4rbzf4dwzfsibl20"))))
+               "0w590x1hdir4q04hillasak71j0g06y8qcp50jjgygc6k35rc4p3"))))
     (native-inputs (list perl qtdeclarative-5 qtwebsockets-5))
     (inputs (list qtbase-5))
     (synopsis "Web communication library for Qt")
