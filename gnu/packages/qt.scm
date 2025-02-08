@@ -2118,7 +2118,7 @@ set of plugins for interacting with pulseaudio and GStreamer.")
   (package
     (inherit qtsvg-5)
     (name "qtwayland")
-    (version "5.15.15")
+    (version "5.15.16")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2127,7 +2127,7 @@ set of plugins for interacting with pulseaudio and GStreamer.")
                                        "qtwayland-update-wayland-xml.patch"))
               (sha256
                (base32
-                "0lcvb4acikh9ywgik51c25g1n2wa23mim8m4bihhy71iq9z5f6xx"))))
+                "0ky74sl5d4yhk789kjihjsb3am0rg8jh2gmvrin9sznnmb9jbyjf"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
