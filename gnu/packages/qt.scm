@@ -2404,7 +2404,7 @@ WebGL.  WebGL is a JavaScript API for rendering 2D and 3D graphics within any
 compatible web browser without the use of plug-ins.  The API is similar to
 OpenGL ES 2.0 and can be used in HTML5 canvas elements")))
 
-(define-public qtwebview
+(define-public qtwebview-5
   (package
     (inherit qtsvg-5)
     (name "qtwebview")
