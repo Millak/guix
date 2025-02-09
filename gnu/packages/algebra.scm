@@ -12,7 +12,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2023, 2024, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
@@ -1016,6 +1016,32 @@ to other CAS it does not try to provide extensive algebraic capabilities and a
 simple programming language but instead accepts a given language (C++) and
 extends it by a set of algebraic capabilities.")
     (license license:gpl2+)))
+
+(define-public normaliz
+  (package
+    (name "normaliz")
+    (version "3.10.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/normaliz/Normaliz")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1smla96wjyv5ygg77ps9np6bfzp2qynq8vd1msybabi4621cnrma"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool pkg-config))
+    ;; Flint is optional. TODO: Try to build with nauty and cocoalib support.
+    ;; The configure script fails to find nauty.h.
+    (inputs (list flint gmp))
+    (home-page "https://www.normaliz.uni-osnabrueck.de/")
+    (synopsis "Tool for discrete convex geometry")
+    (description "Normaliz is a tool for computations in affine monoids,
+vector configurations, rational polyhedra and rational cones.  Normaliz now
+computes rational and algebraic polyhedra, i.e., polyhedra defined over real
+algebraic extensions of QQ.")
+    (license license:gpl3+)))
 
 (define-public eigen
   (package
