@@ -1043,6 +1043,35 @@ computes rational and algebraic polyhedra, i.e., polyhedra defined over real
 algebraic extensions of QQ.")
     (license license:gpl3+)))
 
+(define-public python-pynormaliz
+  (package
+    (name "python-pynormaliz")
+    (version "2.21")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pynormaliz" version))
+       (sha256
+        (base32 "0hsyxml71i2b9pa375ipbfpackj3y67jlg2rxgc433sfy3895wvf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; tests need normaliz to be built with nauty support
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (if tests?
+                           (invoke "python" "tests/runtests.py")))))))
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list flint gmp normaliz))
+    (home-page "https://github.com/Normaliz/PyNormaliz")
+    (synopsis "Python interface to Normaliz")
+    (description
+     "PyNormaliz provides an interface to Normaliz via libNormaliz.  It offers
+the complete functionality of Normaliz, and can be used interactively from
+Python.")
+    (license license:gpl2+)))
+
 (define-public eigen
   (package
     (name "eigen")
