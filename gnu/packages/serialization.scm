@@ -602,7 +602,7 @@ character limit for implicit keys.")
 (define-public jsoncpp
   (package
     (name "jsoncpp")
-    (version "1.9.5")
+    (version "1.9.6")
     (home-page "https://github.com/open-source-parsers/jsoncpp")
     (source (origin
               (method git-fetch)
@@ -610,7 +610,7 @@ character limit for implicit keys.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06zss7z56ykzwcsfdxarmini63hkf8i8gx70q3yw9wb0bw7wj9rv"))))
+                "070xg4i52z3yv5b9bw5k95qskw0daivh0njka87mzj0d3zf1qsyy"))))
     (build-system meson-build-system)
     (synopsis "C++ library for interacting with JSON")
     (description "JsonCpp is a C++ library that allows manipulating JSON values,
