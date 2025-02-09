@@ -1920,7 +1920,8 @@ and not by the available RAM.")
                            #:directories? #t))))))
     (build-system gnu-build-system)
     (arguments
-     (list #:configure-flags
+     (list #:parallel-build? #f
+           #:configure-flags
            #~(list "--without-autogen"
                    ;; fix conflict with internal build name determination
                    "--build="
