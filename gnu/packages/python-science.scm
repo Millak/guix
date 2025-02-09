@@ -9,7 +9,7 @@
 ;;; Copyright © 2019, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020-2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -1127,6 +1127,39 @@ density maps, both for interactive and non-interactive use.")
      "This package provides a Python library for calculating
 Evapotranspiration using various standard methods.")
     (license license:expat)))
+
+(define-public python-nibabel
+  (package
+    (name "python-nibabel")
+    (version "5.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nibabel" version))
+       (sha256
+        (base32 "16snprwgp7qzp51j3mx0zdn7brvx6r14ankldi24ny0w7d8adp0b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; AttributeError: 'dict' object has no attribute 'add'.
+      #:test-flags #~(list "-k" "not test_first and not test_second")))
+    (propagated-inputs (list python-importlib-resources python-numpy
+                             python-packaging python-typing-extensions))
+    (native-inputs (list python-hatch-vcs
+                         python-hatchling
+                         python-pytest
+                         python-pytest-httpserver
+                         python-pytest-xdist))
+    (home-page "https://nipy.org/nibabel/")
+    (synopsis "Read and write access to common neuroimaging file formats")
+    (description
+     "@code{nibabel} is a library that provides read and write access to
+common neuroimaging file formats, including: ANALYZE (plain, SPM99, SPM2
+and later), GIFTI, NIfTI1, NIfTI2, CIFTI-2, MINC1, MINC2, AFNI BRIK/HEAD,
+ECAT and Philips PAR/REC.  In addition, NiBabel also supports FreeSurfer’s
+MGH, geometry, annotation and morphometry files, and provides some limited
+support for DICOM.")
+    (license license:expat))) ; and other non-copyleft licenses
 
 (define-public python-tspex
   (package
