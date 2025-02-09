@@ -189,6 +189,13 @@ in intelligent transportation networks.")
                         ,(file-append (this-package-native-input "nss-certs")
                                       "/etc/ssl/certs")))))
                 ":")))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "P11_MODULE_PATH")
+            (files (list "share/p11-kit/modules"))
+            ;; Helas, this only currently support a single PATH entry.  It'll
+            ;; thus only work in profiles, not in the build environment.
+            (separator #f))))
     (home-page "https://p11-glue.github.io/p11-glue/p11-kit.html")
     (synopsis "PKCS#11 library")
     (description
