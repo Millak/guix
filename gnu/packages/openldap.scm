@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2019, 2021, 2022, 2023, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
@@ -136,35 +136,34 @@
 (define-public nss-pam-ldapd
   (package
     (name "nss-pam-ldapd")
-    (version "0.9.12")
+    (version "0.9.13")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://arthurdejong.org/nss-pam-ldapd/"
                                   "nss-pam-ldapd-" version ".tar.gz"))
               (sha256
                (base32
-                "050fzcmxmf6y15dlcffc4gxr3wkk7fliqqwhlwqzbjwk8vkn3mn6"))))
+                "0vbi3h9v8ai3j1ppmpy2qd2k89l5ww2y4086pmkbncxmgkhq85z0"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-pam-seclib-dir="
-                            (assoc-ref %outputs "out") "/lib/security/")
-             ;; nslcd cannot be convinced to look at run-time for its
-             ;; configuration file at a location that differs from the
-             ;; configured location.
-             "--with-ldap-conf-file=/etc/nslcd.conf")
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-pam-seclib-dir=" #$output "/lib/security/")
+              ;; nslcd cannot be convinced to look at run-time for its
+              ;; configuration file at a location that differs from the
+              ;; configured location.
+              "--with-ldap-conf-file=/etc/nslcd.conf")
        #:phases
-       (modify-phases %standard-phases
-         ;; This is necessary because we tell nslcd with configure flags that
-         ;; it should look for its configuration file at /etc/nslcd.conf.  The
-         ;; build system tries to install a default configuration to that very
-         ;; location.
-         (add-after 'unpack 'override-nslcd.conf-install-path
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Makefile.in"
-               (("\\$\\(DESTDIR\\)\\$\\(NSLCD_CONF_PATH\\)")
-                (string-append (assoc-ref outputs "out")
-                               "/etc/nslcd.conf.example"))))))))
+       #~(modify-phases %standard-phases
+           ;; This is necessary because we tell nslcd with configure flags that
+           ;; it should look for its configuration file at /etc/nslcd.conf.  The
+           ;; build system tries to install a default configuration to that very
+           ;; location.
+           (add-after 'unpack 'override-nslcd.conf-install-path
+             (lambda _
+               (substitute* "Makefile.in"
+                 (("\\$\\(DESTDIR\\)\\$\\(NSLCD_CONF_PATH\\)")
+                  (string-append #$output "/etc/nslcd.conf.example"))))))))
     (inputs
      (list linux-pam openldap mit-krb5 python))
     (home-page "https://arthurdejong.org/nss-pam-ldapd")
