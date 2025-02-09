@@ -348,7 +348,7 @@ and its related documentation.")
 (define-public miniflux
   (package
     (name "miniflux")
-    (version "2.2.4")
+    (version "2.2.5")
     (source
      (origin
        (method git-fetch)
@@ -357,7 +357,7 @@ and its related documentation.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15h9ip7a9n64n9fn6ylpriyz79rilbzw2swb6zjr1fwqyrjcx5l7"))))
+        (base32 "0yx0q47ah7ikri6s9zy9d55gaidmpzd1v5rlkvcyjzwxn6wa88cg"))))
     (build-system go-build-system)
     (arguments
      (list
