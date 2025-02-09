@@ -617,6 +617,10 @@ matrices, and polynomials over the integers and over finite fields.")
               (base32
                "0625541pxxhs7789i3ddf5fm1pqvf1kyljyaii41djg9j12cdhbc"))))
    (build-system gnu-build-system)
+   (arguments
+    (list
+     #:configure-flags #~(list (string-append "--with-ntl="
+                                              #$(this-package-input "ntl")))))
    (native-inputs
     (list doxygen graphviz perl))
    (inputs
@@ -627,10 +631,6 @@ matrices, and polynomials over the integers and over finite fields.")
           ntl
           python-2
           readline))
-   (arguments
-    `(#:configure-flags
-      (list (string-append "--with-ntl="
-                           (assoc-ref %build-inputs "ntl")))))
    (synopsis "Computer algebra system for polynomial computations")
    (description
     "Singular is a computer algebra system for polynomial computations,
