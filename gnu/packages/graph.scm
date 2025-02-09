@@ -6,7 +6,7 @@
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2020 Alexander Krotov <krotov@iitp.ru>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlos@gmx.com>
-;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2023, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Alexandre Hannud Abdo <abdo@member.fsf.org>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
@@ -782,6 +782,40 @@ isolating planarity obstructions.")
     (license license:bsd-3)
     (home-page
       "https://github.com/graph-algorithms/edge-addition-planarity-suite")))
+
+(define-public plantri
+  (package
+    (name "plantri")
+    (version "5.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://users.cecs.anu.edu.au/~bdm/plantri/"
+                                  "plantri" (string-join
+                                             (string-split version #\.)
+                                             "") ".tar.gz"))
+              (sha256
+               (base32
+                "1vbxpjih293d9nmb65fsh6xgg0w12kygwycg1yw4wad7ridxy74i"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; there are no tests
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'install
+                     (lambda _
+                       (for-each
+                        (lambda (bin)
+                          (install-file bin (string-append #$output "/bin")))
+                        '("fullgen" "plantri")))))))
+    (home-page "https://users.cecs.anu.edu.au/~bdm/plantri/")
+    (synopsis "Generate certain types of planar graphs")
+    (description
+     "@code{plantri} and @code{fullgen} (contained in the same package)
+are programs for the generation of certain types of planar graphs.  Graphs
+are generated in such a way that exactly one member of each isomorphism
+class is output without the need for storing them.")
+    (license license:asl2.0)))
 
 (define-public rw
   (package
