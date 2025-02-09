@@ -2066,7 +2066,15 @@ Features include:
     (name "emacs-stgit")
     (build-system emacs-build-system)
     (arguments
-     (list #:include '(list "contrib/stgit.el")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'enter-lisp-directory
+            (lambda _
+              (chdir "contrib")))
+          (add-before 'install-license-files 'leave-lisp-directory
+            (lambda _
+              (chdir ".."))))))
     (synopsis "Emacs major mode for StGit interaction")
     (description "This package a interactive tool to interact with git
 branches using StGit.")
