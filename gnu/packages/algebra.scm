@@ -63,6 +63,7 @@
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -1835,6 +1836,46 @@ no more than about 20 bits long).")
 (@dfn{DCT}), Discrete Sine Transform (@dfn{DST}) and Discrete Hartley Transform
 (@dfn{DHT}).")
     (license license:gpl2+)))
+
+(define-public libsemigroups
+  (package
+    (name "libsemigroups")
+    (version "2.7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libsemigroups/libsemigroups")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0pk7887g4in7fskl0da8l2xppv293jm31ykacsss3vs5fff2pw7a"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; FIXME: libsemigroup's build system doesn't have an option to use
+      ;; external HPCombi.  Try to work it around in the future and skip
+      ;; support for now.
+      #:configure-flags #~(list "--enable-fmt=yes"
+                                "--enable-hpcombi=no"
+                                "--with-external-eigen=yes"
+                                "--with-external-fmt=yes")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'fix-version
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "etc/version-number.sh"
+                         (("/bin/sh")
+                          (search-input-file inputs "/bin/bash"))))))))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (inputs (list eigen fmt))
+    (home-page "https://github.com/libsemigroups/libsemigroups")
+    (synopsis "Library for semigroups and monoids")
+    (description
+     "@code{libsemigroups} is a C++14 library containing implementations of
+several algorithms for computing finite, and finitely presented,
+semigroups and monoids.")
+    (license license:gpl3+)))
 
 (define-public sollya
   (package
