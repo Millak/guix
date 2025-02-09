@@ -39,7 +39,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
@@ -3975,7 +3975,7 @@ self-contained C-extension for Python.")
 (define-public python-cvxopt
   (package
     (name "python-cvxopt")
-    (version "1.2.7")
+    (version "1.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3984,7 +3984,7 @@ self-contained C-extension for Python.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "114z34wwx1bsv4q6xj9p5q99dffgnj9s4i4arx10g191xq9q8i5y"))))
+                "0vdfag3rr906w0gk7vxm2yxfy8y92i4wmqxi82cbykpfp5r82i36"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
