@@ -6541,28 +6541,21 @@ package from WTForms.  The package has been renamed to
 (define-public python-paste
   (package
     (name "python-paste")
-    (version "3.5.2")
+    (version "3.10.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Paste" version))
+       (uri (pypi-uri "paste" version))
        (sha256
         (base32
-         "1xjakxrdvy4kgfy170gb9bl8zp9hqjjwh1h1vlik1pxw606399ym"))
-       (patches (search-patches "python-paste-remove-timing-test.patch"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; This test calls out to the internet.
-           (delete-file "tests/test_proxy.py") #t))))
+         "0jjyl39r5ncx98rwi855x71qrwvwm59idgn7q0c7m2jyb8314g8w"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-wheel))
-    (propagated-inputs
-     (list python-six python-setuptools))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://pythonpaste.readthedocs.io/")
-    (synopsis
-     "Python web development tools, focusing on WSGI")
+    (synopsis "Python web development tools, focusing on WSGI")
     (description
      "Paste provides a variety of web development tools and middleware which
 can be nested together to build web applications.  Paste's design closely
