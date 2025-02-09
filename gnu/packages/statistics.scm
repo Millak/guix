@@ -2591,13 +2591,13 @@ Meier, Nelson Aalen and regression.")
 (define-public python-mapie
   (package
     (name "python-mapie")
-    (version "0.9.1")
+    (version "0.9.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "MAPIE" version))
               (sha256
                (base32
-                "1lyqszfgmqfsyvfaxplzz84iqm7s49rdscjjhnxlymrasrizfp26"))))
+                "00qhgfrix5aq7ng1xpvz2gk0d2d2maidbbd8ic9psq1vdqs6vp2a"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pandas python-pytest python-setuptools
                          python-wheel))
