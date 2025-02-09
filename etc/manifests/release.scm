@@ -68,7 +68,7 @@ TARGET."
   ;; Key packages proposed by the Guix System installer.
   (append (map specification->package
                '("xorg-server" "xfce" "gnome" "mate" "enlightenment"
-                 "openbox" "awesome" "i3-wm" "ratpoison"
+                 "icewm" "openbox" "awesome" "i3-wm" "ratpoison"
                  "emacs" "emacs-exwm" "emacs-desktop-environment"
                  "xlockmore" "slock" "libreoffice"
                  "connman" "network-manager" "network-manager-applet"

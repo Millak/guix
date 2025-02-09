@@ -2013,7 +2013,7 @@ build (current-guix) and then store a couple of full system images.")
     ;; Make sure that all the packages and services that may be used by the
     ;; graphical installer are available.
     (packages (append
-               (list openbox awesome i3-wm i3status
+               (list icewm openbox awesome i3-wm i3status
                      dmenu st ratpoison xterm
                      emacs emacs-exwm emacs-desktop-environment)
                %base-packages))

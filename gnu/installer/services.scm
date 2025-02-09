@@ -84,6 +84,9 @@
       (name "Enlightenment")
       (snippet '((service enlightenment-desktop-service-type))))
      (desktop-environment
+      (name "Icewm")
+      (snippet '((specification->package "icewm"))))
+     (desktop-environment
       (name "Openbox")
       (packages '((specification->package "openbox"))))
      (desktop-environment
