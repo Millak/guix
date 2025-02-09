@@ -599,7 +599,7 @@ matrices, and polynomials over the integers and over finite fields.")
 (define-public singular
   (package
    (name "singular")
-   (version "4.3.2p16")
+   (version "4.4.0p7")
    (source
     (origin
       (method url-fetch)
@@ -613,8 +613,9 @@ matrices, and polynomials over the integers and over finite fields.")
                                     version))
                         #\.) "-")
                       "/singular-" version ".tar.gz"))
-             (sha256 (base32
-                      "05ia8zqiddj1agg9bfdx54z0sjqcgjgi6lz7ck2ngv562fx36mv7"))))
+            (sha256
+              (base32
+               "0625541pxxhs7789i3ddf5fm1pqvf1kyljyaii41djg9j12cdhbc"))))
    (build-system gnu-build-system)
    (native-inputs
     (list doxygen graphviz perl))
