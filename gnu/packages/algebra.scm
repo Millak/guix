@@ -619,13 +619,13 @@ matrices, and polynomials over the integers and over finite fields.")
    (native-inputs
     (list doxygen graphviz perl))
    (inputs
-    `(("cddlib" ,cddlib)
-      ("gmp" ,gmp)
-      ("flint" ,flint)
-      ("mpfr" ,mpfr)
-      ("ntl" ,ntl)
-      ("python" ,python-2)
-      ("readline" ,readline)))
+    (list cddlib
+          gmp
+          flint
+          mpfr
+          ntl
+          python-2
+          readline))
    (arguments
     `(#:configure-flags
       (list (string-append "--with-ntl="
