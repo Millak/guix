@@ -2739,6 +2739,54 @@ linear and quadratic objectives.  There are limited facilities for nonlinear
 and quadratic objectives using the Simplex algorithm.")
     (license license:epl1.0)))
 
+(define-public python-cylp
+  (package
+    (name "python-cylp")
+    (version "0.92.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cylp" version))
+       (sha256
+        (base32 "1mhvjrhvpgnpw4zwri92dj168qvyclcpsqvzbj5maxx5cilnhkww"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-k" (string-append
+                                 "not " (string-join
+                                         (list
+                                          "test_removeVar2" ; AssertionError
+                                          ;; Tests below segfault
+                                          "test_dantzig"
+                                          "test_lifo"
+                                          "test_mf"
+                                          "test_pe")
+                                         " and not ")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests? ; rebuild extensions
+                  (invoke "python" "setup.py" "build_ext" "--inplace")))))))
+    (propagated-inputs (list python-numpy python-pytest python-scipy))
+    (inputs (list cbc))
+    (native-inputs (list pkg-config
+                         python-cython-3
+                         python-hypothesis
+                         python-numpy
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/coin-or/cylp")
+    (synopsis "Python interface for CLP, CBC, and CGL")
+    (description
+     "CyLP is a Python interface to COIN-OR’s Linear and mixed-integer program
+solvers (CLP, CBC, and CGL).  CyLP’s unique feature is that you can use it to
+alter the solution process of the solvers from within Python.  For example,
+you may define cut generators, branch-and-bound strategies, and primal/dual
+Simplex pivot rules completely in Python.")
+    (license license:epl2.0)))
+
 (define-public gecode
   (let* ((commit "f7f0d7c273d6844698f01cec8229ebe0b66a016a")
          (version (git-version "6.2.0" "1" commit)))
