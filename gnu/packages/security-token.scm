@@ -234,12 +234,12 @@ the low-level development kit for the Yubico YubiKey authentication device.")
               (patches (search-patches "softhsm-fix-openssl3-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-gost"))) ; TODO Missing the OpenSSL
-                                               ; engine for GOST
-    (inputs
-     (list openssl))
-    (native-inputs
-     (list pkg-config cppunit))
+     (list #:configure-flags
+           #~(list "--disable-gost"  ;TODO Missing the OpenSSL engine for GOST
+                   (string-append "--with-p11-kit="
+                                  #$output "/share/p11-kit/modules"))))
+    (inputs (list openssl))
+    (native-inputs (list pkg-config cppunit))
     (synopsis "Software implementation of a generic cryptographic device")
     (description
      "SoftHSM 2 is a software implementation of a generic cryptographic device
