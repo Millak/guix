@@ -2976,6 +2976,32 @@ Computational Engineering and Sciences} at The University of Texas at Austin.
 includes a complete LAPACK implementation.")
       (license license:bsd-3))))
 
+(define-public hpcombi
+  (package
+    (name "hpcombi")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libsemigroups/hpcombi")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00mbxw5x6m61n0x68dsiyq97i7b08h3hkbj9is2w6gcg571jy319"))))
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_TESTING=ON")))
+    (native-inputs
+     (list catch2-3))
+    (build-system cmake-build-system)
+    (home-page "https://libsemigroups.github.io/HPCombi/")
+    (synopsis "Fast combinatorics in C++ using SSE/AVX instruction sets")
+    (description "HPCombi is a C++17 header-only library using the SSE and AVX
+instruction sets, and some equivalents, for very fast manipulation of
+combinatorial objects such as transformations, permutations, and boolean
+matrices of small size.")
+    (license license:gpl3+)))
+
 (define-public scasp
   (package
     (name "scasp")
