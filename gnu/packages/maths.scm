@@ -2899,6 +2899,45 @@ and applications.  It provides a modular and extensible solver.")
 fixed point (16.16) format.")
       (license license:expat))))
 
+(define-public glucose
+  (package
+    (name "glucose")
+    (version "4.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/audemard/glucose")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zrn4hnkf8k95dc3s3acydl1bqkr8a0axw56g7n562lx7zj7sd62"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; there are no tests
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON"
+              (string-append "-DCMAKE_BUILD_RPATH=" #$output "/lib"))
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'install
+                     (lambda _
+                       (for-each
+                        (lambda (bin)
+                          (install-file bin (string-append #$output "/bin")))
+                        '("glucose-simp" "glucose-syrup"))
+                       (for-each
+                        (lambda (lib)
+                          (install-file lib (string-append #$output "/lib")))
+                        '("libglucose.so" "libglucosep.so")))))))
+    (inputs (list zlib))
+    (home-page "https://www.labri.fr/perso/lsimon/research/glucose/")
+    (synopsis "SAT Solver")
+    (description "Glucose is a SAT solver based on a scoring scheme introduced
+in 2009 for the clause learning mechanism of so called “Modern” SAT solvers.
+It is designed to be parallel.")
+    (license license:expat)))
+
 (define-public libflame
   ;; The latest release (5.2.0) dates back to 2019.  Use a newer one, which
   ;; among other things provides extra LAPACK symbols, such as 'dgemlq_'
