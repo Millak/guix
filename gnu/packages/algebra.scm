@@ -642,6 +642,28 @@ geometry and singularity theory.")
    (license license:gpl3)
    (home-page "https://www.singular.uni-kl.de/index.php")))
 
+(define-public python-pysingular
+  (package
+    (name "python-pysingular")
+    (version "0.9.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PySingular" version))
+       (sha256
+        (base32 "037n3s1l08g75k22saki6813wi3ciiq45zxca11izilgagbx20ya"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; there are no tests
+    (native-inputs (list python-setuptools python-wheel))
+    ;; XXX: GMP failed to be loaded from Singular.  Pass it here for now.
+    (inputs (list gmp singular))
+    (home-page "https://github.com/sebasguts/PySingular")
+    (synopsis "Simple interface to Singular")
+    (description "This package provides a simple Python interface to the
+Singular computer algebra system.")
+    (license license:gpl2+)))
+
 (define-public gmp-ecm
   (package
     (name "gmp-ecm")
