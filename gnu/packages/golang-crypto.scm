@@ -24,6 +24,8 @@
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;; Copyright © 2024 Superfly Johnson <superfly.johnson@yahoo.com>
+;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1257,6 +1259,33 @@ Stealing encryption and decryption methods.")
     (synopsis "Minisign verification library for Golang")
     (description
      "A Golang library to verify Minisign signatures.")
+    (license license:expat)))
+
+(define-public go-github-com-jphastings-jwker
+  (package
+    (name "go-github-com-jphastings-jwker")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jphastings/jwker")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nb487c2cfazxwqghq5a8iz8gyi0hhajc39c260f0n6d3ib1798g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jphastings/jwker"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/jphastings/jwker")
+    (synopsis "PEM -> JWK conversion tool")
+    (description
+     "This package implements a functionality to convert keys between the
+@acronym{PEM, Privacy-Enhanced Mail} and @acronym{JWK, JSON Web Key} file
+formats.")
     (license license:expat)))
 
 (define-public go-github-com-jzelinskie-whirlpool
@@ -2564,6 +2593,19 @@ Go.")
      `(#:import-path "filippo.io/age/cmd/age-keygen"
        #:unpack-path "filippo.io/age"
        #:install-source? #f))))
+
+(define-public go-jwker
+  (package/inherit go-github-com-jphastings-jwker
+    (name "go-jwker")
+    (arguments
+     (list
+      #:tests? #f
+      #:install-source? #f
+      #:build-flags
+      #~(list (string-append "-ldflags=-X main.version="
+                             #$(package-version this-package)))
+      #:unpack-path "github.com/jphastings/jwker"
+      #:import-path "github.com/jphastings/jwker/cmd/jwker"))))
 
 (define-public go-keyring
   (package
