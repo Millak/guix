@@ -1573,7 +1573,7 @@ finite fields.")
 (define-public m4ri
   (package
     (name "m4ri")
-    (version "20140914")
+    (version "20200125")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1582,7 +1582,7 @@ finite fields.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xfg6pffbn8r1s0y7bn9b8i55l00d41dkmhrpf7pwk53qa3achd3"))))
+                "1dxgbv6zdyki3h61qlv7003wzhy6x14zmcaz9x19md1i7ng07w1k"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
