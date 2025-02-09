@@ -2037,3 +2037,36 @@ gnuplot program, if installed, to draw figures.")
     (license (license:non-copyleft "file://README"
                                    "See README in the distribution."))))
 
+(define-public msolve
+  (package
+    (name "msolve")
+    (version "0.7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/algebraic-solving/msolve")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ipsdw5sk4d344ki4r5ma9vn8gyi8hrk0n951r0720wvgxkw920p"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool))
+    (inputs (list flint gmp mpfr))
+    (home-page "https://msolve.lip6.fr/")
+    (synopsis
+     "Library for polynomial system solving through algebraic methods")
+    (description "@code{msolve} is a C library implementing computer algebra
+algorithms for solving polynomial systems (with rational coefficients or
+coefficients in a prime field).
+
+Currently, with msolve, you can basically solve multivariate polynomial
+systems.  This encompasses:
+
+@itemize
+@item the computation of Groebner bases
+@item real root isolation of the solutions to polynomial systems
+@item the computation of the dimension and the degree of the solution set.
+@end itemize")
+    (license license:gpl2+)))
+
