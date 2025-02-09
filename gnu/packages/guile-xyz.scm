@@ -2524,7 +2524,7 @@ capabilities.")
 (define-public guile-g-golf
   (package
     (name "guile-g-golf")
-    (version "0.8.0-rc9")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -2533,7 +2533,7 @@ capabilities.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x340xr2ki1y3w1cg37fhjsfw27268vlsyc8hby9lmv13l349l8b"))))
+        (base32 "14b6pjchra0axqifpm90m7jbxla2sarhd7bfhzqbn7d14b74sv2d"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2593,7 +2593,6 @@ capabilities.")
            pkg-config
            ;; required for tests
            gtk+
-           clutter
            xorg-server-for-tests))
     (propagated-inputs
      (list gobject-introspection))
