@@ -463,7 +463,7 @@ enabled=" (if vnc-server? "true" "false") "
 command=" vnc-server-command "
 port=" (number->string vnc-server-port) "\n"
 (if (maybe-value-set? vnc-server-listen-address)
-    (format #f "vnc-server-listen-address=~a" vnc-server-listen-address)
+    (format #f "listen-address=~a" vnc-server-listen-address)
     "") "
 
 #
