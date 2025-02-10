@@ -6565,30 +6565,26 @@ follows ideas flowing from WSGI (Web Standard Gateway Interface).")
 (define-public python-pastescript
   (package
     (name "python-pastescript")
-    (version "2.0.2")
+    (version "3.7.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "PasteScript" version))
+       (uri (pypi-uri "pastescript" version))
        (sha256
-        (base32
-         "1h3nnhn45kf4pbcv669ik4faw04j58k8vbj1hwrc532k0nc28gy0"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-nose))
-    (propagated-inputs
-     (list python-paste python-pastedeploy))
-    (home-page (string-append "https://web.archive.org/web/20161025192515/"
-                              "http://pythonpaste.org/script/"))
+        (base32 "08959bmp62pb2rlwr4wpwij15y83jcf9wa9jgg32jlvfzf6h4vsk"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(;; Unfortunately, this requires the latest unittest2,
-       ;; but that requires traceback2 which requires linecache2 which requires
-       ;; unittest2.  So we're skipping tests for now.
-       ;; (Note: Apparently linetest2 only needs unittest2 for its tests,
-       ;; so in theory we could get around this situation somehow.)
-       #:tests? #f))
-    (synopsis
-     "Pluggable command line tool for serving web applications and more")
+     (list
+      #:test-flags #~(list "--ignore=tests/appsetup/testfiles")))
+    (native-inputs
+     (list python-pytest
+           python-wheel))
+    (propagated-inputs
+     (list python-paste
+           python-pastedeploy
+           python-setuptools))
+    (home-page "https://github.com/pasteorg/pastescript")
+    (synopsis "Pluggable command line tool for serving web applications and more")
     (description
      "PasteScript is a plugin-friendly command line tool which provides a
 variety of features, from launching web applications to bootstrapping project
