@@ -7351,7 +7351,9 @@ MIDI drums and comes as two separate drumkits: Black Pearl and Red Zeppelin.")
      (list
       #:tests? #f                       ; no "check" target
       #:make-flags
-      #~(list (string-append "DESTDIR=" #$output) "lv2" "standalone")
+      #~(list (string-append "DESTDIR=" #$output)
+              "CXXFLAGS=-fpermissive"   ; from ‘unsigned char*’ to ‘char*’
+              "lv2" "standalone")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'include-pnglib-code-and-remove-usr-from-paths
