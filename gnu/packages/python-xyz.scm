@@ -34338,24 +34338,22 @@ intended for validating data coming into Python as JSON, YAML, etc.")
 (define-public python-cmd2
   (package
     (name "python-cmd2")
-    (version "2.3.3")
+    (version "2.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cmd2" version))
        (sha256
         (base32
-         "0h1naik558qh48gx2iyy0a0khvw5fz0in69y84mbrhsm9nq7w3bm"))))
+         "0abl9aalyfbncw39d41gd3mmdgjvd7jlaa372r0lmghz0a2x781h"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags '(list "-k" "not test_find_editor_not_specified \
 and not test_transcript")))
     (propagated-inputs
-     (list python-attrs python-colorama python-pyperclip python-wcwidth))
+     (list python-pyperclip python-wcwidth))
     (native-inputs
-     (list python-invoke
-           python-mock
-           python-pytest
+     (list python-pytest
            python-pytest-cov
            python-pytest-mock
            python-setuptools
