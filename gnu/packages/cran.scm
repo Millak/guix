@@ -20468,6 +20468,28 @@ analysis.")
      "This package provides a solver for generalized estimation equations.")
     (license license:gpl2)))
 
+(define-public r-geepack
+  (package
+    (name "r-geepack")
+    (version "1.3.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "geepack" version))
+       (sha256
+        (base32 "0k856hw7zh553yrqp9g3s19hjviadh36drg2vvaddv2ma5ayj6z0"))))
+    (properties `((upstream-name . "geepack")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-broom r-magrittr r-mass))
+    (home-page "https://cran.r-project.org/package=geepack")
+    (synopsis "Generalized estimating equation package")
+    (description
+     "This package provides a generalized estimating equations solver for
+parameters in mean, scale, and correlation structures, through mean link,
+scale link, and correlation link.  It can also handle clustered categorical
+responses.")
+    (license license:gpl3+)))
+
 (define-public r-tab
   (package
     (name "r-tab")
