@@ -1162,6 +1162,33 @@ neighbor search.  An R interface to fast kNN and fixed-radius NN search is
 also provided.")
     (license license:gpl2+)))
 
+(define-public r-dfidx
+  (package
+    (name "r-dfidx")
+    (version "0.1-0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dfidx" version))
+       (sha256
+        (base32 "0ygbw1z0v2s2w7d45b09x54xycfglpd1ipgkgxq8w2q004rkdp9d"))))
+    (properties `((upstream-name . "dfidx")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-formula
+                             r-glue
+                             r-pillar
+                             r-rdpack
+                             r-tidyselect
+                             r-vctrs))
+    (native-inputs (list r-quarto))
+    (home-page "https://cran.r-project.org/package=dfidx")
+    (synopsis "Indexed data frames")
+    (description
+     "This package provides extended data frames, with a special data frame
+column which contains two indexes, with potentially a nesting structure.")
+    (license license:gpl2+)))
+
 (define-public r-diffobj
   (package
     (name "r-diffobj")
