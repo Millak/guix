@@ -4532,6 +4532,50 @@ accessibility from hue, saturation, and lightness value scaling using the
 Chroma.js Color Palette Helper.  See @url{https://gka.github.io/palettes}.")
     (license license:cc0)))
 
+(define-public r-plm
+  (package
+    (name "r-plm")
+    (version "2.6-5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "plm" version))
+       (sha256
+        (base32 "1aya449l2cp7xv41rdyggybpzqhy9z8gpb5s71f9a040nchcp24v"))))
+    (properties `((upstream-name . "plm")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bdsmatrix
+                             r-collapse
+                             r-formula
+                             r-lattice
+                             r-lmtest
+                             r-mass
+                             r-maxlik
+                             r-nlme
+                             r-rdpack
+                             r-sandwich
+                             r-zoo))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=plm")
+    (synopsis "Linear Models for panel data")
+    (description
+     "This package provides a set of estimators for models and (robust)
+covariance matrices, and tests for panel data econometrics, including
+within/fixed effects, random effects, between, first-difference, nested random
+effects as well as instrumental-variable (IV) and Hausman-Taylor-style models,
+panel generalized method of moments (GMM) and general FGLS models, mean
+groups (MG), demeaned MG, and common correlated effects (CCEMG) and
+pooled (CCEP) estimators with common factors, variable coefficients and
+limited dependent variables models.  Test functions include model
+specification, serial correlation, cross-sectional dependence, panel unit root
+and panel Granger (non-)causality.  Typical references are general
+econometrics text books such as Baltagi (2021), Econometric Analysis of Panel
+Data (<doi:10.1007/978-3-030-53953-5>), Hsiao
+(2014), Analysis of Panel Data (<doi:10.1017/CBO9781139839327>), and Croissant
+and Millo (2018), Panel Data Econometrics with
+R (<doi:10.1002/9781119504641>).")
+    (license license:gpl2+)))
+
 (define-public r-plotfunctions
   (package
     (name "r-plotfunctions")
