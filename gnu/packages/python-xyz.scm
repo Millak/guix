@@ -19352,7 +19352,28 @@ time.")
            ;; Adding ipywidgets would create a cycle.
            ;;python-ipywidgets
            python-pytest
-           python-pytest-xdist))
+           python-pytest-xdist
+           (texlive-local-tree
+            (list texlive-adjustbox
+                  texlive-booktabs
+                  texlive-caption
+                  texlive-enumitem
+                  texlive-eurosym
+                  texlive-fancyvrb
+                  texlive-float
+                  texlive-fontspec
+                  texlive-grffile
+                  texlive-jknapltx
+                  texlive-parskip
+                  texlive-pdfcol
+                  texlive-rsfs
+                  texlive-soul
+                  texlive-tcolorbox
+                  texlive-titling
+                  texlive-ulem
+                  texlive-unicode-math
+                  texlive-upquote
+                  texlive-xetex))))
     (propagated-inputs
      (list python-beautifulsoup4
            python-bleach

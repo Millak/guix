@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
-;;; Copyright © 2023, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2023-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,11 +91,16 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
         ((command-regexp _ command)
          (which command))))))
 
-(define* (set-texmfvar #:rest _)
-  "Set TEXMFVAR to a writable location."
-  ;; Default value is relative to $HOME, which is not set during build.  This
-  ;; location is used for generating font metrics or building documentation.
-  (setenv "TEXMFVAR" (string-append (getcwd) "/texmf-var")))
+(define* (configure-texmf #:rest _)
+  "Ensure TEXMFVAR is writable and \"ls-R\" database is not required."
+  ;; Default TEXMFVAR value is relative to $HOME, which is not set during
+  ;; build.  This location is used for generating font metrics or building
+  ;; documentation.
+  (setenv "TEXMFVAR" (string-append (getcwd) "/texmf-var"))
+  ;; By default, a "ls-R" file must exist in TEXMFDIST.  However, it isn't
+  ;; generated in the TeX Live tree used to build a package.  Consequently,
+  ;; relax this requirement.
+  (setenv "TEXMF" "{$TEXMFSYSVAR,$TEXMFDIST}"))
 
 (define* (delete-drv-files #:rest _)
   "Delete pre-generated \".drv\" files in order to prevent build failures."
@@ -297,7 +302,7 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
     (delete 'bootstrap)
     (delete 'configure)
     (add-after 'unpack 'patch-shell-scripts patch-shell-scripts)
-    (add-before 'build 'set-texmfvar set-texmfvar)
+    (add-before 'build 'configure-texmf configure-texmf)
     (add-before 'build 'delete-drv-files delete-drv-files)
     (add-after 'delete-drv-files 'generate-font-metrics generate-font-metrics)
     (replace 'build build)

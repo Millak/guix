@@ -63,70 +63,69 @@
            lilypond
            perl
            python-pygments
+           (texlive-local-tree
+            (list texlive-acronym
+                  texlive-adjustbox
+                  texlive-biblatex
+                  texlive-bibtex
+                  texlive-bibtexperllibs
+                  texlive-bigfoot
+                  texlive-chngcntr
+                  texlive-circuitikz
+                  texlive-collection-langcyrillic
+                  texlive-csquotes
+                  texlive-fancyvrb
+                  texlive-fontspec
+                  texlive-glossaries
+                  texlive-glossaries-english
+                  texlive-glossaries-extra
+                  texlive-koma-script
+                  texlive-lilyglyphs
+                  texlive-minted
+                  texlive-multirow
+                  texlive-pgf
+                  texlive-pgfplots
+                  texlive-subfiles
+                  texlive-svg
+                  texlive-t1utils
+                  texlive-textpos
+                  texlive-transparent
+                  texlive-trimspaces
+                  texlive-upquote
+                  texlive-xetex))
            which))
-    (inputs
-     (list font-liberation
-           git
-           texlive-acronym
-           texlive-adjustbox
-           texlive-biblatex
-           texlive-bibtex
-           texlive-bibtexperllibs
-           texlive-bigfoot
-           texlive-chngcntr
-           texlive-circuitikz
-           texlive-collection-langcyrillic
-           texlive-csquotes
-           texlive-fancyvrb
-           texlive-fontspec
-           texlive-glossaries
-           texlive-glossaries-english
-           texlive-glossaries-extra
-           texlive-koma-script
-           texlive-lilyglyphs
-           texlive-minted
-           texlive-multirow
-           texlive-pgf
-           texlive-pgfplots
-           texlive-subfiles
-           texlive-svg
-           texlive-t1utils
-           texlive-textpos
-           texlive-transparent
-           texlive-trimspaces
-           texlive-upquote
-           texlive-xetex))
-   (arguments
-    (list #:tests? #f                   ; no tests
-          #:modules (append %default-gnu-imported-modules
-                            '((ice-9 regex)
-                              (srfi srfi-1)))
-          #:phases #~(modify-phases %standard-phases
-                       (add-before 'build 'configure-environment
-                         (lambda* (#:key inputs make-flags parallel-build?
-                                   #:allow-other-keys)
-                           (let* ((src (assoc-ref inputs "source"))
-                                  (rx  (make-regexp "/gnu/store/(.*)-book-sparc-.*"))
-                                  (src-hash (match:substring (regexp-exec rx src) 1))
-                                  (random-seed
-                                   (fold (lambda (ch prev)
-                                           (+ (char->integer ch)
-                                              prev))
-                                         0
-                                         (string->list src-hash))))
-                             (setenv "RANDOMSEED" (number->string random-seed))
-                             (setenv "REPRODUCIBILITY" "yes"))))
-                       (replace 'install
-                         (lambda _
-                           (let ((doc-dir (string-append #$output
-                                                         "/share/doc/sparc/")))
-                             (mkdir-p doc-dir)
-                             (copy-file "sparc.ru.pdf"
-                                        (string-append doc-dir
-                                                       "sparc.ru.pdf"))
-                             (copy-file "sparc.en.pdf"
-                                        (string-append doc-dir
-                                                       "sparc.en.pdf"))))))))
+    (inputs (list font-liberation git))
+    (arguments
+     (list #:tests? #f                  ; no tests
+           #:modules (append %default-gnu-imported-modules
+                             '((ice-9 regex)
+                               (srfi srfi-1)))
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'configure-environment
+                          (lambda* (#:key inputs make-flags parallel-build?
+                                    #:allow-other-keys)
+                            (let* ((src (assoc-ref inputs "source"))
+                                   (rx  (make-regexp "/gnu/store/(.*)-book-sparc-.*"))
+                                   (src-hash (match:substring (regexp-exec rx src) 1))
+                                   (random-seed
+                                    (fold (lambda (ch prev)
+                                            (+ (char->integer ch)
+                                               prev))
+                                          0
+                                          (string->list src-hash))))
+                              (setenv "RANDOMSEED" (number->string random-seed))
+                              (setenv "REPRODUCIBILITY" "yes"))))
+                        (replace 'install
+                          (lambda _
+                            (let ((doc-dir (string-append #$output
+                                                          "/share/doc/sparc/")))
+                              (mkdir-p doc-dir)
+                              (copy-file "sparc.ru.pdf"
+                                         (string-append doc-dir
+                                                        "sparc.ru.pdf"))
+                              (copy-file "sparc.en.pdf"
+                                         (string-append doc-dir
+                                                        "sparc.en.pdf"))))))))
     (home-page "https://github.com/artyom-poptsov/SPARC")
     (synopsis "Book on combining art and technology")
     (description
