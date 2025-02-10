@@ -564,14 +564,17 @@ evaluation.")
 (define-public r-cards
   (package
     (name "r-cards")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cards" version))
        (sha256
-        (base32 "1rwa0xh5inyyk1j21d69nasjzyx6rrck9zc194j1xm77zj6z77v7"))))
-    (properties `((upstream-name . "cards")))
+        (base32 "1bspjyxwj1dcjdrgrbh7qkskviwf78ifzhn8kihjpqypsyy1plad"))))
+    (properties
+     `((upstream-name . "cards")
+       ;; Do not create dependency cycle.
+       (updater-ignored-native-inputs . ("r-cardx"))))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
                              r-dplyr
@@ -579,7 +582,7 @@ evaluation.")
                              r-rlang
                              r-tidyr
                              r-tidyselect))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-spelling r-testthat r-withr))
     (home-page "https://github.com/insightsengineering/cards")
     (synopsis "Analysis Results Data")
     (description
