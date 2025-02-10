@@ -1652,6 +1652,42 @@ strings so that the decoded string does not contain incomplete multibyte
 sequences.")
     (license license:expat)))
 
+(define-public node-tiddlywiki
+  (package
+    (name "node-tiddlywiki")
+    (version "5.3.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TiddlyWiki/TiddlyWiki5")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x5rr1phzvymys8rwkxl1xv377j8c5dvl89yjf702adr2yfhq848"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'build)
+                   (add-after 'patch-dependencies 'delete-dev-dependencies
+                     (lambda _
+                       (delete-dependencies '("eslint" "@eslint/js")))))))
+    (home-page "https://github.com/TiddlyWiki/TiddlyWiki5#readme")
+    (synopsis "Non-linear personal web notebook")
+    (description "TiddlyWiki is a unique non-linear notebook for capturing,
+organising and sharing complex information.  Running TiddlyWiki on Node.js brings
+several important benefits over and above the single file version:
+@enumerate
+@item Individual tiddlers are stored in separate files, which you can organise as you
+wish.
+@item The ability to build multiple wikis that blend different combinations of shared
+and unique content.
+@item You can edit your content on any modern browser, including smartphones and
+tablets.
+@end enumerate")
+    (license license:bsd-3)))
+
 (define-public node-util-deprecate
   (package
     (name "node-util-deprecate")
