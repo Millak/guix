@@ -30937,6 +30937,38 @@ web-based tool for analyzing gene sets and returns any enrichment of common
 annotated biological functions.")
     (license license:gpl2+)))
 
+(define-public r-enrichwith
+  (package
+    (name "r-enrichwith")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "enrichwith" version))
+       (sha256
+        (base32 "05fhx323ani86wdxbjp8dgw4d1iq4kr1887646w072a6iq93bwhm"))))
+    (properties `((upstream-name . "enrichwith")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/ikosmidis/enrichwith")
+    (synopsis "Methods to enrich R objects with extra components")
+    (description
+     "This package provides the \"enrich\" method to enrich list-like R
+objects with new, relevant components.  The current version has methods for
+enriching objects of class @code{family}, @code{link-glm}, @code{lm},
+@code{glm} and @code{betareg}.  The resulting objects preserve their class, so
+all methods associated with them still apply.  The package also provides the
+@code{enriched_glm} function that has the same interface as @code{glm} but
+results in objects of class @code{enriched_glm}.  In addition to the usual
+components in a @code{glm} object, @code{enriched_glm} objects carry an
+object-specific simulate method and functions to compute the scores, the
+observed and expected information matrix, the first-order bias, as well as
+model densities, probabilities, and quantiles at arbitrary parameter values.
+The package can also be used to produce customizable source code templates for
+the structured implementation of methods to compute new components and enrich
+arbitrary objects.")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-plot3d
   (package
     (name "r-plot3d")
