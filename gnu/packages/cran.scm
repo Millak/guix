@@ -21170,6 +21170,26 @@ random effects with an adaptive Gaussian quadrature rule; Jose C. Pinheiro and
 Douglas M. Bates (1995) <doi:10.1080/10618600.1995.10474663>.")
     (license license:gpl3+)))
 
+(define-public r-glmmml
+  (package
+    (name "r-glmmml")
+    (version "1.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "glmmML" version))
+       (sha256
+        (base32 "07w6b1i9fkv8dxcmvky81f87ysbrrry3d4jczwkg953g9lankr5j"))))
+    (properties `((upstream-name . "glmmML")))
+    (build-system r-build-system)
+    (native-inputs (list gfortran r-knitr))
+    (home-page "https://cran.r-project.org/package=glmmML")
+    (synopsis "Generalized linear models with clustering")
+    (description
+     "This is a package for binomial and Poisson regression for clustered
+data, fixed and random effects with bootstrapping.")
+    (license license:gpl3+)))
+
 (define-public r-glmmtmb
   (package
     (name "r-glmmtmb")
