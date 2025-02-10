@@ -35930,6 +35930,37 @@ character codes as well as the UN M.49 area codes.")
 analysis and natural language processing.")
     (license license:expat)))
 
+(define-public r-storr
+  (package
+    (name "r-storr")
+    (version "1.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "storr" version))
+       (sha256
+        (base32 "0qszdq16bf0dbss33zi63ciwmkgjsyc0c3akrr2kl14w3ncw6922"))))
+    (properties
+     `((upstream-name . "storr")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-redux"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-digest r-r6))
+    (native-inputs (list r-dbi
+                         r-knitr
+                         r-mockr
+                         r-rpostgres
+                         r-rsqlite
+                         r-testthat))
+    (home-page "https://github.com/richfitz/storr")
+    (synopsis "Simple key value stores")
+    (description
+     "This package creates and manages simple key-value stores.  These can use
+a variety of approaches for storing the data.  This package implements the
+base methods and support for file system, in-memory and DBI-based database
+stores.")
+    (license license:expat)))
+
 (define-public r-spacyr
   (package
     (name "r-spacyr")
