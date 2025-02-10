@@ -8070,6 +8070,43 @@ Additionally, ggtern has implemented several new geometries which are
 unavailable to the standard ggplot2 release.")
     (license license:gpl2)))
 
+(define-public r-tableone
+  (package
+    (name "r-tableone")
+    (version "0.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tableone" version))
+       (sha256
+        (base32 "1br78y68037g5v5jhgi9l393kj2msamdklim8ki40hmxk9bibkxi"))))
+    (properties `((upstream-name . "tableone")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-e1071
+                             r-gmodels
+                             r-labelled
+                             r-mass
+                             r-nlme
+                             r-survey
+                             r-zoo))
+    (native-inputs (list r-geepack
+                         r-knitr
+                         r-lme4
+                         r-lmertest
+                         r-matrix
+                         r-survival
+                         r-testthat))
+    (home-page "https://github.com/kaz-yos/tableone")
+    (synopsis
+     "Describe baseline characteristics with or without propensity score weights")
+    (description
+     "This package creates \"Table 1\", i.e., description of baseline patient
+characteristics, which is essential in every medical research.  It supports
+both continuous and categorical variables, as well as p-values and
+standardized mean differences.  Weighted data are supported via the
+@code{survey} package.")
+    (license license:gpl2)))
+
 (define-public r-tablerdash
   (package
     (name "r-tablerdash")
