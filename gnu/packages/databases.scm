@@ -4849,7 +4849,7 @@ with integrated support for finding required rows quickly.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "17.0.0")
+    (version "18.1.0")
     (source
      (origin
        (method git-fetch)
@@ -4859,7 +4859,7 @@ with integrated support for finding required rows quickly.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11yzhqdvvcq8k4dhcfnwhc0hl0a2k09gyijln00zbglajk7ihfsk"))))
+         "02gg3cm83ilp9z7yp2l4mr164zrym90dw4sxyd98k9s2fvdvyxf0"))))
     (build-system cmake-build-system)
     (arguments
      (list
