@@ -659,9 +659,6 @@ private:
     /* RAII object to delete the chroot directory. */
     std::shared_ptr<AutoDelete> autoDelChroot;
 
-    /* All inputs that are regular files. */
-    PathSet regularInputPaths;
-
     /* Whether this is a fixed-output derivation. */
     bool fixedOutput;
 
@@ -1850,9 +1847,7 @@ void DerivationGoal::startBuilder()
 
         /* Make the closure of the inputs available in the chroot,
            rather than the whole store.  This prevents any access
-           to undeclared dependencies.  Directories are bind-mounted,
-           while other inputs are hard-linked (since only directories
-           can be bind-mounted).  !!! As an extra security
+           to undeclared dependencies.  !!! As an extra security
            precaution, make the fake store only writable by the
            build user. */
         Path chrootStoreDir = chrootRootDir + settings.nixStore;
@@ -1863,28 +1858,22 @@ void DerivationGoal::startBuilder()
             throw SysError(format("cannot change ownership of ‘%1%’") % chrootStoreDir);
 
         foreach (PathSet::iterator, i, inputPaths) {
-            struct stat st;
+	    struct stat st;
             if (lstat(i->c_str(), &st))
                 throw SysError(format("getting attributes of path `%1%'") % *i);
-            if (S_ISDIR(st.st_mode))
-                dirsInChroot[*i] = *i;
-            else {
-                Path p = chrootRootDir + *i;
-                if (link(i->c_str(), p.c_str()) == -1) {
-                    /* Hard-linking fails if we exceed the maximum
-                       link count on a file (e.g. 32000 of ext3),
-                       which is quite possible after a `nix-store
-                       --optimise'. */
-                    if (errno != EMLINK)
-                        throw SysError(format("linking `%1%' to `%2%'") % p % *i);
-                    StringSink sink;
-                    dumpPath(*i, sink);
-                    StringSource source(sink.s);
-                    restorePath(p, source);
-                }
 
-                regularInputPaths.insert(*i);
-            }
+	    if (S_ISLNK(st.st_mode)) {
+		/* Since bind-mounts follow symlinks, thus representing their
+		   target and not the symlink itself, special-case
+		   symlinks. XXX: When running unprivileged, TARGET can be
+		   deleted by the build process.  Use 'open_tree' & co. when
+		   it's more widely available.  */
+                Path target = chrootRootDir + *i;
+		if (symlink(readLink(*i).c_str(), target.c_str()) == -1)
+		    throw SysError(format("failed to create symlink '%1%' to '%2%'") % target % readLink(*i));
+	    }
+	    else
+		dirsInChroot[*i] = *i;
         }
 
         /* If we're repairing, checking or rebuilding part of a
