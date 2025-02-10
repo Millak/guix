@@ -1852,7 +1852,36 @@ exec " gcc "/bin/" program
 ;; In the future, Gash et al. could handle it directly, but it's not
 ;; ready yet.
 (define bash-mesboot (mesboot-package "bash-mesboot" static-bash))
-(define sed-mesboot (mesboot-package "sed-mesboot" sed))
+
+;; "sed" from Gash-Utils lacks the 'w' command as of 0.2.0.
+(define sed-mesboot
+  (mesboot-package
+   "sed-mesboot"
+   (package
+     (inherit sed)
+     (version "4.8")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "mirror://gnu/sed/sed-" version
+                            ".tar.gz"))
+        (sha256
+         (base32
+          "0alqagh0nliymz23kfjg6g9w3cr086k0sfni56gi8fhzqwa3xksk"))
+        (patches (search-patches "coreutils-gnulib-tests.patch"))
+
+        ;; Remove this snippet once upstream releases a fixed version.
+        ;; This snippet changes Makefile.in, even though the upstream
+        ;; patch changes testsuite/local.mk, since we build sed from a
+        ;; release tarball.  See: https://bugs.gnu.org/36150
+        (snippet
+         '(begin
+            (substitute* "Makefile.in"
+              (("^  abs_srcdir='\\$\\(abs_srcdir\\)'.*" previous-line)
+               (string-append
+                previous-line
+                "  CONFIG_HEADER='$(CONFIG_HEADER)'\t\t\\\n")))))
+        (modules '((guix build utils))))))))
 
 ;; "sed" from Gash-Utils lacks the 'w' command as of 0.2.0.
 (define coreutils-mesboot
