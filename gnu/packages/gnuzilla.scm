@@ -298,6 +298,15 @@ in C/C++.")
      (substitute-keyword-arguments (package-arguments mozjs)
        ((#:phases phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'python-3.11-compatibility
+              (lambda _
+                (substitute* '("python/mozbuild/mozpack/files.py"
+                               "python/mozbuild/mozbuild/util.py"
+                               "python/mozbuild/mozbuild/action/process_define_files.py"
+                               "python/mozbuild/mozbuild/backend/base.py"
+                               "python/mozbuild/mozbuild/preprocessor.py"
+                               "python/mozbuild/mozbuild/virtualenv.py")
+                  (("'rU'") "'r'"))))
             (add-after 'unpack 'patch-for-python-3.10
               (lambda _
                 ;; Some classes were moved from collections to collections.abc
