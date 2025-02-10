@@ -199,7 +199,7 @@
 (define-public duckdb
   (package
     (name "duckdb")
-    (version "1.1.1")
+    (version "1.1.3")
     (source
       (origin
        (method git-fetch)
@@ -209,7 +209,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0s2zmrr7m0wb0gmspjcqpyglv8s0zx78k4283abm560ql87bgx30"))
+         "1b57r4x1lnkdiv0f8r0wyhbil61l9gp1ipr37i12s0x6dv19lxi2"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -218,8 +218,9 @@
               (("set\\(DUCKDB_VERSION \"[^\"]*\"")
                (string-append "set(DUCKDB_VERSION \"v" #$version "-dev0\"")))))))
     (arguments
-     `(#:configure-flags
-       (list "-DBUILD_EXTENSIONS=autocomplete;fts;icu;json;parquet;tpch;")))
+     (list
+      #:configure-flags
+      '(list "-DBUILD_EXTENSIONS=autocomplete;fts;icu;json;parquet;tpch;")))
     (build-system cmake-build-system)
     (home-page "https://duckdb.org")
     (synopsis "In-process SQL OLAP database management system")
