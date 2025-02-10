@@ -5116,6 +5116,39 @@ functions, including @code{sort}, @code{order}, and @code{match}.  The
 functions are simplified but can be faster or have other advantages.")
     (license license:gpl3)))
 
+(define-public r-marginaleffects
+  (package
+    (name "r-marginaleffects")
+    (version "0.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "marginaleffects" version))
+       (sha256
+        (base32 "0b5z3i4dmsgnw4945mss1gsw09hmqblqa0l2mdkj9fmrf11yf7d0"))))
+    (properties `((upstream-name . "marginaleffects")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate
+                             r-data-table
+                             r-generics
+                             r-insight
+                             r-rcpp
+                             r-rcppeigen
+                             r-rlang))
+    (native-inputs (list r-here r-knitr r-quarto r-spelling r-tinytest))
+    (home-page "https://marginaleffects.com/")
+    (synopsis
+     "Predictions, comparisons, slopes, marginal means, and hypothesis tests")
+    (description
+     "This package lets you compute and plot predictions, slopes, marginal
+means, and comparisons (contrasts, risk ratios, odds, etc.) for over 100
+classes of statistical and machine learning models in R.  Conduct linear and
+non-linear hypothesis tests, or equivalence tests.  Calculate uncertainty
+estimates using the delta method, bootstrapping, or simulation-based
+inference.  Details can be found in Arel-Bundock, Greifer, and Heiss (2024)
+<doi:10.18637/jss.v111.i09>.")
+    (license license:gpl3+)))
+
 (define-public r-matrixtests
   (package
     (name "r-matrixtests")
