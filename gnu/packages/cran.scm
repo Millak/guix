@@ -12923,6 +12923,28 @@ University Press.  It provides smoothing methods for nonparametric regression
 and density estimation")
     (license license:gpl2+)))
 
+(define-public r-smd
+  (package
+    (name "r-smd")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "smd" version))
+       (sha256
+        (base32 "15npiffznxlvd8rih0z63vdxykhh8fcdsgbrjkjgnakd9fi5xad5"))))
+    (properties `((upstream-name . "smd")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mass))
+    (native-inputs (list r-knitr r-purrr r-stddiff r-tableone r-testthat))
+    (home-page "https://bsaul.github.io/smd/")
+    (synopsis "Compute standardized mean differences")
+    (description
+     "This package computes standardized mean differences and confidence
+intervals for multiple data types based on Yang, D., & Dalton, J. E. (2012)
+<https://support.sas.com/resources/papers/proceedings12/335-2012.pdf>.")
+    (license license:expat)))
+
 (define-public r-smoof
   (package
     (name "r-smoof")
