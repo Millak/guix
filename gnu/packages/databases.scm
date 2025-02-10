@@ -5726,9 +5726,9 @@ compatible with SQLite using a graphical user interface.")
      "This package implements the @acronym{LSP, Language Server Protocol} for SQL.")
     (license license:expat)))
 
-(define-public python-dogpile.cache
+(define-public python-dogpile-cache
   (package
-    (name "python-dogpile.cache")
+    (name "python-dogpile-cache")
     (version "1.1.8")
     (source (origin
               (method url-fetch)

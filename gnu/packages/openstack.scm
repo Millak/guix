@@ -1064,7 +1064,7 @@ regardless of whether they are bundled or not.")
     (propagated-inputs (list python-appdirs
                              python-cryptography
                              python-decorator
-                             python-dogpile.cache
+                             python-dogpile-cache
                              python-importlib-metadata
                              python-iso8601
                              python-jmespath
