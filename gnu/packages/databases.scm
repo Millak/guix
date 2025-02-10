@@ -5233,7 +5233,7 @@ algorithm implementations.")
     (build-system python-build-system)
     (arguments
      (list
-      ;; XXX: Test data is distributed sepratly in
+      ;; XXX: Test data is distributed separately in
       ;; <https://github.com/apache/arrow-testing> 39MiB and requires
       ;; additional steps to be implemented, see
       ;; <https://github.com/apache/arrow/blob/main/ci/scripts/python_build.sh>.
