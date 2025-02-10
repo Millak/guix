@@ -1077,6 +1077,41 @@ clean, transform, and prepare your data for analysis.  It also forms the data
 wrangling backend for the packages in the @code{easystats} ecosystem.")
     (license license:gpl3)))
 
+(define-public r-dbitest
+  (package
+    (name "r-dbitest")
+    (version "1.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "DBItest" version))
+       (sha256
+        (base32 "1zm3y5fsmsyz4bi3fqvl3zp13jjbi029i21xi4l81h7wxrc8p5y5"))))
+    (properties
+     `((upstream-name . "DBItest")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-rsqlite"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-blob
+                             r-callr
+                             r-dbi
+                             r-desc
+                             r-hms
+                             r-lubridate
+                             r-magrittr
+                             r-nanoarrow
+                             r-palmerpenguins
+                             r-rlang
+                             r-testthat
+                             r-withr))
+    (native-inputs (list r-knitr r-lintr))
+    (home-page "https://dbitest.r-dbi.org")
+    (synopsis "Testing DBI backends")
+    (description
+     "This package provides a helper that tests DBI back ends for conformity
+to the interface.")
+    (license license:lgpl2.1+)))
+
 (define-public r-dbscan
   (package
     (name "r-dbscan")
