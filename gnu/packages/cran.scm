@@ -11349,6 +11349,33 @@ same machine or a local network.  Drat is a recursive acronym: Drat R Archive
 Template.")
     (license license:gpl2+)))
 
+(define-public r-dreamerr
+  (package
+    (name "r-dreamerr")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dreamerr" version))
+       (sha256
+        (base32 "11va0bwi8r3qv7cw5zjci0i7876lh02bzf5rdfn6sfv223yllpiy"))))
+    (properties `((upstream-name . "dreamerr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-formula r-stringmagic))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=dreamerr")
+    (synopsis "Error handling made easy")
+    (description
+     "This package provides a set of tools to facilitate package development
+and make R a more user-friendly place.  It is intended mostly for
+developers (or anyone who writes/shares functions).  It provides a simple,
+powerful and flexible way to check the arguments passed to functions.  The
+developer can easily describe the type of argument needed.  If the user
+provides a wrong argument, then an informative error message is prompted with
+the requested type and the problem clearly stated--saving the user a lot of
+time in debugging.")
+    (license license:gpl3)))
+
 (define-public r-drr
   (package
     (name "r-drr")
