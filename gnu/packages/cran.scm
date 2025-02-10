@@ -33792,6 +33792,47 @@ floating point chromosomes.")
 forest) is fit on the kernel matrix of a subset of the training data.")
     (license license:gpl2+)))
 
+(define-public r-duckdb
+  (package
+    (name "r-duckdb")
+    (version "1.1.3-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "duckdb" version))
+       (sha256
+        (base32 "1d4racr5b6v4jrs6yppf6adzscfbj6qzl5xha59spx3smrxr91wj"))
+       ;; This package bundles the duckdb sources and builds a custom variant
+       ;; of duckdb.  I'd be happy to link it with our duckdb library instead,
+       ;; but it does not seem possible to do that.
+       #;
+       (snippet
+        '(delete-file "src/duckdb.tar.xz"))))
+    (properties `((upstream-name . "duckdb")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dbi))
+    (native-inputs (list tzdata-for-tests
+                         r-arrow
+                         r-bit64
+                         r-callr
+                         r-clock
+                         r-dbitest
+                         r-dbplyr
+                         r-dplyr
+                         r-remotes
+                         r-rlang
+                         r-testthat
+                         r-tibble
+                         r-vctrs
+                         r-withr))
+    (home-page "https://r.duckdb.org/")
+    (synopsis "DBI package for the DuckDB database management system")
+    (description
+     "The DuckDB project is an embedded analytical data management system with
+support for the Structured Query Language (SQL).  This package includes all of
+DuckDB and an R Database Interface (DBI) connector.")
+    (license license:expat)))
+
 (define-public r-dummies
   (package
     (name "r-dummies")
