@@ -26821,6 +26821,34 @@ compatible with @code{rzmq} are also provided.")
 several formats and MIME types.")
     (license license:gpl3)))
 
+(define-public r-irace
+  (package
+    (name "r-irace")
+    (version "4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "irace" version))
+       (sha256
+        (base32 "0383gw288nps1lb0zawbxqdb18hcdl59x8vav26c6fg15vr8n9x2"))))
+    (properties `((upstream-name . "irace")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-data-table
+                             r-fs
+                             r-matrixstats
+                             r-r6
+                             r-spacefillr
+                             r-withr))
+    (native-inputs (list r-knitr r-rmpi r-table r-testthat))
+    (home-page "https://mlopez-ibanez.github.io/irace/")
+    (synopsis "Iterated racing for automatic algorithm configuration")
+    (description
+     "Iterated race is an extension of the Iterated F-race method for the
+automatic configuration of optimization algorithms, that is, (offline) tuning
+their parameters by finding the most appropriate settings given a set of
+instances of an optimization problem.")
+    (license license:gpl2+)))
+
 (define-public r-irdisplay
   (package
     (name "r-irdisplay")
