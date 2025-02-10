@@ -18748,6 +18748,36 @@ approach is the identification of genomic regions, genes, or gene sets
 containing one or more SNPs that evolved under directional selection.")
     (license license:gpl2)))
 
+(define-public r-brglm2
+  (package
+    (name "r-brglm2")
+    (version "0.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "brglm2" version))
+       (sha256
+        (base32 "0islmx4kdy22qn2cq7lpzqq6lc6mci5qly645nfdhad9001jmhsa"))))
+    (properties `((upstream-name . "brglm2")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-enrichwith r-mass r-matrix r-nnet r-numderiv))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/ikosmidis/brglm2")
+    (synopsis "Bias reduction in generalized linear models")
+    (description
+     "This is a package for estimation and inference from generalized linear
+models based on various methods for bias reduction and maximum penalized
+likelihood with powers of the Jeffreys prior as penalty.  The @code{brglmFit}
+fitting method can achieve reduction of estimation bias by solving either the
+mean bias-reducing adjusted score equations in Firth (1993)
+<doi:10.1093/biomet/80.1.27> and Kosmidis and Firth
+(2009) <doi:10.1093/biomet/asp055>, or the median bias-reduction adjusted
+score equations in Kenne et al. (2017) <doi:10.1093/biomet/asx046>, or through
+the direct subtraction of an estimate of the bias of the maximum likelihood
+estimator from the maximum likelihood estimates as in Cordeiro and
+McCullagh (1991) <https://www.jstor.org/stable/2345592>.")
+    (license license:gpl3)))
+
 (define-public r-proc
   (package
     (name "r-proc")
