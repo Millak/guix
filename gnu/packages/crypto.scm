@@ -282,30 +282,6 @@ OpenBSD tool of the same name.")
      "This package provides a crate to sign files and verify signatures.")
     (license license:expat)))
 
-(define-public go-github-com-jedisct1-go-minisign
-  (package
-    (name "go-github-com-jedisct1-go-minisign")
-    (version "0.2.5")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/jedisct1/go-minisign")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "15wxg55q95kfany1zmzaazm6dzmd9k4jzigmmscwyavdbkb8ng5b"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/jedisct1/go-minisign"))
-    (propagated-inputs
-     (list go-golang-org-x-crypto))
-    (home-page "https://github.com/jedisct1/go-minisign")
-    (synopsis "Minisign verification library for Golang")
-    (description "A Golang library to verify Minisign signatures.")
-    (license license:expat)))
-
 (define-public encfs
   (package
     (name "encfs")
