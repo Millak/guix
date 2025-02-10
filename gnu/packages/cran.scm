@@ -12425,6 +12425,29 @@ graphing packages.  This package also forms the statistical processing backend
 for ggstatsplot.")
     (license license:gpl3)))
 
+(define-public r-stddiff
+  (package
+    (name "r-stddiff")
+    (version "3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "stddiff" version))
+       (sha256
+        (base32 "1lirfxqiq59vhjkq1zv27ycybbs9n62c14klkkcf74j15a54cmbn"))))
+    (properties `((upstream-name . "stddiff")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=stddiff")
+    (synopsis
+     "Calculate standardized difference for numeric, binary and category variables")
+    (description
+     "This package contains three main functions including
+@code{stddiff.numeric()}, @code{stddiff.binary()} and
+@code{stddiff.category()}.  These are used to calculate the standardized
+difference between two groups.  It is especially used to evaluate the balance
+between two groups before and after propensity score matching.")
+    (license license:gpl3)))
+
 (define-public r-strawr
   (package
     (name "r-strawr")
