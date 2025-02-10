@@ -31337,14 +31337,14 @@ colored by the number of neighboring points.  This is useful to visualize the
 (define-public r-arrow
   (package
     (name "r-arrow")
-    (version "17.0.0.1")
+    (version "18.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "arrow" version))
        (sha256
         (base32
-         "0pp7rllpmdwsx0idqhfg4lv96cvdj6pbnypnlrr835jqv7sxn502"))))
+         "1l74n1fvr346360kiblss6yr0sm5rghbzjxc5ypph0i1pfjxyz3b"))))
     (properties `((upstream-name . "arrow")))
     (build-system r-build-system)
     (arguments
@@ -31379,12 +31379,22 @@ colored by the number of neighboring points.  This is useful to visualize the
     (native-inputs
      (list glibc-utf8-locales
            pkg-config
+           r-blob
+           r-dbi
+           r-dbplyr
            r-dplyr
            r-hms
+           r-jsonlite
            r-lubridate
+           r-readr
+           r-remotes
+           r-reticulate
+           r-stringi
            r-stringr
+           r-sys
            r-testthat
            r-tibble
+           r-withr
            tzdata-for-tests))
     (home-page "https://github.com/apache/arrow/")
     (synopsis "R integration to Apache Arrow")
