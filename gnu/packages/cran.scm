@@ -6941,14 +6941,17 @@ particularly easy to create complete web applications using httpuv alone.")
 (define-public r-httr2
   (package
     (name "r-httr2")
-    (version "1.0.6")
+    (version "1.0.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httr2" version))
               (sha256
                (base32
-                "1idna48j0z75ybdgb6b22wgfa1c8n8q2lw4ywgg959hviykbc3gh"))))
-    (properties `((upstream-name . "httr2")))
+                "1h7pdbalrpipn09srmh2rr5jx5bbngx8jvb0g54835bpg80vh8mn"))))
+    (properties
+     `((upstream-name . "httr2")
+       ;; This package doesn't exist.
+       (updater-ignored-native-inputs . ("r-common"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -6962,7 +6965,15 @@ particularly easy to create complete web applications using httpuv alone.")
            r-rlang
            r-vctrs
            r-withr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-bench
+                         r-clipr
+                         r-httr
+                         r-jsonlite
+                         r-knitr
+                         r-later
+                         r-promises
+                         r-testthat
+                         r-webfakes))
     (home-page "https://httr2.r-lib.org")
     (synopsis "Perform HTTP requests and process the responses")
     (description
