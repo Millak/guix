@@ -1688,7 +1688,7 @@ of M4RI from F_2 to F_{2^e}.")
 (define-public eclib
   (package
     (name "eclib")
-    (version "20241112")
+    (version "20250122")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1697,7 +1697,7 @@ of M4RI from F_2 to F_{2^e}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0v5981y0bv9s2sz6x2yh7mxzqsp9rrfv1jvdv12rwf64yacgmbz0"))))
+                "0f50r23788n6b899za1a7x6jkrhwj3y2v5y4xc98k63mp0wvqfq1"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
