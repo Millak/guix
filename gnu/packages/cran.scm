@@ -20996,6 +20996,30 @@ models, including generalized linear models, mixed effects models and Bayesian
 models.")
     (license license:gpl3)))
 
+(define-public r-glmmadaptive
+  (package
+    (name "r-glmmadaptive")
+    (version "0.9-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "GLMMadaptive" version))
+       (sha256
+        (base32 "1gzm61a7qy4mvw1zaa4n01a5si7vawq2w0ppwk6pfsd06ffh5g2r"))))
+    (properties `((upstream-name . "GLMMadaptive")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mass r-matrixstats r-nlme))
+    (native-inputs (list r-knitr))
+    (home-page "https://drizopoulos.github.io/GLMMadaptive/")
+    (synopsis
+     "Generalized Linear Mixed Models using adaptive gaussian quadrature")
+    (description
+     "This package lets you fit generalized linear mixed models for a single
+grouping factor under maximum likelihood approximating the integrals over the
+random effects with an adaptive Gaussian quadrature rule; Jose C. Pinheiro and
+Douglas M. Bates (1995) <doi:10.1080/10618600.1995.10474663>.")
+    (license license:gpl3+)))
+
 (define-public r-glmmtmb
   (package
     (name "r-glmmtmb")
