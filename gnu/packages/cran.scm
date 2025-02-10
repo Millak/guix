@@ -16071,6 +16071,30 @@ time formats, @code{parse_date} parses dates in unspecified formats,
 and @code{format_iso_8601} formats a date in ISO 8601 format.")
     (license license:gpl2)))
 
+(define-public r-adbcdrivermanager
+  (package
+    (name "r-adbcdrivermanager")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "adbcdrivermanager" version))
+       (sha256
+        (base32 "1aaq0va91yxp4izmdc44pbsyz3qmi8gz1wxvac0rjwks6y53nz8k"))))
+    (properties `((upstream-name . "adbcdrivermanager")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-nanoarrow))
+    (native-inputs (list r-testthat))
+    (home-page "https://arrow.apache.org/adbc/current/r/adbcdrivermanager/")
+    (synopsis "Arrow Database Connectivity (ADBC) driver manager")
+    (description
+     "This package provides a developer-facing interface to Arrow Database
+Connectivity (ADBC) for the purposes of driver development, driver testing,
+and building high-level database interfaces for users.  ADBC is an API
+standard for database access libraries that uses Arrow for result sets and
+query parameters.")
+    (license license:asl2.0)))
+
 (define-public r-abc-data
   (package
     (name "r-abc-data")
