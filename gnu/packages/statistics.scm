@@ -2118,14 +2118,16 @@ times.")
 (define-public r-data-table
   (package
     (name "r-data-table")
-    (version "1.16.2")
+    (version "1.16.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "data.table" version))
               (sha256
                (base32
-                "11k12ixkd7k6lca8lsxlx4z6f6q3ljm6l4784wafa1nhbczwkazl"))))
-    (properties `((upstream-name . "data.table")))
+                "1pww4qq7zsvq1k9gdrx1wf0p190ic4mv7kr30bk1s4dwmsrlnxkj"))))
+    (properties
+     `((upstream-name . "data.table")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
