@@ -285,7 +285,7 @@ OpenBSD tool of the same name.")
 (define-public go-minisign
   (package
     (name "go-minisign")
-    (version "0.1.0")
+    (version "0.2.5")
     (source
       (origin
         (method git-fetch)
@@ -295,10 +295,7 @@ OpenBSD tool of the same name.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0wc0rk5m60yz52f0cncmbgq67yvb1rcx91gvzjg6jpc4mpw2db27"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin (delete-file-recursively "vendor") #t))))
+          "15wxg55q95kfany1zmzaazm6dzmd9k4jzigmmscwyavdbkb8ng5b"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/jedisct1/go-minisign"))
