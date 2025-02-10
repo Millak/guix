@@ -12326,6 +12326,31 @@ can be computed between character vectors while taking proper care of encoding
 or between integer vectors representing generic sequences.")
     (license license:gpl3+)))
 
+(define-public r-stringmagic
+  (package
+    (name "r-stringmagic")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "stringmagic" version))
+       (sha256
+        (base32 "134g9c358d3730fvkhcwcrhy4w7ig614jcnxrygakrcvm55c1lgf"))))
+    (properties `((upstream-name . "stringmagic")))
+    (build-system r-build-system)
+    ;; There are no tests in the ./tests/ directory.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-knitr))
+    (home-page "https://lrberge.github.io/stringmagic/")
+    (synopsis "Character string operations and interpolation, magic edition")
+    (description
+     "This package performs complex string operations compactly and
+efficiently.  It supports string interpolation jointly with over 50 string
+operations.  It also enhances regular string functions (like @code{grep()} and
+co).")
+    (license license:gpl2+)))
+
 (define-public r-uchardet
   (package
     (name "r-uchardet")
