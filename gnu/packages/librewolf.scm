@@ -471,8 +471,10 @@
                        (apply invoke "./mach" "build"
                               ;; mach will use parallel build if possible by default
                               `(,@(if parallel-build?
-                                      '()
-                                      '("-j1")) ,@make-flags))))
+                                      `(,(string-append
+                                          "-j" (number->string (parallel-job-count))))
+                                      '("-j1"))
+                                ,@make-flags))))
                    (add-after 'build 'neutralise-store-references
                      (lambda _
                        ;; Mangle the store references to compilers &
