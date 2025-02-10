@@ -282,9 +282,9 @@ OpenBSD tool of the same name.")
      "This package provides a crate to sign files and verify signatures.")
     (license license:expat)))
 
-(define-public go-minisign
+(define-public go-github-com-jedisct1-go-minisign
   (package
-    (name "go-minisign")
+    (name "go-github-com-jedisct1-go-minisign")
     (version "0.2.5")
     (source
       (origin
