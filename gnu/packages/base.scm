@@ -192,35 +192,21 @@ including, for example, recursive directory searching.")
 
 (define-public sed
   (package
-   (name "sed")
-   (version "4.8")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnu/sed/sed-" version
-                                ".tar.gz"))
-            (sha256
-             (base32
-              "0alqagh0nliymz23kfjg6g9w3cr086k0sfni56gi8fhzqwa3xksk"))
-            (patches (search-patches "coreutils-gnulib-tests.patch"))
-
-            ;; Remove this snippet once upstream releases a fixed version.
-            ;; This snippet changes Makefile.in, even though the upstream
-            ;; patch changes testsuite/local.mk, since we build sed from a
-            ;; release tarball.  See: https://bugs.gnu.org/36150
-            (snippet
-             '(begin
-                (substitute* "Makefile.in"
-                  (("^  abs_srcdir='\\$\\(abs_srcdir\\)'.*" previous-line)
-                   (string-append
-                    previous-line
-                    "  CONFIG_HEADER='$(CONFIG_HEADER)'\t\t\\\n")))))
-            (modules '((guix build utils)))))
-   (build-system gnu-build-system)
-   (synopsis "Stream editor")
-   (native-inputs (append (if (target-loongarch64?)
-                              (list config)
-                              '())
-                          (list perl)))                    ;for tests
+    (name "sed")
+    (version "4.9")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/sed/sed-" version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0bi808vfkg3szmpy9g5wc7jnn2yk6djiz412d30km9rky0c8liyi"))))
+    (build-system gnu-build-system)
+    (synopsis "Stream editor")
+    (native-inputs (append (if (target-loongarch64?)
+                               (list config)
+                               '())
+                           (list perl)))                    ;for tests
     (arguments (if (target-loongarch64?)
                    (list #:phases
                          #~(modify-phases %standard-phases
@@ -234,14 +220,14 @@ including, for example, recursive directory searching.")
                                                (string-append "/bin/" file)) "./build-aux"))
                                            '("config.guess" "config.sub"))))))
                    '()))
-   (description
-    "Sed is a non-interactive, text stream editor.  It receives a text
+    (description
+     "Sed is a non-interactive, text stream editor.  It receives a text
 input from a file or from standard input and it then applies a series of text
 editing commands to the stream and prints its output to standard output.  It
 is often used for substituting text patterns in a stream.  The GNU
 implementation offers several extensions over the standard utility.")
-   (license gpl3+)
-   (home-page "https://www.gnu.org/software/sed/")))
+    (license gpl3+)
+    (home-page "https://www.gnu.org/software/sed/")))
 
 (define-public tar
   (package
