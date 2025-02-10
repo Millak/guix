@@ -5631,6 +5631,33 @@ brief, RDF provides a structured graph consisting of Statements composed of
 Subject, Predicate, and Object Nodes.")
     (license license:asl2.0)))
 
+(define-public r-redux
+  (package
+    (name "r-redux")
+    (version "1.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "redux" version))
+       (sha256
+        (base32 "1cbgc39avvjx1lqfrrwyq6fjm751i10gxhsfx67njg8ghj4pq790"))))
+    (properties `((upstream-name . "redux")))
+    (build-system r-build-system)
+    (inputs (list hiredis))
+    (propagated-inputs (list r-r6 r-storr))
+    (native-inputs (list r-knitr pkg-config r-sys r-testthat))
+    (home-page "https://github.com/richfitz/redux")
+    (synopsis "R bindings to hiredis")
+    (description
+     "This package provides a @code{hiredis} wrapper that includes support for
+transactions, pipelining, blocking subscription, serialisation of all keys and
+values, Redis error handling with R errors.  It includes an automatically
+generated R6 interface to the full @code{hiredis} API.  Generated functions
+are faithful to the @code{hiredis} documentation while attempting to match R's
+argument semantics.  Serialization must be explicitly done by the user, but
+both binary and text-mode serialisation is supported.")
+    (license license:gpl2)))
+
 (define-public r-relations
   (package
     (name "r-relations")
