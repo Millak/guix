@@ -46238,6 +46238,31 @@ package's own @code{stub} function or a similar @code{with_mock} facility
 present in the @code{testthat} package.")
     (license license:expat)))
 
+(define-public r-mockr
+  (package
+    (name "r-mockr")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mockr" version))
+       (sha256
+        (base32 "0n3syab3dq1am562vnjpkgmx3v06liafyy0fcyvj0spdxr0mkvr3"))))
+    (properties `((upstream-name . "mockr")))
+    (build-system r-build-system)
+    ;; One test failure because of an unexpected warning.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list r-rlang r-withr))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://krlmlr.github.io/mockr/")
+    (synopsis "Mocking in R")
+    (description
+     "This package provides a means to mock a package function, i.e.,
+temporarily substitute it for testing.  It was designed as a drop-in
+replacement for the now deprecated @code{testthat::with_mock()} and
+@code{testthat::local_mock()}.")
+    (license license:gpl3)))
+
 (define-public r-zoltr
   (package
     (name "r-zoltr")
