@@ -22691,14 +22691,23 @@ User credentials are shared with command line git through the
 (define-public r-usethis
   (package
     (name "r-usethis")
-    (version "3.0.0")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "usethis" version))
        (sha256
         (base32
-         "1dfcyxvw95lhm4giarsw266833sfbckk44nddjqpxqxarvwm1y4q"))))
+         "1n0nd6z8scwx8scl1y2i80d1h1h3c29kqcbipzdy36xi3lffibv3"))))
+    (properties
+     `((upstream-name . "usethis")
+       (updater-extra-native-inputs . ("r-roxygen2"))
+       (updater-ignored-native-inputs
+        . ("r-archive"                  ;not needed, but also fails to build
+           "r-devtools"                 ;avoid dependency cycle
+           "r-github"                   ;not needed
+           "r-gitlab"                   ;not needed
+           "r-roxyglobals")))) ;not needed
     (build-system r-build-system)
     (arguments
      '(#:phases
@@ -22730,7 +22739,13 @@ User credentials are shared with command line git through the
            r-whisker
            r-withr
            r-yaml))
-    (native-inputs (list r-knitr r-rmarkdown r-roxygen2 r-testthat r-tibble))
+    (native-inputs (list r-knitr
+                         r-magick
+                         r-rmarkdown
+                         r-roxygen2
+                         r-spelling
+                         r-testthat
+                         r-tibble))
     (home-page "https://github.com/r-lib/usethis")
     (synopsis "Automate R package and project setup")
     (description
