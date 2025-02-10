@@ -8647,7 +8647,7 @@ It does not support server push.")
 (define-public hpcguix-web
   (package
     (name "hpcguix-web")
-    (version "0.4.1")
+    (version "0.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8656,7 +8656,7 @@ It does not support server push.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13a4cwqdhpr7gc1z4cxs36qa50mzcdwwlj9qqzv818sx9d7r6vsw"))))
+                "09xfyyz3004qcfjjlg903gnsb9wsrrdk7gw7xawsvw58l6vrialb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
