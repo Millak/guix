@@ -217,8 +217,7 @@ living in the same process.")
               (uri (string-append "mirror://gnupg/gnutls/v"
                                   (version-major+minor version)
                                   "/gnutls-" version ".tar.xz"))
-              (patches (search-patches "gnutls-no-which.patch"
-                                       "gnutls-skip-trust-store-test.patch"))
+              (patches (search-patches "gnutls-no-which.patch"))
               (sha256
                (base32
                 "1v9090cbajf02cw01idfbp0cgmgjn5091ff1b96hqryi0bc17qb9"))))
@@ -241,16 +240,11 @@ living in the same process.")
               ;; ld.so.cache file.
               "--with-zlib=link"
               "--with-zstd=link"
-              ;; GnuTLS doesn't consult any environment variables to specify
-              ;; the location of the system-wide trust store.  Instead it has a
-              ;; configure-time option.  Unless specified, its configure script
-              ;; attempts to auto-detect the location by looking for common
-              ;; places in the file system, none of which are present in our
-              ;; chroot build environment.  If not found, then no default trust
-              ;; store is used, so each program has to provide its own
-              ;; fallback, and users have to configure each program
-              ;; independently.  This seems suboptimal.
-              "--with-default-trust-store-dir=/etc/ssl/certs")
+              ;; Configure GnuTLS to use the p11-kit trust module by default,
+              ;; which is more flexible and knows to look at locations we've
+              ;; configured it to, on top of allowing users to configure it
+              ;; further.
+              "--with-default-trust-store-pkcs11=pkcs11:")
            #:phases
            #~(modify-phases %standard-phases
                #$@(if (target-ppc32?)
