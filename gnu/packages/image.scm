@@ -127,7 +127,7 @@
 (define-public converseen
   (package
     (name "converseen")
-    (version "0.12.0.2")
+    (version "0.12.2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -136,12 +136,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gjg2ma8v8pwldny4j2ag92g5zrv5cz511mq44qr7akjsddq6q6p"))
-              (patches
-               (search-patches "converseen-hide-updates-checks.patch"
-                               ;; Remove links to sites relying on non-free
-                               ;; Javascript.
-                               "converseen-hide-non-free-pointers.patch"))))
+                "03jsf5418kk1j8mk0gjzxb79lv44yy1wsycn6g6fmvg4zhl2cls3"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -149,10 +144,15 @@
       #:configure-flags #~(list "-DUSE_QT6=yes")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-translations-location
-            ;; Fix translations location.  Without this, only English is
-            ;; offered.
+          (add-after 'unpack 'patch-source
             (lambda _
+              ;; Disable auto update and website links, for privacy concerns.
+              (substitute* "src/mainwindowimpl.cpp"
+                (("up->checkForUpdates[(][)];") ""))
+              (substitute* '("src/dialoginfo.cpp" "src/mainwindowimpl.cpp")
+                (("QDesktopServices::openUrl.*;") ""))
+              ;; Fix translations location.  Without this, only English is
+              ;; offered.
               (substitute* "src/translator.cpp"
                 (("QString\\(\"%1/share/converseen/loc\"\\).arg\\(rootPath\\)")
                  (string-append "QString(\""

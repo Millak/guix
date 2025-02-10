@@ -1156,8 +1156,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/compsize-fix-btrfs-progs-compatibility.patch	\
   %D%/packages/patches/containerd-create-pid-file.patch	\
   %D%/packages/patches/containerd-fix-includes.patch            \
-  %D%/packages/patches/converseen-hide-updates-checks.patch	\
-  %D%/packages/patches/converseen-hide-non-free-pointers.patch	\
   %D%/packages/patches/cool-retro-term-wctype.patch		\
   %D%/packages/patches/coq-autosubst-1.8-remove-deprecated-files.patch		\
   %D%/packages/patches/corectrl-polkit-install-dir.patch	\
