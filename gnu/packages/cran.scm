@@ -21055,6 +21055,47 @@ Laplace approximation.  Gradients are calculated using automatic
 differentiation.")
     (license license:agpl3+)))
 
+(define-public r-glmtoolbox
+  (package
+    (name "r-glmtoolbox")
+    (version "0.1.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "glmtoolbox" version))
+       (sha256
+        (base32 "1nzn5nqicry2687d0nx6dacy0kbl0fzsw2wqwwi07mc12b84m7j9"))))
+    (properties `((upstream-name . "glmtoolbox")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-broom
+                             r-formula
+                             r-mass
+                             r-numderiv
+                             r-rfast
+                             r-statmod
+                             r-suppdists))
+    (home-page "https://mlgs.netlify.app/")
+    (synopsis "Set of tools to data analysis using generalized linear models")
+    (description
+     "This package provides a set of tools for the statistical analysis of
+data using:
+
+@enumerate
+@item normal linear models;
+@item generalized linear models;
+@item negative binomial regression models as alternative to the Poisson
+  regression models under the presence of overdispersion;
+@item beta-binomial and random-clumped binomial regression models as
+  alternative to the binomial regression models under the presence of
+  overdispersion;
+@item zero-inflated and zero-altered regression models to deal with
+  zero-excess in count data;
+@item generalized nonlinear models;
+@item generalized estimating equations for cluster correlated data.
+@end enumerate
+")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-bayestestr
   (package
     (name "r-bayestestr")
