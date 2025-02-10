@@ -22766,14 +22766,14 @@ Rcpp, RStudio projects, and more.")
 (define-public r-sessioninfo
   (package
     (name "r-sessioninfo")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sessioninfo" version))
        (sha256
         (base32
-         "1jy7n37qnrb4fgzmn8s8yf7kv29yw27x8zklwf8qdb2kgj2q6qpm"))))
+         "0l66w40lfhb8n5n5201d4fdp4kmlbahwbsrcjyflk6n4lsl90ax0"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -22787,7 +22787,7 @@ Rcpp, RStudio projects, and more.")
              (delete-file "tests/testthat/test-platform-info.R"))))))
     (propagated-inputs
      (list r-cli))
-    (native-inputs (list r-mockery r-testthat))
+    (native-inputs (list r-callr r-testthat r-withr))
     (home-page "https://github.com/r-lib/sessioninfo#readme")
     (synopsis "R session information")
     (description
