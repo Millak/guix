@@ -200,22 +200,24 @@ with mox as possible, but small enhancements have been made.")
 (define-public python-openstackdocstheme
   (package
     (name "python-openstackdocstheme")
-    (version "1.18.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "openstackdocstheme" version))
-              (sha256
-               (base32
-                "1ki5204rjdqjvr8xr9w2qc1z6b6d2i5jas0i70xzkf9njlzjzv2r"))))
-    (build-system python-build-system)
+    (version "3.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "openstackdocstheme" version))
+       (sha256
+        (base32 "0f8vk9556cx3h2z2dwqqkylv3rijd1p15qjy4xjv9sxxcfngdx1q"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: Tests require an old version of python-hacking, which in
-     ;; turn depends on mox3 which depends on this package.
-     `(#:tests? #f))
-    (propagated-inputs
-     (list python-dulwich python-pbr))
+     (list
+      #:tests? #f)) ; no tests in PyPI archive or git checkout
     (native-inputs
-     (list python-sphinx))
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-dulwich
+           python-pbr
+           python-sphinx))
     (home-page "https://docs.openstack.org/openstackdocstheme/latest/")
     (synopsis "OpenStack Docs Theme")
     (description
