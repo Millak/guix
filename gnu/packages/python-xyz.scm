@@ -12540,46 +12540,36 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
 (define-public python-pywavelets
   (package
     (name "python-pywavelets")
-    (version "1.2.0")
+    (version "1.8.0")
     (home-page "https://github.com/PyWavelets/pywt")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "PyWavelets" version))
+              (uri (pypi-uri "pywavelets" version))
               (sha256
                (base32
-                "13csbr6ls9q9ww53z2xwwsj0hpsz88rj2iwp623h0kmv8yq6kgbc"))
-              (snippet
-               #~(begin
-                   (use-modules ((guix build utils)))
-                   (for-each delete-file
-                             (list
-                               "pywt/_extensions/_cwt.c"
-                               "pywt/_extensions/_dwt.c"
-                               "pywt/_extensions/_pywt.c"
-                               "pywt/_extensions/_pywt.h"
-                               "pywt/_extensions/_swt.c"))))))
-    (build-system python-build-system)
+                "1aimbjxvflmx4qrl17bfzy64pz5ql4s9bhnb8g0ssh28fm2h507k"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:modules ((ice-9 ftw)
-                  (srfi srfi-1)
-                  (srfi srfi-26)
-                  (guix build utils)
-                  (guix build python-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (let ((cwd (getcwd))
-                   (libdir (find (cut string-prefix? "lib." <>)
-                                 (scandir "build"))))
-               (with-directory-excursion (string-append cwd "/build/" libdir)
-                 (invoke "pytest" "-vv"))))))))
+     (list
+      #:test-flags '(list "--pyargs" "pywt")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The compiled libraries are only in the output at this point,
+          ;; but they are needed to run tests.
+          ;; FIXME: This should be handled by the pyargs pytest argument,
+          ;; but is not for some reason.
+          (add-before 'check 'pre-check
+            (lambda _ (chdir #$output))))))
     (native-inputs
-     (list python-cython
-           python-matplotlib ;for tests
+     (list meson
+           ninja
+           pkg-config
+           python-cython-3
+           python-meson-python
+           python-numpy
            python-pytest))
     (propagated-inputs
-     (list python-numpy))
+     (list python-numpy python-scipy))
     (synopsis "Wavelet transforms in Python")
     (description
      "PyWavelets is a library for wavelet transforms in Python.  Wavelets are
