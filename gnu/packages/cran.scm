@@ -555,6 +555,47 @@ reports.  The package also exports utilities for working with these objects
 and creating new Analysis Results Data objects.")
     (license license:asl2.0)))
 
+(define-public r-cardx
+  (package
+    (name "r-cardx")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cardx" version))
+       (sha256
+        (base32 "0jsqldsmpfgm9hvsrb833l119xsmkm8nqwdbsl7p1vhn2km0f5dv"))))
+    (properties `((upstream-name . "cardx")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cards
+                             r-cli
+                             r-dplyr
+                             r-glue
+                             r-lifecycle
+                             r-rlang
+                             r-tidyr))
+    (native-inputs (list r-broom
+                         r-effectsize
+                         r-emmeans
+                         r-geepack
+                         r-lme4
+                         r-parameters
+                         r-smd
+                         r-spelling
+                         r-survey
+                         r-survival
+                         r-testthat
+                         r-withr))
+    (home-page "https://insightsengineering.github.io/cardx/")
+    (synopsis "Extra analysis results data utilities")
+    (description
+     "This package lets you create extra Analysis Results Data (ARD) summary
+objects.  The package supplements the simple ARD functions from the
+@code{cards} package, exporting functions to put statistical results in the
+ARD format.  These objects are used and re-used to construct summary tables,
+visualizations, and written reports.")
+    (license license:asl2.0)))
+
 (define-public r-castor
   (package
     (name "r-castor")
