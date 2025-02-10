@@ -1899,6 +1899,7 @@ MANIFEST."
                                  #$(file-append texlive-libkpathsea "/bin")))
           (setenv "PERL5LIB" #$(file-append texlive-scripts "/share/tlpkg"))
           (setenv "GUIX_TEXMF" "/tmp/texlive/share/texmf-dist")
+          (setenv "TEXMF" "{$TEXMFSYSVAR,$TEXMFDIST}")
 
           ;; Remove invalid maps from config file.
           (let* ((web2c (string-append #$output "/share/texmf-dist/web2c/"))
