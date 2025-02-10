@@ -130,12 +130,14 @@
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages dns)
@@ -4138,7 +4140,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "30.1.2")
+    (version "31.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4148,21 +4150,27 @@ be used for realtime video capture via Linux-specific APIs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02pm6397h7l0xhdpscbh1kq8y98zx236z95wvw60kbhq38s0i0ik"))
+                "02l1qr7pbmg0va1m9ydmzamg3kh4h05if1hbg0kzfngq93vvy13p"))
               (patches
                (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:cmake cmake-next                ;needs cmake >= 3.28
       #:configure-flags
-      #~(list (string-append "-DOBS_VERSION_OVERRIDE=" #$version)
-              "-DENABLE_UNIT_TESTS=ON"
-              "-DENABLE_NEW_MPEGTS_OUTPUT=OFF"
-              "-DENABLE_AJA=OFF"
-              "-DENABLE_QSV11=OFF"
-              ;; Browser plugin requires cef, but it is not packaged yet.
-              ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
-              "-DBUILD_BROWSER=OFF")
+      #~(let ((libdir (string-append (assoc-ref %outputs "out") "/lib")))
+          (list (string-append "-DOBS_VERSION_OVERRIDE=" #$version)
+                (string-append "-DOBS_EXECUTABLE_RPATH=" libdir)
+                (string-append "-DOBS_LIBRARY_RPATH=" libdir)
+                (string-append "-DOBS_MODULE_RPATH=" libdir)
+                "-DENABLE_UNIT_TESTS=ON"
+                "-DENABLE_NEW_MPEGTS_OUTPUT=OFF"
+                "-DENABLE_AJA=OFF"
+                "-DENABLE_QSV11=OFF"
+                "-DENABLE_NVENC=OFF"
+                ;; Browser plugin requires cef, but it is not packaged yet.
+                ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
+                "-DBUILD_BROWSER=OFF"))
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'install 'wrap-executable
@@ -4218,10 +4226,12 @@ be used for realtime video capture via Linux-specific APIs.")
       qtbase
       qtsvg
       qtwayland
+      rnnoise
       speexdsp
       v4l-utils
-      vulkan-headers
+      uthash
       vlc
+      vulkan-headers
       wayland
       wayland-protocols
       websocketpp

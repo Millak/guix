@@ -5,29 +5,23 @@ Subject: [PATCH] Use environment variable for a default module location
 
 diff --git a/libobs/obs-nix.c b/libobs/obs-nix.c
 index 382fa0546..481ea0f14 100644
-*** a/libobs/obs-nix.c
---- b/libobs/obs-nix.c
-@@ -66,8 +66,19 @@
+--- a.c	2025-02-10 12:48:39.885858056 +0800
++++ b.c	2025-02-10 12:57:18.913869843 +0800
+@@ -83,6 +83,17 @@ void add_default_module_paths(void)
+ 	bfree(module_bin_path);
+ 	bfree(module_data_path);
  
- void add_default_module_paths(void)
- {
--	for (int i = 0; i < module_patterns_size; i++)
--		obs_add_module_path(module_bin[i], module_data[i]);
-+	char *bin_directory = getenv("OBS_PLUGINS_DIRECTORY");
-+	char *data_directory = getenv("OBS_PLUGINS_DATA_DIRECTORY");
-+	if (bin_directory && data_directory) {
++	module_bin_path = getenv("OBS_PLUGINS_DIRECTORY");
++	module_data_path = getenv("OBS_PLUGINS_DATA_DIRECTORY");
++	if (module_bin_path && module_data_path) {
 +		struct dstr dstr_data_directory;
-+		dstr_init_copy(&dstr_data_directory, data_directory);
++		dstr_init_copy(&dstr_data_directory, module_data_path);
 +		dstr_cat(&dstr_data_directory, "/%module%");
-+		obs_add_module_path(bin_directory, dstr_data_directory.array);
++		obs_add_module_path(module_bin_path, dstr_data_directory.array);
 +		dstr_free(&dstr_data_directory);
-+
-+	} else {
-+		for (int i = 0; i < module_patterns_size; i++)
-+			obs_add_module_path(module_bin[i], module_data[i]);
++               return;
 +	}
- }
- 
- /*
--- 
-2.29.2
++
+ 	for (int i = 0; i < module_patterns_size; i++) {
+ 		obs_add_module_path(module_bin[i], module_data[i]);
+ 	}
