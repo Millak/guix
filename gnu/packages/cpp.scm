@@ -3534,14 +3534,14 @@ Specification for URL parser can be found from the WHATWG website.")
 (define-public tclap
   (package
     (name "tclap")
-    (version "1.4.0-rc1")
+    (version "1.4.0-rc2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/" name "/" name "-" version
                            ".tar.bz2"))
        (sha256
-        (base32 "1ii0gs965xagqfdwln9hd61y68352msybbq059grwspp51w8rq9k"))))
+        (base32 "1xy5q78ff7z22gnia320qlaf0mawv2m02rl6b7dawxy4mmdwwlna"))))
     (build-system cmake-build-system)
     (arguments
      (list
