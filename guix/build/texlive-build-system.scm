@@ -214,8 +214,10 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
                                                        f))))
                        build-targets))
           ((directory-exists? "source")
-           ;; Prioritize ".ins" files over ".dtx" files.  There's no
-           ;; scientific reasoning here; it just seems to work better.
+           ;; Prioritize ".ins" files over ".dtx" files.  The former only
+           ;; generate runfiles whereas the latter usually also rebuild
+           ;; documentation, which is not regenerated during the build process
+           ;; as it would introduce some bootstrapping issues.
            (match (find-files "source" "\\.ins$")
              (() (find-files "source" "\\.dtx$"))
              (files files)))
