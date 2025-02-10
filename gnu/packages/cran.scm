@@ -6337,6 +6337,50 @@ aliased.  It also contains functions for reversibly converting between HGNC
 symbols and valid R names.")
     (license license:gpl2+)))
 
+(define-public r-hh
+  (package
+    (name "r-hh")
+    (version "3.1-53")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "HH" version))
+       (sha256
+        (base32 "14lqyxnpx6dis5s40yrzrdqq5qvqspibzssr2bh3jkkfykjasxmj"))))
+    (properties `((upstream-name . "HH")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-abind
+                             r-colorspace
+                             r-gridextra
+                             r-hmisc
+                             r-lattice
+                             r-latticeextra
+                             r-leaps
+                             r-multcomp
+                             r-rcolorbrewer
+                             r-reshape2
+                             r-rmpfr
+                             r-shiny
+                             r-vcd))
+    (home-page "https://cran.r-project.org/package=HH")
+    (synopsis "Statistical analysis and data display: Heiberger and Holland")
+    (description
+     "This package provides support software for Statistical Analysis and Data
+Display (Second Edition, Springer, ISBN 978-1-4939-2121-8, 2015) and (First
+Edition, Springer, ISBN 0-387-40270-5, 2004) by Richard M. Heiberger and Burt
+Holland.  This contemporary presentation of statistical methods features
+extensive use of graphical displays for exploring data and for displaying the
+analysis.  The second edition includes redesigned graphics and additional
+chapters.  The authors emphasize how to construct and interpret graphs,
+discuss principles of graphical design, and show how accompanying traditional
+tabular results are used to confirm the visual impressions derived directly
+from the graphs.  Many of the graphical formats are novel and appear here for
+the first time in print.  All chapters have exercises.  All functions
+introduced in the book are in the package.  R code for all examples, both
+graphs and tables, in the book is included in the scripts directory of the
+package.")
+    (license license:gpl2+)))
+
 (define-public r-hmm
   (package
     (name "r-hmm")
