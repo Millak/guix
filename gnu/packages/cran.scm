@@ -652,6 +652,27 @@ match datasets quickly.  It also contains functions for various cosmological
 calculations.")
     (license license:gpl3)))
 
+(define-public r-censreg
+  (package
+    (name "r-censreg")
+    (version "0.5-38")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "censReg" version))
+       (sha256
+        (base32 "1rrgvq883970zp311lmkvxxky29w48p54xa4hq7iaa33yq7dbmmb"))))
+    (properties `((upstream-name . "censReg")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-glmmml r-maxlik r-misctools r-plm r-sandwich))
+    (native-inputs (list r-aer))
+    (home-page "http://www.sampleSelection.org")
+    (synopsis "Censored regression (Tobit) models")
+    (description
+     "This is a package for maximum likelihood estimation of censored
+regression (Tobit) models with cross-sectional and panel data.")
+    (license license:gpl2+)))
+
 (define-public r-cetcolor
   (package
     (name "r-cetcolor")
