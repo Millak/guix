@@ -1,0 +1,9 @@
+diff --git a/configure.ac b/configure.ac
+index 3867eb9..6572e1f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -8,4 +8,3 @@ AC_PROG_CXX
+ LT_INIT
+ AC_CONFIG_FILES([Makefile lib/Makefile libbraiding.pc])
+ AC_OUTPUT
+-s

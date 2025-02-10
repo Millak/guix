@@ -1,6 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
-# Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022, 2023, 2024 Andreas Enge <andreas@enge.fr>
+# Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022, 2023, 2024, 2025 Andreas Enge <andreas@enge.fr>
 # Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Mark H Weaver <mhw@netris.org>
 # Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
@@ -1710,6 +1710,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libbase-fix-includes.patch		\
   %D%/packages/patches/libbase-use-own-logging.patch		\
   %D%/packages/patches/libbonobo-activation-test-race.patch	\
+  %D%/packages/patches/libbraiding-no-s.patch                   \
   %D%/packages/patches/libcaca-CVE-2021-3410-pt1.patch		\
   %D%/packages/patches/libcaca-CVE-2021-3410-pt2.patch		\
   %D%/packages/patches/libcanberra-sound-theme-freedesktop.patch \
