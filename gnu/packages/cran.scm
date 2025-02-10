@@ -886,17 +886,25 @@ labels on the node can also be achieved.")
 (define-public r-collapse
   (package
     (name "r-collapse")
-    (version "2.0.17")
+    (version "2.0.18")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "collapse" version))
        (sha256
-        (base32 "1pgvq5h0yi04sb7a44qzn3j6lnzfds7kz9i6hh8mmqfcyljbv240"))))
+        (base32 "0mwp5k7pw0dds0f5jb98qmbcg2nlblz6249lsxb26bj25v6404mr"))))
     (properties `((upstream-name . "collapse")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-data-table
+                         r-dplyr
+                         r-fixest
+                         r-knitr
+                         r-magrittr
+                         r-matrixstats
+                         r-testthat
+                         r-withr
+                         r-zoo))
     (home-page "https://sebkrantz.github.io/collapse/")
     (synopsis "Advanced and fast data transformation")
     (description
