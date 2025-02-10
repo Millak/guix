@@ -3547,6 +3547,39 @@ Currently handlers are provided for CDK, MOE and BCI fingerprint data.")
     ;; Any version of the GPL
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-fixest
+  (package
+    (name "r-fixest")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fixest" version))
+       (sha256
+        (base32 "1pqkwzcv8mjh00k0cl0na7izwhwsp6qpimbxmq5005vbhnwimrvw"))))
+    (properties `((upstream-name . "fixest")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dreamerr
+                             r-nlme
+                             r-numderiv
+                             r-rcpp
+                             r-sandwich
+                             r-stringmagic))
+    (native-inputs (list r-data-table
+                         r-knitr
+                         r-mass))
+    (home-page "https://lrberge.github.io/fixest/")
+    (synopsis "Fast fixed-effects estimations")
+    (description
+     "This is a package for fast and user-friendly estimation of econometric
+models with multiple fixed-effects.  It includes ordinary least squares (OLS),
+generalized linear models (GLM) and the negative binomial.  The core of the
+package is based on optimized parallel C++ code, scaling especially well for
+large data sets.  The method to obtain the fixed-effects coefficients is based
+on Berge (2018).  It further provides tools to export and view the results of
+several estimations with intuitive design to cluster the standard-errors.")
+    (license license:gpl3)))
+
 (define-public r-fpeek
   (package
     (name "r-fpeek")
