@@ -18537,6 +18537,43 @@ them.  It includes various helper functions.")
 procedures to speed up calculations in R.")
     (license license:gpl2)))
 
+(define-public r-blavaan
+  (package
+    (name "r-blavaan")
+    (version "0.5-6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "blavaan" version))
+       (sha256
+        (base32 "0lbvsga6ba4n05xnzahmj2dw3jjpjhkg93p9kadb656wxffkq7qy"))))
+    (properties `((upstream-name . "blavaan")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bayesplot
+                             r-bh
+                             r-coda
+                             r-future-apply
+                             r-lavaan
+                             r-loo
+                             r-matrix
+                             r-mnormt
+                             r-nonnest2
+                             r-rcpp
+                             r-rcppeigen
+                             r-rcppparallel
+                             r-rstan
+                             r-rstantools
+                             r-stanheaders
+                             r-tmvnsim))
+    (native-inputs (list r-tinytest))
+    (home-page "https://ecmerkle.github.io/blavaan/")
+    (synopsis "Bayesian latent variable analysis")
+    (description
+     "This package lets you fit a variety of Bayesian latent variable models,
+including confirmatory factor analysis, structural equation models, and latent
+growth curve models.")
+    (license license:gpl3+)))
+
 (define-public r-blockfest
   (package
     (name "r-blockfest")
