@@ -1221,20 +1221,36 @@ copy-pasting vectors and tables to text painless.")
 (define-public r-datawizard
   (package
     (name "r-datawizard")
-    (version "0.13.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "datawizard" version))
        (sha256
         (base32
-         "12pybh84r8rjnbbyrsribsp1akhpyq20klqywbs2srxkqf2q2rxz"))))
-    (properties `((upstream-name . "datawizard")))
+         "0477ldja6n4ar3hxrlxs5qwfggdbdfcsz7i1dgv3vjsxlvdjwgyd"))))
+    (properties
+     `((upstream-name . "datawizard")
+       (updater-ignored-native-inputs
+        ;; Avoid dependency cycles
+        . ("r-bayestestr" "r-effectsize" "r-parameters"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-insight))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-brms
+           r-dplyr
+           r-ggplot2
+           r-haven
+           r-httr
+           r-knitr
+           r-mediation
+           r-poorman
+           r-psych
+           r-testthat
+           r-tibble
+           r-tidyr
+           r-withr))
     (home-page "https://easystats.github.io/datawizard/")
     (synopsis "Easy data wrangling")
     (description
