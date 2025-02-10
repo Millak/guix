@@ -5729,23 +5729,23 @@ compatible with SQLite using a graphical user interface.")
 (define-public python-dogpile-cache
   (package
     (name "python-dogpile-cache")
-    (version "1.1.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "dogpile.cache" version))
-              (sha256
-               (base32
-                "0kpx42vxzss4sz5ic6mp01a97zinzm6q76n8li2gbi4ccfxyhi6q"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
-    (native-inputs (list python-mako python-pytest))
-    (propagated-inputs (list python-decorator python-stevedore))
+    (version "1.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dogpile_cache" version))
+       (sha256
+        (base32 "1h58g3iyv6gc6x3in252d4c1v5sncvishjy82dz3zpazbxbra0jg"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-mako
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-decorator
+           python-stevedore
+           python-typing-extensions))
     (home-page "https://github.com/sqlalchemy/dogpile.cache")
     (synopsis "Caching front-end based on the Dogpile lock")
     (description "@code{dogpile.cache} is a caching API which provides a
