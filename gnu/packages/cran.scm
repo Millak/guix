@@ -14682,6 +14682,36 @@ framework to allow users to specify, build, trade, and analyse quantitative
 financial trading strategies.")
     (license license:gpl3)))
 
+(define-public r-quarto
+  (package
+    (name "r-quarto")
+    (version "1.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "quarto" version))
+       (sha256
+        (base32 "18403v03hh57fm09csg6jmxh6biih7dgq9sakn0hg6x3kn8vnnaf"))))
+    (properties `((upstream-name . "quarto")))
+    (build-system r-build-system)
+    ;; Vignettes require the quarto binary.
+    (arguments (list #:test-types '(list "tests")))
+    (propagated-inputs (list r-cli
+                             r-jsonlite
+                             r-later
+                             r-processx
+                             r-rlang
+                             r-rmarkdown
+                             r-rstudioapi
+                             r-yaml))
+    (native-inputs (list r-knitr r-testthat r-withr r-xfun))
+    (home-page "https://github.com/quarto-dev/quarto-r")
+    (synopsis "R Interface to Quarto markdown publishing system")
+    (description
+     "This package lets you convert R Markdown documents and Jupyter notebooks
+to a variety of output formats using Quarto.")
+    (license license:gpl2+)))
+
 (define-public r-tseries
   (package
     (name "r-tseries")
