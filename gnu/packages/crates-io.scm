@@ -58906,6 +58906,32 @@ pointers:
     (description "This package provides pretty-print tree-like structures.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pty-process-0.4
+  (package
+    (name "rust-pty-process")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pty-process" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h2wx8mwhr3a90al1y22pf41hkqrq967crsp9bvhpja4w92vajc7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3)
+                                   ("rust-nix" ,rust-nix-0.26)
+                                   ("rust-regex" ,rust-regex-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://git.tozt.net/pty-process")
+    (synopsis "Spawn commands attached to a pty")
+    (description "This package provides the ability to spawn commands attached
+to a pty.")
+    (license license:expat)))
+
 (define-public rust-ptyprocess-0.4
   (package
     (name "rust-ptyprocess")
