@@ -51,6 +51,7 @@
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3596,6 +3597,31 @@ buffers, and audio capture.")
      "ALURE is a utility library to help manage common tasks with OpenAL applications.
 This includes device enumeration and initialization, file loading, and
 streaming.")
+    (license license:expat)))
+
+(define-public pa-notify
+  (package
+    (name "pa-notify")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ikrivosheev/pa-notify")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04wq0bdnb3r27l5wlf8c1ijq18ffywqmdv584l6hbi3i5k0sm7nz"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #f)) ;no check target
+    (inputs (list glib
+                  libnotify
+                  pulseaudio))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/ikrivosheev/pa-notify")
+    (synopsis "PulseAudio or PipeWire volume notification")
+    (description "The pa-notify daemon sends notifications about
+the current volume level of PulseAudio or PipeWire using libnotify.")
     (license license:expat)))
 
 (define-public patchage
