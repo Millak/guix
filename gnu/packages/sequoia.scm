@@ -883,14 +883,14 @@ This Guix package is built to use the nettle cryptographic library.")
 (define-public rust-sequoia-wot-0.13
   (package
     (name "rust-sequoia-wot")
-    (version "0.13.2")
+    (version "0.13.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-wot" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17npdicfxfp9v59y6nsr3lhz510c97bicqrzyw0s6infizpshf8b"))))
+        (base32 "08948jazk7c5a4sza5amq9ah8r0mg02lcrrpqhwgi3qjx6w550v0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
@@ -900,7 +900,7 @@ This Guix package is built to use the nettle cryptographic library.")
                        ("rust-num-cpus" ,rust-num-cpus-1)
                        ("rust-sequoia-cert-store" ,rust-sequoia-cert-store-0.6)
                        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-                       ("rust-thiserror" ,rust-thiserror-1))
+                       ("rust-thiserror" ,rust-thiserror-2))
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
