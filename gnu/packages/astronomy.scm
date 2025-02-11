@@ -4743,22 +4743,10 @@ Virtual observatory (VO) using Python.")
       #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
-          ;; setup.py was removed in 84c80a280431adda00641cda5264c7de18b43b2f
-          ;; for some unknown reason, which caused the package to fail to
-          ;; build. It is being recreated based on that commit.
-          (add-after 'unpack 'create-setup.py
-            (lambda _
-              (call-with-output-file "setup.py"
-                (lambda (port)
-                  (format port "from setuptools import setup
-from extension_helpers import get_extensions
-setup(ext_modules=get_extensions())")))))
-          ;; This file is opened in both install and check phases.
-          (add-before 'install 'writable-compiler
-            (lambda _ (make-file-writable "regions/_compiler.c")))
-          (add-before 'check 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (with-directory-excursion #$output
+                (apply invoke "pytest" "-vv" test-flags)))))))
     (propagated-inputs
      (list python-astropy
            python-h5py
