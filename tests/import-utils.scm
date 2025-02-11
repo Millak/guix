@@ -53,6 +53,10 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
   "This @@ is not Texinfo syntax.  Neither is this %@@>%."
   (beautify-description "This @ is not Texinfo syntax.  Neither is this %@>%."))
 
+(test-equal "beautify-description: escape @stuff"
+  "This is not valid syntax: @code{@@importFrom} oh dear."
+  (beautify-description "This is not valid syntax: @importFrom oh dear."))
+
 (test-equal "beautify-description: wrap PascalCase words in @code"
   "The term @code{DelayedMatrix} refers to a class."
   (beautify-description "The term DelayedMatrix refers to a class."))

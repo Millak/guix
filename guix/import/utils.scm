@@ -342,12 +342,12 @@ LENGTH characters."
                    ;; Escape single @ to prevent it from being understood as
                    ;; invalid Texinfo syntax.
                    (cut regexp-substitute/global #f "@" <> 'pre "@@" 'post)
-                   ;; Wrap camelCase or PascalCase words or text followed
-                   ;; immediately by "()" in @code{...}.
+                   ;; Wrap camelCase, PascalCase words, text followed
+                   ;; immediately by "()", or text starting with "@@" in @code{...}.
                    (lambda (word)
                      (let ((pattern
                             (make-regexp
-                             "([A-Z][a-z]+[A-Z]|[a-z]+[A-Z]|.+\\(\\))")))
+                             "((@@)?[A-Z][a-z]+[A-Z]|(@@)?[a-z]+[A-Z]|(@@)?.+\\(\\))")))
                        (match (list-matches pattern word)
                          (() word)
                          ((m . rest)
