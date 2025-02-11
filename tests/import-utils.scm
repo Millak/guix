@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017, 2022, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2022, 2023, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -68,6 +68,14 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
 (test-equal "beautify-description: wrap function names in @code"
   "The main functions are: @code{haplo.em()} and @code{haplo.power()}; FYI."
   (beautify-description "The main functions are: haplo.em() and haplo.power(); FYI."))
+
+(test-equal "beautify-synopsis: escape @"
+  "This is invalid @@syntax"
+  (beautify-synopsis "This is invalid @syntax"))
+
+(test-equal "beautify-synopsis: escape @"
+  "Just an @@ in the middle"
+  (beautify-synopsis "Just an @ in the middle"))
 
 (test-equal "license->symbol"
   'license:lgpl2.0

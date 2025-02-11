@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2018, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2019, 2020, 2022, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2020, 2022, 2023, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2020 Helio Machado <0x2b3bfa0+guix@googlemail.com>
@@ -422,7 +422,11 @@ LENGTH characters."
                    (substring synopsis 0
                               (1- (string-length synopsis))))
                   (else synopsis))))
-    (string-trim-both cleaned)))
+    ;; Escape single @ to prevent it from being understood as invalid Texinfo
+    ;; syntax.
+    (regexp-substitute/global #f "@"
+                              (string-trim-both cleaned)
+                              'pre "@@" 'post)))
 
 (define* (package-names->package-inputs names #:optional (output #f))
   "Given a list of PACKAGE-NAMES or (PACKAGE-NAME VERSION) pairs, and an
