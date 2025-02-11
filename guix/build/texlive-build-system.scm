@@ -91,6 +91,15 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
         ((command-regexp _ command)
          (which command))))))
 
+(define* (enforce-source-date-epoch #:rest _)
+  "Toggle FORCE_SOURCE_DATE in order to make some Web2C binaries obey to
+SOURCE_DATE_EPOCH.
+
+This is only a part of the solution to make TeX Live reproducible as format
+generation also needs to be wrapped within a `faketime' call in the
+`create-formats' phase."
+  (setenv "FORCE_SOURCE_DATE" "1"))
+
 (define* (configure-texmf #:rest _)
   "Ensure TEXMFVAR is writable and \"ls-R\" database is not required."
   ;; Default TEXMFVAR value is relative to $HOME, which is not set during
@@ -176,7 +185,8 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
        (install-as-runfiles "build" "\\.tfm$"))
      local-sources)))
 
-(define* (create-formats #:key create-formats inputs #:allow-other-keys)
+(define* (create-formats
+          #:key create-formats native-inputs inputs #:allow-other-keys)
   (define (collect-locations inputs pred)
     (delete-duplicates
      (append-map (match-lambda
@@ -194,8 +204,21 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
     (setenv "LUAINPUTS"
             (string-join (collect-locations inputs "\\.lua$") ":"))
     (mkdir-p "web2c")
-    (for-each (cut invoke "fmtutil-sys" "--byfmt" <> "--fmtdir=web2c")
-              create-formats)
+    ;; The ".fmt" format files contain timestamps.  Reset them.
+    ;;
+    ;; XXX: At the moment 32bit systems do not support "faketime" (see
+    ;; <https://issues.guix.gnu.org/72239>), so accept "datefudge" for them.
+    (let* ((inputs (or native-inputs inputs))
+           (command
+            (cond
+             ((assoc-ref inputs "libfaketime") "faketime")
+             ((assoc-ref inputs "datefudge") "datefudge")
+             (else
+              (error "Missing 'libfaketime' or 'datefudge' native input")))))
+      (for-each (cut invoke
+                     command "1970-01-01T00:00:00+00:00"
+                     "fmtutil-sys" "--byfmt" <> "--fmtdir=web2c")
+                create-formats))
     ;; Remove cruft.
     (for-each delete-file (find-files "web2c" "\\.log$"))))
 
@@ -302,6 +325,7 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
     (delete 'bootstrap)
     (delete 'configure)
     (add-after 'unpack 'patch-shell-scripts patch-shell-scripts)
+    (add-before 'build 'enforce-source-date-epoch enforce-source-date-epoch)
     (add-before 'build 'configure-texmf configure-texmf)
     (add-before 'build 'delete-drv-files delete-drv-files)
     (add-after 'delete-drv-files 'generate-font-metrics generate-font-metrics)
