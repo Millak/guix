@@ -258,22 +258,22 @@ than just headers; it requires tight integration with the MUA.")
 (define-public rust-sequoia-gpg-agent-0.5
   (package
     (name "rust-sequoia-gpg-agent")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-gpg-agent" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1f8vzxzkwdaa1v0yh5c1pb3wry734wrf2wwsa1zvypwxgvs129fc"))))
+        (base32 "1j3pawsnxj27ak5gfw6aa7crypbbvv5whwpm3cml7ay4yv6qp8hh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("sequoia-openpgp/crypto-nettle")
        #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
                        ("rust-chrono" ,rust-chrono-0.4)
                        ("rust-futures" ,rust-futures-0.3)
-                       ("rust-lalrpop" ,rust-lalrpop-0.17)
-                       ("rust-lalrpop-util" ,rust-lalrpop-util-0.17)
+                       ("rust-lalrpop" ,rust-lalrpop-0.20)
+                       ("rust-lalrpop-util" ,rust-lalrpop-util-0.20)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-sequoia-ipc" ,rust-sequoia-ipc-0.35)
                        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
