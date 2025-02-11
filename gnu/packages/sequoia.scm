@@ -664,43 +664,6 @@ private key store.")
 HKP protocol, and searching and publishing Web Key Directories.")
     (license license:lgpl2.0+)))
 
-(define-public rust-sequoia-net-0.28
-  (package
-    (inherit rust-sequoia-net-0.29)
-    (name "rust-sequoia-net")
-    (version "0.28.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sequoia-net" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0jw1p8gwf505q6dh1281fl7kmh8mr1f4hswl5crrycwqlq5q3gva"))))
-    (arguments
-     `(#:features '("sequoia-openpgp/crypto-nettle")
-       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-base64" ,rust-base64-0.21)
-                       ("rust-futures-util" ,rust-futures-util-0.3)
-                       ("rust-hickory-client" ,rust-hickory-client-0.24)
-                       ("rust-hickory-resolver" ,rust-hickory-resolver-0.24)
-                       ("rust-http" ,rust-http-0.2)
-                       ("rust-hyper" ,rust-hyper-0.14)
-                       ("rust-hyper-tls" ,rust-hyper-tls-0.5)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-percent-encoding" ,rust-percent-encoding-2)
-                       ("rust-reqwest" ,rust-reqwest-0.11)
-                       ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-                       ("rust-tempfile" ,rust-tempfile-3)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-tokio" ,rust-tokio-1)
-                       ("rust-url" ,rust-url-2)
-                       ("rust-z-base-32" ,rust-z-base-32-0.1))
-       #:cargo-development-inputs
-       (("rust-hyper" ,rust-hyper-0.14)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-reqwest" ,rust-reqwest-0.11)
-        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))))
-
 (define-public rust-sequoia-openpgp-1
   (package
     (name "rust-sequoia-openpgp")
