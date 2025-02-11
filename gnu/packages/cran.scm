@@ -11368,6 +11368,28 @@ hypergeometric distributions.  In addition two random number generators of
 George Marsaglia are included.")
     (license license:gpl2+)))
 
+(define-public r-kit
+  (package
+    (name "r-kit")
+    (version "0.0.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "kit" version))
+       (sha256
+        (base32 "0a0q57q3c5kfjd2c3vz1918hgzsh2ik1rwkr7kdrmzn45xs1nmdy"))))
+    (properties `((upstream-name . "kit")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=kit")
+    (synopsis "Data manipulation functions implemented in C")
+    (description
+     "This package provides basic functions, implemented in C, for large data
+manipulation.  Fast vectorised @code{ifelse()}/nested @code{if()/switch()}
+functions, @code{psum()/pprod()} functions equivalent to @code{pmin()/pmax()}
+plus others which are missing from base R.  Most of these functions are
+callable at C level.")
+    (license license:gpl3)))
+
 (define-public r-kpmt
   (package
     (name "r-kpmt")
