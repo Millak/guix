@@ -9,7 +9,7 @@
 ;;; Copyright © 2016, 2017, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016, 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Peter Feigl <peter.feigl@nexoid.at>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -5942,7 +5942,8 @@ it won't take longer to install 15 machines than it would to install just 2.")
                  (install-file "greetd-ipc.7" man7)
                  (install-file "agreety.1" man1))))))))
     (inputs
-     (list linux-pam))
+     ;; Full bash, not bash-minimal.  See https://issues.guix.gnu.org/76105.
+     (list bash linux-pam))
     (native-inputs
      (list scdoc))
     (synopsis "Minimal and flexible login manager daemon")
