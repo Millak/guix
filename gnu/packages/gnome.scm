@@ -2649,7 +2649,7 @@ GNOME Desktop.")
 (define-public gnome-keyring
   (package
     (name "gnome-keyring")
-    (version "46.1")
+    (version "46.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2657,7 +2657,7 @@ GNOME Desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1xp31iashi7n81z4halmrw53v3lnj847k4514lzqnbzz6a8sxlxi"))))
+                "098ryv7xsnf5r58w8kdr6nahzhmrczjb72ycbqlg7dx8p1kcj9mz"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2667,7 +2667,7 @@ GNOME Desktop.")
                         #$output "/share/p11-kit/modules/")
          (string-append "--with-pkcs11-modules="
                         #$output "/share/p11-kit/modules/"))
-      #:parallel-tests? #f
+      #:parallel-tests? #f              ; XXX: concurrency in dbus tests
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-/bin/sh-reference
