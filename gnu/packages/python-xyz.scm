@@ -433,6 +433,31 @@ libraries such as @code{trio}, as well as any custom @code{async} event
 loop.")
     (license license:expat)))
 
+(define-public python-awesomeversion
+  (package
+    (name "python-awesomeversion")
+    (version "24.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ludeeus/awesomeversion")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kvzhhd2ah0sadlsp5xs3qbiknixq4xwhk3yb6kmhcdl2zcbi4cn"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-snapshot))
+    (home-page "https://github.com/ludeeus/awesomeversion")
+    (synopsis "Create and compare version objects")
+    (description
+     "This package provides a way to make anything a version object, and
+compare against a vast section of other version formats.")
+    (license license:expat)))
+
 (define-public python-awkward-cpp
   (package
     (name "python-awkward-cpp")
