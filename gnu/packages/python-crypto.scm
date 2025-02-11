@@ -165,32 +165,6 @@ useful for a wide range of tasks, from verifying a hash found in /etc/shadow,
 to providing full-strength password hashing for multi-user application.")
     (license license:bsd-3)))
 
-(define-public python-pyblake2
-  (package
-    (name "python-pyblake2")
-    (version "1.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyblake2" version))
-       (sha256
-        (base32
-         "0gz9hgznv5zw4qjq43xa56y0yikimx30gffvibxzm0nv5sq7xk2w"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/dchest/pyblake2")
-    (synopsis "BLAKE2 hash function for Python")
-    (description "BLAKE2 is a cryptographic hash function, which offers
-stronger security while being as fast as MD5 or SHA-1, and comes in two
-flavors: @code{BLAKE2b}, optimized for 64-bit platforms and produces digests
-of any size between 1 and 64 bytes, and @code{BLAKE2s}, optimized for 8- to
-32-bit platforms and produces digests of any size between 1 and 32 bytes.
-
-This package provides a Python interface for BLAKE2.")
-    ;; The COPYING file declares it as public domain, with the option to
-    ;; alternatively use and redistribute it under a variety of permissive
-    ;; licenses. cc0 is explicitly mentioned in setup.py and pyblake2module.c.
-    (license (list license:public-domain license:cc0))))
-
 (define-public python-paramiko
   (package
     (name "python-paramiko")
