@@ -23,6 +23,10 @@
 #include <sys/prctl.h>
 #endif
 
+#ifdef HAVE_LINUX_CLOSE_RANGE_H
+# include <linux/close_range.h>
+#endif
+
 
 extern char * * environ;
 
@@ -1087,12 +1091,19 @@ string runProgram(Path program, bool searchPath, const Strings & args)
 
 void closeMostFDs(const set<int> & exceptions)
 {
-    int maxFD = 0;
-    maxFD = sysconf(_SC_OPEN_MAX);
-    for (int fd = 0; fd < maxFD; ++fd)
-        if (fd != STDIN_FILENO && fd != STDOUT_FILENO && fd != STDERR_FILENO
-            && exceptions.find(fd) == exceptions.end())
-            close(fd); /* ignore result */
+#ifdef HAVE_CLOSE_RANGE
+    if (exceptions.empty())
+	 close_range(3, ~0U, 0);
+    else
+#endif
+    {
+	 int maxFD = 0;
+	 maxFD = sysconf(_SC_OPEN_MAX);
+	 for (int fd = 0; fd < maxFD; ++fd)
+	      if (fd != STDIN_FILENO && fd != STDOUT_FILENO && fd != STDERR_FILENO
+		  && exceptions.find(fd) == exceptions.end())
+		   close(fd); /* ignore result */
+    }
 }
 
 

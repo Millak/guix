@@ -78,7 +78,8 @@ if test "x$guix_build_daemon" = "xyes"; then
 
   dnl Chroot support.
   AC_CHECK_FUNCS([chroot unshare])
-  AC_CHECK_HEADERS([sched.h sys/param.h sys/mount.h sys/syscall.h])
+  AC_CHECK_HEADERS([sched.h sys/param.h sys/mount.h sys/syscall.h \
+    linux/close_range.h])
 
   if test "x$ac_cv_func_chroot" != "xyes"; then
     AC_MSG_ERROR(['chroot' function missing, bailing out])
@@ -95,7 +96,7 @@ if test "x$guix_build_daemon" = "xyes"; then
   dnl strsignal: for error reporting.
   dnl statx: fine-grain 'stat' call, new in glibc 2.28.
   AC_CHECK_FUNCS([lutimes lchown posix_fallocate sched_setaffinity \
-     statvfs nanosleep strsignal statx])
+     statvfs nanosleep strsignal statx close_range])
 
   dnl Check for <locale>.
   AC_LANG_PUSH(C++)
