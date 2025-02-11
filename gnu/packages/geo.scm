@@ -73,6 +73,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -82,6 +83,7 @@
   #:use-module (gnu packages cran)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -2224,6 +2226,165 @@ from multiple records.")
     (description
      "RTree is a Python package with bindings for @code{libspatialindex}.")
     (license license:expat)))
+
+(define-public python-scitools-iris
+  (package
+    (name "python-scitools-iris")
+    (version "3.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scitools_iris" version))
+       (sha256
+        (base32 "19qwmi7amr8q2dd17scch4zvdly3vqc23v5zwpq8qw45vmldxfrq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "--pyargs" "iris"
+              "-k" (string-join
+                    ;; Tests requiring additional data files distributed
+                    ;; separately from this project from
+                    ;; <https://github.com/SciTools/iris-test-data> or network
+                    ;; access.
+                    ;;
+                    ;; XXX: Review this list and try to ignore by files
+                    ;; instead in individual tests.
+                    (list "not test_both_transposed"
+                          "test_2d_coords_contour"
+                          "test_2d_plain_latlon"
+                          "test_2d_plain_latlon_on_polar_map"
+                          "test_2d_rotated_latlon"
+                          "test_2d_rotated_latlon"
+                          "test_ancillary_variables_pass_0"
+                          "test_auxiliary_coordinates_pass_0"
+                          "test_bounds"
+                          "test_bounds_pass_0"
+                          "test_broadcast_cubes"
+                          "test_broadcast_cubes_weighted"
+                          "test_broadcast_transpose_cubes_weighted"
+                          "test_cell_measures_pass_0"
+                          "test_common_mask_broadcast"
+                          "test_common_mask_simple"
+                          "test_compatible_cubes"
+                          "test_compatible_cubes_weighted"
+                          "test_coord_transposed"
+                          "test_coordinates_pass_0"
+                          "test_cube_transposed"
+                          "test_data_pass_0"
+                          "test_destructor"
+                          "test_formula_terms_pass_0"
+                          "test_global_attributes_pass_0"
+                          "test_grid_mapping_pass_0"
+                          "test_grouped_dim"
+                          "test_incompatible_cubes"
+                          "test_izip_different_shaped_coords"
+                          "test_izip_different_valued_coords"
+                          "test_izip_extra_coords_both_slice_dims"
+                          "test_izip_extra_coords_slice_dim"
+                          "test_izip_extra_coords_step_dim"
+                          "test_izip_extra_dim"
+                          "test_izip_input_collections"
+                          "test_izip_missing_slice_coords"
+                          "test_izip_nd_non_ortho"
+                          "test_izip_nd_ortho"
+                          "test_izip_no_args"
+                          "test_izip_no_common_coords_on_step_dim"
+                          "test_izip_onecube_height_lat_long"
+                          "test_izip_onecube_lat"
+                          "test_izip_onecube_lat_lon"
+                          "test_izip_onecube_no_coords"
+                          "test_izip_ordered"
+                          "test_izip_returns_iterable"
+                          "test_izip_same_cube_lat"
+                          "test_izip_same_cube_lat_lon"
+                          "test_izip_same_cube_no_coords"
+                          "test_izip_same_dims_single_coord"
+                          "test_izip_same_dims_two_coords"
+                          "test_izip_subcube_of_same"
+                          "test_izip_unequal_slice_coords"
+                          "test_izip_use_in_analysis"
+                          "test_label_dim_end"
+                          "test_label_dim_start"
+                          "test_lenient_handling"
+                          "test_load_pp_timevarying_orography"
+                          "test_mdtol"
+                          "test_netcdf_v3"
+                          "test_no_delayed_writes"
+                          "test_no_transpose"
+                          "test_non_existent_coord"
+                          "test_perfect_corr"
+                          "test_perfect_corr_all_dims"
+                          "test_python_versions"
+                          "test_realfile_loadsave_equivalence"
+                          "test_realise_data"
+                          "test_realise_data_multisource"
+                          "test_scheduler_types"
+                          "test_single_coord"
+                          "test_stream"
+                          "test_stream_multisource"
+                          "test_stream_multisource__manychunks"
+                          "test_time_of_writing"
+                          "test_ungrouped_dim"
+                          "test_variable_attribute_touch_pass_0"
+                          "test_variable_cf_group_pass_0"
+                          "test_weight_error")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; GeoVista is not packaged yet, "--ignore" option did not work to
+          ;; skip test files.
+          (add-after 'unpack 'delete-failing-test-files
+            (lambda _
+              (with-directory-excursion "lib/iris/tests"
+                (for-each delete-file-recursively
+                          (list "integration/experimental/geovista"
+                                "unit/experimental/geovista")))))
+          (add-after 'unpack 'fix-paths
+            (lambda _
+              (let ((netcdf #$(this-package-native-input "netcdf")))
+                (substitute* (list "lib/iris/tests/__init__.py"
+                                   "lib/iris/tests/stock/netcdf.py")
+                  (("env_bin_path\\(\"ncgen\"\\)")
+                   (format #f "'~a/bin/ncgen'" netcdf))
+                  (("env_bin_path\\(\"ncdump\"\\)")
+                   (format #f "'~a/bin/ncdump'" netcdf))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list netcdf ; for ncdump and ncgen
+           nss-certs-for-test
+           python-distributed
+           python-filelock
+           python-imagehash
+           python-pytest-xdist
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-cartopy
+           python-cf-units
+           python-cftime
+           python-dask
+           ;; python-geovista ; optinoal, not packaged yet
+           python-matplotlib
+           python-netcdf4
+           python-numpy
+           python-pyproj
+           python-scipy
+           python-shapely
+           python-xxhash))
+    (home-page "https://github.com/SciTools/iris")
+    (synopsis "Earth science data analysing and visualising library")
+    (description
+     "Iris is a Python library for analysing and visualising Earth science
+data.  It excels when working with multi-dimensional Earth Science data, where
+tabular representations become unwieldy and inefficient.  Iris implements a
+data model based on the CF conventions.")
+    (license license:lgpl3+)))
 
 (define-public java-jmapviewer
   (package
