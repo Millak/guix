@@ -950,7 +950,7 @@ passphrase when @code{gpg} is run and needs it.")))
 (define-public pinentry-rofi
   (package
     (name "pinentry-rofi")
-    (version "2.1.0")
+    (version "3.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -958,7 +958,7 @@ passphrase when @code{gpg} is run and needs it.")))
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1v5rl2kkvkj1pw3bn20gwa2pa7caan3hbqnr6fshv5j7h56919i7"))))
+               (base32 "0m3lv6cydx2jg7743m6lab0v1myz84xys9z2sdb1b9jiq4xmayhq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules
