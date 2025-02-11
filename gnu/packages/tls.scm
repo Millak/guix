@@ -338,6 +338,7 @@ required structures.")
                (base32
                 "0fdjmy9vfjwk2v616nan1zz6iy9i086vrh5mdcsfqxi00ckbjk2v"))))
     (build-system gnu-build-system)
+    (outputs '("out" "debug"))
     (arguments
      (list
       #:configure-flags
