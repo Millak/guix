@@ -2190,7 +2190,7 @@ wayland support."))))
 (define-public rofi-calc
   (package
     (name "rofi-calc")
-    (version "2.1.0")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -2200,7 +2200,7 @@ wayland support."))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "021z7hwvdcs3g7icyp6xhry0xlq29gg1288hg2kzyzqq4l2irxdi"))))
+         "041i50rbk7cdbrmn43hz4kx4ijdzff4pw1jv2symwfn07z9a6f30"))))
     (build-system gnu-build-system)
     (arguments
      (list
