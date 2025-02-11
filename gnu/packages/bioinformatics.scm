@@ -13027,8 +13027,8 @@ states in the the context of known, reference states.")
       (license license:gpl3))))
 
 (define-public r-presto
-  (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
-        (revision "0"))
+  (let ((commit "7636b3d0465c468c35853f82f1717d3a64b3c8f6")
+        (revision "1"))
     (package
       (name "r-presto")
       (version (git-version "1.0.0" revision commit))
@@ -13040,20 +13040,20 @@ states in the the context of known, reference states.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1c3fmag4r4p2lvbvxlxyck9dvfw1prbwcl9665mmlx4a35750hk8"))))
-      (properties `((upstream . "presto")))
+          (base32 "07giligbadv3ap0p4hzsviqpgiipkqcq7x6p0g8lmb8xxpjz3y29"))))
+      (properties `((upstream-name . "presto")))
       (build-system r-build-system)
       (propagated-inputs
        (list r-data-table
-             r-deseq2
              r-dplyr
              r-matrix
+             r-purrr
              r-rcpp
              r-rcpparmadillo
-             r-reshape2
              r-rlang
+             r-tibble
              r-tidyr))
-      (native-inputs (list r-testthat))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/immunogenomics/presto")
       (synopsis "Fast Functions for Differential Expression using Wilcox and AUC")
       (description "This package performs a fast Wilcoxon rank sum test and
