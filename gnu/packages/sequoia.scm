@@ -917,23 +917,14 @@ This Guix package is built to use the nettle cryptographic library.")
 (define-public sequoia-chameleon-gnupg
   (package
     (name "sequoia-chameleon-gnupg")
-    (version "0.11.2")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-chameleon-gnupg" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rdmyhnvll9r2g4r8xbcjfg5cjw32204cfj6my94p0bc5v6lhv2h"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 ;; According to Debian and Upstream these substitutions are okay.
-                 (copy-file "Cargo.toml.orig" "Cargo.toml")
-                 (substitute* "Cargo.toml"
-                   (("sequoia-policy-config = \"0\\.6\"")
-                    "sequoia-policy-config = \"0.7\"")
-                   (("sequoia-wot = \\{ version = \"0\\.12\"")
-                    "sequoia-wot = { version = \"0.13\""))))))
+        (base32 "0ydb6wbyznr9p734p4jh896arcc45wi0b4isfjs6znwa40j3s66c"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -949,9 +940,7 @@ This Guix package is built to use the nettle cryptographic library.")
               "--skip=gpg::quick::add_key_default_default_iso_date"
               "--skip=gpg::quick::generate_key_default_default_iso_date"
               "--skip=gpg::sign"
-              "--skip=gpg::verify"
-              ;; No such file or directory
-              "--skip=password_store_git")
+              "--skip=gpg::verify")
        #:cargo-inputs
        (list rust-anyhow-1
              rust-base64-0.21
@@ -962,11 +951,11 @@ This Guix package is built to use the nettle cryptographic library.")
              rust-clap-mangen-0.2
              rust-daemonize-0.5
              rust-dirs-5
-             rust-fd-lock-3
+             rust-fd-lock-4
              rust-filetime-0.2
              rust-futures-0.3
              rust-indexmap-2
-             rust-interprocess-1
+             rust-interprocess-2
              rust-libc-0.2
              rust-memchr-2
              rust-openssh-keys-0.6
@@ -974,14 +963,14 @@ This Guix package is built to use the nettle cryptographic library.")
              rust-rand-0.8
              rust-rand-distr-0.4
              rust-rayon-1
-             rust-reqwest-0.11
+             rust-reqwest-0.12
              rust-roff-0.2
              rust-rpassword-7
-             rust-rusqlite-0.29
+             rust-rusqlite-0.31
              rust-sequoia-cert-store-0.6
-             rust-sequoia-gpg-agent-0.4
+             rust-sequoia-gpg-agent-0.5
              rust-sequoia-ipc-0.35
-             rust-sequoia-net-0.28
+             rust-sequoia-net-0.29
              rust-sequoia-openpgp-1
              rust-sequoia-policy-config-0.7
              rust-sequoia-wot-0.13
@@ -989,7 +978,7 @@ This Guix package is built to use the nettle cryptographic library.")
              rust-serde-json-1
              rust-shellexpand-3
              rust-tempfile-3
-             rust-thiserror-1
+             rust-thiserror-2
              rust-tokio-1)
        #:cargo-development-inputs
        (list rust-anyhow-1
@@ -997,10 +986,11 @@ This Guix package is built to use the nettle cryptographic library.")
              rust-diff-0.1
              rust-editdistancek-1
              rust-histo-1
-             rust-interprocess-1
+             rust-interprocess-2
              rust-ntest-0.9
+             rust-pty-process-0.4
              rust-regex-1
-             rust-reqwest-0.11
+             rust-reqwest-0.12
              rust-serde-with-3
              rust-stfu8-0.2
              rust-tar-0.4
