@@ -12240,6 +12240,33 @@ rating scale and partial credit trees, and MPT trees, trees for 1PL, 2PL, 3PL
 and 4PL models and generalized partial credit models.")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public r-generalizedhyperbolic
+  (package
+    (name "r-generalizedhyperbolic")
+    (version "0.8-6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "GeneralizedHyperbolic" version))
+       (sha256
+        (base32 "1a9n9hb6cxp9silcpskhp67l7p1azm72y4dngj48nngcavrm8i4r"))))
+    (properties `((upstream-name . "GeneralizedHyperbolic")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-distributionutils r-mass))
+    (home-page "https://r-forge.r-project.org/projects/rmetrics/")
+    (synopsis "Generalized hyperbolic distribution")
+    (description
+     "This package provides functions for the hyperbolic and related
+distributions.  Density, distribution and quantile functions and random number
+generation are provided for the hyperbolic distribution, the generalized
+hyperbolic distribution, the generalized inverse Gaussian distribution and the
+skew-Laplace distribution.  Additional functionality is provided for the
+hyperbolic distribution, normal inverse Gaussian distribution and generalized
+inverse Gaussian distribution, including fitting of these distributions to
+data.  Linear models with hyperbolic errors may be fitted using
+@code{hyperblmFit}.")
+    (license license:gpl2+)))
+
 (define-public r-generics
   (package
     (name "r-generics")
