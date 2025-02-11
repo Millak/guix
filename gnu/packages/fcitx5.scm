@@ -91,7 +91,7 @@ client.")
 (define-public fcitx5
   (package
     (name "fcitx5")
-    (version "5.1.9")
+    (version "5.1.12")
     (source
      (origin
        (method url-fetch)
@@ -99,7 +99,7 @@ client.")
              "https://download.fcitx-im.org/fcitx5/fcitx5/fcitx5-"
              version "_dict.tar.zst"))
        (sha256
-        (base32 "1r6wyxxghl673q8wmp9519s1gwg8w18mrjg3zkg9qyln3hccyhvs"))))
+        (base32 "1zsmqicp4x2kpbrrh1r87ji3gsfxvl9ipgdni81b3mv6dv999nhr"))))
     (arguments
      (list #:configure-flags #~(list "-DUSE_SYSTEMD=OFF")))
     (build-system cmake-build-system)
