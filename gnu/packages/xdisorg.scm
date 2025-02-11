@@ -2129,19 +2129,18 @@ Extensions, Shortcuts, File browser mode and Custom Color Themes.")
            `(,glib "bin")
            pkg-config))
     (inputs
-     (list cairo
-           glib
-           libjpeg-turbo
+     (list libjpeg-turbo
            (librsvg-for-system)
            libxcb
            libxkbcommon
-           pango
            startup-notification
            xcb-util
            xcb-util-cursor
            xcb-util-keysyms
            xcb-util-wm
            xcb-util-xrm))
+    (propagated-inputs
+     (list cairo glib pango))           ;in Requires.private of rofi.pc
     (native-search-paths
      ;; This is where rofi will search for plugins by default.
      (list (search-path-specification
