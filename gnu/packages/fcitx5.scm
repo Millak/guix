@@ -403,15 +403,15 @@ the Anthy input method.")
 (define-public fcitx5-chinese-addons
   (package
     (name "fcitx5-chinese-addons")
-    (version "5.1.3")
+    (version "5.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.fcitx-im.org/fcitx5"
                            "/fcitx5-chinese-addons/fcitx5-chinese-addons-"
-                           version "_dict.tar.xz"))
+                           version "_dict.tar.zst"))
        (sha256
-        (base32 "0300z1j0285936ia9ihslydxwgmsnb43gqqyq4xm1ixfp1l12hzs"))))
+        (base32 "06ls6ww60y7l39bjk1h1xvjq9c3va5cib6hs4y0xk9p69f2s41l3"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -433,13 +433,10 @@ the Anthy input method.")
        ("curl" ,curl)
        ("gettext" ,gettext-minimal)
        ("fmt" ,fmt)
-       ("libpthread-stubs" ,libpthread-stubs)
        ("opencc" ,opencc)
-       ("qtbase" ,qtbase-5)
+       ("qtbase" ,qtbase)
        ("fcitx5-qt" ,fcitx5-qt)
-       ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtwebchannel-5" ,qtwebchannel-5)
-       ("qtwebengine-5" ,qtwebengine-5)))
+       ("qtwebengine" ,qtwebengine)))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (outputs '("out" "gui"))
