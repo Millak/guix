@@ -1556,68 +1556,54 @@ surface (i.e., gridding) with a hint of machine learning.")
 (define-public python-cartopy
   (package
     (name "python-cartopy")
-    (version "0.23.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Cartopy" version))
+       (uri (pypi-uri "cartopy" version))
        (sha256
-        (base32 "0xknmq73pvkm3k718zrsx8p4r83dbskwqna9v4qvmwh1ayrkf7r3"))))
+        (base32 "1gf8hpjlhjsw1gfd80ghcy3k5lkkshbhlvn4vvpsfsaccgai1j81"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list
-        "--pyargs" "cartopy"
-        ;; These tests require online data.
-        "-m" "not natural_earth and not network"
-        "-k"
-        (string-append
-         ;; These ones too but are not marked as such.
-         "not test_feature_artist_draw"
-         " and not test_feature_artist_draw_facecolor_list"
-         " and not test_feature_artist_draw_cmap"
-         " and not test_feature_artist_draw_styled_feature"
-         " and not test_feature_artist_draw_styler"
-         " and not test_gridliner_constrained_adjust_datalim"
-         " and not test_gridliner_remove"
-         " and not test_gridliner_title_adjust"
-         " and not test_gridliner_labels_bbox_style"
-         ;; Accuracy problems
-         " and not test_single_spole"
-         " and not test_single_npole"
-         ;; Incomplete shapefile definition
-         " and not test_gshhs"
-         " and not test_geometry"
-         " and not test_record"
-         " and not test_bounds"))
+      #~(list
+         "--pyargs" "cartopy"
+         "--numprocesses" (number->string (parallel-job-count))
+         ;; These tests require online data.
+         "-m" "not natural_earth and not network"
+         ;; Failed: Error: Image files did not match.
+         "-k" "not test_gridliner_constrained_adjust_datalim")
       #:phases
-      '(modify-phases %standard-phases
-         ;; We don't want to create an entrypoint for
-         ;; tools/cartopy_feature_download.py, because that file is not
-         ;; installed.
-         (add-after 'unpack 'remove-endpoint
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("^feature_download = .*") "")))))))
+      #~(modify-phases %standard-phases
+          ;; We don't want to create an entrypoint for
+          ;; tools/cartopy_feature_download.py, because that file is not
+          ;; installed.
+          (add-after 'unpack 'remove-endpoint
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^feature_download = .*") "")))))))
     (propagated-inputs
      (list python-matplotlib
+           python-fiona     ; optional [speedups]
            python-numpy
+           python-owslib    ; optional [ows]
            python-packaging
+           python-pillow    ; optional [ows, plotting]
+           python-pykdtree  ; optional [speedups]
            python-pyproj
            python-pyshp
-           python-scipy
+           python-scipy     ; optional [plotting]
            python-shapely))
     (inputs
      (list geos))
     (native-inputs
-     (list python-coveralls
-           python-cython
+     (list python-cython
            python-pytest
-           python-pytest-cov
            python-pytest-mpl
            python-pytest-xdist
            python-setuptools
+           python-setuptools-scm
            python-wheel))
     (home-page "https://scitools.org.uk/cartopy/docs/latest/")
     (synopsis "Cartographic library for visualisation")
