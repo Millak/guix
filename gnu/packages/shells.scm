@@ -620,6 +620,7 @@ ksh, and tcsh.")
                    (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list git-minimal
+           python-pip
            python-pyte
            python-pytest
            python-pytest-mock
