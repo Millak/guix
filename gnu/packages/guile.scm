@@ -461,7 +461,10 @@ without requiring the source code to be rewritten.")
            (search-path-specification
             (variable "GUILE_LOAD_COMPILED_PATH")
             (files '("lib/guile/3.0/site-ccache"
-                     "share/guile/site/3.0")))))))
+                     "share/guile/site/3.0")))
+           (search-path-specification
+            (variable "GUILE_EXTENSIONS_PATH")
+            (files '("lib/guile/3.0/extensions")))))))
 
 (define-public guile-3.0-latest guile-3.0)
 
