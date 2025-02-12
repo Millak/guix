@@ -447,7 +447,7 @@ machine learning algorithms based on GPs.")
                         ;; class, not config_dict_test.
                         "-k" "not testJSONConversionBestEffort")))))))
     (propagated-inputs
-     (list python-absl-py python-contextlib2 python-pyyaml python-six))
+     (list python-absl-py python-pyyaml python-six))
     (native-inputs (list python-mock python-pytest python-setuptools
                          python-wheel))
     (home-page "https://github.com/google/ml_collections")

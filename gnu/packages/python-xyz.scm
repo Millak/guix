@@ -20040,27 +20040,6 @@ connection pool.")
 @code{ArgumentParser} object.")
     (license license:asl2.0)))
 
-(define-public python-contextlib2
-  (package
-    (name "python-contextlib2")
-    (version "0.6.0.post1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "contextlib2" version))
-       (sha256
-        (base32
-         "0bhnr2ac7wy5l85ji909gyljyk85n92w8pdvslmrvc8qih4r1x01"))))
-    (build-system python-build-system)
-    (home-page "https://contextlib2.readthedocs.org/")
-    (synopsis "Tools for decorators and context managers")
-    (description "This module is primarily a backport of the Python
-3.2 contextlib to earlier Python versions.  Like contextlib, it
-provides utilities for common tasks involving decorators and context
-managers.  It also contains additional features that are not part of
-the standard library.")
-    (license license:psfl)))
-
 (define-public python-contexttimer
   (package
     (name "python-contexttimer")
