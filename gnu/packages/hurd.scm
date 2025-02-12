@@ -81,7 +81,7 @@
            (delete 'build))
          #:tests? #f))
       (native-inputs
-       (list autoconf automake texinfo-4))
+       (list autoconf automake-1.16.5 texinfo))
       (supported-systems %hurd-systems)
       (home-page "https://www.gnu.org/software/hurd/microkernel/mach/gnumach.html")
       (synopsis "GNU Mach kernel headers")
