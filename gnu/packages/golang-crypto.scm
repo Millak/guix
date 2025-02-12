@@ -1184,31 +1184,31 @@ functions and functionality to test them.  It aggregates various Golang
 libraries.")
     (license license:expat)))
 
-;; TODO: Inherit from the go-github-com-gxed-hashland
 (define-public go-github-com-gxed-hashland-keccakpg
-  (let ((commit "d9f6b97f8db22dd1e090fd0bbbe98f09cc7dd0a8")
-        (revision "0"))
-    (package
-      (name "go-github-com-gxed-hashland-keccakpg")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/gxed/hashland")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1q23y4lacsz46k9gmgfw4iwwydw36j2601rbidmmswl94grpc386"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:unpack-path "github.com/gxed/hashland"
-         #:import-path "github.com/gxed/hashland/keccakpg"))
-      (home-page "https://github.com/gxed/hashland")
-      (synopsis "Implements the Keccak (SHA-3) hash algorithm in Go")
-      (description "Package @command{keccak} implements the Keccak (SHA-3)
-hash algorithm.  See http://keccak.noekeon.org.")
-      (license license:expat))))
+  (package
+    (name "go-github-com-gxed-hashland-keccakpg")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gxed/hashland")
+             (commit (go-version->git-ref version
+                                          #:subdir "keccakpg"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b921dh9i6zw7y8jfzwvrmdbhnwid12a5z1zjawslfq2vvsajwmm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gxed/hashland/keccakpg"
+      #:unpack-path "github.com/gxed/hashland"))
+    (home-page "https://github.com/gxed/hashland")
+    (synopsis "Implements the Keccak (SHA-3) hash algorithm in Go")
+    (description
+     "Package @command{keccak} implements the Keccak (SHA-3) hash algorithm.
+See http://keccak.noekeon.org.")
+    (license license:expat)))
 
 (define-public go-github-com-gxed-hashland-murmur3
   (package
