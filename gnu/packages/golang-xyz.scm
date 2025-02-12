@@ -12598,6 +12598,34 @@ programs that use traditional command lines.")
       #:import-path "github.com/pborman/getopt/v2"
       #:unpack-path "github.com/pborman/getopt"))))
 
+(define-public go-github-com-pborman-uuid
+  (package
+    (name "go-github-com-pborman-uuid")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pborman/uuid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n1ng6396zgm1iggzp43h554wwp32iwr62qqfy0zl4jnk2dg41lv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pborman/uuid"))
+    (propagated-inputs
+     (list go-github-com-google-uuid))
+    (home-page "https://github.com/pborman/uuid")
+    (synopsis "Generates and inspects UUIDs")
+    (description
+     "The uuid package generates and inspects UUIDs based on
+@url{http://tools.ietf.org/html/rfc4122, RFC 4122} and DCE 1.1: Authentication
+and Security Services.  This package now leverages the github.com/google/uuid
+package (which is based off an earlier version of this package).")
+    (license license:bsd-3)))
+
 (define-public go-github-com-pelletier-go-toml
   (package
     (name "go-github-com-pelletier-go-toml")
