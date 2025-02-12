@@ -757,10 +757,6 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "cox.katherine.e+guix@gmail.com")
   emacs go lisp)
 
-(define-member (person "Marius Bakke"
-                       "marius@gnu.org")
-  python)
-
 (define-member (person "Munyoki Kilyungi"
                        "me@bonfacemunyoki.com")
   python lisp)
