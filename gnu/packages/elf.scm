@@ -143,17 +143,6 @@ libraries.")
                             (("run-strip-strmerge.sh") "")
                             (("run-elflint-self.sh") "")))))
                    #~())
-            #$@(if (target-loongarch64?)
-                   `((add-after 'unpack 'update-config-scripts
-                       (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                         ;; Replace outdated config.guess and config.sub.
-                         (for-each (lambda (file)
-                                     (install-file
-                                      (search-input-file
-                                       (or native-inputs inputs)
-                                       (string-append "/bin/" file)) "./config"))
-                                   '("config.guess" "config.sub")))))
-                   '())
             #$@(if (system-hurd?)
                    #~((add-after 'unpack 'skip-tests
                         (lambda _
@@ -176,10 +165,8 @@ libraries.")
                             (("^#!.*" all)
                              (string-append all "exit 77;\n"))))))
                    #~()))))
-    (native-inputs (append (if (target-loongarch64?)
-                               (list config)
-                               (list))
-                           (list m4)))
+
+    (native-inputs (list m4))
     (inputs (list xz zlib))
     (home-page "https://sourceware.org/elfutils/")
     (synopsis "Collection of utilities and libraries to handle ELF files and
