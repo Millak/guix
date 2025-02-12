@@ -60,6 +60,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Tanguy Le Carrour <tanguy@bioneland.org>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5101,33 +5102,37 @@ remote SMTP server.")
                        ;; Patch all occurrences to "sh" with absolute path to
                        ;; the shell available in Guix.
                        (("\"sh\"")
-                        (string-append
-                         "\"" (search-input-file inputs "bin/sh")
-                         "\"")))
-                     (let ((zoxide (search-input-file inputs "bin/zoxide")))
+                        (format #f "~s" (which "sh"))))
+                     (let ((zoxide #$(this-package-input "zoxide")))
                        (when zoxide
                          (substitute* "commands/z.go"
                            (("\"zoxide\"")
-                            (string-append "\"" zoxide "\"")))))
+                            (format #f "~s"
+                                    (string-append zoxide "/bin/zoxide"))))))
                      (substitute* (list "lib/crypto/gpg/gpg.go"
                                         "lib/crypto/gpg/gpg_test.go"
                                         "lib/crypto/gpg/gpgbin/keys.go"
                                         "lib/crypto/gpg/gpgbin/gpgbin.go")
                        (("\"gpg\"")
-                        (string-append
-                         "\"" (search-input-file inputs "bin/gpg")
-                         "\""))
+                        (format #f "~s"
+                                (string-append #$(this-package-input "gnupg")
+                                               "/bin/gpg")))
                        (("strings\\.Contains\\(stderr\\.String\\(\\), .*\\)")
                         "strings.Contains(stderr.String(), \"gpg\")")))))
                (add-after 'build 'doc
                  (lambda* (#:key import-path build-flags #:allow-other-keys)
                    (invoke "make" "doc" "-C"
                            (string-append "src/" import-path))))
+               ;; XXX: This phase does the build and overwrites
+               ;; go-build-system's build one.
                (replace 'install
                  (lambda* (#:key import-path build-flags #:allow-other-keys)
-                   (invoke "make" "CC=gcc" "GOFLAGS=-tags=notmuch" "install" "-C"
-                           (string-append "src/" import-path)
-                           (string-append "PREFIX=" #$output)))))))
+                   (invoke "make"
+                           (string-append "CC=" #$(cc-for-target))
+                           (string-append "GOFLAGS=-tags=notmuch " (getenv "GOFLAGS"))
+                           (string-append "PREFIX=" #$output)
+                           "install" "-C"
+                           (string-append "src/" import-path)))))))
     (inputs
      (append
       (list gnupg
