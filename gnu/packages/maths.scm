@@ -3527,7 +3527,8 @@ script files.")
        ;; freeimage version 3.17 library leads to 'undefined
        ;; reference' errors.
        #:configure-flags
-        (list "-DUSE_FREEIMAGE:BOOL=OFF"
+        (list "-DCMAKE_CXX_FLAGS=-fpermissive" ;from unsigned char* to char*
+              "-DUSE_FREEIMAGE:BOOL=OFF"
               "-DUSE_TBB:BOOL=ON"
               "-DUSE_VTK:BOOL=OFF"
               "-DBUILD_DOC_Overview:BOOL=OFF"
