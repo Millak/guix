@@ -507,6 +507,30 @@ workloads.  This kind of profiling is also known as wall-clock profiling.")
 tests.")
     (license license:expat)))
 
+(define-public go-github-com-gdey-tbltest
+  (package
+    (name "go-github-com-gdey-tbltest")
+    (version "0.0.0-20180914212833-1865222d591f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gdey/tbltest")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14mfhhqd0qm0m9nhk02vrj31bjnspa7b0ijbmy0j3bhbkh66xbcs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gdey/tbltest"))
+    (home-page "https://github.com/gdey/tbltest")
+    (synopsis "Table driven tests for Golang")
+    (description
+     "Package tbltest implements helper functions to help write table driven
+tests.")
+    (license license:expat)))
+
 (define-public go-github-com-go-playground-validator-v10
   (package
     (name "go-github-com-go-playground-validator-v10")
