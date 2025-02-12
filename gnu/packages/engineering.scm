@@ -2771,6 +2771,39 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
     (home-page "https://3mf.io/")
     (license license:bsd-2)))
 
+(define-public python-keithley2600
+  (package
+    (name "python-keithley2600")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OE-FET/keithley2600")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19bs7lswb04a5xr4zdsknynmpllpj18nb19jcbjnzf1fs1dqg0hw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests provided
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy
+           python-pyvisa
+           python-pyvisa-py))
+    (home-page "https://keithley2600.readthedocs.io/en/stable/")
+    (synopsis "Full Python driver for Keithley 2600 series of SMU")
+    (description
+     "This package provides a full Python driver for the Keithley 2600B series
+of source measurement units.  This driver provides access to base commands and
+higher level functions such as IV measurements, transfer and output curves,
+etc.  Base commands replicate the functionality and syntax from the Keithley's
+internal TSP Lua functions.")
+    (license license:expat)))
+
 (define-public python-pyvisa
   (package
     (name "python-pyvisa")
