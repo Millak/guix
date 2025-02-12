@@ -423,33 +423,25 @@ machine learning algorithms based on GPs.")
 (define-public python-ml-collections
   (package
     (name "python-ml-collections")
-    (version "0.1.1")
+    (version "1.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ml_collections" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/ml_collections")
+             (commit (string-append "v" version))))
        (sha256
-        (base32 "1k38psfzqsqnl99fl578bd07zdmvfkja61r3sgjs2fj3xircrvrz"))))
+        (base32 "1f3rwbgnnvgh2jgnkwxfjdw18yly41hlx9fy56h0x36zyy8p0j21"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; TODO: we can't seem to run the config_flags tests, because
-                ;; the installed Python files conflict with those from the
-                ;; source directory, resulting in constants to be defined more
-                ;; than once.
-                (invoke "pytest" "ml_collections/config_dict/tests"
-                        ;; This one fails because we're testing the __main__
-                        ;; class, not config_dict_test.
-                        "-k" "not testJSONConversionBestEffort")))))))
+      #:test-flags '(list "--pyargs" "ml_collections/config_dict/tests")))
     (propagated-inputs
-     (list python-absl-py python-pyyaml python-six))
-    (native-inputs (list python-mock python-pytest python-setuptools
-                         python-wheel))
+     (list python-absl-py python-pyyaml))
+    (native-inputs (list python-pylint
+                         python-pytest
+                         python-pytest-xdist
+                         python-flit-core))
     (home-page "https://github.com/google/ml_collections")
     (synopsis "Python collections designed for Machine Learning usecases")
     (description
