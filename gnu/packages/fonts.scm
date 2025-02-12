@@ -2093,24 +2093,31 @@ programming.  Iosevka is completely generated from its source code.")
        (sha256
         (base32 "1h5jfrpply7ypc4h6ivxs30qkrbni51zkj78xz6nz4zbnp923yi0"))))))
 
-(define-public font-iosevka-comfy
+(define-public font-aporetic
   (package
-    (inherit font-iosevka)
-    (name "font-iosevka-comfy")
-    (version "1.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.sr.ht/~protesilaos/iosevka-comfy")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "1gccv28avxlkicl6rcsn6i23pdn0nrk91zhcyzwwc3nyzm2w8w40"))))
-    (home-page "https://git.sr.ht/~protesilaos/iosevka-comfy")
+    (name "font-aporetic")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/protesilaos/aporetic")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cihagy7vhw5pqznbihwv3pgb516i94iqfnvfm73njrx1a4dalz6"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/protesilaos/aporetic")
+    (synopsis "Customised build of the Iosevka typeface")
     (description
-     "Iosevka Comfy is a TTF font derived from Iosevka.  It is a slightly tweaked
-     version of the original, designed for enhanced readability.")
-    (license license:silofl1.1)))
+     "Aporetic fonts are a custom build of Iosevka with
+  different style and metrics than the default.  Aporetic optimises for
+  inter-glyph and inter-style consistency within the overarching
+  constraint of usability at small point sizes.")
+    (license (list license:silofl1.1))))
+
+(define-public font-iosevka-comfy
+  (deprecated-package "font-iosevka-comfy"  font-aporetic))
 
 (define-public font-junicode
   (package
