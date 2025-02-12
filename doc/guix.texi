@@ -21652,9 +21652,10 @@ For example, to add two files named @file{001-basic.conf} and
 (service network-manager-service-type
          (network-manager-configuration
           (extra-configuration-files
-           `(("existing-file" ,(local-file "001-basic.conf"))
-             ("constructed-file" ,(plain-file "002-unmanaged.conf"
-                                              "[keyfile]
+           `(("001-basic.conf" ,(local-file "basic.conf"))
+             ("002-unmanaged.conf" ,(plain-file "constructed-unmanaged.conf"
+                                                "\
+[keyfile]
 unmanaged-devices=interface-name:wlo1_ap\n"))))))
 @end lisp
 
