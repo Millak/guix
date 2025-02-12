@@ -5286,6 +5286,32 @@ via REST APIs.")
 language.")
     (license license:expat)))
 
+(define-public go-github-com-mattn-godown
+  (package
+    (name "go-github-com-mattn-godown")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/godown")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f979h6z13nwwx42ahhqv3d4q2ywpg4l7v03qhnr9zaw319jjaln"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/godown"))
+    (propagated-inputs
+     (list go-github-com-mattn-go-runewidth
+           go-golang-org-x-net))
+    (home-page "https://github.com/mattn/godown")
+    (synopsis "Convert HTML into Markdown")
+    (description
+     "This package provides a functionality to convert HTML into Markdown.")
+    (license license:expat)))
+
 (define-public go-github-com-mattn-goveralls
   (package
     (name "go-github-com-mattn-goveralls")
