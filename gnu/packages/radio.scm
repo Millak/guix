@@ -1498,7 +1498,7 @@ E.g.: @code{(udev-rules-service 'bladerf bladerf)}.")
 (define-public hamlib
   (package
     (name "hamlib")
-    (version "4.5.5")
+    (version "4.6.2")
     (source
      (origin
        (method git-fetch)
@@ -1507,7 +1507,7 @@ E.g.: @code{(udev-rules-service 'bladerf bladerf)}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z774z0g7ryamzvdm5f9b3py0lacrvmp2581jn3d581lw35hvfjw"))))
+        (base32 "1vq5ppn5hipklpp49wvq252br4s35mjc2z9dr23yhrx4qxby6gnr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
