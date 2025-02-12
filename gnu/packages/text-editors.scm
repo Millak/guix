@@ -1815,14 +1815,14 @@ highlighting for dozens of languages.  Jed is very small and fast.")
 (define-public xnedit
   (package
     (name "xnedit")
-    (version "1.6.1")
+    (version "1.6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/xnedit/" name "-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "167v7fqnk5zg7jg6iid92wygk6vya7klnhnmgbsghaacg8dnldkf"))))
+                "0y4cwnbsrf9myxwj84jklrzqlvp512nygh0gqnvmsif4g3iqah0y"))))
 
     (build-system gnu-build-system)
     (arguments
