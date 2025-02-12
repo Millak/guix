@@ -3297,7 +3297,7 @@ memory contents between them.")
 (define-public qdmr
   (package
     (name "qdmr")
-    (version "0.11.2")
+    (version "0.12.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3306,7 +3306,7 @@ memory contents between them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r40shli0c66f559m25hd1xagyblh8qhzz7wyqyy7r167fvzagfd"))))
+                "08g00xwdqchc21nmacw45s65k8hnk8450yavjb1dx8kmd31kds79"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ;no tests
