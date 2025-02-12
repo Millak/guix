@@ -82,9 +82,6 @@
    (name "oom"))
   ("CEF4 CB91 4856 BA38 0A20  A7E2 3008 88CB 39C6 3817"
    (name "pelzflorian"))
-  (;; primary: "41CA 12EA DE0C F33F 6885  A58F 5719 6E37 E00B 77FD"
-   "72D5 3D81 8CB6 F4A1 7258  374C A8FC 9E44 7F4F 7D54"
-   (name "planglois"))
   (;; primary: "7E9F 5BF6 1680 4367 127B  7A87 F9E6 9FB8 5A75 54F1"
    "A420 7B56 C255 109F 2CB3  157E 4990 97AE 5EA8 15D9"
    (name "podiki"))
