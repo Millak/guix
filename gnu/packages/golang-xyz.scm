@@ -5630,6 +5630,30 @@ also favors portability, and includes support for all POSIX systems.")
       (modify-inputs (package-inputs go-github-com-gdamore-tcell)
         (prepend go-golang-org-x-term go-golang-org-x-sys))))))
 
+(define-public go-github-com-gdey-errors
+  (package
+    (name "go-github-com-gdey-errors")
+    (version "0.0.0-20190426172550-8ebd5bc891fb")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gdey/errors")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mg33xckg5i529jnv6jxvmp36innz0xl5gbkmnww9paak5yvfjb3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gdey/errors"))
+    (home-page "https://github.com/gdey/errors")
+    (synopsis "Augmentation of std @code{errors} library")
+    (description
+     "This package provides a small error library that augments the errors
+library in go standard library.")
+    (license license:expat)))
+
 (define-public go-github-com-gedex-inflector
   (package
     (name "go-github-com-gedex-inflector")
