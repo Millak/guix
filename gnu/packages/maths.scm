@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2020, 2023, 2024 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2020, 2023, 2024, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2016, 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
@@ -5510,6 +5510,41 @@ point numbers.")
     ;; At least one file (src/maxima.asd) says "version 2."
     ;; GPLv2 only is therefore the smallest subset.
     (license license:gpl2)))
+
+(define-public maxima-ecl
+  (package/inherit maxima
+    (name "maxima-ecl")
+    (properties '((hidden? . #t)))
+    (inputs
+      (modify-inputs (package-inputs maxima)
+        (delete "sbcl")
+        (prepend ecl)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments maxima)
+       ((#:configure-flags flags)
+         #~(list "--enable-ecl"))
+        ((#:phases phases)
+          #~(modify-phases #$phases
+            (add-after 'install 'install-lib
+             (lambda _
+               (let ((lib (string-append
+                            #$output "/lib/maxima/"
+                            #$(package-version this-package)
+                            "/binary-ecl")))
+                    (install-file "src/binary-ecl/maxima.fas" lib))))
+            (replace 'check
+              (lambda _
+                (invoke "sh" "-c"
+                        (string-append
+                          "./maxima-local "
+                          "--lisp=ecl "
+                          "--batch-string=\"run_testsuite();\" "
+                          "| grep -q \"No unexpected errors found\""))))))))
+    (description
+      (string-append
+        (package-description maxima)
+        "  This package variant uses ECL as the underlying Lisp
+implementation."))))
 
 (define-public wxmaxima
   (package
