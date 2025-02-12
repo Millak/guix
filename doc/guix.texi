@@ -21636,6 +21636,28 @@ This is the list of available plugins for virtual private networks
 (VPNs).  An example of this is the @code{network-manager-openvpn}
 package, which allows NetworkManager to manage VPNs @i{via} OpenVPN.
 
+@item @code{extra-configuration-files} (default: @code{'()})
+A list of two-element lists; the first element of each list is a file
+name (as a string), and the second is a file-like object.  Used to
+specify configuration files which will be added to the
+@file{/etc/NetworkManager/conf.d}.  NetworkManager will read additional
+configuration from this directory.  For details on configuration file
+precedence and the configuration file format, see @samp{man 5
+NetworkManager.conf}.
+
+For example, to add two files named @file{001-basic.conf} and
+@file{002-unmanaged.conf}:
+
+@lisp
+(service network-manager-service-type
+         (network-manager-configuration
+          (extra-configuration-files
+           `(("existing-file" ,(local-file "001-basic.conf"))
+             ("constructed-file" ,(plain-file "002-unmanaged.conf"
+                                              "[keyfile]
+unmanaged-devices=interface-name:wlo1_ap\n"))))))
+@end lisp
+
 @end table
 @end deftp
 

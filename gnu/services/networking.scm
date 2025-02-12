@@ -23,6 +23,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 muradm <mail@muradm.net>
 ;;; Copyright © 2024 Nigko Yerden <nigko.yerden@gmail.com>
+;;; Copyright © 2025 45mg <45mg.writes@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1253,18 +1254,27 @@ project's documentation} for more information."
                (default '()))
   (iwd? network-manager-configuration-iwd?  ; TODO: deprecated field, remove.
         (default #f)
-        (sanitize warn-iwd?-field-deprecation)))
+        (sanitize warn-iwd?-field-deprecation))
+  (extra-configuration-files
+   network-manager-configuration-extra-configuration-files
+   (default '())))                 ;'((file-name-string file-like-object) ...)
 
 (define (network-manager-activation config)
   ;; Activation gexp for NetworkManager
   (match-record config <network-manager-configuration>
-    (network-manager dns vpn-plugins)
+                (network-manager dns vpn-plugins extra-configuration-files)
     #~(begin
         (use-modules (guix build utils))
         (mkdir-p "/etc/NetworkManager/system-connections")
         #$@(if (equal? dns "dnsmasq")
                ;; create directory to store dnsmasq lease file
                '((mkdir-p "/var/lib/misc"))
+               '())
+        #$@(if (pair? extra-configuration-files)  ;if non-empty
+               `((symlink
+                  ,(file-union "network-manager-configuration-directory"
+                               extra-configuration-files)
+                  "/etc/NetworkManager/conf.d"))
                '()))))
 
 (define (vpn-plugin-directory plugins)
