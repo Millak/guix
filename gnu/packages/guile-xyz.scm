@@ -17,7 +17,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2018–2024 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2018–2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 swedebugia <swedebugia@riseup.net>
@@ -1729,20 +1729,18 @@ tracker's SOAP service, such as @url{https://bugs.gnu.org}.")
 (define-public guile-email
   (package
     (name "guile-email")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.systemreboot.net/guile-email")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://guile-email.systemreboot.net/releases/"
+                           "guile-email-" version ".tar.lz"))
        (sha256
         (base32
-         "09r50zbkyxvg6f7qn37yibasw69ajxls3sgdnhy9j70mbvcmx9c4"))))
+         "1lxiigsch4skh46s71phg0xzlwlcs3cyvq5q5i7gqkksg6737xjw"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list texinfo))
+     (list lzip texinfo))
     (inputs
      (list guile-3.0))
     (arguments
