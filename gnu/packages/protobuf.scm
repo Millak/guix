@@ -175,7 +175,7 @@ internal RPC protocols and file formats.")
   (package
     (inherit protobuf)
     (name "protobuf")
-    (version "3.20.2")
+    (version "3.20.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -186,7 +186,7 @@ internal RPC protocols and file formats.")
               (snippet '(delete-file-recursively "third_party"))
               (sha256
                (base32
-                "1hsscx9jm8qv3afgwc764rx9sx1ylkrr54xw1wc0mfjbl8mpw5m0"))))
+                "0ggyfrfal7wms4n8pba224jwpjxn19rigd5y90m3x2bg97ych775"))))
     (build-system gnu-build-system)
     (arguments (substitute-keyword-arguments (package-arguments protobuf)
                  ;; XXX: insists on using bundled googletest
