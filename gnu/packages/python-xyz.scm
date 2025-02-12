@@ -35780,19 +35780,20 @@ Screenflick.")
 (define-public python-jinja2-cli
   (package
     (name "python-jinja2-cli")
-    (version "0.7.0")
+    (version "0.8.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "jinja2-cli" version))
         (sha256
           (base32
-            "0vikx7v6fbvww6kfrv0k5a24jyv3ak7nindg60906pdd1m9qvkcw"))))
+            "0l4fw5wn3kxq5gvpi4wj76hvbxfyij9rb32ndwh8w4hi852v2sx1"))))
     (build-system python-build-system)
     (propagated-inputs
       (list python-jinja2))
     (native-inputs
-      (list python-flake8 python-jinja2 python-pytest))
+      (list python-flake8 python-jinja2 python-pytest python-setuptools
+            python-wheel))
     (home-page "https://github.com/mattrobenolt/jinja2-cli")
     (synopsis "Command-line interface to Jinja2")
     (description
