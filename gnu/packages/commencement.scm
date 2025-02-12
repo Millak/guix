@@ -2511,6 +2511,7 @@ exec " gcc "/bin/" program
                                    ("aarch64-linux" (make-libstdc++-boot0 gcc-5))
                                    ("powerpc64le-linux" (make-libstdc++-boot0 gcc-5))
                                    ("riscv64-linux" (make-libstdc++-boot0 gcc-7))
+                                   ("i586-gnu" (make-libstdc++-boot0 gcc-5))
                                    ("x86_64-gnu" (make-libstdc++-boot0 gcc-14))
                                    (_ libstdc++-boot0)))
 
