@@ -41,6 +41,7 @@
 ;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Frederick Muriuki Muriithi <fredmanglis@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2808,6 +2809,32 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
     (description "PyVISA is a Python package for support of the
 @acronym{VISA, Virtual Instrument Software Architecture}, in order to control
 measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
+    (license license:expat)))
+
+(define-public python-pyvisa-py
+  (package
+    (name "python-pyvisa-py")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyVISA-py" version))
+       (sha256
+        (base32 "0lg8a041yg4yl31bxyyy51nh92rdp8ps94pzpyz7siaqg235npsc"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-wheel
+           python-setuptools))
+    (propagated-inputs
+     (list python-pyvisa
+           python-typing-extensions))
+    (home-page "https://pyvisa-py.readthedocs.io/")
+    (synopsis "Backend for PyVISA")
+    (description
+     "PyVISA-py is a backend for PyVISA that implements most of the methods
+for Message Based communication (Serial/USB/GPIB/Ethernet) using Python and
+some well developed, easy to deploy and cross platform libraries.")
     (license license:expat)))
 
 (define-public python-pandapower
