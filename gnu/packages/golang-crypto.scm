@@ -1212,17 +1212,30 @@ hash algorithm.  See http://keccak.noekeon.org.")
 
 (define-public go-github-com-gxed-hashland-murmur3
   (package
-    (inherit go-github-com-gxed-hashland)
     (name "go-github-com-gxed-hashland-murmur3")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gxed/hashland")
+             (commit (go-version->git-ref version
+                                          #:subdir "murmur3"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b921dh9i6zw7y8jfzwvrmdbhnwid12a5z1zjawslfq2vvsajwmm"))))
+    (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/gxed/hashland/murmur3"
       #:unpack-path "github.com/gxed/hashland"))
+    (home-page "https://github.com/gxed/hashland")
     (synopsis "Golang implementation of MurmurHash3 algorithm")
     (description
      "This package provides a native Go implementation of
 @url{https://en.wikipedia.org/wiki/MurmurHash, Austin Appleby's third
-MurmurHash} revision (aka MurmurHash3).")))
+MurmurHash} revision (aka MurmurHash3).")
+    (license license:bsd-3)))
 
 (define-public go-github-com-jcmturner-aescts-v2
   (package
