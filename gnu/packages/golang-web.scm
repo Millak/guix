@@ -5286,6 +5286,35 @@ via REST APIs.")
 language.")
     (license license:expat)))
 
+(define-public go-github-com-mattn-goveralls
+  (package
+    (name "go-github-com-mattn-goveralls")
+    (version "0.0.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/goveralls")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16jszydip2abwc0fws3sz5yzyy87w8mbkhzm2wzb8ijpjhk1by79"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/goveralls"
+      ;; Test requires git.
+      #:test-flags #~(list "-skip" "TestShowArg/with_show")))
+    (propagated-inputs
+     (list go-golang-org-x-mod
+           go-golang-org-x-tools))
+    (home-page "https://github.com/mattn/goveralls")
+    (synopsis "Golang client for Coveralls.io")
+    (description
+     "This package provides a client for @url{http://coveralls.io/
+Coveralls.io} continuous code coverage tracking system.")
+    (license license:expat)))
+
 (define-public go-github-com-mdlayher-ethtool
   (package
     (name "go-github-com-mdlayher-ethtool")
