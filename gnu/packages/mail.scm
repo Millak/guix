@@ -59,6 +59,7 @@
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5069,7 +5070,7 @@ remote SMTP server.")
 (define-public aerc
   (package
     (name "aerc")
-    (version "0.18.2")
+    (version "0.20.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5078,26 +5079,14 @@ remote SMTP server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y34cv2vcwhr0vbd1ax2hv9rmv79dp9i02y2xqyr23krfb5bp197"))
-              (patches
-                (list
-                  ;; patch from upstream to fix encoding problem with sending
-                  ;; gpg-signed messages
-                  ;; see https://todo.sr.ht/~rjarry/aerc/79
-                  (origin
-                    (method url-fetch)
-                    (uri "https://git.sr.ht/~rjarry/aerc/commit/7346d20.patch")
-                    (file-name "aerc-fix-gpg-signed-message-encoding.patch")
-                    (sha256 (base32
-                              "14avr323sr9qipf9d7npqwrzq37i9946z9m6jdkzi8n9rs6zwzq9")))))))
+                "04412inhzj8vwybafqz6nw8wrsyf51zjv0881aacr6zc9bfcq510"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "git.sr.ht/~rjarry/aerc"
            ;; Installing the source is only necessary for Go libraries.
            #:install-source? #f
            #:build-flags
-           #~(list "-tags=notmuch"
-                   (string-append
+           #~(list (string-append
                     "-ldflags=-X main.Version=" #$version
                     " -X git.sr.ht/~rjarry/aerc/config.libexecDir="
                     #$output "/libexec/aerc"
@@ -5136,20 +5125,20 @@ remote SMTP server.")
                            (string-append "src/" import-path))))
                (replace 'install
                  (lambda* (#:key import-path build-flags #:allow-other-keys)
-                   (invoke "make" "CC=gcc" "install" "-C"
+                   (invoke "make" "CC=gcc" "GOFLAGS=-tags=notmuch" "install" "-C"
                            (string-append "src/" import-path)
                            (string-append "PREFIX=" #$output)))))))
     (inputs
      (append
       (list gnupg
-            notmuch ; Failing to build without it.
+            notmuch
             python
             python-vobject)
       (if (supported-package? zoxide)
           (list zoxide)
           '())))
     (native-inputs
-     (list go-git-sr-ht-rjarry-go-opt
+     (list go-git-sr-ht-rjarry-go-opt-v2
            go-git-sr-ht-rockorager-go-jmap
            go-git-sr-ht-rockorager-vaxis
            go-github-com-protonmail-go-crypto
