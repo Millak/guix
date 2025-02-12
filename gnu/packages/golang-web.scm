@@ -7883,6 +7883,29 @@ runtime.  It has zero dependencies, and doesn't rely on CGO.  This means you
 can run applications in other languages and still keep cross compilation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-tomnomnom-linkheader
+  (package
+    (name "go-github-com-tomnomnom-linkheader")
+    (version "0.0.0-20180905144013-02ca5825eb80")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tomnomnom/linkheader")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ghrv28vrvvrpyr4d4q817yby8g1j04mid8ql00sds1pvfv67d32"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tomnomnom/linkheader"))
+    (home-page "https://github.com/tomnomnom/linkheader")
+    (synopsis "Golang HTTP Link header parser")
+    (description
+     "Package linkheader provides functions for parsing HTTP Link headers.")
+    (license license:expat)))
+
 (define-public go-github-com-tv42-httpunix
   (let ((commit "2ba4b9c3382c77e7b9ea89d00746e6111d142a22")
         (revision "0"))
