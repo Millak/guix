@@ -37,6 +37,7 @@
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1494,6 +1495,47 @@ exceptions, macros, and a dynamic programming environment.")
        ("guile-lib" ,guile2.2-lib)
        ,@(fold alist-delete (package-inputs guile-cairo)
                '("guile" "guile-lib"))))))
+
+(define-public guile-cairo-next
+  ;; A commit with cairo-pointer->context, missing from guile-cairo@1.11.2
+  ;; and needed by animated-paintable from g-golf-gtk-4-examples.
+  (let ((commit "30da459d7a4380174ff243b1560d5512a4bca86e")
+        (revision "0"))
+    (package
+      (inherit guile-cairo)
+      (name "guile-cairo-next")
+      (version (git-version "1.11.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/guile-cairo.git/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0dslfldzgxis8g0g3xaffcqnd1njzz23fjy0v3lc0r2694ra4ny4"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments guile-cairo)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             ;; To allow running the check phase before install, add two phases
+             ;; similar to David Pirotte's suggested patch:
+             ;; <https://lists.gnu.org/archive/html/guile-user/2023-03/msg00028.html>.
+             (add-after 'build 'fix-dynamic-link-path
+               (lambda _
+                 ;; Dynamic-link libguile-cairo foreign extension by name, not
+                 ;; path.
+                 (substitute* "cairo/config.scm"
+                   (("\\(define \\*cairo-lib-path\\* .*")
+                    "\(define *cairo-lib-path* \"libguile-cairo\")\n"))))
+             (add-before 'check 'set-libtool-path
+               (lambda _
+                 ;; Use appropriate pre-install libtool path in tests.
+                 (setenv "LTDL_LIBRARY_PATH" "../../guile-cairo/.libs")))))))
+      (inputs
+       (list gettext-minimal guile-3.0 guile-lib))
+      (native-inputs
+       (list autoconf automake libtool pkg-config texinfo)))))
 
 (define-public guile-rsvg
   ;; Use a recent snapshot that supports Guile 2.2 and beyond.
