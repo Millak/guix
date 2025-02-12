@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2019, 2020 Evan Straw <evan.straw99@gmail.com>
-;;; Copyright © 2020-2024 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020-2025 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Charlie Ritter <chewzerita@posteo.net>
 ;;; Copyright © 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -2852,7 +2852,7 @@ software-defined radio receivers.")
 (define-public wfview
   (package
     (name "wfview")
-    (version "1.64")
+    (version "2.03")
     (source
      (origin
        (method git-fetch)
@@ -2861,7 +2861,7 @@ software-defined radio receivers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gsijp2h72bdq0jiw8lcfdyp6rwjizngg7wjgkbdm4m05y7c5nj1"))))
+        (base32 "0b74sbi10plrd6dyqm80k0gggvh7fdnwzlddk18gnj5zzsiq562f"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -2871,14 +2871,16 @@ software-defined radio receivers.")
           (add-after 'unpack 'fix-paths
             (lambda _
               (substitute* "wfview.pro"
-                (("\\.\\./wfview/")
-                 "../")
-                (("!win32:DEFINES \\+= HOST=.* UNAME=.*")
-                 "!win32:DEFINES += HOST=\\\\\\\"guix\\\\\\\" UNAME=\\\\\\\"build\\\\\\\"")
+                (("`hostname`")
+                 "guix")
+                (("`whoami`")
+                 "build")
                 (("\\$\\(shell git -C .* HEAD\\)")
                  "")
                 (("!win32:LIBS \\+= -L\\./ -lopus")
-                 "!win32:LIBS += -L./ -lopus -lqcustomplot"))
+                 "!win32:LIBS += -L./ -lopus -lqcustomplot")
+                (("/sbin/")
+                 ""))
               (substitute* '("wfmain.cpp")
                 (("/usr/share")
                  (string-append #$output "/share")))))
@@ -2903,6 +2905,7 @@ software-defined radio receivers.")
            qtbase-5
            qtmultimedia-5
            qtserialport-5
+           qtwebsockets-5
            rtaudio))
     (home-page "https://wfview.org/")
     (synopsis "Software to control Icom radios")
@@ -2912,6 +2915,7 @@ spectrum waterfall.  It supports at least the following models:
 
 @itemize
 @item IC-705
+@item IC-905
 @item IC-7300
 @item IC-7610
 @item IC-7850
