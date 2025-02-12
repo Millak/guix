@@ -280,6 +280,35 @@ Netscape/Mozilla's old-style cookie files.  It also implements a simple cookie
 jar struct to manage the cookies added to the cookie jar.")
     (license license:expat)))
 
+(define-public go-github-com-akrylysov-algnhsa
+  (package
+    (name "go-github-com-akrylysov-algnhsa")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/akrylysov/algnhsa")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12a118j1f4jk5rr9wlyfvhshxylhc234pzwrqlbq9b3kcc7d74yj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/akrylysov/algnhsa"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aws-aws-lambda-go))
+    (home-page "https://github.com/akrylysov/algnhsa")
+    (synopsis "AWS Lambda Go @code{net/http} server adapter")
+    (description
+     "This package implements a functionality to run Go web applications on
+AWS Lambda and API Gateway or ALB without changing the existing HTTP
+handlers.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-alexliesenfeld-health
   (package
     (name "go-github-com-alexliesenfeld-health")
