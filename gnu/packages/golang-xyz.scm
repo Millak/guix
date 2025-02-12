@@ -1512,6 +1512,29 @@ optimized for sparse nodes of
 @url{http://en.wikipedia.org/wiki/Radix_tree,radix tree}.")
     (license license:expat)))
 
+(define-public go-github-com-arolek-p
+  (package
+    (name "go-github-com-arolek-p")
+    (version "0.0.0-20191103215535-df3c295ed582")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ARolek/p")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dsfrksyrnr3d6aiafnjf3nqyq5jn7s7pzd64j18kngc8l6jrxj1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/arolek/p"))
+    (home-page "https://github.com/arolek/p")
+    (synopsis "Pointer to the value")
+    (description
+     "Pacakge p takes in values and returns a pointer to the value.")
+    (license license:expat)))
+
 (define-public go-github-com-arran4-golang-ical
   (package
     (name "go-github-com-arran4-golang-ical")
