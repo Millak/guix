@@ -5262,6 +5262,32 @@ supported by HTTP PATCH method, allowing for standards based partial updates
 via REST APIs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-mattn-go-ieproxy
+  (package
+    (name "go-github-com-mattn-go-ieproxy")
+    (version "0.0.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-ieproxy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cqfjq106vdm9l9ddb4pps001wxwzabrq2q82f9dimszfq0my8av"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/go-ieproxy"))
+    (propagated-inputs
+     (list go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/mattn/go-ieproxy")
+    (synopsis "Detect the proxy settings from Golang")
+    (description
+     "Package ieproxy is a utility to retrieve the proxy parameters.")
+    (license license:expat)))
+
 (define-public go-github-com-mattn-go-mastodon
   (package
     (name "go-github-com-mattn-go-mastodon")
