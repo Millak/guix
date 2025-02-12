@@ -58,7 +58,9 @@
     (arguments
      (if (or (target-hurd64?) (%current-target-system))
          (list #:configure-flags
-               #~'(#$(string-append
+               #~'("ac_cv_func_malloc_0_nonnull=yes"
+                   "ac_cv_func_realloc_0_nonnull=yes"
+                   #$(string-append
                       "CFLAGS=-g -O2"
                       " -Wno-error=implicit-function-declaration"
                       " -Wno-error=int-conversion")))
