@@ -13522,6 +13522,47 @@ logging.")
 symbols in the style of Sublime Text, VSCode, @code{IntelliJ} IDEA et al.")
     (license license:expat)))
 
+(define-public go-github-com-sap-go-hdb
+  (package
+    (name "go-github-com-sap-go-hdb")
+    (version "1.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SAP/go-hdb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zw37fi0msglsakwynj913zkbj3mfggjhdd5w042khnlm122b129"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/SAP/go-hdb/prometheus
+            (delete-file-recursively "prometheus")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:skip-build? #t
+      #:import-path "github.com/SAP/go-hdb"
+      ;; XXX: The most of the tests require access to database, run some
+      ;; portion of unit tests only.
+      #:test-subdirs #~(list "driver/internal/..."
+                             "driver/unicode/cesu8")))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-golang-org-x-text))
+    (home-page "https://github.com/SAP/go-hdb")
+    (synopsis "SAP HANA Database Client for Golang")
+    (description
+     "Go-hdb is a native Go @url{https://en.wikipedia.org/wiki/SAP_HANA, HANA}
+database driver for Go's sql package.  It implements the SAP HANA SQL command
+network protocol.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-saracen-walker
   (package
     (name "go-github-com-saracen-walker")
