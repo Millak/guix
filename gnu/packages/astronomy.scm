@@ -3729,14 +3729,10 @@ instruments.")
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
                 (setenv "HOME" "/tmp")
-                (make-file-writable "astropy/_compiler.c")
-                ;; Extensions have to be rebuilt before running the tests.
-                (invoke "python" "setup.py" "build_ext" "--inplace"
-                        "-j" (number->string (parallel-job-count)))
                 ;; Step out of the source directory to avoid interference; we
                 ;; want to run the installed code with extensions etc.
-                (with-directory-excursion "/tmp"
-                  (apply invoke "pytest" "-v" test-flags))))))))
+                (with-directory-excursion #$output
+                  (apply invoke "pytest" "-vv" test-flags))))))))
     (native-inputs
      (list nss-certs-for-test
            pkg-config
