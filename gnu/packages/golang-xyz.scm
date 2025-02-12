@@ -6047,6 +6047,53 @@ professionally translated
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-go-spatial-proj
+  (package
+    (name "go-github-com-go-spatial-proj")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-spatial/proj")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sdjms403rr1smm63p21k95m1dfis06i52y1962jnxidcywzm6i5"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-spatial/proj"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/go-spatial/proj")
+    (synopsis "Port of PROJ.4 projection library in Golang")
+    (description
+     "Proj is a selective and on-going port of the venerable
+@url{http://proj4.org/, PROJ.4} project to the Go language.
+
+This package provides the following subpackages:
+@itemize
+@item @code{proj} (top-level): the Conversion API
+@item @code{proj/cmd/proj}: the simple proj command-line tool
+@item @code{proj/core}: the Core API, representing coordinate systems and
+conversion operations
+@item @code{proj/gie}: a naive implementation of the PROJ.4 gie tool, plus the
+full set of PROJ.4 test case files
+@item @code{proj/merror}: a little error package
+@item @code{proj/mlog}: a little logging package
+@item @code{proj/operations}: the actual coordinate operations; these routines
+tend to be closest to the original C code
+@item @code{proj/support}: misc structs and functions in support of the core
+package
+@end itemize")
+    ;; As it's a port of <http://proj4.org/> all licenses are preserved, see
+    ;; LICENSE.md.
+    (license (list license:expat license:asl2.0 license:x11))))
+
 (define-public go-github-com-go-sql-driver-mysql
   (package
     (name "go-github-com-go-sql-driver-mysql")
