@@ -325,6 +325,16 @@ without modification.")
       (arguments
        (substitute-keyword-arguments
            `(#:allowed-references ("out") ,@(package-arguments bash))
+         ((#:configure-flags flags '())
+          ;; XXX: when Update glibc from 2.40 to 2.41,
+          ;; need this flag to compile successfully.
+          ;; Otherwise, an error will be reported:
+          ;; multiple definition of `getenv'
+          (if (%current-target-system)
+              `(cons
+                "bash_cv_getenv_redef=no"
+                ,flags)
+              flags))
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'strip 'remove-everything-but-the-binary
