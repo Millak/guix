@@ -270,12 +270,12 @@ Hurd-minimal package which are needed for both glibc and GCC.")
                   (install-file "gnumach.gz" boot))))))))
     (native-inputs
      (list autoconf
-           automake
+           automake-1.16.5
            (if (%current-target-system)
                (cross-mig (%current-target-system))
                mig)
            perl
-           texinfo-4))
+           texinfo))
     (supported-systems `("i686-linux" ,@%hurd-systems))
     (synopsis "Microkernel of the GNU system")
     (description
