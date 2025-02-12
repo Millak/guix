@@ -74,6 +74,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages javascript)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
@@ -3208,7 +3209,7 @@ Navigation Satellite System.")
 (define-public satdump
   (package
     (name "satdump")
-    (version "1.1.0")
+    (version "1.2.2")
     (source
      ;; TODO: The sources embed some libraries (in src-core/libs).
      ;; Using regular packaged shared libraries instead will require big
@@ -3220,18 +3221,23 @@ Navigation Satellite System.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mz665h02v4hg0v6kb1b3lj7vd2kp7wgasasm10q6qwqr7c133p4"))))
+        (base32 "13f0r513pvf5wax81i6443z3i0808zqf3yppvln8171hsgwdwagr"))))
     (build-system cmake-build-system)
     (native-inputs (list pkg-config))
     (inputs
      (list airspy
            airspyhf
+           armadillo
            bladerf
+           curl
            fftwf
            glew
            glfw
            hackrf
+           hdf5
+           jemalloc
            libpng
+           libtiff
            luajit
            nng
            portaudio
