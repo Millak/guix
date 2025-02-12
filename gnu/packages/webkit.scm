@@ -128,13 +128,13 @@ engine that uses Wayland for graphics output.")
 (define-public webkitgtk
   (package
     (name "webkitgtk")
-    (version "2.46.0")
+    (version "2.46.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "0fpl7mm8bbjavgmskvsgmmxzi280hm0figah1ib5208r1w237m6l"))
+               (base32 "0ay3cq3hbm2l7h7sgc5jbi8v5yhbbgzdvrkcnyxaj2r2jgk1vczj"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
