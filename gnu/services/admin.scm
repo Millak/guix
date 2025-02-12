@@ -407,7 +407,8 @@ This service is deprecated and slated for removal after 2025-06-15.")
              (actions (list (shepherd-action
                              (name 'trigger)
                              (documentation "Trigger log cleanup.")
-                             (procedure #~trigger-timer)))))))))
+                             (procedure #~trigger-timer))))
+             (documentation "Periodically delete old log files."))))))
 
 (define log-cleanup-service-type
   (service-type
