@@ -5262,6 +5262,40 @@ supported by HTTP PATCH method, allowing for standards based partial updates
 via REST APIs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-mattn-go-mastodon
+  (package
+    (name "go-github-com-mattn-go-mastodon")
+    (version "0.0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-mastodon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05hnh5359awm5x7qbaf8fvf772p2hc781alfqnp7ymr4rjfk3pql"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/mattn/go-mastodon/cmd/mstd
+            (delete-file-recursively "cmd")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/go-mastodon"))
+    (propagated-inputs
+     (list go-github-com-gorilla-websocket
+           go-github-com-tomnomnom-linkheader))
+    (home-page "https://github.com/mattn/go-mastodon")
+    (synopsis "Mastodon client for golang")
+    (description
+     "Package mastodon provides functions and structs for accessing the
+mastodon API.")
+    (license license:expat)))
+
 (define-public go-github-com-mattn-go-xmlrpc
   (package
     (name "go-github-com-mattn-go-xmlrpc")
