@@ -1781,6 +1781,52 @@ Data Representation (XDR) standard protocol as specified in RFC
 4506 (obsoletes RFC 1832 and RFC 1014) in pure Go.")
     (license license:isc)))
 
+(define-public go-github-com-dimfeld-httptreemux
+  (package
+    (name "go-github-com-dimfeld-httptreemux")
+    (version "4.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dimfeld/httptreemux")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hs22xfipld6xqc0yqih6llm0m0k64slw12vhrx51r2dz91mjjrz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dimfeld/httptreemux"))
+    (home-page "https://github.com/dimfeld/httptreemux")
+    (synopsis "Tree-based HTTP router for Go")
+    (description
+     "This package provides a re-implementation of
+@url{https://github.com/julienschmidt/httprouter, Julien Schmidt's
+httprouter}, in that it uses a patricia tree, but the logic is rather
+different.  Specifically, the routing rules are relaxed so that a single path
+segment may be a wildcard in one route and a static token in another.")
+    (license license:expat)))
+
+(define-public go-github-com-dimfeld-httptreemux-v5
+  (package
+    (inherit go-github-com-dimfeld-httptreemux)
+    (name "go-github-com-dimfeld-httptreemux-v5")
+    (version "5.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dimfeld/httptreemux")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02q700rrf9mr1bcc3nw0qh186lhv17rsmblajsgifj42n72h0llf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dimfeld/httptreemux/v5"))))
+
 (define-public go-github-com-docker-go-connections
   (package
     (name "go-github-com-docker-go-connections")
