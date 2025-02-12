@@ -484,7 +484,9 @@ Potential client and exit connections are scrubbed of sensitive information.")
           (add-after 'install 'install-gschema
             (lambda _
               (let ((schemas (string-append #$output "/share/glib-2.0/schemas")))
-                (install-file "src/tractor/tractor.gschema.xml" schemas)))))))
+                (install-file "src/tractor/tractor.gschema.xml" schemas)
+                ;; The following line is needed for packages having tractor as input.
+                (invoke "glib-compile-schemas" schemas)))))))
     (home-page "https://framagit.org/tractor")
     (synopsis "Setup an onion routing proxy")
     (description
