@@ -29,14 +29,16 @@
 ;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
+;;; Copyright © 2023 Miguel Ángel Moreno <mail@migalmoreno.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
+;;; Copyright © 2023 conses <contact@conses.eu>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Dominic Martinez <dom@dominicm.dev>
-;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
-;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -8886,6 +8888,53 @@ library code
      "WebTunnel is a Go Pluggable Transport that attempts to imitate web
 browsing activities based on HTTP Upgrade (HTTPT).")
     (license license:bsd-2)))
+
+(define-public go-go-mau-fi-whatsmeow
+  (package
+    (name "go-go-mau-fi-whatsmeow")
+    (version "0.0.0-20241215104421-68b0856cce22")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tulir/whatsmeow")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y3h132g3w6ihc8jn587wvyha9xm3sinjlr0znqq7krvynz3z8id"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.mau.fi/whatsmeow"))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-github-com-gorilla-websocket
+           go-github-com-rs-zerolog
+           go-go-mau-fi-libsignal
+           go-go-mau-fi-util
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-google-golang-org-protobuf))
+    (home-page "https://go.mau.fi/whatsmeow")
+    (synopsis "Go library for the WhatsApp web multidevice API")
+    (description
+     "Package whatsmeow implements a client for interacting with the
+@code{WhatsApp} web multidevice API.
+
+Features:
+@itemize
+@item sending messages to private chats and groups (both text and media)
+@item receiving all messages
+@item managing groups and receiving group change events
+@item joining via invite messages, using and creating invite links
+@item sending and receiving typing notifications
+@item sending and receiving delivery and read receipts
+@item reading and writing app state (contact list, chat pin/mute status, etc)
+@item sending and handling retry receipts if message decryption fails
+@item sending status messages (experimental, may not work for large contact
+lists)
+@end itemize")
+    (license license:mpl2.0)))
 
 (define-public go-go-opentelemetry-io-otel
   (package
