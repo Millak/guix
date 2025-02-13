@@ -2168,7 +2168,7 @@ system.")
 (define-public go-github-com-zalando-go-keyring
   (package
     (name "go-github-com-zalando-go-keyring")
-    (version "0.2.5")
+    (version "0.2.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2177,27 +2177,34 @@ system.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1p6qlsbj9rmqiwz9ly4c7jmifcx8m45xjhsbdwdvw2jzw5jc2ch1"))))
+                "0gavcs0k2wnw0q7zgcdhwca1phqls70wb93j2bdmjlvmrq9na6f4"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/zalando/go-keyring"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Disable tests which require a system DBus instance.
-                  (("TestDelete") "OffTestDelete")
-                  (("TestGet") "OffTestGet")
-                  (("TestSet") "OffTestSet")))))
           (replace 'check
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (when tests?
                 (with-directory-excursion (string-append "src/" import-path)
                   (invoke "dbus-run-session" "--"
-                          "go" "test" "-v" "./..."))))))))
+                          "go" "test" "-v"
+                          "-skip" (string-join
+                                   ;; Disable tests which require a system
+                                   ;; DBus instance.
+                                   (list "TestDelete"
+                                         "TestDeleteAll"
+                                         "TestDeleteAllEmptyService"
+                                         "TestDeleteNonExisting"
+                                         "TestGet"
+                                         "TestGetMultiLine"
+                                         "TestGetNonExisting"
+                                         "TestGetSingleLineHex"
+                                         "TestGetUmlaut"
+                                         "TestSet")
+                                   "|")
+                          "./..."))))))))
     (native-inputs
      (list dbus))
     (propagated-inputs
