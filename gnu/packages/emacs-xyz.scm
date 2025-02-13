@@ -136,7 +136,7 @@
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2023 Thanos Apollo <public@thanosapollo.com>
 ;;; Copyright © 2023 Ian Eure <ian@retrospec.tv>
-;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
+;;; Copyright © 2024-2025 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
@@ -22847,7 +22847,7 @@ created by @code{git format-patch}, from @code{magit}, @code{dired} and
 (define-public emacs-git-email
   (package
     (name "emacs-git-email")
-    (version "0.6.2")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -22856,7 +22856,7 @@ created by @code{git format-patch}, from @code{magit}, @code{dired} and
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1miyz67dk1vi1gs6kgfrmihid90qb9ks79hskhsa2w2a62772jif"))))
+        (base32 "0mda886spz48jvv00xv7ki4154z02bwqbwjfa7clvdw83lfp33am"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
