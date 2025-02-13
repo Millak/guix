@@ -55,6 +55,46 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
+(define-public cbonsai
+  (let ((commit "50fe627c84036e3be4115b02be04d17f58480199")
+        (revision "0"))
+    (package
+      (name "cbonsai")
+      (version (git-version "1.3.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://gitlab.com/jallbrit/cbonsai.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "15bzp99gb1qadp6b6fr2bg0adsvcp04ag83af7cl9lwhpznmid5x"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ; No test suite
+         #:make-flags
+         (list (string-append "CC=" ,(cc-for-target))
+               (string-append "PREFIX=" (assoc-ref %outputs "out")))
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure) ; No ./configure script
+           (add-after 'install 'install-doc
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (doc (string-append out "/share/doc/" ,name "-"
+                                          ,(package-version this-package))))
+                 (install-file "README.md" doc)))))))
+      (native-inputs
+       (list pkg-config scdoc))
+      (inputs
+       (list ncurses))
+      (home-page "https://gitlab.com/jallbrit/cbonsai")
+      (synopsis "Grow bonsai trees in a terminal")
+      (description "Cbonsai is a bonsai tree generator using ASCII art.  It
+creates, colors, and positions a bonsai tree, and is configurable.")
+      (license license:gpl3+))))
+
 (define-public daikichi
   (package
     (name "daikichi")
@@ -92,6 +132,93 @@ This package provides just the utilities and no quotes.")
      (list (search-path-specification
             (variable "DAIKICHI_FORTUNE_PATH")
             (files '("share/fortunes")))))))
+
+(define-public filters
+  (package
+    (name "filters")
+    (version "2.55")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "git://git.joeyh.name/filters")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gaigpda1w9wxfh8an3sam1hpacc1bhxl696w4yj0vzhc6izqvxs"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   ;; kenny is under nonfree Artistic License (Perl) 1.0.
+                   (delete-file "kenny")
+                   (substitute* "Makefile"
+                     (("kenny")
+                      ""))))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:parallel-build? #f             ;y.tab.h fails otherwise
+       #:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             (string-append "prefix=" (assoc-ref %outputs "out")))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-after 'unpack 'respect-prefix
+           (lambda _
+             (substitute* "Makefile"
+               (("/usr/games")
+                "$(prefix)/bin/")
+               (("/usr")
+                "$(prefix)"))
+             #t)))
+       #:tests? #f))                    ; no test suite
+    (native-inputs
+     (list bison flex))
+    (inputs
+     (list perl))
+    (home-page "https://joeyh.name/code/filters/")
+    (synopsis "Various amusing text filters")
+    (description
+     "The filters collection harks back to the late 1980s, when various text
+filters were written to munge written language in amusing ways.  The earliest
+and best known were legends such as the Swedish Chef filter and B1FF.
+
+This package contains the following filter commands:
+@enumerate
+@item b1ff: a satire of a stereotypical Usenet newbie
+@item censor: comply with the @acronym{CDA, Communications Decency Act}
+@item chef: convert English to Mock Swedish
+@item cockney: Cockney English
+@item elee: k3wl hacker slang
+@item fanboy: a stereotypical fan (supports custom fandoms)
+@item fudd: Elmer Fudd
+@item jethro: hillbilly text filter
+@item jibberish: a random selection of these filters
+@item jive: Jive English
+@item ken: turn English into Cockney
+@item kraut: a bad German accent
+@item ky00te: a very cute accent
+@item LOLCAT: as seen in Internet GIFs everywhere
+@item nethackify: wiped-out text as found in nethack
+@item newspeak: à la 1984
+@item nyc: Brooklyn English
+@item pirate: talk like a pirate
+@item rasterman: straight from the keyboard of Carsten Haitzler
+@item scottish: fake Scottish (Dwarven) accent
+@item scramble: scramble the \"inner\" letters of each word
+@item spammer: turn honest text into something liable to be flagged as spam
+@item studly: studly caps.
+@item uniencode: use glorious Unicode to the fullest possible extent
+@item upside-down: flip the text upside down
+@end enumerate
+
+The GNU project hosts a similar collection of filters, the GNU talkfilters.")
+    (license                      ; see debian/copyright
+     (list license:gpl2+          ; most of the filters
+           license:gpl2           ; rasterman, ky00te.dir/* nethackify, pirate
+           license:gpl3+          ; scramble, scottish
+           license:public-domain  ; jethro, kraut, ken, studly
+           license:gpl1+          ; cockney, jive, nyc only say "gpl"
+           license:expat))))     ; newspeak
 
 (define-public fortunes-jkirchartz
   ;; No public release.
@@ -317,129 +444,6 @@ typing @command{sl} instead of @command{ls}.")
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
 
-(define-public filters
-  (package
-    (name "filters")
-    (version "2.55")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "git://git.joeyh.name/filters")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1gaigpda1w9wxfh8an3sam1hpacc1bhxl696w4yj0vzhc6izqvxs"))
-       (modules '((guix build utils)))
-       (snippet '(begin
-                   ;; kenny is under nonfree Artistic License (Perl) 1.0.
-                   (delete-file "kenny")
-                   (substitute* "Makefile"
-                     (("kenny")
-                      ""))))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:parallel-build? #f             ;y.tab.h fails otherwise
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'respect-prefix
-           (lambda _
-             (substitute* "Makefile"
-               (("/usr/games")
-                "$(prefix)/bin/")
-               (("/usr")
-                "$(prefix)"))
-             #t)))
-       #:tests? #f))                    ; no test suite
-    (native-inputs
-     (list bison flex))
-    (inputs
-     (list perl))
-    (home-page "https://joeyh.name/code/filters/")
-    (synopsis "Various amusing text filters")
-    (description
-     "The filters collection harks back to the late 1980s, when various text
-filters were written to munge written language in amusing ways.  The earliest
-and best known were legends such as the Swedish Chef filter and B1FF.
-
-This package contains the following filter commands:
-@enumerate
-@item b1ff: a satire of a stereotypical Usenet newbie
-@item censor: comply with the @acronym{CDA, Communications Decency Act}
-@item chef: convert English to Mock Swedish
-@item cockney: Cockney English
-@item elee: k3wl hacker slang
-@item fanboy: a stereotypical fan (supports custom fandoms)
-@item fudd: Elmer Fudd
-@item jethro: hillbilly text filter
-@item jibberish: a random selection of these filters
-@item jive: Jive English
-@item ken: turn English into Cockney
-@item kraut: a bad German accent
-@item ky00te: a very cute accent
-@item LOLCAT: as seen in Internet GIFs everywhere
-@item nethackify: wiped-out text as found in nethack
-@item newspeak: à la 1984
-@item nyc: Brooklyn English
-@item pirate: talk like a pirate
-@item rasterman: straight from the keyboard of Carsten Haitzler
-@item scottish: fake Scottish (Dwarven) accent
-@item scramble: scramble the \"inner\" letters of each word
-@item spammer: turn honest text into something liable to be flagged as spam
-@item studly: studly caps.
-@item uniencode: use glorious Unicode to the fullest possible extent
-@item upside-down: flip the text upside down
-@end enumerate
-
-The GNU project hosts a similar collection of filters, the GNU talkfilters.")
-    (license                      ; see debian/copyright
-     (list license:gpl2+          ; most of the filters
-           license:gpl2           ; rasterman, ky00te.dir/* nethackify, pirate
-           license:gpl3+          ; scramble, scottish
-           license:public-domain  ; jethro, kraut, ken, studly
-           license:gpl1+          ; cockney, jive, nyc only say "gpl"
-           license:expat))))     ; newspeak
-
-(define-public xsnow
-  (package
-    (name "xsnow")
-    (version "3.7.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://www.ratrabbit.nl/downloads/xsnow/xsnow-"
-             version ".tar.gz"))
-       (sha256
-        (base32 "1wiwlqbc6lfcq69hln8mxsms327sjbdpv0mmkfi9j2xrcgmw41bs"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-install-path
-           (lambda _
-             ;; Install program to bin instead of games.
-             (substitute* "src/Makefile.in"
-               (("(gamesdir = \\$\\(exec_prefix\\)/)games" _ prefix)
-                (string-append prefix "bin")))
-             #t)))))
-    (inputs
-     (list gsl libx11 libxpm libxt libxml2))
-    (native-inputs
-     (list pkg-config))
-    (propagated-inputs
-     (list gdk-pixbuf gtk+))
-    (home-page "https://www.ratrabbit.nl/ratrabbit/xsnow/index.html")
-    (synopsis "Let it snow on the desktop")
-    (description "@code{Xsnow} animates snowfall and Santa with reindeer on
-the desktop background.  Additional customizable effects include wind, stars
-and various scenery elements.")
-    (license license:gpl3+)))
-
 (define-public xpenguins
   (package
     (name "xpenguins")
@@ -546,42 +550,38 @@ protocol.  It shows fishes swimming over the desktop.")
 of the Nyan Cat / Poptart Cat animation.")
     (license license:ncsa)))
 
-(define-public cbonsai
-  (let ((commit "50fe627c84036e3be4115b02be04d17f58480199")
-        (revision "0"))
-    (package
-      (name "cbonsai")
-      (version (git-version "1.3.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://gitlab.com/jallbrit/cbonsai.git")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "15bzp99gb1qadp6b6fr2bg0adsvcp04ag83af7cl9lwhpznmid5x"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f ; No test suite
-         #:make-flags
-         (list (string-append "CC=" ,(cc-for-target))
-               (string-append "PREFIX=" (assoc-ref %outputs "out")))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure) ; No ./configure script
-           (add-after 'install 'install-doc
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (doc (string-append out "/share/doc/" ,name "-"
-                                          ,(package-version this-package))))
-                 (install-file "README.md" doc)))))))
-      (native-inputs
-       (list pkg-config scdoc))
-      (inputs
-       (list ncurses))
-      (home-page "https://gitlab.com/jallbrit/cbonsai")
-      (synopsis "Grow bonsai trees in a terminal")
-      (description "Cbonsai is a bonsai tree generator using ASCII art.  It
-creates, colors, and positions a bonsai tree, and is configurable.")
-      (license license:gpl3+))))
+(define-public xsnow
+  (package
+    (name "xsnow")
+    (version "3.7.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://www.ratrabbit.nl/downloads/xsnow/xsnow-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1wiwlqbc6lfcq69hln8mxsms327sjbdpv0mmkfi9j2xrcgmw41bs"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-install-path
+           (lambda _
+             ;; Install program to bin instead of games.
+             (substitute* "src/Makefile.in"
+               (("(gamesdir = \\$\\(exec_prefix\\)/)games" _ prefix)
+                (string-append prefix "bin")))
+             #t)))))
+    (inputs
+     (list gsl libx11 libxpm libxt libxml2))
+    (native-inputs
+     (list pkg-config))
+    (propagated-inputs
+     (list gdk-pixbuf gtk+))
+    (home-page "https://www.ratrabbit.nl/ratrabbit/xsnow/index.html")
+    (synopsis "Let it snow on the desktop")
+    (description "@code{Xsnow} animates snowfall and Santa with reindeer on
+the desktop background.  Additional customizable effects include wind, stars
+and various scenery elements.")
+    (license license:gpl3+)))
