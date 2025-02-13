@@ -1040,6 +1040,47 @@ safety and thread safety guarantees.")
                     (string-append name "\"" ,%cargo-reference-hash "\"")))
                  (generate-all-checksums "vendor"))))))))))
 
+(define-public rust-1.83
+  (let ((base-rust (rust-bootstrapped-package rust-1.82 "1.83.0"
+                    "0vhwhk4cbyppnz0lcazfjyddyz811fgvadfxswldicpashxpfbbj")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (snippet
+          '(begin
+             (for-each delete-file-recursively
+                       '("src/gcc"
+                         "src/llvm-project"
+                         "vendor/jemalloc-sys-0.3.2"
+                         "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
+                         "vendor/jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
+                         "vendor/openssl-src-111.28.2+1.1.1w/openssl"
+                         "vendor/tikv-jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"))
+             ;; Remove vendored dynamically linked libraries.
+             ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+             ;; Also remove the bundled (mostly Windows) libraries.
+             (for-each delete-file
+                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))
+             ;; Adjust vendored dependency to explicitly use rustix with libc backend.
+             (substitute* '("vendor/tempfile-3.10.1/Cargo.toml"
+                            "vendor/tempfile-3.13.0/Cargo.toml")
+               (("features = \\[\"fs\"" all)
+                (string-append all ", \"use-libc\"")))))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'configure 'use-system-llvm
+               (lambda _
+                 (substitute* "config.toml"
+                   (("\\[llvm\\]") "[llvm]\ndownload-ci-llvm = false")
+                   (("\\[rust\\]") "[rust]\ndownload-rustc = false"))))))))
+      ;; Need llvm >= 18.0
+      (inputs (modify-inputs (package-inputs base-rust)
+                             (replace "llvm" llvm-19))))))
+
 
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
