@@ -17663,6 +17663,32 @@ kubernetes-independent packages supplementing the
 @url{https://pkg.go.dev/std#stdlib,Go standard libs}.")
     (license license:asl2.0)))
 
+(define-public go-maunium-net-go-mauflag
+  (package
+    (name "go-maunium-net-go-mauflag")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tulir/mauflag")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09jv1819jwq5i29y6ngf4j4ii6qwlshydvprfvsfplc419dkz1vx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "maunium.net/go/mauflag"))
+    (home-page "https://maunium.net/go/mauflag")
+    (synopsis "Extendable argument parser for Golang")
+    (description
+     "This package provides an extendable argument parser for Golang.  Mostly
+follows the GNU
+@@url{https://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html,
+Program Argument Syntax Conventions}.")
+    (license license:gpl3)))
+
 (define-public go-modernc-org-fileutil
   (package
     (name "go-modernc-org-fileutil")
