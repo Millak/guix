@@ -1154,6 +1154,32 @@ intended to (eventually) be 1:1 with the TPM 2.0 spec
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-gsterjov-go-libsecret
+  (package
+    (name "go-github-com-gsterjov-go-libsecret")
+    (version "0.0.0-20161001094733-a6f4afe4910c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gsterjov/go-libsecret")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09zaiadnll83vs22ib89agg7anj0blw5fywvmckxllsgif6ak6v7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gsterjov/go-libsecret"))
+    (propagated-inputs
+     (list go-github-com-godbus-dbus))
+    (home-page "https://github.com/gsterjov/go-libsecret")
+    (synopsis "Manage secrets via the @code{Secret Service} DBus API")
+    (description
+     "This native Go library manages secrets via the freedesktop.org
+@code{Secret Service} DBus interface.")
+    (license license:expat)))
+
 ;; It's not public for purpose, as it contains a lot of golang modules which
 ;; may be inherited from the single source, but the package itself does not
 ;; have to be installed directly or linked to other packages..

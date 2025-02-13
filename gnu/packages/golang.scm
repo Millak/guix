@@ -2236,32 +2236,6 @@ sinks and sources.")
 or capture raw audio.")
       (license license:expat))))
 
-(define-public go-github-com-gsterjov-go-libsecret
-  (package
-    (name "go-github-com-gsterjov-go-libsecret")
-    (version "0.0.0-20161001094733-a6f4afe4910c")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gsterjov/go-libsecret")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "09zaiadnll83vs22ib89agg7anj0blw5fywvmckxllsgif6ak6v7"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/gsterjov/go-libsecret"))
-    (propagated-inputs
-     (list go-github-com-godbus-dbus))
-    (home-page "https://github.com/gsterjov/go-libsecret")
-    (synopsis "Manage secrets via the @code{Secret Service} DBus API")
-    (description
-     "This native Go library manages secrets via the freedesktop.org
-@code{Secret Service} DBus interface.")
-    (license license:expat)))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
