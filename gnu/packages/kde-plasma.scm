@@ -2446,11 +2446,13 @@ PulseAudio.")
       (build-system qt-build-system)
       (native-inputs (list extra-cmake-modules))
       (inputs (list ki18n kitemmodels kwindowsystem kio
-                    libplasma
                     oath-toolkit
                     plasma5support
-                    qgpgme-qt6
-                    qtdeclarative))
+                    qgpgme-qt6))
+      (propagated-inputs
+       ;; QML modules need to be propagated so that QML files can find them in
+       ;; $QML_IMPORT_PATH.
+       (list kirigami libplasma qtdeclarative))
       (arguments (list #:qtbase qtbase
                        #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
       (home-page "https://invent.kde.org/plasma/plasma-pass")
