@@ -13184,6 +13184,47 @@ without configuration, but if desired, everything can be customized down to the
 smallest detail.")
     (license license:expat)))
 
+(define-public go-github-com-rakyll-statik
+  (package
+    (name "go-github-com-rakyll-statik")
+    (version "0.1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/rakyll/statik")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y0kbzma55vmyqhyrw9ssgvxn6nw7d0zg72a7nz8vp1zly4hs6va"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Fix compatibility with go-1.18+
+            (substitute* "statik.go"
+              (("fmt\\.Println\\(helpText\\)")
+               "fmt.Print(helpText + \"\\n\")"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rakyll/statik"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list
+                "TestOpen/Files_should_retain_their_original_file*"
+                "TestOpen/Images_should_successfully_unpack"
+                "TestOpen/'index.html'_files_should_be_returned*"
+                "TestOpen/listed_all_sub_directories_in_deep_directory"
+                "TestOpen/Paths_containing_dots_should_be_properly_sanitized")
+               "|"))))
+    (home-page "https://github.com/rakyll/statik/")
+    (synopsis "Embed files into a Go executable")
+    (description "Statik allows you to embed a directory of static files into
+your Go binary to be later served from an http.FileSystem.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-raulk-go-watchdog
   (package
     (name "go-github-com-raulk-go-watchdog")
