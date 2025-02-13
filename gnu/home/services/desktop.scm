@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 conses <contact@conses.eu>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -353,7 +353,6 @@ according to time of day.")))
     (modules '((shepherd support) ;for %user-log-dir
                (srfi srfi-1)
                (srfi srfi-26)))
-    (one-shot? #t)
     (start #~(lambda _
                (fork+exec-command
                 (list
@@ -369,7 +368,8 @@ according to time of day.")))
                       (remove (cut string-prefix? "DISPLAY=" <>)
                               (default-environment-variables)))
                 #:log-file
-                (string-append %user-log-dir "/unclutter.log")))))))
+                (string-append %user-log-dir "/unclutter.log"))))
+    (stop #~(make-kill-destructor)))))
 
 (define home-unclutter-service-type
   (service-type
