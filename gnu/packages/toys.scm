@@ -461,31 +461,30 @@ inline, preserving terminal state and workflow.")
        (sha256
         (base32 "11a1rdgb8wagikhxgm81g80g5qsl59mv4qgsval3isykqh8729bj"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)            ; no configure script
+          (delete 'check)                ; no tests
+          (replace 'install              ; no ‘make install’ target
+            (lambda _
+              (let* ((bin     (string-append #$output "/bin"))
+                     (man     (string-append #$output "/share/man"))
+                     (man1    (string-append #$output "/man1"))
+                     (man1-ja (string-append man "/ja/man1")))
+                (install-file "sl" bin)
+                (install-file "sl.1" man1)
+                (mkdir-p man1-ja)
+                (copy-file "sl.1.ja" (string-append man1-ja "/sl.1"))))))))
     (inputs
      (list ncurses))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (delete 'check)                ; no tests
-         (replace 'install              ; no ‘make install’ target
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man (string-append out "/share/man"))
-                    (man1 (string-append man "/man1"))
-                    (man1-ja (string-append man "/ja/man1")))
-               (install-file "sl" bin)
-               (install-file "sl.1" man1)
-               (mkdir-p man1-ja)
-               (copy-file "sl.1.ja" (string-append man1-ja "/sl.1"))
-               #t))))))
     (home-page "http://www.tkl.iis.u-tokyo.ac.jp/~toyoda/index_e.html")
     (synopsis "Joke command to correct typing \"sl\" by mistake")
     (description
      "@dfn{SL} (for Steam Locomotive) displays one of several animated trains
-on the text terminal.  It serves no useful purpose but to discourage mistakenly
-typing @command{sl} instead of @command{ls}.")
+on the text terminal.  It serves no useful purpose but to discourage
+mistakenly typing @command{sl} instead of @command{ls}.")
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
 
