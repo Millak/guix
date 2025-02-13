@@ -18107,6 +18107,30 @@ and other languages.  More precisely, it is the syntax accepted by RE2 and
 described at https://golang.org/s/re2syntax, except for @code{\\C.}")
     (license license:bsd-3)))
 
+(define-public go-rsc-io-goversion
+  (package
+    (name "go-rsc-io-goversion")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rsc/goversion")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k5rskhl3653snrfwwv0a9ia3jf52gwkc6p4abj4xb04s23qczcs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "rsc.io/goversion"))
+    (home-page "https://github.com/rsc/goversion")
+    (synopsis "Print version used to build Go executables")
+    (description
+     "Goversion scans a directory tree and, for every executable it finds,
+prints the Go version used to build that executable.")
+    (license license:bsd-3)))
+
 (define-public go-sigs-k8s-io-json
   (package
     (name "go-sigs-k8s-io-json")
