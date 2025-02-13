@@ -2087,26 +2087,6 @@ based on murmurhash.")
 matching and globbing with support for \"doublestar\" patterns.")
     (license license:expat)))
 
-;; For chezmoi-1.8.11
-(define-public go-github-com-bmatcuk-doublestar-v2
-  (package
-    (inherit go-github-com-bmatcuk-doublestar)
-    (name "go-github-com-bmatcuk-doublestar-v2")
-    (version "2.0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/bmatcuk/doublestar")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "09ma8a9rhs8dg527vjhdf3lsb6lajaq193m6ksssm2k3qajhpi94"))))
-    (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-bmatcuk-doublestar)
-       ((#:import-path _) "github.com/bmatcuk/doublestar/v2")))))
-
 (define-public go-github-com-bmatcuk-doublestar-v3
   (package
     (inherit go-github-com-bmatcuk-doublestar)
@@ -2750,6 +2730,32 @@ full-window, or a mix of both.")
 compatible terminals.  You can create your own stylesheet or use one of our
 glamorous default themes.")
     (license license:expat)))
+
+;; For chezmoi@2.1.0
+(define-public go-github-com-charmbracelet-glamour-0.3
+  (hidden-package (package (inherit go-github-com-charmbracelet-glamour)
+   (name "go-github-com-charmbracelet-glamour")
+   (version "0.3.0")
+   (source
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/charmbracelet/glamour")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "0fk7wvn0yvsvhnwz6g4q4qb42r513b66131cgk8ahzs3va6flxk3"))))
+    (arguments
+     (list
+      #:tests? #f
+      #:import-path "github.com/charmbracelet/glamour"))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs
+                     go-github-com-charmbracelet-glamour)
+       (replace "go-github-com-alecthomas-chroma-v2"
+         go-github-com-alecthomas-chroma)
+       (append go-github-com-dlclark-regexp2
+               go-github-com-olekukonko-tablewriter))))))
 
 (define-public go-github-com-charmbracelet-harmonica
   (package
@@ -14284,21 +14290,6 @@ converting them to the @code{time.Duration} type.")
      "This package provides a file system abstraction for Go.")
     (license license:asl2.0)))
 
-;; XXX: For chezmoi 1.8.10, remove it when updated.
-(define-public go-github-com-spf13-afero-1.1.2
-  (hidden-package (package (inherit go-github-com-spf13-afero)
-   (name "go-github-com-spf13-afero")
-   (version "1.1.2")
-   (source
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/spf13/afero")
-            (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "0miv4faf5ihjfifb1zv6aia6f6ik7h1s4954kcb8n6ixzhx9ck6k")))))))
-
 (define-public go-github-com-spf13-cast
   (package
     (name "go-github-com-spf13-cast")
@@ -15230,11 +15221,11 @@ supports JSON, YAML, TOML, XML and CSV with zero runtime dependencies.")
 @code{ioutil} packages that is easy to test.")
     (license license:expat)))
 
-;; XXX: For chezmoi 2.30.1, remove it when updated.
-(define-public go-github-com-twpayne-go-vfs-v4
+;; For chezmoi@2.1.0
+(define-public go-github-com-twpayne-go-vfs-v3
   (hidden-package (package (inherit go-github-com-twpayne-go-vfs-v5)
-   (name "go-github-com-twpayne-go-vfs-v4")
-   (version "4.3.0")
+   (name "go-github-com-twpayne-go-vfs-v3")
+   (version "3.0.0")
    (source
     (origin
       (method git-fetch)
@@ -15243,60 +15234,15 @@ supports JSON, YAML, TOML, XML and CSV with zero runtime dependencies.")
             (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1hbrm6b0ca116h8mc8nkq04nba685wmp52pz5980ivvi86ji9b1y"))))
+       (base32 "0w7alyd2pdafny4xfi0ybpnhrwwbkb3fk73yjrwjj6h0rysvpxy2"))))
     (arguments
      (list
-      #:import-path "github.com/twpayne/go-vfs/v4")))))
-
-;; XXX: For chezmoi 1.8.10, remove it when updated.
-(define-public go-github-com-twpayne-go-vfs-1.0.1
-  (hidden-package (package (inherit go-github-com-twpayne-go-vfs-v5)
-   (name "go-github-com-twpayne-go-vfs")
-   (version "1.0.1")
-   (source
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/twpayne/go-vfs")
-            (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "1if2wfdwl3h8v8kgrgywkwcjafcz7hynq8ikr52s11qf2n0w3gny"))))
-    (arguments
-     (list
-      #:import-path "github.com/twpayne/go-vfs")))))
-
-(define-public go-github-com-twpayne-go-xdg-v3
-  (package
-    (name "go-github-com-twpayne-go-xdg-v3")
-    (version "3.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/twpayne/go-xdg")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0j8q7yzixs6jlaad0lpa8hs6b240gm2cmy0yxgnprrbpa0y2r7ln"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/twpayne/go-xdg/v3"))
+      #:import-path "github.com/twpayne/go-vfs/v3"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-github-com-twpayne-go-vfs-1.0.1))
-    (home-page "https://github.com/twpayne/go-xdg/")
-    (synopsis "Functions related to freedesktop.org")
-    (description
-     "Package @code{xdg} provides functions related to
-@uref{freedesktop.org}.")
-    (license license:expat)))
+     (list go-github-com-stretchr-testify)))))
 
 (define-public go-github-com-twpayne-go-xdg-v6
   (package
-    (inherit go-github-com-twpayne-go-xdg-v3)
     (name "go-github-com-twpayne-go-xdg-v6")
     (version "6.1.3")
     (source
@@ -15315,7 +15261,13 @@ supports JSON, YAML, TOML, XML and CSV with zero runtime dependencies.")
     (native-inputs
      (list go-github-com-alecthomas-assert-v2))
     (propagated-inputs
-     (list go-github-com-twpayne-go-vfs-v5))))
+     (list go-github-com-twpayne-go-vfs-v5))
+    (home-page "https://github.com/twpayne/go-xdg/")
+    (synopsis "Functions related to freedesktop.org")
+    (description
+     "Package @code{xdg} provides functions related to
+@uref{freedesktop.org}.")
+    (license license:expat)))
 
 (define-public go-github-com-txthinking-runnergroup
   (package

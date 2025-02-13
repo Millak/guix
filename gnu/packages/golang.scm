@@ -2116,31 +2116,6 @@ characters with their ASCII approximations.")
     (description "@code{gg} is a library for rendering 2D graphics in pure Go.")
     (license license:expat)))
 
-(define-public go-github-com-twpayne-go-vfsafero
-  (package
-    (name "go-github-com-twpayne-go-vfsafero")
-    (version "1.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/twpayne/go-vfsafero")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "18jwxhlrjd06z8xzg9ij0irl4f79jfy5jpwiz6xqlhzb1fja19pw"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/twpayne/go-vfsafero"))
-    (native-inputs
-     (list go-github-com-twpayne-go-vfs-1.0.1 go-github-com-spf13-afero-1.1.2))
-    (home-page "https://github.com/twpayne/go-vfsafero/")
-    (synopsis "Compatibility later between @code{go-vfs} and @code{afero}")
-    (description
-     "Package @code{vfsafero} provides a compatibility later between
-@code{go-github-com-twpayne-go-vfs} and @code{go-github-com-spf13-afero}.")
-    (license license:expat)))
-
 (define-public go-github-com-delthas-go-libnp
   (let ((commit "0e45ece1f878f202fee2c74801e287804668f677"))
     (package

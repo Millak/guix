@@ -3444,12 +3444,12 @@ with caching and de-duplication that works across a set of peer processes.")
 GitHub API v3.")
     (license license:bsd-3)))
 
-;; For chezmoi-1.8.10
-(define-public go-github-com-google-go-github-v33
+;; For chezmoi@2.1.0
+(define-public go-github-com-google-go-github-v36
   (package
     (inherit go-github-com-google-go-github-v31)
-    (name "go-github-com-google-go-github-v33")
-    (version "33.0.0")
+    (name "go-github-com-google-go-github-v36")
+    (version "36.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3458,7 +3458,7 @@ GitHub API v3.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nzwgvaa9k1ky3sfynib6nhalam9dx66h5lxff334m9kk3rf5nn0"))
+        (base32 "041a1rmi7pipimxiwjnsd0dngzb4djmcz8a8x4xv53d3373szaj6"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -3470,7 +3470,7 @@ GitHub API v3.")
     (arguments
      (substitute-keyword-arguments
          (package-arguments go-github-com-google-go-github-v31)
-       ((#:import-path _) "github.com/google/go-github/v33")))))
+       ((#:import-path _) "github.com/google/go-github/v36")))))
 
 (define-public go-github-com-google-go-github-v50
   (package

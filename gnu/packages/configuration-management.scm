@@ -40,7 +40,7 @@
 (define-public chezmoi
   (package
     (name "chezmoi")
-    (version "1.8.10")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -49,64 +49,69 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ildvlq7v8vnw74y4fgnv3hpq49bpl6zh1wmakfh46crwg7ffmjb"))))
+                "1kjjbns80pcd6wh51kmhpw8xlm57cqgq205qp2i2z78n82h3fijc"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:install-source? #f
       #:import-path "github.com/twpayne/chezmoi"
       #:embed-files #~(list ".*\\.xml")
-      #:install-source? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Remove test script which expect additional user's programs available
-          ;; in the PATH. The testdata directory is removed in the latest version
-          ;; (2.46.1) of the program.
-          (add-after 'unpack 'remove-failing-test-scripts
-            (lambda* (#:key import-path #:allow-other-keys)
-              (for-each (lambda (f)
-                          (delete-file (string-append "src/" import-path "/testdata/scripts/" f)))
-                        '("bitwarden.txt"
-                          "cd.txt"
-                          "cd_unix.txt"
-                          "completion.txt"
-                          "diff.txt"
-                          "edit.txt"
-                          "editconfig.txt"
-                          "git.txt"
-                          "gopass.txt"
-                          "keepassxc.txt"
-                          "lastpass.txt"
-                          "onepassword.txt"
-                          "pass.txt"
-                          "runscriptdir_unix.txt"
-                          "script_unix.txt"
-                          "secretgeneric.txt"
-                          "secretgopass.txt"
-                          "secretkeepassxc.txt"
-                          "secretlastpass.txt"
-                          "secretonepassword.txt"
-                          "secretpass.txt")))))))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestScript/autocommit"
+                             "TestScript/autopush"
+                             "TestScript/bitwarden"
+                             "TestScript/builtingit"
+                             "TestScript/cd_unix"
+                             "TestScript/completion"
+                             "TestScript/doctor_unix"
+                             "TestScript/edit"
+                             "TestScript/editconfig"
+                             "TestScript/git"
+                             "TestScript/gopass"
+                             "TestScript/init"
+                             "TestScript/issue1213"
+                             "TestScript/keepassxc"
+                             "TestScript/lastpass"
+                             "TestScript/merge_unix"
+                             "TestScript/modify_unix"
+                             "TestScript/onepassword"
+                             "TestScript/pass"
+                             "TestScript/runscriptdir_unix"
+                             "TestScript/script"
+                             "TestScript/script_unix"
+                             "TestScript/scriptonce_unix"
+                             "TestScript/scriptorder_unix"
+                             "TestScript/scriptsubdir_unix"
+                             "TestScript/secret"
+                             "TestScript/state_unix"
+                             "TestScript/templatefuncs"
+                             "TestScript/update"
+                             "TestScript/vault")
+                       "|"))))
     (native-inputs
      (list go-github-com-masterminds-sprig-v3
-           go-github-com-bmatcuk-doublestar-v2
-           go-github-com-charmbracelet-glamour
+           go-github-com-bmatcuk-doublestar-v4
+           go-github-com-bradenhilton-mozillainstallhash
+           go-github-com-charmbracelet-glamour-0.3
            go-github-com-coreos-go-semver
            go-github-com-go-git-go-git-v5
-           go-github-com-google-go-github-v33
+           go-github-com-google-go-github-v36
+           go-github-com-google-gops
            go-github-com-google-renameio
+           go-github-com-mitchellh-mapstructure
            go-github-com-muesli-combinator
            go-github-com-pelletier-go-toml
-           go-github-com-pkg-diff
            go-github-com-rogpeppe-go-internal
            go-github-com-rs-zerolog
            go-github-com-sergi-go-diff
+           go-github-com-spf13-afero
            go-github-com-spf13-cobra
            go-github-com-spf13-viper
            go-github-com-stretchr-testify
            go-github-com-twpayne-go-shell
-           go-github-com-twpayne-go-vfs-1.0.1
-           go-github-com-twpayne-go-vfsafero
-           go-github-com-twpayne-go-xdg-v3
+           go-github-com-twpayne-go-vfs-v3
+           go-github-com-twpayne-go-xdg-v6
            go-github-com-zalando-go-keyring
            go-go-etcd-io-bbolt
            go-go-uber-org-multierr
