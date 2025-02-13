@@ -341,6 +341,40 @@ test (using testing.TB's @code{TempDir}) and with a few helper methods.")
 strings which may be used in mock tests.")
     (license license:unlicense)))
 
+(define-public go-github-com-data-dog-go-sqlmock
+  (package
+    (name "go-github-com-data-dog-go-sqlmock")
+    (version "1.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DATA-DOG/go-sqlmock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vpvdx9hwmx9gm27aq5r5219xpaxz0gy4q1iqskk4saz05bspn0f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/DATA-DOG/go-sqlmock"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (propagated-inputs
+     (list go-github-com-kisielk-sqlstruct))
+    (home-page "https://github.com/DATA-DOG/go-sqlmock")
+    (synopsis "SQL driver mock for Golang")
+    (description
+     "Package sqlmock is a mock library implementing sql driver.  Which has
+one and only purpose - to simulate any sql driver behavior in tests, without
+needing a real database connection.  It helps to maintain correct
+@acronym{TDD, Test Driven Development} workflow.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-davecgh-go-spew
   (package
     (name "go-github-com-davecgh-go-spew")
