@@ -34,7 +34,7 @@
 ;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023, 2025 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Theofilos Pechlivanis <theofilos.pechlivanis@gmail.com>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -890,7 +890,7 @@ and others.")
 (define-public qucs-s
   (package
     (name "qucs-s")
-    (version "0.0.24")
+    (version "24.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -899,27 +899,25 @@ and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lbkaw0grw9w7d37z5dbhaqi8p57cpf9yp071zp6xrairkgimdx8"))))
-    (build-system cmake-build-system)
-    (native-inputs (list qttools-5))
-    (inputs (list qtbase-5 qtscript qtsvg-5 ngspice octave))
+                "0307046h3vf6pprbvv47r46mpm764w49ci2cg0i3l1w9rbqlypln"))
+              (patches (search-patches "qucs-s-qucsator-rf-search.patch"))))
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase                   ;for Qt 6
+      #:configure-flags #~(list "-DWITH_QT6=ON")
       #:tests? #f                       ;no tests
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch
+          (add-after 'unpack 'adjust-default-settings
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "qucs/main.cpp"
-                (("QucsSettings.NgspiceExecutable = .*;")
-                 (string-append
-                  "QucsSettings.NgspiceExecutable = \""
-                  (search-input-file inputs "/bin/ngspice")
-                  "\";"))
-                (("QucsSettings.OctaveExecutable = .*;")
-                 (string-append
-                  "QucsSettings.OctaveExecutable = \""
-                  (search-input-file inputs "/bin/octave") "\";"))))))))
+              (substitute* "qucs/settings.cpp"
+                (("\"ngspice\"")
+                 (format #f "~s" (search-input-file inputs "bin/ngspice")))
+                (("\"octave\"")
+                 (format #f "~s" (search-input-file inputs "bin/octave")))))))))
+    (native-inputs (list qttools))
+    (inputs (list ngspice octave qtbase qtcharts qtsvg qtwayland))
     (synopsis "GUI for different circuit simulation kernels")
     (description
      "@acronym{Qucs-S, Quite universal circuit simulator with SPICE} provides

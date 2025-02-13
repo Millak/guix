@@ -2006,6 +2006,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtdeclarative-disable-qmlcache.patch	\
   %D%/packages/patches/quodlibet-fix-invalid-glob.patch	\
   %D%/packages/patches/quodlibet-fix-mtime-tests.patch		\
+  %D%/packages/patches/qucs-s-qucsator-rf-search.patch		\
   %D%/packages/patches/qxlsx-fix-include-directory.patch	\
   %D%/packages/patches/sdcc-disable-non-free-code.patch		\
   %D%/packages/patches/sdl-pango-api_additions.patch		\
