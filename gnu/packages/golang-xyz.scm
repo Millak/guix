@@ -9400,6 +9400,30 @@ Goroutine-safe connections)
 manipulate processes in a safe way.")
     (license license:expat)))
 
+(define-public go-github-com-kisielk-sqlstruct
+  (package
+    (name "go-github-com-kisielk-sqlstruct")
+    (version "0.0.0-20210630145711-dae28ed37023")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kisielk/sqlstruct")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kna8qzpf1n5zsfi624xm5k3sssn5cnsw1b23w4l3qa5djy4wylk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kisielk/sqlstruct"))
+    (home-page "https://github.com/kisielk/sqlstruct")
+    (synopsis "Golang sturcts with std @code{database/sql}")
+    (description
+     "Package sqlstruct provides some convenience functions for using structs
+with the Go standard library's @code{database/sql} package.")
+    (license license:expat)))
+
 (define-public go-github-com-klauspost-asmfmt
   (package
     (name "go-github-com-klauspost-asmfmt")
