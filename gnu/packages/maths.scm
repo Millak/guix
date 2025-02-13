@@ -3437,7 +3437,7 @@ supports the propositional fragment of PDDL2.2.")
 (define-public gmsh
   (package
     (name "gmsh")
-    (version "4.11.1")
+    (version "4.13.1")
     (source
      (origin
        (method git-fetch)
@@ -3448,7 +3448,7 @@ supports the propositional fragment of PDDL2.2.")
                              (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d6n7qqj9xpfgh7v5jif565waiqjhahkh21pi5s1vr84y61wxyx8"))
+        (base32 "16abxhadyyj7890lv6cdfxskg25w105pcpqvb5iwf6a59py8na8y"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "contrib/metis"))))
