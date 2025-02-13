@@ -1,9 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2025 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
