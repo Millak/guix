@@ -35782,18 +35782,24 @@ Screenflick.")
     (name "python-jinja2-cli")
     (version "0.8.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "jinja2-cli" version))
-        (sha256
-          (base32
-            "0l4fw5wn3kxq5gvpi4wj76hvbxfyij9rb32ndwh8w4hi852v2sx1"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattrobenolt/jinja2-cli")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "03ap7rxc1g302m0wacn47rf65d6dqrawa4maam9yapyr96viif7b"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-      (list python-jinja2))
+     (list python-jinja2))
     (native-inputs
-      (list python-flake8 python-jinja2 python-pytest python-setuptools
-            python-wheel))
+     (list python-flake8
+           python-jinja2
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/mattrobenolt/jinja2-cli")
     (synopsis "Command-line interface to Jinja2")
     (description
