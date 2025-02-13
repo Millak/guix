@@ -14045,6 +14045,39 @@ sensors).")
 names.")
     (license license:expat)))
 
+(define-public go-github-com-signintech-gopdf
+  (package
+    (name "go-github-com-signintech-gopdf")
+    (version "0.29.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/signintech/gopdf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p63g8iqnq5i31v01i7hzzl09hjwi9474my2y1jzs0xfgfcg3mf1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/signintech/gopdf"
+      #:test-flags
+      #~(list "-skip" "TestImportPagesFromFile|TestTable|TestTableCenter")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))
+    (propagated-inputs
+     (list go-github-com-phpdave11-gofpdi
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/signintech/gopdf")
+    (synopsis "Generating PDF documents")
+    (description "gopdf is a Go library for generating PDF documents.")
+    (license license:expat)))
+
 (define-public go-github-com-sirupsen-logrus
   (package
     (name "go-github-com-sirupsen-logrus")
