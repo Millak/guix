@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2017, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016-2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 Andy Patterson <ajpatter@uwaterloo.ca>
@@ -614,7 +614,7 @@ server and embedded PowerPC, and S390 guests.")
     (name "qemu-minimal")
     (outputs '("out" "doc"))
     (synopsis
-     "Machine emulator and virtualizer (without GUI) for the host architecture")
+     "Machine emulator and virtualizer (without GUI or docs) for the host architecture")
     (arguments
      (substitute-keyword-arguments (package-arguments qemu)
        ((#:configure-flags configure-flags #~'())
@@ -649,11 +649,15 @@ server and embedded PowerPC, and S390 guests.")
                   (else       ; An empty list actually builds all the targets.
                    '()))))
           #~(cons #$target-list-arg #$configure-flags)))
-       ((#:phases phases)
+       ((#:phases phases #~'%standard-phases)
         #~(modify-phases #$phases
             (delete 'configure-user-static)
             (delete 'build-user-static)
-            (delete 'install-user-static)))))
+            (delete 'install-user-static)
+            ;; We cannot fully remove the "doc" output due to the gexp in qemu.
+            (replace 'move-html-doc
+              (lambda _
+                (mkdir-p #$output:doc)))))))
 
     ;; Remove dependencies on optional libraries, notably GUI libraries.
     (native-inputs (filter (lambda (input)
@@ -665,7 +669,9 @@ server and embedded PowerPC, and S390 guests.")
                                 (not (string=? "static" output)))
                                (_ input)))
                            (modify-inputs (package-native-inputs qemu)
-                             (delete "gettext-minimal"))))
+                             (delete "gettext-minimal"
+                                     "python-sphinx"
+                                     "python-sphinx-rtd-theme"))))
     (inputs (modify-inputs (package-inputs qemu)
               (delete "libusb"
                       "mesa"
