@@ -15,6 +15,7 @@
 ;;; Copyright © 2024-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Andy Tai <lichengtai@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Vasilii Smirnov <vasilii.smirnov@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -78,6 +79,7 @@
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages plotutils)
+  #:use-module (gnu packages popt)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -89,14 +91,16 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages specifications)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vim)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xiph)
@@ -259,6 +263,46 @@ interference (RFI) in radio astronomical observations.  It can make use of Lua
 scripts to make flagging strategies flexible, and the tools are applicable to a
 wide set of telescopes.")
     (license license:gpl3+)))
+
+(define-public astroterm
+  (package
+    (name "astroterm")
+    (version "1.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/da-luce/astroterm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03vfjcf8y039xbkigc3wy1sccbmk7zyy2nkfp984nbdxgr1pj129"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'copy-bsc5
+            (lambda _
+              (let* ((ybsc-input #+(this-package-native-input "specification-ybsc"))
+                     (ybsc-file (string-append ybsc-input "/share/ybsc5")))
+                (copy-file ybsc-file "./data/ybsc5"))))
+          (add-before 'configure 'fix-embed-sh-ref
+            (lambda _
+              (substitute* "meson.build"
+                (("'../scripts/embed.sh'")
+                 "meson.source_root() / 'scripts/embed.sh'")))))))
+    (native-inputs
+     (list pkg-config python-wrapper specification-ybsc xxd))
+    (inputs
+     (list ncurses argtable))
+    (home-page "https://github.com/da-luce/astroterm")
+    (synopsis "Planetarium for your terminal")
+    (description
+     "@code{astroterm} is a terminal-based star map written in C.  It displays
+the real-time positions of stars, planets, constellations, and more, all
+within your terminal - no telescope required!")
+    (license license:expat)))
 
 (define-public calceph
   (package
