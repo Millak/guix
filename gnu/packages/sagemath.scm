@@ -310,9 +310,9 @@ polynomials.  The aim of this package is to make them available through a
 generic Python interface.")
     (license license:gpl3+)))
 
-(define-public sagemath-data-polytopes-db
+(define-public polytopes-db
   (package
-    (name "sagemath-data-polytopes-db")
+    (name "polytopes-db")
     (version "20170220")
     (source (origin
               (method url-fetch)
