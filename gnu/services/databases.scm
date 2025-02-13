@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2016, 2022-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2016, 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
@@ -448,12 +448,14 @@ rolname = '" ,name "')) as not_exists;\n"
            (one-shot? #t)
            (start
             #~(lambda args
-                (let ((pid (fork+exec-command
-                            #$(postgresql-create-roles config)
-                            #:user "postgres"
-                            #:group "postgres"
-                            #:log-file #$log)))
-                  (zero? (cdr (waitpid pid))))))
+                (zero? (spawn-command
+                        #$(postgresql-create-roles config)
+                        #:user "postgres"
+                        #:group "postgres"
+                        ;; XXX: As of Shepherd 1.0.2, #:log-file is not
+                        ;; supported.
+                        ;; #:log-file #$log
+                        ))))
            (documentation "Create PostgreSQL roles.")))))
 
 (define postgresql-role-service-type

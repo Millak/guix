@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
@@ -1902,27 +1902,14 @@ WSGIPassAuthorization On
 
 (define (patchwork-django-admin-gexp patchwork settings-module)
   #~(lambda command
-      (let ((pid (primitive-fork))
-            (user (getpwnam "httpd")))
-        (if (eq? pid 0)
-            (dynamic-wind
-              (const #t)
-              (lambda ()
-                (setgid (passwd:gid user))
-                (setuid (passwd:uid user))
-
-                (setenv "DJANGO_SETTINGS_MODULE" "guix.patchwork.settings")
-                (setenv "PYTHONPATH" #$settings-module)
-                (primitive-exit
-                 (if (zero?
-                      (apply system*
-                             #$(file-append patchwork "/bin/patchwork-admin")
-                             command))
-                     0
-                     1)))
-              (lambda ()
-                (primitive-exit 1)))
-            (zero? (cdr (waitpid pid)))))))
+      (zero? (spawn-command
+              `(#$(file-append patchwork "/bin/patchwork-admin")
+                ,command)
+              #:user "httpd"
+              #:group "httpd"
+              #:environment-variables
+              `("DJANGO_SETTINGS_MODULE=guix.patchwork.settings"
+                ,(string-append "PYTHONPATH=" #$settings-module))))))
 
 (define (patchwork-django-admin-action patchwork settings-module)
   (shepherd-action

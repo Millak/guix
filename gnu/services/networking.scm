@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
@@ -390,18 +390,18 @@
                                  '()))
 
                            (false-if-exception (delete-file #$pid-file))
-                           (let ((pid (fork+exec-command
-                                       ;; By default dhclient uses a
-                                       ;; pre-standardization implementation of
-                                       ;; DDNS, which is incompatable with
-                                       ;; non-ISC DHCP servers; thus, pass '-I'.
-                                       ;; <https://kb.isc.org/docs/aa-01091>.
-                                       `(,dhclient "-nw" "-I"
-                                                   #$(string-append "-" version)
-                                                   "-pf" ,#$pid-file
-                                                   ,@config-file-args
-                                                   ,@ifaces))))
-                             (and (zero? (cdr (waitpid pid)))
+                           (let ((status (spawn-command
+                                          ;; By default dhclient uses a
+                                          ;; pre-standardization implementation of
+                                          ;; DDNS, which is incompatable with
+                                          ;; non-ISC DHCP servers; thus, pass '-I'.
+                                          ;; <https://kb.isc.org/docs/aa-01091>.
+                                          `(,dhclient "-nw" "-I"
+                                                      #$(string-append "-" version)
+                                                      "-pf" ,#$pid-file
+                                                      ,@config-file-args
+                                                      ,@ifaces))))
+                             (and (zero? status)
                                   (read-pid-file #$pid-file)))))
                 (stop #~(make-kill-destructor)))))))
     (package
