@@ -1081,6 +1081,10 @@ safety and thread safety guarantees.")
       (inputs (modify-inputs (package-inputs base-rust)
                              (replace "llvm" llvm-19))))))
 
+(define-public rust-1.84
+  (rust-bootstrapped-package rust-1.83 "1.84.1"
+   "0xdk3g1xq33fy4m7q6l38ba9ydxbanccyb0vczvlk998jvababsy"))
+
 
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
