@@ -1430,12 +1430,12 @@ safety and thread safety guarantees.")
                    (mkdir-p (string-append out dest))
                    (copy-recursively "library" (string-append out dest "/library"))
                    (copy-recursively "src" (string-append out dest "/src")))))
-             (add-after 'install 'remove-uninstall-script
-               (lambda* (#:key outputs #:allow-other-keys)
-                 ;; This script has no use on Guix
-                 ;; and it retains a reference to the host's bash.
-                 (delete-file (string-append (assoc-ref outputs "out")
-                                             "/lib/rustlib/uninstall.sh"))))
+             (add-before 'install 'remove-uninstall-script
+               (lambda _
+                 ;; Don't install the uninstall script.  It has no use
+                 ;; on Guix and it retains a reference to the host's bash.
+                 (substitute* "src/tools/rust-installer/install-template.sh"
+                   (("install_uninstaller \"") "# install_uninstaller \""))))
              (add-after 'install-rust-src 'wrap-rust-analyzer
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((bin (string-append (assoc-ref outputs "tools") "/bin")))
