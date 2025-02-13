@@ -1100,12 +1100,13 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.82))
+  (let ((base-rust rust-1.84))
     (package
       (inherit base-rust)
       (properties (append
                     (alist-delete 'hidden? (package-properties base-rust))
-                    (clang-compiler-cpu-architectures "17")))
+                    ;; Keep in sync with the llvm used to build rust.
+                    (clang-compiler-cpu-architectures "19")))
       (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
       (source
        (origin
@@ -1113,7 +1114,9 @@ safety and thread safety guarantees.")
          (snippet
           '(begin
              (for-each delete-file-recursively
-                       '("src/llvm-project"
+                       '("src/gcc"
+                         "src/llvm-project"
+                         "vendor/jemalloc-sys-0.3.2/jemalloc"
                          "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
                          "vendor/jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
                          "vendor/openssl-src-111.17.0+1.1.1m/openssl"
@@ -1123,10 +1126,10 @@ safety and thread safety guarantees.")
                          ;; so we unbundle them.
                          "vendor/curl-sys-0.4.52+curl-7.81.0/curl"
                          "vendor/curl-sys-0.4.74+curl-8.9.0/curl"
+                         "vendor/curl-sys-0.4.77+curl-8.10.1/curl"
                          "vendor/libffi-sys-2.3.0/libffi"
                          "vendor/libz-sys-1.1.3/src/zlib"
-                         "vendor/libz-sys-1.1.18/src/zlib"
-                         "vendor/libz-sys-1.1.19/src/zlib"))
+                         "vendor/libz-sys-1.1.20/src/zlib"))
              ;; Use the packaged nghttp2
              (for-each
               (lambda (ver)
@@ -1155,9 +1158,8 @@ safety and thread safety guarantees.")
                      (string-append all ", \"use-libc\"")))))
               '("3.3.0"
                 "3.4.0"
-                "3.7.1"
                 "3.10.1"
-                "3.12.0"))))))
+                "3.13.0"))))))
       (arguments
        (substitute-keyword-arguments
          (strip-keyword-arguments '(#:tests?)
@@ -1182,7 +1184,8 @@ safety and thread safety guarantees.")
                (lambda _
                  (substitute* "src/tools/cargo/tests/testsuite/git.rs"
                    ,@(make-ignore-test-list
-                      '("fn fetch_downloads_with_git2_first_")))
+                      '("fn fetch_downloads_with_git2_first_"
+                        "fn corrupted_checkout_with_cli")))
                  (substitute* "src/tools/cargo/tests/testsuite/build.rs"
                    ,@(make-ignore-test-list
                       '("fn build_with_symlink_to_path_dependency_with_build_script_in_git")))
@@ -1245,35 +1248,41 @@ safety and thread safety guarantees.")
                              ,@(make-ignore-test-list
                                  '("fn package_cache_lock_during_build")))))))
                    `())
-             (add-after 'unpack 'disable-tests-broken-on-aarch64
-               (lambda _
-                 (with-directory-excursion "src/tools/cargo/tests/testsuite/"
-                   (substitute* "build_script_extra_link_arg.rs"
-                     ,@(make-ignore-test-list
-                        '("fn build_script_extra_link_arg_bin_single")))
-                   (substitute* "build_script.rs"
-                     ,@(make-ignore-test-list
-                        '("fn env_test")))
-                   (substitute* "collisions.rs"
-                     ,@(make-ignore-test-list
-                        '("fn collision_doc_profile_split")))
-                   (substitute* "concurrent.rs"
-                     ,@(make-ignore-test-list
-                        '("fn no_deadlock_with_git_dependencies")))
-                   (substitute* "features2.rs"
-                     ,@(make-ignore-test-list
-                        '("fn dep_with_optional_host_deps_activated"))))))
+             ,@(if (target-aarch64?)
+                   ;; Keep this phase separate so it can be adjusted without needing
+                   ;; to adjust the skipped tests on other architectures.
+                   `((add-after 'unpack 'disable-tests-broken-on-aarch64
+                       (lambda _
+                         (with-directory-excursion "src/tools/cargo/tests/testsuite"
+                           (substitute* "build_script_extra_link_arg.rs"
+                             ,@(make-ignore-test-list
+                                '("fn build_script_extra_link_arg_bin_single")))
+                           (substitute* "build_script.rs"
+                             ,@(make-ignore-test-list
+                                '("fn env_test")))
+                           (substitute* "collisions.rs"
+                             ,@(make-ignore-test-list
+                                '("fn collision_doc_profile_split")))
+                           (substitute* "concurrent.rs"
+                             ,@(make-ignore-test-list
+                                '("fn no_deadlock_with_git_dependencies")))
+                           (substitute* "features2.rs"
+                             ,@(make-ignore-test-list
+                                '("fn dep_with_optional_host_deps_activated")))))))
+                   `())
              (add-after 'unpack 'disable-tests-requiring-crates.io
                (lambda _
-                 (substitute* "src/tools/cargo/tests/testsuite/install.rs"
-                   ,@(make-ignore-test-list
-                      '("fn install_global_cargo_config")))
-                 (substitute* "src/tools/cargo/tests/testsuite/cargo_info/within_ws_with_alternative_registry/mod.rs"
-                   ,@(make-ignore-test-list
-                      '("fn case")))
-                 (substitute* "src/tools/cargo/tests/testsuite/package.rs"
-                   ,@(make-ignore-test-list
-                      '("fn workspace_with_local_deps_index_mismatch")))))
+                 (with-directory-excursion "src/tools/cargo/tests/testsuite"
+                   (substitute* "install.rs"
+                     ,@(make-ignore-test-list
+                        '("fn install_global_cargo_config")))
+                   (substitute* '("cargo_add/add_workspace_non_fuzzy/mod.rs"
+                                  "cargo_info/within_ws_with_alternative_registry/mod.rs")
+                     ,@(make-ignore-test-list
+                        '("fn case")))
+                   (substitute* "package.rs"
+                     ,@(make-ignore-test-list
+                        '("fn workspace_with_local_deps_index_mismatch"))))))
              (add-after 'unpack 'disable-miscellaneous-broken-tests
                (lambda _
                  (substitute* "src/tools/cargo/tests/testsuite/check_cfg.rs"
@@ -1342,7 +1351,7 @@ safety and thread safety guarantees.")
                ;; different outputs while reusing the shared libraries.
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((out (assoc-ref outputs "out")))
-                   (substitute* "src/bootstrap/src/core/builder.rs"
+                   (substitute* "src/bootstrap/src/core/builder/cargo.rs"
                      ((" = rpath.*" all)
                       (string-append all
                                      "                "
@@ -1458,7 +1467,7 @@ exec -a \"$0\" \"~a\" --proc-macro-srv \"~a\" \"$@\""
                       (prepend curl libffi `(,nghttp2 "lib") zlib)))
       (native-inputs (cons*
                       ;; Keep in sync with the llvm used to build rust.
-                      `("clang-source" ,(package-source clang-runtime-17))
+                      `("clang-source" ,(package-source clang-runtime-19))
                       ;; Add test inputs.
                       `("gdb" ,gdb/pinned)
                       `("procps" ,procps)
