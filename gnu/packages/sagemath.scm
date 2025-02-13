@@ -332,9 +332,9 @@ to be used by SageMath.")
     ;; Debian says GPLv2+.
     (license license:gpl2+)))
 
-(define-public sagemath-data-graphs
+(define-public graphs
   (package
-    (name "sagemath-data-graphs")
+    (name "graphs")
     (version "20210214")
     (source (origin
               (method url-fetch)
