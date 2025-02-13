@@ -33991,6 +33991,31 @@ handy file manipulation functions which can be seen in the vignette.  One
 example is a function to remove spaces from all file names in a directory.")
     (license license:gpl3)))
 
+(define-public r-fillpattern
+  (package
+    (name "r-fillpattern")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fillpattern" version))
+       (sha256
+        (base32 "0qwrzxjw4br9sbh0zxry72j6rgvb1s8cwvwqigf7dg1zi4hk4i74"))))
+    (properties `((upstream-name . "fillpattern")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2))
+    (native-inputs (list r-testthat))
+    (home-page "https://cmmr.github.io/fillpattern/")
+    (synopsis "Patterned fills for ggplot2 and grid graphics")
+    (description
+     "This package adds distinctive yet unobtrusive geometric patterns where
+solid color fills are normally used.  Patterned figures look just as
+professional when viewed by colorblind readers or when printed in black and
+white.  The dozen included patterns can be customized in terms of scale,
+rotation, color, fill, line type, and line width.  It is compatible with the
+@code{ggplot2} package as well as @code{grid} graphics.")
+    (license license:expat)))
+
 (define-public r-acmeeqtl
   (package
     (name "r-acmeeqtl")
