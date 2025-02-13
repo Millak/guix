@@ -2648,6 +2648,36 @@ tools."))))
                     "  This package provides an command line interface (CLI)
 tool."))))
 
+(define-public ssh-to-pgp
+  (package
+    (name "ssh-to-pgp")
+    (version "1.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Mic92/ssh-to-pgp")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xaj6pnk5y2flnxm57j9bpdpll9vhg1rbjj4v3a7hn1gginxpprx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/Mic92/ssh-to-pgp"
+      ;; failed: No secret key
+      #:test-flags #~(list "-skip" "TestCli")))
+    (native-inputs
+     (list gnupg
+           go-github-com-protonmail-go-crypto
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/Mic92/ssh-to-pgp")
+    (synopsis "Convert SSH RSA keys to GPG keys")
+    (description "This package provides @code{ssh-to-pgp}: a Go command line
++utility to convert SSH RSA keys to GPG keys.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
