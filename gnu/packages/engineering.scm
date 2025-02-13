@@ -887,6 +887,54 @@ such as those made in pneumatics, hydraulics, process industries, electronics,
 and others.")
     (license license:gpl2+)))
 
+(define-public qucs-s
+  (package
+    (name "qucs-s")
+    (version "0.0.24")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ra3xdh/qucs_s")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lbkaw0grw9w7d37z5dbhaqi8p57cpf9yp071zp6xrairkgimdx8"))))
+    (build-system cmake-build-system)
+    (native-inputs (list qttools-5))
+    (inputs (list qtbase-5 qtscript qtsvg-5 ngspice octave))
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "qucs/main.cpp"
+                (("QucsSettings.NgspiceExecutable = .*;")
+                 (string-append
+                  "QucsSettings.NgspiceExecutable = \""
+                  (search-input-file inputs "/bin/ngspice")
+                  "\";"))
+                (("QucsSettings.OctaveExecutable = .*;")
+                 (string-append
+                  "QucsSettings.OctaveExecutable = \""
+                  (search-input-file inputs "/bin/octave") "\";"))))))))
+    (synopsis "GUI for different circuit simulation kernels")
+    (description
+     "@acronym{Qucs-S, Quite universal circuit simulator with SPICE} provides
+a fancy graphical user interface for a number of popular circuit simulation
+engines.  The package contains libraries for schematic capture, visualization
+and components.  The following simulation kernels are supported:
+@itemize
+@item Ngspice (recommended)
+@item Xyce
+@item SpiceOpus
+@item Qucsator (non-SPICE)
+@end itemize\n")
+    (home-page "https://ra3xdh.github.io/")
+    (license license:gpl2+)))
+
 (define-public gerbv
   (package
     (name "gerbv")
