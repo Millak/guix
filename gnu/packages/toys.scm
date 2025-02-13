@@ -479,40 +479,6 @@ typing @command{sl} instead of @command{ls}.")
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
 
-(define-public xpenguins
-  (package
-    (name "xpenguins")
-    (version "3.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://ratrabbit.nl/downloads/xpenguins/xpenguins-"
-             version ".tar.gz"))
-       (sha256
-        (base32 "03qwc7gf21d2ixkrxxwwgayj6f5fv1kg4b7ggx90j5269il63adm"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'fix-install-path
-            (lambda _
-              ;; Install program to bin/ instead of games/.
-              (substitute* "src/Makefile.in"
-                (("(gamesdir = \\$\\(exec_prefix\\)/)games" _ prefix)
-                 (string-append prefix "bin"))))))))
-    (inputs
-     (list gtk+ libx11 libxml2 libxpm libxt))
-    (native-inputs
-     (list pkg-config))
-    (home-page
-     "https://www.ratrabbit.nl/ratrabbit/software/xpenguins/index.html")
-    (synopsis "Let penguins take over your desktop!")
-    (description "Xpenguins is a vintage application showing penguins running,
-flying and falling on the desktop, using windows as run paths.")
-    (license license:gpl2+)))
-
 (define-public xfishtank
   (package
     (name "xfishtank")
@@ -549,6 +515,40 @@ flying and falling on the desktop, using windows as run paths.")
     (description "Xfishtank is a vintage application that uses the X11
 protocol.  It shows fishes swimming over the desktop.")
     (license (list license:expat license:gpl3+))))
+
+(define-public xpenguins
+  (package
+    (name "xpenguins")
+    (version "3.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://ratrabbit.nl/downloads/xpenguins/xpenguins-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "03qwc7gf21d2ixkrxxwwgayj6f5fv1kg4b7ggx90j5269il63adm"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-install-path
+            (lambda _
+              ;; Install program to bin/ instead of games/.
+              (substitute* "src/Makefile.in"
+                (("(gamesdir = \\$\\(exec_prefix\\)/)games" _ prefix)
+                 (string-append prefix "bin"))))))))
+    (inputs
+     (list gtk+ libx11 libxml2 libxpm libxt))
+    (native-inputs
+     (list pkg-config))
+    (home-page
+     "https://www.ratrabbit.nl/ratrabbit/software/xpenguins/index.html")
+    (synopsis "Let penguins take over your desktop!")
+    (description "Xpenguins is a vintage application showing penguins running,
+flying and falling on the desktop, using windows as run paths.")
+    (license license:gpl2+)))
 
 (define-public xsnow
   (package
