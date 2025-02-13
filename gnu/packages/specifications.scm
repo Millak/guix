@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Vasilii Smirnov <vasilii.smirnov@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -202,3 +203,56 @@ documentation, schemas and source of Golang module.")
 spectroscopic data reduction (e.g. standard star spectra, atmospheric
 extinction curves, line lists for calibration lamps).")
       (license license:bsd-3))))
+
+(define-public specification-ybsc
+  (package
+    (name "specification-ybsc")
+    (version "5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://tdc-www.harvard.edu/catalogs/ybsc" version
+                           ".gz"))
+       (sha256
+        (base32 "1vbvxhw1i3h2r61zgqy7hpwpa4pmc0jh6mknridvx3xyj0g4pi1x"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("ybsc5" "share/ybsc5"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-documentation
+            (lambda _
+              (let ((doc (string-append #$output "/share/doc")))
+                (mkdir-p doc)
+                (with-directory-excursion doc
+                  (copy-file
+                   #+(origin
+                       (method url-fetch)
+                       (uri (string-append
+                             "http://tdc-www.harvard.edu/catalogs/ybsc"
+                             (package-version this-package) ".readme"))
+                       (sha256
+                        (base32
+                         "0vki8cjwgwdfck43sbmm5d8qlk7sag6s2vqq8gp5z29nrpa0j93d")))
+                   "README")
+                  (copy-file
+                   #+(origin
+                       (method url-fetch)
+                       (uri (string-append
+                             "http://tdc-www.harvard.edu/catalogs/ybsc5.notes.gz"
+                             (package-version this-package) ".notes.gz"))
+                       (sha256
+                        (base32
+                         "018lvy24pzf3ifq7dkryjnz2ny46311g4dnfifpv0rddmv7di2fl")))
+                   "notes.gz")
+                  (system* "gunzip" "notes.gz"))))))))
+    (home-page "http://tdc-www.harvard.edu/catalogs/bsc5.html")
+    (synopsis "Yale Bright Star Catalogue")
+    (description
+     "This package provides an ASCII version of @acronym{Yale Bright Star
+Catalogue, @url{https://en.wikipedia.org/wiki/Bright_Star_Catalogue, YBSC}}
+catalog which is a widely used source of basic astronomical and astrophysical
+data for stars brighter than magnitude 6.5.  It provides 9110 stars including
+B1950 positions, proper motions, magnitudes, and, usually, spectral types.")
+    (license license:public-domain)))
