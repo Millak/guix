@@ -356,9 +356,9 @@ database.")
     ;; Debian says GPLv2+.
     (license license:gpl2+)))
 
-(define-public sagemath-data-combinatorial-designs
+(define-public combinatorial-designs
   (package
-    (name "sagemath-data-combinatorial-designs")
+    (name "combinatorial-designs")
     (version "20140630")
     (source (origin
               (method url-fetch)
@@ -375,10 +375,11 @@ database.")
     (home-page "https://www.sagemath.org")
     (synopsis "Data for Combinatorial Designs")
     (description
-     "This package data for combinatorial designs.  It currently contains:
+     "This package contains data for combinatorial designs.  It
+currently contains:
 
 @itemize
 @item The table of @acronym{MOLS, Mutually orthogonal Latin squares} from the
-Handbook of Combinatorial Designs, 2ed.
+Handbook of Combinatorial Designs, 2nd edition.
 @end itemize")
     (license license:public-domain)))
