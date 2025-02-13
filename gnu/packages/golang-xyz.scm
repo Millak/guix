@@ -16812,6 +16812,35 @@ written in Go, as well as some other related libraries like whatsmeow.")
 fork of @code{github.com/chai2010/webp}.")
     (license license:bsd-3)))
 
+(define-public go-go-mau-fi-zeroconfig
+  (package
+    (name "go-go-mau-fi-zeroconfig")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tulir/zeroconfig")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zi5jbrlvsmpiq6ph8mh2360f5chdpy69ykrlmycbm5518wigz2c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.mau.fi/zeroconfig"))
+    (propagated-inputs
+     (list go-github-com-rs-zerolog
+           go-github-com-stretchr-testify
+           go-gopkg-in-natefinch-lumberjack-v2))
+    (home-page "https://go.mau.fi/zeroconfig")
+    (synopsis "Declarative config format for zerolog")
+    (description
+     "This package provides a relatively simple declarative config format for
+@url{https://github.com/rs/zerolog, zerolog} supporting configuration files
+written in YAML or JSON.")
+    (license license:mpl2.0)))
+
 (define-public go-go-mongodb-org-mongo-driver
   (package
     (name "go-go-mongodb-org-mongo-driver")
