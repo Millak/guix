@@ -236,6 +236,7 @@
       ;; <https://bugs.gnu.org/40527>.
       #:tests? (or (%current-target-system)
                    (not (string=? "i686-linux" (%current-system))))
+      #:parallel-tests? (not (target-arm32?))
       #:configure-flags
       #~(let ((gcc (search-input-file %build-inputs "/bin/gcc"))
               (openbios (search-input-file %build-inputs
@@ -365,8 +366,9 @@
               ;; This test appears to be flaky as well, probably resulting
               ;; from a race condition.
               (delete-file "tests/qemu-iotests/tests/copy-before-write")))
-          #$@(if (target-riscv64?)
-                 '((add-after 'unpack 'disable-some-tests
+          #$@(cond
+               ((target-riscv64?)
+                #~((add-after 'unpack 'disable-some-tests
                      (lambda _
                        ;; qemu.qmp.QMPConnectError:
                        ;; Unexpected empty reply from server
@@ -379,8 +381,14 @@
                        (delete-file "tests/qemu-iotests/267")
 
                        ;; This test takes too long.
-                       (delete-file "tests/qemu-iotests/tests/iothreads-stream"))))
-                 '())
+                       (delete-file "tests/qemu-iotests/tests/iothreads-stream")))))
+               ((target-arm32?)
+                #~((add-after 'unpack 'disable-some-tests
+                     (lambda _
+                       ;; failed to allocate memory for stack: Cannot allocate memory
+                       (substitute* "tests/qtest/meson.build"
+                         ((".*qtests_aspeed :.*") ""))))))
+               (else '()))
           (add-after 'patch-source-shebangs 'patch-embedded-shebangs
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               ;; Ensure the executables created by these source files reference
