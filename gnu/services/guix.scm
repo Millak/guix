@@ -350,7 +350,7 @@
                      #:directory "/var/lib/guix-build-coordinator"
                      #:pid-file "/var/run/guix-build-coordinator/pid"
                      ;; Allow time for migrations to run
-                     #:pid-file-timeout 60
+                     #:pid-file-timeout 240
                      #:environment-variables
                      `("LC_ALL=en_US.utf8"
                        "PATH=/run/current-system/profile/bin" ; for hooks
