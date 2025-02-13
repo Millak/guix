@@ -846,6 +846,27 @@ a generic Scheme interaction mode for the GNU Emacs editor.")
      "This package adds support for using Chez Scheme in Emacs with Geiser.")
     (license license:bsd-3)))
 
+(define-public emacs-syncthing
+  (package
+    (name "emacs-syncthing")
+    (version "3.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KeyWeeUsr/emacs-syncthing.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q755rcmlmpz9zb1i3ic3a3svyqwavncnfzmx0bsg6229qg06d0l"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/KeyWeeUsr/emacs-syncthing")
+    (synopsis "Emacs client for Syncthing")
+    (description
+     "Emacs-Syncthing is a client for the Syncthing file synchronization tool
+which provides an Emacs interface to replace the built-in web UI.")
+    (license license:gpl3+)))
+
 (define-public emacs-vc-hgcmd
   (package
     (name "emacs-vc-hgcmd")
