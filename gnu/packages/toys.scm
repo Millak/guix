@@ -373,43 +373,46 @@ of the Nyan Cat / Poptart Cat animation.")
                             "bitmasks/bsd" "bitmasks/sakura" "bitmasks/tomoyo"
                             (find-files "cursors" "(bsd|card|petal).*\\.xbm")))))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "xmkmf")
+              ;; Fix incorrectly generated compiler flags.
+              (substitute* "Makefile"
+                (("(CDEBUGFLAGS = ).*" _ front)
+                 (string-append front "-O2\n")))))
+          (replace 'install
+            (lambda _
+              (let* ((bin     (format #f "~a/bin" #$output))
+                     (doc     (format #f "~a/share/doc/~a-~a"
+                                      #$output #$name #$version))
+                     (man     (format #f "~a/share/man" #$output))
+                     (man6    (format #f "~a/man6" man))
+                     (man6-ja (format #f "~a/ja/man6" man)))
+                (install-file "oneko" bin)
+                (mkdir-p man6)
+                (mkdir-p man6-ja)
+                (copy-file "oneko.man" (string-append man6 "/oneko.6"))
+                (copy-file "oneko.man.jp" (string-append man6-ja "/oneko.6"))
+                (for-each (lambda (file) (install-file file doc))
+                          (find-files "." "README.*"))))))))
     (native-inputs
      (list imake))
     (inputs
      (list libx11 libxext))
-    (arguments
-     `(#:tests? #f ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             (invoke "xmkmf")
-             ;; Fix incorrectly generated compiler flags.
-             (substitute* "Makefile"
-               (("(CDEBUGFLAGS = ).*" _ front) (string-append front "-O2\n")))))
-         (replace 'install
-           (lambda* (#:key outputs make-flags #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version))
-                    (man (string-append out "/share/man"))
-                    (man6 (string-append man "/man6"))
-                    (man6-ja (string-append man "/ja/man6")))
-               (install-file "oneko" bin)
-               (mkdir-p man6)
-               (mkdir-p man6-ja)
-               (copy-file "oneko.man" (string-append man6 "/oneko.6"))
-               (copy-file "oneko.man.jp" (string-append man6-ja "/oneko.6"))
-               (for-each (lambda (file) (install-file file doc))
-                         (find-files "." "README.*"))))))))
     (home-page "http://www.daidouji.com/oneko/")
     (synopsis "Cute cat chasing your mouse pointer")
     (description
-     "Oneko displays an animated cat or dog that chases the mouse pointer---now
-an actual mouse or a bone---around the screen while you work.
+     "Oneko displays an animated cat or dog that chases the mouse
+pointer---now an actual mouse or a bone---around the screen while you work.
 
 It was written for the X Window system and does not work well on Wayland.")
-    (license license:public-domain))) ; see https://directory.fsf.org/wiki/Oneko
+    ;; See <https://directory.fsf.org/wiki/Oneko>.
+    (license license:public-domain)))
 
 (define-public python-terminaltexteffects
   (package
