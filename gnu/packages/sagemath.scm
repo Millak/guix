@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2019, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -289,9 +289,9 @@ libraries GMO, MPFR and MPC.")
 Polyhedra Library (PPL).")
     (license license:gpl3+)))
 
-(define-public sagemath-data-conway-polynomials
+(define-public conway-polynomials
   (package
-    (name "sagemath-data-conway-polynomials")
+    (name "conway-polynomials")
     (version "0.10")
     (source
      (origin
