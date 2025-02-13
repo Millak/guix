@@ -173,7 +173,7 @@ line applications.")
 (define-public fplll
   (package
     (name "fplll")
-    (version "5.4.2")
+    (version "5.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -182,7 +182,7 @@ line applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0044nyfnwzgyfrsikbcbh00f54dd61hwn3fb6711rrskkfnw977a"))))
+                "0m38c1h5586aykac1yy5753a2ygggasrhmmrk092lcnl55ldgy2s"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
