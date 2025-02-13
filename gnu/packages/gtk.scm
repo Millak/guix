@@ -1468,7 +1468,7 @@ ranging from small one-off tools to complete application suites.")
                          (find-files module-dir "\\.scm$"))
                #t))))))
     (inputs
-     (list guile-lib expat guile-3.0))
+     (list guile-lib guile-3.0))
     (propagated-inputs
      ;; The .pc file refers to 'cairo'.
      (list cairo))
