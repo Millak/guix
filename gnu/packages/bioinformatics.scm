@@ -18924,20 +18924,20 @@ controls for use in @code{CytoExploreR}.")
       (license license:gpl2))))
 
 (define-public r-giotto
-  (let ((commit "3c8067cedbf6e3112edcac2ae796de05fd9d6fe4")
+  (let ((commit "3e6671a2512484a7b90b421b7e697d1abc2ec760")
         (revision "1"))
     (package
       (name "r-giotto")
       (version (git-version "1.1.2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/RubD/Giotto/")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1nbbqs0jk07wafshvqsdp8ds3kr9bwq88aafc5m0kdiqs7winb0d"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/RubD/Giotto/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "086kyfhwqcd9qkl2yb9g4xgk8xs88ga4slha7rwilxm1sg8fhchf"))))
       (properties `((upstream-name . "Giotto")))
       (build-system r-build-system)
       (propagated-inputs
