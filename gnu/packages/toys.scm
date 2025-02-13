@@ -55,6 +55,12 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
+;;; Commentary:
+;;;
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+;;; Code:
+
 (define-public cbonsai
   (let ((commit "50fe627c84036e3be4115b02be04d17f58480199")
         (revision "0"))
@@ -585,3 +591,9 @@ flying and falling on the desktop, using windows as run paths.")
 the desktop background.  Additional customizable effects include wind, stars
 and various scenery elements.")
     (license license:gpl3+)))
+
+;;;
+;;; Avoid adding new packages to the end of this file.  To reduce the chances
+;;; of a merge conflict, place them above by existing packages in alphabetical
+;;; order.
+;;;
