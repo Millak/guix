@@ -19,11 +19,13 @@
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2023 Miguel Ángel Moreno <mail@migalmoreno.com>
+;;; Copyright © 2023 conses <contact@conses.eu>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
-;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
+;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Superfly Johnson <superfly.johnson@yahoo.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
@@ -2502,6 +2504,42 @@ obfuscated via the Elligator 2 mapping
 @url{https://github.com/refraction-networking/utls,uTLS} for the specific
 purpose of improving obfs4proxy's meek_lite transport.")
     (license license:bsd-3)))
+
+(define-public go-go-mau-fi-libsignal
+  (package
+    (name "go-go-mau-fi-libsignal")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             ;; Original project:
+             ;;   <https://github.com/RadicalApp/libsignal-protocol-go>
+             ;; The first fork:
+             ;;   <https://github.com/crossle/libsignal-protocol-go>
+             ;;
+             ;; It is the second fork as seen in
+             ;; <https://pkg.go.dev/go.mau.fi/libsignal>.
+             (url "https://github.com/tulir/libsignal-protocol-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pd2kijza7dr5nbgfw176ca1r3rmgpx8h22gqjp557awxqhw9lzr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "go.mau.fi/libsignal"))
+    (propagated-inputs
+     (list go-filippo-io-edwards25519
+           go-golang-org-x-crypto
+           go-google-golang-org-protobuf))
+    (home-page "https://go.mau.fi/libsignal")
+    (synopsis "Go implementation of the Signal protocol for WhatsApp")
+    (description
+     "Libsignal-protocol-go is a Go implementation of the Signal Client
+Protocol.")
+    (license license:gpl3)))
 
 (define-public go-lukechampine-com-blake3
   (package
