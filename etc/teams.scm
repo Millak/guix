@@ -12,6 +12,7 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -285,6 +286,18 @@ and the maven-build-system."
               (make-regexp* "^guix/build/maven/")
               "guix/build-system/ant.scm"
               "guix/build-system/maven.scm")))
+
+(define-team javascript
+  (team 'javascript
+        #:name "JavaScript team"
+        #:description
+        "JavaScript/Node.js packages, the node build system."
+        #:scope (list "gnu/packages/node-xyz.scm"
+                      "gnu/packages/node.scm"
+                      "guix/build-system/node.scm"
+                      "guix/build/node-build-system.scm"
+                      "guix/import/npm-binary.scm"
+                      "guix/scripts/import/npm-binary.scm")))
 
 (define-team science
   (team 'science
