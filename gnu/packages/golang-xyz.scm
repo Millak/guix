@@ -6780,6 +6780,43 @@ for working with API description formats supported by
 lightweight distribution of these models with minimal dependencies.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-gops
+  (package
+    (name "go-github-com-google-gops")
+    (version "0.3.28")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/gops")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dbnpnvf624mygajxn13qcdh9nx23lr70p3x2y6xaz4jnprkilqw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/google/gops"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; mkdir /homeless-shelter: permission denied
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list go-github-com-shirou-gopsutil-v3
+           go-github-com-spf13-cobra
+           go-github-com-xlab-treeprint
+           go-golang-org-x-sys
+           go-rsc-io-goversion))
+    (home-page "https://github.com/google/gops")
+    (synopsis "Listing and diagnosing Go processes tool")
+    (description
+     "This package implements a functionalit to list currently running Go
+processes.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-google-goterm
   (package
     (name "go-github-com-google-goterm")
@@ -18828,6 +18865,20 @@ editor.")
       #:tests? #f
       #:import-path "github.com/client9/misspell/cmd/misspell"
       #:unpack-path "github.com/client9/misspell"))))
+
+(define-public gops
+  (package
+    (inherit go-github-com-google-gops)
+    (name "gops")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-google-gops)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)))
+    (native-inputs (package-propagated-inputs go-github-com-google-gops))
+    (propagated-inputs '())
+    (inputs '())))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
