@@ -331,63 +331,6 @@ a given height bound on a hyperelliptic curve in a very efficient way,
 by using an optimized quadratic sieve algorithm.")
     (license license:gpl2+)))
 
-;; Sage has become upstream of the following package.
-(define-public zn-poly
-  (package
-    (name "zn-poly")
-    (version "0.9.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url (string-append "https://gitlab.com/sagemath/"
-                                  "zn_poly.git/"))
-              (commit version)))
-       (file-name (git-file-name "zn_poly" version))
-       (sha256
-        (base32 "1wbc3apxcldxfcw1dnwnn7fvlfb6bwvlr8glvgv6hf79p9r2s4j0"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(("python" ,python-2)))
-    (inputs
-     (list gmp))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           ;; The configure script chokes on --enable-fast-install.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (invoke "./configure"
-                     (string-append "--prefix=" (assoc-ref outputs "out"))
-                     "--cflags=-O3 -fPIC")))
-         (add-before 'build 'prepare-build
-           (lambda _
-             (setenv "CC" "gcc")
-             #t))
-         (add-after 'build 'build-so
-           (lambda _
-             (invoke "make" "libzn_poly.so")))
-         (add-after 'install 'install-so
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib"))
-                    (soname (string-append "libzn_poly-" ,version ".so"))
-                    (target (string-append lib "/" soname)))
-               (install-file "libzn_poly.a" lib)
-               (install-file soname lib)
-               (symlink target
-                        (string-append lib "/libzn_poly.so"))
-               (symlink target
-                        (string-append lib "/libzn_poly-"
-                                       ,(version-major+minor version)
-                                       ".so")))
-             #t)))))
-    (synopsis "Arithmetic for polynomials over Z/NZ")
-    (description "zn_poly implements the arithmetic of polynomials the
-coefficients of which are modular integers.")
-    (license (list license:gpl2 license:gpl3)) ; dual licensed
-    (home-page "https://gitlab.com/sagemath/zn_poly")))
-
 (define-public sagemath-data-conway-polynomials
   (package
     (name "sagemath-data-conway-polynomials")
