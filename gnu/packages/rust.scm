@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018 Nikolai Merinov <nikolai.merinov@member.fsf.org>
-;;; Copyright © 2017, 2019-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2019-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
@@ -1336,7 +1336,9 @@ safety and thread safety guarantees.")
                            "src/tools/cargo"
                            "src/tools/clippy"
                            "src/tools/rust-analyzer"
-                           "src/tools/rustfmt"))))
+                           "src/tools/rustfmt"
+                           ;; Needed by rust-analyzer and editor plugins
+                           "src/tools/rust-analyzer/crates/proc-macro-srv-cli"))))
              (replace 'check
                ;; Phase overridden to also test more tools.
                (lambda* (#:key tests? parallel-build? #:allow-other-keys)
@@ -1355,6 +1357,15 @@ safety and thread safety guarantees.")
                ;; Phase overridden to also install more tools.
                (lambda* (#:key outputs #:allow-other-keys)
                  (invoke "./x.py" "install")
+                 ;; This one doesn't have an install target so
+                 ;; we need to install manually.
+                 (install-file (string-append
+                                 "build/"
+                                 ,(platform-rust-target
+                                    (lookup-platform-by-system
+                                      (%current-system)))
+                                 "/stage1-tools-bin/rust-analyzer-proc-macro-srv")
+                               (string-append (assoc-ref outputs "out") "/libexec"))
                  (substitute* "config.toml"
                    ;; Adjust the prefix to the 'cargo' output.
                    (("prefix = \"[^\"]*\"")
@@ -1389,10 +1400,12 @@ safety and thread safety guarantees.")
                      (lambda (port)
                        (format port "#!~a
 if test -z \"${RUST_SRC_PATH}\";then export RUST_SRC_PATH=~S;fi;
-exec -a \"$0\" \"~a\" \"$@\""
+exec -a \"$0\" \"~a\" --proc-macro-srv \"~a\" \"$@\""
                                (which "bash")
                                (string-append (assoc-ref outputs "rust-src")
                                               "/lib/rustlib/src/rust/library")
+                               (string-append (assoc-ref outputs "out")
+                                              "/libexec/rust-analyzer-proc-macro-srv")
                                (string-append bin "/.rust-analyzer-real"))))
                    (chmod (string-append bin "/rust-analyzer") #o755))))))))
       (inputs
