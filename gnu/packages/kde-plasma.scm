@@ -2428,31 +2428,36 @@ PulseAudio.")
     (license (list license:lgpl2.1 license:lgpl3))))
 
 (define-public plasma-pass
-  (package
-    (name "plasma-pass")
-    (version "1.2.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/" name "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1klpqcc2wsf3myvzhy9l0sv2iws458iad2mwg3z0cy2d11an8wia"))))
-    (build-system qt-build-system)
-    (native-inputs (list extra-cmake-modules))
-    (inputs (list ki18n kitemmodels kwindowsystem kio
-                  libplasma
-                  oath-toolkit
-                  plasma5support
-                  qgpgme-qt6
-                  qtdeclarative))
-    (arguments (list #:qtbase qtbase
-                     #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
-    (home-page "https://invent.kde.org/plasma/plasma-pass")
-    (synopsis "Plasma applet for the Pass password manager")
-    (description
-     "This package provides a Plasma applet for the Pass password manager.")
-    (license license:lgpl2.1+)))
+  ;; Port to Plasma 6.
+  (let ((commit "74c011b634f3bdbdcd80a74b252e6499774756f2")
+        (revision "0"))
+    (package
+      (name "plasma-pass")
+      (version (git-version "1.2.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://invent.kde.org/plasma/plasma-pass")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0wp69ylhcqhy4l282fns0grhpf20w8jrhj2jmv7gdmhxnpnh9lk9"))
+                (file-name (git-file-name name version))))
+      (build-system qt-build-system)
+      (native-inputs (list extra-cmake-modules))
+      (inputs (list ki18n kitemmodels kwindowsystem kio
+                    libplasma
+                    oath-toolkit
+                    plasma5support
+                    qgpgme-qt6
+                    qtdeclarative))
+      (arguments (list #:qtbase qtbase
+                       #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
+      (home-page "https://invent.kde.org/plasma/plasma-pass")
+      (synopsis "Plasma applet for the Pass password manager")
+      (description
+       "This package provides a Plasma applet for the Pass password manager.")
+      (license license:lgpl2.1+))))
 
 (define-public plasma-phonebook
   (package
