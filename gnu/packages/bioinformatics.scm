@@ -22497,8 +22497,8 @@ patterns.")
       (license license:gpl3))))
 
 (define-public r-voltron
-  (let ((commit "bbd7abb72681ae6dc91cb2f8fe4f3ce3a246f56b")
-        (revision "2"))
+  (let ((commit "8f88699a82abf39f9825ebdccb786f02b20009d2")
+        (revision "3"))
     (package
       (name "r-voltron")
       (version (git-version "0.2.0" revision commit))
@@ -22510,7 +22510,7 @@ patterns.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1h5m2r2hdp73yqsz60wq1sf98dbsqpx155qlxbxnzvhc0l8hjshd"))))
+          (base32 "1vfwyiyi67d7n76jm8vlf7s5rwwga7nrnr9rbd4kx9hfbf26wgf0"))))
       (properties `((upstream-name . "VoltRon")))
       (build-system r-build-system)
       (arguments
@@ -22587,18 +22587,22 @@ patterns.")
                                r-geojsonr
                                r-ggforce
                                r-ggnewscale
+                               r-giotto
                                r-glmgampoi
                                r-hdf5array
                                r-hdf5dataframe
-                               r-hdf5r
                                r-imagearray
                                r-music
+                               r-rhdf5
                                r-rstudioapi
+                               r-s4vectors
                                r-seurat
                                r-seuratobject
                                r-singlecellexperiment
                                r-spacexr
                                r-spatialexperiment
+                               r-summarizedexperiment
+                               r-viridislite
                                r-vitesscer
                                r-xml
                                r-zarrdataframe))
