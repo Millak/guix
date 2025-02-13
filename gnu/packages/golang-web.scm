@@ -64,6 +64,7 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
@@ -9424,6 +9425,97 @@ providing support a subset of OpenAPI features to satisfy kubernetes use-cases
 but implement that subset with little to no assumption about the structure of
 the code or routes.")
     (license license:asl2.0)))
+
+(define-public go-maunium-net-go-mautrix
+  (package
+    (name "go-maunium-net-go-mautrix")
+    (version "0.22.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mautrix/go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0msqbs3qc9ljckj41hgvp16p0sbfzm25wzldb68av9svimscwnmm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "maunium.net/go/mautrix"
+      #:embed-files
+      #~(list
+         ;; golang.org/x/net/publicsuffix/table.go:63:12: pattern
+         ;; data/children: cannot embed irregular file data/children
+         "children"
+         ;; golang.org/x/net/publicsuffix/table.go:48:12: pattern data/nodes:
+         ;; cannot embed irregular file data/nodes
+         "nodes"
+         ;; golang.org/x/net/publicsuffix/table.go:33:12: pattern data/text:
+         ;; cannot embed irregular file data/text
+         "text")
+    #:test-flags
+    #~(list "-skip" (string-join
+                     ;; Network access is required for the tets.
+                     (list "TestClient_Version"
+                           "TestResolveServerName/RM_Step_3B"
+                           "TestResolveServerName/RM_Step_3C"
+                           "TestResolveServerName/RM_Step_3C_MSC4040"
+                           "TestResolveServerName/RM_Step_3D"
+                           "TestResolveServerName/RM_Step_4"
+                           "TestResolveServerName/RM_Step_4_MSC4040"
+                           "TestResolveServerName/maunium")
+                     "|"))))
+    ;; XXX: The final application needs a "libolm" package.
+    (native-inputs
+     (list olm))
+    (propagated-inputs
+     (list go-filippo-io-edwards25519
+           go-github-com-chzyer-readline
+           go-github-com-gorilla-mux
+           go-github-com-gorilla-websocket
+           go-github-com-lib-pq
+           go-github-com-mattn-go-sqlite3
+           go-github-com-rs-xid
+           go-github-com-rs-zerolog
+           go-github-com-skip2-go-qrcode
+           go-github-com-stretchr-testify
+           go-github-com-tidwall-gjson
+           go-github-com-tidwall-sjson
+           go-github-com-yuin-goldmark
+           go-go-mau-fi-util
+           go-go-mau-fi-zeroconfig
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-gopkg-in-yaml-v3
+           go-maunium-net-go-mauflag))
+    (home-page "https://maunium.net/go/mautrix")
+    (synopsis "Golang Matrix framework")
+    (description
+     "Package mautrix implements the Matrix Client-Server API and originated
+from @url{https://github.com/matrix-org/gomatrix}.
+
+Features:
+@itemize
+@item appservice support (Intent API like mautrix-python, room state storage,
+etc)
+@item end-to-end encryption support (incl. interactive SAS verification)
+@item high-level module for building puppeting bridges
+@item high-level module for building chat clients
+@item wrapper functions for the Synapse admin API
+@item structs for parsing event content
+@item helpers for parsing and generating Matrix HTML
+@item helpers for handling push rules
+@end itemize")
+    (license (list
+              ;; This project
+              license:mpl2.0
+              ;; Based on <https://github.com/matrix-org/gomatrix> project, no
+              ;; longer maintained since Feb 21, 2024.
+              license:asl2.0))))
 
 (define-public go-modernc-org-httpfs
   (package
