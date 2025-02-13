@@ -2165,56 +2165,6 @@ extracting information about the music/image/video that is Now Playing on the
 system.")
       (license license:expat))))
 
-(define-public go-github-com-zalando-go-keyring
-  (package
-    (name "go-github-com-zalando-go-keyring")
-    (version "0.2.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/zalando/go-keyring")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0gavcs0k2wnw0q7zgcdhwca1phqls70wb93j2bdmjlvmrq9na6f4"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/zalando/go-keyring"
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "dbus-run-session" "--"
-                          "go" "test" "-v"
-                          "-skip" (string-join
-                                   ;; Disable tests which require a system
-                                   ;; DBus instance.
-                                   (list "TestDelete"
-                                         "TestDeleteAll"
-                                         "TestDeleteAllEmptyService"
-                                         "TestDeleteNonExisting"
-                                         "TestGet"
-                                         "TestGetMultiLine"
-                                         "TestGetNonExisting"
-                                         "TestGetSingleLineHex"
-                                         "TestGetUmlaut"
-                                         "TestSet")
-                                   "|")
-                          "./..."))))))))
-    (native-inputs
-     (list dbus))
-    (propagated-inputs
-     (list go-github-com-godbus-dbus-v5))
-    (home-page "https://github.com/zalando/go-keyring/")
-    (synopsis "Library for working with system keyring")
-    (description "@code{go-keyring} is a library for setting, getting and
-deleting secrets from the system keyring.")
-    (license license:expat)))
-
 (define-public go-github-com-akosmarton-papipes
   (let ((commit "3c63b4919c769c9c2b2d07e69a98abb0eb47fe64")
         (revision "0"))
