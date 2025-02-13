@@ -62,8 +62,10 @@
 ;;; Code:
 
 (define-public cbonsai
-  (let ((commit "50fe627c84036e3be4115b02be04d17f58480199")
-        (revision "0"))
+  ;; XXX: The latest release (1.3.1) was placed on <2021-08-14> but the
+  ;; project has more updates since that time, use the latest commit instead.
+  (let ((commit "4682ec7ca7f74eca0b05b2fad8a8301d16e6978f")
+        (revision "1"))
     (package
       (name "cbonsai")
       (version (git-version "1.3.1" revision commit))
@@ -75,7 +77,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "15bzp99gb1qadp6b6fr2bg0adsvcp04ag83af7cl9lwhpznmid5x"))))
+                  "01slgw872nwpbaa8h2q5s7dfrq3xan0mh6wh8waz88xhy8vp7z1n"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f ; No test suite
