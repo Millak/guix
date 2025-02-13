@@ -232,11 +232,11 @@ The GNU project hosts a similar collection of filters, the GNU talkfilters.")
   ;; No public release.
   ;; Note to updaters: Please ensure that new quotes do not bring harm
   ;; rather than fortune.
-  (let ((commit "2e32ba0a57e3842dc06c8128d880ab4c8ec3aefc")
-        (revision "0"))
+  (let ((commit "f3acb4e88830da7d2ef6ffe501a486a0beb4cea8")
+        (revision "1"))
     (package
       (name "fortunes-jkirchartz")
-      (version (git-version "0" revision commit))
+      (version (git-version "0.0.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -245,7 +245,7 @@ The GNU project hosts a similar collection of filters, the GNU talkfilters.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ym4ldzww5yfd76q7zvhi491bqlykfjnc215bqx1cbj0c8ndb2l4"))
+                  "1l1idf1d5y7acq0znyz9yf7073i4k6wp5pdbn1vaq2np5crpl2r5"))
                 (snippet
                  #~(for-each delete-file
                              ;; incompatible license
