@@ -16680,6 +16680,45 @@ for projects that don't require a full database server such as Postgres or
 MySQL.")
     (license license:expat)))
 
+(define-public go-go-mau-fi-util
+  (package
+    (name "go-go-mau-fi-util")
+    (version "0.8.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mautrix/go-util")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zzkrbwgbxfppsxjck8qgj4xxzpiq25sx4p3zwjh6s1yz3kfb97p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.mau.fi/util"
+      ;; dial tcp: lookup raw.githubusercontent.com on [::1]:53: read udp
+      ;; [::1]:58818->[::1]:53: read: connection refused
+      #:test-flags #~(list "-skip" "TestAdd_Full|TestFullyQualify_Full")))
+    (native-inputs
+     (list go-github-com-data-dog-go-sqlmock
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-mattn-go-sqlite3
+           go-github-com-petermattis-goid
+           go-github-com-rs-zerolog
+           go-golang-org-x-exp
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3))
+    (home-page "https://go.mau.fi/util")
+    (synopsis "Golang utilities used by mautrix-go and bridges")
+    (description
+     "This package provides various Go utilities used by mautrix-go, bridges
+written in Go, as well as some other related libraries like whatsmeow.")
+    (license license:mpl2.0)))
+
 (define-public go-go-mongodb-org-mongo-driver
   (package
     (name "go-go-mongodb-org-mongo-driver")
