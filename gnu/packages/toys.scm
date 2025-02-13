@@ -69,30 +69,30 @@
     (package
       (name "cbonsai")
       (version (git-version "1.3.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://gitlab.com/jallbrit/cbonsai.git")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "01slgw872nwpbaa8h2q5s7dfrq3xan0mh6wh8waz88xhy8vp7z1n"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/jallbrit/cbonsai.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01slgw872nwpbaa8h2q5s7dfrq3xan0mh6wh8waz88xhy8vp7z1n"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f ; No test suite
-         #:make-flags
-         (list (string-append "CC=" ,(cc-for-target))
-               (string-append "PREFIX=" (assoc-ref %outputs "out")))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure) ; No ./configure script
-           (add-after 'install 'install-doc
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (doc (string-append out "/share/doc/" ,name "-"
-                                          ,(package-version this-package))))
-                 (install-file "README.md" doc)))))))
+       (list
+        #:tests? #f ; No test suite
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure) ; No ./configure script
+            (add-after 'install 'install-doc
+              (lambda _
+                (let ((doc (format #f "~a/share/doc/~a-~a" #$output
+                                   #$name #$version)))
+                  (install-file "README.md" doc)))))))
       (native-inputs
        (list pkg-config scdoc))
       (inputs
