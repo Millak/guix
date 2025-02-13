@@ -163,22 +163,22 @@ This package provides just the utilities and no quotes.")
                       ""))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-build? #f             ;y.tab.h fails otherwise
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'respect-prefix
-           (lambda _
-             (substitute* "Makefile"
-               (("/usr/games")
-                "$(prefix)/bin/")
-               (("/usr")
-                "$(prefix)"))
-             #t)))
-       #:tests? #f))                    ; no test suite
+     (list
+      #:parallel-build? #f           ; y.tab.h fails otherwise
+      #:tests? #f                    ; no test suite
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'respect-prefix
+            (lambda _
+              (substitute* "Makefile"
+                (("/usr/games")
+                 "$(prefix)/bin/")
+                (("/usr")
+                 "$(prefix)")))))))
     (native-inputs
      (list bison flex))
     (inputs
