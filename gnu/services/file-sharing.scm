@@ -648,33 +648,12 @@ satisfy requests from peers."))
                 #:log-file #$%transmission-daemon-log-file
                 #:environment-variables
                 '("CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt")))
-      (stop #~(lambda (pid)
-                (kill pid SIGTERM)
 
-                ;; Transmission Daemon normally needs some time to shut down,
-                ;; as it will complete some housekeeping and send a final
-                ;; update to trackers before it exits.
-                ;;
-                ;; Wait a reasonable period for it to stop before continuing.
-                ;; If we don't do this, restarting the service can fail as the
-                ;; new daemon process finds the old one still running and
-                ;; attached to the port used for peer connections.
-                (let wait-before-killing ((period #$stop-wait-period))
-                  (if (zero? (car (waitpid pid WNOHANG)))
-                      (if (positive? period)
-                          (begin
-                            (sleep 1)
-                            (wait-before-killing (- period 1)))
-                          (begin
-                            (format #t
-                                    #$(G_ "Wait period expired; killing \
-transmission-daemon (pid ~a).~%")
-                                    pid)
-                            (display #$(G_ "(If you see this message \
-regularly, you may need to increase the value
-of 'stop-wait-period' in the service configuration.)\n"))
-                            (kill pid SIGKILL)))))
-                #f))
+      ;; Transmission Daemon normally needs some time to shut down, as it will
+      ;; complete some housekeeping and send a final update to trackers before
+      ;; it exits.
+      (stop #~(make-kill-destructor #:grace-period #$stop-wait-period))
+
       (actions
        (list
         (shepherd-action
