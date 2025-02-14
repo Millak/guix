@@ -15994,6 +15994,29 @@ Platforms supported:
 @end itemize")
     (license (list license:expat license:bsd-3))))
 
+(define-public go-github-com-zyedidia-glob
+  (package
+    (name "go-github-com-zyedidia-glob")
+    (version "0.0.0-20170209203856-dd4023a66dc3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zyedidia/glob")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vqw4xbqq6j8p5m7mwxvb448w69vjvgzx0ndsfzdh2cxfirwp3y7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zyedidia/glob"))
+    (home-page "https://github.com/zyedidia/glob")
+    (synopsis "String globbing in Go")
+    (description
+     "Package glob provides objects for matching strings with globs.")
+    (license license:expat)))
+
 (define-public go-github-com-zyedidia-poller
   (package
     (name "go-github-com-zyedidia-poller")
