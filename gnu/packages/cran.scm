@@ -38,7 +38,7 @@
 ;;; Copyright © 2022-2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 Marco Baggio <guix@mawumag.com>
-;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
+;;; Copyright © 2024, 2025 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2024 Tor-björn Claesson <tclaesson@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -44024,6 +44024,42 @@ indicator, a quantitative variable or a survival time.")
 Analysis Toolkit (GATK) to load tables and plot data.  The GATK is a toolkit
 for variant discovery in high-throughput sequencing data.")
     (license license:expat)))
+
+(define-public r-randomforestexplainer
+  (package
+    (name "r-randomforestexplainer")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "randomForestExplainer" version))
+       (sha256
+        (base32 "1ny8c3vn2zvdx12avwvlm4lp648jigkrkcvnhf5qmj8rh0w069v0"))))
+    (properties `((upstream-name . "randomForestExplainer")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-data-table
+                             r-dplyr
+                             r-dt
+                             r-ggally
+                             r-ggplot2
+                             r-ggrepel
+                             r-randomforest
+                             r-ranger
+                             r-reshape2
+                             r-rmarkdown))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/ModelOriented/randomForestExplainer")
+    (synopsis
+     "Explaining and Visualizing Random Forests in Terms of Variable Importance")
+    (description
+     "This package provides a set of tools to help explain which variables are most
+important in a random forests.  Various variable importance measures are
+calculated and visualized in different settings in order to get an idea on how
+their importance changes depending on our criteria (Hemant Ishwaran and Udaya B.
+Kogalur and Eiran Z. Gorodeski and Andy J. Minn and Michael S. Lauer (2010)
+<doi:10.1198/jasa.2009.tm08622>, Leo Breiman (2001)
+<doi:10.1023/A:1010933404324>).")
+    (license (list license:gpl2+ license:gpl3+))))
 
 (define-public r-randomforestsrc
   (package
