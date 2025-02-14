@@ -15960,6 +15960,42 @@ configuration languages, but other uses may be possible too.")
 utilities for cty Golang module.")
     (license license:expat)))
 
+(define-public go-github-com-zyedidia-poller
+  (package
+    (name "go-github-com-zyedidia-poller")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zyedidia/poller")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10cjrqfk1j0l55bdbpm7kv4mqc665pngc8avai0p9chq03y2654g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zyedidia/poller"))
+    (home-page "https://github.com/zyedidia/poller")
+    (synopsis "File-descriptor multiplexer based on epoll(7)")
+    (description
+     "Package poller is a file-descriptor multiplexer.  It allows concurent
+Read and Write operations from and to multiple file-descriptors without
+allocating one OS thread for every blocked operation.  It operates similarly
+to Go's netpoller (which multiplexes network connections) without requiring
+special support from the Go runtime.  It can be used with tty devices,
+character devices, pipes, FIFOs, and any file-descriptor that is poll-able,
+can be used with select(2), epoll(7), etc.
+
+In addition, package poller allows the user to set timeouts (deadlines) for
+read and write operations, and also allows for safe cancelation of blocked
+read and write operations; a Close from another go-routine safely cancels
+ongoing (blocked) read and write operations.
+
+It's an active fork of @url{https://github.com/npat-efault/poller}.")
+    (license license:bsd-2)))
+
 (define-public go-go-abhg-dev-komplete
   (package
     (name "go-go-abhg-dev-komplete")
