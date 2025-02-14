@@ -1334,7 +1334,7 @@ xtensor provides:
 (define-public gap
   (package
     (name "gap")
-    (version "4.13.1")
+    (version "4.14.0")
     (source
      (origin
        (method url-fetch)
@@ -1344,7 +1344,7 @@ xtensor provides:
                            version
                            ".tar.gz"))
        (sha256
-        (base32 "1fmy3mzbw84f1cxrkjcw7wyssj48zhhwxa0a5l58x6gvlvdxp54p"))
+        (base32 "11v4a3cpjpf6pc0hd6x1wlglq9jzakq4naggp671psvgq9r54pw4"))
        (modules '((guix build utils) (ice-9 ftw) (srfi srfi-1)))
        (snippet
         '(begin
@@ -1356,14 +1356,21 @@ xtensor provides:
            (with-directory-excursion "pkg"
              (for-each delete-file-recursively
                        '("caratinterface" ; ./configure: /bin/sh: bad interpreter: No such file or directory
-                         "cddinterface" ; configure: error: could not use setoper.h
-                         "normalizinterface" ; tries to download normaliz
+                         "normalizinterface" ; tries to download normaliz even when it is available
                          "semigroups" ; bundled dependencies
                          "xgap" ; make: /bin/sh: No such file or directory
                         )))))))
     (build-system gnu-build-system)
+    (native-inputs (list (texlive-updmap.cfg
+                           (list texlive-enumitem
+                                 texlive-etoolbox
+                                 texlive-fancyvrb
+                                 texlive-helvetic
+                                 texlive-rsfs
+                                 texlive-times))))
     (inputs
      (list gmp readline zlib
+           cddlib ; for the cddinterface package
            curl   ; for the curlinterface package
            zeromq ; for the zeromqinterface package
      ))
@@ -1382,6 +1389,11 @@ xtensor provides:
            ;; The documentation is bundled, but we create it from source.
            (lambda _
              (with-directory-excursion "doc"
+               ;; We do not build all packages, which breaks
+               ;; cross-references in the documentation. Since
+               ;; gap-4.14.0, this causes an error.
+               (substitute* "make_doc"
+                 (("QuitGap\\(false\\);") "QuitGap(true);"))
                (invoke "./make_doc"))))
          (add-after 'install 'install-packages
            (lambda* (#:key outputs #:allow-other-keys)
