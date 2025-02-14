@@ -16067,6 +16067,32 @@ word-splitting rules.
 It's an alternative fork of @url{https://github.com/kballard/go-shellquote}.")
     (license license:expat)))
 
+(define-public go-github-com-zyedidia-json5
+  (package
+    (name "go-github-com-zyedidia-json5")
+    (version "0.0.0-20200102012142-2da050b1a98d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zyedidia/json5")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sgydazf3npr788b4w17ydmlh3fd1zmpriv9b69967ww90ckh2kz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zyedidia/json5"))
+    (home-page "https://github.com/zyedidia/json5")
+    (synopsis "Go JSON5 decoder package based on encoding/json")
+    (description
+     "This is a Go package that implements decoding of
+@url{https://github.com/json5/json5, JSON5}.
+
+It's an alternative fork of @url{https://github.com/titanous/json5}.")
+    (license (list license:expat license:bsd-3))))
+
 (define-public go-github-com-zyedidia-poller
   (package
     (name "go-github-com-zyedidia-poller")
