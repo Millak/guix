@@ -1364,7 +1364,7 @@ thousands) low quality ones")
 (define-public libxisf
   (package
     (name "libxisf")
-    (version "0.2.12")
+    (version "0.2.13")
     (source
      (origin
        (method git-fetch)
@@ -1373,7 +1373,7 @@ thousands) low quality ones")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bvf3x0xdipkg28c75j6jav3b2llbqvfa6lkwiacxxlzmj0226s2"))))
+        (base32 "0zhj4xijr374c9raddxw8ibawx0n66lqvypgpccb81g41qkkdkmx"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DUSE_BUNDLED_LIBS=OFF")))
