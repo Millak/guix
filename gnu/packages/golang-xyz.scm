@@ -16017,6 +16017,30 @@ Platforms supported:
      "Package glob provides objects for matching strings with globs.")
     (license license:expat)))
 
+;; For micro@2.0.14
+(define-public go-github-com-zyedidia-go-runewidth
+  (hidden-package
+   (package
+     (inherit go-github-com-mattn-go-runewidth)
+     (name "go-github-com-zyedidia-go-runewidth")
+     (version "0.0.12")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/zyedidia/go-runewidth")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "18gv5fkd69v8bwngj6r5zc572vyd1qhafz1wi3d7ynz3w0mmq85c"))))
+     (arguments
+      (list
+       #:import-path "github.com/zyedidia/go-runewidth"))
+     (home-page "https://github.com/zyedidia/go-runewidth")
+     (description
+      "It's an alternative fork of
+@url{https://github.com/mattn/go-runewidth}."))))
+
 (define-public go-github-com-zyedidia-poller
   (package
     (name "go-github-com-zyedidia-poller")
