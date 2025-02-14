@@ -3698,37 +3698,38 @@ a text snippet), using @code{libphonenumber}.")
         (base32 "0l43qfjr0ggpv1hkyyfxp3j6acrbbrl8n6qxlh91gyb2jan03683"))))
     (build-system go-build-system)
     (arguments
-      (list #:import-path "git.sr.ht/~taiite/senpai/cmd/senpai"
-            #:unpack-path "git.sr.ht/~taiite/senpai"
-            #:install-source? #f
-            #:phases
-            #~(modify-phases %standard-phases
-                (add-after 'build 'build-doc
-                  (lambda* (#:key unpack-path #:allow-other-keys)
-                    (invoke "make" "doc"
-                            "-C" (string-append "src/" unpack-path))))
-                (add-after 'install 'install-doc
-                  (lambda* (#:key unpack-path #:allow-other-keys)
-                    (let ((man1 (string-append #$output "/share/man/man1"))
-                          (man5 (string-append #$output "/share/man/man5")))
-                      (mkdir-p man1)
-                      (mkdir-p man5)
-                      (install-file
-                        (string-append "src/" unpack-path "/doc/senpai.1")
-                        man1)
-                      (install-file
-                        (string-append "src/" unpack-path "/doc/senpai.5")
-                        man5)))))))
-    (native-inputs (list go-git-sr-ht-emersion-go-scfg
-                         go-github-com-delthas-go-libnp
-                         go-github-com-delthas-go-localeinfo
-                         go-github-com-delthas-tcell-v2 ; remove in the next release
-                         go-github-com-mattn-go-runewidth
-                         go-golang-org-x-net
-                         go-golang-org-x-time
-                         go-mvdan-cc-xurls-v2
-                         which
-                         scdoc))
+     (list #:import-path "git.sr.ht/~taiite/senpai/cmd/senpai"
+           #:unpack-path "git.sr.ht/~taiite/senpai"
+           #:install-source? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'build-doc
+                 (lambda* (#:key unpack-path #:allow-other-keys)
+                   (invoke "make" "doc"
+                           "-C" (string-append "src/" unpack-path))))
+               (add-after 'install 'install-doc
+                 (lambda* (#:key unpack-path #:allow-other-keys)
+                   (let ((man1 (string-append #$output "/share/man/man1"))
+                         (man5 (string-append #$output "/share/man/man5")))
+                     (mkdir-p man1)
+                     (mkdir-p man5)
+                     (install-file
+                      (string-append "src/" unpack-path "/doc/senpai.1")
+                      man1)
+                     (install-file
+                      (string-append "src/" unpack-path "/doc/senpai.5")
+                      man5)))))))
+    (native-inputs
+     (list go-git-sr-ht-emersion-go-scfg
+           go-github-com-delthas-go-libnp
+           go-github-com-delthas-go-localeinfo
+           go-github-com-delthas-tcell-v2 ; remove in the next release
+           go-github-com-mattn-go-runewidth
+           go-golang-org-x-net
+           go-golang-org-x-time
+           go-mvdan-cc-xurls-v2
+           scdoc
+           which))
     (home-page "https://sr.ht/~delthas/senpai")
     (synopsis "Modern terminal IRC client")
     (description
