@@ -3722,10 +3722,9 @@ a text snippet), using @code{libphonenumber}.")
     (native-inputs (list go-git-sr-ht-emersion-go-scfg
                          go-github-com-delthas-go-libnp
                          go-github-com-delthas-go-localeinfo
-                         go-github-com-delthas-tcell-v2
+                         go-github-com-delthas-tcell-v2 ; remove in the next release
                          go-github-com-mattn-go-runewidth
                          go-golang-org-x-net
-                         go-golang-org-x-term
                          go-golang-org-x-time
                          go-mvdan-cc-xurls-v2
                          which
