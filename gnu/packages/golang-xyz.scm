@@ -15960,6 +15960,40 @@ configuration languages, but other uses may be possible too.")
 utilities for cty Golang module.")
     (license license:expat)))
 
+(define-public go-github-com-zyedidia-clipper
+  (package
+    (name "go-github-com-zyedidia-clipper")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zyedidia/clipper")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18fv2cdll1d7d5wxs6r7kkhmk60pziiw3iy7knmdbcbhrk9rg112"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zyedidia/clipper"))
+    (home-page "https://github.com/zyedidia/clipper")
+    (synopsis "Clipboard access in Golang")
+    (description
+     "This package provides a cross-platform clipboard library.
+
+Platforms supported:
+@itemize
+@item Linux via @code{xclip} or @code{xsel} or @code{wl-copy/wl-paste}
+@item MacOS via @code{pbcopy/pbpaste}
+@item Windows via the Windows clipboard API
+@item WSL via clip.exe/powershell.exe
+@item Android Termux via @code{termux-clipboard-set/termux-clipboard-get}
+@item Plan9 via @code{/dev/snarf}
+@item Anything else via a user-defined script
+@end itemize")
+    (license (list license:expat license:bsd-3))))
+
 (define-public go-github-com-zyedidia-poller
   (package
     (name "go-github-com-zyedidia-poller")
