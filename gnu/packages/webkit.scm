@@ -145,7 +145,7 @@ engine that uses Wayland for graphics output.")
               (patches (search-patches
                         "webkitgtk-adjust-bubblewrap-paths.patch"))))
     (build-system cmake-build-system)
-    (outputs '("out" "doc" "debug"))
+    (outputs '("out" "doc"))
     (arguments
      (list
       ;; The release archive doesn't include the resources/sources needed to
