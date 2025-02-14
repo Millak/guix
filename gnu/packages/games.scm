@@ -3288,6 +3288,32 @@ in mind.")
      "Solarus Quest Editor is a graphical user interface to create and
 modify quests for the Solarus engine.")))
 
+(define-public superfluous-returnz-data
+  (package
+    (name "superfluous-returnz-data")
+    (version "13")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://download.ptilouk.net/superfluous-returnz-d"
+                             version "-data-only"
+                             ".zip"))
+        (sha256
+          (base32
+            "005p1kdm8g5vzf1isvxwiarpw0vciplxdcv9wl4bb47b1gxsh13k"))))
+    (build-system copy-build-system)
+    (native-inputs
+     (list unzip))
+    (arguments
+     (list #:install-plan
+           #~'(("." "."))))
+    (synopsis "Superfluous Returnz game data")
+    (description
+     "This package provides the game data, images, and music of the game
+Superfluous Returnz.")
+    (home-page "https://studios.ptilouk.net/superfluous-returnz/")
+    (license license:cc-by-sa4.0)))
+
 (define-public superstarfighter
   (package
     (name "superstarfighter")
