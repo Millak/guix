@@ -43350,6 +43350,39 @@ includes tuners for hyperparameter optimization in mlr3tuning and optimizers for
 black-box optimization in bbotk.")
     (license license:lgpl3)))
 
+(define-public r-mlr3inferr
+  (package
+    (name "r-mlr3inferr")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mlr3inferr" version))
+       (sha256
+        (base32 "0cw0a194hcairl7va6lvx62k0bn25x15ylczbgcaxjj54bagqslm"))))
+    (properties `((upstream-name . "mlr3inferr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate
+                             r-data-table
+                             r-future
+                             r-lgr
+                             r-mlr3
+                             r-mlr3measures
+                             r-mlr3misc
+                             r-paradox
+                             r-r6
+                             r-withr))
+    (native-inputs (list r-testthat))
+    (home-page "https://mlr3inferr.mlr-org.com")
+    (synopsis "Inference on the generalization error")
+    (description
+     "This package provides an mlr3 extension that provides various
+resampling-based confidence interval (CI) methods for estimating the
+generalization error.  These CI methods are implemented as mlr3 measures,
+enabling the evaluation of individual algorithms on specific tasks as well as
+the comparison of different learning algorithms.")
+    (license license:lgpl3)))
+
 (define-public r-mlr3mbo
   (package
     (name "r-mlr3mbo")
