@@ -16041,6 +16041,32 @@ Platforms supported:
       "It's an alternative fork of
 @url{https://github.com/mattn/go-runewidth}."))))
 
+(define-public go-github-com-zyedidia-go-shellquote
+  (package
+    (name "go-github-com-zyedidia-go-shellquote")
+    (version "0.0.0-20200613203517-eccd813c0655")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zyedidia/go-shellquote")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jxjj60kicpzc6i7vigg0i8iwnhf6jawcalq201a5wkxnkmdlw9g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kballard/go-shellquote"))
+    (home-page "https://github.com/zyedidia/go-shellquote")
+    (synopsis "Go utilities for performing shell-like word splitting/joining")
+    (description
+     "Shellquote provides utilities for joining/splitting strings using sh's
+word-splitting rules.
+
+It's an alternative fork of @url{https://github.com/kballard/go-shellquote}.")
+    (license license:expat)))
+
 (define-public go-github-com-zyedidia-poller
   (package
     (name "go-github-com-zyedidia-poller")
