@@ -38,7 +38,7 @@
 (define-public ipp-usb
   (package
     (name "ipp-usb")
-    (version "0.9.25")
+    (version "0.9.28")
     (source
      (origin
        (method git-fetch)
@@ -47,7 +47,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "003njvcxi0w97wrs52nm9b0f1d96624hjnv9ywsr1m7p6q7r08mg"))))
+        (base32 "068rfy8arjxhgwll46bfq0x3ypi05qjd6gv0zqynfrk2zcwn4f3y"))))
     (build-system go-build-system)
     (arguments
      (list
