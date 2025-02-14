@@ -2519,10 +2519,12 @@ estimated by holdout, bootstrap or cross-validation methods.")
        (uri (cran-uri "rotor" version))
        (sha256
         (base32 "02mzcwd94hykysz3cv0q3dlhbbd4k3rm1di7dcw6m4masgzy05zb"))))
-    (properties `((upstream-name . "rotor")))
+    (properties
+     `((upstream-name . "rotor")
+       (updater-extra-native-inputs . ("r-data-table"))))
     (build-system r-build-system)
     (propagated-inputs (list r-dint r-r6))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-data-table r-testthat))
     (home-page "https://s-fleck.github.io/rotor/")
     (synopsis "Log rotation and conditional backups")
     (description
