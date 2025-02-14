@@ -2091,6 +2091,18 @@ void DerivationGoal::runChild()
 
             for (auto & i : ss) dirsInChroot[i] = i;
 
+	    /* Make new mounts for the store and for /tmp.  That way, when
+	       'chrootRootDir' is made read-only below, these two mounts will
+	       remain writable (the store needs to be writable so derivation
+	       outputs can be written to it, and /tmp is writable by
+	       convention).  */
+	    auto chrootStoreDir = chrootRootDir + settings.nixStore;
+	    if (mount(chrootStoreDir.c_str(), chrootStoreDir.c_str(), 0, MS_BIND, 0) == -1)
+                throw SysError(format("read-write mount of store '%1%' failed") % chrootStoreDir);
+	    auto chrootTmpDir = chrootRootDir + "/tmp";
+	    if (mount(chrootTmpDir.c_str(), chrootTmpDir.c_str(), 0, MS_BIND, 0) == -1)
+                throw SysError(format("read-write mount of temporary directory '%1%' failed") % chrootTmpDir);
+
             /* Bind-mount all the directories from the "host"
                filesystem that we want in the chroot
                environment. */
@@ -2164,6 +2176,10 @@ void DerivationGoal::runChild()
 
             if (rmdir("real-root") == -1)
                 throw SysError("cannot remove real-root directory");
+
+	    /* Remount root as read-only.  */
+            if (mount("/", "/", 0, MS_BIND | MS_REMOUNT | MS_RDONLY, 0) == -1)
+                throw SysError(format("read-only remount of build root '%1%' failed") % chrootRootDir);
         }
 #endif
 
