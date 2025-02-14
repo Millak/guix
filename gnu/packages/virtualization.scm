@@ -2352,7 +2352,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
 (define-public skopeo
   (package
     (name "skopeo")
-    (version "1.17.0")
+    (version "1.18.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2361,7 +2361,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jbz9717hjl8ymkg47nnv87c1hassksn1wvky3z3qfl6d041x1i2"))))
+                "1rql5yw1ppvh2fppan413irn11jplxj8kmna0zrsy9kniiskbkas"))))
     (build-system gnu-build-system)
     (native-inputs
      (list go-1.22
