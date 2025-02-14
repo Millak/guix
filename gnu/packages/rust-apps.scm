@@ -4055,26 +4055,26 @@ the library crate of Cargo.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.10.5+cargo-0.83.0")
+    (version "0.10.9+cargo-0.85.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "cargo-c" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "02ppkpwngksz22vk66sn8xm0lviihp0zpnki1sa4sf0672lrpyjv"))))
+         (base32 "1cxawccpssmpvv6a0sn8lkms5nd3gyh46g407bk2i8xyzyh87pvq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-cargo" ,rust-cargo)
         ("rust-cargo-util" ,rust-cargo-util-0.2)
-        ("rust-cbindgen" ,rust-cbindgen-0.27)
+        ("rust-cbindgen" ,rust-cbindgen-0.28)
         ("rust-cc" ,rust-cc-1)
         ("rust-clap" ,rust-clap-4)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-implib" ,rust-implib-0.3)
-        ("rust-itertools" ,rust-itertools-0.13)
+        ("rust-itertools" ,rust-itertools-0.14)
         ("rust-log" ,rust-log-0.4)
         ("rust-object" ,rust-object-0.36)
         ("rust-regex" ,rust-regex-1)
