@@ -95675,14 +95675,14 @@ against paths and directory trees.")
 (define-public rust-web-sys-0.3
   (package
     (name "rust-web-sys")
-    (version "0.3.76")
+    (version "0.3.77")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "web-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1g0j3kii20mh7hqmdajz2r4c21zynb9h9h026wymalkx88ip5p84"))))
+        (base32 "1lnmc1ffbq34qw91nndklqqm75rasaffj2g4f8h1yvqqz4pdvdik"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -95693,7 +95693,8 @@ against paths and directory trees.")
     (synopsis
      "Bindings for all Web APIs, a procedurally generated crate from WebIDL")
     (description
-     "Bindings for all Web APIs, a procedurally generated crate from WebIDL.")
+     "This package provides bindings for all Web APIs, a procedurally generated
+crate from WebIDL.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-web-time-1
