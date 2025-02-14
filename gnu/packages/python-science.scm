@@ -174,6 +174,33 @@ scientific codes by steering the implementation towards usability and
 maintainability.")
     (license license:bsd-3)))
 
+(define-public python-cmocean
+  (package
+    (name "python-cmocean")
+    (version "4.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cmocean" version))
+       (sha256
+        (base32 "0z0d4ma6i228gwpgnkai8scs9bmzz41rirlnqpmb8hazzfcq71ip"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy
+           python-packaging))
+    (home-page "https://github.com/matplotlib/cmocean")
+    (synopsis "Colormaps for Oceanography")
+    (description
+     "This package contains colormaps for commonly-used oceanographic
+variables.  Most of the colormaps started from @code{matplotlib} colormaps,
+but have now been adjusted using the viscm tool to be perceptually uniform.")
+    (license license:expat)))
+
 (define-public python-cvxpy
   (package
     (name "python-cvxpy")
