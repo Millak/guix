@@ -1870,18 +1870,19 @@ void DerivationGoal::startBuilder()
         }
         dirsInChroot[tmpDirInSandbox] = tmpDir;
 
-        /* Make the closure of the inputs available in the chroot,
-           rather than the whole store.  This prevents any access
-           to undeclared dependencies.  !!! As an extra security
-           precaution, make the fake store only writable by the
-           build user. */
+	/* Create the fake store.  */
         Path chrootStoreDir = chrootRootDir + settings.nixStore;
         createDirs(chrootStoreDir);
         chmod_(chrootStoreDir, 01775);
 
         if (buildUser.enabled() && chown(chrootStoreDir.c_str(), 0, buildUser.getGID()) == -1)
-            throw SysError(format("cannot change ownership of ‘%1%’") % chrootStoreDir);
+	     /* As an extra security precaution, make the fake store only
+		writable by the build user.  */
+	     throw SysError(format("cannot change ownership of ‘%1%’") % chrootStoreDir);
 
+        /* Make the closure of the inputs available in the chroot, rather than
+           the whole store.  This prevents any access to undeclared
+           dependencies. */
         foreach (PathSet::iterator, i, inputPaths) {
 	    struct stat st;
             if (lstat(i->c_str(), &st))
