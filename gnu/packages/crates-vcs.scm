@@ -9471,21 +9471,21 @@ provides a crate for parsing and serialization of gix-url's.")
 (define-public rust-gix-utils-0.1
   (package
     (name "rust-gix-utils")
-    (version "0.1.13")
+    (version "0.1.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-utils" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0prkj13jwvcrd8gy8f73ci2i3nwkak88xpvdibcqwl4rjlz7whms"))))
+        (base32 "0pykxyp0cm2x8lj4ryj1pflksf9k7iyrshf8g321d2dc0d7g427z"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
         ("rust-fastrand" ,rust-fastrand-2)
         ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))
-    (home-page "https://github.com/Byron/gitoxide")
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis
      "Crate with `gitoxide` utilities that don't need feature toggles")
     (description
