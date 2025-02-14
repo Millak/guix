@@ -23962,6 +23962,30 @@ only sparse real matrices in Matrix package format are supported.")
     ;; BSD-3.
     (license (list license:bsd-3 license:bsd-2))))
 
+(define-public r-sparsevctrs
+  (package
+    (name "r-sparsevctrs")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "sparsevctrs" version))
+       (sha256
+        (base32 "12izzvx4vjxxh43f4bl13a3sgdwqyffpbssadr0awyiybvm0dy04"))))
+    (properties `((upstream-name . "sparsevctrs")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli r-rlang r-vctrs))
+    (native-inputs (list r-knitr r-matrix r-testthat r-tibble r-withr))
+    (home-page "https://github.com/r-lib/sparsevctrs")
+    (synopsis "Sparse Vectors for use in data frames")
+    (description
+     "This package provides sparse vectors powered by ALTREP (Alternative
+Representations for R Objects) that behave like regular vectors, and can thus
+be used in data frames.  It also provides tools to convert between sparse
+matrices and data frames with sparse columns and functions to interact with
+sparse vectors.")
+    (license license:expat)))
+
 (define-public r-spatialreg
   (package
     (name "r-spatialreg")
