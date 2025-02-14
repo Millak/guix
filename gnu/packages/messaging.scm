@@ -3701,6 +3701,8 @@ a text snippet), using @code{libphonenumber}.")
      (list #:import-path "git.sr.ht/~taiite/senpai/cmd/senpai"
            #:unpack-path "git.sr.ht/~taiite/senpai"
            #:install-source? #f
+           ;; Step away from cmd/senpai to test the whole project.
+           #:test-subdirs #~(list "../../...")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'build 'build-doc
