@@ -1106,6 +1106,39 @@ spheres, cubes, etc.")
 density maps, both for interactive and non-interactive use.")
     (license license:bsd-2)))
 
+(define-public python-mpsplines
+  ;; No release on PyPI no git tag, use the latest commit.
+  (let ((commit "4967655fca8f4d0fc0685486c8ec2f1fe2f199d2")
+        (revision "0"))
+    (package
+      (name "python-mpsplines")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jararias/mpsplines")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1wqfvjp1d6xzb07qnq72h76f0mx7za9pasgw3qp3ciaycmlkvdr3"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:tests? #f)) ; no tests provided
+      (native-inputs
+       (list python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-scipy
+             python-numpy
+             python-loguru))
+      (home-page "https://github.com/jararias/mpsplines")
+      (synopsis "Mean preserving interpolation with splines")
+      (description
+       "Thi package implements a functionality for mean-preserving
+interpolation of 1D data (for example, time series) with splines.")
+      (license license:bsd-3))))
+
 (define-public python-pyamg
   (package
     (name "python-pyamg")
