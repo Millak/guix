@@ -2383,6 +2383,37 @@ indices.  With a runner one can apply any R function on rolling windows.  The
 package eases work with equally and unequally spaced time series.")
     (license license:gpl2+)))
 
+(define-public r-rush
+  (package
+    (name "r-rush")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rush" version))
+       (sha256
+        (base32 "1pcp60hn07r57dfs2xk7nd7y59q1ahnjylz30vbdpmny8cjxlx4n"))))
+    (properties `((upstream-name . "rush")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate
+                             r-data-table
+                             r-jsonlite
+                             r-lgr
+                             r-mlr3misc
+                             r-processx
+                             r-r6
+                             r-redux
+                             r-uuid))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/mlr-org/rush")
+    (synopsis "Rapid parallel and distributed computing")
+    (description
+     "This is a package for parallel computing with a network of local and
+remote workers.  It enables fast exchange of results between the workers
+through a Redis database.  Key features include task queues, local caching,
+and sophisticated error handling.")
+    (license license:expat)))
+
 (define-public r-prettydoc
   (package
     (name "r-prettydoc")
