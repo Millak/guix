@@ -660,6 +660,29 @@ directory.")
        (append flac fluidsynth libmodplug libvorbis mpg123 opusfile)))
     (properties '((upstream-name . "SDL2_mixer")))))
 
+(define-public sdl2-mixer-x
+  (package
+    (inherit sdl2-mixer)
+    (name "sdl2-mixer-x")
+    (version "2.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/WohlSoft/SDL-Mixer-X")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17l0l89q4az6lmmvpqpymjgs64nc52r140301dcf54vsh76mzd2c"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f                     ;no tests
+           #:configure-flags
+           #~(list "-DBUILD_SHARED_LIBS=ON")))
+    (synopsis "This package is a fork of SDL mixer")
+    (description "A fork of SDL mixer with the goal of fixing various issues
+and supporting more audio formats.")))
+
 (define-public sdl2-net
   (package (inherit sdl-net)
     (name "sdl2-net")
