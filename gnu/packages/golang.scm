@@ -2067,32 +2067,6 @@ be performed.")
       (description "Go wrapper for taglib")
       (license license:unlicense))))
 
-(define-public go-github-com-go-md2man
-  (package
-    (name "go-github-com-go-md2man")
-    (version "2.0.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cpuguy83/go-md2man")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0gqlkv1pv8cpvcj8g77d1hzy5bnp5a3k3xs02iahlr3a65m4azsi"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/cpuguy83/go-md2man"))
-    (propagated-inputs
-     (list go-github-com-russross-blackfriday-v2))
-    (home-page "https://github.com/cpuguy83/go-md2man")
-    (synopsis "Convert markdown into roff")
-    (description
-     "Go-md2man is a Go program that converts markdown to roff for the purpose
-of building man pages.")
-    (license license:expat)))
-
 (define-public go-golang-org-rainycape-unidecode
   (let ((commit "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c")
         (revision "1"))
