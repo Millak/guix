@@ -3051,6 +3051,48 @@ semi-analytic models, to cosmological hydrodynamic simulations, and even
 observationally-derived galaxy merger catalogs.")
     (license license:expat)))
 
+(define-public python-losoto
+  (package
+    (name "python-losoto")
+    (version "2.4.4")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/revoltek/losoto")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sdg30fi3dl4w5k4a4ry8b4rgx8ydf18s0yrka1ba1sin34jkwnk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Test steps are taken from GitHub Actions
+                ;; <.github/workflows/python.yml>.
+                (invoke "python" "tools/losoto_test.py")))))))
+    (native-inputs
+     (list python-cython-3
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-configparser
+           python-matplotlib
+           python-numpy
+           python-casacore
+           python-scipy
+           python-tables))
+    (home-page "https://github.com/revoltek/losoto")
+    (synopsis "LOFAR Solution Tool")
+    (description
+     "This package provides a @acronym{Low-Frequency Array,
+@url{http://www.lofar.org/, LOFAR}} a large radio telescope Solution Tool.")
+    (license license:gpl3)))
+
 (define-public python-mapsims
   (package
     (name "python-mapsims")
