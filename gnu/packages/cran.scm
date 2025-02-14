@@ -15743,6 +15743,32 @@ based on transcript counts obtained with unique molecular identifies.")
 facilitate data exploration.")
     (license license:artistic2.0)))
 
+(define-public r-random
+  (package
+    (name "r-random")
+    (version "0.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "random" version))
+       (sha256
+        (base32 "0sdhagwjlhldb8hn6h4nd1sflzhwkapzybdlb8hzisy3w2ygjn9b"))))
+    (properties `((upstream-name . "random")))
+    (build-system r-build-system)
+    ;; Vignettes require Internet access.
+    (arguments (list #:test-types '(list "tests")))
+    (propagated-inputs (list r-curl))
+    (home-page "https://www.random.org")
+    (synopsis "True random numbers using random.org")
+    (description
+     "The true random number service provided by the @url{random.org} website
+created by Mads Haahr samples atmospheric noise via radio tuned to an unused
+broadcasting frequency together with a skew correction algorithm due to John
+von Neumann.  More background is available in the included vignette based on
+an essay by Mads Haahr.  In its current form, the package offers functions to
+retrieve random integers, randomized sequences and random strings.")
+    (license license:gpl2+)))
+
 (define-public r-randomizr
   (package
     (name "r-randomizr")
