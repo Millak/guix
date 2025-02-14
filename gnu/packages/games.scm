@@ -3314,6 +3314,61 @@ Superfluous Returnz.")
     (home-page "https://studios.ptilouk.net/superfluous-returnz/")
     (license license:cc-by-sa4.0)))
 
+(define-public sosage
+  (package
+    (name "sosage")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://framagit.org/Gee/sosage")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xgk3r18aj9xvrrqr9qdrr6800hkv6lhfcnmm5z21g8kbfh9x4jm"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (for-each delete-file (find-files "." "\\.jar$"))
+
+            ;; The files in 'Third_party' aren't actually bundled libraries,
+            ;; but are wrappers around the system libraries.
+            ;; Move them to the 'Utils' directory, to make that clear.
+            (for-each (lambda (file)
+                        (install-file file "include/Sosage/Utils"))
+                      (find-files "include/Sosage/Third_party" "\\.h$"))
+            (for-each (lambda (file)
+                        (install-file file "src/Sosage/Utils"))
+                      (find-files "src/Sosage/Third_party" "\\.cpp$"))
+            (for-each delete-file-recursively '("include/Sosage/Third_party"
+                                                "src/Sosage/Third_party"))
+            (substitute* (find-files ".")
+              (("Third_party") "Utils"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f ; no tests
+           #:configure-flags
+           #~(list
+              (string-append "-DSOSAGE_DATA_FOLDER="
+                             #$(this-package-input "superfluous-returnz-data")))))
+    (inputs
+     (list libyaml
+           lz4
+           sdl2
+           sdl2-mixer-x
+           sdl2-ttf
+           superfluous-returnz-data))
+    (synopsis "Superfluous Returnz 2D cartoon puzzle game")
+    (description
+     "Superfluous Returnz is a 2D puzzle game set in a colourful cartoon
+universe.  It takes place in the very quiet French village of Fochougny, an
+open world where players solve puzzles, find secret codes and talk to the
+village people to solve the mystery of the apple thief.  The game is licensed
+as Free Software and asks for a financial donation through the game site.")
+    (home-page "https://studios.ptilouk.net/superfluous-returnz/floss/")
+    (license license:expat)))
+
 (define-public superstarfighter
   (package
     (name "superstarfighter")
