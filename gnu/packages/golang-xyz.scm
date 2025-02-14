@@ -16160,6 +16160,35 @@ It's an active fork of @url{https://github.com/npat-efault/poller}.")
      (description
       "It's an alternative fork of @url{https://github.com/gdamore/tcell}."))))
 
+(define-public go-github-com-zyedidia-terminal
+  (package
+    (name "go-github-com-zyedidia-terminal")
+    (version "0.0.0-20230315200948-4b3bcf6dddef")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zyedidia/terminal")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lqplkpllv63msf7sp8igrhvkrnr8l8hz4v5daliyn4qwvgs3k63"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zyedidia/terminal"))
+    (propagated-inputs (list go-github-com-creack-pty))
+    (home-page "https://github.com/zyedidia/terminal")
+    (synopsis "Package terminal is a vt10x terminal emulation backend")
+    (description
+     "Package terminal is a vt10x terminal emulation backend, influenced
+largely by @code{st}, @code{rxvt}, @code{xterm}, and @code{iTerm} as
+reference.  Use it for terminal muxing, a terminal emulation frontend, or
+wherever else you need terminal emulation.
+
+It's an active fork of @url{https://github.com/james4k/terminal}.")
+    (license license:expat)))
+
 (define-public go-go-abhg-dev-komplete
   (package
     (name "go-go-abhg-dev-komplete")
