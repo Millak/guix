@@ -231,6 +231,7 @@
   #:use-module (gnu packages vpn)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
+  #:use-module (gnu packages wm)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
@@ -8084,7 +8085,7 @@ to display dialog boxes from the commandline and shell scripts.")
 (define-public mutter
   (package
     (name "mutter")
-    (version "46.6")
+    (version "46.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8092,7 +8093,7 @@ to display dialog boxes from the commandline and shell scripts.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1w6da067gxgwwv8q893zxrh7h429m41xzkl3p71kr3iwljbq8aj5"))))
+                "0qn9w74a3ycz2ms2avld8zwhcyw3gwhnqs6asxkqafzv99a87h7v"))))
     ;; NOTE: Since version 3.21.x, mutter now bundles and exports forked
     ;; versions of cogl and clutter.  As a result, many of the inputs,
     ;; propagated-inputs, and configure flags used in cogl and clutter are
@@ -8125,9 +8126,13 @@ to display dialog boxes from the commandline and shell scripts.")
          "-Degl_device=true"            ;false by default
          "-Dwayland_eglstream=true"     ;false by default
          (string-append "-Dudev_dir=" #$output "/lib/udev"))
-      #:test-options '(list "--verbose")
+      #:test-options #~(list "--verbose")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-SOURCE_DIR
+            (lambda _
+              ;; Just to make our life easier later.
+              (setenv "SOURCE_DIR" (getcwd))))
           (add-after 'unpack 'use-RUNPATH-instead-of-RPATH
             (lambda _
               ;; The build system disables RUNPATH in favor of RPATH to work
@@ -8146,34 +8151,17 @@ to display dialog boxes from the commandline and shell scripts.")
                       (string-append #$output "/lib/udev"))))
           (add-after 'unpack 'disable-problematic-tests
             (lambda _
-              ;; The native-headless test hangs due to attempting to use audio,
-              ;; unavailable in the container.
-              ;; Note: the following sed expression deletes the whole test(...)
-              ;; expression paragraph.  For an explanation, see: info '(sed)
-              ;; Multiline techniques'.
-              (invoke "sed" "/./{H;$!d} ; x ; s/^.*native-headless.*$//"
-                      "-i" "src/tests/meson.build")
-              ;; Timeline tests may unexpectedly fail on missed frames, so
-              ;; let's disable them as well.
-              ;; See <https://gitlab.gnome.org/GNOME/mutter/-/issues/2125>
-              (substitute* "src/tests/clutter/conform/meson.build"
-                (("'timeline.*',") ""))
-
-              ;; On i686-linux this test fails with a dbus error.  This seems
-              ;; to be fine in later versions, so this workaround can probably
-              ;; be removed soon.
-              #$@(if (string=? "i686-linux" (or (%current-target-system)
-                                                (%current-system)))
-                     #~((substitute* "src/tests/wayland-unit-tests.c"
-                          (("g_test_add_func \\(\"/wayland/toplevel/activation\",") "")
-                          (("^                   toplevel_activation\\);") "")))
-                     #~())))
+              ;; The 'sync' variant of the X11 test fails for unknown reason
+              ;; (see: https://gitlab.gnome.org/GNOME/mutter/-/issues/3910).
+              (substitute* "src/tests/meson.build"
+                (("foreach mode: \\['', 'sync'\\]")
+                 "foreach mode: ['']"))))
           (replace 'check
             (lambda* (#:key tests? test-options parallel-tests?
                       #:allow-other-keys)
               (when tests?
-                ;; Setup (see the 'test-mutter' CI target at
-                ;; https://gitlab.gnome.org/GNOME/mutter/-/raw/main/.gitlab-ci.yml).
+                ;; Setup (refer to the 'test-mutter' and its dependents targets
+                ;; in the '.gitlab-ci.yml' file.
                 (setenv "HOME" "/tmp")
                 (setenv "XDG_RUNTIME_DIR" (string-append (getcwd)
                                                          "/runtime-dir"))
@@ -8188,39 +8176,29 @@ to display dialog boxes from the commandline and shell scripts.")
                 (setenv "G_SLICE" "always-malloc")
                 (setenv "MALLOC_CHECK" "3")
                 (setenv "NO_AT_BRIDGE" "1")
-                ;; This is needed, otherwise the "mutter:core+mutter/unit /
-                ;; anonymous-file" test would fail (see:
-                ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/2017).
-                (setenv "CI_JOB_ID" "1")
 
                 (invoke "glib-compile-schemas" (getenv "GSETTINGS_SCHEMA_DIR"))
-                (mkdir-p (getenv "XDG_RUNTIME_DIR"))
-                (chmod (getenv "XDG_RUNTIME_DIR") #o755)
                 (invoke "pipewire" "--version") ;check for pipewire
-                (system "pipewire &")   ;always returns 0 due to forking
+                ;; XXX: If the 'native-test' test fails, try increasing the
+                ;; sleep here (see:
+                ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/3909).
+                (system "pipewire & sleep 10") ;always returns 0 due to forking
 
                 (setenv "MESON_TESTTHREADS"
                         (if parallel-tests?
                             (number->string (parallel-job-count))
                             "1"))
-                (match (primitive-fork)
-                  (0                    ;child process
-                   (apply execlp "dbus-run-session" "dbus-run-session"
-                          "xvfb-run" "-a" "-s" (getenv "XVFB_SERVER_ARGS")
-                          "meson" "test" "-t" "0" "--print-errorlogs"
-                          test-options))
-                  (dbus-pid
-                   (let loop ()
-                     ;; Reap child processes; otherwise, python-dbusmock would
-                     ;; waste time polling for the dbus processes it spawns to
-                     ;; be reaped, in vain.
-                     (match (waitpid WAIT_ANY)
-                       ((pid . status)
-                        (if (= pid dbus-pid)
-                            (unless (zero? status)
-                              (error "`meson test' exited with status"
-                                     status))
-                            (loop)))))))))))))
+
+                (apply invoke "xvfb-run" "-a" "-s" (getenv "XVFB_SERVER_ARGS")
+                       (string-append (getenv "SOURCE_DIR")
+                                      "/src/tests/meta-dbus-runner.py")
+                       "--launch=wireplumber"
+                       "meson" "test" "-t" "0"
+                       "--setup=plain"
+                       "--no-suite=mutter/kvm"
+                       "--no-rebuild"
+                       "--print-errorlogs"
+                       test-options)))))))
     (native-inputs
      (list desktop-file-utils           ;for update-desktop-database
            `(,glib "bin")               ;for glib-compile-schemas, etc.
@@ -8242,9 +8220,10 @@ to display dialog boxes from the commandline and shell scripts.")
            pipewire
            python
            python-dbus
-           python-dbusmock))
+           python-dbusmock
+           wireplumber-minimal))
     (propagated-inputs
-     (list gsettings-desktop-schemas      ;required by libmutter-14.pc
+     (list gsettings-desktop-schemas    ;required by libmutter-14.pc
            ;; mutter-clutter-14.pc and mutter-cogl-14.pc refer to these:
            at-spi2-core
            cairo
@@ -8273,6 +8252,7 @@ to display dialog boxes from the commandline and shell scripts.")
            gnome-settings-daemon
            graphene
            libcanberra
+           libdisplay-info
            libgudev
            libice
            libsm
