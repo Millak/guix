@@ -35,6 +35,8 @@
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024 Murilo <murilo@disroot.org>
+;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +63,7 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -90,6 +93,9 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
@@ -152,6 +158,55 @@ interactively and via shell scripts.  Its method of command input allows
 complex tasks to be performed in an automated way.  GNU ed offers several
 extensions over the standard utility.")
     (license license:gpl3+)))
+
+(define-public micro
+  (package
+    (name "micro")
+    (version "2.0.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zyedidia/micro")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pcfsaq7k6q59vh3xgh8gy350apkv5rkc09d4fh15lx7m6bxbwka"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/zyedidia/micro/cmd/micro"
+      #:unpack-path "github.com/zyedidia/micro"
+      ;; Step away from cmd/micro to test the whole project.
+      #:test-subdirs #~(list "../../...")))
+    (inputs
+     (list go-github-com-blang-semver
+           go-github-com-dustin-go-humanize
+           go-github-com-go-errors-errors
+           go-github-com-layeh-gopher-luar
+           go-github-com-mattn-go-isatty
+           go-github-com-mitchellh-go-homedir
+           go-github-com-sergi-go-diff
+           go-github-com-stretchr-testify
+           go-github-com-yuin-gopher-lua
+           go-github-com-zyedidia-clipper
+           go-github-com-zyedidia-glob
+           go-github-com-zyedidia-go-runewidth
+           go-github-com-zyedidia-go-shellquote
+           go-github-com-zyedidia-json5
+           go-github-com-zyedidia-tcell-v2
+           go-github-com-zyedidia-terminal
+           go-golang-org-x-text
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/zyedidia/micro")
+    (synopsis "Modern and intuitive terminal-based text editor")
+    (description
+     "@code{micro} is a terminal-based text editor that aims to be easy to use and
+intuitive, while also taking advantage of the capabilities of modern terminals.")
+    ;; The project lists licenses of all used sources in LICENSE-THIRD-PARTY
+    ;; file which are already included in Guix's package definition.
+    (license license:expat)))
 
 (define-public lem
   (let ((commit "534cb9f2e1e1b0ffbdf4552a39801deec21a76f8")
