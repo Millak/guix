@@ -38582,14 +38582,14 @@ iterators with a separator.")
 (define-public rust-js-sys-0.3
   (package
     (name "rust-js-sys")
-    (version "0.3.76")
+    (version "0.3.77")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "js-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1dz7v777h2j38wkf8k5iwkfxskn6nff2cdv2jsslyxkpn2svc5v7"))
+        (base32 "13x2qcky5l22z4xgivi59xhjjx4kxir1zg7gcj0f1ijzd4yg7yhw"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
