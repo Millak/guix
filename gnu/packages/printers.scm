@@ -2,6 +2,7 @@
 ;;; Copyright © 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,16 +55,32 @@
     (build-system go-build-system)
     (arguments
      (list
-      ;; TODO: The project provides manpages and udev rules, review them and
-      ;; install in the next update cycle.
       #:install-source? #f
-      #:import-path "github.com/OpenPrinting/ipp-usb"))
+      #:import-path "github.com/OpenPrinting/ipp-usb"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-manual-page
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (let* ((man (string-append #$output "/share/man/man8")))
+                  (mkdir-p man)
+                  (invoke "go-md2man"
+                          "-in" "ipp-usb.8.md"
+                          "-out" (string-append man "/ipp-usb.8"))))))
+          (add-after 'install 'install-udev-rules
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "systemd-udev/71-ipp-usb.rules"
+                  (("systemd") "shephard")
+                  ((", ENV\\{SYSTEMD_WANTS\\}\\+=\"ipp-usb.service\"") ""))
+                (install-file "systemd-udev/71-ipp-usb.rules"
+                              (string-append #$output "/lib/udev/rules.d"))))))))
     (inputs
      (list avahi libusb))
     (native-inputs
      (list go-github-com-openprinting-goipp
-           pkg-config
-           ronn))
+           go-github-com-go-md2man
+           pkg-config))
     (home-page "https://github.com/OpenPrinting/ipp-usb")
     (synopsis "HTTP reverse proxy, backed by the IPP-over-USB connection")
     (description
