@@ -5093,8 +5093,31 @@ file system utilities for Gitoxide.")
      `(#:cargo-inputs (("rust-gix-features" ,rust-gix-features-0.35))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gix-fsck-0.7
+  (package
+    (name "rust-gix-fsck")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-fsck" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "164kp5bn8zmh6s31h5w93dkhgzz8w54xf1ci9kbj7b2hh0m07vvm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.15)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.6)
+                       ("rust-gix-object" ,rust-gix-object-0.45))))
+    (home-page "https://github.com/GitoxideLabs/gitoxide")
+    (synopsis "Verifies the connectivity and validity of objects in the database")
+    (description "This package verifies the connectivity and validity of objects
+in the database.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-fsck-0.4
   (package
+    (inherit rust-gix-fsck-0.7)
     (name "rust-gix-fsck")
     (version "0.4.1")
     (source
@@ -5104,16 +5127,10 @@ file system utilities for Gitoxide.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0a3ybr321f7p1qv37hvylihcqjxxqlf3jll8wcm0q6nhwpy2i0mv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.14)
                        ("rust-gix-hashtable" ,rust-gix-hashtable-0.5)
-                       ("rust-gix-object" ,rust-gix-object-0.42))))
-    (home-page "https://github.com/GitoxideLabs/gitoxide")
-    (synopsis "Verifies the connectivity and validity of objects in the database")
-    (description "This package verifies the connectivity and validity of objects
-in the database.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-gix-object" ,rust-gix-object-0.42))))))
 
 (define-public rust-gix-glob-0.18
   (package
