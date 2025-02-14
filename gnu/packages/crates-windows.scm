@@ -447,14 +447,14 @@ API library @code{gdi32}.")
 (define-public rust-implib-0.3
   (package
     (name "rust-implib")
-    (version "0.3.3")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "implib" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1n1bcfcsnng54ssf4hjknx87amz61j0kdis94f9kk7gnva07v9r7"))))
+        (base32 "0qjyhapssradwljryq8v31kbyg6s6fqdg50cyyq3by0mc84zg2sr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-memoffset" ,rust-memoffset-0.9)
