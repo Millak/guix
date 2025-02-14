@@ -487,6 +487,32 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                   (("Host system: \\@CMAKE_HOST_SYSTEM\\@")
                    "Host system: @CMAKE_SYSTEM_NAME@"))))))))))
 
+(define-public vktdiff
+  (package
+    (name "vtkdiff")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ufz/vtkdiff")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15nwzfhgyjfvd083kw1s19xkxcds9h31hx9cr339x3bkllbj609j"))))
+    (build-system cmake-build-system)
+    (inputs (list tclap vtk))
+    (arguments
+     (list
+      #:tests? #f ;There are no tests.
+      #:configure-flags #~(list "-DGUIX_BUILD=ON")))
+    (home-page "https://github.com/ufz/vtkdiff")
+    (synopsis "Numerical difference of data arrays in vtk files")
+    (description
+     "The vtkdiff tool shall provide means of numerical comparison of
+different data arrays similar to those available in the numdiff software.")
+    (license license:bsd-3)))
+
 (define-public opencv
   (package
     (name "opencv")
