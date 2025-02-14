@@ -30061,6 +30061,35 @@ loss, score and utility functions, that measure regression, classification and
 ranking performance.")
     (license license:gpl2)))
 
+(define-public r-mlogit
+  (package
+    (name "r-mlogit")
+    (version "1.1-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mlogit" version))
+       (sha256
+        (base32 "0hyi6gi03n895iydrfr1ba2ifbsd6lyjyhkq62d95ghhniysjgkg"))))
+    (properties `((upstream-name . "mlogit")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dfidx
+                             r-formula
+                             r-lmtest
+                             r-mass
+                             r-rdpack
+                             r-statmod
+                             r-zoo))
+    (native-inputs (list r-aer r-knitr r-lattice r-nnet))
+    (home-page "https://cran.r-project.org/package=mlogit")
+    (synopsis "Multinomial logit models")
+    (description
+     "This is a package for maximum likelihood estimation of random utility
+discrete choice models.  The software is described in Croissant (2020)
+<doi:10.18637/jss.v095.i11> and the underlying methods in Train (2009)
+<doi:10.1017/CBO9780511805271>.")
+    (license license:gpl2+)))
+
 (define-public r-mpm
   (package
     (name "r-mpm")
