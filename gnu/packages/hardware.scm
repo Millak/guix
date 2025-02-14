@@ -108,6 +108,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -1142,7 +1143,7 @@ technology, such as head mounted displays with built in head tracking.")
                            "dependencies/winring0"
                            ;; Some bundled appimages
                            "scripts/tools"))))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
        #:tests? #f ; doesn't have tests
@@ -1174,7 +1175,8 @@ technology, such as head mounted displays with built in head tracking.")
            nlohmann-json
            libusb
            mbedtls-lts
-           qtbase-5))
+           qtbase-5
+           qtwayland-5))
     (native-inputs
      (list pkg-config
            qttools-5))
