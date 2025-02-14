@@ -3953,13 +3953,13 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
 (define-public python-astroquery
   (package
     (name "python-astroquery")
-    (version "0.4.8")
+    (version "0.4.9.post1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astroquery" version))
        (sha256
-        (base32 "1dgc792xp6bpb63kqhwqpmc7ck9ifr6wlcqqgl091mfrjy40h4aw"))))
+        (base32 "15viynwq96gyb12q894fi2j4jlzmba3lk86l469ixmrnj3qnn4aw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
