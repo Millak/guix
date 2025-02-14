@@ -56,6 +56,7 @@
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9592,6 +9593,31 @@ modified.  Such data structures are effectively immutable, as their operations
 do not update the structure in-place, but instead always yield a new
 structure.  It's a stable fork of https://github.com/mndrix/ps.")
     (license license:expat)))
+
+(define-public go-github-com-layeh-gopher-luar
+  (package
+    (name "go-github-com-layeh-gopher-luar")
+    (version "1.0.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/layeh/gopher-luar")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zfafqy2jwjmrr0gl3h2ivn0iixb0bvslcwcly9bcmc5yxq35m89"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "layeh.com/gopher-luar"))
+    (propagated-inputs (list go-github-com-yuin-gopher-lua))
+    (home-page "https://github.com/layeh/gopher-luar")
+    (synopsis "Simplifies data passing to and from gopher-lua")
+    (description
+     "Package @code{gopher-luar} simplifies data passing to and from
+ @url{https://github.com/yuin/gopher-lua, gopher-lua}.")
+    (license license:mpl2.0)))
 
 (define-public go-github-com-leodido-go-urn
   (package
