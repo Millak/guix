@@ -29,7 +29,6 @@
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages libusb)
-  #:use-module (gnu packages man)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt))
 
