@@ -4091,7 +4091,7 @@ specifically in the C code.")
 (define-public python-cmyt
   (package
     (name "python-cmyt")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch) ; no tests in the PyPI tarball
@@ -4100,7 +4100,7 @@ specifically in the C code.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d1szsgjd09ya53vx7g5ryz2jdxl19p9rvrm4xz8v53vbqrp18cv"))))
+        (base32 "1d257xlgxc06x47k07xn5ml2kjqzc7dgjal4bl9x2w6b90xn0pm1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
