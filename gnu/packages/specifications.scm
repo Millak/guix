@@ -240,7 +240,7 @@ extinction curves, line lists for calibration lamps).")
                    #+(origin
                        (method url-fetch)
                        (uri (string-append
-                             "http://tdc-www.harvard.edu/catalogs/ybsc5.notes.gz"
+                             "http://tdc-www.harvard.edu/catalogs/ybsc"
                              (package-version this-package) ".notes.gz"))
                        (sha256
                         (base32
