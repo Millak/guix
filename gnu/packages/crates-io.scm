@@ -96549,6 +96549,28 @@ combinators library.")
         ("rust-memchr" ,rust-memchr-2)
         ("rust-terminal-size" ,rust-terminal-size-0.2))))))
 
+(define-public rust-wit-bindgen-rt-0.33
+  (package
+    (name "rust-wit-bindgen-rt")
+    (version "0.33.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wit-bindgen-rt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g4lwfp9x6a2i1hgjn8k14nr4fsnpd5izxhc75zpi2s5cvcg6s1j"))
+       (snippet
+        #~(begin (delete-file "src/libwit_bindgen_cabi_realloc.a")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2))))
+    (home-page "https://github.com/bytecodealliance/wit-bindgen")
+    (synopsis "Runtime support for the `wit-bindgen` crate")
+    (description
+     "This package provides runtime support for the `wit-bindgen` crate.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-wl-clipboard-rs-0.8
   (package
     (name "rust-wl-clipboard-rs")
