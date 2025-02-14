@@ -16129,6 +16129,37 @@ ongoing (blocked) read and write operations.
 It's an active fork of @url{https://github.com/npat-efault/poller}.")
     (license license:bsd-2)))
 
+;; For micro@2.0.14
+(define-public go-github-com-zyedidia-tcell-v2
+  (hidden-package
+   (package
+     (inherit go-github-com-gdamore-tcell-v2)
+     (name "go-github-com-zyedidia-tcell-v2")
+     (version "2.0.10")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/zyedidia/tcell")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1rbivmy79sc8hnygj7b3axhiqgbx6xc4f28pz69nhq9w2skk3zb9"))))
+     (arguments
+      (list
+       #:import-path "github.com/zyedidia/tcell/v2"))
+     (propagated-inputs
+      (list go-github-com-gdamore-encoding
+            go-github-com-lucasb-eyer-go-colorful
+            go-github-com-mattn-go-runewidth
+            go-github-com-xo-terminfo
+            go-github-com-zyedidia-poller
+            go-golang-org-x-sys
+            go-golang-org-x-text))
+     (home-page "https://github.com/zyedidia/tcell")
+     (description
+      "It's an alternative fork of @url{https://github.com/gdamore/tcell}."))))
+
 (define-public go-go-abhg-dev-komplete
   (package
     (name "go-go-abhg-dev-komplete")
