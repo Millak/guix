@@ -152,6 +152,7 @@
 ;;; Copyright © 2024 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2024 Divya Ranjan Pattanaik <divya@subvertising.org>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2277,8 +2278,8 @@ inspired by Plan 9 Acme and the Sam text editor.")
       (license license:gpl3+))))
 
 (define-public emacs-catppuccin-theme
-  (let ((commit "4441d5114fdcc2eb05186a974b4bbad7224e43b5")
-        (revision "1"))
+  (let ((commit "2975032bcf55d23b1cc05e323f5c30ec36bf17ba")
+        (revision "2"))
     (package
       (name "emacs-catppuccin-theme")
       (version (git-version "1.0.0" revision commit))
@@ -2286,11 +2287,11 @@ inspired by Plan 9 Acme and the Sam text editor.")
        (origin
          (method git-fetch)
          (uri (git-reference
-	       (url "https://github.com/catppuccin/emacs")
-	       (commit commit)))
+               (url "https://github.com/catppuccin/emacs")
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1y2ads0w5l3mm0mxxbi2ppb6csq8hw2fd9cmak3myv13qzw92x3w"))))
+          (base32 "0lqmqzanky88jlmrq1qafp5cls2wc39rm65325522izbvqaalgrp"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/catppuccin/emacs")
       (synopsis "Soothing pastel theme for Emacs")
