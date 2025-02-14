@@ -33667,7 +33667,7 @@ commands (a prefix and a suffix) we prefer to call it just a \"transient\".")
 (define-public emacs-forge
   (package
      (name "emacs-forge")
-     (version "0.4.6")
+     (version "0.4.7")
      (source
       (origin
         (method git-fetch)
@@ -33676,7 +33676,7 @@ commands (a prefix and a suffix) we prefer to call it just a \"transient\".")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0mh542c9hy401jcvammd89v9ja3zxc16k7zhfflq67x90987mwhp"))))
+         (base32 "1576ic28h5nanab092r2w7id66jv2wf3vw8fkhsbvm6fi4l6g4vg"))))
      (build-system emacs-build-system)
      (arguments
       `(#:tests? #f                     ;no tests
@@ -33695,7 +33695,6 @@ commands (a prefix and a suffix) we prefer to call it just a \"transient\".")
       (list texinfo))
      (propagated-inputs
       (list emacs-closql
-            emacs-dash
             emacs-emacsql
             emacs-ghub
             emacs-let-alist
