@@ -5415,7 +5415,7 @@ also favors portability, and includes support for all POSIX systems.")
   (package
     (inherit go-github-com-gdamore-tcell)
     (name "go-github-com-gdamore-tcell-v2")
-    (version "2.7.4")
+    (version "2.8.1")
     (source
      (origin
        (method git-fetch)
@@ -5424,7 +5424,7 @@ also favors portability, and includes support for all POSIX systems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05b22sgyf8lnwjddxlfvlj7i8b67gnidhbnz86vvx8fddggpa5nd"))))
+        (base32 "0lr81rqcd30djsz1xa7pqh7k3vyip2xp95g14qqr87xxvb4ggm6v"))))
     (arguments
      (list
       #:import-path "github.com/gdamore/tcell/v2"))
