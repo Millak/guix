@@ -47,7 +47,10 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "068rfy8arjxhgwll46bfq0x3ypi05qjd6gv0zqynfrk2zcwn4f3y"))))
+        (base32 "068rfy8arjxhgwll46bfq0x3ypi05qjd6gv0zqynfrk2zcwn4f3y"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
      (list
