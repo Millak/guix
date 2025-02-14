@@ -32081,6 +32081,32 @@ on graphs of millions of nodes (as long as they can fit in memory).")
     ;; https://github.com/vtraag/leidenalg, which is under GPLv3+.
     (license license:gpl3+)))
 
+(define-public r-leidenbase
+  (package
+    (name "r-leidenbase")
+    (version "0.1.32")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "leidenbase" version))
+       (sha256
+        (base32 "1464zpp5m22i6z47bbzggnjdiqm4lq5dvnhsvslph3ka3wyhnxr2"))))
+    (properties `((upstream-name . "leidenbase")))
+    (build-system r-build-system)
+    (inputs (list libxml2 zlib))
+    (propagated-inputs (list r-igraph))
+    (native-inputs (list r-devtools gfortran r-knitr pkg-config r-testthat))
+    (home-page "https://github.com/cole-trapnell-lab/leidenbase")
+    (synopsis
+     "R and C/C++ wrappers to run Leiden community detection algorithm")
+    (description
+     "This package provides an R to C/C++ interface that runs the
+Leiden community detection algorithm to find a basic partition.  It
+runs the equivalent of the leidenalg @code{find_partition()} function.
+This package includes the required source code files from the official
+leidenalg distribution and functions from the R igraph package.")
+    (license license:gpl3)))
+
 (define-public r-patchwork
   (package
     (name "r-patchwork")
