@@ -77218,14 +77218,14 @@ algorithm.  Includes streaming compression and decompression.")
 (define-public rust-snapbox-0.6
   (package
     (name "rust-snapbox")
-    (version "0.6.17")
+    (version "0.6.21")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "snapbox" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0jnndxckagxzvi52q0ldclz075kdpk4hxq7b22y3rg2867mp62w4"))))
+        (base32 "0ss3nd9ky0fkq7idj7jzr22kvkhxz3ylrq9fmiq5sdg3h52zrp4n"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
