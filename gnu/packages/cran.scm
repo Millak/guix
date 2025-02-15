@@ -2548,14 +2548,16 @@ based on their size or the date of the last backup; inspired by the utility
 (define-public r-rpresto
   (package
     (name "r-rpresto")
-    (version "1.4.6")
+    (version "1.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RPresto" version))
        (sha256
-        (base32 "1q8c3h328iwscnayxj8qc71s2hkqdqwnpf38kn3zz3ks66qzjf8c"))))
-    (properties `((upstream-name . "RPresto")))
+        (base32 "0r4ajzd3ciicvsydacvm8gywhcr64mh1g5p2hjl1lrxzj09x4ckw"))))
+    (properties
+     '((upstream-name . "RPresto")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -2585,7 +2587,7 @@ based on their size or the date of the last backup; inspired by the utility
            r-stringi
            r-tibble
            r-vctrs))
-    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
+    (native-inputs (list r-hms r-knitr r-testthat r-withr tzdata-for-tests))
     (home-page "https://github.com/prestodb/RPresto")
     (synopsis "DBI connector to Presto")
     (description
