@@ -115,6 +115,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-graphics)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
@@ -633,6 +634,25 @@ possible, and it also makes the SGE easy to learn.")
     (description "@code{pyscroll} is a simple and fast module
 for animated scrolling maps for your new or existing game.")
     (license license:lgpl3+)))
+
+(define-public python-pytmx
+  (package
+    (name "python-pytmx")
+    (version "3.32")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "PyTMX" version))
+              (sha256
+               (base32
+                "1jh9b0pjqbjdv72v5047p5d769ic084g013njvky0zcfiwrxi3w5"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-pygame python-pysdl2 python-pyglet))
+  (home-page "https://github.com/bitcraft/PyTMX")
+  (synopsis "Python library to read Tiled Map Editor's TMX maps")
+  (description "@code{pytmx} is a map loader for python/pygame designed for games.
+It provides smart tile loading with a fast and efficient storage base.")
+  (license license:lgpl3+)))
 
 (define-public python-tmx
   (package
