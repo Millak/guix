@@ -14733,25 +14733,38 @@ estimated from a given sample.")
 (define-public r-pillar
   (package
     (name "r-pillar")
-    (version "1.9.0")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pillar" version))
        (sha256
         (base32
-         "1k3sp37dpn46d2xbq621alpvzgnm06x5qb87nk169y47q23b8gpj"))))
+         "17a4mwcar89flag3k5630iawriq1snyz634fnmb04wnhh7l2ppxf"))))
+    (properties
+     ;; Avoid dependency cycles.
+     '((updater-ignored-native-inputs . ("r-ggplot2" "r-tibble"))
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
-           r-fansi
            r-glue
            r-lifecycle
            r-rlang
            r-utf8
            r-vctrs))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-bit64
+           r-dbi
+           r-evaluate
+           r-knitr
+           r-lubridate
+           r-nanotime
+           r-survival
+           r-testthat
+           r-vdiffr
+           r-withr
+           tzdata-for-tests))
     (home-page "https://github.com/r-lib/pillar")
     (synopsis "Coloured formatting for columns")
     (description
