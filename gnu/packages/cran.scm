@@ -4208,14 +4208,16 @@ customize these components as you demand in ordinary @code{ggplot2} grammar.")
 (define-public r-laf
   (package
     (name "r-laf")
-    (version "0.8.4")
+    (version "0.8.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "LaF" version))
        (sha256
-        (base32 "1mj010bl4ql0hm33vl0dd08s9dab11y9fa32nsqs6kbb22gjzk6p"))))
-    (properties `((upstream-name . "LaF")))
+        (base32 "1738v1jc3diz72dc0g0fzad6pa8fyahz1qd66izj437s0xy249q6"))))
+    (properties
+     '((upstream-name . "LaF")
+       (updater-extra-native-inputs . ("r-yaml"))))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
     (native-inputs (list r-testthat r-yaml))
