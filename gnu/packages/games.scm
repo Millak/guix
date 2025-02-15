@@ -87,6 +87,7 @@
 ;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023-2025 Adam Faiz <adam.faiz@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6216,6 +6217,67 @@ safety of the Chromium vessel.")
     ;; Clarified Artistic License for everything but sound, which is covered
     ;; by the Expat License.
     (license (list license:clarified-artistic license:expat))))
+
+(define-public tuxemon
+  (let ((commit "19708725f8b2d939e39b726f49a8a078eba8bf32")
+        (revision "0"))
+  (package
+    (name "tuxemon")
+    (version (git-version "0.4.34" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Tuxemon/Tuxemon")
+              (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jdhk6xs4895gifxlkaxk7625wvw2yl1yc6ciay137dk78amhp86"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (substitute* "requirements.txt"
+              (("pygame-ce") "pygame") ; The pygame-ce fork isn't packaged in Guix
+              (("pygame-menu-ce") "pygame-menu")
+              (("==") ">="))
+            (substitute* "tuxemon/constants/paths.py"
+              (("LIBDIR, ....,") "LIBDIR,"))))))
+    (build-system python-build-system)
+    (native-inputs (list python-flit-core python-setuptools))
+    (propagated-inputs
+     (list python-babel
+           python-cbor
+           python-neteria
+           python-natsort
+           python-pygame
+           python-pyscroll
+           python-pytmx
+           python-pillow
+           python-prompt-toolkit
+           python-pydantic-2
+           python-pygame-menu
+           python-pyyaml
+           python-requests))
+    (arguments
+     (list #:tests? #f ; Tests won't be updated until the API stabilises
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-mods
+                 (lambda _
+                   (let ((site (string-append #$output "/lib/python"
+                                              #$(version-major+minor
+                                                 (package-version python))
+                                              "/site-packages/tuxemon/mods")))
+                     (mkdir-p site)
+                     (copy-recursively "mods" site)))))))
+    (home-page "https://www.tuxemon.org/")
+    (synopsis "Monster-fighting RPG")
+    (description
+     "Tuxemon is a monster-fighting RPG.
+In the spirit of other clones like SuperTux and SuperTuxKart,
+Tuxemon aims to create a game with its own unique style
+that sets it apart from other monster fighting RPGs.")
+    (license license:gpl3+))))
 
 (define-public tuxpaint
   (package
