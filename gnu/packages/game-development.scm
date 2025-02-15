@@ -79,6 +79,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages fonts)
@@ -299,6 +300,37 @@ Conversely, when it reads files for inclusion in pwads, it does the necessary
 conversions (for example, from PPM to Doom picture format).  In addition,
 DeuTex has functions such as merging wads, etc.")
    (license license:gpl2+)))
+
+(define-public go-codeberg-org-anaseto-gruid-sdl
+  (package
+    (name "go-codeberg-org-anaseto-gruid-sdl")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/anaseto/gruid-sdl.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q2k9ysfvqb715mrpk2f3sagkjmcsinh3s6nfgi6f3axckzj2351"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t ; it needs to be built on final application side only
+      #:tests? #f      ; no tests provided
+      #:import-path "codeberg.org/anaseto/gruid-sdl"))
+    (native-inputs
+     (list pkg-config)) ; for go-github-com-veandco-go-sdl2
+    (propagated-inputs
+     (list go-codeberg-org-anaseto-gruid
+           go-github-com-veandco-go-sdl2
+           go-golang-org-x-image))
+    (home-page "https://codeberg.org/anaseto/gruid-sdl")
+    (synopsis "Gruid Driver using the go-sdl2 SDL2 bindings")
+    (description
+     "Package sdl provides a Driver for making native graphical apps.")
+    (license license:isc)))
 
 (define-public go-github-com-veandco-go-sdl2
   (package
