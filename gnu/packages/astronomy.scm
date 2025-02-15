@@ -113,6 +113,7 @@
   #:use-module (guix build-system meson)
   #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -7507,7 +7508,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1i00f63pmyy55mwagab4pv419agzmg2c4075hc8cgbhhhfr6gm8d"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     ;; TODO: Complete documentation build and split into dedicated outputs.
     (arguments
      (list
@@ -7542,6 +7543,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            qtscript ; the last v5 left to rename
            qtserialport-5
            qttranslations
+           qtwayland-5
            qtwebengine-5
            qxlsx-qt5
            zlib))
