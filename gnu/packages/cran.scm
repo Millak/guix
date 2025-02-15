@@ -10837,7 +10837,10 @@ package also provides a C++ API, that works with or without Rcpp.")
        (sha256
         (base32
          "1il6yphqxcyj1039imi8pn6ygyni24daz8ljxxp3z9inb5k2dcwb"))))
-    (properties `((upstream-name . "GGally")))
+    (properties
+     '((upstream-name . "GGally")
+       (updater-extra-native-inputs
+        . ("r-broom" "r-network" "r-scales" "r-sna"))))
     (build-system r-build-system)
     (inputs
      (list openssl))
@@ -10854,7 +10857,8 @@ package also provides a C++ API, that works with or without Rcpp.")
            r-rlang
            r-scales
            r-tidyr))
-    (native-inputs (list r-survival r-testthat r-vdiffr))
+    (native-inputs
+     (list r-broom r-network r-scales r-sna r-survival r-testthat r-vdiffr))
     (home-page "https://ggobi.github.io/ggally")
     (synopsis "Extension to ggplot2")
     (description
