@@ -38822,9 +38822,18 @@ plots and fluctuation diagrams.")
        (sha256
         (base32
          "1mvj2s78n2r66nlqq5bjrvgdwlwbcqdj81yryc34sv3y4m1mkpv9"))))
-    (properties `((upstream-name . "packrat")))
+    (properties
+     '((upstream-name . "packrat")
+       (updater-extra-native-inputs . ("r-mockery"))))
     (build-system r-build-system)
-    (native-inputs (list r-testthat))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           ;; Requires Internet access.
+           (lambda _ (delete-file "tests/testthat/test-downloader.R"))))))
+    (native-inputs (list r-mockery r-testthat))
     (home-page "https://github.com/rstudio/packrat/")
     (synopsis "Dependency management R projects")
     (description
