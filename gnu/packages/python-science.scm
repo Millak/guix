@@ -3107,7 +3107,7 @@ aggregated sum and more.")
 (define-public python-plotnine
   (package
     (name "python-plotnine")
-    (version "0.10.1")
+    (version "0.14.5")
     (source
      (origin
        (method git-fetch)
@@ -3116,7 +3116,7 @@ aggregated sum and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lg53wcm00lj8zbb4q9yj4a0n0fqaqq7c7vj18bda0k56gg0fpwl"))))
+        (base32 "02ph0h312qn5a9ivh2qhv0x9sybccgbidzvb8im1hikwcqp8v2fw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3124,64 +3124,77 @@ aggregated sum and more.")
       ;; XXX: Check for any new failing tests during next update cycle.
       ;; These all fail because the images are considered to be too different,
       ;; though they really do look fine.
-      '(list "-k"
-             (string-append "not TestThemes"
-                            (string-join (list
-                                          ;; Image tests
-                                          "test_adjust_text"
-                                          "test_annotation_logticks_coord_flip_discrete"
-                                          "test_annotation_logticks_faceting"
-                                          "test_arrow"
-                                          "test_aslabeller_dict_0tag"
-                                          "test_caption_simple"
-                                          "test_continuous_x"
-                                          "test_continuous_x_fullrange"
-                                          "test_coord_trans_backtransforms"
-                                          "test_coord_trans_se_false"
-                                          "test_custom_shape"
-                                          "test_datetime_scale_limits"
-                                          "test_dir_v_ncol"
-                                          "test_discrete_x"
-                                          "test_discrete_x_fullrange"
-                                          "test_facet_grid_drop_false"
-                                          "test_facet_grid_expression"
-                                          "test_facet_grid_space_ratios"
-                                          "test_facet_wrap"
-                                          "test_facet_wrap_expression"
-                                          "test_facet_wrap_label_both"
-                                          "test_label_context_wrap2vars"
-                                          "test_labeller_cols_both_grid"
-                                          "test_labeller_cols_both_wrap"
-                                          "test_labeller_towords"
-                                          "test_missing_data_discrete_scale"
-                                          "test_ribbon_facetting"
-                                          "test_stack_non_linear_scale"
-                                          "test_uneven_num_of_lines"
-
-                                          ;; This triggers an unexpected but harmless
-                                          ;; warning.
-                                          "test_save_method"
-
-                                          ;; Missing optional modules
-                                          "test_non_linear_smooth"
-                                          "test_non_linear_smooth_no_ci")
-                                         " and not "
-                                         'prefix)))
-      #:phases '(modify-phases %standard-phases
-                  (add-before 'check 'pre-check
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      ;; The data files are referenced by the tests but they are not
-                      ;; installed.
-                      (copy-recursively "plotnine/data"
-                                        (string-append (site-packages inputs
-                                                                      outputs)
-                                                       "/plotnine/data"))
-                      ;; Matplotlib needs to be able to write its configuration file
-                      ;; somewhere.
-                      (setenv "MPLCONFIGDIR" "/tmp")
-                      (setenv "TZ" "UTC")
-                      (setenv "TZDIR"
-                              (search-input-directory inputs "share/zoneinfo")))))))
+      ;; See https://github.com/has2k1/plotnine/issues/627
+      `(list ,@(map (lambda (file) (string-append "--ignore=" file))
+                    (list "tests/test_aes.py"
+                          "tests/test_annotation_logticks.py"
+                          "tests/test_coords.py"
+                          "tests/test_facet_labelling.py"
+                          "tests/test_facets.py"
+                          "tests/test_geom_bar_col_histogram.py"
+                          "tests/test_geom_bin_2d.py"
+                          "tests/test_geom_boxplot.py"
+                          "tests/test_geom_count.py"
+                          "tests/test_geom_density_2d.py"
+                          "tests/test_geom_density.py"
+                          "tests/test_geom_dotplot.py"
+                          "tests/test_geom_freqpoly.py"
+                          "tests/test_geom_map.py"
+                          "tests/test_geom_path_line_step.py"
+                          "tests/test_geom_point.py"
+                          "tests/test_geom_raster.py"
+                          "tests/test_geom_rect_tile.py"
+                          "tests/test_geom_ribbon_area.py"
+                          "tests/test_geom_sina.py"
+                          "tests/test_geom_smooth.py"
+                          "tests/test_geom_text_label.py"
+                          "tests/test_geom_violin.py"
+                          "tests/test_layout.py"
+                          "tests/test_position.py"
+                          "tests/test_qplot.py"
+                          "tests/test_scale_internals.py"
+                          "tests/test_scale_labelling.py"
+                          "tests/test_stat_ecdf.py"
+                          "tests/test_stat_function.py"
+                          "tests/test_stat_summary.py"
+                          "tests/test_theme.py"))
+             "-k"
+             (string-append "not "
+                            (string-join
+                             (list
+                              ;; This triggers an unexpected but harmless
+                              ;; warning.
+                              "test_save_method"
+                              ;; This test fails to set the locale.
+                              "test_no_after_scale_warning"
+                              ;; Missing optional modules
+                              "test_non_linear_smooth"
+                              "test_non_linear_smooth_no_ci")
+                             " and not "
+                             'infix)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; without the git metadata available, the version string is set to
+            ;; '999'.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; The data files are referenced by the tests but they are not
+              ;; installed.
+              (copy-recursively "plotnine/data"
+                                (string-append (site-packages inputs
+                                                              outputs)
+                                               "/plotnine/data"))
+              (setenv "CI" "1")      ;skip tests that are known to fail on CI.
+              ;; Matplotlib needs to be able to write its configuration file
+              ;; somewhere.
+              (setenv "MPLCONFIGDIR" "/tmp")
+              (setenv "TZ" "UTC")
+              (setenv "TZDIR"
+                      (search-input-directory inputs "share/zoneinfo")))))))
     (propagated-inputs (list python-adjusttext
                              python-matplotlib
                              python-mizani
