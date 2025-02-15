@@ -7773,6 +7773,59 @@ file into a Go http.CookieJar.")
 StatHat} account.")
     (license license:expat)))
 
+(define-public go-github-com-swaggo-swag
+  (package
+    (name "go-github-com-swaggo-swag")
+    (version "1.16.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/swaggo/swag")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a9dg8clgmpsfww5wv3jbdpm7lqza61iihviskwp5rd7wvp57862"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/swaggo/swag"
+      #:unpack-path "github.com/swaggo/swag"
+      #:embed-files
+      #~(list
+         ;; github.com/go-openapi/spec/embed.go:8:12: pattern schemas/*.json:
+         ;; cannot embed irregular file schemas/jsonschema-draft-04.json
+         "jsonschema-draft-04\\.json"
+         ;; github.com/go-openapi/spec/embed.go:8:27: pattern
+         ;; schemas/*/*.json: cannot embed irregular file
+         ;; schemas/v2/schema.json
+         "schema\\.json")
+      #:test-flags
+      #~(list "-skip" (string-append "TestParseGoList/enableGOMODULE"
+                                     "|TestParseDescriptionMarkdown"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (delete-file-recursively "example")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-openapi-spec
+           go-github-com-kylebanks-depth
+           go-github-com-urfave-cli-v2
+           go-golang-org-x-text
+           go-golang-org-x-tools
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/swaggo/swag")
+    (synopsis "Generate RESTful API documentation with Swagger 2.0 for Go")
+    (description
+     "Package swag converts Go annotations to Swagger Documentation 2.0 for
+verity of Go web frameworks which may be integrated with an existing project
+using Swagger UI.")
+    (license license:expat)))
+
 (define-public go-github-com-tdewolff-minify-v2
   (package
     (name "go-github-com-tdewolff-minify-v2")
@@ -9777,6 +9830,20 @@ go-github-com-tdewolff-minify-v2 source.")))
 to use line-based tools such as grep to search for what you want and see the
 absolute \"path\" to it.")
     (license license:expat)))
+
+(define-public swag
+  (package/inherit go-github-com-swaggo-swag
+    (name "swag")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-swaggo-swag)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _ "github.com/swaggo/swag")
+        "github.com/swaggo/swag/cmd/swag")))
+    (native-inputs (package-propagated-inputs go-github-com-swaggo-swag))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public xurls
   (package
