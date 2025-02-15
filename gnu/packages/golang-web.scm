@@ -165,6 +165,42 @@ connections
 API service accounts for Go.")
     (license license:asl2.0)))
 
+(define-public go-code-gitea-io-sdk-gitea
+  (package
+    (name "go-code-gitea-io-sdk-gitea")
+    (version "0.20.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitea.com/gitea/go-sdk")
+             (commit (go-version->git-ref version
+                                          #:subdir "gitea"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15mxaxi1nf6b9qacizf7r55jjcnil7qsdh77qzk6b59qcps940np"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; XXX: Tests are broken
+      #:import-path "code.gitea.io/sdk/gitea"
+      #:unpack-path "code.gitea.io/sdk"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-42wim-httpsig
+           ;; go-github-com-davidmz-go-pageant ; for windows only
+           go-github-com-go-fed-httpsig
+           go-github-com-hashicorp-go-version
+           go-golang-org-x-crypto))
+    (home-page "https://code.gitea.io/sdk")
+    (synopsis "Gitea Golang SDK client")
+    (description
+     "Package gitea implements a client for the Gitea API. The version
+corresponds to the highest supported version of the gitea API, but
+backwards-compatibility is mostly given.")
+    (license license:expat)))
+
 (define-public go-git-sr-ht-adnano-go-gemini
   (package
     (name "go-git-sr-ht-adnano-go-gemini")
