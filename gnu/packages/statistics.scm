@@ -4542,11 +4542,13 @@ the way current RNG settings can be changed.")
        (sha256
         (base32
          "02srqmfkdj7v9gyhssaqdarg4ljn2ds77w25a5w0dm66sqa6ibis"))))
-    (properties `((upstream-name . "Rtsne")))
+    (properties
+     `((upstream-name . "Rtsne")
+       (updater-extra-native-inputs . ("r-irlba"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-irlba r-testthat))
     (home-page "https://github.com/jkrijthe/Rtsne")
     (synopsis "T-distributed stochastic neighbor embedding")
     (description
