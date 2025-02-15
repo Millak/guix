@@ -616,6 +616,24 @@ you can focus on the game itself.  This makes more rapid game development
 possible, and it also makes the SGE easy to learn.")
     (license license:lgpl3+)))
 
+(define-public python-pyscroll
+  (package
+    (name "python-pyscroll")
+    (version "2.31")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyscroll" version))
+              (sha256
+               (base32
+                "0w3c58mkkbsyvx9w9hwdizk20pbds800m7v9vg49ydw440dha0hr"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pygame))
+    (home-page "https://github.com/bitcraft/pyscroll")
+    (synopsis "Fast scrolling maps library for pygame")
+    (description "@code{pyscroll} is a simple and fast module
+for animated scrolling maps for your new or existing game.")
+    (license license:lgpl3+)))
+
 (define-public python-tmx
   (package
     (name "python-tmx")
