@@ -8351,7 +8351,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                       (delete 'disable-gtk-update-icon-cache)))))
     (inputs (modify-inputs (package-inputs gnome-online-accounts)
               (replace "rest" rest)
-              (replace "webkitgtk-for-gtk3" webkitgtk-with-libsoup2)))))
+              (replace "webkitgtk" webkitgtk-with-libsoup2)))))
 
 (define-public evolution-data-server
   (package
