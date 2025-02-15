@@ -8426,30 +8426,28 @@ whatever you make of it.")
     (license license:gpl3)))
 
 (define-public badass
-  (let ((commit "3c3cd669b4fc8f73a102e3702788f7b28dc47dbb")
-        (revision "0"))
   (package
     (name "badass")
-    (version (git-version "0.0" revision commit))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/umayr/badass")
-                     (commit commit)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "05c9vdcb5ym3z0n5ll3v39mw4yl9jcjnlydmn0yl89ai9pv71zb6"))))
+    (version "0.0.0-20151201180210-02e7c38d503f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/umayr/badass")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b0y7xz9y0cqxfphfznz2zhfk7mm2vvmldf088w2fm8c8spj4g28"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/umayr/badass"))
+    (home-page "https://github.com/umayr/badass")
     (synopsis "Hacking contribution graphs in git")
     (description
      "Badass generates false commits for a range of dates, essentially
 hacking the gamification of contribution graphs on platforms such as
 Github or Gitlab.")
-    (home-page "https://github.com/umayr/badass")
-    (license license:expat))))
+    (license license:expat)))
 
 (define-public colobot
   (package
