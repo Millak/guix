@@ -1546,9 +1546,9 @@ TrueType font files in your system's user and system font directories.")
 
 ;; NOTE: A warning from upstream: This program is currently not actively
 ;; maintained, it seems to work fine, but use at your own risk.
-(define-public go-github-com-wraparound-wrap
+(define-public go-wrap
   (package
-    (name "go-github-com-wraparound-wrap")
+    (name "go-wrap")
     (version "0.3.2")
     (source
      (origin
