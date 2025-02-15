@@ -395,7 +395,7 @@ precision.")
 (define-public giac
   (package
     (name "giac")
-    (version "1.9.0-93")
+    (version "1.9.0-998")
     (source
      (origin
        (method url-fetch)
@@ -403,11 +403,11 @@ precision.")
        ;; overwrites the release tarball there, introducing a checksum
        ;; mismatch every time.  See
        ;; <https://www-fourier.ujf-grenoble.fr/~parisse/debian/dists/stable/main/source/README>
-       (uri (string-append "https://www-fourier.ujf-grenoble.fr/"
-                           "~parisse/debian/dists/stable/main/source/"
-                           "giac_" version ".tar.gz"))
+       (uri (string-append
+              "https://www-fourier.ujf-grenoble.fr/~parisse/debian/dists/"
+              "stable/main/source/giac_" version ".tar.gz"))
        (sha256
-        (base32 "11acbgd264vi9r3gzx8js8x2piavhybr97iyrh027qvxlbsdsgqm"))))
+        (base32 "1r71kl21xxf3872r0q25r2b9wpg03zrp08rsnpyqrhajmxb0ljbz"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -445,7 +445,7 @@ precision.")
             (lambda _
               (delete-file (string-append #$output "/bin/xcasnew")))))))
     (inputs
-     ;; TODO: Add libnauty, unbundle "libmicropython.a".
+     ;; TODO: Unbundle "libmicropython.a".
      (list ao
            fltk-1.3
            glpk-4
@@ -461,6 +461,7 @@ precision.")
            mesa
            mpfi
            mpfr
+           (list nauty "lib")
            ntl
            openblas
            pari-gp
