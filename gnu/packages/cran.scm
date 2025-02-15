@@ -3759,14 +3759,16 @@ the system clipboards.")
 (define-public r-clock
   (package
     (name "r-clock")
-    (version "0.7.1")
+    (version "0.7.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "clock" version))
               (sha256
                (base32
-                "1n7hl5mbywfshk8jid5shnsqsn1al0v636wsy14f681zkp1jyba3"))))
-    (properties `((upstream-name . "clock")))
+                "0c1falphgvia63ap7dh72syfp4l9anamzfas2dq3c63kzjv1r8hb"))))
+    (properties
+     '((upstream-name . "clock")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -3786,7 +3788,7 @@ the system clipboards.")
            r-rlang
            r-tzdb
            r-vctrs))
-    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
+    (native-inputs (list r-knitr r-slider r-testthat tzdata-for-tests))
     (home-page "https://clock.r-lib.org")
     (synopsis "Date-Time types and tools")
     (description
