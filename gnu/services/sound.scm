@@ -3,6 +3,7 @@
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages rust-apps)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:export (alsa-configuration
@@ -56,7 +58,15 @@
             ladspa-configuration
             ladspa-configuration?
             ladspa-configuration-plugins
-            ladspa-service-type))
+            ladspa-service-type
+
+            speakersafetyd-configuration
+            speakersafetyd-configuration-blackbox-directory
+            speakersafetyd-configuration-configuration-directory
+            speakersafetyd-configuration-maximum-gain-reduction
+            speakersafetyd-configuration-speakersafetyd
+            speakersafetyd-configuration?
+            speakersafetyd-service-type))
 
 ;;; Commentary:
 ;;;
@@ -262,5 +272,59 @@ computed-file object~%") file))))
                              ladspa-environment)))
    (default-value (ladspa-configuration))
    (description "Configure LADSPA plugins.")))
+
+
+;;;
+;;; Speaker Safety Daemon.
+;;;
+
+(define-configuration/no-serialization speakersafetyd-configuration
+  (blackbox-directory
+   (string "/var/lib/speakersafetyd/blackbox")
+   "The directory to which blackbox files are written when the speakers are
+getting too hot.  The blackbox files contain audio and debug information which
+the developers of @code{speakersafetyd} might ask for when reporting bugs.")
+  (configuration-directory
+   (file-like (file-append speakersafetyd "/share/speakersafetyd"))
+   "The base directory as a G-expression (@pxref{G-Expressions}) that contains
+the configuration files of the speaker models.")
+  (maximum-gain-reduction
+   (integer 7)
+   "Maximum gain reduction before panicking, useful for debugging.")
+  (speakersafetyd
+   (file-like speakersafetyd)
+   "The Speaker Safety Daemon package to use."))
+
+(define speakersafetyd-shepherd-service
+  (match-record-lambda <speakersafetyd-configuration>
+      (blackbox-directory configuration-directory maximum-gain-reduction speakersafetyd)
+    (shepherd-service
+     (documentation "Run the speaker safety daemon")
+     (provision '(speakersafetyd))
+     (requirement '(udev))
+     (start #~(make-forkexec-constructor
+               (list #$(file-append speakersafetyd "/bin/speakersafetyd")
+                     "--config-path" #$configuration-directory
+                     "--blackbox-path" #$blackbox-directory
+                     "--max-reduction" (number->string #$maximum-gain-reduction))))
+     (stop #~(make-kill-destructor)))))
+
+(define speakersafetyd-service-type
+  (service-type
+   (name 'speakersafetyd)
+   (description "Run @command{speakersafetyd}, a user space daemon that
+implements an analogue of the Texas Instruments Smart Amp speaker protection
+model.  It can be used to protect the speakers on Apple Silicon devices.")
+   (extensions
+    (list (service-extension
+           shepherd-root-service-type
+           (compose list speakersafetyd-shepherd-service))
+          (service-extension
+           udev-service-type
+           (compose list speakersafetyd-configuration-speakersafetyd))
+          (service-extension
+           profile-service-type
+           (compose list speakersafetyd-configuration-speakersafetyd))))
+   (default-value (speakersafetyd-configuration))))
 
 ;;; sound.scm ends here
