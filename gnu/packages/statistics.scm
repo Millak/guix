@@ -3394,6 +3394,8 @@ time-of-day values, based on the @code{difftime} class.")
                (base32
                 "02p1jjal73j39r49ba4jlvbx8bdqmm96nsdp47igyv54w1gmm9hg"))))
     (build-system r-build-system)
+    (properties
+     '((updater-extra-native-inputs . ("r-stringi"))))
     (arguments
      (list
       #:phases
@@ -3418,7 +3420,7 @@ time-of-day values, based on the @code{difftime} class.")
            r-tzdb
            r-vroom))
     (native-inputs
-     (list r-knitr r-testthat tzdata-for-tests))
+     (list r-knitr r-stringi r-testthat tzdata-for-tests))
     (home-page "https://github.com/hadley/readr")
     (synopsis "Read tabular data")
     (description
