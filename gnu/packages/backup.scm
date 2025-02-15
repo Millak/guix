@@ -1397,7 +1397,7 @@ borgmatic is powered by borg.")
 (define-public vorta
   (package
     (name "vorta")
-    (version "0.9.1")
+    (version "0.10.3")
     ;; The test folder is not included in the PyPI archive.
     (source (origin
               (method git-fetch)
@@ -1407,14 +1407,15 @@ borgmatic is powered by borg.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lhqikwrydnys24yic6xaqidwacdibx48cl0066xv9xnsjanfsf0"))))
+                "0b4042a0lpbmwlmbh5559b2x9vr2055w6jjrs7088n45d7rkn4sn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "-k" "not test_excludes"
               "--ignore=tests/integration"
-              "--ignore=tests/unit")
+              "--ignore=tests/unit"
+              "--ignore=tests/network_manager/test_darwin.py")
       #:imported-modules `((guix build qt-utils)
                            (guix build cmake-build-system)
                            (guix build qt-build-system)
