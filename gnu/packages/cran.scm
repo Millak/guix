@@ -7216,7 +7216,7 @@ a list of p-values.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64enc r-digest r-fastmap r-rlang))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-markdown r-testthat))
     (home-page "https://cran.r-project.org/web/packages/htmltools")
     (synopsis "R tools for HTML")
     (description
