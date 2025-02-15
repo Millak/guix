@@ -787,6 +787,37 @@ order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-fore
 and @code{go-ipld-format} legacy interface.")
     (license (list license:expat license:asl2.0))))
 
+(define-public go-github-com-ipfs-go-peertaskqueue
+  (package
+    (name "go-github-com-ipfs-go-peertaskqueue")
+    (version "0.8.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-peertaskqueue")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mz6kj0d23p7hfmcrh8l0khj6gx9f58v2ls5336im6yw4vkzr711"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-peertaskqueue"))
+    (native-inputs
+     (list go-github-com-filecoin-project-go-clock))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-ipfs-pq
+           go-github-com-libp2p-go-libp2p))
+    (home-page "https://github.com/ipfs/go-peertaskqueue")
+    (synopsis "Prioritized queue of abstract tasks distributed among peers")
+    ;; Project has nothing in README, see
+    ;; <https://github.com/ipfs/go-peertaskqueue/issues/1>.
+    (description
+     "This package implements a functionality to prioritize queue of abstract
+tasks distributed among peers.")
+    (license (list license:asl2.0 license:expat))))
+
 ;; XXX: This repository has been archived by the owner on Jun 20, 2023. It is
 ;; now read-only.  We highly recommend switching to the maintained version at
 ;; https://github.com/ipfs/boxo/tree/main/verifcid.  It's still in use by some
