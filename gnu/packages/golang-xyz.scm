@@ -317,6 +317,32 @@ user needs to serve using an http server a directory containing the app.wasm
 file along with an index.html file.")
     (license license:isc)))
 
+(define-public go-codeberg-org-anaseto-gruid-tcell
+  (package
+    (name "go-codeberg-org-anaseto-gruid-tcell")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/anaseto/gruid-tcell.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zr5xlmnxva5n3c5fj5hxg1wcsw1pq4favfwwv5nclwgzbd0mjr5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "codeberg.org/anaseto/gruid-tcell"))
+    (propagated-inputs
+     (list go-codeberg-org-anaseto-gruid
+           go-github-com-gdamore-tcell-v2))
+    (home-page "https://codeberg.org/anaseto/gruid-tcell")
+    (synopsis "Gruid Driver using the tcell library")
+    (description
+     "Package tcell provides a gruid Driver for making terminal apps.")
+    (license license:isc)))
+
 (define-public go-dario-cat-mergo
   (package
     (name "go-dario-cat-mergo")
