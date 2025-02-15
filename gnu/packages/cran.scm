@@ -42906,14 +42906,16 @@ and \"Persuasion\".")
 (define-public r-janitor
   (package
     (name "r-janitor")
-    (version "2.2.0")
+    (version "2.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "janitor" version))
               (sha256
                (base32
-                "1bmsyrmy833kzj3s9s6207f54bx1ca0ianwhiyrlp0jfbqcd1m99"))))
-    (properties `((upstream-name . "janitor")))
+                "1pvcmqlkdlain7zf10i2hwq7kg1l703m2sp6d27gxjk258q03i17"))))
+    (properties
+     '((upstream-name . "janitor")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -42943,7 +42945,14 @@ and \"Persuasion\".")
            r-stringr
            r-tidyr
            r-tidyselect))
-    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
+    (native-inputs (list r-dbplyr
+                         r-forcats
+                         r-knitr
+                         r-sf
+                         r-testthat
+                         r-tibble
+                         r-tidygraph
+                         tzdata-for-tests))
     (home-page "https://github.com/sfirke/janitor")
     (synopsis "Simple tools for examining and cleaning dirty data")
     (description
