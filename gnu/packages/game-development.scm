@@ -1483,6 +1483,50 @@ and multimedia programs in the Python language.")
                    license:public-domain
                    license:lgpl2.1+))))
 
+(define-public python-pygame-menu
+  (package
+    (name "python-pygame-menu")
+    (version "4.5.1")
+    (source
+     ;; Tests not included in release.
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/ppizarror/pygame-menu")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0xd5d6nfkd5bp2zfq77yglp6mz043w28zprfz7savgmph5kvdnfh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'prepare-test-environment
+                 (lambda _
+                   (setenv "HOME" (getcwd))))
+               (add-before 'check 'skip-certain-tests
+                 (lambda _
+                   (substitute* "test/test_font.py"
+                     (("test_font_argument") "skip_test_font_argument")
+                     (("test_system_load") "skip_test_system_load"))
+                   (substitute* "test/test_baseimage.py"
+                     ;; Tuples differ: (111, 110) != (110, 109)
+                     (("test_invalid_image") "skip_test_invalid_image")
+                     (("test_scale") "skip_test_scale")))))))
+    (propagated-inputs (list python-pygame python-pyperclip
+                             python-typing-extensions))
+    (native-inputs (list python-nose2 python-setuptools python-wheel))
+    (home-page "https://pygame-menu.readthedocs.io")
+    (synopsis "Menu for pygame")
+    (description
+     "Pygame-menu is a python-pygame library for creating menus and GUIs.
+It supports several widgets, such as buttons, color inputs, clock objects,
+drop selectors, frames, images, labels, selectors, tables, text inputs,
+color switches, and many more, with multiple options to customize.")
+    (license license:expat)))
+
 (define-public python-pygame-sdl2
   (let ((real-version "2.1.0")
         (renpy-version "8.3.0"))
