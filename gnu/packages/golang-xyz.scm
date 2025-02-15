@@ -18070,19 +18070,16 @@ tools."))))
 tool."))))
 
 (define-public go-ulid
-  (package
-    (inherit go-github-com-oklog-ulid-v2)
+  (package/inherit go-github-com-oklog-ulid-v2
     (name "go-ulid")
     (arguments
      (list
       #:install-source? #f
       #:import-path "github.com/oklog/ulid/v2/cmd/ulid"
       #:unpack-path "github.com/oklog/ulid/v2"))
-    (native-inputs
-     (list go-github-com-pborman-getopt-v2))
     (description
-     (string-append (package-description go-github-com-oklog-ulid)
-                    "  This package provides an command line interface (CLI)
+     (string-append (package-description go-github-com-oklog-ulid-v2)
+                    "\nThis package provides a command line interface (CLI)
 tool."))))
 
 (define-public gofumpt
