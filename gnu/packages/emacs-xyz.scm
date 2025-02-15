@@ -23500,8 +23500,8 @@ through them using @key{C-c C-SPC}.")
     (license license:gpl3+)))
 
 (define-public emacs-slack
-  (let ((commit "ff46d88726482211e3ac3d0b9c95dd4fdffe11c2")
-        (revision "10"))
+  (let ((commit "d81c18a90cec42bea58c74e902cfad27900f8de6")
+        (revision "11"))
     (package
       (name "emacs-slack")
       (version (git-version "0.0.2" revision commit))
@@ -23513,7 +23513,7 @@ through them using @key{C-c C-SPC}.")
                 (file-name (git-file-name name commit))
                 (sha256
                  (base32
-                  "15g4dmy4iqqpk8ivhkpsngzllbw0nc5d2sc9j36sdnhwkajzhidj"))))
+                  "0qmviqv67qzfl7w8sdl3l0ds6g7fhz58vx41d2mjm6ny0qd6ksq5"))))
       (build-system emacs-build-system)
       (arguments
        `(#:phases
@@ -23526,6 +23526,8 @@ through them using @key{C-c C-SPC}.")
              emacs-emojify
              emacs-helm
              emacs-request
+             emacs-s
+             emacs-ts
              emacs-websocket
              emacs-oauth2
              emacs-circe))
