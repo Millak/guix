@@ -30,6 +30,7 @@
 ;;; Copyright © 2022 dan <i@dan.games>
 ;;; Copyright © 2022 Cairn <cairn@pm.me>
 ;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022-2023, 2025 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -677,6 +678,25 @@ Game Engine easier.  In addition to SGE's conveniences, the user has access to a
 GUI toolkit, lighting and physics frameworks and @code{Tiled} TMX format
 support.")
     (license license:lgpl3+)))
+
+(define-public python-neteria
+  (package
+    (name "python-neteria")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "neteria" version))
+       (sha256
+        (base32 "1azlix80a6vns2i3z0bdbqk32kx8s2gjh2nvshab235fd9h85yv7"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-rsa))
+    (home-page "https://pypi.org/project/neteria/")
+    (synopsis "Simple game networking library")
+    (description
+     "This package provides a game networking framework for Python.")
+    (license license:gpl3+)))
 
 (define-public slade
   (package
