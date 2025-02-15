@@ -3753,6 +3753,38 @@ submodules:
 font files in your system's user and system font directories.")
     (license license:expat)))
 
+(define-public go-github-com-ghodss-yaml
+  (package
+    (name "go-github-com-ghodss-yaml")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ghodss/yaml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0skwmimpy7hlh7pva2slpcplnm912rp3igs98xnqmn859kwa5v8g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ghodss/yaml"))
+    (propagated-inputs
+     (list go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/ghodss/yaml")
+    (synopsis "YAML marshaling and unmarshaling support for Go")
+    (description
+     "This package provides a wrapper around
+@url{https://github.com/go-yaml/yaml, go-yaml} designed to enable a better way
+of handling YAML when marshaling to and from structs.
+
+It first converts YAML to JSON using go-yaml and then uses @code{json.Marshal}
+and @code{json.Unmarshal} to convert to or from the struct.  This means that
+it effectively reuses the JSON struct tags as well as the custom JSON methods
+@code{MarshalJSON} and @code{UnmarshalJSON} unlike go-yaml.")
+    (license license:expat)))
+
 (define-public go-github-com-go-md2man
   (package
     (name "go-github-com-go-md2man")
