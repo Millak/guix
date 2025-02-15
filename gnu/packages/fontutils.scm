@@ -19,8 +19,10 @@
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2024 Sören Tempel <soeren@soeren-tempel.net>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Sou Bunnbu (宋文武) <iyzsong@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -56,6 +58,7 @@
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
@@ -87,6 +90,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
@@ -1446,6 +1450,60 @@ been designed, tested, and debugged to the extent that general-purpose
 applications should be.")
     (license license:lgpl2.1+)
     (home-page "https://scripts.sil.org/cms/scripts/page.php?cat_id=teckit")))
+
+;; NOTE: A warning from upstream: This program is currently not actively
+;; maintained, it seems to work fine, but use at your own risk.
+(define-public go-wrap
+  (package
+    (name "go-wrap")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             ;; Original URL <https://github.com/Wraparound/wrap>, now
+             ;; redirects to this.
+             (url "https://github.com/eprovst/wrap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xk1zii8vqzfys48phpdnr8ign0xvrsfwzyk9m0is9i3rffm25wh"))
+       (patches (search-patches
+                 "go-github-com-wraparound-wrap-free-fonts.patch"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/eprovst/wrap/cmd/wrap"
+      #:unpack-path "github.com/eprovst/wrap"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-fonts
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (for-each
+               (lambda (program)
+                 (wrap-program program
+                   `("XDG_DATA_DIRS" suffix
+                     ,(map dirname
+                           (search-path-as-list '("share/fonts")
+                                                (map cdr inputs))))))
+               (find-files (string-append (assoc-ref outputs "out")
+                                          "/bin"))))))))
+    (native-inputs
+     (list go-github-com-spf13-cobra
+           go-github-com-signintech-gopdf
+           go-github-com-flopp-go-findfont))
+    (inputs
+     (list font-liberation
+           font-gnu-freefont))
+    (home-page "https://github.com/eprovst/wrap")
+    (synopsis "Format Fountain screenplays")
+    (description
+     "Wrap is a command line tool that is able to convert Fountain files into
+a correctly formatted screen- or stageplay as an HTML or a PDF.  It supports
+standard Fountain, but also has some custom syntax extensions such as
+translated keywords and acts.")
+    (license license:gpl3)))
 
 (define-public graphite2
   (package

@@ -1521,60 +1521,6 @@ the golang proxy package which connects through a TURN relay.  It provides
 parsing and encoding support for STUN and TURN protocols.")
       (license license:bsd-3)))
 
-;; NOTE: A warning from upstream: This program is currently not actively
-;; maintained, it seems to work fine, but use at your own risk.
-(define-public go-wrap
-  (package
-    (name "go-wrap")
-    (version "0.3.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             ;; Original URL <https://github.com/Wraparound/wrap>, now
-             ;; redirects to this.
-             (url "https://github.com/eprovst/wrap")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1xk1zii8vqzfys48phpdnr8ign0xvrsfwzyk9m0is9i3rffm25wh"))
-       (patches (search-patches
-                 "go-github-com-wraparound-wrap-free-fonts.patch"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:install-source? #f
-      #:import-path "github.com/eprovst/wrap/cmd/wrap"
-      #:unpack-path "github.com/eprovst/wrap"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'wrap-fonts
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (for-each
-               (lambda (program)
-                 (wrap-program program
-                   `("XDG_DATA_DIRS" suffix
-                     ,(map dirname
-                           (search-path-as-list '("share/fonts")
-                                                (map cdr inputs))))))
-               (find-files (string-append (assoc-ref outputs "out")
-                                          "/bin"))))))))
-    (native-inputs
-     (list go-github-com-spf13-cobra
-           go-github-com-signintech-gopdf
-           go-github-com-flopp-go-findfont))
-    (inputs
-     (list font-liberation
-           font-gnu-freefont))
-    (home-page "https://github.com/eprovst/wrap")
-    (synopsis "Format Fountain screenplays")
-    (description
-     "Wrap is a command line tool that is able to convert Fountain files into
-a correctly formatted screen- or stageplay as an HTML or a PDF.  It supports
-standard Fountain, but also has some custom syntax extensions such as
-translated keywords and acts.")
-    (license license:gpl3)))
-
 (define-public lyrebird
   (package
     (name "lyrebird")
