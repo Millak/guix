@@ -269,14 +269,14 @@ browser for easy news reading.")
 (define-public gwenview
   (package
     (name "gwenview")
-    (version "24.12.1")
+    (version "24.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/gwenview-" version ".tar.xz"))
        (sha256
-        (base32 "08s5ksqqwj6d46drkvl8ka9c2lp62z3j5vhg65d762s6xnnd5a19"))))
+        (base32 "0qw4jl4zasa32skmf4qysx4spn91j1n6pmc7w8s1l6n6ncsffkjg"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
