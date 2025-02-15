@@ -8950,17 +8950,19 @@ work well on small screens.")
 (define-public r-minty
   (package
     (name "r-minty")
-    (version "0.0.4")
+    (version "0.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "minty" version))
        (sha256
-        (base32 "0hh7yqg8cff0x7b23ng4944h7rqpm96zb7qrqifkdssxcl1jf8ln"))))
-    (properties `((upstream-name . "minty")))
+        (base32 "0sr25z83v00hvq5c80jp70yialnay6c3fjykn1j8clr9s2z5ins7"))))
+    (properties
+     '((upstream-name . "minty")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (propagated-inputs (list r-cpp11 r-tzdb))
-    (native-inputs (list r-hms r-testthat tzdata-for-tests))
+    (native-inputs (list r-hms r-testthat r-withr tzdata-for-tests))
     (home-page "https://gesistsa.github.io/minty/")
     (synopsis "Minimal type guesser")
     (description
