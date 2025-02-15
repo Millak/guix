@@ -839,18 +839,19 @@ due to its architecture which automatically parallelises the image workflows.")
         (base32 "056wapzi0nbqr72m39y220ijl86ncla14l9bmw92wyajgblbd4sq"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ;there are no tests
-       #:configure-flags '("-DBUILD_LIB_STATIC=OFF"
-                           "-DENABLE_DYNAMIC_LINKING=ON"
-                           "-DENABLE_LTO=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-LDFLAGS
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (setenv "LDFLAGS"
-                     (string-append
-                      "-Wl,-rpath="
-                      (assoc-ref outputs "out") "/lib")))))))
+     (list
+      #:tests? #f ;there are no tests
+      #:configure-flags #~(list "-DBUILD_LIB_STATIC=OFF"
+                                "-DENABLE_DYNAMIC_LINKING=ON"
+                                "-DENABLE_LTO=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-LDFLAGS
+            (lambda _
+              (setenv "LDFLAGS"
+                      (string-append
+                       "-Wl,-rpath="
+                       #$output "/lib")))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -881,13 +882,14 @@ including 2D color images.")
     (arguments
      (substitute-keyword-arguments (package-arguments gmic)
        ((#:configure-flags _)
-        `(list "-DGMIC_QT_HOST=none" "-DENABLE_DYNAMIC_LINKING=ON"
-               (string-append "-DGMIC_LIB_PATH="
-                              (assoc-ref %build-inputs "gmic") "/lib")))
+        #~(list "-DGMIC_QT_HOST=none"
+                "-DENABLE_DYNAMIC_LINKING=ON"
+                (string-append "-DGMIC_LIB_PATH="
+                               #$(this-package-input "gmic") "/lib")))
         ((#:phases phases)
-         `(modify-phases ,phases
-            (add-after 'unpack 'qt-chdir
-              (lambda _ (chdir "gmic-qt") #t))))))
+         #~(modify-phases #$phases
+             (add-after 'unpack 'qt-chdir
+               (lambda _ (chdir "gmic-qt") #t))))))
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
@@ -907,9 +909,10 @@ including 2D color images.")
     (arguments
      (substitute-keyword-arguments (package-arguments gmic-qt)
        ((#:configure-flags flags)
-        '(list "-DGMIC_QT_HOST=gimp" "-DENABLE_DYNAMIC_LINKING=ON"
-               (string-append "-DGMIC_LIB_PATH="
-                              (assoc-ref %build-inputs "gmic") "/lib")))))
+        #~(list "-DGMIC_QT_HOST=gimp"
+                "-DENABLE_DYNAMIC_LINKING=ON"
+                (string-append "-DGMIC_LIB_PATH="
+                               #$(this-package-input "gmic") "/lib")))))
     (synopsis "GIMP plugin for the G'MIC image processing framework")))
 
 (define-public nip2
