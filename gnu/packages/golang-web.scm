@@ -2620,6 +2620,39 @@ Features:
 decompose request handling into many smaller layers.")
     (license license:expat)))
 
+(define-public go-github-com-go-fed-httpsig
+  (package
+    (name "go-github-com-go-fed-httpsig")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-fed/httpsig")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h2yk2ih8vrma8zrs1z8bd4r48hbqdwhgbqykrs4siyj9c80ykd2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-fed/httpsig"
+      ;; algorithms_test.go:153: "sha1": got true, want false
+      #:test-flags #~(list "-skip" "TestIsAvailable")))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/go-fed/httpsig")
+    (synopsis "Golang implementation of the HTTP Signatures RFC draft")
+    (description
+     "This package implements HTTP request and response signing and verification.
+Supports the major MAC and asymmetric key signature algorithms.  It has
+several safety restrictions: One, none of the widely known
+non-cryptographically safe algorithms are permitted; Two, the RSA SHA256
+algorithms must be available in the binary (and it should, barring export
+restrictions); Finally, the library assumes either the Authorizationn or
+Signature headers are to be set (but not both).")
+    (license license:bsd-3)))
+
 (define-public go-github-com-go-http-utils-headers
   (package
     (name "go-github-com-go-http-utils-headers")
