@@ -279,6 +279,44 @@ are drivers for terminal apps (gruid-tcell), native graphical apps (gruid-sdl)
 and browser apps (gruid-js).")
     (license license:isc)))
 
+(define-public go-codeberg-org-anaseto-gruid-js
+  (package
+    (name "go-codeberg-org-anaseto-gruid-js")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/anaseto/gruid-js.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m42d469djrix9gnhj6jzvq9kaj2av6ndzl9bf17iyagmqsp5d8x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "codeberg.org/anaseto/gruid-js"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: The final application needs to provide the same environment
+          ;; variables before build to prevent issue like this: imports
+          ;; syscall/js: build constraints exclude all Go files in
+          ;; <...>/syscall/js.
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "GOOS" "js")
+              (setenv "GOARCH" "wasm"))))))
+    (propagated-inputs
+     (list go-codeberg-org-anaseto-gruid))
+    (home-page "https://codeberg.org/anaseto/gruid-js")
+    (synopsis "Gruid Driver using syscall/js and wasm and HTML5 canvas")
+    (description
+     "Package js provides a Driver for making browser apps using wasm.  The
+user needs to serve using an http server a directory containing the app.wasm
+file along with an index.html file.")
+    (license license:isc)))
+
 (define-public go-dario-cat-mergo
   (package
     (name "go-dario-cat-mergo")
