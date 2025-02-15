@@ -10451,10 +10451,12 @@ playing media, scanning, and much more.")
 (define-public gnome-meta-core-services
   (gnome-meta-package
    (name "gnome-meta-core-services")
-   (propagated-inputs (list accountsservice
-                            network-manager
-                            packagekit
-                            upower))))
+   (propagated-inputs
+    (list accountsservice
+          evolution-data-server         ;for the calendar widget
+          network-manager
+          packagekit
+          upower))))
 
 (define-public gnome-meta-core-shell
   (gnome-meta-package
