@@ -75,6 +75,7 @@
 ;;; Copyright © 2022-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2022 Parnikkapore <poomklao@yahoo.com>
+;;; Copyright © 2022 Cairn <cairn@pm.me>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
@@ -85,6 +86,7 @@
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10671,33 +10673,48 @@ terminal full-window applications.")
 (define-public harmonist
   (package
     (name "harmonist")
-    (version "0.4.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://git.tuxfamily.org/harmonist/harmonist.git")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "17ai39pw9xq4asfvhs0whx07hljlivygazbwrxjrnxwrn06483hr"))))
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/anaseto/harmonist")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gn9zmnjw1f4xbdk281cmxh7swxc16i663q8pzn5s135gdg6qgdm"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "git.tuxfamily.org/harmonist/harmonist"))
-    (inputs
-     `(("go-github-com-gdamore-tcell-v2" ,go-github-com-gdamore-tcell-v2)
-       ("go-github-com-nsf-termbox-go" ,go-github-com-nsf-termbox-go)
-       ("go-github-com-anaseto-gruid" ,go-github-com-anaseto-gruid)
-       ("go-github-com-anaseto-gruid-tcell" ,go-github-com-anaseto-gruid-tcell)))
+     (list
+      #:install-source? #f
+      #:import-path "codeberg.org/anaseto/harmonist"))
+    (native-inputs
+     (list go-codeberg-org-anaseto-gruid
+           go-codeberg-org-anaseto-gruid-js
+           go-codeberg-org-anaseto-gruid-sdl
+           go-codeberg-org-anaseto-gruid-tcell
+           go-github-com-gdamore-tcell-v2))
     (home-page "https://harmonist.tuxfamily.org/")
     (synopsis "Stealth coffee-break roguelike game")
-    (description "Harmonist: Dayoriah Clan Infiltration is a stealth
-coffee-break roguelike game.  The game has a heavy focus on tactical
-positioning, light and noise mechanisms, making use of various terrain types
-and cones of view for monsters.  Aiming for a replayable streamlined experience,
-the game avoids complex inventory management and character building, relying
-on items and player adaptability for character progression.")
+    (description
+     "Harmonist: Dayoriah Clan Infiltration is a stealth coffee-break
+roguelike game.  The game has a heavy focus on tactical positioning, light and
+noise mechanisms, making use of various terrain types and cones of view for
+monsters.  Aiming for a replayable streamlined experience, the game avoids
+complex inventory management and character building, relying on items and
+player adaptability for character progression.")
     (license license:isc)))
+
+(define-public harmonist-sdl
+  (package/inherit harmonist
+    (name "harmonist-sdl")
+    (arguments
+     (substitute-keyword-arguments (package-arguments harmonist)
+       ((#:tests? _ #t) #f)
+       ((#:build-flags _ #'()) #~(list "--tags=sdl"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs harmonist)
+       (prepend pkg-config)))))
 
 (define-public gnurobots
   (package
