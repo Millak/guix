@@ -12957,10 +12957,12 @@ for certain use cases.")
         (base32
          "04kj9qzcws6wfw9pf3s6w4phpqywyv6j617l7907plkpcgd6x2i6"))))
     (build-system r-build-system)
+    (properties
+     '((updater-extra-native-inputs . ("v-diffr"))))
     (propagated-inputs
      (list r-ggplot2 r-rcpp r-rlang r-scales r-withr))
     (native-inputs
-     (list r-knitr r-testthat)) ; for vignettes
+     (list r-knitr r-testthat r-vdiffr))
     (home-page "https://github.com/slowkow/ggrepel")
     (synopsis "Repulsive text and label geometries for ggplot2")
     (description
