@@ -3188,14 +3188,14 @@ collation, and NAMESPACE files.")
 (define-public r-openssl
   (package
     (name "r-openssl")
-    (version "2.2.2")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "openssl" version))
        (sha256
         (base32
-         "15lchap2frbsbsdq2cvzp3fkiiakg3ynh1x2g57ndr4c7r0mzd0c"))))
+         "1nw4clg9skm6fnaar72zp00wrk29bjhmh9714a9q0m9wpimcl9cr"))))
     (properties
      `((upstream-name . "openssl")
        (updater-extra-inputs . ("openssl"))))
@@ -3210,9 +3210,9 @@ collation, and NAMESPACE files.")
                (("PKG_LIBS=\"\\$\\{PKG_LIBS_VERSIONED\\}\"")
                 "PKG_LIBS=\"${PKG_LIBS}\"")))))))
     (inputs
-     (list openssl zlib))
+     (list openssl))
     (native-inputs
-     (list pkg-config r-knitr r-testthat))
+     (list pkg-config r-curl r-knitr r-sodium r-testthat))
     (propagated-inputs
      (list r-askpass))
     (home-page "https://github.com/jeroenooms/openssl")
