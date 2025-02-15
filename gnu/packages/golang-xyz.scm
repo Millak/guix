@@ -251,6 +251,34 @@ use the C library from the project called FUSE.")
 a human-readable byte format.")
     (license license:asl2.0)))
 
+(define-public go-codeberg-org-anaseto-gruid
+  (package
+    (name "go-codeberg-org-anaseto-gruid")
+    (version "0.23.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/anaseto/gruid.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19751r5skzn43af1ccgk8km3b3kxzvqzvw0igxbirvw862g1il04"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "codeberg.org/anaseto/gruid"))
+    (propagated-inputs
+     (list go-golang-org-x-image))
+    (home-page "https://codeberg.org/anaseto/gruid")
+    (synopsis "Grid-based UI and game framework")
+    (description
+     "Package gruid provides a model for building grid-based applications.
+The interface abstracts rendering and input for different platforms.  There
+are drivers for terminal apps (gruid-tcell), native graphical apps (gruid-sdl)
+and browser apps (gruid-js).")
+    (license license:isc)))
+
 (define-public go-dario-cat-mergo
   (package
     (name "go-dario-cat-mergo")
