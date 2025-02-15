@@ -44,7 +44,7 @@
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2022 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2022, 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
@@ -106,6 +106,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mes)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -1556,6 +1557,32 @@ programming languages).")
 Services} (AWS) APIs, including EFS, EC2, Route53, and more.  Guile AWS uses
 the Guile compiler tower to generate the DSL from AWS JSON specifications.")
       (license license:gpl3+))))
+
+(define-public guile-mqtt
+  (package
+    (name "guile-mqtt")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/mdjurfeldt/" name
+                           "/releases/download/v" version
+                           "/" name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16a3r6yk41yskwv4qbkrsi0f5rvc7aw2s5di74i8y89j1x9yp9zs"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list "GUILE_AUTO_COMPILE=0")))
+    (native-inputs (list guile-3.0 pkg-config))
+    (inputs (list mosquitto))
+    (home-page "https://github.com/mdjurfeldt/guile-mqtt")
+    (synopsis "Guile bindings for the libmosquitto library")
+    (description
+     "This package provides Guile bindings for the libmosquitto MQTT client library.
+The bindings are written in GOOPS, and the user can extend the client class by
+inheritance.")
+    (license license:lgpl3+)))
 
 (define-public guile-simple-zmq
   (let ((commit "d25d1865e3378d93c44e2b4f5246a70b078a489d")
