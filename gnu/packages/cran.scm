@@ -1899,14 +1899,16 @@ samples) are easily visualized.")
 (define-public r-ggstats
   (package
     (name "r-ggstats")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggstats" version))
        (sha256
-        (base32 "107rv410scf1nk1gaz6gwwbciv7ni6jlid004wxg3r60j8lcak78"))))
-    (properties `((upstream-name . "ggstats")))
+        (base32 "08wwhvpagifzv6yanyflv8rkmcbza0wflp6p08mx2ddcsksc4lva"))))
+    (properties
+     '((upstream-name . "ggstats")
+       (updater-extra-native-inputs . ("r-broom-helpers"))))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
                              r-dplyr
@@ -1919,7 +1921,17 @@ samples) are easily visualized.")
                              r-scales
                              r-stringr
                              r-tidyr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-betareg
+                         r-broom
+                         r-broom-helpers
+                         r-knitr
+                         r-labelled
+                         r-nnet
+                         r-pscl
+                         r-survey
+                         r-survival
+                         r-testthat
+                         r-vdiffr))
     (home-page "https://larmarange.github.io/ggstats/")
     (synopsis "Extension to ggplot2 for plotting stats")
     (description
