@@ -5845,7 +5845,7 @@ processing tasks.")
 (define-public python-mizani
   (package
     (name "python-mizani")
-    (version "0.9.2")
+    (version "0.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5854,8 +5854,18 @@ processing tasks.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13aisfc98nvypb4mglpdphp2r627cjzpdriw4dhlx55f3b2m0dza"))))
+                "0ij0fk4w0jyyj44ij3i2j1nfa0d7dk783w9r25cpwjkpn690xqfx"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; without the git metadata available, the version string is set to
+            ;; '999'.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs
      (list python-matplotlib python-numpy python-pandas python-scipy))
     (native-inputs
