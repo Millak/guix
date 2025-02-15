@@ -6976,18 +6976,26 @@ particularly easy to create complete web applications using httpuv alone.")
 (define-public r-httr2
   (package
     (name "r-httr2")
-    (version "1.0.7")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httr2" version))
               (sha256
                (base32
-                "1h7pdbalrpipn09srmh2rr5jx5bbngx8jvb0g54835bpg80vh8mn"))))
+                "0ahd0gkw9a6rygyz8jr15ms72mwqi60icwmdh6sb2j2rrifjmz2n"))))
     (properties
      `((upstream-name . "httr2")
        ;; This package doesn't exist.
-       (updater-ignored-native-inputs . ("r-common"))))
+       (updater-ignored-native-inputs . ("r-common"))
+       (updater-extra-native-inputs . ("r-docopt" "r-httpuv" "r-xml2"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           ;; This one test fails because it fails to open a connection.
+           (lambda _ (delete-file "tests/testthat/test-oauth.R"))))))
     (propagated-inputs
      (list r-cli
            r-curl
@@ -7002,13 +7010,16 @@ particularly easy to create complete web applications using httpuv alone.")
            r-withr))
     (native-inputs (list r-bench
                          r-clipr
+                         r-docopt
                          r-httr
+                         r-httpuv
                          r-jsonlite
                          r-knitr
                          r-later
                          r-promises
                          r-testthat
-                         r-webfakes))
+                         r-webfakes
+                         r-xml2))
     (home-page "https://httr2.r-lib.org")
     (synopsis "Perform HTTP requests and process the responses")
     (description
