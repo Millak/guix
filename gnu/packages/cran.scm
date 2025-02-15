@@ -8468,16 +8468,30 @@ in R and Shiny via the D3 visualization library.")
 (define-public r-webfakes
   (package
     (name "r-webfakes")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "webfakes" version))
        (sha256
-        (base32 "0c4ja653fzamafkz7chfv16f1h7iibah683ma8sk2yaayywp7j47"))))
+        (base32 "18hcr63ci5cfdd9299va4gckabwx7mypw1jv5vydn2w8x4da2s68"))))
     (properties `((upstream-name . "webfakes")))
     (build-system r-build-system)
-    (native-inputs (list r-curl r-testthat))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           ;; This test requires Internet access.
+           (lambda _ (delete-file "tests/testthat/test-httpbin.R"))))))
+    (native-inputs (list r-curl
+                         r-digest
+                         r-httpuv
+                         r-httr
+                         r-jsonlite
+                         r-testthat
+                         r-withr
+                         r-zip))
     (home-page "https://webfakes.r-lib.org/")
     (synopsis "Fake web apps for HTTP testing")
     (description
