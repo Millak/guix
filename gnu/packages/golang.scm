@@ -1544,27 +1544,31 @@ parsing and encoding support for STUN and TURN protocols.")
 TrueType font files in your system's user and system font directories.")
     (license license:expat)))
 
+;; NOTE: A warning from upstream: This program is currently not actively
+;; maintained, it seems to work fine, but use at your own risk.
 (define-public go-github-com-wraparound-wrap
   (package
     (name "go-github-com-wraparound-wrap")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Wraparound/wrap")
+             ;; Original URL <https://github.com/Wraparound/wrap>, now
+             ;; redirects to this.
+             (url "https://github.com/eprovst/wrap")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0scf7v83p40r9k7k5v41rwiy9yyanfv3jm6jxs9bspxpywgjrk77"))
+        (base32 "1xk1zii8vqzfys48phpdnr8ign0xvrsfwzyk9m0is9i3rffm25wh"))
        (patches (search-patches
                  "go-github-com-wraparound-wrap-free-fonts.patch"))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/Wraparound/wrap/cmd/wrap"
-      #:unpack-path "github.com/Wraparound/wrap"
+      #:import-path "github.com/eprovst/wrap/cmd/wrap"
+      #:unpack-path "github.com/eprovst/wrap"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'wrap-fonts
@@ -1585,7 +1589,7 @@ TrueType font files in your system's user and system font directories.")
     (inputs
      (list font-liberation
            font-gnu-freefont))
-    (home-page "https://github.com/Wraparound/wrap")
+    (home-page "https://github.com/eprovst/wrap")
     (synopsis "Format Fountain screenplays")
     (description
      "Wrap is a command line tool that is able to convert Fountain files into
