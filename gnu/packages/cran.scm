@@ -5107,7 +5107,14 @@ residuals and other information on the model.")
               (sha256
                (base32
                 "1ycq3kjkrlx66h05g5ncvmq2cr051609xs4bzs8n49c70h6p0bpr"))))
-    (properties `((upstream-name . "plumber")))
+    (properties
+     '((upstream-name . "plumber")
+       (updater-extra-native-inputs
+        . ("r-geojsonsf"
+           "r-htmlwidgets"
+           "r-readr"
+           "r-rmarkdown"
+           "r-yaml"))))
     (build-system r-build-system)
     (propagated-inputs (list r-crayon
                              r-ellipsis
@@ -5123,7 +5130,13 @@ residuals and other information on the model.")
                              r-stringi
                              r-swagger
                              r-webutils))
-    (native-inputs (list r-testthat))
+    (native-inputs
+     (list r-geojsonsf
+           r-htmlwidgets
+           r-readr
+           r-rmarkdown
+           r-testthat
+           r-yaml))
     (home-page "https://www.rplumber.io")
     (synopsis "API generator for R")
     (description
