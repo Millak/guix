@@ -7314,21 +7314,26 @@ LaTeX.")
 (define-public r-curl
   (package
     (name "r-curl")
-    (version "6.0.1")
+    (version "6.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "curl" version))
               (sha256
                (base32
-                "0qi3skrkdr43siiw28fmwdkjfqy3ynql5r94nlm9fpvlsyz90744"))))
+                "0d8nxfshpx6cp32ak82w283if4bnr7w5y5m7lb91mwymr9mvp683"))))
     (properties
      `((upstream-name . "curl")
-       (updater-extra-inputs . ("curl"))))
+       (updater-extra-inputs . ("curl"))
+       (updater-ignored-native-inputs . ("r-webutils"))))
     (build-system r-build-system)
     (inputs
      (list curl zlib))
     (native-inputs
-     (list pkg-config r-knitr r-testthat))
+     (list pkg-config
+           r-jsonlite
+           r-knitr
+           r-spelling
+           r-testthat))
     (home-page "https://github.com/jeroenooms/curl")
     (synopsis "HTTP client for R")
     (description
