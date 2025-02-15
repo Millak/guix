@@ -1828,7 +1828,7 @@ Python, PHP, and Perl.")
 (define-public marble-qt
   (package
     (name "marble-qt")
-    (version "24.05.2")
+    (version "24.12.2")
     (source
      (origin
        (method git-fetch)
@@ -1837,47 +1837,52 @@ Python, PHP, and Perl.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "126zm2r637zd8xg0mrqh3g0phlph440ayyzrx8hfvb03drx6y70z"))))
+        (base32 "1pmywj95x8a343k4da35xsmdg1x6146k3xbh7s1iij8p3hx6vran"))))
     (build-system qt-build-system)
     (arguments
      ;; FIXME: libmarblewidget-qt5.so.28 not found.  Also enable the
      ;; corresponding configure flag to build tests.
-     (list #:tests? #f
-           #:configure-flags
-           #~(list "-DBUILD_MARBLE_TOOLS=YES" ; file conversion tools
-                   "-DBUILD_TOUCH=YES"
-                   "-DBUILD_MARBLE_TESTS=FALSE")))
-    (native-inputs
-     (list extra-cmake-modules kdoctools-5 qttools-5
-           osmctools))
+     (list
+      #:tests? #f
+      #:qtbase qtbase
+      #:configure-flags #~(list "-DBUILD_MARBLE_TOOLS=YES" ;file conversion tools
+                                "-DBUILD_TOUCH=YES")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'alter-osmctools-lookup
+                     (lambda _
+                       (substitute* "tools/vectorosm-tilecreator/autotests/CMakeLists.txt"
+                         (("\\$<TARGET_FILE:osmconvert>")
+                          (which "osmconvert"))))))))
+    (native-inputs (list abseil-cpp extra-cmake-modules kdoctools osmctools
+                         qttools))
     ;; One optional dependency missing: libwlocate.
-    (inputs
-     (list gpsd
-           kcoreaddons-5
-           kcrash-5
-           ki18n-5
-           kio-5
-           knewstuff-5
-           kparts-5
-           krunner-5
-           kwallet-5
-           perl
-           phonon
-           protobuf
-           qtbase-5
-           qtdeclarative-5
-           qtlocation-5
-           qtserialport
-           qtsvg-5
-           qtwebchannel-5
-           qtwebengine-5
-           shapelib
-           shared-mime-info
-           zlib))
+    (inputs (list gpsd
+                  kcoreaddons
+                  kcrash
+                  ki18n
+                  kio
+                  knewstuff
+                  kparts
+                  krunner
+                  kwallet
+                  perl
+                  phonon
+                  protobuf
+                  qt5compat
+                  qtdeclarative
+                  qtlocation
+                  qtpositioning
+                  qtserialport
+                  qtsvg
+                  qtwebchannel
+                  qtwebengine
+                  shapelib
+                  shared-mime-info
+                  zlib))
     (home-page "https://marble.kde.org/")
     (synopsis "Virtual globe and world atlas")
-    (description "Marble is similar to a desktop globe.  At closer scale it
+    (description
+     "Marble is similar to a desktop globe.  At closer scale it
 becomes a world atlas, while OpenStreetMap takes the user to street level.  It
 supports searching for places of interest, viewing Wikipedia articles,
 creating routes by drag and drop and more.")
