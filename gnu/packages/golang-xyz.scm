@@ -2177,6 +2177,44 @@ project is to provide a simple, fast, and reliable database for projects that
 don't require a full database server such as Postgres or MySQL.")
     (license license:expat)))
 
+(define-public go-github-com-boombuler-barcode
+  (package
+    (name "go-github-com-boombuler-barcode")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/boombuler/barcode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wpk7lkq3m9dq7wfkziinfzli78qpiwd15cxhibnnyl9lkifgp9s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/boombuler/barcode"))
+    (home-page "https://github.com/boombuler/barcode")
+    (synopsis "Barcode creation library for golang")
+    (description
+     "This package implements a functionality to generate barcodes.
+
+Supported Barcode Types:
+@itemize
+@item 2 of 5
+@item Aztec Code
+@item Codabar
+@item Code 128
+@item Code 39
+@item Code 93
+@item Datamatrix
+@item EAN 13
+@item EAN 8
+@item PDF 417
+@item QR Code
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-bradfitz-gomemcache
   (package
     (name "go-github-com-bradfitz-gomemcache")
