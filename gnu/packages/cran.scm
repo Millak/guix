@@ -38845,15 +38845,17 @@ and reproducible way.")
 (define-public r-rsconnect
   (package
     (name "r-rsconnect")
-    (version "1.3.2")
+    (version "1.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsconnect" version))
        (sha256
         (base32
-         "0m857m9r1scv20cb0qmyl6gr86vpvmka85k0mfj9l4p1c5aa1qf6"))))
-    (properties `((upstream-name . "rsconnect")))
+         "0lf7ahlqynv1p6hnrvmk7ayavr1k3bgmq4h4i253nx0x1233z9px"))))
+    (properties
+     '((upstream-name . "rsconnect")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -38869,7 +38871,18 @@ and reproducible way.")
            r-rstudioapi
            r-yaml))
     (native-inputs
-     (list r-knitr r-rmarkdown r-testthat tzdata-for-tests))
+     (list r-biocmanager
+           r-devtools
+           r-knitr
+           r-mass
+           r-reticulate
+           r-rmarkdown
+           r-shiny
+           r-testthat
+           r-usethis
+           r-webfakes
+           r-withr
+           tzdata-for-tests))
     (home-page "https://github.com/rstudio/rsconnect")
     (synopsis "Deployment interface for R Markdown documents and Shiny applications")
     (description
