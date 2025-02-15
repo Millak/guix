@@ -7715,14 +7715,14 @@ Markdown documents.  More generally, icons can be inserted in any
 (define-public r-bslib
   (package
     (name "r-bslib")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bslib" version))
        (sha256
         (base32
-         "00sbskl5f4mif2x54h5z3m2kv8ij2wv84a61n39931hj3gdjs67x"))
+         "01q9zy2dwhag0jl0dbhfhwbqj09ghd2wrkqihpv8acbazw3s3mxd"))
        (snippet
         '(for-each delete-file
                    '("inst/components/dist/components.min.js"
@@ -7731,7 +7731,9 @@ Markdown documents.  More generally, icons can be inserted in any
                      "inst/lib/bs3/assets/javascripts/bootstrap.min.js"
                      "inst/lib/bs4/dist/js/bootstrap.bundle.min.js"
                      "inst/lib/bs5/dist/js/bootstrap.bundle.min.js")))))
-    (properties `((upstream-name . "bslib")))
+    (properties
+     `((upstream-name . "bslib")
+       (updater-ignored-native-inputs . ("r-rmarkdown" "r-shiny"))))
     (build-system r-build-system)
     (arguments
      (list
