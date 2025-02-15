@@ -559,10 +559,6 @@ photographic equipment.")
                  (string-append "\""
                                 (search-input-file inputs "/lib/libOpenCL.so")
                                 "\"")))))
-          (add-before 'configure 'set-LDFLAGS
-            (lambda _
-              (setenv "LDFLAGS"
-                      (string-append "-Wl,-rpath=" #$output "/lib/darktable"))))
           (add-after 'install 'wrap-program
             (lambda _
               (wrap-program (string-append #$output "/bin/darktable")
