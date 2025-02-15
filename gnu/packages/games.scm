@@ -2296,7 +2296,7 @@ in one tile.")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-chess/"
-                                  (version-major+minor version)  "/"
+                                  (version-major version)  "/"
                                   "gnome-chess-" version ".tar.xz"))
               (sha256
                (base32
