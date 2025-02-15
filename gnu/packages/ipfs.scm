@@ -173,6 +173,40 @@ by a @acronym{Content Identifiers,CID}.  The CID contains the multihash
 corresponding to the block.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ds-dynamodb
+  (package
+    (name "go-github-com-ipfs-go-ds-dynamodb")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ds-dynamodb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z155ajpx52v71hsdjz5950z1w0qmp6c7lsqmsa9qyn7x21g7p0g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; tests need Docker or local DynamoDB Java app
+      #:import-path "github.com/ipfs/go-ds-dynamodb"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-log-v2))
+    (home-page "https://github.com/ipfs/go-ds-dynamodb")
+    (synopsis "DynamoDB datastore implementation")
+    (description
+     "This is an implementation of @url{https://github.com/ipfs/go-datastore,
+go-datastore} that is backed by @code{DynamoDB}.
+
+ddbds includes support for optimized prefix queries.  When you setup your
+table's key schema correctly and register it with ddbds, then incoming queries
+that match the schema will be converted into DynamoDB queries instead of table
+scans, enabling high performance, ordered, high-cardinality prefix queries.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public go-github-com-ipfs-go-ds-flatfs
   (package
     (name "go-github-com-ipfs-go-ds-flatfs")
