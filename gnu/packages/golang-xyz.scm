@@ -16404,6 +16404,32 @@ identifiers, a standardized format in the form of a 128 bit number.")
 detection.")
     (license license:asl2.0)))
 
+(define-public go-github-com-yargevad-filepathx
+  (package
+    (name "go-github-com-yargevad-filepathx")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yargevad/filepathx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fcrzx3h9lxfhqiy85815m65djn64pgfyqrdcr1c0k6axvs49g2s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/yargevad/filepathx"))
+    (home-page "https://github.com/yargevad/filepathx")
+    (synopsis "Double-star support to Golang's std @code{path/filepath}")
+    (description
+     "Package filepathx adds double-star globbing support to the Glob function
+from the core path/filepath package.  You might recognize \"**\" recursive
+globs from things like your .gitignore file, and zsh.  The \"**\" glob
+represents a recursive wildcard matching zero-or-more directory levels deep.")
+    (license license:expat)))
+
 ;; XXX: The latest release v0.1.1 was in 2014, master branch has more changes
 ;; since that time, use the latest commit.
 (define-public go-github-com-yosuke-furukawa-json5
