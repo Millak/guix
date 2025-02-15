@@ -3711,14 +3711,18 @@ a column in data frame.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.3.7")
+    (version "2.3.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "1kllna6hfnyy3rizr8wkpfn7p5sxv3sra12x9vz68hp6i4jmgq15"))))
-    (properties `((upstream-name . "RSQLite")))
+                "116029x7kykxy0wg4p1ln14x6w7wa16jdsnb8wmy6c4khdzlbsym"))))
+    (properties
+     '((upstream-name . "RSQLite")
+       ;; These are not strictly necessary for running tests and adding them
+       ;; would cause dependency cycles.
+       (updater-ignored-native-inputs . ("r-dbitest" "r-ndbi"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -3737,7 +3741,12 @@ a column in data frame.")
            r-plogr
            r-rlang))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-callr
+           r-hms
+           r-knitr
+           r-magrittr
+           r-testthat
+           r-withr))
     (home-page "https://github.com/rstats-db/RSQLite")
     (synopsis "SQLite interface for R")
     (description
