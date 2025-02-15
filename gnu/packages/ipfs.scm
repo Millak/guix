@@ -579,6 +579,28 @@ LevelDB backend.")
      "@code{go-ipfs-exchange-interface} defines the IPFS exchange interface.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipfs-pq
+  (package
+    (name "go-github-com-ipfs-go-ipfs-pq")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-pq")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zi177lysf6f2zap9l0yxcw4r2xvjiji1yb1jzdmiif2ahvi0v84"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ipfs-pq"))
+    (home-page "https://github.com/ipfs/go-ipfs-pq")
+    (synopsis "Priority queue used by go-ipfs")
+    (description "Package pq implements a priority queue.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-redirects-file
   (package
     (name "go-github-com-ipfs-go-ipfs-redirects-file")
