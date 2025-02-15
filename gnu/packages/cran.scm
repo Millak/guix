@@ -3551,8 +3551,10 @@ WebAssembly engine.")
        (uri (cran-uri "vcr" version))
        (sha256
         (base32 "0jp6p9k6y2rshxyq5hb3gv3idk2l426cizy1j2aqcz3s503axsxf"))))
-    (properties `((upstream-name . "vcr")))
+    (properties '((upstream-name . "vcr")))
     (build-system r-build-system)
+    ;; Some tests require Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-base64enc
                              r-crul
                              r-httr
