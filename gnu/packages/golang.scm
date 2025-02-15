@@ -1654,7 +1654,6 @@ termination.")
 
 (define-public go-gopkg-in-tomb-v1
   (package
-    (inherit go-gopkg.in-tomb.v2)
     (name "go-gopkg-in-tomb-v1")
     (version "1.0.0-20141024135613-dd632973f1e7")
     (source (origin
@@ -1666,6 +1665,7 @@ termination.")
               (sha256
                (base32
                 "1lqmq1ag7s4b3gc3ddvr792c5xb5k6sfn0cchr3i2s7f1c231zjv"))))
+    (build-system go-build-system)
     (arguments
      (list #:import-path "gopkg.in/tomb.v1"
            #:phases
@@ -1676,7 +1676,12 @@ termination.")
                                                "/tomb_test.go")
                      (("t.Fatalf\\(`Killf\\(\"BO%s")
                       "t.Fatalf(`Killf(\"BO%%s")))))))
-    (home-page "https://gopkg.in/tomb.v1")))
+    (home-page "https://gopkg.in/tomb.v1")
+    (synopsis "@code{tomb} handles clean goroutine tracking and termination")
+    (description
+     "The @code{tomb} package handles clean goroutine tracking and
+termination.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-google-cadvisor
   (let ((commit "2ed7198f77395ee9a172878a0a7ab92ab59a2cfd")
