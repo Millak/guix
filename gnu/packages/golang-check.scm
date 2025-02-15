@@ -503,6 +503,33 @@ fgprof is designed for analyzing applications with mixed I/O and CPU
 workloads.  This kind of profiling is also known as wall-clock profiling.")
     (license license:expat)))
 
+(define-public go-github-com-filecoin-project-go-clock
+  (package
+    (name "go-github-com-filecoin-project-go-clock")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/filecoin-project/go-clock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rk2m07z42g9dxxda9a14caskc01pqfhpkcy5lf161lh8d8wf8g6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/filecoin-project/go-clock"))
+    (home-page "https://github.com/filecoin-project/go-clock")
+    (synopsis "Mocking time in Go")
+    (description
+     "Clock is a small library for mocking time in Go.  It provides an
+interface around the standard library's @url{https://pkg.go.dev/time, @code{
+time}} package so that the application can use the realtime clock while tests
+can use the mock clock.  This is a maintained fork of benbjohnson's
+@url{https://github.com/benbjohnson/clock, clock} package.")
+    (license license:expat)))
+
 ;; XXX: The project looks like abandoned, see
 ;; <https://github.com/frankban/quicktest/issues/172>, remove when nothing
 ;; depends on it.
