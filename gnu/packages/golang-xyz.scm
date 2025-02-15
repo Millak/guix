@@ -9890,6 +9890,31 @@ allocation.  @code{fastime} is returning the approximate time.")
     (description "This package provides a text formatting functions in Go.")
     (license license:expat)))
 
+(define-public go-github-com-kylebanks-depth
+  (package
+    (name "go-github-com-kylebanks-depth")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KyleBanks/depth")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19gnz1w3ny3dawdhfnfsr17ll11isgk0jmrbfn2hsa6yqzc7jd3k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/KyleBanks/depth"
+      #:test-subdirs #~(list ".")))
+    (home-page "https://github.com/KyleBanks/depth")
+    (synopsis "Visualize Golang Dependency Trees")
+    (description
+     "Package depth provides an ability to traverse and retrieve Go source
+code dependencies in the form of internal and external packages.")
+    (license license:expat)))
+
 (define-public go-github-com-kylelemons-godebug
   (package
     (name "go-github-com-kylelemons-godebug")
