@@ -28,9 +28,11 @@
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 dan <i@dan.games>
+;;; Copyright © 2022 Cairn <cairn@pm.me>
 ;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +62,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system scons)
@@ -76,6 +79,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
@@ -295,6 +299,67 @@ Conversely, when it reads files for inclusion in pwads, it does the necessary
 conversions (for example, from PPM to Doom picture format).  In addition,
 DeuTex has functions such as merging wads, etc.")
    (license license:gpl2+)))
+
+(define-public go-github-com-veandco-go-sdl2
+  (package
+    (name "go-github-com-veandco-go-sdl2")
+    (version "0.4.40")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/veandco/go-sdl2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wi74j32dj5bzlp85v2qlhxn03p9p3500vxmm3d2wj656nwjw3cg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/veandco/go-sdl2"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list
+                        ;; QuitSubSystem(32): subsystem still initialized.
+                        "TestInitQuit"
+                        ;; Field not found "lockData" and type size mismatch.
+                        "TestStructABI"
+                        ;; Parameter 'src' is invalid.
+                        "TestSurface"
+                        ;; Test examples is provided as git submodule
+                        ;; <https://github.com/veandco/go-sdl2-examples>.
+                        "TestTTF")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sdl-wrapper-headers
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\.h")
+                  (("<SDL_image.h>") "<SDL2/SDL_image.h>")
+                  (("<SDL_mixer.h>") "<SDL2/SDL_mixer.h>")
+                  (("<SDL_ttf.h>") "<SDL2/SDL_ttf.h>")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "XDG_RUNTIME_DIR" (getcwd)))))))
+    (native-inputs
+     (list pkg-config))
+    (propagated-inputs
+     (list go-github-com-golang-freetype
+           sdl2
+           sdl2-gfx
+           sdl2-image
+           sdl2-mixer
+           sdl2-ttf))
+    (home-page "https://github.com/veandco/go-sdl2")
+    (synopsis "SDL2 binding for Go")
+    (description
+     "@code{go-sdl2} is SDL2 wrapped for Go users.  It enables
+interoperability between Go and the SDL2 library which is written in C. That
+means the original SDL2 installation is required for this to work.")
+    (license license:bsd-3)))
 
 (define-public grfcodec
   ;; Latest release 6.0.6 requires an older boost and does not build with our
