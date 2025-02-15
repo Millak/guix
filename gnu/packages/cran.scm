@@ -17215,14 +17215,16 @@ and Eclat.")
 (define-public r-parsedate
   (package
     (name "r-parsedate")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parsedate" version))
        (sha256
         (base32
-         "1cfinqlbchmkhkgmdwiy3mnxb17lp02jfk2gpw56hq9vh6wimhqz"))))
+         "0w0phy4jrhh14la507p9051skmmymbdza8kz8jpvhvkg81sdrd79"))))
+    (properties
+     '((updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -17234,7 +17236,7 @@ and Eclat.")
              (setenv "TZDIR"
                      (search-input-directory inputs
                                              "share/zoneinfo")))))))
-    (native-inputs (list r-testthat tzdata-for-tests))
+    (native-inputs (list r-testthat r-withr tzdata-for-tests))
     (home-page "https://github.com/gaborcsardi/parsedate")
     (synopsis
      "Recognize and parse dates in various formats")
