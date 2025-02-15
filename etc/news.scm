@@ -41,7 +41,7 @@
         (title
          (en "Guix System switches to the Shepherd's system log")
          (de "Guix System wechselt zu Shepherds Systemprotokoll")
-         (fr "Guix System passe au journal système de Shepherd")
+         (fr "Guix System passe au journal système de Shepherd"))
         (body
          (en "The default system log used on Guix System and part of
 @code{%base-services} has been switched from the @command{syslogd} command of
@@ -71,8 +71,7 @@ Les avantages de ce changement sont le fait que @code{system-log} peut
 commencer à enregistrer les journaux plus tôt pendant la séquence de
 démarrage et s'arrêter plus tard au moment de l'arrêt, ainsi que son
 intégration complète avec le reste de @command{shepherd}, en particulier avec
-le nouveau service @code{log-rotation}."))))
-
+le nouveau service @code{log-rotation}.")))
 
  (entry (commit "0753a17ddf6f4fab98b93c25f1a93b97ff9e46bb")
         (title
