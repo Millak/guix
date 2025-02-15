@@ -14996,6 +14996,29 @@ environment")
        (sha256
         (base32 "15qi7v2a1kbf70yi3w6y26wbwj0sm8hv9f6xjrb4rl6nv9l8j88c"))))))
 
+(define-public go-github-com-tidwall-cities
+  (package
+    (name "go-github-com-tidwall-cities")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tidwall/cities")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h7imqfhn3w9cfv3zaa7k55s53sas9n628amvjh6kzzjii1a0ix3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tidwall/cities"))
+    (home-page "https://github.com/tidwall/cities")
+    (synopsis "10,000 Cities with Latitude, Longitude, and Elevation")
+    (description
+     "This package provides geographical locations of countries and cities.")
+    (license license:unlicense)))
+
 (define-public go-github-com-tidwall-gjson
   (package
     (name "go-github-com-tidwall-gjson")
