@@ -1521,29 +1521,6 @@ the golang proxy package which connects through a TURN relay.  It provides
 parsing and encoding support for STUN and TURN protocols.")
       (license license:bsd-3)))
 
-(define-public go-github-com-flopp-go-findfont
-  (package
-    (name "go-github-com-flopp-go-findfont")
-    (version "0.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/flopp/go-findfont")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "05jvs5sw6yid0qr2ld7aw0n1mjp47jxhvbg9lsdig86668i2fj2q"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/flopp/go-findfont"))
-    (home-page "https://github.com/flopp/go-findfont")
-    (synopsis "Go font finder library")
-    (description
-     "This package provides a platform-agnostic Go library to locate
-TrueType font files in your system's user and system font directories.")
-    (license license:expat)))
-
 ;; NOTE: A warning from upstream: This program is currently not actively
 ;; maintained, it seems to work fine, but use at your own risk.
 (define-public go-wrap
