@@ -1403,7 +1403,7 @@ for emergency communications data transfers (like ICS213 forms).")
     (native-inputs
      (list autoconf automake pkg-config))
     (inputs
-     (list fltk libx11 libxext libxfixes libxft))
+     (list fltk-1.3 libx11 libxext libxfixes libxft))
     (synopsis "File encapsulation program")
     (description
      "Flwrap is a software utility for amateur radio use.  Its purpose is to

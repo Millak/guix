@@ -1059,7 +1059,7 @@ Features include
         (base32 "19rr09b4xvnz7isng8pzxm5879g3pqvml5v8vh4gbwwn93dnlwpn"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake))
-    (inputs (list fltk
+    (inputs (list fltk-1.3
                   fontconfig
                   openssl
                   libjpeg-turbo

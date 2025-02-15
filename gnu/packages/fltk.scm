@@ -25,6 +25,7 @@
 (define-module (gnu packages fltk)
   #:use-module ((guix licenses) #:select (lgpl2.0 lgpl2.0+))
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages image)
   #:use-module (gnu packages xorg)
@@ -40,21 +41,23 @@
   #:use-module (guix build-system waf)
   #:use-module (srfi srfi-1))
 
-(define-public fltk
+(define-public fltk-1.3
   (package
     (name "fltk")
-    (version "1.3.9")
+    (version "1.3.11")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "https://www.fltk.org/pub/fltk/"
-                          (first (string-split version #\-))
-                          "/fltk-" version "-source.tar.gz"))
+      (method git-fetch)
+      (uri (git-reference
+              (url "https://github.com/fltk/fltk")
+              (commit (string-append "release-" version))))
       (sha256
-       (base32 "06siv517l1wfvcc1dg0h1dka5yzkh9gbmm835i1hgmjhbi2b0dnp"))))
+       (base32 "0pnifyhhvcqfjd6iaa4m14kvfyqhjjdw0aqbcizcdhhqrl6q4pjg"))))
    (build-system gnu-build-system)
    (native-inputs
-    (list pkg-config))
+    (list autoconf
+          automake
+          pkg-config))
    (inputs
     `(("libjpeg" ,libjpeg-turbo)
       ("libpng" ,libpng)
@@ -96,6 +99,19 @@ emulation.  FLTK is designed to be small and modular enough to be statically
 linked, but works fine as a shared library.  FLTK also includes an excellent
 UI builder called FLUID that can be used to create applications in minutes.")
     (license lgpl2.0))) ; plus certain additional permissions
+
+(define-public fltk
+  (package
+    (inherit fltk-1.3)
+    (version "1.4.1")
+    (source (origin
+      (method git-fetch)
+      (uri (git-reference
+              (url "https://github.com/fltk/fltk")
+              (commit (string-append "release-" version))))
+      (sha256
+       (base32 "0ii49imyw29drkhc9dvyiiybc9qy19fxc91wl6w2gmc3xsmdzd6z"))))))
+
 
 (define-public ntk
   (package

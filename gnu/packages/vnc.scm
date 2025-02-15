@@ -202,7 +202,7 @@ RDP, VNC, SPICE, NX, XDMCP, SSH and EXEC network protocols are supported.")
            gnutls
            libjpeg-turbo
            ;;ffmpeg                     ;TODO: add this for h264 encoding
-           fltk
+           fltk-1.3
            linux-pam
            libx11
            libxext

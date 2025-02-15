@@ -3526,7 +3526,7 @@ capabilities, custom envelopes, effects, etc.")
            boost
            cairo
            fftwf
-           fltk
+           fltk-1.3
            fontconfig
            jack-2
            lv2

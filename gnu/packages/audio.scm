@@ -2560,7 +2560,7 @@ auto-wah.")
     (build-system gnu-build-system)
     (inputs
      (list alsa-utils
-           fltk
+           fltk-1.3
            libx11
            libxext
            libxfixes
@@ -6365,7 +6365,7 @@ while still staying in time.")
      (list curl
            dbus
            flac
-           fltk
+           fltk-1.3
            lame
            libfdk
            libsamplerate

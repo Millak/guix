@@ -447,7 +447,7 @@ precision.")
     (inputs
      ;; TODO: Add libnauty, unbundle "libmicropython.a".
      (list ao
-           fltk
+           fltk-1.3
            glpk-4
            gmp
            gsl
