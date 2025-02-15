@@ -218,18 +218,18 @@ their devices.")
                 "1nal6xfh9qcvn96gapb1jn3nyz3n3wwidqdc864rv38lrigms66i"))))
     (build-system qt-build-system)
     (arguments
-     '(#:test-target "check"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (system* "qmake" (string-append "BOOST_DIR="
-                                             (assoc-ref inputs "boost")))))
+     (list
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (system* "qmake" (string-append "BOOST_DIR="
+                                              #$(this-package-input "boost")))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (bin   (string-append out "/bin"))
-                    (share (string-append out "/share/librecad")))
+             (let ((bin   (string-append #$output "/bin"))
+                   (share (string-append #$output "/share/librecad")))
                (mkdir-p bin)
                (install-file "unix/librecad" bin)
                (mkdir-p share)
