@@ -333,7 +333,7 @@ software vendors, application developers and computer science researchers.")
 (define-public openmpi-5
   (package
     (inherit openmpi)
-    (version "5.0.6")
+    (version "5.0.7")
     (source
      (origin
        (method url-fetch)
@@ -366,7 +366,7 @@ software vendors, application developers and computer science researchers.")
            ;; documentation.
            (delete-file-recursively "docs/html")))
        (sha256
-        (base32 "0mw1z4ppnlvxngwd58kl5q26qmvf3bgjkd4r8wjpqis3pky86hdx"))))
+        (base32 "1pf25zp9y0ch3vab3ycpjkck4njrsms0sg6zs0s36h3ajc4j17qi"))))
 
     (inputs (modify-inputs (package-inputs openmpi)
               ;; As of Open MPI 5.0.X, PMIx is used to communicate
