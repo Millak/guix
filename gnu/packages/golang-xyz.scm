@@ -2503,6 +2503,10 @@ over strings.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; github.com/charlievieth/fastwalk/fastwalk_test.go:962:48: cannot use
+      ;; math.MaxUint32 (untyped int constant 4294967295) as int value in
+      ;; argument to fmt.Sprintf (overflows).
+      #:tests? (target-64bit?)
       #:import-path "github.com/charlievieth/fastwalk"))
     (home-page "https://github.com/charlievieth/fastwalk")
     (synopsis "Fast directory traversal for Golang")
