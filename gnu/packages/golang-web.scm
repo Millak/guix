@@ -258,6 +258,38 @@ Gemini clients and servers.")
 2019.")
     (license license:expat)))
 
+(define-public go-github-com-42wim-httpsig
+  (package
+    (name "go-github-com-42wim-httpsig")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/42wim/httpsig")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r6q3g0ghccnvqsw7g3g18s710q8haq5vzpvhrb48vmbcj0pdyn8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/42wim/httpsig"))
+    (propagated-inputs (list go-golang-org-x-crypto))
+    (home-page "https://github.com/42wim/httpsig")
+    (synopsis "Golang implementation of the HTTP Signatures RFC draft")
+    (description
+     "This package implements HTTP request and response signing and
+verification. Supports the major MAC and asymmetric key signature algorithms.
+It has several safety restrictions: One, none of the widely known
+non-cryptographically safe algorithms are permitted; Two, the RSA SHA256
+algorithms must be available in the binary (and it should, barring export
+restrictions); Finally, the library assumes either the Authorizationn or
+Signature headers are to be set (but not both).
+
+It's an alternative fork of @url{https://github.com/go-fed/httpsig}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-aki237-nscjar
   (package
     (name "go-github-com-aki237-nscjar")
