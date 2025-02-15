@@ -33,8 +33,8 @@ do
 		case "$2" in
 		    *.gnu.org*)
 			set -e
-			exec guix git authenticate
-			make check-channel-news
+			guix git authenticate
+			exec make check-channel-news
 			exit 127
 			;;
 		    *)
