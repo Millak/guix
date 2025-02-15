@@ -843,15 +843,9 @@ due to its architecture which automatically parallelises the image workflows.")
       #:tests? #f ;there are no tests
       #:configure-flags #~(list "-DBUILD_LIB_STATIC=OFF"
                                 "-DENABLE_DYNAMIC_LINKING=ON"
-                                "-DENABLE_LTO=ON")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'set-LDFLAGS
-            (lambda _
-              (setenv "LDFLAGS"
-                      (string-append
-                       "-Wl,-rpath="
-                       #$output "/lib")))))))
+                                (string-append "-DCMAKE_EXE_LINKER_FLAGS="
+                                               "-Wl,-rpath=" #$output "/lib")
+                                "-DENABLE_LTO=ON")))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -883,13 +877,11 @@ including 2D color images.")
      (substitute-keyword-arguments (package-arguments gmic)
        ((#:configure-flags _)
         #~(list "-DGMIC_QT_HOST=none"
-                "-DENABLE_DYNAMIC_LINKING=ON"
-                (string-append "-DGMIC_LIB_PATH="
-                               #$(this-package-input "gmic") "/lib")))
-        ((#:phases phases)
-         #~(modify-phases #$phases
-             (add-after 'unpack 'qt-chdir
-               (lambda _ (chdir "gmic-qt") #t))))))
+                "-DENABLE_DYNAMIC_LINKING=ON"))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'qt-chdir
+              (lambda _ (chdir "gmic-qt")))))))
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
@@ -910,9 +902,7 @@ including 2D color images.")
      (substitute-keyword-arguments (package-arguments gmic-qt)
        ((#:configure-flags flags)
         #~(list "-DGMIC_QT_HOST=gimp"
-                "-DENABLE_DYNAMIC_LINKING=ON"
-                (string-append "-DGMIC_LIB_PATH="
-                               #$(this-package-input "gmic") "/lib")))))
+                "-DENABLE_DYNAMIC_LINKING=ON"))))
     (synopsis "GIMP plugin for the G'MIC image processing framework")))
 
 (define-public nip2
