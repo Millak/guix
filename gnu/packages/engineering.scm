@@ -3231,6 +3231,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            qtsvg-5
            qtwebchannel-5
            qtwebengine-5
+           qtwayland-5
            qtx11extras
            qtxmlpatterns
            sqlite
