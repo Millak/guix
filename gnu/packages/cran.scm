@@ -18839,24 +18839,37 @@ implemented in bibutils.")
 (define-public r-rbiom
   (package
     (name "r-rbiom")
-    (version "1.0.3")
+    (version "2.0.13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rbiom" version))
        (sha256
-        (base32 "13nma1s3p4bzh8mvikrnmkqyyrx9axvxavq6fyk2w0j804w1qzcg"))))
-    (properties `((upstream-name . "rbiom")))
+        (base32 "1xdv38ad5bl3330jmx8yq3rr4m4ap5588vbchj2qqqgsykmqhsaf"))))
+    (properties
+     '((upstream-name . "rbiom")
+       (updater-extra-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
-    (propagated-inputs (list r-magrittr
-                             r-openxlsx
+    (propagated-inputs (list r-ape
+                             r-dplyr
+                             r-emmeans
+                             r-fillpattern
+                             r-ggbeeswarm
+                             r-ggnewscale
+                             r-ggplot2
+                             r-ggrepel
+                             r-ggtext
+                             r-jsonlite
+                             r-magrittr
+                             r-mgcv
+                             r-parallelly
+                             r-patchwork
+                             r-pillar
                              r-plyr
-                             r-r-utils
-                             r-rcpp
-                             r-rcppparallel
-                             r-rjson
-                             r-rlang
-                             r-slam))
+                             r-readr
+                             r-readxl
+                             r-slam
+                             r-vegan))
     (native-inputs (list r-testthat))
     (home-page "https://cmmr.github.io/rbiom/index.html")
     (synopsis "Read/write, transform, and summarize BIOM data")
