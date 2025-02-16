@@ -5527,6 +5527,7 @@ includes LV2 plugins and a JACK standalone client.")
            qtquickcontrols2-5
            qtscript
            qtsvg-5
+           qtwayland-5
            qtx11extras
            qtxmlpatterns))
     (propagated-inputs
