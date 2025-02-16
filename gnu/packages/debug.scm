@@ -39,6 +39,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system qt)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages attr)
@@ -988,7 +989,7 @@ engineering.")
               (sha256
                (base32
                 "0jdvyg2jab1pvf36pvkyrfsg2wyy8zp1qx0v2ksclgrnr1hja6k6"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      `(#:tests? #f ; Those are strangely manual
        #:phases
@@ -997,7 +998,7 @@ engineering.")
            (lambda _
              (chdir "src"))))))
     (inputs
-     (list qtbase-5 qtcharts-5))
+     (list qtbase-5 qtcharts-5 qtwayland-5))
     (synopsis "GUI frontend for GDB")
     (description "This package provides a frontend to GDB, the GNU debugger.")
     (home-page "https://github.com/epasveer/seer")
