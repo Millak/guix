@@ -1484,7 +1484,7 @@ different notification systems.")
 (define-public kdeconnect
   (package
     (name "kdeconnect")
-    (version "24.12.1")
+    (version "24.12.2")
     (source
      (origin
        (method url-fetch)
@@ -1493,7 +1493,7 @@ different notification systems.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "0b6n5bh071ww4nmpwyhgrm1wlkjpvr61s52xfd7b6bzz8v8ilanz"))))
+         "1zs7xz9s47s34zxnzhwiz3ip85cpbq119zjg52sv0vpji8bdjadf"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
