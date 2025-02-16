@@ -24836,7 +24836,19 @@ quality control.")
        (sha256
         (base32
          "1gi5sv5bb7y8r95sr7cc01cy01j1ymc9piyjmriz0ybyh8flwyrv"))))
+    (properties
+     '((updater-extra-native-inputs
+        . ("r-dynamictreecut"
+           "r-residualmatrix"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           ;; One test requires r-deseq2, which we cannot add because of a
+           ;; dependency cycle.
+           (lambda _ (delete-file "tests/testthat/test-convert.R"))))))
     (propagated-inputs
      (list r-beachmat
            r-bh
@@ -24860,7 +24872,12 @@ quality control.")
            r-statmod
            r-summarizedexperiment))
     (native-inputs
-     (list r-delayedmatrixstats r-hdf5array r-knitr r-testthat))
+     (list r-delayedmatrixstats
+           r-dynamictreecut
+           r-hdf5array
+           r-knitr
+           r-residualmatrix
+           r-testthat))
     (home-page "https://bioconductor.org/packages/scran")
     (synopsis "Methods for single-cell RNA-Seq data analysis")
     (description "This package implements a variety of low-level analyses of
