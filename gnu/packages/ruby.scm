@@ -36,6 +36,7 @@
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023, 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -157,8 +158,7 @@
                             "test/ruby/test_process.rb"
                             "test/ruby/test_system.rb"
                             "tool/rbinstall.rb")
-               (("/bin/sh") (which "sh")))
-             #t)))))
+               (("/bin/sh") (which "sh"))))))))
     (native-inputs (if (%current-target-system)
                        (list this-package)
                        '()))
@@ -334,8 +334,7 @@ a focus on simplicity and productivity.")
            (lambda _
              (substitute* "Makefile"
                (("ruby ./minirake" m)
-                (string-append m " --verbose")))
-             #t))
+                (string-append m " --verbose")))))
          (add-after 'unpack 'disable-broken-tests
            (lambda _
              (substitute* "mrbgems/mruby-io/test/io.rb"
@@ -343,8 +342,7 @@ a focus on simplicity and productivity.")
                 (string-append m "skip \"Hangs in the Guix build environment\"\n"))
                ;; This one is really weird.  The *expected* output is all wrong.
                (("assert\\('`cmd`.*" m)
-                (string-append m "skip \"Disable for Guix\"\n")))
-             #t))
+                (string-append m "skip \"Disable for Guix\"\n")))))
          ;; There is no install target
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
@@ -357,8 +355,7 @@ a focus on simplicity and productivity.")
                (mkdir-p lib)
                (copy-recursively "build/host/lib" lib)
                (mkdir-p inc)
-               (copy-recursively "include" inc))
-             #t)))))
+               (copy-recursively "include" inc)))))))
     (native-inputs
      (list ruby bison))
     (home-page "https://github.com/mruby/mruby")
@@ -525,8 +522,7 @@ Windows and Mac).")
            (lambda _
              (substitute* "spec/spec_helper.rb"
                (("require 'coveralls'") "")
-               (("Coveralls.wear!") ""))
-             #t)))))
+               (("Coveralls.wear!") "")))))))
     (native-inputs
      (list bundler rsync ruby-rspec-core ruby-rspec-expectations
            ruby-rspec-mocks))
@@ -657,8 +653,7 @@ Eval Print Loop).")
                 (string-append
                  "Kernel.exec('"
                  (assoc-ref inputs "python-ipython")
-                 "/bin/")))
-             #t)))))
+                 "/bin/"))))))))
     (inputs
      (list python-ipython))
     (propagated-inputs
@@ -969,15 +964,13 @@ the Cucumber Gherkin language.")
            (lambda _
              (substitute* "Gemfile"
                (("rspec rspec-core rspec-expectations rspec-mocks rspec-support")
-                ""))
-             #t))
+                ""))))
          (add-before 'build 'loosen-ffi-requirement
            (lambda _
              ;; Accept any version of ruby-ffi.
              (substitute* "Gemfile"
                (("  gem 'ffi', '~> 1\\.9\\.25'")
-                "  gem 'ffi'"))
-             #t))
+                "  gem 'ffi'"))))
          (add-before 'build 'remove-unnecessary-dependency-versions-from-gemfile
            (lambda _
              (substitute* "rspec-its.gemspec"
@@ -985,8 +978,7 @@ the Cucumber Gherkin language.")
                (("spec.add_development_dependency 'cucumber'.*")
                 "spec.add_development_dependency 'cucumber'\n")
                (("bundler.*") "bundler'\n")
-               (("\"aruba.*") "'aruba'\n"))
-             #t)))))
+               (("\"aruba.*") "'aruba'\n")))))))
     (propagated-inputs
      (list ruby-rspec-core ruby-rspec-expectations))
     (native-inputs
@@ -1919,13 +1911,11 @@ Prawn module.")
                   (add-after 'unpack 'do-not-use-bundler
                     (lambda _
                       (substitute* "spec/spec_helper.rb"
-                        ((".*[Bb]undler.*") ""))
-                      #t))
+                        ((".*[Bb]undler.*") ""))))
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
-                        (invoke "rspec"))
-                      #t)))))
+                        (invoke "rspec")))))))
     (native-inputs
      (list ruby-pdf-inspector ruby-rspec))
     (propagated-inputs
@@ -2271,8 +2261,7 @@ for performance optimizations in Ruby code.")
                  ((".*(add|gem).*jeweler.*") "")
                  ((".*(add|gem).*pry.*") "")
                  ((".*(add|gem).*growl.*") "")
-                 ((".*(add|gem).*rb-fsevent.*") ""))
-               #t)))))
+                 ((".*(add|gem).*rb-fsevent.*") "")))))))
       (synopsis "Lightweight test double library for Ruby")
       (description "Gimme is a very lightweight test double library for Ruby,
 based on Mockito (a mocking framework for Java).  It is an opinionated (but
@@ -2583,8 +2572,7 @@ PDF library.  It has features such as:
            (lambda _
              (substitute* "test/helper.rb"
                (("require 'coveralls'") "")
-               (("Coveralls::SimpleCov::Formatter") ""))
-             #t))
+               (("Coveralls::SimpleCov::Formatter") ""))))
          (add-after 'extract-gemspec 'remove-unnecessary-requirements
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "ast.gemspec"
@@ -2592,8 +2580,7 @@ PDF library.  It has features such as:
                (("%q<rest-client>.*") "%q<rest-client>.freeze, [\">= 0\"])\n")
                (("%q<mime-types>.*") "%q<mime-types>.freeze, [\">= 0\"])\n")
                (("%q<rake>.*") "%q<rake>.freeze, [\">= 0\"])\n")
-               (("12\\.3") "13.0"))
-             #t)))))
+               (("12\\.3") "13.0")))))))
     (native-inputs
      (list bundler
            ruby-bacon
@@ -2752,8 +2739,7 @@ value is found.")
                (for-each (lambda (file)
                            (display file)(display "\n")
                            (invoke "ruby" "-Ilib" "-Itest" "-rrubygems" file))
-                         (find-files "test" ".*rb$")))
-             #t)))))
+                         (find-files "test" ".*rb$"))))))))
     (synopsis "Simple JSON and XML parsing for Ruby")
     (description
      "@code{crack} provides really simple JSON and XML parsing, extracted from
@@ -2811,8 +2797,7 @@ It handles parsing of command-line options, and generation of usage help.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "rspec"))
-             #t)))))
+               (invoke "rspec")))))))
     (native-inputs
      (list bundler ruby-rspec-2))
     (synopsis "Assertions for command-line dependencies in Ruby")
@@ -3086,13 +3071,11 @@ building block for authentication strategies.")
            (substitute* "rakefile"
              ;; Update the Rakefile so it works
              (("-rubygems") "-rrubygems")
-             (("Config") "RbConfig"))
-           #t))
+             (("Config") "RbConfig"))))
        (add-before 'check 'set-LIB
          (lambda _
            ;; This is used in the rakefile when running the tests
-           (setenv "LIB" "open4")
-           #t)))))
+           (setenv "LIB" "open4"))))))
   (synopsis "Open child processes from Ruby and manage them easily")
   (description
     "@code{Open4} is a Ruby library to run child processes and manage their
@@ -3120,8 +3103,7 @@ input and output.")
            (lambda _
              ;; This is used in the Rakefile, and setting it avoids an issue
              ;; with running the tests.
-             (setenv "LIB" "options")
-             #t)))))
+             (setenv "LIB" "options"))))))
     (synopsis "Ruby library to parse options from *args cleanly")
     (description
      "The @code{options} library helps with parsing keyword options in Ruby
@@ -3258,15 +3240,13 @@ a Ruby object.")
                     (lambda _
                       (substitute* "fakefs.gemspec"
                         (("`git ls-files lib README.md LICENSE`")
-                         "`find lib README.md LICENSE -type f | sort`"))
-                      #t))
+                         "`find lib README.md LICENSE -type f | sort`"))))
                   (add-before 'check 'remove-version-constraints
                     (lambda _
                       ;; Drop hard version requirements for test dependencies.
                       (substitute* "fakefs.gemspec"
                         (("(.*add_development_dependency .*), .*" _ dep)
-                         (string-append dep "\n")))
-                      #t)))))
+                         (string-append dep "\n"))))))))
     (native-inputs
      (list ruby-bump ruby-maxitest ruby-rubocop ruby-rspec))
     (synopsis "Fake file system for Ruby")
@@ -3735,8 +3715,7 @@ lines of a file, @code{File.wc} to count words, and so on.")
             (substitute* "Rakefile"
               (("require 'rake/gempackagetask'")
                "require 'rubygems/package_task'")
-              (("include Config") ""))
-            #t))
+              (("include Config") ""))))
          (replace 'check
           (lambda _
             (invoke "ruby" "-Ilib" "test/test.rb"))))))
@@ -3764,8 +3743,7 @@ operations with permutations of sequences, such as strings and arrays.")
          (add-after 'unpack 'fix-version-test
           (lambda _
             (substitute* "spec/shellany_spec.rb"
-              (("^RSpec") "require \"shellany\"\nRSpec"))
-            #t)))))
+              (("^RSpec") "require \"shellany\"\nRSpec")))))))
     (native-inputs
      (list ruby-rspec ruby-nenv bundler))
     (synopsis "Capture command output")
@@ -3821,19 +3799,16 @@ libraries such as Libnotify.")
                     (lambda _
                       (substitute* "forking_test_runner.gemspec"
                         (("`git ls-files lib/ bin/ MIT-LICENSE`")
-                         "`find lib/ bin/ MIT-LICENSE -type f | sort`"))
-                      #t))
+                         "`find lib/ bin/ MIT-LICENSE -type f | sort`"))))
                   (add-before 'check 'remove-version-constraints
                     (lambda _
                       ;; Ignore hard coded version constraints for the tests.
-                      (delete-file "Gemfile.lock")
-                      #t))
+                      (delete-file "Gemfile.lock")))
                   (add-before 'check 'set-HOME
                     (lambda _
                       ;; Many tests invoke Bundler, and fails when Bundler
                       ;; warns that /homeless-shelter does not exist.
-                      (setenv "HOME" "/tmp")
-                      #t)))))
+                      (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list ruby-activerecord ruby-bump ruby-rspec ruby-sqlite3 ruby-wwtd))
     (propagated-inputs
@@ -3892,13 +3867,11 @@ standard output stream.")
              ;; Remove 's.cert_chain' as we do not build with a private key
              (substitute* "fuubar.gemspec"
                ((".*cert_chain.*") "")
-               ((".*signing_key.*") ""))
-             #t))
+               ((".*signing_key.*") ""))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "rspec"))
-             #t)))))
+               (invoke "rspec")))))))
     (native-inputs
      (list bundler))
     (propagated-inputs
@@ -4003,8 +3976,7 @@ immutable queue or stack).")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "rspec"))
-             #t)))))
+               (invoke "rspec")))))))
     (native-inputs
      (list bundler ruby-rspec-2))
     (synopsis "HashDiff computes the smallest difference between two hashes")
@@ -5277,8 +5249,7 @@ mixture of HTML and additional ERB syntax.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "rspec"))
-             #t)))))
+               (invoke "rspec")))))))
     (native-inputs
      (list ruby-rspec ruby-simplecov ruby-nokogiri-diff))
     (synopsis "Markdown interpreter in Ruby")
@@ -5311,8 +5282,7 @@ HTML, and PDF through LaTeX.")
                                  test-unit "/lib/ruby/vendor_ruby"
                                  "/gems/test-unit-"
                                  ,(package-version ruby-test-unit)
-                                 "/lib\""))))
-             #t)))))
+                                 "/lib\"")))))))))
     (native-inputs
      (list bundler ruby-test-unit/minimal))
     (synopsis "Ruby library adding metaclass method to all objects")
@@ -5406,13 +5376,11 @@ like JSON.  Unlike JSON, it is very fast and small.")
            (lambda _
              (substitute* "mspec.gemspec"
                (("rake.*") "rake>)\n")
-               (("rspec.*") "rspec>)\n"))
-             #t))
+               (("rspec.*") "rspec>)\n"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "rspec" "spec"))
-             #t)))))
+               (invoke "rspec" "spec")))))))
     (native-inputs
      (list bundler ruby-rake ruby-rspec))
     (synopsis "MSpec is a specialized framework for RubySpec")
@@ -5446,15 +5414,13 @@ specs for Ruby implementations in ruby/spec.")
          (replace 'replace-git-ls-files
            (lambda _
              (substitute* "mysql2.gemspec"
-               (("git ls-files .*`") "find . -type f |sort`"))
-             #t))
+               (("git ls-files .*`") "find . -type f |sort`"))))
          (add-before 'install 'set-MAKEFLAGS
            (lambda* (#:key outputs #:allow-other-keys)
              (setenv "MAKEFLAGS"
                      (string-append
                       "V=1 "
-                      "prefix=" (assoc-ref outputs "out")))
-             #t))
+                      "prefix=" (assoc-ref outputs "out")))))
          ;; Move the 'check phase to after 'install, as then you can test
          ;; using the installed mysql2 gem in the store.
          (delete 'check)
@@ -5466,8 +5432,7 @@ specs for Ruby implementations in ruby/spec.")
                       ":"
                       (assoc-ref outputs "out") "/lib/ruby/vendor_ruby"))
              (when tests?
-               (invoke "rspec"))
-             #t)))))
+               (invoke "rspec")))))))
     (inputs
      `(("mariadb-dev" ,mariadb "dev")
        ("zlib" ,zlib)))
@@ -5565,8 +5530,7 @@ irb's last-word approach.")
                                        "/lib/ruby/vendor_ruby/gems/"
                                        name-and-version
                                        "/lib")
-                        (find-files "./test" ".*\\.rb"))))
-             #t)))))
+                        (find-files "./test" ".*\\.rb")))))))))
     (inputs
      (list libidn))
     (synopsis "Ruby Bindings for the GNU LibIDN library")
@@ -5648,8 +5612,7 @@ definitions on a Ruby object.")
           (lambda _
             (substitute* "Rakefile"
               (("task :test => %w\\[test:unit test:conformance\\]")
-               "task :test => %w[test:unit]"))
-            #t)))))
+               "task :test => %w[test:unit]")))))))
     (native-inputs
      (list bundler ruby-test-unit ruby-rake-compiler))
     (synopsis "Extensible Markdown to (X)HTML converter")
@@ -5966,8 +5929,7 @@ facilities supporting TDD, BDD, mocking, and benchmarking.")
          (add-after 'extract-gemspec 'remove-unnecessary-dependency-versions
            (lambda _
              (substitute* "minitest-around.gemspec"
-               (("%q<cucumber>.*") "%q<cucumber>, [\">= 0\"])\n"))
-             #t)))))
+               (("%q<cucumber>.*") "%q<cucumber>, [\">= 0\"])\n")))))))
     (propagated-inputs
      (list ruby-minitest))
     (native-inputs
@@ -6160,8 +6122,7 @@ absence of failure.")
                (("gem .*") ""))
              ;; Remove byebug as not needed to run tests.
              (substitute* "test/test_helper.rb"
-               (("require 'byebug'") ""))
-             #t)))))
+               (("require 'byebug'") "")))))))
     (native-inputs
      (list bundler ruby-minitest))
     (synopsis "Extra features and changes to MiniTest")
@@ -6227,13 +6188,11 @@ instance, it provides @code{assert_true}, @code{assert_false} and
            (lambda _
              (substitute* "Rakefile"
                (("require 'rubocop/rake\\_task'") "")
-               (("RuboCop::RakeTask\\.new\\(:rubocop\\)") "[].each"))
-             #t))
+               (("RuboCop::RakeTask\\.new\\(:rubocop\\)") "[].each"))))
          (add-after 'extract-gemspec 'remove-rubocop-from-gemspec
            (lambda _
              (substitute* "minitest-reporters.gemspec"
-               ((".*%q<rubocop>.*") "\n"))
-             #t)))))
+               ((".*%q<rubocop>.*") "\n")))))))
     (propagated-inputs
      (list ruby-ansi ruby-builder ruby-minitest ruby-progressbar))
     (native-inputs
@@ -6514,8 +6473,7 @@ core tasks.")
                                      ,version "/lib/git/config.rb")))
                         (substitute* (list config)
                           (("'git'")
-                           (string-append "'" git "'")))
-                        #t))))))
+                           (string-append "'" git "'")))))))))
     (inputs
      (list git))
     (synopsis "Ruby wrappers for Git")
@@ -6892,8 +6850,7 @@ both CSS3 selector and XPath 1.0 support.")
          (add-after 'unpack 'remove-git-ls-files
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "Rakefile"
-               (("git ls-files") "find . -type f"))
-             #t)))))
+               (("git ls-files") "find . -type f")))))))
     (native-inputs
      (list ruby-rspec))
     (synopsis "Retrieve the source code for Ruby methods")
@@ -7474,8 +7431,7 @@ Oedipus matches on the first match, not the longest.")
          (add-after 'unpack 'remove-git-ls-files
           (lambda* (#:key outputs #:allow-other-keys)
             (substitute* "guard.gemspec"
-              (("git ls-files -z") "find . -type f -print0"))
-            #t))
+              (("git ls-files -z") "find . -type f -print0"))))
          (replace 'build
           (lambda _
             (invoke "gem" "build" "guard.gemspec"))))))
@@ -7852,8 +7808,7 @@ current line in an external editor.")
               (("s.add_dependency.*") "\n"))
             (substitute* "Gemfile"
               (("gem \"rake\".*")
-               "gem 'rake'\ngem 'rdoc'\ngem 'json'\n"))
-            #t)))))
+               "gem 'rake'\ngem 'rdoc'\ngem 'json'\n")))))))
     (propagated-inputs
      (list ruby-json))
     (native-inputs
@@ -9066,8 +9021,7 @@ clickjacking, directory traversal, session hijacking and IP spoofing.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "rspec"))
-             #t)))))
+               (invoke "rspec")))))))
     (native-inputs
      (list bundler ruby-rspec))
     (synopsis "Colorize printed text on ANSI terminals")
@@ -9346,8 +9300,7 @@ they match.")
                       ;; XXX: This is needed otherwise the install
                       ;; phase fails to delete the installed cached
                       ;; gem file.
-                      (delete-file-recursively "pkg")
-                      #t)))))
+                      (delete-file-recursively "pkg"))))))
     (native-inputs
      (list ragel ruby-regexp-property-values ruby-rspec))
     (synopsis "Regular expression parser library for Ruby")
@@ -9379,8 +9332,7 @@ expressions.  It comprises the following components:
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "rspec"))
-             #t)))))
+               (invoke "rspec")))))))
     (native-inputs
      (list ruby-rspec))
     (synopsis "Minitest/RSpec parallel test runner for CI environments")
@@ -9604,8 +9556,7 @@ figure out how many times to run the code to get interesting data.")
                       (let ((zeromq (assoc-ref inputs "zeromq")))
                         (substitute* "lib/ffi-rzmq-core/libzmq.rb"
                           (("/usr/local/lib")
-                           (string-append zeromq "/lib")))
-                        #t)))
+                           (string-append zeromq "/lib"))))))
                   (replace 'check
                     (lambda _
                       (invoke "rspec"))))))
@@ -11129,16 +11080,14 @@ simple case of executing code based on the flags or parameters passed.")
           (lambda _
             (substitute* "lib/pygmentize.rb"
               (("\"/usr/bin/env python.*")
-               (string-append "\"" (which "pygmentize") "\"\n")))
-            #t))
+               (string-append "\"" (which "pygmentize") "\"\n")))))
          (add-after 'build 'do-not-use-vendor-directory
           (lambda _
             ;; Remove bundled pygments sources
             ;; FIXME: ruby-build-system does not support snippets.
             (delete-file-recursively "vendor")
             (substitute* "pygmentize.gemspec"
-              (("\"vendor/\\*\\*/\\*\",") ""))
-            #t)))))
+              (("\"vendor/\\*\\*/\\*\",") "")))))))
     (inputs
      `(("pygments" ,python-pygments)))
     (native-inputs
@@ -11237,8 +11186,7 @@ used to create both network servers and clients.")
                (("require 'rubygems/tasks'") "")
                (("Gem::Tasks.new") ""))
              ;; Remove extraneous .gem file that otherwise gets installed.
-             (delete-file-recursively "pkg")
-             #t)))))
+             (delete-file-recursively "pkg"))))))
     (native-inputs
      (list bundler ruby-rake ruby-rspec))
     (synopsis "Simplifies checking for Ruby implementation")
@@ -11588,8 +11536,7 @@ more complex, and error-prone.")
              ;; environment.  This is fixed in the upstream repository but fix
              ;; has not been released.
              (substitute* "Gemfile"
-               (("^gemspec") "gem 'test-unit'\ngemspec"))
-             #t)))))
+               (("^gemspec") "gem 'test-unit'\ngemspec")))))))
     (propagated-inputs
      (list ruby-unf-ext))
     (native-inputs
@@ -11651,15 +11598,13 @@ authentication in Ruby web applications.")
                (("gem 'guard-rspec'") "")
                (("gem 'rb-fsevent'") "")
                (("gem 'pry'") "")
-               (("gem 'growl'") ""))
-             #t))
+               (("gem 'growl'") ""))))
          ;; The test suite doesn't work with rspec@2, and this is incompatible
          ;; with the current version of Rake, so invoke Rspec directly
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "bundle" "exec" "rspec"))
-             #t)))))
+               (invoke "bundle" "exec" "rspec")))))))
     (propagated-inputs
      (list ruby-warden))
     (native-inputs
@@ -11760,8 +11705,7 @@ display width of strings in Ruby.")
                (("%q<rspec.*") "%q<rspec>)\n"))
              ;; Do not use bundler.
              (substitute* "Rakefile"
-               (("Bundler\\.setup.*") "nil\n"))
-             #t)))))
+               (("Bundler\\.setup.*") "nil\n")))))))
     (native-inputs
      (list ruby-rdoc ruby-rspec ruby-rubygems-tasks))
     (synopsis "Ruby library to help check the Ruby version")
@@ -12139,8 +12083,7 @@ It has built-in support for the legacy @code{cookies.txt} and
              (if tests?
                  (invoke "ruby"
                          "-Ilib"
-                         "test/runner.rb")
-                 #t))))))
+                         "test/runner.rb")))))))
     (native-inputs
      (list ruby-rack))
     (synopsis
@@ -12189,8 +12132,7 @@ requests either using arguments or with an interactive prompt.")
                ;; XXX: This symlink is broken since ruby 2.4.
                ;; https://lists.gnu.org/archive/html/guix-devel/2017-06/msg00034.html
                (delete-file file)
-               (symlink "../.index" file)
-               #t))))))
+               (symlink "../.index" file)))))))
     (synopsis "ANSI escape code related libraries")
     (description
      "This package is a collection of ANSI escape code related libraries
@@ -12220,8 +12162,7 @@ device.")
        (modify-phases %standard-phases
          (add-before 'check 'set-version
            (lambda _
-             (setenv "VERSION" ,version)
-             #t)))))
+             (setenv "VERSION" ,version))))))
     (synopsis "Capture of stdout/stderr and handling of child processes")
     (description
      "Systemu can be used on any platform to return status, stdout, and stderr
@@ -12505,8 +12446,7 @@ ruby with support for changing priority using pairing heap data structure")
                ;; XXX: This symlink is broken since ruby 2.4.
                ;; https://lists.gnu.org/archive/html/guix-devel/2017-06/msg00034.html
                (delete-file file)
-               (symlink "../.index" file)
-               #t))))))
+               (symlink "../.index" file)))))))
     (propagated-inputs
      (list ruby-ansi))
     (native-inputs
@@ -13423,8 +13363,7 @@ programs running in the background, in Ruby.")
            (lambda _
              (substitute* "Rakefile"
                (("require \"rubocop/rake\\_task\"") "")
-               (("RuboCop::RakeTask\\.new") ""))
-             #t)))))
+               (("RuboCop::RakeTask\\.new") "")))))))
     (native-inputs
      (list bundler ruby-yard/minimal ruby-mocha ruby-minitest-reporters))
     (home-page "https://simonecarletti.com/code/publicsuffix-ruby/")
@@ -13503,8 +13442,7 @@ RFC 3987, and RFC 6570 (level 4), providing support for IRIs and URI templates."
                         ;; service which is unnecessary for these tests.
                         (("require 'codeclimate-test-reporter'")
                          "")
-                        (("CodeClimate.*") ""))
-                      #t)))))
+                        (("CodeClimate.*") "")))))))
     (synopsis "Add color effects to the @code{String} class")
     (description
      "This package extends the @code{String} class and adds a
@@ -13555,8 +13493,7 @@ for the terminal.")
                ;; colored is unmaintained
                (("colored") "colorator")
                ;; colorator version
-               (("= 1.2") "= 1.1"))
-             #t)))))
+               (("= 1.2") "= 1.1")))))))
     (propagated-inputs (list ruby-colorator))
     (home-page "https://github.com/wbailey/command_line_reporter")
     (synopsis "Report production while executing Ruby scripts")
@@ -13809,41 +13746,34 @@ features that don't exist yet like variables, nesting, mixins and inheritance.")
                    (display (string-append
                              (string-take gemspec index)
                              "\nend\n")
-                            out))))
-             #t))
+                            out))))))
          (add-after 'unpack 'dont-check-the-libsass-version
            (lambda _
              (substitute* "test/native_test.rb"
-               (("assert_equal.*Native\\.version") ""))
-             #t))
+               (("assert_equal.*Native\\.version") ""))))
          (add-after 'unpack 'remove-git-from-gemspec
            (lambda _
              (substitute* "sassc.gemspec"
-               (("`git ls-files -z`") "`find . -type f -print0 |sort -z`"))
-             #t))
+               (("`git ls-files -z`") "`find . -type f -print0 |sort -z`"))))
          (add-after 'unpack 'remove-extensions-from-gemspec
            (lambda _
              (substitute* "sassc.gemspec"
-               (("\\[\"ext/extconf.rb\"\\]") "[]"))
-             #t))
+               (("\\[\"ext/extconf.rb\"\\]") "[]"))))
          (add-after 'unpack 'fix-Rakefile
            (lambda _
              (substitute* "Rakefile"
-               (("test: 'compile:libsass'") ":test"))
-             #t))
+               (("test: 'compile:libsass'") ":test"))))
          (add-after 'unpack 'remove-unnecessary-dependencies
            (lambda _
              (substitute* "test/test_helper.rb"
-               (("require \"pry\"") ""))
-             #t))
+               (("require \"pry\"") ""))))
          (add-before 'build 'patch-native.rb
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "lib/sassc/native.rb"
                ((".*gem_root = spec.gem_dir") "")
                (("ffi_lib .*\n")
                 (string-append
-                 "ffi_lib '" (assoc-ref inputs "libsass") "/lib/libsass.so'")))
-             #t))
+                 "ffi_lib '" (assoc-ref inputs "libsass") "/lib/libsass.so'")))))
          ;; The gemspec still references the libsass files, so just keep the
          ;; one in the gem.
          (delete 'extract-gemspec))))
@@ -13942,13 +13872,11 @@ interface.  It allows Jekyll to rebuild your site when a file changes.")
            (lambda _
              ;; Bundler isn't being used for fetching dependencies, so
              ;; delete the Gemfile.lock
-             (delete-file "Gemfile.lock")
-             #t))
+             (delete-file "Gemfile.lock")))
          (add-before 'build 'patch-gemspec
            (lambda _
              (substitute* "parallel.gemspec"
-               (("git ls-files") "find"))
-             #t)))))
+               (("git ls-files") "find")))))))
     (native-inputs
      (list ruby-rspec
            ruby-rspec-rerun
@@ -14092,8 +14020,7 @@ custom checks.  This gem provides a set of additional checks.")
                             (add-after 'unpack 'do-not-use-bundler
                               (lambda _
                                 (substitute* "spec/spec_helper.rb"
-                                  ((".*[Bb]undler.*") ""))
-                                #t)))))
+                                  ((".*[Bb]undler.*") "")))))))
     (native-inputs
      (list ruby-rspec ruby-cane ruby-morecane))
     (propagated-inputs
@@ -14128,8 +14055,7 @@ access to the contents of a PDF file with a high degree of flexibility.")
                       (lambda _
                         (substitute* "pdf-inspector.gemspec"
                           (("spec.signing_key =.*")
-                           "spec.signing_key = nil"))
-                        #t))
+                           "spec.signing_key = nil"))))
                     (replace 'check
                       (lambda _
                         (substitute* "pdf-inspector.gemspec"
@@ -14290,8 +14216,7 @@ various Prawn projects.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "rspec"))
-             #t)))))
+               (invoke "rspec")))))))
     (home-page "https://github.com/prawnpdf/prawn-table")
     (synopsis "Tables support for Prawn")
     (description "This gem provides tables support for Prawn.")
@@ -14582,8 +14507,7 @@ YAML.load suitable for accepting user input in Ruby applications.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "rspec"))
-             #t)))))
+               (invoke "rspec")))))))
     (native-inputs
      (list ruby-coveralls ruby-rspec ruby-simplecov))
     (synopsis "Simple YAML check tool")
@@ -15153,17 +15077,14 @@ common interface over different adapters.")
               ;; Remove rspec/retry as we are not retrying the tests
               (("require \"rspec/retry\"") "")
               (("config\\.display_try_failure_messages = true") "")
-              (("config\\.verbose_retry = true") ""))
-            #t))
+              (("config\\.verbose_retry = true") ""))))
         (add-before 'check 'compile
           (lambda _
-            (invoke "rake" "compile")
-            #t))
+            (invoke "rake" "compile")))
         (replace 'check
           (lambda* (#:key tests? #:allow-other-keys)
             (when tests?
-              (invoke "rspec"))
-            #t)))))
+              (invoke "rspec")))))))
    (native-inputs
     (list bundler ruby-rake-compiler ruby-rspec ruby-rubocop))
    (synopsis "New I/O for Ruby")
@@ -15726,8 +15647,7 @@ various Ruby objects.")
              (substitute* ".gemspec"
                (("<eventmachine>.freeze, \\[\\\"~> 1.0.0\"")
                 "<eventmachine>, [\">= 1.0.0\"")
-               (("<thin>.freeze, \\[\\\"< 1.7\", ") "<thin>, ["))
-             #t)))))
+               (("<thin>.freeze, \\[\\\"< 1.7\", ") "<thin>, [")))))))
     (propagated-inputs
      (list ruby-eventmachine ruby-thin))
     (synopsis "Simple, upgradable WebSockets for Ruby Thin")
@@ -15752,8 +15672,7 @@ the Thin library.")
                   (add-before 'check 'set-HOME
                     (lambda _
                       ;; Some tests attempt to stat $HOME.  Let them.
-                      (setenv "HOME" "/tmp")
-                      #t)))))
+                      (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list ruby-ffi))
     (native-inputs
@@ -15791,16 +15710,14 @@ for gathering file system information, such as disk space and mount points.")
                 "<eventmachine>, [\">= 1.0.9.1")
                (("<rack>.freeze, \\[\\\"~> 1.5") "<rack>, [\">= 1.5")
                (("<thin>.freeze, \\[\\\"~> 1.5.0") "<thin>, [\">= 1.5.0")
-               (("<sinatra>.freeze, \\[\\\"~> 1.2") "<sinatra>, [\">= 1.2"))
-             #t))
+               (("<sinatra>.freeze, \\[\\\"~> 1.2") "<sinatra>, [\">= 1.2"))))
          (add-before 'build 'loosen-dependency-contraint
              (lambda _
                (substitute* "lib/mail_catcher.rb"
                  (("\"eventmachine\", \"1.0.9.1\"") "\"eventmachine\", \">= 1.0.9.1\"")
                  (("\"rack\", \"~> 1.5\"") "\"rack\", \">= 1.5\"")
                  (("\"thin\", \"~> 1.5.0\"") "\"thin\", \">= 1.5.0\"")
-                 (("\"sinatra\", \"~> 1.2\"") "\"sinatra\", \">= 1.2\""))
-               #t)))))
+                 (("\"sinatra\", \"~> 1.2\"") "\"sinatra\", \">= 1.2\"")))))))
     (inputs
      (list ruby-eventmachine
            ruby-mail
@@ -15934,8 +15851,7 @@ backwards-compatible with an older API specification.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "rspec"))
-             #t)))))
+               (invoke "rspec")))))))
     (synopsis "Convert HTML into Markdown")
     (description
      "This Ruby module allows you to map simple HTML back into
@@ -15987,8 +15903,7 @@ application.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "rspec"))
-             #t)))))
+               (invoke "rspec")))))))
     (synopsis
      "IDE tools for code completion, inline documentation, and static analysis")
     (description
@@ -16071,8 +15986,7 @@ eager loading.")
               (snippet
                '(begin
                   ;; Remove bundled library.
-                  (delete-file "spec/rake-12.3.0.gem")
-                  #t))))
+                  (delete-file "spec/rake-12.3.0.gem")))))
     (build-system ruby-build-system)
     (arguments
      '(;; XXX: Tests need multiple versions of ruby, wants to run
@@ -16083,18 +15997,15 @@ eager loading.")
                     (lambda _
                       (substitute* "wwtd.gemspec"
                         (("git ls-files lib/ bin/`")
-                         "find lib/ bin/ -type f |sort`"))
-                      #t))
+                         "find lib/ bin/ -type f |sort`"))))
                   (add-before 'check 'remove-version-constraints
                     (lambda _
-                      (delete-file "Gemfile.lock")
-                      #t))
+                      (delete-file "Gemfile.lock")))
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (if tests?
                           (invoke "rspec" "spec/")
-                          (format #t "test suite not run~%"))
-                      #t)))))
+                          (format #t "test suite not run~%")))))))
     (native-inputs
      (list ruby-bump ruby-rspec))
     (synopsis "Run @file{.travis.yml} files locally")
@@ -16349,20 +16260,17 @@ and social networks to better index and display your site's content.")
                     (lambda _
                       (substitute* "tasks/rdoc.rake"
                         (("`git ls-files -- lib`")
-                         "`find lib/ -type f |sort`"))
-                      #t))
+                         "`find lib/ -type f |sort`"))))
                   (add-before 'check 'tzdir-setup
                     (lambda* (#:key inputs #:allow-other-keys)
                       (setenv "TZDIR"
                               (string-append (assoc-ref inputs "tzdata")
-                                             "/share/zoneinfo"))
-                      #t))
+                                             "/share/zoneinfo"))))
                   (add-before 'check 'delete-test-BatchProcessor
                     ;; test_BatchProcessor fails with exception:
                     ;; run> terminated with exception (report_on_exception is true)
                     (lambda _
-                      (delete-file "test/test_BatchProcessor.rb")
-                      #t)))))
+                      (delete-file "test/test_BatchProcessor.rb"))))))
     (synopsis
      "Project management command line tool with a domain specific language")
     (description
