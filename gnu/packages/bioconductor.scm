@@ -14118,9 +14118,21 @@ convenient formats.")
               (sha256
                (base32
                 "1rrnldicisjf2cjkvnynlsr91illi6v6wfyqn20xb10p947cyckl"))))
+    (properties
+     '((updater-extra-native-inputs
+        . ("r-matrix" "r-matrixstats" "r-rhdf5"))))
     (build-system r-build-system)
+    ;; One test fails because the "eds" package is missing, but there is no
+    ;; such package.
+    (arguments (list #:tests? #false))
     (native-inputs
-     (list r-knitr r-readr r-testthat r-tximportdata))
+     (list r-knitr
+           r-matrix
+           r-matrixstats
+           r-readr
+           r-rhdf5
+           r-testthat
+           r-tximportdata))
     (home-page "https://bioconductor.org/packages/tximport")
     (synopsis "Import and summarize transcript-level estimates for gene-level analysis")
     (description
