@@ -1148,8 +1148,10 @@ in which the whole-plots or split-plots or both can be freely exchangeable.")
        (sha256
         (base32 "00z1mvqisnzbbwcwax1gm9ilahpgp21kk4l7hqdz8fym27vygd8m"))))
     (build-system r-build-system)
+    (properties
+     '((updater-extra-native-inputs . ("r-abind"))))
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-abind r-testthat))
     (home-page "http://had.co.nz/plyr")
     (synopsis "Tools for Splitting, Applying and Combining Data")
     (description
