@@ -2137,7 +2137,14 @@ enforcing & linting tool for @code{factory_bot} files.")
         (base32
          "1w9whadx60kv4vlbnk77b5yyhhfcg717r9cr334zqznqr1bqr8mh"))))
     (build-system ruby-build-system)
-    (arguments (list #:tests? #f))      ;avoid extra dependencies
+    (arguments
+     (list #:tests? #f  ;avoid extra dependencies
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   (substitute* "Gemfile"
+                     (("gem 'danger'.*") "")))))))
     (propagated-inputs (list ruby-rubocop-factory-bot))
     (synopsis "Code style checking for RSpec files")
     (description "This package provides a plugin for the RuboCop code style
