@@ -10744,8 +10744,10 @@ statistical functions and other utilities to ease their usage.")
        (sha256
         (base32
          "1smcxrfsz6cxym9h8iaiqrrw5bzp2bbpmf05zr8y70jw59zg4ngh"))))
+    (properties
+     `((updater-extra-native-inputs . ("r-codetools"))))
     (build-system r-build-system)
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-codetools r-testthat))
     (home-page "https://github.com/gaborcsardi/prettyunits")
     (synopsis "Pretty, human readable formatting of quantities")
     (description
