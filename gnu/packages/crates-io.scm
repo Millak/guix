@@ -75289,18 +75289,19 @@ multiple threads.")
 (define-public rust-shell-quote-0.7
   (package
     (name "rust-shell-quote")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "shell-quote" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0znflgk3wlbahip3yblqmlnd8c5cslabjh99asds9vhirjyn6k5f"))))
+        (base32 "1r6pxib3hs700ik79c707k88yr57ki9a27sj4mc3dqjsjwajcl7v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1))
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-lenient-semver" ,rust-lenient-semver-0.4)
                                    ("rust-semver" ,rust-semver-1)
                                    ("rust-test-case" ,rust-test-case-3))))
     (home-page "https://github.com/allenap/shell-quote")
