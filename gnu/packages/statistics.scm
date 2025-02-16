@@ -6799,15 +6799,17 @@ is supported.")
 (define-public r-lubridate
   (package
     (name "r-lubridate")
-    (version "1.9.3")
+    (version "1.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lubridate" version))
        (sha256
         (base32
-         "1zvzycng2hsks9d7552nb93abzjrs43c975rc16s3c1is8318vib"))))
+         "1ha68ri36gcq573j7s71m284166qd1ywran62h9d88nn4gi7wjw6"))))
     (build-system r-build-system)
+    (properties
+     '((updater-extra-native-inputs . ("tzdata-for-tests"))))
     (arguments
      (list
       #:phases
