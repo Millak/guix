@@ -2054,7 +2054,8 @@ code style checking of Capybara test files (RSpec, Cucumber, Minitest).")
                           (lambda _
                             (substitute* "Gemfile"
                               (("gem 'rubocop-rspec', '~> 2.16.0'")
-                               "gem 'rubocop-rspec', '>= 2.16.0'")))))))
+                               "gem 'rubocop-rspec', '>= 2.16.0'")
+                              (("gem 'danger'.*") "")))))))
     (native-inputs
      (list ruby-bump
            ruby-rack
