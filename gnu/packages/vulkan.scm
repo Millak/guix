@@ -183,10 +183,9 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
                      (target-x86-64?))
        #:configure-flags
        #~(list (string-append "-DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR="
-                              #$(this-package-native-input "spirv-headers")
-                              "/include/spirv")
+                              #+(this-package-native-input "spirv-headers"))
                (string-append "-DLLVM_EXTERNAL_LIT="
-                              #$(this-package-native-input "python-lit")
+                              #+(this-package-native-input "python-lit")
                               "/bin/lit")
                (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
                               #$output "/lib")
