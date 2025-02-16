@@ -7933,37 +7933,38 @@ of terminal output.")
     (license license:gpl2)))
 
 (define-public ruby-immutable-struct
-  (package
-    (name "ruby-immutable-struct")
-    (version "2.4.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/stitchfix/immutable-struct")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "17hlmy9jfwn3i5h2rwv832ycwcdqwxq7dkkd2yly28klwj0l52rq"))))
-    (build-system ruby-build-system)
-    (arguments
-     (list
-      ;; Issues with the lack of Set in Ruby 3
-      #:ruby ruby-2.7
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "ruby" (which "rspec"))))))))
-    (native-inputs
-     (list ruby-rspec))
-    (synopsis "Ruby library for creating immutable struct classes")
-    (description
-     "Easily create value objects without the pain of Ruby's Struct (or its setters)")
-    (home-page "https://stitchfix.github.io/immutable-struct/")
-    (license license:expat)))
+  (let ((commit "bb67ad8fa2117e8031c3f4333b4c25c8bcd3afff")
+        (revision "0"))
+    (package
+      (name "ruby-immutable-struct")
+      (version (git-version "2.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stitchfix/immutable-struct")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0vsr2spypjf0i7ppg2a0gj3mjj5k3dyqsx224cbsxw51p6cc11c1"))))
+      (build-system ruby-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "ruby" (which "rspec"))))))))
+      (native-inputs
+       (list ruby-rspec))
+      (synopsis "Ruby library for creating immutable struct classes")
+      (description
+       "This package provides a library to help create value objects without
+the pain of Ruby's Struct (or its setters).")
+      (home-page "https://stitchfix.github.io/immutable-struct/")
+      (license license:expat))))
 
 (define-public ruby-faker
   (package
