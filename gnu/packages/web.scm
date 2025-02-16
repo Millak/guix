@@ -105,6 +105,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
@@ -9396,9 +9397,10 @@ It contains the code shared by all Kiwix ports.")
                (base32
                 "0hlk05gcb3fmnxhwj6gan51v98rdq3iv2lklwbpmm1bazmz8i7br"))
               (patches (search-patches "kiwix-desktop-newer-libkiwix.patch"))))
-    (build-system gnu-build-system)
+    (build-system qt-build-system)
     (arguments
-     `(#:phases
+     `(#:test-target "check"
+       #:phases
        (modify-phases %standard-phases
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
@@ -9425,6 +9427,7 @@ It contains the code shared by all Kiwix ports.")
            qtdeclarative-5
            qtwebchannel-5
            qtwebengine-5
+           qtwayland-5
            xapian
            zlib
            `(,zstd "lib")))
