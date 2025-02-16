@@ -9171,7 +9171,7 @@ inspired by the Sinatra microframework style of specifying actions:
 (define-public ruby-rubocop-ast
   (package
     (name "ruby-rubocop-ast")
-    (version "1.28.0")
+    (version "1.37.0")
     (source
      (origin
        (method git-fetch)               ;no test suite in distributed gem
@@ -9181,7 +9181,7 @@ inspired by the Sinatra microframework style of specifying actions:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1dp09gcmahmdfi3s6xsksr3ka9dddjpy9ymhr9wjwv67y1falffr"))))
+         "1ww1vxcx6qaih4g68mrbq4xlgrqbv8w7cqxdaz629sazpw2hkycs"))))
     (build-system ruby-build-system)
     (arguments
      `(#:test-target "spec"
@@ -9203,7 +9203,7 @@ inspired by the Sinatra microframework style of specifying actions:
     (native-inputs
      (list ruby-bump
            ruby-oedipus-lex
-           ruby-pry
+           ruby-prism
            ruby-racc
            ruby-rake
            ruby-rspec
