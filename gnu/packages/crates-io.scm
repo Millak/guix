@@ -35591,14 +35591,14 @@ that efficiently appends and removes common indentation after every newline.")
 (define-public rust-indexmap-2
   (package
     (name "rust-indexmap")
-    (version "2.7.0")
+    (version "2.7.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "indexmap" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "07s7jmdymvd0rm4yswp0j3napx57hkjm9gs9n55lvs2g78vj5y32"))))
+                "0lmnm1zbr5gq3wic3d8a76gpvampridzwckfl97ckd5m08mrk74c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -35612,7 +35612,6 @@ that efficiently appends and removes common indentation after every newline.")
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-fnv" ,rust-fnv-1)
-        ("rust-fxhash" ,rust-fxhash-0.2)
         ("rust-itertools" ,rust-itertools-0.13)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-quickcheck" ,rust-quickcheck-1)
