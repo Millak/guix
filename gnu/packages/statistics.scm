@@ -1827,13 +1827,13 @@ R packages that praise their users.")
 (define-public r-testthat
   (package
     (name "r-testthat")
-    (version "3.2.1.1")
+    (version "3.2.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "testthat" version))
               (sha256
                (base32
-                "1xz94i0r62lslyqya8gz6i2r100wi26y5c2822v2i7lkflwwx1fp"))))
+                "1by17pjy05xjc0clbp8kam2lrzy5w00fd0nqqp76l0dwbd57j2qq"))))
     (properties
      '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
@@ -1857,8 +1857,7 @@ R packages that praise their users.")
            r-rlang
            r-waldo
            r-withr))
-    (native-inputs
-     (list r-knitr))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/hadley/testthat")
     (synopsis "Unit testing for R")
     (description
