@@ -40612,6 +40612,10 @@ Hooks can be configured to run in parallel.  This parameter is an
 association list of hooks to do in parallel, where the key is the symbol
 for the hook and the value is the number of threads to run.
 
+@item @code{listen-repl} (default: @var{#f})
+Port or filename to spawn a REPL listening on, pass @code{#t} to listen
+on the default port or @code{#f} to disable.
+
 @item @code{guile} (default: @code{guile-3.0-latest})
 The Guile package with which to run the Guix Build Coordinator.
 

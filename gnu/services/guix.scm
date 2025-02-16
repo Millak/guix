@@ -48,6 +48,7 @@
             guix-build-coordinator-configuration-allocation-strategy
             guix-build-coordinator-configuration-hooks
             guix-build-coordinator-configuration-parallel-hooks
+            guix-build-coordinator-configuration-listen-repl
             guix-build-coordinator-configuration-guile
             guix-build-coordinator-configuration-extra-environment-variables
 
@@ -176,6 +177,8 @@
                                    (default '()))
   (parallel-hooks                  guix-build-coordinator-configuration-parallel-hooks
                                    (default '()))
+  (listen-repl                     guix-build-coordinator-configuration-listen-repl
+                                   (default #f))
   (guile                           guix-build-coordinator-configuration-guile
                                    (default guile-next))
   (extra-environment-variables
@@ -255,7 +258,8 @@
                                                    client-communication-uri-string
                                                    (hooks '())
                                                    (parallel-hooks '())
-                                                   (guile guile-next))
+                                                   (guile guile-next)
+                                                   listen-repl)
   (program-file
    "start-guix-build-coordinator"
    (with-extensions (cons guix-build-coordinator-package
@@ -311,7 +315,8 @@
             #:parallel-hooks (list #$@(map (match-lambda
                                              ((name . val)
                                               #~(cons '#$name #$val)))
-                                           parallel-hooks))))))
+                                           parallel-hooks))
+            #:listen-repl #$listen-repl))))
    #:guile guile))
 
 (define (guix-build-coordinator-shepherd-services config)
@@ -322,6 +327,7 @@
              allocation-strategy
              hooks
              parallel-hooks
+             listen-repl
              guile
              extra-environment-variables)
     (list
@@ -344,6 +350,7 @@
                               client-communication-uri-string
                               #:hooks hooks
                               #:parallel-hooks parallel-hooks
+                              #:listen-repl listen-repl
                               #:guile guile))
                      #:user #$user
                      #:group #$group
