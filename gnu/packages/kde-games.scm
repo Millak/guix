@@ -1626,7 +1626,8 @@ This package is part of the KDE games module.")
            libkdegames
            libplasma
            qtspeech
-           qtsvg))
+           qtsvg
+           qtwayland))
     (home-page "https://apps.kde.org/knights/")
     (synopsis "Chess game")
     (description "KNights is a chess game, featuring:
