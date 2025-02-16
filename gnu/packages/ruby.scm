@@ -1673,7 +1673,7 @@ syntax to the minimum while remaining clear.")
 (define-public ruby-asciidoctor
   (package
     (name "ruby-asciidoctor")
-    (version "2.0.18")
+    (version "2.0.20")
     (source
      (origin
        (method git-fetch)               ;the gem release lacks a Rakefile
@@ -1683,7 +1683,7 @@ syntax to the minimum while remaining clear.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1mpk3y69lqz9ywfkjmr40dm3mkabrnf92bb011qq1axj73yyrajv"))))
+         "19qvilhwa9plg80ppspn5ys0ybl8qfyaicqbl9w316hk5ldwi1jq"))))
     (build-system ruby-build-system)
     (arguments
      (list
