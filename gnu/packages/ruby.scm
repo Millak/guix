@@ -1313,6 +1313,25 @@ specified in a \"Gemfile\", as well as their dependencies.")
     (home-page "https://bundler.io/")
     (license license:expat)))
 
+(define-public ruby-base64
+  (package
+    (name "ruby-base64")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "base64" version))
+       (sha256
+        (base32 "01qml0yilb9basf7is2614skjp8384h2pycfx86cr8023arfj98g"))))
+    (build-system ruby-build-system)
+    (arguments '(#:tests? #f))  ; No tests bundled.
+    (synopsis "Base64 encoding/decoding in Ruby")
+    (description
+     "This package provides support for encoding and decoding binary data
+using a Base64 representation.")
+    (home-page "https://github.com/ruby/base64")
+    (license (list license:bsd-2))))
+
 (define-public ruby-builder
   (package
     (name "ruby-builder")
