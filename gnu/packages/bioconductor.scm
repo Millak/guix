@@ -8779,7 +8779,10 @@ distribution.")
        (sha256
         (base32
          "0n0cq388rds9x8nxy13srzhm3sc0x539xb26nn1bz05c177kmwxb"))))
-    (properties `((upstream-name . "DESeq2")))
+    (properties
+     '((upstream-name . "DESeq2")
+       (updater-extra-native-inputs
+        . ("r-apeglm" "r-glmgampoi" "r-tximport" "r-tximportdata"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
@@ -8796,7 +8799,16 @@ distribution.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr r-rmarkdown r-testthat))
+     (list r-apeglm
+           r-ashr
+           r-glmgampoi
+           r-knitr
+           r-readr
+           r-rmarkdown
+           r-testthat
+           r-tximeta
+           r-tximport
+           r-tximportdata))
     (home-page "https://bioconductor.org/packages/DESeq2")
     (synopsis "Differential gene expression analysis")
     (description
