@@ -322,6 +322,29 @@ more.")
 currently does not do much, but it might in the future.")
     (license license:gpl3+)))
 
+(define-public guile-oauth
+  (package
+    (name "guile-oauth")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aconchillo/guile-oauth")
+             (commit version)))
+       (file-name (string-append name "-" version "-checkout"))
+       (sha256
+        (base32 "002hgs4xfrrz0rqa6n1078cn7vz5f70azw1kpljvb4dmv228gfxq"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake pkg-config))
+    (inputs (list guile-3.0 gnutls guile-gcrypt guile-gnutls guile-json-4))
+    (home-page "https://github.com/aconchillo/guile-oauth")
+    (synopsis "OAuth module for Guile")
+    (description
+     "This package provides Guile modules to interface with the OAuth and
+OAuth2 protocols.")
+    (license license:gpl3+)))
+
 (define-public guile-openai
   (let ((commit "751cd5db5f8bb7c00e60042a7ec86100930b0f02")
         (revision "1"))
