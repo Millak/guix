@@ -2671,14 +2671,14 @@ features:
 (define-public ruby-contracts
   (package
     (name "ruby-contracts")
-    (version "0.17")
+    (version "0.17.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "contracts" version))
        (sha256
         (base32
-         "0gfybfsb6kqxvvcrv1q7bfjaxmq73pf3vqy4bbzarkbajil05ii5"))))
+         "1sclvlwnlxfaj1595xd0rn3x3w0ljic3vqgnx6476lr7x8xbpbiv"))))
     (build-system ruby-build-system)
     (arguments
      (list
