@@ -2067,6 +2067,25 @@ code style checking of Capybara test files (RSpec, Cucumber, Minitest).")
            ruby-simplecov
            ruby-yard))))
 
+(define-public ruby-rubocop-factory-bot
+  (package
+    (name "ruby-rubocop-factory-bot")
+    (version "2.26.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "rubocop-factory_bot" version))
+       (sha256
+        (base32 "1aljadsjx7affcarzbhz7pydpy6fgqb8hl951y0cmrffxpa3rqcd"))))
+    (build-system ruby-build-system)
+    (arguments '(#:tests? #f))  ; No tests bundled.
+    (synopsis "Code style checking for factory_bot files")
+    (description
+     "This package provides a plugin for the @code{RuboCop} code style
+enforcing & linting tool for @code{factory_bot} files.")
+    (home-page "https://github.com/rubocop/rubocop-factory_bot")
+    (license license:expat)))
+
 ;;; A minimal variant used to build ruby-rubocop itself.
 (define ruby-rubocop-rake-minimal
   (package
