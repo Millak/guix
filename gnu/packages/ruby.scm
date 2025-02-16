@@ -541,6 +541,25 @@ an extensible architecture with a swappable backend.")
     (home-page "https://github.com/ruby-i18n/i18n")
     (license license:expat)))
 
+(define-public ruby-ice-nine
+  (package
+    (name "ruby-ice-nine")
+    (version "0.11.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "ice_nine" version))
+       (sha256
+        (base32 "1nv35qg1rps9fsis28hz2cq2fx1i96795f91q4nmkm934xynll2x"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f))  ;Dependency on convoluted unpackaged ruby-devtools.
+    (synopsis "Deep Freeze Ruby Objects")
+    (description
+     "This package provides a function to deep freeze Ruby objects.")
+    (home-page "https://github.com/dkubb/ice_nine")
+    (license license:expat)))
+
 (define-public ruby-io-console
   (package
     (name "ruby-io-console")
