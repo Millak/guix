@@ -10332,28 +10332,51 @@ graphics packages that comes with the base installation.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.19.5")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "0pjsfnl1v6a6cs6hny092jby750l5br7fdzws9lnly0iky1lf55g"))))
+                "1dcpj5c3fk4zbg2sjvqjyf4zm8dr2jrwkr50kb415i7sgw851r1d"))
+              ;; TODO: we should also replace these other files:
+              ;; inst/htmlwidgets/lib/jstree/dist/jstree.min.js
+              ;; inst/js/bundle.js (generated from inst/js/euctr2ndjson.js)
+              (snippet
+               '(delete-file "inst/htmlwidgets/lib/jquery/dist/jquery.min.js"))))
     (properties `((upstream-name . "ctrdata")))
     (build-system r-build-system)
     (arguments
      (list
+      #:modules
+      '((guix build r-build-system)
+        (guix build minify-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:imported-modules
+      `(,@%r-build-system-modules
+        (guix build minify-build-system))
       #:phases
-      '(modify-phases %standard-phases
-         ;; Needed for vignettes
-         (add-after 'unpack 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst/htmlwidgets/lib/jquery/dist"
+                (for-each
+                 (match-lambda
+                   ((source . target)
+                    (minify source #:target target)))
+                 `((,(assoc-ref inputs "jquery-3.7.1.js")
+                    . "jquery.min.js"))))))
+          ;; Needed for vignettes
+          (add-after 'unpack 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-clipr
            r-countrycode
            r-curl
            r-digest
            r-dplyr
+           r-htmlwidgets
            r-httr
            r-jqr
            r-jsonlite
@@ -10361,11 +10384,19 @@ graphics packages that comes with the base installation.")
            r-nodbi
            r-readr
            r-stringi
-           r-tibble
            r-v8
            r-xml2
            r-zip))
-    (native-inputs (list r-r-rsp))
+    (native-inputs
+     (list esbuild
+           r-r-rsp
+           r-tinytest
+           (origin
+             (method url-fetch)
+             (uri "https://code.jquery.com/jquery-3.7.1.js")
+             (sha256
+              (base32
+               "1zicjv44sx6n83vrkd2lwnlbf7qakzh3gcfjw0lhq48b5z55ma3q")))))
     (home-page "https://cran.r-project.org/package=ctrdata")
     (synopsis "Retrieve and analyze clinical trials in public registers")
     (description
