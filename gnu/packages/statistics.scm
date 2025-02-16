@@ -4931,11 +4931,13 @@ more complete @code{viridis} package.")
        (sha256
         (base32
          "0g4h8mfm5ima0izy4h0c65q478473xsj4hskh15dzg5z1fx9g7hn"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-stringr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-glue r-lifecycle r-rlang r-vctrs r-withr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-stringr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/tidyselect")
     (synopsis "Select from a set of strings")
     (description
