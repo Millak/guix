@@ -6476,15 +6476,17 @@ algorithms.")
 (define-public r-lme4
   (package
     (name "r-lme4")
-    (version "1.1-35.5")
+    (version "1.1-36")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lme4" version))
        (sha256
         (base32
-         "0w2i2d3q19kbx3scd7p7dyfpfpcqb3d5h47y5rb2jr59gvdn8rkx"))))
+         "0vyqmbz1zv3xh45ivfjl9dxpr5n8b48g1k70r58952hd994h7q5l"))))
     (build-system r-build-system)
+    (properties
+     '((updater-ignored-native-inputs . ("r-car" "r-gamm4"))))
     (propagated-inputs
      (list r-boot
            r-lattice
@@ -6494,9 +6496,17 @@ algorithms.")
            r-nlme
            r-nloptr
            r-rcpp
-           r-rcppeigen))
+           r-rcppeigen
+           r-reformulas))
     (native-inputs
-     (list r-knitr r-testthat r-optimx))
+     (list r-devtools
+           r-ggplot2
+           r-knitr
+           r-mgcv
+           r-optimx
+           r-statmod
+           r-testthat
+           r-tibble))
     (home-page "https://cran.r-project.org/web/packages/lme4")
     (synopsis "Linear mixed-effects models using eigen and S4")
     (description
