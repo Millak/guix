@@ -23968,8 +23968,13 @@ routines.")
               (sha256
                (base32
                 "0fjf1q9wlm8n1w8sb9n0yx6s1di33ngk4kanhychy5hqli73v3dh"))))
-    (properties `((upstream-name . "S4Arrays")))
+    (properties
+     '((upstream-name . "S4Arrays")
+       (updater-ignored-native-inputs . ("r-delayedarray"))))
     (build-system r-build-system)
+    ;; Tests require r-delayedarray, but adding it would introduce a
+    ;; dependency cycle.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-abind
            r-biocgenerics
