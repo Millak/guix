@@ -15814,6 +15814,14 @@ information.")
                 "141drlbgld05npk1bay7pcng7xmm43y26559qs8mxy9432cpzx9n"))))
     (properties `((upstream-name . "glmGamPoi")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; This test needs r-deseq2, which depends on this package.
+             (delete-file "tests/testthat/test-size_factors.R"))))))
     (propagated-inputs
      (list r-beachmat
            r-biocgenerics
