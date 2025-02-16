@@ -27399,6 +27399,8 @@ embeddings and functions to build new reference.")
          "0s978mzq8pw1gj5j4j9yil0z1w5zx0msip11gkiq8wjyiipa6qg1"))))
     (properties `((upstream-name . "tximeta")))
     (build-system r-build-system)
+    ;; Two tests fail because data files are not included.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
            r-annotationhub
