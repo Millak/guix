@@ -746,7 +746,9 @@ and utilities for PacBio C++ applications.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "0sx87i8cb4p08ihgpgflxs0fhkr1kw6lxvky4w766rq7wqy41cgk"))))
-      (properties `((upstream-name . "anndataR")))
+      (properties
+       '((upstream-name . "anndataR")
+         (updater-extra-native-inputs . ("r-vctrs"))))
       (build-system r-build-system)
       (propagated-inputs (list r-matrix r-r6))
       (native-inputs
@@ -754,7 +756,8 @@ and utilities for PacBio C++ applications.")
              r-rhdf5
              r-seuratobject
              r-singlecellexperiment
-             r-testthat))
+             r-testthat
+             r-vctrs))
       (home-page "https://github.com/scverse/anndataR")
       (synopsis "AnnData interoperability in R")
       (description
