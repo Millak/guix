@@ -13096,20 +13096,20 @@ Argument Parser.")
 (define-public rust-clap-4
   (package
     (name "rust-clap")
-    (version "4.5.23")
+    (version "4.5.29")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "110cf0i9fmkfqzqhi1h8za9y0vnr5rwhy3wmv1p0rcgp5vnffd9i"))))
+        (base32 "110193i6270qsr6mpc4nghqs4bcz2d1631a3ncrkca3rv25bvkla"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap-builder" ,rust-clap-builder-4)
                        ("rust-clap-derive" ,rust-clap-derive-4))
        #:cargo-development-inputs (("rust-automod" ,rust-automod-1)
-                                   ("rust-clap-cargo" ,rust-clap-cargo-0.14)
+                                   ("rust-clap-cargo" ,rust-clap-cargo-0.15)
                                    ("rust-humantime" ,rust-humantime-2)
                                    ("rust-rustversion" ,rust-rustversion-1)
                                    ("rust-shlex" ,rust-shlex-1)
