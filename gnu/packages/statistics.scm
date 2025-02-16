@@ -591,20 +591,27 @@ k-nearest neighbour, Learning Vector Quantization and Self-Organizing Maps.")
 (define-public r-cluster
   (package
     (name "r-cluster")
-    (version "2.1.6")
+    (version "2.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cluster" version))
        (sha256
         (base32
-         "0r1i243mjbsx00ccg3f46c5iwnfmjxmhhdjvrj3m799mzpx0xifi"))))
+         "1jk0c3758p71d8icpdsxiizl5dc292kyylx9iparjk396hp4can3"))))
     (build-system r-build-system)
-    ;; Tests insist on loading Matrix not from the locations specified with
-    ;; R_LIBS_SITE.
-    (arguments (list #:tests? #false))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             ;; Tests insist on loading Matrix not from the locations
+             ;; specified with R_LIBS_SITE.
+             (substitute* "inst/test-tools.R"
+               ((", lib.loc = .Library") "")))))))
     (native-inputs
-     (list gfortran r-matrix))
+     (list r-matrix))
     (home-page "https://cran.r-project.org/web/packages/cluster")
     (synopsis "Methods for cluster analysis")
     (description
