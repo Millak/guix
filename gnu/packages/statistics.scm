@@ -4840,13 +4840,13 @@ t-probabilities, quantiles, random deviates and densities.")
 (define-public r-matrixstats
   (package
     (name "r-matrixstats")
-    (version "1.4.1")
+    (version "1.5.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "matrixStats" version))
               (sha256
                (base32
-                "046ddvy20rmd1ylyr33kwj9awilrhsdwafxw6mpr4c6anv56avdc"))))
+                "05fcbpwrrs3y5ia15x88x7br7ympf5mg31qh7sj05hkg7rgnr68j"))))
     (properties `((upstream-name . "matrixStats")))
     (build-system r-build-system)
     (arguments
@@ -4855,7 +4855,7 @@ t-probabilities, quantiles, random deviates and densities.")
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list r-r-rsp)) ;used to build vignettes
+     (list r-covr r-r-rsp)) ;used to build vignettes
     (home-page "https://github.com/HenrikBengtsson/matrixStats")
     (synopsis "Methods applying to vectors and matrix rows and columns")
     (description
