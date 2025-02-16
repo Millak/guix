@@ -15989,6 +15989,28 @@ eager loading.")
     (home-page "https://github.com/fxn/zeitwerk")
     (license license:expat)))
 
+(define-public ruby-warning
+  (package
+    (name "ruby-warning")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "warning" version))
+       (sha256
+        (base32 "0lwcf7fsz1sda1fdbqq1i4q9kzg4f5vwrzgfg1vpa1hcxagw84hg"))))
+    (build-system ruby-build-system)
+    (arguments '(#:tests? #f))  ; No tests bundled.
+    (synopsis "Custom processing for warnings")
+    (description
+     "This package adds custom processing for warnings for Ruby, including the
+ability to ignore specific warning messages, ignore warnings in specific
+files/directories, include backtraces with warnings, treat warnings as errors,
+deduplicate warnings, and add custom handling for all warnings in specific
+files/directories.")
+    (home-page "https://github.com/jeremyevans/ruby-warning")
+    (license license:expat)))
+
 (define-public ruby-wwtd
   (package
     (name "ruby-wwtd")
