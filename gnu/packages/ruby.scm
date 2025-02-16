@@ -8862,6 +8862,21 @@ for Rack applications.")
     (home-page "https://github.com/rack/rackup")
     (license license:expat)))
 
+(define-public ruby-rackup-1
+  (package
+    (inherit ruby-rackup)
+    (name "ruby-rackup")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rack/rackup")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1xdfxsz7jx2gwfq212y9mca6q0i5s7kyqbfcscy1315awg57ynyp"))))))
+
 (define-public ruby-rack-cache
   (package
     (name "ruby-rack-cache")
