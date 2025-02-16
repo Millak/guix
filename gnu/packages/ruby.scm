@@ -14890,7 +14890,7 @@ Unicode formatted tables.")
 (define-public jekyll
   (package
     (name "jekyll")
-    (version "4.3.2")
+    (version "4.3.4")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -14899,7 +14899,7 @@ Unicode formatted tables.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d588d7zhp526r21f9mnm204m8qy0c8h3lq3ghyg6qp8mj6hnwj4"))))
+                "0sz285x5ppbifrnixi9sdzv28kg4x3qbzds3qniiwh1ip9hi1yk4"))))
     (build-system ruby-build-system)
     (arguments
      (list #:modules '((guix build ruby-build-system)
