@@ -5722,7 +5722,7 @@ specification and header.")
                            "rosegarden-" version ".tar.xz"))
        (sha256
         (base32 "1k0mpxpakcywss7pi50nzn54ak90svjavr4qk6yi9bq9dc9ncgvz"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
       #:configure-flags #~(list "-DCMAKE_BUILD_TYPE=Release")
@@ -5795,6 +5795,7 @@ specification and header.")
            lilypond
            lrdf
            qtbase-5
+           qtwayland-5
            shared-mime-info
            tar
            lirc
