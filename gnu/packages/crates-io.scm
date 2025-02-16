@@ -94628,8 +94628,34 @@ numbers.")
     (description "Library for parsing terminal data.")
     (license license:expat)))
 
+(define-public rust-vte-0.14
+  (package
+    (name "rust-vte")
+    (version "0.14.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vte" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xy01fgkzb2080prh2ncd8949hm2248fc5wf1lryhdrhxzbxq7r3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cursor-icon" ,rust-cursor-icon-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/alacritty/vte")
+    (synopsis "Parser for implementing terminal emulators")
+    (description
+     "This package provides a parser for implementing terminal emulators.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-vte-0.13
   (package
+    (inherit rust-vte-0.14)
     (name "rust-vte")
     (version "0.13.0")
     (source
@@ -94639,7 +94665,6 @@ numbers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "12qqlvx7qlw1r8l6k9fyqj7k8v72xbz47kppsv0f0l7hjsp25ss0"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arrayvec" ,rust-arrayvec-0.7)
@@ -94648,12 +94673,7 @@ numbers.")
         ("rust-log" ,rust-log-0.4)
         ("rust-serde" ,rust-serde-1)
         ("rust-utf8parse" ,rust-utf8parse-0.2)
-        ("rust-vte-generate-state-changes" ,rust-vte-generate-state-changes-0.1))))
-    (home-page "https://github.com/alacritty/vte")
-    (synopsis "Parser for implementing terminal emulators")
-    (description
-     "This package provides a parser for implementing terminal emulators.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-vte-generate-state-changes" ,rust-vte-generate-state-changes-0.1))))))
 
 (define-public rust-vte-0.11
   (package
