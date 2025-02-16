@@ -155,40 +155,45 @@ For synthesis, the compiler generates netlists in the desired format.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.49")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/YosysHQ/yosys")
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "0mw8csk91s72vl73a9ngc3rrwhr4rfr8fm0abfycj3wcy8n3zr57"))
-              (file-name (git-file-name name version))))
+    (version "0.50")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/YosysHQ/yosys")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "13fmxsg668fqggq4jyflhd5js2m8r52gb407mfqzcqzq59129gmz"))
+       (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:test-target "test"
-      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
-                           (string-append "CXX=" #$(cxx-for-target))
-                           (string-append "PREFIX=" #$output))
+      #:make-flags
+      #~(list (string-append "CC="
+                             #$(cc-for-target))
+              (string-append "CXX="
+                             #$(cxx-for-target))
+              (string-append "PREFIX="
+                             #$output))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'fix-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "backends/smt2/smtio.py"
                 (("\\['z3")
-                 (string-append "['" (search-input-file inputs "bin/z3"))))
+                 (string-append "['"
+                                (search-input-file inputs "bin/z3"))))
               (substitute* "kernel/fstdata.cc"
                 (("vcd2fst")
                  (search-input-file inputs "bin/vcd2fst")))
               (substitute* "kernel/driver.cc"
                 (("^#include \"libs/cxxopts/include/cxxopts.hpp\"")
                  "#include <cxxopts.hpp>"))
-              (substitute* '("passes/cmds/show.cc"
-                             "passes/cmds/viz.cc")
+              (substitute* '("passes/cmds/show.cc" "passes/cmds/viz.cc")
                 (("exec xdot")
-                 (string-append "exec " (search-input-file inputs "bin/xdot")))
+                 (string-append "exec "
+                                (search-input-file inputs "bin/xdot")))
                 (("dot -")
                  (string-append (search-input-file inputs "bin/dot") " -"))
                 (("fuser")
@@ -213,30 +218,29 @@ For synthesis, the compiler generates netlists in the desired format.")
           (add-after 'install 'wrap
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/yosys-witness")
-                `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))))))
-    (native-inputs
-     (list bison
-           cxxopts                      ;header-only library
-           flex
-           gawk             ;for the tests and "make" progress pretty-printing
-           iverilog         ;for the tests
-           pkg-config
-           python
-           tcl))                        ;tclsh for the tests
-    (inputs
-     (list abc
-           bash-minimal
-           graphviz
-           gtkwave
-           libffi
-           psmisc
-           python
-           python-click
-           readline
-           tcl
-           xdot
-           z3
-           zlib))
+                `("GUIX_PYTHONPATH" ":" prefix
+                  (,(getenv "GUIX_PYTHONPATH")))))))))
+    (native-inputs (list bison
+                         cxxopts ;header-only library
+                         flex
+                         gawk ;for the tests and "make" progress pretty-printing
+                         iverilog ;for the tests
+                         pkg-config
+                         python
+                         tcl)) ;tclsh for the tests
+    (inputs (list abc
+                  bash-minimal
+                  graphviz
+                  gtkwave
+                  libffi
+                  psmisc
+                  python
+                  python-click
+                  readline
+                  tcl
+                  xdot
+                  z3
+                  zlib))
     (home-page "https://yosyshq.net/yosys/")
     (synopsis "FPGA Verilog RTL synthesizer")
     (description "Yosys synthesizes Verilog-2005.")
