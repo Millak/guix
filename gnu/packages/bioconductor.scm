@@ -24784,6 +24784,12 @@ of other packages.")
                (base32
                 "1b4sc5gi2wjcrfm78y0w7df2bb5sw6spjswhsss47shxy6m2vhh1"))))
     (build-system r-build-system)
+    (properties
+     '((updater-extra-native-inputs
+        . ("r-delayedmatrixstats"
+           "r-robustbase"
+           "r-scattermore"
+           "r-sparsematrixstats"))))
     (propagated-inputs
      (list r-beachmat
            r-biocgenerics
@@ -24810,7 +24816,8 @@ of other packages.")
            r-uwot
            r-viridis))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-delayedmatrixstats r-robustbase r-scattermore r-sparsematrixstats
+           r-knitr r-testthat))
     (home-page "https://github.com/davismcc/scater")
     (synopsis "Single-cell analysis toolkit for gene expression data in R")
     (description "This package provides a collection of tools for doing
