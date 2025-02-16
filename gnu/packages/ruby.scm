@@ -2208,7 +2208,7 @@ downstream compatibility issues in the Ruby code.")
 (define-public ruby-rubocop-performance
   (package
     (name "ruby-rubocop-performance")
-    (version "1.16.0")
+    (version "1.23.1")
     (source
      (origin
        (method git-fetch)
@@ -2218,7 +2218,7 @@ downstream compatibility issues in the Ruby code.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1axafki2mpdz38y7i0afmnxcan5wj54l8crp8pbs7h1cip7y4s49"))))
+         "0d1p6pgrcnj58q1g0np5j4vbk7wavj31b4bapi5p4gckqlnc7xjd"))))
     (build-system ruby-build-system)
     (arguments
      `(#:tests? #f  ; tests require a git checkout of rubocop's source code.
