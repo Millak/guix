@@ -3098,15 +3098,21 @@ functions.")
 (define-public ruby-erubi
   (package
     (name "ruby-erubi")
-    (version "1.8.0")
+    (version "1.11.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "erubi" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jeremyevans/erubi")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1kagnf6ziahj0d781s6ryy6fwqwa3ad4xbzzj84p9m4nv4c2jir1"))))
+        (base32 "0y4qskz260fjwbnjps5z5yygjwgh6ds0f97lfa9gsmh6zqa1lvvx"))))
     (build-system ruby-build-system)
+    (arguments
+     (list #:test-target "spec"))
+    (native-inputs (list ruby-minitest
+                         ruby-minitest-global-expectations))
     (synopsis "ERB template engine for Ruby")
     (description
      "Erubi is a ERB template engine for Ruby.  It is a simplified fork of
