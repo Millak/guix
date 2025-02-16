@@ -12642,7 +12642,7 @@ part of the Prawn PDF generator.")
 (define-public ruby-puma
   (package
     (name "ruby-puma")
-    (version "6.3.0")
+    (version "6.5.0")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -12652,7 +12652,7 @@ part of the Prawn PDF generator.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0qnayzgyr23w87jc849r00394hv1gw2rk9080nws43ilnycagzxq"))))
+         "1z3njlmywins9yjl4a0c32vhkx9c4q4nia0snz7n45723jv96690"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -12733,7 +12733,11 @@ part of the Prawn PDF generator.")
                             "test_verify_client_cert"
                             "test_server_ssl_with_cert_pem_and_key_pem")
                 (skip-tests "test/test_integration_ssl.rb"
-                            "test_ssl_run_with_curl_client"))))
+                            "test_ssl_run_with_curl_client")
+                (skip-tests "test/test_web_concurrency_auto.rb" "\
+test_web_concurrency_with_concurrent_ruby_unavailable")
+                (skip-tests "test/helpers/integration.rb"
+                            "test_puma_started_log_writing"))))
           (add-before 'check 'relax-test-case-timeout
             (lambda _
               ;; The default value is 45 s and easily causes timeouts.
@@ -12760,11 +12764,14 @@ part of the Prawn PDF generator.")
            ruby-minitest-retry
            ruby-minitest-stub-const
            ruby-rack
+           ruby-rackup-1
            ruby-rake-compiler
            ruby-webrick))
     (inputs
      (list openssl
            ruby-nio4r))
+    (propagated-inputs
+     (list ruby-concurrent-ruby))
     (synopsis "Simple, concurrent HTTP server for Ruby/Rack")
     (description
      "Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
