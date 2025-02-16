@@ -1030,7 +1030,7 @@ tasks.")
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f)) ;There are no tests upstream
-    (inputs (list qtbase-5 networkmanager-qt5))
+    (inputs (list qtbase-5 qtwayland-5 networkmanager-qt5))
     (native-inputs (list qttools-5 pkg-config))
     (synopsis
      "NetworkManager front-end with information icon residing in system tray")
