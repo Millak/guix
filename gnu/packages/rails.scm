@@ -35,7 +35,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (guix build-system ruby))
 
-(define %ruby-rails-version "7.0.5.1")
+(define %ruby-rails-version "7.1.5.1")
 
 (define ruby-rails-monorepo
   (origin
@@ -46,7 +46,7 @@
     (file-name (git-file-name "ruby-rails" %ruby-rails-version))
     (sha256
      (base32
-      "0s16i73rqzlrx5icn848mf2nmblmgxk06wj9576dkadsb8pspv0l"))))
+      "0wzlnfs3k6ahhzcqznk43y1lq8a3dq3i7q1aqracx891hjmr19n2"))))
 
 (define-public ruby-activesupport
   (package
