@@ -827,6 +827,7 @@ the Monero command line client and daemon.")
                qtquickcontrols-5
                qtquickcontrols2-5
                qtsvg-5
+               qtwayland-5
                qtxmlpatterns)))
     (arguments
      (list #:tests? #f ; No tests
