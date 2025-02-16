@@ -17118,49 +17118,6 @@ of various cultural backgrounds and tries to split them into their component
 parts (e.g., given and family names, honorifics etc.).")
     (license (list license:bsd-2 license:agpl3+))))
 
-(define-public ruby-ritex
-  (package
-    (name "ruby-ritex")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "ritex" version))
-              (sha256
-               (base32
-                "07rlm3nyz9sxzy1srxs6a31hw81r6w7swrb85fiwi393z8npwc3a"))))
-    (build-system ruby-build-system)
-    (native-inputs
-     (list itex2mml))
-    (arguments
-     ;; thanks to the Gentoo packagers for figuring this out
-     (list
-      #:ruby ruby-2.7
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'extract-gemspec 'fix-tests
-            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (substitute* "test/mathml.rb"
-                (("\\./itex2MML")
-                 ;; don't use the absolute path to avoid keeping a reference
-                 "itex2MML")
-                (("cmp ',\\\\,\\\\,,,\\\\,'" orig)
-                 (string-append "# " orig " # patched for Guix")))
-              (substitute* "test/answer-key.yaml"
-                (("- ,\\\\,\\\\,,,\\\\," orig)
-                 (string-append "# " orig " # patched for Guix")))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "ruby" "-Ilib:." "test/all.rb")))))))
-    (home-page "https://rubygems.org/gems/ritex")
-    (synopsis "Convert expressions from WebTeX into MathML")
-    (description
-     "Ritex converts expressions from WebTeX into MathML.  WebTeX is an
-adaptation of TeX math syntax for web display.  Ritex makes inserting math
-into HTML pages easy.  It supports most TeX math syntax as well as macros.")
-    ;; doesn't clearly state -only vs -or-later
-    (license license:gpl2)))
-
 (define-public ruby-latex-decode
   (package
     (name "ruby-latex-decode")
