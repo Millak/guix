@@ -2592,7 +2592,7 @@ command.")
     (inherit wpa-supplicant)
     (name "wpa-supplicant-gui")
     (inputs (modify-inputs (package-inputs wpa-supplicant)
-              (prepend qtbase-5 qtsvg-5)))
+              (prepend qtbase-5 qtsvg-5 qtwayland-5)))
     (native-inputs
      ;; For icons.
      (modify-inputs (package-native-inputs wpa-supplicant)
