@@ -4591,7 +4591,7 @@ minimum contrast levels, and more.")
 (define-public rust-xremap
   (package
     (name "rust-xremap")
-    (version "0.10.3")
+    (version "0.10.4")
     (source
      (origin
        (method url-fetch)
@@ -4599,7 +4599,7 @@ minimum contrast levels, and more.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0whvw9bbgjf5znb3025iqkj2aijasg6fcx9q1jy97kb0s4m996q2"))))
+         "13fhh1p51dd7bvmgsjpvsrvvhv4wgpmm8rsv6j07z2nfn8z9s1ia"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '()
