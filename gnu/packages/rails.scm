@@ -470,7 +470,7 @@ directly.")
 (define-public ruby-rails-dom-testing
   (package
    (name "ruby-rails-dom-testing")
-   (version "2.0.3")
+   (version "2.2.0")
    (source
     (origin
       (method git-fetch)
@@ -480,7 +480,7 @@ directly.")
       (file-name (git-file-name name version))
       (sha256
        (base32
-        "17vdh273cmmfpzy5m546dd13zqmimv54jjx0f7sl0zi5lwz0gnck"))))
+        "0ydzwdmssapp0x9gy19qy11b3f1yp56zc1kc971dajq9x7jl3jfa"))))
    (build-system ruby-build-system)
    (arguments
     (list
