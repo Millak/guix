@@ -6608,6 +6608,7 @@ colors, pictures, and sounds.")
                   qtdeclarative-5
                   qtquickcontrols2-5
                   qtsvg-5
+                  qtwayland-5
                   sdl2
                   sdl2-ttf
                   sdl2-gamecontrollerdb))
