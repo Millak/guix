@@ -2524,6 +2524,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            qtgraphicaleffects
            qtkeychain-qt6
            qtmultimedia
+           qtwayland
            qtsvg
            re2
            spdlog
