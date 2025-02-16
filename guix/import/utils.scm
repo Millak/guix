@@ -389,7 +389,8 @@ LENGTH characters."
                                      (string-suffix? "?" last))
                                last
                                (string-append last "."))
-                             (reverse rest))))))
+                             (reverse rest))))
+             (() new-words))) ;; No description in package
          (cleaned
           (string-join (map fix-word new-words))))
     ;; Use double spacing between sentences
