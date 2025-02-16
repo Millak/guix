@@ -8258,7 +8258,7 @@ making Yamagi Quake II one of the most solid Quake II implementations available.
        (sha256
         (base32
          "1ag2cp346f9bz9qy6za6q54id44d2ypvkyhvnjha14qzzapwaysj"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -8282,7 +8282,8 @@ making Yamagi Quake II one of the most solid Quake II implementations available.
      (list qtbase-5 qtsvg-5))
     (native-inputs
      `(("gettext-minimal" ,gettext-minimal)
-       ("qttools-5" ,qttools-5)))
+       ("qttools-5" ,qttools-5)
+       ("qtwayland-5" ,qtwayland-5)))
     (synopsis "Realistic physics puzzle game")
     (description "The Butterfly Effect (tbe) is a game that uses
 realistic physics simulations to combine lots of simple mechanical
