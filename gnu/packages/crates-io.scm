@@ -82926,21 +82926,23 @@ deleting all contents when it's dropped.")
 (define-public rust-tempfile-3
   (package
     (name "rust-tempfile")
-    (version "3.14.0")
+    (version "3.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tempfile" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "037f9jm13bmfc6xq9w86dp0nylrddh6ynvl6db4gm1xwzi8y5k18"))))
+        (base32 "14dvm3lys05wxzb1ahxjg3chb3krk0ir18liw25g893xblhldhiq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-fastrand" ,rust-fastrand-2)
+        ("rust-getrandom" ,rust-getrandom-0.3)
+        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-rustix" ,rust-rustix-0.38)
-        ("rust-windows-sys" ,rust-windows-sys-0.52))
+        ("rust-windows-sys" ,rust-windows-sys-0.59))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3))))
     (home-page "https://stebalien.com/projects/tempfile-rs")
