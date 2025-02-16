@@ -16122,14 +16122,14 @@ exceptions with predefined messages.")
 (define-public ruby-benchmark
   (package
     (name "ruby-benchmark")
-    (version "0.1.1")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "benchmark" version))
        (sha256
         (base32
-         "1jvrl7400fv7v2jjri1r7ilj3sri36hzipwwgpn5psib4c9c59c6"))))
+         "0jl71qcgamm96dzyqk695j24qszhcc7liw74qc83fpjljp2gh4hg"))))
     (build-system ruby-build-system)
     (synopsis "Performance benchmarking library")
     (description "This package provides methods for benchmarking Ruby code,
