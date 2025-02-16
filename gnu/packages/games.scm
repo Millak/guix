@@ -10451,10 +10451,10 @@ simulator.")
               (sha256
                (base32
                 "1wfzkgq81764qzxgk0y5vvpxcrb3icvrr4dd4mj8njrqgbwmn0mw"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments (list #:tests? #f))      ;no test suite
     (native-inputs (list tinycmmc))
-    (inputs (list qtbase-5))
+    (inputs (list qtbase-5 qtwayland-5))
     (home-page "https://github.com/Grumbel/evtest-qt")
     (synopsis "Evdev Joystick Tester")
     (description "@command{evtest-qt} is a simple joystick tester for devices
