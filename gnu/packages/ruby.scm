@@ -16787,6 +16787,24 @@ requests.")
 Dashboard.  It is a Ruby Client library for IRIS / BBS API.")
     (license license:expat)))
 
+(define-public ruby-securerandom
+  (package
+    (name "ruby-securerandom")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "securerandom" version))
+       (sha256
+        (base32 "1cd0iriqfsf1z91qg271sm88xjnfd92b832z49p1nd542ka96lfc"))))
+    (build-system ruby-build-system)
+    (arguments '(#:tests? #f))  ; No tests found.
+    (synopsis "Interface for secure random number generator")
+    (description "This package provides a Ruby interface for secure random
+number generators.")
+    (home-page "https://github.com/ruby/securerandom")
+    (license (list license:bsd-2))))
+
 (define-public ruby-selenium-webdriver
   (package
     (name "ruby-selenium-webdriver")
