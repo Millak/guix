@@ -9543,14 +9543,16 @@ Station Long Term Ecological Research (LTER) Program.")
 (define-public r-party
   (package
     (name "r-party")
-    (version "1.3-17")
+    (version "1.3-18")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "party" version))
        (sha256
-        (base32 "0jvxy9v30aazh9rkvhwz95gaq7s64sasdlsp9ckm1ks3wyqpdq7h"))))
-    (properties `((upstream-name . "party")))
+        (base32 "19snk50f1b1sw2ysmfn2d4qqzkm0hz5qfpgahkwgi5vql89p9xqy"))))
+    (properties
+     '((upstream-name . "party")
+       (updater-extra-native-inputs . ("r-mlbench" "r-vcd"))))
     (build-system r-build-system)
     (propagated-inputs (list r-coin
                              r-modeltools
