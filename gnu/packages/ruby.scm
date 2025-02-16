@@ -2026,7 +2026,7 @@ logic.")
 (define ruby-rubocop-capybara-minimal
   (package
     (name "ruby-rubocop-capybara")
-    (version "2.17.1")
+    (version "2.21.0")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -2035,7 +2035,7 @@ logic.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "137y21b6g0kj1001zp95gwchx2cvgz8pglw2ik1cw647lh77qdsp"))))
+                "19r2s782r9ch2g1lxgrvk22d9qqkxi69brza16bfwp2rl2064qnc"))))
     (build-system ruby-build-system)
     (arguments (list #:tests? #f))
     (synopsis "Capybara plugin for RuboCop")
