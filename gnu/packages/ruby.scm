@@ -7042,19 +7042,19 @@ across multiple CPU cores.")
 (define-public ruby-parser
   (package
     (name "ruby-parser")
-    (version "3.2.2.0")
+    (version "3.3.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "parser" version))
        (sha256
         (base32
-         "0s5afi89p76k8vpwiqvh343pm5l23ijqlpszhz65afym3zpkxhzx"))))
+         "16qi2qhpszm842awxghmsp64yvvawafq96w5jw98irz3f4bh2jbl"))))
     (build-system ruby-build-system)
     (arguments '(#:tests? #f))          ; tests not included in gem
-    (native-inputs (list bundler ruby-cliver ruby-simplecov ruby-racc))
+    (native-inputs (list bundler ruby-cliver ruby-simplecov))
     (inputs (list ragel))
-    (propagated-inputs (list ruby-ast))
+    (propagated-inputs (list ruby-ast ruby-racc))
     (synopsis "Ruby parser written in pure Ruby")
     (description
      "This package provides a Ruby parser written in pure Ruby.")
