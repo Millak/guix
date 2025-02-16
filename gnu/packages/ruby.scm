@@ -9279,7 +9279,7 @@ they match.")
 (define-public ruby-regexp-parser
   (package
     (name "ruby-regexp-parser")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
      (origin
        (method git-fetch)               ;bin/test missing from gem
@@ -9289,7 +9289,7 @@ they match.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0kj5bpnksagxbxi4y1gw5nam1gm948d0gm6869vsyapiqg6000zz"))))
+         "07dx96gjvpa07dsdnzpwhhwc7qpxakjgws7d7wbnkbs20fyvx55x"))))
     (build-system ruby-build-system)
     (arguments
      '(#:test-target "default"
