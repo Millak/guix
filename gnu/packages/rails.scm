@@ -445,20 +445,20 @@ applications, in pace of the default Minitest testing library.")
 (define-public ruby-rails-html-sanitizer
   (package
     (name "ruby-rails-html-sanitizer")
-    (version "1.3.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "rails-html-sanitizer" version))
        (sha256
         (base32
-         "1icpqmxbppl4ynzmn6dx7wdil5hhq6fz707m9ya6d86c7ys8sd4f"))))
+         "1pm4z853nyz1bhhqr7fzl44alnx4bjachcr6rh6qjj375sfz3sc6"))))
     (build-system ruby-build-system)
     (arguments
      '(;; No included tests
        #:tests? #f))
     (propagated-inputs
-     (list ruby-loofah))
+     (list ruby-loofah ruby-nokogiri))
     (synopsis "HTML sanitization for Rails applications")
     (description
      "This gem is used to handle HTML sanitization in Rails applications.  If
