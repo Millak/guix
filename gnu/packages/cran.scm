@@ -42627,11 +42627,13 @@ different palettes and includes both diverging and sequential types.")
        (sha256
         (base32
          "069nvjcmhsk8y7nfgx0ln5rab3r73q61cpvrqm9m0iv4z6rlsc69"))))
-    (properties `((upstream-name . "slider")))
+    (properties
+     '((upstream-name . "slider")
+       (updater-extra-native-inputs . ("r-lubridate" "tzdata-for-tests"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-rlang r-vctrs r-warp))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-lubridate r-testthat tzdata-for-tests))
     (home-page "https://github.com/DavisVaughan/slider")
     (synopsis "Sliding window functions")
     (description
