@@ -1011,7 +1011,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1i5gz5zck8s0kskjgnx9c75gh7zx0kbjsqzl2765f99p9svprirq"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      `(#:test-target "tests"
        #:phases
@@ -1038,6 +1038,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
            qtbase-5
            qtsvg-5
            qtxmlpatterns
+           qtwayland-5
            zlib))
     (home-page "http://hydrogen-music.org/")
     (synopsis "Drum machine")
