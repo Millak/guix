@@ -334,23 +334,6 @@ a focus on simplicity and productivity.")
                  '())
              (list autoconf)))))
 
-(define-public ruby-3.0
-  (package
-    (inherit ruby-2.7)
-    (version "3.0.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
-                           (version-major+minor version)
-                           "/ruby-" version ".tar.xz"))
-       (sha256
-        (base32
-         "1lfvgm6jbspmwmc3haww83l1l8vl1airzi08ljrcz19dws9yxjxm"))))
-    (inputs
-     (modify-inputs (package-inputs ruby-2.7)
-       (replace "openssl" openssl)))))
-
 (define-public ruby ruby-3.1)
 
 (define-public mruby
