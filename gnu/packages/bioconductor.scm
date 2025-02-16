@@ -2378,6 +2378,32 @@ display copy number variation.  Files are stored as GRanges objects from the
 GenomicRanges Bioconductor package.")
     (license license:gpl2)))
 
+;; This is a CRAN package, but it depends on Bioconductor packages.
+(define-public r-cpp11bigwig
+  (package
+    (name "r-cpp11bigwig")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cpp11bigwig" version))
+       (sha256
+        (base32 "0i9rbjj2f8m5x2z594fg7rqqiajf2sjlxj6g66fpl65gr9n7hch8"))))
+    (properties
+     '((upstream-name . "cpp11bigwig")
+       (updater-extra-inputs . ("curl"))))
+    (build-system r-build-system)
+    (inputs (list curl zlib))
+    (propagated-inputs (list r-cpp11 r-genomicranges r-iranges r-tibble))
+    (native-inputs (list r-testthat))
+    (home-page "https://rnabioco.github.io/cpp11bigwig/")
+    (synopsis "Read bigWig and bigBed files")
+    (description
+     "Read @code{bigWig} and @code{bigBed} files using libBigWig.  This
+package provides lightweight access to the binary bigWig and bigBed formats
+developed by the UCSC Genome Browser group.")
+    (license license:expat)))
+
 (define-public r-derfinderdata
   (package
     (name "r-derfinderdata")
