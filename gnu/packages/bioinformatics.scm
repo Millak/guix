@@ -1377,6 +1377,8 @@ within this package are the 3000 bone marrow cells used for vignettes.")
           (base32 "0xwb7cl52nzwgh0xiz8cda27qy5q45cqna5k40fngwj4mrbfm383"))))
       (properties `((upstream-name . "pizzarr")))
       (build-system r-build-system)
+      ;; Some tests require Internet access.
+      (arguments (list #:tests? #false))
       (propagated-inputs (list r-jsonlite r-memoise r-qs r-r6 r-stringr))
       (native-inputs (list r-pbapply r-testthat r-vcr))
       (home-page "https://github.com/keller-mark/pizzarr")
