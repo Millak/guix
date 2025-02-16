@@ -9408,7 +9408,7 @@ run.")
 (define-public ruby-rubocop
   (package
     (name "ruby-rubocop")
-    (version "1.48.1")
+    (version "1.68.0")
     (source
      (origin
        (method git-fetch)               ;no tests in distributed gem
@@ -9418,7 +9418,7 @@ run.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1l4j99mbrdjy2bzcnky30pjgjv8sxjr187jzliyqmldvpf7dizbp"))))
+         "0pfsrgkg2dhb6a2rknciqskgxgmb9kf48rvbkhay9n8n6m712v2w"))))
     (build-system ruby-build-system)
     (arguments
      `(#:test-target "default"
@@ -9444,6 +9444,7 @@ run.")
            ruby-rspec
            ruby-rubocop-ast
            ruby-rubocop-capybara-minimal
+           ruby-rubocop-factory-bot
            ruby-rubocop-minimal
            ruby-rubocop-performance-minimal
            ruby-rubocop-rake-minimal
@@ -9455,6 +9456,7 @@ run.")
            ruby-yard))
     (propagated-inputs
      (list ruby-json
+           ruby-language-server-protocol
            ruby-parallel
            ruby-parser
            ruby-progressbar
