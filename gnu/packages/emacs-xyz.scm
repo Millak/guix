@@ -33629,27 +33629,26 @@ as Emacs Lisp.")
 (define-public emacs-transient
   (package
     (name "emacs-transient")
-    (version "0.8.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/magit/transient")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1jz65hgv4b6k4s3nfzr6js98ghl33f7vk1zyhvh7pxiznsi2s010"))))
+    (version "0.8.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/magit/transient")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01g6r5pmprkg75n23zr27nml7dg0ncsrwgbpfnjf0snhjwb4cbhx"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:tests? #f                      ;no test suite
+     `(#:tests? #f ;no test suite
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'build-info-manual
                     (lambda _
                       (invoke "make" "info")
                       ;; Move the info file to lisp so that it gets
                       ;; installed by the emacs-build-system.
-                      (rename-file "docs/transient.info"
-                                   "lisp/transient.info")))
+                      (rename-file "docs/transient.info" "lisp/transient.info")))
                   (add-after 'build-info-manual 'enter-lisp-directory
                     (lambda _
                       (chdir "lisp"))))))
