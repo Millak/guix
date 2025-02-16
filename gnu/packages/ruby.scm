@@ -7521,28 +7521,21 @@ intended for use with event loops such as async.")
 (define-public ruby-tilt
   (package
     (name "ruby-tilt")
-    (version "2.0.11")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)               ;the distributed gem lacks tests
        (uri (git-reference
-             (url "https://github.com/rtomayko/tilt")
+             (url "https://github.com/jeremyevans/tilt")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0a75s6ci2rwai5q1bnlqbz8kxqnfp2497jhkcry1n4g29lcxq9ja"))))
+        (base32 "0v7s38r86ammqpqm1diyk0yqz1k285argkpy5c8s1vq46983m9lv"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-tests
-            (lambda _
-              ;; Patch some tests
-              (substitute* "test/tilt_sasstemplate_test.rb"
-                (("}\",") "}
-\","))))
           (add-after 'unpack 'remove-some-dependencies
             (lambda _
               (substitute* "Gemfile"
