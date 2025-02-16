@@ -17269,6 +17269,26 @@ JSON-friendly @code{Array} representation.  They can also be used to generate
 corresponding HTML @code{link} elements.")
     (license license:expat)))
 
+(define-public ruby-lint-roller
+  (package
+    (name "ruby-lint-roller")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "lint_roller" version))
+       (sha256
+        (base32 "11yc0d84hsnlvx8cpk4cbj6a4dz9pk0r1k29p0n1fz9acddq831c"))))
+    (build-system ruby-build-system)
+    (arguments '(#:tests? #f))  ;Circular dependency on ruby-standard.
+    (native-inputs (list ruby-minitest))
+    (synopsis "Specification for linter and formatter rulesets")
+    (description
+     "This package provides a plugin specification for Ruby linter and
+formatter rulesets.")
+    (home-page "https://github.com/standardrb/lint_roller")
+    (license license:expat)))
+
 (define-public ruby-rdf
   (package
     (name "ruby-rdf")
