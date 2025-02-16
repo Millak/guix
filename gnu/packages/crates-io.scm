@@ -13201,14 +13201,14 @@ Argument Parser.")
 (define-public rust-clap-builder-4
   (package
     (name "rust-clap-builder")
-    (version "4.5.23")
+    (version "4.5.29")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap_builder" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0f28rgc09kdgfq1hgg1bb1ydaw243w6dwyw74syz439k6b32yn1h"))))
+        (base32 "1yf2r66wl4ybia10wdpycidyqz8sp9bi9k4sskgy3isivb5k5fpn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6)
