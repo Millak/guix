@@ -7185,7 +7185,15 @@ dynamic documents and vignettes.")
             (sha256
              (base32
               "1k8aj5zj297l5yf15f3xak9adcrxr79ax7ifwhz2jq23ifd4dmfs"))))
-   (properties `((upstream-name . "bluster")))
+   (properties
+    '((upstream-name . "bluster")
+      (updater-extra-native-inputs
+       . ("r-apcluster"
+          "r-dirichletmultinomial"
+          "r-dynamictreecut"
+          "r-kohonen"
+          "r-mbkmeans"
+          "r-vegan"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-assorthead
@@ -7197,7 +7205,14 @@ dynamic documents and vignettes.")
           r-rcpp
           r-s4vectors))
    (native-inputs
-    (list r-knitr r-testthat))
+    (list r-apcluster
+          r-dirichletmultinomial
+          r-dynamictreecut
+          r-kohonen
+          r-mbkmeans
+          r-knitr
+          r-testthat
+          r-vegan))
    (home-page "https://bioconductor.org/packages/bluster")
    (synopsis "Clustering algorithms for Bioconductor")
    (description"This package wraps common clustering algorithms in an easily
