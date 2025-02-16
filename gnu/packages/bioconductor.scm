@@ -14952,9 +14952,11 @@ before and after correcting for batch effects.")
               (sha256
                (base32
                 "0alm36lj0p541wyrk85ddyk8g4sscip54532i8pkb6a8mclp9cp3"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-hdf5array"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-hdf5array r-knitr r-testthat))
     (propagated-inputs
      (list r-beachmat
            r-benchmarkme
