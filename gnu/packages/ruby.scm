@@ -6251,20 +6251,16 @@ minitest 5.12, and is planned to be removed from minitest 6.")
 (define-public ruby-minitest-hooks
   (package
     (name "ruby-minitest-hooks")
-    (version "1.5.0")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "minitest-hooks" version))
        (sha256
-        (base32
-         "05z8r6sw3fz4s44fs1150ndlcmcy82vlxmhps5nncg8vk59k3gmf"))))
+        (base32 "11jb31dl5kbpyl3kgxql0p7da9066r2aqw54y5q6cni9nmld3zf5"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"
-       ;; Test suite is incompatible with ruby-2.7.
-       ;; https://github.com/jeremyevans/minitest-hooks/issues/19
-       #:tests? #f))
+     '(#:tests? #f))  ; No tests bundled.
     (native-inputs
      (list ruby-sequel ruby-sqlite3))
     (synopsis "Hooks for the minitest framework")
