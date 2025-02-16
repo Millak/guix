@@ -175,6 +175,20 @@ a focus on simplicity and productivity.")
     (home-page "https://www.ruby-lang.org")
     (license license:ruby)))
 
+(define-public ruby-3.3
+  (package
+    (inherit ruby-3.4)
+    (version "3.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.xz"))
+       (sha256
+        (base32
+         "07pwf3zkf7idl95agfjbv2lvamcp0spp0znqp9arb71ri19rkh43"))))))
+
 (define-public ruby-2.6
   (package
     (name "ruby")
@@ -353,20 +367,6 @@ a focus on simplicity and productivity.")
     (inputs
      (modify-inputs (package-inputs ruby-3.1)
        (prepend libyaml)))))
-
-(define-public ruby-3.3
-  (package
-    (inherit ruby-3.2)
-    (version "3.3.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
-                           (version-major+minor version)
-                           "/ruby-" version ".tar.xz"))
-       (sha256
-        (base32
-         "0hl6bi27w711hva96f95hg02vqzb30kabdw9hbj3rnj3w3z71bj4"))))))
 
 (define-public ruby ruby-3.1)
 
