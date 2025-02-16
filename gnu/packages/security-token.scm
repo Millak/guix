@@ -849,7 +849,8 @@ an unprivileged user.")
                   qtgraphicaleffects
                   qtquickcontrols-5
                   qtquickcontrols2-5
-                  qtsvg-5))
+                  qtsvg-5
+                  qtwayland-5))
     (home-page "https://developers.yubico.com/yubikey-manager-qt/")
     (synopsis "GUI for configuring any YubiKey over all USB interfaces")
     (description "YubiKey Manager (Qt) is a graphical application for
