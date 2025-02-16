@@ -13519,19 +13519,21 @@ completion scripts.")
 (define-public rust-clap-derive-4
   (package
     (name "rust-clap-derive")
-    (version "4.5.18")
+    (version "4.5.28")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ardb26bvcpg72q9myr7yir3a8c83gx7vxk1cccabsd9n73s1ija"))))
+        (base32 "1vgigkhljp3r8r5lwdrn1ij93nafmjwh8cx77nppb9plqsaysk5z"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
-           `(("rust-heck" ,rust-heck-0.5)
+           `(("rust-anstyle" ,rust-anstyle-1)
+             ("rust-heck" ,rust-heck-0.5)
              ("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.12)
              ("rust-quote" ,rust-quote-1)
              ("rust-syn" ,rust-syn-2))))
     (home-page "https://clap.rs/")
