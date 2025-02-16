@@ -764,9 +764,12 @@ Winamp/XMMS skins.")
                                (lambda (file stat)
                                  (string-match "^3rdparty/[^/]*$" file))
                                #:directories? #t))))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
-     `(#:test-target "run_strawberry_tests"
+     `(#:qtbase ,qtbase
+       #:test-target "run_strawberry_tests"
+       #:configure-flags
+       `("-DBUILD_WITH_QT6=ON")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-program
@@ -807,6 +810,7 @@ Winamp/XMMS skins.")
            protobuf
            pulseaudio
            qtbase
+           qtwayland
            sqlite
            taglib))
     (home-page "https://www.strawberrymusicplayer.org/")
