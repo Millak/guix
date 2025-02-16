@@ -3931,7 +3931,7 @@ login manager daemon.")
                         (cons tty %default-console-font))
                       '("tty1" "tty2" "tty3" "tty4" "tty5" "tty6")))
 
-        (service shepherd-system-log-service-type)
+        (service syslog-service-type)
         (service agetty-service-type (agetty-configuration
                                        (extra-options '("-L")) ; no carrier detect
                                        (term "vt100")
