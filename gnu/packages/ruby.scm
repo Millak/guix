@@ -7521,7 +7521,7 @@ intended for use with event loops such as async.")
 (define-public ruby-tilt
   (package
     (name "ruby-tilt")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)               ;the distributed gem lacks tests
@@ -7530,35 +7530,12 @@ intended for use with event loops such as async.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v7s38r86ammqpqm1diyk0yqz1k285argkpy5c8s1vq46983m9lv"))))
+        (base32 "056zm4vzx9xjwl7zgmb17hzb91qx5cvzk60wvsxchfybvl03gn5d"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-some-dependencies
-            (lambda _
-              (substitute* "Gemfile"
-                (("gem 'less'") "\n")
-                (("gem 'coffee-script'") "\n")
-                (("gem 'livescript'") "\n")
-                (("gem 'babel-transpiler'") "\n")
-                (("gem 'typescript-node'") "\n")
-                (("gem 'typescript-node'") "\n")
-                (("gem 'duktape'.*") "\n")
-                ;; TODO ronn is used for generating the manual
-                (("gem 'ronn'.*") "\n")
-                ;; ruby-haml has a runtime dependency on ruby-tilt, so don't
-                ;; pass it in as a native-input
-                (("gem 'haml'.*") "\n")
-                ;; TODO Not all of these gems are packaged for Guix yet:
-                ;; less, coffee-script, livescript, babel-transpiler,
-                ;; typescript-node
-                (("if can_execjs") "if false")
-                ;; Disable the secondary group to reduce the number of
-                ;; dependencies. None of the normal approaches work, so patch
-                ;; the Gemfile instead.
-                (("group :secondary") "[].each"))))
           (add-before 'check 'set-SASS_IMPLEMENTATION
             (lambda _
               (setenv "SASS_IMPLEMENTATION" "sassc"))))))
