@@ -609,13 +609,13 @@ read/write access to i2c devices to users in the @samp{i2c} group.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1hq19gdy9ybraclkqvv1nlf46irql5b6wrc1y6wi0ihkqly20vgz"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list #:tests? #f))                    ; No test suite
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
-     (list ddcutil glib qtbase-5))
+     (list ddcutil glib qtbase-5 qtwayland-5))
     (home-page "https://www.ddcutil.com/")
     (synopsis "Graphical user interface for ddcutil")
     (description "ddcui is a graphical user interface for ddcutil, implemented
