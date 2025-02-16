@@ -113,6 +113,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system scons)
   #:use-module (guix download)
@@ -1701,12 +1702,13 @@ wrapper for disk usage querying and visualisation.")
                  (,(string-append
                     (assoc-ref inputs "perl-uri-escape")
                     "/lib/perl5/site_perl")))))))))
-    (build-system gnu-build-system)
+    (build-system qt-build-system)
     (inputs
      (list bash-minimal
            perl
            perl-uri-escape
            qtbase-5
+           qtwayland-5
            zlib))
     (synopsis "Storage utilisation visualization tool")
     (description
