@@ -2124,7 +2124,7 @@ enforcing & linting tool for @code{factory_bot} files.")
 (define ruby-rubocop-rspec-minimal
   (package
     (name "ruby-rubocop-rspec")
-    (version "2.19.0")
+    (version "2.26.0")
     (source
      (origin
        (method git-fetch)
@@ -2134,9 +2134,10 @@ enforcing & linting tool for @code{factory_bot} files.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0mgjyrzi8r44v3gb8xscdwspirz9kqkaf7zlsjhhlxr0di0rlj2r"))))
+         "1w9whadx60kv4vlbnk77b5yyhhfcg717r9cr334zqznqr1bqr8mh"))))
     (build-system ruby-build-system)
     (arguments (list #:tests? #f))      ;avoid extra dependencies
+    (propagated-inputs (list ruby-rubocop-factory-bot))
     (synopsis "Code style checking for RSpec files")
     (description "This package provides a plugin for the RuboCop code style
 enforcing & linting tool.")
