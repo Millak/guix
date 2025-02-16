@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 Zacchaeus <eikcaz@zacchae.us>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,9 +25,23 @@
   #:use-module (gnu home services shepherd)
   #:export (home-syncthing-service-type)
   #:re-export (syncthing-configuration
-               syncthing-configuration?))
+               syncthing-configuration?
+               syncthing-config-file
+               syncthing-config-file?
+               syncthing-device
+               syncthing-device?
+               syncthing-folder
+               syncthing-folder?
+               syncthing-folder-device
+               syncthing-folder-device?))
 
 (define home-syncthing-service-type
   (service-type
    (inherit (system->home-service-type syncthing-service-type))
+   ;; system->home-service-type does not convert special-files-service-type to
+   ;; home-files-service-type, so redefine extensios
+   (extensions (list (service-extension home-files-service-type
+                                        syncthing-files-service)
+                     (service-extension home-shepherd-service-type
+                                        syncthing-shepherd-service)))
    (default-value (for-home (syncthing-configuration)))))
