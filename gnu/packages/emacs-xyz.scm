@@ -1909,32 +1909,31 @@ rebasing, and other common Git operations.")
     (license license:gpl3+)))
 
 (define-public emacs-magit-stgit
-  (let ((commit "51168b7438dfb5ca6b9239b8564397cc0cc6e798")
-        (revision "0"))
-    (package
-      (name "emacs-magit-stgit")
-      (version (git-version "2.2.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/stacked-git/magit-stgit.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1z2dhc1m510iyrks5lxp3jlqg4n7qwwirbmxg4c4ll0xngfhnalc"))))
-      (build-system emacs-build-system)
-      (propagated-inputs (list emacs-magit emacs-transient))
-      (home-page "https://github.com/stacked-git/magit-stgit")
-      (synopsis "StGit extension for Magit")
-      (description
-       "This package provides basic support for @code{stgit} in
+  (package
+    (name "emacs-magit-stgit")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stacked-git/magit-stgit.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z2dhc1m510iyrks5lxp3jlqg4n7qwwirbmxg4c4ll0xngfhnalc"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-magit emacs-transient emacs-llama
+                             emacs-dash))
+    (home-page "https://github.com/stacked-git/magit-stgit")
+    (synopsis "StGit extension for Magit")
+    (description
+     "This package provides basic support for @code{stgit} in
 @code{emacs-magit}.  When @code{magit-stgit-mode} is turned on, the
 current patch series is displayed in the status buffer.  While point is on a
 patch the changes it introduces can be shown using @code{RET}, it can be selected
 as the current patch using @code{a}, and it can be discarded using @code{k}.  Other
 @code{StGit} commands are available from the @code{StGit} transient on @code{/}.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-magit-svn
   (package
