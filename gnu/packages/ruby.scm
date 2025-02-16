@@ -2329,6 +2329,26 @@ Batch and flush behavior.
     (home-page "https://github.com/jordansissel/ruby-stud")
     (license license:asl2.0)))
 
+(define-public ruby-standard-custom
+  (package
+    (name "ruby-standard-custom")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "standard-custom" version))
+       (sha256
+        (base32 "0av55ai0nv23z5mhrwj1clmxpgyngk7vk6rh58d4y1ws2y2dqjj2"))))
+    (build-system ruby-build-system)
+    (arguments '(#:tests? #f))  ;Circular dependency on ruby-standard.
+    (propagated-inputs (list ruby-lint-roller ruby-rubocop))
+    (synopsis "Plugin of custom cops for Standard Ruby")
+    (description
+     "This package provides a implementations of custom cops that are bundled
+as defaults in Standard Ruby.")
+    (home-page "https://github.com/standardrb/standard-custom")
+    (license license:expat)))
+
 (define-public ruby-standard
   (package
     (name "ruby-standard")
