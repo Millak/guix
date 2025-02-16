@@ -2628,7 +2628,12 @@ capabilities.")
 modern applications in Guile Scheme.  It comprises a direct binding to the
 GObject Introspection API and higher-level functionality for importing Gnome
 libraries and making GObject classes (and methods) available in Guile's
-object-oriented programming system, GOOPS.")
+object-oriented programming system, GOOPS.
+
+Note: Currently, when developing with G-Golf in @command{guix shell}, there is
+a @uref{https://bugs.gnu.org/75157, grafts bug in Guix}.  To avoid it, use
+Guix' @code{--no-grafts} option.  Guix packages that use @code{wrap-program}
+are unaffected.")
     (license license:lgpl3+)))
 
 (define-public g-golf
