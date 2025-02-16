@@ -8425,6 +8425,69 @@ multiplexing.  The original intention of this library is to power the
 connection management for @url{https://github.com/xtaci/kcp-go,kcp-go}.")
     (license license:expat)))
 
+(define-public go-github-com-yggdrasil-network-yggdrasil-go
+  (package
+    (name "go-github-com-yggdrasil-network-yggdrasil-go")
+    (version "0.5.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yggdrasil-network/yggdrasil-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "072r52b6bkpc7bhn0v1z6dm6q5g9qf4k1xlqwrvzmzwai6fm0lrn"))
+      (patches (search-patches "yggdrasil-extra-config.patch"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/yggdrasil-network/yggdrasil-go"))
+    (propagated-inputs
+     (list go-github-com-arceliar-ironwood
+           go-github-com-arceliar-phony
+           go-github-com-cheggaaa-pb-v3
+           go-github-com-coder-websocket
+           go-github-com-gologme-log
+           go-github-com-hashicorp-go-syslog
+           go-github-com-hjson-hjson-go-v4
+           go-github-com-kardianos-minwinsvc
+           go-github-com-olekukonko-tablewriter
+           go-github-com-quic-go-quic-go
+           go-github-com-vishvananda-netlink
+           go-github-com-wlynxg-anet
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           ;; go-golang-zx2c4-com-wintun
+           go-golang-zx2c4-com-wireguard
+           ;; go-golang-zx2c4-com-wireguard-windows
+           go-suah-dev-protect))
+    (home-page "https://github.com/yggdrasil-network/yggdrasil-go")
+    (synopsis "IPv6 overlay network Golang library")
+    (description
+     "This package provides a source code for P2P overlay Yaggdrasil network.
+It is to used for inputs in other packages.")
+    (license
+     ;; As a special exception to the GNU Lesser General Public License
+     ;; version 3 ("LGPL3"), the copyright holders of this Library give you
+     ;; permission to convey to a third party a Combined Work that links
+     ;; statically or dynamically to this Library without providing any Minimal
+     ;; Corresponding Source or Minimal Application Code as set out in 4d or
+     ;; providing the installation information set out in section 4e, provided
+     ;; that you comply with the other provisions of LGPL3 and provided that you
+     ;; meet, for the Application the terms and conditions of the license(s)
+     ;; which apply to the Application. Except as stated in this special
+     ;; exception, the provisions of LGPL3 will continue to comply in full to
+     ;; this Library. If you modify this Library, you may apply this exception
+     ;; to your version of this Library, but you are not obliged to do so. If
+     ;; you do not wish to do so, delete this exception statement from your
+     ;; version. This exception does not (and cannot) modify any license terms
+     ;; which apply to the Application, with which you must still comply
+     license:lgpl3)))
+
 (define-public go-gitlab-torproject-org-tpo-anti-censorship-geoip
   (package
     (name "go-gitlab-torproject-org-tpo-anti-censorship-geoip")
