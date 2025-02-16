@@ -707,19 +707,22 @@ also flexible enough to handle most nonstandard requirements.")
 (define-public r-matrix
   (package
     (name "r-matrix")
-    (version "1.7-1")
+    (version "1.7-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Matrix" version))
        (sha256
         (base32
-         "189q5dlghkj0i8v526d9adv4z3mm1c9iya041aysyb2f9vqbpjm2"))))
-    (properties `((upstream-name . "Matrix")))
+         "0l66jqg7als7pq3y1f9dbsk9zc06gsqw7b4wjaf7k6ynwnd9s0bz"))))
+    (properties
+     `((upstream-name . "Matrix")
+       ;; Needed for vignettes.
+       (updater-extra-native-inputs . ("r-mass"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
-    (native-inputs (list r-mass))
+    (native-inputs (list r-codetools r-mass r-sfsmisc r-sparsem))
     (home-page "https://Matrix.R-forge.R-project.org/")
     (synopsis "Sparse and dense matrix classes and methods")
     (description
