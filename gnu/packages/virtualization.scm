@@ -2480,7 +2480,7 @@ use it.")
                 "1bkzz3mj7kzsv6k0ii8w31cgkpiqw3wvmvv2c6rknsavqqnagb4g"))))
     (build-system ruby-build-system)
     ;; (native-inputs (list ruby-rubocop ruby-vagrant-spec-helper-basic))
-    (propagated-inputs (list ruby-coveralls ruby-serverspec ruby-dep))
+    (propagated-inputs (list ruby-coveralls ruby-serverspec))
     (arguments
      (list
       #:tests? #f  ;; tests require vagrant
