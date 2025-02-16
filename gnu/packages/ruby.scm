@@ -8512,20 +8512,23 @@ alternative to Marshal for Object serialization.")
     (license license:expat)))
 
 (define-public ruby-pg
+  (let ((commit "378b7a35c12292625460ef2f33373de7114bf255")
+        (revision "0"))
   (package
     (name "ruby-pg")
-    (version "1.4.6")
+    (version (git-version "1.5.9" revision commit))
     (home-page "https://github.com/ged/ruby-pg")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url home-page)
-             (commit (string-append "v" version))))
+             (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0k7jgx7x7p6gbsbrv2l5rq27nff2nphnls1sdq525d82b068qnfm"))))
+        (base32 "1aq6kakyghgbb4yykxxl9ziaaa7jbdbyc7vz6avyxhlby1jkj0m8"))
+       (patches
+        (search-patches "ruby-pg-fix-connect-timeout.patch"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -8552,7 +8555,7 @@ alternative to Marshal for Object serialization.")
     (synopsis "Ruby interface to PostgreSQL")
     (description "Pg is the Ruby interface to the PostgreSQL RDBMS.  It works
 with PostgreSQL 9.3 and later.")
-    (license license:ruby)))
+    (license license:ruby))))
 
 (define-public ruby-byebug
   (package
