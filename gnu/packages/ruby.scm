@@ -1650,14 +1650,14 @@ under the hood.")
 (define-public ruby-slim
   (package
     (name "ruby-slim")
-    (version "5.1.0")
+    (version "5.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "slim" version))
        (sha256
         (base32
-         "1rp437r8hr9kdgabb7c96yw4z2wyrajl4cxiij038y10f8i6hbn4"))))
+         "1rqk7jn66wgx50b18ndhbppjq55rbcwgqg1rbhnhxwiggvzisdbj"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
