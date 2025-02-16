@@ -445,7 +445,11 @@ loop.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kvzhhd2ah0sadlsp5xs3qbiknixq4xwhk3yb6kmhcdl2zcbi4cn"))))
+        (base32 "1kvzhhd2ah0sadlsp5xs3qbiknixq4xwhk3yb6kmhcdl2zcbi4cn"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "pyproject.toml"
+                    (("version = \"0\"")
+                     (format #f "version = \"~a\"" #$version))))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-poetry-core
