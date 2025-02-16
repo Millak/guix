@@ -2770,6 +2770,7 @@ projects while introducing many more.")
      (list bash-minimal
            qtbase-5
            qtdeclarative-5
+           qtwayland-5
            zlib
            mpv))
     (arguments
