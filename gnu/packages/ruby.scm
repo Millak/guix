@@ -12869,7 +12869,7 @@ call.")
 (define-public ruby-concurrent-ruby
   (package
     (name "ruby-concurrent-ruby")
-    (version "1.2.2")
+    (version "1.3.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference       ;for tests
@@ -12878,7 +12878,7 @@ call.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vz4rl0nplq14dk9nx45g59i1sk2h53w1mjlrdiyjf780q4a1i38"))))
+                "0f0apna8k9cwnpa4lddwimywxzznrd4rjv4m0lka2i54z49iky73"))))
     (build-system ruby-build-system)
     (arguments
      (list
