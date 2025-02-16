@@ -189,6 +189,20 @@ a focus on simplicity and productivity.")
         (base32
          "0wmdnqcmfa5mf961hzklvjic7vdpgrbl2ckhaafb1m0fbrhbrg2x"))))))
 
+(define-public ruby-3.2
+  (package
+    (inherit ruby-3.3)
+    (version "3.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.xz"))
+       (sha256
+        (base32
+         "0g3s68kcxb24y4h24wvikvk5v3q6l6hs0kjxms9m49sm048d7k0w"))))))
+
 (define-public ruby-2.6
   (package
     (name "ruby")
@@ -323,23 +337,6 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.1
   (package
     (inherit ruby-3.0)
-    (version "3.1.4")
-    (replacement ruby-3.1.7)
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
-                           (version-major+minor version)
-                           "/ruby-" version ".tar.xz"))
-       (sha256
-        (base32
-         "0kzr792rk9n9yrqlyrkc1a0cmbk5y194f7v7p4vwjdk0ww860v8v"))))))
-
-+;;; TODO: This newer version resolves serveral CVEs.  Remove
-+;;; after ungrafting ruby.
-(define ruby-3.1.7
-  (package
-    (inherit ruby-3.1)
     (version "3.1.7")
     (source
      (origin
@@ -350,23 +347,6 @@ a focus on simplicity and productivity.")
        (sha256
         (base32
          "0ddhh3nzfnwwb0ks3rsmf3w1m71ban30wf61djn8gnkbbd2wr2k5"))))))
-
-(define-public ruby-3.2
-  (package
-    (inherit ruby-3.1)
-    (version "3.2.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
-                           (version-major+minor version)
-                           "/ruby-" version ".tar.xz"))
-       (sha256
-        (base32
-         "0g3s68kcxb24y4h24wvikvk5v3q6l6hs0kjxms9m49sm048d7k0w"))))
-    (inputs
-     (modify-inputs (package-inputs ruby-3.1)
-       (prepend libyaml)))))
 
 (define-public ruby ruby-3.1)
 
