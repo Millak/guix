@@ -2393,7 +2393,7 @@ as defaults in Standard Ruby.")
 (define-public ruby-standard
   (package
     (name "ruby-standard")
-    (version "1.25.3")
+    (version "1.37.0")
     (source
      (origin
        (method git-fetch)               ;no test suite in distributed gem
@@ -2402,39 +2402,49 @@ as defaults in Standard Ruby.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0q42gv7wgrc818a5hm599sy07vjq69hbijzpkpgh6jws6x7wzyh3"))))
+        (base32 "0gm9fn6fz41aya34xz7kzda8xxs7h98n7cjx66qbcy2w0qhs40wc"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-HOME
-           (lambda _
-             ;; Some tests fail otherwise.
-             (setenv "HOME" "/tmp")))
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "standard.gemspec"
-               (("\"rubocop\", \"1.44.1\"")
-                "\"rubocop\", \">= 1.44.1\"")
-               (("\"rubocop-performance\", \"1.15.2\"")
-                "\"rubocop-performance\", \">= 1.15.2\""))))
-         (add-after 'unpack 'delete-problematic-tests
-           ;; These tests fail for unknown reasons (see:
-           ;; https://github.com/testdouble/standard/issues/532).
-           (lambda _
-             (for-each
-              delete-file
-              '("test/standard_test.rb"
-                "test/standard/cop/block_single_line_braces_test.rb")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-HOME
+            (lambda _
+              ;; Some tests fail otherwise.
+              (setenv "HOME" "/tmp")))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "standard.gemspec"
+                (("\"rubocop\", \".*\"")
+                 (string-append
+                  "\"rubocop\", \"~> "
+                  #$(package-version
+                     (this-package-input "ruby-rubocop"))
+                  "\""))
+                (("\"rubocop-performance\", \".*\"")
+                 (string-append
+                  "\"rubocop-performance\", \"~> "
+                  #$(package-version
+                     (this-package-input "ruby-rubocop-performance"))
+                  "\"")))))
+          (add-after 'unpack 'delete-problematic-tests
+            ;; These tests fail for unknown reasons (see:
+            ;; https://github.com/testdouble/standard/issues/532).
+            (lambda _
+              (delete-file "test/standard_test.rb")
+              (substitute* "test/standard/base_test.rb"
+                ((".*test_configures_all_rubocop_cops.*" all)
+                 (string-append all
+                                "      skip('fails on guix')\n"))))))))
     (native-inputs
-     (list ruby-gimme
-           ruby-pry
-           ruby-simplecov))
+     (list ruby-simplecov))
     (propagated-inputs
      (list ruby-language-server-protocol
+           ruby-lint-roller
            ruby-rubocop
-           ruby-rubocop-performance))
+           ruby-rubocop-performance
+           ruby-standard-custom
+           ruby-standard-performance))
     (synopsis "Ruby Style Guide, with linter & automatic code fixer")
     (description "Standard is a port of StandardJS.  Like StandardJS, it aims
 to save time in the following ways:
