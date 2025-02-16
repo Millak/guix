@@ -171,6 +171,13 @@ in the Mozilla clients.")
                         (target-ppc32?)))
       #:phases
       #~(modify-phases %standard-phases
+          ;; The "PayPalEE.cert" certificate expires every six months, leading
+          ;; to test failures:
+          ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To work
+          ;; around that, set the time to roughly the release date.
+          (add-after 'unpack 'set-release-date
+            (lambda _
+              (setenv "GUIX_NSS_RELEASE_DATE" "2024-01-23")))
           (replace 'configure
             (lambda _
               (setenv "CC" #$(cc-for-target))
@@ -211,12 +218,12 @@ in the Mozilla clients.")
                                 (("SOURCE_DIR=.*")
                                  (string-append "SOURCE_DIR=" (getcwd) "/nss\n")))))
 
-                    ;; The "PayPalEE.cert" certificate expires every six months,
-                    ;; leading to test failures:
-                    ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
-                    ;; work around that, set the time to roughly the release date.
-                    (invoke #$(if (target-64bit?) "faketime" "datefudge")
-                            "2024-01-23" "./nss/tests/all.sh"))
+
+                    (let ((release-date (getenv "GUIX_NSS_RELEASE_DATE")))
+                      (when (string=? "" release-date)
+                        (raise-exception "`GUIX_NSS_RELEASE_DATE' unset"))
+                      (invoke #$(if (target-64bit?) "faketime" "datefudge")
+                              release-date "./nss/tests/all.sh")))
                   (format #t "test suite not run~%"))))
           (replace 'install
             (lambda* (#:key outputs #:allow-other-keys)
