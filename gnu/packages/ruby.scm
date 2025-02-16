@@ -2511,7 +2511,7 @@ web pages.")
 (define-public ruby-asciidoctor-pdf
   (package
     (name "ruby-asciidoctor-pdf")
-    (version "2.3.4")
+    (version "2.3.19")
     (source
      (origin
        (method git-fetch)               ;no test suite in the distributed gem
@@ -2521,18 +2521,16 @@ web pages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07krhpj2ylz7h7hy8vg0js8yv828qxh3mkhx0bsrfh0p24xwbjrm"))))
+         "1l8my8jj4aww2yad80n6f7hs76lq5gicld8dy014pw90pk3x43mp"))
+       (patches
+        (search-patches
+         "ruby-asciidoctor-pdf-support-prawn-svg-0_36.patch"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:test-target "spec"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'extract-gemspec 'strip-version-requirements
-            (lambda _
-              (substitute* "asciidoctor-pdf.gemspec"
-                (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
-                 (string-append stripped "\n")))))
           ;; The tests rely on the Gem being installed, so move the check
           ;; phase after the install phase.
           (delete 'check)
@@ -2553,15 +2551,12 @@ web pages.")
     (propagated-inputs
      (list ruby-asciidoctor
            ruby-concurrent
-           ruby-open-uri-cached
            ruby-prawn
            ruby-prawn-icon
            ruby-prawn-svg
            ruby-prawn-table
            ruby-prawn-templates
-           ruby-safe-yaml
            ruby-text-hyphen
-           ruby-thread-safe
            ruby-treetop
            ruby-ttfunk))
     (synopsis"AsciiDoc to Portable Document Format (PDF)} converter")
