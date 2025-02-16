@@ -18380,7 +18380,9 @@ and adds the annotation to the plot.")
        (sha256
         (base32
          "1891a976k2qjrh1vkzfg8icxblxa978wbazg7mqq8pcw3nmzbip0"))))
-    (properties `((upstream-name . "rstatix")))
+    (properties
+     '((upstream-name . "rstatix")
+       (updater-extra-native-inputs . ("r-emmeans"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
@@ -18394,7 +18396,7 @@ and adds the annotation to the plot.")
            r-tibble
            r-tidyr
            r-tidyselect))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-emmeans r-testthat))
     (home-page "https://rpkgs.datanovia.com/rstatix/")
     (synopsis "Pipe-friendly framework for basic statistical tests")
     (description
