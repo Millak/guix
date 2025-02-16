@@ -11900,7 +11900,7 @@ Suffix List.")
 (define-public ruby-dotenv
   (package
     (name "ruby-dotenv")
-    (version "2.8.1")
+    (version "3.1.7")
     (source (origin
               (method git-fetch)        ;for the tests
               (uri (git-reference
@@ -11909,7 +11909,7 @@ Suffix List.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s1a71jxppa20fsm2rd1vym099ib48m039rmhggmz99hc3z1fvvr"))))
+                "19j0acy12si537hwi4q54q8n5ycmlvfd2ik5y6r7jir6ww06l8yx"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -11924,6 +11924,10 @@ Suffix List.")
               ;; tasks.
               (delete-file "dotenv-rails.gemspec")
               (delete-file "spec/dotenv/rails_spec.rb")
+              (delete-file "spec/dotenv/log_subscriber_spec.rb")
+              (substitute* "spec/spec_helper.rb"
+                (("require \"dotenv\"" all)
+                 (string-append "require \"pathname\"\n" all)))
               (substitute* "Rakefile"
                 (("DotenvRailsGemHelper.install_tasks name: \"dotenv-rails\"")
                  "")
@@ -11932,9 +11936,10 @@ Suffix List.")
           (replace 'replace-git-ls-files
             (lambda _
               (substitute* "dotenv.gemspec"
-                (("`git ls-files README.md LICENSE lib bin \\| grep -v rails`")
-                 "`find README.md LICENSE lib bin -type f | sort | \
-grep -v rails`")))))))
+                (("`git ls-files (README.md LICENSE lib bin) \\| ([^`]*`)"
+                  all files command)
+                 (string-append
+                  "`find " files " -type f | sort | " command))))))))
     (native-inputs (list ruby-standard ruby-rspec))
     (synopsis "Ruby library for setting environment variables")
     (description "Dotenv is a Ruby library for setting environment variables
