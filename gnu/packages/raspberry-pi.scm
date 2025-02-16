@@ -537,6 +537,7 @@ secondary LCD display connected to the Raspberry Pi board.")
            qtquickcontrols2-5
            qtsvg-5
            qttools-5
+           qtwayland-5
            util-linux))
     (home-page "https://github.com/raspberrypi/rpi-imager/")
     (synopsis "Raspberry Pi Imaging Utility")
