@@ -8181,6 +8181,7 @@ on Bioconductor or which replace R functions.")
                        '("tests/testthat/test_ensemblFunctions.R"
                          "tests/testthat/test_ensemblGenomes.R"
                          "tests/testthat/test_getBM.R"
+                         "tests/testthat/test_utilityFunctions.R"
                          "tests/testthat/test_z_cache.R"
                          ;; This produces unexpected warnings.
                          "tests/testthat/test_ensembl_ssl_settings.R")))))))
