@@ -1749,11 +1749,12 @@ Keywords: html2pdf, htmltopdf")
        ;; XXX: Fix build with mupdf-0.23.0+.
        ;; See also: https://github.com/ahrm/sioyek/issues/804
        (patches (search-patches "sioyek-fix-build.patch"))))
-    (build-system gnu-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list (string-append "PREFIX=" #$output))
+      #:test-target "check"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
@@ -1781,6 +1782,7 @@ Keywords: html2pdf, htmltopdf")
            openjpeg
            qt3d-5
            qtbase-5
+           qtwayland-5
            zlib))
     (home-page "https://sioyek.info/")
     (synopsis "PDF viewer with a focus on technical books and research papers")
