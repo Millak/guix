@@ -15078,15 +15078,17 @@ all return data frames.")
 (define-public r-network
   (package
     (name "r-network")
-    (version "1.18.2")
+    (version "1.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "network" version))
        (sha256
         (base32
-         "0yx20v3izm7037cx5swc19966z97w7q9xw4p2p6skfyap4nqjcxz"))))
+         "04i02ld1wq5qij2q7sx7k1kmpz1gb2xkwbqhhvriwh8nzc3s04px"))))
     (build-system r-build-system)
+    (properties
+     '((updater-ignored-native-inputs . ("r-sna"))))
     (arguments
      (list
       ;; Vignettes require r-sna, which depends on r-network.
