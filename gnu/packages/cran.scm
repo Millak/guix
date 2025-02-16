@@ -21020,6 +21020,8 @@ genotypes as \"graphical genotypes\".")
         (base32
          "12z4q0fn7asxis17hisi82bvfabl5if1338lmfqmkrwv5rg7748d"))))
     (build-system r-build-system)
+    (properties
+     '((updater-extra-native-inputs . ("r-dplyr"))))
     (propagated-inputs
      (list r-future
            r-globals
@@ -21027,7 +21029,7 @@ genotypes as \"graphical genotypes\".")
            r-purrr
            r-rlang
            r-vctrs))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-dplyr r-testthat))
     (home-page "https://github.com/DavisVaughan/furrr")
     (synopsis "Apply mapping functions in parallel using futures")
     (description
