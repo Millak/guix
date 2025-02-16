@@ -9870,13 +9870,13 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
 (define-public ruby-stackprof
   (package
     (name "ruby-stackprof")
-    (version "0.2.26")
+    (version "0.2.27")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "stackprof" version))
        (sha256
-        (base32 "1gdqqwnampxmc54nf6zfy9apkmkpdavzipvfssmjlhnrrjy8qh7f"))))
+        (base32 "03788mbipmihq2w7rznzvv0ks0s9z1321k1jyr6ffln8as3d5xmg"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -9898,7 +9898,7 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
                 ;; This test often fails
                 (("def test_gc") "def skip_test_gc")
                 ;; This test is known to fail on 32-bit systems.
-                ;; /gnu/store/...-stackprof-0.2.26.gem
+                ;; /gnu/store/...-stackprof-0.2.27.gem
                 (("def test_raw") "def skip_test_raw"))))
           (add-before 'check 'build-tests
             (lambda _
