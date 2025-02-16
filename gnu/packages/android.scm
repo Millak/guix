@@ -41,6 +41,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
@@ -1310,10 +1311,10 @@ Java bytecode, which simplifies the analysis of Android applications.")
               (sha256
                (base32
                 "1ianph8ivj0fxg1l7llid7gv4pbfb5j23b33j9gan6x7scr13q2h"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list #:tests? #f)) ;there are no tests
-    (inputs (list qtbase-5 fuse libxkbcommon))
+    (inputs (list qtbase-5 qtwayland-5 fuse libxkbcommon))
     (native-inputs (list qttools-5 openssl readline))
     (home-page "https://whoozle.github.io/android-file-transfer-linux/")
     (synopsis "MTP client for Android devices")
