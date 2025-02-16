@@ -645,7 +645,7 @@ between various shells or commands.")
 (define-public trash-cli
   (package
     (name "trash-cli")
-    (version "0.22.10.20")
+    (version "0.24.5.26")
     (source
      (origin
        (method git-fetch)
@@ -654,44 +654,33 @@ between various shells or commands.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0hkn0hmwrag56g447ddqapib0s399a6b4a9wlliif6zmirxlww9n"))))
+        (base32 "1mqs3y9vbph33jsaa5hc0fhk80pklmsn8ylp979k9qj63fgqrnwn"))))
     (build-system python-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'patch-path-constants
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let ((libc (search-input-file inputs "lib/libc.so.6"))
-                         (df #$(file-append coreutils "/bin/df")))
-                     (substitute* "trashcli/list_mount_points.py"
-                       (("\"/lib/libc.so.6\".*")
-                        (string-append "\"" libc "\"\n"))
-                       (("\"df\"")
-                        (string-append "\"" df "\""))))))
-               (add-before 'build 'fix-setup.py
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let ((bin (string-append #$output "/bin")))
-                     (mkdir-p bin)
-                     (substitute* "setup.py"
-                       (("add_script\\('")
-                        (string-append "add_script('" bin "/" ))))))
-               ;; Whenever setup.py is invoked, scripts in out/bin/ are
-               ;; replaced. Thus we cannot invoke setup.py for testing.
-               ;; Upstream also uses pytest.
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest")))))))
-    (native-inputs
-     (list python-pytest
-           python-parameterized
-           python-flexmock
-           python-mock
-           python-six))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'build 'fix-setup.py
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((bin (string-append #$output "/bin")))
+                         (mkdir-p bin)
+                         (substitute* "setup.py"
+                           (("add_script\\('")
+                            (string-append "add_script('" bin "/"))))))
+                   ;; Whenever setup.py is invoked, scripts in out/bin/ are
+                   ;; replaced. Thus we cannot invoke setup.py for testing.
+                   ;; Upstream also uses pytest.
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "pytest")))))))
+    (native-inputs (list python-flexmock
+                         python-mock
+                         python-parameterized
+                         python-pytest
+                         python-shtab
+                         python-six))
     (inputs (list coreutils))
-    (propagated-inputs
-     (list python-psutil))
+    (propagated-inputs (list python-psutil))
     (home-page "https://github.com/andreafrancia/trash-cli")
     (synopsis "Trash can management tool")
     (description
