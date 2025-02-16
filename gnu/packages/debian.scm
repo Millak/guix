@@ -25,6 +25,7 @@
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -556,6 +557,12 @@ debian/copyright for more information.")))))
     (native-inputs (list pkg-config))
     (arguments
      (list
+      #:configure-flags
+      #~(list
+         (string-append "-DPKG_CONFIG_EXECUTABLE="
+                        (search-input-file
+                         %build-inputs (string-append
+                                        "/bin/" #$(pkg-config-for-target)))))
       #:tests? #f ;Tests are "for development only".
       #:phases #~(modify-phases %standard-phases
                    ;; We want to provide good defaults. Here apt-cacher-ng is built
