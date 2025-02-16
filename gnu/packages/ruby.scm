@@ -8321,7 +8321,7 @@ a native C extension.")
            ;; in the wrapper, and therefore just needs to be an input.
            ruby-thor))
     (propagated-inputs
-     (list ruby-rb-fsevent ruby-rb-inotify ruby-dep))
+     (list ruby-rb-fsevent ruby-rb-inotify))
     (synopsis "Listen to file modifications")
     (description "The Listen gem listens to file modifications and notifies
 you about the changes.")
