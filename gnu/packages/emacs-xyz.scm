@@ -5455,7 +5455,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
 (define-public emacs-cape
   (package
     (name "emacs-cape")
-    (version "1.8")
+    (version "1.9")
     (source
      (origin
        (method git-fetch)
@@ -5464,7 +5464,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ij4skr231bh3qs7s49h4ni8zkagg8k6b3jr611c0wax5gas1jzl"))))
+        (base32 "0pcgxv011z0gl0g38yh2dr09sx17pwpbvydz2dzvm730k9lbyikh"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -5480,8 +5480,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
               (install-file "cape.info"
                             (string-append #$output "/share/info")))))))
     (native-inputs (list texinfo))
-    (propagated-inputs
-     (list emacs-compat))
+    (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/minad/cape")
     (synopsis "Completion at point extensions for Emacs")
     (description
