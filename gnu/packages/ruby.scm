@@ -14514,35 +14514,37 @@ YAML.load suitable for accepting user input in Ruby applications.")
     (license license:expat)))
 
 (define-public ruby-yaml-lint
-  (package
-    (name "ruby-yaml-lint")
-    (version "0.0.10")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
+  ;; No tags for releases.
+  (let ((commit "d6a253f7d33234a9c24660d582cf7014e882c0c2")
+        (revision "0"))
+    (package
+      (name "ruby-yaml-lint")
+      (version (git-version "0.1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
                (url "https://github.com/Pryz/yaml-lint")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1jz26mxjkdyjbgqp7f9isnzd1i6vkizsswyj1v639nmq31hwfh0d"))))
-    (build-system ruby-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "rspec")))))))
-    (native-inputs
-     (list ruby-coveralls ruby-rspec ruby-simplecov))
-    (synopsis "Simple YAML check tool")
-    (description
-     "@code{yaml-lint} will simply try to load the YAML file with the built-in
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0zk0jwzmcaaiyixjvkzdb54xhiqcnjkma72nkv0vm5csaphfdjkx"))))
+      (build-system ruby-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "rspec")))))))
+      (native-inputs
+       (list ruby-coveralls ruby-rspec ruby-simplecov))
+      (synopsis "Simple YAML check tool")
+      (description
+       "@code{yaml-lint} will simply try to load the YAML file with the built-in
 Ruby yaml library.")
-    (home-page "https://github.com/Pryz/yaml-lint")
-    (license license:expat)))
+      (home-page "https://github.com/Pryz/yaml-lint")
+      (license license:expat))))
 
 (define-public ruby-matrix
   (package
