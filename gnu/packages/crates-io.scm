@@ -39832,6 +39832,33 @@ length integer encoding.")
      "This package provides endianness conversions with a generic API in rust.")
     (license license:bsd-3)))
 
+(define-public rust-lenient-semver-parser-0.4
+  (package
+    (name "rust-lenient-semver-parser")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lenient_semver_parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mnpcix37xw1iilsz4l2n7r2q3q361mhghvrpfs2dp2d08fhqrbz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; unresolved import `semver_v010`
+       #:cargo-inputs (("rust-lenient-semver-version-builder"
+                        ,rust-lenient-semver-version-builder-0.4)
+                       ("rust-semver-0.10" ,rust-semver-0.10)
+                       ("rust-semver-0.11" ,rust-semver-0.11)
+                       ("rust-semver" ,rust-semver-1))
+       #:cargo-development-inputs (("rust-semver" ,rust-semver-1)
+                                   ("rust-test-case" ,rust-test-case-1))))
+    (home-page "https://github.com/knutwalker/lenient-semver/")
+    (synopsis "Lenient parser for Semantic Version numbers")
+    (description
+     "This package provides a lenient parser for Semantic Version numbers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lenient-semver-version-builder-0.4
   (package
     (name "rust-lenient-semver-version-builder")
