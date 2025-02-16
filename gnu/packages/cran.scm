@@ -22042,20 +22042,27 @@ cross-sectional, time series, clustered, panel, and longitudinal data.")
 (define-public r-th-data
   (package
     (name "r-th-data")
-    (version "1.1-2")
+    (version "1.1-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "TH.data" version))
        (sha256
         (base32
-         "0wyyvm6l6yvqvfnd1c4l9ff5445zaq9lr0ihz8pg9kkggfslxya7"))))
-    (properties `((upstream-name . "TH.data")))
+         "0fy6dp66r8l4pdhdn2k6rbyqyn411mrj05faylffgi20r4a81sz2"))))
+    (properties
+     `((upstream-name . "TH.data")
+       (updater-ignored-native-inputs
+        . ("r-coin" "r-multcomp" "r-rms"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-survival))
     (native-inputs
-     (list r-knitr))
+     (list r-colorspace
+           r-gridextra
+           r-knitr
+           r-lattice
+           r-vcd))
     (home-page "https://cran.r-project.org/web/packages/TH.data/")
     (synopsis "Shared data sets")
     (description
