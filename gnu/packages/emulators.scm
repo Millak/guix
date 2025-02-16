@@ -653,7 +653,7 @@ emulate a serial nullmodem over TCP/IP.")
               (sha256
                (base32
                 "1fal7a8y5g0rqqjrk795jh1l50ihz01ppjnrfjrk9vkjbd59szbp"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -689,7 +689,7 @@ emulate a serial nullmodem over TCP/IP.")
                #t))))
        #:tests? #f))    ; test suite wants mips toolchain
     (inputs
-     (list elfutils qtbase-5))
+     (list elfutils qtbase-5 qtwayland-5))
     (home-page "https://github.com/cvut/QtMips")
     (synopsis "MIPS CPU emulator")
     (description "This package contains a MIPS CPU emulator.  The simulator
