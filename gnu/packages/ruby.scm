@@ -2349,6 +2349,26 @@ as defaults in Standard Ruby.")
     (home-page "https://github.com/standardrb/standard-custom")
     (license license:expat)))
 
+(define-public ruby-standard-performance
+  (package
+    (name "ruby-standard-performance")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "standard-performance" version))
+       (sha256
+        (base32 "1x298w3wmq8cavbsg903wc3arxp3xh2x8263brvy128436m732rd"))))
+    (build-system ruby-build-system)
+    (arguments '(#:tests? #f))  ;Circular dependency on ruby-standard.
+    (propagated-inputs (list ruby-lint-roller ruby-rubocop-performance))
+    (synopsis "Standard Ruby Plugin for rubocop-performance")
+    (description
+     "This package is a Standard Ruby Plugin providing configuration for
+@code{rubocop-performance}.")
+    (home-page "https://github.com/standardrb/standard-performance")
+    (license license:expat)))
+
 (define-public ruby-standard
   (package
     (name "ruby-standard")
