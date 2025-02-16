@@ -175,10 +175,10 @@ convert data in any way.")
                 (sha256
                  (base32
                   "1vwgv28b291lrcs9fljnlbnicv16lwj4vvl4bz6w3ldp9n5isjmf"))))
-      (build-system cmake-build-system)
+      (build-system qt-build-system)
       (arguments
        `(#:tests? #f))
-      (inputs (list qtbase-5 qttools-5 poppler-qt5))
+      (inputs (list qtbase-5 qttools-5 qtwayland-5 poppler-qt5))
       (native-inputs (list pkg-config extra-cmake-modules))
       (home-page "http://www.qtrac.eu/diffpdf-foss.html")
       (synopsis "Compare two PDF files")
