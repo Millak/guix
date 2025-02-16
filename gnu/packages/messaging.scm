@@ -2568,6 +2568,7 @@ notification, emojis, E2E encryption, and voip calls.")
            qtquickcontrols2-5
            qtsvg-5
            qttools-5
+           qtwayland-5
            xdg-utils))
     (arguments
      `(#:tests? #f))                    ; no tests
