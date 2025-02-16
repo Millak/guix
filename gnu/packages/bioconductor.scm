@@ -24743,7 +24743,10 @@ cell types to infer the cell of origin of each single cell independently.")
        (sha256
         (base32
          "0h13a9pgsm3w324622qlp9nqpvq6gsjwcyd44d6w5yzrl9jcsliv"))))
-    (properties `((upstream-name . "scuttle")))
+    (properties
+     '((upstream-name . "scuttle")
+       (updater-extra-native-inputs
+        . ("r-delayedmatrixstats" "r-sparsematrixstats"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-beachmat
@@ -24759,7 +24762,8 @@ cell types to infer the cell of origin of each single cell independently.")
            r-singlecellexperiment
            r-sparsearray
            r-summarizedexperiment))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs
+     (list r-delayedmatrixstats r-knitr r-sparsematrixstats r-testthat))
     (home-page "https://bioconductor.org/packages/scuttle")
     (synopsis "Single-cell RNA-Seq analysis utilities")
     (description
