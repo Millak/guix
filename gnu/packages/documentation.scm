@@ -425,6 +425,7 @@ the Net to search for documents which are not on the local system.")
            sqlite
            qtbase-5
            qtdeclarative-5
+           qtwayland-5
            qtwebchannel-5
            qtwebengine-5
            qtquickcontrols-5
