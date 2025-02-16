@@ -1407,8 +1407,8 @@ information in the mode line.")
     (license license:expat)))
 
 (define-public emacs-snow
-  (let ((commit "35ea06f19047ac99eaff9663cb035491c4a13e07")
-        (revision "0"))
+  (let ((commit "be17977677fa29709a726715a1a1cba1bd299f68")
+        (revision "1"))
      (package
       (name "emacs-snow")
       (version (git-version "0" revision commit))
@@ -1420,7 +1420,7 @@ information in the mode line.")
                 (commit commit)))
           (file-name (git-file-name name version))
           (sha256
-          (base32 "1pcqvg70r1k73k3jxgz5qzwqsvwjnwvpfrbjf4b54smglz2nvz19"))))
+          (base32 "0fh1hmwpszm9frvnqr2b8rlfx33dy9jm5r82hldgxdbhlv8dq4d0"))))
        (build-system emacs-build-system)
       (home-page "https://github.com/alphapapa/snow.el/")
       (synopsis "Let it snow in Emacs")
