@@ -17177,7 +17177,6 @@ into HTML pages easy.  It supports most TeX math syntax as well as macros.")
     (build-system ruby-build-system)
     (native-inputs
      (list ruby-cucumber
-           ruby-ritex
            ruby-rspec))
     (arguments
      (list
