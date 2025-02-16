@@ -22233,6 +22233,8 @@ directly interact with SingleCellExperiment and Seurat objects.")
         (base32 "14nyaqwz1mvaab5kj63j8h56f2n14v6dz5l1nl9zpp4icgx9hp64"))))
     (properties `((upstream-name . "UCSC.utils")))
     (build-system r-build-system)
+    ;; Tests require Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-httr r-jsonlite r-s4vectors))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/UCSC.utils")
