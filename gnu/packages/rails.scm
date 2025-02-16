@@ -27,6 +27,7 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages node)
@@ -46,7 +47,9 @@
     (file-name (git-file-name "ruby-rails" %ruby-rails-version))
     (sha256
      (base32
-      "0wzlnfs3k6ahhzcqznk43y1lq8a3dq3i7q1aqracx891hjmr19n2"))))
+      "0wzlnfs3k6ahhzcqznk43y1lq8a3dq3i7q1aqracx891hjmr19n2"))
+    (patches
+     (search-patches "ruby-actionpack-remove-browser-tests.patch"))))
 
 (define-public ruby-activesupport
   (package

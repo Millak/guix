@@ -1,0 +1,33 @@
+From 02e8665d5ad910807d567536199f81d8e5aa8bce Mon Sep 17 00:00:00 2001
+From: Nicolas Graves <ngraves@ngraves.fr>
+Date: Mon, 20 Jan 2025 04:48:10 +0100
+Subject: [PATCH] Remove abstract units depending on a read browser.
+
+---
+ actionpack/test/abstract_unit.rb | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/actionpack/test/abstract_unit.rb b/actionpack/test/abstract_unit.rb
+index 1ab8ea73ab..32ffba71a9 100644
+--- a/actionpack/test/abstract_unit.rb
++++ b/actionpack/test/abstract_unit.rb
+@@ -519,16 +519,4 @@ class DrivenByRackTest < ActionDispatch::SystemTestCase
+   driven_by :rack_test
+ end
+ 
+-class DrivenBySeleniumWithChrome < ActionDispatch::SystemTestCase
+-  driven_by :selenium, using: :chrome
+-end
+-
+-class DrivenBySeleniumWithHeadlessChrome < ActionDispatch::SystemTestCase
+-  driven_by :selenium, using: :headless_chrome
+-end
+-
+-class DrivenBySeleniumWithHeadlessFirefox < ActionDispatch::SystemTestCase
+-  driven_by :selenium, using: :headless_firefox
+-end
+-
+ require_relative "../../tools/test_common"
+-- 
+2.47.1
+

@@ -2228,6 +2228,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rocm-comgr-3.1.0-dependencies.patch 	\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\
   %D%/packages/patches/rottlog-direntry.patch 			\
+  %D%/packages/patches/ruby-actionpack-remove-browser-tests.patch	\
   %D%/packages/patches/ruby-hiredis-use-system-hiredis.patch	\
   %D%/packages/patches/ruby-hydra-minimal-no-byebug.patch	\
   %D%/packages/patches/ruby-anystyle-data-immutable-install.patch	\
