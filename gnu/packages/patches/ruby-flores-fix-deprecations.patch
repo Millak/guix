@@ -1,0 +1,38 @@
+From b1c38d58d5e94df8c74c9c69c2f9b5841589a4bd Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?C=C3=A9dric=20Boutillier?= <boutil@debian.org>
+Date: Mon, 23 Sep 2024 23:47:22 +0200
+Subject: [PATCH] Replace deprecated Fixnum by Integer
+
+https://github.com/jordansissel/ruby-flores/pull/14
+
+---
+ lib/flores/random.rb       | 2 +-
+ spec/flores/random_spec.rb | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/flores/random.rb b/lib/flores/random.rb
+index e512b80..ec44f8b 100644
+--- a/lib/flores/random.rb
++++ b/lib/flores/random.rb
+@@ -32,7 +32,7 @@ module Flores::Random
+   # * The length can be a number or a range `x..y`. If a range, it must be ascending (x < y)
+   # * Negative lengths are not permitted and will raise an ArgumentError
+   #
+-  # @param length [Fixnum or Range] the length of text to generate
++  # @param length [Integer or Range] the length of text to generate
+   # @return [String] the generated text
+   def self.text(length)
+     return text_range(length) if length.is_a?(Range)
+diff --git a/spec/flores/random_spec.rb b/spec/flores/random_spec.rb
+index 9e479fb..0e792c3 100644
+--- a/spec/flores/random_spec.rb
++++ b/spec/flores/random_spec.rb
+@@ -108,7 +108,7 @@
+   end
+ 
+   describe "#integer" do
+-    it_behaves_like Numeric, Fixnum do
++    it_behaves_like Numeric, Integer do
+       subject { Flores::Random.integer(range) }
+     end
+   end

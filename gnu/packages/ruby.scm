@@ -4592,30 +4592,40 @@ fiber, and defaults to a shared thread-local state.")
     (license license:expat)))
 
 (define-public ruby-flores
-  (package
-    (name "ruby-flores")
-    (version "0.0.8")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "flores" version))
-              (sha256
-               (base32
-                "0pd8gqgy67rp1baq5r7himl0r9jzv5kqlhdmqh8wngynv548w2ai"))))
-    (build-system ruby-build-system)
-    (arguments
-     (list #:ruby ruby-2.7
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "ruby" (which "rspec"))))))))
-    (native-inputs (list ruby-rspec ruby-simplecov))
-    (synopsis "Fuzzing, randomization, and stress testing library")
-    (description "Flores is a fuzzing, randomization, and stress library to
+  (let ((commit "92fded00b04b1e3d308edb7440d7b7ab2c89ab5e")
+        (revision "0"))
+    (package
+      (name "ruby-flores")
+      (version (git-version "0.0.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jordansissel/ruby-flores")
+               (commit commit)))
+         (sha256
+          (base32 "0jvnw0jli2zzxklfk751vfbi4acf9lijppk67346j3b2qxqi8xms"))
+         (patches
+          (search-patches "ruby-flores-fix-deprecations.patch"))))
+      (build-system ruby-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-gemspec
+                   (lambda _
+                     (substitute* "flores.gemspec"
+                       ;; Since this is not a git repository, do not call 'git'.
+                       (("git ls-files") "find . -type f |sort"))))
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       (invoke "ruby" (which "rspec"))))))))
+      (native-inputs (list ruby-rspec ruby-simplecov))
+      (synopsis "Fuzzing, randomization, and stress testing library")
+      (description "Flores is a fuzzing, randomization, and stress library to
 help tests uncover more bugs.")
-    (home-page "https://github.com/jordansissel/ruby-flores")
-    (license license:asl2.0)))
+      (home-page "https://github.com/jordansissel/ruby-flores")
+      (license license:asl2.0))))
 
 (define-public ruby-ipaddr
   (package
