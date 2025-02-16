@@ -63,6 +63,7 @@
   #:use-module (srfi srfi-98)
   #:export (assert-container-features
             load-manifest
+            launch-environment/container
             guix-environment
             guix-environment*
             show-environment-options-help
