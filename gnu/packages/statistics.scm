@@ -1304,6 +1304,8 @@ using just two functions: melt and dcast (or acast).")
        (uri (cran-uri "ggplot2" version))
        (sha256
         (base32 "08a72kizg42mdm35170fnpn8l6r4n3j1yvbgiq1k8dlvz4jb8n3w"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-mapproj"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -1320,7 +1322,7 @@ using just two functions: melt and dcast (or acast).")
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-mapproj r-testthat))
     (home-page "https://ggplot2.tidyverse.org")
     (synopsis "Implementation of the grammar of graphics")
     (description
