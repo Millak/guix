@@ -10553,7 +10553,7 @@ play with up to four players simultaneously.  It has network support.")
               (sha256
                (base32
                 "04pjpkjhpy720n803gv35iygmjdvsrmw13mih4ympjnqbgjfa7r0"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
       ;; XXX: Engine is built as Pascal source code, requiring Free Pascal
@@ -10593,6 +10593,7 @@ play with up to four players simultaneously.  It has network support.")
            lua-5.1
            physfs
            qtbase-5
+           qtwayland-5
            (sdl-union
             (list sdl2 sdl2-mixer sdl2-net sdl2-ttf sdl2-image))))
     (native-inputs
