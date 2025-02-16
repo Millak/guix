@@ -3268,7 +3268,7 @@ a Ruby object.")
 (define-public ruby-fakefs
   (package
     (name "ruby-fakefs")
-    (version "1.2.2")
+    (version "2.8.0")
     (home-page "https://github.com/fakefs/fakefs")
     (source (origin
               ;; The Rubygems release does not contain tests.
@@ -3279,7 +3279,7 @@ a Ruby object.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "008dq9knyip2bfbl0mrk8b8r7bv0k3bf128wcfqsgy1rqal4mgwk"))))
+                "0a3vq6cllml279j77hxipmbln31pjw6di3zdgpzqvhqgazv55v10"))))
     (build-system ruby-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -3295,7 +3295,7 @@ a Ruby object.")
                         (("(.*add_development_dependency .*), .*" _ dep)
                          (string-append dep "\n"))))))))
     (native-inputs
-     (list ruby-bump ruby-maxitest ruby-rubocop ruby-rspec))
+     (list ruby-bump ruby-maxitest ruby-pry ruby-rubocop ruby-rspec))
     (synopsis "Fake file system for Ruby")
     (description
      "This package provides a fake file system for use in test suites.  It
