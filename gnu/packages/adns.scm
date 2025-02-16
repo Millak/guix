@@ -68,15 +68,15 @@ scripts.")
 (define-public c-ares
   (package
     (name "c-ares")
-    (version "1.18.1")
+    (version "1.34.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://c-ares.haxx.se/download/" name "-" version
-                    ".tar.gz"))
+                    "https://github.com/c-ares/c-ares/releases/download/v"
+                    version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1kxviskwsaa7dcgscvssxa8ps88pdq7kq4z93gxvz7sam2l54z8s"))))
+                "0br2msk3bpl5myhjp9vr5j2scpspvbg2fpnz69dcrr4ycpnxnf7s"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -149,19 +149,7 @@ multiple clients and programs with graphical user interfaces.")
     (license (x11-style "https://c-ares.haxx.se/license.html"))))
 
 (define-public c-ares-for-node-lts
-  (hidden-package
-   (package
-     (inherit c-ares)
-     (version "1.34.4")
-     (source (origin
-               (method url-fetch)
-               (uri (string-append
-                     "https://github.com/c-ares/c-ares/releases/download/v"
-                     version "/c-ares-" version
-                     ".tar.gz"))
-               (sha256
-                (base32
-                 "0br2msk3bpl5myhjp9vr5j2scpspvbg2fpnz69dcrr4ycpnxnf7s")))))))
+  (hidden-package c-ares))
 
 ;; gRPC requires a c-ares built with CMake in order to get the .cmake modules.
 ;; We can not build c-ares itself with CMake because that would introduce a
