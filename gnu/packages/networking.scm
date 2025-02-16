@@ -1860,6 +1860,7 @@ of the same name.")
            qtbase
            qtmultimedia
            qtsvg
+           qtwayland
            sbc
            snappy
            speexdsp
