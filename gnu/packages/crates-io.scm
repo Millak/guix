@@ -1960,14 +1960,14 @@ text to a terminal.")
 (define-public rust-anstyle-1
   (package
     (name "rust-anstyle")
-    (version "1.0.8")
+    (version "1.0.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "anstyle" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1cfmkza63xpn1kkz844mgjwm9miaiz4jkyczmwxzivcsypk1vv0v"))))
+                "1yai2vppmd7zlvlrp9grwll60knrmscalf8l2qpfz8b7y5lkpk2m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
