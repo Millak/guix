@@ -19103,6 +19103,13 @@ intervals.")
         (base32
          "0888fng8zwm2zmi7rap9hc2q2x2gnhz8gyr35wwjx93w6f8rfpra"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           ;; One test requires the unavailable r-purrrlyr.
+           (lambda _ (delete-file "tests/testthat/test-to_any_case.R"))))))
     (propagated-inputs
      (list r-stringi r-stringr))
     (native-inputs (list r-knitr r-testthat r-tibble))
