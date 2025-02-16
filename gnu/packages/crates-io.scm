@@ -41988,7 +41988,7 @@ and attach/detach semantics.")
 (define-public rust-log-0.4
   (package
     (name "rust-log")
-    (version "0.4.22")
+    (version "0.4.25")
     (source
      (origin
        (method url-fetch)
@@ -41996,11 +41996,10 @@ and attach/detach semantics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "093vs0wkm1rgyykk7fjbqp2lwizbixac1w52gv109p5r4jh0p9x7"))))
+         "17ydv5zhfv1zzygy458bmg3f3jx1vfziv9d74817w76yhfqgbjq4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; Not all test files included in release.
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-sval" ,rust-sval-2)
         ("rust-sval-ref" ,rust-sval-ref-2)
