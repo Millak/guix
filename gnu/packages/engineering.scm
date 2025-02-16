@@ -145,6 +145,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -1988,6 +1989,65 @@ bindings for Python, Java, OCaml and more.")
     (propagated-inputs
      (list capstone))))
 
+(define-public python-platypush
+  (package
+    (name "python-platypush")
+    (version "1.3.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.platypush.tech/platypush/platypush.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1chd60r4misz2i368435yb6hhnm97v8kncjnchxj8mg3mglw9gy0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "requirements.txt"
+                (("zipp>=3.19.1")
+                 "zipp")
+                (("urllib3>=2.2.2")
+                 "urllib3"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs (list python-setuptools python-wheel python-pytest redis))
+    (propagated-inputs (list python-alembic
+                             python-croniter
+                             python-docutils
+                             python-flask
+                             python-marshmallow
+                             python-pillow
+                             python-pygments
+                             python-pyotp
+                             python-dateutil
+                             python-magic
+                             python-pyyaml
+                             python-pyzbar
+                             python-qrcode
+                             python-redis
+                             python-requests
+                             python-rsa
+                             python-sqlalchemy-2
+                             python-tornado
+                             python-urllib3
+                             python-websocket-client
+                             python-websockets
+                             python-werkzeug
+                             python-zeroconf
+                             python-zipp))
+    (home-page "https://platypush.tech/")
+    (synopsis "General-purpose automation framework")
+    (description
+     "Platypush is a general-purpose and extensible platform for automation across
+multiple services and devices with hundreds of supported integrations.")
+    (license license:expat)))
 
 (define-public python-esptool
   (package
