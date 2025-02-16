@@ -9279,7 +9279,7 @@ they match.")
 (define-public ruby-regexp-parser
   (package
     (name "ruby-regexp-parser")
-    (version "2.0.0")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)               ;bin/test missing from gem
@@ -9289,7 +9289,7 @@ they match.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09ddxdwlml30q6j4rqf06bbjj1mwx00rs0bksnyblhv85anrqz3k"))))
+         "0kj5bpnksagxbxi4y1gw5nam1gm948d0gm6869vsyapiqg6000zz"))))
     (build-system ruby-build-system)
     (arguments
      '(#:test-target "default"
@@ -9302,7 +9302,7 @@ they match.")
                       ;; gem file.
                       (delete-file-recursively "pkg"))))))
     (native-inputs
-     (list ragel ruby-regexp-property-values ruby-rspec))
+     (list ragel ruby-ice-nine ruby-regexp-property-values ruby-rspec))
     (synopsis "Regular expression parser library for Ruby")
     (description "A Ruby gem for tokenizing, parsing, and transforming regular
 expressions.  It comprises the following components:
