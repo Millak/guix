@@ -14358,43 +14358,45 @@ is compatible with stylesheets designed for pygments.")
                license:bsd-2))))
 
 (define-public ruby-hashie
-  (package
-    (name "ruby-hashie")
-    (version "5.0.0")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/hashie/hashie")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ihami0cdn71cvwzwgr3vxqvqi0ifqsna0vlyqiqlhsnf93w0cm8"))))
-    (build-system ruby-build-system)
-    (arguments
-     (list #:test-target "spec"
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'disable-bundler
-                          (lambda _
-                            (substitute* "Rakefile"
-                              ((".*require 'bundler'.*") "")
-                              ((".*Bundler.setup.*") "")
-                              (("Bundler::GemHelper\\.install_tasks") ""))))
-                        (add-after 'unpack 'disable-rubocop
-                          (lambda _
-                            (substitute* "Rakefile"
-                              (("require 'rubocop/rake_task'") "")
-                              (("RuboCop::RakeTask.new") ""))))
-                        (add-after 'unpack 'relax-requirements
-                          (lambda _
-                            ;; Contains multiple extraneous dependencies.
-                            (delete-file "Gemfile"))))))
-    (native-inputs (list ruby-json ruby-pry ruby-rspec ruby-rspec-pending-for))
-    (home-page "https://github.com/hashie/hashie")
-    (synopsis "Extensions to Ruby Hashes")
-    (description "Hashie is a collection of classes and mixins that make Ruby
+  (let ((commit "73510552ba580867e9882fe092568916cbcd810b")
+        (revision "0"))
+    (package
+      (name "ruby-hashie")
+      (version (git-version "5.0.0" revision commit))
+      (source (origin
+                (method git-fetch)        ;for tests
+                (uri (git-reference
+                      (url "https://github.com/hashie/hashie")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "08rpx040h6vgx6ynk6w029f7z7c8aj2p4v135k2l1zxvnw617ddw"))))
+      (build-system ruby-build-system)
+      (arguments
+       (list #:test-target "spec"
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'disable-bundler
+                            (lambda _
+                              (substitute* "Rakefile"
+                                ((".*require 'bundler'.*") "")
+                                ((".*Bundler.setup.*") "")
+                                (("Bundler::GemHelper\\.install_tasks") ""))))
+                          (add-after 'unpack 'disable-rubocop
+                            (lambda _
+                              (substitute* "Rakefile"
+                                (("require 'rubocop/rake_task'") "")
+                                (("RuboCop::RakeTask.new") ""))))
+                          (add-after 'unpack 'relax-requirements
+                            (lambda _
+                              ;; Contains multiple extraneous dependencies.
+                              (delete-file "Gemfile"))))))
+      (native-inputs (list ruby-json ruby-pry ruby-rspec ruby-rspec-pending-for))
+      (home-page "https://github.com/hashie/hashie")
+      (synopsis "Extensions to Ruby Hashes")
+      (description "Hashie is a collection of classes and mixins that make Ruby
 hashes more powerful.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public ruby-heredoc-unindent
   (package
