@@ -1958,7 +1958,7 @@ either on a local, or remote machine via a number of methods.")
 (define-public gnome-commander
   (package
     (name "gnome-commander")
-    (version "1.16.1")
+    (version "1.18.2")
     (source
      (origin
        (method url-fetch)
@@ -1966,24 +1966,28 @@ either on a local, or remote machine via a number of methods.")
                            (version-major+minor version)  "/"
                            "gnome-commander-" version ".tar.xz"))
        (sha256
-        (base32 "1cyh20nz2f81rb6di99idvw4xjn969mjhj3n2q17kzjhlv20079z"))))
+        (base32 "0wqnm87skbsc7p89ynn64s3154w0j1d0d1gjkbxd5mmpg90i0ysa"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t))
+     `(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'prepare-x-for-test
+           (lambda _
+             (system "Xvfb &")
+             (setenv "DISPLAY" ":0"))))))
     (native-inputs
      (list desktop-file-utils
            flex
            gettext-minimal
            `(,glib "bin")
-           gobject-introspection
            googletest
-           `(,gtk+-2 "bin")
-           intltool
+           `(,gtk+ "bin")
            itstool
-           libtool
-           pkg-config))
+           pkg-config
+           xorg-server-for-tests))
     (inputs
-     (list gconf glib gtk+-2 libxml2))
+     (list glib gtk+))
     (home-page "https://gcmd.github.io/")
     (synopsis "Two-pane graphical file manager for the GNOME desktop")
     (description
