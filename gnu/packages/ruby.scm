@@ -220,80 +220,25 @@ a focus on simplicity and productivity.")
      (modify-inputs (package-inputs ruby-3.2)
        (delete "libyaml")))))
 
-(define-public ruby-2.6
+(define-public ruby-2.7
   (package
     (name "ruby")
-    (version "2.6.10")
+    (version "2.7.8")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+       (uri (string-append "https://cache.ruby-lang.org/pub/ruby/"
                            (version-major+minor version)
-                           "/ruby-" version ".tar.xz"))
+                           "/ruby-" version ".tar.gz"))
        (sha256
         (base32
-         "1wn12klc44hn2nh5v1lkqbdyvljip6qhwjqvkkf8zf112gaxxn2z"))
+         "182vni66djmiqagwzfsd0za7x9k3zag43b88c590aalgphybdnn2"))
        (modules '((guix build utils)))
        (snippet `(begin
                    ;; Remove bundled libffi
                    (delete-file-recursively "ext/fiddle/libffi-3.2.1")
                    #t))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:test-target "test"
-       #:configure-flags
-       ,(if (%current-target-system)
-            '(list (string-append
-                    "LDFLAGS=-Wl,-rpath="
-                    (assoc-ref %outputs "out") "/lib")
-                   "--enable-shared")
-            ''("--enable-shared")) ; dynamic linking
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'replace-bin-sh-and-remove-libffi
-           (lambda _
-             (substitute* '("Makefile.in"
-                            "ext/pty/pty.c"
-                            "io.c"
-                            "lib/mkmf.rb"
-                            "process.c"
-                            "test/rubygems/test_gem_ext_configure_builder.rb"
-                            "test/rdoc/test_rdoc_parser.rb"
-                            "test/ruby/test_rubyoptions.rb"
-                            "test/ruby/test_process.rb"
-                            "test/ruby/test_system.rb"
-                            "tool/rbinstall.rb")
-               (("/bin/sh") (which "sh"))))))))
-    (native-inputs (if (%current-target-system)
-                       (list this-package)
-                       '()))
-    (inputs
-     (list readline openssl-1.1 libffi gdbm))
-    (propagated-inputs
-     (list zlib))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "GEM_PATH")
-            (files (list (string-append "lib/ruby/vendor_ruby"))))))
-    (synopsis "Programming language interpreter")
-    (description "Ruby is a dynamic object-oriented programming language with
-a focus on simplicity and productivity.")
-    (home-page "https://www.ruby-lang.org")
-    (license license:ruby)))
-
-(define-public ruby-2.7
-  (package
-    (inherit ruby-2.6)
-    (version "2.7.8")
-    (source
-     (origin
-       (inherit (package-source ruby-2.6))
-       (uri (string-append "https://cache.ruby-lang.org/pub/ruby/"
-                           (version-major+minor version)
-                           "/ruby-" version ".tar.gz"))
-       (sha256
-        (base32
-         "182vni66djmiqagwzfsd0za7x9k3zag43b88c590aalgphybdnn2"))))
     (arguments
      `(#:test-target "test"
        #:configure-flags
@@ -332,7 +277,20 @@ a focus on simplicity and productivity.")
      (append (if (%current-target-system)
                  (list this-package)
                  '())
-             (list autoconf)))))
+             (list autoconf)))
+    (inputs
+     (list readline openssl-1.1 libffi gdbm))
+    (propagated-inputs
+     (list zlib))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GEM_PATH")
+            (files (list (string-append "lib/ruby/vendor_ruby"))))))
+    (synopsis "Programming language interpreter")
+    (description "Ruby is a dynamic object-oriented programming language with
+a focus on simplicity and productivity.")
+    (home-page "https://www.ruby-lang.org")
+    (license license:ruby)))
 
 (define-public ruby ruby-3.1)
 
