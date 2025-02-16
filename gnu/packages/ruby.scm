@@ -415,13 +415,13 @@ a menu system for providing multiple options to the user.")
 (define-public ruby-hoe
   (package
     (name "ruby-hoe")
-    (version "4.0.4")
+    (version "4.2.2")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "hoe" version))
               (sha256
                (base32
-                "0r2hy7mq9jd9hsbvskd9sxfbagc92adnn7abzxbda05sscbf46hn"))))
+                "1rhj1zs02mpdw6f4fh3mpfmj0p5pfar7rfxm758pk7l931mm8pyn"))))
     (build-system ruby-build-system)
     (arguments
      (list
