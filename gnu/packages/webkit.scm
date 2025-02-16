@@ -242,6 +242,7 @@ engine that uses Wayland for graphics output.")
            pkg-config
            python-wrapper
            gi-docgen
+           ;; TODO Move to ruby@3 on the next rebuild cycle.
            ruby-2.7
            unifdef))
     (propagated-inputs

@@ -526,6 +526,7 @@ using Dates: @dateformat_str, Date, DateTime, DateFormat, Time"))
        ("p7zip" ,p7zip)
        ("pcre2" ,pcre2)
        ("suitesparse" ,suitesparse)
+       ;; TODO Move dependent ruby to ruby@3 on the next rebuild cycle.
        ("utf8proc" ,utf8proc-2.7.0)
        ("wget" ,wget)
        ("which" ,which)

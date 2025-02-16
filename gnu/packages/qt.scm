@@ -575,6 +575,7 @@ system, and the core design of Django is reused in Grantlee.")
            pkg-config
            python
            vulkan-headers
+           ;; TODO Move to ruby@3 on the next rebuild cycle.
            ruby-2.7))
     (arguments
      `(#:disallowed-references ,(list python)
@@ -3344,6 +3345,7 @@ linux/libcurl_wrapper.h")
            pkg-config
            python2-six
            python-2
+           ;; TODO Move to ruby@3 on the next rebuild cycle.
            ruby-2.7))
     (inputs
      (list alsa-lib

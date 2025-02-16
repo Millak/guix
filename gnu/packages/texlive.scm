@@ -136,6 +136,7 @@
        ("pixman" ,pixman)
        ("potrace" ,potrace)
        ("python" ,python)
+       ;; TODO Move to ruby@3 on the next rebuild cycle.
        ("ruby" ,ruby-2.7)
        ("tcsh" ,tcsh)
        ("teckit" ,teckit)
