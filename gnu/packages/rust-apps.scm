@@ -4176,7 +4176,7 @@ common-sense defaults.")
 (define-public skim
   (package
     (name "skim")
-    (version "0.15.7")
+    (version "0.16.0")
     (source
      (origin
        ;; crates.io doesn't have everything needed.
@@ -4186,7 +4186,7 @@ common-sense defaults.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05j775mgx5a00k2p6nwlgxsdizjlw2380ai5rr5d86n2pg58fhmx"))))
+        (base32 "1rwq635iin1vp0ad64qnlgg2pk8chk5p58vwv78f2qp1p3nc5sg9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -4198,12 +4198,12 @@ common-sense defaults.")
                        ("rust-clap-complete-fig" ,rust-clap-complete-fig-4)
                        ("rust-clap-complete-nushell" ,rust-clap-complete-nushell-4)
                        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+                       ("rust-crossbeam" ,rust-crossbeam-0.8)
                        ("rust-defer-drop" ,rust-defer-drop-1)
                        ("rust-derive-builder" ,rust-derive-builder-0.20)
                        ("rust-env-logger" ,rust-env-logger-0.11)
                        ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
                        ("rust-indexmap" ,rust-indexmap-2)
-                       ("rust-lazy-static" ,rust-lazy-static-1)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-nix" ,rust-nix-0.29)
                        ("rust-rand" ,rust-rand-0.8)
@@ -4216,7 +4216,7 @@ common-sense defaults.")
                        ("rust-timer" ,rust-timer-0.2)
                        ("rust-tuikit" ,rust-tuikit-0.5)
                        ("rust-unicode-width" ,rust-unicode-width-0.2)
-                       ("rust-vte" ,rust-vte-0.13)
+                       ("rust-vte" ,rust-vte-0.14)
                        ("rust-which" ,rust-which-7))
        #:phases (modify-phases %standard-phases
                   (replace 'install
