@@ -796,14 +796,14 @@ single hidden layer, and for multinomial log-linear models.")
 (define-public r-rpart
   (package
     (name "r-rpart")
-    (version "4.1.23")
+    (version "4.1.24")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rpart" version))
        (sha256
         (base32
-         "1bxbvbv3jwz1j6yhgswbr6qy574n9rbp3cnwl9badkm6dbnrmf7r"))))
+         "0a9gwwbq2ksx2v7kgrbn0liakkjbfvky1ahkjclpv1frcjknkcaa"))))
     (build-system r-build-system)
     (native-inputs (list r-survival))
     (home-page "https://cran.r-project.org/web/packages/rpart")
