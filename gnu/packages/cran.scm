@@ -17586,19 +17586,19 @@ and classification and regression trees.")
 (define-public r-later
   (package
     (name "r-later")
-    (version "1.3.2")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "later" version))
        (sha256
         (base32
-         "07jn5gp4237va5pcq8lvqzyblgij7k2wj9k5wl93q3fd6cyhgxaj"))))
+         "0b3jwf2nfpjxc0ffijsb4x6smcdyb96afjv9kby330xv2n1ypwry"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-rlang))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-r6 r-testthat))
     (home-page "https://github.com/r-lib/later")
     (synopsis "Utilities for delaying function execution")
     (description
