@@ -22580,28 +22580,44 @@ ROPE percentage and pd).")
 (define-public r-performance
   (package
     (name "r-performance")
-    (version "0.12.4")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "performance" version))
        (sha256
         (base32
-         "0dsvgc8svl5c2zzif656m56ql198nlsjq88bcby8g26bncvhbq5y"))))
+         "0ijavd5f1ziwhajpjlmd60qwj56bw6nqhj2hq0ml026y70gcymjj"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-dharma"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These fail because of unexpected warnings.
-             (delete-file "tests/testthat/test-compare_performance.R")
-             ;; No idea why this fails.
-             (delete-file "tests/testthat/test-rmse.R"))))))
     (propagated-inputs
      (list r-bayestestr r-datawizard r-insight))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-aer
+                         r-afex
+                         r-bayesfactor
+                         r-betareg
+                         r-dharma
+                         r-dirichletreg
+                         r-fixest
+                         r-gamm4
+                         r-glmmtmb
+                         r-lme4
+                         r-lmtest
+                         r-mass
+                         r-mclogit
+                         r-metafor
+                         r-mgcv
+                         r-nlme
+                         r-nonnest2
+                         r-ordinal
+                         r-parameters
+                         r-pscl
+                         r-quantreg
+                         r-rstanarm
+                         r-survival
+                         r-testthat
+                         r-withr))
     (home-page "https://easystats.github.io/performance/")
     (synopsis "Assessment of regression models performance")
     (description
