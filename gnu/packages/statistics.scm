@@ -2046,21 +2046,21 @@ features require SQL translation to be provided by the package author.")
 (define-public r-acepack
   (package
     (name "r-acepack")
-    (version "1.4.2")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "acepack" version))
        (sha256
         (base32
-         "14dccqpww3bv59236r0vr6bibhsafhbm7qshdjxp5ww3nw9cvzsv"))))
+         "1jdj9qjs1k8bq3dz6h9rv5alw35fm0y7nf30869zp9pxffb3z6gv"))))
     (properties
      `((upstream-name . "acepack")
        (updater-extra-inputs . ("gfortran"))))
     (build-system r-build-system)
     (inputs
      (list gfortran))
-    (native-inputs (list r-testthat))
+    (native-inputs (list gfortran r-testthat))
     (home-page "https://cran.r-project.org/web/packages/acepack")
     (synopsis "Functions for regression transformations")
     (description
