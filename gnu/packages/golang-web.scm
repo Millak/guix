@@ -37,6 +37,7 @@
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1912,6 +1913,33 @@ netlink,similarly to what @code{tc -s qdisc show} does.")
      "This package provides an IMAP4rev1 library written in Go.  It can be
 used to build IMAP clients and servers.")
     (license license:expat)))
+
+(define-public go-github-com-emersion-go-imap-id
+  (let ((commit "f94a56b9ecde7e39e7ea38d62c745b557cb94139")
+        (revision "0"))
+    (package
+      (name "go-github-com-emersion-go-imap-id")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emersion/go-imap-id")
+               (commit commit)))
+         (sha256
+          (base32 "1pi87xq6nrb1kdf4za4xp8cfkpwr3p93kjrmzmnr4z0j90y26vfi"))
+         (file-name (git-file-name name version))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/emersion/go-imap-id"))
+      (propagated-inputs (list go-github-com-emersion-go-imap))
+      (home-page "https://github.com/emersion/go-imap-id")
+      (synopsis "ID extension for go-imap")
+      (description
+       "This package provides an ID extension for go-imap as specified in
+@url{https://www.rfc-editor.org/rfc/rfc2971, RFC 2971}.")
+      (license license:expat))))
 
 ;; XXX: This repository has been archived by the owner on Sep 8, 2021. It is
 ;; now read-only.
