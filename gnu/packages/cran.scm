@@ -6853,13 +6853,13 @@ models.")
 (define-public r-hiddenmarkov
   (package
    (name "r-hiddenmarkov")
-   (version "1.8-13")
+   (version "1.8-14")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "HiddenMarkov" version))
             (sha256
              (base32
-              "05dm3nl0ffsz2ziw3bz5bivyxk7r5bxs8xhky3hz660qaqzd51ki"))))
+              "09b0rwipvkcwrgy0mn0dcz11ijihmnabh1yw0avbk3imkv0j42r5"))))
    (build-system r-build-system)
    (native-inputs
     (list gfortran))
