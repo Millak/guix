@@ -35664,14 +35664,16 @@ management} (aCRM).")
 (define-public r-tree
   (package
    (name "r-tree")
-   (version "1.0-43")
+   (version "1.0-44")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "tree" version))
             (sha256
              (base32
-              "11sjkm89ql1576jy0cqbxzjdpx7qs95wbgdxg92lzkiw05nrj2lv"))))
+              "03zp9g2cwf6099l8xkvs9ab11i8a4iflh8afblqihcl4yrglnsfv"))))
    (build-system r-build-system)
+   (properties
+    '((updater-extra-native-inputs . ("r-mass"))))
    (native-inputs (list r-mass))
    (home-page "https://cran.r-project.org/web/packages/tree/")
    (synopsis "Classification and regression trees")
