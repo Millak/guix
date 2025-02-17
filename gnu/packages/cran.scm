@@ -12449,21 +12449,21 @@ with particular emphasis on making attractive log axis plots.")
 (define-public r-rmysql
   (package
     (name "r-rmysql")
-    (version "0.10.29")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RMySQL" version))
        (sha256
         (base32
-         "11kbjzr6bff3ns7bh3aic8kw5bqgf1aaz2fw04vv28dwrqzrxs42"))))
+         "1z5vabv5prmw1d8fyaapa5c8wfzih49i3c5yqm3wr8v8hvalpij7"))))
     (properties `((upstream-name . "RMySQL")))
     (build-system r-build-system)
     (inputs
      (list `(,mariadb "dev") zlib))
     (propagated-inputs
      (list r-dbi))
-    (native-inputs (list r-testthat))
+    (native-inputs (list pkg-config r-testthat))
     (home-page "https://github.com/r-dbi/RMySQL")
     (synopsis "Database interface and MySQL driver for R")
     (description
