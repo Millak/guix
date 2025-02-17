@@ -10663,10 +10663,12 @@ high distances can be flagged as potentially low-quality.")
        (uri (bioconductor-uri "MetaboCoreUtils" version))
        (sha256
         (base32 "0gwghyc59cjp9arrwzm9j643a1nkl14mmcmadw55x7i9gyxvdils"))))
-    (properties `((upstream-name . "MetaboCoreUtils")))
+    (properties
+     '((upstream-name . "MetaboCoreUtils")
+       (updater-extra-native-inputs . ("r-robustbase"))))
     (build-system r-build-system)
     (propagated-inputs (list r-biocparallel r-mscoreutils))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-robustbase r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/MetaboCoreUtils")
     (synopsis "Core utils for Metabolomics data")
     (description
