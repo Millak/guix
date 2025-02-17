@@ -3508,13 +3508,13 @@ well as additional utilities such as panel and axis annotation functions.")
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
-    (version "14.0.2-1")
+    (version "14.2.3-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppArmadillo" version))
               (sha256
                (base32
-                "1ya61i2rh6hh4c6qs47nj5gzwsaah8ahzvh82a4lcjphjfmqlwlv"))))
+                "1pr6a84h6c415ac43fadv77k3dazi8138q92gn7mj3qw7v2wn74k"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
     (propagated-inputs
