@@ -1702,74 +1702,79 @@ virtualization library.")
 (define-public virt-manager
   (package
     (name "virt-manager")
-    (version "4.1.0")
+    (version "5.0.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://virt-manager.org/download/sources"
-                                  "/virt-manager/virt-manager-"
-                                  version ".tar.gz"))
+              (uri (string-append "https://releases.pagure.org/" name
+                                  "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "18lhlnd3gmyzhbnjc16gdyzhjcd33prlxnca4xlidiidngbq21lm"))
-              (patches (search-patches "virt-manager-fix-gtk-cursor-theme-backtace.patch"))))
-    (build-system python-build-system)
+                "0jpqhc02ya55rr8bin734znasslwlff42ann9rsvv5y9w13ax2dw"))))
+    (build-system meson-build-system)
     (arguments
-     (list #:use-setuptools? #f      ; uses custom distutils 'install' command
-           #:tests? #f               ; TODO: The tests currently fail
-                                     ; RuntimeError: Loop condition wasn't met
-           #:imported-modules
-           `((guix build glib-or-gtk-build-system)
-             ,@%python-build-system-modules)
-           #:modules
-           '((ice-9 match)
-             (srfi srfi-26)
-             (guix build python-build-system)
-             ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-             (guix build utils))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-setup
-                 (lambda _
-                   (substitute* "virtinst/buildconfig.py"
-                     (("/usr") #$output))))
-               (add-after 'unpack 'fix-default-uri
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Xen is not available for now - so only patch qemu.
-                   (substitute* "virtManager/createconn.py"
-                     (("/usr(/bin/qemu-system-\\*)" _ suffix)
-                      (string-append #$(this-package-input "qemu") suffix)))))
-               (add-before 'wrap 'wrap-with-GI_TYPELIB_PATH
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let* ((bin       (string-append #$output "/bin"))
-                          (bin-files (find-files bin ".*"))
-                          (paths     (map (match-lambda
-                                            ((output . directory)
-                                             (let* ((girepodir (string-append
-                                                                directory
-                                                                "/lib/girepository-1.0")))
-                                               (if (file-exists? girepodir)
-                                                   girepodir #f))))
-                                          inputs)))
-                     (for-each (lambda (file)
-                                 (format #t "wrapping ~a\n" file)
-                                 (wrap-program file
-                                   `("GI_TYPELIB_PATH" ":" prefix
-                                     ,(filter identity paths))))
-                               bin-files))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (setenv "HOME" "/tmp")
-                     (setenv "XDG_CACHE_HOME" "/tmp")
-                     (system "Xvfb :1 &")
-                     (setenv "DISPLAY" ":1")
-                     ;; Dogtail requires that Assistive Technology support be enabled
-                     (setenv "GTK_MODULES" "gail:atk-bridge")
-                     (invoke "dbus-run-session" "--" "pytest" "--uitests"))))
-               (add-after 'install 'glib-or-gtk-compile-schemas
-                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-               (add-after 'wrap 'glib-or-gtk-wrap
-                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+     (list
+      #:modules
+      '((ice-9 match)
+        (srfi srfi-1)
+        (srfi srfi-26)
+        (guix build meson-build-system)
+        (guix build utils))
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-SOURCE_DIR
+            (lambda _
+              (setenv "SOURCE_DIR" (getcwd))))
+          (add-after 'unpack 'fix-default-uri
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "virtManager/createconn.py"
+                (("/usr(/bin/qemu-system-\\*)" _ suffix)
+                 (string-append #$(this-package-input "qemu") suffix)))))
+          (add-before 'glib-or-gtk-wrap 'wrap-more
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((paths (filter-map
+                             (match-lambda
+                               ((output . directory)
+                                (let* ((girepodir (string-append
+                                                   directory
+                                                   "/lib/girepository-1.0")))
+                                  (and (file-exists? girepodir)
+                                       girepodir))))
+                             inputs)))
+                (for-each (lambda (file)
+                            (format #t "wrapping ~a~%" file)
+                            (wrap-program file
+                              `("GI_TYPELIB_PATH" prefix ,paths)
+                              `("GUIX_PYTHONPATH" prefix
+                                ;; FIXME: This wraps too much (see: bug#25235).
+                                (,(getenv "GUIX_PYTHONPATH")))))
+                          (find-files (string-append #$output "/bin"))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (with-directory-excursion (getenv "SOURCE_DIR")
+                (invoke "pytest" "-vvv"
+                        "-k" (string-append
+                              ;; The cdrom_url and CLI0062 tests cause
+                              ;; some crash, also outside the build container.
+                              "not install_cdrom_url and "
+                              "not testCLI0062virt_install and "
+                              ;; These tests fail only inside the
+                              ;; build container, perhaps due to
+                              ;; missing /dev nodes.
+                              "not install_s390x_cdrom and "
+                              "not install_many_devices and "
+                              "not test_disk and "
+                              "not virt_clone"))))))))
+    (native-inputs
+     (list cdrtools
+           cpio
+           gettext-minimal
+           `(,glib "bin")               ;glib-compile-schemas
+           gobject-introspection
+           `(,gtk+ "bin")               ;gtk-update-icon-cache
+           pkg-config
+           python-docutils              ;rst2ma
+           python-pytest))
     (inputs
      (list bash-minimal
            dconf
@@ -1779,29 +1784,15 @@ virtualization library.")
            libosinfo
            libvirt
            libvirt-glib
-           python-libvirt
+           python-minimal
            python-libxml2
+           python-libvirt
            python-pycairo
            python-pygobject
            python-requests
            qemu
            spice-gtk
            vte/gtk+-3))
-    (native-inputs
-     (list `(,glib "bin")               ; glib-compile-schemas
-           gobject-introspection
-           `(,gtk+ "bin")               ; gtk-update-icon-cache
-           intltool
-           perl                         ; pod2man
-           python-docutils              ; rst2man
-           ;; The following are required for running the tests
-           ;; at-spi2-core
-           ;; dbus
-           ;; gsettings-desktop-schemas
-           ;; python-dogtail
-           ;; python-pytest
-           ;; xorg-server-for-tests        ; xvfb
-           ))
     (home-page "https://virt-manager.org/")
     (synopsis "Manage virtual machines")
     (description
