@@ -5773,6 +5773,22 @@ from the GotoBLAS2-1.13 BSD version.")
     (synopsis "Optimized BLAS library based on GotoBLAS (ILP64 version)")
     (license license:bsd-3)))
 
+(define-public openblas-0.3.29
+  (package
+    (inherit openblas)
+    (name "openblas")
+    (version "0.3.29")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xianyi/OpenBLAS")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1wm00hn0vzb45nqg0q3ka15wjqjzma5lh1x6227di73icqdcbzcz"))))))
+
 (define-public libblastrampoline
   (package
     (name "libblastrampoline")
