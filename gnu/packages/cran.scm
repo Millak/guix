@@ -46186,14 +46186,14 @@ spatiotemporal arrays (raster and vector data cubes) in @code{R}, using
 (define-public r-tmaptools
   (package
     (name "r-tmaptools")
-    (version "3.1-1")
+    (version "3.2")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "tmaptools" version))
         (sha256
           (base32
-            "0bal3czrdr93qig8s5cf5szld5vjbbks67rismfhlkmlgw6wp2gx"))))
+            "1fjhknc03nz66pvwvg3ifjsfgkqfc1il274zmm5fs3rqz74zhxya"))))
     (properties `((upstream-name . "tmaptools")))
     (build-system r-build-system)
     (propagated-inputs
