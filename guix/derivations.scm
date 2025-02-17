@@ -841,30 +841,30 @@ derivation.  It is kept as-is, uninterpreted, in the derivation."
     ;; corresponding environment variable.
     (match drv
       (($ <derivation> outputs inputs sources
-          system builder args env-vars)
+                       system builder args env-vars)
        (let* ((drv-hash (derivation-hash drv))
               (outputs  (map (match-lambda
-                              ((output-name . ($ <derivation-output>
-                                                 _ algo hash rec?))
-                               (let ((path
-                                      (if hash
-                                          (fixed-output-path name hash
-                                                             #:hash-algo algo
-                                                             #:output output-name
-                                                             #:recursive? rec?)
-                                          (output-path output-name
-                                                       drv-hash name))))
-                                 (cons output-name
-                                       (make-derivation-output path algo
-                                                               hash rec?)))))
+                               ((output-name . ($ <derivation-output>
+                                                  _ algo hash rec?))
+                                (let ((path
+                                       (if hash
+                                           (fixed-output-path name hash
+                                                              #:hash-algo algo
+                                                              #:output output-name
+                                                              #:recursive? rec?)
+                                           (output-path output-name
+                                                        drv-hash name))))
+                                  (cons output-name
+                                        (make-derivation-output path algo
+                                                                hash rec?)))))
                              outputs)))
          (make-derivation outputs inputs sources system builder args
                           (map (match-lambda
-                                ((name . value)
-                                 (cons name
-                                       (or (and=> (assoc-ref outputs name)
-                                                  derivation-output-path)
-                                           value))))
+                                 ((name . value)
+                                  (cons name
+                                        (or (and=> (assoc-ref outputs name)
+                                                   derivation-output-path)
+                                            value))))
                                env-vars)
                           #f)))))
 
@@ -910,10 +910,10 @@ derivation.  It is kept as-is, uninterpreted, in the derivation."
     ;; Return a variant of ENV-VARS where each OUTPUTS is associated with an
     ;; empty string, even outputs that do not appear in ENV-VARS.
     (let ((e (map (match-lambda
-                   ((name . val)
-                    (if (member name outputs)
-                        (cons name "")
-                        (cons name val))))
+                    ((name . val)
+                     (if (member name outputs)
+                         (cons name "")
+                         (cons name val))))
                   env-vars)))
       (fold (lambda (output-name env-vars)
               (if (assoc output-name env-vars)
