@@ -43503,11 +43503,13 @@ distributions.")
        (sha256
         (base32
          "121h4b4rms23szcfs1nrbgdk812d61vhrmwn9lgpsgnsaaxqd6y9"))))
-    (properties `((upstream-name . "conflicted")))
+    (properties
+     '((upstream-name . "conflicted")
+       (updater-extra-native-inputs . ("r-dplyr" "r-matrix"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-memoise r-rlang))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-dplyr r-matrix r-testthat))
     (home-page "https://github.com/r-lib/conflicted")
     (synopsis "Alternative conflict resolution strategy")
     (description
