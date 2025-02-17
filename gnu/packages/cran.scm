@@ -16784,13 +16784,13 @@ It also includes interpolation functions.")
 (define-public r-simdesign
   (package
     (name "r-simdesign")
-    (version "2.17.1")
+    (version "2.18")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SimDesign" version))
        (sha256
-        (base32 "0anmnzxxw7mv9kykjf2kmgv6qwxkrg48g91q32r2ia4dw8n17782"))))
+        (base32 "0xvqpi3pfpx80aldb6g0iyw4rzspdfy65n1q2hk0agmm1dpy4qsm"))))
     (properties `((upstream-name . "SimDesign")))
     (build-system r-build-system)
     (propagated-inputs (list r-beepr
