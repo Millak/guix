@@ -3277,17 +3277,17 @@ volume or copy a file.")
 (define-public r-bench
   (package
     (name "r-bench")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bench" version))
        (sha256
-        (base32 "05zky7l6103gabv9y0g3qlx8sgkq1sn9yl9jd3x8834cmlh67bmz"))))
+        (base32 "10yhn778l8am8fq9gfb6n5gfd4nf6bls9k3da5mwrvldcjvza8mq"))))
     (properties `((upstream-name . "bench")))
     (build-system r-build-system)
     (propagated-inputs (list r-glue r-pillar r-profmem r-rlang r-tibble))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-ggplot2 r-testthat r-tidyr r-vctrs r-withr))
     (home-page "https://bench.r-lib.org/")
     (synopsis "High precision timing of R expressions")
     (description
