@@ -47669,20 +47669,20 @@ service, and more.")
 (define-public r-paws-cost-management
   (package
     (name "r-paws-cost-management")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.cost.management" version))
        (sha256
         (base32
-         "1gib8fyx4gvhiaf68r3qql7n1swda11687dal4swp7f4kmgz4x0d"))))
+         "0fp1vqkr46a1wrflpaa2p3rb7170lbsjrsb86nqfk70ihp1fb6gp"))))
     (properties
-     `((upstream-name . "paws.cost.management")))
+     '((upstream-name . "paws.cost.management")
+       (updater-ignored-native-inputs . ("r-paws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services cost management services")
     (description
