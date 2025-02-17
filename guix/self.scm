@@ -882,6 +882,7 @@ itself."
                     ,(local-file "../guix/store/schema.sql")))
 
                  #:extensions (list guile-gcrypt
+                                    guile-git     ;for (guix git)
                                     guile-json)   ;for (guix swh)
                  #:guile-for-build guile-for-build))
 

@@ -148,15 +148,16 @@ flags."
   (let* ((not-colon   (char-set-complement (char-set #\:)))
          (environment (string-tokenize (or (getenv "GUIX_PACKAGE_PATH") "")
                                        not-colon))
-         (channels-scm channels-go (package-path-entries)))
+         (channels-scm (package-path-entries)))
     ;; Automatically add channels and items from $GUIX_PACKAGE_PATH to Guile's
     ;; search path.  For historical reasons, $GUIX_PACKAGE_PATH goes to the
     ;; front; channels go to the back so that they don't override Guix' own
     ;; modules.
+    (append-channels-to-load-path!)
     (set! %load-path
-      (append environment %load-path channels-scm))
+      (append environment %load-path))
     (set! %load-compiled-path
-      (append environment %load-compiled-path channels-go))
+      (append environment %load-compiled-path))
 
     (make-parameter
      (append environment
