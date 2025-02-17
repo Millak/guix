@@ -456,13 +456,13 @@ files and provide more explicit control over line endings.")
 (define-public r-broom-helpers
   (package
     (name "r-broom-helpers")
-    (version "1.17.0")
+    (version "1.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "broom.helpers" version))
        (sha256
-        (base32 "0k97smqgxggdkbgfs2yvvgqw225q9106124kaw499m6cjcldxqyi"))))
+        (base32 "0fj4czsg8m4cr8s6j5m1gagyl2bzm6qaiygrvyya3x79f7g9jjy2"))))
     (properties `((upstream-name . "broom.helpers")))
     (build-system r-build-system)
     ;; Tests require gtsummary, which cannot be packaged due to massive
