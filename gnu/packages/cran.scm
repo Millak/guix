@@ -24514,15 +24514,18 @@ Processing.")
 (define-public r-tm
   (package
     (name "r-tm")
-    (version "0.7-14")
+    (version "0.7-15")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tm" version))
        (sha256
         (base32
-         "103n9m9vh1s1fn2wlab5qm4i1dx4wq0ffl7v69mwa6mvdklfw7ks"))))
-    (properties `((upstream-name . "tm")))
+         "1ravd83xafkpzzs8ark8ijq6607jsnnqg6j983z8v5fqyr3jp9bw"))))
+    (properties
+     '((upstream-name . "tm")
+       ;; Needed for vignettes.
+       (updater-extra-native-inputs . ("r-snowballc"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh r-nlp r-rcpp r-slam r-xml2))
