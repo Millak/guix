@@ -6454,7 +6454,7 @@ resources for bioinformatics.")
            python-umap-learn))
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/swolock/scrublet")
-    (synopsis "Tool to indentify and remove doublets in single-cell data")
+    (synopsis "Tool to identify and remove doublets in single-cell data")
     (description "This package provides a tool for identifying and removing
 doublets in single-cell RNA-seq data.")
     (license license:expat)))
@@ -9698,7 +9698,7 @@ pipeline as a series of consecutive filters, each performing a dedicated
 analysis.  Many of the filters are available, from alignment cleaning to
 phylogeny reconstruction and population genetics analysis.  Despite various
 filtering options and format conversion tools, MafFilter can compute a wide
-range of statistics (phylogenetic trees, nucleotide diversity, inferrence of
+range of statistics (phylogenetic trees, nucleotide diversity, inference of
 selection, etc.).")
     (license license:gpl3+)))
 
@@ -13613,7 +13613,7 @@ single-cell data.")
       (description "Azimuth utilizes an annotated reference dataset.  It
 automates the processing, analysis, and interpretation.  This applies
 specifically to new single-cell RNA-seq or ATAC-seq experiments.  Azimuth
-leverages a reference-based mapping pipeline that inputs acounts matrix and
+leverages a reference-based mapping pipeline that inputs accounts matrix and
 performs normalization, visualization, cell annotation, and differential
 expression.")
       (license license:gpl3))))
