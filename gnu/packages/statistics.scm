@@ -7908,14 +7908,14 @@ Michael Lim & Trevor Hastie (2015)")
 (define-public r-datasaurus
   (package
     (name "r-datasaurus")
-    (version "0.1.8")
+    (version "0.1.9")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "datasauRus" version))
         (sha256
           (base32
-            "08yx87k4kl3i9g3m1j9532whvs4l0l3v5gwj8sk7qlb3m3wajakr"))))
+            "0lkf32py342nswm8k4x1hf9j5pnbx2xipzfaj54z6d58a2nlgii1"))))
     (properties `((upstream-name . "datasauRus")))
     (build-system r-build-system)
     (native-inputs (list r-knitr r-testthat))
