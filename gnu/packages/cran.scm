@@ -31543,11 +31543,13 @@ matched.")
        (sha256
         (base32
          "0bfzqjaxg5r9qzi6hav0m6rcw1cr90h8pwwjklbv930finrxrw5p"))))
-    (properties `((upstream-name . "ggnewscale")))
+    (properties
+     `((upstream-name . "ggnewscale")
+       (updater-extra-native-inputs . ("r-vdiffr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-vdiffr))
     (home-page "https://cran.r-project.org/package=ggnewscale")
     (synopsis "Multiple fill and color scales in ggplot2")
     (description
