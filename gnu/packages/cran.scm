@@ -47742,20 +47742,20 @@ and more.")
 (define-public r-paws-application-integration
   (package
     (name "r-paws-application-integration")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.application.integration" version))
        (sha256
         (base32
-         "1vqwa67px96kw9lrrb3hq9c22jzailwwdw5icvngglaqyd6xvfky"))))
+         "04mi8wbhzacl1wwhdn67bz67r9nj0s68s2w1bm0ryqv3khjknqsa"))))
     (properties
-     `((upstream-name . "paws.application.integration")))
+     '((upstream-name . "paws.application.integration")
+       (updater-ignored-native-inputs . ("r-paws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services application integration services")
     (description
