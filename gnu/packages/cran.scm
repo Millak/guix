@@ -334,13 +334,13 @@ beta regression, see <doi:10.18637/jss.v048.i11>.")
 (define-public r-bma
   (package
     (name "r-bma")
-    (version "3.18.19")
+    (version "3.18.20")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BMA" version))
        (sha256
-        (base32 "0hldrbl7bcf5rchc5vl8v1y679yjbxq8pca79pgc3g607pnddsh9"))))
+        (base32 "18rhz04ykd4gpf8wkj93x5q64ng0x44w7bakhjrsigrcpxnajwid"))))
     (properties `((upstream-name . "BMA")))
     (build-system r-build-system)
     (propagated-inputs (list r-inline r-leaps r-robustbase r-rrcov r-survival))
