@@ -20,6 +20,7 @@
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
+;;; Copyright © 2025 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -492,19 +493,17 @@ support.")
     (license license:gpl2+)))
 
 (define-public ckb-next
-  (let ((commit "967f44018a9d46efa7203fad38518e9381eba0f3")
-        (revision "0"))
     (package
       (name "ckb-next")
-      (version (git-version "0.4.4" revision commit))
+      (version "0.6.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/ckb-next/ckb-next")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (sha256
                  (base32
-                  "0bfpah0zgmyhbi6payymr3p98nfnwqr2xqxgkyzvccz72z246316"))
+                  "1s6xz2d631rds0bsxk26smqjs9jg3lwnjrjh2sw8hc7h7l8jyiqv"))
                 (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
@@ -545,7 +544,7 @@ support.")
 the features of Corsair's proprietary software to Linux-based operating
 systems.  It already supports much of the same functionality, including full
 RGB animations.")
-      (license license:gpl2))))
+      (license license:gpl2)))
 
 (define-public ddcutil
   (package
