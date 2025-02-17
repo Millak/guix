@@ -29915,13 +29915,13 @@ SELECT or UPDATE queries to an end-point.")
 (define-public r-bookdown
   (package
     (name "r-bookdown")
-    (version "0.41")
+    (version "0.42")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bookdown" version))
               (sha256
                (base32
-                "1xwknvsml2bpkyzpapsqlargc1zqphc9q0g7ac0b9d685kvhmd3d"))
+                "1dgl69kcawg0qwwi7cdgj1lw6jy0jv4k7ppsbymhvqvcmk3ray9j"))
               ;; TODO: there is one more file to replace:
               ;; inst/resources/gitbook/js/app.min.js
               (snippet
@@ -30000,8 +30000,11 @@ releases/download/v0.10.1/mathquill-0.10.1.tgz")
            (sha256
             (base32
              "1159l2fi7k3wyclp0pksc0qng291glb8qpa67bvcxwyb9dfiwav7"))))
+       ("r-jsonlite" ,r-jsonlite)
        ("r-testit" ,r-testit)
-       ("r-testthat" ,r-testthat)))
+       ("r-testthat" ,r-testthat)
+       ("r-withr" ,r-withr)
+       ("r-xml2" ,r-xml2)))
     (home-page "https://github.com/rstudio/bookdown")
     (synopsis "Authoring books and technical documents with R markdown")
     (description "This package provides output formats and utilities for
