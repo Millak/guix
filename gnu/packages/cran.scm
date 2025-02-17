@@ -30094,11 +30094,13 @@ global options, defining default values and more.")
        (sha256
         (base32
          "04jp85jik1zkbb08w44m2h0hqyzd80w4pjnfp1lnwy40ax81gj8c"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-stringr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-getopt))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-stringr r-testthat))
     (home-page "https://github.com/trevorld/optparse")
     (synopsis "Command line option parser")
     (description
