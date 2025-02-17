@@ -33281,18 +33281,23 @@ multiple plots.")
 (define-public r-patrick
   (package
     (name "r-patrick")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "patrick" version))
        (sha256
-        (base32 "1ghjvm82hgal091hfjfyz3ndg32xsggip5pp4y0g7rmrzpfjmpjs"))))
+        (base32 "1gyzida6wj3adcjj3rc7amch0mvwchm4jyz1dbfw3sn4m3d6520l"))))
     (properties `((upstream-name . "patrick")))
     (build-system r-build-system)
     ;; One test fails.
     (arguments (list #:tests? #false))
-    (propagated-inputs (list r-dplyr r-purrr r-rlang r-testthat r-tibble))
+    (propagated-inputs (list r-dplyr
+                             r-glue
+                             r-purrr
+                             r-rlang
+                             r-testthat
+                             r-tibble))
     (native-inputs (list r-testthat))
     (home-page "https://github.com/google/patrick")
     (synopsis "Parameterized Unit Testing")
