@@ -18925,21 +18925,21 @@ provided.")
 (define-public r-rdpack
   (package
     (name "r-rdpack")
-    (version "2.6.1")
+    (version "2.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rdpack" version))
        (sha256
         (base32
-         "0igrmi0v17jsbfa770d6rcfnkjx6l2x3shskvjzhc5xbqjbn6qir"))))
+         "00yzjhgn58b3xqbsyw3ky18ii7y58wgw5llhkpij319nfplgk6vj"))))
     (properties `((upstream-name . "Rdpack")))
     (build-system r-build-system)
     ;; FIXME It's unclear why the tests fail.
     (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-rbibutils))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-devtools r-gbrd r-testthat r-waldo))
     (home-page "https://github.com/GeoBosh/Rdpack")
     (synopsis "Update and manipulate Rd documentation objects")
     (description
