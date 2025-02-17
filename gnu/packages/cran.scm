@@ -1855,7 +1855,9 @@ axis breaks of a ggplot.")
        (uri (cran-uri "ggdist" version))
        (sha256
         (base32 "1wc3pqnf2r0324jm0vv1872smriv25h0lx0mni7qp93wrf8k0mpn"))))
-    (properties `((upstream-name . "ggdist")))
+    (properties
+     '((upstream-name . "ggdist")
+       (updater-extra-native-inputs . ("r-posterior"))))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
                              r-distributional
@@ -1870,7 +1872,8 @@ axis breaks of a ggplot.")
                              r-tibble
                              r-vctrs
                              r-withr))
-    (native-inputs (list r-dplyr r-knitr r-testthat r-tidyr r-vdiffr))
+    (native-inputs
+     (list r-dplyr r-knitr r-posterior r-testthat r-tidyr r-vdiffr))
     (home-page "https://mjskay.github.io/ggdist/")
     (synopsis "Visualizations of distributions and uncertainty")
     (description
