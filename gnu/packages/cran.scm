@@ -29647,13 +29647,13 @@ lspec, polyclass, and polymars.")
 (define-public r-rms
   (package
     (name "r-rms")
-    (version "6.8-2")
+    (version "7.0-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rms" version))
        (sha256
-        (base32 "0zz4vdxbzvg5jc5ri0vrd676hn0x98fxmarpy5h6hywv5rqwmrw3"))))
+        (base32 "18k16yjb9izyrh5sjr3qdkr6718nxwzi28cl9nm5i4k4irwnlb7p"))))
     (build-system r-build-system)
     ;; One test fails with: "duplicated column name in design matrix:X21"
     (arguments (list #:tests? #false))
@@ -29667,6 +29667,7 @@ lspec, polyclass, and polymars.")
            r-htmltools
            r-knitr
            r-mass
+           r-matrix
            r-multcomp
            r-nlme
            r-polspline
@@ -29674,7 +29675,7 @@ lspec, polyclass, and polymars.")
            r-rpart
            r-sparsem
            r-survival))
-    (native-inputs (list gfortran r-vgam))
+    (native-inputs (list gfortran))
     (home-page "http://biostat.mc.vanderbilt.edu/rms")
     (synopsis "Regression modeling strategies")
     (description
