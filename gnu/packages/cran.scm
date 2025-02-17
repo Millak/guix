@@ -22743,10 +22743,12 @@ package works as intended.")
        (sha256
         (base32
          "0pf70g4a2kxjcid5rc4ppmgcl3kpjhkszdgz4fqn4l33lp6apij1"))))
-    (properties `((upstream-name . "gitcreds")))
+    (properties
+     `((upstream-name . "gitcreds")
+       (updater-extra-native-inputs . ("r-mockery" "r-codetools"))))
     (build-system r-build-system)
     (inputs (list git-minimal))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-codetools r-knitr r-mockery r-testthat))
     (home-page "https://github.com/r-lib/gitcreds")
     (synopsis "Query git credentials from R")
     (description
