@@ -45246,8 +45246,9 @@ unit tests of graphics).")
          "16zdb910dc40s79f336mdpr0zymxbjh84vx41051hq4gfx54y342"))))
     (properties `((upstream-name . "vdiffr")))
     (build-system r-build-system)
-    (inputs
-     (list libpng zlib))
+    ;; Tests require r-ggplot2, which creates a dependency cycle in pillar.
+    (arguments (list #:tests? #false))
+    (inputs (list libpng zlib))
     (propagated-inputs
      (list r-cpp11
            r-diffobj
