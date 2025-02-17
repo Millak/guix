@@ -26080,7 +26080,9 @@ regions or annotations of your choice from BigWig files.")
        (sha256
         (base32
          "06kz8433vazx7dkxysh8z9lp098irayxh23hra17bf0dih9xjcjp"))))
-    (properties `((upstream-name . "BEclear")))
+    (properties
+     '((upstream-name . "BEclear")
+       (updater-extra-native-inputs . ("r-seewave"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind
@@ -26093,7 +26095,7 @@ regions or annotations of your choice from BigWig files.")
            r-rcpp
            r-rdpack))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-seewave r-testthat))
     (home-page "https://github.com/uds-helms/BEclear")
     (synopsis "Correction of batch effects in DNA methylation data")
     (description
