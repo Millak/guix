@@ -12326,8 +12326,9 @@ single pass.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "ruby" "-Ilib" "-r" "brass"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "ruby" "-Ilib" "-r" "brass")))))))
     (synopsis "Basic foundational assertions framework")
     (description
      "BRASS (Bare-Metal Ruby Assertion System Standard) is a basic
