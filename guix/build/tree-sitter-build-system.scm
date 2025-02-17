@@ -18,10 +18,10 @@
 
 (define-module (guix build tree-sitter-build-system)
   #:use-module ((guix build node-build-system) #:prefix node:)
-  #:use-module (guix build json)
   #:use-module (guix build utils)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
+  #:use-module (json)
   #:use-module (srfi srfi-1)
   #:export (%standard-phases
             tree-sitter-build))
@@ -47,28 +47,24 @@
   "Rewrite dependencies in 'package.json'.  We remove all runtime dependencies
 and replace development dependencies with tree-sitter grammar node modules."
 
-  (define (rewrite package.json)
-    (map (match-lambda
-           (("dependencies" @ . _)
-            '("dependencies" @))
-           (("devDependencies" @ . _)
-            `("devDependencies" @
-              ,@(filter-map (match-lambda
-                              ((key . directory)
-                               (let ((node-module
-                                      (string-append directory
-                                                     "/lib/node_modules/"
-                                                     key)))
-                                 (and (directory-exists? node-module)
-                                      `(,key . ,node-module)))))
-                            (alist-delete "node" inputs))))
-           (other other))
-         package.json))
-
-  (node:with-atomic-json-file-replacement "package.json"
-    (match-lambda
-      (('@ . package.json)
-       (cons '@ (rewrite package.json))))))
+  (node:with-atomic-json-file-replacement
+   (lambda (pkg-meta-alist)
+     (map (match-lambda
+            (("dependencies" dependencies ...)
+             '("dependencies"))
+            (("devDependencies" dev-dependencies ...)
+             `("devDependencies"
+               ,@(filter-map (match-lambda
+                               ((key . directory)
+                                (let ((node-module
+                                       (string-append directory
+                                                      "/lib/node_modules/"
+                                                      key)))
+                                  (and (directory-exists? node-module)
+                                       `(,key . ,node-module)))))
+                             (alist-delete "node" inputs))))
+            (other other))
+          pkg-meta-alist))))
 
 ;; FIXME: The node build-system's configure phase does not support
 ;; cross-compiling so we re-define it.
@@ -99,7 +95,7 @@ and replace development dependencies with tree-sitter grammar node modules."
     (define (compile-language dir)
       (with-directory-excursion dir
         (let ((lang (assoc-ref (call-with-input-file "src/grammar.json"
-                                 read-json)
+                                 json->scm)
                                "name"))
               (source-file (lambda (path)
                              (if (file-exists? path)
