@@ -510,30 +510,33 @@ with a @code{ncurses} user interface similar to @code{alpine} and
   (package
     (name "goimapnotify")
     (version "2.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.com/shackra/goimapnotify")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "06gmhrmfl31icr2lld9g2bnqjs0y2fq7kjfzm8zjg8d3n3vs7rl9"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/shackra/goimapnotify")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06gmhrmfl31icr2lld9g2bnqjs0y2fq7kjfzm8zjg8d3n3vs7rl9"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "gitlab.com/shackra/goimapnotify"))
-    (propagated-inputs (list go-github-com-emersion-go-imap
-                             go-github-com-emersion-go-imap-id
-                             go-github-com-emersion-go-imap-idle
-                             go-github-com-emersion-go-sasl
-                             go-github-com-fatih-color
-                             go-github-com-sirupsen-logrus
-                             go-github-com-spf13-viper))
+     (list
+      #:install-source? #f
+      #:import-path "gitlab.com/shackra/goimapnotify"))
+    (native-inputs
+     (list go-github-com-emersion-go-imap
+           go-github-com-emersion-go-imap-id
+           go-github-com-emersion-go-imap-idle
+           go-github-com-emersion-go-sasl
+           go-github-com-fatih-color
+           go-github-com-sirupsen-logrus
+           go-github-com-spf13-viper))
+    (home-page "https://gitlab.com/shackra/goimapnotify")
     (synopsis "Execute scripts on IMAP mailbox changes")
     (description
      "Script to execute scripts on IMAP mailbox changes (new/deleted/updated
 messages) using IDLE.  Implemented in Go.")
-    (home-page "https://gitlab.com/shackra/goimapnotify")
     (license license:gpl3+)))
 
 (define-public go-gitlab.com-shackra-goimapnotify
