@@ -509,7 +509,7 @@ with a @code{ncurses} user interface similar to @code{alpine} and
 (define-public go-gitlab.com-shackra-goimapnotify
   (package
     (name "go-gitlab.com-shackra-goimapnotify")
-    (version "2.3.7")
+    (version "2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -518,15 +518,17 @@ with a @code{ncurses} user interface similar to @code{alpine} and
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06jhxvhdvdv049qpvp8ahnhvswvbpakpw7aq2lw790f3x89px2ss"))))
+                "06gmhrmfl31icr2lld9g2bnqjs0y2fq7kjfzm8zjg8d3n3vs7rl9"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "gitlab.com/shackra/goimapnotify"))
-    (propagated-inputs
-     (list go-github-com-emersion-go-imap
-           go-github-com-emersion-go-imap-idle
-           go-github-com-emersion-go-sasl go-github-com-sirupsen-logrus
-           go-golang-org-x-text))
+    (propagated-inputs (list go-github-com-emersion-go-imap
+                             go-github-com-emersion-go-imap-id
+                             go-github-com-emersion-go-imap-idle
+                             go-github-com-emersion-go-sasl
+                             go-github-com-fatih-color
+                             go-github-com-sirupsen-logrus
+                             go-github-com-spf13-viper))
     (synopsis "Execute scripts on IMAP mailbox changes")
     (description
      "Script to execute scripts on IMAP mailbox changes (new/deleted/updated
