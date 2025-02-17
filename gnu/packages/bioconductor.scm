@@ -10114,6 +10114,35 @@ the @code{ProteomeXchange} consortium.")
 microarray data, using nearest neighbor averaging.")
     (license license:gpl2+)))
 
+;; This is a CRAN package, but it depends on r-impute, a Bioconductor package.
+(define-public r-imputelcmd
+  (package
+    (name "r-imputelcmd")
+    (version "2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "imputeLCMD" version))
+       (sha256
+        (base32 "0w6wn9b74phiz9f58b6p95fymgrrlh94avhas046ngzaax6ay71n"))))
+    (properties `((upstream-name . "imputeLCMD")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-impute r-norm r-pcamethods r-tmvtnorm))
+    (home-page "https://cran.r-project.org/package=imputeLCMD")
+    (synopsis
+     "Collection of methods for left-censored missing data imputation")
+    (description
+     "This package provides a collection of functions for left-censored
+missing data imputation.  Left-censoring is a special case of missing not at
+random (MNAR) mechanism that generates non-responses in proteomics
+experiments.  The package also contains functions to artificially generate
+peptide/protein expression data (log-transformed) as random draws from a
+multivariate Gaussian distribution as well as a function to generate missing
+data (both randomly and non-randomly).  For comparison reasons, the package
+also contains several wrapper functions for the imputation of non-responses
+that are missing at random.")
+    (license license:gpl2+)))
+
 (define-public r-interactivedisplay
   (package
     (name "r-interactivedisplay")
