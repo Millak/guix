@@ -47818,20 +47818,20 @@ Elasticsearch search engine, and more.")
 (define-public r-paws-machine-learning
   (package
     (name "r-paws-machine-learning")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.machine.learning" version))
        (sha256
         (base32
-         "07p24svzy570x9lglik2wpb2c92nrl6mn982n5j02j5b7z88w33p"))))
+         "07hy9xrgrm3q03j5pks2v1pihzbl054lqwdvlv0rccnigwbkbhfv"))))
     (properties
-     `((upstream-name . "paws.machine.learning")))
+     '((upstream-name . "paws.machine.learning")
+       (updater-ignored-native-inputs . ("r-paws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services machine learning services")
     (description
