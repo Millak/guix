@@ -1390,7 +1390,7 @@ Gerbil code within Emacs.")))
      "Owl Lisp is a simple programming language.  It is intended to provide a
 portable system for writing standalone programs in a subjectively pleasant
 dialect of Lisp.  It has a minimal core and runtime, purely functional
-operation, and suppport for asynchronous evaluation.")
+operation, and support for asynchronous evaluation.")
     (license expat)))
 
 (define-public stklos

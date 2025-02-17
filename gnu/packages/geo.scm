@@ -1167,7 +1167,7 @@ for the @code{OpenStreetMap} Overpass API.")
     (description
      "@code{ogr2osm} is a tool for converting ogr-readable files into
 @acronym{OSM, OpenStreetMap} format.  It supports reading from OGR files like
-shapefiles or PostgresSQL database and converts data into @code{osm} or
+shapefiles or PostgreSQL database and converts data into @code{osm} or
 @code{osm.pbf} formats.  A translation file can be used to manipulate the data
 during conversion.")
     (license license:expat)))

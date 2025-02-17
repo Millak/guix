@@ -151,7 +151,7 @@
                          python-pillow))
     (home-page "https://github.com/jpakkane/a4pdf")
     (synopsis "Color-managed PDF generator")
-    (description "A4PDF is a low-level libray for generating PDF files.
+    (description "A4PDF is a low-level library for generating PDF files.
 It does not have a document model and instead uses PDF primitives
 directly.  It uses LittleCMS for color management but otherwise does not
 convert data in any way.")

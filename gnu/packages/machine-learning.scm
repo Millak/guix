@@ -4662,7 +4662,7 @@ contains facebook extensions and is used by PyTorch.")
       #:install-plan
       ''(("include" "include"))))
     (home-page "https://github.com/intel/ideep")
-    (synopsis "Ideep headers for interal use by PyTorch")
+    (synopsis "Ideep headers for internal use by PyTorch")
     (description "This library is used internally as header-only library by
 PyTorch.")
     (license license:expat)))

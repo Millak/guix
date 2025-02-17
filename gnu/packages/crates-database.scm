@@ -924,7 +924,7 @@ transactional embedded database.")
     (home-page "https://github.com/shssoichiro/sqlformat-rs")
     (synopsis "Formats whitespace in a SQL string to make it easier to read")
     (description
-     "This package provides formating of whitespace in a SQL string to make
+     "This package provides formatting of whitespace in a SQL string to make
 it easier to read.")
     (license (list license:expat license:asl2.0))))
 

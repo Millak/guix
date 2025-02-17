@@ -4122,7 +4122,7 @@ Ruby Gems.")
     (build-system ruby-build-system)
     (synopsis "ActiveSupport stream silencing without ActiveSupport")
     (description "SilentStream is an extraction of some parts of
-ActiveSupport's Kernel Reporting Core Extentions around silencing IO
+ActiveSupport's Kernel Reporting Core Extensions around silencing IO
 streams.")
     (home-page "https://github.com/pboling/silent_stream")
     (license license:expat)))
@@ -11398,7 +11398,7 @@ definitions.")
                 ;; triggered in the build environment, for reasons unknown.
                 (("def test_cp_r_dev.*" all)
                  (string-append all "    return true\n"))))))))
-    (synopsis "Ruby utility libray to manipulate files")
+    (synopsis "Ruby utility library to manipulate files")
     (description "The FileUtils Ruby library includes Several file utility
 methods for copying, moving, removing, etc.")
     (home-page "https://github.com/ruby/fileutils")

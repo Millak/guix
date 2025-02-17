@@ -1131,7 +1131,7 @@ fi")))))))
     (inputs (list libiconv))
     (home-page "https://taku910.github.io/mecab")
     (synopsis "Morphological analysis engine for texts")
-    (description "Mecab is a morphological analysis engine developped as a
+    (description "Mecab is a morphological analysis engine developed as a
 collaboration between the Kyoto university and Nippon Telegraph and Telephone
 Corporation.  The engine is independent of any language, dictionary or corpus.")
     (license (list license:gpl2+ license:lgpl2.1+ license:bsd-3))))

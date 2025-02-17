@@ -723,7 +723,7 @@ import logging
        (list gettext-minimal))
       (home-page "https://github.com/sugarlabs/sugar-commander")
       (synopsis "Manage your Sugar journal")
-      (description "Sugar-commander lets you import items from removeable
+      (description "Sugar-commander lets you import items from removable
 devices like USB drives and SD cards using a familiar hierarchical view of
 files on these devices, as opposed to the flattened Journal view that the
 Sugar Journal gives to these devices.  It also enables you to see how much

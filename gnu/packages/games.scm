@@ -11010,7 +11010,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
     (inputs (list qtbase-5 qtsvg-5))
     (home-page "https://portnov.github.io/qcheckers/")
     (synopsis "Qt-based checkers boardgame")
-    (description "QCheckers, formely known as KCheckers, is a is a Qt version
+    (description "QCheckers, formerly known as KCheckers, is a is a Qt version
 of the classic boardgame checkers (also known as draughts).")
     (license license:gpl2+)))
 

@@ -414,7 +414,7 @@ broadband modem as found, for example, on PinePhone.")
     (home-page "https://www.openfirmware.info/FCODE_suite")
     (synopsis "Utilities to process FCODE, OpenFirmware's byte code")
     (description "This is the OpenBIOS FCODE suite.  It contains a set of
-utilites used to process FCODE, OpenFirmware's byte code, consisting of:
+utilities used to process FCODE, OpenFirmware's byte code, consisting of:
 @enumerate
 @item toke - A tokenizer
 @item detok - A detokenizer
@@ -824,7 +824,7 @@ coreboot.")
        "SGABIOS provides a means for legacy PC software to communicate with an
 attached serial console as if a VGA card is attached.  It is designed to be
 inserted into a BIOS as an option ROM to provide over a serial port the display
-and input capabilites normally handled by a VGA adapter and a keyboard, and
+and input capabilities normally handled by a VGA adapter and a keyboard, and
 additionally provide hooks for logging displayed characters for later collection
 after an operating system boots.")
       (license license:asl2.0))))

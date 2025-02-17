@@ -7215,7 +7215,7 @@ similar to that provided by @command{yason} or @command{st-json}.")
       (description "
 This package provides a JSON
 Pointer (@url{https://tools.ietf.org/html/rfc6901,RFC6901}) implementation for
-Common Lisp.  This libary aims to be independent from any JSON libraries (as much
+Common Lisp.  This library aims to be independent from any JSON libraries (as much
 as possible).")
       (license license:expat))))
 

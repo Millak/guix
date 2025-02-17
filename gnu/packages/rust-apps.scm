@@ -1906,7 +1906,7 @@ bar.  It is also compatible with sway.")
     (synopsis "Featureful text editor in less than 1024 lines of code")
     (description
      "Inspired by the kilo text editor in C, this package provides a text
-editor in less than 1024 lines of code with syntax higlighting, search and
+editor in less than 1024 lines of code with syntax highlighting, search and
 more.")
     (license (list license:expat license:asl2.0))))
 

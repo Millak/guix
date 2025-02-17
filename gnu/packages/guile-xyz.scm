@@ -1225,7 +1225,7 @@ for calling methods on remote servers by exchanging JSON objects.")
     (inputs `(("guile" ,guile-next)))
     (propagated-inputs (list guile-fibers))
     (home-page "https://git.sr.ht/~abcdw/guile-ares-rs")
-    (synopsis "Asyncronous Reliable Extensible Sleek RPC Server for Guile")
+    (synopsis "Asynchronous Reliable Extensible Sleek RPC Server for Guile")
     (description "Asynchronous Reliable Extensible Sleek RPC Server for
  Guile.  It's based on nREPL protocol and can be used for programmable
  interactions with a running guile processes, for implementing REPLs, IDEs,
@@ -5733,7 +5733,7 @@ using a short read-capability.")
       (description
        "R7RS-small Scheme library for reading and writing @acronym{RSV, rows
 of string values} data format, a very simple binary format for storing tables
-of strings.  It is a competitor for CSV (Comma Seperated Values) and TSV (Tab
+of strings.  It is a competitor for CSV (Comma Separated Values) and TSV (Tab
 Separated Values).  Its main benefit is that the strings are represented as
 Unicode encoded as UTF-8, and the value and row separators are byte values
 that are never used in UTF-8, so the strings do not need any error prone

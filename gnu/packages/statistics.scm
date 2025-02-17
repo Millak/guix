@@ -8167,7 +8167,7 @@ models, using simulation.  It was designed to work with models fit using the
         "Pilotdata based simulations for estimating power in linear mixed models")
       (description
        "Mixedpower uses pilotdata and a linear mixed model fitted with lme4 to
-simulate new data sets.  Power is computed seperate for every effect in the
+simulate new data sets.  Power is computed separate for every effect in the
 model output as the relation of significant simulations to all simulations.
 More conservative simulations as a protection against a bias in the pilotdata
 are available as well as methods for plotting the results.")

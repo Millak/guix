@@ -6427,7 +6427,7 @@ target_link_libraries(CHOLMOD_static PRIVATE ${METIS_LIBRARY} ${GKLIB_LIBRARY})"
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Library for solving sparse symmetric positive definite linear
 equations")
-    (description "CHOLMOD is a set of routins for factorizing sparse symmetrix
+    (description "CHOLMOD is a set of routines for factorizing sparse symmetrix
 positive definite matrices, updating/downdating sparse Cholesky factorizations
 and other related operations.")
     (license (list license:gpl2+ license:lgpl2.1+))))

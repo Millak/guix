@@ -4714,7 +4714,7 @@ additions is not changed.")
     (description
      "This package provides an interface for manipulating multivariate polynomials.
 Implementing algorithms on polynomials using this interface will allow the algorithm
-to work for all polynomials implenting this interface.  The interface contains
+to work for all polynomials implementing this interface.  The interface contains
 functions for accessing the coefficients, monomials, defining arithmetic operations
 on them, rational functions, division with remainder, calculus and differentiation,
 and evaluation and substitution.")

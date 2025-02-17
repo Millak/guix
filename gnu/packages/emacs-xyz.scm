@@ -501,7 +501,7 @@ input via a small child-frame spawned at the position of the cursor.")
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-eros emacs-sesman emacs-queue))
     (home-page "https://git.sr.ht/~abcdw/emacs-arei")
-    (synopsis "Asyncronous Reliable Extensible IDE")
+    (synopsis "Asynchronous Reliable Extensible IDE")
     (description "Sleek Guile IDE for Emacs.")
     (license license:gpl3+)))
 
@@ -27999,7 +27999,7 @@ It follows DrRacket concepts where applicable.")
     (home-page "https://github.com/hasu/emacs-ob-racket")
     (synopsis "Org Babel support for Racket")
     (description
-     "This package adds spport for working with Racket code blocks with
+     "This package adds support for working with Racket code blocks with
 Org Babel in Org mode.")
     (license license:gpl3+)))
 
