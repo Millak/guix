@@ -1245,7 +1245,7 @@ standard astronomy libraries:
 (define-public libsep
   (package
     (name "libsep")
-    (version "1.2.1")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -1254,20 +1254,21 @@ standard astronomy libraries:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sag96am6r1ffh9860yq40js874362v3132ahlm6sq7padczkicf"))))
+        (base32 "03a9v3g8bq5sqq0ckxzkk63vij2y6ljpmymdvvvvb72q175pzpkd"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
-                           (string-append "PREFIX=" #$output))
-      #:phases #~(modify-phases %standard-phases
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (chdir "../source")
-                         (invoke "make"
-                                 (string-append "CC=" #$(cc-for-target))
-                                 "test")))))))
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (chdir "../source")
+                (setenv "CC" #$(cc-for-target))))))))
     (native-inputs
      (list python-wrapper))
     (home-page "https://github.com/kbarbary/sep")
@@ -6137,11 +6138,22 @@ well as ephemerides services
     (name "python-sep")
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags #~(list "test.py")))
+     (list
+      #:test-flags #~(list "test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(package-version this-package)))))))
     (native-inputs
-     (list python-cython python-pytest python-setuptools python-wheel))
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
     (propagated-inputs
-     (list  python-numpy))
+     (list python-numpy))
     (synopsis "Python library for Source Extraction and Photometry")))
 
 (define-public python-sep-pjw
