@@ -26929,13 +26929,13 @@ and are now available in the package as well, see Puhr et al (2017)
 (define-public r-longdat
   (package
     (name "r-longdat")
-    (version "1.1.2")
+    (version "1.1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "LongDat" version))
               (sha256
                (base32
-                "1rzkb7byd32jqvhf75zyvy0dlkq79aicz8j0x7lk821qiq4dfv6l"))))
+                "0jydzc50vfml06ykk34bx5681wp35m9yj8x67h9pqwhpyn0f36ca"))))
     (properties `((upstream-name . "LongDat")))
     (build-system r-build-system)
     (propagated-inputs (list r-bestnormalize
