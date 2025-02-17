@@ -46093,17 +46093,17 @@ and formatted text files with additional meta-data, such including @code{.csv},
 (define-public r-packcircles
   (package
     (name "r-packcircles")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "packcircles" version))
         (sha256
           (base32
-            "0fjc575i1vxjp2v4niv2syqqk0d609wm86gkq9rvgmch841x40ps"))))
+            "17z3kmvszg3r6d6p4bagcrdamx13bpgq95mylwyv4wr9rvn5ph6d"))))
     (properties `((upstream-name . "packcircles")))
     (build-system r-build-system)
-    (propagated-inputs (list r-rcpp))
+    (propagated-inputs (list r-checkmate r-rcpp))
     (native-inputs (list r-knitr))
     (home-page
       "https://github.com/mbedward/packcircles")
