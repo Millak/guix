@@ -1795,6 +1795,34 @@ responses as planin JSON/YAML file or save responses as plain JSON/YAML
 files.")
     (license license:bsd-2)))
 
+(define-public python-s3path
+  (package
+    (name "python-s3path")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "s3path" version))
+       (sha256
+        (base32 "0gbvyr60mkpm7jbjiya0pmx26q6cfp27p5czw08jwn3k5cp77krk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: All tests fail with error: fixture 's3_mock' not found.
+      #:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-boto3
+           python-smart-open))
+    (home-page "https://github.com/liormizr/s3path")
+    (synopsis "Pathlib extension for AWS S3 Service")
+    (description
+     "S3Path provide a Python convenient File-System/Path like interface for
+AWS S3 Service using boto3 S3 resource as a driver.")
+    (license license:asl2.0)))
+
 (define-public python-sarif-om
   (package
     (name "python-sarif-om")
