@@ -23949,8 +23949,20 @@ generated.")
     (properties
      `((upstream-name . "preprocessCore")))
     (build-system r-build-system)
-    ;; Tests fail with: "return code from pthread_create() is 22"
-    (arguments (list #:tests? #false))
+    (arguments
+     (list
+      ;; This is necessary because we use OpenBLAS.  See
+      ;; https://github.com/Bioconductor/bioconductor_docker/issues/22
+      #:configure-flags '(list "--disable-threading")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-threading
+           (lambda _
+             ;; Two problems: This package only checks for flexiblas (not
+             ;; openblas) and "R CMD config BLAS_LIBS" does not mention
+             ;; openblas.
+             (substitute* "configure"
+               (("^BLAS_LIBS=.*") "BLAS_LIBS=flexiblas\n")))))))
     (home-page "https://github.com/bmbolstad/preprocessCore")
     (synopsis "Collection of pre-processing functions")
     (description
