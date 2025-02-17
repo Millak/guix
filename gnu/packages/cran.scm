@@ -47326,19 +47326,22 @@ to archive and assign DOIs to data, software, figures, and more.")
 (define-public r-dismo
   (package
     (name "r-dismo")
-    (version "1.3-14")
+    (version "1.3-16")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dismo" version))
        (sha256
         (base32
-         "1msc75xnc9lbnn8pivd5j4jvb1b9p3xgybfm2ak2mpb2aplz5837"))
+         "0lr0cgs2ldihq0pfi1rxs7bzrii832g979r88dplm98lankj75p7"))
        (snippet
         '(for-each delete-file
                    (list "inst/java/dismo.jar"
                          "inst/java/maxent.jar")))))
-    (properties `((upstream-name . "dismo")))
+    (properties
+     `((upstream-name . "dismo")
+       (updater-extra-inputs . ("java-maxent"))
+       (updater-ignored-inputs . ("openjdk"))))
     (build-system r-build-system)
     (arguments
      (list
