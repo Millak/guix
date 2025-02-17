@@ -48833,14 +48833,14 @@ be efficient and easy to use.")
 (define-public r-ggh4x
   (package
     (name "r-ggh4x")
-    (version "0.2.8")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggh4x" version))
        (sha256
         (base32
-         "1vk2xqf1m14zy0jynv73f56a3slrpa9nymvw236v9ixgafarwkm8"))))
+         "0xrq0p6jhzqa1ap1c06pa77mksdh8gvm53sw5iz7hddfl46n8676"))))
     (properties `((upstream-name . "ggh4x")))
     (build-system r-build-system)
     (arguments
@@ -48860,7 +48860,7 @@ be efficient and easy to use.")
            r-scales
            r-vctrs))
     (native-inputs
-     (list r-ggdendro r-knitr r-testthat))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/teunbrand/ggh4x")
     (synopsis "Extension for ggplot2")
     (description "This package is a @code{ggplot2} extension.  It provides some
