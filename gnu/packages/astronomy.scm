@@ -1303,7 +1303,7 @@ performance is at least on par with that of its predecessor; however,
 significant improvements were made to the algorithms for scalar SHTs, which
 are roughly twice as fast when using the same CPU capabilities.
 
-Supporting paper is availalbe at https://arxiv.org/abs/1303.4945")
+Supporting paper is available at https://arxiv.org/abs/1303.4945")
     (license license:gpl2+)))
 
 (define-public libskry
@@ -7800,7 +7800,7 @@ header.")
      "WCSTools is a set of software utilities, written in C, which create,
 display and manipulate the world coordinate system of a FITS or IRAF image,
 using specific keywords in the image header which relate pixel position within
-the image to position on the sky.  Auxillary programs search star catalogs and
+the image to position on the sky.  Auxiliary programs search star catalogs and
 manipulate images.")
     (license license:gpl2+)))
 
