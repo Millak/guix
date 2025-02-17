@@ -1882,6 +1882,81 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
 astronomical images, especially when there is no WCS information available.")
     (license license:expat)))
 
+(define-public python-astrocut
+  (package
+    (name "python-astrocut")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astrocut" version))
+       (sha256
+        (base32 "19smfpb3qbw9s065wx8n0xwg5x8pgj99641hr3lj71dnrfxfwa40"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Tests requiring network access.
+                    (list "not test_cube_cut_from_footprint[SPOC]"
+                          "test_cube_cut_from_footprint[TICA]"
+                          "test_cube_cut_from_footprint_all_sequences"
+                          "test_cube_cut_from_footprint_invalid_sequence"
+                          "test_cube_cut_from_footprint_multi_sequence"
+                          "test_cube_cut_from_footprint_outside_coords"
+                          "test_fits_cut[SPOC]"
+                          "test_fits_cut[TICA]"
+                          "test_get_cutout_limits"
+                          "test_get_cutout_wcs"
+                          "test_multithreading"
+                          "test_s3_cube_cut")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: Report upstream: ModuleNotFoundError: No module named
+          ;; 'packagename'.
+         (add-after 'unpack 'fix-setup.cfg
+           (lambda _
+             (substitute* "setup.cfg"
+               (("console_scripts =") "")
+               (("astropy-package-template-example.*") "")))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-astroquery
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-asdf
+           python-astropy
+           python-cachetools
+           python-fsspec
+           python-pillow
+           python-requests-next
+           python-roman-datamodels
+           python-s3fs
+           python-s3path
+           python-scipy
+           python-spherical-geometry))
+    (home-page "https://astrocut.readthedocs.io")
+    (synopsis "Cutout tools for astronomical images")
+    (description
+     "Astrocut provides tools for making cutouts from sets of astronomical
+images with shared footprints.  It is under active development.
+
+Three main areas of functionality are included:
+@itemize
+@item solving the specific problem of creating image cutouts from sectors of
+@acronym{Transiting Exoplanet Survey Satellite, TESS} full-frame images
+@item general fits file cutouts including from single images and sets of
+images with the shared WCS/pixel scale
+@item cutout post-processing functionality, including centering cutouts along
+a path (for moving targets) and combining cutouts
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-astrodendro
   (package
     (name "python-astrodendro")
