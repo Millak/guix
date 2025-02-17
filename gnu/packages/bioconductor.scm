@@ -8875,6 +8875,8 @@ distribution.")
          "05sjxxv5299m0i9hnhz037dz6f5q8qdb70vbvr28jjzc1jcv7ym8"))))
     (properties `((upstream-name . "DEXSeq")))
     (build-system r-build-system)
+    ;; Tests require r-pasilla, which depends on this package.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
            r-biobase
