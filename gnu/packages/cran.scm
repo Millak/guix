@@ -8985,13 +8985,13 @@ so-called readr first edition parsing engine, now superseded by vroom.")
 (define-public r-mirt
   (package
     (name "r-mirt")
-    (version "1.43")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mirt" version))
        (sha256
-        (base32 "18lqlpcw16bs9qkxdzgbhp7r1mgihkn5798amall341bpym8y1lc"))))
+        (base32 "1r8nv5669bacn3rq6lczc0fm0dgcm1kn8lxjd07lwkg2h4mjir6f"))))
     (properties `((upstream-name . "mirt")))
     (build-system r-build-system)
     (propagated-inputs (list r-dcurver
@@ -9006,7 +9006,7 @@ so-called readr first edition parsing engine, now superseded by vroom.")
                              r-rcpparmadillo
                              r-simdesign
                              r-vegan))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-boot r-knitr r-nonnest2))
     (home-page "https://philchalmers.github.io/mirt/")
     (synopsis "Multidimensional item response theory")
     (description
