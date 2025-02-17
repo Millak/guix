@@ -9697,20 +9697,19 @@ objects.")
 (define-public python-sparse
   (package
     (name "python-sparse")
-    (version "0.15.4")
+    (version "0.15.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sparse" version))
        (sha256
         (base32
-         "111bqz2xqr17rrc7svd20z94xf3zkfs9anjvzpr683zz4iywbcfl"))))
+         "0rp29gp82qwwkq210pzh2qmlqhi2007nb7p7nwqmrkgmjq6cwxjc"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-numba python-numpy python-scipy))
     (native-inputs
      (list python-dask
-           python-pre-commit
            python-pytest
            python-pytest-cov
            python-setuptools
