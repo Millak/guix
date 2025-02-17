@@ -45351,22 +45351,22 @@ clusterings as resolution increases.")
 (define-public r-textshaping
   (package
     (name "r-textshaping")
-    (version "0.4.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "textshaping" version))
        (sha256
         (base32
-         "0ylx4fdvm64cxcy62q84in3nrj7q8r7mvd8vwq6mcy5jddw41s9m"))))
+         "0j0ydkkgl7n00pgjifvwmnsgc2v86b3nvs22zz095di7xwgm3r35"))))
     (properties `((upstream-name . "textshaping")))
     (build-system r-build-system)
     (inputs
      (list freetype fribidi harfbuzz zlib))
     (propagated-inputs
-     (list r-cpp11 r-lifecycle r-systemfonts))
+     (list r-cpp11 r-lifecycle r-stringi r-systemfonts))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config r-knitr r-testthat))
     (home-page "https://github.com/r-lib/textshaping")
     (synopsis "Bindings to the HarfBuzz and Fribidi libraries for text shaping")
     (description
