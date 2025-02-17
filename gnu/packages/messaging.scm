@@ -1198,7 +1198,7 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.9.3")
+    (version "1.9.5")
     (source
      (origin
        (method url-fetch)
@@ -1206,7 +1206,7 @@ of xmpppy.")
                            (version-major+minor version)
                            "/gajim-" version ".tar.gz"))
        (sha256
-         (base32 "10rz8pd43a9308kj6csixsmvdc6ccnqkw83adc5cggh1798b45ag"))
+         (base32 "0g2nhy6ypj4jbz216sgiy37spq34bwa0ydn2g73fp9qnxfq4vpvz"))
        (patches
          (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
@@ -1226,8 +1226,7 @@ of xmpppy.")
                        'generate-gdk-pixbuf-loaders-cache-file))
           (add-before 'build 'build-metadata
             (lambda _
-              (invoke "./pep517build/build_metadata.py"
-                      "-o" "dist/metadata")))
+              (invoke "./make.py" "build")))
           ;; TODO: Change to pyproject-build-system once it supports
           ;; in-tree build backends.
           (replace 'build
@@ -1241,7 +1240,7 @@ of xmpppy.")
                      (find-files "dist" "\\.whl$"))))
           (add-after 'install 'install-metadata
             (lambda _
-              (invoke "./pep517build/install_metadata.py" "dist/metadata"
+              (invoke "./make.py" "install"
                       (string-append "--prefix=" #$output))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
