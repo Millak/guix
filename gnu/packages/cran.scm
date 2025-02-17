@@ -12707,14 +12707,14 @@ multivariate and 5 functional classification problems are included.")
 (define-public r-gower
   (package
     (name "r-gower")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gower" version))
        (sha256
         (base32
-         "1z0mhfp8xp7rk9i820pkvspm6mwih24g6b5rqs63m37sbs79ssi9"))))
+         "0lap31w6y82z65r5byfpijgrn31lh42ssiwncbakn4r60fjnkmag"))))
     (build-system r-build-system)
     (home-page "https://github.com/markvanderloo/gower")
     (synopsis "Gower's distance")
