@@ -2441,7 +2441,7 @@ of dates.")
      (origin
        (method git-fetch) ; No tests in PyPI
        (uri (git-reference
-             (url "https://github.com/kbarbary/extinction")
+             (url "https://github.com/sncosmo/extinction")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -2457,7 +2457,7 @@ of dates.")
            python-wheel))
     (propagated-inputs
      (list python-numpy))
-    (home-page "http://github.com/kbarbary/extinction")
+    (home-page "https://github.com/sncosmo/extinction")
     (synopsis "Fast interstellar dust extinction laws")
     (description
      "This package provides a cython-optimized implementations of empirical dust
