@@ -47,44 +47,51 @@
 ;;;
 ;;; Code:
 
+(define (bool->xml-string bool)
+  ;; add compatibility for the short duration where #f was specified as
+  ;; "false"
+  (if (string? bool) bool
+      ;; the expected case
+      (if bool "true" "false")))
+
 (define-record-type* <syncthing-device>
   syncthing-device make-syncthing-device
   syncthing-device?
   (id syncthing-device-id)
   (name syncthing-device-name (default ""))
   (compression syncthing-device-compression (default "metadata"))
-  (introducer syncthing-device-introducer (default "false"))
-  (skip-introduction-removals syncthing-device-skip-introduction-removals (default "false"))
+  (introducer? syncthing-device-introducer? (default #f))
+  (skip-introduction-removals? syncthing-device-skip-introduction-removals? (default #f))
   (introduced-by syncthing-device-introduced-by (default ""))
   (addresses syncthing-device-addresses (default '("dynamic")))
-  (paused syncthing-device-paused (default "false"))
-  (auto-accept-folders syncthing-device-auto-accept-folders (default "false"))
-  (max-send-kbps syncthing-device-max-send-kbps (default "0"))
-  (max-recv-kbps syncthing-device-max-recv-kbps (default "0"))
-  (max-request-kib syncthing-device-max-request-kib (default "0"))
-  (untrusted syncthing-device-untrusted (default "false"))
-  (remote-gui-port syncthing-device-remote-gui-port (default "0"))
-  (num-connections syncthing-device-num-connections (default "0")))
+  (paused? syncthing-device-paused? (default #f))
+  (auto-accept-folders? syncthing-device-auto-accept-folders? (default #f))
+  (max-send-kbps syncthing-device-max-send-kbps (default 0))
+  (max-receive-kbps syncthing-device-max-receive-kbps (default 0))
+  (max-request-kib syncthing-device-max-request-kib (default 0))
+  (untrusted? syncthing-device-untrusted? (default #f))
+  (remote-gui-port syncthing-device-remote-gui-port (default 0))
+  (num-connections syncthing-device-num-connections (default 0)))
 
 (define syncthing-device->sxml
   (match-record-lambda <syncthing-device>
       (id
-       name compression introducer skip-introduction-removals introduced-by
-       addresses paused auto-accept-folders max-send-kbps max-recv-kbps
-       max-request-kib untrusted remote-gui-port num-connections)
+       name compression introducer? skip-introduction-removals? introduced-by
+       addresses paused? auto-accept-folders? max-send-kbps max-receive-kbps
+       max-request-kib untrusted? remote-gui-port num-connections)
     `(device (@ (id ,id)
                 (name ,name)
                 (compression ,compression)
-                (introducer ,introducer)
-                (skipIntroductionRemovals ,skip-introduction-removals)
+                (introducer ,(bool->xml-string introducer?))
+                (skipIntroductionRemovals ,(bool->xml-string skip-introduction-removals?))
                 (introducedBy ,introduced-by))
              ,@(map (lambda (address) `(address ,address)) addresses)
-             (paused ,paused)
-             (autoAcceptFolders ,auto-accept-folders)
+             (paused ,(bool->xml-string paused?))
+             (autoAcceptFolders ,(bool->xml-string auto-accept-folders?))
              (maxSendKbps ,max-send-kbps)
-             (maxRecvKbps ,max-recv-kbps)
+             (maxRecvKbps ,max-receive-kbps)
              (maxRequestKiB ,max-request-kib)
-             (untrusted ,untrusted)
+             (untrusted ,(bool->xml-string untrusted?))
              (remoteGUIPort ,remote-gui-port)
              (numConnections ,num-connections))))
 
@@ -109,12 +116,12 @@
   (label syncthing-folder-label)
   (path syncthing-folder-path)
   (type syncthing-folder-type (default "sendreceive"))
-  (rescan-interval-s syncthing-folder-rescan-interval-s (default "3600"))
-  (fs-watcher-enabled syncthing-folder-fs-watcher-enabled (default "true"))
-  (fs-watcher-delay-s syncthing-folder-fs-watcher-delay-s (default "10"))
-  (fs-watcher-timeout-s syncthing-folder-fs-watcher-timeout-s (default "0"))
-  (ignore-perms syncthing-folder-ignore-perms (default "false"))
-  (auto-normalize syncthing-folder-auto-normalize (default "true"))
+  (rescan-interval-seconds syncthing-folder-rescan-interval-seconds (default 3600))
+  (file-system-watcher-enabled? syncthing-folder-file-system-watcher-enabled? (default #t))
+  (file-system-watcher-delay-seconds syncthing-folder-file-system-watcher-delay-seconds (default 10))
+  (file-system-watcher-timeout-seconds syncthing-folder-file-system-watcher-timeout-seconds (default 0))
+  (ignore-permissions? syncthing-folder-ignore-permissions? (default #f))
+  (auto-normalize? syncthing-folder-auto-normalize? (default #t))
   (devices syncthing-folder-devices (default '())
            (sanitize (lambda (folder-device-list)
                        (map (lambda (device)
@@ -124,42 +131,42 @@
                             folder-device-list))))
   (filesystem-type syncthing-folder-filesystem-type (default "basic"))
   (min-disk-free-unit syncthing-folder-min-disk-free-unit (default "%"))
-  (min-disk-free syncthing-folder-min-disk-free (default "1"))
+  (min-disk-free syncthing-folder-min-disk-free (default 1))
   (versioning-type syncthing-folder-versioning-type (default #f))
-  (versioning-fs-path syncthing-folder-versioning-fs-path (default ""))
-  (versioning-fs-type syncthing-folder-versioning-fs-type (default "basic"))
-  (versioning-cleanup-interval-s syncthing-folder-versioning-cleanup-interval-s (default "3600"))
+  (versioning-file-system-path syncthing-folder-versioning-file-system-path (default ""))
+  (versioning-file-system-type syncthing-folder-versioning-file-system-type (default "basic"))
+  (versioning-cleanup-interval-seconds syncthing-folder-versioning-cleanup-interval-seconds (default 3600))
   (versioning-cleanout-days syncthing-folder-versioning-cleanout-days (default #f))
   (versioning-keep syncthing-folder-versioning-keep (default #f))
   (versioning-max-age syncthing-folder-versioning-max-age (default #f))
   (versioning-command syncthing-folder-versioning-command (default #f))
-  (copiers syncthing-folder-copiers (default "0"))
-  (puller-max-pending-kib syncthing-folder-puller-max-pending-kib (default "0"))
-  (hashers syncthing-folder-hashers (default "0"))
+  (copiers syncthing-folder-copiers (default 0))
+  (puller-max-pending-kib syncthing-folder-puller-max-pending-kib (default 0))
+  (hashers syncthing-folder-hashers (default 0))
   (order syncthing-folder-order (default "random"))
-  (ignore-delete syncthing-folder-ignore-delete (default "false"))
-  (scan-progress-interval-s syncthing-folder-scan-progress-interval-s (default "0"))
-  (puller-pause-s syncthing-folder-puller-pause-s (default "0"))
-  (max-conflicts syncthing-folder-max-conflicts (default "10"))
-  (disable-sparse-files syncthing-folder-disable-sparse-files (default "false"))
-  (disable-temp-indexes syncthing-folder-disable-temp-indexes (default "false"))
-  (paused syncthing-folder-paused (default "false"))
-  (weak-hash-threshold-pct syncthing-folder-weak-hash-threshold-pct (default "25"))
+  (ignore-delete? syncthing-folder-ignore-delete? (default #f))
+  (scan-progress-interval-seconds syncthing-folder-scan-progress-interval-seconds (default 0))
+  (puller-pause-seconds syncthing-folder-puller-pause-seconds (default 0))
+  (max-conflicts syncthing-folder-max-conflicts (default 10))
+  (disable-sparse-files? syncthing-folder-disable-sparse-files? (default #f))
+  (disable-temp-indexes? syncthing-folder-disable-temp-indexes? (default #f))
+  (paused? syncthing-folder-paused? (default #f))
+  (weak-hash-threshold-percentage syncthing-folder-weak-hash-threshold-percentage (default 25))
   (marker-name syncthing-folder-marker-name (default ".stfolder"))
-  (copy-ownership-from-parent syncthing-folder-copy-ownership-from-parent (default "false"))
-  (mod-time-window-s syncthing-folder-mod-time-window-s (default "0"))
-  (max-concurrent-writes syncthing-folder-max-concurrent-writes (default "2"))
-  (disable-fsync syncthing-folder-disable-fsync (default "false"))
+  (copy-ownership-from-parent? syncthing-folder-copy-ownership-from-parent? (default #f))
+  (mod-time-window-seconds syncthing-folder-mod-time-window-seconds (default 0))
+  (max-concurrent-writes syncthing-folder-max-concurrent-writes (default 2))
+  (disable-fsync? syncthing-folder-disable-fsync? (default #f))
   (block-pull-order syncthing-folder-block-pull-order (default "standard"))
   (copy-range-method syncthing-folder-copy-range-method (default "standard"))
-  (case-sensitive-fs syncthing-folder-case-sensitive-fs (default "false"))
-  (junctions-as-dirs syncthing-folder-junctions-as-dirs (default "false"))
-  (sync-ownership syncthing-folder-sync-ownership (default "false"))
-  (send-ownership syncthing-folder-send-ownership (default "false"))
-  (sync-xattrs syncthing-folder-sync-xattrs (default "false"))
-  (send-xattrs syncthing-folder-send-xattrs (default "false"))
-  (xattr-filter-max-single-entry-size syncthing-folder-xattr-filter-max-single-entry-size (default "1024"))
-  (xattr-filter-max-total-size syncthing-folder-xattr-filter-max-total-size (default "4096")))
+  (case-sensitive-file-system? syncthing-folder-case-sensitive-file-system? (default #f))
+  (junctions-as-dirs? syncthing-folder-junctions-as-dirs? (default #f))
+  (sync-ownership? syncthing-folder-sync-ownership? (default #f))
+  (send-ownership? syncthing-folder-send-ownership? (default #f))
+  (sync-xattrs? syncthing-folder-sync-xattrs? (default #f))
+  (send-xattrs? syncthing-folder-send-xattrs? (default #f))
+  (xattr-filter-max-single-entry-size syncthing-folder-xattr-filter-max-single-entry-size (default 1024))
+  (xattr-filter-max-total-size syncthing-folder-xattr-filter-max-total-size (default 4096)))
 
 ;; Some parameters, when empty, are fully omitted from the config file.  It is
 ;; unknown if this causes a functional difference, but stick to the normal
@@ -170,27 +177,32 @@
 (define syncthing-folder->sxml
   (match-record-lambda <syncthing-folder>
       (id
-       label path type rescan-interval-s fs-watcher-enabled fs-watcher-delay-s
-       fs-watcher-timeout-s ignore-perms auto-normalize devices filesystem-type
-       min-disk-free-unit min-disk-free versioning-type versioning-fs-path
-       versioning-fs-type versioning-cleanup-interval-s versioning-cleanout-days
+       label path type rescan-interval-seconds file-system-watcher-enabled?
+       file-system-watcher-delay-seconds file-system-watcher-timeout-seconds
+       ignore-permissions? auto-normalize? devices filesystem-type
+       min-disk-free-unit min-disk-free versioning-type
+       versioning-file-system-path versioning-file-system-type
+       versioning-cleanup-interval-seconds versioning-cleanout-days
        versioning-keep versioning-max-age versioning-command copiers
-       puller-max-pending-kib hashers order ignore-delete scan-progress-interval-s
-       puller-pause-s max-conflicts disable-sparse-files disable-temp-indexes paused
-       weak-hash-threshold-pct marker-name copy-ownership-from-parent mod-time-window-s
-       max-concurrent-writes disable-fsync block-pull-order copy-range-method
-       case-sensitive-fs junctions-as-dirs sync-ownership send-ownership sync-xattrs
-       send-xattrs xattr-filter-max-single-entry-size xattr-filter-max-total-size)
+       puller-max-pending-kib hashers order ignore-delete?
+       scan-progress-interval-seconds puller-pause-seconds max-conflicts
+       disable-sparse-files? disable-temp-indexes? paused?
+       weak-hash-threshold-percentage marker-name copy-ownership-from-parent?
+       mod-time-window-seconds max-concurrent-writes disable-fsync?
+       block-pull-order copy-range-method case-sensitive-file-system?
+       junctions-as-dirs? sync-ownership? send-ownership? sync-xattrs?
+       send-xattrs? xattr-filter-max-single-entry-size
+       xattr-filter-max-total-size)
     `(folder (@ (id ,(if id id label))
                 (label ,label)
                 (path ,path)
                 (type ,type)
-                (rescanIntervalS ,rescan-interval-s)
-                (fsWatcherEnabled ,fs-watcher-enabled)
-                (fsWatcherDelayS ,fs-watcher-delay-s)
-                (fsWatcherTimeoutS ,fs-watcher-timeout-s)
-                (ignorePerms ,ignore-perms)
-                (autoNormalize ,auto-normalize))
+                (rescanIntervalS ,rescan-interval-seconds)
+                (fsWatcherEnabled ,(bool->xml-string file-system-watcher-enabled?))
+                (fsWatcherDelayS ,file-system-watcher-delay-seconds)
+                (fsWatcherTimeoutS ,file-system-watcher-timeout-seconds)
+                (ignorePerms ,(bool->xml-string ignore-permissions?))
+                (autoNormalize ,(bool->xml-string auto-normalize?)))
              (filesystemType ,filesystem-type)
              ,@(map syncthing-folder-device->sxml
                     devices)
@@ -203,34 +215,34 @@
                          ,@(maybe-param 'keep versioning-keep)
                          ,@(maybe-param 'maxAge versioning-max-age)
                          ,@(maybe-param 'command versioning-command)
-                         (cleanupIntervalS ,versioning-cleanup-interval-s)
-                         (fsPath ,versioning-fs-path)
-                         (fsType ,versioning-fs-type))
+                         (cleanupIntervalS ,versioning-cleanup-interval-seconds)
+                         (fsPath ,versioning-file-system-path)
+                         (fsType ,versioning-file-system-type))
              (copiers ,copiers)
              (pullerMaxPendingKiB ,puller-max-pending-kib)
              (hashers ,hashers)
              (order ,order)
-             (ignoreDelete ,ignore-delete)
-             (scanProgressIntervalS ,scan-progress-interval-s)
-             (pullerPauseS ,puller-pause-s)
+             (ignoreDelete ,(bool->xml-string ignore-delete?))
+             (scanProgressIntervalS ,scan-progress-interval-seconds)
+             (pullerPauseS ,puller-pause-seconds)
              (maxConflicts ,max-conflicts)
-             (disableSparseFiles ,disable-sparse-files)
-             (disableTempIndexes ,disable-temp-indexes)
-             (paused ,paused)
-             (weakHashThresholdPct ,weak-hash-threshold-pct)
+             (disableSparseFiles ,(bool->xml-string disable-sparse-files?))
+             (disableTempIndexes ,(bool->xml-string disable-temp-indexes?))
+             (paused ,(bool->xml-string paused?))
+             (weakHashThresholdPct ,weak-hash-threshold-percentage)
              (markerName ,marker-name)
-             (copyOwnershipFromParent ,copy-ownership-from-parent)
-             (modTimeWindowS ,mod-time-window-s)
+             (copyOwnershipFromParent ,(bool->xml-string copy-ownership-from-parent?))
+             (modTimeWindowS ,mod-time-window-seconds)
              (maxConcurrentWrites ,max-concurrent-writes)
-             (disableFsync ,disable-fsync)
+             (disableFsync ,(bool->xml-string disable-fsync?))
              (blockPullOrder ,block-pull-order)
              (copyRangeMethod ,copy-range-method)
-             (caseSensitiveFS ,case-sensitive-fs)
-             (junctionsAsDirs ,junctions-as-dirs)
-             (syncOwnership ,sync-ownership)
-             (sendOwnership ,send-ownership)
-             (syncXattrs ,sync-xattrs)
-             (sendXattrs ,send-xattrs)
+             (caseSensitiveFS ,(bool->xml-string case-sensitive-file-system?))
+             (junctionsAsDirs ,(bool->xml-string junctions-as-dirs?))
+             (syncOwnership ,(bool->xml-string sync-ownership?))
+             (sendOwnership ,(bool->xml-string send-ownership?))
+             (syncXattrs ,(bool->xml-string sync-xattrs?))
+             (sendXattrs ,(bool->xml-string send-xattrs?))
              (xattrFilter (maxSingleEntrySize ,xattr-filter-max-single-entry-size)
                           (maxTotalSize ,xattr-filter-max-total-size)))))
 
@@ -244,16 +256,16 @@
                                             (path "~/Sync")))))
   (devices syncthing-config-devices
            (default '()))
-  (gui-enabled syncthing-config-gui-enabled (default "true"))
-  (gui-tls syncthing-config-gui-tls (default "false"))
-  (gui-debugging syncthing-config-gui-debugging (default "false"))
-  (gui-send-basic-auth-prompt syncthing-config-gui-send-basic-auth-prompt (default "false"))
+  (gui-enabled? syncthing-config-gui-enabled? (default #t))
+  (gui-tls? syncthing-config-gui-tls? (default #f))
+  (gui-debugging? syncthing-config-gui-debugging? (default #f))
+  (gui-send-basic-authorization-prompt? syncthing-config-gui-send-basic-authorization-prompt? (default #f))
   (gui-address syncthing-config-gui-address (default "127.0.0.1:8384"))
   (gui-user syncthing-config-gui-user (default #f))
   (gui-password syncthing-config-gui-password (default #f))
   (gui-apikey syncthing-config-gui-apikey (default #f))
   (gui-theme syncthing-config-gui-theme (default "default"))
-  (ldap-enabled syncthing-config-ldap-enabled (default #f))
+  (ldap-enabled? syncthing-config-ldap-enabled? (default #f))
   (ldap-address syncthing-config-ldap-address (default ""))
   (ldap-bind-dn syncthing-config-ldap-bind-dn (default ""))
   (ldap-transport syncthing-config-ldap-transport (default ""))
@@ -262,59 +274,59 @@
   (ldap-search-filter syncthing-config-ldap-search-filter (default ""))
   (listen-address syncthing-config-listen-address (default "default"))
   (global-announce-server syncthing-config-global-announce-server (default "default"))
-  (global-announce-enabled syncthing-config-global-announce-enabled (default "true"))
-  (local-announce-enabled syncthing-config-local-announce-enabled (default "true"))
-  (local-announce-port syncthing-config-local-announce-port (default "21027"))
-  (local-announce-mcaddr syncthing-config-local-announce-mcaddr (default "[ff12::8384]:21027"))
-  (max-send-kbps syncthing-config-max-send-kbps (default "0"))
-  (max-recv-kbps syncthing-config-max-recv-kbps (default "0"))
-  (reconnection-interval-s syncthing-config-reconnection-interval-s (default "60"))
-  (relays-enabled syncthing-config-relays-enabled (default "true"))
-  (relay-reconnect-interval-m syncthing-config-relay-reconnect-interval-m (default "10"))
-  (start-browser syncthing-config-start-browser (default "true"))
-  (nat-enabled syncthing-config-nat-enabled (default "true"))
-  (nat-lease-minutes syncthing-config-nat-lease-minutes (default "60"))
-  (nat-renewal-minutes syncthing-config-nat-renewal-minutes (default "30"))
-  (nat-timeout-seconds syncthing-config-nat-timeout-seconds (default "10"))
-  (ur-accepted syncthing-config-ur-accepted (default "0"))
-  (ur-seen syncthing-config-ur-seen (default "0"))
-  (ur-unique-id syncthing-config-ur-unique-id (default ""))
-  (ur-url syncthing-config-ur-url (default "https://data.syncthing.net/newdata"))
-  (ur-post-insecurely syncthing-config-ur-post-insecurely (default "false"))
-  (ur-initial-delay-s syncthing-config-ur-initial-delay-s (default "1800"))
-  (auto-upgrade-interval-h syncthing-config-auto-upgrade-interval-h (default "12"))
-  (upgrade-to-pre-releases syncthing-config-upgrade-to-pre-releases (default "false"))
-  (keep-temporaries-h syncthing-config-keep-temporaries-h (default "24"))
-  (cache-ignored-files syncthing-config-cache-ignored-files (default "false"))
-  (progress-update-interval-s syncthing-config-progress-update-interval-s (default "5"))
-  (limit-bandwidth-in-lan syncthing-config-limit-bandwidth-in-lan (default "false"))
+  (global-announce-enabled? syncthing-config-global-announce-enabled? (default #t))
+  (local-announce-enabled? syncthing-config-local-announce-enabled? (default #t))
+  (local-announce-port syncthing-config-local-announce-port (default 21027))
+  (local-announce-mac-address syncthing-config-local-announce-mac-address (default "[ff12::8384]:21027"))
+  (max-send-kbps syncthing-config-max-send-kbps (default 0))
+  (max-receive-kbps syncthing-config-max-receive-kbps (default 0))
+  (reconnection-interval-seconds syncthing-config-reconnection-interval-seconds (default 60))
+  (relays-enabled? syncthing-config-relays-enabled? (default #t))
+  (relay-reconnect-interval-minutes syncthing-config-relay-reconnect-interval-minutes (default 10))
+  (start-browser? syncthing-config-start-browser? (default #t))
+  (nat-enabled? syncthing-config-nat-enabled? (default #t))
+  (nat-lease-minutes syncthing-config-nat-lease-minutes (default 60))
+  (nat-renewal-minutes syncthing-config-nat-renewal-minutes (default 30))
+  (nat-timeout-seconds syncthing-config-nat-timeout-seconds (default 10))
+  (usage-reporting-accepted syncthing-config-usage-reporting-accepted (default 0))
+  (usage-reporting-seen syncthing-config-usage-reporting-seen (default 0))
+  (usage-reporting-unique-id syncthing-config-usage-reporting-unique-id (default ""))
+  (usage-reporting-url syncthing-config-usage-reporting-url (default "https://data.syncthing.net/newdata"))
+  (usage-reporting-post-insecurely? syncthing-config-usage-reporting-post-insecurely? (default #f))
+  (usage-reporting-initial-delay-seconds syncthing-config-usage-reporting-initial-delay-seconds (default 1800))
+  (auto-upgrade-interval-hours syncthing-config-auto-upgrade-interval-hours (default 12))
+  (upgrade-to-pre-releases? syncthing-config-upgrade-to-pre-releases? (default #f))
+  (keep-temporaries-hours syncthing-config-keep-temporaries-hours (default 24))
+  (cache-ignored-files? syncthing-config-cache-ignored-files? (default #f))
+  (progress-update-interval-seconds syncthing-config-progress-update-interval-seconds (default 5))
+  (limit-bandwidth-in-lan? syncthing-config-limit-bandwidth-in-lan? (default #f))
   (min-home-disk-free-unit syncthing-config-min-home-disk-free-unit (default "%"))
-  (min-home-disk-free syncthing-config-min-home-disk-free (default "1"))
+  (min-home-disk-free syncthing-config-min-home-disk-free (default 1))
   (releases-url syncthing-config-releases-url (default "https://upgrades.syncthing.net/meta.json"))
-  (overwrite-remote-device-names-on-connect syncthing-config-overwrite-remote-device-names-on-connect (default "false"))
-  (temp-index-min-blocks syncthing-config-temp-index-min-blocks (default "10"))
+  (overwrite-remote-device-names-on-connect? syncthing-config-overwrite-remote-device-names-on-connect? (default #f))
+  (temp-index-min-blocks syncthing-config-temp-index-min-blocks (default 10))
   (unacked-notification-id syncthing-config-unacked-notification-id (default "authenticationUserAndPassword"))
-  (traffic-class syncthing-config-traffic-class (default "0"))
-  (set-low-priority syncthing-config-set-low-priority (default "true"))
-  (max-folder-concurrency syncthing-config-max-folder-concurrency (default "0"))
+  (traffic-class syncthing-config-traffic-class (default 0))
+  (set-low-priority? syncthing-config-set-low-priority? (default #t))
+  (max-folder-concurrency syncthing-config-max-folder-concurrency (default 0))
   (crash-reporting-url syncthing-config-crash-reporting-url (default "https://crash.syncthing.net/newcrash"))
-  (crash-reporting-enabled syncthing-config-crash-reporting-enabled (default "true"))
-  (stun-keepalive-start-s syncthing-config-stun-keepalive-start-s (default "180"))
-  (stun-keepalive-min-s syncthing-config-stun-keepalive-min-s (default "20"))
+  (crash-reporting-enabled? syncthing-config-crash-reporting-enabled? (default #t))
+  (stun-keepalive-start-seconds syncthing-config-stun-keepalive-start-seconds (default 180))
+  (stun-keepalive-min-seconds syncthing-config-stun-keepalive-min-seconds (default 20))
   (stun-server syncthing-config-stun-server (default "default"))
   (database-tuning syncthing-config-database-tuning (default "auto"))
-  (max-concurrent-incoming-request-kib syncthing-config-max-concurrent-incoming-request-kib (default "0"))
-  (announce-lan-addresses syncthing-config-announce-lan-addresses (default "true"))
-  (send-full-index-on-upgrade syncthing-config-send-full-index-on-upgrade (default "false"))
-  (connection-limit-enough syncthing-config-connection-limit-enough (default "0"))
-  (connection-limit-max syncthing-config-connection-limit-max (default "0"))
-  (insecure-allow-old-tlsVersions syncthing-config-insecure-allow-old-tlsVersions (default "false"))
-  (connection-priority-tcp-lan syncthing-config-connection-priority-tcp-lan (default "10"))
-  (connection-priority-quic-lan syncthing-config-connection-priority-quic-lan (default "20"))
-  (connection-priority-tcp-wan syncthing-config-connection-priority-tcp-wan (default "30"))
-  (connection-priority-quic-wan syncthing-config-connection-priority-quic-wan (default "40"))
-  (connection-priority-relay syncthing-config-connection-priority-relay (default "50"))
-  (connection-priority-upgrade-threshold syncthing-config-connection-priority-upgrade-threshold (default "0"))
+  (max-concurrent-incoming-request-kib syncthing-config-max-concurrent-incoming-request-kib (default 0))
+  (announce-lan-addresses? syncthing-config-announce-lan-addresses? (default #t))
+  (send-full-index-on-upgrade? syncthing-config-send-full-index-on-upgrade? (default #f))
+  (connection-limit-enough syncthing-config-connection-limit-enough (default 0))
+  (connection-limit-max syncthing-config-connection-limit-max (default 0))
+  (insecure-allow-old-tls-versions? syncthing-config-insecure-allow-old-tls-versions? (default #f))
+  (connection-priority-tcp-lan syncthing-config-connection-priority-tcp-lan (default 10))
+  (connection-priority-quic-lan syncthing-config-connection-priority-quic-lan (default 20))
+  (connection-priority-tcp-wan syncthing-config-connection-priority-tcp-wan (default 30))
+  (connection-priority-quic-wan syncthing-config-connection-priority-quic-wan (default 40))
+  (connection-priority-relay syncthing-config-connection-priority-relay (default 50))
+  (connection-priority-upgrade-threshold syncthing-config-connection-priority-upgrade-threshold (default 0))
   (default-folder syncthing-config-default-folder
     (default (syncthing-folder (label "") (path "~"))))
   (default-device syncthing-config-default-device
@@ -324,25 +336,30 @@
 (define syncthing-config-file->sxml
   (match-record-lambda <syncthing-config-file>
       (folders
-       devices gui-enabled gui-tls gui-debugging gui-send-basic-auth-prompt
-       gui-address gui-user gui-password gui-apikey gui-theme ldap-enabled
-       ldap-address ldap-bind-dn ldap-transport ldap-insecure-skip-verify
-       ldap-search-base-dn ldap-search-filter listen-address global-announce-server
-       global-announce-enabled local-announce-enabled local-announce-port
-       local-announce-mcaddr max-send-kbps max-recv-kbps reconnection-interval-s
-       relays-enabled relay-reconnect-interval-m start-browser nat-enabled
-       nat-lease-minutes nat-renewal-minutes nat-timeout-seconds ur-accepted
-       ur-seen ur-unique-id ur-url ur-post-insecurely ur-initial-delay-s
-       auto-upgrade-interval-h upgrade-to-pre-releases keep-temporaries-h
-       cache-ignored-files progress-update-interval-s limit-bandwidth-in-lan
+       devices gui-enabled? gui-tls? gui-debugging?
+       gui-send-basic-authorization-prompt? gui-address gui-user gui-password
+       gui-apikey gui-theme ldap-enabled? ldap-address ldap-bind-dn
+       ldap-transport ldap-insecure-skip-verify ldap-search-base-dn
+       ldap-search-filter listen-address global-announce-server
+       global-announce-enabled? local-announce-enabled? local-announce-port
+       local-announce-mac-address max-send-kbps max-receive-kbps
+       reconnection-interval-seconds relays-enabled?
+       relay-reconnect-interval-minutes start-browser? nat-enabled?
+       nat-lease-minutes nat-renewal-minutes nat-timeout-seconds
+       usage-reporting-accepted usage-reporting-seen usage-reporting-unique-id
+       usage-reporting-url usage-reporting-post-insecurely?
+       usage-reporting-initial-delay-seconds auto-upgrade-interval-hours
+       upgrade-to-pre-releases? keep-temporaries-hours cache-ignored-files?
+       progress-update-interval-seconds limit-bandwidth-in-lan?
        min-home-disk-free-unit min-home-disk-free releases-url
-       overwrite-remote-device-names-on-connect temp-index-min-blocks
-       unacked-notification-id traffic-class set-low-priority max-folder-concurrency
-       crash-reporting-url crash-reporting-enabled stun-keepalive-start-s
-       stun-keepalive-min-s stun-server database-tuning
-       max-concurrent-incoming-request-kib announce-lan-addresses
-       send-full-index-on-upgrade connection-limit-enough connection-limit-max
-       insecure-allow-old-tlsVersions connection-priority-tcp-lan
+       overwrite-remote-device-names-on-connect? temp-index-min-blocks
+       unacked-notification-id traffic-class set-low-priority?
+       max-folder-concurrency crash-reporting-url crash-reporting-enabled?
+       stun-keepalive-start-seconds stun-keepalive-min-seconds stun-server
+       database-tuning max-concurrent-incoming-request-kib
+       announce-lan-addresses? send-full-index-on-upgrade?
+       connection-limit-enough connection-limit-max
+       insecure-allow-old-tls-versions? connection-priority-tcp-lan
        connection-priority-quic-lan connection-priority-tcp-wan
        connection-priority-quic-wan connection-priority-relay
        connection-priority-upgrade-threshold default-folder default-device
@@ -364,16 +381,16 @@
                             (lambda (device1 device2)
                               (string= (syncthing-device-id device1)
                                        (syncthing-device-id device2)))))
-                    (gui (@ (enabled ,gui-enabled)
-                            (tls ,gui-tls)
-                            (debugging ,gui-debugging)
-                            (sendBasicAuthPrompt ,gui-send-basic-auth-prompt))
+                    (gui (@ (enabled ,(bool->xml-string gui-enabled?))
+                            (tls ,(bool->xml-string gui-tls?))
+                            (debugging ,(bool->xml-string gui-debugging?))
+                            (sendBasicAuthPrompt ,(bool->xml-string gui-send-basic-authorization-prompt?)))
                          (address ,gui-address)
                          ,@(if gui-user `((user ,gui-user)) '())
                          ,@(if gui-password `((password ,gui-password)) '())
                          ,@(if gui-apikey `((apikey ,gui-apikey)) '())
                          (theme ,gui-theme))
-                    (ldap ,(if ldap-enabled
+                    (ldap ,(if ldap-enabled?
                                `((address ,ldap-address)
                                  (bindDN ,ldap-bind-dn)
                                  ,@(if ldap-transport
@@ -391,53 +408,53 @@
                                ""))
                     (options (listenAddress ,listen-address)
                              (globalAnnounceServer ,global-announce-server)
-                             (globalAnnounceEnabled ,global-announce-enabled)
-                             (localAnnounceEnabled ,local-announce-enabled)
+                             (globalAnnounceEnabled ,(bool->xml-string global-announce-enabled?))
+                             (localAnnounceEnabled ,(bool->xml-string local-announce-enabled?))
                              (localAnnouncePort ,local-announce-port)
-                             (localAnnounceMCAddr ,local-announce-mcaddr)
+                             (localAnnounceMCAddr ,local-announce-mac-address)
                              (maxSendKbps ,max-send-kbps)
-                             (maxRecvKbps ,max-recv-kbps)
-                             (reconnectionIntervalS ,reconnection-interval-s)
-                             (relaysEnabled ,relays-enabled)
-                             (relayReconnectIntervalM ,relay-reconnect-interval-m)
-                             (startBrowser ,start-browser)
-                             (natEnabled ,nat-enabled)
+                             (maxRecvKbps ,max-receive-kbps)
+                             (reconnectionIntervalS ,reconnection-interval-seconds)
+                             (relaysEnabled ,(bool->xml-string relays-enabled?))
+                             (relayReconnectIntervalM ,relay-reconnect-interval-minutes)
+                             (startBrowser ,(bool->xml-string start-browser?))
+                             (natEnabled ,(bool->xml-string nat-enabled?))
                              (natLeaseMinutes ,nat-lease-minutes)
                              (natRenewalMinutes ,nat-renewal-minutes)
                              (natTimeoutSeconds ,nat-timeout-seconds)
-                             (urAccepted ,ur-accepted)
-                             (urSeen ,ur-seen)
-                             (urUniqueID ,ur-unique-id)
-                             (urURL ,ur-url)
-                             (urPostInsecurely ,ur-post-insecurely)
-                             (urInitialDelayS ,ur-initial-delay-s)
-                             (autoUpgradeIntervalH ,auto-upgrade-interval-h)
-                             (upgradeToPreReleases ,upgrade-to-pre-releases)
-                             (keepTemporariesH ,keep-temporaries-h)
-                             (cacheIgnoredFiles ,cache-ignored-files)
-                             (progressUpdateIntervalS ,progress-update-interval-s)
-                             (limitBandwidthInLan ,limit-bandwidth-in-lan)
+                             (urAccepted ,usage-reporting-accepted)
+                             (urSeen ,usage-reporting-seen)
+                             (urUniqueID ,usage-reporting-unique-id)
+                             (urURL ,usage-reporting-url)
+                             (urPostInsecurely ,(bool->xml-string usage-reporting-post-insecurely?))
+                             (urInitialDelayS ,usage-reporting-initial-delay-seconds)
+                             (autoUpgradeIntervalH ,auto-upgrade-interval-hours)
+                             (upgradeToPreReleases ,(bool->xml-string upgrade-to-pre-releases?))
+                             (keepTemporariesH ,keep-temporaries-hours)
+                             (cacheIgnoredFiles ,(bool->xml-string cache-ignored-files?))
+                             (progressUpdateIntervalS ,progress-update-interval-seconds)
+                             (limitBandwidthInLan ,(bool->xml-string limit-bandwidth-in-lan?))
                              (minHomeDiskFree (@ (unit ,min-home-disk-free-unit))
                                               ,min-home-disk-free)
                              (releasesURL ,releases-url)
-                             (overwriteRemoteDeviceNamesOnConnect ,overwrite-remote-device-names-on-connect)
+                             (overwriteRemoteDeviceNamesOnConnect ,(bool->xml-string overwrite-remote-device-names-on-connect?))
                              (tempIndexMinBlocks ,temp-index-min-blocks)
                              (unackedNotificationID ,unacked-notification-id)
                              (trafficClass ,traffic-class)
-                             (setLowPriority ,set-low-priority)
+                             (setLowPriority ,(bool->xml-string set-low-priority?))
                              (maxFolderConcurrency ,max-folder-concurrency)
                              (crashReportingURL ,crash-reporting-url)
-                             (crashReportingEnabled ,crash-reporting-enabled)
-                             (stunKeepaliveStartS ,stun-keepalive-start-s)
-                             (stunKeepaliveMinS ,stun-keepalive-min-s)
+                             (crashReportingEnabled ,(bool->xml-string crash-reporting-enabled?))
+                             (stunKeepaliveStartS ,stun-keepalive-start-seconds)
+                             (stunKeepaliveMinS ,stun-keepalive-min-seconds)
                              (stunServer ,stun-server)
                              (databaseTuning ,database-tuning)
                              (maxConcurrentIncomingRequestKiB ,max-concurrent-incoming-request-kib)
-                             (announceLANAddresses ,announce-lan-addresses)
-                             (sendFullIndexOnUpgrade ,send-full-index-on-upgrade)
+                             (announceLANAddresses ,(bool->xml-string announce-lan-addresses?))
+                             (sendFullIndexOnUpgrade ,(bool->xml-string send-full-index-on-upgrade?))
                              (connectionLimitEnough ,connection-limit-enough)
                              (connectionLimitMax ,connection-limit-max)
-                             (insecureAllowOldTLSVersions ,insecure-allow-old-tlsVersions)
+                             (insecureAllowOldTLSVersions ,(bool->xml-string insecure-allow-old-tls-versions?))
                              (connectionPriorityTcpLan ,connection-priority-tcp-lan)
                              (connectionPriorityQuicLan ,connection-priority-quic-lan)
                              (connectionPriorityTcpWan ,connection-priority-tcp-wan)
@@ -532,7 +549,6 @@
       (respawn? #f)
       (stop #~(make-kill-destructor))))))
 
-
 (define syncthing-files-service
   (match-record-lambda <syncthing-configuration> (config-file user home home-service?)
     (if config-file
@@ -541,7 +557,7 @@
         ;; and the skeletons to never be applied to that user's home.  In such
         ;; cases, put the config at /var/lib/syncthing-<user>/config.xml
         `((,(if home-service?
-                ".config/syncthing/config.xml"
+                ".local/state/syncthing/config.xml"
                 (string-append "/var/lib/syncthing-" user "/config.xml"))
            ,(if (file-like? config-file)
                 config-file

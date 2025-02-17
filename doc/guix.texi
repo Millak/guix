@@ -22945,6 +22945,15 @@ common configuration and data directory (@code{--home} in
 @uref{https://docs.syncthing.net/users/syncthing.html}) to
 @file{/var/lib/syncthing-<user>}.
 
+When used as a home service, syncthing configuration will be populated
+in @file{~/.local/state/syncthing/}.  Old Syncthing installs may have
+files in @file{$XDG_CONFIG_HOME/syncthing/} (usually
+@file{~/.config/syncthing/}), which will override configuration in
+@file{~/.local/state/syncthing} managed by this service.  In such
+cases, you should move the contents of
+@file{$XDG_CONFIG_HOME/syncthing/} into
+@file{~/.local/state/syncthing/}.
+
 @end table
 @end deftp
 
@@ -22975,11 +22984,11 @@ Data type representing the configuration file read by the Syncthing
 daemon.
 
 @table @asis
-@item @code{folders} (default: @var{(list (syncthing-folder (id "default") (label "Default Folder") (path "~/Sync")))}
+@item @code{folders} (default: @code{(list (syncthing-folder (id "default") (label "Default Folder") (path "~/Sync")))}
 The default here is the same as Syncthing's default.  The value should
 be a list of @code{syncthing-folder}s.
 
-@item @code{devices} (default: @var{'()}
+@item @code{devices} (default: @code{'()}
 This should be a list of @code{syncthing-device}s.  Guix will
 automatically add any devices specified in any `folders' to this list.
 There are instances when you want to connect to a device despite not
@@ -22989,108 +22998,108 @@ here.  If multiple versions of the same device (as determined by
 comparing device ID) are discovered, the one in this list is
 prioritized.  Otherwise, the first instance in the first folder is used.
 
-@item @code{gui-enabled} (default: @var{"true"})
+@item @code{gui-enabled?} (default: @code{#t})
 By default, any user on the computer can access the GUI and make changes
 to Syncthing.  If you leave this enabled, you should probably set
 @code{gui-user} and @code{gui-password} (see below).
 
-@item @code{gui-tls} (default: @var{"false"})
-@item @code{gui-debugging} (default: @var{"false"})
-@item @code{gui-send-basic-auth-prompt} (default: @var{"false"})
-@item @code{gui-address} (default: @var{"127.0.0.1:8384"})
-@item @code{gui-user} (default: @var{#f})
-@item @code{gui-password} (default: @var{#f})
+@item @code{gui-tls?} (default: @code{#f})
+@item @code{gui-debugging?} (default: @code{#f})
+@item @code{gui-send-basic-authorization-prompt?} (default: @code{#f})
+@item @code{gui-address} (default: @code{"127.0.0.1:8384"})
+@item @code{gui-user} (default: @code{#f})
+@item @code{gui-password} (default: @code{#f})
 A bcrypt hash of the GUI password.  Remember that this will be globally
 exposed in @file{/gnu/store}.
 
-@item @code{gui-apikey} (default: @var{#f})
+@item @code{gui-apikey} (default: @code{#f})
 You must specify this to use the Syncthing REST interface.  This key is
 kept in @file{/gnu/store} and is accessible to all users of the system.
 
-@item @code{gui-theme} (default: @var{"default"})
-@item @code{ldap-enabled} (default: @var{#f})
-@item @code{ldap-address} (default: @var{""})
-@item @code{ldap-bind-dn} (default: @var{""})
-@item @code{ldap-transport} (default: @var{""})
-@item @code{ldap-insecure-skip-verify} (default: @var{""})
-@item @code{ldap-search-base-dn} (default: @var{""})
-@item @code{ldap-search-filter} (default: @var{""})
-@item @code{listen-address} (default: @var{"default"})
-@item @code{global-announce-server} (default: @var{"default"})
-@item @code{global-announce-enabled} (default: @var{"true"})
+@item @code{gui-theme} (default: @code{"default"})
+@item @code{ldap-enabled?} (default: @code{#f})
+@item @code{ldap-address} (default: @code{""})
+@item @code{ldap-bind-dn} (default: @code{""})
+@item @code{ldap-transport} (default: @code{""})
+@item @code{ldap-insecure-skip-verify} (default: @code{""})
+@item @code{ldap-search-base-dn} (default: @code{""})
+@item @code{ldap-search-filter} (default: @code{""})
+@item @code{listen-address} (default: @code{"default"})
+@item @code{global-announce-server} (default: @code{"default"})
+@item @code{global-announce-enabled?} (default: @code{#t})
 Global discovery servers can be used to help connect devices at unknown
 IP addresses by storing the last known IP address.
 
-@item @code{local-announce-enabled} (default: @var{"true"})
+@item @code{local-announce-enabled?} (default: @code{#t})
 This makes devices find each other very easily on the same LAN.  Often,
 this will allow you to just plug an Ethernet between two devices, or
 connect one device to the other's hotspot and start syncing.
 
-@item @code{local-announce-port} (default: @var{"21027"})
-@item @code{local-announce-mcaddr} (default: @var{"[ff12::8384]:21027"})
-@item @code{max-send-kbps} (default: @var{"0"})
-@item @code{max-recv-kbps} (default: @var{"0"})
-@item @code{reconnection-interval-s} (default: @var{"60"})
-@item @code{relays-enabled} (default: @var{"true"})
+@item @code{local-announce-port} (default: @code{21027})
+@item @code{local-announce-mac-address} (default: @code{"[ff12::8384]:21027"})
+@item @code{max-send-kbps} (default: @code{0})
+@item @code{max-receive-kbps} (default: @code{0})
+@item @code{reconnection-interval-seconds} (default: @code{60})
+@item @code{relays-enabled?} (default: @code{#t})
 This option allows your Syncthing instance to use a global network of
 @uref{https://docs.syncthing.net/users/relaying.html, relays} to enable
 syncing between devices when all other methods fail.  As always,
 Syncthing traffic is encrypted in transport and the relays are unable to
 decrypt it.
 
-@item @code{relay-reconnect-interval-m} (default: @var{"10"})
-@item @code{start-browser} (default: @var{"true"})
-@item @code{nat-enabled} (default: @var{"true"})
-@item @code{nat-lease-minutes} (default: @var{"60"})
-@item @code{nat-renewal-minutes} (default: @var{"30"})
-@item @code{nat-timeout-seconds} (default: @var{"10"})
-@item @code{ur-accepted} (default: @var{"0"})
-Options whose names begin with `ur-' control usage reporting.  Set to -1
+@item @code{relay-reconnect-interval-minutes} (default: @code{10})
+@item @code{start-browser?} (default: @code{#t})
+@item @code{nat-enabled?} (default: @code{#t})
+@item @code{nat-lease-minutes} (default: @code{60})
+@item @code{nat-renewal-minutes} (default: @code{30})
+@item @code{nat-timeout-seconds} (default: @code{10})
+@item @code{usage-reporting-accepted} (default: @code{0})
+Options whose names begin with `usage-reporting-' control usage reporting.  Set to -1
 to disable, or to a positive value to enable.  The default (0) disables
 reporting, but causes a usage reporting consent prompt to be displayed
 in the Syncthing GUI.
 
-@item @code{ur-seen} (default: @var{"0"})
-@item @code{ur-unique-id} (default: @var{""})
-@item @code{ur-url} (default: @var{"https://data.syncthing.net/newdata"})
-@item @code{ur-post-insecurely} (default: @var{"false"})
-@item @code{ur-initial-delay-s} (default: @var{"1800"})
-@item @code{auto-upgrade-interval-h} (default: @var{"12"})
-@item @code{upgrade-to-pre-releases} (default: @var{"false"})
-@item @code{keep-temporaries-h} (default: @var{"24"})
-@item @code{cache-ignored-files} (default: @var{"false"})
-@item @code{progress-update-interval-s} (default: @var{"5"})
-@item @code{limit-bandwidth-in-lan} (default: @var{"false"})
-@item @code{min-home-disk-free-unit} (default: @var{"%"})
-@item @code{min-home-disk-free} (default: @var{"1"})
-@item @code{releases-url} (default: @var{"https://upgrades.syncthing.net/meta.json"})
-@item @code{overwrite-remote-device-names-on-connect} (default: @var{"false"})
-@item @code{temp-index-min-blocks} (default: @var{"10"})
-@item @code{unacked-notification-id} (default: @var{"authenticationUserAndPassword"})
-@item @code{traffic-class} (default: @var{"0"})
-@item @code{set-low-priority} (default: @var{"true"})
-@item @code{max-folder-concurrency} (default: @var{"0"})
-@item @code{crash-reporting-url} (default: @var{"https://crash.syncthing.net/newcrash"})
-@item @code{crash-reporting-enabled} (default: @var{"true"})
-@item @code{stun-keepalive-start-s} (default: @var{"180"})
-@item @code{stun-keepalive-min-s} (default: @var{"20"})
-@item @code{stun-server} (default: @var{"default"})
-@item @code{database-tuning} (default: @var{"auto"})
-@item @code{max-concurrent-incoming-request-kib} (default: @var{"0"})
-@item @code{announce-lan-addresses} (default: @var{"true"})
-@item @code{send-full-index-on-upgrade} (default: @var{"false"})
-@item @code{connection-limit-enough} (default: @var{"0"})
-@item @code{connection-limit-max} (default: @var{"0"})
-@item @code{insecure-allow-old-tls-versions} (default: @var{"false"})
-@item @code{connection-priority-tcp-lan} (default: @var{"10"})
-@item @code{connection-priority-quic-lan} (default: @var{"20"})
-@item @code{connection-priority-tcp-wan} (default: @var{"30"})
-@item @code{connection-priority-quic-wan} (default: @var{"40"})
-@item @code{connection-priority-relay} (default: @var{"50"})
-@item @code{connection-priority-upgrade-threshold} (default: @var{"0"})
-@item @code{default-folder} (default: @var{(syncthing-folder (label ""))})
-@item @code{default-device} (default: @var{(syncthing-device (id ""))})
-@item @code{default-ignores} (default: @var{"")})
+@item @code{usage-reporting-seen} (default: @code{0})
+@item @code{usage-reporting-unique-id} (default: @code{""})
+@item @code{usage-reporting-url} (default: @code{"https://data.syncthing.net/newdata"})
+@item @code{usage-reporting-post-insecurely?} (default: @code{#f})
+@item @code{usage-reporting-initial-delay-seconds} (default: @code{1800})
+@item @code{auto-upgrade-interval-hours} (default: @code{12})
+@item @code{upgrade-to-pre-releases?} (default: @code{#f})
+@item @code{keep-temporaries-hours} (default: @code{24})
+@item @code{cache-ignored-files?} (default: @code{#f})
+@item @code{progress-update-interval-seconds} (default: @code{5})
+@item @code{limit-bandwidth-in-lan?} (default: @code{#f})
+@item @code{min-home-disk-free-unit} (default: @code{"%"})
+@item @code{min-home-disk-free} (default: @code{1})
+@item @code{releases-url} (default: @code{"https://upgrades.syncthing.net/meta.json"})
+@item @code{overwrite-remote-device-names-on-connect?} (default: @code{#f})
+@item @code{temp-index-min-blocks} (default: @code{10})
+@item @code{unacked-notification-id} (default: @code{"authenticationUserAndPassword"})
+@item @code{traffic-class} (default: @code{0})
+@item @code{set-low-priority?} (default: @code{#t})
+@item @code{max-folder-concurrency} (default: @code{0})
+@item @code{crash-reporting-url} (default: @code{"https://crash.syncthing.net/newcrash"})
+@item @code{crash-reporting-enabled?} (default: @code{#t})
+@item @code{stun-keepalive-start-seconds} (default: @code{180})
+@item @code{stun-keepalive-min-seconds} (default: @code{20})
+@item @code{stun-server} (default: @code{"default"})
+@item @code{database-tuning} (default: @code{"auto"})
+@item @code{max-concurrent-incoming-request-kib} (default: @code{0})
+@item @code{announce-lan-addresses?} (default: @code{#t})
+@item @code{send-full-index-on-upgrade?} (default: @code{#f})
+@item @code{connection-limit-enough} (default: @code{0})
+@item @code{connection-limit-max} (default: @code{0})
+@item @code{insecure-allow-old-tls-versions?} (default: @code{#f})
+@item @code{connection-priority-tcp-lan} (default: @code{10})
+@item @code{connection-priority-quic-lan} (default: @code{20})
+@item @code{connection-priority-tcp-wan} (default: @code{30})
+@item @code{connection-priority-quic-wan} (default: @code{40})
+@item @code{connection-priority-relay} (default: @code{50})
+@item @code{connection-priority-upgrade-threshold} (default: @code{0})
+@item @code{default-folder} (default: @code{(syncthing-folder (label ""))})
+@itemx @code{default-device} (default: @code{(syncthing-device (id ""))})
+@itemx @code{default-ignores} (default: @code{"")})
 Options whose names begin with `default-' above do not affect folders
 and devices added through the Guix configuration interface.  They will,
 however, affect folders and devices that are added through the Syncthing
@@ -23103,7 +23112,7 @@ GUI, by an @code{introducer}, or a device with
 Data type representing a folder to be synchronized.
 
 @table @asis
-@item @code{id} (default: @var{#f})
+@item @code{id} (default: @code{#f})
 This ID cannot match the ID of any other folder on this device.  If left
 unspecified, it will default to the label (see below).
 
@@ -23113,56 +23122,57 @@ A human readable label for the folder.
 @item @code{path}
 The path at which to store this folder.
 
-@item @code{type} (default: @var{"sendreceive"})
-@item @code{rescan-interval-s} (default: @var{"3600"})
-@item @code{fs-watcher-enabled} (default: @var{"true"})
-@item @code{fs-watcher-delay-s} (default: @var{"10"})
-@item @code{ignore-perms} (default: @var{"false"})
-@item @code{auto-normalize} (default: @var{"true"})
-@item @code{devices} (default: @var{'()})
+@item @code{type} (default: @code{"sendreceive"})
+@item @code{rescan-interval-seconds} (default: @code{3600})
+@item @code{file-system-watcher-enabled?} (default: @code{#t})
+@item @code{file-system-watcher-delay-seconds} (default: @code{10})
+@item @code{file-system-watcher-timeout-seconds} (default: @code{0})
+@item @code{ignore-permissions?} (default: @code{#f})
+@item @code{auto-normalize?} (default: @code{#t})
+@item @code{devices} (default: @code{'()})
 This should be a list of other Syncthing devices.  You do not need to
 specify the current device.  Each device can be listed as a a
 @code{syncthing-device} record or a @code{syncthing-folder-device}
 record if you want files to be encrypted on disk.  See below.
 
-@item @code{filesystem-type} (default: @var{"basic"})
-@item @code{min-disk-free-unit} (default: @var{"%"})
-@item @code{min-disk-free} (default: @var{"1"})
-@item @code{versioning-type} (default: @var{#f})
-@item @code{versioning-fs-path} (default: @var{""})
-@item @code{versioning-fs-type} (default: @var{"basic"})
-@item @code{versioning-cleanup-interval-s} (default: @var{"3600"})
-@item @code{versioning-cleanout-days} (default: @var{#f})
-@item @code{versioning-keep} (default: @var{#f})
-@item @code{versioning-max-age} (default: @var{#f})
-@item @code{versioning-command} (default: @var{#f})
-@item @code{copiers} (default: @var{"0"})
-@item @code{puller-max-pending-kib} (default: @var{"0"})
-@item @code{hashers} (default: @var{"0"})
-@item @code{order} (default: @var{"random"})
-@item @code{ignore-delete} (default: @var{"false"})
-@item @code{scan-progress-interval-s} (default: @var{"0"})
-@item @code{puller-pause-s} (default: @var{"0"})
-@item @code{max-conflicts} (default: @var{"10"})
-@item @code{disable-sparse-files} (default: @var{"false"})
-@item @code{disable-temp-indexes} (default: @var{"false"})
-@item @code{paused} (default: @var{"false"})
-@item @code{weak-hash-threshold-pct} (default: @var{"25"})
-@item @code{marker-name} (default: @var{".stfolder"})
-@item @code{copy-ownership-from-parent} (default: @var{"false"})
-@item @code{mod-time-window-s} (default: @var{"0"})
-@item @code{max-concurrent-writes} (default: @var{"2"})
-@item @code{disable-fsync} (default: @var{"false"})
-@item @code{block-pull-order} (default: @var{"standard"})
-@item @code{copy-range-method} (default: @var{"standard"})
-@item @code{case-sensitive-fs} (default: @var{"false"})
-@item @code{junctions-as-dirs} (default: @var{"false"})
-@item @code{sync-ownership} (default: @var{"false"})
-@item @code{send-ownership} (default: @var{"false"})
-@item @code{sync-xattrs} (default: @var{"false"})
-@item @code{send-xattrs} (default: @var{"false"})
-@item @code{xattr-filter-max-single-entry-size} (default: @var{"1024"})
-@item @code{xattr-filter-max-total-size} (default: @var{"4096")})
+@item @code{filesystem-type} (default: @code{"basic"})
+@item @code{min-disk-free-unit} (default: @code{"%"})
+@item @code{min-disk-free} (default: @code{1})
+@item @code{versioning-type} (default: @code{#f})
+@item @code{versioning-file-system-path} (default: @code{""})
+@item @code{versioning-file-system-type} (default: @code{"basic"})
+@item @code{versioning-cleanup-interval-seconds} (default: @code{3600})
+@item @code{versioning-cleanout-days} (default: @code{#f})
+@item @code{versioning-keep} (default: @code{#f})
+@item @code{versioning-max-age} (default: @code{#f})
+@item @code{versioning-command} (default: @code{#f})
+@item @code{copiers} (default: @code{0})
+@item @code{puller-max-pending-kib} (default: @code{0})
+@item @code{hashers} (default: @code{0})
+@item @code{order} (default: @code{"random"})
+@item @code{ignore-delete?} (default: @code{#f})
+@item @code{scan-progress-interval-seconds} (default: @code{0})
+@item @code{puller-pause-seconds} (default: @code{0})
+@item @code{max-conflicts} (default: @code{10})
+@item @code{disable-sparse-files?} (default: @code{#f})
+@item @code{disable-temp-indexes?} (default: @code{#f})
+@item @code{paused?} (default: @code{#f})
+@item @code{weak-hash-threshold-percentage} (default: @code{25})
+@item @code{marker-name} (default: @code{".stfolder"})
+@item @code{copy-ownership-from-parent?} (default: @code{#f})
+@item @code{mod-time-window-seconds} (default: @code{0})
+@item @code{max-concurrent-writes} (default: @code{2})
+@item @code{disable-fsync?} (default: @code{#f})
+@item @code{block-pull-order} (default: @code{"standard"})
+@item @code{copy-range-method} (default: @code{"standard"})
+@item @code{case-sensitive-file-system?} (default: @code{#f})
+@item @code{junctions-as-dirs?} (default: @code{#f})
+@item @code{sync-ownership?} (default: @code{#f})
+@item @code{send-ownership?} (default: @code{#f})
+@item @code{sync-xattrs?} (default: @code{#f})
+@item @code{send-xattrs?} (default: @code{#f})
+@item @code{xattr-filter-max-single-entry-size} (default: @code{1024})
+@item @code{xattr-filter-max-total-size} (default: @code{4096})
 @end table
 @end deftp
 
@@ -23175,28 +23185,28 @@ A long hash representing the keys generated by Syncthing on the first
 launch.  You can obtain this from the Syncthing GUI or by inspecting an
 existing Syncthing configuration file.
 
-@item @code{name} (default: @var{""})
+@item @code{name} (default: @code{""})
 A human readable device name for viewing in the GUI or in Scheme.
 
-@item @code{compression} (default: @var{"metadata"})
-@item @code{introducer} (default: @var{"false"})
-@item @code{skip-introduction-removals} (default: @var{"false"})
-@item @code{introduced-by} (default: @var{""})
-@item @code{addresses} (default: @var{'("dynamic")})
+@item @code{compression} (default: @code{"metadata"})
+@item @code{introducer?} (default: @code{#f})
+@item @code{skip-introduction-removals?} (default: @code{#f})
+@item @code{introduced-by} (default: @code{""})
+@item @code{addresses} (default: @code{'("dynamic")})
 List of addresses at which to search for this device.  When the special
 value ``dynamic'' is included, Syncthing will search for the device
 locally as well as via the Syncthing project's
 @uref{https://docs.syncthing.net/users/security.html#global-discovery,
 global discovery} servers.
 
-@item @code{paused} (default: @var{"false"})
-@item @code{auto-accept-folders} (default: @var{"false"})
-@item @code{max-send-kbps} (default: @var{"0"})
-@item @code{max-recv-kbps} (default: @var{"0"})
-@item @code{max-request-kib} (default: @var{"0"})
-@item @code{untrusted} (default: @var{"false"})
-@item @code{remote-gui-port} (default: @var{"0"})
-@item @code{num-connections} (default: @var{"0")})
+@item @code{paused?} (default: @code{#f})
+@item @code{auto-accept-folders?} (default: @code{#f})
+@item @code{max-send-kbps} (default: @code{0})
+@item @code{max-receive-kbps} (default: @code{0})
+@item @code{max-request-kib} (default: @code{0})
+@item @code{untrusted?} (default: @code{#f})
+@item @code{remote-gui-port} (default: @code{0})
+@item @code{num-connections} (default: @code{0})
 
 @end table
 @end deftp
@@ -23217,14 +23227,14 @@ If you don't need to use these options, then you can just use
 @item @code{device}
 The @code{syncthing-device} for which this configuration applies.
 
-@item @code{introduced-by} (default: @var{""})
+@item @code{introduced-by} (default: @code{""})
 The name of the device that "introduced" our device to the device
 sharing this folder.  This is only used when "introduced" devices are
 removed by the introducer.  See
 @uref{https://docs.syncthing.net/users/introducer.html, Syncthing
 introductions}.
 
-@item @code{encryption-password} (default: @var{""})
+@item @code{encryption-password} (default: @code{""})
 The password used to encrypt data that is synchronized to untrusted
 devices.
 
