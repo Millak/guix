@@ -2311,7 +2311,7 @@ Cesium.")
 (define-public python-drizzle
   (package
     (name "python-drizzle")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch) ;PyPi doesn't have the test data sets
@@ -2320,7 +2320,7 @@ Cesium.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1psa98n81wphin15j7k0392rh94dkhnwrjp32lr40gb9ldp52mcm"))))
+        (base32 "113fqr87glqkvh4szqvbv0b6brr3bwp4d65qy1r1q4b90318p2zf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2334,16 +2334,16 @@ Cesium.")
               ;; Cython extensions have to be built before running the tests.
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
-     (list python-pytest
+     (list python-astropy-minimal
+           python-gwcs
+           python-pytest
            python-setuptools
            python-setuptools-scm
            python-wheel))
     (propagated-inputs
-     (list python-astropy
-           python-numpy))
+     (list python-numpy))
     (home-page "https://github.com/spacetelescope/drizzle")
-    (synopsis
-     "Astronomical tool for combining dithered images into a single image")
+    (synopsis "Combining dithered images into a single image")
     (description
      "The drizzle library is a Python package for combining dithered images
 into a single image.  This library is derived from code used in DrizzlePac.
