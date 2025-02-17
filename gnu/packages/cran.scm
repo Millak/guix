@@ -28528,7 +28528,7 @@ several formats and MIME types.")
                              r-r6
                              r-spacefillr
                              r-withr))
-    (native-inputs (list r-knitr r-rmpi r-table r-testthat))
+    (native-inputs (list r-knitr r-rmpi r-testthat))
     (home-page "https://mlopez-ibanez.github.io/irace/")
     (synopsis "Iterated racing for automatic algorithm configuration")
     (description
