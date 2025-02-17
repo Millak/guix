@@ -37577,14 +37577,14 @@ OpenMP.")
 (define-public r-emplik
   (package
     (name "r-emplik")
-    (version "1.3-1")
+    (version "1.3-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "emplik" version))
        (sha256
         (base32
-         "1f6v0bg9sl8kn4y8bpgjyc1b18xkmfbs86gbbmbh198v335lgcrb"))))
+         "1n36fxavkfx0ham5wglvlqgyi0c8l1g5jy2xv1a8kfd1r2r5zhbx"))))
     (properties `((upstream-name . "emplik")))
     (build-system r-build-system)
     (propagated-inputs
