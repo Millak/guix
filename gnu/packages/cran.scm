@@ -2901,6 +2901,37 @@ generated grid objects.  This package is particularly designed for
 bioinformaticians to assemble complex plots for publication.")
     (license license:gpl3)))
 
+(define-public r-rtdists
+  (package
+    (name "r-rtdists")
+    (version "0.11-5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rtdists" version))
+       (sha256
+        (base32 "1v8yhyvliw3dm3ciwxxaa9spfw05wp334l7gmvgv20mab2kjxkwp"))))
+    (properties `((upstream-name . "rtdists")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-evd r-gsl r-msm r-rcpp))
+    (native-inputs (list r-devtools r-glba r-knitr r-rwiener r-testthat))
+    (home-page "https://github.com/rtdists/rtdists/")
+    (synopsis "Response Time Distributions")
+    (description
+     "This package provides response time distributions (density/PDF,
+distribution function/CDF, quantile function, and random generation):
+
+@itemize
+@item Ratcliff diffusion model (Ratcliff & @code{McKoon}, 2008,
+<doi:10.1162/neco.2008.12-06-420>) based on C code by Andreas and Jochen Voss
+and
+@item linear ballistic accumulator (LBA; Brown & Heathcote, 2008,
+<doi:10.1016/j.cogpsych.2007.12.002>) with different distributions underlying
+the drift rate.
+@end itemize
+")
+    (license license:gpl3+)))
+
 (define-public r-rticles
   (package
     (name "r-rticles")
