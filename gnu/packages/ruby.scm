@@ -12349,13 +12349,14 @@ make use of.")
          "03h4lmlxpcya8j7s2cnyscqlx8v3xl1xgsw5y1wk1scxcgz2vbmr"))))
     (build-system ruby-build-system)
     (arguments
-     ;; Disable testing to break the cycle qed, ansi, qed, among others.
-     ;; Instead simply test that the executable runs using --copyright.
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "ruby" "-Ilib" "bin/qed" "--copyright"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "ruby" "-Ilib" "bin/qed")))))))
+    (native-inputs
+     (list ruby-ae-bootstrap))
     (propagated-inputs
      (list ruby-ansi ruby-brass))
     (synopsis "Test framework utilizing literate programming techniques")
@@ -12480,6 +12481,15 @@ ruby with support for changing priority using pairing heap data structure")
 for reuse by other test frameworks.")
     (home-page "https://rubyworks.github.io/ae/")
     (license license:bsd-2)))
+
+(define-public ruby-ae-bootstrap
+  (hidden-package
+   (package/inherit ruby-ae
+     (arguments
+      (substitute-keyword-arguments
+          (package-arguments ruby-ae)
+        ((#:tests? _ #t) #f)))
+     (native-inputs '()))))
 
 (define-public ruby-lemon
   (package
