@@ -23637,21 +23637,21 @@ parallel calculations across cluster nodes.")
 (define-public r-chk
   (package
     (name "r-chk")
-    (version "0.9.2")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "chk" version))
        (sha256
         (base32
-         "0f6ilq9pbb6mgvclp6ksbaw8353wf114p1xqhlmkwgsfh2bg63xg"))))
+         "116kmgyi8wndl4r4fmbbdi2bpzxnl92izz1rr6xzwr8zd7xcs22v"))))
     (properties
      `((upstream-name . "chk")
        (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lifecycle r-rlang))
-    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
+    (native-inputs (list r-knitr r-testthat r-withr tzdata-for-tests))
     (home-page "https://github.com/poissonconsulting/chk")
     (synopsis "Check user-supplied function arguments")
     (description
