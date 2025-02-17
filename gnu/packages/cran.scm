@@ -17609,14 +17609,14 @@ time after the current time, after the R execution stack has emptied.")
 (define-public r-promises
   (package
     (name "r-promises")
-    (version "1.3.0")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "promises" version))
        (sha256
         (base32
-         "1lzs65csxaq26d1g37qjjgxzm418xv52c3ccpk0l0cxkpbrrs87q"))))
+         "1gal4rgnrb4k8ws8zbwyrzsmjslrpnw77max7x6ifwsdnmzb1mcl"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-fastmap
@@ -17626,7 +17626,7 @@ time after the current time, after the R execution stack has emptied.")
            r-rcpp
            r-rlang))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-future r-knitr r-spelling r-testthat))
     (home-page "https://rstudio.github.io/promises")
     (synopsis "Abstractions for promise-based asynchronous programming")
     (description
