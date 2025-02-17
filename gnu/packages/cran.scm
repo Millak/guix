@@ -624,6 +624,40 @@ simulating diversification models, dating trees, comparing trees, and
 reading/writing trees in Newick format.")
     (license license:gpl2+)))
 
+(define-public r-cftime
+  (package
+    (name "r-cftime")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "CFtime" version))
+       (sha256
+        (base32 "0q1gsps9v05mbw9nlligjmsbv0gjwnmf6bywazq0jlmggrsjrfbn"))))
+    (properties
+     '((upstream-name . "CFtime")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-ncdfcf"))
+       (updater-extra-native-inputs . ("r-stringr"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-r6))
+    (native-inputs (list r-knitr r-ncdf4 r-stringr r-testthat))
+    (home-page "https://github.com/pvanlaake/CFtime")
+    (synopsis "Using CF-compliant calendars with climate projection data")
+    (description
+     "This package provides support for all calendars as specified in the
+@dfn{Climate and Forecast} (CF) Metadata Conventions for climate and
+forecasting data.  The CF Metadata Conventions is widely used for distributing
+files with climate observations or projections, including the @dfn{Coupled
+Model Intercomparison Project} (CMIP) data used by climate change scientists
+and the @dfn{Intergovernmental Panel on Climate Change} (IPCC).  This package
+specifically allows the user to work with any of the CF-compliant
+calendars (many of which are not compliant with POSIXt).  The CF time
+coordinate is formally defined in the
+@url{https://cfconventions.org/Data/cf-conventions/cf-conventions-1.12/cf-conventions.html#time-coordinate,CF
+Metadata Conventions document}.")
+    (license license:expat)))
+
 (define-public r-chameleon
   (package
     (name "r-chameleon")
