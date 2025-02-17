@@ -319,13 +319,12 @@ exist."
         (format #t "there is no build script to run~%"))
     #t))
 
-(define* (check #:key tests? inputs #:allow-other-keys)
-  "Run 'npm test' if TESTS?"
+(define* (check #:key tests? inputs test-target #:allow-other-keys)
+  "Run 'npm run TEST-TARGET' if TESTS?"
   (if tests?
       (let ((npm (string-append (assoc-ref inputs "node") "/bin/npm")))
-        (invoke npm "test"))
-      (format #t "test suite not run~%"))
-  #t)
+        (invoke npm "run" test-target))
+      (format #t "test suite not run~%")))
 
 (define* (repack #:key inputs #:allow-other-keys)
   (invoke "tar"
