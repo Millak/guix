@@ -6069,6 +6069,8 @@ of the package is similar or identical to tidyverse.")
        (sha256
         (base32
          "1r980y6d4a5brvxwdx41qzi8f3fck36c5l89sd3k4csna09jsg1x"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-mockr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
@@ -6102,7 +6104,7 @@ of the package is similar or identical to tidyverse.")
            r-tidyr
            r-xml2))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-mockr r-testthat))
     (home-page "https://tidyverse.tidyverse.org")
     (synopsis "Install and load packages from the \"Tidyverse\"")
     (description
