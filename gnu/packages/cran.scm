@@ -1615,18 +1615,17 @@ thus not used in the name of the package.")
 (define-public r-embedsom
   (package
     (name "r-embedsom")
-    (version "2.1.2")
+    (version "2.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "EmbedSOM" version))
               (sha256
                (base32
-                "0k4hja5y7qd0n3gfaxzxrz4wpxc1w9d4d4xbb63rq2nfk3lj7a42"))))
+                "1ilsrb53x4zf0r8jc7csbdnnd8a903qkx09aakw8diif38s72rjy"))))
     (properties `((upstream-name . "EmbedSOM")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-fnn
-           r-ggplot2
+     (list r-ggplot2
            r-igraph
            r-matrix
            r-rtsne
