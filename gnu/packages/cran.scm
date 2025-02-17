@@ -11265,14 +11265,14 @@ quantile mixture from L-moments and trimmed L-moments.")
 (define-public r-distillery
   (package
     (name "r-distillery")
-    (version "1.2-1")
+    (version "1.2-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "distillery" version))
        (sha256
         (base32
-         "1ymmxyamkq0zbz2m4gllln1ihks2hcib6gs0mls92as79srz122b"))))
+         "1rsxrq5j5zzk48r27l7ns7igcij9crwi001h002h2fjcai7m03cr"))))
     (build-system r-build-system)
     (home-page "https://ral.ucar.edu/staff/ericg/")
     (synopsis "Functions for confidence intervals and object information")
