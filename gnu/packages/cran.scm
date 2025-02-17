@@ -1043,6 +1043,33 @@ index based on an ordered version of the Lorenz curve as a robust model
 comparison tool involving zero-inflated and highly skewed distributions.")
     (license license:gpl2+)))
 
+(define-public r-cubelyr
+  (package
+    (name "r-cubelyr")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cubelyr" version))
+       (sha256
+        (base32 "154vwf5pj2jh66wqdh78nc0v722b4rh88hss24g5lc31wlghzc8q"))))
+    (properties `((upstream-name . "cubelyr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-glue
+                             r-pillar
+                             r-purrr
+                             r-rlang
+                             r-tibble
+                             r-tidyselect))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/hadley/cubelyr")
+    (synopsis "Data cube dplyr backend")
+    (description
+     "This package provides an implementation of a data cube extracted out of
+dplyr for backward compatibility.")
+    (license license:expat)))
+
 (define-public r-cubist
   (package
     (name "r-cubist")
