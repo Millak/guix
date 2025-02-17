@@ -4783,13 +4783,13 @@ interest, and which require portability between platforms or ease of scripting."
 (define-public python-pyvo
   (package
     (name "python-pyvo")
-    (version "1.6")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyvo" version))
        (sha256
-        (base32 "1ahcazgxhmxscjgz58mxw75k9g0xm7iffnc4lqfbm3h0wqiz8vnv"))))
+        (base32 "0hfdsb6yqda6g987b96jqaw4kqj4qh9qz3am6inx0nl2m5y735pq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4802,7 +4802,8 @@ interest, and which require portability between platforms or ease of scripting."
            python-wheel))
     (propagated-inputs
      (list python-astropy
-           python-pillow
+           python-defusedxml ; extra requirements
+           python-pillow     ; extra requirements
            python-requests))
     (home-page "https://github.com/astropy/pyvo")
     (synopsis "Access Virtual Observatory data and services")
