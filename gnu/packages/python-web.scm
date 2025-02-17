@@ -222,7 +222,7 @@ devpi-client and others.")
     (synopsis "Devpi upload/install/... commands for Python developers")
     (description
      "The devpi command line tool is typically used in conjunction with
-devpi-server.  It allows to upload, test and install packages from devpi
+devpi-server.  It allows uploading, testing and installing packages from devpi
 indexes.")
     (license license:expat)))
 
@@ -680,7 +680,7 @@ reusable library for parsing, manipulating, and generating URIs.")
     (synopsis "Fork of the legacy standard library cgi and cgitb modules")
     (description
      "This is a fork of the standard library modules @code{cgi} and
-@code{cgitb}.  They are slated to be removed from the Python standard libary
+@code{cgitb}.  They are slated to be removed from the Python standard library
 in Python 3.13 by PEP-594.")
     (license license:psfl)))
 

@@ -1372,7 +1372,7 @@ using a dot syntax, for example: @code{dictionary['deeply.nested.key']}.")
      "Often when we want to label multiple points on a graph the text will
 start heavily overlapping with both other labels and data points.  This can be
 a major problem requiring manual solution.  However this can be largely
-automatized by smart placing of the labels (difficult) or iterative adjustment
+automated by smart placing of the labels (difficult) or iterative adjustment
 of their positions to minimize overlaps (relatively easy).  This library
 implements the latter option to help with matplotlib graphs.")
     (license license:expat)))
@@ -26651,7 +26651,7 @@ functionality removed from @code{packaging}.")
     (synopsis "RGB conversion tool in Python")
     (description
      "This package implements functionality of RGB/CIE1931 'xy' gammuts
-convertion: Gamut A, B, and C.")
+conversion: Gamut A, B, and C.")
     (license license:expat)))
 
 (define-public python-sure
