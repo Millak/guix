@@ -12078,11 +12078,11 @@ by modifying the @code{seek()} and @code{tell()} calls.")
                 "1a9jxhg1jl5rcxnhcmgadl3wcznzjihwxgd1chgcmxqk2jszn4ym"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Tie-Hash-Method")
-    (synopsis "Tied hash with specific methods overriden by callbacks")
+    (synopsis "Tied hash with specific methods overridden by callbacks")
     (description
      "@code{Tie::Hash::Method} provides a way to create a tied hash with
-specific overriden behaviour without having to create a new class to do it.  A
-tied hash with no methods overriden is functionally equivalent to a normal
+specific overridden behaviour without having to create a new class to do it.  A
+tied hash with no methods overridden is functionally equivalent to a normal
 hash.")
     (license (package-license perl))))
 

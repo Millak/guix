@@ -266,7 +266,7 @@ side.")
      (description
       "This package provides an old GeoIP database in the legacy @file{.dat}
 format.  The data was collected before MaxMind changed the license and format
-of their databases.  It is intended only as a compatability package for
+of their databases.  It is intended only as a compatibility package for
 SpamAssassin.")
      (license license:cc-by-sa4.0))))
 
