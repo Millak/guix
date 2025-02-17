@@ -47694,18 +47694,19 @@ more.")
 (define-public r-paws-developer-tools
   (package
     (name "r-paws-developer-tools")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.developer.tools" version))
        (sha256
-        (base32 "0p8ds2ks5pd54x891ha3y57rnjh9da3x0nbwqdhl0f2c2l6bqf74"))))
-    (properties `((upstream-name . "paws.developer.tools")))
+        (base32 "159s296ga96qij3c1nswa8hjpj4aw4nmpnz0mjzshvsk1qs8y08q"))))
+    (properties
+     '((upstream-name . "paws.developer.tools")
+       (updater-ignored-native-inputs . ("r-paws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services developer tools services")
     (description
