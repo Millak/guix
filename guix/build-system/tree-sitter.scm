@@ -36,6 +36,12 @@
   `((guix build tree-sitter-build-system)
     ,@%node-build-system-modules))
 
+(define (default-guile-json)
+  "Return the default guile-json package."
+  ;; Lazily resolve the binding to avoid a circular dependency.
+  (let ((mod (resolve-interface '(gnu packages guile))))
+    (module-ref mod 'guile-json-4)))
+
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
                 #:allow-other-keys
@@ -99,25 +105,27 @@
                             (search-paths '())
                             (system (%current-system))
                             (guile #f)
+                            (guile-json (default-guile-json))
                             (imported-modules %tree-sitter-build-system-modules)
                             (modules '((guix build utils)
                                        (guix build tree-sitter-build-system))))
   (define builder
-    (with-imported-modules imported-modules
-      #~(begin
-          (use-modules #$@(sexp->gexp modules))
-          (tree-sitter-build #:name #$name
-                             #:source #+source
-                             #:system #$system
-                             #:phases #$phases
-                             #:tests? #$tests?
-                             #:grammar-directories '#$grammar-directories
-                             #:outputs #$(outputs->gexp outputs)
-                             #:search-paths
-                             '#$(sexp->gexp
-                                 (map search-path-specification->sexp
-                                      search-paths))
-                             #:inputs #$(input-tuples->gexp inputs)))))
+    (with-extensions (list guile-json)
+      (with-imported-modules imported-modules
+        #~(begin
+            (use-modules #$@(sexp->gexp modules))
+            (tree-sitter-build #:name #$name
+                               #:source #+source
+                               #:system #$system
+                               #:phases #$phases
+                               #:tests? #$tests?
+                               #:grammar-directories '#$grammar-directories
+                               #:outputs #$(outputs->gexp outputs)
+                               #:search-paths
+                               '#$(sexp->gexp
+                                   (map search-path-specification->sexp
+                                        search-paths))
+                               #:inputs #$(input-tuples->gexp inputs))))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
@@ -137,6 +145,7 @@
                                   (search-paths '())
                                   (native-search-paths '())
                                   (system (%current-system))
+                                  (guile-json (default-guile-json))
                                   (build (nix-system->gnu-triplet system))
                                   (imported-modules
                                    %tree-sitter-build-system-modules)
@@ -144,40 +153,41 @@
                                    '((guix build utils)
                                      (guix build tree-sitter-build-system))))
   (define builder
-    (with-imported-modules imported-modules
-      #~(begin
-          (use-modules #$@(sexp->gexp modules))
+    (with-extensions (list guile-json)
+      (with-imported-modules imported-modules
+        #~(begin
+            (use-modules #$@(sexp->gexp modules))
 
-          (define %build-host-inputs
-            #+(input-tuples->gexp build-inputs))
+            (define %build-host-inputs
+              #+(input-tuples->gexp build-inputs))
 
-          (define %build-target-inputs
-            (append #$(input-tuples->gexp host-inputs)
-                    #+(input-tuples->gexp target-inputs)))
+            (define %build-target-inputs
+              (append #$(input-tuples->gexp host-inputs)
+                      #+(input-tuples->gexp target-inputs)))
 
-          (define %build-inputs
-            (append %build-host-inputs %build-target-inputs))
+            (define %build-inputs
+              (append %build-host-inputs %build-target-inputs))
 
-          (tree-sitter-build #:name #$name
-                             #:source #+source
-                             #:system #$system
-                             #:build #$build
-                             #:target #$target
-                             #:phases #$phases
-                             #:tests? #$tests?
-                             #:grammar-directories '#$grammar-directories
-                             #:outputs #$(outputs->gexp outputs)
-                             #:inputs %build-target-inputs
-                             #:native-inputs %build-host-inputs
-                             #:search-paths '
-                             #$(sexp->gexp
-                                (map search-path-specification->sexp
-                                     search-paths))
-                             #:native-search-paths
-                             '#$(sexp->gexp
-                                 (map
-                                  search-path-specification->sexp
-                                  native-search-paths))))))
+            (tree-sitter-build #:name #$name
+                               #:source #+source
+                               #:system #$system
+                               #:build #$build
+                               #:target #$target
+                               #:phases #$phases
+                               #:tests? #$tests?
+                               #:grammar-directories '#$grammar-directories
+                               #:outputs #$(outputs->gexp outputs)
+                               #:inputs %build-target-inputs
+                               #:native-inputs %build-host-inputs
+                               #:search-paths '
+                               #$(sexp->gexp
+                                  (map search-path-specification->sexp
+                                       search-paths))
+                               #:native-search-paths
+                               '#$(sexp->gexp
+                                   (map
+                                    search-path-specification->sexp
+                                    native-search-paths)))))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
