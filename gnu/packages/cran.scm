@@ -25104,18 +25104,18 @@ while other are highly specific for the special data format used for
 (define-public r-qmri
   (package
     (name "r-qmri")
-    (version "1.2.7.6")
+    (version "1.2.7.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "qMRI" version))
               (sha256
                (base32
-                "0mbxgg80p159vkz05hbzvvip7h5y5rpvjrjnq1vivz855dk0053g"))))
+                "1fpqxlgpzfzfr7vc3dvrrr8b935sc13b09p9ldimpz775lzd1g9n"))))
     (properties `((upstream-name . "qMRI")))
     (build-system r-build-system)
     (propagated-inputs (list r-adimpro r-aws r-awsmethods r-oro-nifti
                              r-stringr))
-    (native-inputs (list gfortran r-knitr r-testthat))
+    (native-inputs (list gfortran r-knitr))
     (home-page "http://www.wias-berlin.de/research/ats/imaging/")
     (synopsis "Methods for quantitative magnetic resonance imaging (qMRI)")
     (description
