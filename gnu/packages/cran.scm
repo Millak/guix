@@ -47943,19 +47943,20 @@ services, including Simple Storage Service (S3).")
 (define-public r-paws-compute
   (package
     (name "r-paws-compute")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.compute" version))
        (sha256
         (base32
-         "00794ayxmpc2z4gxh0mal3lyhi37y9bmjy3k7rpwv0b17k7p04by"))))
-    (properties `((upstream-name . "paws.compute")))
+         "1yzpzxjzkn69x2sdx5b35zkyzq849rlr5plpah4bl5m9jzkm79yl"))))
+    (properties
+     '((upstream-name . "paws.compute")
+       (updater-ignored-native-inputs . ("r-paws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services compute services")
     (description
