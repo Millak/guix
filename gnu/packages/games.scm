@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015 David Thompson <dthompson2@worcester.edu>
-;;; Copyright © 2014-2024 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014-2025 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
 ;;; Copyright © 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -4748,19 +4748,17 @@ This package expects the game(s) to be placed in subdirectories of
     (home-page "http://exult.info/")
     (license license:gpl2+)))
 
-(define-public supertuxkart
-  (package
-    (name "supertuxkart")
-    (version "1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/supertuxkart/stk-code/"
-                           "releases/download/"
-                           version "/SuperTuxKart-" version "-src.tar.xz"))
+(define %supertuxkart-version "1.4")
+(define supertuxkart-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/supertuxkart/stk-code")
+          (commit %supertuxkart-version)))
        (sha256
         (base32
-         "00qg5i9y4i5gdiiq1dbfsgp7dwj60zb5lkgi2d9p3x5s34j3k44q"))
+         "1hv4p0430zw6qm5fgsmayhj8hdxx7qpzggwks5w26z0dz1b5m9w2"))
+       (file-name (git-file-name "supertuxkart" %supertuxkart-version))
        (modules '((guix build utils)))
        (snippet
         ;; Delete bundled library sources
@@ -4774,38 +4772,102 @@ This package expects the game(s) to be placed in subdirectories of
                        "lib/enet"
                        "lib/mcpp"
                        "lib/mojoal"
-                       "lib/wiiuse"))
-           #t))))
+                       "lib/wiiuse"))))))
+
+(define supertuxkart-data
+  ;; There are no tags or releases for the stk-assets data, nor indication of
+  ;; which revision is bundled into the released SuperTuxKart-*-src tarball;
+  ;; use the latest SVN revision available.
+  (let ((commit "18593")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "supertuxkart-data")
+       ;; The package produced is a merger of supertuxkart's "stk-assets"
+       ;; repository and the "stk-code" repository's "data" directory, so
+       ;; include the code version as well.
+       (version (string-append %supertuxkart-version "-" commit))
+       (source
+        (origin
+          (method svn-fetch)
+          (uri (svn-reference
+                (url "https://svn.code.sf.net/p/supertuxkart/code/stk-assets")
+                (revision (string->number commit))))
+          (file-name (string-append name "-" commit "-checkout"))
+          (sha256
+           (base32
+            "0x2l45w1ahgkw9mrbcxzwdlqs7rams6rsga9m40qjapfiqmvlvbg"))))
+       (build-system copy-build-system)
+       (arguments
+        (list #:install-plan
+              #~'(("." "share/supertuxkart/data"
+                   #:exclude-regexp ("wip-.*")))
+              #:phases
+              #~(modify-phases %standard-phases
+                  (add-after 'unpack 'copy-code-data
+                    (lambda _
+                      (copy-recursively
+                       (string-append
+                        #$(this-package-input
+                           (git-file-name "supertuxkart" %supertuxkart-version))
+                        "/data/")
+                       "."))))))
+       (inputs (list supertuxkart-source))
+       (home-page "https://supertuxkart.net/Main_Page")
+       (synopsis "Data files for SuperTuxKart")
+       (description "This package contains data files for SuperTuxKart.")
+       (license (list license:gpl3+
+                      license:cc-by-sa3.0
+                      license:cc-by-sa4.0
+                      license:cc0))))))
+
+(define-public supertuxkart
+  (package
+    (name "supertuxkart")
+    (version %supertuxkart-version)
+    (source supertuxkart-source)
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; no check target
-       #:configure-flags
-       (list "-DUSE_WIIUSE=0"
-             "-DUSE_SYSTEM_ENET=TRUE"
-             "-DUSE_CRYPTO_OPENSSL=TRUE"
-             ;; In order to use the system ENet library, IPv6 support (added in
-             ;; SuperTuxKart version 1.1) must be disabled.
-             "-DUSE_IPV6=FALSE")))
+     (list #:tests? #f                  ; no check target
+           #:configure-flags
+           #~(list "-DCHECK_ASSETS=FALSE" ; assets are out-of-tree
+                   (string-append "-DSTK_INSTALL_DATA_DIR_ABSOLUTE="
+                                  #$(this-package-input "supertuxkart-data")
+                                  "/share/supertuxkart")
+                   "-DUSE_WIIUSE=0"
+                   "-DUSE_SYSTEM_ENET=TRUE"
+                   "-DUSE_CRYPTO_OPENSSL=TRUE"
+                   ;; In order to use the system ENet library, IPv6 support
+                   ;; (added in SuperTuxKart version 1.1) must be disabled.
+                   "-DUSE_IPV6=FALSE")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'disable-data-install
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("^install\\(.*STK_DATA_DIR" &)
+                      (string-append "# " &))))))))
     (inputs
-     `(("curl" ,curl)
-       ("freetype" ,freetype)
-       ("fribidi" ,fribidi)
-       ("glew" ,glew)
-       ("harfbuzz" ,harfbuzz)
-       ("libopenglrecorder" ,libopenglrecorder)
-       ("libvorbis" ,libvorbis)
-       ("libx11" ,libx11)
-       ("libxrandr" ,libxrandr)
-       ("mesa" ,mesa)
-       ("openal" ,openal)
-       ("sdl2" ,sdl2)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)
-       ;; The following input is needed to build the bundled and modified
-       ;; version of irrlicht.
-       ("enet" ,enet)
-       ("libjpeg" ,libjpeg-turbo)
-       ("openssl" ,openssl)))
+     (list curl
+           freetype
+           fribidi
+           glew
+           harfbuzz
+           libopenglrecorder
+           libvorbis
+           libx11
+           libxrandr
+           mesa
+           openal
+           sdl2
+           sqlite
+           supertuxkart-data
+           zlib
+           ;; The following input is needed to build the bundled and modified
+           ;; version of irrlicht.
+           enet
+           libjpeg-turbo
+           openssl))
     (native-inputs (list mcpp pkg-config python))
     (home-page "https://supertuxkart.net/Main_Page")
     (synopsis "3D kart racing game")
