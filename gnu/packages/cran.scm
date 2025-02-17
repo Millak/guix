@@ -23764,6 +23764,8 @@ simulation of correlated data, and more.")
         (base32 "058ym2j400xj8v4k02b6r3wy3lrs1nk909f6x3hhydf7vibqpvw3"))))
     (properties `((upstream-name . "BiocManager")))
     (build-system r-build-system)
+    ;; One test requires Internet access.
+    (arguments (list #:tests? #false))
     (native-inputs
      (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/BiocManager/")
