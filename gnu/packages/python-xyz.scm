@@ -9706,24 +9706,6 @@ objects.")
         (base32
          "111bqz2xqr17rrc7svd20z94xf3zkfs9anjvzpr683zz4iywbcfl"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-version
-            (lambda _
-              (with-output-to-file "sparse/_version.py"
-                (let* ((version #$(package-version this-package) )
-                       (version-tuple (string-join (string-split version #\.) ", ")))
-                  (lambda ()
-                    (format #t
-                            "__version__ = version = '~a'
-__version_tuple__ = version_tuple = (~a)~%" version version-tuple))))
-              (substitute* "pyproject.toml"
-                (("\\[tool\\.setuptools_scm\\]") "")
-                (("^version_file.*") "")
-                (("^dynamic = \\[\"version\"\\]")
-                 (string-append "version = \"" #$version "\"\n"))))))))
     (propagated-inputs
      (list python-numba python-numpy python-scipy))
     (native-inputs
@@ -9732,7 +9714,7 @@ __version_tuple__ = version_tuple = (~a)~%" version version-tuple))))
            python-pytest
            python-pytest-cov
            python-setuptools
-           python-setuptools-scm
+           python-setuptools-scm-next
            python-wheel))
     (home-page "https://github.com/pydata/sparse/")
     (synopsis "Library for multi-dimensional sparse arrays")
