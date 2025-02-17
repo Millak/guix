@@ -14651,7 +14651,10 @@ Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
               (sha256
                (base32
                 "0c3zv42vb792pn74k1s3hxfhi6vp78nzfvmq5fwa4950bvhfp9s0"))))
-    (properties `((upstream-name . "QFeatures")))
+    (properties
+     '((upstream-name . "QFeatures")
+       (updater-extra-native-inputs
+        . ("r-impute" "r-preprocesscore" "r-singlecellexperiment" "r-vsn"))))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationfilter
                              r-biobase
@@ -14668,7 +14671,13 @@ Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
                              r-summarizedexperiment
                              r-tidyr
                              r-tidyselect))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs
+     (list r-impute
+           r-knitr
+           r-preprocesscore
+           r-singlecellexperiment
+           r-testthat
+           r-vsn))
     (home-page "https://github.com/RforMassSpectrometry/QFeatures")
     (synopsis "Quantitative features for mass spectrometry data")
     (description
