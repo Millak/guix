@@ -46667,11 +46667,13 @@ with well defined variance functions).")
        (uri (cran-uri "webutils" version))
        (sha256
         (base32 "07k6d37pscnbsqxg4rpxr0zxrylpv9z1f3s8c6nwd3fhpwjs4d55"))))
-    (properties `((upstream-name . "webutils")))
+    (properties
+     '((upstream-name . "webutils")
+       (updater-extra-native-inputs . ("r-httpuv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-curl r-jsonlite))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-httpuv r-testthat))
     (home-page "https://github.com/jeroen/webutils")
     (synopsis "Utility functions for developing web applications")
     (description
