@@ -29189,20 +29189,20 @@ are detected using using a homogeneous embedding technique.")
 (define-public r-classint
   (package
     (name "r-classint")
-    (version "0.4-10")
+    (version "0.4-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "classInt" version))
        (sha256
         (base32
-         "12rbwh7g0a6abvy423xjiv53gx1f9lg4y78r80lc0fj9pjpiwmn3"))))
+         "19nhqmlxirq8h87wj7wxrw8krg0fyp6c68slnv2ir5bzrx26hdld"))))
     (properties `((upstream-name . "classInt")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-class r-e1071 r-kernsmooth))
     (native-inputs
-     (list gfortran r-knitr))
+     (list gfortran r-knitr r-tinytest))
     (home-page "https://github.com/r-spatial/classInt/")
     (synopsis "Choose univariate class intervals")
     (description
