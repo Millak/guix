@@ -3994,7 +3994,7 @@ when used with GHC versions which already provide the
     (synopsis "Desktop Notifications client")
     (description
      "This package provides a library for issuing notifications using
-@code{FreeDesktop.org's} Desktop Notifications protcol.  This protocol is
+@code{FreeDesktop.org's} Desktop Notifications protocol.  This protocol is
 supported by services such as Ubuntu's @code{NotifyOSD}.")
     (license license:bsd-3)))
 
@@ -16121,7 +16121,7 @@ a = Solo a .  Note: it's not a @@newtype@@ . @@Solo@@ is available in
      "This package provides extra instances for type-classes in the
 [indexed-traversable](https://hackage.haskell.org/package/indexed-traversable)
 package. .  The intention is to keep this package minimal; it provides instances
-that formely existed in @@lens@@ or @@optics-extra@@.  We recommend putting
+that formerly existed in @@lens@@ or @@optics-extra@@.  We recommend putting
 other instances directly into their defining packages.  The
 @@indexed-traversable@@ package is light, having only GHC boot libraries as its
 dependencies.")
@@ -17002,7 +17002,7 @@ scripting language <https://lua.org Lua>.")
     (inputs (list ghc-network))
     (native-inputs (list ghc-hspec hspec-discover))
     (home-page "https://github.com/yesodweb/wai")
-    (synopsis "Efficient netowrk recv")
+    (synopsis "Efficient network recv")
     (description "Network recv based on buffer pools")
     (license license:bsd-3)))
 
