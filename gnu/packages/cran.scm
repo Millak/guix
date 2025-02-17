@@ -17393,16 +17393,16 @@ misclassification probabilities of different models.")
 (define-public r-zip
   (package
     (name "r-zip")
-    (version "2.3.1")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "zip" version))
        (sha256
         (base32
-         "13y2mhy59jshw0vz7dbq0zg96j1151fqcdb5ycbmjlhwg0448xc3"))))
+         "14954fb5zikmr6vy306199nybj9fkw6vx2n8l72figfg5cmycxcn"))))
     (build-system r-build-system)
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-withr))
     (home-page "https://github.com/gaborcsardi/zip")
     (synopsis "Cross-platform Zip compression")
     (description
