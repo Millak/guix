@@ -26701,6 +26701,8 @@ Bioconductor-friendly.")
     (properties
      `((upstream-name . "BiocDockerManager")))
     (build-system r-build-system)
+    ;; Tests require access to hub.docker.com.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list docker
            r-dplyr
