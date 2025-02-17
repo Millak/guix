@@ -17465,19 +17465,19 @@ custom infix operators.")
 (define-public r-openxlsx
   (package
     (name "r-openxlsx")
-    (version "4.2.7.1")
+    (version "4.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "openxlsx" version))
        (sha256
         (base32
-         "1wgv8144lbnfa6a2a6vj0dq3l2xv960xr7vdbkghadcnps9n4bzi"))))
+         "1n74jxjvqzyvxg39qvjwsq2csl843ircdxw2ypanqzv7ifmn224a"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-stringi r-zip))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-writexl))
     (home-page "https://github.com/awalker89/openxlsx")
     (synopsis "Read, write and edit XLSX files")
     (description
