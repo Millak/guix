@@ -35647,6 +35647,29 @@ corresponding Evil keys.")
 implementation of Windows NT and LanManager compatible password encryption.")
     (license license:gpl3+)))
 
+(define-public emacs-nushell-mode
+  (let ((commit "c179c3cf573b2cc9421dc08bf47e2d619c7791ee")
+        (revision "0"))
+    (package
+      (name "emacs-nushell-mode")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mrkkrp/nushell-mode.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08kx31h22szvmccswwmhyj615c9fqln45darlfkj7q84dmc2fd3n"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/mrkkrp/nushell-mode")
+      (synopsis "Major mode for Nushell scripts")
+      (description
+       "This package provides a very basic version of major mode for Nushell shell
+scripts.")
+      (license license:gpl3+))))
+
 (define-public emacs-nadvice
   (package
     (name "emacs-nadvice")
