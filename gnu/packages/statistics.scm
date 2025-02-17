@@ -905,17 +905,18 @@ binary booleans, @code{TRUE} and @code{FALSE} can be stored with 1 bit only.")
 (define-public r-bit64
   (package
     (name "r-bit64")
-    (version "4.5.2")
+    (version "4.6.0-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bit64" version))
        (sha256
         (base32
-         "0bn7d9dlmr7arbj2090hhkxs9kc0wni5aw39a6nh0243v0zmc8d3"))))
+         "1dqr2g43rhiryzgpfsjb7mb4idnz2jl31jdsvjgrlb625wacxh7v"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bit))
+    (native-inputs (list r-testthat))
     (home-page "https://ff.r-forge.r-project.org/")
     (synopsis "S3 class for vectors of 64 bit integers")
     (description
