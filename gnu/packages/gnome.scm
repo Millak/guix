@@ -12923,13 +12923,12 @@ integrate seamlessly with the GNOME desktop.")
            `(,glib "bin")               ;for glib-compile-resources
            itstool
            pkg-config
-           python
+           python-minimal
            vala))
     (inputs
      (list glib-networking              ;for TLS support
            gsettings-desktop-schemas
            gtk
-           gtk-vnc
            gtksourceview-4
            json-glib
            libarchive
@@ -12946,7 +12945,6 @@ integrate seamlessly with the GNOME desktop.")
            qemu-minimal                 ;for qemu-img
            sparql-query
            tracker
-           vte/gtk+-3
            webkitgtk-for-gtk3))
     (propagated-inputs
      ;; Propagating spice-gtk is necessary so that the gnome-desktop-service
