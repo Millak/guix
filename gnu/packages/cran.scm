@@ -47767,20 +47767,20 @@ Simple Notification Service (SNS) publish/subscribe messaging, and more.")
 (define-public r-paws-security-identity
   (package
     (name "r-paws-security-identity")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.security.identity" version))
        (sha256
         (base32
-         "0mv44m42k8nx3vfl26w3b9xrwrcw8x0zrjgirb4p4fmi7swbv3s0"))))
+         "05pjgigin5hqq679hi3n7b6s9qdm3jdngk957j55mm0hh78rinb7"))))
     (properties
-     `((upstream-name . "paws.security.identity")))
+     '((upstream-name . "paws.security.identity")
+       (updater-ignored-native-inputs . ("r-paws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services security, identity, and compliance services")
     (description
