@@ -48780,13 +48780,13 @@ options for aggregating multi-layer rasters.")
 (define-public r-bien
   (package
     (name "r-bien")
-    (version "1.2.6")
+    (version "1.2.7")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "BIEN" version))
         (sha256
-          (base32 "17zrj5ckxaz4mdbgywxi8kf51ssbf2md1d2azf30dh96kzc2ayps"))))
+          (base32 "0qcc1dl7hv7a1n0lsf4hdih0qdi3bcw2v3gj8wh7w4vzf464y61p"))))
     (properties `((upstream-name . "BIEN")))
     (build-system r-build-system)
     (native-inputs
@@ -48795,9 +48795,7 @@ options for aggregating multi-layer rasters.")
       (list r-ape
             r-dbi
             r-doparallel
-            r-fasterize
             r-foreach
-            r-raster
             r-rpostgresql
             r-sf
             r-terra))
