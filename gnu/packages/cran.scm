@@ -7586,20 +7586,20 @@ jQuery.")
 (define-public r-jqr
   (package
     (name "r-jqr")
-    (version "1.3.5")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "jqr" version))
               (sha256
                (base32
-                "1pcvn2yhgvs3jldy54lrqfnjbj2yss2zylny0gddqvvngzv6cqi2"))))
+                "0bnhk3p0yb30245g8fglrc88nk8xrc2k86q1wa5v3cw3rfpyhac9"))))
     (properties
      `((upstream-name . "jqr")
        (updater-extra-inputs . ("jq"))))
     (build-system r-build-system)
     (inputs (list jq))
     (propagated-inputs (list r-lazyeval r-magrittr))
-    (native-inputs (list pkg-config r-testthat))
+    (native-inputs (list pkg-config r-jsonlite r-testthat))
     (home-page "https://docs.ropensci.org/jqr/")
     (synopsis "R client for jq, a JSON Processor")
     (description
