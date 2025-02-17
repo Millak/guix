@@ -3563,6 +3563,71 @@ and the options
 to make such analysis both as flexible and clear as possible.")
     (license license:bsd-3)))
 
+(define-public python-sndata
+  (package
+    (name "python-sndata")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/sncosmo/SNData")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jci6ry2b8jylda4v7zhl857pifslpnslrbj2207nz4hw43nz3mp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Network access is required for these tests.
+                    (list "not test_duplicate_obj_id_strings"
+                          "test_obj_id_as_str"
+                          "test_coordinates_0_0"
+                          "test_bad_table_id_err"
+                          "test_cache_not_mutated"
+                          "test_comments_not_in_metadata"
+                          "test_get_zp"
+                          "test_id_joining"
+                          "test_ids_are_sorted"
+                          "test_jd_time_format"
+                          "test_join_id_string_error"
+                          "test_minimal_metadata_keys"
+                          "test_no_duplicate_aliases"
+                          "test_no_empty_data_tables"
+                          "test_no_empty_ids"
+                          "test_paper_tables_are_parsed"
+                          "test_sncosmo_registered_band_names"
+                          "test_standard_column_names"
+                          "test_unique_ids")
+                    " and not "))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-cython-3
+           python-poetry-core
+           python-pytest))
+    (propagated-inputs
+     (list python-astropy
+           python-beautifulsoup4
+           python-numpy
+           python-pandas
+           python-pytz
+           python-pyyaml
+           python-requests
+           python-sncosmo
+           python-tqdm))
+    (home-page "https://sndata.readthedocs.io/en/latest/")
+    (synopsis "Interface for data published by various supernova surveys")
+    (description
+     "SNData provides an access to data releases published by a variety of
+supernova (SN) surveys.  It is designed to support the development of scalable
+analysis pipelines that translate with minimal effort between and across data
+sets.  A summary of accessible data is provided below.  Access to additional
+surveys is added upon request or as needed for individual research projects
+undertaken by the developers.")
+    (license license:gpl3+)))
+
 (define-public python-so-noise-models
   (let ((commit "fac881eb5ee012673d8994443caa3c6ad7fac2b6")
         (revision "0"))
