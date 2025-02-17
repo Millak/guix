@@ -47793,20 +47793,20 @@ more.")
 (define-public r-paws-analytics
   (package
     (name "r-paws-analytics")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.analytics" version))
        (sha256
         (base32
-         "0b9i4wyxgqdq2ninhna5kfh8bknxb5f6hiknr017fq2g2jp23sps"))))
+         "1scs1kafhcjz1f0nkdxd3d27ywilkkrizdwm6saqf4hi3v2y5wlh"))))
     (properties
-     `((upstream-name . "paws.analytics")))
+     '((upstream-name . "paws.analytics")
+       (updater-ignored-native-inputs . ("r-paws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services analytics services")
     (description
