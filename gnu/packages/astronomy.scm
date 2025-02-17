@@ -3801,30 +3801,33 @@ astronomy and astrophysics.")
 (define-public python-astropy-healpix
   (package
     (name "python-astropy-healpix")
-    (version "1.0.3")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy_healpix" version))
        (sha256
-        (base32 "0ilpwwvdnd4nchivwnbiy1hl07hd2mdg4wb90r2p05kvr5z2lpfy"))))
+        (base32 "1r362081aj5jqxshcxw0bpzn4qvqnra52k94ghskpv1n5bqisrq3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; This file is opened in both install and check phases.
-          (add-before 'install 'writable-compiler
-            (lambda _ (make-file-writable "astropy_healpix/_compiler.c")))
-          (add-before 'check 'prepare-test-environment
+          (add-after 'unpack 'relax-requirements
             (lambda _
-              ;; Extensions have to be rebuilt before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace")
-              (make-file-writable "astropy_healpix/_compiler.c"))))))
+              (substitute* "setup.cfg"
+                ;; numpy>=1.25
+                ((">=1.25") ">=1.24"))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion #$output
+                  (apply invoke "pytest" "-vv" test-flags))))))))
     (native-inputs
      (list python-extension-helpers
            python-hypothesis
            python-pytest-astropy
+           python-setuptools
            python-setuptools-scm
            python-wheel))
     (propagated-inputs
