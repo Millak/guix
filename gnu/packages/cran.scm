@@ -1949,13 +1949,13 @@ plots.")
 (define-public r-ggstatsplot
   (package
     (name "r-ggstatsplot")
-    (version "0.12.5")
+    (version "0.13.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggstatsplot" version))
               (sha256
                (base32
-                "1341bcq69qqmzz4biyb7d3wrcs0hxvzv2d8x4s3133ip26my4p8v"))))
+                "0yzai4zp2m6m13892gsqszhyf27alyylr6cdh9hvipqvhicrpwbv"))))
     (properties `((upstream-name . "ggstatsplot")))
     (build-system r-build-system)
     (propagated-inputs (list r-correlation
@@ -1976,7 +1976,13 @@ plots.")
                              r-rlang
                              r-statsexpressions
                              r-tidyr))
-    (native-inputs (list r-knitr r-testthat r-vdiffr))
+    (native-inputs (list r-knitr
+                         r-survival
+                         r-testthat
+                         r-tibble
+                         r-vdiffr
+                         r-withr
+                         r-wrs2))
     (home-page "https://indrajeetpatil.github.io/ggstatsplot/")
     (synopsis "Based plots with statistical details")
     (description
