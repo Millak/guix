@@ -44669,13 +44669,13 @@ the comparison of different learning algorithms.")
 (define-public r-mlr3mbo
   (package
     (name "r-mlr3mbo")
-    (version "0.2.6")
+    (version "0.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3mbo" version))
        (sha256
-        (base32 "16z7nxick17kgxv0jif5rdhz28y9713viyjl9hdk29dh13jaljwq"))))
+        (base32 "0q3rr4dq13sjalsjm27ggn6g2kqxlnr2rdq2gbawxglnad50ws0n"))))
     (properties `((upstream-name . "mlr3mbo")))
     (build-system r-build-system)
     (propagated-inputs (list r-bbotk
@@ -44688,7 +44688,11 @@ the comparison of different learning algorithms.")
                              r-paradox
                              r-r6
                              r-spacefillr))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-mlr3learners
+                         r-mlr3pipelines
+                         r-redux
+                         r-rush
+                         r-testthat))
     (home-page "https://mlr3mbo.mlr-org.com")
     (synopsis "Flexible Bayesian optimization")
     (description
