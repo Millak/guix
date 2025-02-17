@@ -43447,27 +43447,55 @@ package also provides functions to visualize the observed data and the MLE.")
 (define-public r-metafor
   (package
     (name "r-metafor")
-    (version "4.6-0")
+    (version "4.8-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "metafor" version))
        (sha256
         (base32
-         "0rl6w4j1fqvr7vn0dbzmir28xbi2wdn9m3lrxwjvvf47pp1lqd07"))))
-    (properties `((upstream-name . "metafor")))
+         "0i06y1aw2vf86aaj9ck1ksx4wqca0dwyghxmfjafgqszn5s0cw9b"))))
+    (properties
+     `((upstream-name . "metafor")
+       (updater-extra-native-inputs
+        . ("r-car"
+           "r-clubsandwich"
+           "r-emmeans"
+           "r-gsl"
+           "r-multcomp"
+           "r-mvtnorm"))))
     (build-system r-build-system)
     (arguments
      (list
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           ;; Requires r-dfoptim.
+           (lambda _ (delete-file "tests/testthat/test_misc_rma_mv.r")))
          ;; When there is no HOME directory, this package will fail to find
          ;; the vignette builder.
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list r-mathjaxr r-matrix r-metadat r-nlme r-numderiv r-pbapply))
-    (native-inputs (list r-r-rsp r-testthat))
+     (list r-digest
+           r-mathjaxr
+           r-matrix
+           r-metadat
+           r-nlme
+           r-numderiv
+           r-pbapply))
+    (native-inputs
+     (list r-car
+           r-clubsandwich
+           r-emmeans
+           r-gsl
+           r-lme4
+           r-minqa
+           r-multcomp
+           r-mvtnorm
+           r-r-rsp
+           r-rsolnp
+           r-testthat))
     (home-page "https://cran.r-project.org/web/packages/metafor/")
     (synopsis "Meta-analysis package for R")
     (description
