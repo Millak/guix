@@ -14489,6 +14489,31 @@ be performed with the @code{caret} package giving access to the large number
 of prediction methods available in @code{caret}.")
     (license license:expat)))
 
+(define-public r-ncdfcf
+  (package
+    (name "r-ncdfcf")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ncdfCF" version))
+       (sha256
+        (base32 "1cyvlhx1dxrhqrwbwv3b8v0974qnaab8ly5pvmpzzyx3b5pyabam"))))
+    (properties `((upstream-name . "ncdfCF")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-abind r-cftime r-r6 r-rnetcdf r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/pvanlaake/ncdfCF")
+    (synopsis "Easy access to NetCDF files with CF Metadata Conventions")
+    (description
+     "@dfn{Network Common Data Form} (netCDF) files are widely used for
+scientific data.  Library-level access in R is provided through packages
+RNetCDF and ncdf4.  The package ncdfCF is built on top of RNetCDF and makes
+the data and its attributes available as a set of R6 classes that are informed
+by the Climate and Forecasting Metadata Conventions.  Access to the data uses
+standard R subsetting operators and common function forms.")
+    (license license:expat)))
+
 (define-public r-network
   (package
     (name "r-network")
