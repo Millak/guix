@@ -45417,6 +45417,8 @@ AGG to use as alternative to the raster devices provided through the
          "0a7q90623ahcadqg0b3a0qylachq7nghf50f0v0lip2axvf7ghsm"))))
     (properties `((upstream-name . "downlit")))
     (build-system r-build-system)
+    ;; 5 tests require Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-brio
            r-desc
