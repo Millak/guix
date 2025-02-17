@@ -5051,14 +5051,14 @@ minimum contrast levels, and more.")
 (define-public zoxide
   (package
     (name "zoxide")
-    (version "0.9.6")
+    (version "0.9.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r8rhz01s3ar5i2pkmplp36rhspsk65jyp4sq7vav1dr4vx9fs4a"))))
+        (base32 "0xwbc9zjglgzzxk23qyg2924gkyaclc844jcg1apx0190r4qlc3z"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
@@ -5073,15 +5073,15 @@ minimum contrast levels, and more.")
              ("rust-dunce" ,rust-dunce-1)
              ("rust-fastrand" ,rust-fastrand-2)
              ("rust-glob" ,rust-glob-0.3)
-             ("rust-nix" ,rust-nix-0.27)
+             ("rust-nix" ,rust-nix-0.29)
              ("rust-ouroboros" ,rust-ouroboros-0.18)
              ("rust-rinja" ,rust-rinja-0.3)
              ("rust-serde" ,rust-serde-1)
              ("rust-which" ,rust-which-6))
            #:cargo-development-inputs
            `(("rust-assert-cmd" ,rust-assert-cmd-2)
-             ("rust-rstest" ,rust-rstest-0.18)
-             ("rust-rstest-reuse" ,rust-rstest-reuse-0.6)
+             ("rust-rstest" ,rust-rstest-0.23)
+             ("rust-rstest-reuse" ,rust-rstest-reuse-0.7)
              ("rust-tempfile" ,rust-tempfile-3))
            #:phases
            #~(modify-phases %standard-phases
