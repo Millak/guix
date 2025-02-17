@@ -47968,14 +47968,14 @@ functions-as-a-service, containers, batch processing, and more.")
 (define-public r-paws
   (package
     (name "r-paws")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws" version))
        (sha256
         (base32
-         "15ff693czjaxd0b18xnv15m4yv7wm81d5f8mvmx0v57xzxsp7f3s"))))
+         "1w7akva0dlvb6r6qk1wjvkqhy2ql6gj853hc63xg41nzlpkmdyc2"))))
     (properties `((upstream-name . "paws")))
     (build-system r-build-system)
     (propagated-inputs
@@ -47993,7 +47993,6 @@ functions-as-a-service, containers, batch processing, and more.")
            r-paws-networking
            r-paws-security-identity
            r-paws-storage))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services software development kit")
     (description
