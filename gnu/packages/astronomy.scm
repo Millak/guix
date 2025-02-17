@@ -6165,22 +6165,12 @@ well as ephemerides services
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "test.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; numpy>=1.23.5
-                (("1.23.5") "1.23.2")
-                ;; TypeError: Configuration.__init__() got an unexpected
-                ;; keyword argument 'version_file'
-                (("version_file = .*") "")))))))
+      #:test-flags #~(list "test.py")))
     (native-inputs
      (list python-cython
            python-pytest
            python-setuptools
-           python-setuptools-scm
+           python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
      (list python-numpy))
