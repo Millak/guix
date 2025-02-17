@@ -13171,13 +13171,13 @@ functions for:
 (define-public r-statsexpressions
   (package
     (name "r-statsexpressions")
-    (version "1.6.1")
+    (version "1.6.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "statsExpressions" version))
               (sha256
                (base32
-                "0l76jrq8x7b89kbxxgswnz5qcwwnkpc0mdm12pbya0ljdf84j1dr"))))
+                "16gzq2sfcmbygqri73bm3iv5y6dpgm9jf4ivfxq44av9ffl4rmhn"))))
     (properties `((upstream-name . "statsExpressions")))
     (build-system r-build-system)
     (propagated-inputs (list r-afex
@@ -13195,12 +13195,17 @@ functions for:
                              r-pmcmrplus
                              r-purrr
                              r-rlang
-                             r-tibble
+                             r-rstantools
                              r-tidyr
                              r-withr
                              r-wrs2
                              r-zeallot))
-    (native-inputs (list r-knitr r-patrick r-testthat))
+    (native-inputs (list r-datapasta
+                         r-ggplot2
+                         r-knitr
+                         r-patrick
+                         r-survival
+                         r-testthat))
     (home-page "https://indrajeetpatil.github.io/statsExpressions/")
     (synopsis "Dataframes and expressions with statistical details")
     (description
