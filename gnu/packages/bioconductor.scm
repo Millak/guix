@@ -5625,10 +5625,12 @@ meta-pattern.")
               (sha256
                (base32
                 "1l23vnp5xwl61ag4djvsg06dp543il8rv3an6hs1qi1wd1lk3llh"))))
-    (properties `((upstream-name . "awst")))
+    (properties
+     '((upstream-name . "awst")
+       (updater-extra-native-inputs . ("r-edaseq"))))
     (build-system r-build-system)
     (propagated-inputs (list r-summarizedexperiment))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-edaseq r-knitr r-testthat))
     (home-page "https://github.com/drisso/awst")
     (synopsis "Asymmetric within-sample transformation")
     (description
