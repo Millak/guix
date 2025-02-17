@@ -3396,58 +3396,44 @@ and the options
 (define-public python-sncosmo
   (package
     (name "python-sncosmo")
-    (version "2.11.2")
+    (version "2.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sncosmo" version))
        (sha256
-        (base32 "1n7kh2qinp04ilf8d26hgjs6c3bdy5vbmppc6ps9jy1q0ll8gi69"))))
+        (base32 "0n5ygpq888hgdy7d4b8zz3hbfdi4vn4lsdp9m9ii0a6ghh61f803"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; Disable tests requireing remote access to download test data.
       #~(list
+         ;; 23/27 tests fail requiring network access, ignore the whole file.
+         "--ignore=sncosmo/tests/test_builtins.py"
          "-k" (string-join
-               (list "not test_megacampsf_bandpass"
-                     "test_builtins_remote_aa"
-                     "test_builtins_remote_nm"
-                     "test_builtins_remote_um"
-                     "test_builtins_remote_wfc3"
-                     "test_builtins_megacampsf"
-                     "test_builtins_timeseries_ascii"
-                     "test_builtins_timeseries_fits"
-                     "test_builtins_salt2model"
-                     "test_builtins_salt3model"
-                     "test_builtins_2011fe"
-                     "test_builtins_mlcs2k2"
-                     "test_builtins_snemo"
-                     "test_builtins_sugar"
-                     "test_builtins_magsys_fits"
-                     "test_builtins_magsys_csp"
-                     "test_builtins_magsys_ab_b12"
-                     "test_builtins_magsys_jla"
-                     "test_csp_magsystem"
-                     "test_compositemagsystem_band_error"
+               ;; Tests require network access.
+               (list "not test_C11"
                      "test_G10"
-                     "test_C11"
-                     "test_salt2source_timeseries_vs_snfit"
-                     "test_salt2source_rcov_vs_snfit"
                      "test_bandflux"
                      "test_bandflux_multi"
                      "test_bandflux_zpsys"
                      "test_bandfluxcov"
                      "test_bandmag"
-                     "test_sugarsource")
+                     "test_compositemagsystem_band_error"
+                     "test_csp_magsystem"
+                     "test_megacampsf_bandpass"
+                     "test_salt2source_rcov_vs_snfit"
+                     "test_salt2source_timeseries_vs_snfit"
+                     "test_sugarsource"
+                     "test_ztf_bandpass")
                " and not "))
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
            (lambda _
              (substitute* "setup.cfg"
-               ;; pyyaml>=6.0.1
-               (("6.0.1") "6.0"))))
+               ;; h5py>=3.11
+               (("3.11") "3.8.0"))))
           (add-before 'check 'prepare-test-environment
             (lambda _
               (setenv "HOME" "/tmp")
@@ -3455,16 +3441,16 @@ and the options
     (propagated-inputs
      (list python-astropy
            python-extinction
+           python-h5py
            python-looseversion
            python-numpy
            python-pyyaml
            python-scipy))
     (native-inputs
      (list ;; python-iminuit ; not packed, optional
-           python-cython
+           python-cython-3
            python-pytest
            python-pytest-astropy
-           python-pytest-cov
            python-setuptools
            python-wheel))
     (home-page "https://sncosmo.readthedocs.org")
