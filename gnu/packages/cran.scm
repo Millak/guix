@@ -36823,13 +36823,13 @@ It also provides a small number of bug fixes to the original code.")
 (define-public r-torch
   (package
     (name "r-torch")
-    (version "0.13.0")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "torch" version))
        (sha256
-        (base32 "1vy855ahji98np2q5j5fag2zcnv4ki5mysxwg3y5kdns6mifd5ns"))))
+        (base32 "13jaz11dj0nhq7015riyb07lxv05lp8xpzyv0f48jl80xxxid44c"))))
     (properties `((upstream-name . "torch")))
     (build-system r-build-system)
     (arguments
@@ -36861,7 +36861,6 @@ It also provides a small number of bug fixes to the original code.")
            r-cli
            r-coro
            r-desc
-           r-ellipsis
            r-glue
            r-jsonlite
            r-magrittr
@@ -36869,8 +36868,13 @@ It also provides a small number of bug fixes to the original code.")
            r-rcpp
            r-rlang
            r-safetensors
+           r-scales
            r-withr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-dplyr
+                         r-knitr
+                         r-mvtnorm
+                         r-numderiv
+                         r-testthat))
     (home-page "https://torch.mlverse.org/docs")
     (synopsis "Tensors and neural networks with GPU acceleration")
     (description
