@@ -46831,13 +46831,15 @@ Apache2.")
        (sha256
         (base32
          "1pj3145c20r4hnyyrynzmps96a4fpgn408lrl6b9bs79y33c6zwv"))))
-    (properties `((upstream-name . "exactextractr")))
+    (properties
+     '((upstream-name . "exactextractr")
+       (updater-extra-native-inputs . ("r-ncdf4"))))
     (build-system r-build-system)
     (inputs (list geos))
     (propagated-inputs
      (list r-raster r-rcpp r-sf))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-ncdf4 r-knitr r-testthat))
     (home-page "https://isciences.gitlab.io/exactextractr/")
     (synopsis "Fast extraction from raster datasets using polygons")
     (description
