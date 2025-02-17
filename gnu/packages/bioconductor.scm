@@ -6681,8 +6681,27 @@ make mapping WGBS data to their probe IDs easier.")
        (uri (bioconductor-uri "decoupleR" version))
        (sha256
         (base32 "0m7rmx64lhxg1l4qnx3ajp8w97nabp62r5mi4rfy0gh40n7z34i7"))))
-    (properties `((upstream-name . "decoupleR")))
+    (properties
+     '((upstream-name . "decoupleR")
+       (updater-extra-native-inputs . ("r-aucell"
+                                       "r-fgsea"
+                                       "r-gsva"
+                                       "r-omnipathr"
+                                       "r-ranger"
+                                       "r-rpart"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; viper is non-free software.
+             (delete-file "tests/testthat/test-statistic-viper.R")
+             ;; This test also attempts to load viper.
+             (delete-file "tests/testthat/test-decoupleR-decouple.R")
+             ;; These tests require Internet access.
+             (delete-file "tests/testthat/test-omnipath.R"))))))
     (propagated-inputs
      (list r-biocparallel
            r-broom
@@ -6697,7 +6716,14 @@ make mapping WGBS data to their probe IDs easier.")
            r-tidyr
            r-tidyselect
            r-withr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-aucell
+                         r-fgsea
+                         r-gsva
+                         r-knitr
+                         r-omnipathr
+                         r-ranger
+                         r-rpart
+                         r-testthat))
     (home-page "https://saezlab.github.io/decoupleR/")
     (synopsis "Computational methods to infer biological activities from omics data")
     (description
