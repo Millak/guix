@@ -3815,13 +3815,13 @@ ldap, and also supports cookies, redirects, authentication, etc.")
 (define-public r-xml
   (package
     (name "r-xml")
-    (version "3.99-0.17")
+    (version "3.99-0.18")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "XML" version))
               (sha256
                (base32
-                "1n52k06jrgyjmz96mv4sv6kczqkhmz2spr3gymcjzzv9zxjk48vf"))))
+                "0jskpmx300bimf835v00bsabz8nxrkr2y63wzrdwbn1cpnlaj398"))))
     (properties
      `((upstream-name . "XML")))
     (build-system r-build-system)
