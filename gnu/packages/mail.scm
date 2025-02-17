@@ -535,8 +535,12 @@ with a @code{ncurses} user interface similar to @code{alpine} and
     (home-page "https://gitlab.com/shackra/goimapnotify")
     (synopsis "Execute scripts on IMAP mailbox changes")
     (description
-     "Script to execute scripts on IMAP mailbox changes (new/deleted/updated
-messages) using IDLE.  Implemented in Go.")
+     "This package provides a CLI application to execute scripts on IMAP
+mailbox changes (new/deleted/updated messages) using
+@url{https://en.wikipedia.org/wiki/IMAP_IDLE, IDLE} and it is mostly
+compatible with the configuration of
+@url{https://github.com/a-sk/python-imapnotify, imapnotify made with
+Python}.")
     (license license:gpl3+)))
 
 (define-public go-gitlab.com-shackra-goimapnotify
