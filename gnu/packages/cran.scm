@@ -22540,20 +22540,33 @@ data using:
 (define-public r-bayestestr
   (package
     (name "r-bayestestr")
-    (version "0.15.0")
+    (version "0.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bayestestR" version))
        (sha256
         (base32
-         "1x3r6vf414lar6z4hshf9lpindiynz2d4kb0bwr1phz5db3x77l3"))))
+         "11daalpnminlrb2dydyd2igk49qfwap8ix0bb4dkvjc41c6rrljh"))))
     (properties `((upstream-name . "bayestestR")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-datawizard r-insight))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-bayesfactor
+           r-blavaan
+           r-bridgesampling
+           r-brms
+           r-cmdstanr
+           r-emmeans
+           r-glmmtmb
+           r-knitr
+           r-lme4
+           r-marginaleffects
+           r-posterior
+           r-rstanarm
+           r-testthat
+           r-withr))
     (home-page "https://github.com/easystats/bayestestR")
     (synopsis "Describe Bayesian models and posterior distributions")
     (description
