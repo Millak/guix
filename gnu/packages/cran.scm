@@ -20826,17 +20826,18 @@ used to teach mathematics, statistics, computation and modeling.")
 (define-public r-raster
   (package
     (name "r-raster")
-    (version "3.6-30")
+    (version "3.6-31")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "raster" version))
        (sha256
         (base32
-         "0w1h9a2151njdlnlg617bcfva558cac739czphwjdc6na9566zxv"))))
+         "0bys5aagbmjxnk8y68ad1rs65hl6qyzdlvq7ji2hqhv8nh7h8wqv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-sp r-terra))
+    (native-inputs (list r-tinytest))
     (home-page "https://www.rspatial.org/")
     (synopsis "Geographic data analysis and modeling")
     (description
