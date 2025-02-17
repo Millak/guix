@@ -17264,14 +17264,14 @@ used.")
 (define-public r-arules
   (package
     (name "r-arules")
-    (version "1.7-8")
+    (version "1.7-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "arules" version))
        (sha256
         (base32
-         "1qc0hdkhsg1a7byldgarlbg36w37sdynz0cvkp3jcj9b131a43dl"))))
+         "0zwcqb8ximzdhxd85x0zbapm9yw8jrwgc849h86zb5zxq7ji758n"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-generics r-matrix))
