@@ -5047,16 +5047,18 @@ feeds, converts them into emails, and sends them.")
                    "sendgmail-remove-domain-restriction.patch"
                    "sendgmail-accept-ignored-gsuite-flag.patch"))
          (sha256
-          (base32
-           "1cxpkiaajhq1gjsg47r2b5xgck0r63pvkyrkm7af8c8dw7fyn64f"))))
-      (inputs
-       (list go-golang-org-x-oauth2 go-cloud-google-com-go-compute-metadata))
+          (base32 "1cxpkiaajhq1gjsg47r2b5xgck0r63pvkyrkm7af8c8dw7fyn64f"))))
       (build-system go-build-system)
       (arguments
-       '(#:unpack-path "github.com/google/gmail-oauth2-tools"
-         #:import-path "github.com/google/gmail-oauth2-tools/go/sendgmail"))
-      (home-page
-       "https://github.com/google/gmail-oauth2-tools/tree/master/go/sendgmail")
+       (list
+        #:install-source? #f
+        #:tests? #f ; no tests
+        #:unpack-path "github.com/google/gmail-oauth2-tools"
+        #:import-path "github.com/google/gmail-oauth2-tools/go/sendgmail"))
+      (inputs
+       (list go-golang-org-x-oauth2
+             go-cloud-google-com-go-compute-metadata))
+      (home-page "https://github.com/google/gmail-oauth2-tools")
       (synopsis
        "Sendmail-compatible tool for using Gmail with @code{git send-email}")
       (description
