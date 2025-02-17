@@ -14541,6 +14541,38 @@ by the Climate and Forecasting Metadata Conventions.  Access to the data uses
 standard R subsetting operators and common function forms.")
     (license license:expat)))
 
+(define-public r-ncmeta
+  (package
+    (name "r-ncmeta")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ncmeta" version))
+       (sha256
+        (base32 "1aamxs3yza1hsgvkp6740lv1dc21a87mzl06n6w3zxkjshri020w"))))
+    (properties
+     '((upstream-name . "ncmeta")
+       ;; These packages do not exist.
+       (updater-ignored-native-inputs
+        . ("r-raadfiles" "r-raadtools"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cftime
+                             r-dplyr
+                             r-rlang
+                             r-rnetcdf
+                             r-tibble
+                             r-tidyr))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/hypertidy/ncmeta")
+    (synopsis "Straightforward NetCDF metadata")
+    (description
+     "Extract metadata from @code{NetCDF} data sources; these can be files,
+file handles or servers.  This package leverages and extends the lower level
+functions of the RNetCDF package providing a consistent set of functions that
+all return data frames.")
+    (license license:gpl3)))
+
 (define-public r-network
   (package
     (name "r-network")
