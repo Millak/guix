@@ -6821,7 +6821,7 @@ writer, as per specification:
 @@url{https://www.haproxy.org/download/2.3/doc/proxy-protocol.txt}.  It is to
 be used in one of or both proxy clients and proxy servers that need to support
 said protocol.  Both protocol versions, 1 (text-based) and 2 (binary-based)
-are supported. @acronym{TLV, tag-length-value} parsers extensions comming with
+are supported. @acronym{TLV, tag-length-value} parsers extensions coming with
 this library support AWS, Azure and GCP.")
     (license license:asl2.0)))
 

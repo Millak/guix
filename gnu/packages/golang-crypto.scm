@@ -2316,7 +2316,7 @@ https://code.google.com/p/go-crypt.")
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://gitlab.com/yawning/bsaes")
-    (synopsis "AES implementatin in Golang")
+    (synopsis "AES implementation in Golang")
     (description
      "The @code{bsaes} is a portable pure-Go constant time AES implementation
 based on the code from @url{https://bearssl.org/,BearSSL}.  On appropriate

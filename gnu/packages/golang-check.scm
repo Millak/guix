@@ -2481,7 +2481,7 @@ advanced Go linter.")
     (home-page "https://gitlab.com/cznic/ccorpus2")
     (synopsis "Continuation of ccorpus using @code{embed.FS}")
     (description
-     "This packge provides a test corpus of C code.")
+     "This package provides a test corpus of C code.")
     (license license:bsd-3)))
 
 (define-public go-mvdan-cc-unparam

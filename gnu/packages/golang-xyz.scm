@@ -6455,7 +6455,7 @@ execution.")
     (native-inputs
      (list go-github-com-golangplus-testing-bootstrap))
     (home-page "https://github.com/golangplus/bytes")
-    (synopsis "Extention to Golang standard @code{bytes} library.")
+    (synopsis "Extension to Golang standard @code{bytes} library.")
     (description
      "Package bytesp is a plus to the standard @code{bytes} package.")
     (license license:bsd-3)))
@@ -6746,7 +6746,7 @@ color (24-bit, RGB)
     (synopsis "Golang file globbing library")
     (description
      "This package provides a filesystem glob API.  It uses @code{gobwas/glob}
-underneath and returns only matching files or direcories, depending on the
+underneath and returns only matching files or directories, depending on the
 configuration.")
     (license license:expat)))
 
@@ -8709,7 +8709,7 @@ library.")
      (list
       #:import-path "github.com/joho/godotenv"))
     (home-page "https://github.com/joho/godotenv")
-    (synopsis "Golang libary to load environment variables from @code{.env}")
+    (synopsis "Golang library to load environment variables from @code{.env}")
     (description
      "This package provides a Go port of the Ruby's dotenv library
 https://github.com/bkeepers/dotenv.")
@@ -12302,7 +12302,7 @@ included in this package.")
     (home-page "https://github.com/otiai10/copy")
     (synopsis "Go copy directory recursively")
     (description
-     "This package implments recursive copy functinoality for directory.")
+     "This package implements recursive copy functinoality for directory.")
     (license license:expat)))
 
 (define-public go-github-com-outcaste-io-ristretto
@@ -16209,7 +16209,7 @@ It's an alternative fork of @url{https://github.com/titanous/json5}.")
     (home-page "https://github.com/zyedidia/poller")
     (synopsis "File-descriptor multiplexer based on epoll(7)")
     (description
-     "Package poller is a file-descriptor multiplexer.  It allows concurent
+     "Package poller is a file-descriptor multiplexer.  It allows concurrent
 Read and Write operations from and to multiple file-descriptors without
 allocating one OS thread for every blocked operation.  It operates similarly
 to Go's netpoller (which multiplexes network connections) without requiring

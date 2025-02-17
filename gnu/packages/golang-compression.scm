@@ -242,7 +242,7 @@ time, as otherwise the internal gzip library will likely be faster.")
            go-github-com-ulikunitz-xz
            go-github-com-xi2-xz))
     (home-page "https://github.com/mholt/archiver")
-    (synopsis "Multi format archiver Golang library and CLI commad")
+    (synopsis "Multi format archiver Golang library and CLI command")
     (description
      "Package archiver facilitates convenient, cross-platform, high-level
 archival and compression operations for a variety of formats and compression
