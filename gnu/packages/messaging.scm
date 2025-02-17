@@ -42,7 +42,7 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
-;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
@@ -1160,13 +1160,13 @@ simultaneously and therefore appear under the same nickname on IRC.")
 (define-public python-nbxmpp
   (package
     (name "python-nbxmpp")
-    (version "5.0.3")
+    (version "5.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nbxmpp" version))
        (sha256
-         (base32 "1swzbdl1zr34jynhsm1f401h5hdn9p6vw9vxa7vx0gd3ifkmiz7w"))))
+         (base32 "04fnc743d523gb38mm1inii80agmpb9r6hvn3f8ygnj3yq7s2vhn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
