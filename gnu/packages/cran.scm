@@ -32417,14 +32417,14 @@ classification and regression models.")
 (define-public r-dae
   (package
     (name "r-dae")
-    (version "3.2.28")
+    (version "3.2.30")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dae" version))
        (sha256
         (base32
-         "13a3j3d8qm1phkp4x0pdqa6p36j6xlakhmkrqcb9x0bpcfzbwfyl"))))
+         "0avjx7q81gybvkzkrg9bjf57sj7mbwkv7qwkzzff05hnbcjrab0y"))))
     (build-system r-build-system)
     (arguments
      '(#:phases
