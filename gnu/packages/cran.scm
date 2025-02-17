@@ -1302,13 +1302,13 @@ to the interface.")
 (define-public r-dbscan
   (package
     (name "r-dbscan")
-    (version "1.2-0")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbscan" version))
        (sha256
-        (base32 "0rv2h5i539ivkgwblfapjpfl09hgxvidkk6x1wmgc6hp30nbl2bj"))))
+        (base32 "0hz31yp2p4zx82qzv4q4s2iiivqq3alqjdfvrgl9n7aj4b8vsfhc"))))
     (properties `((upstream-name . "dbscan")))
     (build-system r-build-system)
     (propagated-inputs (list r-generics r-rcpp))
