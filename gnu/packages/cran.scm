@@ -45898,26 +45898,44 @@ light-weight geometry library used by @url{http://postgis.net/,PostGIS}.")
 (define-public r-stars
   (package
     (name "r-stars")
-    (version "0.6-7")
+    (version "0.6-8")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "stars" version))
         (sha256
           (base32
-            "07wfjair7dgbznh656kk4wy1drwnfpmwvkb69fzs9z1q5p9wp2i3"))))
-    (properties `((upstream-name . "stars")))
+            "136k3hspskj3sq8q1vs8vaysw7rdq303rdixdn15xyzzf1ss1wql"))))
+    (properties
+     '((upstream-name . "stars")
+       (updater-extra-native-inputs
+        . ("r-cubelyr" "r-exactextractr" "r-ncmeta"))
+       ;; These haven't been packaged yet, but they also don't seem necessary.
+       (updater-ignored-native-inputs
+        . ("r-cubble" "r-ncdfgeom" "r-openstreetmap"))))
     (build-system r-build-system)
     (propagated-inputs
       (list r-abind r-classint r-rlang r-sf r-units))
-    (native-inputs (list r-knitr r-testthat r-tibble))
+    (native-inputs (list r-cubelyr
+                         r-dplyr
+                         r-exactextractr
+                         r-ggplot2
+                         r-knitr
+                         r-maps
+                         r-ncmeta
+                         r-raster
+                         r-rnetcdf
+                         r-sp
+                         r-terra
+                         r-testthat
+                         r-xts))
     (home-page "https://r-spatial.github.io/stars/")
-    (synopsis
-      "Spatiotemporal Arrays, Raster and Vector Data Cubes")
+    (synopsis "Spatiotemporal arrays, raster and vector data cubes")
     (description
-      "Reading, manipulating, writing and plotting spatiotemporal arrays
-(raster and vector data cubes) in @code{R}, using @code{GDAL} bindings provided
-by @code{sf}, and @code{NetCDF} bindings by @code{ncmeta} and @code{RNetCDF}.")
+     "This is a package for reading, manipulating, writing and plotting
+spatiotemporal arrays (raster and vector data cubes) in @code{R}, using
+@code{GDAL} bindings provided by @code{sf}, and @code{NetCDF} bindings by
+@code{ncmeta} and @code{RNetCDF}.")
     (license license:asl2.0)))
 
 (define-public r-tmaptools
