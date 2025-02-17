@@ -7152,17 +7152,17 @@ in systems and applications.")
 (define-public r-jsonvalidate
   (package
     (name "r-jsonvalidate")
-    (version "1.3.2")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "jsonvalidate" version))
        (sha256
-        (base32 "0myvm93azl6mj60l8fp91qa3ln3nnwj4p48xli8k215sm6zhhv1b"))))
+        (base32 "010zcpbyja1lb4j7sbx1515scnqkaw6c7fb9g37gj1cr0ipyna9l"))))
     (properties `((upstream-name . "jsonvalidate")))
     (build-system r-build-system)
-    (propagated-inputs (list r-v8))
-    (native-inputs (list r-knitr r-testthat))
+    (propagated-inputs (list r-r6 r-v8))
+    (native-inputs (list r-jsonlite r-knitr r-testthat r-withr))
     (home-page "https://docs.ropensci.org/jsonvalidate/")
     (synopsis "Validate JSON schema")
     (description
