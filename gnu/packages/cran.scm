@@ -2304,13 +2304,13 @@ testing (using Fisher's test) for SNP genotypes as typically obtained in a
 (define-public r-gwidgets2
   (package
     (name "r-gwidgets2")
-    (version "1.0-9")
+    (version "1.0-10")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gWidgets2" version))
               (sha256
                (base32
-                "1ifljpdazzmwf3mgkg9g76365n2cmw8dd3da161fpvw84xxyznfl"))))
+                "04wqyyk7wj808035862vsrmmhpvcailnscycpc83qfrkpqkr15v6"))))
     (properties `((upstream-name . "gWidgets2")))
     (build-system r-build-system)
     ;; Tests fail with: could not find function "gwindow"
