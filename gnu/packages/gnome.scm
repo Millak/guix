@@ -9599,7 +9599,7 @@ properties, screen resolution, and other GNOME parameters.")
                    '("gnome-shell" "gnome-extensions" "gnome-extensions-app"))
                   (substitute* (string-append #$output "/share/gnome-shell/"
                                               "org.gnome.Shell.Extensions")
-                    (("imports\\.package\\.start" all)
+                    (("^import " all)
                      (string-append "'" gi-typelib-path "'.split(':').forEach("
                                     "path => imports.gi.GIRepository.Repository."
                                     "prepend_search_path(path));\n"
@@ -9608,7 +9608,7 @@ properties, screen resolution, and other GNOME parameters.")
                   ;; (i.e. as provided by home-pipewire-service-type)
                   (substitute* (string-append #$output "/share/gnome-shell/"
                                               "org.gnome.Shell.Screencast")
-                    (("imports\\.package\\.start" all)
+                    (("^import " all)
                      (string-append "'" gi-typelib-path "'.split(':').forEach("
                                     "path => imports.gi.GIRepository.Repository."
                                     "prepend_search_path(path));\n"
