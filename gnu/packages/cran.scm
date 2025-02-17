@@ -47718,18 +47718,19 @@ deployment, and more.")
 (define-public r-paws-end-user-computing
   (package
     (name "r-paws-end-user-computing")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.end.user.computing" version))
        (sha256
-        (base32 "1chmqzmc9c70582lj9dy9hxcgnmia2qnl33c8ggmkscqay9hfprs"))))
-    (properties `((upstream-name . "paws.end.user.computing")))
+        (base32 "0i8z3sfsffqa36rnngrapx83lyx8gihj3vflf3d4sm0ywznsh89k"))))
+    (properties
+     '((upstream-name . "paws.end.user.computing")
+       (updater-ignored-native-inputs . ("r-paws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services end user computing services")
     (description
