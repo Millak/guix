@@ -48918,13 +48918,13 @@ interface.")
 (define-public r-metadat
   (package
     (name "r-metadat")
-    (version "1.2-0")
+    (version "1.4-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "metadat" version))
               (sha256
                (base32
-                "1f7mb3pw5d0akr09jjva06ay223izhpzbr21bapnw99x1kiybk7h"))))
+                "019zxxq138mzpkx2hl61as7jyccrxmc61yq3bjy2khrw0pp6sp9a"))))
     (properties `((upstream-name . "metadat")))
     (build-system r-build-system)
     (propagated-inputs (list r-mathjaxr))
