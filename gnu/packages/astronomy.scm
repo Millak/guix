@@ -5247,27 +5247,24 @@ about the underlying principles, see
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0znzfy3bmnsncvahf8qdav0c9403fn99d1gp25lainhv7kxfk44c"))))
+        (base32 "0znzfy3bmnsncvahf8qdav0c9403fn99d1gp25lainhv7kxfk44c"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Remove bundled library.
+            (delete-file-recursively "libqd")))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Disable one failing test
-      ;; See https://github.com/spacetelescope/spherical_geometry/issues/252
-      #:test-flags #~(list "-k" "not test_overlap")
+      #:test-flags
+      #~(list "--pyargs" "spherical_geometry")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
               ;; Use our own libraries in place of bundles.
-              (setenv "USE_SYSTEM_QD" "1")))
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace")
-              (call-with-output-file "pytest.ini"
-                (lambda (port)
-                  (format port "[pytest]
-python_files = test_*.py"))))))))
+              (setenv "USE_SYSTEM_QD" "1"))))))
     (native-inputs
      (list python-pytest
            python-pytest-astropy-header
