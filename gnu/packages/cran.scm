@@ -12641,18 +12641,18 @@ functions are available at both the R level, and through Rcpp.")
 (define-public r-geometry
   (package
     (name "r-geometry")
-    (version "0.5.0")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "geometry" version))
        (sha256
         (base32
-         "0qcymxxbs3lqi4w6cl8h3hwrchk3ahxp83kkv86bvrq4cd6mbxxm"))))
+         "19a6kgnq01s80pca9289lwdgvwg0h3dlv7fr1shi4cd8mlbiwfn8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-linprog r-lpsolve r-magic r-rcpp r-rcppprogress))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-spelling r-testthat))
     (home-page "https://geometry.r-forge.r-project.org/")
     (synopsis "Mesh generator and surface tessellator")
     (description
