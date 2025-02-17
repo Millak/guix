@@ -25084,12 +25084,30 @@ memory usage and processing time is minimized.")
        (sha256
         (base32
          "0d1n5mib93rw4x4iimz7scgxw1929m7g3cnbyfrj6iqxrp721an1"))))
-    (properties `((upstream-name . "MsCoreUtils")))
+    (properties
+     '((upstream-name . "MsCoreUtils")
+       (updater-extra-native-inputs . ("r-impute"
+                                       "r-imputelcmd"
+                                       "r-matrix"
+                                       "r-missforest"
+                                       "r-norm"
+                                       "r-pcamethods"
+                                       "r-preprocesscore"
+                                       "r-vsn"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-clue r-mass r-rcpp r-s4vectors))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-impute
+           r-imputelcmd
+           r-knitr
+           r-matrix
+           r-missforest
+           r-norm
+           r-pcamethods
+           r-preprocesscore
+           r-testthat
+           r-vsn))
     (home-page "https://github.com/RforMassSpectrometry/MsCoreUtils")
     (synopsis "Core utils for mass spectrometry data")
     (description
