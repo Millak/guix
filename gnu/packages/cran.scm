@@ -10692,14 +10692,14 @@ any subsequent lookup as it keeps the hash table in memory.")
 (define-public r-ff
   (package
     (name "r-ff")
-    (version "4.5.0")
+    (version "4.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ff" version))
        (sha256
         (base32
-         "13hq86rmcvlz46v9airb8imj183s1z7fyzfcr3s1ma1wm5991v9a"))))
+         "0b1mqs98vqr67zxnf36vhzk9frd9ndq9ajsvv0z5zc67ziygal85"))))
     (build-system r-build-system)
     (propagated-inputs (list r-bit))
     (native-inputs (list r-testthat))
