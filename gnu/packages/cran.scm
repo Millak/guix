@@ -29367,13 +29367,13 @@ or raster data cubes) are handled by package stars'.")
 (define-public r-spdep
   (package
     (name "r-spdep")
-    (version "1.3-6")
+    (version "1.3-10")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "spdep" version))
               (sha256
                (base32
-                "06i1f77md5k223zy8chq6mrg28sdd6dk8qvrgd9fb606l6y7nvgb"))
+                "070fasvzbh3z0npnbz7q2diik36yvvqns39np73ghrbxlypgavb2"))
               (snippet
                '(for-each delete-file '("inst/doc/CO69.html"
                                         "inst/doc/CO69.R"
@@ -29384,6 +29384,8 @@ or raster data cubes) are handled by package stars'.")
                                         "inst/doc/nb_sf.Rmd"
                                         "inst/doc/sids.html"
                                         "inst/doc/sids.R")))))
+    (properties
+     '((updater-extra-native-inputs . ("r-dbscan"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-boot
@@ -29395,7 +29397,7 @@ or raster data cubes) are handled by package stars'.")
            r-spdata
            r-units))
     (native-inputs
-     (list r-knitr))
+     (list r-dbscan r-knitr r-tinytest))
     (home-page "https://github.com/r-spatial/spdep/")
     (synopsis "Spatial dependence: weighting schemes, statistics and models")
     (description
