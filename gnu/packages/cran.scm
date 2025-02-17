@@ -40321,14 +40321,14 @@ estimation.")
 (define-public r-optimx
   (package
     (name "r-optimx")
-    (version "2023-10.21")
+    (version "2024-12.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "optimx" version))
        (sha256
         (base32
-         "1da4daxgk4kbq1n2mn72482c3j96wba0xf4mzffgasn20ib2swqd"))))
+         "0brap8bhizmfxd8mf71izrs4211qxacxbb938ainsmdsc6idv9dj"))))
     (properties `((upstream-name . "optimx")))
     (build-system r-build-system)
     ;; Tests require too many additional packages.
