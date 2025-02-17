@@ -153,7 +153,7 @@ bind processes, and much more.")
 (define-public hwloc-2
   (package
     (inherit hwloc-1)
-    (version "2.11.2")
+    (version "2.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.open-mpi.org/release/hwloc/v"
@@ -161,7 +161,7 @@ bind processes, and much more.")
                                   "/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "02c4zqifmfk91a8q5515c4azgx6hmmcbc5d9l7qh0w86mvn8zy7p"))))
+                "1m2qkjw35qj9gv9yjn1p46bahdp9l133hs34j61lwwd5q2ys5806"))))
 
     (native-inputs (modify-inputs (package-native-inputs hwloc-1)
                      (append bash)))              ;for completion tests
