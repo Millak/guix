@@ -22115,16 +22115,17 @@ packages maintained by Torsten Hothorn.")
 (define-public r-themis
   (package
     (name "r-themis")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "themis" version))
        (sha256
-        (base32 "1qg1kxax866s84rgjlp2c153793j45lrvay8bqfjnc2cj04h2dgi"))))
+        (base32 "13biv9pizp7zrcgjq5ynnr64c6ivvhzy17vkvzv0dvrf4pm49jqb"))))
     (properties `((upstream-name . "themis")))
     (build-system r-build-system)
-    (propagated-inputs (list r-dplyr
+    (propagated-inputs (list r-cli
+                             r-dplyr
                              r-generics
                              r-glue
                              r-gower
@@ -22138,7 +22139,7 @@ packages maintained by Torsten Hothorn.")
                              r-tibble
                              r-vctrs
                              r-withr))
-    (native-inputs (list r-modeldata r-testthat))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/tidymodels/themis")
     (synopsis "Extra recipes steps for dealing with unbalanced data")
     (description
