@@ -21670,13 +21670,13 @@ handle data from simple random samples as well as complex surveys.")
 (define-public r-tarchetypes
   (package
     (name "r-tarchetypes")
-    (version "0.10.0")
+    (version "0.12.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "tarchetypes" version))
               (sha256
                (base32
-                "0xhx2l00j1yb68a8m5b9c9ams90sp01m9kvzxjgi90zpimpmc3h1"))))
+                "1j5j9bxnqm9i8mlbmh60wlcjqdy6r79dmwvadgrq48lgb5sizhik"))))
     (properties `((upstream-name . "tarchetypes")))
     (build-system r-build-system)
     ;; Many tests fail, because r-targets looks up the system's partitions,
@@ -21693,7 +21693,7 @@ handle data from simple random samples as well as complex surveys.")
                              r-tidyselect
                              r-vctrs
                              r-withr))
-    (native-inputs (list r-rmarkdown r-testthat))
+    (native-inputs (list r-curl r-quarto r-rmarkdown r-testthat r-xml2))
     (home-page "https://docs.ropensci.org/tarchetypes/")
     (synopsis "Archetypes for Targets")
     (description
