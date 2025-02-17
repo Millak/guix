@@ -43920,13 +43920,13 @@ other R users.")
 (define-public r-seurat
   (package
     (name "r-seurat")
-    (version "5.1.0")
+    (version "5.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Seurat" version))
               (sha256
                (base32
-                "0nad49g13v5zg4rr2099m1cl1qcmmj1a0m09gam5xiccg8yv9kxd"))))
+                "06fs5yrafm282a1z502n304gz212p25jzaj1wbjs3r7ylvww168f"))))
     (properties `((upstream-name . "Seurat")))
     (build-system r-build-system)
     (propagated-inputs
@@ -43946,7 +43946,7 @@ other R users.")
            r-irlba
            r-jsonlite
            r-kernsmooth
-           r-leiden
+           r-leidenbase
            r-lifecycle
            r-lmtest
            r-mass
@@ -43958,7 +43958,6 @@ other R users.")
            r-plotly
            r-png
            r-progressr
-           r-purrr
            r-rann
            r-rcolorbrewer
            r-rcpp
@@ -43980,7 +43979,9 @@ other R users.")
            r-spatstat-geom
            r-tibble
            r-uwot))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-bpcells
+                         ;r-singlecellexperiment
+                         r-testthat))
     (home-page "https://www.satijalab.org/seurat")
     (synopsis "Seurat is an R toolkit for single cell genomics")
     (description
