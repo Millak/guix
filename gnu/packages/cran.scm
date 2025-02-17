@@ -30042,16 +30042,16 @@ which has the same usage and output as @code{optim()}.  Using
 (define-public r-options
   (package
     (name "r-options")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "options" version))
        (sha256
-        (base32 "02qnbipdmnw01f40300pg1ycrcbnr37f8yiqbabm6jznf6r4ihm9"))))
+        (base32 "0xngadnr0swdd40wm15mgb9vx4bmcfk8ay4vg1g4w44p2hp3lw80"))))
     (properties `((upstream-name . "options")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-pkgload r-rcmdcheck r-testthat r-withr))
     (home-page "https://dgkf.github.io/options/")
     (synopsis "Simple, consistent package options")
     (description
