@@ -24524,6 +24524,30 @@ supermatrix using PHYLIP or aligned FASTA files.  These functions will be
 useful for building large phylogenies using multiple markers.")
     (license license:gpl2)))
 
+(define-public r-rnetcdf
+  (package
+    (name "r-rnetcdf")
+    (version "2.9-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RNetCDF" version))
+       (sha256
+        (base32 "0cdksiaai9wc4dyk3k01f9q9ki19r94p77rwpy4kr55hvwnrqx8m"))))
+    (properties `((upstream-name . "RNetCDF")))
+    (build-system r-build-system)
+    (inputs (list netcdf udunits))
+    (native-inputs (list pkg-config))
+    (home-page "https://cran.r-project.org/package=RNetCDF")
+    (synopsis "Interface to NetCDF datasets")
+    (description
+     "This package provides an interface to the NetCDF file formats designed
+by Unidata for efficient storage of array-oriented scientific data and
+descriptions.  Most capabilities of NetCDF version 4 are supported.  Optional
+conversions of time units are enabled by UDUNITS version 2, also from
+Unidata.")
+    (license license:gpl2+)))
+
 (define-public r-rnexml
   (package
     (name "r-rnexml")
