@@ -19713,14 +19713,14 @@ the work.")
 (define-public r-doby
   (package
     (name "r-doby")
-    (version "4.6.24")
+    (version "4.6.25")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "doBy" version))
        (sha256
         (base32
-         "1vihc2289ziakxfxfsq64axms2ppja2vgvz09grjckwiaq1widll"))))
+         "0syxp3a75h1qk62zipy87k2kmrm8hfspz51zp3pm52pb251mn7rf"))))
     (properties `((upstream-name . "doBy")))
     (build-system r-build-system)
     (propagated-inputs
@@ -19738,7 +19738,7 @@ the work.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-geepack r-knitr r-lme4 r-multcomp r-testthat))
     (home-page "https://people.math.aau.dk/~sorenh/software/doBy/")
     (synopsis "Groupwise statistics, LSmeans, linear contrasts, and utilities")
     (description
