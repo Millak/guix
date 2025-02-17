@@ -36608,14 +36608,14 @@ it may be seen by an animal with less acute vision.")
 (define-public r-caret
   (package
     (name "r-caret")
-    (version "6.0-94")
+    (version "7.0-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "caret" version))
        (sha256
         (base32
-         "1a191n9qswvf8ri6id8picqgdqx15l6mp996v6f77fv0l8yfh597"))))
+         "0p41k8r3sm8icfli14w6nzc9glwb8a2dmb2b8a5p2j0rrsl53sni"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-e1071
@@ -36630,7 +36630,17 @@ it may be seen by an animal with less acute vision.")
            r-reshape2
            r-withr))
     (native-inputs
-     (list r-fastica r-knitr r-mlmetrics r-testthat r-themis))
+     (list r-car
+           r-dplyr
+           r-fastica
+           r-ipred
+           r-kernlab
+           r-knitr
+           r-mass
+           r-matrix
+           r-rpart
+           r-testthat
+           r-themis))
     (home-page "https://github.com/topepo/caret")
     (synopsis "Classification and regression training")
     (description
