@@ -1806,6 +1806,30 @@ This package provides a simple way to produce such plots using ggplot2.  In
 addition it can convert any categorical axis into a combination matrix axis.")
     (license license:gpl3)))
 
+(define-public r-glba
+  (package
+    (name "r-glba")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "glba" version))
+       (sha256
+        (base32 "0dilf144xfn454xfsndbddhc28gzf36fiknc2qwcx3bp7z5caqjn"))))
+    (properties `((upstream-name . "glba")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=glba")
+    (synopsis "General linear ballistic accumulator models")
+    (description
+     "This package lets you analyze response times and accuracies from
+psychological experiments with the @dfn{linear ballistic accumulator} (LBA)
+model from Brown and Heathcote (2008).  The LBA model is optionally fitted
+with explanatory variables on the parameters such as the drift rate, the
+boundary and the starting point parameters.  A log-link function on the linear
+predictors can be used to ensure that parameters remain positive when
+needed.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-glmpca
   (package
     (name "r-glmpca")
