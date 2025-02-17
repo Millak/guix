@@ -2433,6 +2433,36 @@ for a table giving the position of a planet, asteroid, or comet for a series
 of dates.")
     (license license:expat)))
 
+(define-public python-esutil
+  (package
+    (name "python-esutil")
+    (version "0.6.16")
+    (source
+     (origin
+       (method git-fetch) ; no tests in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/esheldon/esutil")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05csk5asq3si7gdq8mpfh288z10rs45ylpcrrcjx0009q52l95xq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-numpy
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy))
+    (home-page "https://github.com/esheldon/esutil")
+    (synopsis "Numerical, scientific, and astrophysical computing utilities")
+    (description
+     "This package provides a wide variety of utilities, focused primarily on
+numerical python, statistics, and file input/output.  Includes specialized
+tools for astronomers.")
+    (license license:gpl2+)))
+
 (define-public python-extinction
   (package
     (name "python-extinction")
