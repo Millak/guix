@@ -3069,7 +3069,9 @@ or source files in a key-value fashion.")
        (sha256
         (base32
          "0xsw25j2ks9bqgz189qdcyj8hzz93snknlik83nj04s6vy0w7aax"))))
-    (properties `((upstream-name . "BatchJobs")))
+    (properties
+     '((upstream-name . "BatchJobs")
+       (updater-extra-native-inputs . ("r-mass"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports
@@ -3082,7 +3084,7 @@ or source files in a key-value fashion.")
            r-rsqlite
            r-sendmailr
            r-stringi))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-mass r-testthat))
     (home-page "https://github.com/tudo-r/BatchJobs")
     (synopsis "Batch computing with R")
     (description
