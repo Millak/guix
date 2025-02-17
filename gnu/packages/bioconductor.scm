@@ -3299,6 +3299,8 @@ yeast are also included.")
     (properties
      `((upstream-name . "curatedTCGAData")))
     (build-system r-build-system)
+    ;; Tests require Internet access because of ExperimentHub.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationhub
            r-experimenthub
