@@ -3923,13 +3923,13 @@ series of numeric vectors/matrices and factors.")
 (define-public r-fontawesome
   (package
     (name "r-fontawesome")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fontawesome" version))
        (sha256
-        (base32 "1jaw3jz9jz8v7msqv76f234vhrkcy21xgva81m0d313hf6ly4gfs"))))
+        (base32 "0kzvh7xlq8lpx1l7x5gs99a3vncvbccqlqjwixjlrv6mzb80j68v"))))
     (properties `((upstream-name . "fontawesome")))
     (build-system r-build-system)
     ;; Some tests require r-dplyr; adding it to the inputs would lead to a
