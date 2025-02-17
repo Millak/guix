@@ -29513,14 +29513,14 @@ spanning tree.")
 (define-public r-adegenet
   (package
     (name "r-adegenet")
-    (version "2.1.10")
+    (version "2.1.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "adegenet" version))
        (sha256
         (base32
-         "0qxig2jyj1q0a8pwpv5f5v5b4x4af8s9p1p0yc0msmyxq457hqmb"))))
+         "0wb2ryv4irn47c1p6w3w302hhxmh9mrx7djxc1jli86af96xv2pc"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ade4
