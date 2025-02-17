@@ -11180,13 +11180,13 @@ matrices.")
 (define-public r-rmpi
   (package
     (name "r-rmpi")
-    (version "0.7-2.1")
+    (version "0.7-3.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Rmpi" version))
               (sha256
                (base32
-                "1fzd9r49jx1xgrn714av7riypafs401mxcggwj2l0wkhi6i3jq50"))))
+                "07izzlr1zxf25jrgwmi9384cqmg9hqsbh673zifzb4k0lvi0ikmw"))))
     (properties
      `((upstream-name . "Rmpi")
        (updater-extra-inputs . ("openmpi"))))
