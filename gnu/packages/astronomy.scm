@@ -6528,13 +6528,13 @@ install an implementation package such as gwcs.")
 (define-public python-rad
   (package
     (name "python-rad")
-    (version "0.23.0")
+    (version "0.23.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rad" version))
        (sha256
-        (base32 "1c771lxj45iakj4ynjmfg332cm10yllmwniigs9zzjnb02kmaks5"))))
+        (base32 "14zl3nsqbzm28yrghf7n66qmhf369dyw5bqymmgcq515llm42428"))))
     (build-system pyproject-build-system)
     (arguments
      (list
