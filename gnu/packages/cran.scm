@@ -2108,7 +2108,9 @@ belong to the Generalized Empirical Likelihood family of estimators (Smith
        (sha256
         (base32
          "10pv70nvsqh1yc12g5fj7avfihjzpj02m8s9f8sb0c1np9s4z2qb"))))
-    (properties `((upstream-name . "googledrive")))
+    (properties
+     '((upstream-name . "googledrive")
+       (updater-extra-native-inputs . ("r-mockr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -2126,7 +2128,7 @@ belong to the Generalized Empirical Likelihood family of estimators (Smith
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-mockr r-testthat))
     (home-page "https://googledrive.tidyverse.org")
     (synopsis "Interface to Google Drive")
     (description "This package lets you manage Google Drive files from R.")
