@@ -6241,10 +6241,12 @@ and SHAKE256 extendable-output functions (XOF).")
        (uri (cran-uri "selectr" version))
        (sha256
         (base32 "09y1n3iy297g49xlpl7xrjpwgnm57pskx5991lyfcpizbz8ax22m"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-xml" "r-xml2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-r6 r-stringr))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-xml r-xml2))
     (home-page "https://sjp.co.nz/projects/selectr/")
     (synopsis "Translate CSS selectors to XPath expressions")
     (description
