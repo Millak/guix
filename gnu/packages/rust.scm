@@ -1260,6 +1260,9 @@ safety and thread safety guarantees.")
                            (substitute* "build_script.rs"
                              ,@(make-ignore-test-list
                                 '("fn env_test")))
+                           (substitute* "cache_lock.rs"
+                             ,@(make-ignore-test-list
+                                '("fn download_then_mutate")))
                            (substitute* "collisions.rs"
                              ,@(make-ignore-test-list
                                 '("fn collision_doc_profile_split")))
@@ -1268,7 +1271,13 @@ safety and thread safety guarantees.")
                                 '("fn no_deadlock_with_git_dependencies")))
                            (substitute* "features2.rs"
                              ,@(make-ignore-test-list
-                                '("fn dep_with_optional_host_deps_activated")))))))
+                                '("fn dep_with_optional_host_deps_activated"))))
+                         (with-directory-excursion "src/tools/clippy/tests"
+                           ;; `"vectorcall"` is not a supported ABI for the current target
+                           (delete-file "ui/missing_const_for_fn/could_be_const.rs")
+                           (substitute* "missing-test-files.rs"
+                             ,@(make-ignore-test-list
+                                '("fn test_missing_tests")))))))
                    `())
              (add-after 'unpack 'disable-tests-requiring-crates.io
                (lambda _
