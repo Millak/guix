@@ -37875,14 +37875,17 @@ space models and automatic ARIMA modelling.")
 (define-public r-forestplot
   (package
     (name "r-forestplot")
-    (version "3.1.5")
+    (version "3.1.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "forestplot" version))
               (sha256
                (base32
-                "1k1d42am2mqz9s6knqqyrgp5ph8md77bxxjfv1q1bdqmn1k44sbz"))))
-    (properties `((upstream-name . "forestplot")))
+                "1ijy8lir8l2pwg4y2anfi84c47ssq26z97ixnswbssk9ih07r7qh"))))
+    (properties
+     '((upstream-name . "forestplot")
+       ;; Avoid dependency cycles.
+       (updater-ignored-native-inputs . ("r-gmisc" "r-greg"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -37894,7 +37897,12 @@ space models and automatic ARIMA modelling.")
              (delete-file "tests/test_visual_with_Greg.R"))))))
     (propagated-inputs
      (list r-abind r-checkmate))
-    (native-inputs (list r-dplyr r-knitr r-testthat r-tidyr))
+    (native-inputs (list r-dplyr
+                         r-knitr
+                         r-rms
+                         r-testthat
+                         r-tibble
+                         r-tidyverse))
     (home-page "https://gforge.se/packages/")
     (synopsis "Advanced forest plot using @code{grid} graphics")
     (description
