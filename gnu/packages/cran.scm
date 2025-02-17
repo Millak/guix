@@ -44905,6 +44905,27 @@ supply the workflow to create thematic maps.  This package also facilitates
 @code{tmap}, the package for visualizing thematic maps.")
     (license license:gpl3)))
 
+(define-public r-rwiener
+  (package
+    (name "r-rwiener")
+    (version "1.3-3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RWiener" version))
+       (sha256
+        (base32 "0afrgflyfjv4jqm04had74zz4cs934zwvyxaan1r4qpg383kibpq"))))
+    (properties `((upstream-name . "RWiener")))
+    (build-system r-build-system)
+    (home-page "https://github.com/yeagle/RWiener")
+    (synopsis "Wiener process distribution functions")
+    (description
+     "This package provides Wiener process distribution functions, namely the
+Wiener first passage time density, CDF, quantile and random functions.  It
+additionally supplies a modelling function (@code{wdm}) and further methods
+for the resulting object.")
+    (license license:gpl2+)))
+
 (define-public r-rworldmap
   (package
     (name "r-rworldmap")
