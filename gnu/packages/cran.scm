@@ -41541,19 +41541,27 @@ for linear mixed models (AIREML).")
 (define-public r-cpp11
   (package
     (name "r-cpp11")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cpp11" version))
        (sha256
         (base32
-         "18rl8g68iwmdxiy0c3aqw17limx74hpc5q3irdqj9ndzlnvn9pbm"))))
-    (properties `((upstream-name . "cpp11")))
+         "1m5gg7rxcpjy125c8xxxgx0zaw33p7g1xr1wxvafkhidpiss87ix"))))
+    (properties
+     `((upstream-name . "cpp11")
+       (updater-ignored-native-inputs
+        . ("r-decor" "r-rprogress" "r-std" "r-tibble" "r-writable"))))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
     ;; Tests also require these packages: r-decor, r-tibble, and r-vctrs.
     (arguments (list #:tests? #false))
+    (native-inputs (list r-desc
+                         r-glue
+                         r-knitr
+                         r-mockery
+                         r-testthat
+                         r-withr))
     (home-page "https://github.com/r-lib/cpp11")
     (synopsis "C++11 Interface for R's C Interface")
     (description
