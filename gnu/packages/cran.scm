@@ -17663,17 +17663,21 @@ using the @code{snow} package.")
 (define-public r-fsa
   (package
     (name "r-fsa")
-    (version "0.9.5")
+    (version "0.9.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "FSA" version))
               (sha256
                (base32
-                "0b9gf1sh7igd6i14cgl6j8ns2zqvpph3830n7b4q9vw4dfcb53g0"))))
+                "1qpc2rywkbz3l197b1fhbx7mid7ddjyq98w8b28if6gn9g6ary3g"))))
     (properties `((upstream-name . "FSA")))
     (build-system r-build-system)
     (propagated-inputs (list r-car r-dunn-test r-lmtest r-plotrix r-withr))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-desctools
+                         r-nlme
+                         r-psych
+                         r-testthat
+                         r-tibble))
     (home-page "https://fishr-core-team.github.io/FSA/")
     (synopsis "Simple fisheries stock assessment methods")
     (description
