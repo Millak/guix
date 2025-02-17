@@ -22561,7 +22561,9 @@ data using:
        (sha256
         (base32
          "11daalpnminlrb2dydyd2igk49qfwap8ix0bb4dkvjc41c6rrljh"))))
-    (properties `((upstream-name . "bayestestR")))
+    (properties
+     '((upstream-name . "bayestestR")
+       (updater-extra-native-inputs . ("r-logspline"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-datawizard r-insight))
@@ -22575,6 +22577,7 @@ data using:
            r-glmmtmb
            r-knitr
            r-lme4
+           r-logspline
            r-marginaleffects
            r-posterior
            r-rstanarm
