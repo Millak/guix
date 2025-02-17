@@ -5184,17 +5184,17 @@ colleagues (2019) @url{https://doi:10.18637/jss.v090.c01}.")
 (define-public r-polylabelr
   (package
     (name "r-polylabelr")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "polylabelr" version))
               (sha256
                (base32
-                "01b2v0l5g8nxwbd6nwqv8ahypgh6gfhd4qabg75brlj7z1iyfzf2"))))
+                "1wxr2mhbsq7sm3byb4jn6dskmlxxjywhj453qhs0z40aaiphd49c"))))
     (properties `((upstream-name . "polylabelr")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-sf r-spelling r-testthat))
     (home-page "https://github.com/jolars/polylabelr")
     (synopsis "Finding pole of inaccessibility (visual center) of a polygon")
     (description
