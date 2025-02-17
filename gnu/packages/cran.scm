@@ -889,19 +889,21 @@ labels on the node can also be achieved.")
 (define-public r-collapse
   (package
     (name "r-collapse")
-    (version "2.0.18")
+    (version "2.0.19")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "collapse" version))
        (sha256
-        (base32 "0mwp5k7pw0dds0f5jb98qmbcg2nlblz6249lsxb26bj25v6404mr"))))
+        (base32 "131d47im52k9g8piy5g0yjjygj3fr8nbw8gzy2h378zpw162pf8y"))))
     (properties `((upstream-name . "collapse")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list r-data-table
+    (native-inputs (list r-bit64
+                         r-data-table
                          r-dplyr
                          r-fixest
+                         r-kit
                          r-knitr
                          r-magrittr
                          r-matrixstats
