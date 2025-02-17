@@ -25632,13 +25632,13 @@ handling.")
 (define-public r-gridpattern
   (package
     (name "r-gridpattern")
-    (version "1.2.2")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gridpattern" version))
        (sha256
-        (base32 "1fa787m4ns3s7xnai1kqplz32nhy4pa1v6w7kzyjv9qlyfhvrw92"))))
+        (base32 "19ffi9yvpk012mj7jc8gjwx505qrs0gqsdmw1zk4q6iq9rygyrrf"))))
     (properties `((upstream-name . "gridpattern")))
     (build-system r-build-system)
     (propagated-inputs
@@ -25647,7 +25647,7 @@ handling.")
            r-png
            r-rlang
            r-sf))
-    (native-inputs (list r-knitr r-rmarkdown r-testthat))
+    (native-inputs (list r-knitr r-magick r-rmarkdown r-testthat r-vdiffr))
     (home-page "https://trevorldavis.com/R/gridpattern/")
     (synopsis "Grid pattern grobs")
     (description
