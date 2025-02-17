@@ -29222,7 +29222,9 @@ high-performance functions are provided here.")
        (sha256
         (base32
          "0y38g1zy19m7xsipns3m6avmjb9vnyw683nmlgsf4wnxa1qjqxih"))))
-    (properties `((upstream-name . "s2")))
+    (properties
+     '((upstream-name . "s2")
+       (updater-extra-native-inputs . ("r-bit64" "r-vctrs"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -29240,7 +29242,7 @@ high-performance functions are provided here.")
     (inputs
      (list openssl zlib))
     (native-inputs
-     (list pkg-config r-testthat))
+     (list pkg-config r-bit64 r-testthat r-vctrs))
     (home-page "https://r-spatial.github.io/s2/")
     (synopsis "Spherical geometry operators using the S2 geometry library")
     (description
