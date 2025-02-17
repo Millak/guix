@@ -5349,19 +5349,19 @@ package instead.")
 (define-public r-hmisc
   (package
     (name "r-hmisc")
-    (version "5.2-0")
+    (version "5.2-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Hmisc" version))
        (sha256
-        (base32 "1sgwwixidyff88nh7cvy2h3yblhxigikgnmpmgcqx41nb8jkaw8i"))))
+        (base32 "0z09b1nx1q1ayw9wnvvqsb8jnxrkb0hac4m1p7rdibg09ypj2ln5"))))
     (properties `((upstream-name . "Hmisc")))
     (build-system r-build-system)
     ;; Tests need r-rms, which needs this package.
     (arguments (list #:test-types '(list "vignettes")))
     (native-inputs
-     (list gfortran r-mvtnorm))
+     (list gfortran))
     (propagated-inputs
      (list r-base64enc
            r-cluster
