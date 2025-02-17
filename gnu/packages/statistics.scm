@@ -1493,13 +1493,13 @@ for template use among CRAN packages.")
 (define-public r-evaluate
   (package
     (name "r-evaluate")
-    (version "1.0.1")
+    (version "1.0.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "evaluate" version))
               (sha256
                (base32
-                "1qki65w0qr8wndpsydy7frhdddbm122284zkn8ccdqskbgjw6v23"))))
+                "1qm2vz8a1hjgqyidaf3favzbp7fjka3m6qdq9yxjjmhf2gdfvzxv"))))
     (properties
      ;; We can't have r-testthat among the inputs here to avoid a dependency
      ;; cycle.
