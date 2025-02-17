@@ -80,6 +80,12 @@
          (build node-build)
          (arguments (strip-keyword-arguments private-keywords arguments)))))
 
+(define (default-guile-json)
+  "Return the default guile-json package."
+  ;; Lazily resolve the binding to avoid a circular dependency.
+  (let ((mod (resolve-interface '(gnu packages guile))))
+    (module-ref mod 'guile-json-4)))
+
 (define* (node-build name inputs
                      #:key
                      source
@@ -91,26 +97,28 @@
                      (search-paths '())
                      (system (%current-system))
                      (guile #f)
+                     (guile-json (default-guile-json))
                      (imported-modules %node-build-system-modules)
                      (modules '((guix build node-build-system)
                                 (guix build utils))))
   "Build SOURCE using NODE and INPUTS."
   (define builder
-    (with-imported-modules imported-modules
-      #~(begin
-          (use-modules #$@(sexp->gexp modules))
-          (node-build #:name #$name
-                      #:source #+source
-                      #:system #$system
-                      #:npm-flags #$npm-flags
-                      #:test-target #$test-target
-                      #:tests? #$tests?
-                      #:phases #$phases
-                      #:outputs #$(outputs->gexp outputs)
-                      #:search-paths '#$(sexp->gexp
-                                         (map search-path-specification->sexp
-                                              search-paths))
-                      #:inputs #$(input-tuples->gexp inputs)))))
+    (with-extensions (list guile-json)
+      (with-imported-modules imported-modules
+        #~(begin
+            (use-modules #$@(sexp->gexp modules))
+            (node-build #:name #$name
+                        #:source #+source
+                        #:system #$system
+                        #:npm-flags #$npm-flags
+                        #:test-target #$test-target
+                        #:tests? #$tests?
+                        #:phases #$phases
+                        #:outputs #$(outputs->gexp outputs)
+                        #:search-paths '#$(sexp->gexp
+                                           (map search-path-specification->sexp
+                                                search-paths))
+                        #:inputs #$(input-tuples->gexp inputs))))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
