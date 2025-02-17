@@ -150,29 +150,28 @@
 (test-assert "derivation fails but keep going"
   ;; In keep-going mode, 'build-derivations' should fail because of D1, but it
   ;; must return only after D2 has succeeded.
-  (with-store store
-    (let* ((d1 (derivation %store "fails"
-                           %bash `("-c" "false")
-                           #:sources (list %bash)))
-           (d2 (build-expression->derivation %store "sleep-then-succeed"
-                                             `(begin
-                                                ,(random-text)
-                                                ;; XXX: Hopefully that's long
-                                                ;; enough that D1 has already
-                                                ;; failed.
-                                                (sleep 2)
-                                                (mkdir %output)))))
-      (set-build-options %store
-                         #:use-substitutes? #f
-                         #:keep-going? #t)
-      (guard (c ((store-protocol-error? c)
-                 (and (= 100 (store-protocol-error-status c))
-                      (string-contains (store-protocol-error-message c)
-                                       (derivation-file-name d1))
-                      (not (valid-path? %store (derivation->output-path d1)))
-                      (valid-path? %store (derivation->output-path d2)))))
-        (build-derivations %store (list d1 d2))
-        #f))))
+  (let* ((d1 (derivation %store "fails"
+                         %bash `("-c" "false")
+                         #:sources (list %bash)))
+         (d2 (build-expression->derivation %store "sleep-then-succeed"
+                                           `(begin
+                                              ,(random-text)
+                                              ;; XXX: Hopefully that's long
+                                              ;; enough that D1 has already
+                                              ;; failed.
+                                              (sleep 2)
+                                              (mkdir %output)))))
+    (set-build-options %store
+                       #:use-substitutes? #f
+                       #:keep-going? #t)
+    (guard (c ((store-protocol-error? c)
+               (and (= 100 (store-protocol-error-status c))
+                    (string-contains (store-protocol-error-message c)
+                                     (derivation-file-name d1))
+                    (not (valid-path? %store (derivation->output-path d1)))
+                    (valid-path? %store (derivation->output-path d2)))))
+      (build-derivations %store (list d1 d2))
+      #f)))
 
 (test-assert "identical files are deduplicated"
   ;; Note: DATA must be longer than %DEDUPLICATION-MINIMUM-SIZE.
