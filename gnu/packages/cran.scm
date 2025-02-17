@@ -44851,13 +44851,13 @@ work for a wide range of data sets.")
 (define-public r-mlr3verse
   (package
     (name "r-mlr3verse")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3verse" version))
        (sha256
-        (base32 "1azkpmkki8c02vpz98ixsx17civk86dq7c8wwnvm9jlg3spr8hhd"))))
+        (base32 "0kkyp4rgfjsx51f5f5wjq3mjr1ci9axrfcpm287f1ng7b3973l8b"))))
     (properties `((upstream-name . "mlr3verse")))
     (build-system r-build-system)
     (propagated-inputs (list r-bbotk
@@ -44868,6 +44868,7 @@ work for a wide range of data sets.")
                              r-mlr3filters
                              r-mlr3fselect
                              r-mlr3hyperband
+                             r-mlr3inferr
                              r-mlr3learners
                              r-mlr3mbo
                              r-mlr3misc
