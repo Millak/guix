@@ -47644,20 +47644,20 @@ Service (S3).")
 (define-public r-paws-customer-engagement
   (package
     (name "r-paws-customer-engagement")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.customer.engagement" version))
        (sha256
         (base32
-         "06lqmfzw2d60y9jg6lkznxbx6si2mwmq2qzdpq76jy1nzvwsp8d8"))))
+         "1p0p08zixq7cxl92fflvvwsd6vdb4p47bcjxrx14avsl81l87f8v"))))
     (properties
-     `((upstream-name . "paws.customer.engagement")))
+     '((upstream-name . "paws.customer.engagement")
+       (updater-ignored-native-inputs . ("r-paws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services customer engagement services")
     (description
