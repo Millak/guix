@@ -6645,13 +6645,13 @@ solar physics.")
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
-    (version "0.23.0")
+    (version "0.23.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "roman_datamodels" version))
        (sha256
-        (base32 "1r7l93z89d93kkpfcxcy12g1ijy2q942j4g4s1d62rzdcz11gann"))))
+        (base32 "14awdf4ndx9rhdz70s3mayp5j8cfmn9bb37yf3cp3s4w62ydmwfi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
