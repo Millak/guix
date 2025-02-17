@@ -49036,13 +49036,13 @@ matching or aggregation, retrieving coordinates, print, summary, etc.")
 (define-public r-gstat
   (package
     (name "r-gstat")
-    (version "2.1-2")
+    (version "2.1-3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gstat" version))
               (sha256
                (base32
-                "1zvfljlpgvydvjhdhyc9g8c39a3ba347l8hvc6nv27j0w7kyplr6"))))
+                "1lia3vxkv8s9q5svmlg1grhz45ab0ppln69rwcn55vzm6307gp7f"))))
     (properties `((upstream-name . "gstat")))
     (build-system r-build-system)
     (propagated-inputs
