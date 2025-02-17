@@ -1913,6 +1913,35 @@ analysis (GLM-PCA) for dimension reduction of non-normally distributed data
 such as counts or binary matrices.")
     (license license:lgpl3+)))
 
+(define-public r-gmm
+  (package
+    (name "r-gmm")
+    (version "1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gmm" version))
+       (sha256
+        (base32 "1n45dls7632b11bg6pipamp2zmp8j1hp4nlrj91r4schd9fgr6bh"))))
+    (properties `((upstream-name . "gmm")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-sandwich))
+    (native-inputs (list gfortran r-knitr))
+    (home-page "https://cran.r-project.org/package=gmm")
+    (synopsis
+     "Generalized method of moments and generalized empirical likelihood")
+    (description
+     "This is a complete suite to estimate models based on moment conditions.
+It includes the two step Generalized method of moments (Hansen 1982;
+<doi:10.2307/1912775>), the iterated GMM and continuous updated estimator
+(Hansen, Eaton and Yaron 1996; <doi:10.2307/1392442>) and several methods that
+belong to the Generalized Empirical Likelihood family of estimators (Smith
+1997; <doi:10.1111/j.0013-0133.1997.174.x>, Kitamura 1997;
+<doi:10.1214/aos/1069362388>, Newey and Smith 2004;
+<doi:10.1111/j.1468-0262.2004.00482.x>, and Anatolyev 2005
+<doi:10.1111/j.1468-0262.2005.00601.x>).")
+    (license license:gpl2+)))
+
 (define-public r-googledrive
   (package
     (name "r-googledrive")
