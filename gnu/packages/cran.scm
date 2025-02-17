@@ -9840,13 +9840,13 @@ value for each cluster in a dendrogram.")
 (define-public r-rcpp
   (package
     (name "r-rcpp")
-    (version "1.0.13-1")
+    (version "1.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rcpp" version))
        (sha256
-        (base32 "16ln8fxf4hiyg8ar588jci5i64749lhak14mkxsbb0khs8iwc7qx"))))
+        (base32 "00l0791grrwkg4rkqb6k6d5x9qas9cizbgnv7iqy5qxhxx94ms3l"))))
     (build-system r-build-system)
     (home-page "https://www.rcpp.org")
     (synopsis "Seamless R and C++ integration")
