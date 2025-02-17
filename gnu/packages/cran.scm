@@ -47843,20 +47843,20 @@ natural language processing, speech recognition, translation, and more.")
 (define-public r-paws-management
   (package
     (name "r-paws-management")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.management" version))
        (sha256
         (base32
-         "0y3xn7v9ikzm7d4gxhcwps4kqhpxvp3hmcd434d4sdbh6j382b03"))))
+         "1n3m1jw30sv9fi3gjzsz20rbb941xkiz7a8650i0sx20fh5id1sh"))))
     (properties
-     `((upstream-name . "paws.management")))
+     '((upstream-name . "paws.management")
+       (updater-ignored-native-inputs . ("r-paws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services management and governance services")
     (description
