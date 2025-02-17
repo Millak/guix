@@ -44573,14 +44573,17 @@ are.")
 (define-public r-mlr3misc
   (package
     (name "r-mlr3misc")
-    (version "0.15.1")
+    (version "0.16.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3misc" version))
               (sha256
                (base32
-                "1yakq3ir3i46h1a1vnqqdlp4qznnwwk7zmjv7v831jmah9fzf5m3"))))
+                "05d4dkciw5k8dxy61sjlgvjkz8cvjrc577l6y72kwvzl2dy1i40z"))))
     (build-system r-build-system)
+    (properties
+     ;; Avoid dependency cycle.
+     '((updater-ignored-native-inputs . ("r-paradox"))))
     (propagated-inputs
      (list r-backports r-checkmate r-data-table r-digest r-r6))
     (native-inputs (list r-testthat))
