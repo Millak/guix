@@ -2357,22 +2357,24 @@ code to be greatly simplified.")
 (define-public python-drms
   (package
     (name "python-drms")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "drms" version))
        (sha256
-        (base32 "19lqy510d7iyxfz445h2rn4d0rvmd4d3lnjmvbkvv270ckpfw09f"))))
+        (base32 "0nnyqzy9dblis3q1xhx77z8ys1k969fh9qqdvmapn46v91299gml"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-astropy
+     (list python-astropy-minimal
            python-pytest-astropy
            python-setuptools
-           python-setuptools-scm
+           python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
-     (list python-numpy python-pandas))
+     (list python-numpy
+           python-packaging
+           python-pandas))
     (home-page "https://sunpy.org")
     (synopsis "Access astronomical HMI, AIA and MDI data with Python")
     (description
