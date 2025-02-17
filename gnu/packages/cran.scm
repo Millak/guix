@@ -33601,14 +33601,14 @@ emphasize hidden group structures in networks or focus on specific nodes.")
 (define-public r-terra
   (package
     (name "r-terra")
-    (version "1.7-83")
+    (version "1.8-21")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "terra" version))
        (sha256
         (base32
-         "0ay9nf83239wb2kqng6gzp8lhqwa2aw71i00v1xcv0rs1fz648mk"))))
+         "0zqxap11hqils2a8hljkawr1mi4j0ci3nbhhpr0gaa7lyf7aqmba"))))
     (properties `((upstream-name . "terra")))
     (build-system r-build-system)
     (inputs
@@ -33624,7 +33624,7 @@ emphasize hidden group structures in networks or focus on specific nodes.")
     (propagated-inputs
      (list r-rcpp))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config r-tinytest))
     (home-page "https://rspatial.org/terra")
     (synopsis "Spatial data analysis")
     (description
