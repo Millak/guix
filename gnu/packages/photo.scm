@@ -548,7 +548,8 @@ photographic equipment.")
      (list
       #:configure-flags
       #~(list "-DBINARY_PACKAGE_BUILD=On"
-              "-DBUILD_TESTING=On")
+              "-DBUILD_TESTING=On"
+              "-DDONT_USE_INTERNAL_LIBRAW=On")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'libOpenCL-path
@@ -603,6 +604,7 @@ photographic equipment.")
            libjxl                    ;optional, for JPEG-XL support
            libomp
            libpng
+           libraw
            (librsvg-for-system)
            libsecret                    ;optional, for storing passwords
            libsoup-minimal-2            ;optional, for osm-gps-map
