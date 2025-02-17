@@ -31,18 +31,14 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-71)
   #:export (%standard-phases
-            with-atomic-json-file-replacement
             delete-dependencies
-            node-build))
-
-(define* (with-atomic-json-file-replacement proc
-  #:optional (file "package.json"))
-  "Like 'with-atomic-file-replacement', but PROC is called with a single
-argument---the result of parsing FILE's contents as json---and should a value
-to be written as json to the replacement FILE."
-  (with-atomic-file-replacement file
-    (lambda (in out)
-      (scm->json (proc (json->scm in)) out))))
+            delete-dev-dependencies
+            delete-fields
+            modify-json
+            modify-json-fields
+            node-build
+            replace-fields
+            with-atomic-json-file-replacement))
 
 (define* (assoc-ref* alist key #:optional default)
   "Like assoc-ref, but return DEFAULT instead of #f if no value exists."
@@ -71,6 +67,161 @@ unique), but the result may still share storage with ALIST."
     (if (pair? pair)
       (acons key (proc (cdr pair)) rest)
       alist)))
+
+;;;
+;;; package.json modification procedures
+;;;
+
+(define* (with-atomic-json-file-replacement proc
+  #:optional (file "package.json"))
+  "Like 'with-atomic-file-replacement', but PROC is called with a single
+argument---the result of parsing FILE's contents as json---and should a value
+to be written as json to the replacement FILE."
+  (with-atomic-file-replacement file
+    (lambda (in out)
+      (scm->json (proc (json->scm in)) out))))
+
+(define* (modify-json #:key (file "package.json") #:rest all-arguments)
+  "Provide package.json modifying callbacks such as (delete-dependencies ...)"
+  (let
+    (
+      (modifications
+        (let loop ((arguments all-arguments))
+          (cond
+            ((null? arguments) '())
+            ((keyword? (car arguments)) (loop (cddr arguments)))
+            (else (cons (car arguments) (loop (cdr arguments))))))))
+    (with-atomic-json-file-replacement
+      (lambda (package)
+        (fold
+          (lambda (modification package)
+            (modification package))
+          package
+          modifications))
+      file)))
+
+(define (delete-dependencies dependencies-to-remove)
+  "Rewrite 'package.json' to allow the build to proceed without packages
+listed in 'dependencies-to-remove', a list of strings naming npm packages.
+
+To prevent the deleted dependencies from being reintroduced, use this function
+only after the 'patch-dependencies' phase."
+  (lambda (pkg-meta)
+    (fold
+      (lambda (dependency-key pkg-meta)
+        (alist-update
+          pkg-meta
+          dependency-key
+          (lambda (dependencies)
+            (remove
+              (lambda (dependency)
+                (member (car dependency) dependencies-to-remove))
+              dependencies))))
+      pkg-meta
+      (list
+        "devDependencies"
+        "dependencies"
+        "peerDependencies"
+        "optionalDependencies"))))
+
+(define* (modify-json-fields
+    fields
+    field-modifier
+    #:key
+      (field-path-mapper (lambda (field) field))
+      (insert? #f)
+      (strict? #t))
+  "Provides a lambda to supply to modify-json which modifies the specified
+ json file.
+- `fields` is a list procedure-specific data structures which should include
+ the definition of a `field-path` in one of two syntaxes: dot-syntax string
+ such as `\"devDependencies.esbuild\"`, or a list of strings such as
+ `(list \"devDependencies\" \"esbuild\")`.
+- `field-modifier` is a lambda which is invoked at the position of the field.
+ It is supplied with the current field definition, the association list (alist)
+ at the field location in the json file, and the field name, also called `key`.
+- `field-path-mapper` is a lambda which instructs where the field-path is
+ located within the field structure.
+- `insert?` allows the creation of the field and any missing intermediate
+ fields.
+- `strict?` causes an error to be thrown if the exact field-path is not found
+ in the data"
+  (lambda (package)
+    (fold
+      (lambda (field package)
+        (let*
+          (
+            (field-path (field-path-mapper field))
+            (
+              field-path
+              (cond
+                ((string? field-path)
+                  (string-split field-path #\.))
+                ((and (list? field-path) (every string? field-path))
+                  field-path)
+                (else
+                  (error
+                    (string-append
+                      "Invalid field value provided, expecting a string or a "
+                      "list of string but instead got: "
+                      (with-output-to-string (lambda _ (display field-path))))))
+              )))
+          (let loop
+            (
+              (data package)
+              (field-path field-path))
+            (let*
+              (
+                (key (car field-path))
+                (data
+                  (if (and (not (assoc key data)) insert?)
+                    (acons key '() data)
+                    data)))
+              (if (not (assoc key data))
+                (if strict?
+                  (error (string-append
+                    "Key '" key "' was not found in data: "
+                    (with-output-to-string (lambda _ (display data)))))
+                  data)
+                (if (= (length field-path) 1)
+                  (field-modifier field data key)
+                  (assoc-set!
+                    data
+                    key
+                    (loop (assoc-ref data key) (cdr field-path)))))))))
+      package
+      fields)))
+
+(define* (delete-fields fields #:key (strict? #t))
+  "Provides a lambda to supply to modify-json which deletes the specified
+ `fields` which is a list of field-paths as mentioned in `modify-json-fields`.
+ Examples:
+  (delete-fields '(
+    (\"path\" \"to\" \"field\")
+    \"path.to.other.field\"))"
+  (modify-json-fields
+    fields
+    (lambda (_ data key)
+      (assoc-remove! data key))
+    #:strict? strict?))
+
+(define* (replace-fields fields #:key (strict? #t))
+  "Provides a lambda to supply to modify-json which replaces the value of the
+ supplied field. `fields` is a list of pairs, where the first element is the
+ field-path and the second element is the value to replace the target with.
+ Examples:
+  (replace-fields '(
+    ((\"path\" \"to\" \"field\") \"new field value\")
+    (\"path.to.other.field\" \"new field value\")))"
+  (modify-json-fields
+    fields
+    (lambda (field data key)
+      (assoc-set! data key (cdr field)))
+    #:field-path-mapper (lambda (field) (car field))
+    #:strict? strict?))
+
+(define (delete-dev-dependencies)
+  (delete-fields (list "devDependencies") #:strict? #f))
 
 ;;;
 ;;; Phases.
@@ -143,31 +294,6 @@ unique), but the result may still share storage with ALIST."
                   (assoc-ref* pkg-meta "peerDependencies" '())
                   (assoc-ref* pkg-meta "dependencies" '())))))))))
   #t)
-
-(define (delete-dependencies dependencies-to-remove)
-  "Rewrite 'package.json' to allow the build to proceed without packages
-listed in 'dependencies-to-remove', a list of strings naming npm packages.
-
-To prevent the deleted dependencies from being reintroduced, use this function
-only after the 'patch-dependencies' phase."
-  (with-atomic-json-file-replacement
-    (lambda (pkg-meta)
-      (fold
-        (lambda (dependency-key pkg-meta)
-          (alist-update
-            pkg-meta
-            dependency-key
-            (lambda (dependencies)
-              (remove
-                (lambda (dependency)
-                  (member (car dependency) dependencies-to-remove))
-                dependencies))))
-        pkg-meta
-        (list
-          "devDependencies"
-          "dependencies"
-          "peerDependencies"
-          "optionalDependencies")))))
 
 (define* (delete-lockfiles #:key inputs #:allow-other-keys)
   "Delete 'package-lock.json', 'yarn.lock', and 'npm-shrinkwrap.json', if they

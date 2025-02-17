@@ -69,18 +69,7 @@
              ;; We need to remove the prepare script from "package.json", as
              ;; it would try to use the build environment and would block the
              ;; automatic building by other packages making use of node-acorn.
-             ;; TODO: Add utility function
-             (with-atomic-json-file-replacement (lambda (pkg-meta-alist)
-               (map
-                 (match-lambda
-                   (("scripts" . scripts-alist)
-                     (cons "scripts" (filter
-                       (match-lambda
-                         (("prepare" . _) #f)
-                         (_ #t))
-                       scripts-alist)))
-                   (other other))
-                 pkg-meta-alist)))))
+             (modify-json (delete-fields '(("scripts" "prepare"))))))
          (replace 'build
            (lambda* (#:key inputs native-inputs #:allow-other-keys)
              (let ((esbuild (search-input-file (or native-inputs inputs)
@@ -136,38 +125,25 @@ architecture supporting plugins.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies
-              `("benchmark"
-                "bindings"
-                "clang-format"
-                "eslint"
-                "eslint-config-semistandard"
-                "eslint-config-standard"
-                "eslint-plugin-import"
-                "eslint-plugin-node"
-                "eslint-plugin-promise"
-                "fs-extra"
-                "neostandard"
-                "path"
-                "pre-commit"
-                "semver"))))
-         (add-after 'unpack 'skip-js-tests
-           ;; We can't run the js-based tests,
-           ;; but we can still do the C++ parts
-           (lambda args
-             (define new-test-script
-               "echo stopping after pretest on Guix")
-             (with-atomic-json-file-replacement (lambda (pkg-meta-alist)
-               (map
-                 (match-lambda
-                   (("scripts" . scripts-alist)
-                     (cons "scripts" (map
-                       (match-lambda
-                         (("test" . _) (cons "test" new-test-script))
-                         (other other))
-                       scripts-alist)))
-                   (other other))
-                 pkg-meta-alist))))))))
+             (modify-json (delete-dependencies
+                           `("benchmark"
+                             "bindings"
+                             "clang-format"
+                             "eslint"
+                             "eslint-config-semistandard"
+                             "eslint-config-standard"
+                             "eslint-plugin-import"
+                             "eslint-plugin-node"
+                             "eslint-plugin-promise"
+                             "fs-extra"
+                             "neostandard"
+                             "path"
+                             "pre-commit"
+                             "semver"))
+               ;; We can't run the js-based tests,
+               ;; but we can still do the C++ parts
+               (replace-fields (list (cons
+                 "scripts.test" "echo stopping after pretest on Guix")))))))))
     (home-page "https://github.com/nodejs/node-addon-api")
     (synopsis "Node.js API (Node-API) header-only C++ wrappers")
     (description "This module contains header-only C++ wrapper classes which
@@ -232,7 +208,7 @@ addons in a wide array of potential locations.")
        #:phases (modify-phases %standard-phases
                   (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (delete-dependencies '("tap")))))))
+                      (modify-json (delete-dependencies '("tap"))))))))
     (home-page "https://github.com/brianloveswords/buffer-crc32")
     (synopsis "CRC32 implementation in Javascript")
     (description
@@ -288,14 +264,15 @@ and fancy character sets, signed or unsigned data and has tests, for Node.")
                          "minimist"))))
                   (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (delete-dependencies '("c8"
-                                             "docdash"
-                                             "eslint"
-                                             "eslint-plugin-jsdoc"
-                                             "jsdoc"
-                                             "tap-diff"
-                                             "tape"
-                                             "tape-catch")))))))
+                      (modify-json (delete-dependencies
+                                    '("c8"
+                                      "docdash"
+                                      "eslint"
+                                      "eslint-plugin-jsdoc"
+                                      "jsdoc"
+                                      "tap-diff"
+                                      "tape"
+                                      "tape-catch"))))))))
     (inputs (list node-minimist node-pbf node-yazl))
     (home-page "https://github.com/ahwayakchih/crx3")
     (synopsis "Create CRXv3 browser extensions with Javascript")
@@ -325,18 +302,19 @@ and fancy character sets, signed or unsigned data and has tests, for Node.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `("brfs"
-                                    "browserify"
-                                    "coveralls"
-                                    "istanbul"
-                                    "karma"
-                                    "karma-browserify"
-                                    "karma-chrome-launcher"
-                                    "karma-mocha"
-                                    "mocha"
-                                    "mocha-lcov-reporter"
-                                    "xo"
-                                    "supports-color")))))
+             (modify-json (delete-dependencies
+                           `("brfs"
+                             "browserify"
+                             "coveralls"
+                             "istanbul"
+                             "karma"
+                             "karma-browserify"
+                             "karma-chrome-launcher"
+                             "karma-mocha"
+                             "mocha"
+                             "mocha-lcov-reporter"
+                             "xo"
+                             "supports-color"))))))
        #:tests? #f))
     (home-page "https://github.com/debug-js/debug")
     (synopsis "Debugging utility for Node.js")
@@ -421,21 +399,22 @@ codes.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `("@types/mocha"
-                                    "@types/node"
-                                    "@typescript-eslint/eslint-plugin"
-                                    "@typescript-eslint/parser"
-                                    "cpy-cli"
-                                    "eslint"
-                                    "eslint-config-airbnb"
-                                    "eslint-config-prettier"
-                                    "eslint-import-resolver-typescript"
-                                    "eslint-plugin-import"
-                                    "eslint-plugin-jsx-a11y"
-                                    "eslint-plugin-react"
-                                    "mocha"
-                                    "rimraf"
-                                    "typescript"))))
+             (modify-json (delete-dependencies
+                           `("@types/mocha"
+                             "@types/node"
+                             "@typescript-eslint/eslint-plugin"
+                             "@typescript-eslint/parser"
+                             "cpy-cli"
+                             "eslint"
+                             "eslint-config-airbnb"
+                             "eslint-config-prettier"
+                             "eslint-import-resolver-typescript"
+                             "eslint-plugin-import"
+                             "eslint-plugin-jsx-a11y"
+                             "eslint-plugin-react"
+                             "mocha"
+                             "rimraf"
+                             "typescript")))))
          (replace 'build
            (lambda* (#:key inputs native-inputs #:allow-other-keys)
              (copy-recursively "src" "dist")
@@ -497,7 +476,9 @@ clean task of each project.")
        #:phases (modify-phases %standard-phases
                   (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (delete-dependencies '("airtap" "standard" "tape")))))))
+                      (modify-json
+                       (delete-dependencies
+                        '("airtap" "standard" "tape"))))))))
     (home-page "https://github.com/feross/ieee754")
     (synopsis "Read/write IEEE754 floating point numbers in Javascript")
     (description "This package can read and write IEEE754 floating point
@@ -524,7 +505,7 @@ numbers from/to a Buffer or array-like object in Javascript.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies '("tap")))))
+             (modify-json (delete-dependencies '("tap"))))))
        ;; FIXME: Tests depend on node-tap
        #:tests? #f))
     (home-page "https://github.com/isaacs/inherits")
@@ -553,8 +534,9 @@ defaulting to Node's implementation otherwise.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies
-              `("ansi-color" "faucet" "jscs" "tape")))))
+             (modify-json
+              (delete-dependencies
+               `("ansi-color" "faucet" "jscs" "tape"))))))
        #:tests? #f))
     (inputs
      (list node-irc-colors))
@@ -583,7 +565,7 @@ It has functions for joining, parting, talking, and many other IRC commands.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `("istanbul" "vows")))))
+             (modify-json (delete-dependencies `("istanbul" "vows"))))))
        #:tests? #f))
     (home-page "https://github.com/fent/irc-colors.js")
     (synopsis "Node.js module providing color and formatting for IRC")
@@ -657,7 +639,8 @@ random number generator.")
        #:phases (modify-phases %standard-phases
                   (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (delete-dependencies '("covert" "tap" "tape")))))))
+                      (modify-json (delete-dependencies
+                                    '("covert" "tap" "tape"))))))))
     (home-page "https://github.com/substack/minimist")
     (synopsis "Parse CLI arguments in Javascript")
     (description "This package can scan for CLI flags and arguments in
@@ -683,12 +666,13 @@ Javascript.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `("eslint"
-                                    "expect.js"
-                                    "husky"
-                                    "lint-staged"
-                                    "mocha"
-                                    "prettier")))))
+             (modify-json (delete-dependencies
+                           `("eslint"
+                             "expect.js"
+                             "husky"
+                             "lint-staged"
+                             "mocha"
+                             "prettier"))))))
        #:tests? #f))
     (home-page "https://github.com/vercel/ms")
     (synopsis "Convert time to milliseconds")
@@ -716,14 +700,14 @@ a string consisting of a number and a time unit is converted to milliseconds.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies
-              '("bindings"
-                "commander"
-                "glob"
-                "request"
-                "node-gyp" ;; would be needed for tests
-                "tap"
-                "xtend")))))
+             (modify-json (delete-dependencies
+                           '("bindings"
+                             "commander"
+                             "glob"
+                             "request"
+                             "node-gyp" ;; would be needed for tests
+                             "tap"
+                             "xtend"))))))
        ;; tests need tap and other dependencies
        #:tests? #f))
     (inputs
@@ -755,7 +739,8 @@ native Node.js addons without having to inspect @code{NODE_MODULE_VERSION}.")
        #:phases (modify-phases %standard-phases
                   (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (delete-dependencies '("gulp-format-md" "mocha")))))))
+                      (modify-json (delete-dependencies
+                                    '("gulp-format-md" "mocha"))))))))
     (native-inputs (list node-minimist))
     (home-page "https://github.com/jonschlinkert/normalize-path")
     (synopsis "Normalize slashes in a file path")
@@ -784,7 +769,7 @@ slashes, unless disabled.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies '("tap")))))
+             (modify-json (delete-dependencies '("tap"))))))
        ;; FIXME: Tests depend on node-tap
        #:tests? #f))
     (inputs
@@ -841,7 +826,9 @@ while being as light-weight and simple as possible.")
        #:phases (modify-phases %standard-phases
                   (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (delete-dependencies '("@types/node" "ava" "tsd" "xo")))))))
+                      (modify-json
+                       (delete-dependencies
+                        '("@types/node" "ava" "tsd" "xo"))))))))
     (home-page "https://github.com/sindresorhus/path-key")
     (synopsis "Cross-platform utility to compute the PATH environment variable key")
     (description "@code{path-key} provides an implementation to compute the
@@ -867,17 +854,17 @@ particular cross-platform spellings of the PATH environment variable key.")
        #:phases (modify-phases %standard-phases
                   (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (delete-dependencies
-                       '("benchmark"
-                         "browserify"
-                         "eslint"
-                         "eslint-config-mourner"
-                         "mkdirp"
-                         "protobufjs"
-                         "protocol-buffers"
-                         "tap"
-                         "tile-stats-runner"
-                         "uglify-js")))))))
+                      (modify-json (delete-dependencies
+                                    '("benchmark"
+                                      "browserify"
+                                      "eslint"
+                                      "eslint-config-mourner"
+                                      "mkdirp"
+                                      "protobufjs"
+                                      "protocol-buffers"
+                                      "tap"
+                                      "tile-stats-runner"
+                                      "uglify-js"))))))))
     (inputs (list node-ieee754 node-resolve-protobuf-schema))
     (home-page "https://github.com/mapbox/pbf")
     (synopsis "Decode and encode protocol buffers in Javascript")
@@ -908,7 +895,8 @@ code.")
        #:phases (modify-phases %standard-phases
                   (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (delete-dependencies '("standard" "tape")))))))
+                      (modify-json (delete-dependencies
+                                    '("standard" "tape"))))))))
     (home-page "https://github.com/mafintosh/protocol-buffers-schema")
     (synopsis "Protocol buffers schema parser written in Javascript")
     (description "This package provides a protocol buffers schema parser
@@ -935,26 +923,27 @@ written in Javascript.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `("@babel/cli"
-                                    "@babel/core"
-                                    "@babel/polyfill"
-                                    "@babel/preset-env"
-                                    "airtap"
-                                    "assert"
-                                    "bl"
-                                    "deep-strict-equal"
-                                    "events.once"
-                                    "glob"
-                                    "gunzip-maybe"
-                                    "hyperquest"
-                                    "lolex"
-                                    "nyc"
-                                    "pump"
-                                    "rimraf"
-                                    "tap"
-                                    "tape"
-                                    "tar-fs"
-                                    "util-promisify")))))
+             (modify-json (delete-dependencies
+                           `("@babel/cli"
+                             "@babel/core"
+                             "@babel/polyfill"
+                             "@babel/preset-env"
+                             "airtap"
+                             "assert"
+                             "bl"
+                             "deep-strict-equal"
+                             "events.once"
+                             "glob"
+                             "gunzip-maybe"
+                             "hyperquest"
+                             "lolex"
+                             "nyc"
+                             "pump"
+                             "rimraf"
+                             "tap"
+                             "tape"
+                             "tar-fs"
+                             "util-promisify"))))))
        #:tests? #f))
     (inputs (list node-util-deprecate node-string-decoder node-inherits))
     (home-page "https://github.com/nodejs/readable-stream")
@@ -983,7 +972,8 @@ that behaves the same across different versions.")
        #:phases (modify-phases %standard-phases
                   (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (delete-dependencies '("standard" "tape")))))))
+                      (modify-json (delete-dependencies
+                                    '("standard" "tape"))))))))
     (inputs (list node-protocol-buffers-schema))
     (home-page "https://github.com/mafintosh/resolve-protobuf-schema")
     (synopsis "Resolve protobuf imports")
@@ -1012,7 +1002,7 @@ resolve all imports.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies '("tape" "standard")))))
+             (modify-json (delete-dependencies '("tape" "standard"))))))
        #:tests? #f))
     (home-page "https://github.com/feross/safe-buffer")
     (synopsis "Buffer creation with explicit semantics")
@@ -1040,20 +1030,22 @@ resolve all imports.")
        #:phases (modify-phases %standard-phases
                   (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (delete-dependencies '("benchmark" "clone"
-                                             "fast-json-stable-stringify"
-                                             "fast-safe-stringify"
-                                             "fast-stable-stringify"
-                                             "faster-stable-stringify"
-                                             "fastest-stable-stringify"
-                                             "json-stable-stringify"
-                                             "json-stringify-deterministic"
-                                             "json-stringify-safe"
-                                             "standard"
-                                             "tap"
-                                             "typescript"
-                                             "@types/node"
-                                             "@types/json-stable-stringify")))))))
+                      (modify-json (delete-dependencies
+                                    '("benchmark"
+                                      "clone"
+                                      "fast-json-stable-stringify"
+                                      "fast-safe-stringify"
+                                      "fast-stable-stringify"
+                                      "faster-stable-stringify"
+                                      "fastest-stable-stringify"
+                                      "json-stable-stringify"
+                                      "json-stringify-deterministic"
+                                      "json-stringify-safe"
+                                      "standard"
+                                      "tap"
+                                      "typescript"
+                                      "@types/node"
+                                      "@types/json-stable-stringify"))))))))
     (home-page "https://github.com/BridgeAR/safe-stable-stringify")
     (synopsis "Serialization of javascript objects")
     (description
@@ -1111,7 +1103,7 @@ both @file{stderr} and to a timestamped file.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies '("tap")))))
+             (modify-json (delete-dependencies '("tap"))))))
        ;; FIXME: Tests depend on node-tap
        #:tests? #f))
     (home-page "https://github.com/npm/node-semver")
@@ -1151,7 +1143,8 @@ both @file{stderr} and to a timestamped file.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `("@serialport/binding-mock"))))
+             (modify-json (delete-dependencies
+                           `("@serialport/binding-mock")))))
          (add-after 'unpack 'chdir
            (lambda args
              (chdir "packages/serialport"))))
@@ -1210,25 +1203,7 @@ it to make a new binding for a different platform or underling technology.")))
              (chdir "packages/bindings")))
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `("prebuild-install"
-                                    ;; devDependencies
-                                    "@serialport/binding-mock"
-                                    "node-abi"))))
-         (add-after 'chdir 'avoid-prebuild-install
-           (lambda args
-             (with-atomic-json-file-replacement (lambda (pkg-meta-alist)
-               (map
-                 (match-lambda
-                   (("scripts" . scripts-alist)
-                     (cons "scripts" (filter
-                       (match-lambda
-                         (("install" . _) #f)
-                         (_ #t))
-                       scripts-alist)))
-                   (("gypfile" . _)
-                     (cons "gypfile" #f))
-                   (other other))
-                 pkg-meta-alist))))))
+             (modify-json (delete-dependencies `("node-abi"))))))
        #:tests? #f))
     (synopsis "Abstract base class for Node SerialPort bindings")
     (description "Node SerialPort is a modular suite of Node.js packages for
@@ -1409,8 +1384,8 @@ expression to split the incoming text.")))
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `(;; devDependencies
-                                    "@serialport/binding-mock"))))
+             (modify-json
+               (delete-dependencies `("@serialport/binding-mock")))))
          (add-after 'unpack 'chdir
            (lambda args
              (chdir "packages/stream"))))
@@ -1461,26 +1436,27 @@ connection.")))
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies
-              `(;; Normally, this is "built" using @mapbox/node-pre-gyp,
-                ;; which publishes or downloads pre-built binaries or
-                ;; falls back to building from source.  Here, we patch out
-                ;; all of that and just build directly.  It might be
-                ;; better to patch a version of @mapbox/node-pre-gyp that
-                ;; always builds from source, as Debian does, but there
-                ;; are a number of dependencies that need to be packaged
-                ;; or removed.
-                "@mapbox/node-pre-gyp"
-                "node-pre-gyp" ;; deprecated name still used in some places
-                "aws-sdk"
-                "@mapbox/cloudfriend"
-                ;; Confusingly, this is only a dependency because of
-                ;; @mapbox/node-pre-gyp: with that removed,
-                ;; npm will use its own copy:
-                "node-gyp"
-                ;; These we'd like, we just don't have them yet:
-                "eslint"
-                "mocha"))))
+             (modify-json
+              (delete-dependencies
+               `(;; Normally, this is "built" using @mapbox/node-pre-gyp,
+                 ;; which publishes or downloads pre-built binaries or
+                 ;; falls back to building from source.  Here, we patch out
+                 ;; all of that and just build directly.  It might be
+                 ;; better to patch a version of @mapbox/node-pre-gyp that
+                 ;; always builds from source, as Debian does, but there
+                 ;; are a number of dependencies that need to be packaged
+                 ;; or removed.
+                 "@mapbox/node-pre-gyp"
+                 "node-pre-gyp" ;; deprecated name still used in some places
+                 "aws-sdk"
+                 "@mapbox/cloudfriend"
+                 ;; Confusingly, this is only a dependency because of
+                 ;; @mapbox/node-pre-gyp: with that removed,
+                 ;; npm will use its own copy:
+                 "node-gyp"
+                 ;; These we'd like, we just don't have them yet:
+                 "eslint"
+                 "mocha")))))
          (add-before 'configure 'npm-config-sqlite
            ;; We need this step even if we do replace @mapbox/node-pre-gyp
            ;; because the package expects to build its bundled sqlite
@@ -1514,8 +1490,9 @@ connection.")))
              (substitute* ".npmignore"
                (("lib/binding")
                 "#lib/binding # <- patched for Guix"))
-             (with-atomic-json-file-replacement (lambda (pkg-meta-alist)
-               (let ((binary-alist (assoc-ref pkg-meta-alist "binary")))
+             (modify-json
+               (lambda (pkg-meta-alist)
+                 (let ((binary-alist (assoc-ref pkg-meta-alist "binary")))
                  ;; When it builds from source, node-pre-gyp supplies
                  ;; module_name and module_path based on the entries under
                  ;; "binary" from "package.json", so this package's
@@ -1528,19 +1505,11 @@ connection.")))
                    (assoc-ref binary-alist "module_name")
                    " module_path="
                    (assoc-ref binary-alist "module_path"))))
+                 pkg-meta-alist)
                ;; We need to remove the install script from "package.json",
                ;; as it would try to use node-pre-gyp and would block the
                ;; automatic building performed by `npm install`.
-               (map
-                 (match-lambda
-                   (("scripts" . scripts-alist)
-                     (cons "scripts" (filter
-                       (match-lambda
-                         (("install" . _) #f)
-                         (_ #t))
-                       scripts-alist)))
-                   (other other))
-                 pkg-meta-alist))))))))
+               (delete-fields `(("scripts" "install")))))))))
     (home-page "https://github.com/mapbox/node-sqlite3")
     (synopsis "Node.js bindings for SQLite3")
     (description
@@ -1623,8 +1592,9 @@ protocol used in @code{node-lynx}.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies
-              '("tap" "core-util-is" "babel-polyfill")))))
+             (modify-json
+              (delete-dependencies
+               '("tap" "core-util-is" "babel-polyfill"))))))
        ;; FIXME: Tests depend on node-tap
        #:tests? #f))
     (inputs (list node-safe-buffer node-inherits))
@@ -1656,7 +1626,8 @@ sequences.")
                    (delete 'build)
                    (add-after 'patch-dependencies 'delete-dev-dependencies
                      (lambda _
-                       (delete-dependencies '("eslint" "@eslint/js")))))))
+                       (modify-json
+                        (delete-dependencies '("eslint" "@eslint/js"))))))))
     (home-page "https://github.com/TiddlyWiki/TiddlyWiki5#readme")
     (synopsis "Non-linear personal web notebook")
     (description "TiddlyWiki is a unique non-linear notebook for capturing,
@@ -1714,7 +1685,7 @@ function with browser support.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies '("tap")))))))
+             (modify-json (delete-dependencies '("tap"))))))))
     (home-page "https://github.com/npm/wrappy")
     (synopsis "Callback wrapping utility")
     (description "@code{wrappy} is a utility for Node.js to wrap callbacks.")
@@ -1739,7 +1710,9 @@ function with browser support.")
        #:phases (modify-phases %standard-phases
                   (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (delete-dependencies '("airtap" "bl" "istanbul" "yauzl")))))))
+                      (modify-json
+                       (delete-dependencies
+                        '("airtap" "bl" "istanbul" "yauzl"))))))))
     (inputs (list node-buffer-crc32))
     (home-page "https://github.com/thejoshwolfe/yazl")
     (synopsis "Yet another zip library for node")

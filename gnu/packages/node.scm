@@ -13,6 +13,7 @@
 ;;; Copyright © 2021, 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Daniel Khodabakhsh <d.khodabakhsh@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -373,7 +374,7 @@ devices.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies '("tap")))))))
+             (modify-json (delete-dependencies '("tap"))))))))
     (home-page "https://github.com/npm/node-semver")
     (properties '((hidden? . #t)))
     (synopsis "Parses semantic versions strings")
@@ -404,11 +405,12 @@ devices.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies '("eslint"
-                                    "expect.js"
-                                    "husky"
-                                    "lint-staged"
-                                    "mocha")))))))
+             (modify-json (delete-dependencies
+                           '("eslint"
+                             "expect.js"
+                             "husky"
+                             "lint-staged"
+                             "mocha"))))))))
     (home-page "https://github.com/zeit/ms#readme")
     (properties '((hidden? . #t)))
     (synopsis "Tiny millisecond conversion utility")
@@ -438,7 +440,7 @@ formats to milliseconds.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `("chai" "mocha")))))))
+             (modify-json (delete-dependencies `("chai" "mocha"))))))))
     (home-page "https://github.com/darkskyapp/binary-search#readme")
     (properties '((hidden? . #t)))
     (synopsis "Tiny binary search function with comparators")
@@ -467,17 +469,18 @@ formats to milliseconds.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `("brfs"
-                                    "browserify"
-                                    "coveralls"
-                                    "istanbul"
-                                    "karma"
-                                    "karma-browserify"
-                                    "karma-chrome-launcher"
-                                    "karma-mocha"
-                                    "mocha"
-                                    "mocha-lcov-reporter"
-                                    "xo")))))))
+             (modify-json (delete-dependencies
+                           `("brfs"
+                             "browserify"
+                             "coveralls"
+                             "istanbul"
+                             "karma"
+                             "karma-browserify"
+                             "karma-chrome-launcher"
+                             "karma-mocha"
+                             "mocha"
+                             "mocha-lcov-reporter"
+                             "xo"))))))))
     (inputs (list node-ms-bootstrap))
     (home-page "https://github.com/visionmedia/debug#readme")
     (properties '((hidden? . #t)))
@@ -533,12 +536,13 @@ Node.js and web browsers.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda _
-             (delete-dependencies `("@types/mocha"
-                                    "@types/node"
-                                    "mocha"
-                                    "ts-node"
-                                    "tslint"
-                                    "typescript"))))
+             (modify-json (delete-dependencies
+                           `("@types/mocha"
+                             "@types/node"
+                             "mocha"
+                             "ts-node"
+                             "tslint"
+                             "typescript")))))
          (replace 'build
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((esbuild (search-input-file inputs "/bin/esbuild")))
@@ -594,13 +598,14 @@ Node.js and web browsers.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `("@types/debug"
-                                    "@types/mocha"
-                                    "@types/node"
-                                    "mocha"
-                                    "ts-node"
-                                    "tslint"
-                                    "typescript"))))
+             (modify-json (delete-dependencies
+                           `("@types/debug"
+                             "@types/mocha"
+                             "@types/node"
+                             "mocha"
+                             "ts-node"
+                             "tslint"
+                             "typescript")))))
          (replace 'build
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((esbuild (search-input-file inputs "/bin/esbuild")))
@@ -655,15 +660,16 @@ Node.js and web browsers.")
        (modify-phases %standard-phases
          (add-after 'patch-dependencies 'delete-dependencies
            (lambda args
-             (delete-dependencies `("@types/debug"
-                                    "@types/mocha"
-                                    "@types/node"
-                                    "esm"
-                                    "llparse-test-fixture"
-                                    "mocha"
-                                    "ts-node"
-                                    "tslint"
-                                    "typescript"))))
+             (modify-json (delete-dependencies
+                           `("@types/debug"
+                             "@types/mocha"
+                             "@types/node"
+                             "esm"
+                             "llparse-test-fixture"
+                             "mocha"
+                             "ts-node"
+                             "tslint"
+                             "typescript")))))
          (replace 'build
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((esbuild (search-input-file inputs "/bin/esbuild")))
