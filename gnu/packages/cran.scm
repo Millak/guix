@@ -13956,14 +13956,14 @@ models.")
 (define-public r-performanceanalytics
   (package
     (name "r-performanceanalytics")
-    (version "2.0.4")
+    (version "2.0.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PerformanceAnalytics" version))
        (sha256
         (base32
-         "0ci26hsj4wnw9g0mh4vrn0cg986cpcpx169rvw6v6rbnjxq718bq"))))
+         "1hsycy1warjs5ffn2p3nhv455a56svwy3x5605zh7q9qh200kqk4"))))
     (properties
      `((upstream-name . "PerformanceAnalytics")))
     (build-system r-build-system)
@@ -13976,7 +13976,7 @@ models.")
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-quadprog r-xts r-zoo))
-    (native-inputs (list r-hmisc r-r-rsp))
+    (native-inputs (list r-r-rsp r-tinytest))
     (home-page "https://r-forge.r-project.org/projects/returnanalytics/")
     (synopsis "Econometric tools for performance and risk analysis")
     (description "This is a collection of econometric functions for
