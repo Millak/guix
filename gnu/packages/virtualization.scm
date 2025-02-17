@@ -1676,14 +1676,14 @@ three libraries:
 (define-public python-libvirt
   (package
     (name "python-libvirt")
-    (version "10.6.0")
+    (version "11.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/python/libvirt-python-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1r3rvkgnc6j813mcdr7fdfnxx58imzl16azjkg54yy2gfayrq9g4"))))
+        (base32 "1y26104zgylz0v9d6xc0bm6m13is94shn9dlhjycaf347jjjbs6f"))))
     (build-system pyproject-build-system)
     (inputs
      (list libvirt))
