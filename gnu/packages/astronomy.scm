@@ -4478,13 +4478,13 @@ Carlo.")
 (define-public python-ndcube
   (package
     (name "python-ndcube")
-    (version "2.3.0")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ndcube" version))
        (sha256
-        (base32 "1pza5g38gn941dwy8yahkd37lb7z80czs1yj38xhn2cf0s69779h"))))
+        (base32 "0hf261l36jxmd0r8sh2vyxaapv8gcdmnnv82k0hqvq6wh1qp5ksv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4526,7 +4526,7 @@ Carlo.")
            python-pytest-xdist
            python-scipy
            python-setuptools
-           python-setuptools-scm
+           python-setuptools-scm-next
            python-sunpy
            python-wheel))
     (home-page "https://docs.sunpy.org/projects/ndcube/")
