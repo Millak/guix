@@ -5900,6 +5900,30 @@ cross-platform graphical user interface toolkit} widget.")
     ;; Any version of the GPL.
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-tmvtnorm
+  (package
+    (name "r-tmvtnorm")
+    (version "1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tmvtnorm" version))
+       (sha256
+        (base32 "1fhvisddn3x4li2q12c3hss0cj735c0iq32c9cw646ni619jr6rd"))))
+    (properties `((upstream-name . "tmvtnorm")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-gmm r-matrix r-mvtnorm))
+    (native-inputs (list gfortran))
+    (home-page "https://www.r-project.org")
+    (synopsis "Truncated multivariate normal and Student t distribution")
+    (description
+     "This is a package for random number generation for the truncated
+multivariate normal and Student t distribution.  It computes probabilities,
+quantiles and densities, including one-dimensional and bivariate marginal
+densities.  It computes first and second moments (i.e. mean and covariance
+matrix) for the double-truncated multinormal case.")
+    (license license:gpl2+)))
+
 (define-public r-rvest
   (package
     (name "r-rvest")
