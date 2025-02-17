@@ -45887,14 +45887,14 @@ functionalities in strex.")
 (define-public r-readods
   (package
     (name "r-readods")
-    (version "2.3.1")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "readODS" version))
        (sha256
         (base32
-         "08mgpca2c0dmhcrgxlvjg5bp6kyzmfg3z5yyn5fzphrfq8gmgvlm"))))
+         "0xil9ysp4qfx6wvd0672mx043h7hw7qvspcp05sc676p0rw9jrrf"))))
     (properties `((upstream-name . "readODS")))
     (build-system r-build-system)
     (propagated-inputs
@@ -45905,7 +45905,7 @@ functionalities in strex.")
            r-tibble
            r-vctrs
            r-zip))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-readr r-spelling r-testthat r-withr))
     (home-page
      "https://cran.r-project.org/package=readODS")
     (synopsis "Read and Write ODS Files")
