@@ -10122,14 +10122,14 @@ functions subject to simple constraints.")
 (define-public r-bindr
   (package
     (name "r-bindr")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bindr" version))
        (sha256
         (base32
-         "1l05fpk2yql3jka321c0bdgx6mqq9pvfrg2844lbjfpbgjkmqy3w"))))
+         "16161y28wg40pwlvmildcgcwn5wx6hiyk8r79sd0r31w31h6q7sj"))))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
     (home-page "https://github.com/krlmlr/bindr")
