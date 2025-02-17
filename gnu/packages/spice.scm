@@ -195,7 +195,6 @@ which allows users to view a desktop computing environment.")
            vala))
     (inputs
      (list bash-minimal
-           cyrus-sasl
            glib-networking
            gobject-introspection
            json-glib
@@ -214,6 +213,7 @@ which allows users to view a desktop computing environment.")
            spice-protocol
            ;; These are required by the pkg-config files (needed for example
            ;; when building GNOME Boxes).
+           cyrus-sasl
            gtk+
            openssl-1.1
            opus
