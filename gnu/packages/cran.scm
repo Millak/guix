@@ -1822,16 +1822,21 @@ text annotations.")
 (define-public r-ggbreak
   (package
     (name "r-ggbreak")
-    (version "0.1.2")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggbreak" version))
        (sha256
-        (base32 "14rx16v66xd0fjlywi89dq9dbw41zn7hpq14wgvf0178cxdp2fw4"))))
+        (base32 "0paqjx3jlnnwgy7iaaqlslcmngcdprwf1pxknazcj2v91yal40v8"))))
     (properties `((upstream-name . "ggbreak")))
     (build-system r-build-system)
-    (propagated-inputs (list r-aplot r-ggfun r-ggplot2 r-ggplotify r-rlang))
+    (propagated-inputs (list r-aplot
+                             r-ggfun
+                             r-ggplot2
+                             r-ggplotify
+                             r-rlang
+                             r-yulab-utils))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/YuLab-SMU/ggbreak")
     (synopsis "Set axis break for ggplot2")
