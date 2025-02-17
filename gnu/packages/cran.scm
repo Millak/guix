@@ -24282,6 +24282,30 @@ strength when each predictor enters the active set of regularization path for
 the first time as the statistic.")
     (license license:gpl3)))
 
+(define-public r-splines2
+  (package
+    (name "r-splines2")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "splines2" version))
+       (sha256
+        (base32 "1p0xl3k33b539j6fifxaack956z3p4yfvhglcpvral315p8pnzn2"))))
+    (properties `((upstream-name . "splines2")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcpparmadillo))
+    (native-inputs (list r-knitr r-tinytest))
+    (home-page "https://wwenjie.org/splines2")
+    (synopsis "Regression spline functions and classes")
+    (description
+     "This package constructs basis functions of B-splines, M-splines,
+I-splines, convex splines (C-splines), periodic splines, natural cubic
+splines, generalized Bernstein polynomials, their derivatives, and
+integrals (except C-splines) by closed-form recursive formulas.  It also
+contains a C++ head-only library integrated with Rcpp.")
+    (license license:gpl3+)))
+
 (define-public r-splitstackshape
   (package
     (name "r-splitstackshape")
