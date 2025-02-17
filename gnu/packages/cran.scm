@@ -29195,9 +29195,11 @@ tessellation.")
        (sha256
         (base32
          "12rlkspg0zavda6jfwcah7gm9fh4x13720m4gvy4xndfm5gxswxr"))))
-    (properties `((upstream-name . "wk")))
+    (properties
+     '((upstream-name . "wk")
+       (updater-extra-native-inputs . ("r-tibble" "r-vctrs"))))
     (build-system r-build-system)
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-tibble r-vctrs))
     (home-page "https://paleolimbot.github.io/wk/")
     (synopsis "Lightweight well-known geometry parsing")
     (description
