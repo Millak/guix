@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Jelle Licht <jlicht@fsfe.org>
+;;; Copyright © 2024 Daniel Khodabakhsh <d.khodabakhsh@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,14 +25,14 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages node-xyz)
-  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages python)
   #:use-module (gnu packages web)
+  #:use-module (guix build-system node)
   #:use-module (guix gexp)
-  #:use-module (guix packages)
   #:use-module (guix git-download)
-  #:use-module (guix build-system node))
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix packages))
 
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
@@ -69,19 +70,17 @@
              ;; it would try to use the build environment and would block the
              ;; automatic building by other packages making use of node-acorn.
              ;; TODO: Add utility function
-             (with-atomic-json-file-replacement "package.json"
-               (match-lambda
-                 (('@ . pkg-meta-alist)
-                  (cons '@ (map (match-lambda
-                                  (("scripts" @ . scripts-alist)
-                                   `("scripts" @ ,@(filter (match-lambda
-                                                             (("prepare" . _)
-                                                              #f)
-                                                             (_
-                                                              #t))
-                                                           scripts-alist)))
-                                  (other other))
-                                pkg-meta-alist)))))))
+             (with-atomic-json-file-replacement (lambda (pkg-meta-alist)
+               (map
+                 (match-lambda
+                   (("scripts" . scripts-alist)
+                     (cons "scripts" (filter
+                       (match-lambda
+                         (("prepare" . _) #f)
+                         (_ #t))
+                       scripts-alist)))
+                   (other other))
+                 pkg-meta-alist)))))
          (replace 'build
            (lambda* (#:key inputs native-inputs #:allow-other-keys)
              (let ((esbuild (search-input-file (or native-inputs inputs)
@@ -158,23 +157,17 @@ architecture supporting plugins.")
            (lambda args
              (define new-test-script
                "echo stopping after pretest on Guix")
-             (with-atomic-json-file-replacement "package.json"
-               (match-lambda
-                 (('@ . pkg-meta-alist)
-                  (cons
-                   '@
-                   (map (match-lambda
-                          (("scripts" '@ . scripts-alist)
-                           `("scripts" @ ,@(map (match-lambda
-                                                  (("test" . _)
-                                                   (cons "test"
-                                                         new-test-script))
-                                                  (other
-                                                   other))
-                                                scripts-alist)))
-                          (other
-                           other))
-                        pkg-meta-alist))))))))))
+             (with-atomic-json-file-replacement (lambda (pkg-meta-alist)
+               (map
+                 (match-lambda
+                   (("scripts" . scripts-alist)
+                     (cons "scripts" (map
+                       (match-lambda
+                         (("test" . _) (cons "test" new-test-script))
+                         (other other))
+                       scripts-alist)))
+                   (other other))
+                 pkg-meta-alist))))))))
     (home-page "https://github.com/nodejs/node-addon-api")
     (synopsis "Node.js API (Node-API) header-only C++ wrappers")
     (description "This module contains header-only C++ wrapper classes which
@@ -1223,22 +1216,19 @@ it to make a new binding for a different platform or underling technology.")))
                                     "node-abi"))))
          (add-after 'chdir 'avoid-prebuild-install
            (lambda args
-             (with-atomic-json-file-replacement "package.json"
-               (match-lambda
-                 (('@ . pkg-meta-alist)
-                  (cons '@ (map (match-lambda
-                                  (("scripts" @ . scripts-alist)
-                                   `("scripts" @ ,@(filter (match-lambda
-                                                             (("install" . _)
-                                                              #f)
-                                                             (_
-                                                              #t))
-                                                           scripts-alist)))
-                                  (("gypfile" . _)
-                                   '("gypfile" . #f))
-                                  (other
-                                   other))
-                                pkg-meta-alist))))))))
+             (with-atomic-json-file-replacement (lambda (pkg-meta-alist)
+               (map
+                 (match-lambda
+                   (("scripts" . scripts-alist)
+                     (cons "scripts" (filter
+                       (match-lambda
+                         (("install" . _) #f)
+                         (_ #t))
+                       scripts-alist)))
+                   (("gypfile" . _)
+                     (cons "gypfile" #f))
+                   (other other))
+                 pkg-meta-alist))))))
        #:tests? #f))
     (synopsis "Abstract base class for Node SerialPort bindings")
     (description "Node SerialPort is a modular suite of Node.js packages for
@@ -1524,39 +1514,33 @@ connection.")))
              (substitute* ".npmignore"
                (("lib/binding")
                 "#lib/binding # <- patched for Guix"))
-             (with-atomic-json-file-replacement "package.json"
-               (match-lambda
-                 (('@ . pkg-meta-alist)
-                  (match (assoc-ref pkg-meta-alist "binary")
-                    (('@ . binary-alist)
-                     ;; When it builds from source, node-pre-gyp supplies
-                     ;; module_name and module_path based on the entries under
-                     ;; "binary" from "package.json", so this package's
-                     ;; "binding.gyp" doesn't define them. Thus, we also need
-                     ;; to supply them. The GYP_DEFINES environment variable
-                     ;; turns out to be the easiest way to make sure they are
-                     ;; propagated from npm to node-gyp to gyp.
-                     (setenv "GYP_DEFINES"
-                             (string-append
-                              "module_name="
-                              (assoc-ref binary-alist "module_name")
-                              " "
-                              "module_path="
-                              (assoc-ref binary-alist "module_path")))))
-                  ;; We need to remove the install script from "package.json",
-                  ;; as it would try to use node-pre-gyp and would block the
-                  ;; automatic building performed by `npm install`.
-                  (cons '@ (map (match-lambda
-                                  (("scripts" @ . scripts-alist)
-                                   `("scripts" @ ,@(filter (match-lambda
-                                                             (("install" . _)
-                                                              #f)
-                                                             (_
-                                                              #t))
-                                                           scripts-alist)))
-                                  (other
-                                   other))
-                                pkg-meta-alist))))))))))
+             (with-atomic-json-file-replacement (lambda (pkg-meta-alist)
+               (let ((binary-alist (assoc-ref pkg-meta-alist "binary")))
+                 ;; When it builds from source, node-pre-gyp supplies
+                 ;; module_name and module_path based on the entries under
+                 ;; "binary" from "package.json", so this package's
+                 ;; "binding.gyp" doesn't define them. Thus, we also need
+                 ;; to supply them. The GYP_DEFINES environment variable
+                 ;; turns out to be the easiest way to make sure they are
+                 ;; propagated from npm to node-gyp to gyp.
+                 (setenv "GYP_DEFINES" (string-append
+                   "module_name="
+                   (assoc-ref binary-alist "module_name")
+                   " module_path="
+                   (assoc-ref binary-alist "module_path"))))
+               ;; We need to remove the install script from "package.json",
+               ;; as it would try to use node-pre-gyp and would block the
+               ;; automatic building performed by `npm install`.
+               (map
+                 (match-lambda
+                   (("scripts" . scripts-alist)
+                     (cons "scripts" (filter
+                       (match-lambda
+                         (("install" . _) #f)
+                         (_ #t))
+                       scripts-alist)))
+                   (other other))
+                 pkg-meta-alist))))))))
     (home-page "https://github.com/mapbox/node-sqlite3")
     (synopsis "Node.js bindings for SQLite3")
     (description

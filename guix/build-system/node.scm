@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2024 Daniel Khodabakhsh <d.khodabakhsh@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,7 +37,10 @@
 (define %node-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build node-build-system)
-    (guix build json)
+    (json)
+    (json builder)
+    (json parser)
+    (json record)
     ,@%default-gnu-imported-modules))
 
 (define (default-node)
