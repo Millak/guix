@@ -4686,7 +4686,7 @@ National Human Genome Research Institute.  The AnVIL package provides end-user
 and developer functionality.  AnVIL provides fast binary package installation,
 utilities for working with Terra/AnVIL table and data resources, and
 convenient functions for file movement to and from Google cloud storage.  For
-developers, AnVIL provides programatic access to the Terra, Leonardo, Rawls,
+developers, AnVIL provides programmatic access to the Terra, Leonardo, Rawls,
 Dockstore, and Gen3 RESTful programming interface, including helper functions
 to transform JSON responses to formats more amenable to manipulation in R.")
     (license license:artistic2.0)))
@@ -9686,7 +9686,7 @@ manner.")
      "This package provides a client for the gypsum REST
 API (https://gypsum.artifactdb.com), a cloud-based file store in the
 @code{ArtifactDB} ecosystem.  This package provides functions for uploads,
-downloads, and various adminstrative and management tasks.  Check out the
+downloads, and various administrative and management tasks.  Check out the
 documentation at @url{https://github.com/ArtifactDB/gypsum-worker} for more
 details.")
     (license license:expat)))
@@ -10773,7 +10773,7 @@ It has function interfaces for:
      "Representing nucleotide modifications in a nucleotide sequence is
 usually done via special characters from a number of sources.  This represents
 a challenge to work with in R and the Biostrings package.  The Modstrings
-package implements this functionallity for RNA and DNA sequences containing
+package implements this functionality for RNA and DNA sequences containing
 modified nucleotides by translating the character internally in order to work
 with the infrastructure of the Biostrings package.  For this the
 @code{ModRNAString} and @code{ModDNAString} classes and derivates and
@@ -18014,7 +18014,7 @@ enrichment of genomic signals on specific target regions.  This type of
 heatmap is just a normal heatmap but with some special settings, with the
 functionality of @code{ComplexHeatmap}, it would be much easier to customize
 the heatmap as well as concatenating to a list of heatmaps to show
-correspondance between different data sources.")
+correspondence between different data sources.")
     (license license:expat)))
 
 (define-public r-enrichplot
@@ -22393,7 +22393,7 @@ selection and assumption evaluations into the analysis using @acronym{EBP,
 empirical Bayes probability} estimates obtained by Grenander density
 estimation.  For instance, for 3-group comparison analysis, Hybrid Multiple
 testing considers EBPs as weighted EBPs between F-test and H-test with EBPs
-from Shapiro Wilk test of normality as weigth.  Instead of just using EBPs
+from Shapiro Wilk test of normality as weight.  Instead of just using EBPs
 from F-test only or using H-test only, this methodology combines both types of
 EBPs through EBPs from Shapiro Wilk test of normality.  This methodology uses
 then the law of total EBPs.")
@@ -24584,7 +24584,7 @@ virtual class and two concrete subclasses: @code{COO_SparseArray} and
 the nonzero multidimensional data, the \"COO layout\" and the \"SVT layout\",
 respectively.  @code{SVT_SparseArray} objects mimic as much as possible the
 behavior of ordinary matrix and array objects in base R.  In particular, they
-suppport most of the \"standard matrix and array API\" defined in base R and
+support most of the \"standard matrix and array API\" defined in base R and
 in the @code{matrixStats} package from CRAN.")
     (license license:artistic2.0)))
 
@@ -25997,7 +25997,7 @@ pre-specified groups of cells.")
     (description
      "This package implements a method that aims to identify enhancers on
 large scale.  The STARR-seq data consists of two sequencing datasets of the
-same targets in a specifc genome.  The input sequences show which regions
+same targets in a specific genome.  The input sequences show which regions
 where tested for enhancers.  Significant enriched peaks i.e. a lot more
 sequences in one region than in the input where enhancers in the genomic DNA
 are, can be identified.  So the approach pursued is to call peak every region
@@ -26174,7 +26174,7 @@ features such as gene expression or cell type composition can be imputed.")
      "The bayNorm package is used for normalizing single-cell RNA-seq data.
 The main function is @code{bayNorm}, which is a wrapper function for gene
 specific prior parameter estimation and normalization.  The input is a matrix
-of scRNA-seq data with rows different genes and coloums different cells.  The
+of scRNA-seq data with rows different genes and columns different cells.  The
 output is either point estimates from posterior (2D array) or samples from
 posterior (3D array).")
     (license license:gpl2+)))
