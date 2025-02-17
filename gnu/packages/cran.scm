@@ -22723,13 +22723,13 @@ efficient computation even with very large data sets.")
 (define-public r-sjplot
   (package
     (name "r-sjplot")
-    (version "2.8.16")
+    (version "2.8.17")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sjPlot" version))
        (sha256
-        (base32 "093nmn1gq8i4kr5nhwby883rxpdiyb959shqvfnvplwcnnv762ji"))))
+        (base32 "0rai02bnqj5q829f35vw1z779cyw4rx84w6ngv7mpiagw3nb6agj"))))
     (properties `((upstream-name . "sjPlot")))
     (build-system r-build-system)
     (propagated-inputs
@@ -22751,7 +22751,12 @@ efficient computation even with very large data sets.")
            r-sjstats
            r-tidyr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-glmmtmb
+           r-haven
+           r-knitr
+           r-lme4
+           r-rstanarm
+           r-testthat))
     (home-page "https://strengejacke.github.io/sjPlot/")
     (synopsis "Data visualization for statistics in social science")
     (description
