@@ -6185,6 +6185,17 @@ matrix) for the double-truncated multinormal case.")
        (sha256
         (base32 "19lw0jk8d8x88z247hz761gwbx9f5n3yqnv63mn7pkwl55mpqw3x"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; These tests require Internet access.
+             (delete-file "tests/testthat/test-session.R")
+             ;; This fails with "Error: object 's' not found" because a
+             ;; session could not be created.
+             (delete-file "tests/testthat/test-rename.R"))))))
     (propagated-inputs
      (list r-cli
            r-glue
