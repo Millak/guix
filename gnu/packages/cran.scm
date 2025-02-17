@@ -40327,7 +40327,10 @@ inference diagnostics.
        (sha256
         (base32
          "1gl1pdna356mfrf9816rqx8q7a3h3xzkn75bjd2zylgqw49ss88p"))))
-    (properties `((upstream-name . "brms")))
+    (properties
+     '((upstream-name . "brms")
+       (updater-extra-native-inputs
+        . ("r-extradistr" "r-mnormt" "r-rtdists" "r-rwiener" "r-splines2"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -40358,11 +40361,16 @@ inference diagnostics.
            r-rlang
            r-rstan
            r-rstantools))
-    (native-inputs (list r-knitr r-r-rsp r-testthat))
-    (home-page
-     "https://github.com/paul-buerkner/brms")
-    (synopsis
-     "Bayesian Regression Models using 'Stan'")
+    (native-inputs (list r-extradistr
+                         r-knitr
+                         r-mnormt
+                         r-r-rsp
+                         r-rtdists
+                         r-rwiener
+                         r-splines2
+                         r-testthat))
+    (home-page "https://github.com/paul-buerkner/brms")
+    (synopsis "Bayesian regression models using Stan")
     (description
      "Fit Bayesian generalized (non-)linear multivariate multilevel models
 using @emph{Stan} for full Bayesian inference.  A wide range of distributions
