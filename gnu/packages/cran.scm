@@ -43106,26 +43106,21 @@ models without involving a test set.")
 (define-public r-tidypredict
   (package
     (name "r-tidypredict")
-    (version "0.5")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidypredict" version))
        (sha256
         (base32
-         "1h05gm6fwjh6v9qqi9jbislf008h7d50k003qymb0x9gz6p75qgy"))))
-    (properties `((upstream-name . "tidypredict")))
+         "0c33g58glc4j781fbvykgw3qbxlf5wc8x6gijqfcnyk42qkz9iib"))))
+    (properties
+     '((upstream-name . "tidypredict")
+       (updater-extra-native-inputs . ("r-mlbench"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Two tests require r-earth.
-             (delete-file "tests/testthat/test-earth.R"))))))
     (propagated-inputs
-     (list r-dplyr
+     (list r-cli
+           r-dplyr
            r-generics
            r-knitr
            r-purrr
@@ -43135,12 +43130,16 @@ models without involving a test set.")
     (native-inputs
      (list r-cubist
            r-dbplyr
+           r-earth
            r-knitr
            r-mlbench
            r-parsnip
            r-partykit
+           r-randomforest
            r-ranger
-           r-testthat))
+           r-testthat
+           r-xgboost
+           r-yaml))
     (home-page "https://tidypredict.tidymodels.org")
     (synopsis "Run predictions inside the database")
     (description
