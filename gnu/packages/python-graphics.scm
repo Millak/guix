@@ -100,6 +100,41 @@
 ModernGL on multiple platforms.")
       (license license:expat))))
 
+(define-public python-glfw
+  (package
+    (name "python-glfw")
+    (version "2.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "glfw" version))
+       (sha256
+        (base32 "1w36jvn6fx8p7irhwj6bbl67m2id3s0227b3w7bgw9hbicr0vsch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests provided
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-lib-paths
+            (lambda _
+              (substitute* "glfw/library.py"
+                (("_get_library_search_paths\\(\\), ")
+                 (format #f "[ '~a/lib' ],"
+                         #$(this-package-input "glfw")))))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list glfw))
+    (home-page "https://github.com/FlorianRhiem/pyGLFW")
+    (synopsis "Python bindings for GLFW")
+    (description
+     "This package provides Python bindings for @url{http://www.glfw.org/,
+GLFW} OpenGL application development library.")
+    (license license:expat)))
+
 (define-public python-pyglet
   (package
     (name "python-pyglet")
