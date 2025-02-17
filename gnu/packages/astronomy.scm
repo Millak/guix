@@ -3566,12 +3566,6 @@ but has evolved to support other missions as well.")
                     " and not specreduce.calibration_data.get_reference_file_path"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pypojrect-toml
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; TypeError: Configuration.__init__() got an unexpected
-                ;; keyword argument 'version_file'
-                (("version_file = .*") ""))))
          (add-before 'check 'set-home
            (lambda _
              ;; Relax matplotlib warning: ... because the default path
@@ -3581,7 +3575,7 @@ but has evolved to support other missions as well.")
     (native-inputs
      (list python-photutils
            python-pytest-astropy
-           python-setuptools-scm
+           python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
      (list python-astropy
