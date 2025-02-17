@@ -506,9 +506,9 @@ with a @code{ncurses} user interface similar to @code{alpine} and
 @code{pine}.")
     (license license:expat)))
 
-(define-public go-gitlab.com-shackra-goimapnotify
+(define-public goimapnotify
   (package
-    (name "go-gitlab.com-shackra-goimapnotify")
+    (name "goimapnotify")
     (version "2.4")
     (source (origin
               (method git-fetch)
@@ -535,6 +535,9 @@ with a @code{ncurses} user interface similar to @code{alpine} and
 messages) using IDLE.  Implemented in Go.")
     (home-page "https://gitlab.com/shackra/goimapnotify")
     (license license:gpl3+)))
+
+(define-public go-gitlab.com-shackra-goimapnotify
+  (deprecated-package "go-gitlab.com-shackra-goimapnotify" goimapnotify))
 
 (define-public guile2.2-mailutils
   (package
