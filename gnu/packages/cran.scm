@@ -19869,13 +19869,13 @@ cross-validation.")
 (define-public r-blavaan
   (package
     (name "r-blavaan")
-    (version "0.5-6")
+    (version "0.5-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "blavaan" version))
        (sha256
-        (base32 "0lbvsga6ba4n05xnzahmj2dw3jjpjhkg93p9kadb656wxffkq7qy"))))
+        (base32 "00pxi5zj68796b3qkil3w66z446ib61xl2l5v1qia1mc9fznlzri"))))
     (properties `((upstream-name . "blavaan")))
     (build-system r-build-system)
     (propagated-inputs (list r-bayesplot
