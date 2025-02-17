@@ -12170,14 +12170,14 @@ these progress updates.")
 (define-public r-lava
   (package
     (name "r-lava")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lava" version))
        (sha256
         (base32
-         "0zz8hzmqd4qa14y52c8gw9hr6gn0d7srffrddxrmhb01rbp9dfcd"))))
+         "10hkh96ms0c3jcwcdkqgficy2cx1qgz1kvq24b0ihgfhv946d7qq"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -12187,7 +12187,15 @@ these progress updates.")
            r-squarem
            r-survival))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-future
+           r-geepack
+           r-knitr
+           r-lme4
+           r-mass
+           r-nlme
+           r-polycor
+           r-rmarkdown
+           r-testthat))
     (home-page "https://github.com/kkholst/lava")
     (synopsis "Latent variable models")
     (description
