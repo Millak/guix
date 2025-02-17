@@ -7494,14 +7494,14 @@ rules and utility functions for adaptive GH quadrature.")
 (define-public r-rstpm2
   (package
     (name "r-rstpm2")
-    (version "1.6.6")
+    (version "1.6.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rstpm2" version))
        (sha256
         (base32
-         "05d7f1q6k25m6hiv9mwndfy4m2s1b6z19xjay2070hy22jmg6rya"))))
+         "1rxzma2k7zhx57x0kjgznky6wn4686sz5182fnk33wls76ck8p2s"))))
     (properties `((upstream-name . "rstpm2")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7514,7 +7514,7 @@ rules and utility functions for adaptive GH quadrature.")
            r-rcpparmadillo
            r-survival))
     (native-inputs
-     (list gfortran r-ggplot2 r-testthat))
+     (list gfortran r-ggplot2 r-runit r-testthat))
     (home-page "https://github.com/mclements/rstpm2")
     (synopsis "Link-based survival models")
     (description
