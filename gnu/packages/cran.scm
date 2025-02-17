@@ -23688,18 +23688,18 @@ address a bug.")
 (define-public r-rcppalgos
   (package
     (name "r-rcppalgos")
-    (version "2.8.5")
+    (version "2.9.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppAlgos" version))
               (sha256
                (base32
-                "0ww5p6gwhk8bsmk8fqmnypvgmfkgwf0jjasifzz3appwkiql2kyf"))))
+                "17qaadi0xlcgwhim3bjjyk3g946xyqpbi0wljnv2k4lqarbkvsfd"))))
     (properties `((upstream-name . "RcppAlgos")))
     (build-system r-build-system)
     (inputs (list gmp))
     (propagated-inputs (list r-cpp11 r-gmp))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-partitions r-testthat))
     (home-page "https://github.com/jwood000/RcppAlgos")
     (synopsis
      "High performance tools for combinatorics and computational mathematics")
