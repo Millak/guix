@@ -37193,18 +37193,19 @@ statistical shape analysis and archetypal analysis.")
 (define-public r-anytime
   (package
     (name "r-anytime")
-    (version "0.3.9")
+    (version "0.3.11")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "anytime" version))
               (sha256
                (base32
-                "0jjpqynai5nd7mfy1smb44356f3d5bmpxhs1i9x9jw5c959c35hh"))))
+                "1qvb568x99cy68855zsv28llhky1badz34gnp6mdkvz1998qsl7z"))))
     (properties `((upstream-name . "anytime")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh
            r-rcpp))
+    (native-inputs (list r-tinytest))
     (home-page "https://dirk.eddelbuettel.com/code/anytime.html")
     (synopsis "Converter of input to POSIXct or Date")
     (description
