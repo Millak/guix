@@ -12446,8 +12446,8 @@ ruby with support for changing priority using pairing heap data structure")
        (method git-fetch)
        ;; Fetch from github so tests are included.
        (uri (git-reference
-              (url "https://github.com/rubyworks/ae")
-              (commit version)))
+             (url "https://github.com/rubyworks/ae")
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
@@ -12457,7 +12457,9 @@ ruby with support for changing priority using pairing heap data structure")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _ (invoke "qed")))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "qed"))))
          (add-before 'validate-runpath 'replace-broken-symlink
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
