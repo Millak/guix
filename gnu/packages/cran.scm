@@ -44888,13 +44888,13 @@ installation and loading of the core mlr3 packages.")
 (define-public r-mlr3viz
   (package
     (name "r-mlr3viz")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3viz" version))
        (sha256
-        (base32 "0xjw59lv6bwq9ww3a3lm4lmxjqrgppr4wpip0p7f6lyr3jpbih51"))))
+        (base32 "0d0vqg1jlg86fspmfx120jm1fkcjr3f5s93chbgcxb1gpz46pf7f"))))
     (properties `((upstream-name . "mlr3viz")))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate
@@ -44903,7 +44903,16 @@ installation and loading of the core mlr3 packages.")
                              r-mlr3misc
                              r-scales
                              r-viridis))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-bbotk
+                         r-lgr
+                         r-mlr3
+                         r-mlr3filters
+                         r-mlr3fselect
+                         r-mlr3tuning
+                         r-paradox
+                         r-precrec
+                         r-testthat
+                         r-vdiffr))
     (home-page "https://mlr3viz.mlr-org.com")
     (synopsis "Visualizations for mlr3")
     (description
