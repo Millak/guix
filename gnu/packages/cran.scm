@@ -22661,20 +22661,35 @@ results using @code{ggplot2}.")
 (define-public r-effectsize
   (package
     (name "r-effectsize")
-    (version "0.8.9")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "effectsize" version))
        (sha256
         (base32
-         "12qzz3zl5yn28ybmmryhmi29zwzwrfgqhb6wm7aqg78id463bjz9"))))
+         "1r9kx7dp49db43c6r6n7n21b7hsiqv5mvnwpxpmdxvxfcjgbg41z"))))
     (properties `((upstream-name . "effectsize")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bayestestr r-datawizard r-insight r-parameters r-performance))
     (native-inputs
-     (list r-boot r-knitr r-testthat))
+     (list r-afex
+           r-bayesfactor
+           r-car
+           r-correlation
+           r-knitr
+           r-lavaan
+           r-lme4
+           ;r-lmeinfo
+           r-lmertest
+           r-mgcv
+           r-nlme
+           r-parsnip
+           ;r-propcis
+           r-rms
+           r-rstanarm
+           r-testthat))
     (home-page "https://github.com/easystats/effectsize")
     (synopsis "Indices of effect size and standardized parameters")
     (description
