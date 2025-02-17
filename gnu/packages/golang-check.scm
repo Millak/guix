@@ -175,7 +175,7 @@ github.com/sergi/go-diff, mainly for diffing strings in tests.")
     (home-page "https://github.com/bitfield/gotestdox")
     (synopsis "Format Go test results as readable documentation")
     (description
-     "This packages implements a functionality to run tests and report the
+     "This package implements a functionality to run tests and report the
 results, converting test names WrittenInCamelCase into ordinary sentences.")
     (license license:expat)))
 

@@ -14107,7 +14107,7 @@ computing.")
            python-wheel))
     (home-page "https://gitlab.linss.com/open-source/python/uri-template")
     (synopsis "RFC 6570 URI Template Processor")
-    (description "This packages implements URI Template expansion in strict
+    (description "This package implements URI Template expansion in strict
 adherence to RFC 6570, but adds a few extensions.")
     (license license:expat)))
 
@@ -26665,7 +26665,7 @@ functionality removed from @code{packaging}.")
     (home-page "https://github.com/benknight/hue-python-rgb-converter")
     (synopsis "RGB conversion tool in Python")
     (description
-     "This packages implements funtionality of RGB/CIE1931 'xy' gammuts
+     "This package implements functionality of RGB/CIE1931 'xy' gammuts
 convertion: Gamut A, B, and C.")
     (license license:expat)))
 

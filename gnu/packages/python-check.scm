@@ -1212,7 +1212,7 @@ someone to import them in their actual tests to use them.")
     (home-page "https://github.com/pytest-dev/pytest-html")
     (synopsis "Pytest plugin for generating HTML reports")
     (description
-     "This packages provides a pytest plugin for generating HTML reports.")
+     "This package provides a pytest plugin for generating HTML reports.")
     (license license:mpl2.0)))
 
 (define-public python-pytest-metadata
