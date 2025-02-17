@@ -11813,14 +11813,14 @@ provides the R language without the environment.")
 (define-public r-fitdistrplus
   (package
     (name "r-fitdistrplus")
-    (version "1.2-1")
+    (version "1.2-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fitdistrplus" version))
        (sha256
         (base32
-         "0n25b3f92pghkavk4j9l25v1k6wjwkmpyvxslf05ixpzkmd23d38"))))
+         "1ms5cisbv7k5kyn79hk13wr9dmf23lzria84w5z9h2d70zgn0hfp"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -11835,7 +11835,12 @@ provides the R language without the environment.")
     (propagated-inputs
      (list r-mass r-rlang r-survival))
     (native-inputs
-     (list r-actuar r-knitr r-mc2d))
+     (list r-actuar
+           r-generalizedhyperbolic
+           r-ggplot2
+           r-knitr
+           r-mc2d
+           r-npsurv))
     (home-page "https://riskassessment.r-forge.r-project.org")
     (synopsis "Fitting a parametric distribution from data")
     (description
