@@ -3336,7 +3336,7 @@ end products of specific X-ray observatories.")
      (list python-requests
            python-wxpython))
     (home-page "https://siril.org/tutorials/pysiril/")
-    (synopsis "Acquisition files preparation software to proces with SiriL")
+    (synopsis "Acquisition files preparation software to process with SiriL")
     (description
      "SiriLic (SiriL's Interactif Companion) is a software for preparing
 acquisition files (raw, Biases, Flat and Dark) for processing with SiriL
@@ -6136,7 +6136,7 @@ well as ephemerides services
     (synopsis "Alternative fork of SEP library")
     (description
      "This package provides an alternative maintained fork of SEP python
-libary with bug fixtures.")
+library with bug fixtures.")
     (license (list license:expat license:lgpl3+ license:bsd-3))))
 
 (define-public python-suntime
@@ -7320,7 +7320,7 @@ large number of image formats.")
     (synopsis "SDP Processing Function Library")
     (description
      "This package provides a Square Kilometre Array (SKA) Science Data
-Processor (SDP) function libary for radio astronomy.")
+Processor (SDP) function library for radio astronomy.")
     (license license:bsd-3)))
 
 (define-public python-ska-sdp-func
@@ -7823,8 +7823,8 @@ manipulate images.")
     (home-page "https://webbpsf.readthedocs.io/en/stable/installation.html")
     (synopsis "JWST pupil shape, instrument throughputs, and aperture positions data files")
     (description
-     "This package contains FIT and CSV files requried for WebbPSF
-installation and distributed separatly from it.")
+     "This package contains FIT and CSV files required for WebbPSF
+installation and distributed separately from it.")
     (license license:bsd-3)))
 
 (define-public weightwatcher
