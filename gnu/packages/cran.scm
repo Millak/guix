@@ -23990,13 +23990,13 @@ simple multicore parallelism.")
 (define-public r-multiplex
   (package
     (name "r-multiplex")
-    (version "3.8-3")
+    (version "3.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "multiplex" version))
        (sha256
-        (base32 "0ninfd1gf7w2b97l8r7nbgnk8v8312qymfvqbzdarynlxz6qbdlv"))))
+        (base32 "1niqaq9y56j7ryy1p5pa6kify8a4v380hr1nrd69f1p6iqyr7nw9"))))
     (properties `((upstream-name . "multiplex")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
