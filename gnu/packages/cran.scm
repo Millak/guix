@@ -42718,14 +42718,14 @@ object sizes.")
 (define-public r-yardstick
   (package
     (name "r-yardstick")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "yardstick" version))
        (sha256
         (base32
-         "1l6s06sj9hpb20xndnmm8xim9c9h444w6g98b56i5whb11x37d18"))))
+         "0h7rq12v3vgwqhdy2qrq7bany4gfj1cajv6xqw631lw1qchgf80i"))))
     (properties `((upstream-name . "yardstick")))
     (build-system r-build-system)
     (propagated-inputs
@@ -42740,7 +42740,17 @@ object sizes.")
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr r-mosaic r-survival r-testthat r-tidyr))
+     (list r-caret
+           r-devtools
+           r-e1071
+           r-ggplot2
+           r-knitr
+           r-mlmetrics
+           r-proc
+           r-reticulate
+           r-survival
+           r-testthat
+           r-tidyr))
     (home-page "https://github.com/tidymodels/yardstick")
     (synopsis "Tidy characterizations of model performance")
     (description
