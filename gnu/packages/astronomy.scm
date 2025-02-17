@@ -2785,13 +2785,13 @@ across many files.")
 (define-public python-gwcs
   (package
     (name "python-gwcs")
-    (version "0.22.1")
+    (version "0.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gwcs" version))
        (sha256
-        (base32 "0lvab51ryfb4sjsnckmap7idh29as2mjngkyin4ngfy7hdzknvg9"))))
+        (base32 "0q3f2rnl4d1p98kypr1jfkajwih22sbx3smn492yf9dbj92bv1v3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
