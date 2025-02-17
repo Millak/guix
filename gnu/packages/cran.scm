@@ -31584,15 +31584,17 @@ colored by the number of neighboring points.  This is useful to visualize the
 (define-public r-arrow
   (package
     (name "r-arrow")
-    (version "18.1.0")
+    (version "18.1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "arrow" version))
        (sha256
         (base32
-         "1l74n1fvr346360kiblss6yr0sm5rghbzjxc5ypph0i1pfjxyz3b"))))
-    (properties `((upstream-name . "arrow")))
+         "00bnjhi190bz494a30m4ssbi1hrx62d1vfa8wajaqxxhs7jpdsl2"))))
+    (properties
+     `((upstream-name . "arrow")
+       (updater-ignored-native-inputs . ("r-duckdb"))))
     (build-system r-build-system)
     (arguments
      (list
