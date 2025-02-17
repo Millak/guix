@@ -1972,16 +1972,16 @@ demos.  It also acts as a nice screen locker.")
 (define-public xssproxy
   (package
     (name "xssproxy")
-    (version "1.0.0")
+    (version "1.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/timakro/xssproxy")
+                    (url "https://github.com/vincentbernat/xssproxy")
                     (commit (string-append "v" version))))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0c83wmipnsdnbihc5niyczs7jrkss2s8n6iwwjdia7hkjzbd0hl7"))))
+                "19i5npmbd2kbs96wp2bb79crlwkcf9n0n8cd4v1myvczb0iwbz1q"))))
     (build-system gnu-build-system)
     (arguments `(#:make-flags `("bindir=/bin"
                                 "man1dir=/share/man/man1"
@@ -2001,7 +2001,7 @@ freedesktop.org developers.  The inhibition of the screensaver is then
 controlled using the XScreenSaverSuspend function from the Xss (X11 Screen
 Saver extension) library.")
     (home-page "https://github.com/timakro/xssproxy")
-    (license license:gpl3+)))
+    (license license:expat)))
 
 (define-public xsel
   ;; The 1.2.0 release no longer compiles with GCC 8 and upper, see:
