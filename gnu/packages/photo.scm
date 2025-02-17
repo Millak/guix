@@ -588,7 +588,6 @@ photographic equipment.")
            curl
            dbus-glib
            exiv2
-           freeimage
            gmic                         ;optional, for HaldcLUT support
            graphicsmagick
            gsettings-desktop-schemas
@@ -606,7 +605,7 @@ photographic equipment.")
            libpng
            (librsvg-for-system)
            libsecret                    ;optional, for storing passwords
-           libsoup-minimal-2
+           libsoup-minimal-2            ;optional, for osm-gps-map
            libtiff
            libwebp                      ;optional, for WebP support
            libxml2
