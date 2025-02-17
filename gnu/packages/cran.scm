@@ -22151,20 +22151,24 @@ unbalanced datasets.")
 (define-public r-multcomp
   (package
     (name "r-multcomp")
-    (version "1.4-26")
+    (version "1.4-28")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "multcomp" version))
        (sha256
         (base32
-         "1v3979my2yzpqc5lrx7fy72765j2cw1giv4xlpwrr2zvmzgvn051"))))
+         "02m6bg64ys582dingsr0sfpdf5lnkz8rxvs3ybbdgqqns5cghd93"))))
     (build-system r-build-system)
     ;; Vignettes require r-coin, but r-coin depends on r-multcomp.
     (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-codetools r-mvtnorm r-sandwich r-survival r-th-data))
-    (native-inputs (list r-robustbase r-xtable))
+    (native-inputs (list r-foreign
+                         r-lme4
+                         r-mass
+                         r-robustbase
+                         r-xtable))
     (home-page "https://cran.r-project.org/web/packages/multcomp/")
     (synopsis "Simultaneous inference in general parametric models")
     (description
