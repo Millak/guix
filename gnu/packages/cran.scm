@@ -44992,13 +44992,13 @@ computational operations, add-on packages provide additional functionality.")
 (define-public r-mlr3learners
   (package
     (name "r-mlr3learners")
-    (version "0.8.0")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3learners" version))
               (sha256
                (base32
-                "0lzi7a1h853lw6fk8fz50j80qfxgip88kwdv31azcza6xls5i64z"))))
+                "195xjfi6b1zh9y2zbk6cvfd1vf28y0mcdaxhycalvrrz494jcyq0"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate
@@ -45007,7 +45007,7 @@ computational operations, add-on packages provide additional functionality.")
            r-mlr3misc
            r-paradox
            r-r6))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-lgr r-testthat r-xgboost))
     (home-page "https://mlr3learners.mlr-org.com/")
     (synopsis "Recommended Learners for @code{mlr3}")
     (description "@code{mlr3learners} extends @code{mlr3} and @code{mlr3proba}
