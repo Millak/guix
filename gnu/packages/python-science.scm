@@ -1049,13 +1049,13 @@ spheres, cubes, etc.")
 (define-public python-mpl-scatter-density
   (package
     (name "python-mpl-scatter-density")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "mpl-scatter-density" version))
+       (uri (pypi-uri "mpl_scatter_density" version))
        (sha256
-        (base32 "083n4xkwjmxvij9i1xhfnxz8vk39ay0baam4nf0khvcihw47bkna"))))
+        (base32 "0cynk1rk6k2xklgv69difphrz6id77x3xb58kbs4mc4q7z6bvfid"))))
     (build-system pyproject-build-system)
     (arguments
      (list
