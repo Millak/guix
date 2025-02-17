@@ -24978,13 +24978,13 @@ sparse vectors.")
 (define-public r-spatialreg
   (package
     (name "r-spatialreg")
-    (version "1.3-5")
+    (version "1.3-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatialreg" version))
        (sha256
-        (base32 "1i00gclgkkkvkhnhrnvc8r7666glch9zi3qcqcijlrfk48psmzpf"))))
+        (base32 "020jr120lapsrgyfsmfls4229spy1rn83096ipnhfp7pzdnfsib4"))))
     (properties `((upstream-name . "spatialreg")))
     (build-system r-build-system)
     (propagated-inputs (list r-boot
@@ -24997,7 +24997,7 @@ sparse vectors.")
                              r-sf
                              r-spdata
                              r-spdep))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-tinytest))
     (home-page "https://github.com/r-spatial/spatialreg/")
     (synopsis "Spatial regression analysis")
     (description
