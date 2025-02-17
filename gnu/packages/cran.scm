@@ -48741,9 +48741,12 @@ Monte Carlo approach implemented in JAGS.")
        (uri (cran-uri "logger" version))
        (sha256
         (base32 "1ph4al2ish2c3zpznr2zn7wg4hjn1bslywc1vv6smrxfcch3n90g"))))
-    (properties `((upstream-name . "logger")))
+    (properties
+     '((upstream-name . "logger")
+       (updater-extra-native-inputs
+        . ("r-devtools" "r-pander" "r-r-utils"))))
     (build-system r-build-system)
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-devtools r-knitr r-pander r-r-utils r-testthat))
     (home-page "https://daroczig.github.io/logger/")
     (synopsis "Lightweight and flexible logging utility")
     (description
