@@ -47868,20 +47868,20 @@ monitoring, Auto Scaling for automatically scaling resources, and more.")
 (define-public r-paws-networking
   (package
     (name "r-paws-networking")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.networking" version))
        (sha256
         (base32
-         "0mlpx5ydcdnwindf7rs6062xyams77xhlncmqhniyndlzh9lyq8x"))))
+         "137fc6cnkwnnfdq8d5g9p70grhcmaf451wi87ahn9ywlwhk1kcyc"))))
     (properties
-     `((upstream-name . "paws.networking")))
+     '((upstream-name . "paws.networking")
+       (updater-ignored-native-inputs . ("r-paws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-common))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/paws-r/paws")
     (synopsis "Amazon Web Services networking and content delivery services")
     (description
