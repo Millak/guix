@@ -106,6 +106,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rdf)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages sqlite)
@@ -5462,6 +5463,31 @@ package as it can only evaluate XPath expressions.  Also provided are
 convenience functions useful for using CSS selectors on XML nodes.  This
 package is a port of the Python package @code{cssselect}.")
     (license license:bsd-3)))
+
+(define-public r-redland
+  (package
+    (name "r-redland")
+    (version "1.0.17-18")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "redland" version))
+       (sha256
+        (base32 "183m1bvgj52w74383b5v6rfm7gn4izijixans1zdycqp68ibm6g9"))))
+    (properties `((upstream-name . "redland")))
+    (build-system r-build-system)
+    (inputs (list redland pcre2 zlib))
+    (propagated-inputs (list r-roxygen2))
+    (native-inputs (list r-knitr pkg-config r-spelling r-stringi r-testthat))
+    (home-page "https://cran.r-project.org/package=redland")
+    (synopsis "RDF library bindings in R")
+    (description
+     "This package provides methods to parse, query and serialize information
+stored in the @dfn{Resource Description Framework} (RDF).  This package
+supports RDF by implementing an R interface to the Redland RDF C library.  In
+brief, RDF provides a structured graph consisting of Statements composed of
+Subject, Predicate, and Object Nodes.")
+    (license license:asl2.0)))
 
 (define-public r-relations
   (package
