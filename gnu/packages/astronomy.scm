@@ -1717,13 +1717,13 @@ implementation of the ASDF Standard.")
 (define-public python-asdf-astropy
   (package
     (name "python-asdf-astropy")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf_astropy" version))
        (sha256
-        (base32 "0985bhmhnjzlf8n78r1i1dfhbvq167xqz0667kg3jm0l2177b0f9"))))
+        (base32 "1ir4c2mp6hbkkcry2q22sa2rxcs3ry3gpa4v9a1vsi89xr4a99as"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1734,8 +1734,7 @@ implementation of the ASDF Standard.")
           (add-before 'check 'set-home-env
             (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-coverage
-           python-h5py
+     (list python-h5py
            python-pandas
            python-pytest
            python-pytest-astropy
@@ -1746,6 +1745,7 @@ implementation of the ASDF Standard.")
     (propagated-inputs
      (list python-asdf
            python-asdf-coordinates-schemas
+           python-asdf-standard
            python-asdf-transform-schemas
            python-astropy
            python-numpy
