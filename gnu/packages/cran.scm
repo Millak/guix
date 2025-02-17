@@ -7399,17 +7399,17 @@ and vice-versa.")
 (define-public r-fastdummies
   (package
     (name "r-fastdummies")
-    (version "1.7.4")
+    (version "1.7.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "fastDummies" version))
               (sha256
                (base32
-                "026xc1wrzgwyhs1h1bdn7yy56mnpr5rr9bkwljpzmhzgcx5lv44m"))))
+                "0jmvb9j4cywq5nff7997qhv8hl8zw187c9pgdh0i1v9pmy31jymq"))))
     (properties `((upstream-name . "fastDummies")))
     (build-system r-build-system)
     (propagated-inputs (list r-data-table r-stringr r-tibble))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-spelling r-testthat))
     (home-page "https://github.com/jacobkap/fastDummies")
     (synopsis "Create dummy columns and rows from categorical variables")
     (description
