@@ -4898,17 +4898,17 @@ naming conventions as distance methods of existing R packages.")
 (define-public r-paramhelpers
   (package
     (name "r-paramhelpers")
-    (version "1.14.1")
+    (version "1.14.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ParamHelpers" version))
               (sha256
                (base32
-                "088sl3az4ysq8cyw82brdn9xm5yy7rqskxih462d1m5hi62gyl04"))))
+                "0x938sblzzfn7m19xcc6v9z1cpqwg0xngshnyc4hph9gs6r5js5b"))))
     (properties `((upstream-name . "ParamHelpers")))
     (build-system r-build-system)
     (propagated-inputs (list r-backports r-bbmisc r-checkmate r-fastmatch))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-ggplot2 r-irace r-lhs r-testthat))
     (home-page "https://paramhelpers.mlr-org.com")
     (synopsis
      "Helpers for parameters in black-box optimization, tuning, and machine learning")
