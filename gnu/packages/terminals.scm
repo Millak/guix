@@ -42,7 +42,7 @@
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -897,7 +897,7 @@ a server/client mode.")
 (define-public havoc
   (package
     (name "havoc")
-    (version "0.4.0")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -906,7 +906,7 @@ a server/client mode.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "052nfli8x4kvly2iwbk0w3i8gk82bz2p8i0ygkwxhy03m5187lnc"))))
+                "089maf2xgh9halrccdj6p00l4q573x4f6a29655xb9h3a815s9k0"))))
     (build-system gnu-build-system)
     (arguments
      (list
