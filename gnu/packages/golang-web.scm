@@ -6190,7 +6190,7 @@ gzip the response body, for clients which support it.")
 (define-public go-github-com-opentracing-contrib-go-stdlib
   (package
     (name "go-github-com-opentracing-contrib-go-stdlib")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -6199,20 +6199,12 @@ gzip the response body, for clients which support it.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ssnfhbpljxy2v3nsw9aqmh7xlky49dpfwj275aj0b576w46ys6m"))))
+        (base32 "18ws81a30igmff4pnqfvc2sv8hcy5gjb2saqz00mgz64y8nvjfx7"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/opentracing-contrib/go-stdlib"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t
+      #:import-path "github.com/opentracing-contrib/go-stdlib"))
     (propagated-inputs
      (list go-github-com-opentracing-opentracing-go))
     (home-page "https://github.com/opentracing-contrib/go-stdlib")
