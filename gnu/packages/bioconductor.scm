@@ -3096,6 +3096,8 @@ containers.")
                 "1bla3jj5vdvb956pz07fxsihiwqlkpm409rdhljbdnld438q3kpp"))))
     (properties `((upstream-name . "msigdb")))
     (build-system r-build-system)
+    ;; Tests require Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-annotationdbi
                              r-annotationhub
                              r-experimenthub
