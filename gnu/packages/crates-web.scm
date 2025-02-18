@@ -2,7 +2,7 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020-2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
@@ -5433,6 +5433,30 @@ in the Rust programming language.")
     (synopsis "Macros for poem")
     (description "This package provides macros for poem.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-punycode-0.4
+  (package
+    (name "rust-punycode")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "punycode" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zm5722qaz1zhxb5nxnisj009crrknjs9xv4vdp9z0yn42rxrqg9"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Clippy was integrated into rust-1.29.
+                 (substitute* "Cargo.toml.orig"
+                   ((".*clippy.*") ""))
+                 (rename-file "Cargo.toml.orig" "Cargo.toml")))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/mcarton/rust-punycode.git")
+    (synopsis "Functions to decode and encode Punycode")
+    (description
+     "This package provides functions to decode and encode Punycode.")
+    (license license:expat)))
 
 (define-public rust-reqwest-0.12
   (package
