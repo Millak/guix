@@ -5454,19 +5454,18 @@ wayland-client crate for usable bindings.")
 (define-public rust-wayland-server-0.31
   (package
     (name "rust-wayland-server")
-    (version "0.31.6")
+    (version "0.31.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-server" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bc6nxzw9h9az22b42sd4m960mq2nja9dl5lkq8xnaiaf76355f8"))))
+        (base32 "1jx410qa59vry55xm40dqgqa7d0cx7xs3a5qaxv8xzwcsrzbvylp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-downcast-rs" ,rust-downcast-rs-1)
-                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
                        ("rust-log" ,rust-log-0.4)
                        ("rust-rustix" ,rust-rustix-0.38)
                        ("rust-wayland-backend" ,rust-wayland-backend-0.3)
