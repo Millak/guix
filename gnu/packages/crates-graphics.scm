@@ -4628,14 +4628,14 @@ and height) from SVG graphics.")
 (define-public rust-wayland-backend-0.3
   (package
     (name "rust-wayland-backend")
-    (version "0.3.7")
+    (version "0.3.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-backend" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xhnh0mn4cv0wmq3zcm0iic2sbhsz4qdra6kb58x8l51sz73ar85"))))
+        (base32 "1gs7dw6s3lp9g6g0rhk4bh66wl41jnbkd27c6ynhv1x3xac8j85p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `wayland_scanner`
