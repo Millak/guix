@@ -1565,7 +1565,7 @@ several different time zones.")
 (define-public xfce4-notifyd
   (package
     (name "xfce4-notifyd")
-    (version "0.9.6")
+    (version "0.9.7")
     (source
      (origin
        (method git-fetch)
@@ -1574,7 +1574,7 @@ several different time zones.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0li1vxh460ak329sxpz8zbyggv4m38mzdanpjxdjxf9gypsp65ag"))))
+        (base32 "1bj34lkasrrnbgr5gnk8yvhxxypi4n0p3gq20w766f4rg75nh1x6"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list xfce4-dev-tools))
