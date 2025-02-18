@@ -1965,6 +1965,31 @@ authentication through Negotiate mechanism (see
 @url{https://tools.ietf.org/html/rfc4559, RFC4559}).")
     (license license:expat)))
 
+(define-public go-github-com-elazarl-go-bindata-assetfs
+  (package
+    (name "go-github-com-elazarl-go-bindata-assetfs")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elazarl/go-bindata-assetfs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05j8gy417gcildmxa04m8ylriaakadr7zvwn2ggq56pdg7b63knc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/elazarl/go-bindata-assetfs"))
+    (home-page "https://github.com/elazarl/go-bindata-assetfs")
+    (synopsis "Serves embedded files with @code{net/http}")
+    (description
+     "assetfs allows packages to serve static content embedded with the
+@url{https://github.com/go-bindata/go-bindata, go-bindata} tool with the
+standard @code{net/http} package.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-elazarl-goproxy
   (package
     (name "go-github-com-elazarl-goproxy")
