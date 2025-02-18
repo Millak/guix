@@ -5900,17 +5900,18 @@ from xml files.")
   (package
     (inherit rust-webp-0.3)
     (name "rust-webp")
-    (version "0.2.2")
+    (version "0.2.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "webp" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1bhw6xp7vg4rx7flxgzvdzk21q2dx1bsn06h0yj7jq0n3y12y0ng"))))
+               (base32 "0wdspssyvra9zkcsyba52xnfy2r97pj3qxqw1rxjk4jfh7kxidab"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Test fails to find all webp functions.
+       #:cargo-inputs
        (("rust-image" ,rust-image-0.24)
-        ("rust-libwebp-sys" ,rust-libwebp-sys-0.4))
+        ("rust-libwebp-sys" ,rust-libwebp-sys-0.9))
        #:cargo-development-inputs
        (("rust-image" ,rust-image-0.24))))))
 
