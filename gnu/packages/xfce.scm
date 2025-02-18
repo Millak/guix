@@ -945,7 +945,7 @@ archive files using the file context menus in the Thunar file manager.")
 (define-public thunar-shares-plugin
   (package
     (name "thunar-shares-plugin")
-    (version "0.3.2")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -955,10 +955,10 @@ archive files using the file context menus in the Thunar file manager.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0agq4f16mlrri84n81wgrhipvg55gh527jw42wiv6ac9vnqlcnw8"))))
+        (base32 "1m4xdmfs6zcxsq96p0wgwgqv2av7bqqsbpsrbqkq78mrmn9533nl"))))
     (build-system gnu-build-system)
-    (native-inputs (list xfce4-dev-tools))
-    (inputs (list thunar gtk+))
+    (native-inputs (list autoconf-2.71 xfce4-dev-tools))
+    (inputs (list thunar gtk+ xfconf))
     (home-page "https://docs.xfce.org/xfce/thunar/thunar-shares-plugin")
     (synopsis "Folder share plugin for Thunar file manager")
     (description
