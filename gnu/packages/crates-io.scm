@@ -22120,8 +22120,34 @@ other data.")
     (home-page "https://github.com/xdg-rs/dirs")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-dirs-sys-0.5
+  (package
+    (name "rust-dirs-sys")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dirs-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1aqzpgq6ampza6v012gm2dppx9k35cdycbj54808ksbys9k366p0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-option-ext" ,rust-option-ext-0.2)
+                       ("rust-redox-users" ,rust-redox-users-0.5)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/dirs-dev/dirs-sys-rs")
+    (synopsis
+     "System-level helper functions for the dirs and directories crates")
+    (description
+     "This package provides system-level helper functions for the @code{dirs}
+and @code{directories} crates.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dirs-sys-0.4
   (package
+    (inherit rust-dirs-sys-0.5)
     (name "rust-dirs-sys")
     (version "0.4.1")
     (source (origin
@@ -22131,20 +22157,12 @@ other data.")
               (sha256
                (base32
                 "071jy0pvaad9lsa6mzawxrh7cmr7hsmsdxwzm7jzldfkrfjha3sj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-option-ext" ,rust-option-ext-0.2)
         ("rust-redox-users" ,rust-redox-users-0.4)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))))
-    (home-page "https://github.com/dirs-dev/dirs-sys-rs")
-    (synopsis
-     "System-level helper functions for the dirs and directories crates")
-    (description
-     "This package provides system-level helper functions for the @code{dirs}
-and @code{directories} crates.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-windows-sys" ,rust-windows-sys-0.48))))))
 
 (define-public rust-dirs-sys-0.3
   (package
