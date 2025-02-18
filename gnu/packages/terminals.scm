@@ -1533,7 +1533,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.15.0")
+    (version "0.15.1")
     (source
      (origin
        ;; XXX: The crate at "crates.io" contains only the alacritty subproject
@@ -1545,7 +1545,7 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nh5w037rwf00z9b21803184j561s44js9ilfq9pcqbgbg95y308"))))
+        (base32 "1nsmz4vkzandhi1qc863hr9gqlbikb9n6yrdspdv6562swq128gz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
