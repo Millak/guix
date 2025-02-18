@@ -18602,6 +18602,28 @@ encoder/decoder.")
            #:cargo-development-inputs
            `(("rust-libc-print" ,rust-libc-print-0.1))))))
 
+(define-public rust-ctor-lite-0.1
+  (package
+    (name "rust-ctor-lite")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ctor-lite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fwyn69gb0ly5lzhbxjdsp90h1s6jhaxw0rrw2n7gchs401ihy8z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-macro-rules-attribute" ,rust-macro-rules-attribute-0.2)
+        ("rust-rustix" ,rust-rustix-0.38))))
+    (home-page "https://codeberg.org/notgull/ctor-lite")
+    (synopsis "Run code at program startup or shutdown")
+    (description
+     "This package provides a way to run code at program startup or shutdown.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ctrlc-3
   (package
     (name "rust-ctrlc")
