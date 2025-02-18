@@ -22789,18 +22789,18 @@ dedicated files into Rustdoc documentation with support for hiding lines.")
 (define-public rust-document-features-0.2
   (package
     (name "rust-document-features")
-    (version "0.2.10")
+    (version "0.2.11")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "document-features" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "182h528pjyv4ppil2pd2nir46qrb393x5kvm4y51yhnjmgm6jsfb"))))
+         (base32 "0pdhpbz687fk2rkgz45yy3gvbhlxliwb7g1lj3jbx1f1qr89n94m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release" "--"
+       '("--"
          "--skip=self_doc"
          "--skip=self_doc_with_custom_label")
        #:cargo-inputs (("rust-litrs" ,rust-litrs-0.4))))
