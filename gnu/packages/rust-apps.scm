@@ -3807,7 +3807,7 @@ runs a command whenever it detects modifications.")
 (define-public rbw
   (package
     (name "rbw")
-    (version "1.13.1")
+    (version "1.13.2")
     (outputs '("out" "scripts"))
     (source
      (origin
@@ -3815,7 +3815,7 @@ runs a command whenever it detects modifications.")
        (uri (crate-uri "rbw" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1viadih6ijwxlinjshkzfyhxvk00jbm643v6gpwp463ylsjpvvyd"))
+        (base32 "1plwv71iwdcdprknsn32x7wzlg1hnikq3wqbym4yiwpk5kf6anmm"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -3827,6 +3827,7 @@ runs a command whenever it detects modifications.")
        #:cargo-inputs
        (("rust-aes" ,rust-aes-0.8)
         ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-arboard" ,rust-arboard-3)
         ("rust-argon2" ,rust-argon2-0.5)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
         ("rust-axum" ,rust-axum-0.7)
@@ -3836,7 +3837,6 @@ runs a command whenever it detects modifications.")
         ("rust-cbc" ,rust-cbc-0.1)
         ("rust-clap" ,rust-clap-4)
         ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-cli-clipboard" ,rust-cli-clipboard-0.4)
         ("rust-daemonize" ,rust-daemonize-0.5)
         ("rust-directories" ,rust-directories-5)
         ("rust-env-logger" ,rust-env-logger-0.11)
