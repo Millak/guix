@@ -1186,6 +1186,38 @@ bar writers can be supplied for alternate environments.")
     (description "This package provides generic implementations for Go.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-anacrolix-log
+  (package
+    (name "go-github-com-anacrolix-log")
+    (version "0.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/anacrolix/log")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pbvg15rrsh2gv10vsdqak8r572kkjlhil1g0gngnzbcyifqmca0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/anacrolix/log"))
+    (native-inputs
+     (list go-github-com-frankban-quicktest
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-anacrolix-generics))
+    (home-page "https://github.com/anacrolix/log")
+    (synopsis "Context-style logging for Golang")
+    (description
+     "Package log implements a std log compatible logging system that draws
+some inspiration from the @url{https://docs.python.org/3/library/logging.html,
+Python logging module} from Python's standard library.  It supports multiple
+handlers, log levels, zero-allocation, scopes, custom formatting, and
+environment and runtime configuration.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-andreasbriese-bbloom
   (package
     (name "go-github-com-andreasbriese-bbloom")
