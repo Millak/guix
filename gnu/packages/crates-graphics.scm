@@ -5608,14 +5608,14 @@ the wayland protocol, server side.")
 (define-public rust-wayland-sys-0.31
   (package
     (name "rust-wayland-sys")
-    (version "0.31.5")
+    (version "0.31.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02cyl94ydazgjdjf7asm2phni8h62j4cg4pwr6sy7lwfiq6sra7g"))))
+        (base32 "05b6i4lg2qrrz7l4h2b5fd7blkkvxq34i1yvlngsmmbpkhwvpknv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-dlib" ,rust-dlib-0.5)
