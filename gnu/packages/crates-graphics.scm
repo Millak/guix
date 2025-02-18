@@ -2542,14 +2542,14 @@ filters and decoders for the most common image formats.")
 (define-public rust-image-webp-0.2
   (package
     (name "rust-image-webp")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "image-webp" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0bz2zf9rfkfwf50bv60p6vnwnggg75s3bsnnnp6aj4a7v7iyhcg0"))))
+        (base32 "0zwg4gpnp69dpn8pdhgjy14mawwi3md02mp1162al6s64bl02zdp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-byteorder-lite" ,rust-byteorder-lite-0.1)
