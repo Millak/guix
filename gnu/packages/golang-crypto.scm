@@ -1501,6 +1501,33 @@ performance is obtained with AVX2 which gives roughly a 4X performance
 increase approaching hashing speeds of 1GB/sec on a single core.")
       (license license:asl2.0))))
 
+(define-public go-github-com-minio-crc64nvme
+  (package
+    (name "go-github-com-minio-crc64nvme")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minio/crc64nvme")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hk0v474ligna49qh4rvwnqxv7w6ka5grdlb7fczh4kzhx80x536"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/minio/crc64nvme"))
+    (propagated-inputs (list go-github-com-klauspost-cpuid-v2))
+    (home-page "https://github.com/minio/crc64nvme")
+    (synopsis "CRC64 checksums using carryless-multiplication")
+    (description
+     "This package calculates CRC64 checksums using carryless-multiplication
+accelerated with SIMD instructions for both ARM and x86.  The code is based on
+the @code{https://github.com/awesomized/crc64fast-nvme.git, crc64fast-nvme}
+package in Rust.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-minio-highwayhash
   (package
     (name "go-github-com-minio-highwayhash")
