@@ -15704,14 +15704,14 @@ this to write Rust programs which can be customized by end users easily.")
 (define-public rust-console-0.15
   (package
     (name "rust-console")
-    (version "0.15.8")
+    (version "0.15.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "console" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1sz4nl9nz8pkmapqni6py7jxzi7nzqjxzb3ya4kxvmkb0zy867qf"))
+        (base32 "06q4ag46machxp5w381x1v9l2g7d801q6sawvxcpidarh36nwg7a"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (substitute* "Cargo.toml"
@@ -15720,11 +15720,11 @@ this to write Rust programs which can be customized by end users easily.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-encode-unicode" ,rust-encode-unicode-0.3)
-        ("rust-lazy-static" ,rust-lazy-static-1)
+       (("rust-encode-unicode" ,rust-encode-unicode-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-windows-sys" ,rust-windows-sys-0.52))
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-unicode-width" ,rust-unicode-width-0.2)
+        ("rust-windows-sys" ,rust-windows-sys-0.59))
        #:cargo-development-inputs
        (("rust-proptest" ,rust-proptest-1)
         ("rust-regex" ,rust-regex-1))))
