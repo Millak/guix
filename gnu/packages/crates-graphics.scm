@@ -2138,14 +2138,14 @@ SIMD instructions.")
 (define-public rust-glutin-glx-sys-0.6
   (package
     (name "rust-glutin-glx-sys")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glutin_glx_sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0qscs9525kpdwaky5cm6smkyrrlg9sv5xdcnhzh1hvp730wjsaww"))))
+        (base32 "118ifprw3y4jwrr25x862gh9hwd7fniwpywr4ihqpa25h29v4ywa"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gl-generator" ,rust-gl-generator-0.14)
