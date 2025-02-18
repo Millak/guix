@@ -5772,14 +5772,14 @@ crate @code{rust-wayland-client} for usable bindings.")
 (define-public rust-wayrs-client-1
   (package
     (name "rust-wayrs-client")
-    (version "1.1.3")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayrs-client" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0z7qcacf79ljvi7252sdw5cfa5vs6372a01b93v0cc68w5nq53hh"))))
+        (base32 "017pw6p6wzqr41kc4z18npkirwjb9f8vavhsmjnn5sziy9kkky05"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-tokio" ,rust-tokio-1)
