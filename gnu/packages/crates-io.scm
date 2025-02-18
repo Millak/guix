@@ -21900,8 +21900,34 @@ any data structure.  Supports derive on structs and enums.")
     (description "Copy directories recursively with flexible options.")
     (license license:expat)))
 
+(define-public rust-directories-6
+  (package
+    (name "rust-directories")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "directories" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zgy2w088v8w865c11dmc3dih899fgrhvrfp7g83h6v6ai60kx8n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dirs-sys" ,rust-dirs-sys-0.5))
+       #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))
+    (home-page "https://github.com/soc/directories-rs")
+    (synopsis "Library for standard locations of data directories")
+    (description
+     "This package provides a tiny mid-level library that provides
+platform-specific standard locations of directories for config, cache and other
+data on Linux, Windows and macOS by leveraging the mechanisms defined by the XDG
+base/user directory specifications on Linux, the Known Folder API on Windows,
+and the Standard Directory guidelines on macOS.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-directories-5
   (package
+    (inherit rust-directories-6)
     (name "rust-directories")
     (version "5.0.1")
     (source
@@ -21911,22 +21937,9 @@ any data structure.  Supports derive on structs and enums.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0dba6xzk79s1clqzxh2qlgzk3lmvvks1lzzjhhi3hd70hhxifjcs"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-dirs-sys" ,rust-dirs-sys-0.4))
-       #:cargo-development-inputs
-       (("rust-bencher" ,rust-bencher-0.1))))
-    (home-page "https://github.com/dirs-dev/directories-rs")
-    (synopsis "Library for standard locations of data directories")
-    (description
-     "This package provides a tiny mid-level library that provides
-platform-specific standard locations of directories for config,
-cache and other data on Linux, Windows and macOS by leveraging the
-mechanisms defined by the XDG base/user directory specifications
-on Linux, the Known Folder API on Windows, and the Standard
-Directory guidelines on macOS.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-dirs-sys" ,rust-dirs-sys-0.4))
+       #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))))
 
 (define-public rust-directories-4
   (package
