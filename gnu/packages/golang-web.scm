@@ -1391,14 +1391,18 @@ and RFC 5389).")
       #:import-path "github.com/cenkalti/backoff/v4"))
     (home-page "https://github.com/cenkalti/backoff")
     (synopsis "The exponential backoff algorithm in Go")
-    (description "This is a Go port of the exponential backoff algorithm from
-@url{https://github.com/google/google-http-java-client/blob/da1aa993e90285ec18579f1553339b00e19b3ab5/google-http-client/src/main/java/com/google/api/client/util/ExponentialBackOff.java,
-Google's HTTP Client Library for Java}.
+    (description
+     ;; URL https://raw.githubusercontent.com/googleapis/google-http-java-client
+     ;; Commit da1aa993e90285ec18579f1553339b00e19b3ab5
+     ;; Dirrectory google-http-client/src/main/java/com/google/api/client/util
+     ;; File ExponentialBackOff.java
+     "This is a Go port of the exponential backoff algorithm from
+Google's HTTP Client Library for Java.
 
-@url{http://en.wikipedia.org/wiki/Exponential_backoff, Exponential backoff} is an
-algorithm that uses feedback to multiplicatively decrease the rate of some process,
-in order to gradually find an acceptable rate.  The retries exponentially increase
-and stop increasing when a certain threshold is met.")
+@url{http://en.wikipedia.org/wiki/Exponential_backoff, Exponential backoff} is
+an algorithm that uses feedback to multiplicatively decrease the rate of some
+process, in order to gradually find an acceptable rate.  The retries
+exponentially increase and stop increasing when a certain threshold is met.")
     (license license:expat)))
 
 (define-public go-github-com-chris-ramon-douceur
