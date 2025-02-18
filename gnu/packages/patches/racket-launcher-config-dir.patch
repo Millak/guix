@@ -24,7 +24,7 @@ error:
     collection: "rash"
     in collection directories:
      ${HOME}/.local/share/racket/8.14/collects
-     /gnu/store/vn20i9xk22czljr9drwzwpgw209l49s8-racket-vm-cs-8.14/opt/racket-vm/collects/
+     /gnu/store/...-racket-vm-cs-8.14/opt/racket-vm/collects/
 #+end_src
 
 Adding the -G configuration option in the call to the racket binary fixes the
