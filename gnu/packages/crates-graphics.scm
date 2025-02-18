@@ -5264,14 +5264,14 @@ protocol extensions.")
 (define-public rust-wayland-protocols-wlr-0.3
   (package
     (name "rust-wayland-protocols-wlr")
-    (version "0.3.5")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-protocols-wlr" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08j0xfpfqv6kzbfzmdv6crfzalxbxc2n5m9hc4qkqg4jrpv14bkq"))))
+        (base32 "1cpqb0d4ryf87x2wgca5n71wilhvc0jjva0zasbdgalmypk052i4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
