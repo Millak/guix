@@ -65705,8 +65705,35 @@ owned memory.")
      "This package provides a Rust library to access Redox termios functions.")
     (license license:expat)))
 
+(define-public rust-redox-users-0.5
+  (package
+    (name "rust-redox-users")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "redox_users" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0awxx66izdw6kz97r3zxrl5ms5f6dqi5l0f58mlsvlmx8wyrsvyx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--" "--skip=test::get_group")
+       #:cargo-inputs (("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-libredox" ,rust-libredox-0.1)
+                       ("rust-rust-argon2" ,rust-rust-argon2-0.8)
+                       ("rust-thiserror" ,rust-thiserror-2)
+                       ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://gitlab.redox-os.org/redox-os/users")
+    (synopsis "Rust library to access Redox users and groups functionality")
+    (description
+     "This package provides a Rust library to access Redox users and groups
+functionality.")
+    (license license:expat)))
+
 (define-public rust-redox-users-0.4
   (package
+    (inherit rust-redox-users-0.5)
     (name "rust-redox-users")
     (version "0.4.5")
     (source
@@ -65716,20 +65743,13 @@ owned memory.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1498qyfyc2k3ih5aaffddvbhzi36na8iqg54hcm4pnpfa6b3sa5x"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-libredox" ,rust-libredox-0.1)
         ("rust-rust-argon2" ,rust-rust-argon2-0.8)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-zeroize" ,rust-zeroize-1))))
-    (home-page "https://gitlab.redox-os.org/redox-os/users")
-    (synopsis "Rust library to access Redox users and groups functionality")
-    (description
-     "This package provides a Rust library to access Redox users and groups
-functionality")
-    (license license:expat)))
+        ("rust-zeroize" ,rust-zeroize-1))))))
 
 (define-public rust-redox-users-0.3
   (package
