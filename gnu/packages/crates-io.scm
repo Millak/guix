@@ -83281,14 +83281,14 @@ template language.")
 (define-public rust-termbg-0.6
   (package
     (name "rust-termbg")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "termbg" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lavrj3dbs4p8dcd7cxrbzyy5rwg66nwb2g3ahrk3skd6cb6lhh3"))))
+        (base32 "1m1x1axm22izpibr3zrmmnr2fzj6fhq7df63zvbxzwxdl5vlbx4b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-crossterm" ,rust-crossterm-0.28)
