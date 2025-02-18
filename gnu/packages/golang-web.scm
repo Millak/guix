@@ -5926,6 +5926,81 @@ options regarding connection information.")
 options.")
     (license license:bsd-2)))
 
+(define-public go-github-com-minio-minio-go
+  (package
+    (name "go-github-com-minio-minio-go")
+    (version "3.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minio/minio-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fihvi30wrjd4xgksryz8r315w30x4gyqp1qs1gzaipyyksim8d2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/minio/minio-go"))
+    (home-page "https://github.com/minio/minio-go")
+    (synopsis "Minio Go Client SDK for Amazon S3 Compatible Cloud Storage")
+    (description
+     "The Minio Go Client SDK provides simple APIs to access any Amazon S3
+compatible object storage.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-minio-minio-go-v7
+  (package
+    (inherit go-github-com-minio-minio-go)
+    (name "go-github-com-minio-minio-go-v7")
+    (version "7.0.86")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minio/minio-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k9ab0nqdfgwf1h46wsv0i5d207pdyw7dc6ccdj8i7adfbxa1zwa"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/minio/minio-go/v7"
+      #:embed-files
+      #~(list
+         ;; golang.org/x/net/publicsuffix/table.go:63:12: pattern
+         ;; data/children: cannot embed irregular file data/children
+         "children"
+         ;; golang.org/x/net/publicsuffix/table.go:48:12: pattern data/nodes:
+         ;; cannot embed irregular file data/nodes
+         "nodes"
+         ;; golang.org/x/net/publicsuffix/table.go:33:12: pattern data/text:
+         ;; cannot embed irregular file data/text
+         "text")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (substitute* (format #f
+                                   "src/~a/pkg/credentials/credentials.sample"
+                                   import-path)
+                (("/bin/cat") (which "cat"))))))))
+    (propagated-inputs
+     (list go-github-com-dustin-go-humanize
+           go-github-com-go-ini-ini
+           go-github-com-goccy-go-json
+           go-github-com-google-uuid
+           go-github-com-klauspost-compress
+           go-github-com-minio-crc64nvme
+           go-github-com-minio-md5-simd
+           go-github-com-rs-xid
+           go-golang-org-x-crypto
+           go-golang-org-x-net))))
+
 (define-public go-github-com-multiformats-go-multiaddr
   (package
     (name "go-github-com-multiformats-go-multiaddr")
