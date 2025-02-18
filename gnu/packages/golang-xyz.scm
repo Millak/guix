@@ -1162,6 +1162,39 @@ use case for these are for command-line applications but alternate progress
 bar writers can be supplied for alternate environments.")
     (license license:expat)))
 
+(define-public go-github-com-anacrolix-fuse
+  (package
+    (name "go-github-com-anacrolix-fuse")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             ;; It's an alternative and maintained fork
+             ;; https://github.com/bazil/fuse
+             ;; -> https://github.com/zegl/fuse
+             ;;    ->
+             (url "https://github.com/anacrolix/fuse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rlzcdgv7s3ywmhapp35qgi0p5cz8acw589n7hr918hq30dp7w9z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; tests require fuse mount
+      #:import-path "github.com/anacrolix/fuse"))
+    (propagated-inputs
+     (list go-github-com-anacrolix-envpprof
+           go-github-com-tv42-httpunix
+           go-golang-org-x-sys))
+    (home-page "https://github.com/anacrolix/fuse")
+    (synopsis "FUSE implementation in Golang")
+    (description
+     "Package fuse enables writing FUSE file systems on Linux, OS X, and
+@code{FreeBSD}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-anacrolix-generics
   (package
     (name "go-github-com-anacrolix-generics")
