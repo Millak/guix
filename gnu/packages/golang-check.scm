@@ -149,6 +149,34 @@ value and call @code{t.Fatal()} if the assertion fails.")
 github.com/sergi/go-diff, mainly for diffing strings in tests.")
     (license license:expat)))
 
+;; XXX: Not maintained project: This repository has been archived by the owner
+;; on May 18, 2023. It is now read-only.  Consider to remove when nothing
+;; depends on it.
+(define-public go-github-com-benbjohnson-clock
+  (package
+    (name "go-github-com-benbjohnson-clock")
+    (version "1.3.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/benbjohnson/clock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p7n09pywqra21l981fbkma9vzsyf31pbvw6xg5r4hp8h8scf955"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/benbjohnson/clock"))
+    (home-page "https://github.com/benbjohnson/clock")
+    (synopsis "Small library for mocking time in Go")
+    (description
+     "@code{clock} is a small library for mocking time in Go.  It provides an
+interface around the standard library's @code{time} package so that the
+application can use the realtime clock while tests can use the mock clock.")
+    (license license:expat)))
+
 (define-public go-github-com-bitfield-gotestdox
   (package
     (name "go-github-com-bitfield-gotestdox")
