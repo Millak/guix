@@ -450,7 +450,7 @@ windowing-system-independent manner.")
 (define-public xfce4-panel
   (package
     (name "xfce4-panel")
-    (version "4.20.0")
+    (version "4.20.3")
     (source
      (origin
        (method git-fetch)
@@ -459,7 +459,7 @@ windowing-system-independent manner.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "049dhis9106zig5awr9ppnxm357d93z842h015pd8rni9sayc7m0"))))
+        (base32 "0fmybf6caqdqgw68z7nn4c7a6wxn896niw50m8zf3div8d9s7ddl"))))
     (build-system gnu-build-system)
     (arguments
      (list
