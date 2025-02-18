@@ -17480,6 +17480,65 @@ foundation, zap lets users choose when they need to count every allocation and
 when they'd prefer a more familiar, loosely typed API.")
     (license license:expat)))
 
+(define-public go-go-uber-org-zap-exp
+  (package
+    (name "go-go-uber-org-zap-exp")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber-go/zap")
+             (commit (go-version->git-ref version
+                                          #:subdir "exp"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05i15278swdmpif3p6g18sy0sn7rnfdl3m2rj5p30cnyb0j29vig"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "." "exp")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "go.uber.org/zap/exp"
+      #:unpack-path "go.uber.org/zap"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-go-uber-org-zap))
+    (home-page "https://github.com/uber-go/zap")
+    (synopsis "Experemental modules for Uber's Zap")
+    (description
+     "This package providies two additional libraries for go.uber.org/zap:
+
+@itemize
+@item @code{zapslog} implements @code{slog.Handler} which writes to the
+supplied @code{zapcore.Core}
+@item @code{zapfield} implements experimental @code{zap.Field} helpers whose
+APIs may be unstable
+@end itemize")
+    (license license:expat)))
+
 (define-public go-google-golang-org-appengine
   (package
     (name "go-google-golang-org-appengine")
