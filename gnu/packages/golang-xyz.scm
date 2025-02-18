@@ -1162,6 +1162,30 @@ use case for these are for command-line applications but alternate progress
 bar writers can be supplied for alternate environments.")
     (license license:expat)))
 
+(define-public go-github-com-anacrolix-generics
+  (package
+    (name "go-github-com-anacrolix-generics")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/anacrolix/generics")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19nagwx6s5sjyphn5czlplqvzj4zxcv3jl9zskpix5yxg5l24san"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/anacrolix/generics"))
+    (propagated-inputs (list go-golang-org-x-exp))
+    (home-page "https://github.com/anacrolix/generics")
+    (synopsis "Generic implementation for Golang")
+    ;; FIXME: The project provides no documentatin of README. Report upstream.
+    (description "This package provides generic implementations for Go.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-andreasbriese-bbloom
   (package
     (name "go-github-com-andreasbriese-bbloom")
