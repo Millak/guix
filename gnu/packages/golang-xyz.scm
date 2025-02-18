@@ -17440,45 +17440,44 @@ instead of requiring an interval clock to fill the bucket discretely.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h3ml2wqmdxwqv0xdfqvf7l4wma5yd0hdfsa6189mmbhkhzn8v3m"))))
+        (base32 "1h3ml2wqmdxwqv0xdfqvf7l4wma5yd0hdfsa6189mmbhkhzn8v3m"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - go.uber.org/zap/assets
+            ;; - go.uber.org/zap/benchmarks
+            ;; - go.uber.org/zap/exp
+            ;; - go.uber.org/zap/tools
+            ;; - go.uber.org/zap/zapgrpc/internal/test
+            (for-each delete-file-recursively
+                      (list "assets"
+                            "benchmarks"
+                            "exp"
+                            "tools"
+                            "zapgrpc/internal/test"))))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "go.uber.org/zap"
       #:test-flags
-      #~(list "-skip" (string-join
-                       ;; Unexpected stack trace annotation.
-                       (list "TestAddStackSkip"
-                             ;; Expected to find package name and file name in
-                             ;; output.
-                             "TestLoggerAddCaller"
-                             "TestSugarAddCaller")
-                       "|"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-examples-and-benchmarks
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file-recursively
-                          (list "benchmarks"
-                                ;; Remove test files requiring to download all
-                                ;; dependencies for the current Go module and
-                                ;; reports their module paths and locations on
-                                ;; disk.
-                                "stacktrace_ext_test.go"
-                                ;; Not packed yet google.golang.org/grpc.
-                                "zapgrpc/internal/test/grpc_test.go"))))))))
+      ;; Failed to run 'go mod download'
+      #~(list "-skip" "TestStacktraceFiltersVendorZap")))
     (native-inputs
      (list go-github-com-stretchr-testify
            go-go-uber-org-goleak))
     (propagated-inputs
      (list go-go-uber-org-multierr
            go-gopkg-in-yaml-v3))
-    (home-page "https://pkg.go.dev/go.uber.org/zap")
-    (synopsis "Logging library for Go")
+    (home-page "https://github.com/uber-go/zap")
+    (synopsis "Structured and leveled logging in Golang")
     (description
-     "This package provides a library for fast, structured, leveled logging in
-Go.")
+     "This package implements a reflection-free, zero-allocation JSON encoder,
+and the base Logger strives to avoid serialization overhead and allocations
+wherever possible.  By building the high-level @code{SugaredLogger} on that
+foundation, zap lets users choose when they need to count every allocation and
+when they'd prefer a more familiar, loosely typed API.")
     (license license:expat)))
 
 (define-public go-google-golang-org-appengine
