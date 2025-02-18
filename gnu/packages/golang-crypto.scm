@@ -895,6 +895,35 @@ and encrypting JSON Web Tokens (JWT).  It relies only on the standard
 library.")
     (license license:expat)))
 
+(define-public go-github-com-elithrar-simple-scrypt
+  (package
+    (name "go-github-com-elithrar-simple-scrypt")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elithrar/simple-scrypt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xkyw6gdy9cxj7l20cmd97axcsbf0jmcfw94c4gyy1hnd4drszzf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/elithrar/simple-scrypt"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/elithrar/simple-scrypt")
+    (synopsis "Generating, comparing and inspecting password hashes library")
+    (description
+     "Package scrypt provides a convenience wrapper around Go's existing
+@code{crypto/scrypt} package that makes it easier to securely derive strong
+keys from weak inputs (i.e.  user passwords).  The package provides password
+generation, constant-time comparison and parameter upgrading for scrypt
+derived keys.")
+    (license license:expat)))
+
 (define-public go-github-com-emersion-go-bcrypt
   (package
     (name "go-github-com-emersion-go-bcrypt")
