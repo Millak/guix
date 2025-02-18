@@ -1358,14 +1358,14 @@ multi-floor indoor maps.")
 (define-public partitionmanager
   (package
     (name "partitionmanager")
-    (version "24.05.2")
+    (version "24.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/partitionmanager-" version ".tar.xz"))
        (sha256
-        (base32 "01xmwkwv8jrwx2jpg797ar8ac9gbdagrl2v3yzqn62fhwcwjcxy6"))))
+        (base32 "176vdhp2lg44zp3qhrsgjns4d6bid0879qmnjaqysmzcflmzql4b"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
