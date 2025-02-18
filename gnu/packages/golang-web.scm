@@ -6346,6 +6346,33 @@ performance overhead.  While unmarshalling, it allows fully retaining the
 original data and access it via a typed struct and a dynamic map.")
     (license license:expat)))
 
+(define-public go-github-com-peterbourgon-unixtransport
+  (package
+    (name "go-github-com-peterbourgon-unixtransport")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/peterbourgon/unixtransport")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c5j01bqwh8zy3n2mynh6irh30wfv6sdd1a34yhhg39l9xbpj51g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/peterbourgon/unixtransport"))
+    (propagated-inputs
+     (list go-github-com-miekg-dns
+           go-github-com-oklog-run
+           go-github-com-peterbourgon-ff-v3))
+    (home-page "https://github.com/peterbourgon/unixtransport")
+    (synopsis "Support for Unix domain sockets in Go HTTP clients")
+    (description
+     "This package adds support for Unix domain sockets in Go HTTP clients.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-pion-datachannel
   (package
     (name "go-github-com-pion-datachannel")
