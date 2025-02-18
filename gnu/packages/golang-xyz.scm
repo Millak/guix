@@ -12946,6 +12946,38 @@ abstraction on top.  The end result is a conceptually simple, but highly
 performant, disk-backed storage system.")
     (license license:expat)))
 
+(define-public go-github-com-peterbourgon-ff-v3
+  (package
+    (name "go-github-com-peterbourgon-ff-v3")
+    (version "3.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/peterbourgon/ff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "162qh3mp7xn4qhw7rgigwmg0r52mflwcr07fig5z3k257h0mclar"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/peterbourgon/ff/v3"))
+    (propagated-inputs
+     (list go-github-com-pelletier-go-toml
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/peterbourgon/ff")
+    (synopsis "Flags-first Golang library for configuration")
+    (description
+     "Package ff is a flags-first helper package for configuring programs.
+
+The basic idea is that @code{myprogram -h} should always show the complete
+configuration \"surface area\" of a program.  Therefore, every config
+parameter should be defined as a flag.  This module provides a simple and
+robust way to define those flags, and to parse them from command-line
+arguments, environment variables, and/or config files.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-philhofer-fwd
   (package
     (name "go-github-com-philhofer-fwd")
