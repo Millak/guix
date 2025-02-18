@@ -4904,7 +4904,7 @@ minimum contrast levels, and more.")
 (define-public rust-xremap
   (package
     (name "rust-xremap")
-    (version "0.10.4")
+    (version "0.10.5")
     (source
      (origin
        (method url-fetch)
@@ -4912,7 +4912,7 @@ minimum contrast levels, and more.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "13fhh1p51dd7bvmgsjpvsrvvhv4wgpmm8rsv6j07z2nfn8z9s1ia"))))
+         "1763bypr971qyy7lm0q0mg1alqzyzqgsq8ffkp8zfvhwsqipnfn7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '()
@@ -4964,8 +4964,8 @@ minimum contrast levels, and more.")
                  (string-append share "/elvish/lib/xremap")
                  (lambda _ (invoke xremap "--completions" "elvish")))))))))
     (home-page "https://github.com/k0kubun/xremap")
-    (synopsis "Dynamic key remapp for X and Wayland")
-    (description "This package provides dynamic key remapp for X and Wayland.")
+    (synopsis "Dynamic key remapper for X and Wayland")
+    (description "This package provides dynamic key remapper for X and Wayland.")
     (license license:expat)))
 
 (define-public xremap-gnome
