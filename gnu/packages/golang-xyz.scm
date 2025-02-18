@@ -6902,11 +6902,11 @@ provides a buffered io.Writer that is flushed at a timed interval.")
          (package-arguments go-github-com-hanwen-go-fuse)
        ((#:import-path _) "github.com/hanwen/go-fuse/v2")
        ((#:phases phases #~%standard-phases)
-          #~(modify-phases #$phases
-          (add-after 'unpack 'remove-benchmark
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "benchmark"))))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'remove-benchmark
+              (lambda* (#:key import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (delete-file-recursively "benchmark"))))
             (add-after 'unpack 'fix-paths
               (lambda* (#:key import-path #:allow-other-keys)
                 (with-directory-excursion (string-append "src/" import-path)
