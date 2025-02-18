@@ -5067,14 +5067,14 @@ initializing an OpenGL or Vulkan context.")
 (define-public rust-wayland-protocols-0.32
   (package
     (name "rust-wayland-protocols")
-    (version "0.32.5")
+    (version "0.32.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-protocols" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13pmq788d2w9c7sqpjjxi1344bzq1g1ja4vlaa4rlvjfgkjsvl3w"))))
+        (base32 "1z0yahh48x8qzdbcallmxn5am5897hkk5d7p51ly6dwvhr3cz087"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
