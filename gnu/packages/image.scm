@@ -375,7 +375,7 @@ This is a command-line program with batch capabilities (e.g. @code{pngcheck
 *.png}.)
 
 Also includes @code{pngsplit} which can split a PNG, MNG or JNG file into individual,
-numbered chunks, and @code{png-fix-IDAT-windowsize} that allow to reset first IDAT's
+numbered chunks, and @code{png-fix-IDAT-windowsize} that allows resetting first IDAT's
 zlib window-size bytes and fix up CRC to match.")
     ;; "pngsplit" and "png-fix-IDAT-windowsize" are licensed under the terms of
     ;; GNU GPL2+.  See "gpl/COPYING" in the repository."

@@ -1063,6 +1063,6 @@ with GNU make.")
       (description
        "Potato Make is a Scheme library that aims to simplify the task of
 maintaining, updating, and regenerating programs.  It is inspired by
-the POSIX make utility and allows to write a build script in Guile
+the POSIX make utility and allows writing a build script in Guile
 Scheme.")
       (license license:expat))))

@@ -347,7 +347,7 @@ Qt.  Some of its features include:
 @item Double-click on title bar to maximize
 @item Double-click on separator to distribute equally
 @item Show close button on tabs
-@item Allow to make a dock widget non-closable and/or non-dockable
+@item Allows making a dock widget non-closable and/or non-dockable
 @item Optional minimize and maximize button on the title bar
 @item FloatingWindows can be utility windows or full native ones.
 @end itemize")
