@@ -1294,7 +1294,7 @@ multi-floor indoor maps.")
 (define-public kpmcore
   (package
     (name "kpmcore")
-    (version "24.05.2")
+    (version "24.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1302,7 +1302,7 @@ multi-floor indoor maps.")
                     "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1nrmfxs8hbba8b3ml4g9qaf0klzcm8ar052npv5lm0whx6zld1lf"))))
+                "0pdwx8rd7nxjywavhy2yjqgbvw5gf85ik7ilzfa6ifmxwkcb16n7"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
