@@ -7512,6 +7512,31 @@ library.")
 client IP from HTTP requests.")
     (license license:bsd-0)))
 
+(define-public go-github-com-restic-chunker
+  (package
+    (name "go-github-com-restic-chunker")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/restic/chunker")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bp6471lsjzjg17r3q359sz7cybjxpf5xrpndf9xhqc0v9vfx7f5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/restic/chunker"))
+    (home-page "https://github.com/restic/chunker")
+    (synopsis "Implementation of Content Defined Chunking Golang")
+    (description
+     "Package chunker implements @acronym{Content Defined Chunking,
+@url{https://restic.net/blog/2015-09-12/restic-foundation1-cdc/, CDC}} based
+on a rolling Rabin Checksum.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-rs-cors
   (package
     (name "go-github-com-rs-cors")
