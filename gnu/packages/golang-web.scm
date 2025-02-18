@@ -419,6 +419,35 @@ required dependencies.  The HTTP response contains the aggregated health
 result and details about the health status of each component.")
     (license license:expat)))
 
+(define-public go-github-com-anacrolix-envpprof
+  (package
+    (name "go-github-com-anacrolix-envpprof")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/anacrolix/envpprof")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "121kk1fq1919f0gcnmaxsk6n8flspxa00pyfwl09dysyivwbpk67"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/anacrolix/envpprof"))
+    (propagated-inputs (list go-github-com-anacrolix-log))
+    (home-page "https://github.com/anacrolix/envpprof")
+    (synopsis "Control HTTP mux via environment variable")
+    (description
+     "This package implements a functionality to configure Go's pprof features
+and default HTTP mux using the environment variable @code{GOPPROF}.
+@code{envpprof} has an @code{init} function that will run at process
+initialization that checks the value of the @code{GOPPROF} environment
+variable.  The variable can contain a comma-separated list of values, for
+example @code{GOPPROF=http,block}.")
+    (license license:expat)))
+
 (define-public go-github-com-arceliar-ironwood
   (package
     (name "go-github-com-arceliar-ironwood")
