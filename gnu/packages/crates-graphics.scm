@@ -2010,14 +2010,14 @@ SIMD instructions.")
 (define-public rust-glutin-egl-sys-0.7
   (package
     (name "rust-glutin-egl-sys")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glutin_egl_sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "09y80579kyzkrk7smghmnyx2amddzvjah7wczgkdnl189pzrzsfa"))))
+        (base32 "1lh2rj77yvdqjx913nrf7xs5h3ialkkldfn3ppz29x4mc6x80ijc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gl-generator" ,rust-gl-generator-0.14)
