@@ -5134,6 +5134,47 @@ which speaks Serde.")
     (description "Create and decode JWTs in a strongly typed way.")
     (license license:expat)))
 
+(define-public rust-minreq-2
+  (package
+    (name "rust-minreq")
+    (version "2.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "minreq" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qd1wxawx4aiqj7g7p2n6xwdsqa3ad9g9j7qc58gpf81xc7l436s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            ;; Tries to access the network.
+                            "--skip=src/lib.rs - (line 112)"
+                            "--skip=src/lib.rs - (line 130)"
+                            "--skip=src/lib.rs - (line 143)"
+                            "--skip=src/lib.rs - (line 160)")
+       #:cargo-inputs (("rust-base64" ,rust-base64-0.12)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-native-tls" ,rust-native-tls-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-openssl" ,rust-openssl-0.10)
+                       ("rust-openssl-probe" ,rust-openssl-probe-0.1)
+                       ("rust-punycode" ,rust-punycode-0.4)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+                       ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-urlencoding" ,rust-urlencoding-2)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.25))
+       #:cargo-development-inputs (("rust-chrono" ,rust-chrono-0.4)
+                                   ("rust-tiny-http" ,rust-tiny-http-0.12))))
+    (home-page "https://github.com/neonmoe/minreq")
+    (synopsis "Simple, minimal-dependency HTTP client")
+    (description
+     "This package provides a simple, minimal-dependency HTTP client.")
+    (license license:isc)))
+
 (define-public rust-mockito-1
   (package
     (name "rust-mockito")
