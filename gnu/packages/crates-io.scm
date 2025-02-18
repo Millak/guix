@@ -86116,20 +86116,19 @@ tinyobjloader.")
 (define-public rust-tokio-1
   (package
     (name "rust-tokio")
-    (version "1.42.0")
+    (version "1.43.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lbmf21h16iibdy7m63ck66grkwa7b1x8yy9gwvp60j5n0hrpv2w"))))
+        (base32 "17pdm49ihlhfw3rpxix3kdh2ppl1yv7nwp1kxazi5r1xz97zlq9x"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-test-flags
-           '(list "--release" "--features=full")
-           ;; no method named `start_paused` found for struct `tokio::runtime::Builder`
-           #:tests? #f
+           '(list "--features=full")
+           #:tests? #f  ; cannot find function `pause` in module `time`
            #:cargo-inputs
            `(("rust-backtrace" ,rust-backtrace-0.3)
              ("rust-bytes" ,rust-bytes-1)
@@ -86156,6 +86155,7 @@ tinyobjloader.")
              ("rust-tempfile" ,rust-tempfile-3)
              ("rust-tokio-stream" ,rust-tokio-stream-0.1)
              ("rust-tokio-test" ,rust-tokio-test-0.4)
+             ("rust-tracing-mock" ,rust-tracing-mock-0.1)
              ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
              ("rust-windows-sys" ,rust-windows-sys-0.52))))
     (home-page "https://tokio.rs")
