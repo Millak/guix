@@ -1526,6 +1526,37 @@ HighwayHash is a fast hash function designed to defend hash-flooding attacks
 or to authenticate short-lived messages.")
     (license license:asl2.0)))
 
+(define-public go-github-com-minio-md5-simd
+  (package
+    (name "go-github-com-minio-md5-simd")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minio/md5-simd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qj8ipifbdg3ppilyqj8zy68f72rmqy8flli1vch3fibrbw8vpd0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/minio/md5-simd"))
+    (propagated-inputs
+     (list go-github-com-klauspost-cpuid-v2))
+    (home-page "https://github.com/minio/md5-simd")
+    (synopsis "Accelerate MD5 computations in pure Golang")
+    (description
+     "This is a SIMD accelerated MD5 package, allowing up to either 8 (AVX2)
+or 16 (AVX512) independent MD5 sums to be calculated on a single CPU core.
+
+@code{md5-simd} integrates a similar mechanism as described in
+@code{minio/sha256-simd} for making it easy for clients to take advantages of
+the parallel nature of the MD5 calculation.  This will result in reduced
+overall CPU load.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-minio-sha256-simd
   (package
     (name "go-github-com-minio-sha256-simd")
