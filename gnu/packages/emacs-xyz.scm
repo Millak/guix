@@ -13586,6 +13586,37 @@ or to a project or bookmarked directory.  The minibuffer prompt will be
 replaced with the directory you choose.")
     (license license:gpl3+)))
 
+(define-public emacs-consult-mu
+  (let ((commit "e1dc63674b924698b30a9ecc0400a05864711c85")
+        (revision "0"))
+    (package
+      (name "emacs-consult-mu")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/armindarvish/consult-mu/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "17ad0901xbg2vrgdvpp67kia2r7gqsvbkqqb44f4pwakr7zwiz2y"))))
+      (build-system emacs-build-system)
+      (arguments
+       '(#:phases (modify-phases %standard-phases
+                    (add-after 'unpack 'move-source-files
+                      (lambda _
+                        (let ((el-files (find-files "./extras" ".*\\.el$")))
+                          (for-each (lambda (f)
+                                      (rename-file f
+                                                   (basename f))) el-files)))))))
+      (propagated-inputs (list emacs-consult emacs-embark mu))
+      (home-page "https://github.com/armindarvish/consult-mu/")
+      (synopsis "Search mu4e emails with Consult")
+      (description "This package provides a query interface for mu4e using
+Consult.")
+      (license license:gpl3+))))
+
 (define-public emacs-consult-notmuch
   (package
     (name "emacs-consult-notmuch")
