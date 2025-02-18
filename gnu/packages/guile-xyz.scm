@@ -2638,7 +2638,12 @@ are unaffected.")
     (license license:lgpl3+)))
 
 (define-public g-golf
-  (deprecated-package "g-golf" guile-g-golf))
+  ;; Use ‘guile-g-golf’ above in package inputs and other code.  This alias
+  ;; exists as a compromise, see
+  ;; https://lists.gnu.org/archive/html/guix-devel/2025-02/msg00296.html.
+  (package
+    (inherit guile-g-golf)
+    (name "g-golf")))
 
 (define-public guile2.2-g-golf
   (package
