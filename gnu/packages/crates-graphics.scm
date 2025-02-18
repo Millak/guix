@@ -1810,14 +1810,14 @@ SIMD instructions.")
 (define-public rust-glutin-0.32
   (package
     (name "rust-glutin")
-    (version "0.32.1")
+    (version "0.32.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glutin" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16g4sp38p8ca7jj8bdn28s480yl58xa432v3grhafzph1cm42sgc"))))
+        (base32 "0j28jyhkwp4hjwji01n8m8nxyx8za643xvmhvs926qnf1j5jnr03"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
