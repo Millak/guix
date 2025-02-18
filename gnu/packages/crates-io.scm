@@ -10095,7 +10095,7 @@ high efficiency.")
 (define-public rust-bytemuck-1
   (package
     (name "rust-bytemuck")
-    (version "1.20.0")
+    (version "1.21.0")
     (source
       (origin
         (method url-fetch)
@@ -10103,7 +10103,7 @@ high efficiency.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0nk9llwmvjpjlsrlga1qg3spqvci8g1nr286nhamvn7zcf5chdwb"))))
+          "18wj81x9xhqcd6985r8qxmbik6szjfjfj62q3xklw8h2p3x7srgg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
