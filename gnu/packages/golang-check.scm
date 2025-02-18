@@ -466,6 +466,40 @@ style).
 test minimization algorithm.")
     (license license:bsd-2)))
 
+(define-public go-github-com-dvyukov-go-fuzz
+  (package
+    (name "go-github-com-dvyukov-go-fuzz")
+    (version "0.0.0-20240924070022-e577bee5275c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dvyukov/go-fuzz")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07ckgxxphv0157g6gyganrinynvw43c3mvizagjbjm3q2blymfh3"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (for-each delete-file-recursively
+                           (list "go-fuzz/vendor" "test/vendor"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/dvyukov/go-fuzz"))
+    (home-page "https://github.com/dvyukov/go-fuzz")
+    (synopsis "Randomized testing for Golang")
+    (description
+     "Go-fuzz is a coverage-guided
+@url{http://en.wikipedia.org/wiki/Fuzz_testing, fuzzing solution} for testing
+of Go packages.  Fuzzing is mainly applicable to packages that parse complex
+inputs (both text and binary), and is especially useful for hardening of
+systems that parse inputs from potentially malicious users (e.g. anything
+accepted over a network).")
+    (license license:asl2.0)))
+
 (define-public go-github-com-elgris-jsondiff
   (package
     (name "go-github-com-elgris-jsondiff")
