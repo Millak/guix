@@ -7590,6 +7590,36 @@ per host/process
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-sacloud-go-http
+  (package
+    (name "go-github-com-sacloud-go-http")
+    (version "0.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sacloud/go-http")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c7anxj00sam5q06jlqhi1z39p19p7nffd5q07j78pahcskgvpim"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sacloud/go-http"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-hashicorp-go-retryablehttp
+           go-go-uber-org-ratelimit))
+    (home-page "https://github.com/sacloud/go-http")
+    (synopsis "HTTP client library for SAKURA cloud in Go")
+    (description
+     "This package provides a HTTP client functionality that can be used
+across various @url{https://www.sakura.ad.jp/, Sakura Cloud} APIs (IaaS,
+ObjectStorage, PHY, etc.).")
+    (license license:asl2.0)))
+
 (define-public go-github-com-safchain-ethtool
   (package
     (name "go-github-com-safchain-ethtool")
