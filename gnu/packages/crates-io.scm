@@ -2551,26 +2551,25 @@ coverage-guided, mutation-based fuzzers.")
 (define-public rust-arboard-3
   (package
     (name "rust-arboard")
-    (version "3.3.2")
+    (version "3.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "arboard" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0n7s54yjbv3qksq2fivcdnvriplmzp8fd14dfrw7k7048cciy152"))))
+        (base32 "1x2p8dfhzm3w0cpw81ab2rbyzvkzqs9g66xcakq4y0fd2v5rq2fz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; tests require X11 $DISPLAY
        #:cargo-inputs (("rust-clipboard-win" ,rust-clipboard-win-5)
                        ("rust-core-graphics" ,rust-core-graphics-0.23)
-                       ("rust-image" ,rust-image-0.24)
+                       ("rust-image" ,rust-image-0.25)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-objc" ,rust-objc-0.2)
-                       ("rust-objc-foundation" ,rust-objc-foundation-0.1)
-                       ("rust-objc-id" ,rust-objc-id-0.1)
+                       ("rust-objc2" ,rust-objc2-0.5)
+                       ("rust-objc2-app-kit" ,rust-objc2-app-kit-0.2)
+                       ("rust-objc2-foundation" ,rust-objc2-foundation-0.2)
                        ("rust-parking-lot" ,rust-parking-lot-0.12)
-                       ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-windows-sys" ,rust-windows-sys-0.48)
                        ("rust-wl-clipboard-rs" ,rust-wl-clipboard-rs-0.8)
                        ("rust-x11rb" ,rust-x11rb-0.13))
