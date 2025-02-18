@@ -89042,6 +89042,29 @@ with tracing (optional, enabled by the env-logger feature).
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
                                    ("rust-tracing" ,rust-tracing-0.1))))))
 
+(define-public rust-tracing-mock-0.1
+  (package
+    (name "rust-tracing-mock")
+    (version "0.1.0-beta.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-mock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03mg1pzz31bpkj1wyhzh59r0pyypyp6dpsnssdcbqm48zj4rkx9z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-tokio-stream" ,rust-tokio-stream-0.1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-tracing-core" ,rust-tracing-core-0.1)
+                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://tokio.rs")
+    (synopsis "Utilities for testing `tracing` and crates that uses it.")
+    (description
+     "This package provides utilities for testing `tracing` and crates that use it.")
+    (license license:expat)))
+
 (define-public rust-tracing-serde-0.2
   (package
     (name "rust-tracing-serde")
