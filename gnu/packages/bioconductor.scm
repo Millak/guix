@@ -18138,7 +18138,9 @@ information about samples and features can be added to the plot.")
        (sha256
         (base32
          "0ql5mxaks11dpkykggylnpi2jymh467w1zqi6s6bp1gb4h399jly"))))
-    (properties `((upstream-name . "GOSemSim")))
+    (properties
+     '((upstream-name . "GOSemSim")
+       (updater-extra-native-inputs . ("r-org-hs-eg-db"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
@@ -18150,7 +18152,7 @@ information about samples and features can be added to the plot.")
            r-rlang
            r-yulab-utils))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-org-hs-eg-db r-testthat))
     (home-page "https://guangchuangyu.github.io/software/GOSemSim")
     (synopsis "GO-terms semantic similarity measures")
     (description
