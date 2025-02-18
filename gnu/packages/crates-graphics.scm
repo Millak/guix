@@ -1436,14 +1436,14 @@ EUI-64, also known as MAC-48 media access control addresses.")
 (define-public rust-fast-image-resize-5
   (package
     (name "rust-fast-image-resize")
-    (version "5.1.0")
+    (version "5.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fast_image_resize" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qp95mkllxmkc3q0iwh1rj9cgv0rixpjz5wdw6avv2n17g090y7c"))))
+        (base32 "19fiq2lw8yvv0jbnz3scliwhs5hc3n2c3ipnxdz15z3rqp668lmm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; use of undeclared crate or module `testing`
@@ -1455,7 +1455,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
-                                   ("rust-itertools" ,rust-itertools-0.13)
+                                   ("rust-itertools" ,rust-itertools-0.14)
                                    ("rust-libvips" ,rust-libvips-1)
                                    ("rust-nix" ,rust-nix-0.29)
                                    ("rust-png" ,rust-png-0.17)
