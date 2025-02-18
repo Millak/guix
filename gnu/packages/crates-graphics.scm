@@ -5809,17 +5809,17 @@ crate @code{rust-wayland-client} for usable bindings.")
     (description "This package provides the core Wayland types for wayrs.")
     (license license:expat)))
 
-(define-public rust-wayrs-proto-parser-2
+(define-public rust-wayrs-proto-parser-3
   (package
     (name "rust-wayrs-proto-parser")
-    (version "2.0.4")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayrs-proto-parser" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qhav3nzd69f4ikm19kv8k246rpg71qyih60hgz8l7dv9z8gsv79"))))
+        (base32 "08hrcl0mz9v1pkl47zf7hpsn3ww83kh293xvsdfpl086pdz5gx1c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-quick-xml" ,rust-quick-xml-0.37))))
