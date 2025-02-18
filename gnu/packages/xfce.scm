@@ -279,7 +279,7 @@ it to your needs by using several command line options.")
 (define-public elementary-xfce-icon-theme
   (package
     (name "elementary-xfce-icon-theme")
-    (version "0.20")
+    (version "0.20.1")
     (source
      (origin
        (method git-fetch)
@@ -288,7 +288,7 @@ it to your needs by using several command line options.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fdfqf98rk3z30qcs5ca3i3ybwg4icvq6yrxwv8i3yl0ikw6rc4k"))))
+        (base32 "1vv0fsi8myyhxc0miaphhkl4w8g0zkbirrarclbxpahp1pmxw3g1"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -306,7 +306,7 @@ it to your needs by using several command line options.")
      "This is a fork of the upstream elementary project. This icon
 theme is supposed to keep everything working for Xfce, but gets updates from
 upstream occasionally.")
-    (license gpl2+)))
+    (license gpl3+)))
 
 (define-public exo
   (package
