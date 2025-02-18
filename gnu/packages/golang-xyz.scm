@@ -35,7 +35,7 @@
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2022 kiasoc5 <kiasoc5@disroot.org>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
-;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
+;;; Copyright © 2023, 2024 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
@@ -6906,7 +6906,16 @@ provides a buffered io.Writer that is flushed at a timed interval.")
           (add-after 'unpack 'remove-benchmark
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "benchmark"))))))))
+                (delete-file-recursively "benchmark"))))
+            (add-after 'unpack 'fix-paths
+              (lambda* (#:key import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (let* ((fusermount3 "/run/setuid-programs/fusermount3"))
+                    (substitute* "fuse/mount_linux.go"
+                      (("bin, err := fusermountBinary[(][)]")
+                       (format #f "bin, err := ~s, nil" fusermount3)))))))))))
+    (inputs
+     (list fuse))
     (propagated-inputs
      (list go-github-com-kylelemons-godebug
            go-github-com-moby-sys-mountinfo
