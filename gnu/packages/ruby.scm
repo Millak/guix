@@ -13632,45 +13632,48 @@ about the changes.")
     (license license:expat)))
 
 (define-public ruby-terminfo
-  (package
-    (name "ruby-terminfo")
-    (version "0.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-              "http://www.a-k-r.org/" name "/" name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "1n59dw351z6nzylgj0gpx4rpz6qhf8lrhzcbp1xqfpqvryhaxrjh"))))
-    (build-system ruby-build-system)
-    (arguments
-     (list
-      #:test-target "test"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'replace-git-ls-files)
-          (replace 'build
-            (lambda _
-              (invoke "ruby" "extconf.rb")
-              (invoke "make")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (for-each (lambda (f)
-                            (invoke "ruby" "-I" "test" f))
-                          (find-files "test" "^test_.*\\.rb$")))))
-          (replace 'install
-            (lambda _
-              (invoke "make" "install" (string-append "prefix=" #$output)))))))
-    (inputs
-     (list ncurses))
-    (native-inputs
-     (list ruby-rubygems-tasks ruby-rdoc))
-    (home-page "http://www.a-k-r.org/ruby-terminfo/")
-    (synopsis "Terminfo binding for Ruby")
-    (description "Ruby-terminfo provides terminfo binding for Ruby.")
-    (license license:bsd-3)))
+  (let ((commit "f4a597d92dcc465e7b343f9afb8cd45607c8e969")
+        (revision "0"))
+    (package
+      (name "ruby-terminfo")
+      (version (git-version "0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/genki/ruby-terminfo")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0b24sqf0jwj8m106nh35hjayw1kiyrpramb6vg7fnz32mqni6hdi"))))
+      (build-system ruby-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'replace-git-ls-files)
+            (replace 'build
+              (lambda _
+                (invoke "ruby" "extconf.rb")
+                (invoke "make")))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (for-each (lambda (f)
+                              (invoke "ruby" "-Ilib:test" "-Ilib:." f))
+                            (find-files "test" "^test_.*\\.rb$")))))
+            (replace 'install
+              (lambda _
+                (invoke "make" "install" (string-append "prefix=" #$output)))))))
+      (inputs
+       (list ncurses))
+      (native-inputs
+       (list ruby-rubygems-tasks ruby-rdoc))
+      (home-page "http://www.a-k-r.org/ruby-terminfo/")
+      (synopsis "Terminfo binding for Ruby")
+      (description "Ruby-terminfo provides terminfo binding for Ruby.")
+      (license license:bsd-3))))
 
 (define-public ruby-diffy
   (package
