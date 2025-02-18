@@ -35,13 +35,17 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cups)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib) ; dbus for tests
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gstreamer)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
@@ -913,6 +917,72 @@ It includes a history of spoken sentences from which the user can select
 sentences to be re-spoken.")
     (license ;; GPL for programs, FDL for documentation
      (list license:gpl2+ license:fdl1.2+))))
+
+(define-public krename
+  (let ((commit "33b6d5eec7284d82b9d15c4ea43949b0864a2567")
+         (revision "0"))
+    (package
+      (name "krename")
+      (version (git-version "5.0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://invent.kde.org/utilities/krename")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1v056qf4fd1jny0n4n0wka9j0bdx9ii4s0ljb8f2fqgpi2wj57lm"))))
+      (build-system qt-build-system)
+      (arguments
+       (list #:qtbase qtbase
+              #:configure-flags
+              #~(list "-DQT_MAJOR_VERSION=6")))
+      (native-inputs
+       (list extra-cmake-modules pkg-config))
+      (inputs
+       (list exiv2
+             freetype
+             karchive
+             kcompletion
+             kconfig
+             kcoreaddons
+             kcrash
+             ki18n
+             kiconthemes
+             kio
+             kitemviews
+             kjobwidgets
+             kjs
+             kservice
+             kwidgetsaddons
+             kxmlgui
+             podofo
+             taglib
+             qt5compat))
+      (home-page "https://userbase.kde.org/KRename")
+      (synopsis "Utility to handle specialized file renames")
+      (description "KRename is a batch file renamer by KDE.  It allows you to
+easily rename hundreds or even more files in one go.  The filenames can be
+constructed using parts of the original filename or information from the file
+metadata such as the creation date or Exif information of an image.
+
+Its features include:
+
+@itemize
+@item renaming a list of files based on a set of expressions,
+@item copying/moving a list of files to another directory,
+@item converting filenames to upper/lower case,
+@item adding numbers to filenames,
+@item finding and replacing parts of the filename,
+@item rename audio files (e.g. mp3, ogg) files based on their metadata,
+@item setting access and modification dates, permissions and file ownership,
+@item a plug-in API which allows you to extend KRename's features,
+@item renaming directories recursively,
+@item support for KFilePlugins and
+@item creating undo file.
+@end itemize")
+      (license license:gpl3+))))
 
 (define-public kronometer
   (package
