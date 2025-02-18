@@ -1536,7 +1536,7 @@ memory usage graphically, and it can display processes as a tree.")
 (define-public orage
   (package
     (name "orage")
-    (version "4.18.0")
+    (version "4.20.0")
     (source
      (origin
        (method git-fetch)
@@ -1545,7 +1545,7 @@ memory usage graphically, and it can display processes as a tree.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sidyq4358cp701rkfj4p0ikshf612jm5f9j4gma6h6v2dxp7gxw"))))
+        (base32 "0z32b2wg2pfwcvpp81dmdlnwqxnh7ps08mr13syzl7v0qj29p9jm"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
