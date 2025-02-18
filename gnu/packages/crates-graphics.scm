@@ -5853,20 +5853,19 @@ with wayrs-client.")
 (define-public rust-wayrs-scanner-0.15
   (package
     (name "rust-wayrs-scanner")
-    (version "0.15.0")
+    (version "0.15.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayrs-scanner" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ic501bv24racms7gissz8v7axf71irrd134ljsjx557zv5p3w91"))))
+        (base32 "0a4d6szwgj6shm674n550b6nlf7va6z46i7idb5cpmx8c32zgchn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-2)
-                       ("rust-wayrs-proto-parser" ,rust-wayrs-proto-parser-2))))
+                       ("rust-wayrs-proto-parser" ,rust-wayrs-proto-parser-3))))
     (home-page "https://github.com/MaxVerevkin/wayrs")
     (synopsis "Generates code for wayrs-client from xml files")
     (description "This package provides code generation for wayrs-client
