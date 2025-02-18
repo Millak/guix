@@ -6071,6 +6071,41 @@ multistream-select protocol.  The protocol is defined at
 2616} HTTP/1.1 standard.")
     (license license:bsd-3)))
 
+(define-public go-github-com-ncw-swift-v2
+  (package
+    (name "go-github-com-ncw-swift-v2")
+    (version "2.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ncw/swift")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "058mbdgm57rm24skscpl2lklqxs46sc4c3x5770xrd3yncry0rl8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ncw/swift/v2"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests requiring access with TOKEN to API endpoints.
+                       (list "TestAuthenticate"
+                             "TestCDNDisable"
+                             "TestCDNEnable"
+                             "TestCDNMeta"
+                             "TestContainerCreate"
+                             "TestContainerDelete"
+                             "TestOnReAuth")
+                       "|"))))
+    (home-page "https://github.com/ncw/swift")
+    (synopsis "Interface to various cloud storage APIs")
+    (description
+     "Package swift provides an easy to use interface to Swift / Openstack
+Object Storage / Rackspace Cloud Files.")
+    (license license:expat)))
+
 (define-public go-github-com-nrdcg-goinwx
   (package
     (name "go-github-com-nrdcg-goinwx")
