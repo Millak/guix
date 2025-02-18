@@ -18308,6 +18308,8 @@ to multiple hypothesis correction.")
          "1x0dnlbgx2wsiki7l7c8np7v8kh4m5f30yjnavfzg9pjy3j98myq"))))
     (properties `((upstream-name . "DOSE")))
     (build-system r-build-system)
+    ;; Tests attempt to download data from the Internet via r-gosemsim.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
            r-biocparallel
