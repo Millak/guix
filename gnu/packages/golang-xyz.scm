@@ -17395,6 +17395,63 @@ that handle none of the event types.")
      "@code{multierr} allows combining one or more Go errors together.")
     (license license:expat)))
 
+(define-public go-go-uber-org-ratelimit
+  (package
+    (name "go-go-uber-org-ratelimit")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber-go/ratelimit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12q3a1k88ifff8rnp3sk1bk730iln0gqmx32966a8w19yrgwrcdj"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - go.uber.org/ratelimit/tools
+            (delete-file-recursively "tools")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.uber.org/ratelimit"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Tests are shaky, see
+               ;; <https://github.com/uber-go/ratelimit/issues/128>.
+               (list "TestInitial/With_Slack"
+                     "TestDelayedRateLimiter/atomic"
+                     "TestInitial/Without_Slack"
+                     "TestPer/atomic"
+                     "TestSlack/no_option,_defaults_to_10,_with_per/atomic"
+                     "TestSlack/no_option,_defaults_to_10,_with_per/mutex"
+                     "TestSlack/no_option,_defaults_to_10/atomic"
+                     "TestSlack/slack_of_10,_like_default,_with_per/atomic"
+                     "TestSlack/slack_of_10,_like_default/atomic"
+                     "TestSlack/slack_of_150,_with_per/atomic"
+                     "TestSlack/slack_of_150/atomic"
+                     "TestSlack/slack_of_20,_with_per/atomic"
+                     "TestSlack/slack_of_20/atomic")
+               "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-benbjohnson-clock
+           go-go-uber-org-atomic))
+    (home-page "https://github.com/uber-go/ratelimit")
+    (synopsis "Blocking leaky-bucket rate limit implementation in Golang")
+    (description
+     "This package implements the
+@url{https://en.wikipedia.org/wiki/Leaky_bucket, leaky-bucket rate limit
+algorithm}.  It refills the bucket based on the time elapsed between requests
+instead of requiring an interval clock to fill the bucket discretely.")
+    (license license:expat)))
+
 (define-public go-go-uber-org-zap
   (package
     (name "go-go-uber-org-zap")
