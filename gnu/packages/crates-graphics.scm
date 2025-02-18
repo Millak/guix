@@ -4594,32 +4594,34 @@ and height) from SVG graphics.")
 (define-public rust-tiny-xlib-0.2
   (package
     (name "rust-tiny-xlib")
-    (version "0.2.2")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tiny-xlib" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vgbk1n6mk9vrvd228bpila359cz7vb9pbhyim507alv4r4qs2fl"))))
+        (base32 "17nqhy48ab7vchxzplqrw2g88mx2zyr38kwr1ipan76hxx5m0903"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--release" "--"
+     `(#:cargo-test-flags '("--"
+                            ;; error: "failed to open display"
                             "--skip=error_handling"
                             "--skip=remove_and_re_insert"
                             "--skip=smoke"
                             "--skip=replace_old_handler")
        #:cargo-inputs (("rust-as-raw-xcb-connection" ,rust-as-raw-xcb-connection-1)
-                       ("rust-ctor" ,rust-ctor-0.2)
+                       ("rust-ctor-lite" ,rust-ctor-lite-0.1)
                        ("rust-libloading" ,rust-libloading-0.8)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
                        ("rust-tracing" ,rust-tracing-0.1))
        #:cargo-development-inputs
        (("rust-tracing" ,rust-tracing-0.1)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-x11-dl" ,rust-x11-dl-2)
-        ("rust-x11rb" ,rust-x11rb-0.12))))
-    (inputs
-     (list libx11))
+        ("rust-x11rb" ,rust-x11rb-0.13))))
+    (native-inputs (list pkg-config))
+    (inputs (list libx11))
     (home-page "https://github.com/notgull/tiny-xlib")
     (synopsis "Tiny Xlib wrapper for Rust")
     (description "This package provides a tiny Xlib wrapper for Rust.")
