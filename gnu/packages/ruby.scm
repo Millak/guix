@@ -4030,11 +4030,11 @@ two hashes.")
 
 (define-public ruby-hydra-minimal
   ;; No releases yet.
-  (let ((commit "5abfa378743756ae4d9306cc134bcc482f5c9525")
-        (revision "0"))
+  (let ((commit "a4cab705a8a281e4356cb6a05a1946443ad9d53b")
+        (revision "1"))
     (package
       (name "ruby-hydra-minimal")
-      (version (git-version "0.0" revision commit))
+      (version (git-version "0.0.0" revision commit))
       (home-page "https://github.com/hyphenation/hydra")
       (source (origin
                 (method git-fetch)
@@ -4045,7 +4045,7 @@ two hashes.")
                 (patches (search-patches "ruby-hydra-minimal-no-byebug.patch"))
                 (sha256
                  (base32
-                  "1cik398l2765y3d9sdhjzki3303hkry58ac6jlkiy7iy62nm529f"))))
+                  "1swzab7i4cqk1bck7p5m3bh526jh0v6m9qq720r3270zbjc8x8z3"))))
       (build-system ruby-build-system)
       (arguments
        ;; Avoid rspec dependency.
@@ -4058,12 +4058,28 @@ It is a low-dependency variant of ruby-hydra.")
 
 ;; Pinned variant for use by texlive
 (define-public ruby-hydra-minimal/pinned
-  (hidden-package
-   (package
-     (inherit ruby-hydra-minimal)
-     (arguments
-      (cons* #:ruby ruby-2.7
-             (package-arguments ruby-hydra-minimal))))))
+  (let ((commit "5abfa378743756ae4d9306cc134bcc482f5c9525")
+        (revision "0"))
+    (hidden-package
+     (package
+       (inherit ruby-hydra-minimal)
+       (version (git-version "0.0" revision commit))
+       (source (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                       (url "https://github.com/hyphenation/hydra")
+                       (commit commit)))
+                 (file-name (git-file-name "ruby-hydra-minimal" version))
+                 ;; byebug is a non-essential debugging utility that brings in
+                 ;; many dependencies.
+                 (patches (search-patches "ruby-hydra-minimal-no-byebug.patch"))
+                 (sha256
+                  (base32
+                   "1cik398l2765y3d9sdhjzki3303hkry58ac6jlkiy7iy62nm529f"))))
+       (arguments
+        (list
+         #:ruby ruby-2.7
+         #:tests? #f))))))
 
 (define-public ruby-hydra
   (package
