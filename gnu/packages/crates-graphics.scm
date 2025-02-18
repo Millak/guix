@@ -2208,14 +2208,14 @@ SIMD instructions.")
 (define-public rust-glutin-wgl-sys-0.6
   (package
     (name "rust-glutin-wgl-sys")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glutin_wgl_sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0b0y444rc9sf67wqayyj40wayd92rjffavs9ma0llhyrpd8ijkha"))))
+        (base32 "0gng2810jb5x133lmy17qifjx6s90lnprm86afg7mfls505y0kic"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gl-generator" ,rust-gl-generator-0.14))))
