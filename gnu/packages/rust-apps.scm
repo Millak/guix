@@ -3088,14 +3088,14 @@ representations.")
 (define-public procs
   (package
     (name "procs")
-    (version "0.14.8")
+    (version "0.14.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "procs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06q9ply29745g0yxpvmxmqzr74r7qix6i0m16sj1cn7cg1gmc7h3"))))
+        (base32 "0k56fky129r4wn3ifnhlyw42rk1ma3ipg6dc38lf757jx81x4g0y"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -3108,7 +3108,7 @@ representations.")
                        ("rust-clap" ,rust-clap-4)
                        ("rust-clap-complete" ,rust-clap-complete-4)
                        ("rust-console" ,rust-console-0.15)
-                       ("rust-directories" ,rust-directories-5)
+                       ("rust-directories" ,rust-directories-6)
                        ("rust-dockworker" ,rust-dockworker-0.5)
                        ("rust-errno" ,rust-errno-0.3)
                        ("rust-getch" ,rust-getch-0.3)
@@ -3127,7 +3127,7 @@ representations.")
                        ("rust-toml" ,rust-toml-0.8)
                        ("rust-unicode-width" ,rust-unicode-width-0.2)
                        ("rust-uzers" ,rust-uzers-0.12)
-                       ("rust-which" ,rust-which-6)
+                       ("rust-which" ,rust-which-7)
                        ("rust-windows-sys" ,rust-windows-sys-0.59))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'install 'install-manual-page
