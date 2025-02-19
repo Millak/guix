@@ -47545,8 +47545,45 @@ without performing I/O.")
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-notify-7
+  (package
+    (name "rust-notify")
+    (version "7.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "notify" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02a0a1n0raxqslwhfprwmz7w34v54r42006q0m8bmy89jz1v8cy5"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:cargo-inputs (list rust-bitflags-2
+                           rust-crossbeam-channel-0.5
+                           rust-filetime-0.2
+                           rust-fsevent-sys-4
+                           rust-inotify-0.10
+                           rust-kqueue-1
+                           rust-libc-0.2
+                           rust-log-0.4
+                           rust-mio-1
+                           rust-notify-types-1
+                           rust-walkdir-2
+                           rust-windows-sys-0.52)
+      #:cargo-development-inputs (list rust-insta-1
+                                       rust-nix-0.27
+                                       rust-serde-json-1
+                                       rust-tempfile-3)))
+    (home-page "https://github.com/notify-rs/notify")
+    (synopsis "Cross-platform filesystem notification library")
+    (description "This package contains a cross-platform filesystem
+notification library.")
+    (license license:cc0)))
+
 (define-public rust-notify-6
   (package
+    (inherit rust-notify-7)
     (name "rust-notify")
     (version "6.1.1")
     (source
@@ -47556,7 +47593,6 @@ without performing I/O.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0bad98r0ilkhhq2jg3zs11zcqasgbvxia8224wpasm74n65vs1b2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
                        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
@@ -47572,12 +47608,7 @@ without performing I/O.")
                        ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs (("rust-nix" ,rust-nix-0.23)
                                    ("rust-serde-json" ,rust-serde-json-1)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/notify-rs/notify")
-    (synopsis "Cross-platform filesystem notification library")
-    (description "This package contains a cross-platform filesystem
-notification library.")
-    (license license:cc0)))
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-notify-5
   (package
