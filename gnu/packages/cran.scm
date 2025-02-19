@@ -13072,10 +13072,12 @@ from the data points.")
        (uri (cran-uri "coro" version))
        (sha256
         (base32 "1kvaf5484s6dn6zm4nw0ns6fi09lcqnljb51w4fdgsm80s04k6kc"))))
-    (properties `((upstream-name . "coro")))
+    (properties
+     '((upstream-name . "coro")
+       (updater-extra-native-inputs . ("r-later" "r-promises"))))
     (build-system r-build-system)
     (propagated-inputs (list r-rlang))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-later r-promises r-testthat))
     (home-page "https://github.com/r-lib/coro")
     (synopsis "Coroutines for R")
     (description
