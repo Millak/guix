@@ -3,7 +3,7 @@
 ;;; Copyright © 2017 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2017, 2018, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
@@ -1925,20 +1925,20 @@ compatible directories.")
 (define-public python-dropbox
   (package
     (name "python-dropbox")
-    (version "11.36.2")
+    (version "12.0.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "dropbox" version))
         (sha256
-         (base32 "00650gk8557x3f38nd8a1mdby7v1l8l4l72aq48qpiw6shb3v3fl"))
+         (base32 "0qlrc2ykl7zmv808apqv5ycfzrwnm13ngz1daizh9kszmpapy1ah"))
         (snippet
          '(begin
             (use-modules (guix build utils))
             (substitute* "setup.py"
-              (("pytest-runner == 5\\.2\\.0") "pytest-runner"))))))
+              (("pytest-runner==5\\.2\\.0") "pytest-runner"))))))
     (build-system python-build-system)
-    (arguments '(#:tests? #f))  ; Tests require a network connection.
+    (arguments '(#:tests? #f))  ; Tests not included in the release tarball.
     (native-inputs
      (list python-pytest python-pytest-runner))
     (propagated-inputs
