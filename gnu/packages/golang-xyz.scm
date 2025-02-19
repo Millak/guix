@@ -3857,6 +3857,35 @@ submodules:
 font files in your system's user and system font directories.")
     (license license:expat)))
 
+(define-public go-github-com-gammazero-deque
+  (package
+    (name "go-github-com-gammazero-deque")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gammazero/deque")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "017xy7cw5yzmfjixwx5bglcxhg9gyyrqjilqzvq3mrh2760idp1a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gammazero/deque"))
+    (home-page "https://github.com/gammazero/deque")
+    (synopsis "Fast ring-buffer double-ended queue")
+    (description
+     "Package deque provides a fast ring-buffer deque (double-ended queue)
+implementation for Golang.
+
+It generalizes a queue and a stack, to efficiently add and remove items at
+either end with O(1) performance.  Queue (FIFO) operations are supported using
+@code{PushBack} and @code{PopFront}.  Stack (LIFO) operations are supported
+using @code{PushBack} and @code{PopBack}.")
+    (license license:expat)))
+
 (define-public go-github-com-ghodss-yaml
   (package
     (name "go-github-com-ghodss-yaml")
