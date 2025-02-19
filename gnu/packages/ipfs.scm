@@ -905,6 +905,39 @@ and @code{go-ipld-format} legacy interface.")
 tasks distributed among peers.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public go-github-com-ipfs-go-test
+  (package
+    (name "go-github-com-ipfs-go-test")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-test")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h2lns6xl874m175l692qwsrwrv7jcx54ncqygjy9l3910ny2dg2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-test"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid
+           go-github-com-libp2p-go-libp2p
+           go-github-com-multiformats-go-multiaddr
+           go-github-com-multiformats-go-multicodec
+           go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/ipfs/go-test")
+    (synopsis "Testing utilty library for IPFS")
+    (description
+     "This package profides a test utility code used across many different
+IPFS related projects.")
+    (license (list license:asl2.0 license:expat))))
+
 ;; XXX: This repository has been archived by the owner on Jun 20, 2023. It is
 ;; now read-only.  We highly recommend switching to the maintained version at
 ;; https://github.com/ipfs/boxo/tree/main/verifcid.  It's still in use by some
