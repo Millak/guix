@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2024 Sergio Durigan Junior <sergiodj@sergiodj.net>
@@ -203,7 +203,7 @@ seamlessly with your desktop environment.")
 (define-public snac2
   (package
     (name "snac")
-    (version "2.68")
+    (version "2.72")
     (source
      (origin
        (method git-fetch)
@@ -212,20 +212,13 @@ seamlessly with your desktop environment.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sdhwc88yhqgij88js957p86wmq9j0rscski4flympcrg3qk43f9"))))
+        (base32 "1ykrqyx0jc2cmjnj8ygqix2n64bfa2q444qz9ccsnxr3717mn1xc"))))
     (build-system gnu-build-system)
     (inputs (list curl openssl))
     (arguments
      (list
        #:phases #~(modify-phases %standard-phases
-                    (delete 'configure)
-                    (add-after 'unpack 'remove-usr-local
-                      (lambda _
-                        (substitute* "Makefile"
-                          (("-I/usr/local/include")
-                           "")
-                          (("-L/usr/local/lib")
-                           "")))))
+                    (delete 'configure))
        #:tests? #f ; no test target
        #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
                             (string-append "CFLAGS=-O2 -g -Wall -Wextra")
