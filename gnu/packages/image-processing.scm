@@ -1672,36 +1672,36 @@ purposes.")
 (define-public python-imgviz
   (package
     (name "python-imgviz")
-    (version "1.2.6")
+    (version "1.7.6")
     (source
      (origin
        ;; PyPi tarball lacks tests.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/wkentaro/imgviz.git")
+             (url "https://github.com/wkentaro/imgviz")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bm0wdv5p26i8nl4kx3145cz553v401sgbpgc96sddzjfmfiydcw"))
-      (snippet
-       #~(begin (use-modules (guix build utils))
-                (substitute* "imgviz/draw.py"
-                  (("collections\\.Iterable") "collections.abc.Iterable"))
-                (substitute* "imgviz/tile.py"
-                  (("collections\\.Sequence") "collections.abc.Sequence"))))))
-    (build-system python-build-system)
+        (base32 "0z7nwnvqh3hbbccf7v56398aiiwqs68kyrgc5vsmmh1cp4pwrgnb"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-v" "tests"))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; LookupError: Error getting the version from source `vcs`:
+               ;; setuptools-scm was unable to detect version for <...>
+               (add-after 'unpack 'pretend-version
+                 (lambda _
+                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-pytest
+           python-hatchling
+           python-hatch-vcs
+           python-hatch-fancy-pypi-readme))
     (propagated-inputs
-      (list python-matplotlib python-numpy python-pillow python-pyyaml))
-    (native-inputs (list python-pytest))
+     (list python-matplotlib
+           python-numpy
+           python-pillow
+           python-pyyaml))
     (home-page "http://github.com/wkentaro/imgviz")
     (synopsis "Image Visualization Tools")
     (description "Python library for object detection, semantic and instance
