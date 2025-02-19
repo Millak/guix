@@ -48,6 +48,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
@@ -1014,6 +1015,16 @@ game development and other performance-critical applications.")
               (sha256
                (base32
                 "01g64kmjw8dfhj12j5fgyx70avix9p1ml4w25lm726dixmpq9gp8"))))))
+
+(define-public go-github-com-google-flatbuffers
+  (package/inherit flatbuffers-next
+    (name "go-github-com-google-flatbuffers")
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/google/flatbuffers"))))
 
 (define-public python-flatbuffers
   (package
