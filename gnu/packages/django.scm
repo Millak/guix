@@ -676,14 +676,14 @@ queries done via the Django ORM, SQLAlchemy generated queries are displayed.")
 (define-public python-django-gravatar2
   (package
     (name "python-django-gravatar2")
-    (version "1.4.4")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "django-gravatar2" version))
        (sha256
         (base32
-         "1vn921fb6jjx7rf5dzhy66rkb71nwmh9ydd0xs9ys72icw4jh4y8"))))
+         "0r03m1qkh56g92x136xdq8n92mj7gbi1fh0djarxhp9rbr35dfrd"))))
     (build-system python-build-system)
     (arguments
      '(;; TODO: The django project for the tests is missing from the release.
