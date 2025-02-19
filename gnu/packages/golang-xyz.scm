@@ -3857,6 +3857,38 @@ submodules:
 font files in your system's user and system font directories.")
     (license license:expat)))
 
+(define-public go-github-com-gammazero-chanqueue
+  (package
+    (name "go-github-com-gammazero-chanqueue")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gammazero/chanqueue")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kji9blaqbphzrdr9b09c1lfm4vzj94m2ygwganw62byqg4hwy26"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gammazero/chanqueue"))
+    (native-inputs
+     (list go-go-uber-org-goleak))
+    (propagated-inputs
+     (list go-github-com-gammazero-deque))
+    (home-page "https://github.com/gammazero/chanqueue")
+    (synopsis "Buffered channel with unlimited capacity queue")
+    (description
+     "Package chanqueue implements a queue that uses channels for input and
+output to provide concurrent access to a re-sizable queue.  This allows the
+queue to be used like a channel.  Closing the input channel closes the output
+channel when all queued items are read, consistent with channel behavior.  In
+other words chanqueue is a dynamically buffered channel with up to infinite
+capacity.")
+    (license license:expat)))
+
 (define-public go-github-com-gammazero-deque
   (package
     (name "go-github-com-gammazero-deque")
