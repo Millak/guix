@@ -7011,6 +7011,41 @@ such as IoT applications or multi-user database-driven business applications.")
 Python.")
     (license license:bsd-3)))
 
+(define-public python-slowapi
+  (package
+    (name "python-slowapi")
+    (version "0.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/laurents/slowapi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lc1n6lvh01dhhrc507qri9rz1w72l2riii03ixh7n7n1gwjpws7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests fail because the timestamp contains more decimal points
+      ;; than expected, so a simple equality comparison fails.
+      '(list "-k" (string-append "not test_headers_no_breach"
+                                 " and not test_headers_breach"))))
+    (propagated-inputs (list python-limits python-redis))
+    (native-inputs
+     (list python-fastapi
+           python-hiro
+           python-mock
+           python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/laurents/slowapi")
+    (synopsis "Rate limiting extension for Starlette and Fastapi")
+    (description
+     "This package provides a rate limiting extension for Starlette and
+Fastapi.")
+    (license license:expat)))
+
 (define-public python-slugify
   (package
     (name "python-slugify")
