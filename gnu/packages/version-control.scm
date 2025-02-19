@@ -3175,7 +3175,7 @@ any project with more than one developer, is one of Aegis's major functions.")
 (define-public tig
   (package
     (name "tig")
-    (version "2.5.10")
+    (version "2.5.12")
     (source
      (origin
        (method git-fetch)
@@ -3184,7 +3184,7 @@ any project with more than one developer, is one of Aegis's major functions.")
              (commit (string-append "tig-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m7v6xkvly3cbc5hs7plxdny4r41x3vkx7xylygjva4jcvnz0fjr"))))
+        (base32 "1ncrxvn7vbcyfvcczra6jx4mr5hv6p5xfa1wdvdfzwgfkj16hhys"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3196,10 +3196,10 @@ any project with more than one developer, is one of Aegis's major functions.")
           (add-after 'install 'install-completions
             (lambda _
               (let ((share (string-append #$output "/share")))
-                (mkdir-p (string-append share "/bash-completion/completions"))
+                (mkdir-p (string-append #$output "/etc/bash_completion.d"))
                 (mkdir-p (string-append share "/zsh/site-functions"))
                 (copy-file "contrib/tig-completion.bash"
-                           (string-append share "/bash-completion/completions/tig"))
+                           (string-append #$output "/etc/bash_completion.d/tig"))
                 (copy-file "contrib/tig-completion.zsh"
                            (string-append share "/zsh/site-functions/_tig"))))))
       #:test-target "test"
