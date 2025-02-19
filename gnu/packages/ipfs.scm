@@ -814,6 +814,33 @@ order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-fore
 and @code{go-ipld-format} legacy interface.")
     (license (list license:expat license:asl2.0))))
 
+(define-public go-github-com-ipfs-go-metrics-prometheus
+  (package
+    (name "go-github-com-ipfs-go-metrics-prometheus")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-metrics-prometheus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gyh2g912lrwghs2f5alh42dgwsbbdg1wan5vw8s0a2ni0avsfib"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-metrics-prometheus"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-log-v2
+           go-github-com-ipfs-go-metrics-interface
+           go-github-com-prometheus-client-golang))
+    (home-page "https://github.com/ipfs/go-metrics-prometheus")
+    (synopsis "Prometheus bindings for go-metrics-interface")
+    (description
+     "This package provides Prometheus bindings used in IPFS development.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-peertaskqueue
   (package
     (name "go-github-com-ipfs-go-peertaskqueue")
