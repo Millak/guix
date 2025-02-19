@@ -72,7 +72,7 @@ version."
     "Predicate to check if VERSION matches the format of a GNOME release
 version.  A release version can have more than one form, depending on the
 GNOME component, but typically it takes the form of a major-minor tuple, where
-minor can also be prefixed wih \"alpha\", \"beta\" or \"rc\".  For more
+minor can also be prefixed with \"alpha\", \"beta\" or \"rc\".  For more
 information about the GNOME versioning scheme, see:
 https://discourse.gnome.org/t/new-gnome-versioning-scheme/4235"
     (define components (string-tokenize version %not-dot))

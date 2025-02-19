@@ -133,7 +133,7 @@ SWH."
              (when (file-exists?
                     (string-append directory "/.gitattributes"))
                ;; Perform CR/LF conversion and other changes
-               ;; specificied by '.gitattributes'.
+               ;; specified by '.gitattributes'.
                (invoke git-command "-C" directory "init")
                (invoke git-command "-C" directory "config" "--local"
                        "user.email" "you@example.org")

@@ -1200,7 +1200,7 @@ be determined."
 
 (define (string-distance s1 s2)
   "Compute the Levenshtein distance between two strings."
-  ;; Naive implemenation
+  ;; Naive implementation
   (define loop
     (mlambda (as bt)
       (match as

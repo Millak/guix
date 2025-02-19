@@ -394,7 +394,7 @@ name of its URI."
 
 ;; Work around limitations in the 'snippet' mechanism.  It is not possible for
 ;; a 'snippet' to produce a tarball with a different base name than the
-;; original downloaded source.  Moreover, cherry picking dozens of upsteam
+;; original downloaded source.  Moreover, cherry picking dozens of upstream
 ;; patches and applying them suddenly is often impractical; especially when a
 ;; comprehensive code reformatting is done upstream.  Mainly designed for
 ;; Linux and IceCat packages.

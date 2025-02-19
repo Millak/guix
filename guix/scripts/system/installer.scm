@@ -46,7 +46,7 @@
 
 (define (show-help)
   (display (G_ "Usage: guix system installer [OPTION]...
-Run the system installler.\n"))
+Run the system installer.\n"))
   (display (G_ "
   -n, --dry-run          skip network setup, partitioning, and actual install"))
   (display (G_ "

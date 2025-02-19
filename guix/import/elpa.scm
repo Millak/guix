@@ -123,7 +123,7 @@ defined by ELPA-PKG-SPEC, a package specification as in an archive
   (eq? (first elpa-pkg-spec) (string->symbol name)))
 
 (define* (elpa-package-info name #:optional (repo 'gnu))
-  "Extract the information about the package NAME from the package archieve of
+  "Extract the information about the package NAME from the package archive of
 REPO."
   (let* ((archive (elpa-fetch-archive repo))
          (pkgs (match archive ((version pkg-spec ...) pkg-spec)))

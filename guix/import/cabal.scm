@@ -867,7 +867,7 @@ the ordering operation and the version."
       ((("import" imports) rest ...)
        (eval (append (append-map
                      ;; The imports are (at least sometimes) a list with one string
-                     ;; containing all the names separeted by commas. This splits
+                     ;; containing all the names separated by commas. This splits
                      ;; those strings to a list of strings in the same format that is
                      ;; used in common-stanzas.
                      (cut assoc-ref common-stanzas <>)

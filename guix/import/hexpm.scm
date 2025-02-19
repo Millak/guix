@@ -95,7 +95,7 @@
 
 
 (define (lookup-hexpm name)
-  "Look up NAME on hex.pm and return the corresopnding <hexpm> record
+  "Look up NAME on hex.pm and return the corresponding <hexpm> record
 or #f if it was not found."
   (and=> (json-fetch (package-url name))
          json->hexpm))
@@ -143,7 +143,7 @@ or #f if it was not found."
 
 
 (define (lookup-hexpm-release version*)
-  "Look up RELEASE on hexpm-version-url and return the corresopnding
+  "Look up RELEASE on hexpm-version-url and return the corresponding
 <hexpm-release> record or #f if it was not found."
   (and=> (json-fetch (hexpm-version-url version*))
          json->hexpm-release))

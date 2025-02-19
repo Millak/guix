@@ -363,7 +363,7 @@ look up the development dependencs for the given crate."
                                             (crate-versions crate))))))
 
   ;; If no non-yanked existing package version was found, check the upstream
-  ;; versions.  If a non-yanked upsteam version exists, use it instead,
+  ;; versions.  If a non-yanked upstream version exists, use it instead,
   ;; otherwise use the existing package version, provided it exists.
   (define (dependency-name+missing+version+yanked dep)
     (let* ((name (crate-dependency-id dep))

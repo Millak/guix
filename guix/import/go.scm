@@ -91,7 +91,7 @@
 ;;;   + or recognizing .vcs suffix
 ;;;   + or parsing meta tag in HTML served at the URL
 ;;;   + or (TODO) if nothing else works by using zip file served by GOPROXY
-;;; - get go.mod from GOPROXY (which is able to synthetize one if needed)
+;;; - get go.mod from GOPROXY (which is able to synthesize one if needed)
 ;;; - extract list of dependencies from this go.mod
 ;;;
 ;;; The Go module paths are translated to a Guix package name under the
@@ -131,7 +131,7 @@ https://godoc.org/golang.org/x/mod/module#hdr-Escaped_Paths)."
   (http-fetch* (string-append "https://pkg.go.dev/" name)))
 
 (define* (go-module-version-info goproxy name #:key version)
-  "Fetch a JSON object encoding about the lastest version for NAME from the given
+  "Fetch a JSON object encoding about the latest version for NAME from the given
 GOPROXY server, or for VERSION when specified."
   (let ((file (if version
                   (string-append "@v/" version ".info")
@@ -150,7 +150,7 @@ styles for the same package."
         (begin
           (warning (G_ "Empty list of versions on proxy ~a for package '~a'. Using latest.~%")
                    goproxy name)
-          ;; If we haven't recieved any versions, look in the version-info json
+          ;; If we haven't received any versions, look in the version-info json
           ;; object and return a one-element list if found.
           (or (and=> (assoc-ref (go-module-version-info goproxy name) "Version")
                      list)
