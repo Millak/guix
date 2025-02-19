@@ -1711,31 +1711,28 @@ segmentation.")
 (define-public python-pims
   (package
     (name "python-pims")
-    (version "0.6.1")
+    (version "0.7")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "PIMS" version))
+       (uri (pypi-uri "pims" version))
        (sha256
-        (base32 "0fsg353mbbj1ad06nwrp8p9xcrzy6rca6b52nvlbraaf3m309dz2"))))
+        (base32 "0swlh8g4kf8p24g0ghkmwcj9y45rc59lmqx459nhhmhj6167m42m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; We don't have all the (sometimes very large) data files, so we skip
       ;; these tests.
-      '(list "--ignore=pims/tests/test_imseq.py"
-             "--ignore=pims/tests/test_norpix.py"
-             "-k"
-             (string-append " not TestImageReaderTIFF"
-                            " and not TestOpenFiles"
-                            " and not TestSpeStack"
-                            " and not TestTiffStack_pil"
-                            " and not TestTiffStack_tifffile"
-                            " and not TestVideo_ImageIO"))))
+      '(list "--ignore=pims/tests/test_common.py"
+             "--ignore=pims/tests/test_imseq.py"
+             "--ignore=pims/tests/test_norpix.py")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-imageio python-numpy python-slicerator))
-    (native-inputs (list python-pytest))
     (home-page "https://github.com/soft-matter/pims")
     (synopsis "Python Image Sequence")
     (description "Scientific video can be packaged in various ways: familiar
