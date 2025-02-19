@@ -236,6 +236,33 @@ a two-level directory structure in the local file system, regardless of the
 hierarchy of the keys.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ds-measure
+  (package
+    (name "go-github-com-ipfs-go-ds-measure")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ds-measure")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14p3681sb1h81qxkwblngvy72yrd73drcvamgc3v7za734l9f54b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ds-measure"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-metrics-interface))
+    (home-page "https://github.com/ipfs/go-ds-measure")
+    (synopsis "Datastore implementation that keeps metrics on all calls made")
+    (description
+     "Package measure provides a Datastore wrapper that records metrics using
+@url{https://github.com/ipfs/go-metrics-interface}.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-blockstore
   (package
     (name "go-github-com-ipfs-go-ipfs-blockstore")
