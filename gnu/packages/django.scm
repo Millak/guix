@@ -185,13 +185,13 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 (define-public python-django-cache-url
   (package
     (name "python-django-cache-url")
-    (version "3.4.4")
+    (version "3.4.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-cache-url" version))
               (sha256
                (base32
-                "0dpx2wmcclmd3jkprdljz3makq12vd0sjv3xnvlj5vk1lg7glb7g"))))
+                "05yr19gi5ln6za0y9nf184klaixnf1dr1nfajn63893mf6ab37zb"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-django python-setuptools python-wheel))
