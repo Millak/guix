@@ -599,8 +599,8 @@ features.")
 (define-public cpuinfo
   ;; There's currently no tag on this repo.
   (let ((version "0.0")
-        (revision "4")
-        (commit "ca156f7bc9109c552973414a63d310f76ef0cbf8"))
+        (revision "5")
+        (commit "b73ae6ce38d5dd0b7fe46dbe0a4b5f4bab91c7ea"))
     (package
       (name "cpuinfo")
       (version (git-version version revision commit))
@@ -611,13 +611,14 @@ features.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "12ip6mnmymqhcbi8p98cn109y47pg9ygbj3k96r22dbmr77a50c4"))))
+                  "0ibba4jssvjyd147dyj5lzijgxhmjxf0ishl1wykka1rblmxmli4"))))
       (build-system cmake-build-system)
       (arguments
        (list
         ;; cpuinfo does not work in the build container for aarch64:
         ;; https://github.com/pytorch/cpuinfo/issues/143
-        #:tests? (not (target-aarch64?))
+        #:tests? (not (or (target-aarch64?)
+                          (target-riscv64?)))
         #:configure-flags
         '(list "-DBUILD_SHARED_LIBS=ON"
                "-DUSE_SYSTEM_LIBS=ON")
