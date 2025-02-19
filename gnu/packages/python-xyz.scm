@@ -3834,6 +3834,26 @@ and simplified.  It supports SPDX license expressions as well as other naming
 conventions and aliases in the same expression.")
     (license license:gpl2+)))
 
+(define-public python-limits
+  (package
+    (name "python-limits")
+    (version "4.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "limits" version))
+       (sha256
+        (base32 "0nkdwkvn2rs5swnd4ihv6yg6b5124apqzrrymqcm75pwil2mqkx5"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-deprecated python-packaging
+                             python-typing-extensions))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://limits.readthedocs.io/")
+    (synopsis "Rate limiting utilities")
+    (description "This package provides a Python library to perform rate
+limiting with commonly used storage backends.")
+    (license license:expat)))
+
 (define-public python-wand
   (package
     (name "python-wand")
