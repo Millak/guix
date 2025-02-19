@@ -2418,7 +2418,7 @@ automatically set update and create date and time based fields in a table.")
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'configure 'skip-library-detection
-           ;; Avoid depencies on perl-devel-checklib, openssl, and zlib.  They
+           ;; Avoid dependencies on perl-devel-checklib, openssl, and zlib.  They
            ;; are really only needed for the test suite; their absence does not
            ;; affect the build or the end result.
            (lambda _

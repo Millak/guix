@@ -422,7 +422,7 @@ for Erlang/Elixir.")
     (build-system rebar-build-system)
     (inputs (list erlang-fast-tls erlang-p1-utils))
     (synopsis "STUN and TURN library for Erlang/Elixir")
-    (description "This package provodes STUN and TURN library for
+    (description "This package provides STUN and TURN library for
 Erlang/Elixir.")
     (home-page "https://hex.pm/packages/stun")
     (license license:asl2.0)))

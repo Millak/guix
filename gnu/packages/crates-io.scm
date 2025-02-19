@@ -18373,7 +18373,7 @@ crate into higher level tools.")
          (base32
           "1pkf4ay1210g9wqyqhkgvlcsv4i6kgdcmgnh19mrymylznv7pcal"))))
     (build-system cargo-build-system)
-    (arguments '(#:skip-build? #t)) ; Not meant to be built independantly.
+    (arguments '(#:skip-build? #t)) ; Not meant to be built independently.
     (home-page "https://github.com/dtolnay/cxx")
     (synopsis "Test suite of the cxx crate")
     (description "This package provides the test suite of the cxx crate.")
@@ -94573,7 +94573,7 @@ language.")
         (base32 "0gz3nmiaidscb5c85rh3qxi8i584gz5xm3amlxqminl8jq27k40g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t ;; dependency cypthon not yet availalbe
+     `(#:skip-build? #t ;; dependency cypthon not yet available
        #:cargo-development-inputs
        (;; ("rust-cpython" ,rust-cpython-0.2)  TODO
         ("rust-quickcheck" ,rust-quickcheck-0.7)

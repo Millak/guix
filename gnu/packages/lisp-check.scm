@@ -167,7 +167,7 @@ minimal dependencies on DISSECT.")
     (native-inputs (list sbcl-assert-p))
     (inputs (list sbcl-assertion-error sbcl-eventbus))
     (home-page "https://github.com/noloop/cacau")
-    (synopsis "Comon Lisp test runner")
+    (synopsis "Common Lisp test runner")
     (description
      "This package provides a Common Lisp testing framework system CACAU which was
 built to be independent of assertions systems.")
@@ -540,7 +540,7 @@ interactive development model in mind.")
       (synopsis "Make CL unit tests more readable")
       (description
        "@code{cl-hamcrest} is an implementation of the Hamcrest idea in
-Common Lisp.  It simplifes unit tests and makes them more readable.
+Common Lisp.  It simplifies unit tests and makes them more readable.
 Hamcrest uses the idea of pattern-matching, to construct matchers from
 different pieces and to apply them to the data.")
       (license license:bsd-3))))

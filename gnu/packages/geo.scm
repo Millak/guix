@@ -1730,7 +1730,7 @@ extension.")
     (home-page "https://github.com/SciTools/cf-units")
     (synopsis "Units of measure as required by the CF metadata conventions")
     (description
-     "This package provids units of measure as required by the Climate and
+     "This package provides units of measure as required by the Climate and
 Forecast (CF) metadata conventions.  Provision of a wrapper class to support
 Unidata/UCAR UDUNITS-2 library, and the cftime calendar functionality.")
     (license license:lgpl3+)))

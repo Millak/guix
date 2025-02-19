@@ -105,7 +105,7 @@ the @code{c2go} tool at
     (synopsis "Collection of compression libraries for Golang")
     (description
      "Package compress is a collection of compression libraries implementing
-Golang moduels:
+Golang modules:
 @table @code
 @item brotli
 Implements the Brotli format, described in RFC 7932.

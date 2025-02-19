@@ -2431,7 +2431,7 @@ and provides animations for switching between backgrounds.")
     (synopsis "Notification daemon with a graphical interface")
     (description
      "This package provides a notification daemon for the Sway Wayland
-compository, supporting the following featuers:
+compository, supporting the following features:
 
 @itemize
 @item Keyboard shortcuts

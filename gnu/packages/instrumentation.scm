@@ -119,7 +119,7 @@
     ;; distribution tarballs are generated on Ubuntu LTS 18.04.
     ;;
     ;; `paredit-raise-sexp' on the first list of native inputs and remove the
-    ;; 'autoreconf invokation whenever we bump to the next version that is
+    ;; 'autoreconf invocation whenever we bump to the next version that is
     ;; goind to be generated on Ubuntu LTS 22.04.
     (native-inputs
      (append

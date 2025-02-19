@@ -1665,7 +1665,7 @@ similar.")
     (description
      "This package implements methods for batch correction and integration of
 scRNA-seq datasets, based on the Seurat anchor-based integration framework.
-In particular, STACAS is optimized for the integration of heterogenous
+In particular, STACAS is optimized for the integration of heterogeneous
 datasets with only limited overlap between cell sub-types (e.g. TIL sets of
 CD8 from tumor with CD8/CD4 T cells from lymphnode), for which the default
 Seurat alignment methods would tend to over-correct biological differences.
@@ -1694,7 +1694,7 @@ information about cell-types in order to assist the integration process.")
       (home-page "https://github.com/vertesy/Stringendo")
       (synopsis "Stringendo is a string parsing library")
       (description
-       "This package provides string parsing functionalites for generating
+       "This package provides string parsing functionalities for generating
 plotnames, filenames and paths.")
       (license license:gpl3))))
 
@@ -3752,7 +3752,7 @@ operations:
 @item index the reference genome before alignment;
 @item align reads to the corresponding reference genome;
 @item pre-process by convert pair-end reads into fragments, checking the
-  mapping quality score, alingment and filtration;
+  mapping quality score, alignment and filtration;
 @item create the cell-by-bin matrix.
 @end itemize")
     (license license:asl2.0)))
@@ -3859,7 +3859,7 @@ use-case, we encourage users to compose functions to achieve their goals.")
       '(list "-k"
              (string-append ;; Unclear why this one fails.  There is no backtrace.
                             "not test_to_dataframe_is_sparse"
-                            ;; These need skbio, but that neeeds biom-format.
+                            ;; These need skbio, but that needs biom-format.
                             " and not test_align_tree_intersect_obs"
                             " and not test_align_tree_intersect_tips"
                             " and not test_align_tree_sample"))
@@ -13272,7 +13272,7 @@ variation, gene modules and their regulatory models and more.")
                                r-snow))
       (native-inputs (list r-knitr))
       (home-page "https://github.com/TillBirkner/metadeconfoundR")
-      (synopsis "Check multiple covariates for potenial confounding effects")
+      (synopsis "Check multiple covariates for potential confounding effects")
       (description
        "This package detects naive associations between omics features and
 metadata in cross-sectional data-sets using non-parametric tests.  In a second
@@ -18688,7 +18688,7 @@ interaction inference from scRNA-seq data.")
     (synopsis "Annotation, analysis and visualization of circRNA data")
     (description "Circus is an R package for annotation, analysis and
 visualization of circRNA data.  Users can annotate their circRNA candidates
-with host genes, gene featrues they are spliced from, and discriminate between
+with host genes, gene features they are spliced from, and discriminate between
 known and yet unknown splice junctions.  Circular-to-linear ratios of circRNAs
 can be calculated, and a number of descriptive plots easily generated.")
     (license license:artistic2.0)))
@@ -20540,7 +20540,7 @@ phase + query phase).")
 (define-public filtlong
   ;; The recommended way to install is to clone the git repository
   ;; https://github.com/rrwick/Filtlong#installation
-  ;; and the lastest release is more than nine months old
+  ;; and the latest release is more than nine months old
   (let ((commit "d1bb46dfe8bc7efe6257b5ce222c04bfe8aedaab")
         (revision "1"))
     (package

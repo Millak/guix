@@ -2121,7 +2121,7 @@ parallel as well as downloading each file in a number of chunks.
 
 asciicast demo of parfive parfive works by creating a downloader object,
 appending files to it and then running the download. parfive has a synchronous
-API, but uses asyncio to paralellise downloading the files.")
+API, but uses asyncio to parallelise downloading the files.")
     (license license:expat)))
 
 (define-public python-html2text
@@ -8562,7 +8562,7 @@ interpreter written in pure Python.")
     (home-page "https://github.com/web-push-libs/encrypted-content-encoding")
     (synopsis "Encrypted Content Encoding for HTTP")
     (description
-     "This package provices a simple implementation of Encrypted Content
+     "This package provides a simple implementation of Encrypted Content
 Encoding for HTTP.")
     (license license:expat)))
 

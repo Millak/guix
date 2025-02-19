@@ -190,7 +190,7 @@
 ;; as of Racket 7.0. See also <https://racket.discourse.group/t/951/4>.
 ;;
 ;; For Racket BC, the compiled "linklet" s-expressions (primitive modules)
-;; are embeded in C as a static string constant. Eventually, they are further
+;; are embedded in C as a static string constant. Eventually, they are further
 ;; compiled by the C-implemented Racket BC bytecode and JIT compilers.
 ;;
 ;; Zuo is notably *not* a problem for bootstrapping. The implementation is a
@@ -1122,7 +1122,7 @@ languages such as Typed Racket, R5RS and R6RS Scheme, Algol 60, and Datalog.")))
                         ;; Let Guix coexist with other installation
                         ;; methods without clobbering user-specific packages.
                         ;; This could be set in various places, but doing
-                        ;; it here is convienient, at least until we support
+                        ;; it here is convenient, at least until we support
                         ;; cross-compilation.
                         'installation-name
                         (string-append (version)

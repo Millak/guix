@@ -514,7 +514,7 @@
   (string-append (hetzner-api-base-url api) path))
 
 (define (hetzner-api-delete api path)
-  "Delelte the resource at PATH with the Hetzner API."
+  "Delete the resource at PATH with the Hetzner API."
   (hetzner-api-response-body
    (hetzner-api-request-send
     (hetzner-api-request

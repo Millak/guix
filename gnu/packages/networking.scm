@@ -352,7 +352,7 @@ the RFC.")
       (description
        "Netperf is a benchmark that can be used to measure the performance of
 many different types of networking.  It provides tests for both unidirectional
-throughput, and end-to-end latency.  The environments currently measureable
+throughput, and end-to-end latency.  The environments currently measurable
 by netperf include: TCP and UDP via BSD Sockets for both IPv4 and IPv6, DLPI,
 Unix Domain Sockets, SCTP for both IPv4 and IPv6.")
       (license license:expat))))
@@ -3159,7 +3159,7 @@ updates to the zebra daemon.")
      "Generate BGP filters from the @acronym{IRR, Internet Routing Registry}")
     (description
      "This program helps automate the creation and maintenance of @acronym{BGP,
-Border Gateway Protocol} routing filters used for peering trough Internet
+Border Gateway Protocol} routing filters used for peering through Internet
 exchanges.
 
 It generates prefix lists, (extended) access lists, policy-statement terms, and

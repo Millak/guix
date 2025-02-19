@@ -2670,7 +2670,7 @@ role, and your gender.")
     (home-page "https://pipewalker.sourceforge.net/")
     (synopsis "Logical tile puzzle")
     (description
-     "PipeWalker is a simple puzzle game with many diffent themes: connect all
+     "PipeWalker is a simple puzzle game with many different themes: connect all
 computers to one network server, bring water from a source to the taps, etc.
 The underlying mechanism is always the same: you must turn each tile in the
 grid in the right direction to combine all components into a single circuit.

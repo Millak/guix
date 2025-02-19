@@ -92,7 +92,7 @@
 sequentially, inside a the 'installer-step prompt.  When aborted to with a
 parameter of 'abort, fallback to a previous install-step, accordingly to the
 specified REWIND-STRATEGY.  When aborted to with a parameter of 'break, stop
-the computation and return the accumalated result so far.
+the computation and return the accumulated result so far.
 
 REWIND-STRATEGY possible values are 'previous, 'menu and 'start.  If 'previous
 is selected, the execution will resume at the previous installer-step. If

@@ -373,7 +373,7 @@ more information)."
   ;; despite the name of the command-line option
   (scan?
    (boolean #t)
-   "Scan for cachable objects."
+   "Scan for cacheable objects."
    (serializer empty-serializer))
 
   ;; sole required field in the configuration file

@@ -855,7 +855,7 @@ syntax highlighted HTML, ANSI-coloured text, etc.")
               (with-directory-excursion (string-append "src/" import-path)
                 (for-each delete-file-recursively
                           (list "lexers/testdata/python2/test_complex_file1.actual"
-                                ;; Executible is packed as separate package.
+                                ;; Executable is packed as separate package.
                                 "cmd")))))
           ;; XXX: Replace when go-build-system supports nested path.
           (replace 'check
@@ -3277,7 +3277,7 @@ run time.")
     (home-page "https://containerd.io/")
     (synopsis "Cgroups for Golang")
     (description
-     "This package implements a functinoality for creating, managing,
+     "This package implements a functionality for creating, managing,
 inspecting, and destroying cgroups.  The resources format for settings on the
 cgroup uses the OCI runtime-spec found
 @url{https://github.com/opencontainers/runtime-spec,here}.")
@@ -3710,7 +3710,7 @@ of building man pages.")
     (home-page "https://github.com/creasty/defaults")
     (synopsis "Initialize structs with default values")
     (description
-     "This package implements functionlity to initialize structs with default
+     "This package implements functionality to initialize structs with default
 values.  It supports almost all kind of types: @code{int/8/16/32/64},
 @code{uint/8/16/32/64}, @code{float32/64}, @code{uintptr}, @code{bool},
 @code{string}, @code{map}, @code{slice}, @code{struct},
@@ -4253,7 +4253,7 @@ supports concurrent serializable transactions.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; XXX: Tests fail on 32 bit architecure:
+      ;; XXX: Tests fail on 32 bit architecture:
       ;;
       ;; cannot use 12 << 30 (untyped int constant 12884901888) as int value
       ;; in assignment (overflows).
@@ -4352,7 +4352,7 @@ on throughput and hit ratio performance.")
       #:tests? #f
       #:import-path "github.com/dgryski/trifles"))
     (home-page "https://github.com/dgryski/trifles")
-    (synopsis "Collection of Golang utitity libraries and commands")
+    (synopsis "Collection of Golang utility libraries and commands")
     (description
      "This package provides a collection veriaty of utility libraries:
 
@@ -4563,7 +4563,7 @@ mtime,ctime and btime for files.")
 implementing POSIX/GNU-style --flags.  It is compatible with the
 @url{http://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html,
 GNU extensions to the POSIX recommendations for command-line options}.  This
-is an activly maintained fork of @url{https://github.com/ogier/pflag}.")
+is an actively maintained fork of @url{https://github.com/ogier/pflag}.")
     (license license:bsd-3)))
 
 (define-public go-github-com-docker-distribution
@@ -4747,7 +4747,7 @@ sizes.  It converts boring ugly numbers to human-friendly strings and back.")
     (home-page "https://github.com/edsrzf/mmap-go")
     (synopsis "Memory mapped fiels (mmap) in Golang")
     (description
-     "This package implements functinoality of mapping files into memory.  It
+     "This package implements functionality of mapping files into memory.  It
 tries to provide a simple interface, but doesn't go out of its way to abstract
 away every little platform detail.
 
@@ -5282,7 +5282,7 @@ defined output to the standard output.")
       #:import-path "github.com/fatih/structs"))
     (home-page "https://github.com/fatih/structs")
     (synopsis "Utilities for Go structs")
-    (description "This package provides various utilitiy functions to work
+    (description "This package provides various utility functions to work
 with Go structs.")
     (license license:expat)))
 
@@ -7749,7 +7749,7 @@ implementation in https://github.com/jackc/pgx.")
                "|"))
       #:phases
       #~(modify-phases %standard-phases
-          ;; All tests in this file rquire PostgreSQL service running.
+          ;; All tests in this file require PostgreSQL service running.
           (add-before 'check 'remove-failing-test-files
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
@@ -8696,7 +8696,7 @@ database/sql with sqlx.")
      "@command{lumin} is a simple command-line program which highlights matches
 to a specified pattern (string or regex) in the specified files.  This is like
 @code{grep} with @code{--color}, except that @code{lumin} shows all lines, not
-just matching lines.  This package proviedes a CLI tool and @code{colors}
+just matching lines.  This package provides a CLI tool and @code{colors}
 library.")
     (license license:bsd-2)))
 
@@ -9401,7 +9401,7 @@ processing.")
     (home-page "https://github.com/knz/go-libedit")
     (synopsis "Go wrapper around @code{libedit}")
     (description
-     "This packae provides a wrapper around @code{libedit} for Golang.")
+     "This package provides a wrapper around @code{libedit} for Golang.")
      (license license:asl2.0)))
 
 (define-public go-github-com-knz-lipgloss-convert
@@ -11963,7 +11963,7 @@ goroutines as a unit whole.")
     (synopsis "Universally Unique Lexicographically Sortable Identifier in Golang")
     (description
      "This package implements @acronym{ULID, Universally Unique
-Lexicographically Sortable Identifier} as specificed in
+Lexicographically Sortable Identifier} as specified in
 @url{https://github.com/ulid/spec}.
 
 Features of ULID:
@@ -12311,7 +12311,7 @@ included in this package.")
     (home-page "https://github.com/otiai10/copy")
     (synopsis "Go copy directory recursively")
     (description
-     "This package implements recursive copy functinoality for directory.")
+     "This package implements recursive copy functionality for directory.")
     (license license:expat)))
 
 (define-public go-github-com-outcaste-io-ristretto
@@ -15658,7 +15658,7 @@ edges and self-loops are not permitted.
     (home-page "https://github.com/xaionaro-go/bytesextra")
     (synopsis "Golang library for bytes I/O")
     (description
-     "This packae provides @code{io.ReadWriteSeeker} implementation for
+     "This package provides @code{io.ReadWriteSeeker} implementation for
 @code{[]byte}.")
     (license license:cc0)))
 
@@ -16227,7 +16227,7 @@ character devices, pipes, FIFOs, and any file-descriptor that is poll-able,
 can be used with select(2), epoll(7), etc.
 
 In addition, package poller allows the user to set timeouts (deadlines) for
-read and write operations, and also allows for safe cancelation of blocked
+read and write operations, and also allows for safe cancellation of blocked
 read and write operations; a Close from another go-routine safely cancels
 ongoing (blocked) read and write operations.
 

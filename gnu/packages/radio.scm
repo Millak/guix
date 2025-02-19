@@ -2145,10 +2145,10 @@ It can perform as:
 methods:
 
 @itemize
-@item Classic exercice,
+@item Classic exercise,
 @item Koch method,
 @item Read from file,
-@item Callsign exercice.
+@item Callsign exercise.
 @end itemize\n")
     (license license:gpl3+)))
 

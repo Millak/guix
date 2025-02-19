@@ -586,7 +586,7 @@ commit or run any Git arbitrary command.")
     (synopsis "Statusline for Vim")
     (description
      "@code{vim-airline} is an extensible statusline for Vim.
-It can be extended and costumized with themes, works with unicode fonts
+It can be extended and customized with themes, works with unicode fonts
 and powerline symbols, etc.")
     (home-page "https://github.com/vim-airline/vim-airline")
     (license license:expat)))

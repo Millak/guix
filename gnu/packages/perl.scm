@@ -4766,7 +4766,7 @@ import(), @@EXPORT and @@EXPORT_OK and not a whole lot else.")
     (description "Exporter::Tiny supports many of Sub::Exporter's
 external-facing features including renaming imported functions with the `-as`,
 `-prefix` and `-suffix` options; explicit destinations with the `into` option;
-and alternative installers with the `installler` option.  But it's written in
+and alternative installers with the `installer` option.  But it's written in
 only about 40% as many lines of code and with zero non-core dependencies.")
     (license (package-license perl))))
 
@@ -13671,7 +13671,7 @@ via sendmsg and recvmsg.
 
 It also allows manipulating ancillary data or so-called control
 information (cmsghdr).  This ancillary data may be used for file descriptor
-passing, IPv6 operations, and a host of implemenation-specific extensions.")
+passing, IPv6 operations, and a host of implementation-specific extensions.")
     (license license:perl-license)))
 
 ;;;

@@ -227,7 +227,7 @@ Have you run 'guix archive --generate-key'?")
 ;;;
 
 (define (hetzner-machine-delegate target server)
-  "Return the delagate machine that uses SSH for deployment."
+  "Return the delegate machine that uses SSH for deployment."
   (let* ((config (machine-configuration target))
          ;; Get the operating system WITHOUT the provenance service to avoid a
          ;; duplicate symlink conflict in the store.

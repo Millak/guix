@@ -1194,7 +1194,7 @@ files, to verify signatures, and to manage the private and public keys.")
                    prefix (,(string-append perllib ":" (getenv "PERL5LIB")))))))))))
     (home-page "https://salsa.debian.org/intrigeri/parcimonie")
     (synopsis "Incrementally refreshes a GnuPG keyring")
-    (description "Parcimonie incrementaly refreshes a GnuPG keyring in a way
+    (description "Parcimonie incrementally refreshes a GnuPG keyring in a way
 that makes it hard to correlate the keyring content to an individual, and
 makes it hard to locate an individual based on an identifying subset of her
 keyring content.  Parcimonie is a daemon that fetches one key at a time using

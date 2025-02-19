@@ -482,7 +482,7 @@ will name the threaded machine type unless THREADS? is provided as #f."
                                  "release_notes.pdf")
                         (match (find-files
                                 "csug"
-                                "csug.*\\.pdf$" ;; embeded version number
+                                "csug.*\\.pdf$" ;; embedded version number
                                 #:fail-on-error? #t)
                           ((pth)
                            (symlink pth
@@ -732,7 +732,7 @@ package @code{cs-bootstrap} to bootstrap its initial version of Chez Scheme.")
               ghostscript
               netpbm))
        ;; Debian uses a versionless path for STEXLIB,
-       ;; which is much more convienient.
+       ;; which is much more convenient.
        (arguments
         (list
          #:install-plan #~`(("inputs" "lib/stex/")

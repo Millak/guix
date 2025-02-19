@@ -494,7 +494,7 @@ Browser.")
                             "build")))))
           (add-after 'patch-cargo-checksums 'remove-cargo-frozen-flag
             (lambda _
-              ;; Remove --frozen flag from cargo invokation, otherwise it'll
+              ;; Remove --frozen flag from cargo invocation, otherwise it'll
               ;; complain that it's not able to change Cargo.lock.
               ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1726373
               (substitute* "build/RunCbindgen.py"

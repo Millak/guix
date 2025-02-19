@@ -129,7 +129,7 @@ values that can be lowered to strings.")
   (extra-flags
    (list-of-lowerables '())
    "A list of values that are lowered to strings.  These will be passed as
-command-line arguments to the current job @command{restic backup} invokation."))
+command-line arguments to the current job @command{restic backup} invocation."))
 
 (define list-of-restic-backup-jobs?
   (list-of restic-backup-job?))

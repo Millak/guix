@@ -443,7 +443,7 @@ example @file{/var/log/mpd.log}."
 
   (log-level
    maybe-string
-   "Supress any messages below this threshold.
+   "Suppress any messages below this threshold.
 The available values, in decreasing order of verbosity, are: @code{verbose},
 @code{info}, @code{notice}, @code{warning} and @code{error}.")
 

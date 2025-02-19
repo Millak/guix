@@ -712,7 +712,7 @@ expansion of Franklin Gothic, a classic font.  It covers 105 Latin Languages.")
                (apply invoke "make" "install-otb" (string-append "prefix=" otb)
                       make-flags))))
          (add-after 'install 'install-documentation
-           ;; There's no way to decypher the cryptic file names without this.
+           ;; There's no way to decipher the cryptic file names without this.
            (lambda* (#:key outputs #:allow-other-keys)
              (for-each (match-lambda
                          ((name . directory)

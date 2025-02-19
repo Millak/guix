@@ -2365,7 +2365,7 @@ built-in @code{testing} package, but can be used in other contexts too.")
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separatly:
+            ;; Submodules with their own go.mod files and packaged separately:
             ;;
             ;; - gotest.tools/x/generics
             (for-each delete-file-recursively

@@ -1546,7 +1546,7 @@ information.")
   ;; a decade's worth of new data files) rely on the Debian packaging tools,
   ;; so building normally even from the patched sources would miss them.
   ;; Here, we do all of the patching in the origin, so that the result of
-  ;; `guix build --source` is actually useable for building without Guix.
+  ;; `guix build --source` is actually usable for building without Guix.
   (let ((revision "1")
         (commit "3054ee2f90cc7c03ed6b131177d09701c7a4fced"))
     (package

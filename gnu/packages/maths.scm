@@ -3429,7 +3429,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
                     `("PYTHONPATH" prefix (,dest))))))))))
     (inputs (list bash-minimal python))
     (home-page "https://www.fast-downward.org/")
-    (synopsis "Domain-independant classical planning system")
+    (synopsis "Domain-independent classical planning system")
     (description "Fast Downward is a portfolio-based planning system that
 supports the propositional fragment of PDDL2.2.")
     (license license:gpl3+)))

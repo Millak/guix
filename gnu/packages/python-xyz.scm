@@ -5970,7 +5970,7 @@ port forwards using @acronym{UPnP, Universal Plug and Play}.")
            python-setuptools-scm
            python-wheel))
     (home-page "https://github.com/pytest-dev/py")
-    (synopsis "Python library for parsing, I/O, instrospection, and logging")
+    (synopsis "Python library for parsing, I/O, introspection, and logging")
     (description
      "Py is a Python library for file name parsing, .ini file parsing, I/O,
 code introspection, and logging.")
@@ -23503,7 +23503,7 @@ until the object is actually required, and caches the result of said call.")
           (add-after 'unpack 'patch-getprotobyname-calls
             ;; These calls are problematic in the build environment as there is
             ;; no /etc/protocols.  This breaks the sanity-check phase of any
-            ;; package depnding on this one.
+            ;; package depending on this one.
             (lambda _
               (substitute* "dns/rdtypes/IN/WKS.py"
                 (("socket.getprotobyname\\('tcp'\\)")
@@ -23558,7 +23558,7 @@ It supports TSIG authenticated messages and EDNS0.")
           (add-after 'unpack 'patch-getprotobyname-calls
             ;; These calls are problematic in the build environment as there is
             ;; no /etc/protocols.  This breaks the sanity-check phase of any
-            ;; package depnding on this one.
+            ;; package depending on this one.
             (lambda _
               (substitute* "dns/rdtypes/IN/WKS.py"
                 (("socket.getprotobyname\\('tcp'\\)")
@@ -25276,7 +25276,7 @@ efficient as possible on all supported Python versions.")
 Mustache templating language renderer.")
     (license license:expat)))
 
-;; XXX: Try to inherit from duckdb and build from source with all extentions.
+;; XXX: Try to inherit from duckdb and build from source with all extensions.
 (define-public python-duckdb
   (package
     (name "python-duckdb")
@@ -29284,7 +29284,7 @@ user-space file systems in Python.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               ;; These tests don't import currectly.
+               ;; These tests don't import correctly.
                (delete-file "test/test_js_client.py")
                (delete-file "test/test_tsd_types.py")
                (delete-file "test/test_python_gen.py")
@@ -34432,7 +34432,7 @@ dates in almost any string formats commonly found on web pages.")
          (replace 'check
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (add-installed-pythonpath inputs outputs)
-             ;; This invokation is taken from tox.ini.
+             ;; This invocation is taken from tox.ini.
              (invoke "nosetests" "-d" "-v" "tests/"))))))
     (home-page "https://github.com/akesterson/dpath-python")
     (synopsis "File-system-like pathing and searching for dictionaries")

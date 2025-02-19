@@ -567,7 +567,7 @@ documentation for semantics.")
   (extra-arguments
    (list '())
    "A list of strings, gexps or file-like objects that will be directly passed
-to the @command{docker run} invokation."
+to the @command{docker run} invocation."
    (sanitizer oci-sanitize-extra-arguments)))
 
 (define oci-container-configuration->options

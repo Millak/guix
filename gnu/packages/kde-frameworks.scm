@@ -496,7 +496,7 @@ used, but this framework provides a wrapper script to make generating the
 documentation more convenient (including reading settings from the target
 framework or other module) and a standard template for the generated
 documentation.")
-    ;; Most parts are bsd-2, but incuded jquery is expat
+    ;; Most parts are bsd-2, but included jquery is expat
     ;; This list is taken from http://packaging.neon.kde.org/cgit/
     (license (list license:bsd-2 license:expat))))
 
@@ -985,7 +985,7 @@ as well as an API to create KDED modules.")
     (native-inputs
      (list extra-cmake-modules qttools))
     (inputs
-     (list avahi ; alternativly dnssd could be used
+     (list avahi ; alternatively dnssd could be used
            qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Network service discovery using Zeroconf")
@@ -3480,7 +3480,7 @@ their settings.")
     (synopsis "Integration of QML and KDE work spaces")
     (description "KDeclarative provides integration of QML and KDE work spaces.
 It's comprises two parts: a library used by the C++ part of your application to
-intergrate QML with KDE Frameworks specific features, and a series of QML imports
+integrate QML with KDE Frameworks specific features, and a series of QML imports
 that offer bindings to some of the Frameworks.")
     ;; dual licensed
     (license (list license:gpl2+ license:lgpl2.1+))))

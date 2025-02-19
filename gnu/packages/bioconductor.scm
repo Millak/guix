@@ -15627,7 +15627,7 @@ genes or proteins in these datasets.")
      "This package provides a dplyr-like interface for interacting with the
 common Bioconductor classes @code{Ranges} and @code{GenomicRanges}.  By
 providing a grammatical and consistent way of manipulating these classes their
-accessiblity for new Bioconductor users is hopefully increased.")
+accessibility for new Bioconductor users is hopefully increased.")
     (license license:artistic2.0)))
 
 (define-public r-inspect
@@ -26838,7 +26838,7 @@ interest on transformed methylation proportions.")
     (home-page "https://bioconductor.org/packages/omicade4")
     (synopsis "Multiple co-inertia analysis of omics datasets")
     (description
-     "This package performes multiple co-inertia analysis of omics datasets.")
+     "This package performs multiple co-inertia analysis of omics datasets.")
     (license license:gpl2)))
 
 (define-public r-omnipathr

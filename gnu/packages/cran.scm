@@ -5539,7 +5539,7 @@ fitters for consensus relations.")
     (home-page "https://cran.r-project.org/package=repmis")
     (synopsis "Miscellaneous tools for reproducible research")
     (description
-     "This package is a colletion of tools to load R packages and
+     "This package is a collection of tools to load R packages and
 automatically generate BibTeX files citing them as well as load and cache
 plain-text and Excel formatted data stored on GitHub, and from other
 sources.")
@@ -8855,9 +8855,9 @@ you to rapidly iterate while developing a package.")
     (propagated-inputs (list r-base64enc))
     (native-inputs (list pkg-config))
     (home-page "http://www.rforge.net/PKI")
-    (synopsis "Public Key Infrastucture for R based on the X.509 standard")
+    (synopsis "Public Key Infrastructure for R based on the X.509 standard")
     (description
-     "This is a package containing Public Key Infrastucture functions such as
+     "This is a package containing Public Key Infrastructure functions such as
 verifying certificates, RSA encryption and signing, which can be used to build
 PKI infrastructure and perform cryptographic tasks.")
     ;; Either of these licenses.
@@ -13846,7 +13846,7 @@ Institute of Standards and Technology}, USA.")
     (synopsis "Statistical framework to define subgroups in complex datasets")
     (description
      "The package includes the necessary functions to construct a
-self-organizing map of data, to evaluate the statistical signifcance of the
+self-organizing map of data, to evaluate the statistical significance of the
 observed data patterns, and to visualize the results.")
     (license license:gpl2+)))
 
@@ -22622,7 +22622,7 @@ the base function @code{with()}.")
     (propagated-inputs (list r-abind r-bitops r-rnifti))
     (native-inputs (list r-testthat))
     (home-page "https://rigorousanalytics.blogspot.com")
-    (synopsis "Vizualization of medical imaging data")
+    (synopsis "Visualization of medical imaging data")
     (description
      "This package provides functions for the input/output and visualization
 of medical imaging data that follow either the ANALYZE, NIfTI or AFNI formats.
@@ -35672,7 +35672,7 @@ package.")
     (native-inputs
      (list r-knitr r-testthat))
     (home-page "https://github.com/renkun-ken/formattable")
-    (synopsis "Print vectors and data frames with text fromatting")
+    (synopsis "Print vectors and data frames with text formatting")
     (description
      "This R package provides functions to create formattable vectors and data
 frames.  @emph{Formattable} vectors are printed with text formatting, and
@@ -37571,7 +37571,7 @@ client).")
     (home-page "https://cran.r-project.org/web/packages/asd")
     (synopsis "Simulations for Adaptive Seamless Designs")
     (description
-     "This package provdes means to run simulations for adaptive seamless
+     "This package provides means to run simulations for adaptive seamless
 designs with and without early outcomes for treatment selection and
 subpopulation type designs.")
     (license license:gpl3)))

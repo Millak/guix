@@ -927,7 +927,7 @@ cause them to cross."
 
 
 ;;
-;; Auto partitionning.
+;; Auto partitioning.
 ;;
 
 (define* (create-adjacent-partitions! disk partitions

@@ -939,7 +939,7 @@ their levels to be controlled individually.")
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separatly:
+            ;; Submodules with their own go.mod files and packaged separately:
             ;;
             ;; - github.com/libp2p/go-libp2p/scripts/test_analysis
             ;; - github.com/libp2p/go-libp2p/test-plans/m/v2

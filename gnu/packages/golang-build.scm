@@ -496,7 +496,7 @@ toolchain.  The parts needed in the main Go repository are copied in.")
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separatly:
+            ;; Submodules with their own go.mod files and packaged separately:
             ;;
             ;; - olang.org/x/crypto/x509roots/fallback
             (for-each delete-file-recursively (list "x509roots/fallback"))))))
@@ -507,7 +507,7 @@ toolchain.  The parts needed in the main Go repository are copied in.")
       #:import-path "golang.org/x/crypto"
       #:phases
       #~(modify-phases %standard-phases
-          ;; Network access requried: go mod download -json
+          ;; Network access required: go mod download -json
           ;; github.com/google/wycheproof@v0.0.0-20191219022705-2196000605e4.
           ;;
           ;; internal/wycheproof/wycheproof_test.go
@@ -831,7 +831,7 @@ provided by the language and @code{sync} and @code{sync/atomic} packages.
 The package provides several Golang submodules:
 @itemize
 @item @code{errgroup} - synchronization, error propagation, and Context
-cancelation for groups of goroutines working on subtasks of a common task
+cancellation for groups of goroutines working on subtasks of a common task
 @item @code{semaphore} - a weighted semaphore implementation
 @item @code{singleflight} - a duplicate function call suppression mechanism
 @item @code{syncmap} - a concurrent map implementation
@@ -919,7 +919,7 @@ low-level interaction with the operating system.")
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separatly:
+            ;; Submodules with their own go.mod files and packaged separately:
             ;;
             ;; - golang.org/x/telemetry/config
             ;; - golang.org/x/telemetry/godev

@@ -431,7 +431,7 @@ activation.")))
                                    (format #f "/run/user/~a" (getuid))))
               (flag-file-path (string-append
                                xdg-runtime-dir "/on-first-login-executed")))
-         ;; XDG_RUNTIME_DIR dissapears on logout, that means such trick
+         ;; XDG_RUNTIME_DIR disappears on logout, that means such trick
          ;; allows to launch on-first-login script on first login only
          ;; after complete logout/reboot.
          (if (file-exists? xdg-runtime-dir)

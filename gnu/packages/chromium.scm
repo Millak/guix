@@ -580,7 +580,7 @@
               "media_use_libvpx=true"
               "media_use_openh264=true"
 
-              ;; Do not artifically restrict formats supported by system ffmpeg.
+              ;; Do not artificially restrict formats supported by system ffmpeg.
               "proprietary_codecs=true"
               "ffmpeg_branding=\"Chrome\""
 

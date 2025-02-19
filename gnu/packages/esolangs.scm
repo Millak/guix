@@ -96,7 +96,7 @@ LOLCODE language specification.  Unit tests come packaged with the lci source co
 @item portable: lci follows the widely ported ANSI C specification allowing it
 to compile on a broad range of systems.
 @item fast: Much effort has gone into producing simple and efficient code
-whenever possible to the extent that the above points are not compromized.
+whenever possible to the extent that the above points are not compromised.
 @end enumerate")
       (home-page "http://lolcode.org/")
       (license license:gpl3+))))

@@ -3927,7 +3927,7 @@ denote the invalidity of certain code paths in a Scheme program.")
     (description
      "This package provides an implementation of SRFI 146 for Guile.
 SRFI 146 defines datastructures that implement mappings (finite sets
-of associations consiting of a key and a value).  Two types of
+of associations consisting of a key and a value).  Two types of
 mappings are defined: One using a comparator to define an order on the
 keys and another using a hash function on the keys.  The
 datastructures and procedures are by default purely-functional.  This
@@ -4079,7 +4079,7 @@ or errors (Left).")
       (license license:expat))))
 
 (define-public guile-srfi-197
-  ;; There is minor fix to the documention after the final tag, so use
+  ;; There is minor fix to the documentation after the final tag, so use
   ;; the newest commit instead.
   (let ((commit "d31b8be86460bf837cccf2737a1b9b9c01788573")
         (revision "0"))

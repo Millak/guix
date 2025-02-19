@@ -7609,7 +7609,7 @@ native Linux file system, and has been part of the Linux kernel since version
     (home-page
      "http://www.citi.umich.edu/projects/nfsv4/crossrealm/libnfsidmap_config.html")
     (synopsis "NFSv4 support library for name/ID mapping")
-    (description "Libnfsidmap is a library holding mulitiple methods of
+    (description "Libnfsidmap is a library holding multiple methods of
 mapping names to ids and visa versa, mainly for NFSv4.  It provides an
 extensible array of mapping functions, currently consisting of two choices:
 the default @code{nsswitch} and the experimental @code{umich_ldap}.")
@@ -8734,7 +8734,7 @@ receiving to-be-logged packets from the kernel nfnetlink_log subsystem
          "0ax9959c4bapq78n13bbaibcf1gwjir3ngx8l2dh45lw9m4ha2lr"))))
     (build-system gnu-build-system)
     (outputs '("out"
-               ;; additonal non-default output plugins
+               ;; additional non-default output plugins
                "json" "pcap" "sqlite3" "pgsql" "mysql"))
     (native-inputs (list pkg-config))
     (inputs (list libnfnetlink
@@ -9273,7 +9273,7 @@ libraries, which are often integrated directly into libfabric.")
 communications interface for the True Scale family of products.  PSM users are
 enabled with mechanisms necessary to implement higher level communications
 interfaces in parallel environments.")
-    ;; Only Intel-compatable processors are supported.
+    ;; Only Intel-compatible processors are supported.
     (supported-systems '("i686-linux" "x86_64-linux"))
     (license (list license:bsd-2 license:gpl2)))) ;dual
 
@@ -9527,7 +9527,7 @@ The PSM2 API is a high-performance vendor-specific protocol that provides a
 low-level communications interface for the Intel Omni-Path family of
 high-speed networking devices.")
     (home-page "https://github.com/intel/opa-psm2")
-    ;; Only the x86_64 architecure is supported.
+    ;; Only the x86_64 architecture is supported.
     (supported-systems '("x86_64-linux"))
     (license (list license:bsd-3 license:gpl2)))) ; dual
 

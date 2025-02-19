@@ -1708,7 +1708,7 @@ algorithm.")
      (list
       #:import-path "github.com/pion/randutil"))
     (home-page "https://github.com/pion/randutil")
-    (synopsis "Helper library for cryptographic and mathmatical randoms")
+    (synopsis "Helper library for cryptographic and mathematical randoms")
     (description
      "This package provides primitives for generating random values.")
     (license license:expat)))

@@ -1132,7 +1132,7 @@ selected)
 @item Eraser with multiple configurations
 @item LaTeX support
 @item bug reporting, autosave, and auto backup tools
-@item Customizeable toolbar, with multiple configurations, e.g., to
+@item Customizable toolbar, with multiple configurations, e.g., to
 optimize toolbar for portrait / landscape
 @item Page Template definitions
 @item Shape drawing (line, arrow, circle, rectangle)

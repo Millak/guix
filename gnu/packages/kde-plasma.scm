@@ -1808,7 +1808,7 @@ on top of Baloo.")
              libksysguard))
     (home-page "https://invent.kde.org/plasma/plasma5support")
     (synopsis "Support components for porting from KF5/Qt5 to KF6/Qt6")
-    (description "This package provids support components for porting from
+    (description "This package provides support components for porting from
 KF5/Qt5 to KF6/Qt6")
     (license (list license:lgpl2.0+))))
 

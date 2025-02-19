@@ -1411,7 +1411,7 @@ provides features like a Web-browsable API and authentication policies.")
 provides.  A fresh look at blocks.  With @code{django-sekizai} you can define
 placeholders where your blocks get rendered and at different places in your
 templates append to those blocks.  This is especially useful for css and
-javascript.  Your subtemplates can now define css and javscript files to be
+javascript.  Your subtemplates can now define css and javascript files to be
 included, and the css will be nicely put at the top and the javascript to the
 bottom, just like you should.  Also sekizai will ignore any duplicate content in
 a single block.")

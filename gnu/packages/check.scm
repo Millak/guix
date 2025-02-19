@@ -922,7 +922,7 @@ has been designed to be fast, light and unintrusive.")
 
 (define-public ftest
   ;; There aren't any releases and it looks more like a small side project.
-  ;; It is included for completness to run tests for package utfcpp.
+  ;; It is included for completeness to run tests for package utfcpp.
   (let ((commit "c4ad4af0946b73ce1a40cbc72205d15d196c7e06")
         (revision "0"))
     (package

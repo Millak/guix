@@ -690,7 +690,7 @@ internationalizing Common Lisp programs.
 One important aspect of internationalization is of course the language used in
 error messages, documentation strings, etc.  But with this project we provide
 tools for all other aspects of internationalization as well, including dates,
-weight, temperature, names of physical quantitites, etc.")
+weight, temperature, names of physical quantities, etc.")
       (license license:bsd-2))))
 
 (define-public cl-acclimation
@@ -7457,7 +7457,7 @@ format.")
       (native-inputs
        (list sbcl-lift))
       (arguments
-       `(#:tests? #f ; FIXME: Tests get stuck indefinitly
+       `(#:tests? #f ; FIXME: Tests get stuck indefinitely
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-paths
@@ -10078,9 +10078,9 @@ rendering of the XML Infoset.")
                        "cl-syntax-annot"
                        "cl-syntax-interpol")))
     (home-page "https://github.com/m2ym/cl-syntax")
-    (synopsis "Reader Syntax Coventions for Common Lisp and SLIME")
+    (synopsis "Reader Syntax Conventions for Common Lisp and SLIME")
     (description
-     "CL-SYNTAX provides Reader Syntax Coventions for Common Lisp and SLIME.")
+     "CL-SYNTAX provides Reader Syntax Conventions for Common Lisp and SLIME.")
     (license license:llgpl)))
 
 (define-public cl-syntax
@@ -14544,7 +14544,7 @@ coloured printing via @code{cl-ansi-text} and readline completion.")
        `(("metatilities-base" ,sbcl-metatilities-base)))
       (arguments
        ;; NOTE: (Sharlatan-20210106222900+0000) Circular dependencies and failing
-       ;; test suites. lift-standard.config contains referances to deprecated
+       ;; test suites. lift-standard.config contains references to deprecated
        ;; functionality.
        ;; See https://github.com/hraban/dynamic-classes/issues/2
        `(#:tests? #f))
@@ -19946,7 +19946,7 @@ BTCPay, Paypal, and Stripe.")
         sbcl-cl-ppcre))
       (home-page "https://github.com/cxxxr/lisp-preprocessor")
       (synopsis "Common Lisp embedded template engine")
-      (description "This package provices an embedded template engine for Common Lisp.")
+      (description "This package provides an embedded template engine for Common Lisp.")
       (license license:expat))))
 
 (define-public cl-lisp-preprocessor
@@ -24925,7 +24925,7 @@ server over a socket.
 
 @code{POSTMODERN} itself is a wrapper around these packages and provides higher
 level functions, a very simple data access object that can be mapped directly to
-database tables and some convient utilities.  It then tries to put all these
+database tables and some convenient utilities.  It then tries to put all these
 things together into a convenient programming interface")
     (home-page "https://marijnhaverbeke.nl/postmodern/")
     (license license:zlib)))
@@ -31200,7 +31200,7 @@ the return type of a function.")
   (package
     (inherit (sbcl-package->ecl-package sbcl-type-i))
     (arguments
-     ;; The tests get stuck indefinitly
+     ;; The tests get stuck indefinitely
      '(#:tests? #f))))
 
 (define-public sbcl-type-r

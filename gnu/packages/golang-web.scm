@@ -2583,7 +2583,7 @@ decompose request handling into many smaller layers.")
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separatly:
+            ;; Submodules with their own go.mod files and packaged separately:
             ;;
             ;; - github.com/go-jose/go-jose/jose-util
             (delete-file-recursively "jose-util")))))
@@ -6183,7 +6183,7 @@ in Golang.")
       #:tests? #f
       #:import-path "https://github.com/pion/ice"
       #:phases
-      ;; Failed to build and only requried for inheritance:
+      ;; Failed to build and only required for inheritance:
       ;;
       ;; cannot use a.net (type *vnet.Net) as type transport.Net in field value:
       ;; *vnet.Net does not implement transport.Net (wrong type for CreateDialer method)
@@ -6956,7 +6956,7 @@ Caching.")
     (home-page "https://github.com/pquerna/ffjson")
     (synopsis "Faster JSON for Golang")
     (description
-     "This package implements functinality to generate static
+     "This package implements functionality to generate static
 @code{MarshalJSON} and @code{UnmarshalJSON} functions for structures in Go.
 The generated functions reduce the reliance upon runtime reflection to do
 serialization and are generally 2 to 3 times faster.  In cases where
@@ -9314,7 +9314,7 @@ tool."))))
        ((#:import-path _ "github.com/multiformats/go-multiaddr-dns")
         "github.com/multiformats/go-multiaddr-dns/madns")))
     (description
-     "This package provides a CLI binary executible built from
+     "This package provides a CLI binary executable built from
 go-github-com-multiformats-go-multiaddr-dns.")))
 
 (define-public go-minify
@@ -9327,7 +9327,7 @@ go-github-com-multiformats-go-multiaddr-dns.")))
       #:tests? #f ; tested in the library
       #:import-path "github.com/tdewolff/minify/cmd/minify"
       #:unpack-path "github.com/tdewolff/minify"))
-    (description "This package provides a CLI binary executible built from
+    (description "This package provides a CLI binary executable built from
 go-github-com-tdewolff-minify-v2 source.")))
 
 (define-public gron

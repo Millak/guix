@@ -340,7 +340,7 @@
         (base32 "0k1kg4gkp2jhi5fgdfd0cq2qfbyy3gfgwqjrvzq1hzrjmynwwnmr"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #true              ;bootsrapping issues with rust-actix
+     `(#:skip-build? #true              ;bootstrapping issues with rust-actix
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)

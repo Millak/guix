@@ -1540,7 +1540,7 @@ It can also list the processes responsible in a @command{top}-like table.
 A less common nmon feature is its ability to create highly detailed log files
 in @acronym{CSV, comma-separated values} format.  These can be imported into
 spreadsheets or fed straight into an @acronym{RRD, round-robin database} using
-@command{rrdtool} for further analyisis, or to create colourful graphs.")
+@command{rrdtool} for further analysis, or to create colourful graphs.")
     (license license:gpl3+)))
 
 (define-public sipcalc
@@ -5661,7 +5661,7 @@ disk utilization, priority, username, state, and exit code.")
                        "/pkg/visitors"
                        "/cmds/cbfs"
                        "/cmds/create-ffs"
-                       ;; TODO: Not packed yet in Guix, long jorney:
+                       ;; TODO: Not packed yet in Guix, long journey:
                        ;; - github.com/u-root/u-root
                        ;;
                        ;; "/cmds/fmap"

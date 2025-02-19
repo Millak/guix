@@ -487,7 +487,7 @@
 ;; the above list.  Each function either returns a list, or elements that will
 ;; be put in one.  The elements of these lists will either be:
 ;; - strings,
-;;   In this case, the string is seen as a line to add to the configuraiton
+;;   In this case, the string is seen as a line to add to the configuration
 ;;   file.
 ;; - a pair (cons 'begin-block string),
 ;;   In this case, a line "string {" is added to the configuration file, and

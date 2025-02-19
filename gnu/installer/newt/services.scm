@@ -86,7 +86,7 @@ system.")
        (abort-to-prompt 'installer-step 'abort)))))
 
 (define (run-console-services-cbt-page)
-  "Run a page to select various system adminstration services for non-graphical
+  "Run a page to select various system administration services for non-graphical
 systems."
   (let ((items (filter (lambda (service)
                          (eq? 'administration

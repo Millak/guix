@@ -380,7 +380,7 @@ file system, and many more features.")
     (inputs
      (list curl expat gumbo-parser ncurses sqlite yajl))
     (home-page "https://codeberg.org/grisha/newsraft")
-    (synopsis "Feed reader for termnial")
+    (synopsis "Feed reader for terminal")
     (description
      "Newsraft is a feed reader with ncurses user interface.  It is greatly
 inspired by Newsboat and tries to be its lightweight counterpart.

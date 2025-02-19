@@ -284,7 +284,7 @@ Mozilla's canonical set.")
     (build-system rebar-build-system)
     (home-page "https://github.com/project-fifo/cf")
     (synopsis "Terminal colour helper for Erlang io and io_lib")
-    (description "This package provides a helper library for termial colour
+    (description "This package provides a helper library for terminal colour
 printing extending the io:format syntax to add colours.")
     (license license:expat)))
 

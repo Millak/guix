@@ -135,7 +135,7 @@ multibyte strings, internationalization, time zones, and testing.")
      '(#:tests? #f))                    ;no included tests
     (propagated-inputs
      (list ruby-activesupport))
-    (synopsis "Generate URIs idenfitying model instances in Ruby")
+    (synopsis "Generate URIs identifying model instances in Ruby")
     (description
      "@code{GlobalID} provides a way to generate URIs from a model in Ruby that
 uniquely identify it.")

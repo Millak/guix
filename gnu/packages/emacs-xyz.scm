@@ -1127,7 +1127,7 @@ a neat percentage.")
     (propagated-inputs (list emacs-async emacs-projectile))
     (home-page "https://github.com/zachmassia/platformio-mode")
     (synopsis "Minor mode for building and uploading PlatformIO projects")
-    (description "This package provices an Emacs minor mode for building and
+    (description "This package provides an Emacs minor mode for building and
 uploading PlatformIO projects.")
     (license license:gpl3+)))
 
@@ -13844,7 +13844,7 @@ facilitate Perl programming.  CPerl Mode has provided an excellent environment
 for coding; Emacs::PDE provides other common tools such as creating files
 using templates, smart compiling, @command{perldoc}, @command{perltidy},
 debugger, tags tree view and so on.  PDE also provides an easy configuration
-for Perl programing, and a tutorial for novices to start using Emacs.")
+for Perl programming, and a tutorial for novices to start using Emacs.")
     (license license:perl-license)))
 
 (define-public emacs-perspective
@@ -20943,7 +20943,7 @@ function to be used by other frontend programs.")
     (license license:gpl2+)))
 
 (define-public emacs-pyim-basedict
-  ;; XXX: The commit below points to the lastest (un-tagged) release.
+  ;; XXX: The commit below points to the latest (un-tagged) release.
   (let ((commit "d61af27686f7a39e6c138b7261a686e7ea7a0ef7"))
     (package
       (name "emacs-pyim-basedict")
@@ -24752,7 +24752,7 @@ and can be consulted and modified.")
       (home-page "https://github.com/purescript-emacs/psc-ide-emacs")
       (synopsis "Emacs integration for PureScript's psc-ide tool")
       (description
-       "This package provices Emacs integration for @code{psc-ide}, an IDE
+       "This package provides Emacs integration for @code{psc-ide}, an IDE
 protocol for PureScript programming language.  It features:
 
 @itemize
@@ -29854,7 +29854,7 @@ later.")
     (license license:gpl3+)))
 
 (define-public emacs-srfi
-  ;; SRFI data gets updated quite frequently; lastest tag is from
+  ;; SRFI data gets updated quite frequently; latest tag is from
   ;; 2020; commit from 2021-08-12.
   (let ((commit "e31bf04a3be3aad1286b7fe919c2e4810aae751e")
         (revision "0"))

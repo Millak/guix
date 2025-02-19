@@ -44,7 +44,7 @@
     (arguments
      ;; The ical tests all want to create a ".calcurse" directory, and may
      ;; fail with "cannot create directory '.calcurse': File exists" if run
-     ;; concurently.
+     ;; concurrently.
      `(#:configure-flags
        (list (string-append "--docdir=" (assoc-ref %outputs "out")
                             "/share/doc/" ,name "-" ,version))

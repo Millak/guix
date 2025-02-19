@@ -1136,7 +1136,7 @@ IBus-Table on IBus framework:
     (synopsis "Speech to text IBus engine using VOSK")
     (description "This Input Method uses VOSK for voice recognition and allows
 to dictate text in several languages in any application that supports IBus.
-One of the main adavantages is that VOSK performs voice recognition locally
+One of the main advantages is that VOSK performs voice recognition locally
 and does not rely on an online service.")
     (license gpl3+)))
 

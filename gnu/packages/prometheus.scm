@@ -569,7 +569,7 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
      "The StatsD exporter is a drop-in replacement for
 @url{https://github.com/statsd/statsd,StatsD}.  The exporter translates StatsD
 metrics to Prometheus metrics via configured mapping rules.  This package
-provdies a Golang module and @code{statsd_exporter} executable command.")
+provides a Golang module and @code{statsd_exporter} executable command.")
     (license license:asl2.0)))
 
 ;;;

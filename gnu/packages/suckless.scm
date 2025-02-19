@@ -672,7 +672,7 @@ in the range of your wireless station.  Once received the program
 extracts the BSSID of the AP and transmits deauthentication packets
 using the broadcast MAC address.  This results to the disconnection
 of all clients connected to the AP at the time of the attack.  This
-is essencially a WiFi DoS attack tool created for educational
+is essentially a WiFi DoS attack tool created for educational
 purposes only.  It works only in Linux and requires wireless card
 drivers capable of injecting packets in wireless networks.")
     (license license:gpl3+)))

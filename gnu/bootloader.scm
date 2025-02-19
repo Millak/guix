@@ -241,7 +241,7 @@ record."
 ;;; Bootloader configuration record.
 ;;;
 
-;; The <bootloader-configuration> record contains bootloader independant
+;; The <bootloader-configuration> record contains bootloader independent
 ;; configuration used to fill bootloader configuration file.
 
 (define-with-syntax-properties (warn-target-field-deprecation

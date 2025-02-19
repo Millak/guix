@@ -95,7 +95,7 @@ this directory should contain static configurations.")
   (data-home
    (path "$HOME/.local/share")
    "Base directory for programs to store architecture independent
-read-only shared data, analogus to @file{/usr/share}, but for user.")
+read-only shared data, analogous to @file{/usr/share}, but for user.")
   (runtime-dir
    (path "${XDG_RUNTIME_DIR:-/run/user/$UID}")
    "Base directory for programs to store user-specific runtime files,
@@ -103,7 +103,7 @@ like sockets.")
   ;; TODO: deprecated field, use $XDG_STATE_HOME(/log) instead.
   (log-home
    maybe-path
-   "Base directory for programs to store log files, analogus to
+   "Base directory for programs to store log files, analogous to
 @file{/var/log}, but for user.  It is not a part of XDG Base Directory
 Specification, but helps to make implementation of home services more
 consistent."
