@@ -1613,6 +1613,29 @@ do manually if you wanted to keep the buffers of a project neatly isolated in
 separate, named tab groups.")
       (license license:gpl3+))))
 
+(define-public emacs-discourse-mode
+  (package
+    (name "emacs-discourse-mode")
+    (version "0.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/glenneth/discourse-mode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j2f0vclj6zrmk1hxyrrhkcpk74vqvq42g9wjqrjw827yjh2wm65"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat
+                             emacs-markdown-mode
+                             emacs-request))
+    (home-page "https://codeberg.org/glenneth/discourse-mode")
+    (synopsis "Emacs package for interacting with Discourse forums")
+    (description "This package lets you browse categories, view topics, read
+posts, and participate in discussions on Discourse, directly from Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-disproject
   (package
     (name "emacs-disproject")
