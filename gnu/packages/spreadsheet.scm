@@ -99,18 +99,20 @@
 (define-public visidata
   (package
     (name "visidata")
-    (version "3.0.2")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "visidata" version))
        (sha256
         (base32
-         "0nn0fwm0172gn5ffil310k7hmxqrrc1dn6xfz7jxsj0vikq8vhrq"))))
+         "0cdhx0n79n9z5d22nr90kkg93ndxcnyl4margs4f8l88iwaq8i4c"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-home-directory
+                 (lambda _ (setenv "HOME" "/tmp")))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests? (invoke "pytest")))))))
