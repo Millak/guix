@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2016, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
@@ -4201,13 +4201,13 @@ servers.  The 4rev1 and 4 versions of IMAP are supported.")
 (define-public urlscan
   (package
     (name "urlscan")
-    (version "1.0.1")
+    (version "1.0.6")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "urlscan" version))
         (sha256
-         (base32 "0zrh2c8p70fq9y7afmpbsirz22nq2qhnks5c5zfmgnm2b9p9iv70"))))
+         (base32 "10a5rgvzy6baqmr0x4lmzsr73a4jpbm04xyjmqlkr493vq08kgrv"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))        ; No tests.
