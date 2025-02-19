@@ -1833,7 +1833,7 @@ In the above example @code{%file-systems} is a collection of flags
 enabling different file system support, @code{%efi-support} enables EFI
 support and @code{%emulation} enables a x86_64-linux machine to act in
 32-bit mode also.  The @code{default-extra-linux-options} procedure is
-the one defined above, which had to be used to avoid loosing the default
+the one defined above, which had to be used to avoid losing the default
 configuration options of the @code{extra-options} keyword.
 
 This all sounds like it should be doable, but how does one even know which

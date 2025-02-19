@@ -95,7 +95,7 @@ See https://lists.gnu.org/archive/html/guix-devel/2018-12/msg00161.html.
 *** Add more partitioning schemes
 The actual schemes are taken from Debian Installer but some are not
 implemented yet: like "Separate partitions for /home /var and /tmp".
-*** Replace wait page "Partition formating is in progress, please wait"
+*** Replace wait page "Partition formatting is in progress, please wait"
 Create a new waiting page describing what's being done:
 
 [              20%              ]
@@ -103,7 +103,7 @@ Running mkfs.ext4 on /dev/sda2 ...
 
 [              40%              ]
 Running mkfs.ext4 on /dev/sda3 ...
-*** Add a confirmation page before formating/partitioning
+*** Add a confirmation page before formatting/partitioning
 ** Desktop environments
 *** Allow for no desktop environments
 Propose to choose between "headless server" and "lightweight X11" in a new

@@ -3465,9 +3465,9 @@ Guile does not know in which order you intended the string to be read, so it
 will substitute the symbols in the same order as the English sentence.
 
 As an example, you cannot translate @samp{package '~a' has been superseded by
-'~a'} by @samp{'~a' superseeds package '~a'}, because the meaning would be
+'~a'} by @samp{'~a' supersedes package '~a'}, because the meaning would be
 reversed.  If @var{foo} is superseded by @var{bar}, the translation would read
-@samp{'foo' superseeds package 'bar'}.  To work around this problem, it
+@samp{'foo' supersedes package 'bar'}.  To work around this problem, it
 is possible to use more advanced formatting to select a given piece of data,
 instead of following the default English order.  @xref{Formatted Output,,,
 guile, GNU Guile Reference Manual}, for more information on formatting in Guile.

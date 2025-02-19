@@ -36926,7 +36926,7 @@ local syslog daemon.  Alternatively, a log file name can be specified,
 for example @file{/var/log/mpd.log}.
 
 @item @code{log-level} (type: maybe-string)
-Supress any messages below this threshold.  The available values, in
+Suppress any messages below this threshold.  The available values, in
 decreasing order of verbosity, are: @code{verbose}, @code{info},
 @code{notice}, @code{warning} and @code{error}.
 
@@ -41532,7 +41532,7 @@ Print debugging output to stderr.
 Log to syslog facility instead of stdout.
 
 @item @code{scan?} (default: @code{#t}) (type: boolean)
-Scan for cachable objects.
+Scan for cacheable objects.
 
 @item @code{cache-directory} (type: maybe-string)
 Location of the cache directory.
@@ -42635,13 +42635,13 @@ Whether to automatically configure subuids and subgids for root.
 @item @code{subgids} (default: @code{'()}) (type: list-of-subid-ranges)
 The list of @code{subid-range}s that will be serialized to @code{/etc/subgid}.
 If a range doesn't specify a start it will be fitted based on its number of
-requrested subids.  If a range doesn't specify a count the default size
+requested subids.  If a range doesn't specify a count the default size
 of 65536 will be assumed.
 
 @item @code{subuids} (default: @code{'()}) (type: list-of-subid-ranges)
 The list of @code{subid-range}s that will be serialized to @code{/etc/subuid}.
 If a range doesn't specify a start it will be fitted based on its number of
-requrested subids.  If a range doesn't specify a count the default size
+requested subids.  If a range doesn't specify a count the default size
 of 65536 will be assumed.
 
 @end table
@@ -43321,7 +43321,7 @@ Whether to enable verbose output for the current backup job.
 @item @code{extra-flags} (default: @code{'()}) (type: list-of-lowerables)
 A list of values that are lowered to strings.  These will be passed as
 command-line arguments to the current job @command{restic backup}
-invokation.
+invocation.
 
 @end table
 
@@ -47442,7 +47442,7 @@ The expected home directory state would then be:
 @end example
 
 @defvar home-dotfiles-service-type
-Return a service which is very similiar to @code{home-files-service-type}
+Return a service which is very similar to @code{home-files-service-type}
 (and actually extends it), but designed to ease the way into using Guix
 Home for users that already track their dotfiles under some kind of version
 control.  This service allows users to point Guix Home to their dotfiles

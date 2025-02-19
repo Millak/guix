@@ -215,7 +215,7 @@ This is an extension of ‘python-build-system’ with support for PEP-517 and
 *** ‘qemu-binfmt-service-type’ now relies on statically-linked QEMU
 *** ‘sysctl-service-type’ enables Linux protected hardlinks/symlinks by default
 *** ‘%base-services’ now includes a default ‘sysctl-service-type’ instance
-*** Linux Logical Volumne Manager (LVM) now supported, via ‘lvm-device-mapping’
+*** Linux Logical Volume Manager (LVM) now supported, via ‘lvm-device-mapping’
 *** ‘guix system init’ has been optimized
 *** ‘guix system’ warns when users/groups appear more than once
 *** ‘guix system image -t rock64-raw’ produces images for Rock64 devices
@@ -316,7 +316,7 @@ documentation, package descriptions, and the web site.
 * Changes in 1.2.0 (since 1.1.0)
 
 ** Package management
-*** ‘guix pull’ now crytographically authenticates channels
+*** ‘guix pull’ now cryptographically authenticates channels
 *** ‘guix describe -f channels’ now shows “channel introductions”
 *** ‘guix describe -f channels-sans-intro’ omits channel introductions
 *** New ‘guix git authenticate’ command, to authenticate Git checkouts
@@ -3349,7 +3349,7 @@ zimg@2.5, zlib@1.2.11, znc@1.6.5
 *** Create home directories once file systems are mounted
     (<http://bugs.gnu.org/21108>)
 *** GNU R now builds bit-reproducibly (<https://bugs.gnu.org/25598>)
-*** The daemon’s default settings are used unless overriden
+*** The daemon’s default settings are used unless overridden
     (<https://bugs.gnu.org/20217>)
 *** ‘guix system’ now supports the common build option ‘--root’
     (<https://bugs.gnu.org/26271>)
