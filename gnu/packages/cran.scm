@@ -44114,7 +44114,9 @@ distributed as independent packages.")
        (sha256
         (base32
          "1rwyzvqs5hwjmwa70b7g4jm7h1x1spyh81cd2qnmvfml0rw9ricx"))))
-    (properties '((updater-ignored-native-inputs . ("r-utils"))))
+    (properties
+     '((updater-ignored-native-inputs . ("r-utils"))
+       (updater-extra-native-inputs . ("r-vdiffr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape
@@ -44126,7 +44128,7 @@ distributed as independent packages.")
            r-quadprog
            r-rcpp))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-vdiffr))
     (home-page "https://github.com/KlausVigo/phangorn")
     (synopsis "Phylogenetic analysis in R")
     (description
