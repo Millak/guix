@@ -47740,6 +47740,29 @@ client and server")
 Rust dbus client and server.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-notify-types-1
+  (package
+    (name "rust-notify-types")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "notify-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0x5idrpxzf70ng88rz28dqmgx1jyddf0vxx1x3csw09fw6skqpaq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-instant" ,rust-instant-0.1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-insta" ,rust-insta-1)
+                                   ("rust-rstest" ,rust-rstest-0.21)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/notify-rs/notify")
+    (synopsis "Types used by the notify crate")
+    (description "This package provides rust types used by the notify crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-notmuch-0.8
   (package
     (name "rust-notmuch")
