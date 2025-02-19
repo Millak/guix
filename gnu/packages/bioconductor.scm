@@ -6906,6 +6906,9 @@ array-like objects like @code{DataFrame} objects (typically with Rle columns),
                 "0acqdhi13ihv9bxr2n5gh8ysk0ciak273pj495qr3s1pd8qz8772"))))
     (properties `((upstream-name . "densvis")))
     (build-system r-build-system)
+    ;; Due to the use of Basilisk, which forcibly installs a Conda environment
+    ;; on demand, we cannot run these tests.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-assertthat
                              r-basilisk
                              r-irlba
