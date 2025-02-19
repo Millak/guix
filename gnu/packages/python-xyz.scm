@@ -30589,39 +30589,43 @@ the saved state of the original interpreter session.")
 (define-public python-multiprocess
   (package
     (name "python-multiprocess")
-    (version "0.70.14")
+    (version "0.70.17")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "multiprocess" version))
        (sha256
         (base32
-         "0splzd9w9yi42vl7b6mm99vb82jp2adhdrizw1xd4q125z0szp9y"))))
+         "0ypm9yj1ng1s96hk2iwll190dkpc2j5zras8kay9x00n6hdg3qja"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             ;; The "wait_result" and "shared_memory..." tests are broken as
-             ;; there is no keyboard interrupt.
-             ;;
-             ;; The "preload_resources" test fails as it cannot find
-             ;; mp_preload.py.
-             (substitute* "py3.10/multiprocess/tests/__init__.py"
-               (("^(.*)def test_(\
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-broken-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; The "wait_result" and "shared_memory..." tests are broken as
+              ;; there is no keyboard interrupt.
+              ;;
+              ;; The "preload_resources" test fails as it cannot find
+              ;; mp_preload.py.
+              (substitute*
+                  (string-append "py" (python-version
+                                       (assoc-ref inputs "python"))
+                                 "/multiprocess/tests/__init__.py")
+                (("^(.*)def test_(\
 wait_result|\
 shared_memory_SharedMemoryServer_ignores_sigint|\
 preload_resources\
 )" line indent)
-                (string-append indent
-                               "@unittest.skip(\"Disabled by Guix\")\n"
-                               line)))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "multiprocess.tests")))))))
+                 (string-append indent
+                                "@unittest.skip(\"Disabled by Guix\")\n"
+                                line)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "python" "-m" "multiprocess.tests")
+                  (format #t "test suite not run~%")))))))
     (propagated-inputs
      (list python-dill))
     (native-inputs (list python-setuptools python-wheel))
