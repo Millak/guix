@@ -13113,6 +13113,37 @@ package (which is based off an earlier version of this package).")
      (list go-github-com-stretchr-testify))
     (propagated-inputs '())))
 
+(define-public go-github-com-petar-gollrb
+  (package
+    (name "go-github-com-petar-gollrb")
+    (version "0.0.0-20210522233825-ae3b015fd3e9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/petar/GoLLRB")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k50v8jk7pfwpghmpyr9gk8kpcxns0d8kw113z9wjcr0x8gnyj0n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/petar/GoLLRB"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")))))))
+    (home-page "https://github.com/petar/GoLLRB")
+    (synopsis "LLRB implementation of balanced binary search trees for Golang")
+    (description
+     "@code{GoLLRB} is a Left-Leaning Red-Black (LLRB) implementation of 2-3
+balanced binary search trees in Go Language.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-peterbourgon-diskv
   (package
     (name "go-github-com-peterbourgon-diskv")
