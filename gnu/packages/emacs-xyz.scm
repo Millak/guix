@@ -592,8 +592,8 @@ API key.")
     (license license:gpl3+)))
 
 (define-public emacs-gptel-quick
-  (let ((commit "79c33058e605b4fbdb1d1f98d1ab428d6eed111d")
-        (revision "0"))
+  (let ((commit "d7a3aedefdc656a136d5664f2dac165a1f6ebf0e")
+        (revision "1"))
     (package
       (name "emacs-gptel-quick")
       (version (git-version "0.0.5" revision commit))
@@ -604,7 +604,7 @@ API key.")
                (commit commit)))
          (method git-fetch)
          (sha256
-          (base32 "0bw3zjpzyc574jw2qr0j042x68llkjxn66gkfnw7dwwpgwplz671"))
+          (base32 "05khdra5aig8466flwl62nsngyn9cz11zwjn0vyyig9c48n8nfka"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-gptel))
