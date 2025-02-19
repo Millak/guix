@@ -44999,6 +44999,13 @@ implemented as @code{R6} classes.")
                (base32
                 "1h2rp8l9cinxaza2nny2y0hv1m0jf5viw0mi7gh2xl26g1ly71lj"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           ;; These tests attempt to install packages.
+           (lambda _ (delete-file "tests/testthat/test_install_pkgs.R"))))))
     (propagated-inputs
      (list r-backports
            r-checkmate
