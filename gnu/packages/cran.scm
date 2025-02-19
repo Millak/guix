@@ -19990,11 +19990,13 @@ McCullagh (1991) <https://www.jstor.org/stable/2345592>.")
        (sha256
         (base32
          "129cnh3kh9sr42nc7n9f14kr9svi3501834x40njynnzlr0wi4sm"))))
-    (properties `((upstream-name . "pROC")))
+    (properties
+     '((upstream-name . "pROC")
+       (updater-extra-native-inputs . ("r-ggplot2" "r-mass"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-plyr r-rcpp))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-ggplot2 r-mass r-testthat))
     (home-page "https://web.expasy.org/pROC/")
     (synopsis "Display and analyze ROC curves")
     (description
