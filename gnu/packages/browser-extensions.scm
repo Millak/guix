@@ -69,6 +69,55 @@ match website theme.")
 (define-public adaptive-tab-bar-colour/icecat
   (make-icecat-extension adaptive-tab-bar-colour))
 
+(define canvasblocker
+  (package
+    (name "canvasblocker")
+    (version "1.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kkapsner/CanvasBlocker")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xxs6s7nrl4y4qiw2cpkqh170mbv78n0ixd874a72jjvczw2vpg7"))
+       (modules '((guix build utils) (ice-9 match) (ice-9 ftw)))
+       (snippet
+        #~(begin
+            (for-each delete-file
+                      '("canvasblocker.xpi" "package-lock.json"))
+            ;; Delete all hidden files/directories except .tools.
+            (for-each
+             (match-lambda
+               ((or "." ".tools" ".."
+                    (? (lambda (name)
+                         (not (string-prefix? "." name)))))
+                #t)
+               ((? file-is-directory? dir)
+                (delete-file-recursively dir))
+               (file
+                (delete-file file)))
+             (scandir "."))))))
+    (build-system copy-build-system)
+    (properties '((addon-id . "CanvasBlocker@kkapsner.de")))
+    (arguments
+     (list
+      #:install-plan  ;deduced from .tools/build.js
+      #~'(("." #$(assq-ref properties 'addon-id)
+           #:exclude ("crowdin.yml" "package.json" "releaseNotes.txt")
+           #:exclude-regexp ("test/.*" "versions/.*" ".tools/*")))))
+    (home-page "https://github.com/kkapsner/CanvasBlocker")
+    (synopsis "Firefox extension to protect from being fingerprinted")
+    (description "This extension allows users to prevent websites from using
+some Javascript APIs to fingerprint them.  Users can choose to block the APIs
+entirely on some or all websites (which may break some websites) or just block
+or fake its fingerprinting-friendly readout API.")
+    (license license:mpl2.0)))
+
+(define-public canvasblocker/icecat
+  (make-icecat-extension canvasblocker))
+
 (define play-to-kodi
   (package
     (name "play-to-kodi")
