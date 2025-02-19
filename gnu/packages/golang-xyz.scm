@@ -100,6 +100,7 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages specifications)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
@@ -12268,6 +12269,50 @@ list of sentences.")
 @code{org-mode} file format alongside a static site generator with HTML &
 pretty printed rendering in Golang.")
     (license license:expat)))
+
+(define-public go-github-com-nlpodyssey-spago
+  (package
+    (name "go-github-com-nlpodyssey-spago")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nlpodyssey/spago")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vxc7370a1ssb2p25xmrgxkg3jdrl6srsg3w8x7qiacgfdasn5cn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/nlpodyssey/spago"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-flatbuffers))
+    (home-page "https://github.com/nlpodyssey/spago")
+    (synopsis "ML/NLP library in Golang")
+    (description
+     "This package provides is a Machine Learning library written in pure Go
+designed to support relevant neural architectures in Natural Language
+Processing.
+
+It is self-contained, in that it uses its own lightweight computational
+graph both for training and inference, easy to understand from start to
+finish.
+
+It provides:
+@itemize
+@item automatic differentiation via dynamic define-by-run execution
+@item feed-forward layers (Linear, Highway, Convolution...)
+@item recurrent layers (LSTM, GRU, BiLSTM...)
+@item attention layers (Self-Attention, Multi-Head Attention...)
+@item gradient descent optimizers (Adam, RAdam, RMS-Prop, AdaGrad, SGD)
+@item gob compatible neural models for serialization
+@end itemize")
+    (license license:bsd-2)))
 
 (define-public go-github-com-nsf-termbox-go
   (package
