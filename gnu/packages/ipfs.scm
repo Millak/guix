@@ -606,6 +606,39 @@ LevelDB backend.")
      "@code{go-ipfs-exchange-interface} defines the IPFS exchange interface.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipfs-exchange-offline
+  (package
+    (name "go-github-com-ipfs-go-ipfs-exchange-offline")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-exchange-offline")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ad28xbqbxc93ckjnlifbk7p58qis7ayfpndav33n6b4sq6s2a0r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-ipfs-exchange-offline"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-ipfs-blockstore
+           go-github-com-ipfs-go-ipfs-blocksutil
+           go-github-com-ipfs-go-ipfs-exchange-interface
+           go-github-com-ipfs-go-ipfs-util
+           go-github-com-ipfs-go-ipld-format))
+    (home-page "https://github.com/ipfs/go-ipfs-exchange-offline")
+    (synopsis "Offline IPFS exchange implementation")
+    (description
+     "This package implements an object that implements the exchange interface
+but returns nil values to every request.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-pq
   (package
     (name "go-github-com-ipfs-go-ipfs-pq")
