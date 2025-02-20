@@ -4910,10 +4910,22 @@ naming conventions as distance methods of existing R packages.")
               (sha256
                (base32
                 "0x938sblzzfn7m19xcc6v9z1cpqwg0xngshnyc4hph9gs6r5js5b"))))
-    (properties `((upstream-name . "ParamHelpers")))
+    (properties
+     '((upstream-name . "ParamHelpers")
+       (updater-extra-native-inputs
+        . ("r-eaf" "r-emoa" "r-ggally" "r-gridextra" "r-plyr"))))
     (build-system r-build-system)
     (propagated-inputs (list r-backports r-bbmisc r-checkmate r-fastmatch))
-    (native-inputs (list r-ggplot2 r-irace r-lhs r-testthat))
+    (native-inputs
+     (list r-eaf
+           r-emoa
+           r-ggally
+           r-ggplot2
+           r-gridextra
+           r-plyr
+           r-irace
+           r-lhs
+           r-testthat))
     (home-page "https://paramhelpers.mlr-org.com")
     (synopsis
      "Helpers for parameters in black-box optimization, tuning, and machine learning")
