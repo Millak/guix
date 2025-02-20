@@ -829,6 +829,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "jlicht@fsfe.org")
   javascript)
 
+(define-member (person "Cayetano Santos"
+                       "csantosb@inventati.org")
+  electronics)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
