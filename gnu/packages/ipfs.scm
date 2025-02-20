@@ -1504,6 +1504,50 @@ their levels to be controlled individually.")
 @url{https://github.com/libp2p/specs,libp2p}.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-libp2p-pubsub
+  (package
+    (name "go-github-com-libp2p-go-libp2p-pubsub")
+    (version "0.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p-pubsub")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14afjrgfbmlrnjd5xnl70ff95mbvfxp9n8mx3hrw8069bcpzvm2k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; TODO: Tests may need some adjustments as they take quite a lot of
+      ;; time to finish.
+      #:import-path "github.com/libp2p/go-libp2p-pubsub"
+      ;; src/github.com/libp2p/go-libp2p-asn-util/asn.go:12:12: pattern
+      ;; sorted-network-list.bin: cannot embed irregular file
+      ;; sorted-network-list.bin
+      #:embed-files #~(list "sorted-network-list\\.bin")))
+    (native-inputs
+     (list go-github-com-libp2p-go-libp2p-testing
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-benbjohnson-clock
+           go-github-com-gogo-protobuf
+           go-github-com-ipfs-go-log-v2
+           go-github-com-libp2p-go-buffer-pool
+           go-github-com-libp2p-go-libp2p
+           go-github-com-libp2p-go-msgio
+           go-github-com-multiformats-go-multiaddr
+           go-github-com-multiformats-go-varint
+           go-go-uber-org-zap))
+    (home-page "https://github.com/libp2p/go-libp2p-pubsub")
+    (synopsis "PubSub implementation for go-libp2p")
+    (description
+     "This package provides facilities for the Publish/Subscribe pattern of
+message propagation, also known as overlay multicast.  The implementation
+provides topic-based pubsub, with pluggable routing algorithms.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public go-github-com-libp2p-go-libp2p-record
   (package
     (name "go-github-com-libp2p-go-libp2p-record")
