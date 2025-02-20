@@ -30124,10 +30124,12 @@ that accept short and long options.")
               (sha256
                (base32
                 "1fzmw813iab07vnc714zyaszbnsagbmba7j69la36hvnqx78wggz"))))
-    (properties `((upstream-name . "osqp")))
+    (properties
+     '((upstream-name . "osqp")
+       (updater-extra-native-inputs . ("r-slam"))))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix r-r6 r-rcpp))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-slam r-testthat))
     (home-page "https://osqp.org")
     (synopsis "Quadratic Programming Solver using the OSQP Library")
     (description
