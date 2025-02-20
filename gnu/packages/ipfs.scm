@@ -690,6 +690,48 @@ but returns nil values to every request.")
 parsing.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipfs-routing
+  (package
+    (name "go-github-com-ipfs-go-ipfs-routing")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-routing")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j5pyp35z0jnqzz7iiknqx3234swqrpqz478ng8al3b6gqaza9ks"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/ipfs/go-ipfs-routing"
+      ;; One test fails with error: panic: protobuf tag not enough fields in
+      ;; Record.state.
+      #:test-flags #~(list "-skip" "TestOfflineRouterStorage")))
+    (native-inputs
+     (list go-github-com-libp2p-go-libp2p-testing))
+    (propagated-inputs
+     (list go-github-com-gogo-protobuf
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-ipfs-delay
+           go-github-com-ipfs-go-ipfs-ds-help
+           go-github-com-ipfs-go-ipfs-util
+           go-github-com-ipfs-go-log
+           go-github-com-libp2p-go-libp2p
+           go-github-com-libp2p-go-libp2p-record
+           go-github-com-multiformats-go-multiaddr
+           go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/ipfs/go-ipfs-routing")
+    (synopsis "P2P routing implementations used in IPFS")
+    (description
+     "This package provides P2P routing implementations for IPFS
+development.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-util
   (package
     (name "go-github-com-ipfs-go-ipfs-util")
