@@ -1654,6 +1654,47 @@ provides topic-based pubsub, with pluggable routing algorithms.")
 systems.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-libp2p-routing-helpers
+  (package
+    (name "go-github-com-libp2p-go-libp2p-routing-helpers")
+    (version "0.7.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p-routing-helpers")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s0gzxfhmvywk4w78j1ga1ha7f948csfyflpxz8la1cp64238f01"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-libp2p-routing-helpers"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-hashicorp-errwrap
+           go-github-com-hashicorp-go-multierror
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-log
+           go-github-com-jorropo-jsync
+           go-github-com-libp2p-go-libp2p
+           go-github-com-libp2p-go-libp2p-record
+           go-github-com-multiformats-go-multibase
+           go-github-com-multiformats-go-multihash
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-trace
+           go-go-uber-org-multierr))
+    (home-page "https://github.com/libp2p/go-libp2p-routing-helpers")
+    (synopsis
+     "Collection of helper types for composing different types of routers")
+    ;; XXX: Project lacks any documentation.
+    (description
+     "This package provides a collection of helper types for composing
+different types of routers.")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-libp2p-testing
   (package
     (name "go-github-com-libp2p-go-libp2p-testing")
