@@ -1504,6 +1504,46 @@ their levels to be controlled individually.")
 @url{https://github.com/libp2p/specs,libp2p}.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-libp2p-kbucket
+  (package
+    (name "go-github-com-libp2p-go-libp2p-kbucket")
+    (version "0.6.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p-kbucket")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03xla0mhb17lh7syv0x4hvg2i0q1r8d6ym6rmjgf1z3z955znx6l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t ; cycles with Boxo
+      #:import-path "github.com/libp2p/go-libp2p-kbucket"
+      ;; src/github.com/libp2p/go-libp2p-asn-util/asn.go:12:12: pattern
+      ;; sorted-network-list.bin: cannot embed irregular file
+      ;; sorted-network-list.bin
+      #:embed-files #~(list "sorted-network-list\\.bin")
+      ;; Run portion of tests to bypath cycle with Boxo.
+      #:test-subdirs #~(list "peerdiversity/...")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-log-v2
+           go-github-com-libp2p-go-cidranger
+           go-github-com-libp2p-go-libp2p
+           go-github-com-libp2p-go-libp2p-asn-util
+           go-github-com-minio-sha256-simd
+           go-github-com-multiformats-go-multiaddr
+           go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/libp2p/go-libp2p-kbucket")
+    (synopsis "Kbucket implementation for use as a routing table")
+    (description
+     "Package kbucket implements a kademlia k-bucket routing table.")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-libp2p-pubsub
   (package
     (name "go-github-com-libp2p-go-libp2p-pubsub")
