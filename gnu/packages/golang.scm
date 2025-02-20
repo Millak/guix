@@ -1887,10 +1887,11 @@ characters with their ASCII approximations.")
     (license license:expat)))
 
 (define-public go-github-com-delthas-go-libnp
-  (let ((commit "0e45ece1f878f202fee2c74801e287804668f677"))
+  (let ((commit "96674b98150ed492b535d61dde5767dfa2dd14ce")
+        (revision "1"))
     (package
       (name "go-github-com-delthas-go-libnp")
-      (version (git-version "0.0.0" "0" commit))
+      (version (git-version "0.0.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1899,7 +1900,7 @@ characters with their ASCII approximations.")
                 (file-name (git-file-name name version))
                 (sha256
                   (base32
-                    "1hylpvwz3kb8wr00knba6mggjacak2vmqafwysansj0ns038lp8w"))))
+                    "1l2p2mpspjaffninxvghjsfywr39cravfbzpxyiq62lfpw43zwaq"))))
       (build-system go-build-system)
       (arguments `(#:import-path "github.com/delthas/go-libnp"))
       (propagated-inputs (list go-github-com-godbus-dbus-v5))
