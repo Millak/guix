@@ -1679,6 +1679,36 @@ systems.")
      "This package provides a testing toolbox for go-libp2p modules.")
     (license (list license:expat license:asl2.0))))
 
+(define-public go-github-com-libp2p-go-libp2p-xor
+  (package
+    (name "go-github-com-libp2p-go-libp2p-xor")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p-xor")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p4mwz0q0zbj8p1s04hmpy0w0znfxz3b7x28dv7cz0cg6wqvfqvk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Do not build or test to bypass cycle with Boxo.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/libp2p/go-libp2p-xor"))
+    (propagated-inputs
+     (list go-github-com-libp2p-go-libp2p-kbucket))
+    (home-page "https://github.com/libp2p/go-libp2p-xor")
+    (synopsis "Xor Trie implementation for libp2p")
+    (description
+     "This package implements XOR tries.  An XOR trie is a trie for
+equal-length bit strings.  XOR tries support efficient set operations, as well
+as distance-based operations with respect to the XOR metric.")
+    (license license:expat)))
+
 (define-public go-github-com-whyrusleeping-cbor-gen
   (package
     (name "go-github-com-whyrusleeping-cbor-gen")
