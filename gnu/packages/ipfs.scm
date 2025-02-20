@@ -933,6 +933,53 @@ order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-fore
 and @code{go-ipld-format} legacy interface.")
     (license (list license:expat license:asl2.0))))
 
+(define-public go-github-com-ipfs-go-merkledag
+  (package
+    (name "go-github-com-ipfs-go-merkledag")
+    (version "0.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-merkledag")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g1hrk2iw7gvk5qyv5avcc2idkc13w8agz6d7390bwjk18bdd5gr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-merkledag"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests requireing not packaged "github.com/ipfs/go-bitswap".
+          (add-before 'check 'remove-failing-test-files
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "merkledag_test.go")))))))
+    (propagated-inputs
+     (list go-github-com-gogo-protobuf
+           go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-blockservice
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-ipfs-blockstore
+           go-github-com-ipfs-go-ipfs-exchange-offline
+           go-github-com-ipfs-go-ipfs-util
+           go-github-com-ipfs-go-ipld-format
+           go-github-com-ipfs-go-ipld-legacy
+           go-github-com-ipfs-go-log-v2
+           go-github-com-ipld-go-codec-dagpb
+           go-github-com-ipld-go-ipld-prime
+           go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/ipfs/go-merkledag")
+    (synopsis "IPFs merkledag service implementation")
+    (description
+     "Package merkledag implements the IPFS Merkle @acronym{Directed Acyclic
+Graphs, DAG} data structures as specified in
+@url{https://docs.ipfs.tech/concepts/merkle-dag}.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-metrics-prometheus
   (package
     (name "go-github-com-ipfs-go-metrics-prometheus")
