@@ -1862,30 +1862,6 @@ be performed.")
 characters with their ASCII approximations.")
       (license license:asl2.0))))
 
-(define-public go-github-com-fogleman-gg
-  (package
-    (name "go-github-com-fogleman-gg")
-    (version "1.3.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/fogleman/gg")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1nkldjghbqnzj2djfaxhiv35kk341xhcrj9m2dwq65v684iqkk8n"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:tests? #f      ; Issue with test flags.
-       #:import-path "github.com/fogleman/gg"))
-    (propagated-inputs
-     (list go-github-com-golang-freetype))
-    (home-page "https://github.com/fogleman/gg")
-    (synopsis "2D rendering in Go")
-    (description "@code{gg} is a library for rendering 2D graphics in pure Go.")
-    (license license:expat)))
-
 (define-public go-github-com-akosmarton-papipes
   (let ((commit "3c63b4919c769c9c2b2d07e69a98abb0eb47fe64")
         (revision "0"))
