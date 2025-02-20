@@ -63,7 +63,7 @@
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Ryan Sundberg <ryan@arctype.co>
-;;; Copyright © 2022-2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -1698,7 +1698,7 @@ package.")
 (define-public evdi
   (package
     (name "evdi")
-    (version "1.14.4")                  ;inherited by libevdi
+    (version "1.14.8")                  ;inherited by libevdi
     (source
      (origin
        (method git-fetch)
@@ -1707,7 +1707,7 @@ package.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r9gd4ffr8sh9y3ic8fxwgp4gjls2yd6bgsgvcf0vy571s2aqggr"))))
+        (base32 "18n8kk4gbbj252a2dqb7mbpscfb437x42flh1fsl4g5c8brczc77"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
