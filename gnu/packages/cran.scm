@@ -19001,6 +19001,8 @@ references and Rd files.")
        (sha256
         (base32
          "1a9bv5qryivi84f56plz2xaffy2sapviwgwdgzxq9mys7bzsybzh"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-ggplot2" "r-magick"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -19010,7 +19012,7 @@ references and Rd files.")
            r-uuid
            r-xml2
            r-zip))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-ggplot2 r-magick r-testthat))
     (home-page "https://davidgohel.github.io/officer")
     (synopsis "Manipulation of Word and PowerPoint documents")
     (description
