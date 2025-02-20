@@ -6155,13 +6155,13 @@ well as ephemerides services
 (define-public python-sep-pjw
   (package
     (name "python-sep-pjw")
-    (version "1.3.7")
+    (version "1.3.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sep_pjw" version))
        (sha256
-        (base32 "1z8m2l3ccxj1izdazv7a0hg6zd1495bvby8w114s5ji7fd91vdv7"))))
+        (base32 "0lhxfq1acc6qc8nszfdrpwq6dizaypz3b6frknfv5qm59mb488r0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6173,7 +6173,8 @@ well as ephemerides services
            python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
-     (list python-numpy))
+     (list python-numpy
+           python-sep))
     (home-page "https://github.com/PJ-Watson/sep-pjw")
     (synopsis "Alternative fork of SEP library")
     (description
