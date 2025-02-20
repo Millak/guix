@@ -16841,6 +16841,32 @@ globs from things like your .gitignore file, and zsh.  The \"**\" glob
 represents a recursive wildcard matching zero-or-more directory levels deep.")
     (license license:expat)))
 
+(define-public go-github-com-yookoala-realpath
+  (let ((commit "d19ef9c409d9817c1e685775e53d361b03eabbc8")
+        (revision "0"))
+    (package
+      (name "go-github-com-yookoala-realpath")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/yookoala/realpath")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0qvz1dcdldf53rq69fli76z5k1vr7prx9ds1d5rpzgs68kwn40nw"))))
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "github.com/yookoala/realpath"))
+      (home-page "https://github.com/yookoala/realpath")
+      (synopsis "@code{realpath} for Golang")
+      (description
+       "This package provides @code{realpath}, a Go module that when provided
+with a valid relative path / alias path, it will return you with a string of
+its real absolute path in the system.")
+      (license license:expat))))
+
 ;; XXX: The latest release v0.1.1 was in 2014, master branch has more changes
 ;; since that time, use the latest commit.
 (define-public go-github-com-yosuke-furukawa-json5
