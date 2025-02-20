@@ -26431,11 +26431,12 @@ want to include run-time testing features in their own packages.")
         (base32
          "0zxq1jfrzgw95ll7alvm0xnk7aihjdksngq4ya2whyvfjbmv4vdb"))))
     (properties
-     `((upstream-name . "assertive.types")))
+     '((upstream-name . "assertive.types")
+       (updater-extra-native-inputs . ("r-xml2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertive-base r-assertive-properties r-codetools))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-xml2))
     (home-page "https://bitbucket.org/richierocks/assertive.types")
     (synopsis "Assertions to check types of variables")
     (description
