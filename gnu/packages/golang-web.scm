@@ -2447,6 +2447,33 @@ documents, as well as for calculating & applying
 @url{https://tools.ietf.org/html/rfc7396,RFC7396 JSON merge patches}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-fasthttp-router
+  (package
+    (name "go-github-com-fasthttp-router")
+    (version "1.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fasthttp/router")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1szc2s0jbk6jivgfmgxy7iykwqd6b0033jnnr0l47vyxbw7q8zvg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fasthttp/router"))
+    (propagated-inputs
+     (list go-github-com-savsgio-gotils
+           go-github-com-valyala-bytebufferpool
+           go-github-com-valyala-fasthttp))
+    (home-page "https://github.com/fasthttp/router")
+    (synopsis "Router implementation for fasthttp")
+    (description
+     "Package router is a trie based high performance HTTP request router.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-felixge-httpsnoop
   (package
     (name "go-github-com-felixge-httpsnoop")
