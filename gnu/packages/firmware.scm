@@ -1748,3 +1748,40 @@ or passthrough board.")
     (supported-systems '("armhf-linux")) ; actually cortex-m3
     (home-page "https://github.com/xobs/senoko-chibios-3/")
     (license license:gpl3+)))
+
+(define-public firmware-senoko
+  (package
+    (name "firmware-senoko")
+    (version "2.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/novena-next/firmware-senoko.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10d6bgqajl0w17xydjv2x22n5m9d1xsjb09r430nakc1v6gn52d5"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch
+                 (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "update-senoko"
+                      (("^fw=/lib/firmware/senoko.hex")
+                       (string-append "fw="
+                                      (assoc-ref inputs "senoko-chibios")
+                                      "/lib/firmware/senoko.hex")))
+                     (patch-shebang "update-senoko"))))
+           #:install-plan
+           ''(("update-senoko" "bin/")
+              ("update-senoko.1" "share/man/man1/"))))
+    (inputs
+     (list senoko-chibios))
+    (synopsis "Firmware flasher for Novena battery or passthrough board")
+    (description "This package provides a way to update the Novena battery or
+passthrough board firmware on a Novena.")
+    (supported-systems '("armhf-linux"))
+    (home-page "https://github.com/novena-next/firmware-senoko")
+    (license license:bsd-3)))
