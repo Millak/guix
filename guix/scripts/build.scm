@@ -706,15 +706,19 @@ values.")))))))))
                            (ensure-list (load* file (make-user-module '()))))
                           result))))
          (('manifest . manifest)
-          (loop tail 'regular
-                (append (map manifest-entry-item
-                             (manifest-entries
-                              (ensure-manifest
-                               (load* manifest
-                                      (make-user-module '((guix profiles)
-                                                          (gnu))))
-                               manifest)))
-                        result)))
+          ;; Otherwise '--system' is ignored.
+          ;; Wrap the loop instead of adjusting each item so that manifest
+          ;; items can individually be for different systems.
+          (parameterize ((%current-system system))
+            (loop tail 'regular
+                  (append (map manifest-entry-item
+                               (manifest-entries
+                                (ensure-manifest
+                                 (load* manifest
+                                        (make-user-module '((guix profiles)
+                                                            (gnu))))
+                                 manifest)))
+                          result))))
          (('expression . str)
           (loop tail 'regular
                 (append (append-map for-type (ensure-list (read/eval str)))
