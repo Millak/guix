@@ -1362,6 +1362,7 @@ xtensor provides:
      (list gmp readline zlib
            cddlib ; for the cddinterface package
            curl   ; for the curlinterface package
+	   libx11 libxaw libxt ; for the xgap package
            zeromq ; for the zeromqinterface package
      ))
     (arguments
@@ -1374,8 +1375,23 @@ xtensor provides:
              (with-directory-excursion "pkg"
                ;; Unpack package tarball, so that shebangs can be modified.
                (with-directory-excursion "caratinterface"
-                 (invoke "tar" "xvf" "carat.tgz")))))
-         ;; The following phases are added after 'build, apparently in
+                 (invoke "tar" "xvf" "carat.tgz"))
+               ;; Replace paths and adapt configuration.
+               (with-directory-excursion "xgap"
+                 (substitute* '("Makefile.in" "cnf/Makegap.in")
+                   (("/bin/sh")
+                    (string-append
+                      (assoc-ref %build-inputs "bash") "/bin/bash")))
+		 (substitute* "xgap.sh.in"
+                   (("\"@gapdir@\"")
+                    (string-append %output "/share/gap"))
+                   (("^XGAP=.*$")
+		    (string-append "XGAP=" %output
+                                   "/share/gap/pkg/xgap/bin/$XGAP_PRG\n"))
+                   (("^GAP=.*$")
+                    (string-append "GAP=" %output "/bin/gap\n"))
+                   (("VERBOSE=\"NO\"") "VERBOSE=\"YES\""))))))
+         ;; The following phases are executed after 'build, apparently in
          ;; reverse order. So we carry out 'build, then 'build-doc, then
          ;; 'remove-packages, then 'build-packages.
          (add-after 'build 'build-packages
@@ -1391,8 +1407,7 @@ xtensor provides:
              (with-directory-excursion "pkg"
                (for-each delete-file-recursively
                          '("normalizinterface" ; tries to download normaliz even when it is available
-                           "semigroups" ; bundled dependencies
-                           "xgap" ; make: /bin/sh: No such file or directory
+                           "semigroups" ; bundled dependency libsemigroups
              )))))
          (add-after 'build 'build-doc
            ;; The documentation is bundled, but we create it from source.
@@ -1407,8 +1422,13 @@ xtensor provides:
          (add-after 'install 'install-packages
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/gap")))
-               (copy-recursively "pkg" (string-append share "/pkg"))))))))
+                    (bin (string-append out "/bin"))
+                    (share (string-append out "/share/gap"))
+                    (xgap-sh (string-append share "/pkg/xgap/xgap.sh"))
+                    (xgap (string-append bin "/xgap")))
+               (copy-recursively "pkg" (string-append share "/pkg"))
+               (chmod xgap-sh #o744)
+               (symlink xgap-sh xgap)))))))
     (home-page "https://www.gap-system.org/")
     (synopsis
      "System for computational group theory")
