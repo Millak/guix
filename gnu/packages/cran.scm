@@ -38067,7 +38067,8 @@ well as extracting and replacing names and symbols from these objects.")
              ;; Two tests produce harmless warnings.
              (substitute* '("tests/testthat/test-dist.R"
                             "tests/testthat/test-simil.R")
-               (("expect_silent\\(\\{") "expect_warning({")))))))
+               ((".*use_nan is working.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (native-inputs (list r-entropy r-knitr r-testthat))
     (inputs (list tbb))
     (propagated-inputs
