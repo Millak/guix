@@ -1315,7 +1315,13 @@ RNA-seq or spatial transcriptomics.")
                                r-reticulate
                                r-robustrankaggreg
                                r-rsvd
-                               r-seurat))
+                               r-seurat
+
+                               ;; Needed for use with reticulate
+                               python-anndata
+                               python-geosketch
+                               python-scanpy
+                               scvelo))
       (native-inputs (list r-knitr))
       (home-page "https://github.com/WWXkenmo/NetID_package")
       (synopsis
