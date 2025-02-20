@@ -768,13 +768,13 @@ example, explicit calls to callables from templates and better performance.")
 (define-public python-dj-database-url
   (package
     (name "python-dj-database-url")
-    (version "2.1.0")
+    (version "2.3.0")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "dj-database-url" version))
+              (uri (pypi-uri "dj_database_url" version))
               (sha256
                (base32
-                "0pqkifl5zradgsznjpk6g6zp64gnsxdav7x3knf56vh8w7pjq17j"))))
+                "11w7532lq05c3wysbn7f5jf82yj0vjjmsi2ylkjmfsqq6kkfhlmf"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-django python-typing-extensions))
