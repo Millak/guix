@@ -1508,6 +1508,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/go-fix-script-tests.patch			\
   %D%/packages/patches/go-gopkg-in-yaml-v3-32bit.patch		\
   %D%/packages/patches/go-github-com-golang-snappy-32bit-test.patch \
+  %D%/packages/patches/go-github-com-skip2-go-qrcode-fix-tests.patch \
   %D%/packages/patches/go-github-com-warpfork-go-wish-fix-tests.patch \
   %D%/packages/patches/go-github-com-wraparound-wrap-free-fonts.patch \
   %D%/packages/patches/go-skip-gc-test.patch			\
@@ -1661,6 +1662,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libguestfs-syms.patch            	\
   %D%/packages/patches/libobjc2-unbundle-robin-map.patch	\
   %D%/packages/patches/libretro-dolphin-emu-data.patch		\
+  %D%/packages/patches/librewolf-neuter-locale-download.patch	\
   %D%/packages/patches/librewolf-use-system-wide-dir.patch	\
   %D%/packages/patches/libvirt-add-install-prefix.patch	\
   %D%/packages/patches/libziparchive-add-includes.patch		\
@@ -1943,6 +1945,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/openjdk-10-setsignalhandler.patch        \
   %D%/packages/patches/openjdk-11-classlist-reproducibility.patch	\
   %D%/packages/patches/openjdk-13-classlist-reproducibility.patch	\
+  %D%/packages/patches/openjdk-15-jtask-reproducibility.patch	\
   %D%/packages/patches/openjdk-15-xcursor-no-dynamic.patch	\
   %D%/packages/patches/openjdk-21-fix-rpath.patch		\
   %D%/packages/patches/openmpi-mtl-priorities.patch		\
@@ -2114,6 +2117,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pyan3-fix-absolute-path-bug.patch \
   %D%/packages/patches/python-pyan3-fix-positional-arguments.patch \
   %D%/packages/patches/python-pytorch-fix-codegen.patch		\
+  %D%/packages/patches/python-pytorch-for-r-torch-fix-codegen.patch \
+  %D%/packages/patches/python-pytorch-for-r-torch-system-libraries.patch \
   %D%/packages/patches/python-pytorch-runpath.patch		\
   %D%/packages/patches/python-pytorch-system-libraries.patch	\
   %D%/packages/patches/python-pytorch-without-kineto.patch	\
@@ -2161,6 +2166,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/readline-6.2-CVE-2014-2524.patch		\
   %D%/packages/patches/renpy-use-system-fribidi.patch		\
   %D%/packages/patches/reposurgeon-add-missing-docbook-files.patch	\
+  %D%/packages/patches/rdkit-unbundle-external-dependencies.patch	\
   %D%/packages/patches/r-httpuv-1.6.6-unvendor-libuv.patch	\
   %D%/packages/patches/r-sapa-lapack.patch			\
   %D%/packages/patches/r-sgloptim.patch				\
@@ -2296,6 +2302,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/thefuck-remove-broken-tests.patch	\
   %D%/packages/patches/tidy-CVE-2015-5522+5523.patch		\
   %D%/packages/patches/timewarrior-time-sensitive-tests.patch	\
+  %D%/packages/patches/tinydir-fix-cbehave-test.patch		\
   %D%/packages/patches/tinyxml-use-stl.patch			\
   %D%/packages/patches/tk-find-library.patch			\
   %D%/packages/patches/tla2tools-build-xml.patch		\
