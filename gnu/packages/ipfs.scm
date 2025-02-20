@@ -1071,6 +1071,50 @@ tasks distributed among peers.")
 IPFS related projects.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public go-github-com-ipfs-go-unixfsnode
+  (package
+    (name "go-github-com-ipfs-go-unixfsnode")
+    (version "1.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-unixfsnode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rn4x8f9a1ipwz0rg19ylbyh2s3q81vpnlan9yjscnfxx1r6gdbg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-unixfsnode"
+      ;; Full test suites requires Box, which introduce cycle.
+      #:test-subdirs #~(list ".")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list ;; go-github-com-ipfs-boxo ; introduce cycle
+           go-github-com-ipfs-go-bitfield
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-ipld-format
+           go-github-com-ipfs-go-test
+           go-github-com-ipld-go-car-v2
+           go-github-com-ipld-go-codec-dagpb
+           go-github-com-ipld-go-ipld-prime
+           go-github-com-multiformats-go-multicodec
+           go-github-com-multiformats-go-multihash
+           go-github-com-spaolacci-murmur3
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/ipfs/go-unixfsnode")
+    (synopsis "ADL IPLD prime node implementation of protobuf")
+    (description
+     "This is an IPLD ADL that provides string based pathing for protobuf
+nodes.  The top level node behaves like a map where @code{LookupByString}
+returns the Hash property on the Link in the protobufs list of Links whos Name
+property matches the key.  This should enable selector traversals that work
+based of paths.")
+    (license (list license:asl2.0 license:expat))))
+
 ;; XXX: This repository has been archived by the owner on Jun 20, 2023. It is
 ;; now read-only.  We highly recommend switching to the maintained version at
 ;; https://github.com/ipfs/boxo/tree/main/verifcid.  It's still in use by some
