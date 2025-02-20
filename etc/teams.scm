@@ -13,6 +13,7 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
+;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -324,6 +325,15 @@ ecosystem."
                       "guix/import/elpa.scm"
                       "guix/scripts/import/elpa.scm"
                       "tests/elpa.scm")))
+
+(define-team electronics
+  (team 'electronics
+        #:name "Electronics team"
+        #:description "Electronics and hardware related packages."
+        #:scope (list "gnu/packages/fpga.scm"
+                      "gnu/packages/electronics.scm"
+                      "gnu/packages/libftdi.scm"
+                      "gnu/packages/engineering.scm")))
 
 (define-team lisp
   (team 'lisp
