@@ -832,7 +832,7 @@ applications with a @var{SEARCH_URL} variable.")
 (define-public python-django-picklefield
   (package
     (name "python-django-picklefield")
-    (version "3.1.0")
+    (version "3.2.0")
     (home-page "https://github.com/gintas/django-picklefield")
     ;; Use a git checkout because the PyPI release lacks tests.
     (source
@@ -844,7 +844,7 @@ applications with a @var{SEARCH_URL} variable.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "00d8sm6cnkv5bxbs2a3qrm4g69nlaa1wari7mc697df8q91v6r0n"))))
+          "0ykcw0wb064zv17piwiz6ldy2d2jil93x1ckk5pcfnc7hhk1phsh"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
