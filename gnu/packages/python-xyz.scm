@@ -11780,17 +11780,10 @@ a general image processing tool.")
     (arguments
      (list
       #:test-flags
-      #~(list "-k"                      ; XXX: 10/12 bit tests fail
+      #~(list "-k"
               (string-append
-               "not test_save_bgr_16bit_to_10_12_bit"
-               " and not test_save_bgra_16bit_to_10_12_bit"
-               " and not test_open_heif_compare_non_standard_modes_data"
-               " and not test_open_save_disable_16bit"
-               " and not test_heif_read_images[image_path16]"
-               " and not test_heif_read_images[image_path43]"
-               " and not test_premultiplied_alpha"
-               " and not test_hdr_save"
-               " and not test_I_color_modes_to_10_12_bit"))))
+               "not test_heif_read_images[image_path25]"
+               " and not test_heif_read_images[image_path49]"))))
     (inputs (list libheif))
     (propagated-inputs (list python-pillow))
     (native-inputs (list opencv         ; for opencv-python
@@ -11799,7 +11792,6 @@ a general image processing tool.")
                          python-numpy
                          python-packaging
                          python-pre-commit
-                         python-pylint
                          python-pympler
                          python-setuptools
                          python-pytest
