@@ -34,6 +34,7 @@
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;; Copyright © 2025 Divya Ranjan Pattanaik <divya@subvertising.org>
+;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3858,6 +3859,63 @@ C-compatible) software.")
     (synopsis "Annotate stdout/stderr with elapsed times")
     (description "@code{rtss} annotates its output with relative durations between
 consecutive lines and since program start.")
+    (license license:expat)))
+
+(define-public sd
+  (package
+    (name "sd")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a16p1s0j28n3vj006qm7b03k5s9mkr11cbbksvfb88wi10kqqbh"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:cargo-inputs
+      `(("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-is-terminal" ,rust-is-terminal-0.4)
+        ("rust-memmap2" ,rust-memmap2-0.9)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-unescape" ,rust-unescape-0.1))
+      #:cargo-development-inputs
+      `(("rust-ansi-to-html" ,rust-ansi-to-html-0.1)
+        ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+        ("rust-console" ,rust-console-0.15)
+        ("rust-insta" ,rust-insta-1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-regex-automata" ,rust-regex-automata-0.4))
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda _
+              (let ((share (string-append #$output "/share/"))
+                    (bash-dir (string-append #$output "/etc/bash_completion.d/"))
+                    (elvish-dir (string-append #$output "/share/elvish/lib/")))
+                (install-file "gen/sd.1" (string-append share "/man/man1"))
+                (with-directory-excursion "gen/completions"
+                  (install-file "_sd" (string-append share "zsh/site-functions"))
+                  (install-file "sd.fish"
+                                (string-append share "fish/vendor_completions.d"))
+                  (mkdir-p bash-dir)
+                  (mkdir-p elvish-dir)
+                  (copy-file "sd.bash" (string-append bash-dir "sd"))
+                  (copy-file "sd.elv" (string-append elvish-dir "sd")))))))))
+    (home-page "https://github.com/chmln/sd")
+    (synopsis "Intuitive find & replace CLI")
+    (description "@code{sd} is an intuitive find & replace CLI with
+JavaScript/Python-style regular expressions, a string-literal mode, and smart,
+common-sense defaults.")
     (license license:expat)))
 
 (define-public skim
