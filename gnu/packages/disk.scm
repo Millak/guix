@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2016, 2019-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019-2021, 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017 Marius Bakke <mbakke@fastmail.com>
@@ -1249,6 +1249,9 @@ to create devices with respective mappings for the ATARAID sets discovered.")
     (inputs
      (append
       (cons cryptsetup (libcryptsetup-propagated-inputs))
+      (if (supported-package? multipath-tools)
+          (list multipath-tools)
+          '())
       (list bcache-tools
             btrfs-progs
             dosfstools
@@ -1264,7 +1267,6 @@ to create devices with respective mappings for the ATARAID sets discovered.")
             libyaml
             lvm2
             mdadm
-            multipath-tools
             ndctl
             nss
             ntfs-3g
