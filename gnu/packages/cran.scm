@@ -31016,6 +31016,8 @@ discriminant analysis for the purpose of classifying high dimensional data.")
                      "inst/www/lib/jquery/jquery.min.js"
                      "inst/www/lib/lodash/lodash.min.js"
                      "inst/www/lib/vega/vega.min.js")))))
+    (properties
+     '((updater-extra-native-inputs . ("r-lubridate"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -31069,6 +31071,7 @@ discriminant analysis for the purpose of classifying high dimensional data.")
              (sha256
               (base32
                "0gd1rhp85z0xybii19fkkqkbshcklwrrcvj335z17q2cnbb57v44")))))
+       ("r-lubridate" ,r-lubridate)
        ("r-testthat" ,r-testthat)))
     (home-page "https://ggvis.rstudio.com/")
     (synopsis "Interactive grammar of graphics")
