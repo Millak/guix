@@ -1134,82 +1134,54 @@ filtering devices.")
         (base32 "0f1hzhk3q2fgqdg14zlg3z0s0ib1y9xwj89qnjk95b37zbgqjgsb"))))
     (build-system go-build-system)
     (arguments
-     `(#:unpack-path "github.com/OperatorFoundation/shapeshifter-transports"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'build)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Dust/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Dust/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Optimizer/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Optimizer/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Replicant/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Replicant/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/meeklite/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/meeklite/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/meekserver/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/meekserver/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/obfs2/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/obfs2/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/obfs4/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/obfs4/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/shadow/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/shadow/v3"))))
-         (replace 'check
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'check)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               ;;; ERROR: invalid memory address or nil pointer dereference.
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/Dust/v2"
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/Dust/v3"
-               ;;; ERROR: failed with status 1.
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/Optimizer/v2"
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/Optimizer/v3"
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/Replicant/v2"
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/Replicant/v3"
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/meeklite/v2"
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/meeklite/v3"
-               ;;; ERROR: bind: permission denied.
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/meekserver/v2"
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/meekserver/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/obfs2/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/obfs2/v3"))))
-               ;;; ERROR: failed with status 1.
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/obfs4/v2"
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/obfs4/v3"
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/shadow/v2"
-               ;;"github.com/OperatorFoundation/shapeshifter-transports/transports/shadow/v3"))))
-         (replace 'install
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'install)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Dust/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Dust/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Optimizer/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Optimizer/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Replicant/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/Replicant/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/meeklite/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/meeklite/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/meekserver/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/meekserver/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/obfs2/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/obfs2/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/obfs4/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/obfs4/v3"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/shadow/v2"
-               "github.com/OperatorFoundation/shapeshifter-transports/transports/shadow/v3")))))))
+     (list
+      ;; When parallel, tests fail with error: Failed to start listener:listen
+      ;; tcp 127.0.0.1:1235: bind: address already in use.
+      #:parallel-tests? #f
+      #:skip-build? #t
+      #:import-path "github.com/OperatorFoundation/shapeshifter-transports"
+      #:test-flags
+      #~(list "-skip" (string-join
+                  (list
+                   ;; Tests fail in "Optimizer" module.
+                   "TestObfs4Transport_Dial"
+                   "TestOptimizerObfs4Transport_Dial"
+                   "TestOptimizerTransportFirstDial"
+                   "TestOptimizerTransportRandomDial"
+                   "TestOptimizerTransportRotateDial"
+                   "TestOptimizerTransportTrackDial"
+                   "TestOptimizerTransportMinimizeDialDurationDial"
+                   ;; Tests fail in "Replicant" module.
+                   "TestMarshalConfigs"
+                   "TestMarshalConfigs"
+                   "TestMarshalSilverRandomEnumeratedConfigs"
+                   "TestFactoryMonotoneRandomEnumerated"
+                   ;; Tests fail in "meeklite" module.
+                   "TestMeeklite"
+                   "TestFactoryMeeklite"
+                   ;; Test fails in "meekserver/v2" module.
+                   "TestMeekServerListen2"
+                   ;; Test fails in "obfs4" module.
+                   "TestObfs4"
+                   "TestObfs4Factory"
+                  ;; Tests fail in "shadow" module.
+                  "TestShadow"
+                  "TestShadowTransport")
+                  "|"))
+      #:test-subdirs
+      #~(list
+         ;; All tests fail with error: invalid memory address or nil pointer
+         ;; dereference.
+         ;; "transports/Dust/..."
+         "transports/Optimizer/..."
+         "transports/Replicant/..."
+         "transports/meeklite/..."
+         ;; All tests fail with error:  misplaced +build comment.
+         ;; "transports/meekserver/v3/..."
+         "transports/meekserver/v2/..."
+         "transports/obfs2/..."
+         "transports/obfs4/..."
+         "transports/shadow/...")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
