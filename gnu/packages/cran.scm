@@ -47228,31 +47228,6 @@ package.")
 object to and from disk.")
     (license license:gpl3)))
 
-(define-public r-rgeos
-  (package
-    (name "r-rgeos")
-    (version "0.6-4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "rgeos" version))
-       (sha256
-        (base32
-         "04fyrqdpb4cz9kjqh1cxbpqh1ana7l8zh7wdzxassgzxjvgc80wx"))))
-    (properties `((upstream-name . "rgeos")))
-    (build-system r-build-system)
-    (inputs
-     (list geos))
-    (propagated-inputs
-     (list r-sp))
-    (native-inputs (list r-testthat r-xml))
-    (home-page "https://cran.r-project.org/package=rgeos")
-    (synopsis "Interface to Geometry Engine (GEOS)")
-    (description
-     "This package provides an R interface to Geometry Engine (GEOS) using the
-C API for topology operations on geometries.")
-    (license license:gpl2+)))
-
 (define-public r-tfruns
   (package
     (name "r-tfruns")
