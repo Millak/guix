@@ -37981,12 +37981,14 @@ package.")
        (uri (cran-uri "formattable" version))
        (sha256
         (base32 "1vdxi0xmg019qyzjrp8bkjxciz245jcxsrkhfzd44ynqcwi4s3ag"))))
-    (properties `((upstream-name . "formattable")))
+    (properties
+     '((upstream-name . "formattable")
+       (updater-extra-native-inputs . ("r-dt" "r-shiny"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-htmltools r-htmlwidgets r-knitr r-rmarkdown))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-dt r-knitr r-shiny r-testthat))
     (home-page "https://github.com/renkun-ken/formattable")
     (synopsis "Print vectors and data frames with text formatting")
     (description
