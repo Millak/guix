@@ -9212,10 +9212,12 @@ Rcpp and @code{RcppArmadillo} packages.")
        (uri (cran-uri "geos" version))
        (sha256
         (base32 "03cxm9rby7qmk9apqk3sh373rnzqcrj23cn6q153gq93lx372b8n"))))
-    (properties `((upstream-name . "geos")))
+    (properties
+     '((upstream-name . "geos")
+       (updater-extra-native-inputs . ("r-vctrs"))))
     (build-system r-build-system)
     (propagated-inputs (list r-libgeos r-wk))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-vctrs))
     (home-page "https://paleolimbot.github.io/geos/")
     (synopsis "Open Source Geometry Engine (GEOS) R API")
     (description
