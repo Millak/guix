@@ -330,6 +330,37 @@ Go 1.20 @code{crypto/ecdh} standard package.")
 cryptographic standards that are not included in the Go standard library.")
       (license license:asl2.0))))
 
+;; XXX: Deprecated in upstream: This repository has been archived by the owner
+;; on Nov 10, 2020. It is now read-only.
+;; Consider to remove when nothing is depend on it.
+(define-public go-github-com-apparentlymart-go-openvpn-mgmt
+  (let ((commit "4d2ce95ae600ee04eeb020ee0997aabb82752210")
+        (revision "0"))
+    (package
+      (name "go-github-com-apparentlymart-go-openvpn-mgmt")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/apparentlymart/go-openvpn-mgmt")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1dn431jnswg5ns1ah10wswnw6wiv48zq21zr5xp1178l4waswj7k"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:skip-build? #t
+        #:import-path "github.com/apparentlymart/go-openvpn-mgmt"))
+      (home-page "https://github.com/apparentlymart/go-openvpn-mgmt")
+      (synopsis "Go client library for OpenVPN's management protocol")
+      (description
+       "Go-OpenVPN-Mgmt implements a client for the OpenVPN management
+interface.  It can be used to monitor and control an OpenVPN process running
+with its management port enabled.")
+      (license license:expat))))
+
 (define-public go-github-com-bradenhilton-cityhash
   (package
     (name "go-github-com-bradenhilton-cityhash")
