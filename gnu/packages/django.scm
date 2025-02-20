@@ -355,17 +355,18 @@ with arguments to the field constructor.")
 (define-public python-django-classy-tags
   (package
     (name "python-django-classy-tags")
-    (version "2.0.0")
+    (version "4.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "django-classy-tags" version))
         (sha256
          (base32
-          "1javam3zqi3y3j0r490mm61v48yh75jaha99gb7lsxkaz6yri7fm"))))
-    (build-system python-build-system)
-    ;; FIXME: How to make the test templates available to Django?
-    (arguments '(#:tests? #f))
+          "0ngffhbicyx1j0j0nxdvbg9bhs9ss88xvx3dhr6irrx65ymd3nf8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-django))
     (home-page "https://github.com/divio/django-classy-tags")
