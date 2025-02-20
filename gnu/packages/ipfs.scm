@@ -173,6 +173,50 @@ by a @acronym{Content Identifiers,CID}.  The CID contains the multihash
 corresponding to the block.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-blockservice
+  (package
+    (name "go-github-com-ipfs-go-blockservice")
+    (version "0.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-blockservice")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pg6mj0iwlisp0sk9dng9663vvxbcnxjmbb62nkdfaf4dkbs920c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-blockservice"
+      ;; Mock tests intoruduce cycle with Boxo (go-libipfs), run just a
+      ;; portion of tests.
+      #:test-subdirs #~(list ".")))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-ipfs-blockstore
+           go-github-com-ipfs-go-ipfs-blocksutil
+           go-github-com-ipfs-go-ipfs-delay
+           go-github-com-ipfs-go-ipfs-exchange-interface
+           go-github-com-ipfs-go-ipfs-exchange-offline
+           go-github-com-ipfs-go-ipfs-routing
+           go-github-com-ipfs-go-ipfs-util
+           go-github-com-ipfs-go-ipld-format
+           go-github-com-ipfs-go-log-v2
+           go-github-com-ipfs-go-verifcid
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-trace))
+    (home-page "https://github.com/ipfs/go-blockservice")
+    (synopsis "Combines local and remote storage seamlessly")
+    (description
+     "Package blockservice implements a @code{BlockService} interface that
+provides a single @code{GetBlock/AddBlock} interface that seamlessly retrieves
+data either locally or from a remote peer through the exchange.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ds-dynamodb
   (package
     (name "go-github-com-ipfs-go-ds-dynamodb")
