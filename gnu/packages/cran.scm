@@ -1426,6 +1426,29 @@ edition of the book \"Data Mining with R, learning with case studies\"
 by Luis Torgo, published by CRC Press.")
     (license license:gpl2+)))
 
+(define-public r-eaf
+  (package
+    (name "r-eaf")
+    (version "2.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "eaf" version))
+       (sha256
+        (base32 "03039hjrpkgh9kzasd0q8x4k6nnzkmhyrf39psg1zizfdfdh2y4p"))))
+    (properties `((upstream-name . "eaf")))
+    (build-system r-build-system)
+    (inputs (list gsl))
+    (propagated-inputs (list r-matrixstats r-modeltools r-rdpack))
+    (native-inputs (list pkg-config r-spelling r-testthat r-withr))
+    (home-page "https://mlopez-ibanez.github.io/eaf/")
+    (synopsis "Plots of the empirical attainment function")
+    (description
+     "This is a package for computation and visualization of the
+@dfn{empirical attainment function} (EAF) for the analysis of random sets in
+multi-criterion optimization.")
+    (license license:gpl2+)))
+
 (define-public r-earlywarnings
   (package
     (name "r-earlywarnings")
