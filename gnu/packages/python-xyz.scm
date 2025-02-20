@@ -309,6 +309,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix hg-download)
   #:use-module (guix git-download)
@@ -33093,45 +33094,67 @@ such as a file modification and trigger an action.  This is similar to inotify,
 but portable.")
     (license license:asl2.0)))
 
-(define-public python-watchgod
+(define-public python-watchfiles
   (package
-    (name "python-watchgod")
-    (version "0.8.1")
+    (name "python-watchfiles")
+    (version "1.0.4")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/samuelcolvin/watchgod")
+             (url "https://github.com/samuelcolvin/watchfiles")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zm9xd2qf3d74l67yv8j3zhhhvi0vp25vhkg46l9d7flh9m04qrp"))))
-    (build-system pyproject-build-system)
+        (base32 "1kaxq0drjwlvcsg4in25w1bhjjgm1zlz06rr2macyi6s5x96g46h"))))
+    (build-system cargo-build-system)
     (arguments
-     (list #:test-flags '(list "-o" "asyncio_mode=auto"
-                               ;; PytestUnraisableExceptionWarning
-                               "-k" "not test_watch_log and not test_awatch")
-       #:phases #~(modify-phases %standard-phases
-                  (delete 'sanity-check))))
+     (list
+      #:install-source? #f
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build 'install-rust-library
+            (lambda _
+              (copy-file "target/release/lib_rust_notify.so"
+                         "watchfiles/_rust_notify.so")))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (if tests?
+                  ;; Missing file in source.
+                  (invoke "pytest" "-vv" "-k" "not test_docs_examples")
+                  (format #t "test suite not run~%"))))
+          (replace 'install
+            (assoc-ref py:%standard-phases 'install)))
+      #:cargo-inputs
+      (list rust-crossbeam-channel-0.5 rust-notify-7 rust-pyo3-0.23)))
     (native-inputs
-     (list python-anyio
+     (list maturin
+           python-anyio
            python-coverage
-           python-pygments
+           python-dirty-equals
            python-pytest
-           python-pytest-asyncio
            python-pytest-cov
            python-pytest-mock
-           python-pytest-sugar
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/samuelcolvin/watchgod")
+           python-pytest-timeout
+           python-wrapper))
+    (home-page "https://github.com/samuelcolvin/watchfiles")
     (synopsis "Simple, modern file watching and code reload in Python")
     (description
      "Simple, modern file watching and code reload in Python inspired by
 @code{watchdog}.  Among the differences are a unified approach for each
 operating systems and an elegant approach to concurrency using threading.")
     (license license:expat)))
+
+(define-deprecated/alias python-watchgod python-watchfiles)
+(export python-watchgod)
 
 (define-public python-wget
   (package
