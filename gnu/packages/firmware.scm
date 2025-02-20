@@ -1704,3 +1704,47 @@ default assumption for QMK firmware keymaps)."))
 privileges for flashing QMK compatible devices without needing root.  The
 rules require the group @code{plugdev} to be added to each user that needs
 this.")))
+
+(define-public senoko-chibios
+  (package
+    (name "senoko-chibios")
+    (version "2.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/xobs/senoko-chibios-3.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qdpxzqdh0l65rzfbrm1lqzpik3nyg8wa7k0b8b6apj2w6vsp5pv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ; no tests
+           #:make-flags #~(list "USE_VERBOSE_COMPILE=yes")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'patch
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (chdir "senoko")
+                   (substitute* "Makefile"
+                    ;; We don't have those dependencies since we delete .git
+                    ;; after checkout.
+                    ((" [$][(]CHIBIOS[)]/.git/HEAD [$][(]CHIBIOS[)]/.git/index")
+                     "")
+                    (("[$][(]shell git rev-parse HEAD[)]")
+                     ;; Uniquely identify the version.
+                     (assoc-ref outputs "out")))))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((destination (string-append (assoc-ref outputs "out")
+                                      "/lib/firmware")))
+                     (install-file "build/senoko.elf" destination)
+                     (install-file "build/senoko.hex" destination)))))))
+    (synopsis "Firmware for Novena battery or passthrough board")
+    (description "This package provides the firmware for the Novena battery
+or passthrough board.")
+    (supported-systems '("armhf-linux")) ; actually cortex-m3
+    (home-page "https://github.com/xobs/senoko-chibios-3/")
+    (license license:gpl3+)))
