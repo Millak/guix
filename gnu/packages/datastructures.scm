@@ -2,7 +2,7 @@
 ;;; Copyright © 2015, 2016, 2018, 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Meiyo Peng <meiyo.peng@gmail.com>
-;;; Copyright © 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2022, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -27,11 +27,13 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
@@ -224,7 +226,12 @@ allows multiple concurrent reader and writer threads.")
                 "1h5bg0k94by2v7cjq7fb3ridqixbd9pndw506vl27h3fvh9wn6i3"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list perl))                 ; for tests
+     ;; riscv64 needs >= gcc-13.3.0
+     (append
+       (if (target-riscv64?)
+           (list gcc-14)
+           '())
+       (list perl)))            ; for tests
     (home-page "https://liburcu.org/")
     (synopsis "User-space RCU data synchronisation library")
     (description "liburcu is a user-space @dfn{Read-Copy-Update} (RCU) data
