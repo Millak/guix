@@ -17004,6 +17004,42 @@ genomics data, primarily @acronym{mtscATAC-seq, mitochondrial single-cell
 ATAC-sequence}, but is generally applicable across other assays.")
     (license license:expat)))
 
+(define-public python-multicore-tsne
+  (let ((commit "c1dbf84eb550980876d8ed822af4e9dfd21c5e05")
+        (revision "1"))
+    (package
+      (name "python-multicore-tsne")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/DmitryUlyanov/Multicore-TSNE.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0dj805mmd35rfkj7jpkhvnj47x51lqpvascjwyaqxj7pwk6sbkzv"))))
+      (build-system pyproject-build-system)
+      ;; Tests require an old version of scikit-learn.  See
+      ;; https://github.com/DmitryUlyanov/Multicore-TSNE/issues/97.
+      (arguments (list #:tests? #false))
+      (propagated-inputs
+       (list python-cffi python-numpy python-packaging))
+      (native-inputs
+       (list cmake-minimal
+             python-scipy
+             python-scikit-learn
+             python-setuptools
+             python-wheel))
+      (home-page "https://github.com/DmitryUlyanov/Multicore-TSNE")
+      (synopsis "Parallel t-SNE implementation with Python and Torch wrappers")
+      (description
+       "This package contains a multicore Barnes-Hut implementation of the
+t-SNE algorithm.  The implementation is described here:
+@url{http://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf}.")
+      (license license:bsd-3))))
+
 (define-public python-multivelo
   (package
     (name "python-multivelo")
