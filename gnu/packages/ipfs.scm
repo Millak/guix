@@ -1105,6 +1105,97 @@ code prior to it getting merged into @code{go-cid}.")
     ;; LICENSE-MIT and LICENSE-APACHE.
     (license (list license:expat license:asl2.0))))
 
+(define-public go-github-com-ipld-go-car
+  (package
+    (name "go-github-com-ipld-go-car")
+    (version "0.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipld/go-car")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c9mmvwwhl86m0jv7cp3xaay7bpp9nzq3by3r75z2hyz341zvb2c"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/ipld/go-car/v2
+            (delete-file-recursively "v2")
+            ;; To reduce cycles
+            (delete-file-recursively "cmd")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipld/go-car"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-ipld-cbor
+           go-github-com-ipfs-go-ipld-format
+           go-github-com-ipfs-go-merkledag
+           go-github-com-ipld-go-codec-dagpb
+           go-github-com-ipld-go-ipld-prime
+           go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/ipld/go-car")
+    (synopsis "Content addressible archive utility")
+    (description
+     "Package car allows inspecting and reading CARv1 files, described at
+@url{https://ipld.io/specs/transport/car}.")
+    ;; This library is dual-licensed under Apache 2.0 and MIT terms.
+    (license (list license:expat license:asl2.0))))
+
+(define-public go-github-com-ipld-go-car-v2
+  (package
+    (inherit go-github-com-ipld-go-car)
+    (name "go-github-com-ipld-go-car-v2")
+    (version "2.14.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipld/go-car")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08zkz73r76va2hvrg6gixc0nfdwwsigdncsl9h6b5ibb11zwa0gn"))))
+    (arguments
+     (list
+      ;; Version 2 is part of the same source and located in "v2" directory.
+      #:import-path "github.com/ipld/go-car/v2"
+      #:unpack-path "github.com/ipld/go-car"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests requiring github.com/ipfs/go-unixfsnode and indrodusing
+          ;; cylcle.
+          (add-before 'check 'remove-failing-test-files
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (for-each delete-file
+                          (list "v2/selective_test.go"
+                                "v2/writer_test.go"))))))))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-ipld-cbor
+           go-github-com-ipfs-go-ipld-format
+           go-github-com-ipld-go-codec-dagpb
+           go-github-com-ipld-go-ipld-prime
+           go-github-com-multiformats-go-multicodec
+           go-github-com-multiformats-go-multihash
+           go-github-com-multiformats-go-varint
+           go-github-com-petar-gollrb
+           go-github-com-whyrusleeping-cbor
+           go-golang-org-x-exp))
+    (description
+     "Package car allows inspecting and reading CARv2 files, described at
+@url{https://ipld.io/specs/transport/car}.")))
+
 (define-public go-github-com-ipld-go-codec-dagpb
   (package
     (name "go-github-com-ipld-go-codec-dagpb")
