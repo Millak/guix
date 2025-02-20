@@ -9226,6 +9226,31 @@ https://github.com/bkeepers/dotenv.")
 interface instead.")
     (license license:asl2.0)))
 
+(define-public go-github-com-jorropo-jsync
+  (package
+    (name "go-github-com-jorropo-jsync")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Jorropo/jsync")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s1nn6wy6ymvvawyly84y8bx1vl9k46awnvd000q6ndrvgs1clxg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Jorropo/jsync"))
+    (home-page "https://github.com/Jorropo/jsync")
+    (synopsis "Synchronisation implementation wrapper for Go std @code{sync}")
+    (description
+     "jsync is a package that implements various synchronisation helpers that
+are missing from @code{sync}.  It does not and will not rely on golinkname to
+be portable.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public go-github-com-josharian-intern
   (package
     (name "go-github-com-josharian-intern")
