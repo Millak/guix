@@ -49,6 +49,7 @@
 ;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;; Copyright © 2025 Divya Ranjan Pattanaik <divya@subvertising.org>
 ;;; Copyright © 2025 Karl Hallsby <karl@hallsby.com>
+;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1803,6 +1804,29 @@ it outputs messages to Android's logcat.")
     (description
      "This package provides a library which provides a set of methods to work
 with ANSI strings.")
+    (license license:expat)))
+
+(define-public rust-ansi-to-html-0.1
+  (package
+    (name "rust-ansi-to-html")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ansi-to-html" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18kwlgr3vfsij8gvl7vxw11yl628b1s8z2pldh73z4zzq2693gf7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-insta" ,rust-insta-1))))
+    (home-page
+     "https://github.com/Aloso/to-html/tree/master/crates/ansi-to-html")
+    (synopsis "ANSI escape codes to HTML converter")
+    (description "This package provides an ANSI escape codes to HTML converter.")
     (license license:expat)))
 
 (define-public rust-ansi-width-0.1
