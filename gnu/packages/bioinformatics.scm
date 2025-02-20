@@ -24526,11 +24526,11 @@ It also handles cell type-specific differential expression.")
       (license license:gpl3))))
 
 (define-public r-spectre
-  (let ((commit "f6648ab3eb9499300d86502b5d60ec370ae9b61a")
+  (let ((commit "ff5314fd5b3f29121e52f948d91e222a19dd4d25")
         (revision "1"))
     (package
       (name "r-spectre")
-      (version (git-version "0.5.5" revision commit))
+      (version "1.2.0")
       (source
        (origin
          (method git-fetch)
@@ -24540,12 +24540,9 @@ It also handles cell type-specific differential expression.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0g38grrhbqqa4bmcilvdyawbkcnax6k4vffx2giywp18mbirmj0x"))))
+           "0hziqlaq6mnkxi4bwp5xilxy90yh1vz1j1n117d38vmchvclx9yq"))))
       (properties `((upstream-name . "Spectre")))
       (build-system r-build-system)
-      ;; Tests attempt to install Spectre from Github, from the add_fitsne
-      ;; branch.
-      (arguments (list #:tests? #false))
       (propagated-inputs
        (list r-biobase
              r-biocmanager
@@ -24553,6 +24550,7 @@ It also handles cell type-specific differential expression.")
              r-class
              r-colorramps
              r-data-table
+             r-dendsort
              r-devtools
              r-dplyr
              r-exactextractr
@@ -24571,18 +24569,19 @@ It also handles cell type-specific differential expression.")
              r-gtools
              r-hdf5array
              r-irlba
+             r-patchwork
              r-pheatmap
              r-plyr
              r-qs
              r-raster
              r-rcolorbrewer
-             r-rgeos
              r-rhdf5
              r-rstudioapi
              r-rsvd
              r-rtsne
              r-s2
              r-scales
+             r-scattermore
              r-sf
              r-sp
              r-stars
@@ -24591,7 +24590,8 @@ It also handles cell type-specific differential expression.")
              r-tidyr
              r-tidyr
              r-tiff
-             r-umap))
+             r-umap
+             r-uwot))
       (home-page "https://github.com/ImmuneDynamics/Spectre")
       (synopsis "High-dimensional cytometry and imaging analysis")
       (description
