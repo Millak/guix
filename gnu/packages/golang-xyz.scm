@@ -14026,6 +14026,35 @@ logging.")
 symbols in the style of Sublime Text, VSCode, @code{IntelliJ} IDEA et al.")
     (license license:expat)))
 
+(define-public go-github-com-samber-lo
+  (package
+    (name "go-github-com-samber-lo")
+    (version "1.49.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/samber/lo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x82njn075hsb4vax6w7wih5g117chjvsjgzlgq9n1kn5ksi5i64"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/samber/lo"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (home-page "https://github.com/samber/lo")
+    (synopsis "Lodash-style Go library based on Go 1.18+ Generics")
+    (description
+     "This package implements a functionality to iterate over slices, maps,
+channels etc. and heavily inspired by @url{https://github.com/lodash/lodash,
+Lodash}.")
+    (license license:expat)))
+
 (define-public go-github-com-sap-go-hdb
   (package
     (name "go-github-com-sap-go-hdb")
