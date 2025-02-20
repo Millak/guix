@@ -6886,7 +6886,7 @@ provides a buffered io.Writer that is flushed at a timed interval.")
   (package
     (inherit go-github-com-hanwen-go-fuse)
     (name "go-github-com-hanwen-go-fuse-v2")
-    (version "2.7.2")
+    (version "2.5.0")  ;check go,mod in gocryptfs before upgrading
     (source
      (origin
        (method git-fetch)
@@ -6895,7 +6895,7 @@ provides a buffered io.Writer that is flushed at a timed interval.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fcf94chf9ffgjk0wcpnlz0kfb69m2fwzfn4k348kal75x178aar"))))
+        (base32 "0wgx8gwimgf7rp7j23cl6bxx1gzzarda2kqz91i64ydc124jsqmr"))))
     (build-system go-build-system)
     (arguments
      (substitute-keyword-arguments
