@@ -2588,6 +2588,32 @@ Python tools, such as rope and add support for a @file{pyproject.toml}
 configuration file.")
     (license license:lgpl3+)))
 
+(define-public python-pytooling
+  (package
+    (name "python-pytooling")
+    (version "8.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyTooling/pyTooling/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07mca75d2zd6xl0isf0vrcblsc2niyqi7941dgjpiafnsgiygfzf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:tests? #f)) ; requires recent versions of mypy and lxml
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://pytooling.github.io/pyTooling/")
+    (synopsis "Miscellaneous Python tools")
+    (description
+     "pyTooling is a collection of (abstract) data models, lacking classes,
+decorators, a new performance boosting meta-class, and enhanced exceptions.
+It also provides lots of helper functions---e.g., to ease the handling of
+package descriptions or to unify multiple existing APIs into a single API.")
+    (license license:asl2.0)))
+
 (define-public python-colorlog
   (package
     (name "python-colorlog")
