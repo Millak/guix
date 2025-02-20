@@ -342,24 +342,16 @@ Python code formatter \"black\".")
 (define-public python-beartype
   (package
     (name "python-beartype")
-    (version "0.10.4")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beartype" version))
        (sha256
-        (base32 "0amzckgw9c93bl4jf0q6322j9wyyf3i8vl03yixfkrpllzv6kv14"))))
+        (base32 "0wv598iv9c2s6ivfiara9pnkdlnas8xjw063wvyi0dswpb0xyhny"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         "beartype_test"
-         ;; These tests rely on git through the "get_main_readme_file" helper.
-         "-k" (string-append "not test_doc_readme "
-                             "and not test_sphinx "
-                             "and not test_pep561_mypy"))))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs
+     (list python-hatchling python-numpy python-pygments python-pytest))
     (home-page "https://github.com/beartype/beartype")
     (synopsis "Fast runtime type checking for Python")
     (description "Beartype aims to be a very fast runtime type checking tool
