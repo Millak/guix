@@ -25522,6 +25522,14 @@ Unidata.")
                (base32
                 "0ipxdhfzccpqmnfrqdy8bizm80k2chhdlzg3p0dl05p8n35i6s94"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; This test requires Internet access.
+             (delete-file "tests/testthat/test_nexml_read.R"))))))
     (propagated-inputs
      (list r-ape
            r-dplyr
