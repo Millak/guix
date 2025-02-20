@@ -1394,18 +1394,18 @@ provides features like a Web-browsable API and authentication policies.")
 (define-public python-django-sekizai
   (package
     (name "python-django-sekizai")
-    (version "2.0.0")
+    (version "4.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "django-sekizai" version))
         (sha256
          (base32
-          "0vrkli625b5s1wldri3dyrfvqbxg7zxy2pg0rpjixw3b1ndz0ag8"))))
+          "1bfdag32yqjq3vqvyi9izdkmfcs2qip42rcmxpphqp0bmv5kdjia"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f)) ; Tests not included with release.
     (propagated-inputs
-     (list python-django python-django-classy-tags python-six))
+     (list python-django python-django-classy-tags))
     (home-page "https://github.com/divio/django-sekizai")
     (synopsis "Template blocks for Django projects")
     (description "Sekizai means blocks in Japanese, and that is what this app
