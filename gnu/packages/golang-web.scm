@@ -4718,6 +4718,29 @@ jsoniter and variable type declarations (if any).  jsoniter interfaces gives
 router.")
     (license license:bsd-3)))
 
+(define-public go-github-com-justinas-alice
+  (package
+    (name "go-github-com-justinas-alice")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/justinas/alice")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19l88vi13rqyhjl100zd5z26ghy4iln74kqfd3hsmd2nydz7manz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/justinas/alice"))
+    (home-page "https://github.com/justinas/alice")
+    (synopsis "Middleware chaining for Golang")
+    (description
+     "Package alice provides a convenient way to chain HTTP handlers.")
+    (license license:expat)))
+
 (define-public go-github-com-kolo-xmlrpc
   (package
     (name "go-github-com-kolo-xmlrpc")
