@@ -47161,10 +47161,13 @@ the @code{raster} package that is suitable for extracting raster values using
        (sha256
         (base32
          "14vrg6mkwwgw1klgpvjn7936yfxav55rainz71xjjih2j21vq21n"))))
-    (properties `((upstream-name . "stringfish")))
+    (properties
+     '((upstream-name . "stringfish")
+       (updater-extra-inputs . ("pcre2"))))
     (build-system r-build-system)
     ;; Tests require r-qs, which depends on this package.
     (arguments (list #:tests? #false))
+    (inputs (list pcre2))
     (propagated-inputs
      (list r-rcpp r-rcppparallel))
     (native-inputs
