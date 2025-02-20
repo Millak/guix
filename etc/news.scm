@@ -37,6 +37,13 @@
 (channel-news
  (version 0)
 
+  (entry (commit "b4cc3e50187bd20a9479df52022c8228d3af49ab")
+        (title
+         (en "Linux-libre updated to 6.13"))
+        (body
+         (en "The default linux-libre package has been updated to the
+6.13 release series.")))
+
  (entry (commit "0753a17ddf6f4fab98b93c25f1a93b97ff9e46bb")
         (title
          (en "The @command{guix deploy} command now supports the Hetzner Cloud
