@@ -12500,6 +12500,26 @@ on the pitch of the voice and the rhythm of singing.")
     (home-page "https://usdx.eu/")
     (license license:gpl2+)))
 
+(define-public xmahjongg
+  (package
+    (name "xmahjongg")
+    (version "3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.lcdf.org/xmahjongg/xmahjongg-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1kzz8y34q7wibcrmfb3p9rrz88qriz4slxpf1yrrfny23il66g94"))))
+    (build-system gnu-build-system)
+    (inputs (list libx11))
+    (home-page "http://www.lcdf.org/xmahjongg/")
+    (synopsis "Solitaire Mah Jongg game")
+    (description
+     "Xmahjongg is a simple solitaire game.  The object is to remove all Mah
+Jongg tiles from the playing field by taking one matching pair at a time.")
+    (license license:gpl2+)))
+
 (define-public steam-devices-udev-rules
   ;; Last release from 2019-04-10
   (let ((commit "13443480a64fe8f10676606bd57da6de89f8ccb1")
