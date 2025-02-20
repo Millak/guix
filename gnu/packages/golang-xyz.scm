@@ -3833,6 +3833,34 @@ submodules:
      "This package provides memcache client and server functionality.")
     (license license:expat)))
 
+(define-public go-github-com-delthas-go-libnp
+  (let ((commit "96674b98150ed492b535d61dde5767dfa2dd14ce")
+        (revision "1"))
+    (package
+      (name "go-github-com-delthas-go-libnp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/delthas/go-libnp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1l2p2mpspjaffninxvghjsfywr39cravfbzpxyiq62lfpw43zwaq"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/delthas/go-libnp"))
+      (propagated-inputs
+       (list go-github-com-godbus-dbus-v5))
+      (home-page "https://github.com/delthas/go-libnp")
+      (synopsis "Tiny library providing information about now-playing media")
+      (description
+       "@code{go-libnp} is a tiny cross-platform library for extracting
+information about the music/image/video that is Now Playing on the system.")
+      (license license:expat))))
+
 (define-public go-github-com-flopp-go-findfont
   (package
     (name "go-github-com-flopp-go-findfont")

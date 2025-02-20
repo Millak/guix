@@ -1886,31 +1886,6 @@ characters with their ASCII approximations.")
     (description "@code{gg} is a library for rendering 2D graphics in pure Go.")
     (license license:expat)))
 
-(define-public go-github-com-delthas-go-libnp
-  (let ((commit "96674b98150ed492b535d61dde5767dfa2dd14ce")
-        (revision "1"))
-    (package
-      (name "go-github-com-delthas-go-libnp")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/delthas/go-libnp")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                  (base32
-                    "1l2p2mpspjaffninxvghjsfywr39cravfbzpxyiq62lfpw43zwaq"))))
-      (build-system go-build-system)
-      (arguments `(#:import-path "github.com/delthas/go-libnp"))
-      (propagated-inputs (list go-github-com-godbus-dbus-v5))
-      (home-page "https://github.com/delthas/go-libnp")
-      (synopsis "Tiny library providing information about now-playing media")
-      (description "@code{go-libnp} is a tiny cross-platform library for
-extracting information about the music/image/video that is Now Playing on the
-system.")
-      (license license:expat))))
-
 (define-public go-github-com-akosmarton-papipes
   (let ((commit "3c63b4919c769c9c2b2d07e69a98abb0eb47fe64")
         (revision "0"))
