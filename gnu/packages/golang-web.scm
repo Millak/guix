@@ -73,6 +73,7 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages ipfs)
   #:use-module (gnu packages prometheus)
+  #:use-module (gnu packages specifications)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web))
 
@@ -5030,13 +5031,29 @@ faster (and only does simple bandwidth metrics).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c94sq43bl1kp04lllcfrfyiy5z3zcfz0s65sm1vgb2s40zrwpr7"))))
+        (base32 "1c94sq43bl1kp04lllcfrfyiy5z3zcfz0s65sm1vgb2s40zrwpr7"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Delete generated binary file.
+            (delete-file "sorted-network-list.bin")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/libp2p/go-libp2p-asn-util"))
+      #:import-path "github.com/libp2p/go-libp2p-asn-util"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-sorted-network-list
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (setenv "ASN_IPV6_FILE"
+                        (string-append
+                         #$(this-package-native-input "specification-ip2asn-v6")
+                         "/share/data/ip2asn-v6.tsv"))
+                (invoke "go" "run" "./generate/")))))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-stretchr-testify
+           specification-ip2asn-v6))
     (propagated-inputs
      (list go-golang-org-x-exp))
     (home-page "https://github.com/libp2p/go-libp2p-asn-util")
