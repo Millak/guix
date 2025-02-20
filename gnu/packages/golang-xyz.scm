@@ -17314,6 +17314,34 @@ wherever else you need terminal emulation.
 It's an active fork of @url{https://github.com/james4k/terminal}.")
     (license license:expat)))
 
+(define-public go-gitlab-com-ambrevar-damerau
+  (let ((commit "883829e1f25fad54015772ea663e69017cf22352")
+        (revision "0"))
+    (package
+      (name "go-gitlab-com-ambrevar-damerau")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url
+                "https://gitlab.com/ambrevar/damerau")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1b9p8fypc914ij1afn6ir346zsgfqrc5mqc1k3d53n4snypq27qv"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "gitlab.com/ambrevar/damerau"))
+      (home-page "https://gitlab.com/ambrevar/damerau")
+      (synopsis "Damerau-Levenshtein distance for Golang")
+      (description
+       "This is a spelling corrector implementing the Damerau-Levenshtein
+distance.  Takes a string value input from the user.  Looks for an identical
+word on a list of words, if none is found, look for a similar word.")
+      (license license:expat))))
+
 (define-public go-go-abhg-dev-komplete
   (package
     (name "go-go-abhg-dev-komplete")
