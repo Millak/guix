@@ -36541,9 +36541,11 @@ used to compute ruin probabilities.")
        (sha256
         (base32
          "0jd67r11bn98hjwgyr6gas423787xy7ji2hq7ay80blkkcj91xxx"))))
-    (properties `((upstream-name . "bmp")))
+    (properties
+     '((upstream-name . "bmp")
+       (updater-extra-native-inputs . ("r-pixmap"))))
     (build-system r-build-system)
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-pixmap r-testthat))
     (home-page "https://cran.r-project.org/web/packages/bmp/")
     (synopsis "Read Bitmap (BMP) images")
     (description
