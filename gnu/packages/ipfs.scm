@@ -1236,6 +1236,36 @@ their levels to be controlled individually.")
 @url{https://github.com/libp2p/specs,libp2p}.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-libp2p-record
+  (package
+    (name "go-github-com-libp2p-go-libp2p-record")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p-record")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hl3khlsxagypf18cgx0rd2hnlnpg2vhcrn4g7m1xrkimgj57696"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-libp2p-record"))
+    (native-inputs
+     (list go-github-com-ipfs-go-test
+           go-google-golang-org-protobuf))
+    (propagated-inputs
+     (list go-github-com-libp2p-go-libp2p
+           go-github-com-multiformats-go-multihash))
+    (home-page "https://github.com/libp2p/go-libp2p-record")
+    (synopsis "Signed records for use with routing systems")
+    (description
+     "This package implements signed records for use wit IPFS routing
+systems.")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-libp2p-testing
   (package
     (name "go-github-com-libp2p-go-libp2p-testing")
