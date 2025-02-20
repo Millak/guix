@@ -15458,7 +15458,9 @@ information between package updates.")
                 "inst/htmlwidgets/plugins/Leaflet.markercluster/leaflet.markercluster.freezable.js"
                 "inst/htmlwidgets/plugins/Leaflet.markercluster/leaflet.markercluster.layersupport.js"
                 "inst/legacy/www/leaflet.js")))))
-    (properties `((upstream-name . "leaflet")))
+    (properties
+     '((upstream-name . "leaflet")
+       (updater-extra-native-inputs . ("r-shiny"))))
     (build-system r-build-system)
     (arguments
      `(#:modules ((guix build utils)
@@ -15576,6 +15578,7 @@ information between package updates.")
            (sha256
             (base32
              "0vyrbf6gv2lyh4c2bzp5349ivwvvg28gpn87y52a7jdb13rlkpab"))))
+       ("r-shiny" ,r-shiny)
        ("r-testthat" ,r-testthat)))
     (propagated-inputs
      (list r-crosstalk
