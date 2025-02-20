@@ -1599,13 +1599,13 @@ to ElasticSearch.")
 (define-public python-django-netfields
   (package
     (name "python-django-netfields")
-    (version "1.3.0")
+    (version "1.3.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-netfields" version))
               (sha256
                (base32
-                "122d0db1f420cwzrd7hynfbnnpqkjj2ridym5mrnj0l736nin5rr"))))
+                "0q2s6b689hwql4qcw02m3zj2fwsx1w4ffhw81yvp71dq3dh46jg5"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))      ;XXX: Requires a running PostgreSQL server
     (propagated-inputs
