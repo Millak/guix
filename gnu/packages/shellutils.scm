@@ -122,7 +122,7 @@ chart.")
 (define-public boxes
   (package
     (name "boxes")
-    (version "2.2.1")
+    (version "2.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -131,10 +131,10 @@ chart.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1blni7kjskg6y9ycvhwq3srfvh891xhfnjbh5h2zl0pb5szpllqi"))))
+                "028vg9h3vxz3icy7hmxgyqhn62953h1ls6bxwbhdwhl1lpj5py3n"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
+     `(#:test-target "utest"
        #:make-flags (list (string-append "GLOBALCONF="
                                          (assoc-ref %outputs "out")
                                          "/etc/boxes-config"))
@@ -155,11 +155,11 @@ chart.")
                            ("doc/boxes.1"  "share/man/man1/")
                            ("boxes-config" "etc/")))))))))
     (native-inputs
-     (list bison flex
+     (list bison flex cmocka
            ;; For the tests.
            xxd))
     (inputs
-     (list libunistring pcre2))
+     (list ncurses libunistring pcre2))
     (home-page "https://boxes.thomasjensen.com")
     (synopsis "Command line ASCII boxes")
     (description
