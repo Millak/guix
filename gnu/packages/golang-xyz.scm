@@ -6977,6 +6977,34 @@ This package contains a series of small enhancements and additions.")
      "Redigo is a Go client for the Redis database.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-cadvisor
+  (let ((commit "2ed7198f77395ee9a172878a0a7ab92ab59a2cfd")
+        (revision "0"))
+    (package
+      (name "go-github-com-google-cadvisor")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/google/cadvisor")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1w8p345z5j0gk3yiq5ah0znd5lfh348p2s624k5r10drz04p3f55"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/google/cadvisor"
+        #:test-subdirs #~(list ".")))
+      (home-page "https://github.com/google/cadvisor")
+      (synopsis "Analyze resource usage of running containers")
+      (description
+       "The package provides @code{cadvisor}, which provides information about
+the resource usage and performance characteristics of running containers.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-google-gnostic-models
   (package
     (name "go-github-com-google-gnostic-models")
