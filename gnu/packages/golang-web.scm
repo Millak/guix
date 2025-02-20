@@ -9636,6 +9636,18 @@ logging library.  Instead, install one of the bridges listed in the
 metrics SDK.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-trace
+  (package/inherit go-go-opentelemetry-io-otel
+    (name "go-go-opentelemetry-io-otel-trace")
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/trace"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (synopsis "OpenTelemetry Trace API")
+    (description
+     "Package trace provides an implementation of the tracing part of the
+OpenTelemetry API.")))
+
 (define-public go-golang-org-x-oauth2
   (package
     (name "go-golang-org-x-oauth2")
