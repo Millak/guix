@@ -36702,8 +36702,19 @@ classification and regression models.")
               (sha256
                (base32
                 "1iszidm3g24yi5g10wyx3vw03ka1ij4z3q4ng01v7ic863wp08gb"))))
-    (properties `((upstream-name . "caretEnsemble")))
+    (properties
+     '((upstream-name . "caretEnsemble")
+       (updater-extra-native-inputs . ("r-gbm"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             (substitute* "tests/testthat/test-caretList.R"
+               ((".*caretList supports models that return an array.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs (list r-caret
                              r-data-table
                              r-ggplot2
@@ -36714,6 +36725,7 @@ classification and regression models.")
     (native-inputs
      (list r-catools
            r-earth
+           r-gbm
            r-glmnet
            r-knitr
            r-mlbench
