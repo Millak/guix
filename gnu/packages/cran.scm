@@ -32181,6 +32181,8 @@ batch correction, and data correction.")
        (sha256
         (base32
          "0hfspw1q40jqla238dw86iyf0lyk1agc19flwvf9nrm824hw5fdd"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-roxygen2"))))
     (build-system r-build-system)
     ;; This is needed by R.cache.
     (arguments
@@ -32198,7 +32200,7 @@ batch correction, and data correction.")
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-roxygen2 r-testthat))
     (home-page "https://github.com/r-lib/styler")
     (synopsis "Non-invasive pretty printing of R code")
     (description
