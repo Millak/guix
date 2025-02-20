@@ -2585,7 +2585,7 @@ d'informations.")))
          (de "Guix Home ist jetzt Teil von GNU Guix")
          (ru "Guix Home теперь поставляется в составе GNU Guix"))
         (body
-         (en "Guix Home splitted out from rde project and now is a part of
+         (en "Guix Home split out from rde project and now is a part of
 Guix proper.  It is available as a @emph{technology preview} and thus subject
 to change.
 
