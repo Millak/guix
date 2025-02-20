@@ -2396,3 +2396,42 @@ modify their environment during the session with modulefiles.  Modules are
 used on high-performance clusters to dynamically add and remove paths
 to specific versions of applications.")
     (license license:gpl2+)))
+
+(define-public gnome-packagekit
+  (package
+    (name "gnome-packagekit")
+    (version "43.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.gnome.org/GNOME/gnome-packagekit.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fnspk8wfh3v663qpqq3m1fgp21nskgisidihx41wgcsbzbvp1a5"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-Dsystemd=false")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'start-xorg-server
+                 (lambda _
+                    (system "Xvfb :1 &")
+                    (setenv "DISPLAY" ":1")))
+               (add-before 'install 'setenv
+                 (lambda _
+                   ;; Prevent gtk-update-icon-cache, glib-compile-schemas,
+                   ;; update-desktop-database
+                   ;; (since we are doing it ourselves with a profile hook).
+                   (setenv "DESTDIR" "/"))))))
+    (native-inputs
+     (list gnu-gettext pkg-config (list glib "bin") xorg-server-for-tests))
+    (inputs
+     (list glib gtk+ packagekit polkit))
+    (synopsis "GNOME frontend for PackageKit")
+    (description "This package provides a PackageKit frontend for GNOME.
+PackageKit is a common unified interface for package managers.")
+    (home-page "https://gitlab.gnome.org/GNOME/gnome-packagekit")
+    (license license:gpl2+)))
