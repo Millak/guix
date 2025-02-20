@@ -1860,6 +1860,54 @@ non-cryptographic hash algorithm, working at speeds close to RAM limits.")
 algorithm.")
       (license license:bsd-3))))
 
+;; XXX: Deprecated in upstream: This repository has been archived by the owner
+;; on May 1, 2024. It is now read-only.
+;; Consider to remove when nothing is depend on it.
+(define-public go-github-com-operatorfoundation-obfs4
+  (package
+    (name "go-github-com-operatorfoundation-obfs4")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/OperatorFoundation/obfs4")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s730xagdxs66wfh65hb5v9a5h01q5ncic3pyij0a043scagizgr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/OperatorFoundation/obfs4"
+      #:test-subdirs #~(list "common/..."
+                             "proxy_dialers/..."
+                             "transports/obfs4/...")))
+    (propagated-inputs
+     (list go-github-com-dchest-siphash
+           go-github-com-operatorfoundation-ed25519
+           go-github-com-willscott-goturn
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-torproject-org-pluggable-transports-goptlib))
+    (home-page "https://github.com/OperatorFoundation/obfs4")
+    (synopsis "Network obfourscator to scramble network traffic")
+    (description
+     "Obfs4 is a look-like nothing obfuscation protocol that incorporates
+ideas and concepts from Philipp Winter's ScrambleSuit protocol.
+
+The notable differences between ScrambleSuit and obfs4 are:
+@itemize
+@item The handshake always does a full key exchange (no such thing as a Session
+Ticket Handshake).
+@item The handshake uses the Tor Project's ntor handshake with public keys
+obfuscated via the Elligator 2 mapping.
+@item The link layer encryption uses NaCl secret boxes (Poly1305/XSalsa20).
+@end itemize")
+    (license license:bsd-2)))
+
 (define-public go-github-com-pion-randutil
   (package
     (name "go-github-com-pion-randutil")
