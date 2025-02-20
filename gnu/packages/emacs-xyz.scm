@@ -10911,7 +10911,7 @@ interactive searches to move multiple fake cursors.")
 (define-public emacs-multiple-cursors
   (package
     (name "emacs-multiple-cursors")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -10920,7 +10920,7 @@ interactive searches to move multiple fake cursors.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ijgvzv5r44xqvz751fd5drbvrspapw6xwv47582w255j363r6ss"))))
+        (base32 "01ccwbfrnc66ax4bngw1b6k9rzw0m85cm4s0wzk1gkdsc2z647jn"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/magnars/multiple-cursors.el")
     (synopsis "Multiple cursors for Emacs")
