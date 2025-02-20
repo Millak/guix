@@ -19276,11 +19276,13 @@ information are missing.")
        (sha256
         (base32
          "1va86q5wddyvqgdpy8d0an2c7v1qbb4hpn0ai6y1v5v1ff87w73k"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-haven"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-datawizard r-insight))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-haven r-knitr r-testthat))
     (home-page "https://github.com/strengejacke/sjlabelled")
     (synopsis "Labelled data utility functions")
     (description
