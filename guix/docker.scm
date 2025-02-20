@@ -222,7 +222,7 @@ command such as '(\"gzip\" \"-9n\"), to compress IMAGE.  Use CREATION-TIME, a
 SRFI-19 time-utc object, as the creation time in metadata.
 
 When MAX-LAYERS is not false build layered image, providing a Docker
-image with store paths splitted in their own layers to improve sharing
+image with store paths split in their own layers to improve sharing
 between images.
 
 ROOT-SYSTEM is a directory with a provisioned root file system, which will be

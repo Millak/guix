@@ -533,7 +533,7 @@ tarball conforming to the Docker Image Specification, compressed with
 COMPRESSOR.  It can be passed to 'docker load'.  If TARGET is true, it must a
 be a GNU triplet and it is used to derive the architecture metadata in the
 image.  EXTRA-OPTIONS may contain the IMAGE-TAG keyword argument.  If
-MAX-LAYERS is not false, the image will be splitted in up to MAX-LAYERS
+MAX-LAYERS is not false, the image will be split in up to MAX-LAYERS
 layers."
   (define database
     (and localstatedir?

@@ -129,7 +129,7 @@ DEFCONFIG:
   \"CONFIG_D=m\"
   \"CONFIG_E=\"
   \"# CONFIG_G is not set\"
-  ;; For convenience this abbrevation can be used for not set configurations.
+  ;; For convenience this abbreviation can be used for not set configurations.
   \"CONFIG_F\")
 
 Instead of a list, CONFIGS can be a string with one configuration per line."
