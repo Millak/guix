@@ -5734,6 +5734,8 @@ data at that region, and avoids over-plotting.")
               (sha256
                (base32
                 "03mxigi34nd05wjigm8lpcbyhp4c8jxz7zm04qs27clbzsn1jj07"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-dplyr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2
@@ -5742,7 +5744,7 @@ data at that region, and avoids over-plotting.")
            r-scales
            r-stringr
            r-tibble))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-dplyr r-testthat))
     (home-page "https://cran.rstudio.com/web/packages/ggthemes")
     (synopsis "Extra themes, scales and geoms for @code{ggplot2}")
     (description "This package provides extra themes and scales for
