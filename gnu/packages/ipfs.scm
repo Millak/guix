@@ -1548,6 +1548,42 @@ message propagation, also known as overlay multicast.  The implementation
 provides topic-based pubsub, with pluggable routing algorithms.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public go-github-com-libp2p-go-libp2p-pubsub-router
+  (package
+    (name "go-github-com-libp2p-go-libp2p-pubsub-router")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p-pubsub-router")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01mxb8gi7myidnyfg8yqb445lbwqmgncvh7rcwx6n8av84afplx4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; XXX: tests hang, check why
+      #:import-path "github.com/libp2p/go-libp2p-pubsub-router"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-gogo-protobuf
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-ipfs-ds-help
+           go-github-com-ipfs-go-log-v2
+           go-github-com-libp2p-go-libp2p
+           go-github-com-libp2p-go-libp2p-pubsub
+           go-github-com-libp2p-go-libp2p-record
+           go-github-com-libp2p-go-msgio
+           go-golang-org-x-sync))
+    (home-page "https://github.com/libp2p/go-libp2p-pubsub-router")
+    (synopsis "PubSub libp2p router library")
+    (description
+     "This package implements a IPNS over PubSub for @code{libp2p}.")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-libp2p-record
   (package
     (name "go-github-com-libp2p-go-libp2p-record")
