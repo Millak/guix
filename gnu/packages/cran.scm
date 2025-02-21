@@ -44595,7 +44595,9 @@ customization by the user.")
        (uri (cran-uri "mlr3cluster" version))
        (sha256
         (base32 "1pkadg1m4j8bpkdp74a62bpsh2flw7nab1v3mmpbxyadsqscjja1"))))
-    (properties `((upstream-name . "mlr3cluster")))
+    (properties
+     '((upstream-name . "mlr3cluster")
+       (updater-extra-native-inputs . ("r-vctrs"))))
     (build-system r-build-system)
     (propagated-inputs (list r-backports
                              r-checkmate
@@ -44607,7 +44609,7 @@ customization by the user.")
                              r-mlr3misc
                              r-paradox
                              r-r6))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-vctrs))
     (home-page "https://mlr3cluster.mlr-org.com")
     (synopsis "Cluster extension for mlr3")
     (description
