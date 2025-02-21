@@ -4075,7 +4075,9 @@ variables.")
        (sha256
         (base32
          "1jk3x679rvkj3if14cai99w5sk0nj07rhppwwd7i7a1daal0grh5"))))
-    (properties `((upstream-name . "ggpp")))
+    (properties
+     '((upstream-name . "ggpp")
+       (updater-extra-native-inputs . ("r-vdiffr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
@@ -4094,7 +4096,7 @@ variables.")
            r-xts
            r-zoo))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-vdiffr))
     (home-page "https://docs.r4photobiology.info/ggpp/")
     (synopsis "Grammar extensions to ggplot2")
     (description
