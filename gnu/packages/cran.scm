@@ -24306,6 +24306,68 @@ the topic.")
 giving it a description in the specific format.")
     (license license:expat)))
 
+(define-public r-spamm
+  (package
+    (name "r-spamm")
+    (version "4.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "spaMM" version))
+       (sha256
+        (base32 "1nr44jg73gnbc3q1ip7zmzl1n5bggbcgjrdlh6fg81zp41ba3ydv"))))
+    (properties
+     '((upstream-name . "spaMM")
+       (updater-extra-inputs . ("gsl"))
+       ;; We don't need these for tests.
+       (updater-ignored-native-inputs
+        . ("r-blackbox" "r-infusion" "r-inla" "r-isorix"
+           "r-kinship2" "r-multcomp" "r-pkg" "r-safebinaryregression"))))
+    (build-system r-build-system)
+    (inputs (list gsl))
+    (propagated-inputs (list r-backports
+                             r-boot
+                             r-crayon
+                             r-geometry
+                             r-gmp
+                             r-mass
+                             r-matrix
+                             r-minqa
+                             r-nlme
+                             r-nloptr
+                             r-numderiv
+                             r-pbapply
+                             r-proxy
+                             r-rcpp
+                             r-rcppeigen
+                             r-roi))
+    (native-inputs (list r-aster
+                         r-caic4
+                         r-compoissonreg
+                         r-devtools
+                         r-lme4
+                         r-lmertest
+                         r-mgcv
+                         r-pedigreemm
+                         r-sp
+                         r-testthat
+                         r-usethis))
+    (home-page "https://www.r-project.org")
+    (synopsis "Mixed-Effect Models, with or without Spatial Random Effects")
+    (description
+     "Inference based on models with or without spatially-correlated random effects,
+multivariate responses, or non-Gaussian random effects (e.g., Beta).  Variation
+in residual variance (heteroscedasticity) can itself be represented by a
+mixed-effect model.  Both classical geostatistical models (Rousset and Ferdy
+2014 <doi:10.1111/ecog.00566>), and Markov random field models on irregular
+grids (as considered in the INLA package, <https://www.r-inla.org>), can be
+fitted, with distinct computational procedures exploiting the sparse matrix
+representations for the latter case and other autoregressive models.  Laplace
+approximations are used for likelihood or restricted likelihood.  Penalized
+quasi-likelihood and other variants discussed in the h-likelihood literature
+(Lee and Nelder 2001 <doi:10.1093/biomet/88.4.987>) are also implemented.")
+    (license license:cecill)))
+
 (define-public r-sparsesvd
   (package
     (name "r-sparsesvd")
