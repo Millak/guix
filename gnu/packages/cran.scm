@@ -13508,6 +13508,25 @@ preservation and allowing for user-level customization and extension, while
 simplifying cross-class interoperability.")
     (license license:gpl2+)))
 
+(define-public r-pedigreemm
+  (package
+    (name "r-pedigreemm")
+    (version "0.3-5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pedigreemm" version))
+       (sha256
+        (base32 "1bnvd25z8ff0d00wijp2vw9xw11fczqrlblw3ag39pjzn98a1zf7"))))
+    (properties `((upstream-name . "pedigreemm")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lme4 r-matrix))
+    (home-page "https://github.com/anainesvs/pedigreemm/")
+    (synopsis "Pedigree-based mixed-effects models")
+    (description "This package lets you fit pedigree-based mixed-effects
+models.")
+    (license license:gpl2+)))
+
 (define-public r-performanceanalytics
   (package
     (name "r-performanceanalytics")
