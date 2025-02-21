@@ -14268,6 +14268,46 @@ protein-protein interaction databases and integrative resources such as
 molecular functions, respectively, and produces intuitive graphical outputs.")
     (license license:gpl3)))
 
+;; This is a CRAN package but it depends on r-mixomics from Bioconductor.
+(define-public r-xllim
+  (package
+    (name "r-xllim")
+    (version "2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "xLLiM" version))
+       (sha256
+        (base32 "08v6acn6vpn8asn61ldqdryjz0xk5zyd2v63aqrc5xximpqwrp7d"))))
+    (properties `((upstream-name . "xLLiM")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-abind
+                             r-capushe
+                             r-corpcor
+                             r-e1071
+                             r-glmnet
+                             r-igraph
+                             r-mass
+                             r-matrix
+                             r-mda
+                             r-mixomics
+                             r-progress
+                             r-randomforest))
+    (home-page "https://cran.r-project.org/package=xLLiM")
+    (synopsis "High dimensional locally-linear mapping")
+    (description
+     "This package provides a tool for non linear mapping (non linear
+regression) using a mixture of regression model and an inverse regression
+strategy.  The methods include the GLLiM model (see Deleforge et al (2015)
+<DOI:10.1007/s11222-014-9461-5>) based on Gaussian mixtures and a robust
+version of GLLiM, named SLLiM (see Perthame et al (2016)
+<DOI:10.1016/j.jmva.2017.09.009>) based on a mixture of Generalized Student
+distributions.  The methods also include BLLiM (see Devijver et al (2017)
+<@code{arXiv:1701.07899>}) which is an extension of GLLiM with a sparse block
+diagonal structure for large covariance matrices (particularly interesting for
+transcriptomic data).")
+    (license license:gpl2+)))
+
 (define-public r-xmapbridge
   (package
     (name "r-xmapbridge")
