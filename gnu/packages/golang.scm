@@ -1226,11 +1226,32 @@ networks where it would otherwise be blocked or heavily throttled.")
           (base32 "13f5pvr74afa28pbpmgvjzjx68vv5zmrwlvxp7hr5bl5625zlxmy"))))
       (build-system go-build-system)
       (arguments
-       `(#:unpack-path "github.com/mufti1/interconv"
-         #:import-path "github.com/mufti1/interconv/package"))
+       (list
+        #:skip-build? #t
+        #:import-path "github.com/mufti1/interconv"))
       (home-page "https://github.com/mufti1/interconv")
       (synopsis "Data type converter")
-      (description "InterConv converts interfaces into any data type.")
+      (description
+       "InterConv converts interfaces into any data type.
+
+Data type that can be converted:
+@itemize
+@item Int
+@item Int8
+@item Int32
+@item Int16
+@item Int64
+@item Float32
+@item Float64
+@item Boolean
+@item String
+@item Uint
+@item Uint8
+@item Uint16
+@item Uint32
+@item Uint64
+@item Uintptr
+@end itemize")
       (license license:expat))))
 
 (define-public go-github-com-operatorfoundation-monolith-go
