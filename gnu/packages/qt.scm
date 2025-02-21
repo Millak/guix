@@ -34,6 +34,7 @@
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2024 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4987,6 +4988,66 @@ window docking system.")
 @url{Promises/A+,https://promisesaplus.com/} standard for the ``promises''
 programming paradigm.")
     (license license:expat)))
+
+(define-public qtwidgetanimationframework
+  (let ((commit "b07ab59cee7a21eb29d29cb67c160681f13ac5ae") ;no tags
+          (revision "0"))
+    (package
+      (name "qtwidgetanimationframework")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+           (git-reference
+             (url "https://github.com/dimkanovikov/WidgetAnimationFramework")
+             (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1smbdrzk05vvbf6lpjdq82k4y2kc4yv1gk5388qbslbzlb6ihls6"))))
+      (build-system qt-build-system)
+      (arguments
+       (list #:qtbase qtbase
+             #:tests? #f ;no tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 ;; This project does not have any build rule but its demo has
+                 ;; one.
+                 (add-after 'unpack 'pre-configure
+                   (lambda _
+                     (copy-file "demo/waf-demo.pro" "src/waf.pro")
+                     (substitute* "src/waf.pro"
+                       (("main.cpp ") "")
+                       (("app") "lib")
+                       (("waf-demo") "waf"))
+                     (chdir "src")))
+                 ;; No configure script exists.
+                 (replace 'configure
+                   (lambda _
+                     (invoke "qmake")))
+                 ;; No install rule exists.
+                 (replace 'install
+                   (lambda _
+                     ;; Install library files.
+                     (for-each
+                       (lambda (file)
+                         (install-file file
+                                       (string-append #$output "/lib/"
+                                                      (dirname file))))
+                       (find-files "." "\\.so"))
+                     ;; Install header files.
+                     (for-each
+                       (lambda (file)
+                         (install-file file
+                                       (string-append #$output "/include/WAF/"
+                                                      (dirname file))))
+                       (find-files "." "\\.h$")))))))
+      (home-page "https://github.com/dimkanovikov/WidgetAnimationFramework")
+      (synopsis "Extension for animating Qt widgets")
+      (description
+       "@acronym{WAF,Widget Animation Framework} is an extension for animating
+Qt widgets.")
+      (license license:lgpl3+))))
 
 (define-public qtcolorwidgets
   (package
