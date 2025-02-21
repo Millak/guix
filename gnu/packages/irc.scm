@@ -14,7 +14,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Christian Miller <christian.miller@dadoes.de>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;;
@@ -374,7 +374,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "4.5.1")
+    (version "4.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -383,7 +383,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q1d3lwrl4jnxn496cx7rbzwfvq8wa2fbk3p8n6yyvrahyhiz628"))))
+                "1m3hq97n5arl3gk649knbg4ar68q1rqlmpvs5q5fl2p93wniq82w"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
