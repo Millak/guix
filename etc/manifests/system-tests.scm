@@ -74,7 +74,7 @@ instance."
   "Return a manifest containing all the system tests, or all those selected by
 the 'TESTS' environment variable."
   (define source
-    (string-append (current-source-directory) "/.."))
+    (string-append (current-source-directory) "/../.."))
 
   (define commit
     ;; Fetch the current commit ID so we can potentially build the same
