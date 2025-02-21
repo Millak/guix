@@ -32548,6 +32548,45 @@ library uses.  It is also possible to control the number of threads in
 OpenMP.")
     (license license:agpl3+)))
 
+(define-public r-rhub
+  (package
+    (name "r-rhub")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rhub" version))
+       (sha256
+        (base32 "05q1jv7c2l09ssb72d17hhcisvzqmcd3d1njc1j6w8lhvc5kqs47"))))
+    (properties
+     '((upstream-name . "rhub")
+       (updater-extra-native-inputs . ("r-knitr"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-callr
+                             r-cli
+                             r-curl
+                             r-desc
+                             r-gert
+                             r-gitcreds
+                             r-glue
+                             r-jsonlite
+                             r-pkgbuild
+                             r-processx
+                             r-r6
+                             r-rappdirs
+                             r-rematch
+                             r-rprojroot
+                             r-whoami))
+    (native-inputs
+     (list r-knitr r-mockery r-pillar r-testthat r-webfakes r-withr))
+    (home-page "https://github.com/r-hub/rhub")
+    (synopsis "Tools for R package developers")
+    (description
+     "R-hub uses GitHub Actions to run @code{R CMD} check and similar package
+checks. The @code{rhub} package helps you set up R-hub for your R package, and
+start running checks.")
+    (license license:expat)))
+
 (define-public r-lda
   (package
     (name "r-lda")
