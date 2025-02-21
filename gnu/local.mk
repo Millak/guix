@@ -1265,6 +1265,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/fail2ban-python310-server-action.patch	\
   %D%/packages/patches/fail2ban-python310-server-actions.patch	\
   %D%/packages/patches/fail2ban-python310-server-jails.patch	\
+  %D%/packages/patches/faiss-tests-CMakeLists-find-googletest.patch	\
   %D%/packages/patches/falcosecurity-libs-shared-build.patch	\
   %D%/packages/patches/farstream-gupnp.patch                         \
   %D%/packages/patches/farstream-make.patch                          \

@@ -62,6 +62,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
@@ -582,85 +583,36 @@ graphs.")
 (define-public faiss
   (package
     (name "faiss")
-    (version "1.5.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/facebookresearch/faiss")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0pk15jfa775cy2pqmzq62nhd6zfjxmpvz5h731197c28aq3zw39w"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "utils.cpp"
-                    (("#include <immintrin.h>")
-                     "#ifdef __SSE__\n#include <immintrin.h>\n#endif"))
-                  #t))))
+    (version "1.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/facebookresearch/faiss")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1x6z94f6vhh7ppsn7wll46k7i63lzcnc3r3rv5zfarljybqhrsjd"))
+       ;; Including but skipping perf_tests requires to patch
+       ;; perf_tests/CMakeLists.txt. KISS: Remove it instead.
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (delete-file-recursively "perf_tests")
+                    (substitute* "CMakeLists.txt"
+                      (("add_subdirectory\\(perf_tests\\)") ""))))
+       (patches
+        (search-patches "faiss-tests-CMakeLists-find-googletest.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DBUILD_WITH_GPU=OFF"     ; thanks, but no thanks, CUDA.
-             "-DBUILD_TUTORIAL=OFF")    ; we don't need those
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'prepare-build
-           (lambda _
-             (let ((features (list ,@(let ((system (or (%current-target-system)
-                                                       (%current-system))))
-                                       (cond
-                                        ((string-prefix? "x86_64" system)
-                                         '("-mavx" "-msse2" "-mpopcnt"))
-                                        ((string-prefix? "i686" system)
-                                         '("-msse2" "-mpopcnt"))
-                                        (else
-                                         '()))))))
-               (substitute* "CMakeLists.txt"
-                 (("-m64") "")
-                 (("-mpopcnt") "")      ; only some architectures
-                 (("-msse4")
-                  (string-append
-                   (string-join features)
-                   " -I" (getcwd)))
-                 ;; Build also the shared library
-                 (("ARCHIVE DESTINATION lib")
-                  "LIBRARY DESTINATION lib")
-                 (("add_library.*" m)
-                  "\
-add_library(objlib OBJECT ${faiss_cpu_headers} ${faiss_cpu_cpp})
-set_property(TARGET objlib PROPERTY POSITION_INDEPENDENT_CODE 1)
-add_library(${faiss_lib}_static STATIC $<TARGET_OBJECTS:objlib>)
-add_library(${faiss_lib} SHARED $<TARGET_OBJECTS:objlib>)
-install(TARGETS ${faiss_lib}_static ARCHIVE DESTINATION lib)
-\n")))
-
-             ;; See https://github.com/facebookresearch/faiss/issues/520
-             (substitute* "IndexScalarQuantizer.cpp"
-               (("#define USE_AVX") ""))
-
-             ;; Make header files available for compiling tests.
-             (mkdir-p "faiss")
-             (for-each (lambda (file)
-                         (mkdir-p (string-append "faiss/" (dirname file)))
-                         (copy-file file (string-append "faiss/" file)))
-                       (find-files "." "\\.h$"))
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "make" "-C" "tests"
-                     (format #f "-j~a" (parallel-job-count)))))
-         (add-after 'install 'remove-tests
-           (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file-recursively
-              (string-append (assoc-ref outputs "out")
-                             "/test"))
-             #t)))))
+     (list #:configure-flags
+           #~'("-DFAISS_ENABLE_GPU=OFF"     ; thanks, but no thanks, CUDA.
+               "-DFAISS_ENABLE_PYTHON=OFF"
+               "-DBUILD_TESTING=ON")))
     (inputs
      (list openblas))
     (native-inputs
-     (list googletest))
+     (list googletest openmpi))
     (home-page "https://github.com/facebookresearch/faiss")
     (synopsis "Efficient similarity search and clustering of dense vectors")
     (description "Faiss is a library for efficient similarity search and
@@ -672,45 +624,75 @@ contains supporting code for evaluation and parameter tuning.")
 (define-public python-faiss
   (package (inherit faiss)
     (name "python-faiss")
-    (build-system python-build-system)
+    (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "python") #t))
-         (add-after 'chdir 'build-swig
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-output-to-file "../makefile.inc"
-               (lambda ()
-                 (let ((python-version ,(version-major+minor (package-version python))))
-                   (format #t "\
-PYTHONCFLAGS =-I~a/include/python~a/ -I~a/lib/python~a/site-packages/numpy/core/include
-LIBS = -lpython~a -lfaiss
-SHAREDFLAGS = -shared -fopenmp
-CXXFLAGS = -fpermissive -fopenmp -fPIC
-CPUFLAGS = ~{~a ~}~%"
-                           (assoc-ref inputs "python*") python-version
-                           (assoc-ref inputs "python-numpy") python-version
-                           python-version
-                           (list ,@(let ((system (or (%current-target-system)
-                                                     (%current-system))))
-                                     (cond
-                                       ((string-prefix? "x86_64" system)
-                                        '("-mavx" "-msse2" "-mpopcnt"))
-                                       ((string-prefix? "i686" system)
-                                        '("-msse2" "-mpopcnt"))
-                                       (else
-                                         '()))))))))
-             (substitute* "Makefile"
-               (("../libfaiss.a") ""))
-             (invoke "make" "cpu"))))))
+     (list
+      #:imported-modules `(,@%cmake-build-system-modules
+                           (guix build gremlin)
+                           (guix build python-build-system))
+      #:modules '((guix build cmake-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils)
+                  (guix build gremlin)
+                  (ice-9 match)
+                  (srfi srfi-1)
+                  (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "faiss/python")))
+          (add-before 'install 'python-build
+            (lambda _
+              ((assoc-ref python:%standard-phases 'build)
+               #:use-setuptools? #t)))
+          (replace 'install
+            (lambda args
+              (apply
+               (assoc-ref python:%standard-phases 'install)
+               #:use-setuptools? #t
+               #:configure-flags ''()
+               args)
+              (for-each
+               delete-file
+               (find-files #$output
+                           "_*faiss_example_external_module\\.(so|py)$"))))
+          ;; Move check phase after 'install.
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+              (if tests?
+                  (with-directory-excursion "../../tests"
+                    (let* ((version #$(version-major+minor
+                                       (package-version
+                                        (this-package-input "python-wrapper"))))
+                           (destination (string-append "/lib/python" version
+                                                       "/site-packages/")))
+                      (setenv
+                       "PYTHONPATH"
+                       (string-join
+                        (filter
+                         directory-exists?
+                         (map (match-lambda
+                                ((name . directory)
+                                 (string-append directory destination)))
+                              (append outputs inputs)))
+                        ":")))
+                    (for-each
+                     (lambda (file)
+                       (invoke "python" file))
+                     (remove (cut member <> '(;; External module removed
+                                              "./external_module_test.py"
+                                              ;; Avoid torch dependency
+                                              "./torch_test_contrib.py"
+                                              "./torch_test_neural_net.py"))
+                             (find-files "." "\\.py$"))))
+                  (format #t "test suite not run~%")))))))
+    (native-inputs
+     (list python-scipy))
     (inputs
-     `(("faiss" ,faiss)
-       ("openblas" ,openblas)
-       ("python*" ,python)
-       ("swig" ,swig)))
+     (list faiss openblas python-wrapper swig))
     (propagated-inputs
-     (list python-matplotlib python-numpy))
+     (list python-numpy))
     (description "Faiss is a library for efficient similarity search and
 clustering of dense vectors.  This package provides Python bindings to the
 Faiss library.")))
