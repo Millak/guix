@@ -19417,6 +19417,50 @@ them.  It includes various helper functions.")
 procedures to speed up calculations in R.")
     (license license:gpl2)))
 
+(define-public r-blackbox
+  (package
+    (name "r-blackbox")
+    (version "1.1.46")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "blackbox" version))
+       (sha256
+        (base32 "03m93v5nk5zg039axkf02drdj2q165k73xk6waaiyi0b8w0sbl8l"))))
+    (properties
+     '((upstream-name . "blackbox")
+       (updater-ignored-native-inputs . ("r-pkg"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-foreach
+                             r-geometry
+                             r-lattice
+                             r-mass
+                             r-matrixstats
+                             r-nloptr
+                             r-numderiv
+                             r-pbapply
+                             r-proxy
+                             r-rcdd
+                             r-rcpp
+                             r-rcppeigen
+                             r-spamm))
+    (native-inputs (list r-testthat))
+    (home-page "https://kimura.univ-montp2.fr/~rousset/Migraine.htm")
+    (synopsis "Black box optimization and exploration of parameter space")
+    (description
+     "This package performs prediction of a response function from simulated
+response values, allowing black-box optimization of functions estimated with
+some error.  It includes a simple user interface for such applications, as
+well as more specialized functions designed to be called by the Migraine
+software (Rousset and Leblois, 2012 <doi:10.1093/molbev/MSR262>; Leblois et
+al., 2014 <doi:10.1093/molbev/msu212>; and see URL).  The latter functions are
+used for prediction of likelihood surfaces and implied likelihood ratio
+confidence intervals, and for exploration of predictor space of the surface.
+Prediction of the response is based on ordinary Kriging (with residual error)
+of the input.  Estimation of smoothing parameters is performed by generalized
+cross-validation.")
+    (license license:cecill)))
+
 (define-public r-blavaan
   (package
     (name "r-blavaan")
