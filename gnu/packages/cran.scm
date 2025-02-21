@@ -45132,7 +45132,9 @@ vector machines, and gradient boosting.")
        (sha256
         (base32
          "1mm8bvnlinwbrxrmjw16nmqkgxcixcwa7i4lh3s49g5i82yk7xmb"))))
-    (properties `((upstream-name . "bbotk")))
+    (properties
+     '((upstream-name . "bbotk")
+       (updater-extra-native-inputs . ("r-gensa"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate
@@ -45141,7 +45143,8 @@ vector machines, and gradient boosting.")
            r-mlr3misc
            r-paradox
            r-r6))
-    (native-inputs (list r-irace
+    (native-inputs (list r-gensa
+                         r-irace
                          r-processx
                          r-progressr
                          r-redux
