@@ -6742,13 +6742,13 @@ between image and reference catalogs.  Currently only aligning images with
 (define-public python-viresclient
   (package
     (name "python-viresclient")
-    (version "0.12.1")
+    (version "0.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "viresclient" version))
        (sha256
-        (base32 "04micg72jag8zyvszc9hhi5p0zr8j3k93chhd5gkl20bvk69l3fp"))))
+        (base32 "1x1xgs6fs7rmhqs6f32x173gsz1mlrcpji0rf307x232lyav7wds"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-flit-core
