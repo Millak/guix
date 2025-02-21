@@ -197,6 +197,33 @@ allocator that makes it easy to generate complex code without a significant
 development effort.")
       (license license:zlib))))
 
+(define-public asyncplusplus
+  (package
+    (name "asyncplusplus")
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Amanieu/asyncplusplus")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0iswbh7y46kn412c52af0n8bc4fplm3y94yh10n2lchispzar72j"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Fix install location of cmake files.
+               '(substitute* "CMakeLists.txt"
+                  (("DESTINATION cmake")
+                    "DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (home-page "https://github.com/Amanieu/asyncplusplus")
+    (synopsis "Concurrency framework for C++11")
+    (description "Async++ is a concurrency framework for C++11.")
+    (license license:expat)))
+
 (define-public biblesync
   (package
     (name "biblesync")
