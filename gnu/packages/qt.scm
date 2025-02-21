@@ -4948,6 +4948,46 @@ a binding language:
 window docking system.")
     (license license:lgpl2.1+)))
 
+(define-public qtpromise
+  (package
+    (name "qtpromise")
+    (version "0.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/simonbrunel/qtpromise")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nsh6v5k4kdrrhcd6adz947n0dka4rrbx8f8rvm1175545nbi67s"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:test-target "tests"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'fix-include-path
+                 (lambda _
+                   (chdir "../source")
+                   (substitute* "../source/include/QtPromise"
+                     (("../src/") ""))))
+               (replace 'install
+                 (lambda _
+                   (let ((include (string-append #$output "/include")))
+                     (with-directory-excursion "../source"
+                       (install-file "include/QtPromise"
+                                     (string-append include))
+                       (copy-recursively "src/qtpromise"
+                                         (string-append include
+                                                        "/qtpromise")))))))))
+    (home-page "https://qtpromise.netlify.app/")
+    (synopsis "Promises/A+ implementation for Qt/C++")
+    (description
+     "This package provides a Qt/C++ implementation of
+@url{Promises/A+,https://promisesaplus.com/} standard for the ``promises''
+programming paradigm.")
+    (license license:expat)))
+
 (define-public qtcolorwidgets
   (package
     (name "qtcolorwidgets")
