@@ -1208,55 +1208,6 @@ form that bypasses network filtering, allowing the application to work on
 networks where it would otherwise be blocked or heavily throttled.")
     (license license:expat)))
 
-(define-public go-github-com-operatorfoundation-monolith-go
-  (package
-    (name "go-github-com-operatorfoundation-monolith-go")
-    (version "1.0.10")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/OperatorFoundation/monolith-go")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zzamnrakjvz9frxscyhrvyz2ikqq2klmynn218jk5dar6mc6xyf"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/OperatorFoundation/monolith-go"
-      #:test-flags
-      #~(list "-skip" (string-join
-                       (list "TestEnumeratedItems"
-                             "TestOptional2"
-                             "TestVariableStringsPart")
-                       "|"))))
-    (propagated-inputs
-     (list go-github-com-deckarep-golang-set))
-    (home-page "https://github.com/OperatorFoundation/monolith-go")
-    (synopsis "Byte sequences library")
-    (description "Monolith-Go is a Go library for working with byte sequences.")
-    (license license:expat)))
-
-;; To build bitmask 0.21.11, remove when it's updated.
-(define-public go-github-com-operatorfoundation-monolith-go-1.0.4
-  (package
-    (inherit go-github-com-operatorfoundation-monolith-go)
-    (name "go-github-com-operatorfoundation-monolith-go")
-    (version "1.0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/OperatorFoundation/monolith-go")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "066bqlgw5h7a3kxswqlv734asb7nw2y6snsn09yqk0ixj23qw22s"))))))
-
 (define-public go-github-com-blanu-dust
   (package
     (name "go-github-com-blanu-dust")
