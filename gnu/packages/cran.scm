@@ -1326,6 +1326,49 @@ also provided.")
 column which contains two indexes, with potentially a nesting structure.")
     (license license:gpl2+)))
 
+(define-public r-dharma
+  (package
+    (name "r-dharma")
+    (version "0.4.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "DHARMa" version))
+       (sha256
+        (base32 "0mfywr4pshnd13xs2zdhd8xvbc43qxaj075jhy8lrlg1agmc6gya"))))
+    (properties `((upstream-name . "DHARMa")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape
+                             r-gap
+                             r-lme4
+                             r-lmtest
+                             r-matrix
+                             r-qgam))
+    (native-inputs (list r-devtools
+                         r-glmmadaptive
+                         r-glmmtmb
+                         r-knitr
+                         r-mass
+                         r-mgcv
+                         r-phylolm
+                         r-rhub
+                         r-spamm
+                         r-testthat))
+    (home-page "https://florianhartig.github.io/DHARMa/")
+    (synopsis "Residual diagnostics for hierarchical regression models")
+    (description
+     "The DHARMa package uses a simulation-based approach to create readily
+interpretable scaled (quantile) residuals for fitted (generalized) linear
+mixed models.  Moreover, externally created simulations, e.g. posterior
+predictive simulations from Bayesian software such as JAGS, STAN, or BUGS can
+be processed as well.  The resulting residuals are standardized to values
+between 0 and 1 and can be interpreted as intuitively as residuals from a
+linear regression.  The package also provides a number of plot and test
+functions for typical model misspecification problems, such as
+over/underdispersion, zero-inflation, and residual spatial, phylogenetic and
+temporal autocorrelation.")
+    (license license:gpl3+)))
+
 (define-public r-diffobj
   (package
     (name "r-diffobj")
