@@ -7292,6 +7292,47 @@ often becomes readily apparent as to which regions of the tumor genome are
 over-abundant or less-abundant as compared to that of normal cells.")
     (license license:bsd-3)))
 
+;; This is a CRAN package, but it depends on r-xllim, which depends on a
+;; Bioconductor package.
+(define-public r-infusion
+  (package
+    (name "r-infusion")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Infusion" version))
+       (sha256
+        (base32 "13jj8ivxigk8k6fl8m2dbniv08vfd87ry8vbpzcj9mxk7kg9p75l"))))
+    (properties
+     '((upstream-name . "Infusion")
+       (updater-ignored-native-inputs . ("r-pkg"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-blackbox
+                             r-boot
+                             r-cli
+                             r-foreach
+                             r-geometry
+                             r-matrixstats
+                             r-mvtnorm
+                             r-nloptr
+                             r-numderiv
+                             r-pbapply
+                             r-proxy
+                             r-ranger
+                             r-spamm
+                             r-viridislite))
+    (native-inputs (list r-devtools r-testthat r-xllim))
+    (home-page "https://gitlab.mbb.univ-montp2.fr/francois/Infusion")
+    (synopsis "Inference using simulation")
+    (description
+     "This package implements functions for simulation-based inference.  In
+particular, it implements functions to perform likelihood inference from data
+summaries whose distributions are simulated.  The package implements more
+advanced methods than the ones first described in: Rousset, Gouy, Almoyna and
+Courtiol (2017) <doi:10.1111/1755-0998.12627>.")
+    (license license:cecill)))
+
 (define-public r-iranges
   (package
     (name "r-iranges")
