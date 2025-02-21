@@ -44712,7 +44712,9 @@ the performance of optimized feature sets with nested resampling.")
        (uri (cran-uri "mlr3hyperband" version))
        (sha256
         (base32 "1sr9bccy1zmbj83i6nlwkfmi98b40bl1l9q4lzl8n0knnavnzcj7"))))
-    (properties `((upstream-name . "mlr3hyperband")))
+    (properties
+     '((upstream-name . "mlr3hyperband")
+       (updater-extra-native-inputs . ("r-emoa"))))
     (build-system r-build-system)
     (propagated-inputs (list r-bbotk
                              r-checkmate
@@ -44723,7 +44725,7 @@ the performance of optimized feature sets with nested resampling.")
                              r-mlr3tuning
                              r-paradox
                              r-r6))
-    (native-inputs (list r-mlr3pipelines r-testthat))
+    (native-inputs (list r-emoa r-mlr3pipelines r-testthat))
     (home-page "https://mlr3hyperband.mlr-org.com")
     (synopsis "Hyperband for mlr3")
     (description
