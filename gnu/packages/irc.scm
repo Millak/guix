@@ -1256,7 +1256,7 @@ what.")
            go-google-golang-org-protobuf
            go-gopkg-in-irc-v4
            scdoc))
-    (home-page "https://git.sr.ht/~emersion/soju")
+    (home-page "https://soju.im/")
     (synopsis "User-friendly IRC bouncer")
     (description
      "Connects to upstream IRC servers on behalf of the user to provide
