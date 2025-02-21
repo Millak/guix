@@ -44439,6 +44439,8 @@ use on EC2 instances, the package 'aws.ec2metadata' is suggested.")
          "132cczq0ml7lpp2yl6l4p99dn1zihrncnpa6wyad4m9mnr50a8dx"))))
     (properties `((upstream-name . "aws.s3")))
     (build-system r-build-system)
+    ;; 3/5 tests require Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-aws-signature
            r-base64enc
