@@ -4867,6 +4867,58 @@ a binding language:
 @end itemize\n")
     (license license:lgpl3)))                    ;version 3 only (+ exception)
 
+(define-public qcodeeditor
+  (let ((commit "dc644d41b68978ab9a5591ba891a223221570e74") ;no tags
+        (revision "0"))
+    (package
+      (name "qcodeeditor")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Megaxela/QCodeEditor")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1bpvfwbgp275w79dzrd7d9k3md1ch7n88rh59mxdfj8s911n42j8"))
+                (patches
+                 (search-patches "qcodeeditor-qt6.patch"))))
+      (build-system qt-build-system)
+      (arguments
+       (list #:qtbase qtbase
+             #:tests? #f ;no tests
+             #:configure-flags
+             #~(list "-DBUILD_EXAMPLE=ON"
+                     (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
+                                    #$output "/lib"))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'build-shared-library
+                   (lambda _
+                     (substitute* "CMakeLists.txt"
+                       (("STATIC") "SHARED"))))
+                 ;; Install rule does not exist.
+                 (replace 'install
+                   (lambda _
+                     (install-file "example/QCodeEditorExample"
+                                   (string-append #$output "/bin"))
+                     (install-file "libQCodeEditor.so"
+                                   (string-append #$output "/lib"))
+                     (for-each
+                       (lambda (file)
+                         (install-file file
+                                       (string-append #$output
+                                                      "/include/QCodeEditor")))
+                       (find-files "../source/include/internal" "\\.hpp")))))))
+      (inputs
+       (list qtwayland))
+      (home-page "https://github.com/Megaxela/QCodeEditor")
+      (synopsis "Qt code editor widget")
+      (description
+       "QCodeEditor is a Qt widget for editing/viewing code.")
+      (license license:expat))))
+
 (define-public qtcolorwidgets
   (package
     (name "qtcolorwidgets")
