@@ -3272,7 +3272,7 @@ defined rule on an input file.")
                             " and not test_cli.py"
                             " and not test_mutate.py"))))
     (propagated-inputs (list openmm python-numpy))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/openmm/pdbfixer")
     (synopsis "Application for fixing problems in Protein Data Bank")
     (description
