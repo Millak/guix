@@ -10256,6 +10256,30 @@ instructed to explore various modifications of the objects (e.g., sorting
 rows, dropping names) to see if the modified versions are identical.")
     (license license:gpl2+)))
 
+(define-public r-compoissonreg
+  (package
+    (name "r-compoissonreg")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "COMPoissonReg" version))
+       (sha256
+        (base32 "0a03v9b3mv214y2ky94z8y363x6b97a68kvypvan56m0mg0zzq3d"))))
+    (properties `((upstream-name . "COMPoissonReg")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-numderiv r-rcpp))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/lotze/COMPoissonReg")
+    (synopsis "Conway-Maxwell Poisson (COM-Poisson) regression")
+    (description
+     "Fit Conway-Maxwell Poisson (COM-Poisson or CMP) regression models to
+count data (Sellers & Shmueli, 2010) <doi:10.1214/09-AOAS306>.  The package
+provides functions for model estimation, dispersion testing, and diagnostics.
+Zero-inflated CMP regression (Sellers & Raim, 2016)
+<doi:10.1016/j.csda.2016.01.007> is also supported.")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-dendextend
   (package
     (name "r-dendextend")
