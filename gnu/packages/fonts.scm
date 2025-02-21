@@ -1952,15 +1952,15 @@ EOF
 (define-public font-iosevka
   (package
     (name "font-iosevka")
-    (version "20.0.0")
+    (version "32.5.0")
     (source
      (origin
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-" version ".zip"))
+                           "/PkgTTC-Iosevka-" version ".zip"))
        (sha256
-        (base32 "19f8p7zw7wbm8xbxm0kxv8k979bkqvx51hrckkc6nvddmigq1848"))))
+        (base32 "1w7043q2pxllry2njrk4cpqwvralb0a1d3bxac36y0ai9al3m5w0"))))
     (build-system font-build-system)
     (home-page "https://be5invis.github.io/Iosevka/")
     (synopsis "Coders' typeface, built from code")
@@ -1981,9 +1981,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-slab-" version ".zip"))
+                           "/PkgTTC-IosevkaSlab-" version ".zip"))
        (sha256
-        (base32 "0c8pxdz98xwd8sj1yc8gx2g2wfjyxk4951wmg55dibd3wj106rjp"))))))
+        (base32 "03r7ldsk3qrvy46ag08fhs3ppxmzycn8gh6xxmi3pw972hn9kgpi"))))))
 
 (define-public font-iosevka-term
   (package
@@ -1995,9 +1995,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttf-iosevka-term-" version ".zip"))
+                           "/PkgTTF-IosevkaTerm-" version ".zip"))
        (sha256
-        (base32 "1rln8cl1ah201ai2p34s6a52ggkgmgcx9gnvdnfgv4430bmnrpwc"))))
+        (base32 "13g3czmd36k261ip9l8r94hcq6swbvag80zb9g7i9frjsr97xn2h"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -2015,10 +2015,10 @@ programming.  Iosevka is completely generated from its source code.")
      (origin
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka/"
-                           "releases/download/v" version "/"
-                           "ttf-iosevka-term-slab-" version ".zip"))
+                           "releases/download/v" version
+                           "/PkgTTF-IosevkaTermSlab-" version ".zip"))
        (sha256
-        (base32 "1sjz6h3w2c15jdfhqiibjshq5zfdjng28vcsl2dyxrb5wdxs7a01"))))
+        (base32 "00dwp06za3i8kyqqk5xqsd9div2ydf0rgdnj3vl5g6g5621asd39"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -2037,9 +2037,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-aile-" version ".zip"))
+                           "/PkgTTC-IosevkaAile-" version ".zip"))
        (sha256
-        (base32 "0jcyx8wpw18d8igqr1hfrybrldkr0r9qs24jw4z0x5k4gbah7mmf"))))))
+        (base32 "10sf5q4f3l9z4pai46sszkswnwfnjmyqzs6ark1dlsifxh8c86wb"))))))
 
 (define-public font-iosevka-curly
   (package
@@ -2050,10 +2050,10 @@ programming.  Iosevka is completely generated from its source code.")
      (origin
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka/"
-                           "releases/download/v" version  "/"
-                           "ttc-iosevka-curly-" version ".zip"))
+                           "releases/download/v" version
+                           "/PkgTTC-IosevkaCurly-" version ".zip"))
        (sha256
-        (base32 "0hj4lx8cyvib21cp065a56ag9jkwpzs74a93cf557j0x91k3wja0"))))))
+        (base32 "0qg4r8hid50hnjj3gs0xagdymm15z919s0pn6n2dnlmmxvw1c5nv"))))))
 
 (define-public font-iosevka-curly-slab
   (package
@@ -2064,10 +2064,10 @@ programming.  Iosevka is completely generated from its source code.")
      (origin
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka/"
-                           "releases/download/v" version  "/"
-                           "ttc-iosevka-curly-slab-" version ".zip"))
+                           "releases/download/v" version
+                           "/PkgTTC-IosevkaCurlySlab-" version ".zip"))
        (sha256
-        (base32 "10h58x5c32chvz4gdx8pifs1nd4ysnd4zq7pbjqsfv3h4lxz4r5h"))))))
+        (base32 "1lkcs3aqxvdlpgbplhpd4i6vza1xyqnim2awak9b310byyf35d0c"))))))
 
 (define-public font-iosevka-etoile
   (package
@@ -2079,9 +2079,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-etoile-" version ".zip"))
+                           "/PkgTTC-IosevkaEtoile-" version ".zip"))
        (sha256
-        (base32 "16lbcms4rnx7dh016c15wpz94b932hfvlng78jv1lhdr13w7s60z"))))))
+        (base32 "1yh8vlhrcczmsir87f84qr605rf1kp86bvf1c459myc4a6hcqc3z"))))))
 
 (define-public font-iosevka-ss01
   (package
@@ -2093,9 +2093,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss01-" version ".zip"))
+                           "/PkgTTC-IosevkaSS01-" version ".zip"))
        (sha256
-        (base32 "01awvcjp9yrvb57pr55ynp12kvjcjyl4yddbaqxh39if2hlp530n"))))))
+        (base32 "0h1ln3bisbgwd7cc6c9jcmplzvgca42csd5cfxj1jjs4i2vmx2d6"))))))
 
 (define-public font-iosevka-ss02
   (package
@@ -2107,9 +2107,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss02-" version ".zip"))
+                           "/PkgTTC-IosevkaSS02-" version ".zip"))
        (sha256
-        (base32 "1j849rpz8lrarhnc020wy6m0lk3xizjrxihbc0bqld6pmjam6b7n"))))))
+        (base32 "0z0b14cwhbb85fjp508cb1ihscxcc75asjmq9fw5rfl3kx85w6h8"))))))
 
 (define-public font-iosevka-ss03
   (package
@@ -2121,9 +2121,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss03-" version ".zip"))
+                           "/PkgTTC-IosevkaSS03-" version ".zip"))
        (sha256
-        (base32 "118c1wfzkhg4918c246r5d8633qfcjz5356acl38jfz45nhhvls5"))))))
+        (base32 "18gs7h6mb5c9fqmx7ip1a5k3garqbgp640m338h776pcq9mlnndv"))))))
 
 (define-public font-iosevka-ss04
   (package
@@ -2135,9 +2135,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss04-" version ".zip"))
+                           "/PkgTTC-IosevkaSS04-" version ".zip"))
        (sha256
-        (base32 "0xsylys7ky1v0pb5w0d1dw9hsxpda4yqzjafbqgk98id3b08fvay"))))))
+        (base32 "1yjywm9r390gnagla6g5yjach0ydng0m0q752k39fb2z5rpjzphp"))))))
 
 (define-public font-iosevka-ss05
   (package
@@ -2149,9 +2149,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss05-" version ".zip"))
+                           "/PkgTTC-IosevkaSS05-" version ".zip"))
        (sha256
-        (base32 "0rpmw3cpzigv39nnirwmai118n5bnpmr58s90p20n4wgvr0rnfz2"))))))
+        (base32 "1jn8xb7f3hxs4yl54hmiar49wwdl7489xv0f0sqr5c66ip2jar0k"))))))
 
 (define-public font-iosevka-ss06
   (package
@@ -2163,9 +2163,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss06-" version ".zip"))
+                           "/PkgTTC-IosevkaSS06-" version ".zip"))
        (sha256
-        (base32 "0pw41ncg2qjabi33ql2xp4a76gxxynybqbgrj7lk30dyr597v5v9"))))))
+        (base32 "0c6wysyg8nzgan39z4w6l41abx2d0gj89mli63ydagqlljk7vs71"))))))
 
 (define-public font-iosevka-ss07
   (package
@@ -2177,9 +2177,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss07-" version ".zip"))
+                           "/PkgTTC-IosevkaSS07-" version ".zip"))
        (sha256
-        (base32 "0ww21ydwj0537xzk8f2przcd232fibzrsgil7pl5xmf2di226hx5"))))))
+        (base32 "006khr7hh14dcq81mqzn3fkfrpbix1vghrvwff289r7cfy45ijkk"))))))
 
 (define-public font-iosevka-ss08
   (package
@@ -2191,9 +2191,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss08-" version ".zip"))
+                           "/PkgTTC-IosevkaSS08-" version ".zip"))
        (sha256
-        (base32 "195w4nd0901zlyjq7a6n7pwjwi2b5vnm4gj4y6692axi660jdv4j"))))))
+        (base32 "1dbnhbljybal9l61iq88h85jkmc16aaw8kxcq3r0ikzv2pq3vslm"))))))
 
 (define-public font-iosevka-ss09
   (package
@@ -2205,9 +2205,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss09-" version ".zip"))
+                           "/PkgTTC-IosevkaSS09-" version ".zip"))
        (sha256
-        (base32 "1h5jfrpply7ypc4h6ivxs30qkrbni51zkj78xz6nz4zbnp923yi0"))))))
+        (base32 "0b218h42n5qg920q95ip3mva2xz012ijzgxj8r9m638qar0ba1qi"))))))
 
 (define-public font-iosevka-ss10
   (package
@@ -2219,9 +2219,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss10-" version ".zip"))
+                           "/PkgTTC-IosevkaSS10-" version ".zip"))
        (sha256
-        (base32 "0j8i7ampwrlw8ka3vjad2z7ll2606ia8zp7c65i14m73v3vcyxfi"))))))
+        (base32 "005i3am8amvwg8skq5lh5pisq1ll8hi9nj3imlcvcwj0w2i8b04w"))))))
 
 (define-public font-iosevka-ss11
   (package
@@ -2233,9 +2233,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss11-" version ".zip"))
+                           "/PkgTTC-IosevkaSS11-" version ".zip"))
        (sha256
-        (base32 "1v76db3jfx82ifxs3mci6xsy6xkvadl40nnla1afb3d4ycd907ni"))))))
+        (base32 "0gnk9arz1dfksjx2d7gnb6vx0p0p7hpz4gcnkaj6ppdry9a5lmdn"))))))
 
 (define-public font-iosevka-ss12
   (package
@@ -2247,9 +2247,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss12-" version ".zip"))
+                           "/PkgTTC-IosevkaSS12-" version ".zip"))
        (sha256
-        (base32 "0ax80i0nd7z5x92hrk8mpv3n1x6hhxgwlqm7niv9nqm78dgma8sz"))))))
+        (base32 "17ri9f2ka7jsb4n3bbb18vxnjxk432f8740hzbjpnvzy16av5nhk"))))))
 
 (define-public font-iosevka-ss13
   (package
@@ -2261,9 +2261,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss13-" version ".zip"))
+                           "/PkgTTC-IosevkaSS13-" version ".zip"))
        (sha256
-        (base32 "03nmlsgnphi3q5mm36l7a9rynijsjhh6g6b68xxxl3djmby613as"))))))
+        (base32 "1nb3vd7q3xcbijawk9pqznkcfrjdykrc83jl58dnx7jf0znk7j4d"))))))
 
 (define-public font-iosevka-ss14
   (package
@@ -2275,9 +2275,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss14-" version ".zip"))
+                           "/PkgTTC-IosevkaSS14-" version ".zip"))
        (sha256
-        (base32 "1liapgr528qd88y6brhskcniddxanqqmx2qww21rqfyv9wl110wj"))))))
+        (base32 "0dqkrf86h77ps90rdbsndngzg0l8c4jh8l3f3vcmdy1vlcrycpbi"))))))
 
 (define-public font-iosevka-ss15
   (package
@@ -2289,9 +2289,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss15-" version ".zip"))
+                           "/PkgTTC-IosevkaSS15-" version ".zip"))
        (sha256
-        (base32 "19mhdl6dzb4003m00chnj9918l3mxrwfvfxh3wmvp6h4sfa6hymk"))))))
+        (base32 "0qd2di4phlxakprm5bqi0kz9yy48wqrhkxidzjswagf6bnm3mk5v"))))))
 
 (define-public font-iosevka-ss16
   (package
@@ -2303,9 +2303,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss16-" version ".zip"))
+                           "/PkgTTC-IosevkaSS16-" version ".zip"))
        (sha256
-        (base32 "0zsmjgv1i5bb3gk0zl0yi6lrrb8mikl1hlhi7p0vfapas7p5ylyy"))))))
+        (base32 "15yr94a3faribc19j91q7jna0hx3dsdpz1axkzr5gy56w7hg6bw4"))))))
 
 (define-public font-iosevka-ss17
   (package
@@ -2317,9 +2317,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss17-" version ".zip"))
+                           "/PkgTTC-IosevkaSS17-" version ".zip"))
        (sha256
-        (base32 "02p5q5wwn2awaifdknyki8q25c2f1mq59fa6w4vf6n3k95s8sys5"))))))
+        (base32 "0k8blbzymyvwczngafz3vijwdy4iwhxc4lrfqxgddrfi57lbnj5r"))))))
 
 (define-public font-iosevka-ss18
   (package
@@ -2331,9 +2331,9 @@ programming.  Iosevka is completely generated from its source code.")
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/be5invis/Iosevka"
                            "/releases/download/v" version
-                           "/ttc-iosevka-ss18-" version ".zip"))
+                           "/PkgTTC-IosevkaSS18-" version ".zip"))
        (sha256
-        (base32 "1lpkcpqjpf2982pc9kk4dg788vwdpxg18i8mcwx6wa7wfkykrq24"))))))
+        (base32 "08ijx9rbcx95yiaiwv6k25xmsi24rdy50mkmmaw94mmwv22mxdra"))))))
 
 (define-public font-aporetic
   (package
