@@ -47,16 +47,14 @@
 (define-public connman
   (package
     (name "connman")
-    (version "1.42")
+    (version "1.43")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://kernel.org/linux/network/connman/"
                             "connman-" version ".tar.xz"))
         (sha256
-         (base32 "1an24caah35chc1c48p67ln8kpj9fr7slg5fklpfz0f0dzjbmrm3"))
-        (patches
-         (search-patches "connman-add-missing-libppp-compat.h.patch"))))
+         (base32 "1g735gnhhhqzjhpwv62q8mg8345a62rhyk5qwavh0yby6azcwmqj"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
