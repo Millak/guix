@@ -243,6 +243,41 @@ a recent compiler).  Asio is written and maintained by Christopher
 M. Kohlhoff, and released under the Boost Software License', Version 1.0.")
     (license license:boost1.0)))
 
+(define-public r-aster
+  (package
+    (name "r-aster")
+    (version "1.1-3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "aster" version))
+       (sha256
+        (base32 "1piimmrsvhbps8ld6vjjg82kf8pm5nwl91437dglid802p51pwlm"))))
+    (properties `((upstream-name . "aster")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-trust))
+    (native-inputs (list r-numderiv))
+    (home-page "http://www.stat.umn.edu/geyer/aster/")
+    (synopsis "Aster Models")
+    (description
+     "Aster models (Geyer, Wagenius, and Shaw, 2007,
+<doi:10.1093/biomet/asm030>; Shaw, Geyer, Wagenius, Hangelbroek, and Etterson,
+2008, <doi:10.1086/588063>; Geyer, Ridley, Latta, Etterson, and Shaw, 2013,
+<doi:10.1214/13-AOAS653>) are exponential family regression models for life
+history analysis.  They are like generalized linear models except that
+elements of the response vector can have different families (e.2g., some
+Bernoulli, some Poisson, some zero-truncated Poisson, some normal) and can be
+dependent, the dependence indicated by a graphical structure.  Discrete time
+survival analysis, life table analysis, zero-inflated Poisson regression, and
+generalized linear models that are exponential family (e.g., logistic
+regression and Poisson regression with log link) are special cases.  Main use
+is for data in which there is survival over discrete time periods and there is
+additional data about what happens conditional on survival (e.g., number of
+offspring).  Uses the exponential family canonical parameterization (aster
+transform of usual parameterization).  There are also random effects versions
+of these models.")
+    (license license:expat)))
+
 (define-public r-beepr
   (package
     (name "r-beepr")
