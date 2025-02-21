@@ -20972,6 +20972,30 @@ sequences representative of those subpopulations.  It is designed in @code{C} fo
 performance and interfaced with @code{R} for visualization.")
     (license license:gpl2+)))
 
+(define-public r-phylolm
+  (package
+    (name "r-phylolm")
+    (version "2.6.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "phylolm" version))
+       (sha256
+        (base32 "0sg2a7isy5f5phk2db4v2b78apdmd3k9c8jdwpkrm3lw7vxj52v5"))))
+    (properties `((upstream-name . "phylolm")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape r-future-apply))
+    (native-inputs (list r-nlme r-testthat))
+    (home-page "https://github.com/lamho86/phylolm")
+    (synopsis "Phylogenetic linear regression")
+    (description
+     "This package provides functions for fitting phylogenetic linear models
+and phylogenetic generalized linear models.  The computation uses an algorithm
+that is linear in the number of tips in the tree.  The package also provides
+functions for simulating continuous or binary traits along the tree.  Other
+tools include functions to test the adequacy of a population tree.")
+    (license license:gpl2+)))
+
 (define-public r-physicalactivity
   (package
     (name "r-physicalactivity")
