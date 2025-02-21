@@ -24013,7 +24013,9 @@ to colexicographical order.")
               (sha256
                (base32
                 "18yl24s1g8wf3xi6f0k7jhs99ka4dslxf5p9ax9m5l1rbva5xdwj"))))
-    (properties `((upstream-name . "multidplyr")))
+    (properties
+     '((upstream-name . "multidplyr")
+       (updater-extra-native-inputs . ("r-covr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-callr
@@ -24027,7 +24029,7 @@ to colexicographical order.")
            r-tibble
            r-tidyselect
            r-vctrs))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-covr r-knitr r-testthat))
     (home-page "https://multidplyr.tidyverse.org")
     (synopsis "Multi-process dplyr backend")
     (description
