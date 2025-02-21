@@ -51,6 +51,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -69,6 +70,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages time))
 
 (define-public avro-cpp-1.9
@@ -440,6 +442,30 @@ that implements both the msgpack and msgpack-rpc specifications.")
     (description
      "This package provides a C library for parsing and writing CSV data.")
     (license license:lgpl2.1+)))
+
+(define-public qtcsv
+  (package
+    (name "qtcsv")
+    (version "1.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/iamantony/qtcsv")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1c9i93kr7wvpr01i4wixi9mf991nd3k2adg5fy0vxwwlvvc7dgdw"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:test-target "tests"))
+    (home-page "https://github.com/iamantony/qtcsv")
+    (synopsis "Library for reading and writing CSV files in Qt")
+    (description
+     "@code{qtcsv} is a library for reading and writing
+@acronym{CSV,comma-seperated values} files in Qt.")
+    (license license:expat)))
 
 (define-public libscfg
   (package
