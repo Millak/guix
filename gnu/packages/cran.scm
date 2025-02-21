@@ -25246,6 +25246,40 @@ order (univariate) isotonic regression and bivariate isotonic regression with
 linear order on both variables.")
     (license license:gpl2+)))
 
+(define-public r-isorix
+  (package
+    (name "r-isorix")
+    (version "0.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "IsoriX" version))
+       (sha256
+        (base32 "1z86qgl68l9mpyf0ym1szvwv416mx7gqkr15gs5i0jlw4zafc1jc"))))
+    (properties `((upstream-name . "IsoriX")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lattice
+                             r-latticeextra
+                             r-numderiv
+                             r-rastervis
+                             r-spamm
+                             r-terra
+                             r-viridislite))
+    (native-inputs (list r-devtools r-spelling r-testthat r-withr))
+    (home-page "https://github.com/courtiol/IsoriX")
+    (synopsis
+     "Isoscape computation and inference of spatial origins using mixed models")
+    (description
+     "This package is for building isoscapes using mixed models and inferring
+the geographic origin of samples based on their isotopic ratios.  This package
+is essentially a simplified interface to several other packages which
+implements a new statistical framework based on mixed models.  It uses
+@code{spaMM} for fitting and predicting isoscapes, and assigning an organism's
+origin depending on its isotopic ratio.  @code{IsoriX} also relies heavily on
+the package @code{rasterVis} for plotting the maps produced with terra using
+lattice'.")
+    (license license:gpl2+)))
+
 (define-public r-chemometrics
   (package
     (name "r-chemometrics")
