@@ -4413,13 +4413,13 @@ milliarcsecond).")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.16.1")
+    (version "1.17.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jwst" version))
               (sha256
                (base32
-                "1bqfgqp4gdm1ky5dvzhzpgygwr710h4mbykp5sb9aw3cw9jg1bk7"))
+                "0brlj2w0jjg9p4zwna05bk9l8nb7xkcss7p5rjdjaj3hxlskzfkq"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -4435,12 +4435,25 @@ milliarcsecond).")
       ;; XXX: Tests require access to https://jwst-crds-pub.stsci.edu server for
       ;; getting data sets.
       #:tests? #f
-      #:phases #~(modify-phases %standard-phases
-                   ;; NOTE: (Sharlatan-20230529T113448+0100): opencv-python's
-                   ;; version can't be detected, it could the way it's packed in
-                   ;; Guix. Review failing sanity check with more efforts,
-                   ;; disable for now to make package buildable.
-                   (delete 'sanity-check))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; gwcs>=0.22.0,<0.23.0
+                ((">=0.22.0,<0.23.0") ">=0.22.0")
+                ;; numpy<2.0,>=1.25
+                ((">=1.25,<2.0") ">=1.24,<2.0")
+                ;; scipy>=1.14.1
+                (("1.14.1") "1.12.0")
+                ;; XXX: Can't detect opencv-python version. The input opencv
+                ;; might not set the version correctly.
+                ((".*opencv-python-headless.*") "")
+                ;; jwst.csv_tools was removed.
+                (("csvconvert = .*") "")
+                ;; ImportError: module 'jwst.scripts.asn_gather' has no
+                ;; attribute 'main'
+                (("asn_gather = .*") "")))))))
     ;; opencv provides OpenCV-Python which is Listed as install requirement.
     (propagated-inputs (list opencv
                              python-asdf
@@ -4467,7 +4480,6 @@ milliarcsecond).")
                              python-stcal
                              python-stdatamodels
                              python-stpipe
-                             python-stsci-image
                              python-stsci-imagestats
                              python-synphot
                              python-tweakwcs
