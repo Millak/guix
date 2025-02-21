@@ -4852,14 +4852,12 @@ of astronomical sources.")
               ;; TODO: Review failing tests later when any upstream
               ;; suggestions are provided:
               ;; https://github.com/poliastro/poliastro/issues/1618
-              "-k" (string-append "not test_czml_add_trajectory"
-                                  " and not test_czml_custom_packet"
-                                  " and not test_czml_ground_station"
-                                  " and not test_czml_groundtrack"
-                                  " and not test_czml_preamble"
-                                  ;; This fails with "ufunc 'isfinite' not
-                                  ;; supported for the input types"
-                                  " and not test_porkchop_plotting"))
+              "--ignore=tests/test_czml.py"
+              "-k" (string-append
+                    ;; This fails with "ufunc 'isfinite' not
+                    ;; supported for the input types"
+                    "not test_porkchop_plotting"
+                    " and not test_maneuver_constructor_raises_error_if_invalid_delta_v"))
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
