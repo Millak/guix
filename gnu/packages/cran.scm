@@ -5268,6 +5268,30 @@ regions.  GAs can be run sequentially or in parallel, using an explicit
 master-slave parallelisation or a coarse-grain islands approach.")
     (license license:gpl2+)))
 
+(define-public r-gap-datasets
+  (package
+    (name "r-gap-datasets")
+    (version "0.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gap.datasets" version))
+       (sha256
+        (base32 "1jwpsb66sgj2zzgrpgwxc22df66gbhi278ywbmaicc10mipv050y"))))
+    (properties `((upstream-name . "gap.datasets")))
+    (build-system r-build-system)
+    (home-page "https://jinghuazhao.github.io/R/")
+    (synopsis "Datasets for gap")
+    (description
+     "This package provides datasets associated with the gap package.
+Currently, it includes an example data for regional association plot (CDKN),
+an example data for a genomewide association meta-analysis (OPG), data in
+studies of Parkinson's diease (PD), ALHD2 markers and alcoholism (aldh2),
+APOE/APOC1 markers and Schizophrenia (apoeapoc), cystic fibrosis (cf), a
+Olink/INF panel (inf1), Manhattan plots with
+(hr1420, mhtdata) and without (w4) gene annotations.")
+    (license license:gpl2+)))
+
 (define-public r-grandr
   (package
     (name "r-grandr")
