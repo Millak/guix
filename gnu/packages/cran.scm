@@ -3049,6 +3049,29 @@ generated grid objects.  This package is particularly designed for
 bioinformaticians to assemble complex plots for publication.")
     (license license:gpl3)))
 
+(define-public r-whoami
+  (package
+    (name "r-whoami")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "whoami" version))
+       (sha256
+        (base32 "19fwl7z55s4kl2xzwqwh8iwg13kdrv222vyl3kibxgwrjcjwj2y2"))))
+    (properties `((upstream-name . "whoami")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-httr r-jsonlite))
+    (native-inputs (list r-mockery r-testthat r-withr))
+    (home-page "https://github.com/r-lib/whoami#readme")
+    (synopsis
+     "Username, full name, email address, GitHub username of the current user")
+    (description
+     "Look up the username and full name of the current user, the current
+user's email address and GitHub username, using various sources of system and
+configuration information.")
+    (license license:expat)))
+
 (define-public r-rtdists
   (package
     (name "r-rtdists")
