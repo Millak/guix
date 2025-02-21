@@ -3596,35 +3596,37 @@ instruments.")
 (define-public python-sunkit-image
   (package
     (name "python-sunkit-image")
-    (version "0.5.1")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunkit_image" version))
        (sha256
-        (base32 "1wzii7dy0yb2lx0k8m3iak5vxc0wbybj5cdkvrk93sr14k9crqds"))))
+        (base32 "0gdbg3g8jxcgkwd34ls6342zj90m6ncas4f655q9dh79lqy7hhm8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Disable as not compatible with Pytest 8+, check with upstream.
-      ;;
-      ;; pytest.PytestRemovedIn9Warning: Marks applied to fixtures have no
-      ;; effect
-      ;;
-      ;; See docs: <https://docs.pytest.org/en/stable/deprecations.html>.
-      #:tests? #f
-      ;; XXX: Check with upstram: assert False.
       #:test-flags
-      #~(list "-k" (string-append
-                    "not test_fnrgf"
-                    " and not test_calculate_solar_rotate_shift"
-                    " and not test_mapsequence_solar_derotate"))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; One test fails with assertion, probably in NumPy array
+              ;; precision calculation: np.allclose and
+              ;; sunpy.map.mapbase.GenericMap are not matched.
+              "--deselect=sunkit_image/tests/test_radial.py::test_fnrgf")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home
             (lambda _
               ;; For tests: Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-dask
+           python-pytest
+           python-pytest-astropy
+           python-pytest-mpl
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
@@ -3632,16 +3634,6 @@ instruments.")
            python-scikit-image
            python-scipy
            python-sunpy))
-    (native-inputs
-     (list python-astroscrappy
-           python-beautifulsoup4
-           python-dask
-           python-drms
-           python-importlib-resources
-           python-pytest-astropy
-           python-pytest-mpl
-           python-setuptools-scm
-           python-zeep))
     (home-page "https://github.com/sunpy/sunkit-image/")
     (synopsis "Solar Physics image processing toolbox")
     (description
