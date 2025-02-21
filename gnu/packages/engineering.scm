@@ -176,6 +176,64 @@
   #:use-module (gnu packages xorg)
   #:use-module ((srfi srfi-1) #:hide (zip)))
 
+(define-public aacircuit
+  ;; No release in PyPI or version tag on Git, use the latest commit.
+  (let ((commit "18635c846754b6219da1a2ceb8977714f70004d0")
+        (revision "0"))
+    (package
+      (name "aacircuit")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Blokkendoos/AACircuit")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "07agb7fbpbq74zm27j9b00imr46q6kpwhxzmmffw2s9scv80c1km"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  ;; Delete develompent test file.
+                  (delete-file "tests/test_flake.py")
+                  ;; Exclude tests intended for visual review.
+                  (setenv "NOSE_EXCLUDE"
+                          (string-join '("test_export_pdf"
+                                         "test_import_aacircuit_export_pdf")
+                                       ","))
+                  (setenv "HOME" "/tmp")
+                  (invoke "xvfb-run" "./testrunner.sh")))))))
+      (native-inputs
+       ;; XXX: Test runner may be migrated to Pytest
+       ;; <https://docs.pytest.org/en/7.1.x/how-to/nose.html> after report to
+       ;; the upstream to modify them, use deprecated Nose test runner for
+       ;; now.
+       (list python-nose
+             python-setuptools
+             python-wheel
+             xvfb-run))
+      (propagated-inputs
+       (list gtk+
+             python-bresenham
+             python-platformdirs
+             python-pycairo
+             python-pyclip
+             python-pygobject
+             python-pypubsub))
+      (home-page "https://github.com/Blokkendoos/AACircuit")
+      (synopsis "Draw electronic circuits with ASCII characters")
+      (description
+       "This is a pythonized, kind of reverse engineered version of original
+AACircuit written by Andreas Weber in Borland Delphi.  The idea and GUI layout
+are also taken from the original.")
+      (license license:gpl3+))))
+
 (define-public cutecom
   (package
     (name "cutecom")
