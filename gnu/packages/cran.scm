@@ -14725,6 +14725,27 @@ self-organizing map of data, to evaluate the statistical significance of the
 observed data patterns, and to visualize the results.")
     (license license:gpl2+)))
 
+(define-public r-nycflights13
+  (package
+    (name "r-nycflights13")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "nycflights13" version))
+       (sha256
+        (base32 "07aa76c77pm1wpzkwjmzv8n6ir5i6fxawx8wx586gwc5wajcb1qf"))))
+    (properties `((upstream-name . "nycflights13")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-tibble))
+    (home-page "https://github.com/hadley/nycflights13")
+    (synopsis "Flights that departed NYC in 2013")
+    (description
+     "This package provides airline on-time data for all flights departing NYC
+in 2013.  It also includes useful metadata on airlines, airports, weather, and
+planes.")
+    (license license:cc0)))
+
 (define-public r-stabs
   (package
     (name "r-stabs")
