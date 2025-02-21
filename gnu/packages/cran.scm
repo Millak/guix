@@ -19473,9 +19473,13 @@ documents.")
        (sha256
         (base32
          "14wv9l927bh57jbdxcf8wb429mz85x5bnsm31i2j3m0db0ikf4ax"))))
+    (properties
+     '((updater-extra-native-inputs
+        . ("r-bit64" "r-nycflights13" "r-readxl"))))
     (build-system r-build-system)
     (inputs (list zlib))
-    (native-inputs (list r-spelling r-testthat))
+    (native-inputs
+     (list r-bit64 r-nycflights13 r-readxl r-spelling r-testthat))
     (home-page "https://github.com/ropensci/writexl")
     (synopsis "Export data frames to xlsx format")
     (description
