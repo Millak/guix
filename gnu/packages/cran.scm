@@ -14474,9 +14474,11 @@ functions and used in the data analysis.")
        (sha256
         (base32
          "16ghf60rj0l8ypm0hxjp23zxdi2ndq8ii74cilq61m107fnha9mj"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-mockery"))))
     (build-system r-build-system)
     (propagated-inputs (list r-crayon))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-mockery r-testthat))
     (home-page "https://github.com/r-lib/debugme#readme")
     (synopsis "Debug R packages")
     (description
