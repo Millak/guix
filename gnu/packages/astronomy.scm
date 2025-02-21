@@ -5740,18 +5740,19 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.10.0")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stcal" version))
        (sha256
-        (base32 "1h0vkc3nd77qm2ph1nihpd1n7dzr3d4rw2wga6j7siqjiwmphj3g"))))
+        (base32 "0xafli4b3wyimpaxmvb0h5bha5g5kg76s4hykk63wkxrjrd2m2vf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-k" (string-join
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-join
                     ;; Tests requiring network access.
                     (list "not test_absolute_align"
                           "test_relative_align[True]"
@@ -5770,11 +5771,16 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
                 ;; contain the variable: error: ‘NPY_NTYPES_LEGACY’ undeclared
                 ;; (first use in this function)
                 ((".*NPY_NTYPES_LEGACY.*") ""))))
-          (add-before 'build 'silent-check-for-opencv
+          (add-before 'build 'relax-requirements
             (lambda _
-              ;; XXX: Can't detect opencv-python version. The input opencv
-              ;; might not set the version correctly.
               (substitute* "pyproject.toml"
+                ;; Relax some requirements as all tests passed successfully.
+                ;; numpy>=1.25.0
+                (("1.25.0") "1.24.4")
+                ;; scipy>=1.14.1
+                (("1.14.1") "1.12.0")
+                ;; XXX: Can't detect opencv-python version. The input opencv
+                ;; might not set the version correctly.
                 ((".*opencv-python-headless.*") ""))))
           (add-before 'check 'build-extensions
             (lambda _
@@ -5784,6 +5790,7 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
      (list python-cython-3
            python-psutil
            python-pytest
+           python-pytest-xdist
            python-pytest-doctestplus
            python-setuptools
            python-setuptools-scm
