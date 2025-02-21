@@ -2410,13 +2410,13 @@ implemented using the astropy.modeling framework.")
 (define-public python-ephem
   (package
     (name "python-ephem")
-    (version "4.1.6")
+    (version "4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ephem" version))
        (sha256
-        (base32 "0ps2lr6aa477262yw13w3hh0h5rzmywdlji0wbnkxnzrfvmf9lhf"))))
+        (base32 "0rb0vc3kgmw5rzhfhxffg94bcwasm46sf814hv7l13ry8m7xckrw"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-setuptools
