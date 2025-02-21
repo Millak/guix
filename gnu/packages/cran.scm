@@ -44862,6 +44862,9 @@ package also supersedes the package @code{BBmisc}.")
               (sha256
                (base32
                 "0h089ip9vqjdq9dps5ihwdwiaik8ricm2cj86shm8195ad1wnlyx"))))
+    (properties
+     '((updater-extra-native-inputs
+        . ("r-bbotk" "r-gensa" "r-mlr3learners" "r-rpart"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports
@@ -44874,7 +44877,8 @@ package also supersedes the package @code{BBmisc}.")
            r-paradox
            r-r6
            r-withr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs
+     (list r-bbotk r-gensa r-knitr r-mlr3learners r-rpart r-testthat))
     (home-page "https://mlr3pipelines.mlr-org.com/")
     (synopsis "Preprocessing Operators and Pipelines for @code{mlr3}")
     (description "@code{mlr3pipelines} enriches @code{mlr3} with a diverse
