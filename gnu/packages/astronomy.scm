@@ -4517,25 +4517,17 @@ exposures and high-level data products (mosaics, extracted spectra, etc.).")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; FIXME: Invistigate why it failes on python-jwst side where the
-      ;; python-tweakwcs is built just fine:
-      ;;
-      ;; <...>/tweakwcs/matchutils.py:18: in <module>
-      ;; from stsci.stimage import xyxymatch
-      ;; E   ModuleNotFoundError: No module named 'stsci.stimage'
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'sanity-check))))
+      ;; One test fails with error: FileNotFoundError: [Errno 2] No such file
+      ;; or directory.
+      #:test-flags #~(list "-k" "not test_calib_prep_steps")))
+    (native-inputs
+     (list python-pytest))
     (propagated-inputs
      (list python-astropy
            python-jwst
            python-matplotlib
            python-numpy
            python-scipy))
-    (native-inputs
-     (list python-pytest
-           python-stsci-stimage))
     (home-page "https://github.com/spacetelescope/jwst_reffiles")
     (synopsis "Tool for JWST's CRDS-formatted reference files creation")
     (description
