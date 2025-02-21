@@ -13216,6 +13216,25 @@ can be produced.  All the probability functions in the stats, stats4 and evd
 packages are automatically available for truncation.")
     (license license:gpl2+)))
 
+(define-public r-trust
+  (package
+    (name "r-trust")
+    (version "0.1-8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "trust" version))
+       (sha256
+        (base32 "1b6wsx4vybr5952ii3ska6jbcb3654iibz83n645khxfca5k8blm"))))
+    (properties `((upstream-name . "trust")))
+    (build-system r-build-system)
+    (home-page "https://www.stat.umn.edu/geyer/trust/")
+    (synopsis "Trust region optimization")
+    (description
+     "This package does local optimization using two derivatives and trust
+regions.  Guaranteed to converge to local minimum of objective function.")
+    (license license:expat)))
+
 (define-public r-trycatchlog
   (package
     (name "r-trycatchlog")
