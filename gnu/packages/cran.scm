@@ -25452,10 +25452,12 @@ accompanying package @code{rnaturalearth}.")
               (sha256
                (base32
                 "0flrqz7pansy11ds23qv06bcmh6vxqljq0517v6292ibbx7nx1qx"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-ape"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-progress r-rcpp))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-ape r-testthat))
     (home-page "https://github.com/fmichonneau/rncl")
     (synopsis "Interface to the Nexus class library")
     (description "This package provides an interface to the Nexus class
