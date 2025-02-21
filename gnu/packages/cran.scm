@@ -5268,6 +5268,34 @@ regions.  GAs can be run sequentially or in parallel, using an explicit
 master-slave parallelisation or a coarse-grain islands approach.")
     (license license:gpl2+)))
 
+(define-public r-gap
+  (package
+    (name "r-gap")
+    (version "1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gap" version))
+       (sha256
+        (base32 "1pz0j3vglccrwm3p9lj6wbq58varb8b0xg5r97gmz8c3biprpzww"))))
+    (properties `((upstream-name . "gap")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr r-gap-datasets r-ggplot2 r-plotly
+                             r-rdpack))
+    (native-inputs (list gfortran r-knitr))
+    (home-page "https://github.com/jinghuazhao/R")
+    (synopsis "Genetic analysis package")
+    (description
+     "This package is designed as an integrated package for genetic data
+analysis of both population and family data.  Currently, it contains functions
+for sample size calculations of both population-based and family-based
+designs, probability of familial disease aggregation, kinship calculation,
+statistics in linkage analysis, and association analysis involving genetic
+markers including haplotype analysis with or without environmental covariates.
+Over years, the package has been developed in-between many projects hence also
+in line with the name (gap).")
+    (license license:gpl2+)))
+
 (define-public r-gap-datasets
   (package
     (name "r-gap-datasets")
