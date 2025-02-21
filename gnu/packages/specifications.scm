@@ -27,6 +27,33 @@
   #:use-module (guix packages)
   #:use-module (guix build-system copy))
 
+(define-public specification-ip2asn-v6
+  (package
+    (name "specification-ip2asn-v6")
+    (version "20240820024646")
+    (source
+     (origin
+       (method url-fetch)
+       ;; Upstream updates the file too often without any versioning provided,
+       ;; use archived variant.
+       (uri (string-append "https://web.archive.org/web/" version
+                           "/https://iptoasn.com/data/ip2asn-v6.tsv.gz"))
+       (sha256
+        (base32 "1n2l0s6vg7v0nxprhi0gkrbqrjq5q91gra15bp2lr7p5kwki52xf"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("ip2asn-v6.tsv" "share/data/"))))
+    (home-page "https://iptoasn.com")
+    (synopsis "Free IP address to ASN database")
+    (description
+     "This package provides a collection of IPv6 addresses to
+@acronym{Autonomous system, ASN}, a self-hosted API is availalbe from
+@url{https://github.com/jedisct1/iptoasn-webservice}.")
+    ;; It's a TSV plain text file, distributed under Public Domain
+    ;; Dedication license
+    ;; <https://opendatacommons.org/licenses/pddl/1.0/>.
+    (license license:public-domain)))
+
 (define-public specification-ipld
   (let ((commit "84a5cc6c168314a26be0d447c26fe76e46ce2a42")
         (revision "0"))
