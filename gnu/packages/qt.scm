@@ -4919,6 +4919,35 @@ a binding language:
        "QCodeEditor is a Qt widget for editing/viewing code.")
       (license license:expat))))
 
+(define-public qt-advanced-docking-system
+  (package
+    (name "qt-advanced-docking-system")
+    (version "4.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System")
+          (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qbvlnfpdlz22y1vrdd1gs2mfh03k95ccahb7pl6i07pgn4dgcvh"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f ;no tests
+           #:configure-flags
+           #~(list ;; Examples require qtdeclarative.
+                   "-DBUILD_EXAMPLES=OFF"
+                   (string-append "-DADS_VERSION=" #$version))))
+    (home-page "https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System")
+    (synopsis "Advanced docking system for Qt")
+    (description
+     "Qt Advanced Docking System lets you create customizable layouts using a
+window docking system.")
+    (license license:lgpl2.1+)))
+
 (define-public qtcolorwidgets
   (package
     (name "qtcolorwidgets")
