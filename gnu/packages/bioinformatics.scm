@@ -3579,6 +3579,50 @@ annotation, provides Python genomic feature search and sequence retrieval from
 the managed genomes, STAR indexing and mapping and more.")
       (license license:gpl3+))))
 
+(define-public python-pygam
+  (package
+    (name "python-pygam")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dswah/pyGAM")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bv404idswsm2ay3yziq1i2cbydq4f3vjav5s4i15bgd13k7zvim"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-pyproject
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; Change build backend
+                (("build-backend = .*")
+                 "build-backend = \"poetry.core.masonry.api\"\n")
+                ;; Modify version field
+                (("^version = \"0.0.0\"")
+                 (string-append "version = \"" #$version "\""))))))))
+    (propagated-inputs (list python-black
+                             python-flake8
+                             python-ipython
+                             python-numpy
+                             python-pandas
+                             python-poetry-core
+                             python-progressbar2
+                             python-scipy))
+    (native-inputs (list python-mock python-pytest python-pytest-cov))
+    (home-page "https://github.com/dswah/pyGAM")
+    (synopsis "Generalized additive models in Python")
+    (description
+     "This tool is for building Generalized Additive Models in Python.
+It emphasizes modularity and performance.  The API will be immediately
+familiar to anyone with experience of scikit-learn or scipy.")
+    (license license:asl2.0)))
+
 (define-public python-pysnptools
   (package
     (name "python-pysnptools")
