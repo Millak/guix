@@ -6743,6 +6743,15 @@ orbit around the Earth.")
        (sha256
         (base32 "0a1ygsar9l6jybji9qibz6ja3picv9aiw2jmdcsqdfqhrppknqp7"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; 2 tests are not compatible with gwcs>=0.24, skip them for now
+      ;; and enable in the next release, see
+      ;; <https://github.com/spacetelescope/tweakwcs/pull/220>.
+      #~(list "-k" (string-append
+                    "not test_jwstgwcs_bad_pipelines_no_vacorr"
+                    " and not test_jwstgwcs_bad_pipelines_with_vacorr"))))
     (propagated-inputs
      (list python-astropy
            python-gwcs
@@ -6752,9 +6761,7 @@ orbit around the Earth.")
            python-stsci-imagestats
            python-stsci-stimage))
     (native-inputs
-     (list python-codecov
-           python-pytest
-           python-pytest-cov
+     (list python-pytest
            python-scipy
            python-setuptools
            python-setuptools-scm
