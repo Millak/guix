@@ -17,7 +17,7 @@
 ;;; Copyright © 2016, 2017 Troy Sankey <sankeytms@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2016–2024 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -4261,7 +4261,7 @@ It is a replacement for the @command{urlview} program.")
 (define-public mumi
   (package
     (name "mumi")
-    (version "0.4.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4270,7 +4270,7 @@ It is a replacement for the @command{urlview} program.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rkma9391zfz2m8i0452vglcf9ck5d2vmilj9zz8x48jhyn9lvig"))))
+                "0r9kbxn97si74swppfyznn3s17ng9x1clq6w9fi9m1ml2blmi5dv"))))
     (build-system gnu-build-system)
     (arguments
      (list
