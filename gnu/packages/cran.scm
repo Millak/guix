@@ -44749,8 +44749,22 @@ mlr3 is loaded.")
        (uri (cran-uri "mlr3filters" version))
        (sha256
         (base32 "12gbvp99hai6cnqa8nxlc4x24ig2andnwhhhfkxdkbxjm89dnfaa"))))
-    (properties `((upstream-name . "mlr3filters")))
+    (properties
+     '((upstream-name . "mlr3filters")
+       (updater-extra-native-inputs . ("r-boruta" "r-rpart"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; This requires FSelectorRcpp, which eventually depends on
+             ;; mystery jars in r-rwekajars.
+             (substitute* '("tests/testthat/test_FilterInformationGain.R"
+                            "tests/testthat/test_FilterRelief.R")
+               ((".* handles features with only missings gracefully.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs (list r-backports
                              r-checkmate
                              r-data-table
@@ -44758,7 +44772,7 @@ mlr3 is loaded.")
                              r-mlr3misc
                              r-paradox
                              r-r6))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-boruta r-rpart r-testthat))
     (home-page "https://mlr3filters.mlr-org.com")
     (synopsis "Filter based feature selection for mlr3")
     (description
