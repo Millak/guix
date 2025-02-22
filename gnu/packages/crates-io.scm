@@ -21710,6 +21710,29 @@ This project is a fork of Faraday's boondock.")
     (description
      "This package provides Bindings for the Kubernetes client API.")
     (license license:asl2.0)))
+
+(define-public rust-compose-spec-macros-0.1
+  (package
+    (name "rust-compose-spec-macros")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "compose_spec_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z4r9n38h5346ksfilkaxa76zzivdhvj9axq8yjm6wv9nhl1pf25"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/k9withabone/compose_spec_rs")
+    (synopsis "Procedural macros for use in the compose_spec crate")
+    (description
+     "This package provides Procedural macros for use in the compose_spec crate.")
+    (license license:mpl2.0)))
 (define-public rust-docmatic-0.1
   (package
     (name "rust-docmatic")
