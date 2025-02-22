@@ -22527,6 +22527,8 @@ data, fixed and random effects with bootstrapping.")
          "189awpihhy6k677swwss7zcnz6rprmiwmyicc2679p5n8f3ccr7n"))))
     (properties `((upstream-name . "glmmTMB")))
     (build-system r-build-system)
+    ;; TODO: tests take forever and eventually the build times out.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-lme4
            r-matrix
