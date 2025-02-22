@@ -85,7 +85,10 @@
             virtual-machine-memory-size
             virtual-machine-disk-image-size
             virtual-machine-port-forwardings
-            virtual-machine-date))
+            virtual-machine-date
+
+            file-system->mount-tag
+            common-qemu-options))
 
 
 ;;; Commentary:
