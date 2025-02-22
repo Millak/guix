@@ -17728,6 +17728,25 @@ using the @code{snow} package.")
 methods.")
     (license license:gpl2+)))
 
+(define-public r-fsadata
+  (package
+    (name "r-fsadata")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "FSAdata" version))
+       (sha256
+        (base32 "0zh0gkylziysqjc9gn3kjz7070x2rvmi1c64kxl6q2479929hysi"))))
+    (properties `((upstream-name . "FSAdata")))
+    (build-system r-build-system)
+    (home-page "https://fishr-core-team.github.io/FSAdata/")
+    (synopsis "Data to support the fish stock assessment package")
+    (description
+     "This package provides the datasets to support the Fish Stock
+Assessment (FSA) package.")
+    (license license:gpl2+)))
+
 (define-public r-fstcore
   (package
     (name "r-fstcore")
