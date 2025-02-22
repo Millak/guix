@@ -46142,6 +46142,13 @@ shepherd, The GNU Shepherd Manual}, for details.
 @item @code{requirement} (default: @code{'()})
 List of symbols denoting the Shepherd services this one depends on.
 
+@cindex @code{user-processes} Shepherd service
+With very few exceptions, services that start a daemon must depend at
+least on the @code{user-processes} service; this ensures that these
+daemons are started after all the file systems have been mounted and
+that, during shutdown, they are stopped before attempting to terminate
+remaining user processes.
+
 @cindex one-shot services, for the Shepherd
 @item @code{one-shot?} (default: @code{#f})
 Whether this service is @dfn{one-shot}.  One-shot services stop immediately
