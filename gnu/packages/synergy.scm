@@ -20,14 +20,20 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages synergy)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
-  #:use-module ((guix licenses) #:select (gpl2))
+  #:use-module ((guix licenses) #:select (gpl2 expat))
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system meson)
   #:use-module (gnu packages)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages tls)
@@ -90,3 +96,50 @@
 software for sharing one mouse and keyboard between multiple computers on your
 desk.")
     (license gpl2)))
+
+(define-public waynergy
+  (package
+    (name "waynergy")
+    (version "0.0.17")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/r-c-f/waynergy.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "130h1y68c230fj1c4srsvj8b9d4b8b6lipmi9bpx094axzl5c2kk"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((wl-clipboard (assoc-ref inputs "wl-clipboard"))
+                         (procps (assoc-ref inputs "procps"))
+                         (out (assoc-ref outputs "out")))
+                     (substitute* "waynergy.desktop"
+                      (("Exec=/usr/bin/waynergy")
+                       (string-append "Exec=" out "/bin/waynergy")))
+                     (substitute* "src/clip.c"
+                      (("\"wl-paste\"")
+                       (string-append "\"" wl-clipboard "/bin/wl-paste\""))
+                      (("\"wl-copy\"")
+                       (string-append "\"" wl-clipboard "/bin/wl-copy\""))
+                      (("\"waynergy-clip-update\"")
+                       (string-append "\"" out
+                                      "/bin/waynergy-clip-update\""))
+                      (("\"pkill -f 'wlpaste")
+                       (string-append "\"" procps
+                                      "/bin/pkill -f 'wl-paste")))))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libxkbcommon libressl wl-clipboard wayland wl-clipboard procps))
+    (synopsis "Mouse and keyboard sharing utility for Wayland")
+    (description "Synergy brings your computers together in one cohesive experience; it's
+software for sharing one mouse and keyboard between multiple computers on your
+desk.  This package is a Wayland version of Synergy, mostly for wlroots.")
+    (home-page "https://github.com/r-c-f/waynergy")
+    (license expat)))
