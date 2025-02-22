@@ -1315,39 +1315,6 @@ their ASCII approximations.")
 sinks and sources.")
       (license license:expat))))
 
-(define-public go-github-com-mesilliac-pulse-simple
-  (let ((commit "75ac54e19fdff88f4fbd82f45125134b602230b0")
-        (revision "0"))
-    (package
-      (name "go-github-com-mesilliac-pulse-simple")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/mesilliac/pulse-simple")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1awwczsa9yy99p035ckajqfs8m6mab0lz82mzlj1c5cj9lnmwplj"))))
-      (build-system go-build-system)
-      (propagated-inputs
-       (list pkg-config pulseaudio))
-      (arguments
-       (list
-        #:import-path "github.com/mesilliac/pulse-simple"
-        #:phases #~(modify-phases %standard-phases
-                     (add-after 'unpack 'remove-examples
-                       (lambda* (#:key import-path #:allow-other-keys)
-                         (delete-file-recursively
-                          (string-append "src/" import-path "/examples")))))))
-      (home-page "https://github.com/mesilliac/pulse-simple")
-      (synopsis "Cgo bindings to PulseAudio's Simple API")
-      (description
-       "This package provides Cgo bindings to PulseAudio's Simple API, to play
-or capture raw audio.")
-      (license license:expat))))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
