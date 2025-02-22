@@ -57,7 +57,7 @@
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Javier Olaechea <pirata@gmail.com>
-;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -1123,7 +1123,7 @@ provides an integration with GitHub and GitLab.")
 (define-public got
   (package
     (name "got")
-    (version "0.103")
+    (version "0.108")
     (source (origin
               (method url-fetch)
               (uri
@@ -1132,7 +1132,7 @@ provides an integration with GitHub and GitLab.")
                   version ".tar.gz"))
               (sha256
                (base32
-                "0y18961xrj4rja850i31gadiaps2qnkfb4jlramlz9akyf9mwh1j"))))
+                "1qnk5d1vyxyyqr6sc6wkc7b7w274zr0jv8vdq13sx1rmvl5353bc"))))
     (inputs
      (list libevent
            `(,util-linux "lib")
