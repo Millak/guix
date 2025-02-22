@@ -2464,6 +2464,46 @@ Compatible hardware/software:
 or capture raw audio.")
       (license license:expat))))
 
+;; kapanhang is only one user of this package, keep it next to it to prevent
+;; importing pulseaudio module into golang-xyz.
+(define-public go-github-com-akosmarton-papipes
+  (let ((commit "3c63b4919c769c9c2b2d07e69a98abb0eb47fe64")
+        (revision "0"))
+    (package
+      (name "go-github-com-akosmarton-papipes")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/akosmarton/papipes")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "16p77p3d1v26qd3knxn087jqlad2qm23q8m796cdr66hrdc0gahq"))))
+      (build-system go-build-system)
+      (inputs
+       (list pulseaudio))
+      (arguments
+       `(#:import-path "github.com/akosmarton/papipes"
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* '("src/github.com/akosmarton/papipes/common.go"
+                              "src/github.com/akosmarton/papipes/sink.go"
+                              "src/github.com/akosmarton/papipes/source.go")
+                 (("exec.Command\\(\"pactl\"")
+                  (string-append "exec.Command(\""
+                                 (assoc-ref inputs "pulseaudio")
+                                 "/bin/pactl\""))))))))
+      (home-page "https://github.com/akosmarton/papipes")
+      (synopsis "Pulseaudio client library for Go")
+      (description
+       "This is a Pulseaudio client library in Golang for creating virtual
+sinks and sources.")
+      (license license:expat))))
+
 (define-public dream
   (package
     (name "dream")
