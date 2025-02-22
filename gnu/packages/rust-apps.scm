@@ -4929,3 +4929,43 @@ to navigate to the best match.")
     (synopsis "Like jq, but for HTML")
     (description "Extract content from HTML files using CSS selectors.")
     (license license:expat)))
+
+(define-public podlet
+  (package
+    (name "podlet")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "podlet" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j394gv9fpl1wii7l0v4y31mdni6r98l223wd6x2v3ia82091xg4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-color-eyre" ,rust-color-eyre-0.6)
+                       ("rust-compose-spec" ,rust-compose-spec-0.2)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-ipnet" ,rust-ipnet-2)
+                       ("rust-k8s-openapi" ,rust-k8s-openapi-0.22)
+                       ("rust-nix" ,rust-nix-0.28)
+                       ("rust-path-clean" ,rust-path-clean-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+                       ("rust-shlex" ,rust-shlex-1)
+                       ("rust-smart-default" ,rust-smart-default-0.7)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-umask" ,rust-umask-2)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-zbus" ,rust-zbus-4))))
+    (home-page "https://github.com/containers/podlet")
+    (synopsis
+     "Generate Podman Quadlet files from a Podman command, compose file,
+or existing object")
+    (description
+     "This package generates Podman Quadlet files from a Podman command,
+compose file, or existing object.")
+    (license license:mpl2.0)))
