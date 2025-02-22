@@ -1980,6 +1980,27 @@ obfuscated via the Elligator 2 mapping.
 protocol from the Pluggable Transports 2.0 specification.")
     (license license:expat)))
 
+(define-public go-github-com-operatorfoundation-shapeshifter-ipc-v3
+  (package
+    (inherit go-github-com-operatorfoundation-shapeshifter-ipc)
+    (name "go-github-com-operatorfoundation-shapeshifter-ipc-v3")
+    (version "3.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OperatorFoundation/shapeshifter-ipc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dvvls7v40krq26nzn2f1q55628i3zff4by1ib2wad9pyhb88rg0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; all tests fail with error: undefined: Args.
+      #:import-path "github.com/OperatorFoundation/shapeshifter-ipc/v3"
+      #:unpack-path "github.com/OperatorFoundation/shapeshifter-ipc"))))
+
 (define-public go-github-com-pion-randutil
   (package
     (name "go-github-com-pion-randutil")
