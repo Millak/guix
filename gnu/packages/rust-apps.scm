@@ -2860,6 +2860,45 @@ by modifying your @file{Cargo.toml} file from the command line.")
 rebase.")
     (license license:gpl3+)))
 
+(define-public pastel
+  (package
+    (name "pastel")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pastel" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mwy4nx3jn74sr1q8ap98faja5wp7hz51yqga8l050xz645kb8wj"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-inputs
+      `(("rust-atty" ,rust-atty-0.2)
+        ("rust-clap" ,rust-clap-3)
+        ("rust-clap-complete" ,rust-clap-complete-3)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-output-vt100" ,rust-output-vt100-0.1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-regex" ,rust-regex-1))
+      #:cargo-development-inputs
+      `(("rust-approx" ,rust-approx-0.5)
+        ("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.6))))
+    (home-page "https://github.com/sharkdp/pastel")
+    (synopsis
+     "Command-line tool to generate, analyze, convert and manipulate colors")
+    (description
+     "Pastel is a command-line tool to generate, analyze, convert and
+manipulate colors.  It supports many different color formats and color spaces
+like RGB (sRGB), HSL, CIELAB, CIELCh as well as ANSI 8-bit and 24-bit
+representations.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public procs
   (package
     (name "procs")
