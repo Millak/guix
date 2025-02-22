@@ -10158,6 +10158,49 @@ protocol.")
 ;;; Executables:
 ;;;
 
+(define-public lyrebird
+  (package
+    (name "lyrebird")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird")
+             (commit (string-append "lyrebird-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qk7npkj0a3a28rp38whl1jwjr0z0hdcsq5bgm8bl1fk9g6cqbnp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:unpack-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
+      #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird/cmd/lyrebird"))
+    (propagated-inputs
+     (list go-filippo-io-edwards25519
+           go-github-com-dchest-siphash
+           go-github-com-refraction-networking-utls
+           go-gitlab-com-yawning-edwards25519-extra
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel
+           go-golang-org-x-crypto
+           go-golang-org-x-net))
+    (home-page "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird")
+    (synopsis "Look-like nothing obfuscation protocol")
+    (description
+     "This is a look-like nothing obfuscation protocol that incorporates ideas
+and concepts from Philipp Winter's ScrambleSuit protocol.")
+    (license (list license:bsd-2 license:bsd-3))))
+
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
+  ;; This is a final command, no need for a full name of the go.mod module path
+  ;; style. The same is suggested in project's README and Makefile.
+  (deprecated-package
+   "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird"
+   lyrebird))
+
 (define-public go-jose-util
   (package
     (name "go-jose-util")
