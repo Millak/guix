@@ -8129,7 +8129,7 @@ interface in sysfs, which can be accomplished with the included udev rules.")
 (define-public tlp
   (package
     (name "tlp")
-    (version "1.5.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -8138,7 +8138,7 @@ interface in sysfs, which can be accomplished with the included udev rules.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cssclk2brhwvn9dm7h5snm2svwy0c8cfr4z2cgkdkac2pfaaxw4"))))
+        (base32 "0r8r95wjb1sl5v8mli7kba2py9hc0ps915fx4lap5pg108ik9a06"))))
     (native-inputs
      (list shellcheck))
     (inputs
@@ -8168,78 +8168,61 @@ interface in sysfs, which can be accomplished with the included udev rules.")
     (arguments
      ;; XXX: The full test suite is run with "checkall" but it requires
      ;; "checkbashisms" and "perlcritic", not yet packaged in Guix.
-     `(#:test-target "shellcheck"
-       #:modules ((guix build gnu-build-system)
+     (list
+      #:test-target "shellcheck"
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (srfi srfi-1))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'build 'setenv
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (setenv "TLP_WITH_SYSTEMD" "0")
-               (setenv "TLP_NO_INIT" "1")
-               (setenv "TLP_NO_PMUTILS" "1")
-               (setenv "TLP_SBIN" (string-append out "/bin"))
-               (setenv "TLP_BATD" (string-append out "/share/tlp/bat.d"))
-               (setenv "TLP_BIN" (string-append out "/bin"))
-               (setenv "TLP_TLIB" (string-append out "/share/tlp"))
-               (setenv "TLP_FLIB" (string-append out "/share/tlp/func.d"))
-               (setenv "TLP_ULIB" (string-append out "/lib/udev"))
-               (setenv "TLP_CONFDEF"
-                       (string-append out "/share/tlp/defaults.conf"))
-               (setenv "TLP_CONFDIR" (string-append out "/etc/tlp.d"))
-               (setenv "TLP_CONFREN"
-                       (string-append out "/share/tlp/rename.conf"))
-               (setenv "TLP_ELOD"
-                       (string-append out "/lib/elogind/system-sleep"))
-               (setenv "TLP_SHCPL"
-                       (string-append out "/share/bash-completion/completions"))
-               (setenv "TLP_MAN" (string-append out "/share/man"))
-               (setenv "TLP_META" (string-append out "/share/metainfo")))))
-         (add-before 'install 'fix-installation
-           (lambda _
-             ;; Stop the Makefile from trying to create system directories.
-             (substitute* "Makefile"
-               (("\\[ -f \\$\\(_CONFUSR\\) \\]") "#")
-               (("install -d -m 755 \\$\\(_VAR\\)") "#"))))
-         (replace 'install
-           (lambda _ (invoke "make" "install-tlp" "install-man-tlp")))
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((bin (string-append (assoc-ref outputs "out") "/bin"))
-                    (bin-files (find-files bin ".*")))
-               (define (bin-directory input-name)
-                 (let ((p (assoc-ref inputs input-name)))
-                   (and p (string-append p "/bin"))))
-               (define (sbin-directory input-name)
-                 (string-append (assoc-ref inputs input-name) "/sbin"))
-               (for-each (lambda (program)
-                           (wrap-program program
-                             `("PATH" ":" prefix
-                               ,(append
-                                 (filter-map bin-directory
-                                             '("bash"
-                                               "coreutils"
-                                               "dbus"
-                                               "eudev"
-                                               "grep"
-                                               "inetutils"
-                                               "kmod"
-                                               "perl"
-                                               "sed"
-                                               "usbutils"
-                                               "util-linux"
-                                               "x86-energy-perf-policy"))
-                                 (filter-map sbin-directory
-                                             '("ethtool"
-                                               "hdparm"
-                                               "iw"
-                                               "pciutils"
-                                               "rfkill"
-                                               "wireless-tools"))))))
-                         bin-files)))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no configure script
+          (add-before 'build 'setenv
+            (lambda _
+              (setenv "TLP_WITH_SYSTEMD" "0")
+              (setenv "TLP_NO_INIT" "1")))
+          (add-before 'build 'fix-installation
+            (lambda _
+              ;; Stop the Makefile from trying to create system directories.
+              (substitute* "Makefile"
+                (("= /usr") (string-append "= " #$output))
+                (("= /etc") (string-append "= " #$output "/etc"))
+                (("install -d -m 755 \\$\\(_VAR\\)") "#"))))
+          (replace 'install
+            (lambda _ (invoke "make" "install-tlp" "install-man-tlp")))
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((bin (string-append (assoc-ref outputs "out") "/bin"))
+                     (bin-files (find-files bin ".*")))
+                (define (bin-directory input-name)
+                  (let ((p (assoc-ref inputs input-name)))
+                    (and p (string-append p "/bin"))))
+                (define (sbin-directory input-name)
+                  (string-append (assoc-ref inputs input-name) "/sbin"))
+                (for-each (lambda (program)
+                            (wrap-program program
+                              `("PATH" ":" prefix
+                                ,(append
+                                  (filter-map bin-directory
+                                              '("bash"
+                                                "coreutils"
+                                                "dbus"
+                                                "eudev"
+                                                "grep"
+                                                "inetutils"
+                                                "kmod"
+                                                "perl"
+                                                "sed"
+                                                "usbutils"
+                                                "util-linux"
+                                                "x86-energy-perf-policy"))
+                                  (filter-map sbin-directory
+                                              '("ethtool"
+                                                "hdparm"
+                                                "iw"
+                                                "pciutils"
+                                                "rfkill"
+                                                "wireless-tools"))))))
+                          bin-files)))))))
     (home-page "https://linrunner.de/en/tlp/tlp.html")
     (synopsis "Power management tool for Linux")
     (description "TLP is a power management tool for Linux.  It comes with
