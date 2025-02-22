@@ -31560,7 +31560,7 @@ shader functions, written with @code{Shadow}.")
          (sha256
           (base32 "16mcqpzwrz808p9n3wwl99ckg3hg7yihw08y1i4l7c92aldbkasq"))))
       (build-system asdf-build-system/sbcl)
-      (home-page "https://github.com/hankhero/cl-json")
+      (home-page "https://github.com/libre-man/unix-opts")
       (synopsis "Unix-style command line options parser")
       (description
        "This is a minimalistic parser of command line options.  The main
