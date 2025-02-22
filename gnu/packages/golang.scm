@@ -1211,46 +1211,6 @@ methods can be called and usual operations such as indexing or arithmetic can
 be performed.")
       (license license:expat))))
 
-(define-public go-github-com-wtolson-go-taglib
-  (let ((commit "6e68349ff94ecea412de7e748cb5eaa26f472777")
-        (revision "0"))
-    (package
-      (name "go-github-com-wtolson-go-taglib")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url
-                "https://github.com/wtolson/go-taglib")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1cpjqnrviwflz150g78iir5ndrp3hh7a93zbp4dwbg6sb2q141p2"))))
-      (build-system go-build-system)
-      ;; From go-1.10 onward, "pkg" compiled libraries are not re-used, so
-      ;; when this package required as input for another one, it will have to
-      ;; be built again.  Thus its CGO requirements must be made available in
-      ;; the environment, that is, they must be propagated.
-      (propagated-inputs
-       (list pkg-config taglib))
-      (arguments
-       `(#:import-path "github.com/wtolson/go-taglib"
-         ;; Tests don't pass "vet" on Go since 1.11.  See
-         ;; https://github.com/wtolson/go-taglib/issues/12.
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key import-path #:allow-other-keys)
-               (invoke "go" "test"
-                       "-vet=off"
-                       import-path))))))
-      (home-page "https://github.com/wtolson/go-taglib")
-      (synopsis "Go wrapper for taglib")
-      (description "Go wrapper for taglib")
-      (license license:unlicense))))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
