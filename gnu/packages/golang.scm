@@ -1257,23 +1257,24 @@ be performed.")
     (package
       (name "go-golang-org-rainycape-unidecode")
       (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/rainycape/unidecode")
-                       (commit commit)))
-                (file-name (string-append "go-golang-org-rainycape-unidecode-"
-                                          version "-checkout"))
-                (sha256
-                 (base32
-                  "1wvzdijd640blwkgmw6h09frkfa04kcpdq87n2zh2ymj1dzla5v5"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rainycape/unidecode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1wvzdijd640blwkgmw6h09frkfa04kcpdq87n2zh2ymj1dzla5v5"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "golang.org/rainycape/unidecode"))
+       (list
+        #:import-path "golang.org/rainycape/unidecode"))
       (home-page "https://github.com/rainycape/unidecode")
       (synopsis "Unicode transliterator in Golang")
-      (description "Unicode transliterator in Golang - Replaces non-ASCII
-characters with their ASCII approximations.")
+      (description
+       "Unicode transliterator in Golang - Replaces non-ASCII characters with
+their ASCII approximations.")
       (license license:asl2.0))))
 
 (define-public go-github-com-akosmarton-papipes
