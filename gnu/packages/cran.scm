@@ -42138,6 +42138,8 @@ not digit characters.")
               (sha256
                (base32
                 "1675az0lfvmwzh9c3fknnk0n2kz1w7hy0kdj3a37n5j1knxwsjhh"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-vdiffr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -42152,7 +42154,7 @@ not digit characters.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-vdiffr))
     (home-page "https://visdat.njtierney.com/")
     (synopsis "Preliminary Visualisation of Data")
     (description "This package provides procedures to create preliminary exploratory
