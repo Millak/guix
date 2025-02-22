@@ -8,7 +8,6 @@
 ;;;; Code:
 
 (define-module (gnu packages power)
-  #:use-module (gnu)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
