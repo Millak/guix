@@ -1251,32 +1251,6 @@ be performed.")
       (description "Go wrapper for taglib")
       (license license:unlicense))))
 
-(define-public go-golang-org-rainycape-unidecode
-  (let ((commit "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c")
-        (revision "1"))
-    (package
-      (name "go-golang-org-rainycape-unidecode")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/rainycape/unidecode")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1wvzdijd640blwkgmw6h09frkfa04kcpdq87n2zh2ymj1dzla5v5"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "golang.org/rainycape/unidecode"))
-      (home-page "https://github.com/rainycape/unidecode")
-      (synopsis "Unicode transliterator in Golang")
-      (description
-       "Unicode transliterator in Golang - Replaces non-ASCII characters with
-their ASCII approximations.")
-      (license license:asl2.0))))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
