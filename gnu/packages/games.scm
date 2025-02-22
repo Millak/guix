@@ -88,6 +88,7 @@
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023-2025 Adam Faiz <adam.faiz@disroot.org>
+;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8998,6 +8999,68 @@ further optional visual, tactical and physical enhancements while remaining
 entirely config file, savegame, netplay and demo compatible with the
 original.")
     (home-page "https://www.chocolate-doom.org/wiki/index.php/Crispy_Doom")))
+
+(define-public woof-doom
+  (package
+    (name "woof-doom")
+    (version "15.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fabiangreffrath/woof")
+             (commit (string-append "woof_" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04c7hm4jnr9aiz6w4520zww6b7j86qv9xaf87hdv48cjc9sp2ljk"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   (with-directory-excursion "third-party"
+                     (delete-file-recursively "miniz")
+                     (delete-file-recursively "yyjson")
+                     (delete-file-recursively "spng"))
+                   (delete-file-recursively "win32")
+                   (substitute* (find-files "src" ".")
+                     (("miniz.h") "miniz/miniz.h"))))
+       (patches (search-patches "woof-doom-unbundle-spng-miniz.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;'demotest' requires internet access.
+    (native-inputs (list python))
+    (inputs (list libebur128
+                  libsndfile
+                  libxmp
+                  miniz
+                  openal
+                  sdl2
+                  sdl2-net
+                  spng
+                  yyjson
+                  fluidsynth))
+    (home-page "https://github.com/fabiangreffrath/woof")
+    (synopsis "MBF-style Doom source port targeted at modern systems")
+    (description
+     "Woof! is a continuation of the MBF lineage of Doom source ports, with
+modern features such as dynamic resolution scaling, uncapped framerates,
+adjustable field of view, 3D audio with HRTF and 7.1 surround sound
+support, and modern gamepad features including rumble, gyro, and flick
+stick support.  Supports the new MBF21 format, as well as the MUSINFO,
+UMAPINFO, DEHEXTRA, and DSDHacked specifictions.")
+    (license
+     ;; See README.md
+     (list (license:non-copyleft
+            "https://bitbucket.org/jpommier/pffft/src/master/pffft.h"
+            "FFTPACK license")
+           license:bsd-2
+           license:bsd-3
+           license:cc-by3.0
+           license:cc0
+           license:expat
+           license:gpl2
+           license:gpl3+
+           license:public-domain
+           license:gpl2+))))
 
 (define xonotic-data
   (package
