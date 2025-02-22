@@ -2001,6 +2001,96 @@ protocol from the Pluggable Transports 2.0 specification.")
       #:import-path "github.com/OperatorFoundation/shapeshifter-ipc/v3"
       #:unpack-path "github.com/OperatorFoundation/shapeshifter-ipc"))))
 
+(define-public go-github-com-operatorfoundation-shapeshifter-transports
+  (package
+    (name "go-github-com-operatorfoundation-shapeshifter-transports")
+    (version "3.0.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/OperatorFoundation/shapeshifter-transports")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f1hzhk3q2fgqdg14zlg3z0s0ib1y9xwj89qnjk95b37zbgqjgsb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; When parallel, tests fail with error: Failed to start listener:listen
+      ;; tcp 127.0.0.1:1235: bind: address already in use.
+      #:parallel-tests? #f
+      #:skip-build? #t
+      #:import-path "github.com/OperatorFoundation/shapeshifter-transports"
+      #:test-flags
+      #~(list "-skip" (string-join
+                  (list
+                   ;; Tests fail in "Optimizer" module.
+                   "TestObfs4Transport_Dial"
+                   "TestOptimizerObfs4Transport_Dial"
+                   "TestOptimizerTransportFirstDial"
+                   "TestOptimizerTransportRandomDial"
+                   "TestOptimizerTransportRotateDial"
+                   "TestOptimizerTransportTrackDial"
+                   "TestOptimizerTransportMinimizeDialDurationDial"
+                   ;; Tests fail in "Replicant" module.
+                   "TestMarshalConfigs"
+                   "TestMarshalConfigs"
+                   "TestMarshalSilverRandomEnumeratedConfigs"
+                   "TestFactoryMonotoneRandomEnumerated"
+                   ;; Tests fail in "meeklite" module.
+                   "TestMeeklite"
+                   "TestFactoryMeeklite"
+                   ;; Test fails in "meekserver/v2" module.
+                   "TestMeekServerListen2"
+                   ;; Test fails in "obfs4" module.
+                   "TestObfs4"
+                   "TestObfs4Factory"
+                  ;; Tests fail in "shadow" module.
+                  "TestShadow"
+                  "TestShadowTransport")
+                  "|"))
+      #:test-subdirs
+      #~(list
+         ;; All tests fail with error: invalid memory address or nil pointer
+         ;; dereference.
+         ;; "transports/Dust/..."
+         "transports/Optimizer/..."
+         "transports/Replicant/..."
+         "transports/meeklite/..."
+         ;; All tests fail with error:  misplaced +build comment.
+         ;; "transports/meekserver/v3/..."
+         "transports/meekserver/v2/..."
+         "transports/obfs2/..."
+         "transports/obfs4/..."
+         "transports/shadow/...")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aead-chacha20
+           go-github-com-blanu-dust
+           go-github-com-deckarep-golang-set
+           go-github-com-kataras-golog
+           go-github-com-mufti1-interconv
+           go-github-com-opentracing-opentracing-go
+           go-github-com-operatorfoundation-monolith-go-1.0.4
+           go-github-com-operatorfoundation-obfs4
+           go-github-com-operatorfoundation-shapeshifter-ipc
+           go-github-com-shadowsocks-go-shadowsocks2
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-torproject-org-pluggable-transports-goptlib))
+    (home-page "https://github.com/OperatorFoundation/shapeshifter-transports")
+    (synopsis "Go implementation of Pluggable Transports")
+    (description "Shapeshifter-Transports is a set of Pluggable Transports
+implementing the Go API from the Pluggable Transports 2.0 specification.
+Each transport implements a different method of shapeshifting network traffic.
+The goal is for application traffic to be sent over the network in a shapeshifted
+form that bypasses network filtering, allowing the application to work on
+networks where it would otherwise be blocked or heavily throttled.")
+    (license license:expat)))
+
 (define-public go-github-com-pion-randutil
   (package
     (name "go-github-com-pion-randutil")
