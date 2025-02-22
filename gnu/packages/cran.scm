@@ -43889,6 +43889,14 @@ genome scans.")
               (sha256
                (base32 "0sy4j3f1dw7w7qcp3lsc5mmd8kwa5qaxcl8c4236a8zbzkvvnp5j"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; TODO: this should be done by default in R itself.
+         (add-before 'check 'find-zip
+           (lambda _
+             (setenv "R_ZIPCMD" (which "zip")))))))
     (propagated-inputs
      (list r-data-table
            r-jsonlite
@@ -43896,7 +43904,7 @@ genome scans.")
            r-rcppeigen
            r-rsqlite
            r-yaml))
-    (native-inputs (list r-qtl r-testthat))
+    (native-inputs (list r-qtl r-testthat zip))
     (home-page "https://kbroman.org/qtl2/")
     (synopsis "Quantitative Trait Locus Mapping in Experimental Crosses")
     (description
