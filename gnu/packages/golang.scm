@@ -1087,52 +1087,6 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.22 (make-go-std go-1.22))
 (define-public go-std-1.23 (make-go-std go-1.23))
 
-(define-public go-github-com-aarzilli-golua
-  (let ((commit "03fc4642d792b1f2bc5e7343b403cf490f8c501d")
-        (revision "0"))
-    (package
-      (name "go-github-com-aarzilli-golua")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url
-                "https://github.com/aarzilli/golua")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1d9hr29i36cza98afj3g6rs3l7xbkprwzz0blcxsr9dd7nak20di"))))
-      (build-system go-build-system)
-      ;; From go-1.10 onward, "pkg" compiled libraries are not re-used, so
-      ;; when this package required as input for another one, it will have to
-      ;; be built again.  Thus its CGO requirements must be made available in
-      ;; the environment, that is, they must be propagated.
-      (propagated-inputs
-       (list lua))
-      (arguments
-       `(#:unpack-path "github.com/aarzilli/golua"
-         #:import-path "github.com/aarzilli/golua/lua"
-         #:phases
-         (modify-phases %standard-phases
-           ;; While it's possible to fix the CGO_LDFLAGS with the "-tags"
-           ;; command line argument, go-1.10+ does not re-use the produced pkg
-           ;; for dependencies, which means we would need to propagate the
-           ;; same "-tags" argument to all golua referrers.  A substitution is
-           ;; more convenient here.  We also need to propagate the lua
-           ;; dependency to make it available to referrers.
-           (add-after 'unpack 'fix-lua-ldflags
-             (lambda _
-               (substitute* "src/github.com/aarzilli/golua/lua/lua.go"
-                 (("#cgo linux,!llua,!luaa LDFLAGS: -llua5.3")
-                  "#cgo linux,!llua,!luaa LDFLAGS: -llua")))))))
-      (home-page "https://github.com/aarzilli/golua")
-      (synopsis "Go Bindings for the Lua C API")
-      (description "This package provides @code{lua}, a Go module that can
-run a Lua virtual machine.")
-      (license license:expat))))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
