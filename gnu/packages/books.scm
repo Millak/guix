@@ -42,7 +42,7 @@
 (define-public book-sparc
   (package
     (name "book-sparc")
-    (version "3.0.0")
+    (version "3.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -50,7 +50,7 @@
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0fc8w51d6dsnn1fi0c2fq2vabx375gv0py2kfalhjpa1l193a1dw"))
+                "19jq3sj8az8vn36qz0ld1glzw7qxsvqs95yxnw2r691caphvsfvk"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))))
     (build-system gnu-build-system)
