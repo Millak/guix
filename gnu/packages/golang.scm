@@ -1224,37 +1224,10 @@ networks where it would otherwise be blocked or heavily throttled.")
         (base32 "1q1fcnllg462nfca16s5mr0n2jh92x3hj946qnaqc682phjz04lg"))))
     (build-system go-build-system)
     (arguments
-     `(#:tests? #f                      ; ERROR: undefined: Args.
-       #:unpack-path "github.com/OperatorFoundation/shapeshifter-ipc"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'build)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               "github.com/OperatorFoundation/shapeshifter-ipc/v2"
-               "github.com/OperatorFoundation/shapeshifter-ipc/v3"))))
-         (replace 'check
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'check)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               "github.com/OperatorFoundation/shapeshifter-ipc/v2"
-               "github.com/OperatorFoundation/shapeshifter-ipc/v3"))))
-         (replace 'install
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'install)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               "github.com/OperatorFoundation/shapeshifter-ipc/v2"
-               "github.com/OperatorFoundation/shapeshifter-ipc/v3")))))))
+     (list
+      #:skip-build? #t
+      #:tests? #f ; all tests fail with error: undefined: Args.
+      #:import-path "github.com/OperatorFoundation/shapeshifter-ipc"))
     (home-page "https://github.com/OperatorFoundation/shapeshifter-ipc")
     (synopsis "Go implementation of the Pluggable Transports IPC protocol")
     (description "Shapeshifter-IPC is a library for Go implementing the IPC
