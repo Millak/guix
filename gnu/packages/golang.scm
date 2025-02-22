@@ -1221,76 +1221,25 @@ networks where it would otherwise be blocked or heavily throttled.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lya21w06ramq37af5hdiafbrv5k1csjm7k7m00v0bfxg3ni01bs"))))
+        (base32 "1lya21w06ramq37af5hdiafbrv5k1csjm7k7m00v0bfxg3ni01bs"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Examples are all broken.
+            (delete-file-recursively "modelgen/examples")
+            ;; Fix module path in test file.
+            (substitute* "go/huffman/huffman_test.go"
+              (("github.com/blanu/Dust/go/DustModel/huffman")
+               "github.com/blanu/Dust/go/huffman"))))))
     (build-system go-build-system)
     (arguments
-     `(#:unpack-path "github.com/blanu/Dust"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'build)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               "github.com/blanu/Dust/go/buf"
-               "github.com/blanu/Dust/go/dist"
-               "github.com/blanu/Dust/go/huffman"
-               "github.com/blanu/Dust/go/model1"
-               "github.com/blanu/Dust/go/prim1"
-               "github.com/blanu/Dust/go/proc"
-               "github.com/blanu/Dust/go/sillyHex"
-               "github.com/blanu/Dust/go/skein"
-               "github.com/blanu/Dust/go/v2/Dust2_proxy"
-               "github.com/blanu/Dust/go/v2/Dust2_tool"
-               "github.com/blanu/Dust/go/v2/crypting"
-               "github.com/blanu/Dust/go/v2/interface"
-               "github.com/blanu/Dust/go/v2/shaping"))))
-         (replace 'check
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'check)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               "github.com/blanu/Dust/go/buf"
-               "github.com/blanu/Dust/go/dist"
-               ;; Repository is missing test files directory.
-               ;;"github.com/blanu/Dust/go/huffman"
-               "github.com/blanu/Dust/go/model1"
-               "github.com/blanu/Dust/go/prim1"
-               "github.com/blanu/Dust/go/proc"
-               "github.com/blanu/Dust/go/sillyHex"
-               "github.com/blanu/Dust/go/skein"
-               "github.com/blanu/Dust/go/v2/Dust2_proxy"
-               "github.com/blanu/Dust/go/v2/Dust2_tool"
-               "github.com/blanu/Dust/go/v2/crypting"
-               "github.com/blanu/Dust/go/v2/interface"
-               "github.com/blanu/Dust/go/v2/shaping"))))
-         (replace 'install
-           (lambda arguments
-             (for-each
-              (lambda (directory)
-                (apply (assoc-ref %standard-phases 'install)
-                       `(,@arguments #:import-path ,directory)))
-              (list
-               "github.com/blanu/Dust/go/buf"
-               "github.com/blanu/Dust/go/dist"
-               "github.com/blanu/Dust/go/huffman"
-               "github.com/blanu/Dust/go/model1"
-               "github.com/blanu/Dust/go/prim1"
-               "github.com/blanu/Dust/go/proc"
-               "github.com/blanu/Dust/go/sillyHex"
-               "github.com/blanu/Dust/go/skein"
-               "github.com/blanu/Dust/go/v2/Dust2_proxy"
-               "github.com/blanu/Dust/go/v2/Dust2_tool"
-               "github.com/blanu/Dust/go/v2/crypting"
-               "github.com/blanu/Dust/go/v2/interface"
-               "github.com/blanu/Dust/go/v2/shaping")))))))
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/blanu/Dust"))
     (propagated-inputs
      (list go-github-com-operatorfoundation-ed25519
-           go-github-com-op-go-logging go-golang-org-x-crypto))
+           go-github-com-op-go-logging
+           go-golang-org-x-crypto))
     (home-page "https://github.com/blanu/Dust")
     (synopsis "Censorship-resistant internet transport protocol")
     (description "Dust is an Internet protocol designed to resist a number of
