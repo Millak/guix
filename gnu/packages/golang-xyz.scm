@@ -10045,6 +10045,33 @@ processing.")
 @url{https://github.com/charmbracelet/lipgloss, lipgloss} Styles.")
     (license license:asl2.0)))
 
+(define-public go-github-com-komkom-toml
+  (package
+    (name "go-github-com-komkom-toml")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/komkom/toml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rl44jkfdwzjqp31aif6ywyli6pzl2999wp3807vzxz0yd6chwfw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/komkom/toml"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pkg-errors))
+    (home-page "https://github.com/komkom/toml")
+    (synopsis "Instream TOML to JSON encoder")
+    (description
+     "This package provides a TOML parser and JSON encoder.")
+    (license license:expat)))
+
 (define-public go-github-com-kortschak-utter
   (package
     (name "go-github-com-kortschak-utter")
