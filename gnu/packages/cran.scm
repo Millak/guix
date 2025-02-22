@@ -1180,6 +1180,16 @@ etc.")
         (base32 "14zvdq5p1hhd6y0xzf761q2kh217rra25ihl17jipakf61zbf88m"))))
     (properties `((upstream-name . "cutpointr")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; This requires the fANCOVA package
+             (substitute* "tests/testthat/test-cutpointr.R"
+               ((".*LOESS smoothing does not return warnings or errors.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs (list r-dplyr
                              r-foreach
                              r-ggplot2
