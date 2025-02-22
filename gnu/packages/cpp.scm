@@ -76,6 +76,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bdw-gc)
@@ -117,6 +118,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -3160,6 +3162,60 @@ queues, resource pools, strings, etc.
 @item And more.
 @end itemize")
       (license license:zlib))))
+
+(define-public juce
+  (package
+    (name "juce")
+    (version "8.0.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/juce-framework/JUCE")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1n2w571wc7fl178x5ynxiaxvhjvqskfwnd0x295yzr6vpc35a1mv"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:configure-flags #~(list "-DJUCE_TOOL_INSTALL_DIR=bin")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute*
+                       (find-files "." "jucer_ProjectExport_CodeBlocks.h$")
+                     (("/usr/include/freetype2")
+                      (search-input-directory inputs "/include/freetype2")))
+                   (substitute*
+                       (find-files "." "juce_linux_Fonts.cpp$")
+                     (("fonts\\.conf\" };")
+                      (string-append
+                       "fonts.conf\"\n\""
+                       (search-input-file inputs "/etc/fonts/fonts.conf")
+                       "\"\n};"))))))))
+    (native-inputs
+     (list alsa-lib
+           curl
+           jack-1
+           libx11
+           pkg-config
+           webkitgtk-with-libsoup2))
+    (inputs (list fontconfig freetype libjpeg-turbo libpng))
+    (home-page "https://juce.com")
+    (synopsis "C++ application framework for audio plugins and plugin hosts")
+    (description
+     "JUCE is a C++ application framework for creating applications including
+VST, VST3, AU, AUv3, AAX and LV2 audio plug-ins and plug-in hosts.")
+    (license
+     (list license:asl2.0  ;for Oboe and AudioUnitSDK
+           license:bsd-3   ;for FLAC, Ogg Vorbis and OpenGL Extension Wrangler
+           license:expat   ;for Mesa 3-D graphics and jucer icons
+           license:gpl3    ;for JUCE and VST3 SDK
+           license:ijg     ;for jpeglib
+           license:isc     ;for LV2 SDK
+           license:zlib)))) ;for pngLib, zlib and Box2D
 
 (define-public ftxui
   (package
