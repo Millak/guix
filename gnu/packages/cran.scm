@@ -13187,10 +13187,17 @@ the parameters of a stable distribution.")
        (uri (cran-uri "stabm" version))
        (sha256
         (base32 "1vslidq2pzpwhsrsklghaqsdjjf4w4wqs2dng0p68zhrv5vlivhq"))))
-    (properties `((upstream-name . "stabm")))
+    (properties
+     '((upstream-name . "stabm")
+       (updater-extra-native-inputs
+        . ("r-cowplot" "r-ggdendro" "r-ggplot2" "r-igraph"))))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate r-matrix))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-cowplot
+                         r-ggdendro
+                         r-ggplot2
+                         r-igraph
+                         r-knitr r-testthat))
     (home-page "https://bommert.github.io/stabm/")
     (synopsis "Stability measures for feature selection")
     (description
