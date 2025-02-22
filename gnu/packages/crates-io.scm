@@ -21733,6 +21733,36 @@ This project is a fork of Faraday's boondock.")
     (description
      "This package provides Procedural macros for use in the compose_spec crate.")
     (license license:mpl2.0)))
+
+(define-public rust-compose-spec-0.2
+  (package
+    (name "rust-compose-spec")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "compose_spec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17h8g1mrwk8yphqxfhdgyvn5hpagmm5p3p8p6yxh23hl3d6zdshi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-compose-spec-macros" ,rust-compose-spec-macros-0.1)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-ipnet" ,rust-ipnet-2)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/k9withabone/compose_spec_rs")
+    (synopsis "Types for (de)serializing from/to the compose-spec")
+    (description
+     "This package provides types for (de)serializing from/to compose-spec, a
+container description format.")
+    (license license:mpl2.0)))
+
 (define-public rust-docmatic-0.1
   (package
     (name "rust-docmatic")
