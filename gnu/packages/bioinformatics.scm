@@ -22674,8 +22674,8 @@ patterns.")
       (license license:gpl3))))
 
 (define-public r-voltron
-  (let ((commit "8f88699a82abf39f9825ebdccb786f02b20009d2")
-        (revision "3"))
+  (let ((commit "381754801c2d0cf44c8a3a25326f3a89eef17411")
+        (revision "4"))
     (package
       (name "r-voltron")
       (version (git-version "0.2.0" revision commit))
@@ -22687,7 +22687,7 @@ patterns.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1vfwyiyi67d7n76jm8vlf7s5rwwga7nrnr9rbd4kx9hfbf26wgf0"))))
+          (base32 "1x8b51qlxz4zc23asz4wmvhy7fbvxnhn5svlalgdrj7bibq345qq"))))
       (properties `((upstream-name . "VoltRon")))
       (build-system r-build-system)
       (arguments
