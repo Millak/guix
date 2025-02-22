@@ -21685,6 +21685,31 @@ from macros.")
 This project is a fork of Faraday's boondock.")
     (license license:asl2.0)))
 
+(define-public rust-k8s-openapi-0.22
+  (package
+    (name "rust-k8s-openapi")
+    (version "0.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "k8s-openapi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mcpy1gdxpqayc74i3x3ayh3q5bl6dzvsgmw91jq1r9sjkxill0r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-base64" ,rust-base64-0.22)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-schemars" ,rust-schemars-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-value" ,rust-serde-value-0.7)
+                       ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/Arnavion/k8s-openapi")
+    (synopsis "Bindings for the Kubernetes client API")
+    (description
+     "This package provides Bindings for the Kubernetes client API.")
+    (license license:asl2.0)))
 (define-public rust-docmatic-0.1
   (package
     (name "rust-docmatic")
