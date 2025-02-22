@@ -11384,3 +11384,42 @@ Linux input convention.  Specifically, that allows you to use the D-pad
 as a gamepad.")
     (home-page "https://github.com/dkosmari/hid-wiimote-plus")
     (license license:gpl2+)))
+
+(define-public python-evemu
+  (package
+    (name "python-evemu")
+    (version "2.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/libevdev/evemu")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1sxf6v2wnajj9srlkfjfymjmmp4dlq73gzjcjmaw015a3c0xl029"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ; would open device files
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "python/evemu/base.py"
+                     (("\"libevdev.so\"")
+                      (string-append "\"" (assoc-ref inputs "libevdev")
+                                     "/lib/libevdev.so\""))))))))
+    (native-inputs
+     (list asciidoc autoconf automake libtool docbook-xsl pkg-config
+           python-wrapper xmlto))
+    (inputs
+     (list libevdev))
+    (synopsis "Record and replay input device events")
+    (description "This package provides a way to record and replay device
+descriptions and events, making it possible to emulate input devices
+through the Linux kernel's input system.  Emulated devices are for most
+practical purposes indistinguishable from real devices.
+
+It provides a command line program and also a Python library.")
+    (home-page "https://www.freedesktop.org/wiki/Evemu/")
+    (license license:gpl3)))
