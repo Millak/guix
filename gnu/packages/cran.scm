@@ -17739,10 +17739,15 @@ using the @code{snow} package.")
               (sha256
                (base32
                 "1qpc2rywkbz3l197b1fhbx7mid7ddjyq98w8b28if6gn9g6ary3g"))))
-    (properties `((upstream-name . "FSA")))
+    (properties
+     '((upstream-name . "FSA")
+       (updater-extra-native-inputs
+        . ("r-fishmethods" "r-fsadata"))))
     (build-system r-build-system)
     (propagated-inputs (list r-car r-dunn-test r-lmtest r-plotrix r-withr))
     (native-inputs (list r-desctools
+                         r-fishmethods
+                         r-fsadata
                          r-nlme
                          r-psych
                          r-testthat
