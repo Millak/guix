@@ -361,6 +361,52 @@ interface.  It can be used to monitor and control an OpenVPN process running
 with its management port enabled.")
       (license license:expat))))
 
+(define-public go-github-com-blanu-dust
+  (package
+    (name "go-github-com-blanu-dust")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/blanu/Dust")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lya21w06ramq37af5hdiafbrv5k1csjm7k7m00v0bfxg3ni01bs"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Examples are all broken.
+            (delete-file-recursively "modelgen/examples")
+            ;; Fix module path in test file.
+            (substitute* "go/huffman/huffman_test.go"
+              (("github.com/blanu/Dust/go/DustModel/huffman")
+               "github.com/blanu/Dust/go/huffman"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/blanu/Dust"))
+    (propagated-inputs
+     (list go-github-com-operatorfoundation-ed25519
+           go-github-com-op-go-logging
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/blanu/Dust")
+    (synopsis "Censorship-resistant internet transport protocol")
+    (description
+     "Dust is an Internet protocol designed to resist a number of attacks
+currently in active use to censor Internet communication.  While adherence to
+the theoretical maxims of cryptographic security is observed where possible,
+the focus of Dust is on real solutions to real attacks.")
+    (license
+     (list
+      ;; Skein.
+      license:bsd-2
+      ;; Others.
+      license:expat))))
+
 (define-public go-github-com-bradenhilton-cityhash
   (package
     (name "go-github-com-bradenhilton-cityhash")
