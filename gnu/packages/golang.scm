@@ -1208,32 +1208,6 @@ form that bypasses network filtering, allowing the application to work on
 networks where it would otherwise be blocked or heavily throttled.")
     (license license:expat)))
 
-(define-public go-github-com-operatorfoundation-shapeshifter-ipc
-  (package
-    (name "go-github-com-operatorfoundation-shapeshifter-ipc")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/OperatorFoundation/shapeshifter-ipc")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1q1fcnllg462nfca16s5mr0n2jh92x3hj946qnaqc682phjz04lg"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:tests? #f ; all tests fail with error: undefined: Args.
-      #:import-path "github.com/OperatorFoundation/shapeshifter-ipc"))
-    (home-page "https://github.com/OperatorFoundation/shapeshifter-ipc")
-    (synopsis "Go implementation of the Pluggable Transports IPC protocol")
-    (description "Shapeshifter-IPC is a library for Go implementing the IPC
-protocol from the Pluggable Transports 2.0 specification.")
-    (license license:expat)))
-
 (define-public go-github-com-willscott-goturn
     (package
       (name "go-github-com-willscott-goturn")
