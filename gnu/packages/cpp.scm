@@ -261,6 +261,28 @@ This project is maintained by Kitware in support of ITK, the Insight
 Segmentation and Registration Toolkit.")
   (license license:asl2.0)))
 
+(define-public cpp-utilities
+  (package
+    (name "cpp-utilities")
+    (version "5.27.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Martchus/cpp-utilities")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1nm6d87j11jc5617qk58a81ajxgrncr7xsf4dkyscrygi2n3dbgz"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/Martchus/cpp-utilities/")
+    (synopsis "Useful C++ classes and routines")
+    (description
+     "This package provides useful C++ classes and routines such as argument
+parser, IO and conversion utilities.")
+    (license license:gpl2+)))
+
 (define-public range-v3
   (package
     (name "range-v3")
