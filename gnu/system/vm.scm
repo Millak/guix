@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -211,14 +211,16 @@ environment with the store shared with the host.  MAPPINGS is a list of
 
 (define* (common-qemu-options image shared-fs
                               #:key
+                              (image-format "raw")
                               rw-image?
                               (target (%current-target-system)))
   "Return the a string-value gexp with the common QEMU options to boot IMAGE,
 with '-virtfs' options for the host file systems listed in SHARED-FS."
 
   (define (virtfs-option fs)
-    #~(format #f "-virtfs local,path=~s,security_model=none,mount_tag=~s"
-              #$fs #$(file-system->mount-tag fs)))
+    #~("-virtfs"
+       (format #f "local,path=~a,security_model=none,mount_tag=~a"
+               #$fs #$(file-system->mount-tag fs))))
 
   #~(;; Only enable kvm if we see /dev/kvm exists.
      ;; This allows users without hardware virtualization to still use these
@@ -230,11 +232,12 @@ with '-virtfs' options for the host file systems listed in SHARED-FS."
      "-object" "rng-random,filename=/dev/urandom,id=guix-vm-rng"
      "-device" "virtio-rng-pci,rng=guix-vm-rng"
 
-     #$@(map virtfs-option shared-fs)
-     #$@(if rw-image?
-            #~((format #f "-drive file=~a,format=qcow2,if=virtio" #$image))
-            #~((format #f "-drive file=~a,format=raw,if=virtio,cache=writeback,werror=report,readonly=on"
-                       #$image)))))
+     #$@(append-map virtfs-option shared-fs)
+     "-drive"
+     #$(if rw-image?
+           #~(format #f "file=~a,format=qcow2,if=virtio" #$image)
+           #~(format #f "file=~a,format=~a,if=virtio,cache=writeback,werror=report,readonly=on"
+                     #$image #$image-format))))
 
 (define* (system-qemu-image/shared-store-script os
                                                 #:key
