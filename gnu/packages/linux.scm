@@ -8253,7 +8253,7 @@ every time the power supply source is changed.")
 (define-public tlpui
   (package
     (name "tlpui")
-    (version "1.5.0-7")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -8262,17 +8262,12 @@ every time the power supply source is changed.")
              (commit (string-append "tlpui-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07gi0i6wqjb5h0hmy7i7bjscfrf9v825xv85j7fxinxwrj42053y"))))
-    (build-system python-build-system)
+        (base32 "1q33p4gf5ii53wlgs61gghqxp3js5c45pn5nlibg2ygw069225r5"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-setup.py
-            ;; Install data_files to $out/share instead of /usr/share.
-            (lambda _
-              (substitute* "setup.py"
-                (("/usr/") ""))))
           (add-after 'unpack 'set-absolute-locations
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((defaults.conf
@@ -8298,36 +8293,28 @@ every time the power supply source is changed.")
                   (substitute* "settingshelper.py"
                     (("(command_exists = ).*" _ lead)
                      (string-append lead "True\n")))))))
-          (add-before 'check 'fix-home-directory
+          (add-after 'install 'install-desktop-file
             (lambda _
-              ;; Tests fail with "Permission denied:
-              ;; '/homeless-shelter'".
-              (setenv "HOME" "/tmp")))
-          ;; `sanity-check' phase errors out with the following
-          ;; messages: "Unable to init server: Could not connect:
-          ;; Connection refused" and "Error: cannot read user
-          ;; configuration from /etc/tlp.conf or /etc/default/tlp".
-          (delete 'sanity-check)
-          ;; Skip two failing tests (out of 10) about configuration file
-          ;; issues.
-          (add-before 'check 'skip-failing-tests
-            (lambda _
-              (substitute* "test/test_tlp_settings.py"
-                ((".*?windowxsize = 900.*") "")
-                ((".*?windowysize = 600.*") ""))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "-m" "discover"))))
-          (add-after 'install 'wrap-gi-python
+              (let ((dir (string-append #$output "/share/applications")))
+                (install-file "tlpui.desktop" dir))))
+          (add-after 'wrap 'wrap-gi-python
             (lambda _
               (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
                 (wrap-program (string-append #$output "/bin/tlpui")
                   `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (native-inputs
-     (list `(,glib "bin") gobject-introspection python-discover))
+     (list `(,glib "bin")
+           gobject-introspection
+           python-poetry-core
+           python-pytest
+           python-pyyaml))
     (inputs
-     (list gtk+ pciutils python-pygobject tlp usbutils))
+     (list gtk+
+           pciutils
+           python-pygobject
+           tlp
+           usbutils))
+    (propagated-inputs (list (librsvg-for-system)))
     (home-page "https://github.com/d4nj1/TLPUI")
     (synopsis "User interface for TLP written in Python")
     (description
