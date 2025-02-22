@@ -358,6 +358,36 @@ It is the default image viewer on LXDE desktop environment.")
     (home-page "https://lxde.sourceforge.net/gpicview/")
     (license license:gpl2+)))
 
+(define-public qimgv
+  (package
+    (name "qimgv")
+    (version "1.0.3-alpha")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/easymodo/qimgv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "05mk3vdqk4vzg8phqfkxy167iqycahlw1n69nx5myfp5rjii4wvw"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))          ;no tests
+    (native-inputs
+     (list exiv2
+           mpv
+           opencv
+           pkg-config
+           qtbase
+           qtsvg
+           qttools))
+    (home-page "https://github.com/easymodo/qimgv")
+    (synopsis "Qt image viewer with optional video support")
+    (description
+     "Qimgv is a configurable Qt image viewer, with optional video support.")
+    (license license:gpl3+)))
+
 (define-public sxiv
   (package
     (name "sxiv")
