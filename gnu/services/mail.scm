@@ -1600,7 +1600,7 @@ greyed out, instead of only later giving \"not selectable\" popup error.
     (list (shepherd-service
            (documentation "Run the Dovecot POP3/IMAP mail server.")
            (provision '(dovecot))
-           (requirement '(pam networking))
+           (requirement '(user-processes pam networking))
            (start #~(make-forkexec-constructor
                      (list (string-append #$dovecot "/sbin/dovecot")
                            "-F")))
@@ -1903,7 +1903,7 @@ exim_group = exim
     (($ <imap4d-configuration> package config-file)
      (list (shepherd-service
             (provision '(imap4d))
-            (requirement '(networking syslogd))
+            (requirement '(user-processes networking syslogd))
             (documentation "Run the imap4d daemon.")
             (start (let ((imap4d (file-append package "/sbin/imap4d")))
                      #~(make-forkexec-constructor
@@ -2195,7 +2195,7 @@ authentication plugin that extracts the username from the certificate.")
   (list (shepherd-service
          (provision '(radicale))
          (documentation "Run the radicale daemon.")
-         (requirement '(networking))
+         (requirement '(user-processes networking))
          (start #~(make-forkexec-constructor
                    (list #$(file-append (radicale-configuration-package cfg)
                                         "/bin/radicale")
@@ -2317,7 +2317,7 @@ in these files will override the defaults.")
    (boolean #f)
    "Do not apply Jinja templates.")
   (shepherd-requirements
-   (list-of-symbols '(loopback))
+   (list-of-symbols '(user-processes loopback))
    "This is a list of symbols naming Shepherd services that this service
 will depend on."))
 

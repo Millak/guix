@@ -506,7 +506,7 @@ is truncated and rewritten every minute.")
              (provision (match role
                           ('server '(vpn-server))
                           ('client '(vpn-client))))
-             (requirement '(networking))
+             (requirement '(user-processes networking))
              (start #~(make-forkexec-constructor
                        (list (string-append #$openvpn "/sbin/openvpn")
                              "--writepid" #$pid-file "--config" #$config-file
@@ -693,7 +693,7 @@ include ~a/*.conf"
   (let* ((ipsec (file-append strongswan "/sbin/ipsec"))
         (strongswan-conf-path (strongswan-configuration-file config)))
     (list (shepherd-service
-           (requirement '(networking))
+           (requirement '(user-processes networking))
            (provision '(ipsec))
            (start #~(make-forkexec-constructor
                      (list #$ipsec "start" "--nofork")

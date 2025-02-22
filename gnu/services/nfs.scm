@@ -74,7 +74,7 @@
 
            (shepherd-service
             (documentation "Start the RPC bind daemon.")
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (provision '(rpcbind-daemon))
 
             (start #~(make-forkexec-constructor #$rpcbind-command))
@@ -164,7 +164,7 @@ NFS-related data between the kernel and user-space programs."))))
 
            (shepherd-service
             (documentation "Start the RPC GSS daemon.")
-            (requirement '(rpcbind-daemon rpc-pipefs))
+            (requirement '(user-processes rpcbind-daemon rpc-pipefs))
             (provision '(gss-daemon))
 
             (start #~(make-forkexec-constructor #$gss-command))
@@ -236,7 +236,7 @@ RPC)."))))
 
            (shepherd-service
             (documentation "Start the RPC IDMAP daemon.")
-            (requirement '(rpcbind-daemon rpc-pipefs))
+            (requirement '(user-processes rpcbind-daemon rpc-pipefs))
             (provision '(idmap-daemon))
             (start #~(make-forkexec-constructor #$idmap-command))
             (stop #~(make-kill-destructor))))))

@@ -1008,7 +1008,7 @@ extensions that it uses."
     (list (shepherd-service
            (documentation "Run the CUPS print server.")
            (provision '(cups))
-           (requirement '(networking))
+           (requirement '(user-processes networking))
            (start #~(make-forkexec-constructor
                      (list (string-append #$cups "/sbin/cupsd")
                            "-f" "-c" #$cupsd.conf "-s" #$cups-files.conf)))

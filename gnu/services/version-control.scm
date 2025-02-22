@@ -136,7 +136,7 @@
                        ,@whitelist)))
        (list (shepherd-service
               (documentation "Run the git-daemon.")
-              (requirement '(networking))
+              (requirement '(user-processes networking))
               (provision '(git-daemon))
               (start #~(make-forkexec-constructor '#$command
                                                   #:user "git-daemon"

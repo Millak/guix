@@ -547,7 +547,7 @@ argument, either a registered username or the fingerprint of the account.")
                           ,@%default-modules))
                ;; The requirement on dbus-system is to ensure other required
                ;; activation for D-Bus, such as a /etc/machine-id file.
-               (requirement '(dbus-system syslogd))
+               (requirement '(user-processes dbus-system syslogd))
                (start
                 #~(lambda ()
                     (define pid
@@ -580,7 +580,7 @@ argument, either a registered username or the fingerprint of the account.")
                               list-banned-contacts-action
                               enable-account-action
                               disable-account-action))
-               (requirement '(jami-dbus-session))
+               (requirement '(user-processes jami-dbus-session))
                (modules `((ice-9 format)
                           (ice-9 ftw)
                           (ice-9 match)
@@ -944,7 +944,7 @@ Or set public-registration to #f"))))))))
   (list (shepherd-service
          (provision '(mumble-server))
          (documentation "Run the Mumble server.")
-         (requirement '(networking))
+         (requirement '(user-processes networking))
          (start #~(make-forkexec-constructor
                    '(#$(file-append (mumble-server-configuration-package config)
                                     "/bin/mumble-server")

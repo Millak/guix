@@ -196,7 +196,7 @@ HTTP.")
       (shepherd-service
        (documentation "Prometheus node exporter.")
        (provision '(prometheus-node-exporter))
-       (requirement '(networking))
+       (requirement '(user-processes networking))
        (start #~(make-forkexec-constructor
                  (list #$(file-append package "/bin/node_exporter")
                        "--web.listen-address" #$web-listen-address
@@ -630,7 +630,7 @@ resolution.")
     (match-record config <vnstat-configuration> (package pid-file)
       (shepherd-service
        (documentation "Run vnstatd.")
-       (requirement `(networking file-systems))
+       (requirement `(user-processes networking file-systems))
        (provision '(vnstatd))
        (start #~(make-forkexec-constructor
                  (list #$(file-append package "/sbin/vnstatd")

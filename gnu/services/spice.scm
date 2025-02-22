@@ -47,7 +47,7 @@
   (list
    (shepherd-service
     (documentation "Spice vdagentd service")
-    (requirement '(dbus-system))
+    (requirement '(user-processes dbus-system))
     (provision '(spice-vdagentd))
     (start #~(lambda args
                ;; spice-vdagentd supports being activated upon the client

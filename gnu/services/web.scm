@@ -471,7 +471,7 @@
      (list (shepherd-service
             (provision '(httpd))
             (documentation "The Apache HTTP Server")
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
                       `(#$(file-append package "/bin/httpd")
                         #$@(if config
@@ -960,7 +960,7 @@ renewed TLS certificates, or @code{include}d files.")
      (list (shepherd-service
             (provision '(fcgiwrap))
             (documentation "Run the fcgiwrap daemon.")
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
                       '(#$(file-append package "/sbin/fcgiwrap")
                         "-s" #$socket)
@@ -1144,7 +1144,7 @@ and the back-end of a Web service.")))
      (list (shepherd-service
             (provision '(php-fpm))
             (documentation "Run the php-fpm daemon.")
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
                       '(#$(file-append php "/sbin/php-fpm")
                         "--fpm-config"
@@ -1289,7 +1289,7 @@ a webserver.")
     (shepherd-service
      (documentation "hpcguix-web daemon")
      (provision     '(hpcguix-web))
-     (requirement   '(networking))
+     (requirement   '(user-processes networking))
      (start #~(make-forkexec-constructor
                (list #$(file-append hpcguix-web "/bin/hpcguix-web")
                      (string-append "--listen="
@@ -1426,6 +1426,7 @@ a webserver.")
     (($ <tailon-configuration> config-file package)
      (list (shepherd-service
             (provision '(tailon))
+            (requirement '(user-processes))
             (documentation "Run the tailon daemon.")
             (start #~(make-forkexec-constructor
                       `(,(string-append #$package "/bin/tailon")
@@ -1618,7 +1619,7 @@ files.")
             (provision (list (symbol-append 'varnish- (string->symbol name))))
             (documentation (string-append "The Varnish Web Accelerator"
                                           " (" name ")"))
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
                       (list #$(file-append package "/sbin/varnishd")
                             "-n" #$name
@@ -1678,6 +1679,7 @@ Whoogle."))
     (list
      (shepherd-service
       (provision '(whoogle-search))
+      (requirement '(user-processes))
       (start #~(make-forkexec-constructor
                 (list (string-append #$package "/bin/whoogle-search")
                       "--host" #$host "--port" #$(number->string port))
@@ -2066,7 +2068,7 @@ WSGIPassAuthorization On
      (list (shepherd-service
             (provision '(mumi))
             (documentation "Mumi bug-tracking web interface.")
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
                       `(#$(file-append mumi "/bin/mumi") "web"
                         ,@(if #$mailer? '() '("--disable-mailer")))
@@ -2077,7 +2079,7 @@ WSGIPassAuthorization On
            (shepherd-service
             (provision '(mumi-worker))
             (documentation "Mumi bug-tracking web interface database worker.")
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
                       '(#$(file-append mumi "/bin/mumi") "worker")
                       #:environment-variables #$environment
@@ -2087,7 +2089,7 @@ WSGIPassAuthorization On
            (shepherd-service
             (provision '(mumi-mailer))
             (documentation "Mumi bug-tracking web interface mailer.")
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
                       `(#$(file-append mumi "/bin/mumi") "mailer"
                         ,@(if #$sender
@@ -2142,7 +2144,7 @@ root=/srv/gemini
     (($ <gmnisrv-configuration> package config-file)
      (list (shepherd-service
             (provision '(gmnisrv))
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (documentation "Run the gmnisrv Gemini server.")
             (start (let ((gmnisrv (file-append package "/bin/gmnisrv")))
                      #~(make-forkexec-constructor
@@ -2231,7 +2233,7 @@ root=/srv/gemini
                               log-ip? user group log-file)
      (list (shepherd-service
             (provision '(agate))
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (documentation "Run the agate Gemini server.")
             (start (let ((agate (file-append package "/bin/agate")))
                      #~(make-forkexec-constructor

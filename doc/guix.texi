@@ -29519,7 +29519,7 @@ Ignore running workers as privileged users.
 @item @code{skip-template?} (default: @code{#f}) (type: boolean)
 Do not apply Jinja templates.
 
-@item @code{shepherd-requirements} (default: @code{(loopback)}) (type: list-of-symbols)
+@item @code{shepherd-requirements} (default: @code{(user-processes loopback)}) (type: list-of-symbols)
 This is a list of symbols naming Shepherd services that this service
 will depend on.
 

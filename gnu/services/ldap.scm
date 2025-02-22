@@ -229,7 +229,7 @@ whether systemd is installed.")
            (documentation "Run an 389 directory server instance.")
            (provision (list (symbol-append 'directory-server-
                                            (string->symbol instance-name))))
-           (requirement '())
+           (requirement '(user-processes))
            (start #~(make-forkexec-constructor
                      (list #$(file-append 389-ds-base "/sbin/dsctl")
                            #$instance-name "start")

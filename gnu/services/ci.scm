@@ -79,7 +79,7 @@
      (list (shepherd-service
             (documentation "Run Laminar.")
             (provision '(laminar))
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
                       (list #$(file-append laminar "/sbin/laminard"))
                       #:environment-variables

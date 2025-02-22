@@ -53,7 +53,7 @@
      (shepherd-service
       (documentation "PC/SC Smart Card Daemon")
       (provision '(pcscd))
-      (requirement '(syslogd))
+      (requirement '(user-processes syslogd))
       (start #~(lambda _
                  (let ((socket "/run/pcscd/pcscd.comm"))
                    (when (file-exists? socket)

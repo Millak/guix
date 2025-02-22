@@ -573,6 +573,7 @@ performs required management tasks for virtualized guests.")))
     (list (shepherd-service
            (documentation "Run the virtlog daemon.")
            (provision '(virtlogd))
+           (requirement '(user-processes))
            (start #~(make-forkexec-constructor
                      (list (string-append #$libvirt "/sbin/virtlogd")
                            "-f" #$config-file)))

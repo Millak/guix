@@ -53,7 +53,7 @@
     (list (shepherd-service
            (documentation "Run joycond.")
            (provision '(joycond))
-           (requirement '(bluetooth))
+           (requirement '(user-processes bluetooth))
            (start #~(make-forkexec-constructor
                      (list #$(file-append joycond "/bin/joycond"))))
            (stop #~(make-kill-destructor))))))
@@ -109,7 +109,7 @@ install udev rules required to use the controller as an unprivileged user.")
        (shepherd-service
         (documentation "The Battle for Wesnoth server")
         (provision '(wesnoth-daemon))
-        (requirement '(networking))
+        (requirement '(user-processes networking))
         (start #~(make-forkexec-constructor
                   (list #$wesnothd "-p" #$(number->string port))
                   #:user "wesnothd" #:group "wesnothd"))

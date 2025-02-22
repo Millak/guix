@@ -206,7 +206,7 @@ CONFIG, a <xvnc-configuration> object."
     (shepherd-service
      (provision '(xvnc vncserver))
      (documentation "Run the Xvnc server.")
-     (requirement '(networking syslogd))
+     (requirement '(user-processes networking syslogd))
      (start (if (xvnc-configuration-inetd? config)
                 #~(let* ((inaddr (if #$(xvnc-configuration-localhost? config)
                                      INADDR_LOOPBACK

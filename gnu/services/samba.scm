@@ -91,7 +91,7 @@
        (list (shepherd-service
               (documentation "Run Samba")
               (provision '(samba-samba))
-              (requirement '(networking))
+              (requirement '(user-processes networking))
               (start #~(make-forkexec-constructor
                         (list #$(file-append package "/sbin/samba")
                               (string-append "--configfile=" #$config-file)
@@ -105,7 +105,7 @@
        (list (shepherd-service
               (documentation "Run NMBD")
               (provision '(samba-nmbd))
-              (requirement '(networking))
+              (requirement '(user-processes networking))
               (start #~(make-forkexec-constructor
                         (list #$(file-append package "/sbin/nmbd")
                               (string-append "--configfile=" #$config-file)
@@ -119,7 +119,7 @@
        (list (shepherd-service
               (documentation "Run SMBD")
               (provision '(samba-smbd))
-              (requirement '(networking))
+              (requirement '(user-processes networking))
               (start #~(make-forkexec-constructor
                         (list #$(file-append package "/sbin/smbd")
                               (string-append "--configfile=" #$config-file)
@@ -133,7 +133,7 @@
        (list (shepherd-service
               (documentation "Run Winnbindd for Name Service Switch")
               (provision '(samba-winbindd))
-              (requirement '(networking))
+              (requirement '(user-processes networking))
               (start #~(make-forkexec-constructor
                         (list #$(file-append package "/sbin/winbindd")
                               (string-append "--configfile=" #$config-file)
@@ -222,7 +222,7 @@ controller or as a regular domain member.")
 like your local NAS device, to be found by Web Service Discovery Clients
 like Windows.")
             (provision '(wsdd))
-            (requirement '(networking))
+            (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
                       (list #$(file-append package "/bin/wsdd")
                             #$@(if ipv4only?

@@ -56,6 +56,7 @@ ignore\ndisk_error_action = syslog\n"))
     (list (shepherd-service
            (documentation "Auditd allows you to audit file system accesses and process execution.")
            (provision '(auditd))
+           (requirement '(user-processes))
            (start #~(make-forkexec-constructor
                      (list (string-append #$audit "/sbin/auditd") "-c" #$configuration-directory)
                      #:pid-file "/var/run/auditd.pid"))

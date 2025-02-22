@@ -721,7 +721,7 @@ down.")))
 
       (shepherd-service
         (documentation "Add TRNG to entropy pool.")
-        (requirement '(udev))
+        (requirement '(user-processes udev))
         (provision '(trng))
         (start #~(make-forkexec-constructor '#$rngd-command))
         (stop #~(make-kill-destructor))))
@@ -2791,7 +2791,7 @@ NAME-udev-hardware."
   (match-record config <gpm-configuration>
     (gpm options)
     (list (shepherd-service
-           (requirement '(udev))
+           (requirement '(user-processes udev))
            (provision '(gpm))
            ;; 'gpm' runs in the background and sets a PID file.
            ;; Note that it requires running as "root".

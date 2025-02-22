@@ -635,7 +635,7 @@ satisfy requests from peers."))
     (list
      (shepherd-service
       (provision '(transmission-daemon transmission bittorrent))
-      (requirement '(networking))
+      (requirement '(user-processes networking))
       (documentation "Share files using the BitTorrent protocol.")
       (start #~(make-forkexec-constructor
                 '(#$(file-append transmission "/bin/transmission-daemon")

@@ -304,7 +304,7 @@ is a list, it recursively searches it until it locates the last item of TREE."
     (list (shepherd-service
            (documentation "Run the UPower power and battery monitor.")
            (provision '(upower-daemon))
-           (requirement '(dbus-system udev))
+           (requirement '(user-processes dbus-system udev))
 
            (start #~(make-forkexec-constructor
                      (list (string-append #$upower "/libexec/upowerd"))
@@ -859,7 +859,7 @@ site} for more information."
   "Return a shepherd service for @command{bluetoothd}."
   (shepherd-service
    (provision '(bluetooth))
-   (requirement '(dbus-system udev))
+   (requirement '(user-processes dbus-system udev))
    (documentation "Run the bluetoothd daemon.")
    (start #~(make-forkexec-constructor
              (list #$(file-append (bluetooth-configuration-bluez config)
@@ -1303,7 +1303,7 @@ seats.)"
     (elogind-configuration-file config))
 
   (list (shepherd-service
-         (requirement '(dbus-system))
+         (requirement '(user-processes dbus-system))
          (provision '(elogind))
          (start #~(make-forkexec-constructor
                    (list #$(file-append (elogind-package config)
@@ -1953,7 +1953,7 @@ rules."
                                device))))
        (list (shepherd-service
               (provision '(inputattach))
-              (requirement '(udev))
+              (requirement '(user-processes udev))
               (documentation "inputattach daemon")
               (start #~(make-forkexec-constructor
                         (cons (string-append #$inputattach
@@ -2067,7 +2067,7 @@ or setting its password with passwd.")))
 (define (seatd-shepherd-service config)
   (list (shepherd-service
          (documentation "Minimal seat management daemon")
-         (requirement '())
+         (requirement '(user-processes))
          ;; TODO: once cgroups is separate dependency
          ;; here we should depend on it rather than elogind
          (provision '(seatd elogind))

@@ -469,7 +469,7 @@ more information)."
         (shepherd-service
          (documentation "Run the cachefilesd daemon for FS-Cache.")
          (provision '(cachefilesd))
-         (requirement (append '(file-systems)
+         (requirement (append '(user-processes file-systems)
                               (if use-syslog? '(syslogd) '())))
          (start #~(begin
                     (and=> #$(maybe-value cache-directory) mkdir-p)
@@ -523,7 +523,7 @@ the Linux @code{cachefiles} module.")
   (shepherd-service
    (documentation "Run rasdaemon")
    (provision '(rasdaemon))
-   (requirement '(syslogd))
+   (requirement '(user-processes syslogd))
    (start #~(make-forkexec-constructor
              '#$(rasdaemon-configuration->command-line-args config)))
    (stop #~(make-kill-destructor))))

@@ -334,7 +334,7 @@
      (shepherd-service
       (documentation "Guix Build Coordinator")
       (provision '(guix-build-coordinator))
-      (requirement '(networking))
+      (requirement '(user-processes networking))
       (start #~(lambda args
                  (parameterize ((%current-logfile-date-format ""))
                    (apply
@@ -585,7 +585,7 @@ ca-certificates.crt file in the system profile."
      (shepherd-service
       (documentation "Guix Data Service web server")
       (provision '(guix-data-service))
-      (requirement '(postgres networking))
+      (requirement '(user-processes postgres networking))
       (start #~(make-forkexec-constructor
                 (list #$(file-append package
                                      "/bin/guix-data-service")
@@ -612,7 +612,7 @@ ca-certificates.crt file in the system profile."
      (shepherd-service
       (documentation "Guix Data Service setup database")
       (provision '(guix-data-service-setup-database))
-      (requirement '(postgres))
+      (requirement '(user-processes postgres))
       (one-shot? #t)
       (start
        (with-extensions (cons package
@@ -647,7 +647,7 @@ ca-certificates.crt file in the system profile."
      (shepherd-service
       (documentation "Guix Data Service process jobs")
       (provision '(guix-data-service-process-jobs))
-      (requirement '(postgres networking))
+      (requirement '(user-processes postgres networking))
       (start #~(make-forkexec-constructor
                 (list
                  #$(file-append package
@@ -923,7 +923,7 @@ ca-certificates.crt file in the system profile."
      (shepherd-service
       (documentation "Nar Herder")
       (provision '(nar-herder))
-      (requirement '(networking))
+      (requirement '(user-processes networking))
       (start #~(make-forkexec-constructor
                 (list #$(file-append package
                                      "/bin/nar-herder")
@@ -1097,7 +1097,7 @@ ca-certificates.crt file in the system profile."
      (shepherd-service
       (documentation "Build Farm Front-end")
       (provision '(bffe))
-      (requirement '(networking))
+      (requirement '(user-processes networking))
       (start #~(make-forkexec-constructor
                 (list #$start-script)
                 #:user #$user

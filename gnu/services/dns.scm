@@ -700,7 +700,7 @@ cache.size = 100 * MB
      (list
       (shepherd-service
        (provision '(kresd))
-       (requirement '(networking))
+       (requirement '(user-processes networking))
        (documentation "Run the Knot Resolver daemon.")
        (start #~(make-forkexec-constructor
                  '(#$(file-append package "/sbin/kresd")
@@ -816,7 +816,7 @@ cache.size = 100 * MB
      tftp-root tftp-unique-root extra-options)
     (shepherd-service
      (provision (dnsmasq-provision config))
-     (requirement '(networking))
+     (requirement '(user-processes networking))
      (documentation "Run the dnsmasq DNS server.")
      (start #~(make-forkexec-constructor
                (list

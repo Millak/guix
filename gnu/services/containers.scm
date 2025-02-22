@@ -153,7 +153,8 @@ available for each configured user."))
 (define (rootless-podman-cgroups-fs-owner-service config)
   (shepherd-service (provision '(cgroups2-fs-owner))
                     (requirement
-                     '(dbus-system
+                     '(user-processes
+                       dbus-system
                        elogind
                        file-system-/sys/fs/cgroup
                        networking
@@ -180,7 +181,8 @@ available for each configured user."))
 (define (rootless-podman-cgroups-limits-service config)
   (shepherd-service (provision '(cgroups2-limits))
                     (requirement
-                     '(dbus-system
+                     '(user-processes
+                       dbus-system
                        elogind
                        networking
                        udev

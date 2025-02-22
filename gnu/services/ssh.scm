@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2019, 2022-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2019, 2022-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
@@ -218,7 +218,8 @@
                      interfaces)))))
 
   (define requires
-    `(networking
+    `(user-processes
+      networking
       pam
       ,@(if (and daemonic? (lsh-configuration-syslog-output? config))
             '(syslogd)
@@ -595,7 +596,7 @@ of user-name/file-like tuples."
 
          ;; On the Hurd, this can only be started after pfinet is up, hence
          ;; the dependency on 'networking'.
-         (requirement '(pam syslogd loopback networking))
+         (requirement '(user-processes pam syslogd loopback networking))
          (provision '(ssh-daemon ssh sshd))
 
          (start #~(if #$inetd-style?
@@ -726,7 +727,8 @@ of user-name/file-like tuples."
 
   (define requires
     (if (dropbear-configuration-syslog-output? config)
-        '(networking syslogd) '(networking)))
+        '(user-processes networking syslogd)
+        '(user-processes networking)))
 
   (list (shepherd-service
          (documentation "Dropbear SSH server.")
@@ -794,6 +796,7 @@ object."
   (shepherd-service
    (documentation "Automatically set up ssh connections (and keep them alive).")
    (provision '(autossh))
+   (requirement '(user-processes))
    (start #~(make-forkexec-constructor
              (list #$(file-append autossh "/bin/autossh")
                    #$@(autossh-configuration-ssh-options config))

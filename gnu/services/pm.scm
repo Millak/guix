@@ -511,6 +511,7 @@ shutdown on system startup."))
   (list
    (shepherd-service
     (provision '(thermald))
+    (requirement '(user-processes))
     (documentation "Run thermald cpu frequency scaling.")
     (start #~(make-forkexec-constructor
               '(#$(file-append (thermald-thermald config) "/sbin/thermald")

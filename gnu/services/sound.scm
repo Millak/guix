@@ -301,7 +301,7 @@ the configuration files of the speaker models.")
     (shepherd-service
      (documentation "Run the speaker safety daemon")
      (provision '(speakersafetyd))
-     (requirement '(udev))
+     (requirement '(user-processes udev))
      (start #~(make-forkexec-constructor
                (list #$(file-append speakersafetyd "/bin/speakersafetyd")
                      "--config-path" #$configuration-directory

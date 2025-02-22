@@ -277,6 +277,7 @@ please use 'modules' instead~%")))
                                   "--config" #$config-file "--daemon")))
       (list (shepherd-service
              (provision '(rsync))
+             (requirement '(user-processes))
              (documentation "Run rsync daemon.")
              (actions (list (shepherd-configuration-action config-file)))
              (start #~(if #$inetd-style?

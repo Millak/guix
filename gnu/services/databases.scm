@@ -443,7 +443,7 @@ rolname = '" ,name "')) as not_exists;\n"
   (match-record config <postgresql-role-configuration>
     (log)
     (list (shepherd-service
-           (requirement '(postgres))
+           (requirement '(user-processes postgres))
            (provision '(postgres-roles))
            (one-shot? #t)
            (start
