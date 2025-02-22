@@ -40800,10 +40800,17 @@ amounts of memory.")
        (sha256
         (base32
          "1irx7qg1sw69ggsk4jgxfd3pp741kd944fipnda1qbcbphg5prrq"))))
-    (properties `((upstream-name . "Boruta")))
+    (properties
+     '((upstream-name . "Boruta")
+       (updater-extra-native-inputs
+        . ("r-randomforest" "r-survival" "r-xgboost"))))
     (build-system r-build-system)
     (propagated-inputs (list r-ranger))
-    (native-inputs (list r-rferns r-testthat))
+    (native-inputs (list r-randomforest
+                         r-rferns
+                         r-survival
+                         r-testthat
+                         r-xgboost))
     (home-page "https://gitlab.com/mbq/Boruta/")
     (synopsis "Wrapper algorithm for all relevant feature selection")
     (description
