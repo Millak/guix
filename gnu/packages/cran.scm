@@ -3979,6 +3979,32 @@ Currently handlers are provided for CDK, MOE and BCI fingerprint data.")
     ;; Any version of the GPL
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-fishmethods
+  (package
+    (name "r-fishmethods")
+    (version "1.13-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fishmethods" version))
+       (sha256
+        (base32 "07y58zr4m2nb9q3m3rqjxbxysf9br6ss22l4857w59mcnjfrx8c7"))))
+    (properties `((upstream-name . "fishmethods")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-boot
+                             r-bootstrap
+                             r-data-table
+                             r-lme4
+                             r-mass
+                             r-numderiv
+                             r-tmb))
+    (home-page "https://cran.r-project.org/package=fishmethods")
+    (synopsis "Fishery science methods and models")
+    (description
+     "This package provides functions for applying a wide range of fisheries
+stock assessment methods.")
+    (license license:gpl2+)))
+
 (define-public r-fixest
   (package
     (name "r-fixest")
