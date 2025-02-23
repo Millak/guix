@@ -19512,7 +19512,35 @@ functions.")
        (sha256
         (base32
          "01jz0rflzc0f4lwnmmk8s2vj281l2ch75avcbin0b4wis48xrj2q"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-broom"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; These all fail with: 'write_xml.xml_document(private$doc, file
+             ;; = private$filename)`: Error closing file
+             (substitute* "tests/testthat/test-as_flextable.R"
+               ((".*grouped data structure.*" m)
+                (string-append m "skip('skip');\n")))
+             (substitute* "tests/testthat/test-link.R"
+               ((".*URL are preserved in pptx.*" m)
+                (string-append m "skip('skip');\n")))
+             (substitute* "tests/testthat/test-pptx-tables.R"
+               ((".*(row height is valid|location is correct).*" m)
+                (string-append m "skip('skip');\n")))
+             (substitute* "tests/testthat/test-rotations.R"
+               ((".*pptx rotations.*" m)
+                (string-append m "skip('skip');\n")))
+             (substitute* "tests/testthat/test-styles.R"
+               ((".*borders with office docs are sanitized.*" m)
+                (string-append m "skip('skip');\n")))
+             (substitute* "tests/testthat/test-text.R"
+               ((".*pptx - string are html encoded.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs
      (list r-data-table
            r-gdtools
@@ -19525,7 +19553,7 @@ functions.")
            r-uuid
            r-xml2))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-broom r-knitr r-testthat))
     (home-page "https://davidgohel.github.io/flextable")
     (synopsis "Functions for tabular reporting")
     (description
