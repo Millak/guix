@@ -22523,27 +22523,21 @@ of commands is displayed in a handy popup.")
 (define-public emacs-ws-butler
   (package
     (name "emacs-ws-butler")
-    (version "0.7")
+    (version "1.1")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/lewang/ws-butler")
-             (commit "v0.7")))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://elpa.nongnu.org/nongnu/ws-butler-" version
+                           ".tar"))
        (sha256
-        (base32 "17f73isx2wdwzjcxparyy7ngl4cha0g69da1d72b3yidzim1kh6h"))))
+        (base32 "1vy7g2ryg1drcz9zpn011d36zcd9a5b5yny5hwpjrllqj5dg73jx"))))
     (build-system emacs-build-system)
-    (arguments
-     `(#:tests? #t
-       #:test-command '("ert-runner" "tests")))
-    (native-inputs
-     (list emacs-ert-runner))
-    (home-page "https://github.com/lewang/ws-butler")
-    (synopsis "Trim spaces from end of lines")
+    (home-page "https://elpa.nongnu.org/nongnu/ws-butler.html")
+    (synopsis "Unobtrusively remove trailing whitespace")
     (description
-     "This Emacs package automatically and unobtrusively trims whitespace
-characters from end of lines.")
+     "ws-butler automatically trims trailing whitespace characters on save.
+In contrast with other whitespace cleanup solutions, only modified lines are
+trimmed.")
     (license license:gpl3+)))
 
 (define-public emacs-opencl-mode
