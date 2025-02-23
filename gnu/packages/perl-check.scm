@@ -16,6 +16,7 @@
 ;;; Copyright © 2018 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2020 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -119,18 +120,40 @@ lexically, just dynamically.")
 etc built upon the Test2 testing library.")
     (license perl-license)))
 
+(define-public perl-test2-tools-command
+  (package
+    (name "perl-test2-tools-command")
+    (version "0.20")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/J/JM/JMATES/Test2-Tools-Command-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0n388mc1rqfd960yyfn74lgxwrv2b5yrijxf499g7xdvaj44crn4"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test2-suite))
+    (propagated-inputs (list perl-file-chdir perl-test2-suite))
+    (home-page "https://metacpan.org/release/Test2-Tools-Command")
+    (synopsis "Test simple Unix commands")
+    (description "This module tests that commands given particular arguments
+result in particular outputs by way of the exit status word, standard output,
+and standard error.")
+    (license bsd-3)))
+
 (define-public perl-test2-plugin-nowarnings
   (package
     (name "perl-test2-plugin-nowarnings")
     (version "0.06")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "mirror://cpan/authors/id/D/DR/DROLSKY/Test2-Plugin-NoWarnings-"
-                            version ".tar.gz"))
-        (sha256
-         (base32
-          "002qk6qsm0l6r2kaxywvc38w0yf0mlavgywq8li076pn6kcw3242"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/D/DR/DROLSKY/Test2-Plugin-NoWarnings-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "002qk6qsm0l6r2kaxywvc38w0yf0mlavgywq8li076pn6kcw3242"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-ipc-run3))
