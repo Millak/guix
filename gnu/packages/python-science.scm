@@ -4074,16 +4074,10 @@ numerical computation.")
               (sha256
                (base32
                 "0jb5lia0q742d1713jk33vlj41y61sf52j6pgk7pvhxvfxglgxjr"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy))
-    (native-inputs (list python-pytest python-pytest-cov python-pytest-pep8))
+    (native-inputs
+     (list python-pytest python-pytest-cov python-setuptools python-wheel))
     (home-page "https://github.com/dgasmith/opt_einsum")
     (synopsis "Optimizing numpys einsum function")
     (description
