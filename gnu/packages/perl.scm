@@ -6669,6 +6669,26 @@ logging mechanism.")
 @code{Log::Any} adapter using @code{Log::Log4perl} for logging.")
     (license (package-license perl))))
 
+(define-public perl-log-any-adapter-screen
+  (package
+  (name "perl-log-any-adapter-screen")
+  (version "0.140")
+  (source (origin
+            (method url-fetch)
+            (uri (string-append
+                  "mirror://cpan/authors/id/P/PE/PERLANCAR/Log-Any-Adapter-Screen-"
+                  version ".tar.gz"))
+            (sha256
+             (base32
+              "1bl8n0d7wsfj3dijxi1bh65qfz75i1qbp14wkk3bsjv895fz6awr"))))
+  (build-system perl-build-system)
+  (propagated-inputs (list perl-log-any))
+  (home-page "https://metacpan.org/release/Log-Any-Adapter-Screen")
+  (synopsis "Send logs to screen, with colors and some other features")
+  (description "This module provides a @code{Log::Any} adapter to send log
+messages to screen, with colors and some other features.")
+  (license (package-license perl))))
+
 (define-public perl-log-contextual
   (package
     (name "perl-log-contextual")
