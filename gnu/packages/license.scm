@@ -183,19 +183,25 @@ string and serializes them in a normalized format.")
            perl-string-copyright
            perl-string-escape
            perl-string-license))
-    (inputs (list bash-minimal))         ; for wrap-program
+    (inputs (list bash-minimal))        ; for wrap-program
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (perllib (string-append out "/lib/perl5/site_perl/"
-                                            ,(package-version perl))))
-               (wrap-program (string-append out "/bin/licensecheck")
-                 `("PERL5LIB" ":"
-                   prefix (,(string-append perllib ":" (getenv "PERL5LIB")))))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-licensecheck
+            (lambda _
+              (let ((licensecheck (string-append #$output "/bin/licensecheck"))
+                    (perl5lib (string-append #$output "/lib/perl5/site_perl/"
+                                             #$(package-version perl))))
+                (wrap-program licensecheck
+                  `("PERL5LIB" ":" prefix
+                    ,(list perl5lib (getenv "PERL5LIB")))))))
+          (add-after 'wrap-licensecheck 'check-wrap
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (unsetenv "PERL5LIB")
+                (invoke/quiet (string-append #$output "/bin/licensecheck")
+                              "--version")))))))
     (home-page "https://metacpan.org/release/App-Licensecheck")
     (synopsis "License checker for source files")
     (description "Licensecheck attempts to determine the license that applies
