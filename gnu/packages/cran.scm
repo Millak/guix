@@ -33944,36 +33944,6 @@ extraction and variable selection) as well as conversion between indices of
 effect size.")
     (license license:gpl3)))
 
-(define-public r-rgdal
-  (package
-    (name "r-rgdal")
-    (version "1.6-7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "rgdal" version))
-       (sha256
-        (base32 "0cxfmm7niixw3dnbqm7a00603dyqjrphajqx0q5vjpdhmpyysp2m"))))
-    (properties
-     `((upstream-name . "rgdal")
-       (updater-extra-inputs . ("gdal" "proj"))
-       ;; These are only needed for Windows
-       (updater-ignored-inputs . ("curl" "openssl" "openssh" "pcre2"))))
-    (build-system r-build-system)
-    (inputs
-     (list gdal proj zlib))
-    (propagated-inputs
-     (list r-sp))
-    (native-inputs
-     (list pkg-config r-knitr r-sf))
-    (home-page "https://rgdal.r-forge.r-project.org")
-    (synopsis "Bindings for the Geospatial Data Abstraction Library")
-    (description
-     "This package provides bindings to the Geospatial Data Abstraction
-Library (GDAL) and access to projection/transformation operations from the
-PROJ.4 library.")
-    (license license:gpl2+)))
-
 (define-public r-insol
   (package
     (name "r-insol")
