@@ -4,6 +4,7 @@
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages python-build)
@@ -92,6 +94,38 @@ Regexp::Pattern is a convention for organizing reusable regex patterns.")
     (description "String::Copyright Parses common styles of copyright
 statements and serializes in normalized format.")
     (license gpl3+)))
+
+(define-public perl-string-license
+  (package
+    (name "perl-string-license")
+    (version "0.0.9")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/J/JO/JONASS/String-License-v"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1dbw8rgwdlgnlvscijpb2dnw5irfd6wvca587bprq5kk19mf7jzf"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-file-basedir
+                         perl-regexp-pattern-license
+                         perl-software-license
+                         perl-test-without-module
+                         perl-test2-suite
+                         perl-yaml-libyaml))
+    (propagated-inputs (list perl-array-intspan
+                             perl-feature-compat-class
+                             perl-log-any
+                             perl-namespace-clean
+                             perl-path-tiny
+                             perl-regexp-pattern
+                             perl-regexp-pattern-license))
+    (home-page "https://metacpan.org/release/String-License")
+    (synopsis "Detect source code license statements in a text string")
+    (description "@code{String::License} identifies license statements in a
+string and serializes them in a normalized format.")
+    (license agpl3+)))
 
 (define-public perl-software-license
   (package
