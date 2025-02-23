@@ -933,7 +933,6 @@ be stripped.")
 
 (define-public go-github-com-alecthomas-kingpin-v2
   (package
-    (inherit go-github-com-alecthomas-kingpin)
     (name "go-github-com-alecthomas-kingpin-v2")
     (version "2.4.0")
     (source
@@ -945,14 +944,20 @@ be stripped.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "12xl62xzwq2h71hp1i0133403zhyqwsh95sr870fx18wmpqh8shf"))))
+    (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/alecthomas/kingpin/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-alecthomas-units
            go-github-com-xhit-go-str2duration-v2))
-    (native-inputs
-     (list go-github-com-stretchr-testify))))
+    (home-page "https://github.com/alecthomas/kingpin")
+    (synopsis "Go library provides utilities for building command line interfaces")
+    (description
+     "Go library provides utilities for building command line interfaces.")
+    (license license:expat)))
 
 (define-public go-github-com-alecthomas-kong
   (package
