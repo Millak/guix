@@ -6807,7 +6807,9 @@ as of close of business.  Perform date arithmetic in units of \"months\" and
               (sha256
                (base32
                 "1hg1jr0y11v93mqg2kn8n841nbsiffhyyr2kswj7kk664vlpril0"))))
-    (properties `((upstream-name . "Morpho")))
+    (properties
+     '((upstream-name . "Morpho")
+       (updater-extra-native-inputs . ("r-shapes"))))
     (build-system r-build-system)
     (propagated-inputs (list r-bezier
                              r-colorramps
@@ -6821,7 +6823,7 @@ as of close of business.  Perform date arithmetic in units of \"months\" and
                              r-rgl
                              r-rvcg
                              r-sf))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-shapes r-testthat))
     (home-page "https://github.com/zarquon42b/Morpho")
     (synopsis
      "Calculations and visualizations related to geometric morphometrics")
