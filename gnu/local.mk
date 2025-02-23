@@ -424,6 +424,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/kerberos.scm			\
   %D%/packages/kodi.scm				\
   %D%/packages/language.scm			\
+  %D%/packages/lc0.scm			\
   %D%/packages/lean.scm				\
   %D%/packages/lego.scm				\
   %D%/packages/less.scm				\
