@@ -10837,6 +10837,26 @@ known prefixes.")
 that they won't be changed.")
     (license (package-license perl))))
 
+(define-public perl-string-trim-more
+  (package
+    (name "perl-string-trim-more")
+    (version "0.03")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PERLANCAR/String-Trim-More-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0zsfq6350pnaxpa0g5syh3w04qx5fa6svw1idxy8k4ha7vbzp73k"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/String-Trim-More")
+    (synopsis "String trimming utilities")
+    (description "This module is an alternative to @code{String::Trim}.
+Instead of a single @code{trim} function, this module provides several from
+which you can choose on, depending on your needs.")
+    (license (package-license perl))))
+
 (define-public perl-string-print
   (package
     (name "perl-string-print")
