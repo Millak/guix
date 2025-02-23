@@ -47824,43 +47824,6 @@ predicting the environmental similarity of any site to that of the locations
 of known occurrences of a species.")
     (license license:gpl3+)))
 
-(define-public r-zoon
-  (package
-    (name "r-zoon")
-    (version "0.6.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "zoon" version))
-       (sha256
-        (base32
-         "02y29vr2yn8al69km8faiqrwjrc1r3hsvw3dg8lwjr65cxw1krip"))))
-    (properties `((upstream-name . "zoon")))
-    (build-system r-build-system)
-    ;; Some tests try to fetch files from the internet.
-    (arguments (list #:tests? #false))
-    (propagated-inputs
-     (list r-dismo
-           r-plyr
-           r-randomforest
-           r-raster
-           r-rcurl
-           r-rfigshare
-           r-rgdal
-           r-roxygen2
-           r-rworldmap
-           r-sp
-           r-testthat))
-    (native-inputs
-     (list r-knitr))
-    (home-page "https://github.com/zoonproject/zoon")
-    (synopsis "Reproducible, accessible and shareable species distribution modelling")
-    (description
-     "This package reads user submitted modules from an online repository,
-runs full species distribution modelling workflows and returns output that is
-fully reproducible.")
-    (license license:bsd-3)))
-
 (define-public r-paws-common
   (package
     (name "r-paws-common")
