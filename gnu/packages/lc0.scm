@@ -38,7 +38,7 @@
 (define-public lc0
   (package
     (name "lc0")
-    (version "0.30.0")
+    (version "0.31.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -53,7 +53,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m7k8m8iz4pxv3h9g2j1dkgryi4k9c1bcg3fx5j7ii4ysif63kj3"))))
+                "0hhil95vwx3vval8wz5k8cr3djj2lgy5racahmj9xjaj7h6as1pk"))))
     (build-system meson-build-system)
     (arguments
      (list
