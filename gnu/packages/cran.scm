@@ -14996,9 +14996,11 @@ their own grammars and easily expose them in R packages.")
        (uri (cran-uri "tinylabels" version))
        (sha256
         (base32 "01pvnirma3wzfqnnz8zvyqajjyysjm3sd6813bgdhz199lcg7hhz"))))
-    (properties `((upstream-name . "tinylabels")))
+    (properties
+     '((upstream-name . "tinylabels")
+       (updater-extra-native-inputs . ("r-vctrs"))))
     (build-system r-build-system)
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat r-vctrs))
     (home-page "https://github.com/mariusbarth/tinylabels")
     (synopsis "Lightweight variable labels")
     (description
