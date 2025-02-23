@@ -5088,6 +5088,28 @@ interface XS for C++; it is a thin layer over plain XS.")
 link Fortran libraries into C libraries.")
     (license (package-license perl))))
 
+(define-public perl-feature-compat-class
+  (package
+    (name "perl-feature-compat-class")
+    (version "0.06")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PEVANS/Feature-Compat-Class-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1hsyjza638pmmasyk6qjw9mbzjpm3cfjdrs09ww0ylarjk1z7s7q"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-object-pad))
+    (home-page "https://metacpan.org/release/Feature-Compat-Class")
+    (synopsis "Forward-compatible @code{class} syntax in Perl")
+    (description "This module provides the @code{class} keyword and related
+others (@code{method}, @code{field} and @code{ADJUST}) in a forward-compatible
+way.")
+    (license (package-license perl))))
+
 (define-public perl-file-changenotify
   (package
     (name "perl-file-changenotify")
