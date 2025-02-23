@@ -48459,29 +48459,6 @@ motivated by research into the merits of different zoning systems.  A flexible
 concentric rings and radial lines emanating from a central point.")
     (license license:gpl3)))
 
-(define-public r-zonator
-  (package
-    (name "r-zonator")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "zonator" version))
-       (sha256
-        (base32
-         "1plxchpd4ypp36phl13pi9yvlrqi3lk83lv5rldrhdqynhcgfw2k"))))
-    (properties `((upstream-name . "zonator")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-ggplot2 r-raster r-rcolorbrewer r-reshape2 r-rgdal))
-    (native-inputs (list r-knitr r-testthat))
-    (home-page "https://cbig.github.io/zonator/")
-    (synopsis "Utilities for Zonation spatial conservation prioritization")
-    (description
-     "Create new analysis setups and deal with results of Zonation
-conservation prioritization software.")
-    (license license:bsd-2)))
-
 (define-public r-mmwrweek
   (package
     (name "r-mmwrweek")
