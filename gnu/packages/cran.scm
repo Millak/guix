@@ -44945,7 +44945,10 @@ the comparison of different learning algorithms.")
        (uri (cran-uri "mlr3mbo" version))
        (sha256
         (base32 "0q3rr4dq13sjalsjm27ggn6g2kqxlnr2rdq2gbawxglnad50ws0n"))))
-    (properties `((upstream-name . "mlr3mbo")))
+    (properties
+     '((upstream-name . "mlr3mbo")
+       (updater-extra-native-inputs
+        . ("r-dicekriging" "r-emoa" "r-fastghquad" "r-ranger" "r-rgenoud"))))
     (build-system r-build-system)
     (propagated-inputs (list r-bbotk
                              r-checkmate
@@ -44957,9 +44960,14 @@ the comparison of different learning algorithms.")
                              r-paradox
                              r-r6
                              r-spacefillr))
-    (native-inputs (list r-mlr3learners
+    (native-inputs (list r-dicekriging
+                         r-emoa
+                         r-fastghquad
+                         r-mlr3learners
                          r-mlr3pipelines
+                         r-ranger
                          r-redux
+                         r-rgenoud
                          r-rush
                          r-testthat))
     (home-page "https://mlr3mbo.mlr-org.com")
