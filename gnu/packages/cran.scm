@@ -42840,7 +42840,9 @@ more.")
        (sha256
         (base32
          "120xfm12w8pfqjbmmzsyc01qnffbb1n514dgw9v9gmqdy5l70i6s"))))
-    (properties `((upstream-name . "workflows")))
+    (properties
+     '((upstream-name . "workflows")
+       (updater-extra-native-inputs . ("r-dials"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -42854,7 +42856,7 @@ more.")
            r-tidyselect
            r-vctrs))
     (native-inputs
-     (list r-knitr r-modeldata r-recipes r-testthat))
+     (list r-dials r-knitr r-modeldata r-recipes r-testthat))
     (home-page "https://github.com/tidymodels/workflows")
     (synopsis "Modeling workflows")
     (description
