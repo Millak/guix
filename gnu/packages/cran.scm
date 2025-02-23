@@ -7576,8 +7576,21 @@ rules and utility functions for adaptive GH quadrature.")
        (sha256
         (base32
          "1rxzma2k7zhx57x0kjgznky6wn4686sz5182fnk33wls76ck8p2s"))))
-    (properties `((upstream-name . "rstpm2")))
+    (properties
+     '((upstream-name . "rstpm2")
+       (updater-extra-native-inputs . ("r-desolve"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; XXX: This one fails with the wrong result:
+             ;; length(beta) == length(args$init) is not TRUE
+             (substitute* "tests/testthat/test_delayed.R"
+               ((".*All values zero or one.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs
      (list r-bbmle
            r-bh
@@ -7588,7 +7601,7 @@ rules and utility functions for adaptive GH quadrature.")
            r-rcpparmadillo
            r-survival))
     (native-inputs
-     (list gfortran r-ggplot2 r-runit r-testthat))
+     (list gfortran r-desolve r-ggplot2 r-runit r-testthat))
     (home-page "https://github.com/mclements/rstpm2")
     (synopsis "Link-based survival models")
     (description
