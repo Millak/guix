@@ -3214,19 +3214,13 @@ each of the environments.")
               (sha256
                (base32
                 "0959qfxb4ayvfxvmpargvh4zfhwdq5l77gczhzv33bhmfblk8ccm"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             ;; It's easier to run tests after install.
-             ;; Make installed package available for running the tests
-             (add-installed-pythonpath inputs outputs)
-             (invoke "py.test" "-vv" "-k" "not test_syntax_error"))))))
+     (list
+      #:test-flags
+      '(list "-k" "not test_syntax_error")))
     (native-inputs
-     (list python-coverage python-pytest python-pytest-pep8))
+     (list python-coverage python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-pyflakes))
     (home-page "https://github.com/fschulze/pytest-flakes")
