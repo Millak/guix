@@ -38,6 +38,7 @@
 /doc/guix*.html
 /doc/guix*.info
 /doc/guix*.info-[0-9]
+/doc/guix*.info-[0-9][0-9]
 /doc/guix*.ky
 /doc/guix*.pg
 /doc/guix*.toc
