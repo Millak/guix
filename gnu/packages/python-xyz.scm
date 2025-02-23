@@ -3509,17 +3509,17 @@ planar geometric objects.  It is based on the @code{GEOS} library.")
 (define-public python-shortuuid
   (package
     (name "python-shortuuid")
-    (version "0.5.0")
+    (version "1.0.13")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "shortuuid" version))
        (sha256
         (base32
-         "1f8i4zwj5vmpzbz6b17bljy4399gx5aq7vsyw63sz2qgyjcd73yh"))))
-    (build-system python-build-system)
+         "0wjygiwk07irgqmr29bv7rvq9pc71ff3jinzn620a9h6yq3wzf9v"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pep8))
+     (list python-poetry-core python-pytest))
     (home-page "https://github.com/skorokithakis/shortuuid")
     (synopsis "Generator library for concise, unambiguous and URL-safe UUIDs")
     (description
