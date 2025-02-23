@@ -9118,6 +9118,32 @@ It tracks the latest version of the same @code{vhdl-mode} package included
 with Emacs.")
     (license license:gpl3+)))
 
+(define-public emacs-vhdl-ts-mode
+  (package
+    (name "emacs-vhdl-ts-mode")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gmlarumbe/vhdl-ts-mode/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vqq1819czzliicanv00hhv13zy9apvj4326pnj9n3iqx45q6a96"))))
+    (build-system emacs-build-system)
+    (arguments
+     ;; the testing framework, test-hdl, requires network
+     `(#:tests? #f
+       #:test-command '("make")))
+    (home-page "https://github.com/gmlarumbe/vhdl-ts-mode/")
+    (synopsis "VHDL Tree-sitter mode")
+    (description
+     "VHDL-ts-mode provides syntax highlighting, indentation, imenu,
+which-func, navigation and basic beautify and completion features to navigate
+and edit VHDL files.")
+    (license license:gpl3+)))
+
 (define-public emacs-mode-line-bell
   (package
     (name "emacs-mode-line-bell")
