@@ -1243,10 +1243,17 @@ safety and thread safety guarantees.")
                              ,@(make-ignore-test-list
                                  '("fn multiple_shared"
                                    "fn multiple_download"
-                                   "fn download_then_mutate")))
+                                   "fn download_then_mutate"
+                                   "fn mutate_err_is_atomic")))
                            (substitute* "global_cache_tracker.rs"
                              ,@(make-ignore-test-list
-                                 '("fn package_cache_lock_during_build")))))))
+                                 '("fn package_cache_lock_during_build"))))
+                         (with-directory-excursion "src/tools/clippy/tests"
+                           ;; `"vectorcall"` is not a supported ABI for the current target
+                           (delete-file "ui/missing_const_for_fn/could_be_const.rs")
+                           (substitute* "missing-test-files.rs"
+                             ,@(make-ignore-test-list
+                                '("fn test_missing_tests")))))))
                    `())
              ,@(if (target-aarch64?)
                    ;; Keep this phase separate so it can be adjusted without needing
