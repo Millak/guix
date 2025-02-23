@@ -37,6 +37,7 @@
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2020, 2023 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;;
@@ -12938,6 +12939,28 @@ neither visible nor modifiable from Perl space).")
      "This module provides some XS functions to assist in writing
 syntax modules that provide new perl-visible syntax, primarily for authors of
 keyword plugins using the @code{PL_keyword_plugin} hook mechanism.")
+    (license (package-license perl))))
+
+(define-public perl-xs-parse-sublike
+  (package
+    (name "perl-xs-parse-sublike")
+    (version "0.18")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PEVANS/XS-Parse-Sublike-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0m2iv6sfkkj6ckx7nprniqrj5qg2qyir8ns8l2rwmqnvxw2pqq16"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test2-suite))
+    (home-page "https://metacpan.org/release/XS-Parse-Sublike")
+    (synopsis "XS functions to assist in parsing sub-like syntax")
+    (description
+     "This module provides some XS functions to assist in writing parsers for
+@code{sub}-like syntax, primarily for authors of keyword plugins using the
+@code{PL_keyword_plugin} hook mechanism.")
     (license (package-license perl))))
 
 (define-public perl-yaml
