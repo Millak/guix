@@ -33,6 +33,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages web)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
@@ -152,7 +153,7 @@ string and serializes them in a normalized format.")
 (define-public licensecheck
   (package
     (name "licensecheck")
-    (version "3.0.37")
+    (version "3.3.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -160,33 +161,29 @@ string and serializes them in a normalized format.")
                     "v" version ".tar.gz"))
               (sha256
                (base32
-                "12l83zf85zagpagizmzy3bwkc659sbzqf18cycx8g4h6d3mc5kqw"))))
+                "17sfw2cz5x339zq6xc2nfjps2vwpj3d307v90gva498fvnlk1y4y"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-regexp-pattern
-           perl-software-license
-           perl-test-requires
-           perl-test-roo
-           perl-test-script
-           perl-universal-require
-           perl-number-range
-           perl-sub-quote))
+     (list perl-encode-locale
+           perl-regexp-pattern-license
+           perl-string-copyright
+           perl-test-without-module
+           perl-test2-suite
+           perl-test2-tools-command))
     (propagated-inputs
-     `(("perl-getopt-long-descriptive" ,perl-getopt-long-descriptive)
-       ("perl-moo" ,perl-moo-2)
-       ("perl-namespace-clean" ,perl-namespace-clean)
-       ("perl-path-iterator-rule" ,perl-path-iterator-rule)
-       ("perl-path-tiny" ,perl-path-tiny)
-       ("perl-pod-constants" ,perl-pod-constants)
-       ("perl-regexp-pattern-license" ,perl-regexp-pattern-license)
-       ("perl-sort-key" ,perl-sort-key)
-       ("perl-strictures" ,perl-strictures-2)
-       ("perl-string-copyright" ,perl-string-copyright)
-       ("perl-string-escape" ,perl-string-escape)
-       ("perl-try-tiny" ,perl-try-tiny)
-       ("perl-module-runtime" ,perl-module-runtime)))
-    (inputs
-     `(("bash" ,bash-minimal))) ; for wrap-program
+     (list perl-feature-compat-class
+           perl-feature-compat-try
+           perl-io-interactive
+           perl-log-any
+           perl-log-any-adapter-screen
+           perl-namespace-clean
+           perl-path-iterator-rule
+           perl-path-tiny
+           perl-pod-constants
+           perl-string-copyright
+           perl-string-escape
+           perl-string-license))
+    (inputs (list bash-minimal))         ; for wrap-program
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -204,7 +201,7 @@ string and serializes them in a normalized format.")
     (description "Licensecheck attempts to determine the license that applies
 to each file passed to it, by searching the start of the file for text
 belonging to various licenses.")
-    (license (package-license perl))))
+    (license agpl3+)))
 
 (define-public reuse
   (package
