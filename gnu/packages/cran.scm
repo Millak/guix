@@ -22588,10 +22588,12 @@ detection, parallelism through BLAS and parallel user templates.")
        (uri (cran-uri "sjstats" version))
        (sha256
         (base32 "07qv32gnrhrl21zgj1xp1gqdqjn6ax1nf40s11nmpag8r0xgvqnk"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-mass"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-datawizard r-effectsize r-insight r-parameters r-performance))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-mass r-testthat))
     (home-page "https://github.com/strengejacke/sjstats")
     (synopsis "Functions for common statistical computations")
     (description
