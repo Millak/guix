@@ -153,6 +153,7 @@
 ;;; Copyright © 2024 Divya Ranjan Pattanaik <divya@subvertising.org>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
+;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42407,6 +42408,29 @@ latest Emacs.")
 or encoding.  FLIM-LB is a variant of FLIM, which features supports to latest
 Emacs.")
       (license license:gpl2+))))
+
+(define-public emacs-fpga
+  (let ((commit "7ba64134609cbb9b7a5dd3b960985fa46a582cf0")
+        (revision "0"))
+    (package
+      (name "emacs-fpga")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gmlarumbe/fpga")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0sl3s5bfqmicpg4hp2k6qznrgj71dx0lz3dv2jyd48ys67m9x4dx"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/gmlarumbe/fpga")
+      (synopsis "Emacs fpga & asic utilities")
+      (description
+       "Emacs-fpga provides emacs facilities to interface with fpga & asic
+tools from major vendors.")
+      (license license:gpl3+))))
 
 (define-public emacs-semi-epg
   ;; No release since Dec 24, 2003.
