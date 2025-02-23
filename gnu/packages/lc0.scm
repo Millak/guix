@@ -18,6 +18,7 @@
 
 (define-module (gnu packages lc0)
   #:use-module (guix build utils)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
@@ -157,3 +158,59 @@ was finished being trained in April of 2022."))
    "09gm8lgaick60rn4x9h9w5sxdqivr4ign73viviadw1gj7wsbnsg"
    "This is an official neural network of a ``main run'' of the Leela Chess
 Zero project.  The network was finished being trained in September of 2023."))
+
+(define (make-lc0-maia rating)
+  (package
+    (name (string-append "lc0-maia-" rating))
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/CSSLab/maia-chess")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "maia" version))
+              (sha256
+               (base32
+                "0qjkp56pb5vvkr3j1vdsdzligvy7faza917z7vdfmf168pkvrxsr"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~(list
+         `(,(string-append "model_files/" #$rating
+                           "/final_" #$rating "-40.pb.gz")
+           ,(string-append "share/lc0/maia-" #$rating ".pb.gz")))))
+    (synopsis "Human-like neural network for Leela Chess Zero")
+    (description
+     "Maia’s goal is to play the human move, not necessarily the best move.
+As a result, Maia has a more human-like style than previous engines, matching
+moves played by human players in online games over 50% of the time.")
+    (home-page "https://maiachess.com")
+    (license license:gpl3)))
+
+(define-public lc0-maia-1100
+  (make-lc0-maia "1100"))
+
+(define-public lc0-maia-1200
+  (make-lc0-maia "1200"))
+
+(define-public lc0-maia-1300
+  (make-lc0-maia "1300"))
+
+(define-public lc0-maia-1400
+  (make-lc0-maia "1400"))
+
+(define-public lc0-maia-1500
+  (make-lc0-maia "1500"))
+
+(define-public lc0-maia-1600
+  (make-lc0-maia "1600"))
+
+(define-public lc0-maia-1700
+  (make-lc0-maia "1700"))
+
+(define-public lc0-maia-1800
+  (make-lc0-maia "1800"))
+
+(define-public lc0-maia-1900
+  (make-lc0-maia "1900"))
