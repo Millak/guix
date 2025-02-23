@@ -4395,6 +4395,8 @@ axis} (SMA), and @dfn{ranged major axis} (RMA).")
               (sha256
                (base32
                 "1ipi8dsxql94gk9h020shbvy26arpwjqlmkplyy746vmhkc03ma8"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-vdiffr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-confintr
@@ -4415,7 +4417,7 @@ axis} (SMA), and @dfn{ranged major axis} (RMA).")
            r-splus2r
            r-tibble))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-vdiffr))
     (home-page "https://www.r4photobiology.info/")
     (synopsis "Miscellaneous Extensions to @code{ggplot2}")
     (description "This package provides extensions to @code{ggplot2},
