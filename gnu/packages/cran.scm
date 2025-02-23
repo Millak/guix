@@ -22975,7 +22975,9 @@ back to file after modifications.")
        (uri (cran-uri "GillespieSSA2" version))
        (sha256
         (base32 "0wjz0fh9cwvaw6n7hs2lkh818jzbjl11ps5gxnjqizz8gfp9fr10"))))
-    (properties `((upstream-name . "GillespieSSA2")))
+    (properties
+     '((upstream-name . "GillespieSSA2")
+       (updater-extra-native-inputs . ("r-ggplot2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
@@ -22989,7 +22991,7 @@ back to file after modifications.")
            r-rlang
            r-stringr
            r-tidyr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-ggplot2 r-knitr r-testthat))
     (home-page "https://github.com/rcannood/GillespieSSA2")
     (synopsis "Gillespie's stochastic simulation algorithm")
     (description
