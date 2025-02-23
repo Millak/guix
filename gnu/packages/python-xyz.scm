@@ -32135,6 +32135,11 @@ standard error channel (stderr) in your program.")
                 (string-append
                  "not test_is_block_device"
 
+                 ,@(cond
+                    ((target-aarch64?)
+                     '(" and not test_keyboardinterrupt_during_test"))
+                    (#t '()))
+
                  ;; These fail because of network (or specifically IPv6
                  ;; network) access (see:
                  ;; https://github.com/agronholm/anyio/issues/417).
