@@ -17899,6 +17899,25 @@ to the cluster management tool @code{sfCluster}, but can also used without
 it.")
    (license license:gpl2+)))
 
+(define-public r-rgenoud
+  (package
+    (name "r-rgenoud")
+    (version "5.9-0.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rgenoud" version))
+       (sha256
+        (base32 "12pf7kvyvly0aqrk84k07cx7gnqmnrpfzs41ys960gx70lzf77f6"))))
+    (properties `((upstream-name . "rgenoud")))
+    (build-system r-build-system)
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/JasjeetSekhon/rgenoud")
+    (synopsis "R version of genetic optimization using derivatives")
+    (description
+     "This package provides a genetic algorithm plus derivative optimizer.")
+    (license license:gpl3)))
+
 (define-public r-rgexf
   (package
     (name "r-rgexf")
