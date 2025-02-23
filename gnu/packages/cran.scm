@@ -4081,7 +4081,9 @@ in good performances with large files.")
             (sha256
              (base32
               "0wax853pi3ghqv5alfkx9rgfb3sm3sqh3miklwvn22bh1s44q14h"))))
-   (properties `((upstream-name . "ggalluvial")))
+   (properties
+    '((upstream-name . "ggalluvial")
+      (updater-extra-native-inputs . ("r-alluvial"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-dplyr
@@ -4091,7 +4093,7 @@ in good performances with large files.")
           r-tidyr
           r-tidyselect))
    (native-inputs
-    (list r-knitr r-testthat))
+    (list r-alluvial r-knitr r-testthat))
    (home-page "https://corybrunson.github.io/ggalluvial/")
    (synopsis "Alluvial plots for ggplot2")
    (description "This package provides alluvial plots for @code{ggplot2}.
