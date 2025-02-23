@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
@@ -183,29 +183,20 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
 
-(define (qemu-patch commit file-name sha256-bv)
-  "Return an origin for COMMIT."
-  (origin
-    (method url-fetch)
-    (uri (string-append
-          "http://git.qemu.org/?p=qemu.git;a=commitdiff_plain;h="
-          commit))
-    (hash (content-hash sha256-bv sha256))
-    (file-name file-name)))
-
 (define-public qemu
   (package
     (name "qemu")
-    (version "8.2.2")
+    (version "9.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.qemu.org/qemu-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1wy45fbf4816l4ylsz8b8cbypva9apcdnvlgqfr586icp30lcww4"))
+        (base32 "12dc3fpv6c6qvw89amjjbb6dgc2f1c1alfgn2nab7a8kxnh7f2j8"))
        (patches (search-patches "qemu-build-info-manual.patch"
                                 "qemu-disable-bios-tables-test.patch"
+                                "qemu-disable-migration-test.patch"
                                 "qemu-fix-agent-paths.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -437,8 +428,7 @@
           ;; Configure, build and install QEMU user-emulation static binaries.
           (add-after 'configure 'configure-user-static
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((static (assoc-ref outputs "static"))
-                     (gcc (search-input-file inputs "/bin/gcc"))
+              (let* ((gcc (search-input-file inputs "/bin/gcc"))
                      ;; This is the common set of configure flags; it is
                      ;; duplicated here to isolate this phase from manipulations
                      ;; to the #:configure-flags build argument, as done in
@@ -446,7 +436,8 @@
                      (configure-flags (list (string-append "--cc=" gcc)
                                             (string-append "--host-cc=" gcc)
                                             "--sysconfdir=/etc"
-                                            "--disable-debug-info")))
+                                            "--disable-debug-info"))
+                     (static (assoc-ref outputs "static")))
                 (mkdir-p "../user-static")
                 (with-directory-excursion "../user-static"
                   (apply invoke "../../configure"
@@ -462,15 +453,18 @@
                 (apply (assoc-ref %standard-phases 'build) args))))
           (add-after 'install 'install-user-static
             (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((static (assoc-ref outputs "static"))
-                     (bin (string-append static "/bin")))
+              (let ((static-bin (string-append
+                                 (assoc-ref outputs "static") ;see bug#70611
+                                 "/bin")))
                 (with-directory-excursion "../user-static"
-                  (for-each (cut install-file <> bin)
-                            (append-map (cut find-files <> "^qemu-" #:stat stat)
-                                        (scandir "."
-                                                 (cut string-suffix?
-                                                      "-linux-user" <>))))))))
-
+                  (for-each
+                   (cut install-file <> static-bin)
+                   (find-files "."
+                               (lambda (name stat)
+                                 ;; Select 'qemu-' prefixed executables.
+                                 (and (string-prefix? "./qemu-" name)
+                                      (eq? 'regular (stat:type stat))
+                                      (logtest #o100 (stat:perms stat))))))))))
           (add-before 'check 'set-SOCK_DIR
             (lambda _
               ;; The default value for SOCK_DIR is TMPDIR, which can be long
@@ -506,7 +500,7 @@ exec smbd $@")))
           (add-after 'install 'move-html-doc
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((out #$output)
-                     (doc #$output:doc)
+                     (doc (assoc-ref outputs "doc")) ;see bug#70611
                      (qemu-doc (string-append doc "/share/doc/qemu-"
                                               #$(package-version this-package))))
                 (mkdir-p qemu-doc)
@@ -538,7 +532,6 @@ exec smbd $@")))
             ncurses
             openbios-qemu-ppc
             opensbi-qemu
-            ;; pciutils
             pixman
             pulseaudio
             sdl2
@@ -548,8 +541,6 @@ exec smbd $@")))
             util-linux
             vde2
             virglrenderer
-
-            ;; Formats to support for .qcow2 (and possibly other) compression.
             zlib
             `(,zstd "lib"))))
     (native-inputs
@@ -567,6 +558,7 @@ exec smbd $@")))
            python-wrapper
            python-sphinx
            python-sphinx-rtd-theme
+           python-tomli
            texinfo
            ;; The following static libraries are required to build
            ;; the static output of QEMU.

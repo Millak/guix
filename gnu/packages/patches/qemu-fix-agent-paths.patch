@@ -4,19 +4,20 @@ after the patch from the Nix package:
 https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/virtualization/qemu/fix-qemu-ga.patch
 
 diff --git a/qga/commands-posix.c b/qga/commands-posix.c
+index 6e3c15f539..eaef900b6e 100644
 --- a/qga/commands-posix.c
 +++ b/qga/commands-posix.c
-@@ -84,6 +84,7 @@ static void ga_wait_child(pid_t pid, int *status, Error **errp)
- void qmp_guest_shutdown(bool has_mode, const char *mode, Error **errp)
+@@ -216,6 +216,7 @@ out:
+ void qmp_guest_shutdown(const char *mode, Error **errp)
  {
      const char *shutdown_flag;
 +    const char *command;
      Error *local_err = NULL;
-     pid_t pid;
-     int status;
-@@ -101,10 +102,13 @@ void qmp_guest_shutdown(bool has_mode, const char *mode, Error **errp)
+ 
+ #ifdef CONFIG_SOLARIS
+@@ -235,16 +236,24 @@ void qmp_guest_shutdown(const char *mode, Error **errp)
      slog("guest-shutdown called, mode: %s", mode);
-     if (!has_mode || strcmp(mode, "powerdown") == 0) {
+     if (!mode || strcmp(mode, "powerdown") == 0) {
          shutdown_flag = powerdown_flag;
 +        command = "shutdown";
      } else if (strcmp(mode, "halt") == 0) {
@@ -28,38 +29,35 @@ diff --git a/qga/commands-posix.c b/qga/commands-posix.c
      } else {
          error_setg(errp,
                     "mode is invalid (valid values are: halt|powerdown|reboot");
-@@ -123,6 +127,11 @@ void qmp_guest_shutdown(bool has_mode, const char *mode, Error **errp)
-         execl("/sbin/shutdown", "shutdown", shutdown_flag, "-g0", "-y",
-               "hypervisor initiated shutdown", (char *)NULL);
- #else
-+        /* try Guix’s shutdown/halt/reboot first */
-+        char *path = g_strdup_printf("/run/current-system/profile/sbin/%s", command);
-+        execl(path, command, (char *)NULL);
-+        g_free(path);
-+
-         execl("/sbin/shutdown", "shutdown", "-h", shutdown_flag, "+0",
-                "hypervisor initiated shutdown", (char *)NULL);
- #endif
-@@ -159,10 +168,12 @@ void qmp_guest_set_time(bool has_time, int64_t time_ns, Error **errp)
-     Error *local_err = NULL;
-     struct timeval tv;
-     static const char hwclock_path[] = "/sbin/hwclock";
-+    static const char hwclock_path_guix[] = "/run/current-system/profile/sbin/hwclock";
-     static int hwclock_available = -1;
- 
-     if (hwclock_available < 0) {
--        hwclock_available = (access(hwclock_path, X_OK) == 0);
-+        hwclock_available = (access(hwclock_path_guix, X_OK) == 0) ||
-+                            (access(hwclock_path, X_OK) == 0);
+         return;
      }
  
-     if (!hwclock_available) {
-@@ -208,6 +219,8 @@ void qmp_guest_set_time(bool has_time, int64_t time_ns, Error **errp)
++    /* Try Guix’s shutdown/halt/reboot first. */
++    char *path = g_strdup_printf("/run/current-system/profile/sbin/%s", command);
++    execl(path, command, (char *) NULL);
++    g_free(path);
++
+     const char *argv[] = {"/sbin/shutdown",
+ #ifdef CONFIG_SOLARIS
+                           shutdown_flag, "-g0", "-y",
+@@ -269,7 +278,7 @@ void qmp_guest_set_time(bool has_time, int64_t time_ns, Error **errp)
+     int ret;
+     Error *local_err = NULL;
+     struct timeval tv;
+-    const char *argv[] = {"/sbin/hwclock", has_time ? "-w" : "-s", NULL};
++    const char *argv[] = {"/run/current-system/profile/sbin/hwclock", has_time ? "-w" : "-s", NULL};
  
-         /* Use '/sbin/hwclock -w' to set RTC from the system time,
-          * or '/sbin/hwclock -s' to set the system time from RTC. */
-+        execl(hwclock_path_guix, "hwclock", has_time ? "-w" : "-s",
-+               NULL);
-         execl(hwclock_path, "hwclock", has_time ? "-w" : "-s", NULL);
-         _exit(EXIT_FAILURE);
-     } else if (pid < 0) {
+     /* If user has passed a time, validate and set it. */
+     if (has_time) {
+@@ -302,6 +311,11 @@ void qmp_guest_set_time(bool has_time, int64_t time_ns, Error **errp)
+      * hardware clock (RTC). */
+     ga_run_command(argv, NULL, "set hardware clock to system time",
+                    &local_err);
++    if (local_err) {
++        argv[0] = "/sbin/hwclock";
++        ga_run_command(argv, NULL, "set hardware clock to system time",
++                       &local_err);
++    }
+     if (local_err) {
+         error_propagate(errp, local_err);
+         return;
