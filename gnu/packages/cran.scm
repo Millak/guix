@@ -13452,9 +13452,11 @@ with the package @code{optim}.")
        (uri (cran-uri "usedist" version))
        (sha256
         (base32 "0ddf1zcalbrn293qmr9kdzz3x16fzc4k1bwb1pjmwnspisqfi8kj"))))
-    (properties `((upstream-name . "usedist")))
+    (properties
+     '((upstream-name . "usedist")
+       (updater-extra-native-inputs . ("r-dplyr" "r-tidyr" "r-tibble"))))
     (build-system r-build-system)
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-dplyr r-testthat r-tidyr r-tibble))
     (home-page "https://cran.r-project.org/package=usedist")
     (synopsis "Distance matrix utilities")
     (description
