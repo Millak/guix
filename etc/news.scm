@@ -39,10 +39,13 @@
 
   (entry (commit "b4cc3e50187bd20a9479df52022c8228d3af49ab")
         (title
-         (en "Linux-libre updated to 6.13"))
+         (en "Linux-libre updated to 6.13")
+         (de "Linux-libre wird auf 6.13 aktualisiert"))
         (body
          (en "The default linux-libre package has been updated to the
-6.13 release series.")))
+6.13 release series.")
+         (de "Das standardmäßig verwendete @code{linux-libre}-Paket basiert
+              jetzt auf der 6.13-Versionsreihe.")))
 
  (entry (commit "0753a17ddf6f4fab98b93c25f1a93b97ff9e46bb")
         (title
