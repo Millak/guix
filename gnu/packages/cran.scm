@@ -42442,7 +42442,9 @@ censored data.")
        (sha256
         (base32
          "1171m8rx98bdkij0vp1w87msfjvbqsrh4jkzpm39yz0vg8charsv"))))
-    (properties `((upstream-name . "flexsurv")))
+    (properties
+     '((upstream-name . "flexsurv")
+       (updater-extra-native-inputs . ("r-splines2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
@@ -42467,7 +42469,7 @@ censored data.")
            r-tidyr
            r-tidyselect))
     (native-inputs
-     (list r-broom r-covr r-knitr r-testthat))
+     (list r-broom r-covr r-knitr r-splines2 r-testthat))
     (home-page "https://github.com/chjackson/flexsurv-dev")
     (synopsis "Flexible parametric survival and multi-state models")
     (description
