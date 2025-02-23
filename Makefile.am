@@ -562,6 +562,7 @@ SCM_TESTS =					\
   tests/graph.scm				\
   tests/gremlin.scm				\
   tests/hackage.scm				\
+  tests/hexpm.scm				\
   tests/home-import.scm				\
   tests/home-services.scm			\
   tests/http-client.scm				\
@@ -569,6 +570,7 @@ SCM_TESTS =					\
   tests/import-github.scm			\
   tests/import-utils.scm			\
   tests/inferior.scm				\
+  tests/ipfs.scm				\
   tests/lint.scm				\
   tests/machine/hetzner.scm                     \
   tests/machine/hetzner/http.scm                 \

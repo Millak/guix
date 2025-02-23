@@ -36,6 +36,7 @@ DOC_COOKBOOK_PO_FILES =				\
   %D%/guix-cookbook.sv.po
 
 EXTRA_DIST = \
+  %D%/po4a.cfg \
   %D%/guix-manual.pot \
   %D%/guix-cookbook.pot \
   $(DOC_PO_FILES) \

@@ -858,6 +858,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/image.scm				\
   %D%/tests/install.scm				\
   %D%/tests/ldap.scm				\
+  %D%/tests/lightdm.scm			\
   %D%/tests/linux-modules.scm			\
   %D%/tests/mail.scm				\
   %D%/tests/messaging.scm			\
@@ -867,6 +868,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/reconfigure.scm			\
   %D%/tests/rsync.scm				\
   %D%/tests/samba.scm				\
+  %D%/tests/sddm.scm				\
   %D%/tests/security.scm			\
   %D%/tests/security-token.scm			\
   %D%/tests/shadow.scm  			\
