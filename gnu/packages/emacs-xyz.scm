@@ -147,7 +147,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Spencer King <spencer.king@nursiapress.com>
 ;;; Copyright © 2024 emma thompson <bigbookofbug@proton.me>
-;;; Copyright © 2024 Liam Hupfer <liam@hpfr.net>
+;;; Copyright © 2024-2025 Liam Hupfer <liam@hpfr.net>
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2024 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2024 Divya Ranjan Pattanaik <divya@subvertising.org>
@@ -33689,6 +33689,29 @@ workspaces with a LSP-compliant server running.")
      "This package can be used to search emails in Emacs, searching result
 displays as you type thanks to Helm, though @command{notmuch-search} does the
 real search.")
+    (license license:gpl3+)))
+
+(define-public emacs-notmuch-addr
+  (package
+    (name "emacs-notmuch-addr")
+    (version "1.1.0")
+    (home-page "https://github.com/tarsius/notmuch-addr")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit "7dde87a44b6576eb736cb6a3b69df6b9946c5ecc")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xr78yw679swbl1bcwhk5k6qj1l9zr9nyl34ry2bpdryi370zkkp"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat emacs-notmuch))
+    (synopsis "Improved address completion for Notmuch")
+    (description
+     "A simple alternative to @code{notmuch-address}.  It gives up on
+persistent caching, external scripts, and backward compatibility.  It uses the
+improved completion API offered by Emacs 27.1 and later.")
     (license license:gpl3+)))
 
 (define-public emacs-notmuch-indicator
