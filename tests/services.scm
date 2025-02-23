@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2019, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2019, 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -225,7 +225,7 @@
                                  (start #t)))))
     (lambda (unload restart)
       (list (map live-service-provision unload)
-            (map shepherd-service-provision restart)))))
+            (map live-service-provision restart)))))
 
 (test-equal "shepherd-service-upgrade: service depended on is not unloaded"
   '(((baz))                                       ;unload
@@ -243,7 +243,7 @@
                                  (start #t)))))
     (lambda (unload restart)
       (list (map live-service-provision unload)
-            (map shepherd-service-provision restart)))))
+            (map live-service-provision restart)))))
 
 (test-equal "shepherd-service-upgrade: obsolete services that depend on each other"
   '(((foo) (bar) (baz))                           ;unload
@@ -260,7 +260,7 @@
                                  (start #t)))))
     (lambda (unload restart)
       (list (map live-service-provision unload)
-            (map shepherd-service-provision restart)))))
+            (map live-service-provision restart)))))
 
 (test-equal "shepherd-service-upgrade: transient service"
   ;; Transient service must not be unloaded:
@@ -277,7 +277,24 @@
                                  (start #t)))))
     (lambda (unload restart)
       (list (map live-service-provision unload)
-            (map shepherd-service-provision restart)))))
+            (map live-service-provision restart)))))
+
+(test-equal "shepherd-service-upgrade: service has new canonical name"
+  '(((qux))                                       ;unload
+    ((ssh) (foo)))                                ;restart
+  (call-with-values
+      (lambda ()
+        (shepherd-service-upgrade
+         (list (live-service '(ssh) '() #f 42)   ;running
+               (live-service '(foo) '() #f #t)   ;changed canonical name
+               (live-service '(qux) '() #f #t))  ;obsolete
+         (list (shepherd-service (provision '(ssh))
+                                 (start #t))
+               (shepherd-service (provision '(bar foo))
+                                 (start #t)))))
+    (lambda (unload restart)
+      (list (map live-service-provision unload)
+            (map live-service-provision restart)))))
 
 (test-eq "lookup-service-types"
   system-service-type

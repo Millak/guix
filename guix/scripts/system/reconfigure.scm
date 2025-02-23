@@ -214,7 +214,7 @@ services as defined by OS."
     (let* ((to-unload to-restart
                       (shepherd-service-upgrade live-services target-services))
            (to-unload  (map live-service-canonical-name to-unload))
-           (to-restart (map shepherd-service-canonical-name to-restart))
+           (to-restart (map live-service-canonical-name to-restart))
            (running    (map live-service-canonical-name
                             (filter live-service-running live-services)))
            (to-start   (lset-difference eqv?

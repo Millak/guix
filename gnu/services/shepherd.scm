@@ -517,8 +517,8 @@ symbols provided/required by a service."
 
 (define (shepherd-service-upgrade live target)
   "Return two values: the subset of LIVE (a list of <live-service>) that needs
-to be unloaded, and the subset of TARGET (a list of <shepherd-service>) that
-need to be restarted to complete their upgrade."
+to be unloaded, and the subset of LIVE that needs to be restarted to complete
+their upgrade."
   (define (essential? service)
     (memq (first (live-service-provision service))
           '(root shepherd)))
@@ -531,10 +531,6 @@ need to be restarted to complete their upgrade."
     (shepherd-service-lookup-procedure live
                                        live-service-provision))
 
-  (define (running? service)
-    (and=> (lookup-live (shepherd-service-canonical-name service))
-           live-service-running))
-
   (define live-service-dependents
     (shepherd-service-back-edges live
                                  #:provision live-service-provision
@@ -546,8 +542,14 @@ need to be restarted to complete their upgrade."
       (_  #f)))
 
   (define to-restart
-    ;; Restart services that are currently running.
-    (filter running? target))
+    ;; Restart services that appear in TARGET and are currently running.
+    (filter-map (lambda (service)
+                  (and=> (any lookup-live
+                              (shepherd-service-provision service))
+                         (lambda (live)
+                           (and (live-service-running live)
+                                live))))
+                target))
 
   (define to-unload
     ;; Unload services that are no longer required.  Essential services must
