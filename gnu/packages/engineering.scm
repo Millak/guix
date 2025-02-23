@@ -285,12 +285,12 @@ their devices.")
 (define-public librecad
   (package
     (name "librecad")
-    (version "2.2.1")
+    (version "2.2.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/LibreCAD/LibreCAD")
-                     (commit version)))
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
