@@ -830,7 +830,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Cayetano Santos"
                        "csantosb@inventati.org")
-  electronics)
+  emacs electronics)
 
 
 (define (find-team name)
