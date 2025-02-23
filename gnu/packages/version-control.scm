@@ -4041,32 +4041,6 @@ the smallest possible conflicts and to allow a merge to be saved, tested,
 interrupted, published, and collaborated on while in progress.")
     (license license:gpl2+)))
 
-(define-public go-github-com-git-lfs-pktline
-  (let ((commit "ca444d533ef1e474d0aab99cdbeed9b048d65241")
-        (revision "1"))
-    (package
-      (name "go-github-com-git-lfs-pktline")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri
-          (git-reference
-           (url "https://github.com/git-lfs/pktline")
-           (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0mxp4c59g5b3y20ilf90b6cagbk2b473vsmdz159y4hssvi1ac7r"))))
-      (build-system go-build-system)
-      (arguments `(#:import-path "github.com/git-lfs/pktline"))
-      (native-inputs
-       (list go-github-com-stretchr-testify))
-      (home-page "https://github.com/git-lfs/pktline")
-      (synopsis "Git pkt-line Go toolkit")
-      (description "This package is a Go language toolkit for reading and
-writing files using the Git pkt-line format used in various Git operations.")
-      (license license:expat))))
-
 (define-public go-github-com-git-lfs-wildmatch-v2
   (package
     (name "go-github-com-git-lfs-wildmatch-v2")
