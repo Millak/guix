@@ -16051,10 +16051,12 @@ A function to toggle the @code{*elfeed-log*} buffer in a popup window.
       (license license:gpl3+))))
 
 (define-public emacs-elfeed-org
-  (let ((commit "77b6bbf222487809813de260447d31c4c59902c9"))
+  (let ((commit "1197cf29f6604e572ec604874a8f50b58081176a")
+        (version "20250104.0")
+        (revision "0"))
     (package
       (name "emacs-elfeed-org")
-      (version (git-version "0.1" "1" commit))
+      (version (git-version version revision commit))
       (source
        (origin
          (method git-fetch)
@@ -16063,35 +16065,13 @@ A function to toggle the @code{*elfeed-log*} buffer in a popup window.
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0a2ibka82xq1dhy2z7rd2y9zhcj8rna8357881yz49wf55ccgm53"))))
+          (base32 "0giwnzlqk2s5hb6fs8a0l4dxcmn2fvkngpj1fayzwj0qnvds1kri"))))
       (build-system emacs-build-system)
       (arguments
        `(#:tests? #t
-         #:test-command '("ert-runner" "-L" "org-mode/lisp")
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'chmod
-             (lambda _
-               (chmod "test/fixture-mark-feed-ignore.org" #o644)))
-           (add-before 'check 'xt-number-tests
-             (lambda _
-               ((lambda (file test-name)     ; variant of ert-number-tests
-                  (emacs-batch-edit-file file
-                    `(let ((i 0))
-                       (while (re-search-forward ,(string-append "xt-deftest "
-                                                                 test-name)
-                                                 nil t)
-                         (goto-char (match-beginning 0))
-                         (kill-region (match-beginning 0) (match-end 0))
-                         (insert (format "xt-deftest %s-%d" ,test-name i))
-                         (setq i (+ i 1)))
-                       (basic-save-buffer))))
-                "test/elfeed-org-test.el"
-                "rmh-elfeed-org-convert-headline-to-tagger-params"))))))
-      (propagated-inputs
-       (list emacs-elfeed emacs-org emacs-dash emacs-s))
-      (native-inputs
-       (list emacs-ert-runner emacs-xtest))
+         #:test-command '("ert-runner" "-L" "org-mode/lisp")))
+      (propagated-inputs (list emacs-elfeed))
+      (native-inputs (list emacs-ert-runner emacs-xtest))
       (home-page "https://github.com/remyhonig/elfeed-org")
       (synopsis "Configure Elfeed with an Org-mode file")
       (description
