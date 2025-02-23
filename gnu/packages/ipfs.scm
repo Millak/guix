@@ -919,18 +919,19 @@ order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-fore
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/ipfs/go-ipld-legacy"))
-    (native-inputs (list go-github-com-stretchr-testify))
-    (propagated-inputs (list go-github-com-ipfs-go-block-format
-                             go-github-com-ipfs-go-cid
-                             go-github-com-ipfs-go-ipld-format
-                             go-github-com-ipld-go-ipld-prime))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-ipld-format
+           go-github-com-ipld-go-ipld-prime))
     (home-page "https://github.com/ipfs/go-ipld-legacy")
     (synopsis "Translation layer for IPLD legacy code")
     (description
-     "@code{go-ipld-format} is a translation layer between @code{go-ipld-prime} nodes
-and @code{go-ipld-format} legacy interface.")
+     "@code{go-ipld-format} is a translation layer between
+@code{go-ipld-prime} nodes and @code{go-ipld-format} legacy interface.")
     (license (list license:expat license:asl2.0))))
 
 (define-public go-github-com-ipfs-go-merkledag
