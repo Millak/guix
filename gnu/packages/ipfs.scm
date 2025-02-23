@@ -1257,11 +1257,11 @@ code prior to it getting merged into @code{go-cid}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.21
       #:import-path "github.com/ipld/go-codec-dagpb"))
-    (propagated-inputs (list go-github-com-ipfs-go-cid
-                             go-github-com-ipld-go-ipld-prime
-                             go-google-golang-org-protobuf))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-cid
+           go-github-com-ipld-go-ipld-prime
+           go-google-golang-org-protobuf))
     (home-page "https://github.com/ipld/go-codec-dagpb/")
     (synopsis "Implementation of the DAG-PB spec for Go")
     (description
