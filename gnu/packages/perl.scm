@@ -5110,6 +5110,27 @@ others (@code{method}, @code{field} and @code{ADJUST}) in a forward-compatible
 way.")
     (license (package-license perl))))
 
+(define-public perl-feature-compat-try
+  (package
+    (name "perl-feature-compat-try")
+    (version "0.05")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PEVANS/Feature-Compat-Try-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0z3df58bamp1zx996mwvxy75h67p80wgl4sz3h9xnc5c7hbwg8ar"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-syntax-keyword-try))
+    (home-page "https://metacpan.org/release/Feature-Compat-Try")
+    (synopsis "@code{try/catch} syntax in Perl")
+    (description "This module provides syntactical support for
+@code{try/catch} control flows.")
+    (license (package-license perl))))
+
 (define-public perl-file-changenotify
   (package
     (name "perl-file-changenotify")
