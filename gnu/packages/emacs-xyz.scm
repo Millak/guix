@@ -2058,6 +2058,29 @@ process, passing on the arguments as command line arguments.")
      "Magit-annex adds a few git-annex operations to the Magit interface.")
     (license license:gpl3+)))
 
+(define-public emacs-magit-tbdiff
+  (package
+    (name "emacs-magit-tbdiff")
+    (version "1.2.0")
+    (home-page "https://github.com/magit/magit-tbdiff")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jh6wspb6ijmkqvyaswqj60ixpgjj2ijcf0b53q48pfs5dwc97p4"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-magit))
+    (synopsis "Magit extension for range diffs")
+    (description
+     "Magit-tbdiff provides a Magit interface to @code{git-range-diff} (and its
+third-party predecessor @code{git-tbdiff}), a Git subcommand for comparing two
+versions of a topic branch.")
+    (license license:gpl3+)))
+
 (define-public emacs-malyon
   (package
     (name "emacs-malyon")
