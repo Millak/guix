@@ -45136,7 +45136,9 @@ installation and loading of the core mlr3 packages.")
        (uri (cran-uri "mlr3viz" version))
        (sha256
         (base32 "0d0vqg1jlg86fspmfx120jm1fkcjr3f5s93chbgcxb1gpz46pf7f"))))
-    (properties `((upstream-name . "mlr3viz")))
+    (properties
+     '((upstream-name . "mlr3viz")
+       (updater-extra-native-inputs . ("r-rpart"))))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate
                              r-data-table
@@ -45152,6 +45154,7 @@ installation and loading of the core mlr3 packages.")
                          r-mlr3tuning
                          r-paradox
                          r-precrec
+                         r-rpart
                          r-testthat
                          r-vdiffr))
     (home-page "https://mlr3viz.mlr-org.com")
