@@ -123,7 +123,7 @@ Copyright @copyright{} 2023 Foundation Devices, Inc.@*
 Copyright @copyright{} 2023 Thomas Ieong@*
 Copyright @copyright{} 2023 Saku Laesvuori@*
 Copyright @copyright{} 2023 Graham James Addis@*
-Copyright @copyright{} 2023, 2024 Tomas Volf@*
+Copyright @copyright{} 2023-2025 Tomas Volf@*
 Copyright @copyright{} 2024, 2025 Herman Rimm@*
 Copyright @copyright{} 2024 Matthew Trzcinski@*
 Copyright @copyright{} 2024 Richard Sent@*
@@ -422,7 +422,7 @@ Services
 * Network File System::         NFS related services.
 * Samba Services::              Samba services.
 * Continuous Integration::      Cuirass and Laminar services.
-* Power Management Services::   Extending battery life.
+* Power Management Services::   Extending battery life, etc.
 * Audio Services::              The MPD.
 * Virtualization Services::     Virtualization services.
 * Version Control Services::    Providing remote access to Git repositories.
@@ -19287,7 +19287,7 @@ declaration.
 * Network File System::         NFS related services.
 * Samba Services::              Samba services.
 * Continuous Integration::      Cuirass and Laminar services.
-* Power Management Services::   Extending battery life.
+* Power Management Services::   Extending battery life, etc.
 * Audio Services::              The MPD.
 * Virtualization Services::     Virtualization services.
 * Version Control Services::    Providing remote access to Git repositories.
@@ -36887,6 +36887,382 @@ The PowerTOP package.  Defaults to @code{powertop} in the @code{(gnu
 packages linux)} module
 
 @end deftypevr
+
+@end table
+@end deftp
+
+The @code{(gnu services power)} module provides a service definition for
+@uref{http://www.apcupsd.org/, apcupsd}, a utility to interact with
+@acronym{APC, APC by Schneider Electric or formerly American Power
+Conversion Corporation} @acronym{UPS, Uninterruptible Power Supply}
+devices.  Apcupsd also works with some @acronym{OEM, Original Equipment
+Manufacturer}-branded products manufactured by APC.
+
+@defvar apcupsd-service-type
+The service type for apcupsd.  For USB UPSes no configuration is
+necessary, however tweaking some fields to better suit your needs might
+be desirable.  The defaults are taken from the upstream configuration
+and they are not very conservative (for example, the default
+@code{battery-level} of 5% may be considered too low by some).
+
+The default event handlers do send emails, read more in
+@ref{apcupsd-event-handlers}.
+
+@lisp
+(service apcupsd-service-type)
+@end lisp
+@end defvar
+
+@deftp {Data Type} apcupsd-configuration
+
+Available @code{apcupsd-configuration} fields are:
+
+@table @asis
+@item @code{apcupsd} (default: @code{apcupsd}) (type: package)
+The @code{apcupsd} package to use.
+
+@item @code{shepherd-service-name} (default: @code{apcupsd}) (type: symbol)
+The name of the shepherd service.  You can add the service multiple
+times with different names to manage multiple UPSes.
+
+@item @code{auto-start?} (default: @code{#t}) (type: boolean)
+Should the shepherd service auto-start?
+
+@item @code{pid-file} (default: @code{"/var/run/apcupsd.pid"}) (type: string)
+The file name of the pid file.
+
+@item @code{debug-level} (default: @code{0}) (type: integer)
+The logging verbosity.  Bigger number means more logs.  The source code
+uses up to @code{300} as debug level value, so a value of @code{999}
+seems reasonable to enable all the logs.
+
+@item @code{run-dir} (default: @code{"/var/run/apcupsd"}) (type: string)
+The directory containing runtime information.  You need to change this
+if you desire to run multiple instances of the daemon.
+
+@item @code{name} (type: maybe-string)
+Use this to give your UPS a name in log files and such.  This is
+particularly useful if you have multiple UPSes.  This does not set the
+EEPROM.  It should be 8 characters or less.
+
+@item @code{cable} (default: @code{usb}) (type: enum-cable)
+The type of a cable connecting the UPS to your computer.  Possible
+generic choices are @code{'simple}, @code{'smart}, @code{'ether} and
+@code{'usb}.
+
+Alternatively, a specific cable model number may be used:
+@code{'940-0119A}, @code{'940-0127A}, @code{'940-0128A},
+@code{'940-0020B}, @code{'940-0020C}, @code{'940-0023A},
+@code{'940-0024B}, @code{'940-0024C}, @code{'940-1524C},
+@code{'940-0024G}, @code{'940-0095A}, @code{'940-0095B},
+@code{'940-0095C}, @code{'940-0625A}, @code{'M-04-02-2000}.
+
+@item @code{type} (default: @code{usb}) (type: enum-type)
+The type of the UPS you have.
+
+@table @code
+@item apcsmart
+Newer serial character device, appropriate for SmartUPS models using a
+serial cable (not an USB).
+
+@item usb
+Most new UPSes are an USB.
+
+@item net
+Network link to a master apcupsd through apcupsd's Network Information
+Server.  This is used if the UPS powering your computer is connected to
+a different computer for monitoring.
+
+@item snmp
+SNMP network link to an SNMP-enabled UPS device.
+
+@item netsnmp
+Same as the SNMP above but requires use of the net-snmp library.  Unless
+you have a specific need for this old driver, you should use the
+@code{'snmp} instead.
+
+@item dumb
+An old serial character device for use with simple-signaling UPSes.
+
+@item pcnet
+A PowerChute Network Shutdown protocol which can be used as an
+alternative to an SNMP with the AP9617 family of smart slot cards.
+
+@item modbus
+A serial device for use with newest SmartUPS models supporting the
+MODBUS protocol.
+
+@end table
+
+@item @code{device} (default: @code{""}) (type: string)
+For USB UPSes, usually you want to set this to an empty string (the
+default).  For other UPS types, you must specify an appropriate port or
+address.
+
+@table @code
+@item apcsmart
+Set to the appropriate @file{/dev/tty**} device.
+
+@item usb
+A null string setting enables auto-detection, which is the best choice
+for most installations.
+
+@item net
+Set to @code{@var{hostname}:@var{port}}.
+
+@item snmp
+Set to @code{@var{hostname}:@var{port}:@var{vendor}:@var{community}}.
+The @var{hostname} is the ip address or hostname of the UPS on the
+network.  The @var{vendor} can be can be "APC" or "APC_NOTRAP".
+"APC_NOTRAP" will disable SNMP trap catching; you usually want "APC".
+The @var{port} is usually 161.  The @var{community} is usually
+"private".
+
+@item netsnmp
+Same as the @code{'snmp}.
+
+@item dumb
+Set to the appropriate @file{/dev/tty**} device.
+
+@item pcnet
+Set to @code{@var{ipaddr}:@var{username}:@var{passphrase}:@var{port}}.
+The @var{ipaddr} is the IP address of the UPS management card.  The
+@var{username} and the @var{passphrase} are the credentials for which
+the card has been configured.  The @var{port} is the port number on
+which to listen for messages from the UPS, normally 3052.  If this
+parameter is empty or missing, the default of 3052 will be used.
+
+@item modbus
+Set to the appropriate @file{/dev/tty**} device.  You can also leave it
+empty for MODBUS over USB or set to the serial number of the UPS.
+
+@end table
+
+@item @code{poll-time} (default: @code{60}) (type: integer)
+The interval (in seconds) at which apcupsd polls the UPS for status.
+This setting applies both to directly-attached UPSes (apcsmart, usb,
+dumb) and networked UPSes (net, snmp).  Lowering this setting will
+improve the apcupsd's responsiveness to certain events at the cost of
+higher CPU utilization.
+
+@item @code{on-batery-delay} (default: @code{6}) (type: integer)
+The time in seconds from when a power failure is detected until we react
+to it with an onbattery event.  The @code{'powerout} event will be
+triggered immediately when a power failure is detected.  However, the
+@code{'onbattery} event will be trigger only after this delay.
+
+@item @code{battery-level} (default: @code{5}) (type: integer)
+If during a power failure, the remaining battery percentage (as reported
+by the UPS) is below or equal to this value, the apcupsd will initiate a
+system shutdown.
+
+@quotation Note
+@code{battery-level}, @code{remaining-minutes}, and @code{timeout} work
+in a conjunction, so the first that occurs will cause the initation of a
+shutdown.
+@end quotation
+
+@item @code{remaining-minutes} (default: @code{3}) (type: integer)
+If during a power failure, the remaining runtime in minutes (as
+calculated internally by the UPS) is below or equal to this value,
+apcupsd will initiate a system shutdown.
+
+@quotation Note
+@code{battery-level}, @code{remaining-minutes}, and @code{timeout} work
+in a conjunction, so the first that occurs will cause the initation of a
+shutdown.
+@end quotation
+
+@item @code{timeout} (default: @code{0}) (type: integer)
+If during a power failure, the UPS has run on batteries for this many
+seconds or longer, apcupsd will initiate a system shutdown.  The value
+of 0 disables this timer.
+
+@quotation Note
+@code{battery-level}, @code{remaining-minutes}, and @code{timeout} work
+in a conjunction, so the first that occurs will cause the initation of a
+shutdown.
+@end quotation
+
+@item @code{annoy-interval} (default: @code{300}) (type: integer)
+The time in seconds between annoying users (via the @code{'annoyme}
+event) to sign off prior to system shutdown.  0 disables.
+
+@item @code{annoy-delay} (default: @code{60}) (type: integer)
+The initial delay in seconds after a power failure before warning users
+to get off the system.
+
+@item @code{no-logon} (default: @code{disable}) (type: enum-no-logon)
+The condition which determines when users are prevented from logging in
+during a power failure.
+
+@item @code{kill-delay} (default: @code{0}) (type: integer)
+If this is non-zero, the apcupsd will continue running after a shutdown
+has been requested, and after the specified time in seconds attempt to
+kill the power.  This is for use on systems where apcupsd cannot regain
+control after a shutdown.
+
+@item @code{net-server} (default: @code{#f}) (type: boolean)
+If enabled, a network information server process will be started.
+
+@item @code{net-server-ip} (default: @code{"127.0.0.1"}) (type: string)
+An IP address on which the NIS server will listen for incoming
+connections.
+
+@item @code{net-server-port} (default: @code{3551}) (type: integer)
+An IP port on which the NIS server will listen for incoming connections.
+
+@item @code{net-server-events-file} (type: maybe-string)
+If you want the last few EVENTS to be available over the network by the
+network information server, you must set this to a file name.
+
+@item @code{net-server-events-file-max-size} (default: @code{10}) (type: integer)
+The maximum size of the events file in kilobytes.
+
+@item @code{class} (default: @code{standalone}) (type: enum-class)
+Normally standalone unless you share an UPS using an APC ShareUPS card.
+
+@item @code{mode} (default: @code{disable}) (type: enum-mode)
+Normally disable unless you share an UPS using an APC ShareUPS card.
+
+@item @code{stat-time} (default: @code{0}) (type: integer)
+The time interval in seconds between writing the status file, 0
+disables.
+
+@item @code{log-stats} (default: @code{#f}) (type: boolean)
+Also write the stats as a logs.  This generates a lot of output.
+
+@item @code{data-time} (default: @code{0}) (type: integer)
+The time interval in seconds between writing the data records to the log
+file, 0 disables.
+
+@item @code{facility} (type: maybe-string)
+The logging facility for the syslog.
+
+@item @code{event-handlers} (type: apcupsd-event-handlers)
+Handlers for events produced by apcupsd.
+
+@end table
+@end deftp
+
+@anchor{apcupsd-event-handlers}
+@deftp {Data Type} apcupsd-event-handlers
+
+For a description of the events please refer to @samp{man 8 apccontrol}.
+
+Each handler shall be a gexp.  It is spliced into the control script for
+the daemon.  In addition to the standard Guile programming environment,
+the following procedures and variables are also available:
+
+@table @code
+@item conf
+Variable containing the file name of the configuration file.
+
+@item powerfail-file
+Variable containing the file name of the powerfail file.
+
+@item cmd
+The event currently being handled.
+
+@item name
+The name of the UPS as specified in the configuration file.
+
+@item connected?
+Is @code{#t} if @command{apcupsd} is connected to the UPS via a serial
+port (or a USB port).  In most configurations, this will be the case.
+In the case of a Slave machine where apcupsd is not directly connected
+to the UPS, this value will be @code{#f}.
+
+@item powered?
+Is @code{#t} if the computer on which @command{apcupsd} is running is
+powered by the UPS and @code{#f} if not.  At the moment, this value is
+unimplemented and always @code{#f}.
+
+@item (err @var{fmt} @var{args...})
+Wrapper around @code{format} outputting to @code{(current-error-port)}.
+
+@item (wall @var{fmt} @var{args...})
+Wrapper around @code{format} outputting via @command{wall}.
+
+@item (apcupsd @var{args...})
+Call @command{apcupsd} while passing the correct configuration file and
+all the arguments.
+
+@item (mail-to-root @var{subject} @var{body})
+Send an email to the local administrator.  This procedure assumes the
+@command{sendmail} is located at @command{/run/privileged/bin/sendmail}
+(as would be the case with @code{opensmtpd-service-type}).
+
+@end table
+
+Available @code{apcupsd-event-handlers} fields are:
+
+@table @asis
+@item @code{modules} (type: gexp)
+Additional modules to import into the generated handler script.
+
+@item @code{killpower} (type: gexp)
+The handler for the killpower event.
+
+@item @code{commfailure} (type: gexp)
+The handler for the commfailure event.
+
+@item @code{commok} (type: gexp)
+The handler for the commfailure event.
+
+@item @code{powerout} (type: gexp)
+The handler for the powerout event.
+
+@item @code{onbattery} (type: gexp)
+The handler for the onbattery event.
+
+@item @code{offbattery} (type: gexp)
+The handler for the offbattery event.
+
+@item @code{mainsback} (type: gexp)
+The handler for the mainsback event.
+
+@item @code{failing} (type: gexp)
+The handler for the failing event.
+
+@item @code{timeout} (type: gexp)
+The handler for the timeout event.
+
+@item @code{loadlimit} (type: gexp)
+The handler for the loadlimit event.
+
+@item @code{runlimit} (type: gexp)
+The handler for the runlimit event.
+
+@item @code{doreboot} (type: gexp)
+The handler for the doreboot event.
+
+@item @code{doshutdown} (type: gexp)
+The handler for the doshutdown event.
+
+@item @code{annoyme} (type: gexp)
+The handler for the annoyme event.
+
+@item @code{emergency} (type: gexp)
+The handler for the emergency event.
+
+@item @code{changeme} (type: gexp)
+The handler for the changeme event.
+
+@item @code{remotedown} (type: gexp)
+The handler for the remotedown event.
+
+@item @code{startselftest} (type: gexp)
+The handler for the startselftest event.
+
+@item @code{endselftest} (type: gexp)
+The handler for the endselftest event.
+
+@item @code{battdetach} (type: gexp)
+The handler for the battdetach event.
+
+@item @code{battattach} (type: gexp)
+The handler for the battattach event.
 
 @end table
 @end deftp
