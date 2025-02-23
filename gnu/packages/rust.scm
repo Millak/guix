@@ -1470,12 +1470,10 @@ safety and thread safety guarantees.")
                      (lambda (port)
                        (format port "#!~a
 if test -z \"${RUST_SRC_PATH}\";then export RUST_SRC_PATH=~S;fi;
-exec -a \"$0\" \"~a\" --proc-macro-srv \"~a\" \"$@\""
+exec -a \"$0\" \"~a\" \"$@\""
                                (which "bash")
                                (string-append (assoc-ref outputs "rust-src")
                                               "/lib/rustlib/src/rust/library")
-                               (string-append (assoc-ref outputs "out")
-                                              "/libexec/rust-analyzer-proc-macro-srv")
                                (string-append bin "/.rust-analyzer-real"))))
                    (chmod (string-append bin "/rust-analyzer") #o755))))))))
       (inputs
