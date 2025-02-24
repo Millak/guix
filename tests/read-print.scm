@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -274,17 +274,19 @@ mnopqrstuvwxyz.\")"
    '(#:phases %standard-phases
      #:tests? #f)))")
 
-;; '#:key value' is kept on the same line.
+;; '#:key value' is kept on the same line, except when followed by a gexp.
 (test-pretty-print "\
 (package
   (name \"keyword-value-same-line\")
   (arguments
    (list
-    #:phases #~(modify-phases %standard-phases
-                 (add-before 'x 'y
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (foo bar baz))))
-    #:make-flags #~'(\"ANSWER=42\")
+    #:phases
+    #~(modify-phases %standard-phases
+        (add-before 'x 'y
+          (lambda* (#:key inputs #:allow-other-keys)
+            (foo bar baz))))
+    #:make-flags
+    #~'(\"ANSWER=42\")
     #:tests? #f)))")
 
 (test-pretty-print "\
