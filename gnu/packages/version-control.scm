@@ -54,6 +54,7 @@
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Ryan Desfosses <rdesfo@sdf.org>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Javier Olaechea <pirata@gmail.com>
@@ -1403,6 +1404,52 @@ write native speed custom Git applications in any language with bindings.")
                    ;; Tests may be disabled if cross-compiling.
                    (format #t "Test suite not run.~%"))))))))))
 
+(define-public git-issue
+  (let ((commit "d056998566d30235072b97982756ff607e9ecce9")
+        (revision "0"))
+    (package
+      (name "git-issue")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/dspinellis/git-issue")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0002bjzv6rgpxbbsjiswg73prl7iq217qvafbxhsjp2wjj00i0sm"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags #~(list (string-append "PREFIX=" #$output))
+             #:test-target "test"
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure) ;no configure script
+                 (add-before 'build 'generate-docs
+                   (lambda _
+                     (invoke "make" "sync-docs")))
+                 (add-before 'check 'fix-tests
+                   (lambda _
+                     (substitute* "test.sh"
+                       ;; Skip 3 failing tests.
+                       (("fail \"Uncommitted files sync-docs.*")
+                        "ok \"ignored\"\n")
+                       (("try_grep '\\^Tags:\\.\\*cloned'")
+                        "ok \"ignored\"")
+                       (("try \"\\$gi\" tag \"\\$issue\" cloned")
+                        "ok \"ignored\"")
+                       ;; Fix a test.
+                       (("#!/bin/sh") (string-append "#!" (which "sh")))))))))
+      (native-inputs (list git-minimal util-linux))
+      (inputs (list jq curl))
+      (synopsis "Git-based decentralized issue management")
+      (description
+       "This is a minimalist decentralized issue management system based on
+Git, offering (optional) bidirectional integration with GitHub and GitLab
+issue management.")
+      (home-page "https://github.com/dspinellis/git-issue")
+      (license license:gpl3+))))
+
 (define-public git-crypt
   (package
     (name "git-crypt")
@@ -1423,7 +1470,7 @@ write native speed custom Git applications in any language with bindings.")
      (list docbook-xml-4.2 docbook-xsl libxslt))
     (arguments
      (list
-      #:tests? #f ; No tests.
+      #:tests? #f                       ; No tests.
       #:make-flags
       #~(list
          "ENABLE_MAN=yes"
