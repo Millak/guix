@@ -530,13 +530,13 @@ your code.")
 (define-public python-django-filter
   (package
     (name "python-django-filter")
-    (version "24.3")
+    (version "25.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django_filter" version))
               (sha256
                (base32
-                "1hyr5i5f4n5kk5ax3y39hslhy0wi2nqk6rrgajh1rlmg69kszk6q"))))
+                "0lvi82f3dnj89ip8hry8fq8w7x632r5p84dlr451rnm8izsfxj8y"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:phases
