@@ -4014,22 +4014,28 @@ Unicode-to-LaTeX conversion.")
 (define-public python-cftime
   (package
     (name "python-cftime")
-    (version "1.6.2")
+    (version "1.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cftime" version))
        (sha256
-        (base32 "1lp6jrjjgl18csn4bcnphn0l16ag4aynvn7x0kins155p07w0546"))))
+        (base32 "1p5fw25hjqpzwxw3662f72ga30kpf8pbbph8fgb7x2kmjdhl09g3"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-unwanted-dev-dependencies
+                 (lambda _
+                   (substitute* "requirements-dev.txt"
+                     (("(check-manifest|coverage|coveralls|pytest-cov|twine)")
+                      "")))))))
     (propagated-inputs
      (list python-numpy))
     (native-inputs
-     (list python-check-manifest
-           python-coverage
-           python-coveralls
-           python-cython
-           python-pytest-cov
+     (list python-cython
+           python-pytest
+           python-setuptools
            python-sphinx
            python-twine
            python-wheel))
