@@ -8126,12 +8126,17 @@ separately.")
        (uri (cran-uri "shinymeta" version))
        (sha256
         (base32 "1lizg5sjg0f2axr9vk8z4w43lbyim83gd4dzx91dygknv3kgyp89"))))
-    (properties `((upstream-name . "shinymeta")))
+    (properties
+     '((upstream-name . "shinymeta")
+       (updater-extra-native-inputs
+        . ("r-knitr" "r-rmarkdown" "r-stringr" "zip"))))
     (build-system r-build-system)
     (arguments
      (list
       #:phases
       '(modify-phases %standard-phases
+         (add-before 'check 'find-zip
+           (lambda _ (setenv "R_ZIPCMD" (which "zip"))))
          ;; Needed by styler for writing to caches.
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
@@ -8143,7 +8148,7 @@ separately.")
                              r-shiny
                              r-sourcetools
                              r-styler))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-knitr r-rmarkdown r-stringr r-testthat zip))
     (home-page "https://rstudio.github.io/shinymeta/")
     (synopsis "Export domain logic from Shiny using meta-programming")
     (description
