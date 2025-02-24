@@ -46436,27 +46436,27 @@ to read the latter.")
             "0bzaq0vx6c83i4xf7p9zwka7h7jbv1qfy6w4v3kljx30hl048dpn"))))
     (properties `((upstream-name . "readtext")))
     (build-system r-build-system)
+    ;; Tests require Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs
-      (list r-antiword
-            r-data-table
-            r-digest
-            r-httr
-            r-jsonlite
-            r-pdftools
-            r-pillar
-            r-readods
-            r-readxl
-            r-streamr
-            r-stringi
-            r-striprtf
-            r-xml2))
+     (list r-antiword
+           r-data-table
+           r-digest
+           r-httr
+           r-jsonlite
+           r-pdftools
+           r-pillar
+           r-readods
+           r-readxl
+           r-streamr
+           r-stringi
+           r-striprtf
+           r-xml2))
     (native-inputs (list r-knitr r-testthat))
-    (home-page
-      "https://github.com/quanteda/readtext")
-    (synopsis
-      "Import and Handling for Plain and Formatted Text Files")
+    (home-page "https://github.com/quanteda/readtext")
+    (synopsis "Import and handling for plain and formatted text files")
     (description
-      "This package provides functions for importing and handling text files
+     "This package provides functions for importing and handling text files
 and formatted text files with additional meta-data, such including @code{.csv},
 @code{.tab}, @code{.json}, @code{.xml}, @code{.html}, @code{.pdf}, @code{.doc},
 @code{.docx}, @code{.rtf}, @code{.xls}, @code{.xlsx}, and others.")
