@@ -38,6 +38,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages embedded)
@@ -52,6 +53,10 @@
   #:use-module (gnu packages m4)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages serialization)
+  #:use-module (gnu packages swig)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
@@ -522,3 +527,42 @@ rules.  This can be done by extending @code{udev-service-type} in your
 Additionally your user must be member of the @code{plugdev} group.")
       (home-page "https://gitlab.com/DavidGriffith/minipro")
       (license license:gpl3+))))
+
+(define-public uhdm
+  (package
+    (name "uhdm")
+    (version "1.84")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chipsalliance/UHDM/")
+             (commit (string-append "v" version))
+             ;; avoid submodules, and use guix packages capnproto and
+             ;; googletest instead
+             (recursive? #f)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06i06wfyymhvmpnw79lgb84l9w9cyydvnr7n3bgmgf8a77jbxk2y"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; there is no configure stage, as for INSTALL.md
+          (delete 'configure))
+      #:test-target "test"
+      #:make-flags
+      #~(list
+         "ADDITIONAL_CMAKE_OPTIONS=-DUHDM_USE_HOST_CAPNP=On -DUHDM_USE_HOST_GTEST=On"
+         (string-append "PREFIX="
+                        #$output))))
+    (native-inputs (list cmake-minimal googletest pkg-config python-wrapper
+                         swig))
+    (inputs (list capnproto openssl python-orderedmultidict zlib))
+    (home-page "https://github.com/chipsalliance/UHDM/")
+    (synopsis "Universal Hardware Data Model")
+    (description
+     "UHDM is a complete modeling of the IEEE SystemVerilog Object Model with
+VPI Interface, Elaborator, Serialization, Visitor and Listener.")
+    (license license:asl2.0)))
