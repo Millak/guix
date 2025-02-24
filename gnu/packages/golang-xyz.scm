@@ -903,34 +903,6 @@ strings or other files).  If stdout is not a terminal, colour formatting will
 be stripped.")
     (license license:expat)))
 
-(define-public go-github-com-alecthomas-kingpin
-  (package
-    (name "go-github-com-alecthomas-kingpin")
-    (version "2.2.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/alecthomas/kingpin")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0mndnv3hdngr3bxp7yxfd47cas4prv98sqw534mx7vp38gd88n5r"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/alecthomas/kingpin"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-github-com-alecthomas-template
-           go-github-com-alecthomas-units))
-    (home-page "https://github.com/alecthomas/kingpin")
-    (synopsis "Go library provides utilities for building command line interfaces")
-    (description
-     "Go library provides utilities for building command line interfaces.")
-    (license license:expat)))
-
 (define-public go-github-com-alecthomas-kingpin-v2
   (package
     (name "go-github-com-alecthomas-kingpin-v2")
@@ -18180,7 +18152,7 @@ their ASCII approximations.")
 
 (define-public go-gopkg-in-alecthomas-kingpin-v2
   (package
-    (inherit go-github-com-alecthomas-kingpin)
+    (inherit go-github-com-alecthomas-kingpin-v2)
     (name "go-gopkg-in-alecthomas-kingpin-v2")
     (arguments
      (list
