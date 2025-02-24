@@ -11139,16 +11139,16 @@ the results.")
 (define-public python-pykdtree
   (package
     (name "python-pykdtree")
-    (version "1.3.4")
+    (version "1.3.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pykdtree" version))
        (sha256
-        (base32 "0p8n2ljdacfixkiw092974dmhy4s1c0h032ii1z9kwi9h5h5rgmy"))))
+        (base32 "0q4zrqdn8ad6f710yggkhvx4avf2h1hsbg9qa7ghly54v4vhpgd7"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-nose))
+     (list python-cython python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/storpipfugl/pykdtree")
