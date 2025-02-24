@@ -42524,12 +42524,14 @@ models.")
        (sha256
         (base32
          "0g92kwi1nlmpc8m4pc9kv9xhczryr2kn9icfr3js7da7vy8g50xy"))))
-    (properties `((upstream-name . "TransPhylo")))
+    (properties
+     '((upstream-name . "TransPhylo")
+       (updater-extra-native-inputs . ("r-coda" "r-purrr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape r-rcpp))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-coda r-knitr r-purrr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/TransPhylo/")
     (synopsis "Inference of transmission tree from a dated phylogeny")
     (description
