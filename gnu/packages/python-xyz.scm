@@ -30646,17 +30646,9 @@ library's @code{threading} module.")
               (sha256
                (base32
                 "1rs5a3hx1fcpfsxxkl5kx6g06c82wqjqgdqyny5l1ggl1wq0rmfn"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-dill))
-    (native-inputs (list python-check-manifest python-pytest python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/sixty-north/multiprocessing_on_dill")
     (synopsis "Multiprocessing using dill instead of pickle")
     (description
