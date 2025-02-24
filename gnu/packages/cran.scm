@@ -48324,8 +48324,19 @@ DynamoDB NoSQL database, and Lambda functions-as-a-service.")
         (base32
          "0gndiq92cy6gi7f833hdjvqii3cn83wz5rjvygcvjl3dw4pwv966"))))
     (properties
-     `((upstream-name . "zoomGroupStats")))
+     '((upstream-name . "zoomGroupStats")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
     (propagated-inputs
      (list r-data-table
            r-dplyr
@@ -48336,7 +48347,7 @@ DynamoDB NoSQL database, and Lambda functions-as-a-service.")
            r-pbapply
            r-stringr
            r-syuzhet))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
     (home-page "http://zoomgroupstats.org")
     (synopsis "Analyze text, audio, and video from Zoom meetings")
     (description
