@@ -70,7 +70,7 @@ Run IMPORTER with ARGS.\n"))
   (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
-  -i, --insert           insert packages into file alphabetically"))
+  -i, --insert=FILE      insert packages into FILE alphabetically"))
   (display (G_ "
   -V, --version          display version information and exit"))
   (newline)
@@ -107,7 +107,18 @@ PROC callback."
   (category packaging)
   (synopsis "import a package definition from an external repository")
 
-  (match args
+  (define (process-args args)
+    (match args
+      ;; Workaround to accpet ‘--insert=FILE’, for the consistency of
+      ;; command-line interface.
+      ((arg . rest)
+       (if (string-prefix? "--insert=" arg)
+           (append (string-split arg #\=)
+                   rest)
+           args))
+      (_ args)))
+
+  (match (process-args args)
     (()
      (format (current-error-port)
              (G_ "guix import: missing importer name~%")))
