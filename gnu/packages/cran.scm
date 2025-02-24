@@ -20431,6 +20431,27 @@ maximal.  Both functions have the same interface as the @code{prcomp} function
 from the @code{stats} package (plus some extra parameters).")
     (license license:gpl2+)))
 
+(define-public r-cmaesr
+  (package
+    (name "r-cmaesr")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cmaesr" version))
+       (sha256
+        (base32 "03zx2nrw24wmmjjpyh8pswasjjq0amf0g375fm2b3s111dx8fbj9"))))
+    (properties `((upstream-name . "cmaesr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bbmisc r-checkmate r-ggplot2 r-paramhelpers
+                             r-smoof))
+    (home-page "https://github.com/jakobbossek/cmaesr")
+    (synopsis "Covariance matrix adaptation evolution strategy")
+    (description
+     "This is a pure R implementation of the Covariance Matrix Adaptation
+Evolution Strategy (CMA-ES) with optional restarts (IPOP-CMA-ES).")
+    (license license:bsd-2)))
+
 (define-public r-cmplot
   (package
     (name "r-cmplot")
