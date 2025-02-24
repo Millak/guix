@@ -2093,10 +2093,11 @@ void DerivationGoal::runChild()
                network, so give them access to /etc/resolv.conf and so
                on. */
             if (fixedOutput) {
-                ss.push_back("/etc/resolv.conf");
-                ss.push_back("/etc/nsswitch.conf");
-                ss.push_back("/etc/services");
-                ss.push_back("/etc/hosts");
+		auto files = { "/etc/resolv.conf", "/etc/nsswitch.conf",
+			       "/etc/services", "/etc/hosts" };
+		for (auto & file: files) {
+		    if (pathExists(file)) ss.push_back(file);
+		}
             }
 
             for (auto & i : ss) dirsInChroot[i] = i;
