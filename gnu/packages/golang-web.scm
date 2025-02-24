@@ -1918,6 +1918,45 @@ Data Representation (XDR) standard protocol as specified in RFC
 4506 (obsoletes RFC 1832 and RFC 1014) in pure Go.")
     (license license:isc)))
 
+(define-public go-github-com-digitalocean-godo
+  (package
+    (name "go-github-com-digitalocean-godo")
+    (version "1.138.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/digitalocean/godo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "083vhzb1hwzdmn5m14ygs949g2kabmafvpcxq2laylkylq1fd3rm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:import-path "github.com/digitalocean/godo"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests requiring networking setup.
+                       (list "TestRegistry_DeleteManifest"
+                             "TestRegistry_DeleteTag"
+                             "TestRegistry_ListManifests"
+                             "TestRepository_ListTags")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-go-querystring
+           go-github-com-hashicorp-go-retryablehttp
+           go-golang-org-x-oauth2
+           go-golang-org-x-time))
+    (home-page "https://github.com/digitalocean/godo")
+    (synopsis "DigitalOcean Go API client")
+    (description
+     "Package godo is the @code{DigitalOcean} API v2 client for Go.")
+    (license (list license:expat license:bsd-3))))
+
 (define-public go-github-com-dimfeld-httptreemux
   (package
     (name "go-github-com-dimfeld-httptreemux")
