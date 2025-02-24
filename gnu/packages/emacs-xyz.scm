@@ -24773,6 +24773,30 @@ keychains.  The keychain entries are displayed in a directory-like structure
 and can be consulted and modified.")
     (license license:gpl3+)))
 
+(define-public emacs-passage
+  (let ((commit "5f1ad815464b1e4ce7880b835f9e805a8b9b15a4")
+        (revision "0"))
+    (package
+      (name "emacs-passage")
+      (version (git-version "2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/anticomputer/passage.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12sxaig36n3qrmnyq2znar74hgbgfh3sgghki4n7aq2bzxwfbn8h"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-age emacs-f emacs-s emacs-with-editor))
+      (home-page "https://github.com/anticomputer/passage.el")
+      (synopsis "Pass-Age Encryption support for Emacs")
+      (description
+       "This package provides transparent Age file encryption and decryption
+in Emacs for Pass-Age, a port of Pass, the standard Unix password manager.")
+      (license license:gpl3+))))
+
 (define-public emacs-psc-ide
   ;; There is no proper release.  The base version is extracted from the
   ;; "Version" keyword in the main file.
