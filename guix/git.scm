@@ -219,6 +219,9 @@ when talking to remote Git servers.
 
 If one of them is #f, the corresponding default setting is kept unchanged."
   ;; 'set-server-timeout!' & co. were added in Guile-Git 0.9.0.
+  (define (defined? variable)
+    (module-defined? (resolve-interface '(git)) variable))
+
   (when (and (defined? 'set-server-connection-timeout!)
              connection-timeout)
     (set-server-connection-timeout! connection-timeout))
