@@ -448,7 +448,7 @@ shutdown on system startup."))
 
 (define (tlp-shepherd-service config)
   (let* ((tlp-bin (file-append
-                   (tlp-configuration-tlp config) "/bin/tlp"))
+                   (tlp-configuration-tlp config) "/sbin/tlp"))
          (tlp-action (lambda args
                        #~(lambda _
                            (zero? (system* #$tlp-bin #$@args))))))
