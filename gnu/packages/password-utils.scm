@@ -147,13 +147,10 @@
      (list
       #:install-source? #f
       #:import-path "github.com/99designs/aws-vault"
+      #:build-flags
+      #~(list (string-append "-ldflags=-X main.Version=" #$version))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'patch-version
-            (lambda _
-              (substitute* "src/github.com/99designs/aws-vault/main.go"
-                (("var Version = \"dev\"")
-                 (string-append "var Version = \"v" #$version "\"")))))
           (add-after 'build 'contrib
             (lambda* (#:key import-path #:allow-other-keys)
               (let* ((zsh-site-dir
