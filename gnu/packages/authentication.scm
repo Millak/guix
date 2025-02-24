@@ -23,6 +23,9 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages security-token)
@@ -32,6 +35,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
@@ -122,7 +126,7 @@ PSKC (RFC6030) to manage secret key data.")
 (define-public oauth2l
   (package
     (name "oauth2l")
-    (version "1.3.0")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -131,10 +135,40 @@ PSKC (RFC6030) to manage secret key data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0010870xdhf0aysrs2vhl3yxd4gh87qp7mjpyp7qy1n2rz55pgbc"))))
+        (base32 "1gm5pbgmz3p0zk5s4gvslp8ixhak3d35pfm7wrw5yk2rcdffr5li"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/google/oauth2l"))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/google/oauth2l"
+      #:test-flags
+      #~(list "-skip"
+              ;; Tests requiring network access.
+              (string-join
+               (list "Test2LOFlow/curl._2lo"
+                     "Test3LOFlow/curl._3lo"
+                     "Test3LOFlow/fetch._3lo_cached"
+                     "Test3LOLoopbackFlow/curl._3lo_loopback"
+                     "Test3LOLoopbackFlow/fetch._3lo_loopback_cached"
+                     "TestCLI/info._invalid_token"
+                     "TestSSOFlow/fetch._sso"
+                     "TestSSOFlow/fetch._sso._old_interface"
+                     "TestServiceAccountImpersonationFlow/fetch._sso.*"
+                     "TestStsFlow/fetch._2lo._sts"
+                     "TestStsFlow/fetch._sso._sts")
+               "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list go-github-com-google-uuid
+           go-github-com-jessevdk-go-flags
+           go-golang-org-x-oauth2))
     (home-page "https://github.com/google/oauth2l")
     (synopsis "Simple CLI for interacting with Google API authentication")
     (description
