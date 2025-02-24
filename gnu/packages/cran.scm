@@ -26312,6 +26312,8 @@ preparing, executing, and processing HTTP requests.")
        (sha256
         (base32
          "0wkm9xka83skq1cnv830q4jnqvwm8rlmns2mj8n692h2y5qxlmna"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-blob" "r-dbplyr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bit64
@@ -26329,7 +26331,7 @@ preparing, executing, and processing HTTP requests.")
            r-rapidjsonr
            r-rlang
            r-tibble))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-blob r-dbplyr r-testthat))
     (home-page "https://github.com/r-dbi/bigrquery")
     (synopsis "R interface to Google's BigQuery API")
     (description
