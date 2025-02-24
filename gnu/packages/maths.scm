@@ -3839,7 +3839,7 @@ scientific applications modeled by partial differential equations.")
            #~(modify-phases %standard-phases
                (add-after 'build 'mpi-setup
                  #$%openmpi-setup))))
-    (inputs (list openmpi))
+    (inputs (list openmpi zlib))
     (native-inputs (list m4))
     (home-page "https://parallel-netcdf.github.io/")
     (synopsis "Parallel I/O Library for NetCDF File Access")
