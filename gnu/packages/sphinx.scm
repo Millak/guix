@@ -157,7 +157,7 @@
            python-flit-core
            python-pytest
            (texlive-local-tree
-            (list texlive-cm-super texlive-tex-gyre))))
+            (list texlive-anyfontsize texlive-cm-super texlive-tex-gyre))))
     (home-page "https://www.sphinx-doc.org")
     (synopsis "Python documentation generator")
     (description "Sphinx is a tool that makes it easy to create documentation
