@@ -44765,7 +44765,10 @@ Most operations can be parallelized.")
               (sha256
                (base32
                 "16fwj7m28g4km7yalqppxmh3lw2jln0z072l6awia38qkdg6xwhc"))))
-    (properties `((upstream-name . "mlrMBO")))
+    (properties
+     '((upstream-name . "mlrMBO")
+       (updater-extra-native-inputs
+        . ("r-cmaesr" "r-dicekriging" "r-rgenoud" "r-randomforest"))))
     (build-system r-build-system)
     (propagated-inputs (list r-backports
                              r-bbmisc
@@ -44776,7 +44779,13 @@ Most operations can be parallelized.")
                              r-parallelmap
                              r-paramhelpers
                              r-smoof))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs
+     (list r-cmaesr
+           r-dicekriging
+           r-knitr
+           r-randomforest
+           r-rgenoud
+           r-testthat))
     (home-page "https://github.com/mlr-org/mlrMBO")
     (synopsis "Model-based optimization with mlr")
     (description
