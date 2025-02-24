@@ -5727,7 +5727,7 @@ parts of it.")
 (define-public openblas
   (package
     (name "openblas")
-    (version "0.3.20")
+    (version "0.3.29")
     (source
      (origin
        (method git-fetch)
@@ -5737,7 +5737,7 @@ parts of it.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0r4sz3rn68fyc2paq0a04pgfi7iszpm95f6ggbzxpvjzx9qxbcql"))))
+         "1wm00hn0vzb45nqg0q3ka15wjqjzma5lh1x6227di73icqdcbzcz"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -5821,21 +5821,7 @@ from the GotoBLAS2-1.13 BSD version.")
     (synopsis "Optimized BLAS library based on GotoBLAS (ILP64 version)")
     (license license:bsd-3)))
 
-(define-public openblas-0.3.29
-  (package
-    (inherit openblas)
-    (name "openblas")
-    (version "0.3.29")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/xianyi/OpenBLAS")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1wm00hn0vzb45nqg0q3ka15wjqjzma5lh1x6227di73icqdcbzcz"))))))
+(define-public openblas-0.3.29 openblas)
 
 (define-public libblastrampoline
   (package
