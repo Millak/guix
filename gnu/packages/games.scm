@@ -12569,14 +12569,13 @@ virtual reality devices.")
                   vlc
                   zlib))
     (home-page "https://gemrb.org/")
-    (synopsis
-     "Portable open-source implementation of Bioware's Infinity Engine")
+    (synopsis "Portable implementation of Bioware's Infinity Engine")
     (description
      "GemRB (Game Engine Made with preRendered Background) is a portable
-     open-source reimplementation of the Infinity Engine that underpinned
-     Baldur's Gate, Icewind Dale and Planescape: Torment.  It sports a
-     cleaner design, greater extensibility and several innovations.")
-    (license (list license:gpl2))))
+reimplementation of the Infinity Engine that underpinned Baldur's Gate,
+Icewind Dale and Planescape: Torment.  It sports a cleaner design, greater
+extensibility and several innovations.")
+    (license license:gpl2+)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
