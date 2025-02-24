@@ -298,6 +298,7 @@ guix/build/cargo-build-system\.scm                 @guix/rust
 guix/build/cargo-utils\.scm                        @guix/rust
 guix/build-system/cargo\.scm                       @guix/rust
 guix/import/crate\.scm                             @guix/rust
+guix/import/crate/cargo-lock\.scm                  @guix/rust
 guix/scripts/import/crate\.scm                     @guix/rust
 tests/crate\.scm                                   @guix/rust
 

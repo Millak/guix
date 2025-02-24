@@ -298,6 +298,7 @@ MODULES =					\
   guix/import/cpan.scm				\
   guix/import/cran.scm				\
   guix/import/crate.scm				\
+  guix/import/crate/cargo-lock.scm		\
   guix/import/egg.scm   			\
   guix/import/elm.scm				\
   guix/import/elpa.scm   			\

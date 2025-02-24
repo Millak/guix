@@ -9,6 +9,9 @@
 ;;; Copyright © 2023, 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024 Murilo <murilo@disroot.org>
+;;; Copyright © 2024-2025 Luis Guilherme Coelho <lgcoelho@disroot.org>
+;;; Copyright © 2025 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,12 +29,14 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix import crate)
+  #:use-module (guix base16)
   #:use-module (guix base32)
   #:use-module ((guix build-system cargo) #:hide (crate-source))
   #:use-module (guix diagnostics)
   #:use-module (gcrypt hash)
   #:use-module (guix http-client)
   #:use-module (guix i18n)
+  #:use-module (guix import crate cargo-lock)
   #:use-module (guix import json)
   #:use-module (guix import utils)
   #:use-module (guix memoization)
@@ -39,9 +44,11 @@
   #:use-module (guix read-print)
   #:use-module (guix upstream)
   #:use-module (guix utils)
+  #:use-module (guix scripts download)
   #:use-module (gnu packages)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
+  #:use-module (ice-9 textual-ports)
   #:use-module (json)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
@@ -52,6 +59,7 @@
             guix-package->crate-name
             string->license
             crate-recursive-import
+            cargo-lock->expressions
             %crate-updater))
 
 
@@ -480,6 +488,76 @@ look up the development dependencs for the given crate."
              (parts (string-split path #\/)))
     (match parts
       ((name _ ...) name))))
+
+
+;;;
+;;; Convert ‘Cargo.lock’ to Guix sources.
+;;;
+
+(define (cargo-lock->expressions lockfile package-name)
+  "Given LOCKFILE, a 'Cargo.lock' file, import its content as source
+expressions.  Return a source list and a Cargo inputs entry for PACKAGE-NAME
+referencing all imported sources."
+  (define (crate->guix-source crate)
+    (match crate
+      (('crate
+        ('crate-name name)
+        ('crate-version version)
+        ('crate-source _)
+        ('crate-checksum checksum))
+       `(define
+          ,(string->symbol
+            (string-append (crate-name->package-name name) "-" version))
+          ,@(if (or (string-suffix? "src" name)
+                    (string-suffix? "sys" name))
+                (list (comment ";; TODO: Check bundled sources.\n" #f))
+                '())
+          (crate-source ,name ,version
+                        ,(bytevector->nix-base32-string
+                          (base16-string->bytevector checksum)))))
+      ;; Git snapshot.
+      (('crate
+        ('crate-name name)
+        ('crate-version version)
+        ('crate-source source))
+       (begin
+         (let* ((src (string-split source (char-set #\+ #\? #\#)))
+                (url (second src))
+                (commit (last src))
+                (version (string-append version "." (string-take commit 7)))
+                (checksum
+                 (second
+                  (string-split
+                   (with-output-to-string
+                     (lambda _
+                       (guix-download "-g" url
+                                      (string-append "--commit=" commit))))
+                   #\newline))))
+           `(define
+              ,(string->symbol
+                (string-append (crate-name->package-name name) "-" version))
+              ,(comment
+                ";; TODO: Define standalone package if this is a workspace.\n"
+                #f)
+              (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url ,url)
+                      (commit ,commit)))
+                (file-name
+                 (git-file-name ,(crate-name->package-name name) ,version))
+                (sha256 (base32 ,checksum)))))))
+      ;; Cargo workspace member.
+      (else #f)))
+
+  (let* ((source-expressions
+          (filter-map crate->guix-source
+                      (cargo-lock-string->scm
+                       (call-with-input-file lockfile get-string-all))))
+         (cargo-inputs-entry
+          `(,(string->symbol package-name) =>
+            (list ,@(map second source-expressions)))))
+    (values source-expressions cargo-inputs-entry)))
 
 
 ;;;
