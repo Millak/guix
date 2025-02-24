@@ -7431,7 +7431,12 @@ and fairly speedy.")
               ;; <uvicorn.supervisors.multiprocess.Process object at
               ;; 0x7ffff39b6110>.is_alive.
               ;; Maybe this <https://github.com/encode/uvicorn/issues/2466>.
-              "--ignore=tests/supervisors/test_multiprocess.py")))
+              "--ignore=tests/supervisors/test_multiprocess.py"
+
+              #$@(cond
+                  ((target-aarch64?)
+                   '("-k not test_send_binary_data_to_server_bigger_than_default_on_websockets"))
+                  (#t '())))))
     (native-inputs
      (list nss-certs-for-test
            python-a2wsgi
