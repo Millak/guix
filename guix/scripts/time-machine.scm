@@ -28,7 +28,7 @@
   #:use-module (guix store)
   #:use-module (guix status)
   #:use-module ((guix git)
-                #:select (update-cached-checkout with-git-error-handling))
+                #:select (with-git-error-handling))
   #:use-module ((guix utils)
                 #:select (%current-system))
   #:use-module ((guix scripts pull)
