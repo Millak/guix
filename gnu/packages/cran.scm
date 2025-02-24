@@ -17533,7 +17533,9 @@ additional external tools on any platform.")
               (sha256
                (base32
                 "1fi1nc9c7kfnig6b5ifpb1v9r3gxszk984rwyq7i1lb6s5jv0b9z"))))
-    (properties `((upstream-name . "openai")))
+    (properties
+     '((upstream-name . "openai")
+       (updater-extra-native-inputs . ("r-purrr"))))
     (build-system r-build-system)
     (propagated-inputs (list r-assertthat
                              r-glue
@@ -17541,7 +17543,7 @@ additional external tools on any platform.")
                              r-jsonlite
                              r-lifecycle
                              r-magrittr))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-purrr r-testthat))
     (home-page "https://github.com/irudnyts/openai")
     (synopsis "R Wrapper for OpenAI API")
     (description
