@@ -248,10 +248,10 @@
               (seabios (search-input-file %build-inputs
                                           "share/qemu/bios.bin"))
               (ipxe
-                #$@(if (this-package-input "ipxe-qemu")
-                       #~((search-input-file %build-inputs
-                                             "share/qemu/pxe-virtio.rom"))
-                       #~((string-append #$output "/share/qemu"))))
+               #$@(if (this-package-input "ipxe-qemu")
+                      #~((search-input-file %build-inputs
+                                            "share/qemu/pxe-virtio.rom"))
+                      #~((string-append #$output "/share/qemu"))))
               (out #$output))
           (list (string-append "--cc=" gcc)
                 ;; Some architectures insist on using HOST_CC.
@@ -285,10 +285,10 @@
                                         inputs "share/qemu/bios.bin")))
                      (seabios-firmwares (find-files seabios "\\.bin$"))
                      (ipxe
-                       #$@(if (this-package-input "ipxe-qemu")
-                              #~((dirname (search-input-file
-                                            inputs "share/qemu/pxe-virtio.rom")))
-                              #~((string-append #$output "/share/qemu"))))
+                      #$@(if (this-package-input "ipxe-qemu")
+                             #~((dirname (search-input-file
+                                          inputs "share/qemu/pxe-virtio.rom")))
+                             #~((string-append #$output "/share/qemu"))))
                      (ipxe-firmwares (find-files ipxe "\\.rom$"))
                      (openbios (search-input-file
                                 inputs "share/qemu/openbios-ppc"))
@@ -368,28 +368,28 @@
               ;; from a race condition.
               (delete-file "tests/qemu-iotests/tests/copy-before-write")))
           #$@(cond
-               ((target-riscv64?)
-                #~((add-after 'unpack 'disable-some-tests
-                     (lambda _
-                       ;; qemu.qmp.QMPConnectError:
-                       ;; Unexpected empty reply from server
-                       (delete-file "tests/qemu-iotests/040")
-                       (delete-file "tests/qemu-iotests/041")
-                       (delete-file "tests/qemu-iotests/256")
+              ((target-riscv64?)
+               #~((add-after 'unpack 'disable-some-tests
+                    (lambda _
+                      ;; qemu.qmp.QMPConnectError:
+                      ;; Unexpected empty reply from server
+                      (delete-file "tests/qemu-iotests/040")
+                      (delete-file "tests/qemu-iotests/041")
+                      (delete-file "tests/qemu-iotests/256")
 
-                       ;; No 'PCI' bus found for device 'virtio-scsi-pci'
-                       (delete-file "tests/qemu-iotests/127")
-                       (delete-file "tests/qemu-iotests/267")
+                      ;; No 'PCI' bus found for device 'virtio-scsi-pci'
+                      (delete-file "tests/qemu-iotests/127")
+                      (delete-file "tests/qemu-iotests/267")
 
-                       ;; This test takes too long.
-                       (delete-file "tests/qemu-iotests/tests/iothreads-stream")))))
-               ((target-arm32?)
-                #~((add-after 'unpack 'disable-some-tests
-                     (lambda _
-                       ;; failed to allocate memory for stack: Cannot allocate memory
-                       (substitute* "tests/qtest/meson.build"
-                         ((".*qtests_aspeed :.*") ""))))))
-               (else '()))
+                      ;; This test takes too long.
+                      (delete-file "tests/qemu-iotests/tests/iothreads-stream")))))
+              ((target-arm32?)
+               #~((add-after 'unpack 'disable-some-tests
+                    (lambda _
+                      ;; failed to allocate memory for stack: Cannot allocate memory
+                      (substitute* "tests/qtest/meson.build"
+                        ((".*qtests_aspeed :.*") ""))))))
+              (else '()))
           (add-after 'patch-source-shebangs 'patch-embedded-shebangs
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               ;; Ensure the executables created by these source files reference
@@ -447,15 +447,15 @@
                                             (string-append "--host-cc=" gcc)
                                             "--sysconfdir=/etc"
                                             "--disable-debug-info")))
-              (mkdir-p "../user-static")
-              (with-directory-excursion "../user-static"
-                (apply invoke "../../configure"
-                       "--static"
-                       "--disable-docs" ;already built
-                       "--disable-system"
-                       "--enable-linux-user"
-                       (string-append "--prefix=" static)
-                       configure-flags)))))
+                (mkdir-p "../user-static")
+                (with-directory-excursion "../user-static"
+                  (apply invoke "../../configure"
+                         "--static"
+                         "--disable-docs" ;already built
+                         "--disable-system"
+                         "--enable-linux-user"
+                         (string-append "--prefix=" static)
+                         configure-flags)))))
           (add-after 'build 'build-user-static
             (lambda args
               (with-directory-excursion "../user-static"
@@ -514,44 +514,44 @@ exec smbd $@")))
                              (string-append qemu-doc "/html"))))))))
     (inputs
      (append
-       (if (supported-package? ipxe-qemu)
-           (list ipxe-qemu)
-           '())
-       (list alsa-lib
-             bash-minimal
-             dtc
-             glib
-             gnutls                     ;for qcow2 disk encryption
-             gtk+
-             libaio
-             libcacard                  ;smartcard support
-             attr libcap-ng             ;VirtFS support
-             libdrm
-             libepoxy
-             libjpeg-turbo
-             libpng
-             libseccomp
-             libslirp
-             liburing
-             libusb                     ;USB pass-through support
-             mesa
-             ncurses
-             openbios-qemu-ppc
-             opensbi-qemu
-             ;; pciutils
-             pixman
-             pulseaudio
-             sdl2
-             seabios-qemu
-             spice
-             usbredir
-             util-linux
-             vde2
-             virglrenderer
+      (if (supported-package? ipxe-qemu)
+          (list ipxe-qemu)
+          '())
+      (list alsa-lib
+            bash-minimal
+            dtc
+            glib
+            gnutls                      ;for qcow2 disk encryption
+            gtk+
+            libaio
+            libcacard                   ;smartcard support
+            attr libcap-ng              ;VirtFS support
+            libdrm
+            libepoxy
+            libjpeg-turbo
+            libpng
+            libseccomp
+            libslirp
+            liburing
+            libusb                      ;USB pass-through support
+            mesa
+            ncurses
+            openbios-qemu-ppc
+            opensbi-qemu
+            ;; pciutils
+            pixman
+            pulseaudio
+            sdl2
+            seabios-qemu
+            spice
+            usbredir
+            util-linux
+            vde2
+            virglrenderer
 
-             ;; Formats to support for .qcow2 (and possibly other) compression.
-             zlib
-             `(,zstd "lib"))))
+            ;; Formats to support for .qcow2 (and possibly other) compression.
+            zlib
+            `(,zstd "lib"))))
     (native-inputs
      ;; Note: acpica is here only to pretty-print firmware differences with IASL
      ;; (see the replace-firmwares phase above).
