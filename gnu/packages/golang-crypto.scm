@@ -60,6 +60,7 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages password-utils)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages specifications))
 
 ;;; Commentary:
@@ -1574,6 +1575,40 @@ library's internal ChaCha20 package.")
     (synopsis "TLS 1.3 with QUIC in Go")
     (description "This package provides @code{qtls}, a QUIC-capable variant of
 the Go standard library's TLS 1.3 implementation.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-miekg-pkcs11
+  (package
+    (name "go-github-com-miekg-pkcs11")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/miekg/pkcs11")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w403kmqxf8w25aap4901nrm7wj0wf95lrwwv1nvdjnwi8jjgapz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/miekg/pkcs11"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "SOFTHSM_LIB" (format #f "~a/lib/softhsm/libsofthsm2.so"
+                                            #$(this-package-native-input "softhsm"))))))))
+    (native-inputs
+     (list softhsm))
+    (home-page "https://github.com/miekg/pkcs11")
+    (synopsis "PKCS #11 wrapper for Golang")
+    (description
+     "This package provides an implementation of the
+@url{https://en.wikipedia.org/wiki/PKCS_11, PKCS#11} API.  It wraps the
+library closely, but uses Go idiom where it makes sense.  It has been tested
+with SoftHSM.")
     (license license:bsd-3)))
 
 (define-public go-github-com-minio-blake2b-simd
