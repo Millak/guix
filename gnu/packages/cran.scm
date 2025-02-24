@@ -29347,11 +29347,13 @@ utilities for sequence data management under the ACNUC system.")
        (uri (cran-uri "unigd" version))
        (sha256
         (base32 "0iykjsfi8rjayrb4nhnm8ifdlsaxr7918bk6ackgfj1qz5g33wr7"))))
-    (properties `((upstream-name . "unigd")))
+    (properties
+     '((upstream-name . "unigd")
+       (updater-extra-native-inputs . ("r-fontquiver"))))
     (build-system r-build-system)
     (inputs (list cairo fontconfig freetype libpng zlib))
     (propagated-inputs (list r-cpp11 r-systemfonts))
-    (native-inputs (list pkg-config r-knitr r-testthat r-xml2))
+    (native-inputs (list pkg-config r-fontquiver r-knitr r-testthat r-xml2))
     (home-page "https://github.com/nx10/unigd")
     (synopsis "Universal graphics device")
     (description
