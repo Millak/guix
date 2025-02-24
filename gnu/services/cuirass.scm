@@ -207,6 +207,13 @@
         (documentation "Run Cuirass web interface.")
         (provision '(cuirass-web))
         (requirement '(user-processes cuirass))
+
+        ;; XXX: Respawn slowly to work around the fact that 'cuirass' is not
+        ;; ready yet (not listening to the bridge) when it gets in 'started'
+        ;; state.
+        (respawn-delay 1)
+        (respawn-limit #~'(10 . 15))
+
         (start #~(make-forkexec-constructor
                   (list (string-append #$cuirass "/bin/cuirass")
                         "web"
