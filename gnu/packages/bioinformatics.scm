@@ -20209,7 +20209,8 @@ genomic scores), long range contacts and the visualization of viewpoints.")
            python-pysam
            python-tqdm))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-wheel))
     (home-page "https://pygenometracks.readthedocs.io")
     (synopsis "Program and library to plot beautiful genome browser tracks")
     (description
