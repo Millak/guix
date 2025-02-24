@@ -12539,7 +12539,7 @@ virtual reality devices.")
 (define-public gemrb
   (package
     (name "gemrb")
-    (version "0.9.3")
+    (version "0.9.4")
     (source
      (origin
        (method git-fetch)
@@ -12548,13 +12548,16 @@ virtual reality devices.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wfmq4z2in18k4znshd7h1i496zlskbci49yp5d54mfxvyp534m5"))
-       ;; Remove the patch in the next version, as commit d339c0d fixes this
+        (base32 "16pp9vw717pk9q8q3asxk4j64rmywbnpw91cr3qanwnmdi5p5gj4"))
+       ;; Remove the patch in the next version, as commit cca8e71 fixes this
        (patches (search-patches
-                 "gemrb-add-path-suffixes-for-vlc-headers.patch"))))
+                 "gemrb-remove-ifdef-and-externalize-path-setting-to-cmake.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags `("-DUSE_TESTS=ON" "-DOPENGL_BACKEND=OpenGL")))
+     (list
+      #:cmake cmake-3.30
+      #:configure-flags
+      #~(list "-DUSE_TESTS=ON" "-DOPENGL_BACKEND=OpenGL")))
     (native-inputs (list python-3.10 glibc-locales googletest))
     (inputs (list freetype
                   libiconv

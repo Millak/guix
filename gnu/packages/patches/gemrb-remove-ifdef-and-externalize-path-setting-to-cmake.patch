@@ -1,0 +1,57 @@
+From cca8e711247ae67921a1c91ef24ea78415cbea78 Mon Sep 17 00:00:00 2001
+From: Jaka Kranjc <lynxlupodian@users.sourceforge.net>
+Date: Mon, 13 Jan 2025 22:21:55 +0100
+Subject: [PATCH] Test_Map: remove ifdef and externalize path setting to cmake
+
+should fix #2267
+---
+ demo/tester.cfg               | 6 +++---
+ gemrb/CMakeLists.txt          | 3 +++
+ gemrb/tests/core/Test_Map.cpp | 6 +-----
+ 3 files changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/demo/tester.cfg b/demo/tester.cfg
+index 26b8b54993..9bf2903de0 100644
+--- a/demo/tester.cfg
++++ b/demo/tester.cfg
+@@ -1,6 +1,6 @@
+ GameType = demo
+-GamePath = ../../../demo
+-GemRBPath = ../../../gemrb
+-PluginsPath = ../plugins
++GamePath = ${CMAKE_SOURCE_DIR}/demo
++GemRBPath = ${CMAKE_SOURCE_DIR}/gemrb
++PluginsPath = ${CMAKE_CURRENT_BINARY_DIR}/plugins
+ UseAsLibrary = 1
+ AudioDriver = none
+diff --git a/gemrb/CMakeLists.txt b/gemrb/CMakeLists.txt
+index a61050960e..c556c6bbbc 100644
+--- a/gemrb/CMakeLists.txt
++++ b/gemrb/CMakeLists.txt
+@@ -162,6 +162,9 @@ CONFIGURE_FILE(
+   IMMEDIATE @ONLY
+ )
+ 
++# copy config for complex tests to build dir
++CONFIGURE_FILE(../demo/tester.cfg "${CMAKE_BINARY_DIR}")
++
+ INSTALL( TARGETS gemrb DESTINATION ${BIN_DIR} )
+ 
+ # optional script to help deploy dependencies when building with windows.
+diff --git a/gemrb/tests/core/Test_Map.cpp b/gemrb/tests/core/Test_Map.cpp
+index 591475fb3a..fc30a93e94 100644
+--- a/gemrb/tests/core/Test_Map.cpp
++++ b/gemrb/tests/core/Test_Map.cpp
+@@ -41,11 +41,7 @@ class MapTest : public testing::Test {
+ 	static void SetUpTestSuite()
+ 	{
+ 		setlocale(LC_ALL, "");
+-#if defined(WIN32) || defined(__APPLE__)
+-		const char* argv[] = { "tester", "-c", "../demo/tester.cfg" };
+-#else
+-		const char* argv[] = { "tester", "-c", "../../../demo/tester.cfg" };
+-#endif
++		const char* argv[] = { "tester", "-c", "../../tester.cfg" };
+ 		auto cfg = LoadFromArgs(3, const_cast<char**>(argv));
+ 		ToggleLogging(true);
+ 		AddLogWriter(createStdioLogWriter());
