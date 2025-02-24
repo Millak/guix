@@ -4142,32 +4142,31 @@ will reconstruct the object along its delta-base chain and return it.")
                                            (string-append #$output "/share/man/man1")))
                            (find-files "." "^git-lfs.*\\.1$"))))))
                  #~()))))
-    ;; make `ronn` available during build for man page generation
     (native-inputs
-     (append (list git-minimal)
+     (append (list git-minimal
+                   go-github-com-avast-retry-go
+                   go-github-com-dpotapov-go-spnego
+                   go-github-com-git-lfs-gitobj-v2
+                   go-github-com-git-lfs-go-netrc
+                   go-github-com-git-lfs-pktline
+                   go-github-com-git-lfs-wildmatch-v2
+                   go-github-com-jmhodges-clock
+                   go-github-com-leonelquinteros-gotext
+                   go-github-com-mattn-go-isatty
+                   go-github-com-olekukonko-ts
+                   go-github-com-pkg-errors
+                   go-github-com-rubyist-tracerx
+                   go-github-com-spf13-cobra
+                   go-github-com-ssgelm-cookiejarparser
+                   go-github-com-stretchr-testify
+                   go-github-com-xeipuuv-gojsonschema
+                   go-golang-org-x-net
+                   go-golang-org-x-sync
+                   go-golang-org-x-sys)
+             ;; make `ronn` available during build for man page generation
              (if (supported-package? ruby-asciidoctor)
                  (list ronn-ng ruby-asciidoctor)
                  '())))
-    (propagated-inputs
-     (list go-github-com-avast-retry-go
-           go-github-com-dpotapov-go-spnego
-           go-github-com-git-lfs-gitobj-v2
-           go-github-com-git-lfs-go-netrc
-           go-github-com-git-lfs-pktline
-           go-github-com-git-lfs-wildmatch-v2
-           go-github-com-jmhodges-clock
-           go-github-com-leonelquinteros-gotext
-           go-github-com-mattn-go-isatty
-           go-github-com-olekukonko-ts
-           go-github-com-pkg-errors
-           go-github-com-rubyist-tracerx
-           go-github-com-spf13-cobra
-           go-github-com-ssgelm-cookiejarparser
-           go-github-com-stretchr-testify
-           go-github-com-xeipuuv-gojsonschema
-           go-golang-org-x-net
-           go-golang-org-x-sync
-           go-golang-org-x-sys))
     (home-page "https://git-lfs.github.com/")
     (synopsis "Git extension for versioning large files")
     (description
