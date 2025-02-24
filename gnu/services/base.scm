@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hui Lu <luhuins@163.com>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021-2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2025 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
@@ -160,6 +160,8 @@
 
             udev-configuration
             udev-configuration?
+            udev-configuration-udev
+            udev-configuration-debug?
             udev-configuration-rules
             udev-configuration-hardware
             udev-service-type
@@ -2581,6 +2583,8 @@ command that allows you to share pre-built binaries with others over HTTP.")))
   udev-configuration?
   (udev   udev-configuration-udev                 ;file-like
           (default eudev))
+  (debug? udev-configuration-debug?               ;boolean
+          (default #f))
   (rules  udev-configuration-rules                ;list of file-like
           (default '()))
   (hardware  udev-configuration-hardware          ;list of file-like
@@ -2723,7 +2727,10 @@ item of PACKAGES."
                (umask old-umask))
 
              (let ((pid (fork+exec-command
-                         (list udevd)
+                         (list udevd
+                               #$@(if (udev-configuration-debug? config)
+                                      '("--debug")
+                                      '()))
                          #:environment-variables
                          (cons*
                           (string-append "LINUX_MODULE_DIRECTORY="

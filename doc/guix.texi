@@ -20384,17 +20384,21 @@ In an @code{operating-system} declaration, this service type can be
 @deftp {Data Type} udev-configuration
 Data type representing the configuration of udev.
 
-@table @asis
-@item @code{udev} (default: @code{eudev}) (type: file-like)
+@table @code
+@item udev (default: @code{eudev}) (type: file-like)
 Package object of the udev service.  This package is used at run-time,
 when compiled for the target system.  In order to generate the
 @file{hwdb.bin} hardware index, it is also used when generating the
 system definition, compiled for the current system.
 
-@item @code{rules} (default: @var{'()}) (type: list-of-file-like)
+@item debug? (default: @code{#f}) (type: boolean)
+Whether to enable debug output.  The debug output is written to the
+system log, @file{/var/log/messages}.
+
+@item rules (default: @code{'()}) (type: list-of-file-like)
 List of file-like objects denoting udev rule files under a sub-directory.
 
-@item @code{hardware} (default: @var{'()}) (type: list-of-file-like)
+@item hardware (default: @code{'()}) (type: list-of-file-like)
 List of file-like objects denoting udev hardware description files under
 a sub-directory.
 
