@@ -4097,7 +4097,7 @@ will reconstruct the object along its delta-base chain and return it.")
 (define-public git-lfs
   (package
     (name "git-lfs")
-    (version "3.6.0")
+    (version "3.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4106,7 +4106,7 @@ will reconstruct the object along its delta-base chain and return it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09ry2nq5bpdxk446dyhc0d6d85wy5x2i5ckwwg9r00a3zdp5v4ry"))))
+                "02819i3sd9qjw89lcpv6rmhfqaxkz1pddqw8havw3ysmcmhmb7yd"))))
     (build-system go-build-system)
     (arguments
      (list
