@@ -20819,12 +20819,14 @@ a library of prediction algorithms to be used in the super learner.")
        (sha256
         (base32
          "0qvdxzvpi7a66gx61v6fj31zy4y5cid18g4qgv5lir7qc74rbbx0"))))
-    (properties `((upstream-name . "drtmle")))
+    (properties
+     '((upstream-name . "drtmle")
+       (updater-extra-native-inputs . ("r-nloptr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-future-apply r-np r-superlearner))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-nloptr r-testthat))
     (home-page "https://github.com/benkeser/drtmle")
     (synopsis "Doubly-robust nonparametric estimation and inference")
     (description
