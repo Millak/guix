@@ -27388,7 +27388,8 @@ web frameworks.")
          "1b28j265kvibgxrgxx0gwfm6cmv252c8ph1j2vb0cpms8ph5if5v"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
+     '(#:tests? #f ; XXX: all tests fail requiring additional credentials
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-ssh
            (lambda* (#:key inputs #:allow-other-keys)
