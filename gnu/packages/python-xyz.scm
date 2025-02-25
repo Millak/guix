@@ -27380,12 +27380,12 @@ web frameworks.")
     (name "python-apache-libcloud")
     (version "3.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "apache-libcloud" version))
-        (sha256
-         (base32
-          "1b28j265kvibgxrgxx0gwfm6cmv252c8ph1j2vb0cpms8ph5if5v"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "apache-libcloud" version))
+       (sha256
+        (base32
+         "1b28j265kvibgxrgxx0gwfm6cmv252c8ph1j2vb0cpms8ph5if5v"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
