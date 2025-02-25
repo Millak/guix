@@ -1831,7 +1831,7 @@ times faster decoding.")
 (define-public go-github-com-nats-io-jwt-v2
   (package
     (name "go-github-com-nats-io-jwt-v2")
-    (version "2.5.3")
+    (version "2.7.3")
     (source
      (origin
        (method git-fetch)
@@ -1840,7 +1840,7 @@ times faster decoding.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wcqbfyd3b4qdspmf72cpsbi0y2a4b1qd0cv3qvhh17d1h1a6zib"))))
+        (base32 "09gfzhahm6wfnkaqm5yam8vd9y50rnyjxcl6mw3a9y4far1vpmvb"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/nats-io/jwt/v2"
