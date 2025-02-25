@@ -17458,6 +17458,29 @@ distance.  Takes a string value input from the user.  Looks for an identical
 word on a list of words, if none is found, look for a similar word.")
       (license license:expat))))
 
+(define-public go-go-abhg-dev-io-ioutil
+  (package
+    (name "go-go-abhg-dev-io-ioutil")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/abhinav/ioutil-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sckmmpabnv9myccnjjrdr3an8zkzvcpwssx40x2z60kivd4zvv2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.abhg.dev/io/ioutil"))
+    (home-page "https://go.abhg.dev/io/ioutil")
+    (synopsis "Extensions for the Golang std @code{io} package")
+    (description
+     "Package ioutil contains extensions for the @code{io} package.")
+    (license license:bsd-3)))
+
 (define-public go-go-abhg-dev-komplete
   (package
     (name "go-go-abhg-dev-komplete")
