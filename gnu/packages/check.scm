@@ -1987,35 +1987,29 @@ Python's @code{random.seed}.")
 (define-public python-pytest-runner
   (package
     (name "python-pytest-runner")
-    (version "6.0.0")
+    (version "6.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-runner" version))
        (sha256
         (base32
-         "11dnhxnjmh4nf1j8rnvx944ha3wg8ggrgrwdcx4c7d19xmi57n5l"))))
+         "16zly218ij0n6fxzqsasia3vh9xkzl9w0cs9pwvqy057hnap7m3h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; FIXME: The test suite requires 'python-pytest-virtualenv',
       ;; but that introduces a circular dependency.
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda _
-              (let ((circa-1980 (* 10 366 24 60 60)))
-                (setenv "SOURCE_DATE_EPOCH" (number->string circa-1980))
-                (invoke "python" "-m" "build" "--wheel" "--no-isolation" "."))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+      #:tests? #f))
     (native-inputs
-     (list python-pip python-pypa-build python-pytest
-           python-setuptools python-setuptools-scm python-wheel))
+     (list python-pytest
+           python-pytest-checkdocs
+           python-pytest-enabler
+           ;; python-pytest-virtualenv
+           python-setuptools
+           python-setuptools-scm
+           python-types-setuptools
+           python-wheel))
     (home-page "https://github.com/pytest-dev/pytest-runner")
     (synopsis "Invoke py.test as a distutils command")
     (description
