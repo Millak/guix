@@ -1055,13 +1055,13 @@ a notebook.")
 (define-public python-ipympl
   (package
     (name "python-ipympl")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ipympl" version))
        (sha256
-        (base32 "11rppjdqzgs4pfiq8gww5xkpbk21fp86vvv839v56b9rqq06j2b4"))))
+        (base32 "12qgiy08klqb5gipm23yzh09p5g2k8ihcq2bprprdya84acw2rf8"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-ipython
@@ -1072,7 +1072,7 @@ a notebook.")
            python-pillow
            python-traitlets))
     (native-inputs
-     (list python-jupyter-packaging))
+     (list python-hatchling python-jupyter-packaging))
     (home-page "https://matplotlib.org/ipympl/")
     (synopsis "Matplotlib Jupyter Extension")
     (description "Leveraging the Jupyter interactive widgets framework, ipympl
