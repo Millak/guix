@@ -1597,7 +1597,6 @@ learning.")
                ((",!=1.12\\.\\*") "")))))))
     (propagated-inputs (list python-numpy python-scipy))
     (native-inputs (list python-autograd
-                         python-flake8-bugbear
                          python-matplotlib
                          python-pytest
                          python-pytest-cov
