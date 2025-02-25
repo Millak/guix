@@ -1019,6 +1019,25 @@ is not available for Guile 2.0.")
      (modify-inputs (package-native-inputs guile-fibers-1.1)
        (replace "guile" guile-2.2)))))
 
+(define-public guile-fibers-next
+  (let ((commit "96cd1f4d4639b5c0f0b2fb7ebfd29b339a368dcc")
+        (revision "0"))
+    (package
+      (inherit guile-fibers)
+      (name "guile-fibers-next")
+      (version (git-version "1.3.1"
+                            revision
+                            commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wingo/fibers")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0kmsbdcpw2qdl20ihjsdcbw3nlii9f6zpkhhrwqmlyqi46hyq9xl")))))))
+
 (define-public guile-filesystem
   (package
     (name "guile-filesystem")
