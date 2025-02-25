@@ -3512,37 +3512,6 @@ tests written in a natural language style, backed up by Python code.")
 JSON APIs with Behave.")
     (license license:expat)))
 
-(define-public python-rednose
-  (package
-    (name "python-rednose")
-    (version "1.2.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "rednose" version))
-        (sha256
-          (base32
-            "11x5nx5b4wdq04s7vj1gcdl07jvvkfb37p0r5lg773gr5rr8mj6h"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-setup.py
-                    (lambda _
-                      ;; Six is only required for tests and later versions
-                      ;; work fine.
-                      (substitute* "setup.py"
-                        (("six==1.10.0") "six"))
-                      #t)))))
-    (propagated-inputs
-     (list python-colorama python-termstyle))
-    (native-inputs
-     (list python-six python-nose))
-    (home-page "https://github.com/JBKahn/rednose")
-    (synopsis "Colored output for Python nosetests")
-    (description "This package provides colored output for the
-@command{nosetests} command of the Python Nose unit test framework.")
-    (license license:bsd-3)))
-
 (define-public python-nose-exclude
   (package
     (name "python-nose-exclude")

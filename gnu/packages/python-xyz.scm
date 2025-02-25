@@ -27055,10 +27055,20 @@ conversion: Gamut A, B, and C.")
         (base32
          "1jmrskj399idw1czx6dvy2zfaijnwi02b55vx979ixp7q2mnzz68"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'remove-rednose-dependency
+           (lambda _
+             (substitute* "setup.py"
+               (("'rednose'") ""))
+             (substitute* '("requirements.txt" "setup.cfg")
+               (("rednose.*") "")))))))
     (propagated-inputs
      (list python-mock python-six))
     (native-inputs
-     (list python-nose python-rednose))
+     (list python-nose))
     (home-page "https://github.com/gabrielfalcao/sure")
     (synopsis "Automated testing library in python for python")
     (description
