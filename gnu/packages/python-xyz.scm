@@ -135,6 +135,7 @@
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Amade Nemes <nemesamade@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
@@ -5825,6 +5826,24 @@ any Python package.")
 interface programs.  This library provides features to parse arguments,
 automatic tab-completion, color support, logging to @code{std}, etc.")
     (license license:expat)))
+
+(define-public python-extract-dtb
+  (package
+    (name "python-extract-dtb")
+    (version "1.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "extract-dtb" version))
+              (sha256
+               (base32
+                "1a7rfvwisgri8b00pch6d9pfrl8s93w8g09yzxf4xh0qvmsxmh43"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/PabloCastellano/extract-dtb/")
+    (synopsis "Extract device tree blobs (DTB) from kernel images")
+    (description
+     "This package provides a tool to split a kernel image with appended
+@acronym{DTB, Device Tree Blobs} into separated kernel and DTB files.")
+    (license license:gpl3+)))
 
 (define-public python-mimeparse
   (package
