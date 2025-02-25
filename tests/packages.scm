@@ -80,6 +80,11 @@
 ;; When grafting, do not add dependency on 'glibc-utf8-locales'.
 (%graft-with-utf8-locale? #f)
 
+(define (bootstrap-binary name)
+  (let ((bin (search-bootstrap-binary name (%current-system))))
+    (and %store
+         (add-to-store %store name #t "sha256" bin))))
+
 
 (test-begin "packages")
 
@@ -609,14 +614,14 @@
 
 (test-equal "package-source-derivation, origin, sha512"
   "hello"
-  (let* ((bash    (search-bootstrap-binary "bash" (%current-system)))
+  (let* ((bash    (bootstrap-binary "bash"))
          (builder (add-text-to-store %store "my-fixed-builder.sh"
                                      "echo -n hello > $out" '()))
          (method  (lambda* (url hash-algo hash #:optional name
                                 #:rest rest)
                     (and (eq? hash-algo 'sha512)
                          (raw-derivation name bash (list builder)
-                                         #:sources (list builder)
+                                         #:sources (list bash builder)
                                          #:hash hash
                                          #:hash-algo hash-algo))))
          (source  (origin
@@ -635,14 +640,14 @@
 
 (test-equal "package-source-derivation, origin, sha3-512"
   "hello, sha3"
-  (let* ((bash    (search-bootstrap-binary "bash" (%current-system)))
+  (let* ((bash    (bootstrap-binary "bash"))
          (builder (add-text-to-store %store "my-fixed-builder.sh"
                                      "echo -n hello, sha3 > $out" '()))
          (method  (lambda* (url hash-algo hash #:optional name
                                 #:rest rest)
                     (and (eq? hash-algo 'sha3-512)
                          (raw-derivation name bash (list builder)
-                                         #:sources (list builder)
+                                         #:sources (list bash builder)
                                          #:hash hash
                                          #:hash-algo hash-algo))))
          (source  (origin

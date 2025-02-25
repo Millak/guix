@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -443,7 +443,7 @@
                                      (string-append
                                       "fixed-" (symbol->string hash-algorithm))
                                      %bash `(,builder)
-                                     #:sources `(,builder) ;optional
+                                     #:sources (list %bash builder)
                                      #:hash hash
                                      #:hash-algo hash-algorithm)))
            (build-derivations %store (list drv))
@@ -462,9 +462,11 @@
          (hash       (gcrypt:sha256 (string->utf8 "hello")))
          (drv1       (derivation %store "fixed"
                                  %bash `(,builder1)
+                                 #:sources (list %bash builder1)
                                  #:hash hash #:hash-algo 'sha256))
          (drv2       (derivation %store "fixed"
                                  %bash `(,builder2)
+                                 #:sources (list %bash builder2)
                                  #:hash hash #:hash-algo 'sha256))
          (succeeded? (build-derivations %store (list drv1 drv2))))
     (and succeeded?
@@ -477,7 +479,7 @@
          (hash       (gcrypt:sha256 (string->utf8 "hello")))
          (drv        (derivation %store "fixed-rec"
                                  %bash `(,builder)
-                                 #:sources (list builder)
+                                 #:sources (list %bash builder)
                                  #:hash (base32 "0sg9f58l1jj88w6pdrfdpj5x9b1zrwszk84j81zvby36q9whhhqa")
                                  #:hash-algo 'sha256
                                  #:recursive? #t))
@@ -511,9 +513,11 @@
          (hash       (gcrypt:sha256 (string->utf8 "hello")))
          (fixed1     (derivation %store "fixed"
                                  %bash `(,builder1)
+                                 #:sources (list %bash builder1)
                                  #:hash hash #:hash-algo 'sha256))
          (fixed2     (derivation %store "fixed"
                                  %bash `(,builder2)
+                                 #:sources (list %bash builder2)
                                  #:hash hash #:hash-algo 'sha256))
          (fixed-out  (derivation->output-path fixed1))
          (builder3   (add-text-to-store
@@ -548,9 +552,11 @@
          (hash       (gcrypt:sha256 (string->utf8 "hello")))
          (fixed1     (derivation %store "fixed"
                                  %bash `(,builder1)
+                                 #:sources (list %bash builder1)
                                  #:hash hash #:hash-algo 'sha256))
          (fixed2     (derivation %store "fixed"
                                  %bash `(,builder2)
+                                 #:sources (list %bash builder2)
                                  #:hash hash #:hash-algo 'sha256))
          (builder3   (add-text-to-store %store "builder.sh"
                                         "echo fake builder"))
@@ -580,21 +586,21 @@
                                       '()))
          (hash     (gcrypt:sha256 (string->utf8 "hello")))
          (drv1     (derivation %store "fixed" %bash (list builder1)
-                               #:sources (list builder1)
+                               #:sources (list %bash builder1)
                                #:hash hash #:hash-algo 'sha256))
          (drv2     (derivation %store "fixed" %bash (list builder2)
-                               #:sources (list builder2)
+                               #:sources (list %bash builder2)
                                #:hash hash #:hash-algo 'sha256))
          (drv3a    (derivation %store "fixed-user" %bash (list builder3)
                                #:outputs '("one" "two")
-                               #:sources (list builder3)
+                               #:sources (list %bash builder3)
                                #:inputs (list (derivation-input drv1))))
          (drv3b    (derivation %store "fixed-user" %bash (list builder3)
                                #:outputs '("one" "two")
-                               #:sources (list builder3)
+                               #:sources (list %bash builder3)
                                #:inputs (list (derivation-input drv2))))
          (drv4     (derivation %store "fixed-user-user" %bash (list builder1)
-                               #:sources (list builder1)
+                               #:sources (list %bash builder1)
                                #:inputs (list (derivation-input drv3a '("one"))
                                               (derivation-input drv3b '("two"))))))
     (match (derivation-inputs drv4)
@@ -892,7 +898,7 @@
                                     ,(string-append
                                       (derivation->output-path %coreutils)
                                       "/bin")))
-                      #:sources (list builder)
+                      #:sources (list %bash builder)
                       #:inputs (list (derivation-input %coreutils))))
          (succeeded?
           (build-derivations %store (list drv))))
