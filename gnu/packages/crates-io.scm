@@ -46305,14 +46305,14 @@ support for no_std and embedded programs.")
 (define-public rust-minijinja-2
   (package
     (name "rust-minijinja")
-    (version "2.5.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "minijinja" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1d99nn7pmqimbp5sd3gcndi958nmp5klav633pjx1p6i2ysy2drc"))))
+        (base32 "1adwdlr6jdvilw9gb2vk6ghnhyx8lf5zbcxhqa3hpqw5bvgvixyg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-aho-corasick" ,rust-aho-corasick-1)
