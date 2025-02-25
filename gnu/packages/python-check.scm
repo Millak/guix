@@ -2814,20 +2814,20 @@ help in debugging failures and optimizing the scheduler to improve speed.")
               (sha256
                (base32
                 "0shq1bqnydj0l3ipb73j1qh5kqcjvzkps30zk8grq3dwmh3wmnkr"))))
-    ;; We don't use pyproject-build-system because that would require
-    ;; poetry.masonry.
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      ;; Tests depend on python-sanic.
      (list
       #:tests? #f
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("websockets.*<11.0")
-                "websockets<13.0")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
+    (native-inputs
+     (list python-poetry-core))
     (propagated-inputs
      (list python-httpx python-async-generator python-pytest
            python-websockets))
