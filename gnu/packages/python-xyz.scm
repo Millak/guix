@@ -10211,8 +10211,7 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
          "04n95h0cqnsrdyh1gv0abh2i5ynyrq2wfqpppx9djp7mxr9y9226"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-coverage
-           python-pycodestyle
+     (list python-pycodestyle
            python-pyflakes
            python-pytest
            python-pytest-cov
@@ -27101,8 +27100,7 @@ identifying what the file is.")
                          "not test_smoke"
                          " and not test_smoke_n_system_special_chars"))))
     (native-inputs
-     (list python-coverage
-           python-mock
+     (list python-mock
            python-pytest
            python-setuptools
            python-wheel))

@@ -1504,7 +1504,6 @@ counters and tunnels).")
      (list fenics openmpi pybind11))
     (native-inputs
      (list pkg-config
-           python-coverage
            python-decorator
            python-pkgconfig
            python-pytest

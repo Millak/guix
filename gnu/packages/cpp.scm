@@ -1959,8 +1959,7 @@ using the string similarity calculations from FuzzyWuzzy.")
                    (setenv "GUIX_PYTHONPATH"
                            (getenv "TMP_PYTHONPATH")))))))
     (native-inputs
-     (list python-coverage
-           python-parameterized
+     (list python-parameterized
            python-pytest
            python-pytest-cov
            python-pytest-runner

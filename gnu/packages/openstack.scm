@@ -157,8 +157,7 @@ manner.")
     (propagated-inputs
      (list python-flake8))
     (native-inputs
-     (list python-coverage
-           python-ddt
+     (list python-ddt
            python-eventlet
            python-fixtures
            python-setuptools

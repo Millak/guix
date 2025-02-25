@@ -2987,7 +2987,7 @@ each of the environments.")
       #:test-flags
       '(list "-k" "not test_syntax_error")))
     (native-inputs
-     (list python-coverage python-pytest python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-pyflakes))
     (home-page "https://github.com/fschulze/pytest-flakes")

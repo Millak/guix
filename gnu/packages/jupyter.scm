@@ -293,8 +293,7 @@ Jupytext are:
                              python-terminado
                              python-tornado-6
                              python-traitlets))
-    (native-inputs (list python-coverage
-                         python-nbval
+    (native-inputs (list python-nbval
                          python-jupyter-packaging
                          python-pytest
                          python-pytest-cov
