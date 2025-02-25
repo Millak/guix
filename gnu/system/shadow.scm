@@ -267,19 +267,22 @@ for a colorful Guile experience.\\n\\n\"))))\n"))
 (define home-config
   (home-environment
     (services
-      (list
-        ;; Uncomment the shell you wish to use for your user:
-        ;(service home-bash-service-type)
-        ;(service home-fish-service-type)
-        ;(service home-zsh-service-type)
+      (append
+        (list
+          ;; Uncomment the shell you wish to use for your user:
+          ;(service home-bash-service-type)
+          ;(service home-fish-service-type)
+          ;(service home-zsh-service-type)
 
-        (service home-files-service-type
-         `((\".guile\" ,%default-dotguile)
-           (\".Xdefaults\" ,%default-xdefaults)))
+          (service home-files-service-type
+           `((\".guile\" ,%default-dotguile)
+             (\".Xdefaults\" ,%default-xdefaults)))
 
-        (service home-xdg-configuration-files-service-type
-         `((\"gdb/gdbinit\" ,%default-gdbinit)
-           (\"nano/nanorc\" ,%default-nanorc)))))))
+          (service home-xdg-configuration-files-service-type
+           `((\"gdb/gdbinit\" ,%default-gdbinit)
+             (\"nano/nanorc\" ,%default-nanorc))))
+
+        %base-home-services))))
 
 home-config"))
 
