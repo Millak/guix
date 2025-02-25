@@ -1496,7 +1496,7 @@ of a Unix terminal to HTML code.")
 (define-public vale
   (package
     (name "vale")
-    (version "3.9.4")
+    (version "3.9.5")
     (source
      (origin
        (method git-fetch)
@@ -1504,7 +1504,7 @@ of a Unix terminal to HTML code.")
              (url "https://github.com/errata-ai/vale")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "009gyrn2mi7bg10v6mqrr6c6ii5l2vbhs7mvh7g4xxgqhaqzpbhp"))
+        (base32 "119iiyh164rkj7jlghr2j1kbhc8k1bvfhsfvd972zs092fg7dh4p"))
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
