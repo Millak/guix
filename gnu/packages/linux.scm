@@ -10032,6 +10032,39 @@ libraries are used by the @command{sysdig} command-line utility.")
 types and interfaces and translates so that the X server can use them.")
     (license license:gpl2+)))
 
+(define-public keyd
+  (package
+    (name "keyd")
+    (version "2.5.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/rvaiya/keyd")
+               (commit (string-append "v" version))))
+        (sha256
+          (base32
+            "0nkra6lwdjhjcwj6486cgy562n4bcp98fjgl52rj8pp76i15yad7"))))
+    (arguments
+      (list #:tests? #f ; tests require root
+            #:make-flags
+            #~(list (string-append "CC=" #$(cc-for-target))
+                    "PREFIX="
+                    (string-append "DESTDIR=" #$output))
+            #:phases
+            '(modify-phases
+               %standard-phases
+               (delete 'configure)))) ; no autoconf
+    (build-system gnu-build-system)
+    (inputs (list linux-libre-headers))
+    (synopsis "Key remapping daemon for Linux")
+    (description
+      "Keyd is a keyboard remapping utility with intuitive ini configuration
+file format.  Keyd has several features, many of which are traditionally only
+found in custom keyboard firmware like QMK.")
+    (home-page "https://github.com/rvaiya/keyd")
+    (license license:expat)))
+
 (define-public pipewire
   (package
     (name "pipewire")
