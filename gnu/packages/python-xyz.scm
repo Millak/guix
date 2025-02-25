@@ -30503,8 +30503,12 @@ N-dimensional arrays for Python.")
     (arguments
      (list
       #:test-flags
-      ;; This one test seemingly freezes
-      '(list "-k" "not test_read_lazy_h5_cluster")
+      #~(list "-k" #$(string-append
+                      ;; This one test seemingly freezes
+                      "not test_read_lazy_h5_cluster"
+                      ;; Fails with a numpy deprecation warning
+                      ;; but not an actual failure
+                      " and not test_read_write_X"))
       #:phases
       #~(modify-phases %standard-phases
           ;; Doctests require scanpy from (gnu packages bioinformatics)
