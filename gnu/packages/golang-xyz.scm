@@ -12327,7 +12327,7 @@ sunset times from geographical coordinates and a date.")
 (define-public go-github-com-nats-io-nats-go
   (package
     (name "go-github-com-nats-io-nats-go")
-    (version "1.38.0")
+    (version "1.39.1")
     (source
      (origin
        (method git-fetch)
@@ -12336,7 +12336,7 @@ sunset times from geographical coordinates and a date.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b21sxzds2x5a8b13hmf5n1pf1bf770ky7q12147gqq7vsw39fa1"))))
+        (base32 "122y7n1xridlpy8048z0p7bv8192pc5yp9js1sspayi9rrn27z6i"))))
     (build-system go-build-system)
     (arguments
      (list
