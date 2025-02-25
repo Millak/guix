@@ -3456,7 +3456,6 @@ backported from Python 2.7 for Python 2.4+.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-mock
-           python-nose
            python-assertpy
            python-pathpy
            python-pyhamcrest
