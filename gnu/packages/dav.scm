@@ -143,7 +143,6 @@ CardDAV server with a local folder or file.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-pytest-flake8
            python-setuptools
            python-waitress
            python-wheel))

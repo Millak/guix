@@ -275,7 +275,7 @@ simple way to add custom protocol messages.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
-     (list flex python-pytest python-pytest-flake8))
+     (list flex python-pytest))
     (inputs
      (list bash-minimal clang llvm unifdef
            python python-pebble python-psutil python-chardet))
