@@ -2898,7 +2898,6 @@ genetic variation data.")
                          python-hatch-vcs
                          python-hatchling
                          python-numpy
-                         python-pip
                          python-pypa-build
                          python-pytest
                          python-pytest-subprocess
