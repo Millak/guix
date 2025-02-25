@@ -993,7 +993,7 @@ minimalistic.")
 (define-public go-github-com-junegunn-fzf
   (package
     (name "go-github-com-junegunn-fzf")
-    (version "0.54.3")
+    (version "0.60.2")
     (source
      (origin
        (method git-fetch)
@@ -1003,15 +1003,15 @@ minimalistic.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0mdj3z7w2igkvy8r304k9rcr2l6xm459ifshdm55iy6mazd8cmci"))))
+         "1c18h9326i8g9ksbfrpzrxpz8xlym2a35fpjsi7dn1dv6rr3jayn"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/junegunn/fzf"))
     (inputs
      (list go-github-com-charlievieth-fastwalk
            go-github-com-gdamore-tcell-v2
+           go-github-com-junegunn-go-shellwords
            go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-shellwords
            go-github-com-rivo-uniseg
            go-golang-org-x-sys
            go-golang-org-x-term))
