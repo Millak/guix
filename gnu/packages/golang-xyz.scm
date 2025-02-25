@@ -11177,6 +11177,28 @@ string.")
 the @code{cpan} module @code{Parse::CommandLine}.")
     (license license:expat)))
 
+;; For fzf@0.60.2
+(define-public go-github-com-junegunn-go-shellwords
+  (let ((commit "2aa3b3277741a6ad31883f223d770221a85e9dd0")
+        (revision "0"))
+    (hidden-package (package (inherit go-github-com-mattn-go-shellwords)
+       (name "go-github-com-junegunn-go-shellwords")
+       (version (git-version "0.0.0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/junegunn/go-shellwords")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "1x51lwmkf9bbn28f5682idkph70lk6xzh0w46diq6c7a9rw27b5b"))))
+       (build-system go-build-system)
+       (arguments
+        (substitute-keyword-arguments
+            (package-arguments go-github-com-mattn-go-shellwords)
+          ((#:import-path _) "github.com/junegunn/go-shellwords")))))))
+
 (define-public go-github-com-mattn-go-sixel
   (package
     (name "go-github-com-mattn-go-sixel")
