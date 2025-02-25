@@ -1586,7 +1586,7 @@ to the source files instead of copying them."
   (define file-pair
     (match-lambda
      ((final-path . (? string? file-name))
-      (mlet %store-monad ((file (interned-file file-name
+      (mlet %store-monad ((file (interned-file (readlink* file-name)
                                                (basename final-path))))
         (return (list final-path file))))
      ((final-path . file-like)
