@@ -1020,6 +1020,24 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (sha256
         (base32 "1lsi3b4gdkiyr6233p544ixc1312g37lxj2wwwczxdm2kj71hs8r"))))))
 
+(define-public go-1.24
+  (package
+    (inherit go-1.23)
+    (name "go")
+    (version "1.24.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/go")
+             (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11hsxrchk37qwjwscrr8b8vnlg6vlgfizbxy8bayxpqnpjvifig5"))))
+    (native-inputs
+     ;; Go 1.24 and later requires Go 1.22+ as the bootstrap toolchain.
+     (alist-replace "go" (list go-1.22) (package-native-inputs go-1.23)))))
+
 ;;
 ;; Default Golang version used in guix/build-system/go.scm to build packages.
 ;;
@@ -1067,6 +1085,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.21 (make-go-std go-1.21))
 (define-public go-std-1.22 (make-go-std go-1.22))
 (define-public go-std-1.23 (make-go-std go-1.23))
+(define-public go-std-1.24 (make-go-std go-1.24))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
