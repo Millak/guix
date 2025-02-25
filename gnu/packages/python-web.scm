@@ -3219,7 +3219,6 @@ compliance with the specification.")
     (propagated-inputs
      (list python-attrs
            python-aiohttp
-           python-dictpath
            python-isodate
            python-jsonschema
            python-lazy-object-proxy

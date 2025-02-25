@@ -34192,25 +34192,6 @@ cryptographically signed ones).")
 dictionaries.")
     (license license:expat)))
 
-(define-public python-dictpath
-  (package
-    (name "python-dictpath")
-    (version "0.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "dictpath" version))
-       (sha256
-        (base32 "1n4hq4wbgaw59bbb16nhkgg5wk8sl4iw940vjrgx4xmifqxxw73m"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest python-pytest-cov python-pytest-flake8))
-    (home-page "https://github.com/p1c2u/pathable")
-    (synopsis "Object-oriented path library for Python")
-    (description "This object-oriented dictionary path Python library enables
-traversing resources like paths or accessing resources on demand with separate
-accessor layer.")
-    (license license:asl2.0)))
-
 (define-public pyzo
   (package
     (name "pyzo")
