@@ -539,13 +539,13 @@
         ;; When used as a system service, this service might be executed
         ;; before a user's home even exists, causing it to be owned by root,
         ;; and the skeletons to never be applied to that user's home.  In such
-        ;; cases, put the config at /var/lib/syncthnig-<user>/config.xml
+        ;; cases, put the config at /var/lib/syncthing-<user>/config.xml
         `((,(if home-service?
                 ".config/syncthing/config.xml"
                 (string-append "/var/lib/syncthing-" user "/config.xml"))
            ,(if (file-like? config-file)
                 config-file
-                (plain-file "syncthin-config.xml" (serialize-syncthing-config-file
+                (plain-file "syncthing-config.xml" (serialize-syncthing-config-file
                                                    config-file)))))
         '())))
 
