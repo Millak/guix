@@ -202,7 +202,7 @@ library included in the stdlib, and supports GIF, TIFF and PDF.")
 (define-public go-github-com-klauspost-compress
   (package
     (name "go-github-com-klauspost-compress")
-    (version "1.17.11")
+    (version "1.18.0")
     (source
      (origin
        (method git-fetch)
@@ -211,7 +211,7 @@ library included in the stdlib, and supports GIF, TIFF and PDF.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i8r1xiba62nng651p4razxg1kw1910sl4grm7axm2g4q8s3i298"))))
+        (base32 "1vpk98rkfc67pniqj7xvxm2b275xwzav8rnca06023py769rlkyy"))))
     (build-system go-build-system)
     (arguments
      (list
