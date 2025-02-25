@@ -2672,7 +2672,6 @@ visualize your public Git repositories on a web interface.")
               (invoke "git" "config" "--global" "user.email" "you@example.com"))))))
     (native-inputs
      (list git-minimal/pinned
-           python-covdefaults
            python-distlib
            python-pytest
            python-pytest-env

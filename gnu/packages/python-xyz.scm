@@ -21928,8 +21928,7 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
                    ;; This fails because wheel shows up in requirements
                    " and not test_setuptools_get_requires_for_build_wheel"))))
     (native-inputs
-     (list python-covdefaults
-           python-hatch-vcs
+     (list python-hatch-vcs
            python-hatchling
            python-pytest
            python-pytest-cov

@@ -649,7 +649,6 @@ indexes.")
                              python-typing-extensions))
     (native-inputs
      (list nss-certs-for-test
-           python-covdefaults
            python-hatchling
            python-hatch-vcs
            python-httpx
