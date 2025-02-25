@@ -22956,6 +22956,31 @@ platform-specific standard locations of directories for config, cache and
 other data.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-dirs-6
+  (package
+    (name "rust-dirs")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dirs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0knfikii29761g22pwfrb8d0nqpbgw77sni9h2224haisyaams63"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dirs-sys" ,rust-dirs-sys-0.5))))
+    (home-page "https://github.com/soc/dirs-rs")
+    (synopsis
+     "Library for dealing with platform-specific standard configuration locations")
+    (description
+     "This package provides a library that provides platform-specific
+standard locations of directories for config, cache and other data on Linux,
+Windows, macOS and Redox by leveraging the mechanisms defined by the XDG
+base/user directory specifications on Linux, the Known Folder API on Windows,
+and the Standard Directory guidelines on macOS.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dirs-5
   (package
     (name "rust-dirs")
