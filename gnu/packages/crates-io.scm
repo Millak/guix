@@ -23793,6 +23793,57 @@ dedicated files into Rustdoc documentation with support for hiding lines.")
 @code{Cargo.toml}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-documented-macros-0.9
+  (package
+    (name "rust-documented-macros")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "documented-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yp5hy7r88x1bjcyclqyrkpiddm42xmpr3s1znjzjn4vj8svp553"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; doc tests fail
+       #:cargo-inputs (("rust-convert-case" ,rust-convert-case-0.6)
+                       ("rust-itertools" ,rust-itertools-0.13)
+                       ("rust-optfield" ,rust-optfield-0.3)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-strum" ,rust-strum-0.26)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/cyqsimon/documented")
+    (synopsis "Derive and attribute macros for @code{documented}")
+    (description
+     "This package provides derive and attribute macros for @code{documented}.")
+    (license license:expat)))
+
+(define-public rust-documented-0.9
+  (package
+    (name "rust-documented")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "documented" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wy67lk299zn0csr5fkmxyz0vkas0ycqk26ys99lbg4m14pv6vdw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-documented-macros" ,rust-documented-macros-0.9)
+                       ("rust-phf" ,rust-phf-0.11)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/cyqsimon/documented")
+    (synopsis
+     "Derive and attribute macros for accessing your type's documentation at runtime")
+    (description
+     "This package provides derive and attribute macros for accessing your
+type's documentation at runtime.")
+    (license license:expat)))
+
 (define-public rust-documented-0.6
   (package
     (name "rust-documented")
