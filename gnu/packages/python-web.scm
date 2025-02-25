@@ -3444,8 +3444,8 @@ RFC6455, regardless of your programming paradigm.")
                              python-priority
                              python-tomli
                              python-wsproto))
-    (native-inputs (list python-httpx
-                         python-hypothesis
+    (native-inputs (list nss-certs-for-test
+                         python-httpx
                          python-poetry-core
                          python-pytest
                          python-pytest-asyncio
