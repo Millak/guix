@@ -3314,13 +3314,13 @@ attachments).
 (define-public python-vcrpy
   (package
     (name "python-vcrpy")
-    (version "6.0.2")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "vcrpy" version))
        (sha256
-        (base32 "02fwmmc33qqybzbj1lvdz458g1fffm5cgnqihj4larw4268kvqc8"))))
+        (base32 "0l1sdfc51024jclqv9104nagpirxx8w0gcn5h0bdxv950jnr2qqp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3333,22 +3333,23 @@ attachments).
                           "test_testcase_playback")
                     " and not "))))
     (native-inputs
-     (list nss-certs-for-test
-           python-flask
+     (list python-aiohttp
+           python-boto3
            python-httplib2
-           python-ipaddress
-           python-mock
+           python-httpx
            python-pytest
            python-pytest-cov
+           python-pytest-aiohttp
+           python-pytest-asyncio
            python-pytest-httpbin
+           python-requests
            python-setuptools
+           python-tornado
            python-urllib3
+           python-werkzeug
            python-wheel))
     (propagated-inputs
-     (list python-pyyaml
-           python-six
-           python-wrapt
-           python-yarl))
+     (list python-pyyaml python-wrapt python-yarl))
     (home-page "https://github.com/kevin1024/vcrpy")
     (synopsis "Automatically mock your HTTP interactions")
     (description
