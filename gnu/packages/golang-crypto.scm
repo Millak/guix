@@ -1672,7 +1672,7 @@ package in Rust.")
 (define-public go-github-com-minio-highwayhash
   (package
     (name "go-github-com-minio-highwayhash")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -1681,7 +1681,7 @@ package in Rust.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1inrix7720273ccynxcyi7xsgc55cskxrw7gwn08qkmdj9xdxqai"))))
+        (base32 "14g2x266h8sxs0yynmcl2r2mnhx55rfzgykw4hygm7i1vpfrikg4"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/minio/highwayhash"))
