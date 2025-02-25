@@ -9264,6 +9264,54 @@ It is to used for inputs in other packages.")
      ;; which apply to the Application, with which you must still comply
      license:lgpl3)))
 
+(define-public go-gitlab-com-gitlab-org-api-client-go
+  (package
+    (name "go-gitlab-com-gitlab-org-api-client-go")
+    (version "0.123.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/gitlab-org/api/client-go.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xrqyqvmaslfr9cj91519qi5f2sd3l2mvipxgjf13vd3v4fchacn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:import-path "gitlab.com/gitlab-org/api/client-go"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Tests requir network access.
+               (list "TestGetMergeRequest"
+                     "TestRepositoryFilesService_CreateFile"
+                     "TestRepositoryFilesService_DeleteFile"
+                     "TestRepositoryFilesService_GetFile"
+                     "TestRepositoryFilesService_GetFileBlame"
+                     "TestRepositoryFilesService_GetFileMetaData"
+                     "TestRepositoryFilesService_GetRawFile"
+                     "TestRepositoryFilesService_UpdateFile"
+                     "TestRepositorySubmodulesService_UpdateSubmodule"
+                     "TestUpdateRepositoryEnvironmentsEscapesURL")
+               "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-go-querystring
+           go-github-com-hashicorp-go-cleanhttp
+           go-github-com-hashicorp-go-retryablehttp
+           go-golang-org-x-oauth2
+           go-golang-org-x-time))
+    (home-page "https://gitlab.com/gitlab-org/api/client-go")
+    (synopsis "GitLab client for Golang")
+    (description
+     "This package provides a GitLab API client enabling Go programs to
+interact with GitLab in a simple and uniform way.")
+    (license license:asl2.0)))
+
 (define-public go-gitlab-torproject-org-tpo-anti-censorship-geoip
   (package
     (name "go-gitlab-torproject-org-tpo-anti-censorship-geoip")
