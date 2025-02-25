@@ -738,7 +738,10 @@ file system.")
                (base32
                 "11as7n2mj3nbqsqb3ivyv9985n73i022s748qvjg36cs8ig50afx"))))
     (build-system pyproject-build-system)
-    (inputs (list python-requests python-argcomplete python-urllib3 gnupg))
+    (inputs (list python-requests
+                  python-argcomplete
+                  python-urllib3-next
+                  gnupg))
     (native-inputs (list python-setuptools python-wheel))
     (arguments
      (list #:phases #~(modify-phases %standard-phases
