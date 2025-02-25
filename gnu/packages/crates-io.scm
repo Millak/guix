@@ -84830,14 +84830,14 @@ deleting all contents when it's dropped.")
 (define-public rust-tempfile-3
   (package
     (name "rust-tempfile")
-    (version "3.16.0")
+    (version "3.17.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tempfile" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14dvm3lys05wxzb1ahxjg3chb3krk0ir18liw25g893xblhldhiq"))))
+        (base32 "0c52ggq5vy5mzgk5ly36cgzs1cig3cv6r1jarijmzxgkn6na1r92"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
