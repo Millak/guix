@@ -37013,9 +37013,9 @@ generation, and software testing purposes.")
 
 (define-public python-peachpy
   ;; There is no tag in this repo.
-  (let ((commit "913d74c35a6b1d330e90bfc055208ce5b06b35a0")
+  (let ((commit "349e8f836142b2ed0efeb6bb99b1b715d87202e9")
         (version "0.2.0")                         ;from 'peachpy/__init__.py'
-        (revision "2"))
+        (revision "3"))
     (package
       (name "python-peachpy")
       (version (git-version version revision commit))
@@ -37026,17 +37026,15 @@ generation, and software testing purposes.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1wnqxspxsacw4556q0b9fbw11nhrkgn6gs8g43jdnpa35f3z9kb6"))
+                  "16pnkghmqjc7pbws0yhyrwlz43d5pffb5c6v2bb4jk0j537gwzbi"))
                 (patches (search-patches "python-peachpy-determinism.patch"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
-       '(#:phases (modify-phases %standard-phases
-                    (replace 'check
-                      (lambda* (#:key tests? #:allow-other-keys)
-                        (when tests?
-                          (invoke "nosetests")))))))
+       ;; The issue is known and the test will probably never be fixed.
+       ;; https://github.com/Maratyszcza/PeachPy/issues/131
+       (list #:test-flags ''("--ignore=tests/arm/test_arm.py")))
       (native-inputs
-       (list python-nose python-rednose python-setuptools))
+       (list python-pytest python-setuptools python-wheel))
       (propagated-inputs
        (list python-six python-opcodes))
       (synopsis "Efficient assembly code generation in Python")
