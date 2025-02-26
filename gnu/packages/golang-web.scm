@@ -8612,6 +8612,49 @@ extract data from those paths.")
 encoding library for the MessagePack, CBOR, JSON and the Binc formats.")
     (license license:expat)))
 
+(define-public go-github-com-urfave-negroni
+  (package
+    (name "go-github-com-urfave-negroni")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/urfave/negroni")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gp6j74adi1cn8fq5v3wzlzhwl4zg43n2746m4fzdcdimihk3ccp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/urfave/negroni"))
+    (home-page "https://github.com/urfave/negroni")
+    (synopsis "Idiomatic HTTP Middleware for Golang")
+    (description
+     "Package negroni is an idiomatic approach to web middleware in Go.  It is
+tiny,non-intrusive, and encourages use of @code{net/http} Handlers.")
+    (license license:expat)))
+
+(define-public go-github-com-urfave-negroni-v3
+  (package
+    (inherit go-github-com-urfave-negroni)
+    (name "go-github-com-urfave-negroni-v3")
+    (version "3.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/urfave/negroni")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04fbp15jq23sp10kgrpgmbif3mvzs82m1wx2bbmgknh27yy8i95y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/urfave/negroni/v3"))))
+
 (define-public go-github-com-valyala-fasthttp
   (package
     (name "go-github-com-valyala-fasthttp")
