@@ -3,7 +3,7 @@
 ;;; Copyright © 2020, 2021 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2021, 2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
@@ -44,6 +44,7 @@
   #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-compression)
   #:use-module (gnu packages crates-crypto)
+  #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io))
 
 (define-public rust-anstyle-wincon-3
@@ -682,6 +683,38 @@ IOCP and Async I/O abstractions.")
 Windows's named pipes.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-native-windows-gui-1
+  (package
+    (name "rust-native-windows-gui")
+    (version "1.0.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "native-windows-gui" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m44lbslzvs04i4rgcphld23qlwf9zzlzmspgimyp3gnd6k06w2g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t                 ;many errors, little usefulness
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-muldiv" ,rust-muldiv-0.2)
+                       ("rust-newline-converter" ,rust-newline-converter-0.2)
+                       ("rust-plotters" ,rust-plotters-0.3)
+                       ("rust-plotters-backend" ,rust-plotters-backend-0.3)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.3)
+                       ("rust-stretch" ,rust-stretch-0.3)
+                       ("rust-winapi" ,rust-winapi-0.3)
+                       ("rust-winapi-build" ,rust-winapi-build-0.1))))
+    (home-page "https://github.com/gabdube/native-windows-gui")
+    (synopsis "Develop native GUI applications for Microsoft Windows")
+    (description
+     "This package provides a Rust library to develop native GUI applications
+on the desktop for Microsoft Windows.  Native-windows-gui wraps the native
+win32 window controls in a rustic API.")
+    (license license:expat)))
+
 (define-public rust-nt-time-0.6
   (package
     (name "rust-nt-time")
@@ -695,7 +728,7 @@ Windows's named pipes.")
         (base32 "02sikab4va5gv2ja5rjd7fp1g1dh6l1pryjlsprxh0hcq247fmkf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; Not all files included.
+     `(#:tests? #f                      ; Not all files included.
        #:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-time" ,rust-time-0.3)
