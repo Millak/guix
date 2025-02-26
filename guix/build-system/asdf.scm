@@ -155,9 +155,13 @@ set up using CL source package conventions."
 
   (define (find-input-package pkg)
     (let* ((name (package-name pkg))
-           (new-name (transform-package-name name))
-           (pkgs (find-packages-by-name new-name)))
-      (if (null? pkgs) #f (list-ref pkgs 0))))
+           (new-name (transform-package-name name)))
+      (if (string=? name new-name)
+          pkg
+          (let ((pkgs (find-packages-by-name new-name)))
+            (if (null? pkgs)
+                #f
+                (list-ref pkgs 0))))))
 
   (define transform
     (mlambda (pkg)
