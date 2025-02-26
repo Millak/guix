@@ -30466,7 +30466,7 @@ decisions with any given backend.")
 (define-public python-dask
   (package
     (name "python-dask")
-    (version "2024.4.2")
+    (version "2024.12.1")
     (source
      (origin
        (method git-fetch)
@@ -30475,7 +30475,7 @@ decisions with any given backend.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kaxlvqd5hknlb0awck5vcw9b18nl8rpxx4j78js8p9d0y5rsgw8"))))
+        (base32 "17iqfyjphyn72xdr8fmynzvixskbq16pwmsknwc6anq7s2axvas2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -30503,7 +30503,10 @@ decisions with any given backend.")
                     " and not test_to_delayed_optimize_graph"
                     ;; This one expects a deprecation warning that never
                     ;; comes.
-                    " and not test_RandomState_only_funcs")
+                    " and not test_RandomState_only_funcs"
+                    ;; This test expects a RuntimeWarning that is never
+                    ;; raised.
+                    " and not test_nanquantile_all_nan")
               ;; Tests must run from the output directory, because otherwise
               ;; it complains about the difference between the target
               ;; directory embedded in the pyc files and the source directory
