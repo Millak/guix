@@ -713,16 +713,23 @@ should only be used as part of the Guix cups-pk-helper service.")
         ;; Produce a "light build", meaning that only the printer (CUPS) and
         ;; scanner (SANE) support gets built, without all the 'hp-*'
         ;; command-line tools.
-        #~(cons "--enable-lite-build"
-                (delete "--enable-qt5" #$cf)))
+        #~(cons* "--enable-lite-build"
+                 "--disable-network-build"
+                 ;; The flag "--enable-lite-build" is incompatible with
+                 ;; "--enable-network-build" inherited from hplip, so we need
+                 ;; to override it with "--disable-network-build".
+                 (delete "--enable-qt5" #$cf)))
        ((#:phases phases)
         ;; The 'wrap-binaries' is not needed here since the 'hp-*' programs
         ;; are not installed.
         #~(alist-delete 'wrap-binaries #$phases))))
-    (inputs (remove (match-lambda
-                      ((label . _)
-                       (string-prefix? "python" label)))
-                    (package-inputs hplip)))
+    (inputs
+     (list cups-minimal
+           dbus
+           libjpeg-turbo
+           libusb
+           sane-backends-minimal
+           zlib))
     (synopsis "GUI-less version of hplip")))
 
 (define-public foomatic-filters
