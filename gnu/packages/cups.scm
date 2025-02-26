@@ -529,14 +529,14 @@ should only be used as part of the Guix cups-pk-helper service.")
 (define-public hplip
   (package
     (name "hplip")
-    (version "3.23.12")
+    (version "3.24.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hplip/hplip/" version
                                   "/hplip-" version ".tar.gz"))
               (sha256
                (base32
-                "1vb9irqsm3d4c2qdr4h6ia940x65bb99h4x31mgxn7dkvv42lv57"))
+                "1yzil1fn9ib2hxmqh9in0apmmznvln0xahlxvyny59ck321l6xjx"))
               (patches (search-patches "hplip-usb-timeout.patch"))
               (modules '((guix build utils)))
               (snippet
