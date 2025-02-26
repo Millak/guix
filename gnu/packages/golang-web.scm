@@ -10188,7 +10188,7 @@ etc)
 (define-public go-mvdan-cc-xurls-v2
   (package
     (name "go-mvdan-cc-xurls-v2")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
      (origin
        (method git-fetch)
@@ -10197,17 +10197,20 @@ etc)
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1516hwlxbnhdca56qy7sx9h2n5askq6ddqpqyp3f5rvmzdkxf4zn"))))
+        (base32 "1kk4mjizr23zjzsavs21krp13w52p3b8dcm4ahlrr6xkkfn8ry3i"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.22
       #:import-path "mvdan.cc/xurls/v2"
+      #:build-flags #~(list (string-append "-ldflags=-X main.version="
+                                           #$version))
       #:test-flags #~(list "-skip" "TestScript/version")))
     (propagated-inputs
-     (list go-github-com-rogpeppe-go-internal
+     (list go-github-com-rogpeppe-go-internal-1.14
            go-golang-org-x-mod
            go-golang-org-x-sync))
-    (home-page "https://mvdan.cc/xurls/v2/")
+    (home-page "https://github.com/mvdan/xurls")
     (synopsis "Extracts URLs from text")
     (description
      "Xurls extracts urls from plain text using regular expressions.  It can
@@ -10456,20 +10459,18 @@ absolute \"path\" to it.")
     (inputs '())))
 
 (define-public xurls
-  (package
-    (inherit go-mvdan-cc-xurls-v2)
+  (package/inherit go-mvdan-cc-xurls-v2
     (name "xurls")
     (arguments
-     (list
-      #:import-path "mvdan.cc/xurls/v2/cmd/xurls"
-      #:unpack-path "mvdan.cc/xurls/v2"
-      #:install-source? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (delete-file "testdata/script/version.txtar")))))))))
+     (substitute-keyword-arguments
+         (package-arguments go-mvdan-cc-xurls-v2)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _ "mvdan.cc/xurls/v2") "mvdan.cc/xurls/cmd/xurls")
+       ((#:unpack-path _ "") "mvdan.cc/xurls")))
+    (native-inputs (package-propagated-inputs go-mvdan-cc-xurls-v2))
+    (propagated-inputs '())
+    (inputs '())))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
