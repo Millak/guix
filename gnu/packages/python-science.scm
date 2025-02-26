@@ -624,7 +624,7 @@ optimization problems in Python.")
 (define-public python-dask-expr
   (package
     (name "python-dask-expr")
-    (version "1.0.14")
+    (version "1.1.21")
     (source
      (origin
        (method git-fetch)
@@ -633,7 +633,7 @@ optimization problems in Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c2q8w8wl5d2hycbjp9vavkl5f36kaz390wxlis2d8d43jnqhf0d"))))
+        (base32 "0m920db2asmqf4w2dncpnkccdhx4c9sfcsd96bh1jfdh8sw2wf6z"))))
     (build-system pyproject-build-system)
     (arguments
      (list
