@@ -79200,6 +79200,29 @@ iterated over only by reference rather than by value.")
     (arguments
      `(#:cargo-inputs (("rust-num-traits" ,rust-num-traits-0.2))))))
 
+(define-public rust-stretch-0.3
+  (package
+    (name "rust-stretch")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "stretch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11vdmli145j6yakgr7hkzgbnz1kqsb9rq3zrxl1g6dz11k9cc3bv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t                 ;build phase fails
+       #:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libm" ,rust-libm-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.2))))
+    (home-page "https://github.com/vislyhq/stretch")
+    (synopsis "High performance Flexbox implementation")
+    (description
+     "This package provides a high performance Flexbox implementation.")
+    (license license:expat)))
+
 (define-public rust-strength-reduce-0.2
   (package
     (name "rust-strength-reduce")
