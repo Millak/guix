@@ -255,7 +255,7 @@ install.")
 (define-public reprotest
   (package
     (name "reprotest")
-    (version "0.7.28")
+    (version "0.7.29")
     (source
      (origin
        (method git-fetch)
@@ -264,13 +264,10 @@ install.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06jm82w05qsx3wskch3fm5mpkpj5jmq7r4yram4ixprxc5j8flg8"))))
+        (base32 "17n7pdqil3jmpwcshr6dm5qsbpim3847smgxa82wy33kl2bz1ai8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; TODO: all tests failed during creation: PermissionError: [Errno 13]
-      ;; Permission denied.
-      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'compress-documentation 'make-virt-files-executable
@@ -280,6 +277,25 @@ install.")
               (for-each (lambda (file)
                           (chmod file #o755))
                         (find-files #$output "autopkgtest-virt-.*"))))
+          ;; Adjust use of importlib.resources to use python 3.10 compatible
+          ;; syntax, which requires an argument.
+          ;; Drop when switching to python 3.12+.
+          (add-after 'unpack 'adjust-importlib-resources-for-old-python
+            (lambda _
+              (substitute* "reprotest/__init__.py"
+                (("importlib.resources.files\\(\\)")
+                  "importlib.resources.files(package='reprotest')"))))
+          (add-after 'unpack 'skip-most-tests
+            ;; These tests require functionality not available in the guix
+            ;; build environment
+            (lambda _
+              (substitute* "tests/test_reprotest.py"
+                (("def (test_simple_build|test_self_build|test_variations)"
+                  def)
+                 (string-append
+                  "@pytest.mark.skip(reason='guix environment lacks permissions')
+"
+                  def)))))
           (add-after 'install 'install-doc
             (lambda _
               (let* ((mandir1 (string-append
