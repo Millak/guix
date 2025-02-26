@@ -95,7 +95,9 @@
                       (imported-modules %emacs-build-system-modules)
                       (modules '((guix build emacs-build-system)
                                  (guix build utils)
-                                 (guix build emacs-utils))))
+                                 (guix build emacs-utils)))
+                      allowed-references
+                      disallowed-references)
   "Build SOURCE using EMACS, and with INPUTS."
   (define builder
     (with-imported-modules imported-modules
@@ -120,6 +122,8 @@
                                                   system #:graft? #f)))
     (gexp->derivation name builder
                       #:system system
+                      #:allowed-references allowed-references
+                      #:disallowed-references disallowed-references
                       #:guile-for-build guile)))
 
 (define emacs-build-system
