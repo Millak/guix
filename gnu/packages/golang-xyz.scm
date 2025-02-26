@@ -14080,6 +14080,28 @@ comments.
 @end itemize")
     (license license:bsd-3)))
 
+;; Breaking chanes and requires go-1.23+
+(define-public go-github-com-rogpeppe-go-internal-1.14
+  (package
+    (inherit go-github-com-rogpeppe-go-internal)
+    (name "go-github-com-rogpeppe-go-internal")
+    (version "1.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rogpeppe/go-internal")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14g7rmpcd25vjc0cm9issdy7160zy4h6r1wmsdihimc341ff3p78"))))
+    (arguments
+     (list
+      #:skip-build? #t
+      #:go go-1.23
+      #:import-path "github.com/rogpeppe/go-internal"
+      #:test-flags #~(list "-skip" "TestSimple/cover")))))
+
 (define-public go-github-com-rs-zerolog
   (package
     (name "go-github-com-rs-zerolog")
