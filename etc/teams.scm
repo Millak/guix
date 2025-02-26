@@ -597,6 +597,7 @@ already exists.  Lookup team IDs among CURRENT-TEAMS."
         #:description "The extensible, customizable text editor and its
 ecosystem."
         #:scope (list "gnu/packages/aux-files/emacs/guix-emacs.el"
+                      "gnu/packages/aux-files/emacs/comp-integrity.el"
                       (make-regexp* "^gnu/packages/emacs(-.+|)\\.scm$")
                       "gnu/packages/tree-sitter.scm"
                       "guix/build/emacs-build-system.scm"
