@@ -773,7 +773,7 @@ interoperability offered by HDF5.")
 (define-public python-distributed
   (package
     (name "python-distributed")
-    (version "2024.4.2")
+    (version "2024.12.1")
     (source
      (origin
        ;; The test files are not included in the archive on pypi
@@ -784,7 +784,7 @@ interoperability offered by HDF5.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0sy9mqa8qlxsagbz8xn304csrlxhxj4b6k84yrjxdcmkp9pkx166"))))
+         "1k0kmzd48mvaaizbf3b6lk84s0fw88x9v7hfgiddyyv6mf4x7h27"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -795,6 +795,10 @@ interoperability offered by HDF5.")
                             " and not gpu"
                             " and not ipython"
                             " and not avoid_ci")
+             ;; This disables FutureWarning that are caught as error,
+             ;; related to the merge of python-dask-expr in python-dask.
+             "-W"
+             (string-append "ignore::FutureWarning")
              "-k"
              (string-append
               ;; These fail because they require network access,
@@ -860,6 +864,7 @@ interoperability offered by HDF5.")
                 "test_rebalance_sync"
                 "test_repr_localcluster"
                 "test_require_encryption"
+                "test_rpc_closed_exception"
                 "test_rpc_default"
                 "test_rpc_inproc"
                 "test_rpc_message_lifetime_default"
@@ -891,6 +896,7 @@ interoperability offered by HDF5.")
                 "test_threadpoolworkers_pick_correct_ioloop"
                 "test_tls_listen_connect"
                 "test_tls_temporary_credentials_functional"
+                "test_transition_failure_triggers_log_event"
                 "test_variable_in_task"
                 "test_worker_preload_text"
                 "test_worker_uses_same_host_as_nanny"
