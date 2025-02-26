@@ -573,12 +573,12 @@ editor (with wide ints)" )
         #~(cons "--with-wide-int" #$flags))))))
 
 (define-public emacs-next-minimal
-  (let ((commit "881d593a9879f3355733f1b627af7cc0c12b429e")
+  (let ((commit "60232a30e360c00fb303cb033d4aec15a9e41342")
         (revision "0"))
-   (package
+  (package
     (inherit emacs-minimal)
     (name "emacs-next-minimal")
-    (version (git-version "30.0.92" revision commit))
+    (version (git-version "31.0.50" revision commit))
     (source
      (origin
        (method git-fetch)
@@ -587,12 +587,12 @@ editor (with wide ints)" )
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nj3a7wsl5piqf6a8wnmfyjbpxp2dwl0r48flv9q624jx4nxfr2p"))
+        (base32 "1n1i20j92a8sqv224yzvyzk804h9x0lgyp3jlny3b6g08ka91034"))
        (patches
         (search-patches "emacs-disable-jit-compilation.patch"
                         "emacs-next-exec-path.patch"
                         "emacs-fix-scheme-indent-function.patch"
-                        "emacs-next-native-comp-driver-options.patch"
+                        "emacs-native-comp-driver-options.patch"
                         "emacs-next-native-comp-fix-filenames.patch"
                         "emacs-native-comp-pin-packages.patch"
                         "emacs-pgtk-super-key-fix.patch")))))))

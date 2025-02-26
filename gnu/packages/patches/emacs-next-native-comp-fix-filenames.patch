@@ -12,11 +12,11 @@ way into the actual variable despite attempts to remove it by calling
 The user-visible procedure ‘startup-redirect-eln-cache’ is kept, as
 packages may require it, but only pushes the new value now.
 
-Index: emacs-next/src/comp.c
+Index: emacs/src/comp.c
 ===================================================================
---- emacs-next.orig/src/comp.c
-+++ emacs-next/src/comp.c
-@@ -4403,26 +4403,17 @@ DEFUN ("comp-el-to-eln-rel-filename", Fc
+--- emacs.orig/src/comp.c
++++ emacs/src/comp.c
+@@ -4279,26 +4279,17 @@ DEFUN ("comp-el-to-eln-rel-filename", Fc
         Scomp_el_to_eln_rel_filename, 1, 1, 0,
         doc: /* Return the relative name of the .eln file for FILENAME.
  FILENAME must exist, and if it's a symlink, the target must exist.
@@ -32,7 +32,7 @@ Index: emacs-next/src/comp.c
    (Lisp_Object filename)
  {
    CHECK_STRING (filename);
- 
+
 -  /* Resolve possible symlinks in FILENAME, so that path_hash below
 -     always compares equal. (Bug#44701).  */
 -  filename = Fexpand_file_name (filename, Qnil);
@@ -44,15 +44,15 @@ Index: emacs-next/src/comp.c
 -      xfree (file_normalized);
 -    }
 +  Lisp_Object rel_name = filename;
- 
+
 +  filename = Fexpand_file_name (filename, Qnil);
    if (NILP (Ffile_exists_p (filename)))
      xsignal1 (Qfile_missing, filename);
- 
-@@ -4430,64 +4421,55 @@ one for the file name and another for it
+
+@@ -4306,64 +4297,55 @@ one for the file name and another for it
    filename = Fw32_long_file_name (filename);
  #endif
- 
+
 -  Lisp_Object content_hash = comp_hash_source_file (filename);
 -
 -  if (suffix_p (filename, ".gz"))
@@ -93,7 +93,7 @@ Index: emacs-next/src/comp.c
 -    }
 +  Lisp_Object tail = Vload_path;
 +  Lisp_Object name_len = Flength (filename);
- 
+
 -  Lisp_Object lds_re_tail = loadsearch_re_list;
 -  FOR_EACH_TAIL (lds_re_tail)
 +  FOR_EACH_TAIL_SAFE (tail)
@@ -131,7 +131,7 @@ Index: emacs-next/src/comp.c
 +
 +  if (!NILP (bogus_dirs))
 +  {
-+    tail = CALL2I (split-string, bogus_dirs, build_string (":"));
++    tail = CALLNI (split-string, bogus_dirs, build_string (":"));
 +
 +    FOR_EACH_TAIL_SAFE (tail)
 +      {
@@ -155,9 +155,9 @@ Index: emacs-next/src/comp.c
 +  return concat2(Fsubstring (filename, Qnil, make_fixnum (-3)),
 +		 build_string (NATIVE_ELISP_SUFFIX));
  }
- 
+
  DEFUN ("comp-el-to-eln-filename", Fcomp_el_to_eln_filename,
-@@ -4501,13 +4483,7 @@ If BASE-DIR is non-nil, use it as the di
+@@ -4377,13 +4359,7 @@ If BASE-DIR is non-nil, use it as the di
  non-absolute BASE-DIR is interpreted as relative to `invocation-directory'.
  If BASE-DIR is omitted or nil, look for the first writable directory
  in `native-comp-eln-load-path', and use as BASE-DIR its subdirectory
@@ -172,47 +172,47 @@ Index: emacs-next/src/comp.c
    (Lisp_Object filename, Lisp_Object base_dir)
  {
    Lisp_Object source_filename = filename;
-@@ -4555,10 +4531,11 @@ the latter is supposed to be used by the
+@@ -4431,10 +4407,11 @@ the latter is supposed to be used by the
    Lisp_Object lisp_preloaded =
      Fgetenv_internal (build_string ("LISP_PRELOADED"), Qnil);
    base_dir = Fexpand_file_name (Vcomp_native_version_dir, base_dir);
 +  bool preloaded = comp_file_preloaded_p;
    if (comp_file_preloaded_p
        || (!NILP (lisp_preloaded)
--	  && !NILP (Fmember (CALL1I (file-name-base, source_filename),
+-	  && !NILP (Fmember (CALLNI (file-name-base, source_filename),
 -			     Fmapcar (intern_c_string ("file-name-base"),
-+	  && !NILP (Fmember (CALL1I (file-name-sans-extension, source_filename),
++	  && !NILP (Fmember (CALLNI (file-name-sans-extension, source_filename),
 +			     Fmapcar (intern_c_string ("file-name-sans-extension"),
- 				      CALL1I (split-string, lisp_preloaded))))))
+ 				      CALLNI (split-string, lisp_preloaded))))))
      base_dir = Fexpand_file_name (build_string ("preloaded"), base_dir);
- 
-@@ -5875,10 +5852,7 @@ The last directory of this list is assum
+
+@@ -5741,10 +5718,7 @@ The last directory of this list is assum
  the system *.eln files, which are the files produced when building
  Emacs.  */);
- 
+
 -  /* Temporary value in use for bootstrap.  We can't do better as
 -     `invocation-directory' is still unset, will be fixed up during
 -     dump reload.  */
 -  Vnative_comp_eln_load_path = Fcons (build_string ("../native-lisp/"), Qnil);
 +  Vnative_comp_eln_load_path = Qnil;
- 
+
    DEFVAR_LISP ("native-comp-enable-subr-trampolines",
  	       Vnative_comp_enable_subr_trampolines,
-Index: emacs-next/lisp/startup.el
+Index: emacs/lisp/startup.el
 ===================================================================
---- emacs-next.orig/lisp/startup.el
-+++ emacs-next/lisp/startup.el
-@@ -527,9 +527,6 @@ DIRS are relative."
+--- emacs.orig/lisp/startup.el
++++ emacs/lisp/startup.el
+@@ -520,9 +520,6 @@ DIRS are relative."
  (defvar native-comp-jit-compilation)
  (defvar native-comp-enable-subr-trampolines)
- 
+
 -(defvar startup--original-eln-load-path nil
 -  "Original value of `native-comp-eln-load-path'.")
 -
  (defun startup-redirect-eln-cache (cache-directory)
    "Redirect the user's eln-cache directory to CACHE-DIRECTORY.
  CACHE-DIRECTORY must be a single directory, a string.
-@@ -540,22 +537,10 @@ to `user-emacs-directory'.
+@@ -533,22 +530,10 @@ to `user-emacs-directory'.
  For best results, call this function in your early-init file,
  so that the rest of initialization and package loading uses
  the updated value."
@@ -222,7 +222,7 @@ Index: emacs-next/lisp/startup.el
    (push (expand-file-name (file-name-as-directory cache-directory)
                            user-emacs-directory)
          native-comp-eln-load-path))
- 
+
 -(defun startup--update-eln-cache ()
 -  "Update the user eln-cache directory due to user customizations."
 -  ;; Don't override user customizations!
@@ -235,10 +235,20 @@ Index: emacs-next/lisp/startup.el
  (defun startup--rescale-elt-match-p (font-pattern font-object)
    "Test whether FONT-OBJECT matches an element of `face-font-rescale-alist'.
  FONT-OBJECT is a font-object that specifies a font to test.
-@@ -1383,12 +1368,6 @@ please check its value")
+@@ -771,9 +756,6 @@ It is the default value of the variable
+       (unwind-protect
+ 	  (command-line)
+
+-        (when (featurep 'native-compile)
+-          (startup--update-eln-cache))
+-
+ 	;; Do this again, in case .emacs defined more abbreviations.
+ 	(if default-directory
+ 	    (setq default-directory (abbreviate-file-name default-directory)))
+@@ -1385,12 +1367,6 @@ please check its value")
        startup-init-directory)))
    (setq early-init-file user-init-file)
- 
+
 -  ;; Amend `native-comp-eln-load-path', since the early-init file may
 -  ;; have altered `user-emacs-directory' and/or changed the eln-cache
 -  ;; directory.
@@ -248,10 +258,10 @@ Index: emacs-next/lisp/startup.el
    ;; If any package directory exists, initialize the package system.
    (and user-init-file
         package-enable-at-startup
-@@ -1523,12 +1502,6 @@ please check its value")
+@@ -1525,12 +1501,6 @@ please check its value")
          startup-init-directory))
       t)
- 
+
 -    ;; Amend `native-comp-eln-load-path' again, since the early-init
 -    ;; file may have altered `user-emacs-directory' and/or changed the
 -    ;; eln-cache directory.
@@ -261,10 +271,10 @@ Index: emacs-next/lisp/startup.el
      (when (and deactivate-mark transient-mark-mode)
        (with-current-buffer (window-buffer)
          (deactivate-mark)))
-Index: emacs-next/lisp/loadup.el
+Index: emacs/lisp/loadup.el
 ===================================================================
---- emacs-next.orig/lisp/loadup.el
-+++ emacs-next/lisp/loadup.el
+--- emacs.orig/lisp/loadup.el
++++ emacs/lisp/loadup.el
 @@ -53,6 +53,14 @@
  (setq redisplay--inhibit-bidi t)
  
@@ -280,7 +290,7 @@ Index: emacs-next/lisp/loadup.el
  
  ;; Add subdirectories to the load-path for files that might get
  ;; autoloaded when bootstrapping or running Emacs normally.
-@@ -538,27 +546,25 @@ This to have it working when installed o
+@@ -522,27 +530,25 @@ This to have it working when installed o
  directory got moved.  This is set to be a pair in the form of:
  \(rel-filename-from-install-bin . rel-filename-from-local-bin)."
    (when (and load--bin-dest-dir load--eln-dest-dir)
@@ -320,7 +330,7 @@ Index: emacs-next/lisp/loadup.el
                       ;; Relative filename from the built uninstalled binary.
                       (file-relative-name file invocation-directory))))))
  	     comp-loaded-comp-units-h)))
-@@ -644,7 +650,9 @@ directory got moved.  This is set to be
+@@ -609,7 +615,9 @@ directory got moved.  This is set to be
                     (equal dump-mode "pdump"))
            ;; Don't enable this before bootstrap is completed, as the
            ;; compiler infrastructure may not be usable yet.
@@ -331,11 +341,11 @@ Index: emacs-next/lisp/loadup.el
          (message "Dumping under the name %s" output)
          (condition-case ()
              (delete-file output)
-Index: emacs-next/src/Makefile.in
+Index: emacs/src/Makefile.in
 ===================================================================
---- emacs-next.orig/src/Makefile.in
-+++ emacs-next/src/Makefile.in
-@@ -591,6 +591,7 @@ shortlisp := $(filter-out ${shortlisp_fi
+--- emacs.orig/src/Makefile.in
++++ emacs/src/Makefile.in
+@@ -567,6 +567,7 @@ shortlisp := $(filter-out ${shortlisp_fi
  ## We don't really need to sort, but may as well use it to remove duplicates.
  shortlisp := loaddefs.el loadup.el $(sort ${shortlisp})
  export LISP_PRELOADED = ${shortlisp}
