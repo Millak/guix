@@ -50423,6 +50423,22 @@ exact behavior of code more explicit, and allows using turbofish syntax.")
 primitives and enums easier.")
     (license (list license:bsd-3 license:expat license:asl2.0))))
 
+(define-public rust-num-enum-0.6
+  (package
+    (inherit rust-num-enum-0.7)
+    (name "rust-num-enum")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "num_enum" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18bna04g6zq978z2b4ygz0f8pbva37id4xnpgwh8l41w1m1mn0bs"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-num-enum-derive" ,rust-num-enum-derive-0.6))))))
+
 (define-public rust-num-enum-0.5
   (package
     (inherit rust-num-enum-0.7)
@@ -50496,6 +50512,25 @@ primitives and enums easier.")
      "This package provides procedural macros to make inter-operation between
 primitives and enums easier.")
     (license (list license:bsd-3 license:expat license:asl2.0))))
+
+(define-public rust-num-enum-derive-0.6
+  (package
+    (inherit rust-num-enum-derive-0.7)
+    (name "rust-num-enum-derive")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "num_enum_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19k57c0wg56vzzj2w77jsi8nls1b8xh8pvpzjnrgf8d9cnvpsrln"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))))
 
 (define-public rust-num-enum-derive-0.5
   (package
