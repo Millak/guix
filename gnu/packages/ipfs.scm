@@ -1505,6 +1505,42 @@ their levels to be controlled individually.")
 @url{https://github.com/libp2p/specs,libp2p}.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-libp2p-gostream
+  (package
+    (name "go-github-com-libp2p-go-libp2p-gostream")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p-gostream")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zq5vhjj590azc1gwwiyqilf9ifxp8nz4hziz0fxs5ly2xhjj1mw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Broken upstream, see
+      ;; <https://github.com/libp2p/go-libp2p-gostream/issues/90>
+      #:tests? #f
+      #:import-path "github.com/libp2p/go-libp2p-gostream"
+      ;; src/github.com/libp2p/go-libp2p-asn-util/asn.go:12:12: pattern
+      ;; sorted-network-list.bin: cannot embed irregular file
+      ;; sorted-network-list.bin
+      #:embed-files #~(list "sorted-network-list\\.bin")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-libp2p-go-libp2p
+           go-github-com-multiformats-go-multiaddr))
+    (home-page "https://github.com/libp2p/go-libp2p-gostream")
+    (synopsis "Golang @code{net} wrappers for libp2p")
+    (description
+     "This package provides a replacement of the standard @code{net} stack in
+Go with @url{https://github.com/libp2p/libp2p, LibP2P} streams.")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-libp2p-kbucket
   (package
     (name "go-github-com-libp2p-go-libp2p-kbucket")
