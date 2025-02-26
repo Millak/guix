@@ -12,11 +12,11 @@ way into the actual variable despite attempts to remove it by calling
 The user-visible procedure ‘startup-redirect-eln-cache’ is kept, as
 packages may require it, but only pushes the new value now.
 
-Index: emacs-29.2/src/comp.c
+Index: emacs-next/src/comp.c
 ===================================================================
---- emacs-29.2.orig/src/comp.c
-+++ emacs-29.2/src/comp.c
-@@ -4396,26 +4396,17 @@ DEFUN ("comp-el-to-eln-rel-filename", Fc
+--- emacs-next.orig/src/comp.c
++++ emacs-next/src/comp.c
+@@ -4403,26 +4403,17 @@ DEFUN ("comp-el-to-eln-rel-filename", Fc
         Scomp_el_to_eln_rel_filename, 1, 1, 0,
         doc: /* Return the relative name of the .eln file for FILENAME.
  FILENAME must exist, and if it's a symlink, the target must exist.
@@ -49,7 +49,7 @@ Index: emacs-29.2/src/comp.c
    if (NILP (Ffile_exists_p (filename)))
      xsignal1 (Qfile_missing, filename);
  
-@@ -4423,64 +4414,55 @@ one for the file name and another for it
+@@ -4430,64 +4421,55 @@ one for the file name and another for it
    filename = Fw32_long_file_name (filename);
  #endif
  
@@ -157,7 +157,7 @@ Index: emacs-29.2/src/comp.c
  }
  
  DEFUN ("comp-el-to-eln-filename", Fcomp_el_to_eln_filename,
-@@ -4494,13 +4476,7 @@ If BASE-DIR is non-nil, use it as the di
+@@ -4501,13 +4483,7 @@ If BASE-DIR is non-nil, use it as the di
  non-absolute BASE-DIR is interpreted as relative to `invocation-directory'.
  If BASE-DIR is omitted or nil, look for the first writable directory
  in `native-comp-eln-load-path', and use as BASE-DIR its subdirectory
@@ -172,7 +172,7 @@ Index: emacs-29.2/src/comp.c
    (Lisp_Object filename, Lisp_Object base_dir)
  {
    Lisp_Object source_filename = filename;
-@@ -4548,10 +4524,11 @@ the latter is supposed to be used by the
+@@ -4555,10 +4531,11 @@ the latter is supposed to be used by the
    Lisp_Object lisp_preloaded =
      Fgetenv_internal (build_string ("LISP_PRELOADED"), Qnil);
    base_dir = Fexpand_file_name (Vcomp_native_version_dir, base_dir);
@@ -186,7 +186,7 @@ Index: emacs-29.2/src/comp.c
  				      CALL1I (split-string, lisp_preloaded))))))
      base_dir = Fexpand_file_name (build_string ("preloaded"), base_dir);
  
-@@ -5863,10 +5840,7 @@ The last directory of this list is assum
+@@ -5875,10 +5852,7 @@ The last directory of this list is assum
  the system *.eln files, which are the files produced when building
  Emacs.  */);
  
@@ -198,11 +198,11 @@ Index: emacs-29.2/src/comp.c
  
    DEFVAR_LISP ("native-comp-enable-subr-trampolines",
  	       Vnative_comp_enable_subr_trampolines,
-Index: emacs-29.2/lisp/startup.el
+Index: emacs-next/lisp/startup.el
 ===================================================================
---- emacs-29.2.orig/lisp/startup.el
-+++ emacs-29.2/lisp/startup.el
-@@ -545,9 +545,6 @@ DIRS are relative."
+--- emacs-next.orig/lisp/startup.el
++++ emacs-next/lisp/startup.el
+@@ -527,9 +527,6 @@ DIRS are relative."
  (defvar native-comp-jit-compilation)
  (defvar native-comp-enable-subr-trampolines)
  
@@ -212,7 +212,7 @@ Index: emacs-29.2/lisp/startup.el
  (defun startup-redirect-eln-cache (cache-directory)
    "Redirect the user's eln-cache directory to CACHE-DIRECTORY.
  CACHE-DIRECTORY must be a single directory, a string.
-@@ -558,22 +555,10 @@ to `user-emacs-directory'.
+@@ -540,22 +537,10 @@ to `user-emacs-directory'.
  For best results, call this function in your early-init file,
  so that the rest of initialization and package loading uses
  the updated value."
@@ -232,10 +232,10 @@ Index: emacs-29.2/lisp/startup.el
 -    (setq startup--original-eln-load-path
 -          (copy-sequence native-comp-eln-load-path))))
 -
- (defun normal-top-level ()
-   "Emacs calls this function when it first starts up.
- It sets `command-line-processed', processes the command-line,
-@@ -1362,12 +1347,6 @@ please check its value")
+ (defun startup--rescale-elt-match-p (font-pattern font-object)
+   "Test whether FONT-OBJECT matches an element of `face-font-rescale-alist'.
+ FONT-OBJECT is a font-object that specifies a font to test.
+@@ -1383,12 +1368,6 @@ please check its value")
        startup-init-directory)))
    (setq early-init-file user-init-file)
  
@@ -248,7 +248,7 @@ Index: emacs-29.2/lisp/startup.el
    ;; If any package directory exists, initialize the package system.
    (and user-init-file
         package-enable-at-startup
-@@ -1502,12 +1481,6 @@ please check its value")
+@@ -1523,12 +1502,6 @@ please check its value")
          startup-init-directory))
       t)
  
@@ -261,10 +261,10 @@ Index: emacs-29.2/lisp/startup.el
      (when (and deactivate-mark transient-mark-mode)
        (with-current-buffer (window-buffer)
          (deactivate-mark)))
-Index: emacs-29.2/lisp/loadup.el
+Index: emacs-next/lisp/loadup.el
 ===================================================================
---- emacs-29.2.orig/lisp/loadup.el
-+++ emacs-29.2/lisp/loadup.el
+--- emacs-next.orig/lisp/loadup.el
++++ emacs-next/lisp/loadup.el
 @@ -53,6 +53,14 @@
  (setq redisplay--inhibit-bidi t)
  
@@ -280,9 +280,16 @@ Index: emacs-29.2/lisp/loadup.el
  
  ;; Add subdirectories to the load-path for files that might get
  ;; autoloaded when bootstrapping or running Emacs normally.
-@@ -494,22 +502,20 @@ lost after dumping")))
-             (concat eln-dest-dir "native-lisp/" comp-native-version-dir "/"))
+@@ -538,27 +546,25 @@ This to have it working when installed o
+ directory got moved.  This is set to be a pair in the form of:
+ \(rel-filename-from-install-bin . rel-filename-from-local-bin)."
+   (when (and load--bin-dest-dir load--eln-dest-dir)
+-      (setq eln-dest-dir
+-          (concat load--eln-dest-dir "native-lisp/" comp-native-version-dir "/"))
++      (setq load--eln-versioned-dest-dir
++            (concat load--eln-dest-dir "native-lisp/" comp-native-version-dir "/"))
        (maphash (lambda (_ cu)
+                (when (stringp (native-comp-unit-file cu))
                   (let* ((file (native-comp-unit-file cu))
 -                        (preloaded (equal (substring (file-name-directory file)
 -                                                     -10 -1)
@@ -302,33 +309,33 @@ Index: emacs-29.2/lisp/loadup.el
 -                                          (file-name-nondirectory
 -                                           file)
 -                                          eln-dest-dir-eff)
--                                         bin-dest-dir)
+-                                         load--bin-dest-dir)
 +                     (file-relative-name
 +                      (expand-file-name
 +                       (save-match-data
 +                         (string-match native-lisp-needle file)
 +                         (substring file (match-end 0)))
-+                       eln-dest-dir)
-+                      bin-dest-dir)
++                       load--eln-versioned-dest-dir)
++                      load--bin-dest-dir)
                       ;; Relative filename from the built uninstalled binary.
-                      (file-relative-name file invocation-directory)))))
- 	       comp-loaded-comp-units-h)))
-@@ -557,7 +563,9 @@ lost after dumping")))
-                  (equal dump-mode "pdump"))
-         ;; Don't enable this before bootstrap is completed, as the
-         ;; compiler infrastructure may not be usable yet.
--        (setq native-comp-enable-subr-trampolines t))
-+        (setq native-comp-enable-subr-trampolines t
-+              ;; We loaded everything we could.
-+              comp-file-preloaded-p nil))
-       (message "Dumping under the name %s" output)
-       (condition-case ()
-           (delete-file output)
-Index: emacs-29.2/src/Makefile.in
+                      (file-relative-name file invocation-directory))))))
+ 	     comp-loaded-comp-units-h)))
+@@ -644,7 +650,9 @@ directory got moved.  This is set to be
+                    (equal dump-mode "pdump"))
+           ;; Don't enable this before bootstrap is completed, as the
+           ;; compiler infrastructure may not be usable yet.
+-          (setq native-comp-enable-subr-trampolines t))
++          (setq native-comp-enable-subr-trampolines t
++                ;; We loaded everything we could.
++                comp-file-preloaded-p nil))
+         (message "Dumping under the name %s" output)
+         (condition-case ()
+             (delete-file output)
+Index: emacs-next/src/Makefile.in
 ===================================================================
---- emacs-29.2.orig/src/Makefile.in
-+++ emacs-29.2/src/Makefile.in
-@@ -553,6 +553,7 @@ shortlisp := $(filter-out ${shortlisp_fi
+--- emacs-next.orig/src/Makefile.in
++++ emacs-next/src/Makefile.in
+@@ -591,6 +591,7 @@ shortlisp := $(filter-out ${shortlisp_fi
  ## We don't really need to sort, but may as well use it to remove duplicates.
  shortlisp := loaddefs.el loadup.el $(sort ${shortlisp})
  export LISP_PRELOADED = ${shortlisp}

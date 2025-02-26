@@ -101,7 +101,7 @@
 (define-public emacs-minimal
   (package
     (name "emacs-minimal")
-    (version "29.4")
+    (version "30.1")
     ;; Note: When using (replacement …), ensure that comp-native-version-dir
     ;; stays the same across grafts.
     ;; Run `make check-system TESTS=emacs-native-comp' to ensure that grafts
@@ -112,7 +112,7 @@
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0dd2mh6maa7dc5f49qdzj7bi4hda4wfm1cvvgq560djcz537k2ds"))
+                "13qkdx515qv7m8b2mpd37p16frs0xgl7bw8xvv397bz6fspc3jkc"))
               (patches (search-patches "emacs-disable-jit-compilation.patch"
                                        "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
@@ -173,7 +173,6 @@
                              "lisp/mail/feedmail.el"
                              "lisp/obsolete/pgg-pgp.el"
                              "lisp/obsolete/pgg-pgp5.el"
-                             "lisp/obsolete/terminal.el"
                              "lisp/org/ob-eval.el"
                              "lisp/textmodes/artist.el"
                              "lisp/progmodes/sh-script.el"
@@ -730,10 +729,6 @@ Started in 2014 as a GSOC project, Guile-Emacs was resurrected in 2024.")
                       ;; Likewise, we don't need to patch helper binaries
                       ;; like etags, ctags or ebrowse.
                       "^emacs(-[0-9]+(\\.[0-9]+)*)?$")))))
-              (add-after 'unpack 'help-patch-progam-file-names
-                (lambda _
-                  (call-with-output-file "lisp/obsolete/terminal.el"
-                    (lambda (port) (display port)))))
               (add-after 'configure 'touch-lisp/finder-inf.el
                 (lambda _
                   (call-with-output-file "lisp/finder-inf.el"

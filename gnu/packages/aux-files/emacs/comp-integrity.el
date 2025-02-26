@@ -1,34 +1,25 @@
 (require 'ert)
 
 (eval-when-compile
-  (require 'help-fns)
-
-  (defmacro expect-help (fun result &optional feature)
+  (defmacro expect-feature (&optional feature)
     `(progn
-       (eval-when-compile (when ',feature
-                            (require ',feature)))
-
-       (ert-deftest ,(intern (concat "expect-" (symbol-name fun)
-                                     "-" (symbol-name result)))
-           ()
-           (should
-            (eq ',result
-                (let ((desc (substring-no-properties
-                             (with-output-to-string
-                               (help-fns-function-description-header ',fun)))))
-                  (cond ((string-search "native-compiled" desc) 'native)
-                        ((string-search "byte-compiled" desc) 'byte)
-                        ((string-search "built-in" desc) 'built-in)
-                        (t nil))))))))
+       (eval-when-compile
+         (or (not ',feature)
+             (require ',feature)))))
 
   (defmacro expect-native (fun &optional feature)
-    `(progn (expect-help ,fun native ,feature)))
+    `(progn
+       (expect-feature ,feature)
+       (should (native-comp-function-p (symbol-function ',fun)))))
 
-  (defmacro expect-native-if-bound (fun)
-    `(and (boundp ',fun) (expect-help ,fun native)))
+
+  (defmacro expect-native-if-bound (fun &optional feature)
+    `(and (expect-feature ,feature)
+          (boundp ',fun)
+          (should (native-comp-function-p (symbol-function ',fun)))))
 
   (defmacro expect-builtin (fun &optional feature)
-    `(progn (expect-help ,fun built-in ,feature))))
+    `(should (primitive-function-p (symbol-function ',fun)))))
 
 (expect-native abbrev-mode)
 (expect-native backquote-process)
@@ -92,9 +83,7 @@
 (expect-native-if-bound mouse-wheel-change-button)
 (expect-native advice-function-mapc)
 (expect-native comment-string-strip)
-(if (>= emacs-major-version 30)
-    (expect-builtin obarray-make)
-    (expect-native obarray-make))
+(expect-builtin obarray-make)
 (expect-native obarray-map)
 (expect-native oclosure-type)
 (expect-native forward-page)
