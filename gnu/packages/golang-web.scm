@@ -9860,6 +9860,34 @@ metrics SDK.")
      "Package trace provides an implementation of the tracing part of the
 OpenTelemetry API.")))
 
+(define-public go-goji-io
+  (package
+    (name "go-goji-io")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/goji/goji")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sckb1gayxfrlm12kdp33vwqq4gs5irqswr7pm0skkdz66swsvcc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "goji.io"))
+    (home-page "https://goji.io")
+    (synopsis "HTTP request multiplexer for Golang")
+    (description
+     "Goji is a HTTP request multiplexer, similar to std
+@code{net/http.ServeMux}.  It compares incoming requests to a list of
+registered Patterns, and dispatches to the @code{http.Handler} that
+corresponds to the first matching Pattern.  Goji also supports
+Middleware (composable shared functionality applied to every request) and uses
+the standard @code{context} package to store request-scoped values.")
+    (license license:expat)))
+
 (define-public go-golang-org-x-oauth2
   (package
     (name "go-golang-org-x-oauth2")
