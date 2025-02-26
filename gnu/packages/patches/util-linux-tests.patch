@@ -1,23 +1,6 @@
-This test checks whether 'root' is successfully translated to UID/GID 0,
-using 'getpwnam' in libmount.  This doesn't work in the chroot because
-/etc/passwd doesn't contain an entry for 'root' so skip it.
-
-The second test requires that '/sys/dev/block' is present, which is not
+This test requires that '/sys/dev/block' is present, which is not
 the case inside the build container.
 
---- util-linux-2.25.2/tests/ts/libmount/optstr	2015-01-23 13:58:41.181151194 +0100
-+++ util-linux-2.25.2/tests/ts/libmount/optstr	2015-01-23 13:58:42.829161716 +0100
-@@ -108,10 +108,6 @@
- ts_run $TESTPROG --apply --user "noexec,nosuid,loop=/dev/looop0" 0x408 &> $TS_OUTPUT
- ts_finalize_subtest
- 
--ts_init_subtest "fix"
--ts_run $TESTPROG --fix "uid=root,gid=root" &> $TS_OUTPUT
--ts_finalize_subtest
--
- ts_init_subtest "deduplicate"
- ts_run $TESTPROG --dedup bbb,ccc,AAA,xxx,AAA=a,AAA=bbb,ddd,AAA=ccc,fff=eee AAA &> $TS_OUTPUT
- ts_finalize_subtest
 --- a/tests/ts/lsblk/lsblk	2019-03-11 21:08:23.734387391 +0100
 +++ b/tests/ts/lsblk/lsblk	2019-03-11 21:12:43.635473111 +0100
 @@ -22,6 +22,8 @@
