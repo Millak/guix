@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
 ;;; Copyright © 2019-2025 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
@@ -45563,6 +45563,21 @@ C++ symbols mangled by MSVC.")
      "This package provides a trait for numeric types to perform combined
 multiplication and division with overflow protection.")
     (license license:expat)))
+
+(define-public rust-muldiv-0.2
+  (package
+    (inherit rust-muldiv-1)
+    (name "rust-muldiv")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "muldiv" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "014jlry2l2ph56mp8knw65637hh49q7fmrraim2bx9vz0a638684"))))
+    (arguments
+     `(#:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.9))))))
 
 (define-public rust-multer-3
   (package
