@@ -36657,6 +36657,29 @@ bytestring representations.")
         ("rust-tokio" ,rust-tokio-0.2))
        #:cargo-development-inputs (("rust-tokio" ,rust-tokio-0.2))))))
 
+(define-public rust-interception-sys-0.1
+  (package
+    (name "rust-interception-sys")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "interception-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lgwbml7gzq5a5rriy708w68gx6yiw9cdg7xy2c5vsrrck7pbs5b"))
+       (modules '((guix build utils)))
+       (snippet
+        '(for-each delete-file
+                   (find-files "." "\\.(dll|lib)$")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))               ;empty package
+    (home-page "https://github.com/bozbez/interception-sys")
+    (synopsis "FFI bindings for Interception")
+    (description "This package provides FFI bindings for Interception.")
+    (license license:lgpl3)))
+
 (define-public rust-interpolate-name-0.2
   (package
     (name "rust-interpolate-name")
