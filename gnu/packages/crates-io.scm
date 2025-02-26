@@ -54831,6 +54831,33 @@ algebra.")
     (description "This package provides Search for files in PATH.")
     (license license:expat)))
 
+(define-public rust-patricia-tree-0.8
+  (package
+    (name "rust-patricia-tree")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "patricia_tree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s5fya6rvgg2gxxp5mbv0xdq8jqikps1sc6snk23zrgzkd9z9wii"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/sile/patricia_tree")
+    (synopsis "Memory-efficient data structures based on Patricia tree")
+    (description
+     "This package provides memory-efficient data structures based on
+Patricia tree.")
+    (license license:expat)))
+
 (define-public rust-paw-1
   (package
     (name "rust-paw")
