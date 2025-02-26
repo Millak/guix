@@ -25,12 +25,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix build-system cargo)
+  #:use-module (guix diagnostics)
+  #:use-module (guix i18n)
   #:use-module (guix search-paths)
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix monads)
   #:use-module (guix packages)
+  #:use-module (guix download)
   #:use-module (guix platform)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
@@ -45,7 +48,10 @@
             crate-url
             crate-url?
             crate-uri
-            crate-name->package-name))
+            crate-name->package-name
+            crate-source
+            define-cargo-inputs
+            cargo-inputs))
 
 (define %crate-base-url
   (make-parameter "https://crates.io"))
@@ -61,6 +67,44 @@ to NAME and VERSION."
 
 (define (crate-name->package-name name)
   (downstream-package-name "rust-" name))
+
+;; NOTE: Only use this procedure in (gnu packages rust-crates).
+(define* (crate-source name version hash #:key (patches '()) (snippet #f))
+  (origin
+    (method url-fetch)
+    (uri (crate-uri name version))
+    (file-name
+     (string-append (crate-name->package-name name) "-" version ".tar.gz"))
+    (sha256 (base32 hash))
+    (modules '((guix build utils)))
+    (patches patches)
+    (snippet snippet)))
+
+(define-syntax define-cargo-inputs
+  (syntax-rules (=>)
+    ((_ lookup inputs ...)
+     (define lookup
+       (let ((table (make-hash-table)))
+         (letrec-syntax ((record
+                          (syntax-rules (=>)
+                            ((_) #t)
+                            ((_ (name => lst) rest (... ...))
+                             (begin
+                               (hashq-set! table 'name (filter identity lst))
+                               (record rest (... ...)))))))
+           (record inputs ...)
+           (lambda (name)
+             "Return the inputs for NAME."
+             (hashq-ref table name))))))))
+
+(define* (cargo-inputs name #:key (module '(gnu packages rust-crates)))
+  "Lookup Cargo inputs for NAME defined in MODULE, return an empty list if
+unavailable."
+  (let ((lookup (module-ref (resolve-interface module) 'lookup-cargo-inputs)))
+    (or (lookup name)
+        (begin
+          (warning (G_ "no Cargo inputs available for '~a'~%") name)
+          '()))))
 
 (define (default-rust target)
   "Return the default Rust package."

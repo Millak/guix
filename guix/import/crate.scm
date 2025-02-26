@@ -27,7 +27,7 @@
 
 (define-module (guix import crate)
   #:use-module (guix base32)
-  #:use-module (guix build-system cargo)
+  #:use-module ((guix build-system cargo) #:hide (crate-source))
   #:use-module (guix diagnostics)
   #:use-module (gcrypt hash)
   #:use-module (guix http-client)

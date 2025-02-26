@@ -1,0 +1,70 @@
+#!/usr/bin/env -S gawk -f
+# GNU Guix --- Functional package management for GNU
+# Copyright © 2025 Efraim Flashner <efraim@flashner.co.il>
+#
+# This file is part of GNU Guix.
+#
+# GNU Guix is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or (at
+# your option) any later version.
+#
+# GNU Guix is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
+
+# To run:
+# ./etc/teams/rust/audit-rust-crates ./path/to/file.scm
+# Prints the output of cargo-audit to the shell.
+
+# Make sure we have cargo-audit in our PATH
+BEGIN {
+    if (system("which cargo-audit 1> /dev/null"))
+        exit 1;
+    # Parse a record at a time.
+    RS = "\n\n"
+    cargoAudit = "cargo-audit audit --file -"
+}
+
+# Check the crate-source origin-only inputs
+/crate-source/ {
+    for(i=3; i <= NF-2; i++) {
+        if($i == "(crate-source") {
+            cargoLock = cargoLock "[[package]]\nname = " $(i+1) "\nversion = " $(i+2) "\n"
+            next
+        }
+    }
+}
+
+# Check the crates packaged from crates.io tarballs
+/crate-uri/ {
+    for(i=3; i <= NF; i++) {
+        if($i == "(version")
+           crateVersion = $(i+1)
+        if($i == "(crate-uri")
+           crateName = $(i+1)
+    }
+    gsub(/)/, "", crateVersion)
+    cargoLock = cargoLock "[[package]]\nname = " crateName "\nversion = " crateVersion "\n"
+}
+
+# The xxxx-cargo-input variables have a set style
+# TODO: Replace the last dash between the name and the version with a space!
+# This doesn't take into account swapping between "-" and "_" so we skip it.
+#( $2 ~ /-cargo-inputs/ ) {
+#    sub(/-cargo-inputs/, "", $2)
+#    gsub(/)/, "", $0)
+#    gsub(/rust-/, "", $0)
+#    #gensub(/([[:alpha:]])-([[:digit:]]+)/, "\\1 \\2", "g", $i)
+#    print "[[package]]\nname = \"" $2 "\"\nversion = \"1.0.0\"\ndependencies = ["
+#    for (i = 4; i <= NF; i++) {
+#        print "\"" $i "\","
+#    }
+#    print "]"
+#}
+
+END { print cargoLock | cargoAudit }
