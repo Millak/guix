@@ -47816,6 +47816,27 @@ feed reader.")
     (description "This package provides a newline byte converter library.")
     (license license:expat)))
 
+(define-public rust-newline-converter-0.2
+  (package
+    (inherit rust-newline-converter-0.3)
+    (name "rust-newline-converter")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "newline-converter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03y000bbxnwzb7aipxyw7gm68b1bd8dv7illz03l4qw7bjfx0w8z"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-fancy-regex" ,rust-fancy-regex-0.10)
+        ("rust-lazy-regex" ,rust-lazy-regex-2)
+        ("rust-once-cell" ,rust-once-cell-1))))))
+
 (define-public rust-newsblur-api-0.1
   (package
     (name "rust-newsblur-api")
