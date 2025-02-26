@@ -19736,7 +19736,7 @@ tool."))))
     (name "gopls")
     ;; XXX: Starting from 0.14.0 gppls needs golang.org/x/telemetry, which
     ;; needs to be discussed if it may be included in Guix.
-    (version "0.17.1")
+    (version "0.18.1")
     (source
      (origin
        (method git-fetch)
@@ -19745,7 +19745,7 @@ tool."))))
              (commit (go-version->git-ref version #:subdir "gopls"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qksn79nc94fig5bia0l8h7fzm1zbn9rvya25hwf0f18v8a0id9l"))))
+        (base32 "0s396bjwac1acrlpbp7k7xfyhmkykyxc08w6hirbdhlq8vg923p7"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -19771,8 +19771,10 @@ tool."))))
            go-github-com-jba-templatecheck
            go-golang-org-x-mod
            go-golang-org-x-sync
+           go-golang-org-x-sys
            go-golang-org-x-telemetry
            go-golang-org-x-text
+           go-golang-org-x-tools
            go-golang-org-x-vuln
            go-gopkg-in-yaml-v3
            go-honnef-co-go-tools
