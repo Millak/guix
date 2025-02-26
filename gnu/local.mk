@@ -411,6 +411,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/julia-jll.scm			\
   %D%/packages/julia-xyz.scm			\
   %D%/packages/jupyter.scm			\
+  %D%/packages/kanata.scm 			\
   %D%/packages/kawa.scm				\
   %D%/packages/kde.scm				\
   %D%/packages/kde-frameworks.scm		\
