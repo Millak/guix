@@ -213,7 +213,7 @@ package contains the library, but no drivers.")
   (package/inherit sane-backends-minimal
     (name "sane-backends")
     (inputs
-     `(("hplip" ,(@ (gnu packages cups) hplip-minimal))
+     `(("hplip" ,(@ (gnu packages cups) hplip))
        ("libjpeg" ,libjpeg-turbo)       ; for pixma/epsonds/other back ends
        ("libpng" ,libpng)               ; support ‘scanimage --format=png’
        ("libxml2" ,libxml2)             ; for pixma back end
