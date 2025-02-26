@@ -1077,7 +1077,7 @@ the date of the most recent commit that modified them
 (define-public git-spice
   (package
     (name "git-spice")
-    (version "0.9.0")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -1086,76 +1086,73 @@ the date of the most recent commit that modified them
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yvnd5a3ql905jrxh0sq9sdcfmyq38fsbqx0zbhxbd4rgs8hv5s3"))))
+        (base32 "0fgdi0gmax808aazmzl75wny2klfcz5gbs8v82zhifgiza01xzqy"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
+      #:go go-1.24
       #:import-path "go.abhg.dev/gs"
       #:install-source? #f
+      #:build-flags
+      #~(list (string-append "-ldflags=-X main._version=" #$version))
       #:test-flags
       #~(list "-skip"
               (string-join
-               ;; XXX: Tests failing with various reasons; requiring
+               ;; XXX: Tests failing with various reasons: requiring
                ;; networking config or write access, or outbound access, check
                ;; if some of them may be fixed.
-               (list "TestDeviceFlowAuthenticator"
+               (list "TestAuthenticationFlow_PAT/pat"
+                     "TestDeviceFlowAuthenticator"
                      "TestScript/auth_detect_forge"
                      "TestScript/auth_explicit_forge"
                      "TestScript/auth_insecure_storage"
                      "TestScript/auth_prompt_forge"
+                     "TestScript/branch_create_below_with_downstack_history"
+                     "TestScript/branch_create_no_verify"
+                     "TestScript/branch_onto_two_stacks_with_downstack_history"
                      "TestScript/branch_split_reassign_submitted"
-                     "TestScript/branch_submit_ambiguous_branch"
-                     "TestScript/branch_submit_by_name"
-                     "TestScript/branch_submit_config_no_publish"
-                     "TestScript/branch_submit_create_update"
-                     "TestScript/branch_submit_detect_existing"
-                     "TestScript/branch_submit_detect_existing_conflict"
-                     "TestScript/branch_submit_detect_existing_upstream_name"
-                     "TestScript/branch_submit_force_push"
-                     "TestScript/branch_submit_long_body"
-                     "TestScript/branch_submit_many_upstream_names_taken"
-                     "TestScript/branch_submit_multiple_commits"
-                     "TestScript/branch_submit_multiple_pr_templates"
-                     "TestScript/branch_submit_navigation_.*_out_multiple"
-                     "TestScript/branch_submit_needs_restack"
-                     "TestScript/branch_submit_no_editor"
-                     "TestScript/branch_submit_no_publish"
-                     "TestScript/branch_submit_pr_template"
-                     "TestScript/branch_submit_pr_template_cache_invalidation"
-                     "TestScript/branch_submit_pr_template_no_body"
-                     "TestScript/branch_submit_pr_template_prompt"
-                     "TestScript/branch_submit_recover_prepared"
-                     "TestScript/branch_submit_remote_prompt"
-                     "TestScript/branch_submit_rename"
-                     "TestScript/branch_submit_rename_base"
-                     "TestScript/branch_submit_update_pr_is_closed"
-                     "TestScript/branch_submit_update_pr_is_merged"
-                     "TestScript/branch_submit_upstream_name"
-                     "TestScript/branch_submit_upstream_name_wrong_remote"
-                     "TestScript/branch_submit_use_git_editor"
-                     "TestScript/branch_submit_web"
-                     "TestScript/branch_submit_web_opt_out"
+                     "TestScript/branch_submit_.*"
+                     "TestScript/commit_amend_no_verify"
+                     "TestScript/commit_create_no_verify"
+                     "TestScript/commit_split_no_verify"
                      "TestScript/downstack_submit"
-                     "TestScript/issue369_branch_.*_case_insensitive"
-                     "TestScript/issue369_branch_.*_remote_update"
+                     "TestScript/issue369_branch_submit_pr_template_cache_.*"
                      "TestScript/issue398_repo_sync_many_merged"
-                     "TestScript/repo_sync_after_merging_renamed_branch"
-                     "TestScript/repo_sync_detached_head"
-                     "TestScript/repo_sync_detect_externally_created_prs"
-                     "TestScript/repo_sync_external_pr_head_mismatch"
-                     "TestScript/repo_sync_manual_pull_merged_pr"
-                     "TestScript/repo_sync_merged_pr"
-                     "TestScript/repo_sync_remote_already_deleted"
-                     "TestScript/repo_sync_restack"
-                     "TestScript/repo_sync_trunk_dirty_tree"
-                     "TestScript/repo_sync_trunk_no_prs"
-                     "TestScript/repo_sync_unpushed_commits"
+                     "TestScript/repo_sync_.*"
+                     "TestScript/stack_edit_inserted_at_bottom_with_.*"
                      "TestScript/stack_submit"
-                     "TestScript/stack_submit_update_leave_draft"
-                     "TestScript/stack_submit_web"
-                     "TestScript/upstack_submit_main")
-               "|"))))
+                     "TestScript/stack_submit_.*"
+                     "TestScript/submit_update_only"
+                     "TestScript/upstack_submit_main"
+                     "TestSelectAuthenticator/oauth"
+                     "TestSelectAuthenticator/oauth_public")
+               "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-shell-completion
+            (lambda _
+              (let* ((out #$output)
+                     (share (string-append out "/share"))
+                     (gs (string-append out "/bin/gs"))
+                     (bash-completions-dir
+                      (string-append out "/etc/bash_completion.d/"))
+                     (fish-completions-dir
+                      (string-append share "/fish/vendor_completions.d"))
+                     (zsh-completions-dir
+                      (string-append share "/zsh/site-functions")))
+                (for-each mkdir-p
+                          (list bash-completions-dir
+                                fish-completions-dir
+                                zsh-completions-dir))
+                (with-output-to-file
+                    (string-append bash-completions-dir "/gs")
+                  (lambda _ (invoke gs "shell" "completion" "bash")))
+                (with-output-to-file
+                    (string-append fish-completions-dir "/gs.fish")
+                  (lambda _ (invoke gs "shell" "completion" "fish")))
+                (with-output-to-file
+                    (string-append zsh-completions-dir "/_gs")
+                  (lambda _ (invoke gs "shell" "completion" "zsh")))))))))
     (native-inputs
      (list git-minimal ; for tests in testdata/scripts
            go-github-com-alecthomas-kong
@@ -1168,16 +1165,16 @@ the date of the most recent commit that modified them
            go-github-com-creack-pty
            go-github-com-dustin-go-humanize
            go-github-com-mattn-go-isatty
-           go-github-com-rogpeppe-go-internal
+           go-github-com-rogpeppe-go-internal-1.14
            go-github-com-sahilm-fuzzy
            go-github-com-shurcool-githubv4
            go-github-com-stretchr-testify
            go-github-com-tidwall-gjson
            go-github-com-vito-midterm
-           go-github-com-xanzy-go-gitlab
            go-github-com-zalando-go-keyring
+           go-gitlab-com-gitlab-org-api-client-go
+           go-go-abhg-dev-io-ioutil
            go-go-abhg-dev-komplete
-           go-go-abhg-dev-requiredfield
            go-go-abhg-dev-testing-stub
            go-go-uber-org-mock
            go-golang-org-x-oauth2
