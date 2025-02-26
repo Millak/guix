@@ -6648,8 +6648,8 @@ is an attempt to combine both into something useful.")
       (license license:asl2.0))))
 
 (define-public guile-knots
-  (let ((commit "13f11185765b436aaa96b070b31b7b093a2122b7")
-        (revision "10"))
+  (let ((commit "f549bee282e108bc5f68ba885a0b2ba53b82e373")
+        (revision "11"))
     (package
     (name "guile-knots")
     (version (git-version "0" revision commit))
@@ -6660,7 +6660,7 @@ is an attempt to combine both into something useful.")
                     (commit commit)))
               (sha256
                (base32
-                "029nvm8dwvf1ha2ya2xmgwnh1z6582ig7ih3c70d4fwnpg4ir52f"))
+                "0v2wh9ijxs26xgl8r03zmwclibfmf2klam1gsabzq65hafvgrgwj"))
               (file-name (string-append name "-" version "-checkout"))))
     (build-system gnu-build-system)
     (native-inputs
