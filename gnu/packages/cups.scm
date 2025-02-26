@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Lukas Gradl <lgradl@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,6 +43,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -579,7 +581,6 @@ should only be used as part of the Guix cups-pk-helper service.")
                   ((guix build python-build-system) #:prefix python:))
       #:configure-flags
       #~(list "--disable-imageProcessor-build"
-              "--disable-network-build"
               (string-append "--prefix=" #$output)
               (string-append "--sysconfdir=" #$output "/etc")
               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
@@ -690,6 +691,9 @@ should only be used as part of the Guix cups-pk-helper service.")
            python-pyqt
            python-wrapper
            sane-backends-minimal
+           net-snmp
+           openssl
+           avahi
            zlib))
     (home-page "https://developers.hp.com/hp-linux-imaging-and-printing")
     (synopsis "HP printer drivers")
