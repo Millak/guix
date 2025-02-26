@@ -2317,7 +2317,7 @@ main monitor/GPU.")
                  (invoke "make" "install" "install-bash" "install-man"
                          (string-append "PREFIX=" out)))))))))
     (native-inputs
-     (list go-github-com-go-md2man pkg-config))
+     (list go-md2man pkg-config))
     (inputs
      (list libseccomp))
     (synopsis "Open container initiative runtime")
@@ -2394,7 +2394,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
     (build-system gnu-build-system)
     (native-inputs
      (list go-1.22
-           go-github-com-go-md2man
+           go-md2man
            pkg-config))
     (inputs
      (list bash-minimal
@@ -2413,8 +2413,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
               "PREFIX="
               (string-append "DESTDIR=" #$output)
               "GOGCFLAGS=-trimpath"
-              (string-append "GOMD2MAN="
-                             #$go-github-com-go-md2man "/bin/go-md2man"))
+              (string-append "GOMD2MAN=" #$go-md2man "/bin/go-md2man"))
       #:tests? #f                       ; The tests require Docker
       #:test-target "test-unit"
       #:imported-modules

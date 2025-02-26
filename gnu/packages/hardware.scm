@@ -188,7 +188,7 @@ sets, and tools to deal with register databases.")
               (map (lambda (target)
                      (apply invoke "make" target make-flags))
                    '("install.udev" "install.polkit")))))))
-    (native-inputs (list go-github-com-go-md2man))
+    (native-inputs (list go-md2man))
     (supported-systems
      (lset-difference string=? %supported-systems %hurd-systems))
     (home-page "https://gitlab.com/cameronnemo/brillo")

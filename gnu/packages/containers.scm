@@ -489,8 +489,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
       #~(list (string-append "CC=" #$(cc-for-target))
               (string-append "PREFIX=" #$output)
               (string-append "HELPER_BINARIES_DIR=" #$output "/_guix")
-              (string-append "GOMD2MAN="
-                             #$go-github-com-go-md2man "/bin/go-md2man")
+              (string-append "GOMD2MAN=" #$go-md2man "/bin/go-md2man")
               (string-append "BUILDFLAGS=-trimpath"))
       #:tests? #f                  ; /sys/fs/cgroup not set up in guix sandbox
       #:test-target "test"
@@ -575,7 +574,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
            bats
            git-minimal/pinned
            go-1.22
-           go-github-com-go-md2man
+           go-md2man
            gnu-gettext ; for envsubst
            mandoc
            pkg-config
@@ -643,8 +642,7 @@ being rootless and not requiring any daemon to be running.")
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
               (string-append "PREFIX=" #$output)
-              (string-append "GOMD2MAN="
-                             #$go-github-com-go-md2man "/bin/go-md2man"))
+              (string-append "GOMD2MAN=" #$go-md2man "/bin/go-md2man"))
       #:tests? #f                  ; /sys/fs/cgroup not set up in guix sandbox
       #:test-target "test-unit"
       #:phases
@@ -702,7 +700,7 @@ being rootless and not requiring any daemon to be running.")
     (native-inputs
      (list bats
            go-1.23
-           go-github-com-go-md2man
+           go-md2man
            pkg-config))
     (synopsis "Build @acronym{OCI, Open Container Initiative} images")
     (description

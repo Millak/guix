@@ -82,7 +82,7 @@
      (list avahi libusb))
     (native-inputs
      (list go-github-com-openprinting-goipp
-           go-github-com-go-md2man
+           go-md2man
            pkg-config))
     (home-page "https://github.com/OpenPrinting/ipp-usb")
     (synopsis "HTTP reverse proxy, backed by the IPP-over-USB connection")

@@ -3968,6 +3968,7 @@ it effectively reuses the JSON struct tags as well as the custom JSON methods
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "github.com/cpuguy83/go-md2man"))
     (propagated-inputs
      (list go-github-com-russross-blackfriday-v2))
@@ -19497,6 +19498,24 @@ Jsonnet C++implementation.")
     (description
      (string-append (package-description go-github-com-vburenin-ifacemaker)
                     "  This package provides a command line interface (CLI) tool."))))
+
+(define-public go-md2man
+  (package/inherit go-github-com-go-md2man
+    (name "go-md2man")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-go-md2man)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)))
+    (native-inputs
+     (package-propagated-inputs go-github-com-go-md2man))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     (string-append (package-description go-github-com-go-md2man)
+                    "\nThis package provides a command line interface (CLI)
+tool."))))
 
 (define-public go-msgio
   (package

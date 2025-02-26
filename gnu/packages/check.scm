@@ -413,9 +413,9 @@ source code editors and IDEs.")
     (native-inputs
      (list go-github-com-docopt-docopt-go
            go-github-com-go-ini-ini
-           go-github-com-go-md2man
            go-github-com-olekukonko-tablewriter
-           go-github-com-stretchr-testify))
+           go-github-com-stretchr-testify
+           go-md2man))
     (home-page "https://github.com/mrtazz/checkmake")
     (synopsis "Linter and analyzer for @file{Makefile}")
     (description
