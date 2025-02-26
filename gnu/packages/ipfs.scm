@@ -1541,6 +1541,44 @@ their levels to be controlled individually.")
 Go with @url{https://github.com/libp2p/libp2p, LibP2P} streams.")
     (license license:expat)))
 
+(define-public go-github-com-libp2p-go-libp2p-http
+  (package
+    (name "go-github-com-libp2p-go-libp2p-http")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p-http")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v65xjj1ljpx9bfwqivgncc6imrykw1dd8m2zvaqiygv0dirzkzn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Broken upstream, see
+      ;; <https://github.com/libp2p/go-libp2p-http/issues/94>
+      #:tests? #f
+      #:import-path "github.com/libp2p/go-libp2p-http"
+      ;; src/github.com/libp2p/go-libp2p-asn-util/asn.go:12:12: pattern
+      ;; sorted-network-list.bin: cannot embed irregular file
+      ;; sorted-network-list.bin
+      #:embed-files #~(list "sorted-network-list\\.bin")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-libp2p-go-libp2p
+           go-github-com-libp2p-go-libp2p-gostream
+           go-github-com-multiformats-go-multiaddr))
+    (home-page "https://github.com/libp2p/go-libp2p-http")
+    (synopsis "HTTP on top of libp2p")
+    (description
+     "Package p2phttp allows to serve HTTP endpoints and make HTTP requests
+through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
+@code{http} and @code{net} stacks.")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-libp2p-kbucket
   (package
     (name "go-github-com-libp2p-go-libp2p-kbucket")
