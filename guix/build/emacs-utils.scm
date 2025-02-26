@@ -146,6 +146,7 @@ If native code is not supported, compile to bytecode instead."
                       'comp--write-bytecode-file)))))
        (mapc
         (lambda (file)
+          (message "Compiling `%s'" (file-relative-name file ,dir))
           (let (byte-to-native-output-buffer-file
                 ;; First entry is the eln-cache of the homeless shelter,
                 ;; second entry is the install directory.
