@@ -340,31 +340,40 @@ time to a logfile.")
         (base32 "01vdxm3y5fg4hqhq4k1lk0m7w70kkwlka5jhixv7a9lf1gqldskd"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/naggie/dstask"
-       #:install-source? #f
-       #:test-subdirs '("pkg/..." ".")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key import-path #:allow-other-keys)
-             (with-directory-excursion (string-append "src/" import-path)
-               (invoke "go" "build" "-trimpath" "-o" "dstask" "cmd/dstask/main.go")
-               (invoke "go" "build" "-trimpath" "-o" "dstask-import"
-                       "cmd/dstask-import/main.go"))))
-         (replace 'install
-           (lambda* (#:key import-path outputs #:allow-other-keys)
-             (with-directory-excursion (string-append "src/" import-path)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bindir (string-append out "/bin"))
-                      (zsh-completion (string-append
-                                       out "/share/zsh/site-functions/_dstask"))
-                      (bash-completion
-                       (string-append
-                        out "/share/bash-completion/completions/_dstask")))
-                 (install-file "dstask" bindir)
-                 (install-file "dstask-import" bindir)
-                 (install-file ".dstask-bash-completions.sh" bash-completion)
-                 (install-file ".dstask-zsh-completions.sh" zsh-completion))))))))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/naggie/dstask"
+      #:build-flags
+      #~(list (string-append
+               "-ldflags=-X github.com/naggie/dstask.VERSION=" #$version
+               " -X github.com/naggie/dstask.GIT_COMMIT=" #$version))
+      #:test-subdirs #~(list "pkg/..." ".")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda arguments
+              (let ((path-prefix "github.com/naggie/dstask/cmd/"))
+                (for-each
+                 (lambda (cmd)
+                   (apply (assoc-ref %standard-phases 'build)
+                          `(,@arguments #:import-path
+                            ,(string-append path-prefix cmd))))
+                 (list "dstask-import" "dstask")))))
+          ;; TODO: Completions may be generated on the fly with "dstask
+          ;; (bash|fish|zsh)-completion" but invocation of "dstask" requires
+          ;; creating $HOME/.dstask git repository, find out workaround and
+          ;; add fish completion as well.
+          (add-after 'install 'install-shell-completions
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (let* ((out #$output)
+                       (share (string-append out "/share"))
+                       (zsh-completion
+                        (string-append share "/zsh/site-functions/_dstask"))
+                       (bash-completion
+                        (string-append out "/bash-completion/completions/_dstask")))
+                  (install-file ".dstask-bash-completions.sh" bash-completion)
+                  (install-file ".dstask-zsh-completions.sh" zsh-completion))))))))
     (native-inputs
      (list go-github-com-burntsushi-toml
            go-github-com-gofrs-uuid
