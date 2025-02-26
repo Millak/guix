@@ -8169,6 +8169,8 @@ interface in sysfs, which can be accomplished with the included udev rules.")
      ;; XXX: The full test suite is run with "checkall" but it requires
      ;; "checkbashisms" and "perlcritic", not yet packaged in Guix.
      (list
+      #:make-flags
+      #~(list "TLP_CONFUSR=/etc/tlp.conf" "TLP_CONFDIR=/etc/tlp.d")
       #:test-target "shellcheck"
       #:modules '((guix build gnu-build-system)
                   (guix build utils)
