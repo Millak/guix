@@ -568,7 +568,7 @@ of a fake DNS resolver.")
            python-mypy
            python-numpy
            python-pillow
-           python-pydantic
+           python-pydantic-2
            python-pytest
            python-pytest-asyncio
            python-pytest-cov
