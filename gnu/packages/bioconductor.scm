@@ -5985,7 +5985,9 @@ usage.")
               (sha256
                (base32
                 "01ksk9wqzmg14pn0x0dch1fcrdwxw9qrfc592gkx9cy4sh8kdf3n"))))
-    (properties `((upstream-name . "BANDITS")))
+    (properties
+     '((upstream-name . "BANDITS")
+       (updater-extra-native-inputs . ("r-tximport"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocparallel
@@ -5999,7 +6001,7 @@ usage.")
            r-r-utils
            r-rcpp
            r-rcpparmadillo))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat r-tximport))
     (home-page "https://github.com/SimoneTiberi/BANDITS")
     (synopsis "Bayesian analysis of differential splicing")
     (description
