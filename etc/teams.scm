@@ -845,6 +845,9 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "csantosb@inventati.org")
   emacs electronics)
 
+(define-member (person "Greg Hogan"
+                       "code@greghogan.com")
+  c++)
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
