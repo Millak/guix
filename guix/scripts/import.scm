@@ -152,16 +152,19 @@ PROC callback."
              (lambda (expr)
                (match expr
                  (((? define-prefix? define-prefix) term _ ...)
-                  (let ((source-properties
-                         (find-definition-insertion-location
-                          file term #:define-prefix define-prefix)))
-                    (if source-properties
-                      (insert-expression source-properties expr)
-                      (let ((port (open-file file "a")))
-                        (pretty-print-with-comments port expr)
-                        (newline port)
-                        (newline port)
-                        (close-port port)))))))))
+                  ;; Skip existing definition.
+                  (unless (find-definition-location
+                           file term #:define-prefix define-prefix)
+                    (let ((source-properties
+                           (find-definition-insertion-location
+                            file term #:define-prefix define-prefix)))
+                      (if source-properties
+                          (insert-expression source-properties expr)
+                          (let ((port (open-file file "a")))
+                            (pretty-print-with-comments port expr)
+                            (newline port)
+                            (newline port)
+                            (close-port port))))))))))
        (import-as-definitions importer
                               (cons (string-append "--file-to-insert=" file)
                                     args)
