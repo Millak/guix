@@ -18267,6 +18267,51 @@ corresponding dendrogram is plotted.  Optionally, panels with additional
 information about samples and features can be added to the plot.")
     (license license:gpl2+)))
 
+(define-public r-helloranges
+  (package
+    (name "r-helloranges")
+    (version "1.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "HelloRanges" version))
+       (sha256
+        (base32 "11hmnqvmhd7rn5dcm20wg109sp8cmaq5k06x0cyaimi0dmf1psxv"))))
+    (properties
+     '((upstream-name . "HelloRanges")
+       (updater-extra-native-inputs . ("r-biocstyle" "r-runit"))))
+    (build-system r-build-system)
+    ;; Vignettes need Internet access.
+    (arguments (list #:test-types '(list "tests")))
+    (propagated-inputs (list r-biocgenerics
+                             r-biocio
+                             r-biostrings
+                             r-bsgenome
+                             r-docopt
+                             r-genomeinfodb
+                             r-genomicalignments
+                             r-genomicfeatures
+                             r-genomicranges
+                             r-iranges
+                             r-rsamtools
+                             r-rtracklayer
+                             r-s4vectors
+                             r-summarizedexperiment
+                             r-variantannotation))
+    (native-inputs
+     (list r-biocstyle
+           r-hellorangesdata
+           r-txdb-hsapiens-ucsc-hg19-knowngene
+           r-runit))
+    (home-page "https://bioconductor.org/packages/HelloRanges")
+    (synopsis "Introduce *Ranges to bedtools users")
+    (description
+     "This package translates bedtools command-line invocations to R code
+calling functions from the Bioconductor @code{*Ranges} infrastructure.  This
+is intended to educate novice Bioconductor users and to compare the syntax and
+semantics of the two frameworks.")
+    (license license:gpl2+)))
+
 (define-public r-gosemsim
   (package
     (name "r-gosemsim")
