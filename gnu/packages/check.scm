@@ -3109,39 +3109,6 @@ produces a given output.  As mypy can be told to display the type of an
 expression this allows you to check mypys type interference.")
     (license (list license:expat license:asl2.0))))
 
-(define-public python-pytest-pep8
-  (package
-    (name "python-pytest-pep8")
-    (version "1.0.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-pep8" version))
-              (sha256
-               (base32
-                "06032agzhw1i9d9qlhfblnl3dw5hcyxhagn7b120zhrszbjzfbh3"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; Fails with recent pytest and pep8. See upstream issues #8 and #12.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-dependencies
-           (lambda _
-             (substitute* "setup.py"
-               (("'pytest-cache', ") ""))))  ; Included in recent pytest
-         (replace 'check
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-              (when tests?
-                (add-installed-pythonpath inputs outputs)
-                (invoke "pytest" "-v")))))))
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-pep8))
-    (home-page "https://bitbucket.org/pytest-dev/pytest-pep8")
-    (synopsis "Py.test plugin to check PEP8 requirements")
-    (description "Pytest plugin for checking PEP8 compliance.")
-    (license license:expat)))
-
 (define-public python-pytest-perf
   (package
     (name "python-pytest-perf")

@@ -4161,7 +4161,7 @@ project, and it will potentially also do the same for the Lime project.")
     (propagated-inputs
      (list python-h5py python-numpy))
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-pep8
+     (list python-pytest python-pytest-cov
            python-pytest-xdist))
     (home-page "https://github.com/keras-team/keras-applications")
     (synopsis "Reference implementations of popular deep learning models")
@@ -4331,7 +4331,6 @@ with image data, text data, and sequence data.")
            python-pandas
            python-pytest
            python-pytest-cov
-           python-pytest-pep8
            python-pytest-timeout
            python-pytest-xdist
            python-pyux
