@@ -387,7 +387,7 @@ requires = ['setuptools']
 
 [metadata]
 name = blake3
-version = '~a'
+version = ~a
 
 [options]
 packages = find:
