@@ -30,6 +30,7 @@
   #:use-module (guix read-print)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (%standard-import-options
@@ -84,7 +85,8 @@ PROC callback."
         ((and expr (or ('package _ ...)
                        ('let _ ...)))
          (proc (package->definition expr)))
-        ((and expr ('define-public _ ...))
+        ((and expr (or ('define-public _ ...)
+                       ('define _ ...)))
          (proc expr))
         ((expressions ...)
          (for-each (lambda (expr)
@@ -92,7 +94,8 @@ PROC callback."
                        ((and expr (or ('package _ ...)
                                       ('let _ ...)))
                         (proc (package->definition expr)))
-                       ((and expr ('define-public _ ...))
+                       ((and expr (or ('define-public _ ...)
+                                      ('define _ ...)))
                         (proc expr))))
                    expressions))
         (x
@@ -129,13 +132,19 @@ PROC callback."
      (show-version-and-exit "guix import"))
     ((or ("-i" file importer args ...)
          ("--insert" file importer args ...))
-     (let ((find-and-insert
+     (let* ((define-prefixes
+             `(,@(if (member importer '("crate"))
+                     '(define)
+                     '())
+               define-public))
+            (define-prefix? (cut member <> define-prefixes))
+            (find-and-insert
              (lambda (expr)
                (match expr
-                 (('define-public term _ ...)
+                 (((? define-prefix? define-prefix) term _ ...)
                   (let ((source-properties
-                          (find-definition-insertion-location
-                            file term)))
+                         (find-definition-insertion-location
+                          file term #:define-prefix define-prefix)))
                     (if source-properties
                       (insert-expression source-properties expr)
                       (let ((port (open-file file "a")))

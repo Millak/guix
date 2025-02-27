@@ -154,6 +154,7 @@
             edit-expression
             delete-expression
             insert-expression
+            find-definition-location
             find-definition-insertion-location
 
             filtered-port
@@ -520,23 +521,35 @@ SOURCE-PROPERTIES."
                    (string-append expr "\n\n" str))))
     (edit-expression source-properties insert)))
 
-(define (find-definition-insertion-location file term)
-  "Search in FILE for a top-level public definition whose defined term
-alphabetically succeeds TERM. Return the location if found, or #f
-otherwise."
-  (let ((search-term (symbol->string term)))
+(define* (find-definition-location file term
+                                   #:key (define-prefix 'define-public)
+                                   (pred string=))
+  "Search in FILE for a top-level definition created using DEFINE-PREFIX, with
+the defined term compared to TERM through PRED.  Return the location if PRED
+returns #t, or #f otherwise."
+  (let ((search-term (symbol->string term))
+        (define-prefix? (cut eq? define-prefix <>)))
     (call-with-input-file file
       (lambda (port)
         (do ((syntax (read-syntax port)
                      (read-syntax port)))
           ((match (syntax->datum syntax)
-             (('define-public current-term _ ...)
-              (string> (symbol->string current-term)
-                       search-term))
+             (((? define-prefix?) current-term _ ...)
+              (pred (symbol->string current-term)
+                    search-term))
              ((? eof-object?) #t)
              (_ #f))
            (and (not (eof-object? syntax))
                 (syntax-source syntax))))))))
+
+(define* (find-definition-insertion-location file term
+                                             #:key
+                                             (define-prefix 'define-public))
+  "Search in FILE for a top-level definition created using DEFINE-PREFIX, with
+the defined term alphabetically succeeds TERM.  Return the location if found,
+or #f otherwise."
+  (find-definition-location
+   file term #:define-prefix define-prefix #:pred string>))
 
 
 ;;;
