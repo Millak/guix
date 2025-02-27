@@ -7299,8 +7299,20 @@ throughout the @url{https://github.com/pion, Pion} modules.")
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f ;Tests require network access.
-      #:import-path "github.com/pion/turn"))
+      #:import-path "github.com/pion/turn"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Tests requiring networking setup.
+               (list "TestClientWithSTUN/SendBindingRequest"
+                     "TestClientWithSTUN/SendBindingRequestTo_Parallel")
+               "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
