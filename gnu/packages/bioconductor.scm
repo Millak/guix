@@ -17822,14 +17822,16 @@ model.")
 (define-public r-minfi
   (package
     (name "r-minfi")
-    (version "1.52.0")
+    (version "1.52.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "minfi" version))
        (sha256
         (base32
-         "1n63pzyn153w24l6ydblah046dqv6fpcz4wi25j14myk12kwx1x0"))))
+         "13bajbcsm0rkw92c8pz1pxn07af5nf51qfff5p0n9chdi01k78dk"))))
+    (properties
+     '((updater-ignored-native-inputs . ("r-minfidata"))))
     (build-system r-build-system)
     ;; Tests require r-minfidata, which depends on this package.
     (arguments (list #:tests? #false))
