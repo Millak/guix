@@ -27,11 +27,14 @@
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build json)
   #:use-module ((guix build utils) #:hide (delete))
+  #:use-module (ice-9 binary-ports)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
+  #:use-module (ice-9 regex)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 threads)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (%standard-phases
@@ -111,12 +114,30 @@ Cargo.toml file present at its root."
 (define (rust-package? name)
   (string-prefix? "rust-" name))
 
-(define* (check-for-pregenerated-files #:rest _)
+(define* (check-for-pregenerated-files #:key parallel-build? #:allow-other-keys)
   "Check the source code for files which are known to generally be bundled
 libraries or executables."
-  (let ((pregenerated-files (find-files "." "\\.(a|dll|dylib|exe|lib)$")))
-    (when (not (null-list? pregenerated-files))
-      (error "Possible pre-generated files found:" pregenerated-files))))
+  (format #t "Searching for binary files...~%")
+  (let ((known-pattern (make-regexp "\\.(a|dll|dylib|exe|lib)$"))
+        (empty-file?
+         (lambda (file stat)
+           (let ((size (stat:size stat)))
+             (or (zero? size)
+                 (and (eqv? 1 size)
+                      (eqv? #\newline
+                            (call-with-ascii-input-file file read-char))))))))
+    (n-par-for-each
+     (if parallel-build?
+         (parallel-job-count)
+         1)
+     (lambda (file)
+       ;; Print out binary files.
+       (false-if-exception (invoke "grep" "-IL" "." file))
+       ;; Warn about known pre-generated files.
+       ;; Not failing here for compatibility with existing packages.
+       (when (regexp-exec known-pattern file)
+         (format #t "error: Possible pre-generated file found: ~a~%" file)))
+     (find-files "." (negate empty-file?)))))
 
 (define* (configure #:key inputs
                     target system
@@ -380,8 +401,8 @@ directory = '" vendor-dir "'") port)
     (replace 'check check)
     (replace 'install install)
     (add-after 'build 'package package)
-    (add-after 'unpack 'check-for-pregenerated-files check-for-pregenerated-files)
-    (add-after 'check-for-pregenerated-files 'unpack-rust-crates unpack-rust-crates)
+    (add-after 'unpack 'unpack-rust-crates unpack-rust-crates)
+    (add-after 'configure 'check-for-pregenerated-files check-for-pregenerated-files)
     (add-after 'patch-generated-file-shebangs 'patch-cargo-checksums patch-cargo-checksums)))
 
 (define* (cargo-build #:key inputs (phases %standard-phases)
