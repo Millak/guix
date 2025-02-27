@@ -7587,13 +7587,13 @@ Courtiol (2017) <doi:10.1111/1755-0998.12627>.")
 (define-public r-iranges
   (package
     (name "r-iranges")
-    (version "2.40.0")
+    (version "2.40.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "IRanges" version))
               (sha256
                (base32
-                "1mvlm8xkrrfp5m9d2ar0kl9m4hgr05xmmys33dq5zwrzi5idqp0y"))))
+                "1yn8j6n7w789ivcrmi670n4a861hnar1626hc4rmyx3g36pkpq4s"))))
     (properties
      `((upstream-name . "IRanges")))
     (build-system r-build-system)
