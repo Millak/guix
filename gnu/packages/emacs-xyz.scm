@@ -30488,16 +30488,16 @@ source code.")
 (define-public emacs-rustic
   (package
     (name "emacs-rustic")
-    (version "3.4")
+    (version "3.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/brotzeit/rustic")
+             (url "https://github.com/emacs-rustic/rustic")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16vsv4fhj8zq9g4zrsmipdb1nydxgw3dhh5s3wawpvx2rcg6gx2l"))))
+        (base32 "1kbhad1lc7jy7frp3lk14ch8g53zh28rwy8v7nb8fixlxbla0jml"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash
@@ -30519,7 +30519,7 @@ source code.")
          (add-before 'check 'set-without-cask
            (lambda _
              (setenv "WITHOUT_CASK" "1"))))))
-    (home-page "https://github.com/brotzeit/rustic")
+    (home-page "https://github.com/emacs-rustic/rustic")
     (synopsis "Rust development environment for Emacs")
     (description "Rustic is a fork of Rust mode.
 In addition to its predecessor, it offers the following features:
