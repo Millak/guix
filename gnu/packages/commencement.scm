@@ -2073,6 +2073,7 @@ exec " gcc "/bin/" program
               ,(if (target-64bit?)
                    ''("TIME_T_32_BIT_OK=yes")
                    ''())
+              '("--disable-year2038")
               ,(match (%current-system)
                  ((or "arm-linux" "aarch64-linux")
                   ''("--disable-dependency-tracking"))
