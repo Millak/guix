@@ -7393,6 +7393,31 @@ it like any library.  The quickest way to get started is to look at the
            go-github-com-pion-transport-v3
            go-golang-org-x-sys))))
 
+(define-public go-github-com-pion-turn-v4
+  (package
+    (inherit go-github-com-pion-turn-v3)
+    (name "go-github-com-pion-turn-v4")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/turn/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yd0v6ijwl62qd2sz7imq9pd2grcrw4dhwnn4302m1k89pxr52wx"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments
+                                    go-github-com-pion-turn-v3)
+       ((#:import-path _) "github.com/pion/turn/v4")))
+    (propagated-inputs
+     (list go-github-com-pion-logging
+           go-github-com-pion-randutil
+           go-github-com-pion-stun-v3
+           go-github-com-pion-transport-v3
+           go-golang-org-x-sys))))
+
 (define-public go-github-com-pion-webrtc-v3
   (package
     (name "go-github-com-pion-webrtc-v3")
