@@ -7266,21 +7266,22 @@ throughout the @url{https://github.com/pion, Pion} modules.")
 
 (define-public go-github-com-pion-transport-v3
   (package
-    (inherit go-github-com-pion-transport)
+    (inherit go-github-com-pion-transport-v2)
     (name "go-github-com-pion-transport-v3")
-    (version "3.0.2")
+    (version "3.0.7")
     (source
      (origin
-       (inherit (package-source go-github-com-pion-transport))
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/transport/")
+             (url "https://github.com/pion/transport")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j7ljkbyf2qd7daxg7d1rd6c92md64agi59b69g6jyqpz5jww998"))))
+        (base32 "05qv7packvz18dfw5bc616f7hy9ad9jz10yxckg29g60y43k5nkf"))))
     (arguments
-     (list
-      #:import-path "github.com/pion/transport/v3"))))
+     (substitute-keyword-arguments (package-arguments
+                                    go-github-com-pion-transport-v2)
+       ((#:import-path _) "github.com/pion/transport/v3")))))
 
 (define-public go-github-com-pion-turn
   (package
