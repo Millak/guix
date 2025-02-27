@@ -879,7 +879,7 @@ through the pass command.")
          ("src/completion/pass.zsh-completion"
           "/share/zsh/site-functions/_passage"))))
     (inputs
-     (list age age-keygen coreutils-minimal git-minimal
+     (list age coreutils-minimal git-minimal
            procps qrencode sed tree util-linux))
     (home-page "https://github.com/FiloSottile/passage")
     (synopsis "Encrypted password manager")
