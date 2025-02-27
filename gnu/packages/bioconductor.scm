@@ -7862,7 +7862,9 @@ mapping.")
               (sha256
                (base32
                 "15bdddc34y6i1j06fpi82p8xz07p4q07p2js657gssh4lwxkz5n1"))))
-    (properties `((upstream-name . "Nebulosa")))
+    (properties
+     '((upstream-name . "Nebulosa")
+       (updater-extra-native-inputs . ("r-seurat"))))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2
                              r-ggrastr
@@ -7872,7 +7874,7 @@ mapping.")
                              r-seuratobject
                              r-singlecellexperiment
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-seurat r-testthat))
     (home-page "https://github.com/powellgenomicslab/Nebulosa")
     (synopsis
      "Single-cell data visualisation using kernel gene-weighted density estimation")
