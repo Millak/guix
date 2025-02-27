@@ -141,6 +141,7 @@ PROC callback."
                       (let ((port (open-file file "a")))
                         (pretty-print-with-comments port expr)
                         (newline port)
+                        (newline port)
                         (close-port port)))))))))
        (import-as-definitions importer args find-and-insert)))
     ((importer args ...)
