@@ -8413,13 +8413,13 @@ on Bioconductor or which replace R functions.")
 (define-public r-biomart
   (package
     (name "r-biomart")
-    (version "2.62.0")
+    (version "2.62.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "biomaRt" version))
               (sha256
                (base32
-                "16xh2vj729sjg9660w1sw5jcz59sawbni3i2nf8rzawaqf0ks979"))))
+                "1g0qz7wn87iszws5khc61a22rxlc5frswxv4gm56hxgk1387glgi"))))
     (properties
      `((upstream-name . "biomaRt")))
     (build-system r-build-system)
