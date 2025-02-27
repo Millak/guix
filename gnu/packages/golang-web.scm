@@ -7034,7 +7034,7 @@ packetizer and depacketizer.")
 (define-public go-github-com-pion-sctp
   (package
     (name "go-github-com-pion-sctp")
-    (version "1.8.19")
+    (version "1.8.36")
     (source
      (origin
        (method git-fetch)
@@ -7043,7 +7043,7 @@ packetizer and depacketizer.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19yzpyrlmk3gvpkpn5846rad9cc8ffxw9jqwnpr6szqax7k0l0zw"))))
+        (base32 "0j9ibj7mhrnh4vmcm6dh6l7q52jq0h6788gvgsfmhh7mxrlajgy3"))))
     (build-system go-build-system)
     (arguments
      (list
