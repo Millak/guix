@@ -25042,7 +25042,10 @@ libraries.")
        (uri (bioconductor-uri "SingleR" version))
        (sha256
         (base32 "1dlawx0hxnbb955yhbq4ryxv5yi62hgzh5di9vrzx1pi14vnc5nk"))))
-    (properties `((upstream-name . "SingleR")))
+    (properties
+     '((upstream-name . "SingleR")
+       (updater-extra-native-inputs
+        . ("r-ggplot2" "r-pheatmap" "r-scran" "r-viridis"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assorthead
@@ -25057,7 +25060,14 @@ libraries.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr r-scuttle r-singlecellexperiment r-testthat))
+     (list r-ggplot2
+           r-knitr
+           r-pheatmap
+           r-scuttle
+           r-scran
+           r-singlecellexperiment
+           r-testthat
+           r-viridis))
     (home-page "https://github.com/LTLA/SingleR")
     (synopsis "Reference-based single-cell RNA-seq annotation")
     (description
