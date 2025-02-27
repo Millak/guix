@@ -36,6 +36,7 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages prometheus)
@@ -1752,6 +1753,68 @@ Go with @url{https://github.com/libp2p/libp2p, LibP2P} streams.")
      "Package p2phttp allows to serve HTTP endpoints and make HTTP requests
 through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
 @code{http} and @code{net} stacks.")
+    (license license:expat)))
+
+(define-public go-github-com-libp2p-go-libp2p-kad-dht
+  (package
+    (name "go-github-com-libp2p-go-libp2p-kad-dht")
+    (version "0.29.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p-kad-dht")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cmj04sypdky5fc3b50fhz8h1aarg0ngdi15cyfwn6yb98pmfq4z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:embed-files #~(list "sorted-network-list.bin")
+      #:import-path "github.com/libp2p/go-libp2p-kad-dht"))
+    (native-inputs
+     (list go-github-com-ipfs-go-test
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-gopacket
+           go-github-com-google-uuid
+           go-github-com-hashicorp-go-multierror
+           go-github-com-hashicorp-golang-lru
+           go-github-com-ipfs-boxo
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-detect-race
+           go-github-com-ipfs-go-log
+           go-github-com-ipfs-go-log-v2
+           go-github-com-libp2p-go-libp2p
+           go-github-com-libp2p-go-libp2p-kbucket
+           go-github-com-libp2p-go-libp2p-record
+           go-github-com-libp2p-go-libp2p-routing-helpers
+           go-github-com-libp2p-go-libp2p-testing
+           go-github-com-libp2p-go-libp2p-xor
+           go-github-com-libp2p-go-msgio
+           go-github-com-libp2p-go-netroute
+           go-github-com-multiformats-go-base32
+           go-github-com-multiformats-go-multiaddr
+           go-github-com-multiformats-go-multibase
+           go-github-com-multiformats-go-multihash
+           go-github-com-multiformats-go-multistream
+           go-github-com-whyrusleeping-go-keyspace
+           go-go-opentelemetry-io-otel
+           ;; go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-trace
+           go-go-uber-org-multierr
+           go-go-uber-org-zap
+           go-gonum-org-v1-gonum
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/libp2p/go-libp2p-kad-dht")
+    (synopsis "Kademlia DHT implementation on go-libp2p")
+    (description
+     "Package dht implements a distributed hash table that satisfies the IPFS
+routing interface as specified in @url{https://github.com/libp2p/specs,
+kab-dht}.  This DHT is modeled after Kademlia with S/Kademlia modifications.")
     (license license:expat)))
 
 (define-public go-github-com-libp2p-go-libp2p-kbucket
