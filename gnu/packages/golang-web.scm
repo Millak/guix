@@ -5317,7 +5317,7 @@ daemon as described in
 (define-public go-github-com-libp2p-go-yamux-v4
   (package
     (name "go-github-com-libp2p-go-yamux-v4")
-    (version "4.0.1")
+    (version "4.0.2")
     (source
      (origin
        (method git-fetch)
@@ -5326,7 +5326,7 @@ daemon as described in
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13px8fcjjp02cricabbf3x410jkr8sb6r369nqq1zrgr7v90s22j"))))
+        (base32 "1jrj7pamcs8s6pd6c8dhkfv3a8cdjhb0kamcxa9cgv79n8rnyp86"))))
     (build-system go-build-system)
     (arguments
      (list
