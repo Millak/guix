@@ -1544,13 +1544,13 @@ Ensembl.")
 (define-public r-escape
   (package
     (name "r-escape")
-    (version "2.2.1")
+    (version "2.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "escape" version))
        (sha256
-        (base32 "0874r80za3kxf9vc9arz8ncsddqffzi6a28vivaah293kg23nc0m"))))
+        (base32 "1n1pz7qvd9447b8v6wz0lfqkvkb099jgzcf882b3x9s7mzcjryh5"))))
     (properties `((upstream-name . "escape")))
     (build-system r-build-system)
     (arguments
@@ -1580,7 +1580,12 @@ Ensembl.")
                              r-stringr
                              r-summarizedexperiment
                              r-ucell))
-    (native-inputs (list r-knitr r-seurat r-testthat))
+    (native-inputs (list r-knitr
+                         r-rlang
+                         r-seurat
+                         r-spelling
+                         r-testthat
+                         r-vdiffr))
     (home-page "https://bioconductor.org/packages/escape")
     (synopsis "Single cell analysis platform for enrichment")
     (description
