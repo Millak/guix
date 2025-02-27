@@ -2079,13 +2079,13 @@ and are compatible with its API.")
 (define-public python-thinc
   (package
     (name "python-thinc")
-    (version "8.1.10")
+    (version "8.1.12")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "thinc" version))
               (sha256
                (base32
-                "14drmwa2sh8fqszv1fm2jl4lky1j5yrbkjv89bl49q07vbblhjkc"))))
+                "0lx37vl84y2jcsfn9sphdzbjny2jjyfb85llrrvz0xmig5f2rlcx"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:phases
@@ -2097,15 +2097,14 @@ and are compatible with its API.")
     (propagated-inputs (list python-blis-for-thinc
                              python-catalogue
                              python-confection
-                             python-contextvars
                              python-cymem
                              python-murmurhash
                              python-numpy
                              python-packaging
                              python-preshed
-                             python-pydantic
+                             python-pydantic-2
+                             python-setuptools
                              python-srsly
-                             python-typing-extensions
                              python-wasabi))
     (native-inputs (list python-cython python-mock python-pytest
                          python-setuptools python-wheel))
