@@ -13543,7 +13543,9 @@ and comparing the clusterings.")
               (sha256
                (base32
                 "1yzpmchvkyaca18bybbmf29amh8pilf213gnl8in6cc3nr50f3hv"))))
-    (properties `((upstream-name . "singscore")))
+    (properties
+     '((upstream-name . "singscore")
+       (updater-extra-native-inputs . ("r-hexbin"))))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase
                              r-biocparallel
@@ -13561,7 +13563,7 @@ and comparing the clusterings.")
                              r-s4vectors
                              r-summarizedexperiment
                              r-tidyr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-hexbin r-knitr r-testthat))
     (home-page "https://davislaboratory.github.io/singscore/")
     (synopsis "Rank-based single-sample gene set scoring method")
     (description
