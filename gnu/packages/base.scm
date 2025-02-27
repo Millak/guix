@@ -382,14 +382,14 @@ differences.")
 (define-public diffutils
   (package
    (name "diffutils")
-   (version "3.10")
+   (version "3.11")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/diffutils/diffutils-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "17nhkdn5a2z6pwcmjs4jas2plg066hbdz06y5vhypr14qwyfkrch"))))
+              "07hkwbws3nhxqrsvsf01h6gl2q4pcfhf8s3hv3vqbmbxwdgz0gm7"))))
    (build-system gnu-build-system)
    (arguments
     (list
