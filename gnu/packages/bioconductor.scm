@@ -4769,6 +4769,8 @@ for use in Bioconductor’s AnnotationHub.")
                 "0dddvbwf0xqf74aw0a32pmacqpb3pil1kz33ksimabiyx3n4xg9i"))))
     (properties `((upstream-name . "AnVIL")))
     (build-system r-build-system)
+    ;; Tests require Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-anvilbase
            r-biocbaseutils
