@@ -528,24 +528,24 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.13)))
 
-(define-public linux-libre-6.12-version "6.12.16")
+;; The "longterm" kernels — the older releases with long-term upstream support.
+;; Here are the support timelines:
+;; <https://www.kernel.org/category/releases.html>
+
+(define-public linux-libre-6.12-version "6.12.17")
 (define-public linux-libre-6.12-gnu-revision "gnu")
 (define deblob-scripts-6.12
   (linux-libre-deblob-scripts
    linux-libre-6.12-version
    linux-libre-6.12-gnu-revision
-   (base32 "1q7irnysdzi85wapdwnrm0jza8ahaza4977m349ykxrrahbxh1nj")
-   (base32 "1ijzynl3isl9az2aqnb4cvrq1y90f3irhc4d7flrzi1ra4dqjc9w")))
+   (base32 "1d2v3608fxa1s7ncpkkzxa48g2qz4agrxx1kyww3fn8z66l8k4vj")
+   (base32 "1pzqaqccjbd089ff3i1kd788y9dj063x12vzffhi335xf930ad6f")))
 (define-public linux-libre-6.12-pristine-source
   (let ((version linux-libre-6.12-version)
-        (hash (base32 "1i3xkprqsd3yqbai1pbgrszcg6ycy5rwpblzzw5m4lagd4m3d0az")))
+        (hash (base32 "1cv3vrvwsj4ldbq7f9ccmal9as2ziw0cn8g3fd4lx5w09z9mq82w")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.12)))
-
-;; The "longterm" kernels — the older releases with long-term upstream support.
-;; Here are the support timelines:
-;; <https://www.kernel.org/category/releases.html>
 
 (define-public linux-libre-6.6-version "6.6.79")
 (define-public linux-libre-6.6-gnu-revision "gnu")
