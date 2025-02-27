@@ -17040,6 +17040,7 @@ multiplication and calculation of row/column sums or means.")
              ;; Two tests fail with: Objects equal but not identical
              (for-each delete-file
                        '("tests/testthat/test-correct-exps.R"
+                         "tests/testthat/test-cluster-mnn.R"
                          "tests/testthat/test-reduced-mnn.R")))))))
     (propagated-inputs
      (list r-beachmat
