@@ -1402,7 +1402,7 @@ their levels to be controlled individually.")
 (define-public go-github-com-libp2p-go-libp2p
   (package
     (name "go-github-com-libp2p-go-libp2p")
-    (version "0.36.5")
+    (version "0.40.0")
     (source
      (origin
        (method git-fetch)
@@ -1411,7 +1411,7 @@ their levels to be controlled individually.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fmalwb0g0nykd1v22nm5gmif9mvapshsja8w1ihlm8ahbqq9vb2"))
+        (base32 "1w9bx5g5c39ik4d7lxrhh1hv6k1mw9hz61l3ipshylf5jc3azc8f"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1424,6 +1424,7 @@ their levels to be controlled individually.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.22
       #:embed-files #~(list "sorted-network-list.bin")
       #:import-path "github.com/libp2p/go-libp2p"
       ;; XXX: Check how to enable the most of the tests, see GitHub Actions
@@ -1434,7 +1435,7 @@ their levels to be controlled individually.")
           (add-after 'unpack 'remove-examples
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-              (delete-file-recursively "examples")))))))
+                (delete-file-recursively "examples")))))))
     (native-inputs
      (list go-github-com-libp2p-go-libp2p-testing
            go-github-com-stretchr-testify
@@ -1463,7 +1464,7 @@ their levels to be controlled individually.")
            go-github-com-libp2p-go-nat
            go-github-com-libp2p-go-netroute
            go-github-com-libp2p-go-reuseport
-           go-github-com-libp2p-go-yamux-v4
+           go-github-com-libp2p-go-yamux-v5
            go-github-com-libp2p-zeroconf-v2
            go-github-com-marten-seemann-tcp
            go-github-com-mikioh-tcpinfo
@@ -1479,11 +1480,11 @@ their levels to be controlled individually.")
            go-github-com-multiformats-go-varint
            go-github-com-pbnjay-memory
            go-github-com-pion-datachannel
-           go-github-com-pion-ice-v2
+           go-github-com-pion-ice-v4
            go-github-com-pion-logging
            go-github-com-pion-sctp
            go-github-com-pion-stun
-           go-github-com-pion-webrtc-v3
+           go-github-com-pion-webrtc-v4
            go-github-com-prometheus-client-golang
            go-github-com-prometheus-client-model
            go-github-com-quic-go-quic-go
@@ -1492,7 +1493,6 @@ their levels to be controlled individually.")
            go-go-uber-org-fx
            go-go-uber-org-zap
            go-golang-org-x-crypto
-           go-golang-org-x-exp
            go-golang-org-x-sync
            go-golang-org-x-sys
            go-golang-org-x-tools
