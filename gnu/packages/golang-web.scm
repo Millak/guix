@@ -7119,6 +7119,28 @@ Protocol,SCTP} as specified in
      "Package srtp implements Secure Real-time Transport Protocol.")
     (license license:expat)))
 
+(define-public go-github-com-pion-srtp-v3
+  (package
+    (inherit go-github-com-pion-srtp-v2)
+    (name "go-github-com-pion-srtp-v3")
+    (version "3.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/srtp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03343fsgrawfy9plsl7y5022ygjln3jvsn3im5xl1qwnc68rb1a2"))))
+    (arguments
+     (list
+      #:import-path "github.com/pion/srtp/v3"))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs go-github-com-pion-srtp-v2)
+       (replace "go-github-com-pion-transport-v2"
+         go-github-com-pion-transport-v3)))))
+
 (define-public go-github-com-pion-stun
   (package
     (name "go-github-com-pion-stun")
