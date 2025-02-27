@@ -5937,6 +5937,8 @@ Various visual and textual types of output are available.")
                 "05mydm8cxkv7qcpkpny4hjkyl7p5dmqj1fyvmqa6rj9rh4ccxsl7"))))
     (properties `((upstream-name . "bambu")))
     (build-system r-build-system)
+    ;; Tests require Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biocgenerics
            r-biocparallel
@@ -5955,7 +5957,8 @@ Various visual and textual types of output are available.")
            r-summarizedexperiment
            r-tidyr
            r-xgboost))
-    (native-inputs (list r-annotationdbi r-ggplot2 r-knitr r-purrr r-testthat))
+    (native-inputs
+     (list r-annotationdbi r-ggplot2 r-knitr r-purrr r-testthat))
     (home-page "https://github.com/GoekeLab/bambu")
     (synopsis
      "Isoform reconstruction and quantification for long read RNA-Seq data")
