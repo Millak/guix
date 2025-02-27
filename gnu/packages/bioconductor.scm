@@ -5921,13 +5921,13 @@ Various visual and textual types of output are available.")
 (define-public r-bambu
   (package
     (name "r-bambu")
-    (version "3.8.0")
+    (version "3.8.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "bambu" version))
               (sha256
                (base32
-                "1jh1qvscwd2fkyb0vzj93kh27h3qssif5fh2z365yvp3pz4asy1j"))))
+                "05mydm8cxkv7qcpkpny4hjkyl7p5dmqj1fyvmqa6rj9rh4ccxsl7"))))
     (properties `((upstream-name . "bambu")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5948,7 +5948,7 @@ Various visual and textual types of output are available.")
            r-summarizedexperiment
            r-tidyr
            r-xgboost))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-annotationdbi r-ggplot2 r-knitr r-purrr r-testthat))
     (home-page "https://github.com/GoekeLab/bambu")
     (synopsis
      "Isoform reconstruction and quantification for long read RNA-Seq data")
