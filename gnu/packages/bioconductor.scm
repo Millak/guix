@@ -4915,7 +4915,9 @@ paired or unpaired study designs.")
               (sha256
                (base32
                 "01ywmi5k5y9x5ds743qhzjn975gc5h8k0csxs78pnrjng5ij2gh2"))))
-    (properties `((upstream-name . "alevinQC")))
+    (properties
+     '((upstream-name . "alevinQC")
+       (updater-extra-native-inputs . ("r-biocstyle"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cowplot
@@ -4930,7 +4932,7 @@ paired or unpaired study designs.")
            r-shiny
            r-shinydashboard
            r-tximport))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-biocstyle r-knitr r-testthat))
     (home-page "https://github.com/csoneson/alevinQC")
     (synopsis "Quality control reports for @code{Alevin} output")
     (description
