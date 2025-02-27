@@ -5344,6 +5344,25 @@ such as TCP or Unix domain sockets, and provides stream-oriented multiplexing.
 It is inspired by SPDY but is not interoperable with it.")
     (license (list license:mpl2.0 license:bsd-3))))
 
+(define-public go-github-com-libp2p-go-yamux-v5
+  (package
+    (inherit go-github-com-libp2p-go-yamux-v4)
+    (name "go-github-com-libp2p-go-yamux-v5")
+    (version "5.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-yamux")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "019jj3qwzrbqcgwzri5iwi1vh2cn0ms6k8fx14jlmy856b25yl3y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/libp2p/go-yamux/v5"))))
+
 (define-public go-github-com-libp2p-zeroconf-v2
   (package
     (name "go-github-com-libp2p-zeroconf-v2")
