@@ -8565,13 +8565,13 @@ objects.")
 (define-public r-biostrings
   (package
     (name "r-biostrings")
-    (version "2.74.0")
+    (version "2.74.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Biostrings" version))
               (sha256
                (base32
-                "1z50mmp34rpl9mr571g1whvfnxlcnk196k9naxjngl0qriyymcvl"))))
+                "1kyyrkcnpblyl37x5ncbhz412l5jm1l0ci7r7d1z60dhikysbpxl"))))
     (properties
      `((upstream-name . "Biostrings")))
     (build-system r-build-system)
@@ -8582,7 +8582,7 @@ objects.")
            r-iranges
            r-s4vectors
            r-xvector))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-runit r-testthat))
     (home-page "https://bioconductor.org/packages/Biostrings")
     (synopsis "String objects and algorithms for biological sequences")
     (description
