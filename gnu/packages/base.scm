@@ -232,14 +232,14 @@ implementation offers several extensions over the standard utility.")
 (define-public tar
   (package
    (name "tar")
-   (version "1.34")
+   (version "1.35")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/tar/tar-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0a0x87anh9chbi2cgcyy7pmnm5hzk4yd1w2j8gm1wplwhwkbvgk3"))
+              "05nw7q7sazkana11hnf3f77lmybw1j9j6lsk93bsxirf6hvzyqjd"))
             (patches (search-patches "tar-skip-unreliable-tests.patch"
                                      "tar-remove-wholesparse-check.patch"))))
    (build-system gnu-build-system)

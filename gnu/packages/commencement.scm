@@ -1924,7 +1924,11 @@ exec " gcc "/bin/" program
       (inherit pkg)
       (native-inputs
        `(("xz" ,xz-mesboot)
-         ,@(package-native-inputs pkg))))))
+         ("sed" ,sed-mesboot)
+         ,@(package-native-inputs pkg)))
+      (arguments (substitute-keyword-arguments (package-arguments pkg)
+                   ((#:configure-flags flags ''())
+                    `(cons "--disable-year2038" ,flags)))))))
 
 (define (%boot-mesboot6-inputs)
   `(("bash" ,bash-mesboot)
@@ -2194,6 +2198,7 @@ exec " gcc "/bin/" program
      `(#:implicit-inputs? #f
        #:tests? #f
        #:guile ,%bootstrap-guile
+       #:configure-flags (list "--disable-year2038")
        ,@(package-arguments tar)))))
 
 (define (%boot0-inputs)
