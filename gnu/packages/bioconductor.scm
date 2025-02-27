@@ -24828,7 +24828,22 @@ decompression of raw bead-level data from the Illumina BeadArray platform.")
        (uri (bioconductor-uri "CNEr" version))
        (sha256
         (base32 "0f4hbg5vprsygpd3d79vrvz2d35rbicv5wgllnk5cyvyrgsp15c7"))))
-    (properties `((upstream-name . "CNEr")))
+    (properties
+     '((upstream-name . "CNEr")
+       (updater-extra-native-inputs
+        . ("r-bsgenome-drerio-ucsc-danrer10"
+           "r-bsgenome-hsapiens-ucsc-hg38"))))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; These require Internet access to download data from UCSC.
+             (delete-file "tests/testthat/test_Axt.R")
+             (substitute* "tests/testthat/test_CNE.R"
+               ((".*test_CNE.*" m)
+                (string-append m "skip('guix')\n"))))))))
     (build-system r-build-system)
     (inputs (list zlib))
     (propagated-inputs
@@ -24853,7 +24868,10 @@ decompression of raw bead-level data from the Illumina BeadArray platform.")
            r-s4vectors
            r-xvector))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-bsgenome-drerio-ucsc-danrer10
+           r-bsgenome-hsapiens-ucsc-hg38
+           r-knitr
+           r-testthat))
     (home-page "https://github.com/ge11232002/CNEr")
     (synopsis "CNE Detection and Visualization")
     (description
