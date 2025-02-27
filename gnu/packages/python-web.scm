@@ -1419,16 +1419,6 @@ routes using HTTP Digest Authentication.")
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
               "--ignore=tests/bin/test_public_interface.py"
-              "-k"
-              (string-join
-               ;; AttributeError: module 'pydantic.v1' has no attribute
-               ;; 'error_wrappers'
-               (list "not test_connector_with_empty_properties"
-                     "test_connector_with_invalid_permission"
-                     "test_connector_with_invalid_permission_type"
-                     "test_connector_without_source"
-                     "test_transform_invalid_document")
-               " and not ")
               "tests")
       #:phases
       #~(modify-phases %standard-phases
@@ -1450,7 +1440,7 @@ routes using HTTP Digest Authentication.")
     (propagated-inputs
      (list python-boto3
            python-jsonschema
-           python-pydantic
+           python-pydantic-2
            python-typing-extensions))
     (home-page "https://github.com/aws/serverless-application-model")
     (synopsis "Transform AWS SAM templates into AWS CloudFormation templates")
