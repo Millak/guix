@@ -26216,14 +26216,14 @@ the earlier snpMatrix package, allowing for uncertainty in genotypes.")
 (define-public r-chromstar
   (package
     (name "r-chromstar")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "chromstaR" version))
        (sha256
         (base32
-         "0swkjq50p3ak0ddyg7pqg37fivdpr3v5jpakn38sk5i5ycn3qf3g"))))
+         "071aipwk1awr71hvzflps49dzp83p12zm1pbyx4l8d2v3wbj0dlz"))))
     (properties `((upstream-name . "chromstaR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -26241,7 +26241,7 @@ the earlier snpMatrix package, allowing for uncertainty in genotypes.")
            r-reshape2
            r-rsamtools
            r-s4vectors))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-biomart r-knitr r-testthat))
     (home-page "https://github.com/ataudt/chromstaR")
     (synopsis "Chromatin state analysis for ChIP-Seq data")
     (description
