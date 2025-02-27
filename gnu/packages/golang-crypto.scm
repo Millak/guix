@@ -139,6 +139,8 @@ can be ignored.")
     (build-system go-build-system)
     (arguments
      (list
+      #:build-flags #~(list (string-append "-ldflags=-X main.Version="
+                                           #$version))
       #:embed-files #~(list "armor.*" "header_crlf" "hmac_.*" "scrypt.*"
                             "stanza_.*" "stream_.*" "version_unsupported"
                             "x25519.*" "x25519_.*")
@@ -155,9 +157,8 @@ can be ignored.")
     (synopsis "Secure file encryption tool, format, and Go library")
     (description
      "This package implements file encryption according to the
-@{age-encryption.org/v1, https://age-encryption.org/v1} specification.
-It features small explicit keys, no configuration options, and Unix-style
-composability.")
+@url{https://age-encryption.org/v1} specification.  It features small explicit
+keys, no configuration options, and Unix-style composability.")
     (license license:bsd-3)))
 
 (define-public go-filippo-io-edwards25519
@@ -2562,37 +2563,32 @@ Go.")
 ;;;
 
 (define-public age
-  (package
-    (inherit go-filippo-io-age)
+  (package/inherit go-filippo-io-age
     (name "age")
     (arguments
-     (list
-      #:install-source? #f
-      #:import-path "filippo.io/age/cmd/age"
-      #:unpack-path "filippo.io/age"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-failing-test-data-files
-            ;; FIXME: testdata/output_file.txt:49: unknown command "ttyin"
-            ;; age: error: input and output file are the same: "inputcopy"
-            ;; age: error: input and output file are the same: "./inputcopy"
-            ;; age: error: input and output file are the same: "keycopy"
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file
-                          (list "testdata/scrypt.txt"
-                                "testdata/output_file.txt"
-                                "testdata/encrypted_keys.txt"
-                                "testdata/terminal.txt"))))))))))
-
-(define-public age-keygen
-  (package
-    (inherit go-filippo-io-age)
-    (name "age-keygen")
-    (arguments
-     `(#:import-path "filippo.io/age/cmd/age-keygen"
-       #:unpack-path "filippo.io/age"
-       #:install-source? #f))))
+     (substitute-keyword-arguments
+         (package-arguments go-filippo-io-age)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:unpack-path _ "") "filippo.io/age")
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'build
+              (lambda* (#:key import-path #:allow-other-keys #:rest arguments)
+                (for-each
+                 (lambda (cmd)
+                   (apply (assoc-ref #$phases 'build)
+                          `(,@arguments
+                            #:import-path ,(string-append import-path cmd))))
+                 (list "/cmd/age"
+                       "/cmd/age-keygen"))))))))
+    (native-inputs (package-propagated-inputs go-filippo-io-age))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     (string-append (package-description go-filippo-io-age)
+                    "\nThis package provides a command line interface (CLI)
+tools."))))
 
 (define-public go-jwker
   (package/inherit go-github-com-jphastings-jwker
