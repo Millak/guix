@@ -6889,6 +6889,30 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
            go-github-com-pion-turn-v3
            go-golang-org-x-net))))
 
+(define-public go-github-com-pion-ice-v4
+  (package
+    (inherit go-github-com-pion-ice-v3)
+    (name "go-github-com-pion-ice-v4")
+    (version "4.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pion/ice/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kcq14li99dpm927rqizmmnkx6jwp9zr4fvhhv42id9dmn8y6yqj"))))
+    (arguments
+     (list
+      #:tests? #f ;Tests require network access.
+      #:import-path "github.com/pion/ice/v4"))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs go-github-com-pion-ice-v3)
+       (replace "go-github-com-pion-dtls-v2" go-github-com-pion-dtls-v3)
+       (replace "go-github-com-pion-stun-v2" go-github-com-pion-stun-v3)
+       (replace "go-github-com-pion-turn-v3" go-github-com-pion-turn-v4)))))
+
 (define-public go-github-com-pion-interceptor
   (package
     (name "go-github-com-pion-interceptor")
