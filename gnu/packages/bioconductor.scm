@@ -15583,13 +15583,13 @@ enrichedGO (addGeneIDs).")
 (define-public r-matrixgenerics
   (package
    (name "r-matrixgenerics")
-   (version "1.18.0")
+   (version "1.18.1")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "MatrixGenerics" version))
             (sha256
              (base32
-              "132cd7qw3rqnv20raf0n1bnjvmkfckg928p80iflj576wxhwcndk"))))
+              "1b66vv8nbvdf0zvapmkcn8hxbvh5d4pv12l1rpawijzp3xg7r7p9"))))
    (properties
     `((upstream-name . "MatrixGenerics")))
    (build-system r-build-system)
