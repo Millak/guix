@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016, 2017 Ben Woodcroft <donttrustben@gmail.com>
@@ -24231,6 +24231,27 @@ to colexicographical order.")
      "Partition a data frame across multiple worker processes to provide
 simple multicore parallelism.")
     (license license:expat)))
+
+(define-public r-multigraph
+  (package
+    (name "r-multigraph")
+    (version "0.99-3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "multigraph" version))
+       (sha256
+        (base32 "0q634jsr1m9nzn4g3bcy5dxl26bdzdg6imcym2jifaa29b7m1790"))))
+    (properties `((upstream-name . "multigraph")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-multiplex))
+    (home-page "https://github.com/mplex/multigraph/")
+    (synopsis "Plot and manipulate multigraphs")
+    (description
+     "This package provides functions to plot and manipulate multigraphs,
+signed and valued graphs, bipartite graphs, multilevel graphs, and Cayley
+graphs with various layout options.")
+    (license license:gpl3)))
 
 (define-public r-multiplex
   (package
