@@ -10420,21 +10420,20 @@ starlette.")
 (define-public python-fastapi-csrf-protect
   (package
     (name "python-fastapi-csrf-protect")
-    (version "0.3.1")
+    (version "0.3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/aekasitt/fastapi-csrf-protect")
-                    ;; This commit corresponds to version 0.3.1
-                    (commit "536acd651d0d3f9862a0b753ba64dd2d187f8655")))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zlwa0fplmcihylyvakskwkbkl2cq291fmys5x6wrpfdbjrqbgbj"))))
+                "181yawlbpd4709mamsradr9zj0jrbp4qvwfvmggs80pd36iiwyy8"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-fastapi python-itsdangerous
-           python-pydantic))
+           python-pydantic-2))
     (native-inputs
      (list python-poetry-core
            python-pytest))
