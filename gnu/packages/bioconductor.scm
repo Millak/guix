@@ -23487,13 +23487,13 @@ monograph.")
 (define-public r-bioccheck
   (package
     (name "r-bioccheck")
-    (version "1.42.0")
+    (version "1.42.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocCheck" version))
               (sha256
                (base32
-                "0c0gwa2wxwfh8ypj1vgy5lp89msn2s9cd155mwn0ginabvp9v36r"))))
+                "108kic1bsycq7pkbbv6881w7w7vfb2wy8n06vvzmbmvfh5jg5nv2"))))
     (properties
      `((upstream-name . "BiocCheck")))
     (build-system r-build-system)
@@ -23511,7 +23511,7 @@ monograph.")
            r-rvest
            r-stringdist))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-tinytest))
     (home-page "https://bioconductor.org/packages/BiocCheck")
     (synopsis "Executes Bioconductor-specific package checks")
     (description "This package contains tools to perform additional quality
