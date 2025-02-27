@@ -13194,7 +13194,9 @@ states in the the context of known, reference states.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "07giligbadv3ap0p4hzsviqpgiipkqcq7x6p0g8lmb8xxpjz3y29"))))
-      (properties `((upstream-name . "presto")))
+      (properties
+       '((upstream-name . "presto")
+         (updater-extra-native-inputs . ("r-broom"))))
       (build-system r-build-system)
       (propagated-inputs
        (list r-data-table
@@ -13206,7 +13208,7 @@ states in the the context of known, reference states.")
              r-rlang
              r-tibble
              r-tidyr))
-      (native-inputs (list r-knitr r-testthat))
+      (native-inputs (list r-broom r-knitr r-testthat))
       (home-page "https://github.com/immunogenomics/presto")
       (synopsis "Fast Functions for Differential Expression using Wilcox and AUC")
       (description "This package performs a fast Wilcoxon rank sum test and
