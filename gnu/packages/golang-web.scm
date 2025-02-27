@@ -6674,7 +6674,7 @@ original data and access it via a typed struct and a dynamic map.")
 (define-public go-github-com-pion-datachannel
   (package
     (name "go-github-com-pion-datachannel")
-    (version "1.5.8")
+    (version "1.5.10")
     (source
      (origin
        (method git-fetch)
@@ -6683,7 +6683,7 @@ original data and access it via a typed struct and a dynamic map.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v2xwrzvflrh1s8x6p1dj9h0hmxsp30h8whbl5p544r30rvsbnp2"))))
+        (base32 "1197ix9z1qg9xf8bhcy0k4a3ppql0jv4l8szv21wwkwzpylba0jk"))))
     (build-system go-build-system)
     (arguments
      (list
