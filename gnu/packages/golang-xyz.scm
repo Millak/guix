@@ -4058,6 +4058,30 @@ values.  It supports almost all kind of types: @code{int/8/16/32/64},
 (define-public go-github-com-cskr-pubsub
   (package
     (name "go-github-com-cskr-pubsub")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cskr/pubsub")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wr8cg5axrlz9xg33r9dqvkp5ix9q8h8c7qw78mj22qprwh3zj9f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cskr/pubsub"))
+    (home-page "https://github.com/cskr/pubsub")
+    (synopsis "Simple pubsub package for go")
+    (description
+     "Package @code{pubsub} implements a simple multi-topic pub-sub library.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-cskr-pubsub-v2
+  (package
+    (inherit go-github-com-cskr-pubsub)
+    (name "go-github-com-cskr-pubsub-v2")
     (version "2.0.2")
     (source
      (origin
@@ -4071,12 +4095,7 @@ values.  It supports almost all kind of types: @code{int/8/16/32/64},
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/cskr/pubsub"))
-    (home-page "https://github.com/cskr/pubsub")
-    (synopsis "Simple pubsub package for go")
-    (description
-     "Package @code{pubsub} implements a simple multi-topic pub-sub library.")
-    (license license:bsd-2)))
+      #:import-path "github.com/cskr/pubsub/v2"))))
 
 (define-public go-github-com-cyberdelia-go-metrics-graphite
   (package
