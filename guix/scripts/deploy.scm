@@ -3,6 +3,7 @@
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
 ;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
+;;; Copyright © 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +64,8 @@ Perform the deployment specified by FILE.\n"))
   -e, --expression=EXPR  deploy the list of machines EXPR evaluates to"))
   (newline)
   (display (G_ "
+  -r, --roll-back        switch to the previous operating system configuration"))
+  (display (G_ "
   -x, --execute          execute the following command on all the machines"))
   (newline)
   (display (G_ "
@@ -84,6 +87,9 @@ Perform the deployment specified by FILE.\n"))
          (option '(#\n "dry-run") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'dry-run? #t result)))
+         (option '(#\r "roll-back") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'roll-back? #t result)))
          (option '(#\x "execute") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'execute-command? #t result)))
@@ -118,20 +124,32 @@ Perform the deployment specified by FILE.\n"))
                                            environment-modules))))
     (load* file module)))
 
-(define* (show-what-to-deploy machines #:key (dry-run? #f))
-  "Show the list of machines to deploy, MACHINES."
+(define* (show-what-to-deploy machines #:key (dry-run? #f) (roll-back? #f))
+  "Show the list of machines in MACHINES to deploy or roll back."
   (let ((count (length machines)))
     (if dry-run?
-        (format (current-error-port)
-                (N_ "The following ~d machine would be deployed:~%"
-                    "The following ~d machines would be deployed:~%"
+        (if roll-back?
+            (format (current-error-port)
+                (N_ "The following ~d machine would be rolled back:~%"
+                    "The following ~d machines would be rolled back:~%"
                     count)
                 count)
-        (format (current-error-port)
-                (N_ "The following ~d machine will be deployed:~%"
-                    "The following ~d machines will be deployed:~%"
+            (format (current-error-port)
+                    (N_ "The following ~d machine would be deployed:~%"
+                        "The following ~d machines would be deployed:~%"
+                        count)
+                    count))
+        (if roll-back?
+            (format (current-error-port)
+                    (N_ "The following ~d machine will be rolled back:~%"
+                        "The following ~d machines will be rolled back:~%"
+                        count)
                     count)
-                count))
+            (format (current-error-port)
+                    (N_ "The following ~d machine will be deployed:~%"
+                        "The following ~d machines will be deployed:~%"
+                        count)
+                    count)))
     (display (indented-string
               (fill-paragraph (string-join (map machine-display-name machines)
                                            ", ")
@@ -174,6 +192,35 @@ Perform the deployment specified by FILE.\n"))
 
     (info (G_ "successfully deployed ~a~%")
           (machine-display-name machine))))
+
+(define (roll-back-machine* store machine)
+  "Roll back MACHINE, taking care of error handling."
+  (info (G_ "rolling back ~a...~%")
+        (machine-display-name machine))
+
+  (guard* (c
+           ;; On Guile 3.0, exceptions such as 'unbound-variable' are compound
+           ;; and include a '&message'.  However, that message only contains
+           ;; the format string.  Thus, special-case it here to avoid
+           ;; displaying a bare format string.
+           (((exception-predicate &exception-with-kind-and-args) c)
+            (raise c))
+
+           ((message-condition? c)
+            (leave (G_ "failed to roll back ~a: ~a~%")
+                   (machine-display-name machine)
+                   (condition-message c)))
+           ((formatted-message? c)
+            (leave (G_ "failed to roll back ~a: ~a~%")
+                   (machine-display-name machine)
+                   (apply format #f
+                          (gettext (formatted-message-string c)
+                                   %gettext-domain)
+                          (formatted-message-arguments c)))))
+      (run-with-store store (roll-back-machine machine)))
+
+  (info (G_ "successfully rolled back ~a~%")
+        (machine-display-name machine)))
 
 (define (invoke-command store machine command)
   "Invoke COMMAND, a list of strings, on MACHINE.  Display its output (if any)
@@ -258,6 +305,7 @@ otherwise."
            (machines (or (and file (load-source-file file))
                          (and expression (read/eval expression))))
            (dry-run? (assoc-ref opts 'dry-run?))
+           (roll-back? (assq-ref opts 'roll-back?))
            (execute-command? (assoc-ref opts 'execute-command?)))
       (when (and file expression)
         (leave (G_ "both '--expression' and a deployment file were provided~%")))
@@ -292,8 +340,13 @@ otherwise."
                     (_
                      (leave (G_ "'-x' specified but no command given~%"))))
                   (begin
-                    (show-what-to-deploy machines #:dry-run? dry-run?)
+                    (show-what-to-deploy machines
+                                         #:dry-run? dry-run?
+                                         #:roll-back? roll-back?)
                     (unless dry-run?
                       (map/accumulate-builds store
-                                             (cut deploy-machine* store <>)
+                                             (cut (if roll-back?
+                                                      roll-back-machine*
+                                                      deploy-machine*)
+                                                  store <>)
                                              machines)))))))))))
