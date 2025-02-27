@@ -22613,7 +22613,8 @@ data.")
         (base32
          "03wjwi3h6agdvp552cd8mlrlvjjb1wwi0z02yclh0jcxbrd7a90z"))))
     (properties
-     `((upstream-name . "universalmotif")))
+     '((upstream-name . "universalmotif")
+       (updater-extra-native-inputs . ("r-ape" "r-ggtree"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -22635,7 +22636,7 @@ data.")
            r-s4vectors
            r-yaml))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-ape r-ggtree r-knitr r-testthat))
     (home-page
      "https://bioconductor.org/packages/universalmotif/")
     (synopsis
