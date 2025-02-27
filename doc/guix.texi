@@ -9520,7 +9520,10 @@ This build system supports cargo workspaces.  Parameter
 library crates to package in the @code{package} phase.  Specified crates are
 packaged from left to right, in case there's dependency among them.  For
 example, specifying @code{''("pcre2-sys" "pcre2")} will package
-@code{"pcre2-sys"} first and then @code{"pcre2"}.
+@code{"pcre2-sys"} first and then @code{"pcre2"}.  Parameter
+@code{#:cargo-install-paths} (default: @code{''()}) allows specifying paths of
+binary crates to install in the @code{install} phase, @code{''("crates/atuin")},
+for example.
 @end defvar
 
 @defvar chicken-build-system

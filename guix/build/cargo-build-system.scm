@@ -379,6 +379,7 @@ directory = '" vendor-dir "'") port)
                   skip-build?
                   install-source?
                   features
+                  (cargo-install-paths '())
                   #:allow-other-keys)
   "Install a given Cargo package."
   (let* ((out      (assoc-ref outputs "out"))
@@ -393,10 +394,18 @@ directory = '" vendor-dir "'") port)
     ;; Only install crates which include binary targets,
     ;; otherwise cargo will raise an error.
     (or skip-build?
-        (not (has-executable-target?))
-        (invoke "cargo" "install" "--offline" "--no-track"
-                "--path" "." "--root" out
-                "--features" (string-join features)))
+        ;; NOTE: Cargo workspace installation support:
+        ;; #:skip-build? #f + #:cargo-install-paths.
+        (and (null? cargo-install-paths)
+             (not (has-executable-target?)))
+        (for-each
+         (lambda (path)
+           (invoke "cargo" "install" "--offline" "--no-track"
+                   "--path" path "--root" out
+                   "--features" (string-join features)))
+         (if (null? cargo-install-paths)
+             '(".")
+             cargo-install-paths)))
 
     (when install-source?
       ;; Install crate tarballs and unpacked sources for later use.
