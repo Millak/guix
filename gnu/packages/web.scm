@@ -5336,8 +5336,8 @@ Cloud.")
     (license license:expat)))
 
 (define-public guix-data-service
-  (let ((commit "1da2a09cfbb39f35b61858f673e81b4be7efd17a")
-        (revision "63"))
+  (let ((commit "5684add77edd120ed640368d9795fbea7ea5a9ea")
+        (revision "64"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -5349,7 +5349,7 @@ Cloud.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "025xjx656askbg210birkhzqx826yj8653pn06dh06kqrsih9ywx"))))
+                  "1rv2gxjnzf6yyvv04h5z9rhnq5zfv7nsihalbjs7k5m79yjjmq5s"))))
       (build-system gnu-build-system)
       (arguments
        (list
