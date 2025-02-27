@@ -2336,6 +2336,38 @@ single-cell data or deconvolution of bulk RNA-seq.")
 and blood controls for CNA analysis.")
     (license license:gpl3)))
 
+(define-public r-chihaya
+  (package
+    (name "r-chihaya")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "chihaya" version))
+       (sha256
+        (base32 "0k52ym2x489k1k4d52jyd6jy4wnr7gd2p9n1pwfqbca3b91cmaj0"))))
+    (properties `((upstream-name . "chihaya")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-delayedarray
+                             r-hdf5array
+                             r-matrix
+                             r-rcpp
+                             r-rhdf5
+                             r-rhdf5lib))
+    (native-inputs (list r-biocgenerics
+                         r-biocsingular
+                         r-knitr
+                         r-residualmatrix
+                         r-s4vectors
+                         r-testthat))
+    (home-page "https://github.com/ArtifactDB/chihaya-R")
+    (synopsis "Save Delayed Operations to a HDF5 File")
+    (description
+     "Saves the delayed operations of a @code{DelayedArray} to a HDF5 file.  This
+enables efficient recovery of the @code{DelayedArray's} contents in other
+languages and analysis frameworks.")
+    (license license:gpl3)))
+
 (define-public r-chipexoqualexample
   (package
     (name "r-chipexoqualexample")
