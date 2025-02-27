@@ -19531,16 +19531,15 @@ This allows one to make simple text-mode user interfaces on Unix-like systems")
 (define-public python-confection
   (package
     (name "python-confection")
-    (version "0.0.4")
+    (version "0.1.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "confection" version))
               (sha256
                (base32
-                "1ksfn10zhnpkcj3y0c3xs4dznvc062bk62x4c3ig0dd6bn4gbpdi"))))
+                "03hgb6601mx6iip4nr8i0is8x5vmh85z286j7j8lhkxxlqydswlf"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-pydantic python-srsly
-                             python-typing-extensions))
+    (propagated-inputs (list python-pydantic-2 python-srsly))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/explosion/confection")
     (synopsis "Config system for Python")
