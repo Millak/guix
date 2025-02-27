@@ -3272,7 +3272,6 @@ satellites.")
       (native-inputs
        (list python-mock
              python-mox3
-             python-pep8
              python-pytest
              python-pytest-mock
              python-pyyaml

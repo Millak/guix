@@ -16157,29 +16157,6 @@ you do not want to store entirely on disk or on memory.")
 application monitoring and error tracking software.")
     (license license:bsd-2)))
 
-(define-public python-pep8
-  ;; This package has been renamed to ‘pycodestyle’ and is no longer updated.
-  ;; Its last release (1.7.1) adds only a scary warning to this effect, breaking
-  ;; some dependents' test suites, and nothing more.
-  (package
-    (name "python-pep8")
-    (version "1.7.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pep8" version))
-        (sha256
-          (base32
-           "002rkl4lsn6x2mxmf8ar00l0m8i3mzrc6pnzz77blyksmpsxa4x1"))
-        (patches (search-patches "python-pep8-stdlib-tokenize-compat.patch"))))
-    (build-system python-build-system)
-    (home-page "https://pep8.readthedocs.org/")
-    (synopsis "Python style guide checker")
-    (description
-     "This tools checks Python code against some of the style conventions in
-PEP 8.")
-    (license license:expat)))
-
 (define-public python-pep8-naming
   (package
     (name "python-pep8-naming")
@@ -26298,7 +26275,7 @@ both as keys and as attributes.")
        ;; fails due to deprecation warnings, etc.
        #:tests? #f))
     (native-inputs
-     (list python-coverage-test-runner python-pep8))
+     (list python-coverage-test-runner))
     (propagated-inputs
      (list python-pyaml))
     (home-page "https://liw.fi/cliapp/")
@@ -26324,7 +26301,7 @@ both as keys and as attributes.")
        (file-name (git-file-name name version))))
     (build-system python-build-system)
     (native-inputs
-     (list python-coverage-test-runner python-pep8))
+     (list python-coverage-test-runner))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
