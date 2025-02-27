@@ -27683,7 +27683,9 @@ estimates, etc.")
        (uri (bioconductor-uri "TCGAbiolinks" version))
        (sha256
         (base32 "0rrk97956kyd17apjm29fxnqjhbh5mllpfr3y4yf3a3ras9chgw4"))))
-    (properties `((upstream-name . "TCGAbiolinks")))
+    (properties
+     '((upstream-name . "TCGAbiolinks")
+       (updater-extra-native-inputs . ("r-edaseq" "r-edger" "r-survminer"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biomart
@@ -27709,7 +27711,7 @@ estimates, etc.")
            r-tidyr
            r-xml
            r-xml2))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-edaseq r-edger r-knitr r-survminer r-testthat))
     (home-page "https://github.com/BioinformaticsFMRP/TCGAbiolinks")
     (synopsis "Integrative analysis with GDC data")
     (description
