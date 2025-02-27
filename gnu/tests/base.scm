@@ -62,6 +62,7 @@
             %test-activation
 
             %hello-dependencies-manifest
+            guix-daemon-test-cases
             %test-guix-daemon))
 
 (define %simple-os
@@ -1034,6 +1035,88 @@ non-ASCII names from /tmp.")
           (packages->manifest (list (canonical-package guile-3.0)
                                     %bootstrap-guile))))))
 
+(define (guix-daemon-test-cases marionette)
+  "Return a gexp with SRFI-64 test cases testing guix-daemon.  Those test are
+evaluated in MARIONETTE, a gexp denoting a marionette (system under test).
+Assume that an unprivileged account for 'user' exists on the system under
+test."
+  #~(begin
+      (test-equal "guix describe"
+        0
+        (marionette-eval '(system* "guix" "describe")
+                         #$marionette))
+
+      (test-equal "hello not already built"
+        #f
+        ;; Check that the next test will really build 'hello'.
+        (marionette-eval '(file-exists?
+                           #$(with-parameters ((%graft? #f))
+                               hello))
+                         #$marionette))
+
+      (test-equal "guix build hello"
+        0
+        ;; Check that guix-daemon is up and running and that the build
+        ;; environment is properly set up (build users, etc.).
+        (marionette-eval '(system* "guix" "build" "hello" "--no-grafts")
+                         #$marionette))
+
+      (test-assert "hello indeed built"
+        (marionette-eval '(file-exists?
+                           #$(with-parameters ((%graft? #f))
+                               hello))
+                         #$marionette))
+
+      (test-equal "guix install hello"
+        0
+        ;; Check that ~/.guix-profile & co. are properly created.
+        (marionette-eval '(let ((pw (getpwuid (getuid))))
+                            (setenv "USER" (passwd:name pw))
+                            (setenv "HOME" (pk 'home (passwd:dir pw)))
+                            (system* "guix" "install" "hello"
+                                     "--no-grafts" "--bootstrap"))
+                         #$marionette))
+
+      (test-equal "user profile created"
+        0
+        (marionette-eval '(system "ls -lad ~/.guix-profile")
+                         #$marionette))
+
+      (test-equal "hello"
+        0
+        (marionette-eval '(system "~/.guix-profile/bin/hello")
+                         #$marionette))
+
+      (test-equal "guix install hello, unprivileged user"
+        0
+        ;; Check that 'guix' is in $PATH for new users and that
+        ;; ~user/.guix-profile also gets created, assuming that 'user' exists
+        ;; as an unprivileged user account.
+        (marionette-eval '(system "su - user -c \
+'guix install hello --no-grafts --bootstrap'")
+                         #$marionette))
+
+      (test-equal "user hello"
+        0
+        (marionette-eval '(system "~user/.guix-profile/bin/hello")
+                         #$marionette))
+
+      (test-equal "unprivileged user profile created"
+        0
+        (marionette-eval '(system "ls -lad ~user/.guix-profile")
+                         #$marionette))
+
+      (test-equal "store is read-only"
+        EROFS
+        (marionette-eval '(catch 'system-error
+                            (lambda ()
+                              (mkdir (in-vicinity #$(%store-prefix)
+                                                  "whatever"))
+                              0)
+                            (lambda args
+                              (system-error-errno args)))
+                         #$marionette))))
+
 (define (run-guix-daemon-test os)
   (define test-image
     (image (operating-system os)
@@ -1070,82 +1153,7 @@ non-ASCII names from /tmp.")
           (test-runner-current (system-test-runner #$output))
           (test-begin "guix-daemon")
 
-          (test-equal "guix describe"
-            0
-            (marionette-eval '(system* "guix" "describe")
-                             marionette))
-
-          ;; XXX: What follows is largely copied form (gnu tests foreign).
-
-          (test-equal "hello not already built"
-            #f
-            ;; Check that the next test will really build 'hello'.
-            (marionette-eval '(file-exists?
-                               #$(with-parameters ((%graft? #f))
-                                   hello))
-                             marionette))
-
-          (test-equal "guix build hello"
-            0
-            ;; Check that guix-daemon is up and running and that the build
-            ;; environment is properly set up (build users, etc.).
-            (marionette-eval '(system* "guix" "build" "hello" "--no-grafts")
-                             marionette))
-
-          (test-assert "hello indeed built"
-            (marionette-eval '(file-exists?
-                               #$(with-parameters ((%graft? #f))
-                                   hello))
-                             marionette))
-
-          (test-equal "guix install hello"
-            0
-            ;; Check that ~/.guix-profile & co. are properly created.
-            (marionette-eval '(let ((pw (getpwuid (getuid))))
-                                (setenv "USER" (passwd:name pw))
-                                (setenv "HOME" (pk 'home (passwd:dir pw)))
-                                (system* "guix" "install" "hello"
-                                         "--no-grafts" "--bootstrap"))
-                             marionette))
-
-          (test-equal "user profile created"
-            0
-            (marionette-eval '(system "ls -lad ~/.guix-profile")
-                             marionette))
-
-          (test-equal "hello"
-            0
-            (marionette-eval '(system "~/.guix-profile/bin/hello")
-                             marionette))
-
-          (test-equal "guix install hello, unprivileged user"
-            0
-            ;; Check that 'guix' is in $PATH for new users and that
-            ;; ~user/.guix-profile also gets created.
-            (marionette-eval '(system "su - user -c \
-'guix install hello --no-grafts --bootstrap'")
-                             marionette))
-
-          (test-equal "user hello"
-            0
-            (marionette-eval '(system "~user/.guix-profile/bin/hello")
-                             marionette))
-
-          (test-equal "unprivileged user profile created"
-            0
-            (marionette-eval '(system "ls -lad ~user/.guix-profile")
-                             marionette))
-
-          (test-equal "store is read-only"
-            EROFS
-            (marionette-eval '(catch 'system-error
-                                (lambda ()
-                                  (mkdir (in-vicinity #$(%store-prefix)
-                                                      "whatever"))
-                                  0)
-                                (lambda args
-                                  (system-error-errno args)))
-                             marionette))
+          #$(guix-daemon-test-cases #~marionette)
 
           (test-end))))
 
