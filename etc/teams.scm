@@ -642,6 +642,19 @@ GLib/GIO, GTK, GStreamer and Webkit."
                       "gnu/services/hurd.scm"
                       "gnu/packages/hurd.scm")))
 
+(define-team c++
+  (team 'c++
+        #:name "C/C++ team"
+        #:description
+        "C and C++ libraries and tools."
+        #:scope (list "gnu/build-system/cmake.scm"
+                      "gnu/build/cmake-build-system.scm"
+                      "gnu/packages/c.scm"
+                      "gnu/packages/cmake.scm"
+                      "gnu/packages/cpp.scm"
+                      "gnu/packages/ninja.scm"
+                      "gnu/packages/valgrind.scm")))
+
 
 (define-member (person "Eric Bavier"
                        "bavier@posteo.net")
