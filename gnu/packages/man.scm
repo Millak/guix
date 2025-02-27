@@ -40,15 +40,17 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages less)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages linux)
+  #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages xml))
 
 (define-public xmltoman
@@ -510,3 +512,72 @@ in C99.")
     (synopsis "Convert text to man page")
     (description "Txt2man converts flat ASCII text to man page format.")
     (license license:gpl2+)))
+
+(define-public stdman
+  ;; Stdman generates the man files from "html-book-YYYYMMDD.tar.xz" asset in
+  ;; <https://github.com/PeterFeicht/cppreference-doc> repository, which is an
+  ;; unofficial archive of <https://en.cppreference.com>.
+  ;;
+  ;; There are therefore two versions to consider: one for the tool, and one
+  ;; for the source.  Use the latter for the package as a whole, and let-bind
+  ;; the former.
+  (let ((stdman-version "2024.07.05"))
+    (package
+      (name "stdman")
+      (version "20240610")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jeaye/stdman")
+                      (commit stdman-version)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0h1gfw4sxic5gx073zmshg4qyz2g142ckgzyj30pk8j708mnl8pz"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #false            ;no tests
+             #:configure-flags #~(list (string-append "--prefix=" #$output))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'reproducible-build
+                   ;; Out of the box, executable's "version" results from
+                   ;; a call to `date'.  Since the string is going to appear
+                   ;; in every man page, refer to the documentation version.
+                   (lambda _
+                     (substitute* "Makefile.in"
+                       (("(STDMAN_VERSION=).*" _ prefix)
+                        (string-append prefix #$version "\n")))))
+                 (add-after 'unpack 'unpack-html-source
+                   (lambda _
+                     (let ((reference
+                            #$(this-package-native-input
+                               (string-append "html-book-" version ".tar.xz"))))
+                       (invoke "tar" "xvJf" reference))))
+                 (replace 'build
+                   (lambda _
+                     ;; Elinks insists on creating its configuration in HOME.
+                     (setenv "HOME" (getcwd))
+                     (invoke "make" "generate"))))))
+      (native-inputs
+       (list curl
+             elinks
+             which
+             (origin
+               (method url-fetch)
+               (uri
+                (string-append
+                 "https://github.com/PeterFeicht/cppreference-doc/"
+                 "releases/download/v" version "/"
+                 "html-book-" version ".tar.xz"))
+               (file-name (string-append "html-book-" version ".tar.xz"))
+               (sha256
+                (base32
+                 "0qa7d2bida65c00z5awa99jrwr4gvxdpc3xp9r6hkxppxaji495w")))))
+      (home-page "https://github.com/jeaye/stdman")
+      (synopsis "Formatted C++ @code{stdlib} man pages from cppreference")
+      (description
+       "Stdman is a tool that provides C++ @code{stdlib} documentation
+archived from @url{https://en.cppreference.com, cppreference} as
+Groff-formated man pages, accessible from the @command{man} command.")
+      (license license:expat))))
