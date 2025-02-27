@@ -3956,6 +3956,30 @@ The 5x8 and 6x12 versions only contain printable ASCII characters,
 Spleen also has support for Powerline symbols out of the box.")
     (license license:bsd-2)))
 
+(define-public font-stix-two
+  (package
+    (name "font-stix-two")
+    (version "2.13b171")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/stipub/stixfonts")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17d5a4fk4dz4kraprhxs9q46cbwakfwz06a0qy9zf5nwp4g6fq2d"))))
+    (build-system font-build-system)
+    (home-page "https://www.stixfonts.org/")
+    (synopsis
+     "OpenType Unicode fonts for scientific, technical, and mathematical texts")
+    (description
+     "The mission of the Scientific and Technical Information Exchange (STIX)
+font creation project is the preparation of a comprehensive set of fonts that
+serve the scientific and engineering community in the process from manuscript
+creation through final publication, both in electronic and print formats.")
+    (license license:silofl1.1)))
+
 (define-public font-scientifica
   (package
     (name "font-scientifica")
