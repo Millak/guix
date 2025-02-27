@@ -671,7 +671,7 @@ they exist.")
            python-httpx
            python-jinja2
            python-nodeenv
-           python-pydantic
+           python-pydantic-2
            python-strenum
            python-tomlkit
            python-typing-extensions))
