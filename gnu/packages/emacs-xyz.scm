@@ -9728,6 +9728,30 @@ errors.")
 the current Cargo project.")
     (license license:gpl3+)))
 
+(define-public emacs-flycheck-deno
+  (package
+    (name "emacs-flycheck-deno")
+    (version "0.1.0")
+    (source
+     (origin
+      (method git-fetch)
+      (uri
+       (git-reference
+        (url "https://github.com/flycheck/flycheck-deno")
+        (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1vvhzidnpzf25z5qn85zx7cpwaavd22vsds4q9y5mpmf8hi526l6"))))
+    (propagated-inputs
+     (list emacs-flycheck))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/flycheck/flycheck-deno")
+    (synopsis "Deno support for Flycheck")
+    (description
+     "This Flycheck extension configures Flycheck automatically for
+  the current Deno project.")
+    (license license:gpl3+)))
+
 (define-public emacs-flycheck-package
   (package
     (name "emacs-flycheck-package")
