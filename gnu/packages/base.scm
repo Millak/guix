@@ -1835,14 +1835,14 @@ and daylight-saving rules.")
 (define-public libiconv
   (package
     (name "libiconv")
-    (version "1.15")
+    (version "1.18")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/libiconv/libiconv-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0y1ij745r4p48mxq84rax40p10ln7fc7m243p8k8sia519i3dxfc"))
+                "1s35d4kk7abfqrcicjzy5s9gpip6dzyhn157a7qq5sxlz7sga21v"))
               (modules '((guix build utils)))
               (snippet
                ;; Work around "declared gets" error on glibc systems (fixed by
