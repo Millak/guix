@@ -2514,6 +2514,8 @@ associated with cell type.")
                 "1zq5xbgr4r68mmzsszb16w11axkmgrxcrpl56dy33szs0ahk10xs"))))
     (properties `((upstream-name . "FlowSorted.Blood.EPIC")))
     (build-system r-build-system)
+    ;; Tests require Internet access via ExperimentHub.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationhub
            r-experimenthub
