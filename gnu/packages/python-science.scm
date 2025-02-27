@@ -912,6 +912,33 @@ logic, also known as grey logic.")
 and scientific computing.")
     (license license:bsd-3)))
 
+(define-public python-boost-histogram
+  (package
+    (name "python-boost-histogram")
+    (version "1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "boost_histogram" version))
+       (sha256
+        (base32 "0p2f90p5jwlwrjz3hq2fzaifkmny33g2mpi89nnhi3w41f1jxr2i"))))
+    (build-system pyproject-build-system)
+    ;; This package bundles files from Boost::Histogram and doesn't provide
+    ;; a way to use a system library.
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list cmake-minimal
+                         pybind11
+                         python-pytest
+                         python-pytest-benchmark
+                         python-scikit-build-core
+                         python-setuptools-scm))
+    (home-page "https://boost-histogram.readthedocs.io/en/latest/")
+    (synopsis "Python bindings for the Boost::Histogram library")
+    (description
+     "This package provides Python bindings for the Boost::Histogram library,
+one of the fastest libraries for histogramming.")
+    (license license:bsd-3)))
+
 (define-public python-scikit-opt
   (package
     (name "python-scikit-opt")
