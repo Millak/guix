@@ -26656,8 +26656,19 @@ approach and a multi-scale contact profile.")
        (uri (bioconductor-uri "BASiCS" version))
        (sha256
         (base32 "1pdbkxamzcpgiqycp3dzmakj3laclgj3r9q9garz3q86m59fkrzb"))))
-    (properties `((upstream-name . "BASiCS")))
+    (properties
+     '((upstream-name . "BASiCS")
+       (updater-extra-native-inputs . ("r-scrnaseq"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             (substitute* "tests/testthat/test_misc.R"
+               ((".*ERCC works.*" m)
+                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs
      (list r-assertthat
            r-biobase
@@ -26681,7 +26692,7 @@ approach and a multi-scale contact profile.")
            r-singlecellexperiment
            r-summarizedexperiment
            r-viridis))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-scrnaseq r-testthat))
     (home-page "https://github.com/catavallejos/BASiCS")
     (synopsis "Bayesian analysis of single-cell sequencing data")
     (description
