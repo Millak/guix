@@ -1309,13 +1309,13 @@ natural language processing framework.")
 (define-public python-spacy
   (package
     (name "python-spacy")
-    (version "3.5.3")
+    (version "3.6.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "spacy" version))
               (sha256
                (base32
-                "13141hc966d8nxbnlwj01vhndgq0rq4nmii3qkb3hrap45kiv5rm"))))
+                "0ri1cz62kswawsa4hflh0ah8f63mnnqah0sbd5hmabdf0s3sj8v3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
