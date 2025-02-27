@@ -2984,6 +2984,8 @@ with different methylation clocks.")
                 "1w2907hcja7rkdrizh0rmdf75liy2zx4v9kxp4xx12x222q9ngz6"))))
     (properties `((upstream-name . "MouseGastrulationData")))
     (build-system r-build-system)
+    ;; Tests require Internet access thanks to ExperimentHub.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-biocgenerics
                              r-bumpymatrix
                              r-experimenthub
