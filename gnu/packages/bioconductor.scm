@@ -9693,6 +9693,7 @@ alignments.")
              ;; These tests attempt to download files.
              (for-each delete-file
                        '("tests/testthat/test_api.R"
+                         "tests/testthat/test_clinical.R"
                          "tests/testthat/test_data.R")))))))
     (propagated-inputs (list r-dplyr
                              r-genomicranges
