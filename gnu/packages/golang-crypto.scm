@@ -14,7 +14,7 @@
 ;;; Copyright © 2021 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022, 2023, 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
@@ -135,7 +135,17 @@ can be ignored.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "183iqzmdwk4b35vxrdg2gdzd4277yr5bgbgl9brqv3w1dap5v4pm"))))
+        (base32 "183iqzmdwk4b35vxrdg2gdzd4277yr5bgbgl9brqv3w1dap5v4pm"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Age source bundles manpages already. Seems OK not to rebuild
+            ;; them with ronn, they are pretty auditable.
+            (with-directory-excursion "doc"
+              (for-each delete-file '("age.1.html"
+                                      "age.1.ronn"
+                                      "age-keygen.1.html"
+                                      "age-keygen.1.ronn")))))))
     (build-system go-build-system)
     (arguments
      (list
@@ -2581,7 +2591,12 @@ Go.")
                           `(,@arguments
                             #:import-path ,(string-append import-path cmd))))
                  (list "/cmd/age"
-                       "/cmd/age-keygen"))))))))
+                       "/cmd/age-keygen"))))
+            (add-after 'install 'install-man-pages
+              (lambda _
+                (let ((man (string-append #$output "/man/man1/")))
+                  (install-file "src/filippo.io/age/doc/age.1" man)
+                  (install-file "src/filippo.io/age/doc/age-keygen.1" man))))))))
     (native-inputs (package-propagated-inputs go-filippo-io-age))
     (propagated-inputs '())
     (inputs '())
