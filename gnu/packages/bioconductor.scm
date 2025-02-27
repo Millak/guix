@@ -20295,22 +20295,22 @@ This algorithm is based on the publication by Hart et al., 2013 (Pubmed ID
 (define-public r-rbowtie2
   (package
     (name "r-rbowtie2")
-    (version "2.12.0")
+    (version "2.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rbowtie2" version))
        (sha256
         (base32
-         "1jk0h0ms984bc5k36vb9z9mldpa70yibxl5ppf5i2q09py7higa7"))))
+         "0raa82fc90zb6z24scf395k0gg1qfabjcwcgzl5w15vlgfzj0byy"))))
     (properties `((upstream-name . "Rbowtie2")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-magrittr r-rsamtools))
     (inputs
-     (list samtools zlib))
+     (list samtools))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr))
     (home-page "https://bioconductor.org/packages/Rbowtie2/")
     (synopsis "R wrapper for Bowtie2 and AdapterRemoval")
     (description
