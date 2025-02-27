@@ -4760,13 +4760,13 @@ for use in Bioconductor’s AnnotationHub.")
 (define-public r-anvil
   (package
     (name "r-anvil")
-    (version "1.18.0")
+    (version "1.18.4")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AnVIL" version))
               (sha256
                (base32
-                "101d8xc8ifyxgnwp0a60r55pqfpmp8cfbbnmy0z8r95r2nylzxsg"))))
+                "0dddvbwf0xqf74aw0a32pmacqpb3pil1kz33ksimabiyx3n4xg9i"))))
     (properties `((upstream-name . "AnVIL")))
     (build-system r-build-system)
     (propagated-inputs
@@ -4787,7 +4787,7 @@ for use in Bioconductor’s AnnotationHub.")
            r-tidyr
            r-tidyselect
            r-yaml))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-anvilgcp r-knitr r-testthat r-withr))
     (home-page "https://bioconductor.org/packages/AnVIL")
     (synopsis "Provides access to AnVIL, Terra, Leonardo and other projects")
     (description
