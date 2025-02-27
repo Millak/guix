@@ -45397,7 +45397,9 @@ server type} this virtual server should be created with.  For example,
 @code{"cx42"} corresponds to a x86_64 server that has 8 VCPUs, 16 GB of
 memory and 160 GB of storage, while @code{"cax31"} to the AArch64
 equivalent.  Other server types and their current prices can be found
-@uref{https://www.hetzner.com/cloud/#pricing, here}.
+@uref{https://www.hetzner.com/cloud/#pricing, here}.  The @code{"cpx11"}
+server type is currently not supported, since its rescue system is too
+small to bootstrap a Guix system from.
 
 @item @code{ssh-key}
 The file name of the SSH private key to use to authenticate with the

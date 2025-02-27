@@ -551,6 +551,13 @@ chmod 700 /mnt/root/.ssh
 cp /root/.ssh/authorized_keys /mnt/root/.ssh/authorized_keys
 chmod 600 /mnt/root/.ssh/authorized_keys
 
+# Small instance don't have much disk space.  Bind mount the store of the
+# rescue system to the tmp directory of the new Guix system.
+mkdir -p /mnt/tmp/gnu/store
+mkdir -p /gnu/store
+mount --bind /mnt/tmp/gnu/store /gnu/store
+
+apt-get install guix --assume-yes
 cat > /tmp/guix/deploy/hetzner-os.scm << EOF
 (use-modules (gnu) (guix utils))
 (use-package-modules ssh)
@@ -605,7 +612,7 @@ fdisk -l /dev/sda"
      (format #f "#!/usr/bin/env bash
 set -eo pipefail
 apt-get update
-apt-get install guix cloud-initramfs-growroot --assume-yes"))
+apt-get install cloud-initramfs-growroot --assume-yes"))
     (format #t "successfully installed rescue system packages on '~a'\n" name)))
 
 (define (hetzner-machine-delete machine server)

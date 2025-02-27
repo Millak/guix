@@ -64,7 +64,7 @@
    (environment hetzner-environment-type)
    (configuration (hetzner-configuration
                    (labels %labels)
-                   (server-type "cax41")
+                   (server-type "cax11")
                    (ssh-key %ssh-key-file)))))
 
 (define %x86-machine
@@ -76,7 +76,7 @@
    (environment hetzner-environment-type)
    (configuration (hetzner-configuration
                    (labels %labels)
-                   (server-type "cpx51")
+                   (server-type "cx22")
                    (ssh-key %ssh-key-file)))))
 
 (define (cleanup machine)
