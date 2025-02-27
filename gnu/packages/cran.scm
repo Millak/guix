@@ -11837,6 +11837,31 @@ functions from LINPACK.")
     ;; Any GPL version.
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-lintools
+  (package
+    (name "r-lintools")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lintools" version))
+       (sha256
+        (base32 "03sfx1w3kl7xk79bpw6hddk7xylh2w2fp9zsgbd50150xp49p1ah"))))
+    (properties `((upstream-name . "lintools")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr r-tinytest))
+    (home-page "https://github.com/data-cleaning/lintools")
+    (synopsis "Manipulation of linear systems of (in)equalities")
+    (description
+     "This is a package for variable elimination (Gaussian elimination,
+Fourier-Motzkin elimination), Moore-Penrose pseudoinverse, reduction to
+reduced row echelon form, value substitution, projecting a vector on the
+convex polytope described by a system of (in)equations, simplify systems by
+removing spurious columns and rows and collapse implied equalities, test if a
+matrix is totally unimodular, compute variable ranges implied by
+linear (in)equalities.")
+    (license license:gpl3)))
+
 (define-public r-litedown
   (package
     (name "r-litedown")
