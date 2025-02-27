@@ -13217,13 +13217,13 @@ single-cell RNA-seq.")
 (define-public r-seqarray
   (package
     (name "r-seqarray")
-    (version "1.46.0")
+    (version "1.46.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SeqArray" version))
               (sha256
                (base32
-                "1a1vjkkr2bhzyjbark7n5wa8grxscwaaz8zpn0qlx7ybj66bvbgj"))))
+                "14hbhsxh47qaxikwp537aw9hkhg1jnm15w0ycjmajpg2wx1fl4ak"))))
     (properties `((upstream-name . "SeqArray")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings
@@ -13233,7 +13233,7 @@ single-cell RNA-seq.")
                              r-iranges
                              r-s4vectors))
     (native-inputs
-     (list r-digest r-knitr r-matrix r-runit r-variantannotation))
+     (list r-biocgenerics r-knitr r-runit r-variantannotation))
     (home-page "https://github.com/zhengxwen/SeqArray")
     (synopsis
      "Data management of large-scale whole-genome sequence variant calls")
