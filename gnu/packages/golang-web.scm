@@ -7065,7 +7065,7 @@ Protocol,SCTP} as specified in
 (define-public go-github-com-pion-sdp-v3
   (package
     (name "go-github-com-pion-sdp-v3")
-    (version "3.0.9")
+    (version "3.0.10")
     (source
      (origin
        (method git-fetch)
@@ -7074,7 +7074,7 @@ Protocol,SCTP} as specified in
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08d3glli1n45ayc26qwaxm7k5knrf99x5nwkllmmhf29g8kwc89n"))))
+        (base32 "0xpak20vwf3vmhi0lcj0xgy4snffsmyb6f2c6sq0w713drxqv2hb"))))
     (build-system go-build-system)
     (arguments
      (list
