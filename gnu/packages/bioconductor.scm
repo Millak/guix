@@ -13310,6 +13310,8 @@ reference point and sorted by a user defined feature.")
                 "0s7vybr0nd5wx1qjkmfqjkff4wp9qv5ibk2fckzpwlsd2jv3pzng"))))
     (properties `((upstream-name . "sesame")))
     (build-system r-build-system)
+    ;; Tests use ExperimentHub, so needs Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-biocfilecache
                              r-biocparallel
                              r-dplyr
