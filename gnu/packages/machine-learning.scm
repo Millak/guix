@@ -1345,7 +1345,7 @@ natural language processing framework.")
                              python-packaging
                              python-pathy
                              python-preshed
-                             python-pydantic
+                             python-pydantic-2
                              python-requests
                              python-setuptools
                              python-smart-open
