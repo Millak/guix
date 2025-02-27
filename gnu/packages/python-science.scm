@@ -3936,15 +3936,17 @@ documentation for more information.")
                    (list "vendor/boost"
                          "vendor/pcre"
                          "vendor/pybind11")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false ;require vaex.server and others, which require vaex-core.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" )))))))
+     (list
+      #:tests? #false ;require vaex.server and others, which require vaex-core.
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-for-pydantic
+           (lambda _
+             (substitute* "vaex/settings.py"
+               (("from pydantic import BaseModel")
+                "from pydantic_settings import BaseModel")))))))
     (inputs
      (list boost pcre pybind11-2.3))
     (propagated-inputs
@@ -3961,14 +3963,15 @@ documentation for more information.")
            python-pandas
            python-progressbar2
            python-pyarrow
-           python-pydantic
+           python-pydantic-2
+           python-pydantic-settings
            python-pyyaml
            python-requests
            python-rich
            python-six
            python-tabulate))
     (native-inputs
-     (list python-pytest python-cython))
+     (list python-pytest python-cython python-setuptools python-wheel))
     (home-page "https://www.github.com/maartenbreddels/vaex")
     (synopsis "Core of Vaex library for exploring tabular datasets")
     (description "Vaex is a high performance Python library for lazy
