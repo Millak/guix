@@ -1541,60 +1541,6 @@ Ensembl.")
 Ensembl.")
     (license license:artistic2.0)))
 
-(define-public r-escape
-  (package
-    (name "r-escape")
-    (version "2.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "escape" version))
-       (sha256
-        (base32 "1n1pz7qvd9447b8v6wz0lfqkvkb099jgzcf882b3x9s7mzcjryh5"))))
-    (properties `((upstream-name . "escape")))
-    (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; This one test fails with accuracy errors.
-             (delete-file "tests/testthat/test-performPCA.R"))))))
-    (propagated-inputs (list r-aucell
-                             r-biocparallel
-                             r-dplyr
-                             r-ggdist
-                             r-ggplot2
-                             r-ggpointdensity
-                             r-ggridges
-                             r-gseabase
-                             r-gsva
-                             r-matrix
-                             r-matrixgenerics
-                             r-msigdbr
-                             r-patchwork
-                             r-reshape2
-                             r-seuratobject
-                             r-singlecellexperiment
-                             r-stringr
-                             r-summarizedexperiment
-                             r-ucell))
-    (native-inputs (list r-knitr
-                         r-rlang
-                         r-seurat
-                         r-spelling
-                         r-testthat
-                         r-vdiffr))
-    (home-page "https://bioconductor.org/packages/escape")
-    (synopsis "Single cell analysis platform for enrichment")
-    (description
-     "R-escape streamlines gene set enrichment analysis for single-cell RNA
-sequencing.  Using raw count information, Seurat objects, or
-@code{SingleCellExperiment} format, users can perform and visualize GSEA
-across individual cells.")
-    (license license:gpl2)))
-
 (define-public r-sift-hsapiens-dbsnp132
   (package
     (name "r-sift-hsapiens-dbsnp132")
@@ -7410,6 +7356,60 @@ Beta-Binomial distributions.")
      "This package provides a set of functions to create and interact with
 dynamic documents and vignettes.")
     (license license:artistic2.0)))
+
+(define-public r-escape
+  (package
+    (name "r-escape")
+    (version "2.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "escape" version))
+       (sha256
+        (base32 "1n1pz7qvd9447b8v6wz0lfqkvkb099jgzcf882b3x9s7mzcjryh5"))))
+    (properties `((upstream-name . "escape")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; This one test fails with accuracy errors.
+             (delete-file "tests/testthat/test-performPCA.R"))))))
+    (propagated-inputs (list r-aucell
+                             r-biocparallel
+                             r-dplyr
+                             r-ggdist
+                             r-ggplot2
+                             r-ggpointdensity
+                             r-ggridges
+                             r-gseabase
+                             r-gsva
+                             r-matrix
+                             r-matrixgenerics
+                             r-msigdbr
+                             r-patchwork
+                             r-reshape2
+                             r-seuratobject
+                             r-singlecellexperiment
+                             r-stringr
+                             r-summarizedexperiment
+                             r-ucell))
+    (native-inputs (list r-knitr
+                         r-rlang
+                         r-seurat
+                         r-spelling
+                         r-testthat
+                         r-vdiffr))
+    (home-page "https://bioconductor.org/packages/escape")
+    (synopsis "Single cell analysis platform for enrichment")
+    (description
+     "R-escape streamlines gene set enrichment analysis for single-cell RNA
+sequencing.  Using raw count information, Seurat objects, or
+@code{SingleCellExperiment} format, users can perform and visualize GSEA
+across individual cells.")
+    (license license:gpl2)))
 
 (define-public r-bluster
   (package
