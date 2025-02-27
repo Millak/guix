@@ -15297,13 +15297,14 @@ expressed genes in DNA microarray experiments.")
 (define-public r-graph
   (package
     (name "r-graph")
-    (version "1.84.0")
+    (version "1.84.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "graph" version))
               (sha256
                (base32
-                "0fq7nbbcpmyhzhahgxdz8dx2bbzzv5cidd6gs7sr5i5184iyq2wp"))))
+                "19s5bzpbc5m99k7cvfl90ndy7pcwi9z42g45b6f9vh417k4r2and"))))
+    (properties '((updater-extra-native-inputs . ("r-xml"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -15316,7 +15317,7 @@ expressed genes in DNA microarray experiments.")
                (("checkEquals\\(\"not a node:.*") "")))))))
     (propagated-inputs
      (list r-biocgenerics))
-    (native-inputs (list r-knitr r-runit r-xml))
+    (native-inputs (list r-knitr r-multigraph r-runit r-xml))
     (home-page "https://bioconductor.org/packages/graph")
     (synopsis "Handle graph data structures in R")
     (description
