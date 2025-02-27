@@ -13166,6 +13166,8 @@ powerTCR R packages.")
         (base32 "1vjww44d3w2rvvj1b2fdbcv0pwpsspqdhzbykwvsqmw559k9viz1"))))
     (properties `((upstream-name . "scRNAseq")))
     (build-system r-build-system)
+    ;; Some tests require Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-alabaster-base
                              r-alabaster-matrix
                              r-alabaster-sce
