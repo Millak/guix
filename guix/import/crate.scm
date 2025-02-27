@@ -481,10 +481,6 @@ look up the development dependencs for the given crate."
     (match parts
       ((name _ ...) name))))
 
-(define (crate-name->package-name name)
-  (downstream-package-name "rust-" name))
-
-
 
 ;;;
 ;;; Updater
@@ -528,4 +524,3 @@ prefix when PARTIAL-VERSION? is #t."
    (description "Updater for crates.io packages")
    (pred crate-package?)
    (import import-release)))
-

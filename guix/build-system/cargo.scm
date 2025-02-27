@@ -44,7 +44,8 @@
             %crate-base-url
             crate-url
             crate-url?
-            crate-uri))
+            crate-uri
+            crate-name->package-name))
 
 (define %crate-base-url
   (make-parameter "https://crates.io"))
@@ -57,6 +58,9 @@
   "Return a URI string for the crate package hosted at crates.io corresponding
 to NAME and VERSION."
   (string-append crate-url name "/" version "/download"))
+
+(define (crate-name->package-name name)
+  (downstream-package-name "rust-" name))
 
 (define (default-rust target)
   "Return the default Rust package."
