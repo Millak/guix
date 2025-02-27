@@ -2575,7 +2575,7 @@ implementation for the Telegram Bot API.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-packaging
                              python-platformdirs
-                             python-pydantic
+                             python-pydantic-2
                              python-sphinx
                              python-sphinx-autodoc-typehints
                              python-sphinx-rtd-theme
