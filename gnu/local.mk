@@ -864,6 +864,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/lightdm.scm			\
   %D%/tests/linux-modules.scm			\
   %D%/tests/mail.scm				\
+  %D%/tests/mcron.scm				\
   %D%/tests/messaging.scm			\
   %D%/tests/networking.scm			\
   %D%/tests/package-management.scm		\
