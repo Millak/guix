@@ -246,7 +246,7 @@ directory = '" vendor-dir "'") port)
   "Build a given Cargo package."
   (or skip-build?
       (apply invoke
-             `("cargo" "build"
+             `("cargo" "build" "--offline"
                ,@(if parallel-build?
                      (list "-j" (number->string (parallel-job-count)))
                      (list "-j" "1"))
@@ -264,7 +264,7 @@ directory = '" vendor-dir "'") port)
   "Run tests for a given Cargo package."
   (when tests?
     (apply invoke
-           `("cargo" "test"
+           `("cargo" "test" "--offline"
              ,@(if parallel-build?
                    (list "-j" (number->string (parallel-job-count)))
                    (list "-j" "1"))
@@ -303,7 +303,7 @@ directory = '" vendor-dir "'") port)
         ;;error: invalid inclusion of reserved file name Cargo.toml.orig in package source
         (when (file-exists? "Cargo.toml.orig")
           (delete-file "Cargo.toml.orig"))
-        (apply invoke `("cargo" "package" ,@cargo-package-flags))
+        (apply invoke `("cargo" "package" "--offline" ,@cargo-package-flags))
 
         ;; Then unpack the crate, reset the timestamp of all contained files, and
         ;; repack them.  This is necessary to ensure that they are reproducible.
@@ -356,7 +356,8 @@ directory = '" vendor-dir "'") port)
     ;; otherwise cargo will raise an error.
     (or skip-build?
         (not (has-executable-target?))
-        (invoke "cargo" "install" "--no-track" "--path" "." "--root" out
+        (invoke "cargo" "install" "--offline" "--no-track"
+                "--path" "." "--root" out
                 "--features" (string-join features)))
 
     (when install-source?
