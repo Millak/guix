@@ -6892,7 +6892,7 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
 (define-public go-github-com-pion-interceptor
   (package
     (name "go-github-com-pion-interceptor")
-    (version "0.1.30")
+    (version "0.1.37")
     (source
      (origin
        (method git-fetch)
@@ -6901,7 +6901,7 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b0mmrzb9m9xsskylambdcw3g9xfd1fdfagcw8k0l8886ckqjprr"))))
+        (base32 "0dl6z8ysssq8nnkrvbi1qnhib12mdwb8psqmmdhj43yffjwb0gg6"))))
     (build-system go-build-system)
     (arguments
      (list
