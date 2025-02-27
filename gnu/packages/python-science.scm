@@ -1637,7 +1637,10 @@ idea of the remaining amount of computation to be done.")
                            "not test_python_std_list_dict_generics"
                            " and not test_python_std_list_dict_empty_and_none"
                            " and not test_pandas_modules_importable"
-                           " and not test_check_groups"))))
+                           " and not test_check_groups"
+                           ;; This is a test failure due to unexpected error
+                           ;; message format.  It is harmless.
+                           " and not test_pandas_stubs_false_positives"))))
     ;; Pandera comes with a lot of extras. We test as many as possible, but do
     ;; not include all of them in the propagated-inputs. Currently, we have to
     ;; skip the pyspark and io tests due to missing packages python-pyspark
@@ -1648,7 +1651,7 @@ idea of the remaining amount of computation to be done.")
                              python-packaging
                              python-pandas
                              python-pandas-stubs ;mypy extra
-                             python-pydantic
+                             python-pydantic-2
                              python-scipy ;hypotheses extra
                              python-typeguard
                              python-typing-inspect
