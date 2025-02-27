@@ -4600,13 +4600,13 @@ analysis, modelling, and visualization of spike-in controls.")
 (define-public r-ancombc
   (package
     (name "r-ancombc")
-    (version "2.8.0")
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ANCOMBC" version))
               (sha256
                (base32
-                "0cbz7yxrci57divf85d9ffkzi1rh7xy2ara9x1wng75vc0qcnj9c"))))
+                "13sd32f55zyzbxs5sbb96smgzkh4y45lh8291w35bgxc41vqxdjx"))))
     (properties `((upstream-name . "ANCOMBC")))
     (build-system r-build-system)
     (propagated-inputs
@@ -4625,7 +4625,7 @@ analysis, modelling, and visualization of spike-in controls.")
            r-multcomp
            r-nloptr
            r-rdpack))
-    (native-inputs (list r-knitr r-microbiome r-testthat))
+    (native-inputs (list r-knitr r-phyloseq r-testthat))
     (home-page "https://github.com/FrederickHuangLin/ANCOMBC")
     (synopsis "Analysis of compositions of microbiomes with bias correction")
     (description
