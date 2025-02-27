@@ -1635,6 +1635,7 @@ through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.22
       ;; TODO: Tests may need some adjustments as they take quite a lot of
       ;; time to finish.
       #:import-path "github.com/libp2p/go-libp2p-pubsub"
