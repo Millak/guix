@@ -4766,6 +4766,36 @@ are built on top of @code{AnVILBase}.  Extension packages will provide methods
 for interacting with other cloud providers.")
     (license license:artistic2.0)))
 
+(define-public r-anvilgcp
+  (package
+    (name "r-anvilgcp")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "AnVILGCP" version))
+       (sha256
+        (base32 "0m0assxfq65smzqif7rqsqzlw0y8zjdnyq0nxij0snqzjd9a0iih"))))
+    (properties `((upstream-name . "AnVILGCP")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-anvilbase
+                             r-biocbaseutils
+                             r-dplyr
+                             r-httr
+                             r-jsonlite
+                             r-rlang
+                             r-tibble
+                             r-tidyr))
+    (native-inputs (list r-knitr r-testthat r-withr))
+    (home-page "https://github.com/Bioconductor/AnVILGCP")
+    (synopsis "GCP R client for the AnVIL")
+    (description
+     "The package provides a set of functions to interact with the @dfn{Google
+Cloud Platform} (GCP) services on the @code{AnVIL} platform.  The package is
+designed to work with the @code{AnVIL} package.  User-level interaction with
+this package should be minimal.")
+    (license license:artistic2.0)))
+
 (define-public r-aldex2
   (package
     (name "r-aldex2")
