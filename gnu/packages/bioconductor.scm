@@ -20893,13 +20893,13 @@ and to both short and long sequence reads.")
 (define-public r-flames
   (package
     (name "r-flames")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "FLAMES" version))
        (sha256
-        (base32 "0fhgis2grzzpzarlza4kqw8ysanlsw410wykjjakk35pyx275j8m"))))
+        (base32 "0yszsrnvs13h1vdv5gfja54g48f8b0dadlwd2h7n02pl8b569q38"))))
     (properties `((upstream-name . "FLAMES")))
     (build-system r-build-system)
     (arguments
@@ -20961,7 +20961,7 @@ and to both short and long sequence reads.")
            r-tidyselect
            r-txdbmaker
            r-withr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/OliverVoogd/FLAMES")
     (synopsis
      "Full Length Analysis of Mutations and Splicing in long read RNA-seq data")
