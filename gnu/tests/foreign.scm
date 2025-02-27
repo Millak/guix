@@ -26,6 +26,8 @@
   #:autoload   (guix store) (%store-prefix %store-monad %graft?)
   #:use-module (gnu compression)
   #:use-module (gnu tests)
+  #:use-module ((gnu tests base)
+                #:select (%hello-dependencies-manifest))
   #:use-module (gnu packages base)
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages guile)
@@ -140,39 +142,7 @@ system is expected to be on DEVICE."
   ;; Manifest of the Guix installation tarball.
   (concatenate-manifests
    (list (packages->manifest (list guix))
-
-         ;; Include the dependencies of 'hello' in addition to 'guix' so that
-         ;; we can test 'guix build hello'.
-         (map-manifest-entries
-          manifest-entry-without-grafts
-          (package->development-manifest hello))
-
-         ;; Add the source of 'hello'.
-         (manifest
-          (list (manifest-entry
-                  (name "hello-source")
-                  (version (package-version hello))
-                  (item (let ((file (origin-actual-file-name
-                                     (package-source hello))))
-                          (computed-file
-                           "hello-source"
-                           #~(begin
-                               ;; Put the tarball in a subdirectory since
-                               ;; profile union crashes otherwise.
-                               (mkdir #$output)
-                               (mkdir (in-vicinity #$output "src"))
-                               (symlink #$(package-source hello)
-                                        (in-vicinity #$output
-                                                     (string-append "src/"
-                                                                    #$file))))))))))
-
-         ;; Include 'guile-final', which is needed when building derivations
-         ;; such as that of 'hello' but missing from the development manifest.
-         ;; Add '%bootstrap-guile', used by 'guix install --bootstrap'.
-         (map-manifest-entries
-          manifest-entry-without-grafts
-          (packages->manifest (list (canonical-package guile-3.0)
-                                    %bootstrap-guile))))))
+         %hello-dependencies-manifest)))
 
 (define %guix-install-script
   ;; The 'guix-install.sh' script.

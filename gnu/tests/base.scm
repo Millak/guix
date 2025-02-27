@@ -60,6 +60,8 @@
             %test-root-unmount
             %test-cleanup
             %test-activation
+
+            %hello-dependencies-manifest
             %test-guix-daemon))
 
 (define %simple-os
@@ -998,7 +1000,7 @@ non-ASCII names from /tmp.")
     (item (with-parameters ((%graft? #f))
             (manifest-entry-item entry)))))
 
-(define %hello-dependencies-manifest            ;TODO: Share with (gnu tests foreign).
+(define %hello-dependencies-manifest
   ;; Build dependencies of 'hello' needed to test 'guix build hello'.
   (concatenate-manifests
    (list (map-manifest-entries
