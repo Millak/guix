@@ -18713,7 +18713,8 @@ attempts to assess their statistical significance.")
         (base32
          "0vmjhzxq59zdxywyyqa31fcsasckq8qfpbjp70ml1vcxnvkr49ck"))))
     (properties
-     `((upstream-name . "clusterProfiler")))
+     '((upstream-name . "clusterProfiler")
+       (updater-extra-native-inputs . ("r-org-hs-eg-db"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
@@ -18732,7 +18733,7 @@ attempts to assess their statistical significance.")
            r-tidyr
            r-yulab-utils))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-org-hs-eg-db r-testthat))
     (home-page "https://guangchuangyu.github.io/software/clusterProfiler/")
     (synopsis "Analysis and visualization of functional profiles for gene clusters")
     (description
