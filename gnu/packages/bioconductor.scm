@@ -7165,13 +7165,13 @@ calculation in parallel.")
 (define-public r-dmrcate
   (package
     (name "r-dmrcate")
-    (version "3.2.0")
+    (version "3.2.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DMRcate" version))
               (sha256
                (base32
-                "0diky1jam8k1b61xkwaxbsx6pd599d1pf0xw9s7yr17fm4rbqhm9"))))
+                "1k0hbyqk4l6kqr60anmgk1jyk7kb1m0c1gjzvbbw2yc154ncyscq"))))
     (properties `((upstream-name . "DMRcate")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7190,7 +7190,7 @@ calculation in parallel.")
            r-plyr
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/DMRcate")
     (synopsis "Methylation array and sequencing spatial analysis methods")
     (description
