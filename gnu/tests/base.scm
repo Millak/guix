@@ -34,6 +34,8 @@
   #:use-module (gnu services networking)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bootstrap)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ocr)
@@ -45,6 +47,7 @@
   #:use-module (guix monads)
   #:use-module (guix modules)
   #:use-module (guix packages)
+  #:use-module (guix profiles)
   #:use-module (guix utils)
   #:use-module ((srfi srfi-1) #:hide (partition))
   #:use-module (ice-9 match)
@@ -56,7 +59,8 @@
             %test-halt
             %test-root-unmount
             %test-cleanup
-            %test-activation))
+            %test-activation
+            %test-guix-daemon))
 
 (define %simple-os
   (simple-operating-system))
@@ -981,3 +985,188 @@ non-ASCII names from /tmp.")
    (name "activation")
    (description "Test that activation scripts are run in the correct order")
    (value (run-activation-test name))))
+
+
+;;;
+;;; Build daemon.
+;;;
+
+(define (manifest-entry-without-grafts entry)
+  "Return ENTRY with grafts disabled on its contents."
+  (manifest-entry
+    (inherit entry)
+    (item (with-parameters ((%graft? #f))
+            (manifest-entry-item entry)))))
+
+(define %hello-dependencies-manifest            ;TODO: Share with (gnu tests foreign).
+  ;; Build dependencies of 'hello' needed to test 'guix build hello'.
+  (concatenate-manifests
+   (list (map-manifest-entries
+          manifest-entry-without-grafts
+          (package->development-manifest hello))
+
+         ;; Add the source of 'hello'.
+         (manifest
+          (list (manifest-entry
+                  (name "hello-source")
+                  (version (package-version hello))
+                  (item (let ((file (origin-actual-file-name
+                                     (package-source hello))))
+                          (computed-file
+                           "hello-source"
+                           #~(begin
+                               ;; Put the tarball in a subdirectory since
+                               ;; profile union crashes otherwise.
+                               (mkdir #$output)
+                               (mkdir (in-vicinity #$output "src"))
+                               (symlink #$(package-source hello)
+                                        (in-vicinity #$output
+                                                     (string-append "src/"
+                                                                    #$file))))))))))
+
+         ;; Include 'guile-final', which is needed when building derivations
+         ;; such as that of 'hello' but missing from the development manifest.
+         ;; Add '%bootstrap-guile', used by 'guix install --bootstrap'.
+         (map-manifest-entries
+          manifest-entry-without-grafts
+          (packages->manifest (list (canonical-package guile-3.0)
+                                    %bootstrap-guile))))))
+
+(define (run-guix-daemon-test os)
+  (define test-image
+    (image (operating-system os)
+           (format 'compressed-qcow2)
+           (volatile-root? #f)
+           (shared-store? #f)
+           (partition-table-type 'mbr)
+           (partitions
+            (list (partition
+                   (size (* 4 (expt 2 30)))
+                   (offset (* 512 2048))          ;leave room for GRUB
+                   (flags '(boot))
+                   (label "root"))))))
+
+  (define test
+    (with-imported-modules (source-module-closure
+                            '((gnu build marionette)
+                              (guix build utils)))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (guix build utils)
+                       (srfi srfi-64))
+
+          (define marionette
+            (make-marionette
+             (list (string-append #$qemu-minimal "/bin/" (qemu-command))
+                   #$@(common-qemu-options (system-image test-image) '()
+                                           #:image-format "qcow2"
+                                           #:rw-image? #t)
+                   "-m" "512"
+                   "-nographic" "-serial" "stdio"
+                   "-snapshot")))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "guix-daemon")
+
+          (test-equal "guix describe"
+            0
+            (marionette-eval '(system* "guix" "describe")
+                             marionette))
+
+          ;; XXX: What follows is largely copied form (gnu tests foreign).
+
+          (test-equal "hello not already built"
+            #f
+            ;; Check that the next test will really build 'hello'.
+            (marionette-eval '(file-exists?
+                               #$(with-parameters ((%graft? #f))
+                                   hello))
+                             marionette))
+
+          (test-equal "guix build hello"
+            0
+            ;; Check that guix-daemon is up and running and that the build
+            ;; environment is properly set up (build users, etc.).
+            (marionette-eval '(system* "guix" "build" "hello" "--no-grafts")
+                             marionette))
+
+          (test-assert "hello indeed built"
+            (marionette-eval '(file-exists?
+                               #$(with-parameters ((%graft? #f))
+                                   hello))
+                             marionette))
+
+          (test-equal "guix install hello"
+            0
+            ;; Check that ~/.guix-profile & co. are properly created.
+            (marionette-eval '(let ((pw (getpwuid (getuid))))
+                                (setenv "USER" (passwd:name pw))
+                                (setenv "HOME" (pk 'home (passwd:dir pw)))
+                                (system* "guix" "install" "hello"
+                                         "--no-grafts" "--bootstrap"))
+                             marionette))
+
+          (test-equal "user profile created"
+            0
+            (marionette-eval '(system "ls -lad ~/.guix-profile")
+                             marionette))
+
+          (test-equal "hello"
+            0
+            (marionette-eval '(system "~/.guix-profile/bin/hello")
+                             marionette))
+
+          (test-equal "guix install hello, unprivileged user"
+            0
+            ;; Check that 'guix' is in $PATH for new users and that
+            ;; ~user/.guix-profile also gets created.
+            (marionette-eval '(system "su - user -c \
+'guix install hello --no-grafts --bootstrap'")
+                             marionette))
+
+          (test-equal "user hello"
+            0
+            (marionette-eval '(system "~user/.guix-profile/bin/hello")
+                             marionette))
+
+          (test-equal "unprivileged user profile created"
+            0
+            (marionette-eval '(system "ls -lad ~user/.guix-profile")
+                             marionette))
+
+          (test-equal "store is read-only"
+            EROFS
+            (marionette-eval '(catch 'system-error
+                                (lambda ()
+                                  (mkdir (in-vicinity #$(%store-prefix)
+                                                      "whatever"))
+                                  0)
+                                (lambda args
+                                  (system-error-errno args)))
+                             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "guix-daemon-test" test))
+
+(define %test-guix-daemon
+  (system-test
+   (name "guix-daemon")
+   (description
+    "Test 'guix-daemon' behavior on a multi-user system.")
+   (value
+    (let ((os (marionette-operating-system
+               (operating-system
+                 (inherit (operating-system-with-gc-roots
+                           %simple-os
+                           (list (profile
+                                  (name "hello-build-dependencies")
+                                  (content %hello-dependencies-manifest)))))
+                 (kernel-arguments '("console=ttyS0"))
+                 (users (cons (user-account
+                               (name "user")
+                               (group "users"))
+                              %base-user-accounts)))
+               #:imported-modules '((gnu services herd)
+                                    (guix combinators)))))
+      (run-guix-daemon-test os)))))
