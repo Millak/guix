@@ -18887,6 +18887,16 @@ interaction inference from scRNA-seq data.")
                 "0d1jz7r81zbcy1gkppggkjmgjxyjhva69s3cdb01m3f0790m4fv0"))))
     (properties `((upstream-name . "ciRcus")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; These tests need Internet access.
+             (substitute* "tests/testthat/test-loadAnnot.R"
+               (("test_that.*Annotation.*" m)
+                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs
      (list r-annotationdbi
            r-annotationhub
