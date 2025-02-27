@@ -2704,6 +2704,32 @@ et al. Cancer Cell 17:98-110, 2010; Costa et al. FEBS J, 288:2311-2331,
 2021.")
     (license license:artistic2.0)))
 
+(define-public r-hellorangesdata
+  (package
+    (name "r-hellorangesdata")
+    (version "1.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "HelloRangesData" version
+                              'experiment))
+       (sha256
+        (base32 "0a6bjiyq8y505lcl4nn2jz7x5zkbspnw5l4zaar3p3hql981268a"))))
+    (properties `((upstream-name . "HelloRangesData")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/HelloRangesData")
+    (synopsis "Data for the HelloRanges tutorial vignette")
+    (description
+     "This package provides the data that were used in the @url{bedtools
+tutorial by Aaron Quinlan,
+http://quinlanlab.org/tutorials/bedtools/bedtools.html}.  It includes a subset
+of the @code{DnaseI} hypersensitivity data from \"Maurano et al. Systematic
+Localization of Common Disease-Associated Variation in Regulatory
+DNA. Science.  2012.  Vol. 337 no. 6099 pp. 1190-1195.\"  The rest of the
+tracks were originally downloaded from the UCSC table browser.  See the
+@code{HelloRanges} vignette for a port of the bedtools tutorial to R.")
+    (license license:gpl2+)))
+
 (define-public r-hdcytodata
   (package
     (name "r-hdcytodata")
