@@ -6535,6 +6535,7 @@ set analyses, and can deal with repeated or longitudinal data.")
     (build-system r-build-system)
     (arguments
      (list
+      #:tests? #false ;require a running JVM.
       #:configure-flags '(list "--fake")
       #:modules
       '((guix build r-build-system)
