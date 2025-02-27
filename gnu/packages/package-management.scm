@@ -1607,7 +1607,7 @@ environments.")
                                           "guile-gnutls"
                                           #$@(if (target-hurd?)
                                                  '()
-                                                 '("guile-fibers"
+                                                 '("guile-fibers-next"
                                                    "guile-knots")))))
                        (wrap-program file
                          `("PATH" ":" prefix
@@ -1651,7 +1651,7 @@ environments.")
              guile-gcrypt
              guix
              guile-prometheus
-             guile-fibers
+             guile-fibers-next
              guile-knots
              guile-lib
              guile-next))
@@ -1671,7 +1671,7 @@ environments.")
              guile-sqlite3
              guix
              guile-gnutls
-             guile-fibers
+             guile-fibers-next
              guile-knots))
       (home-page "https://git.cbaines.net/guix/build-coordinator/")
       (synopsis "Tool to help build derivations")
