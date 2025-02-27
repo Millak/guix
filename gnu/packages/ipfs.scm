@@ -2161,6 +2161,7 @@ also mount the world at @code{/ipfs}.")
       (build-system go-build-system)
       (arguments
        (list
+        #:go go-1.22
         #:embed-files #~(list "sorted-network-list.bin")
         #:install-source? #f
         #:import-path "gitlab.com/spritely/spritely-libp2p-daemon"))
