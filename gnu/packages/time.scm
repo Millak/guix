@@ -70,18 +70,45 @@
   #:use-module (guix licenses)
   #:use-module (guix packages))
 
+(define-public termdown
+  (package
+    (name "termdown")
+    (version "1.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "termdown" version))
+       (sha256
+        (base32
+         "07nxsqpwnpr9jkvif2ngjlcq05z0ldnmqxd15d1l593lzmxdyrci"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools python-wheel))
+    (propagated-inputs
+     (list python-click
+           python-pyfiglet
+           python-dateutil))
+    (home-page "https://github.com/trehn/termdown")
+    (synopsis "Countdown timer for your terminal")
+    (description
+     "Termdown provides a fancy text display while it counts down to zero from
+a starting point you provide.  The user can pause and resume the countdown
+from the text user interface.  It can also be used in stop watch mode which
+counts forward or for just showing the current time.")
+    (license gpl3)))
+
 (define-public time
   (package
     (name "time")
     (version "1.9")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/time/time-"
-                          version ".tar.gz"))
-      (sha256
-       (base32
-        "07jj7cz6lc13iqrpgn81ivqh8rkm73p4rnivwgrrshk23v4g1b7v"))))
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/time/time-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "07jj7cz6lc13iqrpgn81ivqh8rkm73p4rnivwgrrshk23v4g1b7v"))))
     (build-system gnu-build-system)
     (home-page "https://www.gnu.org/software/time/")
     (synopsis "Run a command, then display its resource usage")
