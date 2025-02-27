@@ -109,6 +109,29 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages xorg))
 
+(define-public font-arapey
+  (let ((commit  "28fa45c7f31afe62f577b0b857570ab0326b9113"))
+    (package
+      (name "font-arapey")
+      (version "0.0.1")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/etunni/arapey")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1wvzx8gkw1d2dc2zqp8a75lc1kr6fvg90asyjkbrcynqi6qnwkaf"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/etunni/arapey")
+      (synopsis "Typeface with soft lines, curving tips, and rhythmic nuances")
+      (description
+       "Arapey (Ah-ra-pay) is a contemporary modern typeface with some
+features of a Bodoni, but the structures, soft lines, and finishes leave
+a calm and distinguished feeling.")
+      (license license:silofl1.1))))
+
 (define-public font-artifika
   (package
     (name "font-artifika")
@@ -3977,9 +4000,9 @@ Most characters are just 4px wide, which is brilliant for low dpi(90-120) displa
     (synopsis "The Tuffy Truetype Font Family")
     (description
      "Thatcher Ulrich's first outline font design.  He started with the goal
-+of producing a neutral, readable sans-serif text font.  There are lots of
-+\"expressive\" fonts out there, but he wanted to start with something very
-+plain and clean, something he might want to actually use.")
+of producing a neutral, readable sans-serif text font.  There are lots of
+\"expressive\" fonts out there, but he wanted to start with something very
+plain and clean, something he might want to actually use.")
     (license license:public-domain)))
 
 (define-public font-velvetyne-jgs
