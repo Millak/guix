@@ -2605,6 +2605,9 @@ Go.")
                     "\nThis package provides a command line interface (CLI)
 tools."))))
 
+(define-public age-keygen
+  (deprecated-package "age-keygen" age))
+
 (define-public go-jwker
   (package/inherit go-github-com-jphastings-jwker
     (name "go-jwker")
