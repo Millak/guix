@@ -3778,6 +3778,33 @@ submodules:
      "This package provides memcache client and server functionality.")
     (license license:expat)))
 
+(define-public go-github-com-crackcomm-go-gitignore
+  (package
+    (name "go-github-com-crackcomm-go-gitignore")
+    (version "0.0.0-20241020182519-7843d2ba8fdf")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/crackcomm/go-gitignore")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vabnacz1bk2lvln3bjg4i6wj1lsb6pxy55xzkjp8wdhd8gmk47b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/crackcomm/go-gitignore"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/crackcomm/go-gitignore")
+    (synopsis "Gitignore parser for Golang")
+    (description
+     "ignore is a library which returns a new ignorer object which can test
+against various paths.  This is particularly useful when trying to filter
+files based on a .gitignore document.")
+    (license license:expat)))
+
 (define-public go-github-com-delthas-go-libnp
   (let ((commit "96674b98150ed492b535d61dde5767dfa2dd14ce")
         (revision "1"))
