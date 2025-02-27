@@ -4179,6 +4179,28 @@ It is relatively compact to allow a lot of code on screen, while (hopefully) cle
 enough to remain readable even at high resolutions.")
     (license license:expat)))
 
+(define-public font-et-book
+  (let ((commit "24d3a3bbfc880095d3df2b9e9d60d05819138e89"))
+    (package
+      (name "font-et-book")
+      (version "1.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/edwardtufte/et-book")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1bhpk1fbp8jdhzc5j8y5v3bpnzy2sz3dpgjgzclb0dnm51hqqrpn"))))
+      (build-system font-build-system)
+      (home-page "https://edwardtufte.github.io/et-book/")
+      (synopsis "ET Book fonts")
+      (description
+       "ET Book is a Bembo-like font for the computer designed by Dmitry Krasny,
+Bonnie Scranton, and Edward Tufte.")
+      (license license:expat))))
+
 (define-public font-cica
   (package
     (name "font-cica")
@@ -4187,7 +4209,7 @@ enough to remain readable even at high resolutions.")
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/miiton/Cica/releases/download/"
-             "v" version "/Cica_v" version ".zip"))
+                           "v" version "/Cica_v" version ".zip"))
        (sha256
         (base32 "0vshn2cd70mnbavsw9cbagcasa95wiv9qdj4wkzxn7gxygqvrlfb"))))
     (build-system font-build-system)
