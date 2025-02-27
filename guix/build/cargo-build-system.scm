@@ -302,11 +302,16 @@ directory = '" vendor-dir "'") port)
                   source
                   skip-build?
                   install-source?
+                  (cargo-package-crates '())
                   (cargo-package-flags '("--no-metadata" "--no-verify"))
+                  (vendor-dir "guix-vendor")
                   #:allow-other-keys)
   "Run 'cargo-package' for a given Cargo package."
   (if install-source?
-    (if skip-build?
+    ;; NOTE: Cargo workspace packaging support:
+    ;; #:install-source? #t + #:cargo-package-crates.
+    (if (and (null? cargo-package-crates)
+             skip-build?)
       (begin
         (install-file source "target/package")
         (with-directory-excursion "target/package"
@@ -324,7 +329,19 @@ directory = '" vendor-dir "'") port)
         ;;error: invalid inclusion of reserved file name Cargo.toml.orig in package source
         (when (file-exists? "Cargo.toml.orig")
           (delete-file "Cargo.toml.orig"))
-        (apply invoke `("cargo" "package" "--offline" ,@cargo-package-flags))
+
+        (if (null? cargo-package-crates)
+            (apply invoke `("cargo" "package" "--offline" ,@cargo-package-flags))
+            (for-each
+             (lambda (pkg)
+               (apply invoke "cargo" "package" "--offline" "--package" pkg
+                      cargo-package-flags)
+               (for-each
+                (lambda (crate)
+                  (invoke "tar" "xzf" crate "-C" vendor-dir))
+                (find-files "target/package" "\\.crate$"))
+               (patch-cargo-checksums #:vendor-dir vendor-dir))
+             cargo-package-crates))
 
         ;; Then unpack the crate, reset the timestamp of all contained files, and
         ;; repack them.  This is necessary to ensure that they are reproducible.

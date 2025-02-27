@@ -9514,6 +9514,13 @@ to create a source crate for future use.  The @code{install} phase installs
 the binaries defined by the crate.  Unless @code{install-source? #f} is
 defined it will also install a source crate repository of itself and unpacked
 sources, to ease in future hacking on rust packages.
+
+This build system supports cargo workspaces.  Parameter
+@code{#:cargo-package-crates} (default: @code{''()}) allows specifying names of
+library crates to package in the @code{package} phase.  Specified crates are
+packaged from left to right, in case there's dependency among them.  For
+example, specifying @code{''("pcre2-sys" "pcre2")} will package
+@code{"pcre2-sys"} first and then @code{"pcre2"}.
 @end defvar
 
 @defvar chicken-build-system
