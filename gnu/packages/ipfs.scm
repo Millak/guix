@@ -118,6 +118,181 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
     (license (list license:expat             ; bbloom.go
                    license:public-domain)))) ; siphash.go
 
+(define-public go-github-com-ipfs-boxo
+  (package
+    (name "go-github-com-ipfs-boxo")
+    (version "0.28.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/boxo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "152g98g4j0pw5az1pc9xdrrzp4qd3cb9xflc98w69migq9il6k68"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packed as
+            ;; separated packages:
+            ;;
+            ;; - github.com/ipfs/boxo/cmd/boxo-migrate
+            ;; - github.com/ipfs/boxo/cmd/deprecator
+            ;; - github.com/ipfs/boxo/examples
+            (for-each delete-file-recursively
+                      (list "cmd" "examples"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:skip-build? #t
+      #:embed-files #~(list "sorted-network-list.bin")
+      #:test-subdirs #~(list "bitswap/..."
+                             "blockservice/..."
+                             "blockstore/..."
+                             "bootstrap/..."
+                             "chunker/..."
+                             "datastore/..."
+                             "exchange/..."
+                             "fetcher/..."
+                             "files/..."
+                             "filestore/..."
+                             ;; "gateway/..." ; missing packages
+                             "ipld/..."
+                             "ipns/..."
+                             "keystore/..."
+                             "mfs/..."
+                             ;; "namesys/..." ; missing packages
+                             "path/..."
+                             "peering/..."
+                             "pinning/..."
+                             "provider/..."
+                             ;; "routing/..." ; missing packages
+                             "tar/..."
+                             ;; "tracing/..." ; missing packages
+                             "util/..."
+                             "verifcid/...")
+      #:import-path "github.com/ipfs/boxo"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-alecthomas-units
+           go-github-com-cespare-xxhash-v2
+           go-github-com-crackcomm-go-gitignore
+           go-github-com-cskr-pubsub
+           go-github-com-dustin-go-humanize
+           go-github-com-filecoin-project-go-clock
+           go-github-com-gabriel-vasile-mimetype
+           go-github-com-gammazero-chanqueue
+           go-github-com-gammazero-deque
+           go-github-com-google-uuid
+           go-github-com-gorilla-mux
+           go-github-com-hashicorp-go-multierror
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-ipfs-bbloom
+           go-github-com-ipfs-go-bitfield
+           go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-cidutil
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-detect-race
+           go-github-com-ipfs-go-ipfs-delay
+           go-github-com-ipfs-go-ipfs-redirects-file
+           go-github-com-ipfs-go-ipld-format
+           go-github-com-ipfs-go-ipld-legacy
+           go-github-com-ipfs-go-log-v2
+           go-github-com-ipfs-go-metrics-interface
+           go-github-com-ipfs-go-peertaskqueue
+           go-github-com-ipfs-go-test
+           go-github-com-ipfs-go-unixfsnode
+           go-github-com-ipld-go-car
+           go-github-com-ipld-go-car-v2
+           go-github-com-ipld-go-codec-dagpb
+           go-github-com-ipld-go-ipld-prime
+           go-github-com-libp2p-go-buffer-pool
+           go-github-com-libp2p-go-doh-resolver
+           go-github-com-libp2p-go-libp2p
+           ;; go-github-com-libp2p-go-libp2p-kad-dht
+           go-github-com-libp2p-go-libp2p-record
+           go-github-com-libp2p-go-libp2p-routing-helpers
+           go-github-com-libp2p-go-libp2p-testing
+           go-github-com-libp2p-go-msgio
+           go-github-com-miekg-dns
+           go-github-com-mr-tron-base58
+           go-github-com-multiformats-go-base32
+           go-github-com-multiformats-go-multiaddr
+           go-github-com-multiformats-go-multiaddr-dns
+           go-github-com-multiformats-go-multibase
+           go-github-com-multiformats-go-multicodec
+           go-github-com-multiformats-go-multihash
+           go-github-com-multiformats-go-multistream
+           go-github-com-polydawn-refmt
+           go-github-com-prometheus-client-golang
+           go-github-com-samber-lo
+           ;; go-github-com-slok-go-http-metrics
+           go-github-com-spaolacci-murmur3
+           go-github-com-whyrusleeping-base32
+           go-github-com-whyrusleeping-chunker
+           go-go-opencensus-io
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-otel
+           ;; go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           ;; go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
+           ;; go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace
+           ;; go-go-opentelemetry-io-otel-exporters-zipkin
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
+           go-go-uber-org-multierr
+           go-go-uber-org-zap
+           go-golang-org-x-exp
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/ipfs/boxo")
+    (synopsis "Collection of reference libraries for building IPFS applications")
+    (description
+     "This package provides a set of libraries for building IPFS applications
+and implementations in Golang.
+
+Included subpackaged:
+@itemize
+@item @code{bitswap} - implementation of the bitswap protocol, the data
+trading module for ipfs
+
+@item @code{blockservice} - implements a BlockService interface that
+provides a single GetBlock/AddBlock interface that seamlessly retrieves data
+either locally or from a remote peer through the exchange
+
+@item @code{blockstore} - implements a thin wrapper over a datastore,
+giving a clean interface for Getting and Putting block objects
+
+@item @code{datastore/dshelp} - provides utilities for parsing and creating
+datastore keys used by go-ipfs
+
+@item @code{exchange} - defines the IPFS exchange interface
+
+@item @code{files} - file interfaces and utils used in Golang implementations
+of IPFS
+
+@item @code{filestore} - implements a Blockstore which is able to read certain
+blocks of data directly from its original location in the filesystem
+
+@item @code{ipld/unixfs} - provides additinoal @code{importer}, @code{io},
+@code{mod}, @code{hamt}, @code{archive} and @code{test} packages
+
+@item @code{ipld/merkledag} - implements the IPFS Merkle DAG data structures
+
+@item @code{ipns} - reference implementation of the IPNS Record and
+Verification specification
+
+@item @code{mfs} - implements an in memory model of a mutable IPFS filesystem
+
+@item @code{path} - contains utilities to work with IPFS paths
+@end itemize")
+    (license (list license:expat license:asl2.0))))
+
 (define-public go-github-com-ipfs-go-bitfield
   (package
     (name "go-github-com-ipfs-go-bitfield")
