@@ -25312,16 +25312,17 @@ Visium platform.")
 (define-public r-delayedmatrixstats
   (package
     (name "r-delayedmatrixstats")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DelayedMatrixStats" version))
        (sha256
         (base32
-         "01yrbmdj38r6h4n0nvg5njz8v6qmqcfdq3mgg07z1cslvad958d3"))))
+         "0a55pnqwxsav61vkwck6wkwf5r0q50dwsk2ln22z22w4hrlni320"))))
     (properties
-     `((upstream-name . "DelayedMatrixStats")))
+     '((upstream-name . "DelayedMatrixStats")
+       (updater-extra-native-inputs . ("r-hdf5array"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-delayedarray
@@ -25332,7 +25333,7 @@ Visium platform.")
            r-sparsearray
            r-sparsematrixstats))
     (native-inputs
-     (list r-hdf5array r-knitr r-testthat))
+     (list r-hdf5array r-knitr r-matrixstats r-testthat))
     (home-page "https://github.com/PeteHaitch/DelayedMatrixStats")
     (synopsis "Functions that apply to rows and columns of DelayedMatrix objects")
     (description
