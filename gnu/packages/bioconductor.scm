@@ -18816,7 +18816,9 @@ expression data sets.")
        (sha256
         (base32
          "1r00hcisp4i2q7nki9rkp753ms3g7biw9h9hxfwajfjqlwpb3l5y"))))
-    (properties `((upstream-name . "MLInterfaces")))
+    (properties
+     '((upstream-name . "MLInterfaces")
+       (updater-extra-native-inputs . ("r-e1071"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotate
@@ -18840,7 +18842,7 @@ expression data sets.")
            r-shiny
            r-summarizedexperiment
            r-threejs))
-    (native-inputs (list r-golubesets r-knitr r-testthat))
+    (native-inputs (list r-e1071 r-golubesets r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/MLInterfaces/")
     (synopsis "Interfaces to R machine learning procedures")
     (description
