@@ -4280,7 +4280,9 @@ datasets.")
        (uri (bioconductor-uri "alabaster.base" version))
        (sha256
         (base32 "02bgq5z7p2di62d8167qd02drhrwyjk3c9iq38g7lbk89vbi1f1h"))))
-    (properties `((upstream-name . "alabaster.base")))
+    (properties
+     '((upstream-name . "alabaster.base")
+       (updater-extra-native-inputs . ("r-matrix"))))
     (build-system r-build-system)
     (inputs (list zlib))
     (propagated-inputs (list r-alabaster-schemas
@@ -4290,7 +4292,7 @@ datasets.")
                              r-rhdf5
                              r-rhdf5lib
                              r-s4vectors))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-matrix r-testthat))
     (home-page "https://bioconductor.org/packages/alabaster.base")
     (synopsis "Save Bioconductor objects to file")
     (description
