@@ -4304,13 +4304,13 @@ applications can enrich this metadata with context-specific properties.")
 (define-public r-alabaster-matrix
   (package
     (name "r-alabaster-matrix")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "alabaster.matrix" version))
        (sha256
-        (base32 "1pa8ihsiipcmhlm4fczzmlbskai4qlwp7ld65qcznp1bawbxvfhc"))))
+        (base32 "1cppp2p8gpynyngxlyyxmgzvd27650z4bi5akw8bzimqphxfap3f"))))
     (properties `((upstream-name . "alabaster.matrix")))
     (build-system r-build-system)
     (propagated-inputs (list r-alabaster-base
@@ -4323,7 +4323,7 @@ applications can enrich this metadata with context-specific properties.")
                              r-s4arrays
                              r-s4vectors
                              r-sparsearray))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-biocsingular r-knitr r-residualmatrix r-testthat))
     (home-page "https://bioconductor.org/packages/alabaster.matrix")
     (synopsis "Load and save artifacts from file")
     (description
