@@ -162,6 +162,7 @@
 ;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025, Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23336,6 +23337,31 @@ write tooling that generates distribution files from Python projects.")
 resilience.  Lark can parse all context-free languages.  That means it is
 capable of parsing almost any programming language out there, and to
 some degree most natural languages too.")
+    (license license:expat)))
+
+(define-public python-find-libpython
+  (package
+    (name "python-find-libpython")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ktbarrett/find_libpython")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z1r9nix2z75sv41j97pnl6jgj2lk6k8la23vavxjpprsc9ld1dd"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel
+                         ;; tests
+                         python-pytest))
+    (home-page "https://github.com/ktbarrett/find_libpython")
+    (synopsis "Find the path to the @code{libpython} dynamic library")
+    (description
+     "@code{find_libpython} helps find the path to the
+@code{libpython} dynamic library for the current Python environment.  It is
+both a script and a Python package.")
     (license license:expat)))
 
 (define-public python-libcst
