@@ -365,6 +365,39 @@ spell-checking library.")
       (home-page "https://git.thanosapollo.org/hunspell-dict-el/")
       (license (list license:gpl2 license:gpl3)))))
 
+(define-public hunspell-dict-el-polytonic
+  (let ((commit "ddb787b6a28767773ff2b6ed0092a6957e4825e3"))
+    (package
+      (name "hunspell-dict-el-polytonic")
+      (version "0.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.thanosapollo.org/hunspell-dict-el-polytonic")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ik14rcpxxmp35314rcip38nr0z8i3375l5k9ajf6ywx8r5i3zr9"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (delete 'build)
+                    (delete 'configure)
+                    (replace 'install
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        (let* ((out (assoc-ref outputs "out"))
+                               (share (string-append out "/share/hunspell/")))
+                          (install-file "el_GR.aff" share)
+                          (install-file "el_GR.dic" share) #t))))
+         #:tests? #f))
+      (native-inputs (list hunspell ispell perl))
+      (synopsis "Hunspell Polytonic Greek/Hellenic dictionary")
+      (description "This package provides a dictionary for the Hunspell
+spell-checking library.")
+      (home-page "https://git.thanosapollo.org/hunspell-dict-el-polytonic")
+      (license (list license:gpl2 license:gpl3)))))
+
 (define* (hunspell-dictionary dict-name full-name #:key synopsis home-page license)
   (package
     (name (string-append
