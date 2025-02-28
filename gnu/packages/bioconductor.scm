@@ -13788,7 +13788,10 @@ methylation data.")
        (uri (bioconductor-uri "transcriptR" version))
        (sha256
         (base32 "00b4wgfvn8785l01vyx6n05l5lpngpk4gp5y2hpkcxrh49q19b45"))))
-    (properties `((upstream-name . "transcriptR")))
+    (properties
+     '((upstream-name . "transcriptR")
+       (updater-extra-native-inputs
+        . ("r-txdb-hsapiens-ucsc-hg19-knowngene"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics
@@ -13806,7 +13809,8 @@ methylation data.")
            r-rsamtools
            r-rtracklayer
            r-s4vectors))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs
+     (list r-knitr r-testthat r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "https://bioconductor.org/packages/transcriptR")
     (synopsis "Primary transcripts detection and quantification")
     (description
