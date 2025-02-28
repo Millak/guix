@@ -483,6 +483,34 @@ hierarchy of the keys.")
 @url{https://github.com/ipfs/go-metrics-interface}.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-fs-lock
+  (package
+    (name "go-github-com-ipfs-go-fs-lock")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-fs-lock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zf52cq7j59pwdy4wd8h5gym8ph2big0nma05xwl61wrsyjwsngz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs/go-fs-lock"))
+    (propagated-inputs
+     (list go-github-com-ipfs-go-ipfs-util
+           go-github-com-ipfs-go-log-v2
+           go-go4-org
+           go-golang-org-x-sys))
+    (home-page "https://github.com/ipfs/go-fs-lock")
+    (synopsis "Filesystem based locking")
+    (description
+     "This package implements a filesystem based locking.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-blockstore
   (package
     (name "go-github-com-ipfs-go-ipfs-blockstore")
