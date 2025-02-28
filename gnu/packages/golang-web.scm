@@ -9716,6 +9716,63 @@ lists)
 @end itemize")
     (license license:mpl2.0)))
 
+(define-public go-go-opencensus-io
+  (package
+    (name "go-go-opencensus-io")
+    (version "0.24.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/census-instrumentation/opencensus-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1923j8v214fyk9qlw0lfva6ah8p7s8cfkrysiada5pp4jim4k4xi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opencensus.io"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Tests requiring networking.
+               (list "TestAgainstSpecs/Successful_GET_call_to_https.*"
+                     "TestAgainstSpecs/Successfully_POST_call_to_https.*")
+               "|"))
+      #:test-subdirs
+      #~(list "exporter/..."
+              "internal"
+              ;; "internal/testpb/..." ; missing packages
+              "metric/..."
+              ;; "plugin/ocgrpc/..."   ; missing packages
+              "plugin/ochttp/..."
+              "plugin/runmetrics/..."
+              "resource/..."
+              "stats/..."
+              "tag"
+              "trace/..."
+              ;; "zpages"              ; missing packages
+              "zpages/internal/...")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (propagated-inputs
+     (list go-github-com-golang-groupcache
+           go-github-com-golang-protobuf
+           go-github-com-google-go-cmp
+           go-github-com-stretchr-testify
+           go-golang-org-x-net
+           #; go-google-golang-org-grpc)) ; not packaged, long journey
+    (home-page "https://opencensus.io/")
+    (synopsis "Stats collection and distributed tracing framework")
+    (description
+     "Package opencensus contains Go support for @code{OpenCensus}.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel
   (package
     (name "go-go-opentelemetry-io-otel")
