@@ -63,6 +63,7 @@
   #:use-module (gnu packages digest)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages machine-learning)
@@ -1431,6 +1432,41 @@ originally defined by the CLHEP project.")
      "@code{Particle} provides a pythonic interface to the Particle Data Group
 (PDG) particle data tables and particle identification codes, with extended
 particle information and extra goodies.")
+    (license license:bsd-3)))
+
+(define-public python-decaylanguage
+  (package
+    (name "python-decaylanguage")
+    (version "0.18.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "decaylanguage" version))
+       (sha256
+        (base32 "0kc9i9k51kg2zv8dwywpigiipxzmyxpzb101imjsvv1licip7b8v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; This file fails to be collected with "DeprecationWarning: setDaemon()
+      ;; is deprecated, set the daemon attribute instead".
+      #:test-flags #~(list "--ignore" "tests/test_convert.py")))
+    (propagated-inputs (list python-attrs
+                             python-graphviz
+                             python-hepunits
+                             python-lark
+                             python-numpy
+                             python-pandas
+                             python-particle
+                             python-plumbum))
+    (native-inputs (list python-hatch-vcs
+                         python-hatchling
+                         python-pytest))
+    (home-page "https://decaylanguage.readthedocs.io/en/latest/")
+    (synopsis "Language to describe, manipulate and convert particle decays")
+    (description "DecayLanguage implements a language to describe and convert
+particle decays between digital representations, effectively making it
+possible to interoperate several fitting programs.  Particular interest is
+given to programs dedicated to amplitude analyses.")
     (license license:bsd-3)))
 
 (define-public python-trimesh
