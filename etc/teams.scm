@@ -672,6 +672,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "me@tobias.gr")
   core mentors)
 
+(define-member (person "Steve George"
+                       "steve@futurile.net")
+  rust)
+
 (define-member (person "Leo Famulari"
                        "leo@famulari.name")
   kernel)
