@@ -2,7 +2,7 @@
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2021, 2023, 2024 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2021, 2023-2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Denis Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
@@ -73,6 +73,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages lxqt)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages mtools)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages ncurses)
@@ -86,6 +87,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -1616,3 +1618,35 @@ modern instrumentation and data acquision systems using Ethernet.")
 HID compatible USB relay modules available with different number of
 output relays.")
     (license license:gpl2+)))
+
+(define-public python-usbrelay
+  (package
+    (inherit usbrelay)
+    (name "python-usbrelay")
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (inputs
+     (list usbrelay))
+    (propagated-inputs
+     (list python-paho-mqtt))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'install-daemon
+            (lambda _
+              (install-file "usbrelayd.8"
+                            (string-append #$output "/share/man/man8"))
+              (install-file "usbrelayd"
+                            (string-append #$output "/sbin"))
+              (chmod (string-append #$output "/sbin/usbrelayd") #o555)))
+          (add-after 'install-daemon 'chdir
+            (lambda _
+              (chdir "usbrelay_py"))))))
+    (synopsis "Python library to control USB relay modules")
+    (description
+     "This is the Python extension to @code{usbrelay}, a Linux driver based on
+hidapi for a variety of inexpensive HID compatible USB relay modules.  This
+package also includes @code{usbrelayd}.")))
