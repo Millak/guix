@@ -16193,8 +16193,27 @@ genes or proteins in these datasets.")
               (sha256
                (base32
                 "0ai6p7q4iva420wnm0008p1vivd72gc1anwhzzsmy14bxr52rwbx"))))
-    (properties `((upstream-name . "plyranges")))
+    (properties
+     '((upstream-name . "plyranges")
+       (updater-extra-native-inputs . ("r-helloranges"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; These fail because seqinfo is not defined.
+             (substitute* "tests/testthat/test-io-bw.R"
+               ((".*reading/ writing bigwig files returns correct GRanges.*" m)
+                (string-append m "skip('guix')\n")))
+             (substitute* "tests/testthat/test-io-gff.R"
+               ((".*reading GFF files returns correct GRanges.*" m)
+                (string-append m "skip('guix')\n")))
+             ;; Could not find function "WIGFile"
+             (substitute* "tests/testthat/test-io-wig.R"
+               ((".*reading WIG files.*" m)
+                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs (list r-biocgenerics
                              r-dplyr
                              r-genomeinfodb
@@ -16207,7 +16226,7 @@ genes or proteins in these datasets.")
                              r-rtracklayer
                              r-s4vectors
                              r-tidyselect))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-helloranges r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/plyranges")
     (synopsis "Fluent interface for manipulating GenomicRanges")
     (description
