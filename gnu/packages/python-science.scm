@@ -1291,6 +1291,30 @@ not usually a runtime dependency, but only a type checking, testing, and/or
 docs dependency in support of other libraries.")
     (license license:bsd-3)))
 
+(define-public python-histoprint
+  (package
+    (name "python-histoprint")
+    (version "2.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "histoprint" version))
+       (sha256
+        (base32 "07d2lk64gwhjvw4wccvwks3j4ig7g99q627jjxz4ans5a29p5pz1"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-click python-numpy python-uhi))
+    (native-inputs (list python-awkward
+                         python-boost-histogram
+                         python-hatch-vcs
+                         python-hatchling
+                         python-pytest
+                         python-rich))
+    (home-page "https://github.com/scikit-hep/histoprint")
+    (synopsis "Pretty print histograms to the console")
+    (description "Histoprint uses a mix of terminal color codes and Unicode
+trickery (i.e. combining characters) to plot overlaying histograms.")
+    (license license:expat)))
+
 (define-public python-tdda
   (package
     (name "python-tdda")
