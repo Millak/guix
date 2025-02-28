@@ -174,7 +174,12 @@ chk_require()
 
 add_init_sys_require()
 { # Add the elements of FOO_INIT_SYS to REQUIRE
-    local init_require="${INIT_SYS}_REQUIRE[@]"
+
+    # Convert the init system command name captured in INIT_SYS in
+    # chk_init_sys to uppercase, with hyphens replaced by underscores.
+    local init_require=${INIT_SYS^^}_REQUIRE[@]
+    init_require=${init_require//-/_}
+
     if [[ -n "$init_require" ]]; then
         # Have to add piecemeal because ${!foo[@]} performs direct array key
         # expansion, not indirect plain array expansion.
