@@ -24560,7 +24560,9 @@ objects from the @code{graph} package.")
               (sha256
                (base32
                 "07qzplkpq1zbh671b44c1qa1k47jqqmyrrrdyixjz0fqj0ikw6ya"))))
-    (properties `((upstream-name . "fishpond")))
+    (properties
+     '((upstream-name . "fishpond")
+       (updater-extra-native-inputs . ("r-tximportdata"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind
@@ -24575,7 +24577,8 @@ objects from the @code{graph} package.")
            r-singlecellexperiment
            r-summarizedexperiment
            r-svmisc))
-    (native-inputs (list r-data-table r-deseq2 r-knitr r-samr r-testthat))
+    (native-inputs (list r-data-table r-deseq2 r-knitr r-samr r-testthat
+                         r-tximportdata))
     (home-page "https://github.com/mikelove/fishpond")
     (synopsis "Downstream methods and tools for expression data")
     (description
