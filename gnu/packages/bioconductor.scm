@@ -14362,7 +14362,9 @@ dependencies between GO terms can be implemented and applied.")
        (uri (bioconductor-uri "txdbmaker" version))
        (sha256
         (base32 "09ix8lzc7rgkxnrk8s53ql0jd96h89wbqvqqpax1i7d5jw15lja6"))))
-    (properties `((upstream-name . "txdbmaker")))
+    (properties
+     '((upstream-name . "txdbmaker")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -14390,7 +14392,7 @@ dependencies between GO terms can be implemented and applied.")
                              r-rtracklayer
                              r-s4vectors
                              r-ucsc-utils))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/txdbmaker")
     (synopsis "Tools for making TxDb objects from genomic annotations")
     (description
