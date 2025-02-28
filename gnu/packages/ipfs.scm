@@ -1266,10 +1266,9 @@ Graphs, DAG} data structures as specified in
     (arguments
      (list
       #:import-path "github.com/ipfs/go-peertaskqueue"))
-    (native-inputs
-     (list go-github-com-filecoin-project-go-clock))
     (propagated-inputs
-     (list go-github-com-ipfs-go-ipfs-pq
+     (list go-github-com-filecoin-project-go-clock
+           go-github-com-ipfs-go-ipfs-pq
            go-github-com-libp2p-go-libp2p))
     (home-page "https://github.com/ipfs/go-peertaskqueue")
     (synopsis "Prioritized queue of abstract tasks distributed among peers")
