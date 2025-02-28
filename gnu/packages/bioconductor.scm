@@ -4660,8 +4660,21 @@ these biases and construct statistically consistent estimators.")
               (sha256
                (base32
                 "02dbfx159b9ivlzgyhd1ikhw2ciq6q7f3b3sdq4hsp49yp6ps7nl"))))
-    (properties `((upstream-name . "animalcules")))
+    (properties
+     '((upstream-name . "animalcules")
+       (updater-extra-native-inputs . ("r-glmnet"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'skip-bad-tests
+           (lambda _
+             ;; This test needs Internet access.
+             (with-directory-excursion "tests/testthat"
+               (substitute* "test-examples.R"
+                 ((".*find_taxonomy\\(\\) is working.*" m)
+                  (string-append m "skip('guix')\n")))))))))
     (propagated-inputs
      (list r-ape
            r-assertthat
@@ -4694,7 +4707,7 @@ these biases and construct statistically consistent estimators.")
            r-umap
            r-vegan
            r-xml))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-glmnet r-knitr r-testthat))
     (home-page "https://github.com/compbiomed/animalcules")
     (synopsis "Interactive microbiome analysis toolkit")
     (description
