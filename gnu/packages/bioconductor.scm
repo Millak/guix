@@ -4996,6 +4996,8 @@ plants.  The method has been specifically designed to:
                 "1md4m9ln1mpxf7d2h7jnsjyi4zrviiqn9fzk1gkz2n6qj7jwpqbb"))))
     (properties `((upstream-name . "alpine")))
     (build-system r-build-system)
+    ;; Tests require Internet access because alpineData uses ExperimentHub.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biostrings
            r-genomeinfodb
