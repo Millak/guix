@@ -27306,7 +27306,9 @@ using aCGH or sequencing.")
        (sha256
         (base32
          "08mhr9ichh2kynnwchmcqf4l0sn38v5sww6995jwqfyxy5vqvx4x"))))
-    (properties `((upstream-name . "BioNERO")))
+    (properties
+     '((upstream-name . "BioNERO")
+       (updater-extra-native-inputs . ("r-networkd3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocparallel
@@ -27330,7 +27332,7 @@ using aCGH or sequencing.")
            r-sva
            r-wgcna))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-networkd3 r-testthat))
     (home-page "https://github.com/almeidasilvaf/BioNERO")
     (synopsis "Biological network reconstruction omnibus")
     (description
