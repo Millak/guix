@@ -607,6 +607,43 @@ used in @code{go-ipfs} and related packages to refer to a typed hunk of data.")
 with @url{https://github.com/ipld/cid, CIDs}.")
     (license license:expat)))
 
+(define-public go-github-com-ipfs-go-ipfs-cmds
+  (package
+    (name "go-github-com-ipfs-go-ipfs-cmds")
+    (version "0.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs/go-ipfs-cmds")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0npgcwzxzgvygl9r9h5kbnfl1dh0hygmwk1jj1hwznyvj47x6lwl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "github.com/ipfs/go-ipfs-cmds"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (propagated-inputs
+     (list go-github-com-ipfs-boxo
+           go-github-com-ipfs-go-log
+           go-github-com-rs-cors
+           go-github-com-texttheater-golang-levenshtein
+           go-golang-org-x-term))
+    (home-page "https://github.com/ipfs/go-ipfs-cmds")
+    (synopsis "IPFS commands package")
+    (description
+     "Package cmds helps building both standalone and client-server
+applications.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-ipfs-delay
   (package
     (name "go-github-com-ipfs-go-ipfs-delay")
