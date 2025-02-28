@@ -15153,7 +15153,7 @@ signal in the input, that lead to spurious peaks during peak calling.")
          "1whb4k54wm21k74r6qyng130nnaii9czh9dhvl1x7hnqa8gq0dx7"))))
     (properties
      `((upstream-name . "DiffBind")
-       (updater-extra-native-inputs . ("r-biocstyle"))))
+       (updater-extra-native-inputs . ("r-biocstyle" "r-csaw" "r-edger"))))
     (build-system r-build-system)
     ;; Vignettes fail with: "Only one peakset meets specified criteria."
     (arguments (list #:test-types '(list "tests")))
@@ -15181,7 +15181,7 @@ signal in the input, that lead to spurious peaks during peak calling.")
            r-s4vectors
            r-summarizedexperiment
            r-systempiper))
-    (native-inputs (list r-biocstyle r-testthat r-xtable))
+    (native-inputs (list r-biocstyle r-csaw r-edger r-testthat r-xtable))
     (home-page "https://bioconductor.org/packages/DiffBind")
     (synopsis "Differential binding analysis of ChIP-Seq peak data")
     (description
