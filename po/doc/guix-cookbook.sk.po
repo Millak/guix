@@ -4,13 +4,13 @@
 # Marek Felšöci <marek@felsoci.sk>, 2021, 2022, 2023, 2024, 2025.
 # Julien Lepiller <fedora-account@lepiller.eu>, 2023.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2024, 2025.
-# Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2024.
+# Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2024, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-01-12 03:18+0000\n"
-"PO-Revision-Date: 2025-01-05 23:30+0000\n"
+"POT-Creation-Date: 2025-02-20 03:18+0000\n"
+"PO-Revision-Date: 2025-02-27 18:04+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Slovak <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/sk/>\n"
 "Language: sk\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 5.9.1\n"
+"X-Generator: Weblate 5.10\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -86,8 +86,8 @@ msgstr "Tento dokument obsahuje návody a podrobné príklady použitia GNU@tie{
 #.  You can replace the following paragraph with information on
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:78
-msgid "This manual is also available in French (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), German (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), Korean (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), Slovak (@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}), and Swedish (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}).  If you would like to translate this document in your native language, consider joining @uref{https://translate.fedoraproject.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix reference manual})."
-msgstr "Táto príručka je dostupná aj v angličtine (@pxref{Top,,, guix-cookbook, GNU Guix Cookbook}), francúzštine (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), nemčine (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), kórejčine (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), brazílskej portugalčine (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}) a švédčine (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}).  Ak chcete pomôcť s prekladom tohto dokumentu do vášho rodného jazyka, pripojte sa k @uref{https://translate.fedoraproject.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix reference manual})."
+msgid "This manual is also available in French (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), German (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), Korean (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), Russian (@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}), Slovak (@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}), and Swedish (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}).  If you would like to translate this document in your native language, consider joining @uref{https://translate.fedoraproject.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix Reference Manual})."
+msgstr "Táto príručka je dostupná aj v angličtine (@pxref{Top,,, guix-cookbook, GNU Guix Cookbook}), francúzštine (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), nemčine (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), kórejčine (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), brazílskej portugalčine (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), ruštine (@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}) a švédčine (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}).  Ak chcete pomôcť s prekladom tohto dokumentu do vášho rodného jazyka, pripojte sa k @uref{https://translate.fedoraproject.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix Reference Manual})."
 
 #. type: chapter
 #: guix-git/doc/guix-cookbook.texi:90 guix-git/doc/guix-cookbook.texi:99
@@ -3548,7 +3548,7 @@ msgstr ""
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1838
-msgid "In the above example @code{%file-systems} is a collection of flags enabling different file system support, @code{%efi-support} enables EFI support and @code{%emulation} enables a x86_64-linux machine to act in 32-bit mode also.  The @code{default-extra-linux-options} procedure is the one defined above, which had to be used to avoid loosing the default configuration options of the @code{extra-options} keyword."
+msgid "In the above example @code{%file-systems} is a collection of flags enabling different file system support, @code{%efi-support} enables EFI support and @code{%emulation} enables a x86_64-linux machine to act in 32-bit mode also.  The @code{default-extra-linux-options} procedure is the one defined above, which had to be used to avoid losing the default configuration options of the @code{extra-options} keyword."
 msgstr "V hore uvedenom príklade je @code{%file-systems} zbierkou volieb povoľujúcich podporu rôznych súborových systémov, @code{%efi-support} povoľuje podporu EFI a @code{%emulation} povoľuje strojom x86_64-linux pracovať v 32-bitovom režime.  Postup @code{default-extra-linux-options} je ten, ktorý sme zadali už predtým, aby sme zabránili strate prednastavených volieb kľúčového slova @code{extra-options}."
 
 #. type: Plain text
