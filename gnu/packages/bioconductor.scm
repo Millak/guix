@@ -13239,7 +13239,9 @@ with cell- and gene-level metadata.")
               (sha256
                (base32
                 "09l8w1b2n8kwhmn8373hfddj38gdddar0jfq0cz80kqb98xh3d37"))))
-    (properties `((upstream-name . "scry")))
+    (properties
+     '((upstream-name . "scry")
+       (updater-extra-native-inputs . ("r-hdf5array"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocsingular
@@ -13248,7 +13250,7 @@ with cell- and gene-level metadata.")
            r-matrix
            r-singlecellexperiment
            r-summarizedexperiment))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-hdf5array r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/scry.html")
     (synopsis "Small-count analysis methods for high-dimensional data")
     (description
