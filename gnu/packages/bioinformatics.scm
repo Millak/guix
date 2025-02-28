@@ -1072,6 +1072,16 @@ simultaneously considered.")
           (base32 "0irarlnxfnasa755adxsn67rxsy01zwhjhw18g4cag08cqiyyw41"))))
       (properties `((upstream-name . "ewastools")))
       (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'disable-bad-tests
+             (lambda _
+               ;; Test data are missing.
+               (substitute* "tests/testthat/test-minfi-pipeline.R"
+                 ((".*compatibility with minfi.*" m)
+                  (string-append m "skip('guix')\n"))))))))
       (propagated-inputs
        (list r-data-table
              r-igraph
