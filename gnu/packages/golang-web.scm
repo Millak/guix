@@ -9773,6 +9773,51 @@ lists)
      "Package opencensus contains Go support for @code{OpenCensus}.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+  (package
+    (name "go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp")
+    (version "0.59.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+             (commit (go-version->git-ref version
+                                          #:subdir
+                                          "instrumentation/net/http/otelhttp"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17kyba5816983migninw6v2si2d28j32973c0x8i08fswrjz5dm0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path
+      "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+      #:unpack-path "go.opentelemetry.io/contrib"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (delete-file-recursively
+                 "instrumentation/net/http/otelhttp/example")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric))
+    (propagated-inputs
+     (list go-github-com-felixge-httpsnoop
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-trace))
+    (home-page "https://opentelemetry.io/")
+    (synopsis "Golang std @code{http.Handler} wrapper library")
+    (description
+     "Package otelhttp provides an http.Handler and functions that are
+intended to be used to add tracing by wrapping existing handlers (with
+Handler) and routes @code{WithRouteTag}.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel
   (package
     (name "go-go-opentelemetry-io-otel")
