@@ -1845,11 +1845,11 @@ their levels to be controlled individually.")
 @url{https://github.com/libp2p/specs,libp2p}.")
     (license license:expat)))
 
-;; For kubo@0.31.0
-(define-public go-github-com-libp2p-go-libp2p-0.36
+;; For kubo@0.32.0
+(define-public go-github-com-libp2p-go-libp2p-0.38
   (hidden-package (package/inherit go-github-com-libp2p-go-libp2p
     (name "go-github-com-libp2p-go-libp2p")
-    (version "0.36.5")
+    (version "0.38.2")
     (source
      (origin
        (method git-fetch)
@@ -1858,7 +1858,7 @@ their levels to be controlled individually.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fmalwb0g0nykd1v22nm5gmif9mvapshsja8w1ihlm8ahbqq9vb2"))))
+        (base32 "1c88qgkvyvdjsy5bds3ylcikpj00jxhyxnv7alb6x860xm9703xk"))))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs go-github-com-libp2p-go-libp2p)
        (replace "go-github-com-libp2p-go-yamux-v5"
@@ -2282,15 +2282,16 @@ types.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.31.0")
+    (version "0.32.0")
     (source
      (origin
        (method url-fetch/tarbomb)
        (uri (string-append
-             "https://dist.ipfs.io/kubo/v" version
+             ;; Permament redirection from <https://ipfs.io>.
+             "https://dist.ipfs.tech/kubo//v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "0271rh54xbwikbllzsjnkjlj29cb2xy5lnhia47qlf2ymvl48kvf"))
+        (base32 "0la7ndrvi17fhbsss0q5qhl47phni5zqbyr4n5svcznyin58d4g8"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
@@ -2303,6 +2304,7 @@ types.")
                              "vendor/github.com/benbjohnson"
                              "vendor/github.com/beorn7"
                              "vendor/github.com/blang"
+                             "vendor/github.com/caddyserver/certmagic"
                              "vendor/github.com/cenkalti"
                              "vendor/github.com/ceramicnetwork"
                              "vendor/github.com/cespare"
@@ -2391,10 +2393,10 @@ types.")
                              "vendor/github.com/marten-seemann"
                              "vendor/github.com/mattn"
                              "vendor/github.com/mgutz"
+                             "vendor/github.com/mholt"
                              "vendor/github.com/miekg"
                              "vendor/github.com/mikioh"
                              "vendor/github.com/minio"
-                             "vendor/github.com/mitchellh"
                              "vendor/github.com/mr-tron"
                              "vendor/github.com/multiformats"
                              "vendor/github.com/munnerz"
@@ -2457,15 +2459,17 @@ types.")
                   ;;
                   go-bazil-org-fuse
                   ;;go-contrib-go-opencensus-io-exporter-prometheus
-                  go-github-com-benbjohnson-clock
                   go-github-com-blang-semver-v4
+                  go-github-com-caddyserver-certmagic
                   go-github-com-cenkalti-backoff-v4
                   go-github-com-ceramicnetwork-go-dag-jose
                   go-github-com-cheggaaa-pb
+                  ;;go-github-com-cockroachdb-pebble
                   go-github-com-coreos-go-systemd-v22
                   go-github-com-dustin-go-humanize
                   go-github-com-elgris-jsondiff
                   go-github-com-facebookgo-atomicfile
+                  go-github-com-filecoin-project-go-clock
                   go-github-com-fsnotify-fsnotify
                   go-github-com-google-uuid
                   go-github-com-hashicorp-go-multierror
@@ -2480,6 +2484,7 @@ types.")
                   go-github-com-ipfs-go-ds-flatfs
                   go-github-com-ipfs-go-ds-leveldb
                   go-github-com-ipfs-go-ds-measure
+                  ;;go-github-com-ipfs-go-ds-pebble
                   go-github-com-ipfs-go-fs-lock
                   ;;go-github-com-ipfs-go-ipfs-cmds
                   go-github-com-ipfs-go-ipld-cbor
@@ -2490,6 +2495,7 @@ types.")
                   go-github-com-ipfs-go-log-v2
                   go-github-com-ipfs-go-metrics-interface
                   go-github-com-ipfs-go-metrics-prometheus
+                  go-github-com-ipfs-go-test
                   go-github-com-ipfs-go-unixfsnode
                   ;;go-github-com-ipfs-shipyard-nopfs
                   ;;go-github-com-ipfs-shipyard-nopfs-ipfs
@@ -2497,12 +2503,12 @@ types.")
                   go-github-com-ipld-go-car-v2
                   go-github-com-ipld-go-codec-dagpb
                   go-github-com-ipld-go-ipld-prime
-                  go-github-com-jbenet-go-random
+                  ;;go-github-com-ipshipyard-p2p-forge
                   go-github-com-jbenet-go-temp-err-catcher
                   go-github-com-jbenet-goprocess
                   go-github-com-julienschmidt-httprouter
                   go-github-com-libp2p-go-doh-resolver
-                  go-github-com-libp2p-go-libp2p-0.36
+                  go-github-com-libp2p-go-libp2p-0.38
                   go-github-com-libp2p-go-libp2p-http
                   ;;go-github-com-libp2p-go-libp2p-kad-dht
                   ;;go-github-com-libp2p-go-libp2p-kbucket
@@ -2512,7 +2518,6 @@ types.")
                   go-github-com-libp2p-go-libp2p-routing-helpers
                   go-github-com-libp2p-go-libp2p-testing
                   go-github-com-libp2p-go-socket-activation
-                  go-github-com-mitchellh-go-homedir
                   go-github-com-multiformats-go-multiaddr
                   go-github-com-multiformats-go-multiaddr-dns
                   go-github-com-multiformats-go-multibase
