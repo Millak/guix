@@ -8607,8 +8607,8 @@ pure Common Lisp.")
          ((#:tests? _ #f) #f))))))
 
 (define-public sbcl-cl-pdf
-  (let ((commit "ee904a118a0f060279ad9d253a3e8e3997609213")
-        (revision "3"))
+  (let ((commit "0a1cd33b658c7101766781c534455d4d9e5972bf")
+        (revision "4"))
     (package
       (name "sbcl-cl-pdf")
       (version (git-version "2.0.0" revision commit))
@@ -8620,7 +8620,7 @@ pure Common Lisp.")
                (commit commit)))
          (file-name (git-file-name "cl-pdf" version))
          (sha256
-          (base32 "0j7hbqv6yzrgx0inqinpw8h22728l53ccciw6iymzz4g92j9fzlq"))))
+          (base32 "1x88fvk3kxi3k6a84iajb6myw67z8n3plfidq8d4c26ymiz0kvfm"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-iterate sbcl-zpb-ttf))
