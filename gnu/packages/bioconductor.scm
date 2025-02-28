@@ -13642,6 +13642,14 @@ level.")
                 "0zspiaj7s9ij466dl25k5lrr1r2gpav2dwpmzhqpqpm0pg436xpg"))))
     (properties `((upstream-name . "TCGAutils")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; These tests require Internet access.
+             (delete-file "tests/testthat/test-ID-translation.R"))))))
     (propagated-inputs (list r-annotationdbi
                              r-biocbaseutils
                              r-biocgenerics
