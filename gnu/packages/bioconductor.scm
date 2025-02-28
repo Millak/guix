@@ -23560,6 +23560,9 @@ monograph.")
     (properties
      `((upstream-name . "BiocCheck")))
     (build-system r-build-system)
+    ;; One of the tests requires Internet access to validate Bioconductor
+    ;; version.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biocbaseutils
            r-biocfilecache
