@@ -1846,6 +1846,29 @@ their levels to be controlled individually.")
 @url{https://github.com/libp2p/specs,libp2p}.")
     (license license:expat)))
 
+;; For kubo@0.31.0
+(define-public go-github-com-libp2p-go-libp2p-0.36
+  (hidden-package (package/inherit go-github-com-libp2p-go-libp2p
+    (name "go-github-com-libp2p-go-libp2p")
+    (version "0.36.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libp2p/go-libp2p")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fmalwb0g0nykd1v22nm5gmif9mvapshsja8w1ihlm8ahbqq9vb2"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs go-github-com-libp2p-go-libp2p)
+       (replace "go-github-com-libp2p-go-yamux-v5"
+         go-github-com-libp2p-go-yamux-v4)
+       (replace "go-github-com-pion-ice-v4"
+         go-github-com-pion-ice-v2)
+       (replace "go-github-com-pion-webrtc-v4"
+         go-github-com-pion-webrtc-v3))))))
+
 (define-public go-github-com-libp2p-go-libp2p-gostream
   (package
     (name "go-github-com-libp2p-go-libp2p-gostream")
@@ -2454,7 +2477,7 @@ types.")
                   go-github-com-jbenet-goprocess
                   go-github-com-julienschmidt-httprouter
                   go-github-com-libp2p-go-doh-resolver
-                  go-github-com-libp2p-go-libp2p
+                  go-github-com-libp2p-go-libp2p-0.36
                   ;;go-github-com-libp2p-go-libp2p-http
                   ;;go-github-com-libp2p-go-libp2p-kad-dht
                   ;;go-github-com-libp2p-go-libp2p-kbucket
