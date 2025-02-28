@@ -18827,11 +18827,11 @@ activity prediction from transcriptomics data, and its R implementation
     (license license:expat)))
 
 (define-public r-liana
-  (let ((commit "10d81773e0874de676eb106ce56e3cf9d4fe01d3")
+  (let ((commit "6cab46c54234f861ea176c3de77c4b8aa45ecb3d")
         (revision "1"))
     (package
       (name "r-liana")
-      (version (git-version "0.1.11" revision commit))
+      (version (git-version "0.1.14" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -18840,8 +18840,11 @@ activity prediction from transcriptomics data, and its R implementation
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0b0m8i9kava36s3cn6vnn5vmiwvqwxmcq8jacy6ccshsji3kgp09"))))
-      (properties `((upstream-name . "liana")))
+                  "1zkvkkvxyhn60b2rribz5fhvm9kvscq8xz6is440080ihpyfyadz"))))
+      (properties
+       '((upstream-name . "liana")
+         (updater-extra-native-inputs
+          . ("r-delayedmatrixstats" "r-sparsematrixstats"))))
       (build-system r-build-system)
       (arguments
        (list
@@ -18849,7 +18852,22 @@ activity prediction from transcriptomics data, and its R implementation
         '(modify-phases %standard-phases
            ;; This is needed to find ~/.config/OmnipathR/omnipathr.yml
            (add-after 'unpack 'set-HOME
-             (lambda _ (setenv "HOME" "/tmp"))))))
+             (lambda _ (setenv "HOME" "/tmp")))
+           (add-after 'unpack 'disable-bad-tests
+             (lambda _
+               ;; These tests attempt to connect to the Internet.
+               (substitute* "tests/testthat/test-liana_utils.R"
+                 ((".*Test liana pipe.*" m)
+                  (string-append m "skip('guix')\n")))
+               (substitute* "tests/testthat/test-liana_tensor.R"
+                 ((".*Test tensor wrapper.*" m)
+                  (string-append m "skip('guix')\n"))
+                 ((".*Test decompose_tensor.*" m)
+                  (string-append m "skip('guix')\n")))
+               ;; XXX: This test returns a data.frame instead of an error.
+               (substitute* "tests/testthat/test-liana_cytotalk.R"
+                 ((".*Test Cytotalk Wrap.*" m)
+                  (string-append m "skip('guix')\n"))))))))
       (propagated-inputs
        (list r-basilisk
              r-basilisk-utils
@@ -18872,7 +18890,12 @@ activity prediction from transcriptomics data, and its R implementation
              r-tibble
              r-tidyr
              r-tidyselect))
-      (native-inputs (list r-knitr r-testthat))
+      (native-inputs
+       (list r-delayedmatrixstats
+             r-knitr
+             r-seurat
+             r-sparsematrixstats
+             r-testthat))
       (home-page "https://github.com/saezlab/liana/")
       (synopsis "LIANA: a LIgand-receptor ANalysis frAmework")
       (description
