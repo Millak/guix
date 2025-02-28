@@ -9903,6 +9903,18 @@ logging library.  Instead, install one of the bridges listed in the
 [registry], and use the associated logging library.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-metric
+  (package/inherit go-go-opentelemetry-io-otel
+    (name "go-go-opentelemetry-io-otel-metric")
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/metric"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (synopsis "OpenTelemetry Metric API")
+    (description
+     "Package metric provides an implementation of the metric part of the
+OpenTelemetry API.")))
+
 (define-public go-go-opentelemetry-io-otel-sdk
   (package
     (name "go-go-opentelemetry-io-otel-sdk")
