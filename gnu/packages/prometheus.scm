@@ -52,6 +52,36 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-contrib-go-opencensus-io-exporter-prometheus
+  (package
+    (name "go-contrib-go-opencensus-io-exporter-prometheus")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://github.com/census-ecosystem/opencensus-go-exporter-prometheus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n09d2nbng4bws9vi2ddq2ffv9hr0c3i9mif6fkjr4chyyyiy8ik"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "contrib.go.opencensus.io/exporter/prometheus"))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-statsd-exporter
+           go-go-opencensus-io))
+    (home-page "https://github.com/census-ecosystem/opencensus-go-exporter-prometheus")
+    (synopsis "OpenCensus Go Prometheus Exporter")
+    (description
+     "Package prometheus contains a Prometheus exporter that supports
+exporting @code{OpenCensus} views as Prometheus metrics.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-mwitkow-go-conntrack
   (package
     (name "go-github-com-mwitkow-go-conntrack")
