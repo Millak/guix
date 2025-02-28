@@ -7509,7 +7509,11 @@ anniversaries.")
                      "TestNodeCache"
                      "TestProfiler"
                      "TestSoftwareProfiler"
-                     "TestTraceFSMount")
+                     "TestTraceFSMount"
+                     #$@(if (target-arm?)
+                            '("TestDataTLB"
+                              "TestInstructionTLB")
+                            '()))
                "|"))))
     (native-inputs
      (list go-github-com-stretchr-testify))
