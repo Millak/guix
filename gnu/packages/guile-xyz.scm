@@ -1640,7 +1640,8 @@ messaging library.")
   (package
     (inherit guile-simple-zmq)
     (name "guile2.2-simple-zmq")
-    (native-inputs (list guile-2.2))))
+    (native-inputs (modify-inputs (package-native-inputs guile-simple-zmq)
+                     (replace "guile" guile-2.2)))))
 
 (define-public jupyter-guile-kernel
   (let ((commit "f25fb90b95529b17a006a807bd04e6aee12ea304")
