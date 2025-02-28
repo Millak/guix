@@ -1315,6 +1315,31 @@ docs dependency in support of other libraries.")
 trickery (i.e. combining characters) to plot overlaying histograms.")
     (license license:expat)))
 
+(define-public python-hist
+  (package
+    (name "python-hist")
+    (version "2.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hist" version))
+       (sha256
+        (base32 "17cd46c0ixq18fr2kgzam09w1sr4qkd9l6nsjdbl4vggw80ck9vx"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-boost-histogram
+                             python-histoprint
+                             python-numpy
+                             python-typing-extensions))
+    (native-inputs (list python-hatch-vcs
+                         python-hatchling
+                         python-pytest
+                         python-pytest-mpl))
+    (home-page "https://hist.readthedocs.io/en/latest/")
+    (synopsis "Hist classes and utilities")
+    (description
+     "Hist is an analyst-friendly front-end for @code{boost-histogram}.")
+    (license license:bsd-3)))
+
 (define-public python-tdda
   (package
     (name "python-tdda")
