@@ -14225,6 +14225,46 @@ logging.")
     (arguments
      (list #:import-path "github.com/russross/blackfriday/v2"))))
 
+(define-public go-github-com-rwcarlsen-goexif
+  ;; No release or version tag, Golang pseudo version:
+  ;; 0.0.0-20190401172101-9e8deecbddbd.
+  (let ((commit "9e8deecbddbd4989a3e8d003684b783412b41e7a")
+        (revision "0"))
+    (package
+      (name "go-github-com-rwcarlsen-goexif")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rwcarlsen/goexif")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1drqhzplg72lvrf3qmb9awbggnjqp23hwn2pgvksi3spv17kc9h2"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:skip-build? #t
+        #:import-path "github.com/rwcarlsen/goexif"))
+      (home-page "https://github.com/rwcarlsen/goexif")
+      (synopsis "Decode embedded EXIF meta data from image files")
+      (description
+       "This package provides decoding of basic EXIF and TIFF encoded data.
+Functionality is split into packages:
+@itemize
+
+@item @code{exif} - implements decoding of EXIF data as defined in the EXIF
+2.2 specification (http://www.exif.org/Exif2-2.PDF)
+
+@item @code{mknote} - provides makernote parsers that can be used with
+@code{goexif/exif}
+
+@item @code{tiff} - implements TIFF decoding as defined in TIFF 6.0
+specification at http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
+
+@end itemize")
+      (license license:bsd-2))))
 
 (define-public go-github-com-ryanuber-columnize
   (package
