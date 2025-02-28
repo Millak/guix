@@ -26603,6 +26603,8 @@ all RNA-Seq libraries of each species integrated in Bgee.")
          "15hnn6rk9hv623zzjsg1axydvlj3vjpwyhvhw0xpmk9q7zm6g79h"))))
     (properties `((upstream-name . "BgeeDB")))
     (build-system r-build-system)
+    ;; Tests require Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-anndata
            r-biobase
