@@ -43,7 +43,7 @@ Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*
 Copyright @copyright{} 2017, 2018, 2019 Clément Lassieur@*
 Copyright @copyright{} 2017, 2018, 2020, 2021, 2022 Mathieu Othacehe@*
 Copyright @copyright{} 2017 Federico Beffa@*
-Copyright @copyright{} 2017, 2018, 2024 Carlo Zancanaro@*
+Copyright @copyright{} 2017, 2018, 2024, 2025 Carlo Zancanaro@*
 Copyright @copyright{} 2017 Thomas Danckaert@*
 Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
@@ -35569,6 +35569,12 @@ The routing table to which routes are added, as a string.  There are two
 special values: @code{"off"} that disables the creation of routes
 altogether, and @code{"auto"} (the default) that adds routes to the
 default table and enables special handling of default routes.
+
+@item @code{auto-start?} (default: @code{#t"})
+Whether the Wireguard network should be started automatically by the
+Shepherd.  If it is @code{#f} the service has to be started manually
+with @code{herd start wireguard-$interface} (for example: @code{herd
+start wireguard-wg0}).
 
 @end table
 @end deftp
