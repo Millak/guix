@@ -6393,6 +6393,43 @@ experiment types where it is important to have a framework in order to inspect
 how the coverage distributed across the genome.")
     (license license:artistic2.0)))
 
+(define-public r-csaw
+  (package
+    (name "r-csaw")
+    (version "1.40.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "csaw" version))
+       (sha256
+        (base32 "02ajgkpwz5s7i72swnlix1djmnv8zmp7yl2ppwq4m60rs23d06wg"))))
+    (properties `((upstream-name . "csaw")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-biocparallel
+                             r-edger
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-iranges
+                             r-limma
+                             r-matrix
+                             r-metapod
+                             r-rcpp
+                             r-rhtslib
+                             r-rsamtools
+                             r-s4vectors
+                             r-summarizedexperiment
+                             r-zlibbioc))
+    (native-inputs (list r-genomicalignments r-knitr r-org-mm-eg-db r-testthat
+                         r-txdb-mmusculus-ucsc-mm10-knowngene))
+    (home-page "https://bioconductor.org/packages/csaw")
+    (synopsis "ChIP-Seq analysis with windows")
+    (description
+     "This is a package for detection of differentially bound regions in
+@code{ChIP-seq} data with sliding windows, with methods for normalization and
+proper FDR control.")
+    (license license:gpl3)))
+
 (define-public r-cummerbund
   (package
    (name "r-cummerbund")
