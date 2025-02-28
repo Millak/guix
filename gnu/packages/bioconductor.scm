@@ -13840,13 +13840,15 @@ able to deal also with novel and case specific events.")
         (base32
          "10ldajw1a3naxy58w4zf9ri5ql93fd6r06cdwg2dyagsb8qg3l20"))))
     (properties
-     `((upstream-name . "TrajectoryUtils")))
+     '((upstream-name . "TrajectoryUtils")
+       (updater-extra-native-inputs . ("r-biocparallel"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-igraph r-matrix r-s4vectors r-singlecellexperiment
            r-summarizedexperiment))
     (native-inputs
      (list r-biocneighbors
+           r-biocparallel
            r-delayedmatrixstats
            r-knitr
            r-testthat))
