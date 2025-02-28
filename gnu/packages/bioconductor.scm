@@ -12918,6 +12918,8 @@ transcripts in groups of interest.")
         (base32 "0gra749fgcify2625gg1nbnqw328ddf98pplv8yaq4hn37a1s76j"))))
     (properties `((upstream-name . "scAnnotatR")))
     (build-system r-build-system)
+    ;; 6 tests require connecting to a database over the Internet.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationhub
            r-ape
