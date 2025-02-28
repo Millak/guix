@@ -1363,6 +1363,47 @@ code prior to it getting merged into @code{go-cid}.")
     ;; LICENSE-MIT and LICENSE-APACHE.
     (license (list license:expat license:asl2.0))))
 
+(define-public go-github-com-ipfs-shipyard-nopfs
+  (package
+    (name "go-github-com-ipfs-shipyard-nopfs")
+    (version "0.0.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs-shipyard/nopfs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qbp7hny0v6n74agh1ym98ndnnr53aq1hd6ybm5q214fah7k23r7"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/ipfs-shipyard/nopfs/ipfs
+            ;; - github.com/ipfs-shipyard/nopfs/nopfs-kubo-plugin
+            (for-each delete-file-recursively
+                      (list "ipfs" "nopfs-kubo-plugin"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ipfs-shipyard/nopfs"))
+    (propagated-inputs
+     (list go-github-com-fsnotify-fsnotify
+           go-github-com-ipfs-boxo
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-log-v2
+           go-github-com-multiformats-go-multicodec
+           go-github-com-multiformats-go-multihash
+           go-go-uber-org-multierr
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/ipfs-shipyard/nopfs")
+    (synopsis "Content-blocking-layer capabilities for IPFS")
+    (description
+     "Package nopfs implements content blocking for the IPFS stack.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-ipld-go-car
   (package
     (name "go-github-com-ipld-go-car")
