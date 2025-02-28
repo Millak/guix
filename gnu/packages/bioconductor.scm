@@ -6416,33 +6416,33 @@ proper FDR control.")
 
 (define-public r-cummerbund
   (package
-   (name "r-cummerbund")
-   (version "2.48.0")
-   (source (origin
-             (method url-fetch)
-             (uri (bioconductor-uri "cummeRbund" version))
-             (sha256
-              (base32
-               "13505rlzwczgqzqs9fcfgij8558iwzhcn29ai4xl96qqz4qwx00k"))))
-   (build-system r-build-system)
-   (propagated-inputs
-    (list r-biobase
-          r-biocgenerics
-          r-fastcluster
-          r-ggplot2
-          r-gviz
-          r-plyr
-          r-reshape2
-          r-rsqlite
-          r-rtracklayer
-          r-s4vectors))
-   (home-page "https://bioconductor.org/packages/cummeRbund/")
-   (synopsis "Analyze Cufflinks high-throughput sequencing data")
-   (description "This package allows for persistent storage, access,
-exploration, and manipulation of Cufflinks high-throughput sequencing
-data.  In addition, provides numerous plotting functions for commonly
-used visualizations.")
-   (license license:artistic2.0)))
+    (name "r-cummerbund")
+    (version "2.48.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "cummeRbund" version))
+              (sha256
+               (base32
+                "13505rlzwczgqzqs9fcfgij8558iwzhcn29ai4xl96qqz4qwx00k"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-biocgenerics
+           r-fastcluster
+           r-ggplot2
+           r-gviz
+           r-plyr
+           r-reshape2
+           r-rsqlite
+           r-rtracklayer
+           r-s4vectors))
+    (home-page "https://bioconductor.org/packages/cummeRbund/")
+    (synopsis "Analyze Cufflinks high-throughput sequencing data")
+    (description "This package allows for persistent storage, access,
+exploration, and manipulation of Cufflinks high-throughput sequencing data.
+In addition, provides numerous plotting functions for commonly used
+visualizations.")
+    (license license:artistic2.0)))
 
 (define-public r-dama
   (package
