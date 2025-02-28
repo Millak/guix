@@ -3450,6 +3450,32 @@ cultures from 4 patients at 2 time points over 3 conditions (DPN, OHT and contro
     ;; The author(s) mentions only LGPL without any specific version.
     (license license:lgpl2.1+)))
 
+(define-public r-rcistarget-hg19-motifdbs-cisbponly-500bp
+  (package
+    (name "r-rcistarget-hg19-motifdbs-cisbponly-500bp")
+    (version "1.26.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "RcisTarget.hg19.motifDBs.cisbpOnly.500bp"
+                              version
+                              'experiment))
+       (sha256
+        (base32 "1c3gsk4jvbwyj7s18hms29liha52820p5mmnpfnhxdhh8g6ll4sc"))))
+    (properties `((upstream-name . "RcisTarget.hg19.motifDBs.cisbpOnly.500bp")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-data-table))
+    (home-page "https://scenic.aertslab.org")
+    (synopsis
+     "RcisTarget motif databases for human (hg19) - Subset of 4.6k motifs")
+    (description
+     "This package provides @code{RcisTarget} databases: Gene-based motif
+rankings and annotation to transcription factors.  This package contains a
+subset of 4.6k motifs (cisbp motifs), scored only within 500bp upstream and
+the TSS. See @code{RcisTarget} tutorial to download the full databases,
+containing 20k motifs and search space up to 10kbp around the TSS.")
+    (license license:gpl3)))
+
 (define-public r-rnaseqdata-hnrnpc-bam-chr14
   (package
     (name "r-rnaseqdata-hnrnpc-bam-chr14")
