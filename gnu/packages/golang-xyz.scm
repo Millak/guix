@@ -18240,6 +18240,116 @@ APIs may be unstable
 @end itemize")
     (license license:expat)))
 
+(define-public go-go4-org
+  ;; No release or version tag, Golang pseudo version:
+  ;; 0.0.0-20230225012048-214862532bf5.
+  (let ((commit "214862532bf518db360e7ecc2b8a94b66a10c176")
+        (revision "0"))
+    (package
+      (name "go-go4-org")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/go4org/go4")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0cfgb3jjmqmxcb7n46kk4i8pqqda0fhxgs1wqmgicxqj46ny8bpk"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:skip-build? #t
+        #:import-path "go4.org"
+        #:test-subdirs
+        #~(list "bytereplacer/..."
+                ;; "cloud/..." ; missing packages
+                "ctxutil/..."
+                "errorutil/..."
+                "fault/..."
+                "jsonconfig/..."
+                "legal/..."
+                "lock/..."
+                "media/..."
+                "must/..."
+                "net/..."
+                "net/throttle/..."
+                "oauthutil/..."
+                "osutil/..."
+                "readerutil/..."
+                "reflectutil/..."
+                "rollsum/..."
+                "sort/..."
+                "strutil/..."
+                "syncutil/..."
+                "testing/..."
+                "testing/functest/..."
+                "types/..."
+                ;; "wkfs/..." ; missing packages
+                "writerutil/..."
+                "xdgdir/...")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-examples
+              (lambda* (#:key import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (for-each delete-file
+                            (find-files "." "example.*_test\\.go$"))))))))
+      (propagated-inputs
+       (list ;; go-cloud-google-com-go
+             ;; go-cloud-google-com-go-storage
+             go-github-com-rwcarlsen-goexif
+             go-golang-org-x-net
+             go-golang-org-x-oauth2
+             go-golang-org-x-sys
+             #; go-google-golang-org-api))
+      (home-page "https://github.com/go4org/go4")
+      (synopsis "Collection of packages for Go programmers")
+      (description
+       "This package provides a collection various self sufficient Golang
+sub-packages:
+
+@itemize
+@item @code{bytereplacer} - provides a utility for replacing parts of byte
+@item @code{ctxutil} -  contains golang.org/x/net/context related utilities
+@item @code{errorutil} -  helps make better error messages
+@item @code{fault} - handles fault injection for testing
+@item @code{jsonconfig} - defines a helper type for JSON objects to be used
+for configuration
+@item @code{legal} -  provides in-process storage for compiled-in licenses
+@item @code{lock} - provides a file locking library
+@item @code{media/heif} - reads HEIF containers, as found in Apple HEIC/HEVC
+images
+@item @code{must} - contains helpers that panic on failure
+@item @code{net/throttle} - provides a @code{net.Listener} that returns
+artificially-delayed connections for testing real-world connectivity slices
+@item @code{oauthutil} - contains OAuth 2 related utilities
+@item @code{osutil} -  contains os level functions
+@item @code{readerutil} - contains @code{io.Reader} types
+@item @code{readerutil} - provides and operates on @code{io.Readers}
+@item @code{reflectutil} - contains @code{reflect} utilities
+@item @code{rollsum} - implements rolling checksums similar to apenwarr's bup,
+which is similar to librsync
+@item @code{sort} - provides primitives for sorting slices and user-defined
+collections
+@item @code{strutil} - contains string and byte processing functions
+@item @code{syncutil/singleflight} - provides a duplicate function call
+suppression mechanism
+@item @code{syncutil/syncdebug} - contains facilities for debugging
+synchronization problems
+@item @code{syncutil} - provides various synchronization utilities
+@item @code{testing/functest} - contains utilities to ease writing
+table-driven tests for pure functions and method
+@item @code{types} - provides various common types
+@item @code{wkfs} - implements the pluggable well-known filesystem abstraction
+layer
+@item @code{writerutil} - contains {io.Writer} types
+@item @code{xdgdir} - implements the Free Desktop Base Directory specification
+for locating directories
+@end itemize")
+      (license (list license:asl2.0 license:bsd-3)))))
+
 (define-public go-golang-org-rainycape-unidecode
   (let ((commit "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c")
         (revision "1"))
