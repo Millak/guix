@@ -15581,6 +15581,31 @@ standard library.")
      "This package provides XOR bitwise code engine.")
     (license license:expat)))
 
+(define-public go-github-com-texttheater-golang-levenshtein
+  (package
+    (name "go-github-com-texttheater-golang-levenshtein")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/texttheater/golang-levenshtein")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14r17scr7qc7bcc9xidg9g6vb1dnk96ffcclppc53s11k63hrgaq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/texttheater/golang-levenshtein"))
+    (home-page "https://github.com/texttheater/golang-levenshtein")
+    (synopsis "Implementation of the Levenshtein algorithm in Golang")
+    (description
+     "This package implements the Levenshtein algorithm in Go, providing edit
+distances, edit scripts and ratios for strings (slices of runes).")
+    (license license:expat)))
+
 (define-public go-github-com-thejerf-suture
   (package
     (name "go-github-com-thejerf-suture")
