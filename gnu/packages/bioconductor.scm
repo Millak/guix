@@ -13123,8 +13123,26 @@ different experiment.")
        (uri (bioconductor-uri "scRepertoire" version))
        (sha256
         (base32 "0id62pkjyk48jxica8mfzb2mzwc5f1ijb7d5200grxzn453zsihm"))))
-    (properties `((upstream-name . "scRepertoire")))
+    (properties
+     '((upstream-name . "scRepertoire")
+       (updater-extra-native-inputs . ("r-seurat" "r-vdiffr"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; These attempt to connect to the Internet.
+             (substitute* "tests/testthat/test-clonalCluster.R"
+               ((".*clonalCluster works.*" m)
+                (string-append m "skip('guix')\n")))
+             (substitute* "tests/testthat/test-loadContigs.R"
+               ((".*loadContigs works.*" m)
+                (string-append m "skip('guix')\n")))
+             (substitute* "tests/testthat/test-combineContigs.R"
+               ((".*combineBCR works.*" m)
+                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs
      (list r-assertthat
            r-cubature
@@ -13154,7 +13172,7 @@ different experiment.")
            r-tidygraph
            r-truncdist
            r-vgam))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-seurat r-testthat r-vdiffr))
     (home-page "https://bioconductor.org/packages/scRepertoire")
     (synopsis "Toolkit for single-cell immune receptor profiling")
     (description
