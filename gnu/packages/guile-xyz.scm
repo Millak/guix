@@ -1617,18 +1617,15 @@ inheritance.")
                (url "https://github.com/jerry40/guile-simple-zmq")
                (commit commit)))
          (sha256
-          (base32
-           "1aq1s0f0z5g6qsv9jqr0663qv4rwxd9j1pmg1g8v6rl09xb8g8lp"))
+          (base32 "1aq1s0f0z5g6qsv9jqr0663qv4rwxd9j1pmg1g8v6rl09xb8g8lp"))
          (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
-       '(#:make-flags
-         '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
-
-      (native-inputs
-       (list guile-3.0))
-      (inputs
-       (list autoconf automake pkg-config zeromq))
+       (list
+        #:make-flags
+        #~'("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
+      (native-inputs (list autoconf automake pkg-config guile-3.0))
+      (inputs (list zeromq))
       (home-page "https://github.com/jerry40/guile-simple-zmq")
       (synopsis "Guile wrapper over ZeroMQ library")
       (description
