@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
@@ -559,7 +559,8 @@ own.  This helper makes it easier to deal with \"tar bombs\"."
                                                       (or name file-name))
                                        #:system system
                                        #:guile guile))
-                      (guile (package->derivation guile system)))
+                      (guile (package->derivation guile system
+                                                  #:graft? #f)))
     ;; Take the tar bomb, and simply unpack it as a directory.
     ;; Use ungrafted tar/gzip so that the resulting tarball doesn't depend on
     ;; whether grafts are enabled.
@@ -597,7 +598,8 @@ own.  This helper makes it easier to deal with \"zip bombs\"."
                                                       (or name file-name))
                                        #:system system
                                        #:guile guile))
-                      (guile (package->derivation guile system)))
+                      (guile (package->derivation guile system
+                                                  #:graft? #f)))
     ;; Take the zip bomb, and simply unpack it as a directory.
     ;; Use ungrafted unzip so that the resulting tarball doesn't depend on
     ;; whether grafts are enabled.
