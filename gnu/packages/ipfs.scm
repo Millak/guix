@@ -1404,6 +1404,65 @@ code prior to it getting merged into @code{go-cid}.")
      "Package nopfs implements content blocking for the IPFS stack.")
     (license license:asl2.0)))
 
+(define-public go-github-com-ipfs-shipyard-nopfs-ipfs
+  (package
+    (name "go-github-com-ipfs-shipyard-nopfs-ipfs")
+    (version "0.25.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ipfs-shipyard/nopfs")
+             (commit (go-version->git-ref version
+                                          #:subdir "ipfs"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00lwizzdfdx6kynxddal3all6q9dhwqanpkw0d0vxlwik4nkvxa5"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "." "ipfs")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:embed-files #~(list "sorted-network-list.bin")
+      #:import-path "github.com/ipfs-shipyard/nopfs/ipfs"
+      #:unpack-path "github.com/ipfs-shipyard/nopfs"))
+    (propagated-inputs
+     (list go-github-com-ipfs-boxo
+           go-github-com-ipfs-go-block-format
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-log-v2
+           go-github-com-ipfs-shipyard-nopfs
+           go-github-com-ipld-go-ipld-prime
+           go-github-com-libp2p-go-libp2p
+           go-github-com-libp2p-go-libp2p-kad-dht))
+    (home-page "https://github.com/ipfs-shipyard/nopfs")
+    (synopsis "IPFS library helpers and wrappers")
+    (description
+     "Package ipfs provides wrapper implementations of key layers in the
+go-ipfs stack to enable content-blocking.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-ipld-go-car
   (package
     (name "go-github-com-ipld-go-car")
