@@ -21764,7 +21764,11 @@ data, to only emphasize the data that actually matters.")
        (sha256
         (base32
          "0iggn3p3i36xgl79dbs0nf9nv9cyiap7mlgg2s5q1fx9mni501xw"))))
-    (properties `((upstream-name . "RcisTarget")))
+    (properties
+     '((upstream-name . "RcisTarget")
+       (updater-extra-native-inputs
+        . ("r-doparallel"
+           "r-rcistarget-hg19-motifdbs-cisbponly-500bp"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-arrow
@@ -21781,7 +21785,10 @@ data, to only emphasize the data that actually matters.")
            r-tibble
            r-zoo))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-doparallel
+           r-knitr
+           r-rcistarget-hg19-motifdbs-cisbponly-500bp
+           r-testthat))
     (home-page "https://aertslab.org/#scenic")
     (synopsis "Identify transcription factor binding motifs enriched on a gene list")
     (description
