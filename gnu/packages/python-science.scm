@@ -1386,6 +1386,25 @@ reference testing, constraint discovery for data, automatic inference
 of regular expressions from text data and automatic test generation.")
     (license license:expat))) ; MIT License
 
+(define-public python-hepunits
+  (package
+    (name "python-hepunits")
+    (version "2.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hepunits" version))
+       (sha256
+        (base32 "1n1nf2rz2d86qzjmcwykbc16jzsqb45vs8lyksg98b3jd8nwsd4l"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatch-vcs python-hatchling python-pytest))
+    (home-page "https://github.com/scikit-hep/hepunits")
+    (synopsis "Units and constants in the HEP system of units")
+    (description "@code{hepunits} collects the most commonly used units and
+constants in the HEP System of Units, as derived from the basic units
+originally defined by the CLHEP project.")
+    (license license:bsd-3)))
+
 (define-public python-trimesh
   (package
     (name "python-trimesh")
