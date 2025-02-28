@@ -1469,6 +1469,35 @@ possible to interoperate several fitting programs.  Particular interest is
 given to programs dedicated to amplitude analyses.")
     (license license:bsd-3)))
 
+(define-public python-vector
+  (package
+    (name "python-vector")
+    (version "1.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vector" version))
+       (sha256
+        (base32 "1jhfgx54a6l1cz9as2wlwrph86f8s1882biaakx1cl31igdxjnbf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; This file requires python-papermill (not yet packaged).
+      #:test-flags #~(list "--ignore" "tests/test_notebooks.py")))
+    (propagated-inputs (list python-numpy python-packaging))
+    (native-inputs (list python-awkward
+                         python-hatch-vcs
+                         python-hatchling
+                         python-pytest
+                         python-sympy))
+    (home-page "https://github.com/scikit-hep/vector")
+    (synopsis "Arrays of 2D, 3D, and Lorentz vectors")
+    (description "Vector is a Python library for 2D and 3D spatial vectors, as
+well as 4D space-time vectors.  It is especially intended for performing
+geometric calculations on arrays of vectors, rather than one vector at a time
+in a Python @code{for} loop.")
+    (license license:bsd-3)))
+
 (define-public python-trimesh
   (package
     (name "python-trimesh")
