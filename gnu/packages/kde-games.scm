@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
@@ -32,6 +32,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages games)
   #:use-module (gnu packages gl)
   #:use-module ((gnu packages freedesktop) #:select (shared-mime-info))
   #:use-module (gnu packages kde)
@@ -1098,10 +1099,22 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "1ha4ywihk7wf1cqqbjq6j2pr3x43xxna5nz0x21msiq37rrx93j0"))))
     (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-gnugo-command
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "src/kigo.kcfg"
+                         (("\"gnugo\"")
+                          (format #f "~s"
+                                  (search-input-file inputs "bin/gnugo")))))))))
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules
+           kdoctools))
     (inputs
-     (list kconfig
+     (list gnugo
+           kconfig
            kconfigwidgets
            kcoreaddons
            kcrash
@@ -1114,11 +1127,9 @@ This package is part of the KDE games module.")
            libkdegames
            qtdeclarative
            qtsvg))
-    (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/kigo/")
     (synopsis "Go board game")
-    (description "Kigo is an open-source implementation of the popular Go
-game.
+    (description "Kigo is an implementation of the popular Go game.
 
 Go is a strategic board game for two players.  It is also known as
 igo (Japanese), weiqi or wei ch'i (Chinese) or baduk (Korean).  Go is noted
@@ -1126,8 +1137,6 @@ for being rich in strategic complexity despite its simple rules.  The game is
 played by two players who alternately place black and white stones (playing
 pieces, now usually made of glass or plastic) on the vacant intersections of a
 grid of 19x19 lines (9x9 or 13x13 for easier games).
-
-You also need to install a go engine, e.g. @code{gnugo}.
 
 This package is part of the KDE games module.")
     (license license:gpl3+)))
