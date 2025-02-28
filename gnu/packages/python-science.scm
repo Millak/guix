@@ -1405,6 +1405,34 @@ constants in the HEP System of Units, as derived from the basic units
 originally defined by the CLHEP project.")
     (license license:bsd-3)))
 
+(define-public python-particle
+  (package
+    (name "python-particle")
+    (version "0.25.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "particle" version))
+       (sha256
+        (base32 "0as50k5hinxszsm6lnghnmx2cyjy77c0i2gvzf2q64g2x5b7xkvq"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-attrs
+                             python-hepunits
+                             python-typing-extensions))
+    (native-inputs (list python-hatch-vcs
+                         python-hatchling
+                         python-pandas
+                         python-pytest
+                         python-pytest-benchmark
+                         python-tabulate))
+    (home-page "https://github.com/scikit-hep/particle")
+    (synopsis "Extended PDG particle data and MC identification codes")
+    (description
+     "@code{Particle} provides a pythonic interface to the Particle Data Group
+(PDG) particle data tables and particle identification codes, with extended
+particle information and extra goodies.")
+    (license license:bsd-3)))
+
 (define-public python-trimesh
   (package
     (name "python-trimesh")
