@@ -187,12 +187,59 @@ slicing.")
       (home-page "https://sr.ht/~mcf/cproc")
       (license license:expat))))
 
+(define-public stringzilla
+  (package
+    (name "stringzilla")
+    (version "3.12.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ashvardanian/StringZilla")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v1wh4lxxd1bymbiadnaj8207d85c88ic6wdxki1967f7iij8m4k"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DSTRINGZILLA_IS_MAIN_PROJECT=ON"
+                   "-DSTRINGZILLA_INSTALL=ON"
+                   (string-append "-DSTRINGZILLA_INCLUDE_INSTALL_DIR="
+                                  #$output "/include")
+                   ;; One fails, another takes very long.
+                   "-DSTRINGZILLA_BUILD_BENCHMARK=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; The install process moves a file into
+               ;; "/usr/src/stringzilla/".  Fix this.
+               (add-after 'unpack 'install-in-a-standard-location
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("(install\\(DIRECTORY \\./c/ DESTINATION ).*" _ prefix)
+                      (string-append prefix
+                                     #$output
+                                     "/share/stringzilla/)\n")))))
+               ;; AVX512 support can be disabled by defining SZ_USE_X86_AVX512
+               ;; to 0 before including the header.
+               (add-after 'unpack 'skip-failing-test
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("^ *define_launcher\\(.*_avx512 .*") "")))))))
+    (home-page "https://github.com/ashvardanian/StringZilla")
+    (synopsis "C/C++ header-only string library using SIMD and SWAR")
+    (description
+     "StringZilla is a C/C++ header-only string library which relies on SIMD
+and SWAR.  It implements string search, edit distances, sorting, lazy ranges,
+hashes and fingerprints.")
+    (license (list license:asl2.0 license:bsd-3)))) ; readme says dual-licensed
+
 (define-public tcc
   ;; There's currently no release fixing <https://issues.guix.gnu.org/52140>.
   (let ((revision "1")
         (commit "a83b28568596afd8792fd58d1a5bd157fc6b6634"))
     (package
-      (name "tcc")                                ;aka. "tinycc"
+      (name "tcc")                      ;aka. "tinycc"
       (version (git-version "0.9.27" revision commit))
       (source (origin
                 (method git-fetch)
