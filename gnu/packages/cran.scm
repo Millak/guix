@@ -3388,6 +3388,27 @@ singular and eigenvalue decompositions, as well as for principal component
 analysis of large sparse or dense matrices.")
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-iterators
+  (package
+    (name "r-iterators")
+    (version "1.0.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "iterators" version))
+       (sha256
+        (base32
+         "0yv7rh6ghlfx727xy2aq64a7skyxp9msakaffs641q9h15d0gwyf"))))
+    (build-system r-build-system)
+    (native-inputs (list r-runit))
+    (home-page "https://cran.r-project.org/web/packages/iterators")
+    (synopsis "Iterator construct for R")
+    (description
+     "This package provides support for iterators, which allow a programmer to
+traverse through all the elements of a vector, list, or other collection of
+data.")
+    (license license:asl2.0)))
+
 (define-public r-googlesheets4
   (package
     (name "r-googlesheets4")
