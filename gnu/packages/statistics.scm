@@ -1756,26 +1756,6 @@ worries about execution time overhead.")
 or source files in a key-value fashion.")
     (license license:bsd-3)))
 
-(define-public r-brew
-  (package
-    (name "r-brew")
-    (version "1.0-10")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "brew" version))
-              (sha256
-               (base32
-                "13x3vnrhfcvr479r4dya61a5vcky2gb4kv2xbivy0ah39qrzg0a1"))))
-    (build-system r-build-system)
-    (native-inputs (list r-testthat))
-    (home-page "https://cran.r-project.org/web/packages/brew")
-    (synopsis "Templating framework for report generation")
-    (description
-     "The brew package implements a templating framework for mixing text and R
-code for report generation.  The template syntax is similar to PHP, Ruby's erb
-module, Java Server Pages, and Python's psp module.")
-    (license license:gpl2+)))
-
 (define-public r-desc
   (package
     (name "r-desc")
