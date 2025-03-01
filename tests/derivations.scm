@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2026 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +21,7 @@
 
 (define-module (test-derivations)
   #:use-module (guix derivations)
+  #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module ((gcrypt hash) #:prefix gcrypt:)
@@ -1605,6 +1607,29 @@
          (out       (derivation->output-path drv2)))
     (and (build-derivations %store (list (pk 'remapped* drv2)))
          (call-with-input-file out get-string-all))))
+
+(test-assert "map-derivation, modules"
+  (let* ((bash-drv (package-derivation %store (@ (gnu packages bash) bash)))
+         (bash-input (car (derivation-inputs bash-drv)))
+         (bash-input-drv (derivation-input-derivation bash-input))
+         (drv-with-modules (run-with-store %store
+                             (gexp->derivation "derivation-with-modules"
+                                               (with-imported-modules '((guix build utils))
+                                                 #~(begin
+                                                     (use-modules (guix build utils))
+                                                     (mkdir-p (string-append #$output
+                                                                             "/bin")))))))
+         (bash-mapped-1 (map-derivation %store bash-drv
+                                        `((,bash-input-drv . ,drv-with-modules))))
+         (bash-mapped-2 (map-derivation %store bash-mapped-1
+                                        `((,drv-with-modules . ,bash-input-drv))))
+         (is-input? (lambda (in drv)
+                      (not (null? (filter (lambda (input)
+                                            (eq? in (derivation-input-derivation input)))
+                                          (derivation-inputs drv)))))))
+    (and
+     (not (is-input? bash-input-drv bash-mapped-1))
+     (is-input? bash-input-drv bash-mapped-2))))
 
 (test-end)
 

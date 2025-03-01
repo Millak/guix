@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 Mathieu Lirzin <mthl@gnu.org>
+;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1074,8 +1075,10 @@ recursively."
                                     ((_ . replacement)
                                      replacement)
                                     (#f
-                                     (substitute-file source
-                                                      initial replacements))))
+                                     (if (file-is-directory? source)
+                                         source
+                                         (substitute-file source
+                                                          initial replacements)))))
                                 (derivation-sources drv)))
 
              ;; Now augment the lists of initials and replacements.
