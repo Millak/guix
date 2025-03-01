@@ -477,6 +477,31 @@ factors for simple designs, including contingency tables, one- and two-sample
 designs, one-way designs, general ANOVA designs, and linear regression.")
     (license license:gpl2)))
 
+(define-public r-bbmisc
+  (package
+    (name "r-bbmisc")
+    (version "1.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "BBmisc" version))
+       (sha256
+        (base32
+         "01a43raxj374cg6khs14r0bxvfm8v1sp0p2ambp7npnizvwxqi8i"))))
+    (properties
+     '((upstream-name . "BBmisc")
+       (updater-extra-native-inputs . ("r-codetools"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-checkmate r-data-table))
+    (native-inputs (list r-codetools r-testthat))
+    (home-page "https://github.com/berndbischl/BBmisc")
+    (synopsis "Miscellaneous functions for R package development")
+    (description
+     "This package provides miscellaneous helper functions for the development
+of R packages.")
+    (license license:bsd-3)))
+
 (define-public r-beepr
   (package
     (name "r-beepr")
