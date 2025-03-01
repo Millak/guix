@@ -4506,30 +4506,6 @@ asymmetric discriminant projections for visualisation of the separation of
 groupings.")
   (license license:gpl2+)))
 
-(define-public r-vgam
-  (package
-    (name "r-vgam")
-    (version "1.1-12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "VGAM" version))
-       (sha256
-        (base32 "05pgznwb0bwppq9mslvg197iyp0ln0npapd4r0zc6c2k6ikq4xsa"))))
-    (properties `((upstream-name . "VGAM")))
-    (build-system r-build-system)
-    (native-inputs
-     (list gfortran))
-    (home-page "https://www.stat.auckland.ac.nz/~yee/VGAM")
-    (synopsis "Vector generalized linear and additive models")
-    (description
-    "This package is an implementation of about 6 major classes of statistical
-regression models.  Currently only fixed-effects models are implemented, i.e.,
-no random-effects models.  Many (150+) models and distributions are estimated
-by maximum likelihood estimation (MLE) or penalized MLE, using Fisher scoring.
-VGLMs can be loosely thought of as multivariate generalised linear models.")
-    (license license:gpl2+)))
-
 (define-public r-pbapply
   (package
     (name "r-pbapply")
