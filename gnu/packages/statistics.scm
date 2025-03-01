@@ -547,25 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-estimability
-  (package
-    (name "r-estimability")
-    (version "1.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "estimability" version))
-              (sha256
-               (base32
-                "1sa42rczhzfj0dkn8v1pq6b752rh6h7x553gcgl7g27x75mbk9iw"))))
-    (build-system r-build-system)
-    (native-inputs (list r-knitr))
-    (home-page "https://cran.r-project.org/web/packages/estimability")
-    (synopsis "Tools for assessing estimability of linear predictions")
-    (description "This package provides tools for determining estimability of
-linear functions of regression coefficients, and @code{epredict} methods that
-handle non-estimable cases correctly.")
-    (license license:gpl2+)))
-
 (define-public r-labeling
   (package
     (name "r-labeling")
