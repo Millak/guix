@@ -6841,6 +6841,64 @@ the server and cleaning up before returning the exit status of the command.")
     (license (list license:x11          ; the script
                    license:gpl2+))))    ; the man page
 
+(define-public xwayland-run
+  (package
+    (name "xwayland-run")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/ofourdan/xwayland-run.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nhrdjk1zbxfxkqwsz992g6xg04gankprzks543931fysclgdzql"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:imported-modules
+      (append %meson-build-system-modules
+              %python-build-system-modules)
+      #:modules
+      '((guix build utils)
+        (guix build meson-build-system)
+        ((guix build python-build-system) #:prefix python:))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enable-bytecode-determinism
+            (assoc-ref python:%standard-phases 'enable-bytecode-determinism))
+          (add-after 'install 'python-install
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (apply (assoc-ref python:%standard-phases phase)
+                        args))
+               '(add-install-to-pythonpath
+                 add-install-to-path
+                 wrap))))
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/wlheadless/xwayland.py"
+                (("'(xauth|Xwayland)'" _ command)
+                 (format #f "'~a'" (search-input-file
+                                    inputs (in-vicinity "bin" command))))))))))
+    (inputs (list python xauth xorg-server-xwayland))
+    (home-page "https://gitlab.freedesktop.org/ofourdan/xwayland-run")
+    (synopsis "Run X11 client on dedicated Xwayland server")
+    (description
+     "@code{xwayland-run} contains a set of small utilities revolving around
+running @command{Xwayland} and various Wayland compositor headless, namely:
+@itemize
+@item @command{xwayland-run}: Spawn X11 client within its own dedicated
+@command{Xwayland} rootful instance.
+@item @command{wlheadless-run}: Run Wayland client on a set of supported
+Wayland headless compositors.
+@item @command{xwfb-run}: Combination of above two tools to be used as a
+direct replacement for @command{xvfb-run} specifically.
+@end itemize")
+    (license license:gpl2+)))
+
 (define-public setroot
   (package
     (name "setroot")
