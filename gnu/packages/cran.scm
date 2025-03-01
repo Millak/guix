@@ -8529,6 +8529,28 @@ graphs and tables, in the book is included in the scripts directory of the
 package.")
     (license license:gpl2+)))
 
+(define-public r-hiddenmarkov
+  (package
+    (name "r-hiddenmarkov")
+    (version "1.8-14")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "HiddenMarkov" version))
+              (sha256
+               (base32
+                "09b0rwipvkcwrgy0mn0dcz11ijihmnabh1yw0avbk3imkv0j42r5"))))
+    (build-system r-build-system)
+    (native-inputs
+     (list gfortran))
+    (home-page "https://cran.r-project.org/web/packages/HiddenMarkov/")
+    (synopsis "Hidden markov models for R")
+    (description "This package contains functions for the analysis of Discrete
+Time Hidden Markov Models, Markov Modulated GLMs and the Markov Modulated
+Poisson Process.  It includes functions for simulation, parameter estimation,
+and the Viterbi algorithm.  The algorithms are based of those of Walter
+Zucchini.")
+    (license license:gpl2+)))
+
 (define-public r-highr
   (package
     (name "r-highr")
@@ -8574,28 +8596,6 @@ supported via Andre Simon's highlight package.")
 and make inference with discrete time and discrete space hidden Markov
 models.")
     (license license:gpl2+)))
-
-(define-public r-hiddenmarkov
-  (package
-   (name "r-hiddenmarkov")
-   (version "1.8-14")
-   (source (origin
-            (method url-fetch)
-            (uri (cran-uri "HiddenMarkov" version))
-            (sha256
-             (base32
-              "09b0rwipvkcwrgy0mn0dcz11ijihmnabh1yw0avbk3imkv0j42r5"))))
-   (build-system r-build-system)
-   (native-inputs
-    (list gfortran))
-   (home-page "https://cran.r-project.org/web/packages/HiddenMarkov/")
-   (synopsis "Hidden markov models for R")
-   (description "This package contains functions for the analysis of Discrete
-Time Hidden Markov Models, Markov Modulated GLMs and the Markov Modulated
-Poisson Process.  It includes functions for simulation, parameter estimation,
-and the Viterbi algorithm.  The algorithms are based of those of Walter
-Zucchini.")
-   (license license:gpl2+)))
 
 (define-public r-hsaur3
   (package
