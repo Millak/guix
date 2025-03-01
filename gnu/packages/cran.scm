@@ -4885,6 +4885,28 @@ analysis.")
     ;; Either version may be picked.
     (license (list license:gpl2 license:gpl3))))
 
+(define-public r-survival
+  (package
+    (name "r-survival")
+    (version "3.8-3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "survival" version))
+       (sha256
+        (base32
+         "05crwnjvdx2z6asjipc04534zp2jk3a16qkg8b3n399pgnjhbayw"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-matrix))
+    (home-page "https://github.com/therneau/survival")
+    (synopsis "Survival analysis")
+    (description
+     "This package contains the core survival analysis routines, including
+definition of Surv objects, Kaplan-Meier and Aalen-Johansen (multi-state)
+curves, Cox models, and parametric accelerated failure time models.")
+    (license license:lgpl2.0+)))
+
 (define-public r-swagger
   (package
     (name "r-swagger")
