@@ -18317,6 +18317,8 @@ published results; and a routine for graphical display.")
             (sha256
              (base32
               "1wfq76g6mqf0gkqi9jxqb5va8v59k4ivbdm8d3plmpb6rd23n2ha"))))
+   (properties
+    '((updater-extra-native-inputs . ("r-clusterexperiment"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-biobase
@@ -18340,7 +18342,11 @@ published results; and a routine for graphical display.")
           r-trajectoryutils
           r-viridis))
    (native-inputs
-    (list r-delayedmatrixstats r-dplyr r-knitr r-testthat))
+    (list r-clusterexperiment
+          r-delayedmatrixstats
+          r-dplyr
+          r-knitr
+          r-testthat))
    (home-page "https://statomics.github.io/tradeSeq/index.html")
    (synopsis "Trajectory-based differential expression analysis")
    (description
