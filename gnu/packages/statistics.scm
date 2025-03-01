@@ -547,24 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-mime
-  (package
-    (name "r-mime")
-    (version "0.12")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "mime" version))
-              (sha256
-               (base32
-                "0j9qbq9jfsp61h2d0xmb87pa2wi8nhb1h2wih7l5drf1sr8i0059"))))
-    (build-system r-build-system)
-    (home-page "https://github.com/yihui/mime")
-    (synopsis "R package to map filenames to MIME types")
-    (description
-     "This package guesses the MIME type from a filename extension using the
-data derived from /etc/mime.types in UNIX-type systems.")
-    (license license:gpl2)))
-
 (define-public r-markdown
   (package
     (name "r-markdown")
