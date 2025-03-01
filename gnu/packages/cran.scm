@@ -13823,6 +13823,29 @@ generation in R using Literate Programming techniques.")
     ;; here.
     (license license:gpl2+)))
 
+(define-public r-knitrbootstrap
+  (package
+    (name "r-knitrbootstrap")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "knitrBootstrap" version))
+       (sha256
+        (base32
+         "157mn2gm7djfiw1b55vdr2ylrmgxlpfg95bmm82ghv5g6vr26smd"))))
+    (properties `((upstream-name . "knitrBootstrap")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-knitr r-markdown r-rmarkdown))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/jimhester/knitrBootstrap")
+    (synopsis "Knitr bootstrap framework")
+    (description
+     "This package provides a framework to create Bootstrap 3 HTML reports
+from knitr Rmarkdown.")
+    (license license:expat)))
+
 (define-public r-kit
   (package
     (name "r-kit")
