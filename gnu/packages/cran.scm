@@ -1591,6 +1591,37 @@ effects of different types of color-blindness.")
 visualization of their differences.")
     (license license:gpl2+)))
 
+(define-public r-digest
+  (package
+    (name "r-digest")
+    (version "0.6.37")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "digest" version))
+       (sha256
+        (base32 "0883iyjbd50f0gwz6hgdmcsrk0i0fkjaix9hz6d4m2jbk54x3i42"))))
+    (build-system r-build-system)
+    ;; Vignettes require r-knitr, which requires r-digest, so we have to
+    ;; disable them and the tests.
+    (arguments
+     `(#:tests? #f
+       #:configure-flags (list "--no-build-vignettes")))
+    (native-inputs (list r-simplermarkdown))
+    (home-page "https://dirk.eddelbuettel.com/code/digest.html")
+    (synopsis "Create cryptographic hash digests of R objects")
+    (description
+     "This package contains an implementation of a function @code{digest()} for
+the creation of hash digests of arbitrary R objects (using the md5, sha-1,
+sha-256, crc32, xxhash and murmurhash algorithms) permitting easy comparison
+of R language objects, as well as a function @code{hmac()} to create hash-based
+message authentication code.
+
+Please note that this package is not meant to be deployed for cryptographic
+purposes for which more comprehensive (and widely tested) libraries such as
+OpenSSL should be used.")
+    (license license:gpl2+)))
+
 (define-public r-dint
   (package
     (name "r-dint")
