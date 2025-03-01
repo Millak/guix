@@ -50658,6 +50658,29 @@ parsing.")
 limited to R.")
     (license license:gpl3+)))
 
+(define-public r-withr
+  (package
+    (name "r-withr")
+    (version "3.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "withr" version))
+              (sha256
+               (base32
+                "18y1jbyf6b70zm0kyjdjhdzyskhsbaww3j0kpyjcqxfjjgs0afha"))))
+    (build-system r-build-system)
+    ;; Tests require r-testthat, which indirectly depends on this package.
+    (arguments (list #:tests? #false))
+    (native-inputs
+     (list r-knitr))
+    (home-page "https://github.com/jimhester/withr")
+    (synopsis "Run code with temporarily modified global state")
+    (description
+     "This package provides a set of functions to run R code in an environment
+in which global state has been temporarily modified.  Many of these functions
+were originally a part of the r-devtools package.")
+    (license license:gpl2+)))
+
 (define-public r-wordspace
   (package
     (name "r-wordspace")
