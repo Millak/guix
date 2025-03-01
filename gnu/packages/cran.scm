@@ -2051,6 +2051,28 @@ adapted for other output formats, such as HTML or LaTeX.")
 It also provides visualization tools for analyzing these biases.")
     (license license:gpl3)))
 
+(define-public r-formula
+  (package
+    (name "r-formula")
+    (version "1.2-5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Formula" version))
+       (sha256
+        (base32
+         "0p1m9pqcn8ns0sn67js53677q8gwxgbl4bymcn5y2r0dc1s4c9c6"))))
+    (properties `((upstream-name . "Formula")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/Formula")
+    (synopsis "Extended model formulas")
+    (description
+     "This package provides a new class @code{Formula}, which extends the base
+class @code{formula}.  It supports extended formulas with multiple parts of
+regressors on the right-hand side and/or multiple responses on the left-hand
+side.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-fuzzyjoin
   (package
     (name "r-fuzzyjoin")
