@@ -22545,7 +22545,8 @@ populations, splice site strength, conservation, etc.")
         (base32
          "1xyki5lrpb5wbmgfn1qvkyc4912jv1wsm98njb5krqvvwff1z8hr"))))
     (properties
-     `((upstream-name . "variancePartition")))
+     '((upstream-name . "variancePartition")
+       (updater-extra-native-inputs . ("r-rfast"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-aod
@@ -22575,6 +22576,7 @@ populations, splice site strength, conservation, etc.")
            r-devtools
            r-edger
            r-knitr
+           r-rfast
            r-runit))
     (home-page "https://bioconductor.org/packages/variancePartition/")
     (synopsis "Analyze variation in gene expression experiments")
