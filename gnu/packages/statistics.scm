@@ -547,24 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-dichromat
-  (package
-    (name "r-dichromat")
-    (version "2.0-0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "dichromat" version))
-       (sha256
-        (base32 "10b0avdar3d1y8x2ya3x5kqxqg0z0mq872hdzvc1nn4amplph1d1"))))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/dichromat")
-    (synopsis "Color schemes for dichromats")
-    (description
-     "Dichromat collapses red-green or green-blue distinctions to simulate the
-effects of different types of color-blindness.")
-    (license license:gpl2+)))
-
 (define-public r-digest
   (package
     (name "r-digest")
