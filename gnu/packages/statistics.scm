@@ -523,30 +523,6 @@ available, greatly increasing its breadth and scope.")
     (description
      "This package provides the R math library as an independent package.")))
 
-(define-public r-kernsmooth
-  (package
-    (name "r-kernsmooth")
-    (version "2.23-26")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "KernSmooth" version))
-       (sha256
-        (base32
-         "0gm79nfaypvpxg7j9jdi6k0w5dyi0fp14m32grwalzvz36nbsrdl"))))
-    (properties `((upstream-name . "KernSmooth")))
-    (build-system r-build-system)
-    (native-inputs
-     (list gfortran))
-    (home-page "https://cran.r-project.org/web/packages/KernSmooth")
-    (synopsis "Functions for kernel smoothing")
-    (description
-     "This package provides functions for kernel smoothing (and density
-estimation) corresponding to the book: Wand, M.P. and Jones, M.C. (1995)
-\"Kernel Smoothing\".")
-    ;; Unlimited use and distribution
-    (license (license:non-copyleft "file://LICENCE.note"))))
-
 (define-public r-lattice
   (package
     (name "r-lattice")
