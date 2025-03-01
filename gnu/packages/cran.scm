@@ -408,6 +408,41 @@ package instead.")
 flexible than the orphaned \"base64\" package.")
     (license license:gpl2+)))
 
+(define-public r-batchjobs
+  (package
+    (name "r-batchjobs")
+    (version "1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "BatchJobs" version))
+       (sha256
+        (base32
+         "0xsw25j2ks9bqgz189qdcyj8hzz93snknlik83nj04s6vy0w7aax"))))
+    (properties
+     '((upstream-name . "BatchJobs")
+       (updater-extra-native-inputs . ("r-mass"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-backports
+           r-bbmisc
+           r-brew
+           r-checkmate
+           r-data-table
+           r-dbi
+           r-digest
+           r-rsqlite
+           r-sendmailr
+           r-stringi))
+    (native-inputs (list r-mass r-testthat))
+    (home-page "https://github.com/tudo-r/BatchJobs")
+    (synopsis "Batch computing with R")
+    (description
+     "This package provides @code{Map}, @code{Reduce} and @code{Filter}
+variants to generate jobs on batch computing systems like PBS/Torque, LSF,
+SLURM and Sun Grid Engine.  Multicore and SSH systems are also supported.")
+    (license license:bsd-2)))
+
 (define-public r-beepr
   (package
     (name "r-beepr")
