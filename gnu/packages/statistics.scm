@@ -2847,28 +2847,6 @@ Shiny).  The @code{DataTables} library has been included in this R package.")
                      license:expat
                      license:wtfpl2)))))
 
-(define-public r-irlba
-  (package
-    (name "r-irlba")
-    (version "2.3.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "irlba" version))
-       (sha256
-        (base32
-         "1ky5nlmyrnwz6121wwqd8p8r1ycnjkl5r290k4x2477rzs267zic"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-matrix))
-    (home-page "https://cran.r-project.org/web/packages/irlba")
-    (synopsis "Methods for eigendecomposition of large matrices")
-    (description
-     "This package provides fast and memory efficient methods for truncated
-singular and eigenvalue decompositions, as well as for principal component
-analysis of large sparse or dense matrices.")
-    (license (list license:gpl2+ license:gpl3+))))
-
 (define-public r-glmnet
   (package
    (name "r-glmnet")
