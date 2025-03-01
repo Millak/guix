@@ -2415,6 +2415,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/wpa-supplicant-dbus-group-policy.patch		\
   %D%/packages/patches/x265-arm-flags.patch			\
   %D%/packages/patches/xdg-desktop-portal-disable-portal-tests.patch\
+  %D%/packages/patches/xdg-desktop-portal-disable-configuration-search-exit.patch\
   %D%/packages/patches/xdg-desktop-portal-wlr-harcoded-length.patch\
   %D%/packages/patches/xf86-video-siliconmotion-fix-ftbfs.patch \
   %D%/packages/patches/xfig-Enable-error-message-for-missing-libraries.patch		\

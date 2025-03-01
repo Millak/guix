@@ -3213,8 +3213,10 @@ compatible with the well-known scripts of the same name.")
        (sha256
         (base32
          "0r8y8qmzcfj7b7brqcxr9lg8pavfds815ffvj0kqc378fhgaln5q"))
-       ;; Disable portal tests since they try to use fuse.
-       (patches (search-patches "xdg-desktop-portal-disable-portal-tests.patch"))))
+       (patches (search-patches
+                 ;; Disable portal tests since they try to use fuse.
+                 "xdg-desktop-portal-disable-portal-tests.patch"
+                 "xdg-desktop-portal-disable-configuration-search-exit.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags

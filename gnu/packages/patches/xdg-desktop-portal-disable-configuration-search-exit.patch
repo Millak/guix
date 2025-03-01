@@ -1,0 +1,27 @@
+From 37003d1f99246c88cbe7cf2f83616642e0fdf3fb Mon Sep 17 00:00:00 2001
+From: Rodion Goritskov <rodion.goritskov@gmail.com>
+Date: Fri, 27 Sep 2024 00:44:07 +0400
+Subject: [PATCH] portal-impl: Check if there are any configuration files in XDG_DESKTOP_PORTAL_DIR before exiting configuration search
+
+---
+ src/portal-impl.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/src/portal-impl.c b/src/portal-impl.c
+index 8c1fd53..8708409 100644
+--- a/src/portal-impl.c
++++ b/src/portal-impl.c
+@@ -438,9 +438,8 @@ load_portal_configuration (gboolean opt_verbose)
+ 
+   if (portal_dir != NULL)
+     {
+-      load_config_directory (portal_dir, desktops, opt_verbose);
+-      /* All other config directories are ignored when this is set */
+-      return;
++      if (load_config_directory (portal_dir, desktops, opt_verbose))
++	return;
+     }
+ 
+   /* $XDG_CONFIG_HOME/xdg-desktop-portal/(DESKTOP-)portals.conf */
+-- 
+2.46.0
