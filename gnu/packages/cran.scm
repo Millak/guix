@@ -1031,6 +1031,27 @@ Shiny applications.")
     (license (list license:gpl3
                    license:isc)))) ;for bundled d3js
 
+(define-public r-coda
+  (package
+    (name "r-coda")
+    (version "0.19-4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "coda" version))
+              (sha256
+               (base32
+                "1mlaf3ffql3phc12vlfss0vqqdj415mxsg84vsdgymmvdzc53d7l"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-lattice))
+    (home-page "https://cran.r-project.org/web/packages/coda")
+    (synopsis "Package for output analysis and diagnostics for MCMC")
+    (description "This package provides functions for summarizing and plotting
+the output from Markov Chain Monte Carlo (MCMC) simulations, as well as
+diagnostic tests of convergence to the equilibrium distribution of the Markov
+chain.")
+    (license license:gpl2+)))
+
 (define-public r-codetools
   (package
     (name "r-codetools")
