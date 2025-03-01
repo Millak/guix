@@ -10815,54 +10815,6 @@ array against the quality of the other arrays.  Then, arrays with unusually
 high distances can be flagged as potentially low-quality.")
     (license license:lgpl2.0+)))
 
-;; This is available only in the devel branch of Bioconductor.
-(define-public r-memes
-  (let ((commit "55f0df1fe65c8ead5252542fdc0da0ff2339049e")
-        (revision "1"))
-    (package
-      (name "r-memes")
-      (version (git-version "1.11.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/snystrom/memes")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0mp3a610v293prmyid3w1w8fkjkppjnim60h7p9vz2884d0wdvk4"))))
-      (properties `((upstream-name . "memes")))
-      (build-system r-build-system)
-      (propagated-inputs (list r-biostrings
-                               r-cmdfun
-                               r-dplyr
-                               r-genomicranges
-                               r-ggplot2
-                               r-ggseqlogo
-                               r-magrittr
-                               r-matrixstats
-                               r-patchwork
-                               r-processx
-                               r-purrr
-                               r-readr
-                               r-rlang
-                               r-tibble
-                               r-tidyr
-                               r-universalmotif
-                               r-usethis
-                               r-xml2))
-      (native-inputs (list r-knitr))
-      (home-page "https://github.com/snystrom/memes")
-      (synopsis
-       "Motif matching, comparison, and de novo discovery using the MEME Suite")
-      (description
-       "This package facilitates motif analysis using MEME Suite tools.
-Memes provides data aware utilities for using GRanges objects as
-entrypoints to motifanalysis, data structures for examining & editing
-motif lists, and novel data visualizations.  Memes functions and data
-structures are amenable to both base R and tidyverse workflows.")
-      (license license:expat))))
-
 (define-public r-metabocoreutils
   (package
     (name "r-metabocoreutils")
