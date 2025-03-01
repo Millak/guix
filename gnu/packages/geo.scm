@@ -1108,7 +1108,9 @@ require a spatial database such as PostGIS.")
     (propagated-inputs (list python-geojson
                              python-requests
                              python-shapely))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/mvexel/overpass-api-python-wrapper")
     (synopsis "Python wrapper for the OpenStreetMap Overpass API")
     (description "This package provides python-overpass, a Python wrapper
