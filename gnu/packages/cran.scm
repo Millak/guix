@@ -3730,6 +3730,28 @@ isolated functions, also called crates, print to the console with their total
 size and can be easily tested locally before being sent to a remote.")
     (license license:gpl3)))
 
+(define-public r-class
+  (package
+    (name "r-class")
+    (version "7.3-23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "class" version))
+       (sha256
+        (base32
+         "1wci521c81q500rwcsm8q1s307fxfx8pjvai85bg2ig0x89dn6jd"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-mass))
+    (home-page "https://www.stats.ox.ac.uk/pub/MASS4/")
+    (synopsis "R functions for classification")
+    (description
+     "This package provides various functions for classification, including
+k-nearest neighbour, Learning Vector Quantization and Self-Organizing Maps.")
+    ;; Either of the two versions can be picked.
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-climaemet
   (package
     (name "r-climaemet")
