@@ -34703,6 +34703,34 @@ extensible, so that users are also allowed to define their own objectives
 easily.")
     (license license:asl2.0)))
 
+(define-public r-xnomial
+  (package
+    (name "r-xnomial")
+    (version "1.0.4.1")
+    (source
+     (origin (method url-fetch)
+             (uri (cran-uri "XNomial" version))
+             (sha256
+              (base32
+               "09chxyj35s291myjaxk6y9afvg2wdsi05vz7rwqmaqzmvyqcwpw7"))))
+    (properties (quasiquote ((upstream-name . "XNomial"))))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/web/packages/XNomial")
+    (synopsis "Goodness-of-Fit test for multinomial data")
+    (description
+     "This package provides an exact Goodness-of-Fit test for multinomial data
+with fixed probabilities.  It can be used to determine whether a set of counts
+fits a given expected ratio.  To see whether a set of observed counts fits an
+expectation, one can examine all possible outcomes with @code{xmulti()} or a
+random sample of them with @code{xmonte()} and find the probability of an
+observation deviating from the expectation by at least as much as the
+observed.  As a measure of deviation from the expected, one can use the
+log-likelihood ratio, the multinomial probability, or the classic chi-square
+statistic.  A histogram of the test statistic can also be plotted and compared
+with the asymptotic curve.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-xtable
   (package
     (name "r-xtable")
