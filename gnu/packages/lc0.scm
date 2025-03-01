@@ -60,7 +60,13 @@
       #:configure-flags
       #~(list "-Ddnnl=true"
               (string-append "-Ddnnl_dir="
-                             #$(this-package-input "oneapi-dnnl")))))
+                             #$(this-package-input "oneapi-dnnl")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-march-native
+            (lambda _
+              (substitute* "meson.build"
+                (("-march=native") "")))))))
     (native-search-paths
      (list (search-path-specification
             (variable "XDG_DATA_DIRS")
