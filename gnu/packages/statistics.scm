@@ -547,30 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-svglite
-  (package
-    (name "r-svglite")
-    (version "2.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "svglite" version))
-       (sha256
-        (base32 "0m0axxrkiih4wmrp9qh803p4l92fdgrsbxaww38z89widx75da7h"))))
-    (properties `((upstream-name . "svglite")))
-    (build-system r-build-system)
-    (inputs (list libpng zlib))
-    (propagated-inputs (list r-cpp11 r-systemfonts))
-    (native-inputs (list r-fontquiver r-knitr r-testthat r-xml2))
-    (home-page "https://svglite.r-lib.org")
-    (synopsis "SVG graphics device")
-    (description
-     "@code{svglite} is a graphics device that produces clean
-@dfn{SVG} (Scalable Vector Graphics) output, suitable for use on the web, or
-hand editing.  Compared to the built-in @code{svg()}, @code{svglite} is
-considerably faster, produces smaller files, and leaves text as is.")
-    (license license:gpl2+)))
-
 (define-public r-assertthat
   (package
     (name "r-assertthat")
