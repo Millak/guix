@@ -523,32 +523,6 @@ available, greatly increasing its breadth and scope.")
     (description
      "This package provides the R math library as an independent package.")))
 
-(define-public r-matrix
-  (package
-    (name "r-matrix")
-    (version "1.7-2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "Matrix" version))
-       (sha256
-        (base32
-         "0l66jqg7als7pq3y1f9dbsk9zc06gsqw7b4wjaf7k6ynwnd9s0bz"))))
-    (properties
-     `((upstream-name . "Matrix")
-       ;; Needed for vignettes.
-       (updater-extra-native-inputs . ("r-mass"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-lattice))
-    (native-inputs (list r-codetools r-mass r-sfsmisc r-sparsem))
-    (home-page "https://Matrix.R-forge.R-project.org/")
-    (synopsis "Sparse and dense matrix classes and methods")
-    (description
-     "This package provides classes and methods for dense and sparse matrices
-and operations on them using LAPACK and SuiteSparse.")
-    (license license:gpl2+)))
-
 (define-public r-nlme
   (package
     (name "r-nlme")
