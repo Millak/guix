@@ -1438,6 +1438,28 @@ clean, transform, and prepare your data for analysis.  It also forms the data
 wrangling backend for the packages in the @code{easystats} ecosystem.")
     (license license:gpl3)))
 
+(define-public r-dbi
+  (package
+    (name "r-dbi")
+    (version "1.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "DBI" version))
+              (sha256
+               (base32
+                "1gid1mfzq1j3n5fsnpzdb50p2m73z92s6njp0sgr503aaskhhryg"))))
+    (build-system r-build-system)
+    (native-inputs
+     (list r-knitr r-testthat))
+    (home-page "https://github.com/rstats-db/DBI")
+    (synopsis "R database interface")
+    (description
+     "The DBI package provides a database interface (DBI) definition for
+communication between R and relational database management systems.  All
+classes in this package are virtual and need to be extended by the various
+R/DBMS implementations.")
+    (license license:lgpl2.0+)))
+
 (define-public r-dbitest
   (package
     (name "r-dbitest")
