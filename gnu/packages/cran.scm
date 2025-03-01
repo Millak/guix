@@ -2666,6 +2666,31 @@ of blocks (groups of samples).  @code{permute} also allows split-plot designs,
 in which the whole-plots or split-plots or both can be freely exchangeable.")
    (license license:gpl2+)))
 
+(define-public r-plyr
+  (package
+    (name "r-plyr")
+    (version "1.8.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "plyr" version))
+       (sha256
+        (base32 "00z1mvqisnzbbwcwax1gm9ilahpgp21kk4l7hqdz8fym27vygd8m"))))
+    (build-system r-build-system)
+    (properties
+     '((updater-extra-native-inputs . ("r-abind"))))
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-abind r-testthat))
+    (home-page "http://had.co.nz/plyr")
+    (synopsis "Tools for splitting, applying and combining data")
+    (description
+     "Plyr is a set of tools that solves a common set of problems: you need to
+break a big problem down into manageable pieces, operate on each piece and
+then put all the pieces back together.  For example, you might want to fit a
+model to each spatial location or time point in your study, summarise data by
+panels or collapse high-dimensional arrays to simpler summary statistics.")
+    (license license:expat)))
+
 (define-public r-pma
   (package
     (name "r-pma")
