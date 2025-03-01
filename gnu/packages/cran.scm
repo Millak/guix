@@ -352,6 +352,24 @@ bias-reduced estimation, finite mixture models, and recursive partitioning for
 beta regression, see <doi:10.18637/jss.v048.i11>.")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public r-bh
+  (package
+    (name "r-bh")
+    (version "1.87.0-1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "BH" version))
+              (sha256
+               (base32
+                "14q3wq9aix8fsbd09dj3nbhh89wpbxzn2l8wk8l26apl6pk9m0jr"))))
+    (build-system r-build-system)
+    (home-page "https://github.com/eddelbuettel/bh")
+    (synopsis "R package providing subset of Boost headers")
+    (description
+     "This package aims to provide the most useful subset of Boost libraries
+for template use among CRAN packages.")
+    (license license:boost1.0)))
+
 (define-public r-bit
   (package
     (name "r-bit")
