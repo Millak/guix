@@ -523,28 +523,6 @@ available, greatly increasing its breadth and scope.")
     (description
      "This package provides the R math library as an independent package.")))
 
-(define-public r-boot
-  (package
-    (name "r-boot")
-    (version "1.3-31")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "boot" version))
-       (sha256
-        (base32
-         "1ln8079g7l6yxdh7bmcn2acjlln0hvrhhjbp5r0wl0xms662wm6q"))))
-    (build-system r-build-system)
-    (native-inputs (list r-survival))
-    (home-page "https://cran.r-project.org/web/packages/boot")
-    (synopsis "Bootstrap functions for R")
-    (description
-     "This package provides functions and datasets for bootstrapping from the
-book \"Bootstrap Methods and Their Application\" by A.C. Davison and
-D.V. Hinkley (1997, CUP), originally written by Angelo Canty for S.")
-    ;; Unlimited distribution
-    (license (license:non-copyleft "file://R/bootfuns.q"))))
-
 (define-public r-mass
   (package
     (name "r-mass")
