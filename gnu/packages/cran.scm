@@ -33494,6 +33494,31 @@ purpose Metropolis sampling algorithm, and tools for visualization are
 provided.")
     (license license:gpl3)))
 
+(define-public r-xml
+  (package
+    (name "r-xml")
+    (version "3.99-0.18")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "XML" version))
+              (sha256
+               (base32
+                "0jskpmx300bimf835v00bsabz8nxrkr2y63wzrdwbn1cpnlaj398"))))
+    (properties
+     `((upstream-name . "XML")))
+    (build-system r-build-system)
+    (inputs
+     (list libxml2 zlib))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://www.omegahat.net/RSXML")
+    (synopsis "Tools for parsing and generating XML within R")
+    (description
+     "Many approaches for both reading and creating XML (and HTML)
+documents (including DTDs), both local and accessible via HTTP or FTP.  Also
+offers access to an XPath \"interpreter\".")
+    (license license:bsd-2)))
+
 (define-public r-xml2
   (package
     (name "r-xml2")
