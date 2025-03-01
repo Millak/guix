@@ -2140,24 +2140,29 @@ cp -r /tmp/locale/*/en_US.*")))
            bash-minimal
            bubblewrap
            curl
-           dconf
            fuse
            gdk-pixbuf
-           gpgme
-           json-glib
-           libarchive
            libcap
            libostree
-           libseccomp
            libsoup-minimal-2
-           libxau
            libxml2
            p11-kit
            polkit
            util-linux
            xdg-dbus-proxy
            zstd))
-    (propagated-inputs (list glib-networking gnupg gsettings-desktop-schemas))
+    (propagated-inputs (list glib-networking
+                             gnupg
+                             gsettings-desktop-schemas
+                             ;; The following are listed in Requires.private of
+                             ;; `flatpak.pc'.
+                             curl
+                             dconf
+                             gpgme
+                             json-glib
+                             libarchive
+                             libseccomp
+                             libxau))
     (home-page "https://flatpak.org")
     (synopsis "System for building, distributing, and running sandboxed desktop
 applications")
