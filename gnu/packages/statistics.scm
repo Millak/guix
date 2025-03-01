@@ -3087,30 +3087,6 @@ Stochastic Neighbor Embedding using a Barnes-Hut implementation.")
     ;; code licensed under BSD-4.
     (license (list license:bsd-3 license:bsd-4))))
 
-(define-public r-e1071
-  (package
-    (name "r-e1071")
-    (version "1.7-16")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "e1071" version))
-       (sha256
-        (base32
-         "0krsgkcvs16jixmjwjl05aggpz02hahg2j8ydk4r9nrz0ginbm8j"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-class r-proxy))
-    ;; For vignettes
-    (native-inputs (list r-mlbench r-randomforest r-xtable))
-    (home-page "https://cran.r-project.org/web/packages/e1071")
-    (synopsis "Miscellaneous functions for probability theory")
-    (description
-     "This package provides functions for latent class analysis, short time
-Fourier transform, fuzzy clustering, support vector machines, shortest path
-computation, bagged clustering, naive Bayes classifier, and more.")
-    (license license:gpl2+)))
-
 (define-public r-synchronicity
   (package
     (name "r-synchronicity")
