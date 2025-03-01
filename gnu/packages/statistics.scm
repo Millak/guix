@@ -3104,24 +3104,6 @@ Shiny).  The @code{DataTables} library has been included in this R package.")
                      license:expat
                      license:wtfpl2)))))
 
-(define-public r-base64enc
-  (package
-    (name "r-base64enc")
-    (version "0.1-3")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "base64enc" version))
-              (sha256
-               (base32
-                "13b89fhg1nx7zds82a0biz847ixphg9byf5zl2cw9kab6s56v1bd"))))
-    (build-system r-build-system)
-    (home-page "https://www.rforge.net/base64enc")
-    (synopsis "Tools for Base64 encoding")
-    (description
-     "This package provides tools for handling Base64 encoding.  It is more
-flexible than the orphaned \"base64\" package.")
-    (license license:gpl2+)))
-
 (define-public r-irlba
   (package
     (name "r-irlba")
