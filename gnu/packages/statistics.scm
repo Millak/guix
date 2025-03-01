@@ -547,33 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-highr
-  (package
-    (name "r-highr")
-    (version "0.11")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "highr" version))
-              (sha256
-               (base32
-                "19z0gwdy46z6gb46b3fs2ljxa2cn0bpvx7aam0jk75h180l183g9"))))
-    (properties
-     ;; We can't have r-knitr among the inputs here, because r-highr depends
-     ;; on r-xfun, which is an input to r-knitr.
-     '((updater-ignored-native-inputs . ("r-knitr"))))
-    (build-system r-build-system)
-    ;; Do not build vignettes as they need r-knitr.
-    (arguments (list #:test-types '(list "tests")))
-    (propagated-inputs (list r-xfun))
-    (native-inputs (list r-testit))
-    (home-page "https://github.com/yihui/highr")
-    (synopsis "Syntax highlighting for R source code")
-    (description
-     "This package provides syntax highlighting for R source code.  Currently
-it supports LaTeX and HTML output.  Source code of other languages is
-supported via Andre Simon's highlight package.")
-    (license license:gpl3+)))
-
 (define-public r-httpgd
   (package
     (name "r-httpgd")
