@@ -8597,6 +8597,49 @@ and make inference with discrete time and discrete space hidden Markov
 models.")
     (license license:gpl2+)))
 
+(define-public r-hmisc
+  (package
+    (name "r-hmisc")
+    (version "5.2-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Hmisc" version))
+       (sha256
+        (base32 "0z09b1nx1q1ayw9wnvvqsb8jnxrkb0hac4m1p7rdibg09ypj2ln5"))))
+    (properties `((upstream-name . "Hmisc")))
+    (build-system r-build-system)
+    ;; Tests need r-rms, which needs this package.
+    (arguments (list #:test-types '(list "vignettes")))
+    (native-inputs
+     (list gfortran))
+    (propagated-inputs
+     (list r-base64enc
+           r-cluster
+           r-colorspace
+           r-data-table
+           r-foreign
+           r-formula
+           r-ggplot2
+           r-gridextra
+           r-gtable
+           r-htmltable
+           r-htmltools
+           r-knitr
+           r-nnet
+           r-rmarkdown
+           r-rpart
+           r-viridis))
+    (home-page "http://biostat.mc.vanderbilt.edu/Hmisc")
+    (synopsis "Miscellaneous data analysis and graphics functions")
+    (description
+     "This package contains many functions useful for data analysis,
+high-level graphics, utility operations, functions for computing sample size
+and power, importing and annotating datasets, imputing missing values,
+advanced table making, variable clustering, character string manipulation,
+conversion of R objects to LaTeX code, and recoding variables.")
+    (license license:gpl2+)))
+
 (define-public r-hms
   (package
     (name "r-hms")
