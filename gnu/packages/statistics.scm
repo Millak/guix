@@ -523,28 +523,6 @@ available, greatly increasing its breadth and scope.")
     (description
      "This package provides the R math library as an independent package.")))
 
-(define-public r-nlme
-  (package
-    (name "r-nlme")
-    (version "3.1-167")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "nlme" version))
-       (sha256
-        (base32 "0jca5a7z82rrwy0imwb5jc2hx6m2av9fsdvlahrsb290kg5rrp6s"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-lattice))
-    (native-inputs
-     (list gfortran))
-    (home-page "https://cran.r-project.org/web/packages/nlme")
-    (synopsis "Linear and nonlinear mixed effects models")
-    (description
-     "This package provides tools to fit and compare Gaussian linear and
-nonlinear mixed-effects models.")
-    (license license:gpl2+)))
-
 (define-public r-mgcv
   (package
    (name "r-mgcv")
