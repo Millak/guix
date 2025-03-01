@@ -547,25 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-yaml
-  (package
-    (name "r-yaml")
-    (version "2.3.10")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "yaml" version))
-              (sha256
-               (base32
-                "0v9al1fh82vpjhml91j73sim7gfyc0154kxaam41sdkf6qnx8dp2"))))
-    (build-system r-build-system)
-    (native-inputs (list r-runit))
-    (home-page "https://cran.r-project.org/web/packages/yaml/")
-    (synopsis "Methods to convert R data to YAML and back")
-    (description
-     "This package implements the libyaml YAML 1.1 parser and
-emitter (http://pyyaml.org/wiki/LibYAML) for R.")
-    (license license:bsd-3)))
-
 (define-public r-knitr
   (package
     (name "r-knitr")
