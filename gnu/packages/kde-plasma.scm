@@ -291,6 +291,7 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   kxmlgui
                   kirigami
                   kirigami-addons
+                  kitemmodels
                   kuserfeedback
                   knewstuff
                   knotifications
@@ -300,7 +301,10 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   kidletime
                   packagekit-qt6
                   purpose
+                  qt5compat
                   qtdeclarative
+                  qtsvg
+                  qtwebview
                   qcoro-qt6))
     ;; -- The following features have been disabled:
     ;; * Ostree, Library to manage ostree repository. Required to build the rpm-ostree backend
