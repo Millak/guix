@@ -243,6 +243,27 @@ a recent compiler).  Asio is written and maintained by Christopher
 M. Kohlhoff, and released under the Boost Software License', Version 1.0.")
     (license license:boost1.0)))
 
+(define-public r-assertthat
+  (package
+    (name "r-assertthat")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "assertthat" version))
+              (sha256
+               (base32
+                "17wy5bdfzg73sg2clisg1k3zyn1adkj59x56m5nwia2k8z67zkw5"))))
+    (build-system r-build-system)
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/hadley/assertthat")
+    (synopsis "Easy pre and post assertions")
+    (description
+     "Assertthat is an extension to @code{stopifnot()} that makes it easy to
+declare the pre and post conditions that your code should satisfy, while also
+producing friendly error messages so that your users know what they've done
+wrong.")
+    (license license:gpl3+)))
+
 (define-public r-aster
   (package
     (name "r-aster")
