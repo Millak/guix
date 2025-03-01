@@ -50974,6 +50974,29 @@ variables and hardware resources.  Functions in this package are supposed to
 be efficient and easy to use.")
     (license license:gpl2+)))
 
+(define-public r-vipor
+  (package
+    (name "r-vipor")
+    (version "0.4.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "vipor" version))
+              (sha256
+               (base32
+                "17hb6y1i9bva0fr4k9m6wncmnzdjad1b7fhsvfhva4xavpll3bds"))))
+    (build-system r-build-system)
+    ;; Vignettes need r-beeswarm and r-ggbeeswarm, leading to a dependency
+    ;; cycle.
+    (arguments (list #:test-types '(list "tests")))
+    (native-inputs (list r-testthat))
+    (home-page "https://cran.r-project.org/web/packages/vipor")
+    (synopsis "Plot categorical data using noise and density estimates")
+    (description
+     "This package provides tools to generate a violin point plot, a
+combination of a violin/histogram plot and a scatter plot by offsetting points
+within a category based on their density using quasirandom noise.")
+    (license license:gpl2+)))
+
 (define-public r-viridis
   (package
     (name "r-viridis")
