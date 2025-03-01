@@ -8738,6 +8738,30 @@ particularly easy to create complete web applications using httpuv alone.")
     ;; obtained here: https://github.com/rstudio/httpuv/blob/master/LICENSE
     (license license:gpl3+)))
 
+(define-public r-httr
+  (package
+    (name "r-httr")
+    (version "1.4.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "httr" version))
+              (sha256
+               (base32
+                "0fisvq3zydmqagn7lj6x98zxkcl7l95gfydl27zkigb7zg1fcm8m"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-curl r-jsonlite r-mime r-openssl r-r6))
+    (native-inputs
+     (list r-knitr r-testthat))
+    (home-page "https://github.com/hadley/httr")
+    (synopsis "Tools for working with URLs and HTTP")
+    (description
+     "The aim of httr is to provide a wrapper for RCurl customised to the
+demands of modern web APIs.  It provides useful tools for working with HTTP
+organised by HTTP verbs (@code{GET()}, @code{POST()}, etc).  Configuration
+functions make it easy to control additional request components.")
+    (license license:expat)))
+
 (define-public r-httr2
   (package
     (name "r-httr2")
