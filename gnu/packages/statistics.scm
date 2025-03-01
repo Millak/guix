@@ -547,30 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-evaluate
-  (package
-    (name "r-evaluate")
-    (version "1.0.3")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "evaluate" version))
-              (sha256
-               (base32
-                "1qm2vz8a1hjgqyidaf3favzbp7fjka3m6qdq9yxjjmhf2gdfvzxv"))))
-    (properties
-     ;; We can't have r-testthat among the inputs here to avoid a dependency
-     ;; cycle.
-     '((updater-ignored-native-inputs . ("r-testthat"))))
-    (build-system r-build-system)
-    (home-page "https://github.com/hadley/evaluate")
-    (synopsis "Parsing and evaluation tools for R")
-    (description
-     "This package provides tools that allow you to recreate the parsing,
-evaluation and display of R code, with enough information that you can
-accurately recreate what happens at the command line.  The tools can easily be
-adapted for other output formats, such as HTML or LaTeX.")
-    (license license:gpl3+)))
-
 (define-public r-formatr
   (package
     (name "r-formatr")
