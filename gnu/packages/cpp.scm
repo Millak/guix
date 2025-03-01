@@ -686,6 +686,34 @@ single values.  It also provides accelerated implementation of common
 mathematical functions operating on batches.")
     (license license:bsd-3)))
 
+(define-public icecream-cpp
+  ;; Last release was in 2020.
+  (let ((commit "95c8b91c2214be76a2847cd4ab37dccd9250ed77")
+        (revision "0"))
+    (package
+      (name "icecream-cpp")
+      (version (git-version "0.3.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/renatoGarcia/icecream-cpp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0zw4aj5xs13grf7qj6f33dq7md9hn5i9mf6kz66b5jsx2fly6xxs"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:configure-flags #~(list "-DBUILD_TESTING=ON")))
+      (native-inputs (list boost catch2))
+      (home-page "https://github.com/renatoGarcia/icecream-cpp")
+      (synopsis "C++ library for @code{printf} debugging")
+      (description
+       "IceCream-Cpp is a C++ library for @code{printf} debugging.  It is
+inspired by the @url{https://github.com/gruns/icecream, Python library} of the
+same name.")
+      (license license:expat))))
+
 (define-public google-highway
   (package
     (name "google-highway")
