@@ -9388,7 +9388,7 @@ previewing themes in real time.")
 (define-public r-shiny
   (package
     (name "r-shiny")
-    (version "1.8.1")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -9398,11 +9398,11 @@ previewing themes in real time.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "06prh7r00dy1i2nlcls9cpfiw86lbyzbgcf9hbj54j6kfv8mh5fw"))
+         "07b4i1qcpfhyflaxxvwllnz0qw9iphnnsrr5rwa65aw7d9r2wszz"))
        (snippet
         '(for-each delete-file
                    '("inst/www/shared/bootstrap/js/bootstrap.min.js"
-                     "inst/www/shared/bootstrap/accessibility/js/bootstrap-accessibility.min.js" ; TODO
+                     "inst/www/shared/bootstrap/accessibility/js/bootstrap-accessibility.min.js"
                      "inst/www/shared/datatables/js/jquery.dataTables.min.js"
                      "inst/www/shared/datepicker/js/bootstrap-datepicker.min.js"
                      "inst/www/shared/highlight/highlight.pack.js"
@@ -9413,8 +9413,14 @@ previewing themes in real time.")
                      "inst/www/shared/selectize/accessibility/js/selectize-plugin-a11y.min.js"
                      "inst/www/shared/selectize/js/selectize.min.js"
                      "inst/www/shared/shiny.min.js"
+                     ;; These are built from TypeScript sources, which is a
+                     ;; little trickier to do correctly.
+                     ;; "inst/www/shared/shiny-showcase.js" ;TODO
+                     ;; "inst/www/shared/shiny-autoreload.js" ;TODO
                      "inst/www/shared/showdown/compressed/showdown.js"
                      "inst/www/shared/strftime/strftime-min.js")))))
+    (properties
+     '((updater-extra-native-inputs . ("r-coro"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -9508,6 +9514,7 @@ v1.0.7/_site/plugins/js/bootstrap-accessibility.js")
            (sha256
             (base32
              "1489wyzwrpf86y7vhc13n4v3mszmsfybhd3f75jkpnbvyp5sncm8"))))
+       ("r-coro" ,r-coro)
        ("r-future" ,r-future)
        ("r-ggplot2" ,r-ggplot2)
        ("r-testthat" ,r-testthat)))
