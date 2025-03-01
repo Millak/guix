@@ -5855,6 +5855,51 @@ It also includes vectorized operations for row-by-row means, variances, and
 t-tests.  Finally, it provides new colorschemes.")
     (license license:asl2.0)))
 
+(define-public r-openssl
+  (package
+    (name "r-openssl")
+    (version "2.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "openssl" version))
+       (sha256
+        (base32
+         "1nw4clg9skm6fnaar72zp00wrk29bjhmh9714a9q0m9wpimcl9cr"))))
+    (properties
+     `((upstream-name . "openssl")
+       (updater-extra-inputs . ("openssl"))))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'do-not-use-versioned-linking
+           (lambda _
+             (substitute* "configure"
+               (("PKG_LIBS=\"\\$\\{PKG_LIBS_VERSIONED\\}\"")
+                "PKG_LIBS=\"${PKG_LIBS}\"")))))))
+    (inputs
+     (list openssl))
+    (native-inputs
+     (list pkg-config r-curl r-knitr r-sodium r-testthat))
+    (propagated-inputs
+     (list r-askpass))
+    (home-page "https://github.com/jeroenooms/openssl")
+    (synopsis "Toolkit for encryption, signatures and certificates")
+    (description
+     "This package provides R bindings to OpenSSL libssl and libcrypto, plus
+custom SSH pubkey parsers.  It supports RSA, DSA and NIST curves P-256, P-384
+and P-521.  Cryptographic signatures can either be created and verified
+manually or via x509 certificates.  AES block cipher is used in CBC mode for
+symmetric encryption; RSA for asymmetric (public key) encryption.  High-level
+envelope functions combine RSA and AES for encrypting arbitrary sized data.
+Other utilities include key generators, hash functions (md5, sha1, sha256,
+etc), base64 encoder, a secure random number generator, and @code{bignum} math
+methods for manually performing crypto calculations on large multibyte
+integers.")
+    (license license:expat)))
+
 (define-public r-orgmassspecr
   (package
     (name "r-orgmassspecr")
