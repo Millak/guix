@@ -523,25 +523,6 @@ available, greatly increasing its breadth and scope.")
     (description
      "This package provides the R math library as an independent package.")))
 
-(define-public r-nnet
-  (package
-    (name "r-nnet")
-    (version "7.3-20")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "nnet" version))
-       (sha256
-        (base32
-         "0mdmnafhjas0cd5ac5c2pb6nzii3m9dqgr7y3fycyqdi1rzf2cwg"))))
-    (build-system r-build-system)
-    (home-page "https://www.stats.ox.ac.uk/pub/MASS4/")
-    (synopsis "Feed-forward neural networks and multinomial log-linear models")
-    (description
-     "This package provides functions for feed-forward neural networks with a
-single hidden layer, and for multinomial log-linear models.")
-    (license (list license:gpl2+ license:gpl3+))))
-
 (define-public r-rpart
   (package
     (name "r-rpart")
