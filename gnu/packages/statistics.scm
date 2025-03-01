@@ -547,38 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-gdtools
-  (package
-    (name "r-gdtools")
-    (version "0.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "gdtools" version))
-       (sha256
-        (base32
-         "0vv8g0h5fkpna5b3fqrj6dkdxpqr0ws5sdmzgysb17gw4vviq39b"))))
-    (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; This is needed for tests.
-         (add-after 'unpack 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list pkg-config r-testthat))
-    (inputs
-     (list cairo fontconfig freetype zlib))
-    (propagated-inputs
-     (list r-fontquiver r-htmltools r-rcpp r-systemfonts))
-    (home-page "https://cran.r-project.org/web/packages/gdtools")
-    (synopsis "Utilities for graphical rendering")
-    (description
-     "The @code{gdtools} package provides functionalities to get font metrics
-and to generate base64 encoded string from raster matrix.")
-    (license license:gpl3)))
-
 (define-public r-svglite
   (package
     (name "r-svglite")
