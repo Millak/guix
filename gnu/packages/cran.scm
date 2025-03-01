@@ -2066,6 +2066,32 @@ text annotations.")
 axis breaks of a ggplot.")
     (license license:artistic2.0)))
 
+(define-public r-ggdendro
+  (package
+    (name "r-ggdendro")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggdendro" version))
+              (sha256
+               (base32
+                "0sdayyzvhkbli0ha68mc0f7cgp36njv9ign37d63l21hvd6w6h0r"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ggplot2 r-mass))
+    (native-inputs
+     (list r-knitr r-testthat))
+    (home-page "https://github.com/andrie/ggdendro")
+    (synopsis "Create dendrograms and tree diagrams using ggplot2")
+    (description "This is a set of tools for dendrograms and tree plots using
+ggplot2.  The ggplot2 philosophy is to clearly separate data from the
+presentation.  Unfortunately the plot method for dendrograms plots directly to
+a plot device with out exposing the data.  The ggdendro package resolves this
+by making available functions that extract the dendrogram plot data.  The
+package provides implementations for tree, rpart, as well as diana and agnes
+cluster diagrams.")
+    (license license:gpl2+)))
+
 (define-public r-ggdist
   (package
     (name "r-ggdist")
