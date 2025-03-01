@@ -50900,6 +50900,37 @@ coefficients or scattering amplitudes, for seismological P and S-waves at an
 interface.")
     (license license:gpl2+)))
 
+(define-public r-ztable
+  (package
+    (name "r-ztable")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ztable" version))
+              (sha256
+               (base32
+                "1ps7ix0hc84s0p0ra6bkjxky3cffs1rvdcagqzj78lbdq22dk5j8"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-flextable
+           r-magrittr
+           r-officer
+           r-rcolorbrewer
+           r-rstudioapi
+           r-scales
+           r-stringr))
+    (native-inputs
+     (list r-knitr r-testthat))
+    (home-page "https://cran.r-project.org/web/packages/ztable")
+    (synopsis "Zebra-striped tables in LaTeX and HTML formats for R")
+    (description
+     "This package provides functions to make zebra-striped tables (tables
+with alternating row colors) in LaTeX and HTML formats easily from
+@code{data.frame}, @code{matrix}, @code{lm}, @code{aov}, @code{anova},
+@code{glm}, @code{coxph}, @code{nls}, @code{fitdistr}, @code{mytable} and
+@code{cbind.mytable} objects.")
+    (license license:gpl2+)))
+
 (define-public r-metadat
   (package
     (name "r-metadat")
