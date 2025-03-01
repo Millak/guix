@@ -5182,6 +5182,32 @@ analysis.")
     ;; Either version may be picked.
     (license (list license:gpl2 license:gpl3))))
 
+(define-public r-stringi
+  (package
+    (name "r-stringi")
+    (version "1.8.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "stringi" version))
+       (sha256
+        (base32
+         "1wv9qqxl84l44kpvkx0lmyciinrh9pa5512jm56gsaqs9pvgh6f2"))))
+    (build-system r-build-system)
+    (inputs (list icu4c))
+    (native-inputs (list pkg-config))
+    (home-page "http://stringi.rexamine.com/")
+    (synopsis "Character string processing facilities")
+    (description
+     "This package allows for fast, correct, consistent, portable, as well as
+convenient character string/text processing in every locale and any native
+encoding.  Owing to the use of the ICU library, the package provides R users
+with platform-independent functions known to Java, Perl, Python, PHP, and Ruby
+programmers.  Among available features there are: pattern searching
+ (e.g.  via regular expressions), random string generation, string collation,
+transliteration, concatenation, date-time formatting and parsing, etc.")
+    (license license:bsd-3)))
+
 (define-public r-survival
   (package
     (name "r-survival")
