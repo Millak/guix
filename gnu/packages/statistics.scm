@@ -523,27 +523,6 @@ available, greatly increasing its breadth and scope.")
     (description
      "This package provides the R math library as an independent package.")))
 
-(define-public r-mass
-  (package
-    (name "r-mass")
-    (version "7.3-64")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "MASS" version))
-       (sha256
-        (base32
-         "0zxvrnl7dk41f6saldjz16lvy4m6ks4707vdv3z6kkvzp4jkfcdz"))))
-    (properties `((upstream-name . "MASS")))
-    (build-system r-build-system)
-    (home-page "https://www.stats.ox.ac.uk/pub/MASS4/")
-    (synopsis "Support functions and datasets for Venables and Ripley's MASS")
-    (description
-     "This package provides functions and datasets for the book \"Modern
-Applied Statistics with S\" (4th edition, 2002) by Venables and Ripley.")
-    ;; Either version may be picked.
-    (license (list license:gpl2 license:gpl3))))
-
 (define-public r-class
   (package
     (name "r-class")

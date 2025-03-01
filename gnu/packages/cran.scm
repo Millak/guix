@@ -5656,6 +5656,27 @@ inference.  Details can be found in Arel-Bundock, Greifer, and Heiss (2024)
 <doi:10.18637/jss.v111.i09>.")
     (license license:gpl3+)))
 
+(define-public r-mass
+  (package
+    (name "r-mass")
+    (version "7.3-64")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "MASS" version))
+       (sha256
+        (base32
+         "0zxvrnl7dk41f6saldjz16lvy4m6ks4707vdv3z6kkvzp4jkfcdz"))))
+    (properties `((upstream-name . "MASS")))
+    (build-system r-build-system)
+    (home-page "https://www.stats.ox.ac.uk/pub/MASS4/")
+    (synopsis "Support functions and datasets for Venables and Ripley's MASS")
+    (description
+     "This package provides functions and datasets for the book \"Modern
+Applied Statistics with S\" (4th edition, 2002) by Venables and Ripley.")
+    ;; Either version may be picked.
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-matrixtests
   (package
     (name "r-matrixtests")
