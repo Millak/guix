@@ -756,6 +756,28 @@ caching.")
 vectors.")
     (license license:gpl2+)))
 
+(define-public r-blob
+  (package
+    (name "r-blob")
+    (version "1.2.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "blob" version))
+              (sha256
+               (base32
+                "13vjy9f3zki8w1damz6kqq47689mk4l1navnwh7r6z8lqkmj52fh"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-rlang r-vctrs))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/hadley/blob")
+    (synopsis "Simple S3 Class for representing vectors of binary data")
+    (description "Raw vectors in R are useful for storing a single binary
+object.  What if you want to put a vector of them in a data frame?  The blob
+package provides the blob object, a list of raw vectors, suitable for use as
+a column in data frame.")
+    (license license:gpl3+)))
+
 (define-public r-bma
   (package
     (name "r-bma")
