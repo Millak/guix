@@ -443,6 +443,40 @@ variants to generate jobs on batch computing systems like PBS/Torque, LSF,
 SLURM and Sun Grid Engine.  Multicore and SSH systems are also supported.")
     (license license:bsd-2)))
 
+(define-public r-bayesfactor
+  (package
+    (name "r-bayesfactor")
+    (version "0.9.12-4.7")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (cran-uri "BayesFactor" version))
+        (sha256
+          (base32
+            "0z9p9vdcmcdwqmixaiqnhli2b06whbap6y4pqx4a5gcdgxlj09zr"))))
+    (properties `((upstream-name . "BayesFactor")))
+    (build-system r-build-system)
+    ;; Tests fail with: could not find function "context"
+    (arguments (list #:test-types '(list "vignettes")))
+    (propagated-inputs
+     (list r-coda
+           r-hypergeo
+           r-matrix
+           r-matrixmodels
+           r-mvtnorm
+           r-pbapply
+           r-rcpp
+           r-rcppeigen
+           r-stringr))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://richarddmorey.github.io/BayesFactor/")
+    (synopsis "Computation of Bayes factors for common designs")
+    (description
+     "This package provides a suite of functions for computing various Bayes
+factors for simple designs, including contingency tables, one- and two-sample
+designs, one-way designs, general ANOVA designs, and linear regression.")
+    (license license:gpl2)))
+
 (define-public r-beepr
   (package
     (name "r-beepr")
