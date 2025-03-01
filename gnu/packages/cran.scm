@@ -649,6 +649,26 @@ memory-mapped files.")
     ;; Users can choose either LGPLv3 or ASL2.0.
     (license (list license:lgpl3 license:asl2.0))))
 
+(define-public r-bigmemory-sri
+  (package
+    (name "r-bigmemory-sri")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bigmemory.sri" version))
+       (sha256
+        (base32 "0wbpk3naipl0ab3wnixnp2n874kazrapv1c31fi3cxm19b94x6h2"))))
+    (properties
+     `((upstream-name . "bigmemory.sri")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/bigmemory.sri")
+    (synopsis "Shared resource interface for the bigmemory package")
+    (description "This package provides a shared resource interface for the
+bigmemory and synchronicity packages.")
+    ;; Users can choose either LGPLv3 or ASL2.0.
+    (license (list license:lgpl3 license:asl2.0))))
+
 (define-public r-bit
   (package
     (name "r-bit")
