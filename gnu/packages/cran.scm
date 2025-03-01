@@ -2756,6 +2756,25 @@ Analytics products.")
 prototype-based, rather than class-based object oriented ideas.")
     (license license:gpl2+)))
 
+(define-public r-rcolorbrewer
+  (package
+    (name "r-rcolorbrewer")
+    (version "1.1-3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RColorBrewer" version))
+       (sha256
+        (base32 "1h0s0f4vvlk40cagp3qwhd0layzkjcnqkiwjyhwqns257i1gahjg"))))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/RColorBrewer")
+    (synopsis "ColorBrewer palettes")
+    (description
+     "This package provides color schemes for maps (and other graphics)
+designed by Cynthia Brewer as described at http://colorbrewer2.org")
+    ;; Includes code licensed under bsd-4
+    (license license:asl2.0)))
+
 (define-public r-robslopes
   (package
     (name "r-robslopes")
