@@ -20998,8 +20998,8 @@ Log files such as those found in @file{/var/log} tend to grow endlessly,
 so it's a good idea to @dfn{rotate} them once in a while---i.e., archive
 their contents in separate files, possibly compressed.  The @code{(gnu
 services admin)} module provides an interface to the log rotation
-service provided by the Shepherd (@pxref{Log Rotation,,, shepherd, The
-GNU Shepherd Manual}).
+service provided by the Shepherd (@pxref{Log Rotation Service,,,
+shepherd, The GNU Shepherd Manual}).
 
 This log rotation service is made available through
 @code{log-rotation-service-type}, which takes a
