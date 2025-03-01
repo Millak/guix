@@ -8460,6 +8460,29 @@ reference points, permutation tests, detection of outliers, processing of
 sliding semi-landmarks and semi-automated surface landmark placement.")
     (license license:gpl2)))
 
+(define-public r-hexbin
+  (package
+    (name "r-hexbin")
+    (version "1.28.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "hexbin" version))
+       (sha256
+        (base32
+         "1rnk94mjhzfmpcq77iy8qi2j8dj8bdw9vdjmwm27s94z77b8gl1f"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-lattice))
+    (native-inputs
+     (list gfortran r-knitr)) ; for vignettes
+    (home-page "https://github.com/edzer/hexbin")
+    (synopsis "Hexagonal binning routines")
+    (description
+     "This package provides binning and plotting functions for hexagonal bins.
+It uses and relies on grid graphics and formal (S4) classes and methods.")
+    (license license:gpl2+)))
+
 (define-public r-hgnchelper
   (package
     (name "r-hgnchelper")
