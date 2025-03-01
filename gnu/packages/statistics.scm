@@ -1642,27 +1642,6 @@ main goal of this library is giving to specific applications all the
 functionalities needed to treat uncertainties in studies.")
     (license license:lgpl3+)))
 
-(define-public r-ade4
-  (package
-    (name "r-ade4")
-    (version "1.7-22")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "ade4" version))
-        (sha256
-          (base32
-            "1d4knc1c1hha4gwcakbllzmff4g0mh56y058dn6wp9m2hd7gaz80"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-mass r-pixmap r-rcpp r-rcpparmadillo r-sp))
-    (home-page "https://pbil.univ-lyon1.fr/ADE-4")
-    (synopsis "Multivariate data analysis and graphical display")
-    (description
-     "The ade4 package contains data analysis functions to analyze ecological
-and environmental data in the framework of Euclidean exploratory methods.")
-    (license license:gpl2+)))
-
 (define-public r-xml2
   (package
     (name "r-xml2")
