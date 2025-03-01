@@ -525,6 +525,25 @@ is intended to be useful, for example, if you are running a long analysis in
 the background and want to know when it is ready.")
     (license license:gpl3)))
 
+(define-public r-beeswarm
+  (package
+    (name "r-beeswarm")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "beeswarm" version))
+              (sha256
+               (base32
+                "016mqcbdksialkmap56rprzna9b6cd6896ml9gl2n2h8yjdk7x2i"))))
+    (build-system r-build-system)
+    (home-page "https://www.cbs.dtu.dk/~eklund/beeswarm/")
+    (synopsis "Implementation of bee swarm plots")
+    (description
+     "This package provides an implementation of bee swarm plots.  The bee
+swarm plot is a one-dimensional scatter plot like stripchart, but with
+closely-packed, non-overlapping points.")
+    (license license:artistic2.0)))
+
 (define-public r-betareg
   (package
     (name "r-betareg")
