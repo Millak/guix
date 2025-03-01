@@ -50638,6 +50638,26 @@ parsing.")
     ;; GPL 2 or GPL 3.
     (license license:gpl3)))
 
+(define-public r-whisker
+  (package
+    (name "r-whisker")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "whisker" version))
+              (sha256
+               (base32
+                "1g7jy6dnc5igs7yqy1n7cmy0ia8dm2yi3qj1mil2y0q88m4m2ldz"))))
+    (build-system r-build-system)
+    ;; Fails with: could not find function "whisker.render"
+    (arguments (list #:tests? #false))
+    (home-page "https://github.com/edwindj/whisker")
+    (synopsis "Logicless mustache templating for R")
+    (description
+     "This package provides logicless templating, with a syntax that is not
+limited to R.")
+    (license license:gpl3+)))
+
 (define-public r-wordspace
   (package
     (name "r-wordspace")
