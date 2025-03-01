@@ -6316,6 +6316,27 @@ parameter estimation by GCV, REML or UBRE/AIC.  The library includes a
 distributions beyond the exponential family.")
     (license license:gpl2+)))
 
+(define-public r-munsell
+  (package
+    (name "r-munsell")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "munsell" version))
+       (sha256
+        (base32 "19i9jjawlqciw4n4h99a4sm0lbc77la3pqyzjvnwsrh7qjdgv8h3"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-colorspace))
+    (native-inputs (list r-testthat))
+    (home-page "https://cran.r-project.org/web/packages/munsell")
+    (synopsis "Munsell colour system")
+    (description
+     "The Munsell package contains functions for exploring and using the
+Munsell colour system.")
+    (license license:expat)))
+
 (define-public r-shadowtext
   (package
     (name "r-shadowtext")

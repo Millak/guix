@@ -547,27 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-munsell
-  (package
-    (name "r-munsell")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "munsell" version))
-       (sha256
-        (base32 "19i9jjawlqciw4n4h99a4sm0lbc77la3pqyzjvnwsrh7qjdgv8h3"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-colorspace))
-    (native-inputs (list r-testthat))
-    (home-page "https://cran.r-project.org/web/packages/munsell")
-    (synopsis "Munsell colour system")
-    (description
-     "The Munsell package contains Functions for exploring and using the
-Munsell colour system.")
-    (license license:expat)))
-
 (define-public r-permute
   (package
    (name "r-permute")
