@@ -547,33 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-magrittr
-  (package
-    (name "r-magrittr")
-    (version "2.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "magrittr" version))
-       (sha256
-        (base32 "1ljmrrm36y31db5z4cl863ap8k3jcaxk0qzy3f0cn6iag4zzigx2"))))
-    (properties
-     ;; We can't have r-knitr or r-testthat among the inputs here, because
-     ;; that would lead to dependency cycles.
-     '((updater-ignored-native-inputs . ("r-knitr" "r-testthat"))))
-    (build-system r-build-system)
-    ;; Tests require r-testthat, which uses this package.
-    (arguments (list #:tests? #false))
-    (home-page "https://cran.r-project.org/web/packages/magrittr/index.html")
-    (synopsis "Forward-pipe operator for R")
-    (description
-     "Magrittr provides a mechanism for chaining commands with a new
-forward-pipe operator, %>%.  This operator will forward a value, or the result
-of an expression, into the next function call/expression.  There is flexible
-support for the type of right-hand side expressions.  For more information,
-see package vignette.  To quote Rene Magritte, \"Ceci n'est pas un pipe.\"")
-    (license license:expat)))
-
 (define-public r-munsell
   (package
     (name "r-munsell")
