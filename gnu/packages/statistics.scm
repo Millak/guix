@@ -2200,24 +2200,6 @@ the header files from the templated Armadillo library.")
     ;; later, as is the rest of 'Rcpp'.
     (license license:gpl2+)))
 
-(define-public r-bitops
-  (package
-    (name "r-bitops")
-    (version "1.0-9")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "bitops" version))
-              (sha256
-               (base32
-                "020dfk0pmiz739rnpb9yi8hnsih3z3891dljvs7kpfvjgfvsbwyg"))))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/bitops")
-    (synopsis "Bitwise operations")
-    (description
-     "This package provides functions for bitwise operations on integer
-vectors.")
-    (license license:gpl2+)))
-
 (define-public r-catools
   (package
     (name "r-catools")
