@@ -523,26 +523,6 @@ available, greatly increasing its breadth and scope.")
     (description
      "This package provides the R math library as an independent package.")))
 
-(define-public r-foreign
-  (package
-    (name "r-foreign")
-    (version "0.8-88")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "foreign" version))
-       (sha256
-        (base32
-         "10csyqkw46yclyjj9ywg9y9xvmr9v6h1wjd2cilpjw6irbp37fph"))))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/foreign")
-    (synopsis "Read data stored by other statistics software")
-    (description
-     "This package provides functions for reading and writing data stored by
-some versions of Epi Info, Minitab, S, SAS, SPSS, Stata, Systat and Weka and
-for reading and writing some dBase files.")
-    (license license:gpl2+)))
-
 (define-public r-kernsmooth
   (package
     (name "r-kernsmooth")
