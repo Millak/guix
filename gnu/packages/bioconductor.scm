@@ -15618,8 +15618,21 @@ determining dependencies between variables, code improvement suggestions.")
        (sha256
         (base32
          "0zzpmrni4la6d2zws8wxak51lnn9g2i9xbwj1f3micpyn1bxlsc9"))))
-    (properties `((upstream-name . "ChIPpeakAnno")))
+    (properties
+     '((upstream-name . "ChIPpeakAnno")
+       (updater-extra-native-inputs . ("r-seqinr"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; "sequence MT not found", but it's probably because it tries to
+             ;; access the Internet earlier
+             (substitute* "tests/testthat/test_getAllPeakSequence.R"
+               ((".*getAllPeakSequence works not correct.*" m)
+                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs
      (list r-annotationdbi
            r-biocgenerics
@@ -15663,6 +15676,7 @@ determining dependencies between variables, code improvement suggestions.")
            r-org-ce-eg-db
            r-org-hs-eg-db
            r-reactome-db
+           r-seqinr
            r-testthat
            r-txdb-hsapiens-ucsc-hg38-knowngene))
     (home-page "https://bioconductor.org/packages/ChIPpeakAnno")
