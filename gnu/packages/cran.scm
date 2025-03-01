@@ -813,6 +813,58 @@ are included as well.")
     ;; Any version of the GPL.
     (license license:gpl3+)))
 
+(define-public r-chorddiag
+  (package
+    (name "r-chorddiag")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattflor/chorddiag")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1bpy9q861l1hyyiqbx2f7qzp7j7im8bkcfdwgxzk5fm0250p359a"))
+       ;; Delete minified JavaScript file
+       (snippet
+        '(delete-file "inst/htmlwidgets/lib/d3/d3.min.js"))))
+    (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/htmlwidgets/lib/d3"
+               (let ((source (assoc-ref inputs "d3.v4.js"))
+                     (target "d3.min.js"))
+                 (format #true "Processing ~a --> ~a~%"
+                         source target)
+                 (invoke "esbuild" source "--minify"
+                         (string-append "--outfile=" target)))))))))
+    (propagated-inputs
+     (list r-htmlwidgets r-rcolorbrewer))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ("r-knitr" ,r-knitr)
+       ("d3.v4.js"
+        ,(origin
+           (method url-fetch)
+           (uri "https://d3js.org/d3.v4.js")
+           (sha256
+            (base32
+             "0y7byf6kcinfz9ac59jxc4v6kppdazmnyqfav0dm4h550fzfqqlg"))))))
+    (home-page "https://github.com/mattflor/chorddiag")
+    (synopsis "Create D3 chord diagram")
+    (description
+     "This package provides tools to create interactive chords diagrams via
+the D3 Javascript library.  Chord diagrams show directed relationships among a
+group of entities.  This package is based on
+@url{http://bl.ocks.org/mbostock/4062006} with some modifications (fading) and
+additions (tooltips, bipartite diagram type).")
+    (license license:gpl3+)))
+
 (define-public r-celestial
   (package
     (name "r-celestial")
