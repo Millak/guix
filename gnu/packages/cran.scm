@@ -2613,6 +2613,26 @@ based on their size or the date of the last backup; inspired by the utility
 @code{logrotate}'.")
     (license license:expat)))
 
+(define-public r-rpart
+  (package
+    (name "r-rpart")
+    (version "4.1.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rpart" version))
+       (sha256
+        (base32
+         "0a9gwwbq2ksx2v7kgrbn0liakkjbfvky1ahkjclpv1frcjknkcaa"))))
+    (build-system r-build-system)
+    (native-inputs (list r-survival))
+    (home-page "https://cran.r-project.org/web/packages/rpart")
+    (synopsis "Recursive partitioning and regression trees")
+    (description
+     "This package provides recursive partitioning functions for
+classification, regression and survival trees.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-rpresto
   (package
     (name "r-rpresto")

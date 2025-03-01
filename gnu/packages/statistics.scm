@@ -523,26 +523,6 @@ available, greatly increasing its breadth and scope.")
     (description
      "This package provides the R math library as an independent package.")))
 
-(define-public r-rpart
-  (package
-    (name "r-rpart")
-    (version "4.1.24")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "rpart" version))
-       (sha256
-        (base32
-         "0a9gwwbq2ksx2v7kgrbn0liakkjbfvky1ahkjclpv1frcjknkcaa"))))
-    (build-system r-build-system)
-    (native-inputs (list r-survival))
-    (home-page "https://cran.r-project.org/web/packages/rpart")
-    (synopsis "Recursive partitioning and regression trees")
-    (description
-     "This package provides recursive partitioning functions for
-classification, regression and survival trees.")
-    (license (list license:gpl2+ license:gpl3+))))
-
 (define-public r-spatial
   (package
     (name "r-spatial")
