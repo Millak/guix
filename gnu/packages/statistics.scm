@@ -523,25 +523,6 @@ available, greatly increasing its breadth and scope.")
     (description
      "This package provides the R math library as an independent package.")))
 
-(define-public r-codetools
-  (package
-    (name "r-codetools")
-    (version "0.2-20")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "codetools" version))
-       (sha256
-        (base32
-         "0qx8zrlickl45wzzbydsbx5f1vmzhn71x7amzpfj71qpxisz7riv"))))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/codetools")
-    (synopsis "Code analysis tools for R")
-    (description "This package provides code analysis tools for R to check R
-code for possible problems.")
-    ;; Any version of the GPL.
-    (license (list license:gpl2+ license:gpl3+))))
-
 (define-public r-foreign
   (package
     (name "r-foreign")
