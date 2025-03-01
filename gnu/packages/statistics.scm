@@ -1838,28 +1838,6 @@ informative error messages when it's not available.")
 tools to simplify the devolpment of R packages.")
     (license license:gpl2+)))
 
-(define-public r-hms
-  (package
-    (name "r-hms")
-    (version "1.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "hms" version))
-       (sha256
-        (base32
-         "10h2k5j97fggq3hc0qzxv1q9821y21m326v3x99zsvpl1b3g89p6"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-lifecycle r-pkgconfig r-rlang r-vctrs))
-    (native-inputs (list r-testthat))
-    (home-page "https://github.com/rstats-db/hms")
-    (synopsis "Pretty time of day")
-    (description
-     "This package implements an S3 class for storing and formatting
-time-of-day values, based on the @code{difftime} class.")
-    (license license:gpl3+)))
-
 (define-public r-readr
   (package
     (name "r-readr")
