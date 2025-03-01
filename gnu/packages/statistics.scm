@@ -547,23 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-labeling
-  (package
-    (name "r-labeling")
-    (version "0.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "labeling" version))
-       (sha256
-        (base32 "1wk4wa1s8f17b5lf8vs5hxsmyadp2ccmyg4hamq7sdvlrk14yby6"))))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/labeling")
-    (synopsis "Axis labeling algorithms")
-    (description "The labeling package provides a range of axis labeling
-algorithms.")
-    (license license:expat)))
-
 (define-public r-magrittr
   (package
     (name "r-magrittr")
