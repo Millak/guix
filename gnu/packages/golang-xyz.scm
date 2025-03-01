@@ -4098,7 +4098,13 @@ values.  It supports almost all kind of types: @code{int/8/16/32/64},
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/cskr/pubsub"))
+      #:import-path "github.com/cskr/pubsub"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-example
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "example_test.go")))))))
     (home-page "https://github.com/cskr/pubsub")
     (synopsis "Simple pubsub package for go")
     (description
