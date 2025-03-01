@@ -92,6 +92,7 @@
   #:use-module (gnu packages java)
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
@@ -121,7 +122,8 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:use-module ((srfi srfi-1) #:hide (zip)))
 
 (define-public r-abbreviate
   (package
@@ -614,6 +616,38 @@ including Wallenius' noncentral hypergeometric distribution and Fisher's
 noncentral hypergeometric distribution (also called extended hypergeometric
 distribution).")
    (license license:gpl3+)))
+
+(define-public r-bigmemory
+  (package
+    (name "r-bigmemory")
+    (version "4.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bigmemory" version))
+       (sha256
+        (base32
+         "0b80c2nsgphgr3cnvf75a0z3bzqx4q1a4dplq0h2izc71mn5fgzy"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bh r-bigmemory-sri r-rcpp r-uuid))
+    (inputs
+     (list `(,util-linux "lib"))) ;for -luuid
+    (native-inputs (list r-testthat))
+    (supported-systems
+     (fold delete
+           %supported-systems
+           ;; Build fails on these systems
+           '("armhf-linux"
+             "aarch64-linux"
+             "powerpc64le-linux")))
+    (home-page "http://www.bigmemory.org")
+    (synopsis "Manage large matrices with shared memory or memory-mapped files")
+    (description "This package provides methods to create, store, access, and
+manipulate large matrices.  Matrices are allocated to shared memory and may use
+memory-mapped files.")
+    ;; Users can choose either LGPLv3 or ASL2.0.
+    (license (list license:lgpl3 license:asl2.0))))
 
 (define-public r-bit
   (package
