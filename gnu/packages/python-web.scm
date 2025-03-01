@@ -4787,6 +4787,26 @@ protocol, both client and server for Python asyncio module.
  TYPE (\"I\" and \"A\"), PASV, ABOR, APPE, REST.")
     (license license:asl2.0)))
 
+(define-public python-mohawk
+  (package
+    (name "python-mohawk")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "mohawk" version))
+              (sha256
+               (base32
+                "08wppsv65yd0gdxy5zwq37yp6jmxakfz4a2yx5wwq2d222my786j"))))
+    (build-system python-build-system)
+    (native-inputs (list python-mock  python-nose))
+    (propagated-inputs (list python-six))
+    (home-page "https://github.com/kumar303/mohawk")
+    (synopsis "Library for Hawk HTTP authorization")
+    (description
+     "Mohawk is an alternate Python implementation of the Hawk HTTP
+authorization scheme.")
+    (license license:bsd-3)))
+
 (define-public python-msal
   (package
     (name "python-msal")
