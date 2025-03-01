@@ -13794,6 +13794,35 @@ George Marsaglia are included.")
 classification, regression and clustering.")
     (license license:gpl2+)))
 
+(define-public r-knitr
+  (package
+    (name "r-knitr")
+    (version "1.49")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "knitr" version))
+              (sha256
+               (base32
+                "1lx2k2gg14pmpbh8i884mdaqx0zaf0x07x1001z3hja6cmwwali9"))))
+    (properties
+     ;; We can't have r-litedown among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-litedown"))))
+    (build-system r-build-system)
+    ;; Tests need r-tibble, which needs r-knitr.
+    (arguments (list #:tests? #false))
+    (propagated-inputs
+     (list r-evaluate r-highr r-xfun r-yaml))
+    (home-page "https://yihui.org/knitr/")
+    (synopsis "General-purpose package for dynamic report generation in R")
+    (description
+     "This package provides a general-purpose tool for dynamic report
+generation in R using Literate Programming techniques.")
+    ;; The code is released under any version of the GPL.  As it is used by
+    ;; r-markdown which is available under GPLv2 only, we have chosen GPLv2+
+    ;; here.
+    (license license:gpl2+)))
+
 (define-public r-kit
   (package
     (name "r-kit")
