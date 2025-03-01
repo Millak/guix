@@ -6017,6 +6017,28 @@ comprehensive overview over the implemented methods and references can be
 found in the manual pages @code{mcr-package} and @code{mcreg}.")
     (license license:gpl3+)))
 
+(define-public r-mgcv
+  (package
+    (name "r-mgcv")
+    (version "1.9-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mgcv" version))
+       (sha256
+        (base32 "0cnvbdda243as2bxfsgnnk7xjmp1msgr9i4vbd84jfnxpqvvq3vh"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-matrix r-nlme))
+    (home-page "https://cran.r-project.org/web/packages/mgcv")
+    (synopsis "Mixed generalised additive model computation")
+    (description
+     "GAMs, GAMMs and other generalized ridge regression with multiple smoothing
+parameter estimation by GCV, REML or UBRE/AIC.  The library includes a
+@code{gam()} function, a wide variety of smoothers, JAGS support and
+distributions beyond the exponential family.")
+    (license license:gpl2+)))
+
 (define-public r-shadowtext
   (package
     (name "r-shadowtext")
