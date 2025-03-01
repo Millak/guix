@@ -4408,6 +4408,27 @@ would an ordinary data.frame.  The @code{LaF} vignette gives an overview of
 the functionality provided.")
     (license license:gpl3)))
 
+(define-public r-lattice
+  (package
+    (name "r-lattice")
+    (version "0.22-6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "lattice" version))
+              (sha256
+               (base32
+                "1xq09lfjlca6c7mn412hjjav0q66p7wmjrwx5f3ygv3jwh8p4dsb"))))
+    (build-system r-build-system)
+    (native-inputs (list r-mass))
+    (home-page "https://lattice.r-forge.r-project.org/")
+    (synopsis "High-level data visualization system")
+    (description
+     "The lattice package provides a powerful and elegant high-level data
+visualization system inspired by Trellis graphics, with an emphasis on
+multivariate data.  Lattice is sufficient for typical graphics needs, and is
+also flexible enough to handle most nonstandard requirements.")
+    (license license:gpl2+)))
+
 (define-public r-lbfgsb3c
   (package
     (name "r-lbfgsb3c")
