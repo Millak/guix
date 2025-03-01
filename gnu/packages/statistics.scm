@@ -523,26 +523,6 @@ available, greatly increasing its breadth and scope.")
     (description
      "This package provides the R math library as an independent package.")))
 
-(define-public r-spatial
-  (package
-    (name "r-spatial")
-    (version "7.3-18")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "spatial" version))
-       (sha256
-        (base32
-         "0m9hljg8xz996rr2a3fwd7gna62fxslffmxmjpnghnkld4ynjinc"))))
-    (build-system r-build-system)
-    (home-page "https://www.stats.ox.ac.uk/pub/MASS4/")
-    (synopsis "Functions for kriging and point pattern analysis")
-    (description
-     "This package provides functions for kriging and point pattern
-analysis.")
-    ;; Either version may be picked.
-    (license (list license:gpl2 license:gpl3))))
-
 (define-public r-survival
   (package
     (name "r-survival")
