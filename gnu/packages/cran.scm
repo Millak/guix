@@ -5117,6 +5117,29 @@ provides methods for automatically determining breaks and labels for axes and
 legends.")
     (license license:expat)))
 
+(define-public r-sendmailr
+  (package
+    (name "r-sendmailr")
+    (version "1.4-0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "sendmailR" version))
+       (sha256
+        (base32
+         "1balci88r2ci51xdh5zaqm3ss3vnry8pbkx2qngppc7n2gy932sv"))))
+    (properties `((upstream-name . "sendmailR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-base64enc))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/web/packages/sendmailR")
+    (synopsis "Send email using R")
+    (description
+     "This package contains a simple SMTP client which provides a portable
+solution for sending email, including attachments, from within R.")
+    (license license:gpl2+)))
+
 (define-public r-skat
   (package
     (name "r-skat")
