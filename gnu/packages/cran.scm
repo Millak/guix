@@ -331,6 +331,29 @@ bias-reduced estimation, finite mixture models, and recursive partitioning for
 beta regression, see <doi:10.18637/jss.v048.i11>.")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public r-bit
+  (package
+    (name "r-bit")
+    (version "4.5.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bit" version))
+       (sha256
+        (base32
+         "0wl8s9z54wb2l56sgdyz7rrjzydmjv3cy8q3fmbsinh435l2yhd0"))))
+    (build-system r-build-system)
+    (native-inputs
+     (list r-knitr r-rmarkdown r-testthat))
+    (home-page "https://ff.r-forge.r-project.org")
+    (synopsis "Class for vectors of 1-bit booleans")
+    (description
+     "This package provides bitmapped vectors of booleans (no @code{NA}s),
+coercion from and to logicals, integers and integer subscripts, fast boolean
+operators and fast summary statistics.  With @code{bit} class vectors of true
+binary booleans, @code{TRUE} and @code{FALSE} can be stored with 1 bit only.")
+    (license license:gpl2)))
+
 (define-public r-bma
   (package
     (name "r-bma")
