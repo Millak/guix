@@ -2310,38 +2310,6 @@ single-cell data or deconvolution of bulk RNA-seq.")
 and blood controls for CNA analysis.")
     (license license:gpl3)))
 
-(define-public r-chihaya
-  (package
-    (name "r-chihaya")
-    (version "1.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "chihaya" version))
-       (sha256
-        (base32 "0k52ym2x489k1k4d52jyd6jy4wnr7gd2p9n1pwfqbca3b91cmaj0"))))
-    (properties `((upstream-name . "chihaya")))
-    (build-system r-build-system)
-    (propagated-inputs (list r-delayedarray
-                             r-hdf5array
-                             r-matrix
-                             r-rcpp
-                             r-rhdf5
-                             r-rhdf5lib))
-    (native-inputs (list r-biocgenerics
-                         r-biocsingular
-                         r-knitr
-                         r-residualmatrix
-                         r-s4vectors
-                         r-testthat))
-    (home-page "https://github.com/ArtifactDB/chihaya-R")
-    (synopsis "Save Delayed Operations to a HDF5 File")
-    (description
-     "Saves the delayed operations of a @code{DelayedArray} to a HDF5 file.  This
-enables efficient recovery of the @code{DelayedArray's} contents in other
-languages and analysis frameworks.")
-    (license license:gpl3)))
-
 (define-public r-chipexoqualexample
   (package
     (name "r-chipexoqualexample")
@@ -2405,32 +2373,6 @@ mm10.  In addition, it contains a blacklist filter to remove regions that
 display copy number variation.  Files are stored as GRanges objects from the
 GenomicRanges Bioconductor package.")
     (license license:gpl2)))
-
-;; This is a CRAN package, but it depends on Bioconductor packages.
-(define-public r-cpp11bigwig
-  (package
-    (name "r-cpp11bigwig")
-    (version "0.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "cpp11bigwig" version))
-       (sha256
-        (base32 "0i9rbjj2f8m5x2z594fg7rqqiajf2sjlxj6g66fpl65gr9n7hch8"))))
-    (properties
-     '((upstream-name . "cpp11bigwig")
-       (updater-extra-inputs . ("curl"))))
-    (build-system r-build-system)
-    (inputs (list curl zlib))
-    (propagated-inputs (list r-cpp11 r-genomicranges r-iranges r-tibble))
-    (native-inputs (list r-testthat))
-    (home-page "https://rnabioco.github.io/cpp11bigwig/")
-    (synopsis "Read bigWig and bigBed files")
-    (description
-     "Read @code{bigWig} and @code{bigBed} files using libBigWig.  This
-package provides lightweight access to the binary bigWig and bigBed formats
-developed by the UCSC Genome Browser group.")
-    (license license:expat)))
 
 (define-public r-derfinderdata
   (package
@@ -2871,54 +2813,6 @@ gene expression indicate a role for enhancer priming in immune response\", publi
 in Nature Genetics, January 2018.")
     (license license:gpl2+)))
 
-;; This is available only in the devel branch of Bioconductor.
-(define-public r-memes
-  (let ((commit "55f0df1fe65c8ead5252542fdc0da0ff2339049e")
-        (revision "1"))
-    (package
-      (name "r-memes")
-      (version (git-version "1.11.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/snystrom/memes")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0mp3a610v293prmyid3w1w8fkjkppjnim60h7p9vz2884d0wdvk4"))))
-      (properties `((upstream-name . "memes")))
-      (build-system r-build-system)
-      (propagated-inputs (list r-biostrings
-                               r-cmdfun
-                               r-dplyr
-                               r-genomicranges
-                               r-ggplot2
-                               r-ggseqlogo
-                               r-magrittr
-                               r-matrixstats
-                               r-patchwork
-                               r-processx
-                               r-purrr
-                               r-readr
-                               r-rlang
-                               r-tibble
-                               r-tidyr
-                               r-universalmotif
-                               r-usethis
-                               r-xml2))
-      (native-inputs (list r-knitr))
-      (home-page "https://github.com/snystrom/memes")
-      (synopsis
-       "Motif matching, comparison, and de novo discovery using the MEME Suite")
-      (description
-       "This package facilitates motif analysis using MEME Suite tools.
-Memes provides data aware utilities for using GRanges objects as
-entrypoints to motifanalysis, data structures for examining & editing
-motif lists, and novel data visualizations.  Memes functions and data
-structures are amenable to both base R and tidyverse workflows.")
-      (license license:expat))))
-
 (define-public r-methylaiddata
   (package
     (name "r-methylaiddata")
@@ -3094,52 +2988,6 @@ III, m/z 400-450; a subset of UPLC - Bruker micrOTOFq data, both mzML and mz5;
 LC-MSMS and MRM files from proteomics experiments; and PSI mzIdentML example
 files for various search engines.")
     (license license:gpl2+)))
-
-(define-public r-msexperiment
-  (package
-    (name "r-msexperiment")
-    (version "1.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "MsExperiment" version))
-       (sha256
-        (base32 "15vxwvgimliyzj0rb06s7rpm3wrz3gc1n0wdgs0jd4flwp152g9h"))))
-    (properties
-     `((upstream-name . "MsExperiment")
-       (updater-extra-native-inputs . ("r-mzr"))))
-    (build-system r-build-system)
-    (propagated-inputs (list r-biocgenerics
-                             r-dbi
-                             r-iranges
-                             r-protgenerics
-                             r-qfeatures
-                             r-s4vectors
-                             r-spectra
-                             r-summarizedexperiment))
-    (native-inputs (list r-knitr
-                         r-msbackendsql
-                         r-msdata
-                         r-mzr
-                         r-rsqlite
-                         r-s4vectors
-                         r-spectra
-                         r-summarizedexperiment
-                         r-testthat))
-    (home-page "https://github.com/RforMassSpectrometry/MsExperiment")
-    (synopsis "Infrastructure for Mass Spectrometry experiments")
-    (description
-     "This package provides infrastructure to store and manage all aspects
-related to a complete proteomics or metabolomics mass spectrometry (MS)
-experiment.  The @code{MsExperiment} package provides light-weight and
-flexible containers for MS experiments building on the new MS infrastructure
-provided by the Spectra, QFeatures and related packages.  Along with raw data
-representations, links to original data files and sample annotations,
-additional metadata or annotations can also be stored within the
-@code{MsExperiment} container.  To guarantee maximum flexibility only minimal
-constraints are put on the type and content of the data within the
-containers.")
-    (license license:artistic2.0)))
 
 (define-public r-msigdb
   (package
@@ -6307,6 +6155,38 @@ omics protocols.  The package can also be used to explore functional pathways
 enrichment in single cell data.")
     (license license:gpl3)))
 
+(define-public r-chihaya
+  (package
+    (name "r-chihaya")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "chihaya" version))
+       (sha256
+        (base32 "0k52ym2x489k1k4d52jyd6jy4wnr7gd2p9n1pwfqbca3b91cmaj0"))))
+    (properties `((upstream-name . "chihaya")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-delayedarray
+                             r-hdf5array
+                             r-matrix
+                             r-rcpp
+                             r-rhdf5
+                             r-rhdf5lib))
+    (native-inputs (list r-biocgenerics
+                         r-biocsingular
+                         r-knitr
+                         r-residualmatrix
+                         r-s4vectors
+                         r-testthat))
+    (home-page "https://github.com/ArtifactDB/chihaya-R")
+    (synopsis "Save Delayed Operations to a HDF5 File")
+    (description
+     "Saves the delayed operations of a @code{DelayedArray} to a HDF5 file.  This
+enables efficient recovery of the @code{DelayedArray's} contents in other
+languages and analysis frameworks.")
+    (license license:gpl3)))
+
 (define-public r-coregx
   (package
     (name "r-coregx")
@@ -6378,6 +6258,32 @@ be also used for genome-wide nucleosome positioning experiments or other
 experiment types where it is important to have a framework in order to inspect
 how the coverage distributed across the genome.")
     (license license:artistic2.0)))
+
+;; This is a CRAN package, but it depends on Bioconductor packages.
+(define-public r-cpp11bigwig
+  (package
+    (name "r-cpp11bigwig")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cpp11bigwig" version))
+       (sha256
+        (base32 "0i9rbjj2f8m5x2z594fg7rqqiajf2sjlxj6g66fpl65gr9n7hch8"))))
+    (properties
+     '((upstream-name . "cpp11bigwig")
+       (updater-extra-inputs . ("curl"))))
+    (build-system r-build-system)
+    (inputs (list curl zlib))
+    (propagated-inputs (list r-cpp11 r-genomicranges r-iranges r-tibble))
+    (native-inputs (list r-testthat))
+    (home-page "https://rnabioco.github.io/cpp11bigwig/")
+    (synopsis "Read bigWig and bigBed files")
+    (description
+     "Read @code{bigWig} and @code{bigBed} files using libBigWig.  This
+package provides lightweight access to the binary bigWig and bigBed formats
+developed by the UCSC Genome Browser group.")
+    (license license:expat)))
 
 (define-public r-csaw
   (package
@@ -10909,6 +10815,54 @@ array against the quality of the other arrays.  Then, arrays with unusually
 high distances can be flagged as potentially low-quality.")
     (license license:lgpl2.0+)))
 
+;; This is available only in the devel branch of Bioconductor.
+(define-public r-memes
+  (let ((commit "55f0df1fe65c8ead5252542fdc0da0ff2339049e")
+        (revision "1"))
+    (package
+      (name "r-memes")
+      (version (git-version "1.11.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/snystrom/memes")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mp3a610v293prmyid3w1w8fkjkppjnim60h7p9vz2884d0wdvk4"))))
+      (properties `((upstream-name . "memes")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-biostrings
+                               r-cmdfun
+                               r-dplyr
+                               r-genomicranges
+                               r-ggplot2
+                               r-ggseqlogo
+                               r-magrittr
+                               r-matrixstats
+                               r-patchwork
+                               r-processx
+                               r-purrr
+                               r-readr
+                               r-rlang
+                               r-tibble
+                               r-tidyr
+                               r-universalmotif
+                               r-usethis
+                               r-xml2))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/snystrom/memes")
+      (synopsis
+       "Motif matching, comparison, and de novo discovery using the MEME Suite")
+      (description
+       "This package facilitates motif analysis using MEME Suite tools.
+Memes provides data aware utilities for using GRanges objects as
+entrypoints to motifanalysis, data structures for examining & editing
+motif lists, and novel data visualizations.  Memes functions and data
+structures are amenable to both base R and tidyverse workflows.")
+      (license license:expat))))
+
 (define-public r-metabocoreutils
   (package
     (name "r-metabocoreutils")
@@ -11473,6 +11427,52 @@ this package are supposed to be used with the Spectra Bioconductor package.
 Through the @code{MsBackendSql} with its minimal memory footprint, this
 package thus provides an alternative MS data representation for very large or
 remote MS data sets.")
+    (license license:artistic2.0)))
+
+(define-public r-msexperiment
+  (package
+    (name "r-msexperiment")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MsExperiment" version))
+       (sha256
+        (base32 "15vxwvgimliyzj0rb06s7rpm3wrz3gc1n0wdgs0jd4flwp152g9h"))))
+    (properties
+     `((upstream-name . "MsExperiment")
+       (updater-extra-native-inputs . ("r-mzr"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-dbi
+                             r-iranges
+                             r-protgenerics
+                             r-qfeatures
+                             r-s4vectors
+                             r-spectra
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr
+                         r-msbackendsql
+                         r-msdata
+                         r-mzr
+                         r-rsqlite
+                         r-s4vectors
+                         r-spectra
+                         r-summarizedexperiment
+                         r-testthat))
+    (home-page "https://github.com/RforMassSpectrometry/MsExperiment")
+    (synopsis "Infrastructure for Mass Spectrometry experiments")
+    (description
+     "This package provides infrastructure to store and manage all aspects
+related to a complete proteomics or metabolomics mass spectrometry (MS)
+experiment.  The @code{MsExperiment} package provides light-weight and
+flexible containers for MS experiments building on the new MS infrastructure
+provided by the Spectra, QFeatures and related packages.  Along with raw data
+representations, links to original data files and sample annotations,
+additional metadata or annotations can also be stored within the
+@code{MsExperiment} container.  To guarantee maximum flexibility only minimal
+constraints are put on the type and content of the data within the
+containers.")
     (license license:artistic2.0)))
 
 (define-public r-msnbase
