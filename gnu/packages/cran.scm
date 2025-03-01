@@ -33494,6 +33494,31 @@ purpose Metropolis sampling algorithm, and tools for visualization are
 provided.")
     (license license:gpl3)))
 
+(define-public r-xml2
+  (package
+    (name "r-xml2")
+    (version "1.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "xml2" version))
+       (sha256
+        (base32
+         "13rhvmrjdqwc5psn501vz9jfmqwlf4rc30w6vrnn3wxzk7zr26g8"))))
+    (build-system r-build-system)
+    (inputs
+     (list libxml2 zlib))
+    (propagated-inputs
+     (list r-cli r-rlang))
+    (native-inputs
+     (list pkg-config r-knitr r-testthat))
+    (home-page "https://github.com/hadley/xml2")
+    (synopsis "Parse XML with R")
+    (description
+     "This package provides a simple, consistent interface to working with XML
+files in R.  It is built on top of the libxml2 C library.")
+    (license license:gpl2+)))
+
 (define-public r-xmlparsedata
   (package
     (name "r-xmlparsedata")
