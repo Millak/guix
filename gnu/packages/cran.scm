@@ -368,6 +368,28 @@ can make use of the new functions without worrying about the minimum required
 R version.")
     (license license:gpl2+)))
 
+(define-public r-base64
+  (package
+    (name "r-base64")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "base64" version))
+       (sha256
+        (base32
+         "030f8ynlga2qych88d45hk491cfi25hrjwl2gj4gsphljvi7ps5i"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-openssl))
+    (home-page "https://cran.r-project.org/web/packages/base64")
+    (synopsis "Base64 encoder and decoder")
+    (description
+     "This package is a compatibility wrapper to replace the orphaned package
+by Romain Francois.  New applications should use the openssl or base64enc
+package instead.")
+    (license license:expat)))
+
 (define-public r-beepr
   (package
     (name "r-beepr")
