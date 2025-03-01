@@ -3781,29 +3781,6 @@ directly from R.  Once uploaded to a plotly account, plotly graphs (and the
 data behind them) can be viewed and modified in a web browser.")
     (license license:x11)))
 
-(define-public r-biased-urn
-  (package
-   (name "r-biased-urn")
-   (version "2.0.12")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (cran-uri "BiasedUrn" version))
-     (sha256
-      (base32
-       "14jpijms81pgl4zyqrhwwdfj0jmlmml21blspvin8lqw8fbbbcr9"))))
-   (properties `((upstream-name . "BiasedUrn")))
-   (build-system r-build-system)
-   (home-page "https://www.agner.org/random/")
-   (synopsis "Biased urn model distributions")
-   (description
-    "This package provides statistical models of biased sampling in the form
-of univariate and multivariate noncentral hypergeometric distributions,
-including Wallenius' noncentral hypergeometric distribution and Fisher's
-noncentral hypergeometric distribution (also called extended hypergeometric
-distribution).")
-   (license license:gpl3+)))
-
 (define-public r-rematch
   (package
     (name "r-rematch")
