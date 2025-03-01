@@ -547,25 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-lazyeval
-  (package
-    (name "r-lazyeval")
-    (version "0.2.2")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "lazyeval" version))
-              (sha256
-               (base32
-                "1m10i059csrcqkcn59a8wspn784alxsq3symzhn24mhhl894346n"))))
-    (build-system r-build-system)
-    (native-inputs (list r-knitr r-testthat))
-    (home-page "https://github.com/hadley/lazyeval")
-    (synopsis "Lazy (non-standard) evaluation in R")
-    (description
-     "This package provides the tools necessary to do non-standard
-evaluation (NSE) in R.")
-    (license license:gpl3+)))
-
 (define-public r-dbi
   (package
     (name "r-dbi")
