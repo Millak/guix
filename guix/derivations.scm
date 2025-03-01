@@ -1060,56 +1060,59 @@ recursively."
              (#f
               (derivation-input (loop drv) sub-drvs)))))))
 
-    (let loop ((drv drv))
-      (let* ((inputs       (map (cut rewritten-input <> loop)
-                                (derivation-inputs drv)))
-             (initial      (append-map derivation-input-output-paths
-                                       (derivation-inputs drv)))
-             (replacements (append-map input->output-paths inputs))
+    (define loop
+      (mlambdaq (drv)
+        (let* ((inputs       (map (cut rewritten-input <> loop)
+                                  (derivation-inputs drv)))
+               (initial      (append-map derivation-input-output-paths
+                                         (derivation-inputs drv)))
+               (replacements (append-map input->output-paths inputs))
 
-             ;; Sources typically refer to the output directories of the
-             ;; original inputs, INITIAL.  Rewrite them by substituting
-             ;; REPLACEMENTS.
-             (sources      (map (lambda (source)
-                                  (match (vhash-assoc source mapping)
-                                    ((_ . replacement)
-                                     replacement)
-                                    (#f
-                                     (if (file-is-directory? source)
-                                         source
-                                         (substitute-file source
-                                                          initial replacements)))))
-                                (derivation-sources drv)))
+               ;; Sources typically refer to the output directories of the
+               ;; original inputs, INITIAL.  Rewrite them by substituting
+               ;; REPLACEMENTS.
+               (sources      (map (lambda (source)
+                                    (match (vhash-assoc source mapping)
+                                      ((_ . replacement)
+                                       replacement)
+                                      (#f
+                                       (if (file-is-directory? source)
+                                           source
+                                           (substitute-file source
+                                                            initial replacements)))))
+                                  (derivation-sources drv)))
 
-             ;; Now augment the lists of initials and replacements.
-             (initial      (append (derivation-sources drv) initial))
-             (replacements (append sources replacements))
-             (name         (store-path-package-name
-                            (string-drop-right (derivation-file-name drv)
-                                               4))))
-        (derivation store name
-                    (substitute (derivation-builder drv)
-                                initial replacements)
-                    (map (cut substitute <> initial replacements)
-                         (derivation-builder-arguments drv))
-                    #:system system
-                    #:env-vars (map (match-lambda
-                                     ((var . value)
-                                      `(,var
-                                        . ,(substitute value initial
-                                                       replacements))))
-                                    (derivation-builder-environment-vars drv))
-                    #:inputs (filter derivation-input? inputs)
-                    #:sources (append sources (filter string? inputs))
-                    #:outputs (derivation-output-names drv)
-                    #:hash (match (derivation-outputs drv)
-                             ((($ <derivation-output> _ algo hash))
-                              hash)
-                             (_ #f))
-                    #:hash-algo (match (derivation-outputs drv)
-                                  ((($ <derivation-output> _ algo hash))
-                                   algo)
-                                  (_ #f)))))))
+               ;; Now augment the lists of initials and replacements.
+               (initial      (append (derivation-sources drv) initial))
+               (replacements (append sources replacements))
+               (name         (store-path-package-name
+                              (string-drop-right (derivation-file-name drv)
+                                                 4))))
+          (derivation store name
+                      (substitute (derivation-builder drv)
+                                  initial replacements)
+                      (map (cut substitute <> initial replacements)
+                           (derivation-builder-arguments drv))
+                      #:system system
+                      #:env-vars (map (match-lambda
+                                        ((var . value)
+                                         `(,var
+                                           . ,(substitute value initial
+                                                          replacements))))
+                                      (derivation-builder-environment-vars drv))
+                      #:inputs (filter derivation-input? inputs)
+                      #:sources (append sources (filter string? inputs))
+                      #:outputs (derivation-output-names drv)
+                      #:hash (match (derivation-outputs drv)
+                               ((($ <derivation-output> _ algo hash))
+                                hash)
+                               (_ #f))
+                      #:hash-algo (match (derivation-outputs drv)
+                                    ((($ <derivation-output> _ algo hash))
+                                     algo)
+                                    (_ #f))))))
+
+    (loop drv)))
 
 
 ;;;
