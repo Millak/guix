@@ -273,6 +273,13 @@ install.")
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'compress-documentation 'make-virt-files-executable
+            ;; The autopkgtest-virt- files need to be marked executable for
+            ;; reprotest to function correctly.
+            (lambda _
+              (for-each (lambda (file)
+                          (chmod file #o755))
+                        (find-files #$output "autopkgtest-virt-.*"))))
           (add-after 'install 'install-doc
             (lambda _
               (let* ((mandir1 (string-append
