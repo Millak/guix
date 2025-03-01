@@ -3874,6 +3874,38 @@ date-time parsing, formatting, arithmetic, extraction and updating of
 components, and rounding.")
     (license license:expat)))
 
+(define-public r-cluster
+  (package
+    (name "r-cluster")
+    (version "2.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cluster" version))
+       (sha256
+        (base32
+         "1jk0c3758p71d8icpdsxiizl5dc292kyylx9iparjk396hp4can3"))))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             ;; Tests insist on loading Matrix not from the locations
+             ;; specified with R_LIBS_SITE.
+             (substitute* "inst/test-tools.R"
+               ((", lib.loc = .Library") "")))))))
+    (native-inputs
+     (list r-matrix))
+    (home-page "https://cran.r-project.org/web/packages/cluster")
+    (synopsis "Methods for cluster analysis")
+    (description
+     "This package provides methods for cluster analysis.  It is a much
+extended version of the original from Peter Rousseeuw, Anja Struyf and Mia
+Hubert, based on Kaufman and Rousseeuw (1990) \"Finding Groups in Data\".")
+    (license license:gpl2+)))
+
 (define-public r-clvalid
   (package
     (name "r-clvalid")
