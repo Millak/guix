@@ -981,26 +981,6 @@ fast ordered joins, fast add/modify/delete of columns by group, column listing
 and fast file reading.")
     (license license:gpl3+)))
 
-(define-public r-xtable
-  (package
-    (name "r-xtable")
-    (version "1.8-4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "xtable" version))
-       (sha256
-        (base32
-         "077xfm0gphvhsay75amd9v90zk57kjgrrlgih04fyrbqqblc1gjs"))))
-    (build-system r-build-system)
-    (native-inputs
-     (list r-knitr)) ; for vignettes
-    (home-page "https://xtable.r-forge.r-project.org/")
-    (synopsis "Export R tables to LaTeX or HTML")
-    (description
-     "This package provides tools to export R data as LaTeX and HTML tables.")
-    (license license:gpl2+)))
-
 (define-public python-vega-datasets
   (package
     (name "python-vega-datasets")

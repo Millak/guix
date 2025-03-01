@@ -34703,6 +34703,26 @@ extensible, so that users are also allowed to define their own objectives
 easily.")
     (license license:asl2.0)))
 
+(define-public r-xtable
+  (package
+    (name "r-xtable")
+    (version "1.8-4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "xtable" version))
+       (sha256
+        (base32
+         "077xfm0gphvhsay75amd9v90zk57kjgrrlgih04fyrbqqblc1gjs"))))
+    (build-system r-build-system)
+    (native-inputs
+     (list r-knitr)) ; for vignettes
+    (home-page "https://xtable.r-forge.r-project.org/")
+    (synopsis "Export R tables to LaTeX or HTML")
+    (description
+     "This package provides tools to export R data as LaTeX and HTML tables.")
+    (license license:gpl2+)))
+
 (define-public r-umap
   (package
     (name "r-umap")
