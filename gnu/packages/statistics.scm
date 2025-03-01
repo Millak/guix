@@ -547,28 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-formatr
-  (package
-    (name "r-formatr")
-    (version "1.14")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "formatR" version))
-              (sha256
-               (base32
-                "0k271w4bhlj7r9igkiyfw7d7bg30s2mn4sr4alb8f9w57wnapfjf"))))
-    (build-system r-build-system)
-    (native-inputs
-     (list r-knitr r-testit))
-    (home-page "https://yihui.org/formatr/")
-    (synopsis "Format R code automatically")
-    (description
-     "This package provides a function to format R source code.  Spaces and
-indent will be added to the code automatically, and comments will be preserved
-under certain conditions, so that R code will be more human-readable and tidy.
-There is also a Shiny app as a user interface in this package.")
-    (license license:gpl3+)))
-
 (define-public r-highr
   (package
     (name "r-highr")
