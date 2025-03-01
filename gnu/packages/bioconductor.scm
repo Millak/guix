@@ -24992,7 +24992,9 @@ advanced visualization of sets of conserved noncoding elements.")
        (sha256
         (base32
          "129qkllv3i0pifigw255g3k4b6ki6sf8hql56x2nbm6h64bcfd9c"))))
-    (properties `((upstream-name . "TFBSTools")))
+    (properties
+     '((upstream-name . "TFBSTools")
+       (updater-extra-native-inputs . ("r-jaspar2016"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
@@ -25016,7 +25018,7 @@ advanced visualization of sets of conserved noncoding elements.")
            r-tfmpvalue
            r-xml
            r-xvector))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-jaspar2016 r-knitr r-testthat))
     (home-page "https://github.com/ge11232002/TFBSTools")
     (synopsis "Transcription factor binding site (TFBS) analysis")
     (description
