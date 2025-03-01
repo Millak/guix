@@ -753,7 +753,6 @@ different data arrays similar to those available in the numdiff software.")
            ffmpeg-4
            ;; TODO: add gstreamer
            gtk+
-           gtkglext
            hdf5
            ilmbase
            imath                        ;should be propagated by openexr
