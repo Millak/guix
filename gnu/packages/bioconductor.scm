@@ -20127,10 +20127,11 @@ genes.")
         (base32
          "0na7zqp2xblz4pjchsgwcabhci15pxnmnzlyr6yihlavf83b53cg"))))
     (properties
-     `((upstream-name . "MassSpecWavelet")))
+     '((upstream-name . "MassSpecWavelet")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/MassSpecWavelet/")
     (synopsis "Mass spectrum processing by wavelet-based algorithms")
     (description
