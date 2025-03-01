@@ -2775,6 +2775,27 @@ designed by Cynthia Brewer as described at http://colorbrewer2.org")
     ;; Includes code licensed under bsd-4
     (license license:asl2.0)))
 
+(define-public r-reshape2
+  (package
+    (name "r-reshape2")
+    (version "1.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "reshape2" version))
+       (sha256
+        (base32 "1n0jrajpvc8hjkh9z4g8bwq63qy5vy5cgl2pzjardyih4ngcz3fq"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-plyr r-rcpp r-stringr))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/hadley/reshape")
+    (synopsis "Flexibly reshape data: a reboot of the \"reshape\" package")
+    (description
+     "Reshape2 is an R library to flexibly restructure and aggregate data
+using just two functions: melt and dcast (or acast).")
+    (license license:expat)))
+
 (define-public r-robslopes
   (package
     (name "r-robslopes")
