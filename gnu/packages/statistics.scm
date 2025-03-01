@@ -547,25 +547,6 @@ available, greatly increasing its breadth and scope.")
            r-spatial
            r-survival))))
 
-(define-public r-proto
-  (package
-    (name "r-proto")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "proto" version))
-       (sha256
-        (base32 "1l843p8vckjckdhgv37ngv47fga5jzy0n00pmipvp05nnaixk54j"))))
-    (build-system r-build-system)
-    (native-inputs (list r-testthat))
-    (home-page "https://github.com/hadley/proto")
-    (synopsis "Prototype object-based programming")
-    (description
-     "Proto is an object oriented system using object-based, also called
-prototype-based, rather than class-based object oriented ideas.")
-    (license license:gpl2+)))
-
 (define-public r-rcolorbrewer
   (package
     (name "r-rcolorbrewer")
