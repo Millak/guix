@@ -8006,6 +8006,34 @@ data analyses is available.  In addition, Sweave source code for slides of
 selected chapters is included in this package.")
     (license license:gpl2)))
 
+(define-public r-httpgd
+  (package
+    (name "r-httpgd")
+    (version "2.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "httpgd" version))
+       (sha256
+        (base32 "02p9d50gbzaz1v77ssby9fgxx8pxp4n8h50k57x9niymgi7phnmx"))))
+    (properties `((upstream-name . "httpgd")))
+    (build-system r-build-system)
+    ;; XXX On the build farm the tests fail with "Too many open files".  It
+    ;; works fine on my laptop.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list r-asioheaders r-cpp11 r-unigd))
+    (native-inputs (list r-future r-httr r-jsonlite r-knitr r-testthat))
+    (home-page "https://github.com/nx10/httpgd")
+    (synopsis "HTTP server graphics device")
+    (description
+     "This package provides a graphics device for R that is accessible via
+network protocols.  This package was created to make it easier to embed live R
+graphics in integrated development environments and other applications.  The
+included HTML/@code{JavaScript} client (plot viewer) aims to provide a better
+overall user experience when dealing with R graphics.  The device
+asynchronously serves graphics via HTTP and @code{WebSockets}'.")
+    (license license:gpl2+)))
+
 (define-public r-httptest
   (package
     (name "r-httptest")
