@@ -3263,33 +3263,6 @@ also some vector-based methods, e.g. @code{binMeans()}, @code{madDiff()} and
 memory usage.")
     (license license:artistic2.0)))
 
-(define-public r-viridis
-  (package
-    (name "r-viridis")
-    (version "0.6.5")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "viridis" version))
-              (sha256
-               (base32
-                "0p00s24d8bsifw3r0afwrx98bqixnf5krpbw42hfwp8ipsv5qaw6"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-ggplot2 r-gridextra r-viridislite))
-    (native-inputs
-     (list r-knitr r-testthat)) ; for vignettes
-    (home-page "https://github.com/sjmgarnier/viridis")
-    (synopsis "Matplotlib default color map")
-    (description
-     "This package is a port of the new @url{matplotlib,
-http://matplotlib.org/} color maps (@code{viridis}--the default--,
-@code{magma}, @code{plasma}, and @code{inferno}) to R.  These color maps are
-designed in such a way that they will analytically be perfectly
-perceptually-uniform, both in regular form and also when converted to
-black-and-white.  They are also designed to be perceived by readers with the
-most common form of color blindness.")
-    (license license:x11)))
-
 (define-public r-tidyselect
   (package
     (name "r-tidyselect")
