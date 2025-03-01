@@ -800,34 +800,6 @@ understand the language at a deeper level.")
 you call it again with the same arguments it returns the pre-computed value.")
     (license license:expat)))
 
-(define-public r-crayon
-  (package
-    (name "r-crayon")
-    (version "1.5.3")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "crayon" version))
-              (sha256
-               (base32
-                "0sfsx4k77fsx1dx9c186dg273psrr3awz4ivfvmbbvs1amla0x1y"))))
-    (properties
-     ;; We can't have r-testthat among the inputs here to avoid a dependency
-     ;; cycle.
-     '((updater-ignored-native-inputs . ("r-testthat"))))
-    (build-system r-build-system)
-    ;; Tests need r-testthat, which would lead to a dependency cycle.
-    ;; r-crayon@1.5.3 -> r-diffobj@0.3.5 -> r-waldo@0.6.1 -> r-testthat@3.2.1.1
-    (arguments (list #:tests? #false))
-    (home-page "https://github.com/gaborcsardi/crayon")
-    (synopsis "Colored terminal output for R")
-    (description
-     "Colored terminal output on terminals that support ANSI color and
-highlight codes.  It also works in Emacs ESS.  ANSI color support is
-automatically detected.  Colors and highlighting can be combined and nested.
-New styles can also be created easily.  This package was inspired by the
-\"chalk\" JavaScript project.")
-    (license license:expat)))
-
 (define-public r-praise
   (package
     (name "r-praise")
