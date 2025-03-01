@@ -13772,6 +13772,28 @@ hypergeometric distributions.  In addition two random number generators of
 George Marsaglia are included.")
     (license license:gpl2+)))
 
+(define-public r-kknn
+  (package
+    (name "r-kknn")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "kknn" version))
+       (sha256
+        (base32
+         "1nzkg3dxaiqp87p56wm895qx5xn86hv5hjr73qvl1yiaxiq0x112"))))
+    (properties `((upstream-name . "kknn")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-igraph r-matrix))
+    (home-page "https://github.com/KlausVigo/kknn")
+    (synopsis "Weighted k-nearest neighbors")
+    (description
+     "This is a package providing tools for weighted k-Nearest neighbors for
+classification, regression and clustering.")
+    (license license:gpl2+)))
+
 (define-public r-kit
   (package
     (name "r-kit")
