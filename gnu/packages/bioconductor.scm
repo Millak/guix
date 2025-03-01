@@ -13298,7 +13298,9 @@ single-cell RNA-seq.")
               (sha256
                (base32
                 "14hbhsxh47qaxikwp537aw9hkhg1jnm15w0ycjmajpg2wx1fl4ak"))))
-    (properties `((upstream-name . "SeqArray")))
+    (properties
+     '((upstream-name . "SeqArray")
+       (updater-extra-native-inputs . ("r-digest"))))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings
                              r-gdsfmt
@@ -13307,7 +13309,7 @@ single-cell RNA-seq.")
                              r-iranges
                              r-s4vectors))
     (native-inputs
-     (list r-biocgenerics r-knitr r-runit r-variantannotation))
+     (list r-biocgenerics r-digest r-knitr r-runit r-variantannotation))
     (home-page "https://github.com/zhengxwen/SeqArray")
     (synopsis
      "Data management of large-scale whole-genome sequence variant calls")
