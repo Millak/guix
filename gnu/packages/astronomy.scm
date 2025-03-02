@@ -6995,6 +6995,48 @@ pipelines.")
 orbit around the Earth.")
     (license license:expat)))
 
+(define-public python-stsci-tools
+  (package
+    (name "python-stsci-tools")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stsci_tools" version))
+       (sha256
+        (base32 "180x3fmp020p4imc39ajs5qs6iimd8ld5bly3g9mm4psqbp8nyw9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              ;; Two tests fail with error: RuntimeError: Problem during:
+              ;; takes_time(), exitcode: 1. Check log.
+              (string-append "not test_launch_and_wait[None-spawn]"
+                             " and not test_launch_and_wait[None-forkserver]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (delete-file "conftest.py"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy-header
+           python-pytest-doctestplus
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-packaging))
+    (home-page "https://stscitools.readthedocs.io/en/latest")
+    (synopsis "Collection of STScI utility functions")
+    (description
+     "This package provides a collection of @acronym{Space Telescope Science
+Institute, STScI} utility functions.")
+    (license license:bsd-3)))
+
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
