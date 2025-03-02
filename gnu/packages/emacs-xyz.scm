@@ -34275,8 +34275,6 @@ indexing of modern Fortran.")
          "0604xgwrcvqsmk1vky8wdivsl43p6jgs5zchqssdmf22f5chxbzr"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
-    (arguments
-     (list #:test-command #~'("ert-runner")))
     (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/plattfot/bfuture.el")
     (synopsis "Basic future concept for Emacs with Tramp support")
