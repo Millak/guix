@@ -9154,6 +9154,39 @@ Also included are keybindings for spec files and Dired buffers, as well as
 snippets for yasnippet.")
       (license license:gpl3+))))
 
+(define-public emacs-vhdl-ext
+  (package
+    (name "emacs-vhdl-ext")
+    (version "0.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gmlarumbe/vhdl-ext/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vgmhsgrh8x8br5grnh1jnf01r2q148xxyf028jgaq09wwjkdvkc"))))
+    (build-system emacs-build-system)
+    (arguments
+     ;; the testing framework test-hdl requires network
+     `(#:tests? #f
+       #:test-command '("make")))
+    (propagated-inputs (list emacs-ag
+                             emacs-async
+                             emacs-flycheck
+                             emacs-hydra
+                             emacs-lsp-mode
+                             emacs-outshine
+                             emacs-ripgrep
+                             emacs-vhdl-ts-mode))
+    (home-page "https://github.com/gmlarumbe/vhdl-ext/")
+    (synopsis "Extensions to Emacs @code{vhdl-mode}")
+    (description "This package provides additional features and utilities for
+@code{vhdl-mode}, such as snippet selection via @code{hydra}, code navigation, code
+formatting, and code folding.")
+    (license license:gpl3+)))
+
 (define-public emacs-vhdl-mode
   (package
     (name "emacs-vhdl-mode")
