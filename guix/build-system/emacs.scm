@@ -87,6 +87,7 @@
                       (test-command #f) ; inferred in emacs-build-system
                       (phases '%standard-phases)
                       (outputs '("out"))
+                      (lisp-directory #f)
                       (include (quote %default-include))
                       (exclude (quote %default-exclude))
                       (search-paths '())
@@ -105,6 +106,7 @@
           (use-modules #$@(sexp->gexp modules))
           (emacs-build #:name #$name
                        #:source #+source
+                       #:lisp-directory #$lisp-directory
                        #:system #$system
                        #:test-command #$test-command
                        #:tests? #$tests?

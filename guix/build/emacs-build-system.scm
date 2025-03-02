@@ -67,7 +67,7 @@ name that has been stripped of the hash and version number."
                     (strip-store-file-name file) suffix))))
       (string-append name suffix))))
 
-(define* (unpack #:key source #:allow-other-keys)
+(define* (unpack #:key source lisp-directory #:allow-other-keys)
   "Unpack SOURCE into the build directory.  SOURCE may be a compressed
 archive, a directory, or an Emacs Lisp file."
   (if (string-suffix? ".el" source)
@@ -76,7 +76,9 @@ archive, a directory, or an Emacs Lisp file."
         (chdir "source")
         (copy-file source (store-file->elisp-source-file source))
         #t)
-      (gnu:unpack #:source source)))
+      (begin
+        (gnu:unpack #:source source)
+        (and=> lisp-directory chdir))))
 
 (define* (expand-load-path #:key (prepend-source? #t) #:allow-other-keys)
   "Expand EMACSLOADPATH, so that inputs, whose code resides in subdirectories,
