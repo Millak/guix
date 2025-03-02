@@ -1346,10 +1346,7 @@ time compilation and compiled macros.")
     (version "1.0")
     (build-system emacs-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'install 'change-directory
-                          (lambda _
-                            (chdir "etc"))))))
+     (list #:lisp-directory "etc"))
     (synopsis "Emacs major-mode for editing Gerbil code")
     (description
      "Gerbil mode provides font-lock, indentation, navigation, and REPL for
