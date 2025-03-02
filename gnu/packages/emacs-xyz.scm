@@ -15829,6 +15829,7 @@ editing facilities related to Clojure, ClojureScript and cljc source.")
        (sha256
         (base32 "0d3z5z90ln8ipk1yds1n1p8fj9yyh2kpspqjs7agl38indra3nb4"))))
     (build-system emacs-build-system)
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/cask/epl")
     (synopsis "Emacs Package Library")
     (description
