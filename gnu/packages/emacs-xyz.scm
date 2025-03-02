@@ -2909,17 +2909,16 @@ organizing remote Go repository clones.")
     (arguments
      (list
       #:tests? #f ; there are no tests
+      #:lisp-directory "lisp"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'build-info-manual
             (lambda _
-              (invoke "make" "info")
-              ;; Move the info file to lisp so that it gets installed by the
-              ;; emacs-build-system.
-              (rename-file "docs/ghub.info" "lisp/ghub.info")))
-          (add-after 'build-info-manual 'chdir-lisp
+              (invoke "make" "--directory=.." "info")))
+          (add-after 'install 'install-info
             (lambda _
-              (chdir "lisp"))))))
+              (let ((info (string-append #$output "/share/info")))
+                (install-file "../docs/ghub.info" info)))))))
     (native-inputs
      (list texinfo))
     (propagated-inputs
