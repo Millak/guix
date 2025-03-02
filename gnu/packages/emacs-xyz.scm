@@ -17053,8 +17053,7 @@ another window.")
          (add-after 'unpack 'ert-number-tests
              (lambda _
                (ert-number-tests "test/pyvenv-hook-dir-test.el"
-                                 "pyvenv-hook-dir"))))
-       #:test-command '("ert-runner")))
+                                 "pyvenv-hook-dir"))))))
     (native-inputs
      (list emacs-ert-runner emacs-mocker))
     (home-page "https://github.com/jorgenschaefer/pyvenv")
