@@ -38006,8 +38006,7 @@ contrast and few colors.")
       (native-inputs
        (list emacs-ert-runner))
       (arguments
-       (list #:test-command #~(list "ert-runner")
-             #:modules '((guix build emacs-build-system)
+       (list #:modules '((guix build emacs-build-system)
                          (guix build utils)
                          (guix build emacs-utils)
                          (srfi srfi-1))
