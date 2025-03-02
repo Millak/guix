@@ -28511,8 +28511,6 @@ downloading manager for Emacs.")
      (list emacs-dash emacs-elisp-refs emacs-f emacs-s))
     (native-inputs
      (list emacs-ert-runner emacs-undercover))
-    (arguments
-     `(#:test-command '("ert-runner")))
     (home-page "https://github.com/Wilfred/helpful")
     (synopsis "More contextual information in Emacs help")
     (description "@code{helpful} is an alternative to the built-in Emacs help
