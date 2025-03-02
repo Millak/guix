@@ -1,0 +1,34 @@
+From 3794389ef685b6a59b3a487d0492c3add3c42c2f Mon Sep 17 00:00:00 2001
+From: Xiyue Deng <manphiz@gmail.com>
+Date: Wed, 26 Feb 2025 15:39:42 -0800
+Subject: [PATCH] Check for interpreted-function-p
+
+Emacs 30.x added interpreted-function which is different from
+byte-code-function, and hence helpful--signature will try to treat it
+like a lambda which will fail with
+
+,----
+| (wrong-type-argument listp #[(x) (x) (t) nil "Foo"])
+`----
+
+This patch adds tests for such case using interpreted-function-p when
+it's available.
+---
+ helpful.el | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/helpful.el b/helpful.el
+index b100816..331ece8 100644
+--- a/helpful.el
++++ b/helpful.el
+@@ -2570,7 +2570,9 @@ For example, \"(some-func FOO &optional BAR)\"."
+             (cond
+              ((symbolp sym)
+               (help-function-arglist sym))
+-             ((byte-code-function-p sym)
++             ((or (byte-code-function-p sym)
++                  (if (fboundp 'interpreted-function-p)
++                      (interpreted-function-p sym)))
+               ;; argdesc can be a list of arguments or an integer
+               ;; encoding the min/max number of arguments. See
+               ;; Byte-Code Function Objects in the elisp manual.

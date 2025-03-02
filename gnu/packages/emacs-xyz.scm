@@ -28503,7 +28503,9 @@ downloading manager for Emacs.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "03afgdbs5nmhw833svrqky7fmfs1zlvqzcj7j5g29sakivs60xqc"))
-       (patches (search-patches "emacs-helpful-fix-tests.patch"))))
+       (patches (search-patches
+                 "emacs-helpful-fix-signature.patch"
+                 "emacs-helpful-fix-tests.patch"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-elisp-refs emacs-f emacs-s))
