@@ -2666,7 +2666,7 @@ memoized as a function of '%current-system'."
                    (substitute* "scripts/min-tool-version.sh"
                      (("echo 5\\.1\\.0")  ;GCC
                       "echo 4.8.4")
-                     (("echo 2\\.23\\.0") ;binutils
+                     (("echo 2\\.25\\.0") ;binutils
                       "echo 2.20.1")))))))))
     (native-inputs
      `(("perl" ,perl-boot0)
