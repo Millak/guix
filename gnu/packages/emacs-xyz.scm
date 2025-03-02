@@ -12208,6 +12208,8 @@ for compilation, debugging, documentation lookup, and so on.")
        (sha256
         (base32 "13ww7hld5pa32myj9krr6prmc99s7hnpsw8mw9krpxffykkblj2f"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "ert-runner" "tests")))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/auto-complete/popup-el")
     (synopsis "Visual Popup User Interface for Emacs")
     (description
