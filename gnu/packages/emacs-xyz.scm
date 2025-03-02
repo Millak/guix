@@ -5433,12 +5433,12 @@ as brings user experience improvements.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:lisp-directory "lisp"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
+          (add-after 'unpack 'set-home
             (lambda _
-              (setenv "HOME" "/tmp")
-              (chdir "lisp"))))))
+              (setenv "HOME" "/tmp"))))))
     (synopsis "WYSIWYG LaTeX environment")
     (description "This package provides a WYSIWYG LaTeX environment.
 It uses @command{dvisvgm}, @command{xclip}, @command{pngpaste} and
