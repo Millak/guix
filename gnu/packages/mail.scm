@@ -1582,14 +1582,12 @@ ing, and tagging large collections of email messages.")
      (list notmuch))
     (arguments
      (list
+      #:lisp-directory "emacs"
       #:exclude #~(cons* "make-deps.el" "rstdoc.el" %default-exclude)
       #:include #~(cons* "notmuch-logo.svg" %default-include)
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "emacs")))
-          (add-after 'chdir 'patch-paths
+          (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((notmuch (search-input-file inputs "/bin/notmuch")))
                 (substitute* "notmuch-lib.el"
