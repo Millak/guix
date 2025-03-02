@@ -16965,8 +16965,6 @@ on your highlights and notes)
        (sha256
         (base32 "1dc514cqbfmg33sb3j90s5jmw6jnm3wzvs0zhw3maz13bp7w6z48"))))
     (build-system emacs-build-system)
-    (arguments
-     `(#:test-command '("ert-runner")))
     (native-inputs
      (list emacs-ert-runner))
     (propagated-inputs
