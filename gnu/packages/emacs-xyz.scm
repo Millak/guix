@@ -25062,8 +25062,6 @@ supports multiple backends such as @code{vlc}, @code{mpg123},
                (base32
                 "1jpfyqnqd8nj0g8xbiw4ar2qzxx3pvhwibr6hdzhyy9mmc4yzdgk"))))
     (build-system emacs-build-system)
-    (arguments
-     `(#:test-command '("ert-runner")))
     (native-inputs
      (list emacs-ert-runner emacs-undercover emacs-shut-up emacs-f))
     (propagated-inputs
