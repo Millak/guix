@@ -33225,9 +33225,6 @@ from Emacs.")
                (base32
                 "03bavca89cf7dsjmg7hb48qnvca41ndiij33iw5yjjhbq1zyj8r4"))))
     (build-system emacs-build-system)
-    (arguments
-     (list
-      #:test-command #~(list "ert-runner")))
     (native-inputs
      (list emacs-ert-runner))
     (home-page "https://github.com/mpdel/libmpdel")
