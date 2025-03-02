@@ -77,7 +77,8 @@ Cargo.toml file present at its root."
                                             " | cut -d/ -f2"
                                             " | grep -q '^Cargo.toml$'")))))
 
-(define* (unpack-rust-crates #:key inputs vendor-dir #:allow-other-keys)
+(define* (unpack-rust-crates #:key inputs (vendor-dir "guix-vendor")
+                             #:allow-other-keys)
   (define (inputs->rust-inputs inputs)
     "Filter using the label part from INPUTS."
     (filter (lambda (input)
@@ -141,7 +142,7 @@ libraries or executables."
 
 (define* (configure #:key inputs
                     target system
-                    cargo-target
+                    (cargo-target #f)
                     (vendor-dir "guix-vendor")
                     #:allow-other-keys)
   "Vendor Cargo.toml dependencies as guix inputs."
@@ -260,7 +261,7 @@ directory = '" vendor-dir "'") port)
 
 (define* (build #:key
                 parallel-build?
-                skip-build?
+                (skip-build? #f)
                 (features '())
                 (cargo-build-flags '("--release"))
                 #:allow-other-keys)
@@ -300,8 +301,8 @@ directory = '" vendor-dir "'") port)
 
 (define* (package #:key
                   source
-                  skip-build?
-                  install-source?
+                  (skip-build? #f)
+                  (install-source? #t)
                   (cargo-package-crates '())
                   (cargo-package-flags '("--no-metadata" "--no-verify"))
                   (vendor-dir "guix-vendor")
@@ -376,9 +377,9 @@ directory = '" vendor-dir "'") port)
 (define* (install #:key
                   inputs
                   outputs
-                  skip-build?
-                  install-source?
-                  features
+                  (skip-build? #f)
+                  (install-source? #t)
+                  (features '())
                   (cargo-install-paths '())
                   #:allow-other-keys)
   "Install a given Cargo package."
