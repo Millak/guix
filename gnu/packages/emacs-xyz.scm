@@ -5724,12 +5724,9 @@ Emacs.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:lisp-directory "elisp"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir-elisp
-            ;; Elisp directory is not in root of the source.
-            (lambda _
-              (chdir "elisp")))
           (add-after 'install 'install-doc
             ;; Documentation consists of several Markdown files.
             (lambda _
