@@ -1824,7 +1824,9 @@ graft, and #f otherwise."
                         (return (graft
                                   (origin orig)
                                   (origin-output output)
-                                  (replacement replacement)
+                                  (replacement
+                                   (with-parameters ((%current-system system))
+                                     replacement))
                                   (replacement-output output))))
                       package output system)
              (return #f))))
@@ -1846,7 +1848,10 @@ graft, and #f otherwise."
                (return (graft
                          (origin orig)
                          (origin-output output)
-                         (replacement replacement)
+                         (replacement
+                          (with-parameters ((%current-system system)
+                                            (%current-target-system target))
+                            replacement))
                          (replacement-output output))))
              (return #f))))
       (_

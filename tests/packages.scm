@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2025 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1095,7 +1096,29 @@
       ((graft)
        (and (eq? (graft-origin graft)
                  (package-derivation %store dep))
-            (eq? (graft-replacement graft) new))))))
+            (eq? (run-with-store %store
+                   (lower-object (graft-replacement graft)))
+                 (package-derivation %store new)))))))
+
+(test-assert "package-grafts, indirect grafts, #:system argument"
+  (let* ((system (if (string=? (%current-system) "riscv64-linux")
+                     "x86_64-linux"
+                     "riscv64-linux"))
+         (new   (dummy-package "dep"
+                  (arguments `(#:implicit-inputs? #f
+                               #:system ,system))))
+         (dep   (package (inherit new) (version "0.0")))
+         (dep*  (package (inherit dep) (replacement new)))
+         (dummy (dummy-package "dummy"
+                  (arguments '(#:implicit-inputs? #f))
+                  (inputs (list dep*)))))
+    (match (package-grafts %store dummy)
+      ((graft)
+       (and (eq? (graft-origin graft)
+                 (package-derivation %store dep system))
+            (eq? (run-with-store %store
+                   (lower-object (graft-replacement graft)))
+                 (package-derivation %store new)))))))
 
 ;; XXX: This test would require building the cross toolchain just to see if it
 ;; needs grafting, which is obviously too expensive, and thus disabled.
@@ -1132,7 +1155,9 @@
       ((graft)
        (and (eq? (graft-origin graft)
                  (package-derivation %store dep))
-            (eq? (graft-replacement graft) new))))))
+            (eq? (run-with-store %store
+                   (lower-object (graft-replacement graft)))
+                 (package-derivation %store new)))))))
 
 (test-assert "package-grafts, same replacement twice"
   (let* ((new  (dummy-package "dep"
@@ -1157,7 +1182,9 @@
                  (package-derivation %store
                                      (package (inherit dep)
                                               (replacement #f))))
-            (eq? (graft-replacement graft) new))))))
+            (eq? (run-with-store %store
+                   (lower-object (graft-replacement graft)))
+                 (package-derivation %store new)))))))
 
 (test-assert "package-grafts, dependency on several outputs"
   ;; Make sure we get one graft per output; see <https://bugs.gnu.org/41796>.
@@ -1177,9 +1204,11 @@
       ((graft1 graft2)
        (and (eq? (graft-origin graft1) (graft-origin graft2)
                  (package-derivation %store p0))
-            (eq? (graft-replacement graft1)
-                 (graft-replacement graft2)
-                 p0*)
+            (eq? (run-with-store %store
+                   (lower-object (graft-replacement graft1)))
+                 (run-with-store %store
+                   (lower-object (graft-replacement graft2)))
+                 (package-derivation %store p0*))
             (string=? "lib"
                       (graft-origin-output graft1)
                       (graft-replacement-output graft1))
@@ -1256,10 +1285,17 @@
       ((graft1 graft2)
        (and (eq? (graft-origin graft1)
                  (package-derivation %store p1 #:graft? #f))
-            (eq? (graft-replacement graft1) p1r)
+            (eq? (run-with-store %store
+                   (lower-object (graft-replacement graft1)))
+                 (package-derivation %store p1r #:graft? #t))
             (eq? (graft-origin graft2)
                  (package-derivation %store p2 #:graft? #f))
-            (eq? (graft-replacement graft2) p2r))))))
+            ;; XXX: Remove parameterize when
+            ;; <https://issues.guix.gnu.org/75879> is fixed.
+            (eq? (parameterize ((%graft? #t))
+                   (run-with-store %store
+                     (lower-object (graft-replacement graft2))))
+                 (package-derivation %store p2r #:graft? #t)))))))
 
 ;;; XXX: Nowadays 'graft-derivation' needs to build derivations beforehand to
 ;;; find out about their run-time dependencies, so this test is no longer
