@@ -27415,9 +27415,6 @@ continue.")
            emacs-shut-up))
     (native-inputs
      (list emacs-ert-runner emacs-undercover))
-    (arguments
-     (list
-      #:test-command #~(list "ert-runner")))
     (home-page "https://github.com/Wilfred/elisp-refs")
     (synopsis "Find callers of elisp functions or macros")
     (description "@code{elisp-refs} finds references to functions, macros or
