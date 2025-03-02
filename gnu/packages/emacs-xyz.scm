@@ -16601,7 +16601,6 @@ empty @file{.projectile} file in it.")
       (arguments
        (list
         #:include #~(cons "^project-skeletons\\/" %default-include)
-        #:test-command #~(list "ert-runner")
         #:phases
         #~(modify-phases %standard-phases
             ;; XXX: one failing test involving initializing a git repo.
