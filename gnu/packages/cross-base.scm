@@ -419,9 +419,7 @@ target that libc."
 (define* (cross-kernel-headers/deprecated target
                                           #:optional
                                           (linux-headers
-                                           (if (target-loongarch64? target)
-                                               linux-libre-headers-5.19.17
-                                               linux-libre-headers))
+                                           linux-libre-headers)
                                           (xgcc (cross-gcc target))
                                           (xbinutils (cross-binutils target)))
   (warning (G_ "'cross-kernel-headers' must be used with keyword arguments~%"))
@@ -496,9 +494,7 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
 
 (define* (cross-kernel-headers* target
                                 #:key
-                                (linux-headers (if (target-loongarch64? target)
-                                                   linux-libre-headers-5.19.17
-                                                   linux-libre-headers))
+                                (linux-headers linux-libre-headers)
                                 (xgcc (cross-gcc target))
                                 (xbinutils (cross-binutils target)))
   "Return headers depending on TARGET."
