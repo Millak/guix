@@ -84,7 +84,7 @@
                       #:key source
                       (tests? (not (%current-target-system)))
                       (parallel-tests? #t)
-                      (test-command ''("make" "check"))
+                      (test-command #f) ; inferred in emacs-build-system
                       (phases '%standard-phases)
                       (outputs '("out"))
                       (include (quote %default-include))

@@ -223,23 +223,34 @@ locations in the store in '.el' files."
   (let ((name (store-directory->elpa-name-version (assoc-ref outputs "out"))))
     (and=> (find-root-library-file name) write-pkg-file)))
 
-(define* (check #:key tests? (test-command '("make" "check"))
+(define (check-command test-command)
+  (cond
+   (test-command test-command)
+   ((which "buttercup") '("buttercup" "-L" "."))
+   ((which "ert-runner") '("ert-runner"))
+   ((file-exists? "Makefile") '("make" "check"))
+   (else #f)))
+
+(define* (check #:key tests? test-command
                 (parallel-tests? #t) #:allow-other-keys)
   "Run the tests by invoking TEST-COMMAND.
 
 When TEST-COMMAND uses make and PARALLEL-TESTS is #t, the tests are run in
 parallel. PARALLEL-TESTS? is ignored when using a non-make TEST-COMMAND."
-  (match-let (((test-program . args) test-command))
-    (let ((using-make? (string=? test-program "make")))
-      (if tests?
-          (apply invoke test-program
-                 `(,@args
-                   ,@(if (and using-make? parallel-tests?)
-                         `("-j" ,(number->string (parallel-job-count)))
-                         '())))
-          (begin
-            (format #t "test suite not run~%")
-            #t)))))
+  (match (and tests? (check-command test-command))
+    ((test-program . args)
+     (let ((using-make? (string=? test-program "make")))
+       (apply invoke test-program
+              `(,@args
+                ,@(if (and using-make? parallel-tests?)
+                      `("-j" ,(number->string (parallel-job-count)))
+                      '())))))
+    (#f
+     (if tests?
+         (begin
+           (display "warning: test system not found.\n")
+           (display "note: this will be an error in the future.\n"))
+         (display "test suite not run\n")))))
 
 (define* (install #:key outputs
                   (include %default-include)
