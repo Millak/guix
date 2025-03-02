@@ -204,10 +204,7 @@ built-in support for concurrency, distribution and fault tolerance.")
     (source (package-source erlang))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'expand-load-path 'change-working-directory
-           (lambda _ (chdir "lib/tools/emacs") #t)))))
+     (list #:lisp-directory "lib/tools/emacs"))
     (home-page "https://www.erlang.org/")
     (synopsis "Erlang major mode for Emacs")
     (description
