@@ -576,10 +576,7 @@ native Python types.")
     (source (package-source protobuf))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'expand-load-path 'change-working-directory
-           (lambda _ (chdir "editors") #t)))))
+     (list #:lisp-directory "editors"))
     (home-page "https://github.com/protocolbuffers/protobuf")
     (synopsis "Protocol buffers major mode for Emacs")
     (description
