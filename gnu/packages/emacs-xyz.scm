@@ -35972,10 +35972,7 @@ all of your projects, then override or add variables on a per-project basis.")
     (build-system emacs-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _ (chdir "lisp"))))))
+      #:lisp-directory "lisp"))
     (propagated-inputs (list emacs-casual-lib))
     (home-page "https://github.com/kickingvegas/casual-calc")
     (synopsis "Transient-based porcelain for calc")
