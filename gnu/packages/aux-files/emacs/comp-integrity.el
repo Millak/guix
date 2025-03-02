@@ -39,7 +39,7 @@
 (expect-native custom-add-choice)
 (expect-native debug-early)
 (expect-native display-table-slot disp-table)
-(expect-native dnd-open-file)
+(expect-native-if-bound dnd-open-file)
 (expect-native dos-mode25 dos-fns)
 (expect-native find-file-text dos-w32)
 (expect-native-if-bound dynamic-setting-handle-config-changed-event)
