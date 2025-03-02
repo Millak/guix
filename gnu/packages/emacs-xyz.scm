@@ -27465,12 +27465,7 @@ mode.")
         (base32 "0m7gj224sqxjjw5sxky92fnrxg9jy4nf33kwf0aqxnfhqlgh545k"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir-elisp
-           ;; Elisp directory is not in root of the source.
-           (lambda _
-             (chdir "servers"))))))
+     (list #:lisp-directory "servers"))
     (propagated-inputs (list emacs-ert-async))
     (home-page "https://github.com/stsquad/emacs_chrome")
     (synopsis "Server that responds to edit requests from Chromium")
