@@ -479,8 +479,6 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                         (target-hurd? (%current-target-system)))
                    (string-suffix? "-hurd" (%current-system)))
                   gnumach-headers)
-                 ;; linux 5.19 include loongarch support.
-                 ((target-loongarch64?) linux-libre-headers-5.19.17)
                  (else linux-libre-headers)))))
       (propagated-inputs '())
 
