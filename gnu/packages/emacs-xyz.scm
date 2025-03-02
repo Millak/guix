@@ -19896,8 +19896,6 @@ procedures for emacs-lisp-mode.")
     (propagated-inputs (list emacs-dash))
     (native-inputs
      (list emacs-ert-runner))
-    (arguments
-     `(#:test-command '("ert-runner")))
     (home-page "https://github.com/Wilfred/ht.el")
     (synopsis "Hash table library for Emacs")
     (description
