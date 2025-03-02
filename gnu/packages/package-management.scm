@@ -1720,6 +1720,8 @@ outputs of those builds.")
            guile-gnutls
            bash-minimal
            (libc-utf8-locales-for-target)))
+    (propagated-inputs
+     '())
     (description
      "The Guix Build Coordinator helps with performing lots of builds across
 potentially many machines, and with doing something with the results and
