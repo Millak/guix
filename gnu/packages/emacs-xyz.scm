@@ -412,9 +412,6 @@ buffer, a file on your disk, or a string from the kill ring.")
        (sha256
         (base32 "1yn5cc6cmj3hwqgmjj44dz847xn5k99kirj36qwc04q7vhl8z8k7"))))
     (build-system emacs-build-system)
-    (arguments
-     (list
-      #:test-command #~(list "ert-runner")))
     (inputs
      (list emacs-auto-complete
            emacs-company
