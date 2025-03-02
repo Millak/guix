@@ -9035,8 +9035,6 @@ customizability, and extensibility.")
     (build-system emacs-build-system)
     (native-inputs
      (list emacs-ert-runner))
-    (arguments
-     `(#:test-command '("ert-runner")))
     (home-page "https://github.com/akicho8/string-inflection")
     (synopsis "Convert symbol names between different naming conventions")
     (description
