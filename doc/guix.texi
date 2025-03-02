@@ -18170,7 +18170,35 @@ This is a list of symbols denoting Shepherd requirements that must be
 met before mounting the file system.
 
 As an example, an NFS file system would typically have a requirement for
-@code{networking}.
+@code{networking}.  In some situations, requiring @code{networking}
+might not be sufficient as @code{networking} being marked as started
+does @emph{not} imply the network has already been configured and in
+working order (for example, when using
+@code{dhcpcd-client-service-type}).  For such cases, adding a
+requirement on a custom @code{network-online} service may be necessary.
+A sample @code{network-online} one-shot Shepherd service implementation
+is provided below:
+
+@lisp
+(simple-service 'network-online shepherd-root-service-type
+  (list
+   (shepherd-service
+    (requirement '(networking))
+    (provision '(network-online))
+    (documentation "Wait for the network to come up.")
+    (start #~(lambda _
+               (let* ((cmd
+                       "set -eux
+c=0
+while ! /run/setuid-programs/ping -qc1 -W1 example.org; do
+	sleep 1
+	[ \"$((c += 1))\" -lt 30 ] || exit 1  # Limit the wait time
+done
+")
+                    (status (system cmd)))
+               (= 0 (status:exit-val status)))))
+    (one-shot? #t))))
+@end lisp
 
 Typically, file systems are mounted before most other Shepherd services
 are started.  However, file systems with a non-empty
