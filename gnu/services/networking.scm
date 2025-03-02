@@ -1432,7 +1432,18 @@ project's documentation} for more information."
                '((mkdir-p "/var/lib/misc"))
                '())
         #$@(if (pair? extra-configuration-files)  ;if non-empty
-               `((symlink
+               ;; If /etc/NetworkManager/conf.d is a symlink to a store file,
+               ;; delete it.
+               `((if (and (file-exists? "/etc/NetworkManager/conf.d")
+                          (store-file-name?
+                           (canonicalize-path "/etc/NetworkManager/conf.d")))
+                     (delete-file-recursively
+                      "/etc/NetworkManager/conf.d"))
+                 ;; If it exists but is not a symlink to a store file, then
+                 ;; this will fail with EEXIST; we leave this for the user to
+                 ;; handle, since they probably created the directory
+                 ;; themselves.
+                 (symlink
                   ,(file-union "network-manager-configuration-directory"
                                extra-configuration-files)
                   "/etc/NetworkManager/conf.d"))
