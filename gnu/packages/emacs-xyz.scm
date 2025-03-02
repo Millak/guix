@@ -33300,9 +33300,6 @@ instances (play/pause, volume control, media selection, etc.) remotely.")
                (base32
                 "0fszhjf6bj8frvlnim86sfv6sab3qyignxqh8x6i4bqgwnb6svkf"))))
     (build-system emacs-build-system)
-    (arguments
-     (list
-      #:test-command #~(list "ert-runner")))
     (native-inputs
      (list emacs-ert-runner))
     (propagated-inputs
