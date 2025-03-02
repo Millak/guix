@@ -50,7 +50,6 @@
 ;;; Copyright © 2024 mio <stigma@disroot.org>
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
 ;;;
@@ -1066,7 +1065,7 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "3.7.1")            ;for ffmpeg 6 support
+    (version "3.5.1")            ;for ffmpeg 6 support
     (source
      (origin
        (method git-fetch)
@@ -1075,7 +1074,8 @@ engineers, musicians, soundtrack editors and composers.")
              (commit (string-append "Audacity-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f5lgj9phpgw07x0bd9wclsb4r0bn9358va70kkvq6rak6m9vb20"))
+        (base32 "11sjyz6hxsr5dnndkkkiq7arjxvjl1sycl151xq3a3ggakgql3y1"))
+       (patches (search-patches "audacity-ffmpeg-fallback.patch"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
