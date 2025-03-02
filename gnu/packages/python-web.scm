@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
-;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
@@ -2481,7 +2481,11 @@ and that could be anything you want.")
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (when tests?
                (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-vv" "test")))))))
+               (invoke "python" "-m" "pytest" "-vv" "test"
+                       ;; This test exceededs the Hypothesis deadline.
+                       ,@(if (target-riscv64?)
+                             `("-k" "not test_changing_max_frame_size")
+                             '()))))))))
     (native-inputs
      (list python-hypothesis python-pytest))
     (propagated-inputs
