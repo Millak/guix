@@ -18110,7 +18110,6 @@ target will call @code{compile} on it.")
     (arguments
      (list
       #:include #~(cons "\\.lsp$" %default-include)
-      #:test-command #~(list "ert-runner")
       #:phases
       #~(modify-phases %standard-phases
           ;; Move the extensions source files to the top level, which is
