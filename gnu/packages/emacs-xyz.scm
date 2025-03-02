@@ -31412,8 +31412,6 @@ files.  It focuses on highlighting the document to improve readability.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "12a429lajk09qp1jxgig54p8z6wndfgr4jwdmgkc9s2df9sw02d3"))))
-      (arguments
-       `(#:test-command '("ert-runner")))
       (native-inputs
        (list emacs-ert-runner emacs-undercover))
       (propagated-inputs
