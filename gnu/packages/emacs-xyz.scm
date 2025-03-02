@@ -4072,9 +4072,6 @@ Rust.")
              ;; Delete the Cask test runners.
              (for-each delete-file '("Cask" "test/test-helper.el"))))))
       (build-system emacs-build-system)
-      (arguments
-       (list
-        #:test-command #~(list "ert-runner")))
       (native-inputs
        (list emacs-ert-runner))
       (propagated-inputs
