@@ -757,7 +757,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
 (define u-boot
   (package
     (name "u-boot")
-    (version "2024.10")
+    (version "2025.01")
     (source
      (origin
        (method git-fetch)
@@ -766,7 +766,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yrhb0izihv47p781dc4cp0znc5g225ayl7anz23c6jdrmfbpz2h"))
+        (base32 "1i1v86bnixh8hyqbwwr5iwdnnadmg2fqxw9g526fvclsbvl8lz0v"))
        (patches (search-patches "u-boot-allow-disabling-openssl.patch"
                                 "u-boot-rockchip-inno-usb.patch"))))
     (build-system gnu-build-system)
@@ -1343,7 +1343,7 @@ partition."))
       ;; These disabled features require OpenSSL, which is
       ;; incompatible with the GPLv2-only parts of U-boot.
       #:configs (map (cut string-append "# CONFIG_" <> " is not set")
-                     '("FIT_CIPHER"))
+                     '("FIT_CIPHER" "MBEDTLS_LIB"))
       #:append-description
       "The sandbox configuration of U-Boot provides a @command{u-boot}
 command that runs as a normal user space application.  It can be used to
