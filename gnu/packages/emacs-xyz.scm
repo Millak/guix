@@ -19360,11 +19360,7 @@ components required by the produced @file{.tex} file.")
         (base32 "08m3aa8vsrlkacbvindjwqzviv5r8i9a0vzsrl8rx01xq5b0zd42"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-source-directory
-           (lambda _
-             (chdir "lisp"))))))
+     (list #:lisp-directory "lisp"))
     (propagated-inputs
      (list emacs-org))
     (home-page "https://git.sr.ht/~bzg/org-contrib")
