@@ -27043,6 +27043,13 @@ and @code{erc-send-modify-hook} to download and show images.")
                (base32
                 "0rc7ql78qraa35lv6igkd81j5ap9zgn6ri9rp9cajp86s2b46dg6"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "emacs" "--batch" "-L" "." "-L" "ert-tests"
+                             "-l" "cl-macs" "-l" "ert" "-l" "list-utils-test"
+                             "--eval"
+                             "(progn (fset 'ert--print-backtrace 'ignore)
+                                     (ert-run-tests-batch-and-exit
+                                        '(not (tag :interactive))))")))
     (home-page "https://github.com/rolandwalker/list-utils")
     (synopsis "List-manipulation utility functions")
     (description
