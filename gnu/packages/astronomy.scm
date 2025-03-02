@@ -1757,6 +1757,51 @@ implementation of the ASDF Standard.")
 Astropy objects.")
     (license license:bsd-3)))
 
+(define-public python-asdf-compression
+  ;; TODO: No release, change to tag when it's ready.
+  (let ((commit "7cfd07c6f789d4919e5730e0cda150fb20da4139")
+        (revision "1"))
+    (package
+      (name "python-asdf-compression")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/asdf-format/asdf-compression")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "198y3mnl9kvhva479k6g9zbynjg8apsrwy7lq26g5q6v55s16hgc"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'set-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
+      (native-inputs
+       (list python-numpy
+             python-pytest
+             python-setuptools
+             python-setuptools-scm
+             python-wheel))
+      (propagated-inputs
+       (list python-asdf
+             python-blosc
+             python-lz4
+             python-zstandard))
+      (home-page "https://github.com/asdf-format/asdf-compression")
+      (synopsis "ASDF extension to support various compression algorithms")
+      (description
+       "This package includes a plugin for the Python library ASDF to add
+support for reading and writing various compression algorithms including:
+@url{https://www.blosc.org/python-blosc/reference.html,Blosc},
+@url{https://python-lz4.readthedocs.io/en/stable/lz4.frame.html,LZ4 Frame},
+@url{http://facebook.github.io/zstd/,Zstandard}.")
+      (license license:bsd-3))))
+
 (define-public python-asdf-zarr
   (package
     (name "python-asdf-zarr")
@@ -2042,6 +2087,140 @@ simulated Astronomical data in Python.")
 mining in astronomy.")
     (license license:bsd-2)))
 
+;; XXX: Upgrading to the latest version requires Python3.11+ and fresh
+;; versions of numpy, PyYAML, packaging, Pandas and matplotlib, see
+;; <https://github.com/astropy/astropy/blob/v7.0.0/CHANGES.rst
+;; #other-changes-and-additions>.
+(define-public python-astropy
+  (package
+    (name "python-astropy")
+    (version "6.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astropy" version))
+       (sha256
+        (base32 "1vspagb4vbmkl6fm3mr78577dgdq992ggwkd5qawpdh6cccaq1d4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Remove Python bundles.
+           (with-directory-excursion "astropy/extern"
+             (for-each delete-file-recursively '("ply" "configobj")))
+           ;; Remove cextern bundles. Check bundled versions against available
+           ;; in Guix in the future update of astropy.
+           ;; Linking against an external cfitsio version has been removed,
+           ;; see https://github.com/astropy/astropy/pull/14311
+           (with-directory-excursion "cextern"
+             (for-each delete-file-recursively '("expat" "wcslib")))))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "astropy"
+              "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-join
+                    ;; Skip tests that need remote data.
+                    (list "not remote_data"
+                          ;; ValueError: The truth value of an array with more than
+                          ;; one element is ambiguous. Use a.any() or a.all()
+                          "test_table_comp[t16-t26]"
+                          ;; UnboundLocalError: local variable 'ihd'
+                          ;; referenced before assignment
+                          "test_delay_doc_updates")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'preparations
+            (lambda _
+              ;; Use our own libraries in place of bundles.
+              (setenv "ASTROPY_USE_SYSTEM_ALL" "1")
+              ;; Relax xfail tests.
+              (substitute* "pyproject.toml"
+                (("xfail_strict = true") "xfail_strict = false"))
+              ;; Replace reference to external ply.
+              (substitute* "astropy/utils/parsing.py"
+                (("astropy.extern.ply") "ply"))
+              ;; Replace reference to external configobj.
+              (substitute* "astropy/config/configuration.py"
+                (("from astropy.extern.configobj ") ""))))
+          ;; This file is opened in both install and check phases.
+          (add-before 'install 'writable-compiler
+            (lambda _
+              (make-file-writable "astropy/_compiler.c")))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                ;; Step out of the source directory to avoid interference; we
+                ;; want to run the installed code with extensions etc.
+                (with-directory-excursion #$output
+                  (apply invoke "pytest" "-vv" test-flags))))))))
+    (native-inputs
+     (list nss-certs-for-test
+           pkg-config
+           python-cython-3
+           python-extension-helpers
+           python-ipython
+           python-objgraph
+           python-pandas
+           python-pytest
+           python-pytest-astropy
+           python-pytest-astropy-header
+           python-pytest-mpl
+           python-pytest-xdist
+           python-scikit-image
+           python-setuptools
+           python-setuptools-scm
+           python-sgp4
+           python-skyfield
+           python-threadpoolctl
+           python-timezonefinder
+           python-wheel))
+    (inputs
+     (list expat wcslib))
+    (propagated-inputs
+     (list python-astropy-iers-data
+           python-configobj
+           python-h5py
+           python-jplephem
+           python-matplotlib
+           python-numpy
+           python-packaging
+           python-ply
+           python-pyarrow
+           python-pyerfa
+           python-pyyaml
+           python-scipy))
+    (home-page "https://www.astropy.org/")
+    (synopsis "Core package for Astronomy in Python")
+    (description
+     "Astropy is a single core package for Astronomy in Python.  It contains
+much of the core functionality and some common tools needed for performing
+astronomy and astrophysics.")
+    (license license:bsd-3)))
+
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-astropy-minimal
+  (package/inherit python-astropy
+    (name "python-astropy-minimal")
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-astropy)
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list nss-certs-for-test
+           pkg-config
+           python-cython-3
+           python-extension-helpers
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-astropy)
+       (delete python-matplotlib
+               python-scipy)))))
+
 (define-public python-bayesicfitting
   (package
     (name "python-bayesicfitting")
@@ -2231,6 +2410,83 @@ time formats
 attempting to maintain ISTP compliance
 @end itemize")
     (license license:expat)))
+
+(define-public python-ci-watson
+  (package
+    (name "python-ci-watson")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ci_watson" version))
+       (sha256
+        (base32 "1rlhs8y0splmzr76z1s35zl68qm748nlayha8m81b0zhkhicxvhg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pypojrect-toml
+            (lambda _
+              (substitute* "setup.cfg"
+                ;; ImportError: Error importing plugin " no:legacypath": No
+                ;; module named ' no:legacypath'
+                (("-p no:legacypath") "")))))))
+    (native-inputs
+     (list python-pytest-astropy-header
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-crds
+           python-pytest
+           python-readchar
+           python-requests))
+    (home-page "https://github.com/spacetelescope/ci_watson")
+    (synopsis "Helper functions for STScI software")
+    (description
+     "This package contains a helper functionality to test ROMAN and JWST.")
+    (license license:bsd-3)))
+
+(define-public python-cmyt
+  (package
+    (name "python-cmyt")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch) ; no tests in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/yt-project/cmyt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d257xlgxc06x47k07xn5ml2kjqzc7dgjal4bl9x2w6b90xn0pm1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; numpy>=1.26
+                ((">=1.26") ">=1.23")))))))
+    (native-inputs
+     (list python-colorspacious
+           python-pytest
+           python-pytest-mpl
+           python-hatchling))
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy))
+    (home-page "https://yt-project.org/")
+    (synopsis "Matplotlib colormaps from the yt project")
+    (description
+     "This package provides a range of colormaps designed for scientific use
+with Matplotlib.  It includes perceptually uniform sequential colormaps such
+as @code{abre}, @code{dusk}, @code{kepl}, and @code{octarine}, as well as
+monochromatic sequential colormaps like @code{blue}, @code{green}, and
+@code{red}, and others (@code{algae}, @code{pastel}, and @code{xray}).")
+    (license license:bsd-3)))
 
 (define-public python-coolest
   (package
@@ -3883,140 +4139,6 @@ instruments.")
      "This package provides an image processing toolbox for Solar Physics.")
     (license license:bsd-2)))
 
-;; XXX: Upgrading to the latest version requires Python3.11+ and fresh
-;; versions of numpy, PyYAML, packaging, Pandas and matplotlib, see
-;; <https://github.com/astropy/astropy/blob/v7.0.0/CHANGES.rst
-;; #other-changes-and-additions>.
-(define-public python-astropy
-  (package
-    (name "python-astropy")
-    (version "6.1.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "astropy" version))
-       (sha256
-        (base32 "1vspagb4vbmkl6fm3mr78577dgdq992ggwkd5qawpdh6cccaq1d4"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove Python bundles.
-           (with-directory-excursion "astropy/extern"
-             (for-each delete-file-recursively '("ply" "configobj")))
-           ;; Remove cextern bundles. Check bundled versions against available
-           ;; in Guix in the future update of astropy.
-           ;; Linking against an external cfitsio version has been removed,
-           ;; see https://github.com/astropy/astropy/pull/14311
-           (with-directory-excursion "cextern"
-             (for-each delete-file-recursively '("expat" "wcslib")))))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--pyargs" "astropy"
-              "--numprocesses" (number->string (parallel-job-count))
-              "-k" (string-join
-                    ;; Skip tests that need remote data.
-                    (list "not remote_data"
-                          ;; ValueError: The truth value of an array with more than
-                          ;; one element is ambiguous. Use a.any() or a.all()
-                          "test_table_comp[t16-t26]"
-                          ;; UnboundLocalError: local variable 'ihd'
-                          ;; referenced before assignment
-                          "test_delay_doc_updates")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'preparations
-            (lambda _
-              ;; Use our own libraries in place of bundles.
-              (setenv "ASTROPY_USE_SYSTEM_ALL" "1")
-              ;; Relax xfail tests.
-              (substitute* "pyproject.toml"
-                (("xfail_strict = true") "xfail_strict = false"))
-              ;; Replace reference to external ply.
-              (substitute* "astropy/utils/parsing.py"
-                (("astropy.extern.ply") "ply"))
-              ;; Replace reference to external configobj.
-              (substitute* "astropy/config/configuration.py"
-                (("from astropy.extern.configobj ") ""))))
-          ;; This file is opened in both install and check phases.
-          (add-before 'install 'writable-compiler
-            (lambda _
-              (make-file-writable "astropy/_compiler.c")))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                ;; Step out of the source directory to avoid interference; we
-                ;; want to run the installed code with extensions etc.
-                (with-directory-excursion #$output
-                  (apply invoke "pytest" "-vv" test-flags))))))))
-    (native-inputs
-     (list nss-certs-for-test
-           pkg-config
-           python-cython-3
-           python-extension-helpers
-           python-ipython
-           python-objgraph
-           python-pandas
-           python-pytest
-           python-pytest-astropy
-           python-pytest-astropy-header
-           python-pytest-mpl
-           python-pytest-xdist
-           python-scikit-image
-           python-setuptools
-           python-setuptools-scm
-           python-sgp4
-           python-skyfield
-           python-threadpoolctl
-           python-timezonefinder
-           python-wheel))
-    (inputs
-     (list expat wcslib))
-    (propagated-inputs
-     (list python-astropy-iers-data
-           python-configobj
-           python-h5py
-           python-jplephem
-           python-matplotlib
-           python-numpy
-           python-packaging
-           python-ply
-           python-pyarrow
-           python-pyerfa
-           python-pyyaml
-           python-scipy))
-    (home-page "https://www.astropy.org/")
-    (synopsis "Core package for Astronomy in Python")
-    (description
-     "Astropy is a single core package for Astronomy in Python.  It contains
-much of the core functionality and some common tools needed for performing
-astronomy and astrophysics.")
-    (license license:bsd-3)))
-
-;; A bare minimal package, mainly to use in tests and reduce closure
-;; size. Tests are left out in the main package to slim down native-inputs.
-(define-public python-astropy-minimal
-  (package/inherit python-astropy
-    (name "python-astropy-minimal")
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-astropy)
-       ((#:tests? _ #t) #f)))
-    (native-inputs
-     (list nss-certs-for-test
-           pkg-config
-           python-cython-3
-           python-extension-helpers
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-astropy)
-       (delete python-matplotlib
-               python-scipy)))))
-
 (define-public python-astropy-healpix
   (package
     (name "python-astropy-healpix")
@@ -4269,83 +4391,6 @@ arrays), based on Pieter van Dokkum's L.A.Cosmic algorithm.  Much of this was
 originally adapted from cosmics.py written by Malte Tewes.  This is designed to
 be as fast as possible so some of the readability has been sacrificed,
 specifically in the C code.")
-    (license license:bsd-3)))
-
-(define-public python-ci-watson
-  (package
-    (name "python-ci-watson")
-    (version "0.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ci_watson" version))
-       (sha256
-        (base32 "1rlhs8y0splmzr76z1s35zl68qm748nlayha8m81b0zhkhicxvhg"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pypojrect-toml
-            (lambda _
-              (substitute* "setup.cfg"
-                ;; ImportError: Error importing plugin " no:legacypath": No
-                ;; module named ' no:legacypath'
-                (("-p no:legacypath") "")))))))
-    (native-inputs
-     (list python-pytest-astropy-header
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-crds
-           python-pytest
-           python-readchar
-           python-requests))
-    (home-page "https://github.com/spacetelescope/ci_watson")
-    (synopsis "Helper functions for STScI software")
-    (description
-     "This package contains a helper functionality to test ROMAN and JWST.")
-    (license license:bsd-3)))
-
-(define-public python-cmyt
-  (package
-    (name "python-cmyt")
-    (version "2.0.2")
-    (source
-     (origin
-       (method git-fetch) ; no tests in the PyPI tarball
-       (uri (git-reference
-             (url "https://github.com/yt-project/cmyt")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1d257xlgxc06x47k07xn5ml2kjqzc7dgjal4bl9x2w6b90xn0pm1"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; numpy>=1.26
-                ((">=1.26") ">=1.23")))))))
-    (native-inputs
-     (list python-colorspacious
-           python-pytest
-           python-pytest-mpl
-           python-hatchling))
-    (propagated-inputs
-     (list python-matplotlib
-           python-numpy))
-    (home-page "https://yt-project.org/")
-    (synopsis "Matplotlib colormaps from the yt project")
-    (description
-     "This package provides a range of colormaps designed for scientific use
-with Matplotlib.  It includes perceptually uniform sequential colormaps such
-as @code{abre}, @code{dusk}, @code{kepl}, and @code{octarine}, as well as
-monochromatic sequential colormaps like @code{blue}, @code{green}, and
-@code{red}, and others (@code{algae}, @code{pastel}, and @code{xray}).")
     (license license:bsd-3)))
 
 (define-public python-hvpy
@@ -6460,51 +6505,6 @@ object.")
 PYSYNPHOT, utilizing Astropy and covering the non-instrument specific portions
 of the old packages.")
     (license license:bsd-3)))
-
-(define-public python-asdf-compression
-  ;; TODO: No release, change to tag when it's ready.
-  (let ((commit "7cfd07c6f789d4919e5730e0cda150fb20da4139")
-        (revision "1"))
-    (package
-      (name "python-asdf-compression")
-      (version (git-version "0.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/asdf-format/asdf-compression")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "198y3mnl9kvhva479k6g9zbynjg8apsrwy7lq26g5q6v55s16hgc"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'build 'set-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
-      (native-inputs
-       (list python-numpy
-             python-pytest
-             python-setuptools
-             python-setuptools-scm
-             python-wheel))
-      (propagated-inputs
-       (list python-asdf
-             python-blosc
-             python-lz4
-             python-zstandard))
-      (home-page "https://github.com/asdf-format/asdf-compression")
-      (synopsis "ASDF extension to support various compression algorithms")
-      (description
-       "This package includes a plugin for the Python library ASDF to add
-support for reading and writing various compression algorithms including:
-@url{https://www.blosc.org/python-blosc/reference.html,Blosc},
-@url{https://python-lz4.readthedocs.io/en/stable/lz4.frame.html,LZ4 Frame},
-@url{http://facebook.github.io/zstd/,Zstandard}.")
-      (license license:bsd-3))))
 
 (define-public python-asdf-standard
   (package
