@@ -62,6 +62,7 @@
 ;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
+;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Evgeny Pisemsky <mail@pisemsky.site>
@@ -346,6 +347,36 @@ and its related documentation.")
                (sha256
                 (base32
                  "1jgmfbazc2n9dnl7axhahwppyq25bvbvwx0lqplq76by97fgf9q1")))))))
+
+(define-public leafnode
+  (package
+    (name "leafnode")
+    (version "1.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/leafnode/leafnode/"
+                                  version "/leafnode-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1pkryzndqaxs1ym7gs77r6x8mmzpnm5x7n2ph8ga45zn45rwwrxl"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-tests
+                 (lambda _
+                   (substitute* "Makefile.am"
+                     (("/bin/sh") (which "sh"))))))))
+    (native-inputs (list autoconf automake))
+    (inputs (list pcre2))
+    (home-page "https://sourceforge.net/projects/leafnode/")
+    (synopsis "NNTP news proxy")
+    (description
+     "Leafnode is a caching Usenet news proxy that enables online newsreaders
+to read news off-line and aggregates news from various NNTP servers into
+one.")
+    ;; Most of the code is under Expat license, with some GPL, LGPL exceptions.
+    (license license:gpl2+)))
 
 (define-public miniflux
   (package
