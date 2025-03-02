@@ -17234,8 +17234,7 @@ indentation guides in Emacs:
                       (man1 (string-append out "/share/man/man1")))
                  (mkdir-p man1)
                  (copy-file "docs/_build/man/elpy.1"
-                            (string-append man1 "/elpy.1"))))))
-         #:test-command '("ert-runner")))
+                            (string-append man1 "/elpy.1"))))))))
       (propagated-inputs
        (list emacs-company
              emacs-find-file-in-project
