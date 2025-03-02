@@ -1906,11 +1906,9 @@ configuration files, such as @file{.gitattributes}, @file{.gitignore}, and
     (arguments
      (list
       #:tests? #f                       ; no test suite
+      #:lisp-directory "lisp"
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'install 'enter-lisp-directory
-            (lambda _
-              (chdir "lisp")))
           (add-before 'install 'make-info
             (lambda _
               (with-directory-excursion "../docs"
