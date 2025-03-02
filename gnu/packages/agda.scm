@@ -150,10 +150,7 @@ such as Coq, Epigram and NuPRL.")
     (build-system emacs-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'enter-elisp-dir
-            (lambda _ (chdir "src/data/emacs-mode"))))))
+      #:lisp-directory "src/data/emacs-mode"))
     (home-page "https://agda.readthedocs.io/en/latest/tools/emacs-mode.html")
     (synopsis "Emacs mode for Agda")
     (description "This Emacs mode enables interactive development with
