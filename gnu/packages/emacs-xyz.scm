@@ -29212,12 +29212,7 @@ bookmarks and history.")
                   "0giac390bq95ag41xkxqp8jjrhfx1wpgglz7jg5rkm0wjhcwmyml"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'chdir-elisp
-             ;; Elisp directory is not in root of the source.
-             (lambda _
-               (chdir "util/swm-emacs"))))))
+       (list #:lisp-directory "util/swm-emacs"))
       (home-page "https://github.com/stumpwm/stumpwm-contrib")
       (synopsis "Emacs minor-mode for Stumpwm")
       (description "Emacs minor-mode for Stumpwm")
