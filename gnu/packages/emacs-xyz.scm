@@ -25956,26 +25956,17 @@ match your personal coding style.")
         (base32 "1a6zw1z318ip4vnqfgv99b2knbm3qq6ji7spqq9g5w3lls40aqvx"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
+     `(#:lisp-directory "lisp"
+       #:phases
        (modify-phases %standard-phases
          (add-before 'install 'make-info
            ;; Documentation is located in "docs/".
            (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion "docs"
+             (with-directory-excursion "../docs"
                (invoke "makeinfo" "-o" "epkg.info" "epkg.texi")
                (let ((info (string-append (assoc-ref outputs "out")
                                           "/share/info")))
-                 (install-file "epkg.info" info)))))
-         (add-after 'make-info 'move-to-lisp-directory
-           ;; Source code is located in "lisp/".
-           (lambda _
-             (chdir "lisp")))
-         (add-after 'expand-load-path 'add-el-dir-to-emacs-load-path
-           (lambda _
-             (setenv "EMACSLOADPATH"
-                     (string-append (getcwd)
-                                    "/lisp:"
-                                    (getenv "EMACSLOADPATH"))))))))
+                 (install-file "epkg.info" info))))))))
     (native-inputs
      (list texinfo))
     (propagated-inputs
