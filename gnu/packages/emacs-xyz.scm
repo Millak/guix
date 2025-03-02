@@ -25271,29 +25271,31 @@ text-mode (i.e. Org-mode).")
       (license license:gpl3+))))
 
 (define-public emacs-outshine
-  (package
-    (name "emacs-outshine")
-    (version "3.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/alphapapa/outshine")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1lh9f5dgdbwfyzxk6nsg1xwdjs8gc6p9mbyyhp6f8fnk3h0y88cg"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-outorg))
-    (home-page "https://github.com/alphapapa/outshine")
-    (synopsis "Emacs outline with outshine")
-    (description "Outshine attempts to bring the look and feel of
+  (let ((commit "bf1eed10dd7a89b63d0fc014944033db397c1e23")
+        (revision "1"))
+    (package
+      (name "emacs-outshine")
+      (version (git-version "3.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/alphapapa/outshine")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "19ni7j84361if3kyap1jf2xj0w3myp9iiz52gjcmbgk1g1g9ycdc"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-outorg))
+      (home-page "https://github.com/alphapapa/outshine")
+      (synopsis "Emacs outline with outshine")
+      (description "Outshine attempts to bring the look and feel of
 @code{org-mode} to an Emacs outside of the Org major-mode.  It is an extension
 of @code{outline-minor-mode} (@code{org-mode} itself derives from
 outline-mode), so there is no such thing like an outshine mode, only
 @code{outline-minor-mode} with outshine extensions loaded.")
-    (license license:gpl3+)))
+      (license license:gpl2+))))
 
 (define-public emacs-frecency
   (package
