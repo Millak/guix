@@ -12828,7 +12828,7 @@ desktop environment.")
 (define-public polari
   (package
     (name "polari")
-    (version "42.1")
+    (version "46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/polari/"
@@ -12836,7 +12836,7 @@ desktop environment.")
                                   "/polari-" version ".tar.xz"))
               (sha256
                (base32
-                "0gbbjs522a8vdps79m1h3krkizbld61h8r1hn9z41gpc904cz45g"))))
+                "0c8a6q6g1mgpc9g423rgqplbpjwb7zq1bvylad7jk2ci6yg71cfj"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -12878,7 +12878,8 @@ desktop environment.")
            libsecret
            libsoup
            telepathy-glib
-           telepathy-logger))
+           telepathy-logger
+           tracker))
     (propagated-inputs
      (list telepathy-idle
            telepathy-mission-control))
