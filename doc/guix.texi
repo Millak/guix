@@ -21003,7 +21003,7 @@ GNU Shepherd Manual}).
 
 This log rotation service is made available through
 @code{log-rotation-service-type}, which takes a
-@code{log-rotation-configuration} record has its value.  By default,
+@code{log-rotation-configuration} record as its value.  By default,
 this provides @code{log-rotation}, a Shepherd ``timed service'' that
 runs periodically---once a week by default.  It automatically knows
 about the log files produced by Shepherd services and can be taught
@@ -21041,10 +21041,10 @@ be a @code{log-rotation-configuration} record, as discussed below.
 Available @code{log-rotation-configuration} fields are:
 
 @table @asis
-@item @code{provision} (default: @code{(log-rotation)}) (type: list-of-symbols)
+@item @code{provision} (default: @code{'(log-rotation)}) (type: list-of-symbols)
 The name(s) of the log rotation Shepherd service.
 
-@item @code{requirement} (default: @code{(user-processes)}) (type: list-of-symbols)
+@item @code{requirement} (default: @code{'(user-processes)}) (type: list-of-symbols)
 Dependencies of the log rotation Shepherd service.
 
 @item @code{calendar-event} (type: gexp)
@@ -46823,7 +46823,7 @@ system:
 @defvar shepherd-transient-service-type
 This service type represents the Shepherd's @code{transient} service,
 which lets you spawn commands in the background and interact with them
-as regular Shepherd service; it is similar to @command{systemd-run}.
+as regular Shepherd services; it is similar to @command{systemd-run}.
 
 For example, the command below spawns @command{rsync} in the background,
 in an environment where the @env{SSH_AUTH_SOCK} environment variable has
@@ -46870,10 +46870,10 @@ The value of services of this type must be a
 Available @code{system-log-configuration} fields are:
 
 @table @asis
-@item @code{provision} (default: @code{(system-log syslogd)}) (type: list-of-symbols)
+@item @code{provision} (default: @code{'(system-log syslogd)}) (type: list-of-symbols)
 The name(s) of the system log service.
 
-@item @code{requirement} (default: @code{(root-file-system)}) (type: list-of-symbols)
+@item @code{requirement} (default: @code{'(root-file-system)}) (type: list-of-symbols)
 Dependencies of the system log service.
 
 @item @code{kernel-log-file} (type: gexp-or-string-or-false)
@@ -46888,7 +46888,7 @@ write that procedure.
 
 @item @code{date-format} (type: gexp-or-string)
 String or string-valued gexp specifying how to format timestamps in log
-file.  It must be a valid string for @code{strftime} (@pxref{Time,,,
+files.  It must be a valid string for @code{strftime} (@pxref{Time,,,
 guile,GNU Guile Reference Manual}), including delimiting space---e.g.,
 @code{"%c "} for a format identical to that of traditional syslogd
 implementations.
