@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2024 Sergio Durigan Junior <sergiodj@sergiodj.net>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,9 +50,68 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml))
+
+(define-public cuttlefish
+  (package
+    (name "cuttlefish")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.shinice.net/artectrex/Cuttlefish")
+              (commit "9e9b97ccbb27562c86637e5b413c28beacd8cd4d")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fdkag4j66zaf2shbw4j6hspk6bw6b0kbd5l6wzvh3p7id7yj6qi"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin (substitute* "data/ch.cuttlefish.app.gschema.xml"
+                   ;; Instance does not work properly.
+                   (("https://video.blender.org")
+                    "https://tilvids.com"))
+                 (substitute* "src/video-view.cpp"
+                   ;; Top-level "files" key has an empty list.
+                   (("\\[\"files\"\\]")
+                    "[\"streamingPlaylists\"][0][\"files\"]"))))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'glib-or-gtk-wrap 'wrap-gst-plugins
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/cuttlefish")
+                     `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                               (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
+    (native-inputs
+     (list desktop-file-utils
+           gettext-minimal              ;msgfmt
+           (list glib "bin")            ;glib-compile-resources
+           gsettings-desktop-schemas    ;org.gnome.system.proxy schema
+           pkg-config))
+    (inputs (list bash-minimal
+                  gst-plugins-bad
+                  gst-plugins-good      ;playbin plugin
+                  gstreamer
+                  gtk
+                  jsoncpp
+                  libadwaita
+                  libsoup-minimal-2))
+    (home-page "https://cuttlefish.ch")
+    (synopsis "GTK client for PeerTube")
+    (description
+     "Cuttlefish is a desktop client for PeerTube, but will work on
+GNU/Linux-based phones (like the Librem 5 or Pinephone) as well.  Cuttlefish
+aims to provide a better experience of watching PeerTube videos and using
+PeerTube in general, via an efficient native application that can hook into
+the federation of interconnected video hosting services.")
+    ;; Logo distributed under the Creative Commons CCBY license.
+    (license license:gpl3+)))
 
 (define-public toot
   (package
