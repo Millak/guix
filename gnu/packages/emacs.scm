@@ -608,28 +608,7 @@ editor (with wide ints)" )
                                   (string-drop (package-name emacs)
                                                (string-length "emacs"))))))
     (version version)
-    (source source)
-    (arguments
-     (substitute-keyword-arguments (package-arguments emacs)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (replace 'validate-comp-integrity
-              (lambda* (#:key outputs #:allow-other-keys)
-                #$(cond
-                   ((%current-target-system)
-                    #~(display
-                       "Cannot validate native compilation on cross builds.\n"))
-                   ((member (%current-system) '("armhf-linux" "i686-linux"))
-                    #~(display "Integrity test is broken on 32 bit systems.\n"))
-                   (else
-                    #~(invoke
-                       (string-append (assoc-ref outputs "out") "/bin/emacs")
-                       "--batch"
-                       "--load"
-                       #$(local-file
-                          (search-auxiliary-file
-                           "emacs/comp-integrity-next.el"))
-                       "-f" "ert-run-tests-batch-and-exit")))))))))))
+    (source source)))
 
 (define-public emacs-next (emacs->emacs-next emacs))
 (define-public emacs-next-pgtk (emacs->emacs-next emacs-pgtk))
