@@ -27385,8 +27385,6 @@ the tailed file.  It works locally or on remote files using Tramp.")
     (build-system emacs-build-system)
     (native-inputs
      (list emacs-ert-runner emacs-undercover))
-    (arguments
-     `(#:test-command '("ert-runner")))
     (home-page "https://github.com/Wilfred/loop.el")
     (synopsis "Imperative loop structures for Emacs")
     (description "Loop structures familiar to users of other languages.  This
