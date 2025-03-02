@@ -3430,12 +3430,10 @@ Rust code.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:lisp-directory "src"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "src")))
-          (add-after 'chdir 'move-checkers
+          (add-after 'unpack 'move-checkers
             (lambda _
               ;; Move checkers to the top level, which is in the
               ;; EMACSLOADPATH.
