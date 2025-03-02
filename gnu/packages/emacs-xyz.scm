@@ -38845,6 +38845,7 @@ with a preconfigured set of keys.")
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-s emacs-dash emacs-f))
+    (native-inputs (list emacs-buttercup))
     (home-page "https://gitlab.com/bennya/shrink-path.el")
     (synopsis "Fish-style path truncation in emacs-lisp")
     (description "This package provides utility functions that allow for
