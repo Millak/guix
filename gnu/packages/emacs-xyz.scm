@@ -38690,8 +38690,6 @@ contributed packages to Telega.")))
         (base32 "0l7yyn8yxyxbsjbs52bp9wh66wdj828scb1gjbi6pk1hrx5x8g9v"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
-    (arguments
-     `(#:test-command '("ert-runner")))
     (native-inputs (list emacs-ert-runner))
     (propagated-inputs
      (list emacs-nerd-icons emacs-compat emacs-shrink-path))
