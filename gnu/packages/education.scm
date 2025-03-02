@@ -680,14 +680,14 @@ language and very flexible regarding to new or unknown keyboard layouts.")
 (define-public kqtquickcharts
   (package
     (name "kqtquickcharts")
-    (version "24.12.1")
+    (version "24.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kqtquickcharts-" version ".tar.xz"))
               (sha256
                (base32
-                "0ivw6xqxdswk2dvnd2bdgbjylh8ipfa151qncfm0iv2q6rcq4ia2"))))
+                "0a9rpp165s3ishc1jsaalgjixir591a8f6r9qqzji50jgf629ivc"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list qtdeclarative-5))
