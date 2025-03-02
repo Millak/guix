@@ -34718,16 +34718,14 @@ as Emacs Lisp.")
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #f ;no test suite
+       #:lisp-directory "lisp"
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'build-info-manual
                     (lambda _
-                      (invoke "make" "info")
+                      (invoke "make" "--directory=.." "info")
                       ;; Move the info file to lisp so that it gets
                       ;; installed by the emacs-build-system.
-                      (rename-file "docs/transient.info" "lisp/transient.info")))
-                  (add-after 'build-info-manual 'enter-lisp-directory
-                    (lambda _
-                      (chdir "lisp"))))))
+                      (rename-file "../docs/transient.info" "transient.info"))))))
     (native-inputs (list texinfo))
     (propagated-inputs (list emacs-compat))
     (home-page "https://magit.vc/manual/transient")
