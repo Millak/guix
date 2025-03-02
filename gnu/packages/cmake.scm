@@ -557,12 +557,7 @@ or package manifest (Cargo.toml file).")
     (outputs '("out"))
     (build-system emacs-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'chdir-elisp
-                 ;; Elisp directory is not in root of the source.
-                 (lambda _
-                   (chdir "Auxiliary"))))))
+     (list #:lisp-directory "Auxiliary"))
     (synopsis "Emacs major mode for editing Cmake expressions")
     (description "@code{cmakeos-mode} provides an Emacs major mode for editing
 Cmake files.  It supports syntax highlighting, indenting and refilling of
