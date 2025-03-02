@@ -804,6 +804,36 @@ AutoCad format which can encode single line fonts.  This format is used for
 many CNC and laser operations.")
     (license license:expat)))
 
+(define-public python-simplify-polyline
+  (package
+    (name "python-simplify-polyline")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "simplify_polyline" version))
+       (sha256
+        (base32 "08f6bvwbg04z19pirq4ynsiq89yhbzqh9g6zbnp9fvdnmics7hgw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/ShayHill/simplify_polyline")
+    (synopsis "Simplify an open or closed polyline")
+    (description
+     "This package implements functionality to work with plyline.
+Features:
+@itemize
+@item Visvalingham-Whyatt - removes the smallest triangles formed by
+three consecutive points in a polyline or polygon
+@item Douglas-Peucker - gives a better representation of the convex hull
+@end itemize")
+    (license license:expat)))
+
 (define-public python-takethetime
   (package
     (name "python-takethetime")
