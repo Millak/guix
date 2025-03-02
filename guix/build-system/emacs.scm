@@ -82,7 +82,7 @@
 
 (define* (emacs-build name inputs
                       #:key source
-                      (tests? #f)
+                      (tests? (not (%current-target-system)))
                       (parallel-tests? #t)
                       (test-command ''("make" "check"))
                       (phases '%standard-phases)
