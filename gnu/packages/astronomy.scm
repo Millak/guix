@@ -7068,6 +7068,77 @@ orbit around the Earth.")
 Institute, STScI} utility functions.")
     (license license:bsd-3)))
 
+(define-public python-stwcs
+  (package
+    (name "python-stwcs")
+    (version "1.7.3") ; any newer version requires NumPy 2+
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stwcs" version))
+       (sha256
+        (base32 "12114hx27mgwcwcyz7lghm78g6pbg8j40189lcfi22zsk47fxv11"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; XXX: Test requiring network access to download data
+                    ;; from <mast.stsci.edu>, check if the test data may be
+                    ;; obtained programmatically.
+                    (list "not test1SciExt"
+                          "testAllExt"
+                          "testHletFromSimpleFITS"
+                          "testHletFromString"
+                          "testSciExtList"
+                          "testSciExtNumList"
+                          "testWrongD2IMModel"
+                          "testWrongNPOLModel"
+                          "testWrongSIPModel"
+                          "test_add_radesys"
+                          "test_apply_as_alternate_method"
+                          "test_apply_as_primary_method"
+                          "test_apply_d2im"
+                          "test_db_connection"
+                          "test_default"
+                          "test_new_obs"
+                          "test_no_HDRNAME_no_WCSNAME"
+                          "test_outwcs"
+                          "test_pipeline_sci1"
+                          "test_pipeline_sci2"
+                          "test_remove_d2im_distortion"
+                          "test_remove_npol_distortion"
+                          "test_remove_npol_distortion_hdulist"
+                          "test_repeate"
+                          "test_repeated_updatewcs_use_db"
+                          "test_restore_headerlet"
+                          "test_simple_sci1"
+                          "test_simple_sci2"
+                          "test_update_d2im_distortion"
+                          "test_update_legacy_file"
+                          "test_update_stis_asn"
+                          "test_update_waiver_wfpc2")
+                    " and not "))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-lxml
+           python-numpy
+           python-requests
+           python-stsci-tools))
+    (home-page "https://stwcs.readthedocs.io/en/latest/")
+    (synopsis "WCS based distortion models and coordinate transformation")
+    (description
+     "STWCS provides support for WCS distortion models and coordinate
+transformation for the imaging instruments on the @acronym{Hubble Space
+Telescope, HST}).")
+    (license license:bsd-3)))
+
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
