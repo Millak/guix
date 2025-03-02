@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2015, 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2022-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -609,6 +609,10 @@ This package provides the core library and elements.")
                    ((target-x86-32?)
                     #~((substitute* "tests/check/meson.build"
                          ((".*'libs/libsabi\\.c'.*") ""))))
+                   ((target-ppc64le?)
+                    #~((substitute* "tests/check/meson.build"
+                         ((".*'elements/glimagesink\\.c'.*") "")
+                         ((".*'pipelines/gl-launch-lines\\.c'.*") ""))))
                    ((target-arm32?)
                     #~((substitute* "tests/check/meson.build"
                          ((".*'orc_adder.*") ""))))
