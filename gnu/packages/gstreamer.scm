@@ -608,7 +608,9 @@ This package provides the core library and elements.")
               #$@(cond
                    ((target-x86-32?)
                     #~((substitute* "tests/check/meson.build"
-                         ((".*'libs/libsabi\\.c'.*") ""))))
+                         ((".*'libs/dsd\\.c'.*") "")
+                         ((".*'libs/libsabi\\.c'.*") "")
+                         ((".*'elements/volume\\.c'.*") ""))))
                    ((target-ppc64le?)
                     #~((substitute* "tests/check/meson.build"
                          ((".*'elements/glimagesink\\.c'.*") "")
