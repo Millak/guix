@@ -41993,31 +41993,25 @@ on the chosen style."))))
       (license license:gpl3+)))) ; License is in pyimport.el
 
 (define-public emacs-straight-el
-  (let ((commit "b3760f5829dba37e855add7323304561eb57a3d4")
-        (revision "3"))
+  (let ((commit "44a866f28f3ded6bcd8bc79ddc73b8b5044de835")
+        (revision "4"))
     (package
       (name "emacs-straight-el")
       (version (git-version "0" revision commit))
       (source
        (origin
          (method git-fetch)
-         (uri
-          (git-reference
-           (url "https://github.com/radian-software/straight.el")
-           (commit commit)))
+         (uri (git-reference
+               (url "https://github.com/radian-software/straight.el/")
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "10kvm2gzn7yf2wkfprq7cm6m2la83rdi394rcrsxql3yyhd0v599"))))
+          (base32 "086ly0szbf1lxkdi76jzjd6znz9shrmdbw7a9mr977s27219l8mf"))))
       (build-system emacs-build-system)
       (arguments
        (list
         #:tests? #t
-        #:test-command
-        #~(list "emacs" "-Q" "--batch"
-                "-L" "."
-                "--load" "ert"
-                "--load" "tests/straight-test.el"
-                "--eval" "(progn (require 'straight-ert-print-hack) (ert-run-tests-batch-and-exit))")
+        #:test-command '(list "make" "tests")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-git-executable
@@ -42026,14 +42020,9 @@ on the chosen style."))))
                 (substitute* "straight.el"
                   (("\"git\"")
                    (string-append "\""
-                                  (search-input-file inputs "/bin/git")
-                                  "\""))))))))
-      (native-inputs
-       (list texinfo))
-      (inputs
-       (list git))
-      (propagated-inputs
-       (list emacs-magit))
+                                  (search-input-file inputs "/bin/git") "\""))))))))
+      (inputs (list git))
+      (propagated-inputs (list emacs-magit))
       (home-page "https://github.com/radian-software/straight.el/")
       (synopsis "Purely functional package manager for the Emacs hacker")
       (description
