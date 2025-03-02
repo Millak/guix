@@ -28384,20 +28384,17 @@ regions which @code{hideshow} can hide.")
        (sha256
         (base32 "1p4ibx0qgznv8ard4a9m7345ay8ij2qzmqdqiqlllndqq6mz62x5"))))
     (arguments
-     `(#:phases
+     `(#:lisp-directory "emacs"
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'install-json-files
            (lambda* (#:key outputs #:allow-other-keys)
              (for-each (lambda (directory)
-                         (copy-recursively directory
+                         (copy-recursively (string-append "../" directory)
                                            (string-append
-                                            (assoc-ref outputs "out")
+                                            (assoc-ref outputs "out") "/"
                                             directory)))
-                       '("js" "json"))))
-         (add-after 'unpack 'chdir-elisp
-           ;; Elisp directory is not in root of the source.
-           (lambda _
-             (chdir "emacs"))))))
+                       '("js" "json")))))))
     (build-system emacs-build-system)
     (home-page "https://github.com/for-GET/know-your-http-well")
     (synopsis "Meaning of HTTP headers codes")
