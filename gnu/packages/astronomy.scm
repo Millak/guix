@@ -2865,6 +2865,37 @@ tools for astronomers.")
 exitinction laws found in the literature.")
     (license license:expat)))
 
+(define-public python-fitsblender
+  (package
+    (name "python-fitsblender")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fitsblender" version))
+       (sha256
+        (base32 "1ba1374axaxh3dzzpii6q05z4jcrfp7yjk1wsfm2gzmxalnp0f6r"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-stsci-tools))
+    (home-page "https://github.com/spacetelescope/fitsblender")
+    (synopsis "Aggregate values in FITS headers")
+    (description
+     "This package supports the creation of a combined header for a FITS file
+based on the contents of the headers of a set of input FITS images.  A rules
+file defines what keywords will be present in the combined output header as
+well as how the output value will be determined from the set of values from
+all the input image headers.")
+    (license license:bsd-3)))
+
 (define-public python-fitsio
   (package
     (name "python-fitsio")
