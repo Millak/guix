@@ -152,13 +152,14 @@ noinst_HEADERS =						\
 	         (lambda (in)					\
 	           (write (get-string-all in) out)))))"
 
-# The '.service' files for systemd.
+# The '.service' and other files for systemd.
 systemdservicedir = $(libdir)/systemd/system
 nodist_systemdservice_DATA =			\
   etc/gnu-store.mount				\
   etc/guix-daemon.service			\
   etc/guix-publish.service			\
-  etc/guix-gc.service
+  etc/guix-gc.service				\
+  etc/guix-gc.timer
 
 etc/%.mount: etc/%.mount.in	\
 			 $(top_builddir)/config.status
@@ -174,6 +175,11 @@ etc/guix-%.service: etc/guix-%.service.in	\
 	       -e 's|@''GUIX_SUBSTITUTE_URLS''@|$(GUIX_SUBSTITUTE_URLS)|' \
 	       < "$<" > "$@.tmp";		\
 	mv "$@.tmp" "$@"
+
+etc/guix-gc.timer: etc/guix-gc.timer.in	\
+			 $(top_builddir)/config.status
+	$(AM_V_GEN)$(MKDIR_P) "`dirname $@`";	\
+	cp "$@.in" "$@"
 
 # The service script for sysvinit.
 sysvinitservicedir = $(sysconfdir)/init.d
@@ -225,7 +231,7 @@ EXTRA_DIST +=					\
   etc/guix-publish.service.in			\
   etc/guix-publish.conf.in			\
   etc/guix-gc.service.in			\
-  etc/guix-gc.timer				\
+  etc/guix-gc.timer.in				\
   etc/init.d/guix-daemon.in			\
   etc/openrc/guix-daemon.in
 

@@ -76,6 +76,7 @@
 /etc/guix-publish.conf
 /etc/guix-publish.service
 /etc/guix-gc.service
+/etc/guix-gc.timer
 /etc/init.d/guix-daemon
 /etc/openrc/guix-daemon
 /guix-*
