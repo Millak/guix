@@ -35341,10 +35341,7 @@ keypresses mapped in firefox to the action described in the function name.")
     (build-system emacs-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _ (chdir "lisp"))))
+      #:lisp-directory "lisp"
       #:test-command #~(list "emacs" "-Q" "--batch"
                              "-l" "../test/exwm-firefox--tests.el"
                              "-l" "exwm-firefox.el"
