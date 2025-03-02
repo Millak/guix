@@ -2311,7 +2311,7 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -2321,7 +2321,7 @@ provides tight coupling to Guix.")
        (file-name (string-append name "-" version "-checkout"))
        (sha256
         (base32
-         "1gkz19iz3ncf9ddr731lsaw12ca7ygj3dxziz54s9xpp5cw19r0v"))))
+         "1zxclhyrsbp9v6sj36kmphiwqhb06rcm1zjskg5091py8361wjd6"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
