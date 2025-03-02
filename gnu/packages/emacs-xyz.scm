@@ -8094,6 +8094,9 @@ and code formatting.")
          (sha256
           (base32 "09c3a1771v6kliwj0bn953pxxyjlk6q9kp31cxcr0nraik7d0mhk"))))
       (build-system emacs-build-system)
+      (native-inputs (list emacs-ert-runner
+                           emacs-ert-expectations
+                           emacs-undercover))
       (home-page "https://github.com/rejeep/el-mock.el")
       (synopsis "Tiny mock and stub framework in Emacs Lisp")
       (description
