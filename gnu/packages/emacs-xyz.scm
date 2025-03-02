@@ -19735,8 +19735,10 @@ package provides the Emacs theme.")
          "04i9b11iksg6acn885wl3qgi5xpsm3yszlqmd2x21yhprndlz7gb"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "ert-runner" "tests")))
     (propagated-inputs
      (list emacs-popup))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/auto-complete/auto-complete")
     (synopsis "Intelligent auto-completion extension for Emacs")
     (description
