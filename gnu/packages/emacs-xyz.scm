@@ -28568,8 +28568,6 @@ and doesn't require memorisation of commands.
            emacs-shut-up))
     (native-inputs
      (list emacs-ert-runner emacs-undercover))
-    (arguments
-     `(#:test-command '("ert-runner")))
     (synopsis "Suggest Elisp functions that give the output requested")
     (description "Suggest.el will find functions that give the output
 requested.  It's a great way of exploring list, string and arithmetic
