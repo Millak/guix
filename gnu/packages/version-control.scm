@@ -2200,11 +2200,9 @@ Features include:
     (build-system emacs-build-system)
     (arguments
      (list
+      #:lisp-directory "contrib"
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'install 'enter-lisp-directory
-            (lambda _
-              (chdir "contrib")))
           (add-before 'install-license-files 'leave-lisp-directory
             (lambda _
               (chdir ".."))))))
