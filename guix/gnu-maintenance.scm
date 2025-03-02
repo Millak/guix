@@ -867,9 +867,10 @@ GNOME packages; EMMS is included though, because its releases are on gnu.org."
   ;; HTML (unlike <https://download.savannah.nongnu.org/releases>.)
   "https://de.freedif.org/savannah/")
 
-(define* (import-savannah-release package #:key (version #f))
+(define* (import-savannah-release package #:key version partial-version?)
   "Return the latest release of PACKAGE. Optionally include a VERSION string
-to fetch a specific version."
+to fetch a specific version, which may be partially provided when
+PARTIAL-VERSION? is #t."
   (let* ((uri       (string->uri
                      (match (origin-uri (package-source package))
                        ((? string? uri) uri)
@@ -879,9 +880,10 @@ to fetch a specific version."
     ;; or whichever detached signature naming scheme PACKAGE uses.
     (import-html-release %savannah-base package
                          #:version version
+                         #:partial-version? partial-version?
                          #:directory directory)))
 
-(define* (latest-sourceforge-release package #:key (version #f))
+(define* (latest-sourceforge-release package #:key version partial-version?)
   "Return the latest release of PACKAGE. Optionally include a VERSION string
 to fetch a specific version."
   (define (uri-append uri extension)
@@ -898,10 +900,12 @@ to fetch a specific version."
        (else #f))))
 
   (when version
-    (error
-     (formatted-message
-      (G_ "Updating to a specific version is not yet implemented for ~a, sorry.")
-      "sourceforge")))
+    (report-error
+     (G_ "Updating to a specific version is not yet implemented for SourceForge.")))
+
+  (when partial-version?
+    (report-error
+     (G_ "Updating to a partial version is not yet implemented for SourceForge.")))
 
   (let* ((name     (package-upstream-name package))
          (base     (string-append "https://sourceforge.net/projects/"
@@ -941,22 +945,25 @@ to fetch a specific version."
         (when port
           (close-port port))))))
 
-(define* (import-xorg-release package #:key (version #f))
+(define* (import-xorg-release package #:key version partial-version?)
   "Return the latest release of PACKAGE.  Optionally include a VERSION string
-to fetch a specific version."
+to fetch a specific version, which may be partially provided when
+PARTIAL-VERSION? is #t."
   (let ((uri (string->uri (origin-uri (package-source package)))))
     (false-if-networking-error
      (false-if-ftp-error
       (import-ftp-release
        (package-name package)
        #:version version
+       #:partial-version? partial-version?
        #:server "ftp.freedesktop.org"
        #:directory
        (string-append "/pub/xorg/" (dirname (uri-path uri))))))))
 
-(define* (import-kernel.org-release package #:key (version #f))
+(define* (import-kernel.org-release package #:key version partial-version?)
   "Return the latest release of PACKAGE, a Linux kernel package.
-Optionally include a VERSION string to fetch a specific version."
+Optionally include a VERSION string to fetch a specific version, which may be
+partially provided when PARTIAL-VERSION? is #t."
   (define %kernel.org-base
     ;; This URL and sub-directories thereof are nginx-generated directory
     ;; listings suitable for 'import-html-release'.
@@ -972,6 +979,7 @@ Optionally include a VERSION string to fetch a specific version."
          (directory (dirname (uri-path uri))))
     (import-html-release %kernel.org-base package
                          #:version version
+                         #:partial-version? partial-version?
                          #:directory directory
                          #:file->signature file->signature)))
 
