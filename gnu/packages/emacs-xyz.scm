@@ -35134,8 +35134,6 @@ done using Helm, Ido or Ivy.")
        (list emacs-dash))
       (native-inputs
        (list emacs-ert-runner emacs-undercover))
-      (arguments
-       `(#:test-command '("ert-runner")))
       (home-page "https://github.com/Wilfred/tco.el")
       (synopsis "Tail-call optimization for Emacs Lisp")
       (description "This package provides tail-call optimization for Emacs
