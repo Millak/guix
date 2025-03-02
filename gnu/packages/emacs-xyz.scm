@@ -24149,8 +24149,6 @@ the latest versions of Idris 1.")
        (sha256
         (base32 "0bx4ns0jb0sqrjk1nsspvl3mhz3n12925azf7brlwb1vcgnji09v"))))
     (build-system emacs-build-system)
-    (arguments
-     `(#:test-command '("ert-runner")))
     (native-inputs
      (list emacs-ert-runner))
     (propagated-inputs
