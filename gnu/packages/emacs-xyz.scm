@@ -1516,9 +1516,6 @@ out of the box.")
                 "1f6bhdr1a72x94dlz2i1fwwln8crc2mbpc2iq23hvsbsfmj7xfzp"))))
     (native-inputs (list emacs-ert-runner))
     (build-system emacs-build-system)
-    (arguments
-     (list
-      #:test-command #~(list "ert-runner")))
     (home-page "https://github.com/hlissner/emacs-pug-mode")
     (synopsis "Pug support for Emacs")
     (description "Pug mode offers Emacs support for Pug.  Unlike Jade mode, it
