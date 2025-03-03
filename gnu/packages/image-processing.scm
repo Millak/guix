@@ -873,26 +873,21 @@ including 2D color images.")
 (define-public nip2
   (package
     (name "nip2")
-    (version "8.7.1")
+    (version "8.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/libvips/nip2/releases/download/v"
                            version "/nip2-" version ".tar.gz" ))
        (sha256
-        (base32 "0l7n427njif53npqn02gfjjly8y3khbrkzqxp10j5vp9h97psgiw"))))
+        (base32 "1kbndn37m0cfjvrvw25b5if9d962r8v79q78i2lzm55r7zmjcpmp"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         ;; test_conv.ws keep failing so disabling for now.
-         (add-after 'unpack 'disable-test-conv
-           (lambda _
-             (delete-file "test/workspaces/test_conv.ws")
-             #t))
          (add-before 'check 'set-home
            (lambda _
-             (setenv "HOME" "/tmp") #t)))))
+             (setenv "HOME" "/tmp"))))))
     (inputs (list gsl gtk+-2 vips))
     (native-inputs (list bison flex pkg-config))
     (home-page "https://github.com/libvips/nip2")
