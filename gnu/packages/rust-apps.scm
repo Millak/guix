@@ -547,6 +547,27 @@ audit @file{Cargo.lock} for crates with security vulnerabilities.")
 in your executable.")
     (license license:expat)))
 
+(define-public cargo-license
+  (package
+    (name "cargo-license")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-license" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jw9sn91a23ry6sx3337gi6d56vykgar0i9rrrxgxh93mvdw0qgh"))))
+    (build-system cargo-build-system)
+    (arguments (list #:install-source? #f))
+    (inputs (cargo-inputs 'cargo-license))
+    (home-page "https://github.com/onur/cargo-license")
+    (synopsis "Cargo subcommand to see license of dependencies")
+    (description
+     "This package provides a Cargo subcommand, @command{cargo license}, to see
+license of dependencies.")
+    (license license:expat)))
+
 (define-public cargo-machete
   (package
     (name "cargo-machete")
