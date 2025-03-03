@@ -96,6 +96,20 @@
         (lambda ()
           exp ...)))))
 
+;; guix-publish uses (current-processor-count) as the default number of
+;; workers, however on a system with a large number of cores, that large
+;; number of worker threads being used in the course of these tests can end up
+;; hitting resource limits and causing spurious test failures.
+;;
+;; This will depend on what resource limits are in use, but 64 seems low
+;; enough to be able to run the tests without problems.
+(let ((max-processors 64))
+  (when (> (current-processor-count)
+           max-processors)
+    (setaffinity
+     (getpid)
+     (make-bitvector max-processors #t))))
+
 ;; Run a local publishing server in a separate thread.
 (with-separate-output-ports
  (call-with-new-thread
