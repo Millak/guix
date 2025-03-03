@@ -410,25 +410,24 @@ intelligible and easily correctable.")
         (base32 "17jwcgc3jdp41rvxqi7zdsysfpjgzqq4z1l345qwffp1an6yaaqk"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       '("-DBUILD_TESTS=YES"
-         ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1078404
-         "-DCMAKE_CXX_FLAGS=-fpermissive")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-lang
-           (lambda _
-             (invoke "make" "lang")))
-         (add-before 'check 'pre-check
-           (lambda _
-             (setenv "HOME" (getcwd))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_TESTS=YES"
+              ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1078404
+              "-DCMAKE_CXX_FLAGS=-fpermissive")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-lang
+            (lambda _
+              (invoke "make" "lang")))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-
-       ;; For tests.
-       ("jq" ,jq)))
+     (list gettext-minimal
+           pkg-config
+           ;; For tests.
+           jq))
     (inputs
      (list glib ncurses readline zlib))
     (home-page "https://dushistov.github.io/sdcv/")
