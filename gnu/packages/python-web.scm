@@ -7974,7 +7974,11 @@ files.")
            #~(modify-phases %standard-phases
                (add-before 'check 'extend-test-timeout
                  (lambda _
-                   (setenv "WEBSOCKETS_TESTS_TIMEOUT_FACTOR" "10"))))))
+                   ;; Some architectures need an even longer timeout.  Make it
+                   ;; long enough that it should never fail due to timeout.
+                   #$@(if (target-riscv64?)
+                          #~((setenv "WEBSOCKETS_TESTS_TIMEOUT_FACTOR" "100"))
+                          #~((setenv "WEBSOCKETS_TESTS_TIMEOUT_FACTOR" "10"))))))))
     (native-inputs
      (list python-setuptools
            python-wheel))
