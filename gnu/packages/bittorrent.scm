@@ -146,7 +146,9 @@
                       #:glib-or-gtk-wrap-excluded-outputs (list "out")
                       args)))
            (add-after 'glib-or-gtk-wrap 'wrap-program
-             (lambda* (#:key outputs #:allow-other-keys)
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (glib-or-gtk:generate-gdk-pixbuf-loaders-cache
+                (map cdr inputs) (list (assoc-ref outputs "gui")))
                (wrap-program (string-append #$output:gui "/bin/transmission-gtk")
                  ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Transmission to load
                  ;; its own icons in pure environments.
