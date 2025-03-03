@@ -128,6 +128,14 @@
   (crate-source "arrayvec" "0.7.6"
                 "0l1fz4ccgv6pm609rif37sl5nv5k6lbzi7kkppgzqzh1vwix20kw"))
 
+(define rust-asn1-0.20.0
+  (crate-source "asn1" "0.20.0"
+                "0ckg83ingvagwjvmxadjjmkgna5kvlvrfx9arlfvzqhxxas892rd"))
+
+(define rust-asn1-derive-0.20.0
+  (crate-source "asn1_derive" "0.20.0"
+                "1b88xsqmxpxjq4p2mrn1icj7c3k2s041v7wqp8yhnqiq06fq0052"))
+
 (define rust-assert-cmd-2.0.16
   (crate-source "assert_cmd" "2.0.16"
                 "0gdj0710k3lnvyjmpv8a4dgwrk9ib85l2wfw4n2xwy3qyavka66w"))
@@ -1353,6 +1361,10 @@
   (crate-source "memmap2" "0.9.5"
                 "0krpvvkpg4i3l05cv3q2xk24a1vj5c86gbrli2wzhj1qkpnpwgzx"))
 
+(define rust-memoffset-0.9.1
+  (crate-source "memoffset" "0.9.1"
+                "12i17wh9a9plx869g7j4whf62xw68k5zd4k0k5nh6ys5mszid028"))
+
 (define rust-mime-0.3.17
   (crate-source "mime" "0.3.17"
                 "16hkibgvb9klh0w0jk5crr5xv90l3wlf77ggymzjmvl1818vnxv8"))
@@ -1558,6 +1570,10 @@
   (crate-source "path-slash" "0.2.1"
                 "0hjgljv4vy97qqw9gxnwzqhhpysjss2yhdphfccy3c388afhk48y"))
 
+(define rust-pem-3.0.5
+  (crate-source "pem" "3.0.5"
+                "1wwfk8sbyi9l18fvvn6z9p2gy7v7q7wimbhvrvixxj8a8zl3ibrq"))
+
 (define rust-pep440-rs-0.6.6
   (crate-source "pep440_rs" "0.6.6"
                 "11g35bi0gagfchjcdvpaj1i82gxkrc391fcpm2f0cblw2yissvj6"))
@@ -1708,6 +1724,27 @@
   (crate-source "psm" "0.1.25"
                 "125y7h40mkwb64j4v2v7s6f69ilk745kg60w1s2cq62cw8im93pm"
                 #:snippet '(delete-file "src/arch/wasm32.o")))
+
+(define rust-pyo3-0.23.5
+  (crate-source "pyo3" "0.23.5"
+                "0wm8z6jgg18z2cgr99wc34mbkffhcnb50igmq5d1ff6ghpyvyy3p"
+                #:snippet '(delete-file-recursively "branding")))
+
+(define rust-pyo3-build-config-0.23.5
+  (crate-source "pyo3-build-config" "0.23.5"
+                "1yqhw1k466k65rqvy2d4xz2shl0hzkry1xlxinciigzkdvlcpxll"))
+
+(define rust-pyo3-ffi-0.23.5
+  (crate-source "pyo3-ffi" "0.23.5"
+                "13fxvxijl59vilv39akdzwqd1l7fb6c70f53n27irfy0672b9wg9"))
+
+(define rust-pyo3-macros-0.23.5
+  (crate-source "pyo3-macros" "0.23.5"
+                "1nm9i19aff7zn245v35qb0lbr3cxr19zdgcayq84fg7n509j1hpv"))
+
+(define rust-pyo3-macros-backend-0.23.5
+  (crate-source "pyo3-macros-backend" "0.23.5"
+                "0a10yxj41kvjhh9vywzd2zj3h6iwm4bg3mlkw2frrnpks1m759pw"))
 
 (define rust-pyproject-toml-0.11.0
   (crate-source "pyproject-toml" "0.11.0"
@@ -1978,6 +2015,10 @@
 (define rust-selectors-0.25.0
   (crate-source "selectors" "0.25.0"
                 "01kvl1r7plzlb665r64p11djabhsrd88si2zh7vci3v3ydshbcsf"))
+
+(define rust-self-cell-1.1.0
+  (crate-source "self_cell" "1.1.0"
+                "1gmxk5bvnnimcif7v1jk8ai2azfvh9djki545nd86vsnphjgrzf2"))
 
 (define rust-semver-1.0.26
   (crate-source "semver" "1.0.26"
@@ -2391,6 +2432,10 @@
 (define rust-unicode-xid-0.2.6
   (crate-source "unicode-xid" "0.2.6"
                 "0lzqaky89fq0bcrh6jj6bhlz37scfd8c7dsj5dq7y32if56c1hgb"))
+
+(define rust-unindent-0.2.4
+  (crate-source "unindent" "0.2.4"
+                "1wvfh815i6wm6whpdz1viig7ib14cwfymyr1kn3sxk2kyl3y2r3j"))
 
 (define rust-unscanny-0.1.0
   (crate-source "unscanny" "0.1.0"
@@ -3889,6 +3934,42 @@
                                     rust-zerovec-derive-0.10.3
                                     rust-zip-2.6.1
                                     rust-zopfli-0.8.1))
+                     (python-cryptography =>
+                                          (list rust-asn1-0.20.0
+                                           rust-asn1-derive-0.20.0
+                                           rust-autocfg-1.4.0
+                                           rust-base64-0.22.1
+                                           rust-bitflags-2.9.0
+                                           rust-cc-1.2.18
+                                           rust-cfg-if-1.0.0
+                                           rust-foreign-types-0.3.2
+                                           rust-foreign-types-shared-0.1.1
+                                           rust-heck-0.5.0
+                                           rust-indoc-2.0.6
+                                           rust-itoa-1.0.15
+                                           rust-libc-0.2.171
+                                           rust-memoffset-0.9.1
+                                           rust-once-cell-1.21.3
+                                           rust-openssl-0.10.72
+                                           rust-openssl-macros-0.1.1
+                                           rust-openssl-sys-0.9.107
+                                           rust-pem-3.0.5
+                                           rust-pkg-config-0.3.32
+                                           rust-portable-atomic-1.11.0
+                                           rust-proc-macro2-1.0.94
+                                           rust-pyo3-0.23.5
+                                           rust-pyo3-build-config-0.23.5
+                                           rust-pyo3-ffi-0.23.5
+                                           rust-pyo3-macros-0.23.5
+                                           rust-pyo3-macros-backend-0.23.5
+                                           rust-quote-1.0.40
+                                           rust-self-cell-1.1.0
+                                           rust-shlex-1.3.0
+                                           rust-syn-2.0.100
+                                           rust-target-lexicon-0.12.16
+                                           rust-unicode-ident-1.0.18
+                                           rust-unindent-0.2.4
+                                           rust-vcpkg-0.2.15))
                      (rust-bindgen-cli =>
                                        (list rust-aho-corasick-1.1.3
                                         rust-annotate-snippets-0.11.5
