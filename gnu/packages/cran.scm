@@ -4765,6 +4765,45 @@ regions.  GAs can be run sequentially or in parallel, using an explicit
 master-slave parallelisation or a coarse-grain islands approach.")
     (license license:gpl2+)))
 
+(define-public r-grandr
+  (package
+    (name "r-grandr")
+    (version "0.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "grandR" version))
+       (sha256
+        (base32 "058cvcjrqhgm14vyhlm1mdhs3z0kfpjlfc3msadsvlhlb7p676sn"))))
+    (properties `((upstream-name . "grandR")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cowplot
+                             r-ggplot2
+                             r-labeling
+                             r-lfc
+                             r-mass
+                             r-matrix
+                             r-minpack-lm
+                             r-numderiv
+                             r-patchwork
+                             r-plyr
+                             r-rcurl
+                             r-reshape2
+                             r-rlang
+                             r-scales))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/erhard-lab/grandR")
+    (synopsis
+     "Comprehensive analysis of nucleotide conversion sequencing data")
+    (description
+     "Nucleotide conversion sequencing experiments have been developed to add
+a temporal dimension to RNA-seq and single-cell RNA-seq.  Such experiments
+require specialized tools for primary processing such as GRAND-SLAM, and
+specialized tools for downstream analyses. @code{grandR} provides a
+comprehensive toolbox for quality control, kinetic modeling, differential gene
+expression analysis and visualization of such data.")
+    (license license:asl2.0)))
+
 (define-public r-greg
   (package
     (name "r-greg")
