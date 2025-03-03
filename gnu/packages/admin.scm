@@ -2953,13 +2953,13 @@ characters can be replaced as well, as can UTF-8 characters.")
 (define-public tree
   (package
     (name "tree")
-    (version "2.1.1")
+    (version "2.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://oldmanprogrammer.net/tar/tree/"
                                   "tree-" version ".tgz"))
               (sha256
-               (base32 "1mchmdkq77d4c2mx7xmarccbk46a3sm2aqslarjwgxrs81gxbhyk"))))
+               (base32 "1v5j8igc5yjzs7w63010p8il5rw5qb1zy032l2ni3hy0g3f4bb38"))))
     (build-system gnu-build-system)
     (arguments
      (list
