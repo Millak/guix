@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -153,7 +153,7 @@ ascii art drawings that contain characters that resemble lines like @samp{|}
 (define-public java-flatlaf
   (package
     (name "java-flatlaf")
-    (version "3.4.1")
+    (version "3.5.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -162,7 +162,7 @@ ascii art drawings that contain characters that resemble lines like @samp{|}
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qr7g8s5m89q5k31mnxk18lflz3l2hid4i055mim3b0m4vjs40pi"))
+                "017n1w6hds4wrz597jk7v8r6pz0kz5j9xwd240nq7s8hc58d4c2q"))
               (modules '((guix build utils)))
               (snippet
                '(for-each
