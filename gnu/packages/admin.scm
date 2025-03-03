@@ -2956,9 +2956,8 @@ characters can be replaced as well, as can UTF-8 characters.")
     (version "2.1.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://mama.indstate.edu/users/ice/tree/src/tree-"
-                    version ".tgz"))
+              (uri (string-append "https://oldmanprogrammer.net/tar/tree/"
+                                  "tree-" version ".tgz"))
               (sha256
                (base32 "1mchmdkq77d4c2mx7xmarccbk46a3sm2aqslarjwgxrs81gxbhyk"))))
     (build-system gnu-build-system)
@@ -2976,7 +2975,7 @@ characters can be replaced as well, as can UTF-8 characters.")
      "Tree is a recursive directory listing command that produces a depth
 indented listing of files, which is colorized ala dircolors if the LS_COLORS
 environment variable is set and output is to tty.")
-    (home-page "https://mama.indstate.edu/users/ice/tree/")
+    (home-page "https://oldmanprogrammer.net/source.php?dir=projects/tree")
     (license license:gpl2+)))
 
 (define-public lr
