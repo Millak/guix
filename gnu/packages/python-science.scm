@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2022-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -1467,7 +1467,14 @@ doing practical, real world data analysis in Python.")
                      "test_savefig"
                      ;; It requires a fresh python-tzdata, including new
                      ;; timezones.
-                     "test_repr")
+                     "test_repr"
+                     ;; These tests should be skipped on 32bit systems:
+                     ;; Cannot cast array data from dtype('int64') to dtype('int32')
+                     #$@(if (not (target-64bit?))
+                            #~("test_inf_bound_infinite_recursion"
+                               "test_reindex_behavior_with_interval_index"
+                               "test_repeating_interval_index_with_infs")
+                            #~()))
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
