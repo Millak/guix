@@ -3709,6 +3709,29 @@ optimization as the @code{optim()} function.  This package also adds more
 stopping criteria as well as allowing the adjustment of more tolerances.")
     (license license:gpl2)))
 
+(define-public r-lfc
+  (package
+    (name "r-lfc")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lfc" version))
+       (sha256
+        (base32 "1fh3i5mhzgz8k6y32m2y7lilxvm10kjkp5b70zm06iygazsk8bvz"))))
+    (properties `((upstream-name . "lfc")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/erhard-lab/lfc")
+    (synopsis
+     "Log fold change distribution tools for working with ratios of counts")
+    (description
+     "This is a package for ratios of count data such as obtained from RNA-seq
+are modelled using Bayesian statistics to derive posteriors for effects sizes.
+This approach is described in Erhard & Zimmer (2015) <doi:10.1093/nar/gkv696>
+and Erhard (2018) <doi:10.1093/bioinformatics/bty471>.")
+    (license license:asl2.0)))
+
 (define-public r-lmds
   (package
     (name "r-lmds")
