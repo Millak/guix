@@ -75,6 +75,7 @@
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages time)
@@ -538,54 +539,50 @@ is used by the Requests library to verify HTTPS requests.")
                            (find-files "." "Cargo\\.lock$"))
                  (substitute* "pyproject.toml"
                    (("locked = true") "offline = true"))))))
-    (build-system cargo-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:imported-modules `(,@%cargo-build-system-modules
                            ,@%pyproject-build-system-modules)
-      #:modules '((guix build cargo-build-system)
-                  ((guix build pyproject-build-system) #:prefix py:)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
                   (guix build utils))
-      #:cargo-inputs
-      (list rust-asn1-0.20
-            rust-cc-1
-            rust-cfg-if-1
-            rust-foreign-types-0.3
-            rust-foreign-types-shared-0.1
-            rust-once-cell-1
-            rust-openssl-0.10
-            rust-openssl-sys-0.9
-            rust-pem-3
-            rust-pyo3-0.23
-            rust-self-cell-1)
-      #:install-source? #false
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'build
-            (assoc-ref py:%standard-phases 'build))
-          (delete 'check)
-          (add-after 'install 'check
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-              (when tests?
-                (py:add-installed-pythonpath inputs outputs)
-                (invoke "python" "-m" "pytest" "tests"))))
-          (replace 'install
-            (assoc-ref py:%standard-phases 'install)))))
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
     (native-inputs
-     (list python-certifi
-           python-cffi
-           python-click
-           python-cryptography-vectors
-           python-mypy
-           python-pretend
-           python-pytest
-           python-pytest-benchmark
-           python-pytest-cov
-           python-pytest-randomly
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
-    (inputs (list maturin openssl python-wrapper))
+     (append
+      (list python-certifi
+            python-cffi
+            python-click
+            python-cryptography-vectors
+            python-mypy
+            python-pretend
+            python-pytest
+            python-pytest-benchmark
+            python-pytest-cov
+            python-pytest-randomly
+            python-pytest-xdist
+            python-setuptools
+            python-wheel
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs
+     (cons* maturin openssl (cargo-inputs 'python-cryptography)))
     (propagated-inputs (list python-cffi))
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Cryptographic recipes and primitives for Python")
