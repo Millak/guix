@@ -3807,11 +3807,6 @@ for dealing with different structured file formats.")
                                      "--host=" #$(%current-target-system)))
                                 #~("--enable-vala")))
                      args)))
-          (add-after 'configure 'dont-vendor-self
-            (lambda* (#:key vendor-dir #:allow-other-keys)
-              ;; Don't keep the whole tarball in the vendor directory
-              (delete-file-recursively
-               (string-append vendor-dir "/" #$name "-" #$version ".tar.xz"))))
           (replace 'build
             (assoc-ref gnu:%standard-phases 'build))
           (replace 'check

@@ -312,11 +312,6 @@ cards.")
                  (("if curl-config")
                   (string-append
                     "if " (search-input-file inputs "/bin/curl-config"))))))
-           (add-after 'configure 'dont-vendor-self
-             (lambda* (#:key vendor-dir #:allow-other-keys)
-               ;; Don't keep the whole tarball in the vendor directory
-               (delete-file-recursively
-                 (string-append vendor-dir "/" #$name "-" #$version ".tar.xz"))))
            (add-after 'unpack 'patch-source
              (lambda* (#:key outputs #:allow-other-keys)
                (substitute* "Makefile"

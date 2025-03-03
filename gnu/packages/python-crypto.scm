@@ -561,11 +561,6 @@ is used by the Requests library to verify HTTPS requests.")
       #:install-source? #false
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'configure 'dont-vendor-self
-            (lambda* (#:key vendor-dir #:allow-other-keys)
-              ;; Don't keep the whole tarball in the vendor directory
-              (delete-file-recursively
-               (string-append vendor-dir "/cryptography-" #$version ".tar.zst"))))
           (replace 'build
             (assoc-ref py:%standard-phases 'build))
           (delete 'check)
