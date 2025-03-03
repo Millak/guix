@@ -1379,9 +1379,9 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-arm64-honeycomb
   ;; Kernel for use on the HoneyComb LX2 boards:
   ;; <https://shop.solid-run.com/product/SRCFTXE000IV13/>.
-  (make-linux-libre* linux-libre-5.15-version
-                     linux-libre-5.15-gnu-revision
-                     linux-libre-5.15-source
+  (make-linux-libre* linux-libre-lts-version
+                     linux-libre-lts-gnu-revision
+                     linux-libre-lts-source
                      '("aarch64-linux")
                      #:extra-version "arm64-honeycomb"
                      #:extra-options
@@ -1433,8 +1433,35 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                         ("CONFIG_CRYPTO_USER_API_AEAD" . #true)
 
                         ;; For connecting to ci.guix.gnu.org over VPN.
-                        ("CONFIG_WIREGUARD" . m))
-                      (default-extra-linux-options linux-libre-5.15-version))))
+                        ("CONFIG_WIREGUARD" . m)
+
+                        ;; restool support
+                        ("CONFIG_FSL_MC_UAPI_SUPPORT" . #t)
+                        ("CONFIG_FSL_MC_BUS" . #t)
+                        ("CONFIG_VFIO_FSL_MC" . #t)
+                        ("CONFIG_FSL_MC_DPIO" . #t)
+                        ("CONFIG_ARM_GIC_V3_ITS_FSL_MC" . #t)
+
+                        ;; vsockets support
+                        ;; TODO This seems to be enabled by default on other
+                        ;; architectures?
+                        ("CONFIG_VSOCKETS" . m)
+                        ("CONFIG_VSOCKETS_DIAG" . m)
+                        ("CONFIG_VSOCKETS_LOOPBACK" . m)
+                        ("CONFIG_VMWARE_VMCI_VSOCKETS" . m)
+                        ("CONFIG_VIRTIO_VSOCKETS" . m)
+                        ("CONFIG_VIRTIO_VSOCKETS_COMMON" . m)
+                        ("CONFIG_HYPERV_VSOCKETS" . m)
+                        ("CONFIG_VHOST_IOTLB" . m)
+                        ("CONFIG_VHOST_RING" . m)
+                        ("CONFIG_VHOST_TASK" . #true)
+                        ("CONFIG_VHOST" . m)
+                        ("CONFIG_VHOST_MENU" . #true)
+                        ("CONFIG_VHOST_NET" . m)
+                        ("CONFIG_VHOST_SCSI" . m)
+                        ("CONFIG_VHOST_VSOCK" . m)
+                        ("CONFIG_VHOST_VDPA" . m))
+                      (default-extra-linux-options linux-libre-lts-version))))
 
 (define-public linux-libre-riscv64-generic
   (make-linux-libre* linux-libre-version
