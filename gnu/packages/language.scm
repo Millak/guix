@@ -7,7 +7,7 @@
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2022 Milran <milranmike@protonmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Charles <charles@charje.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
@@ -1034,7 +1034,7 @@ and manipulation.")
                                    (string-append doc "/README.filters.md"))
                         (copy-file "convert2skk/README.md"
                                    (string-append doc "/README.convert2skk.md")))))
-                  (add-after 'wrap-scripts 'check-scripts
+                  (add-after 'install-scripts 'check-scripts
                     ;; Skipped tests for:
                     ;; * skk2cdb.py: Requires cdb file
                     (lambda* (#:key outputs #:allow-other-keys)
