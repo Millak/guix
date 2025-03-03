@@ -1090,6 +1090,9 @@ using a stylus.")
               (invoke "cmake" "--build" "." "--target" "test-units")))
           (add-after 'install 'glib-or-gtk-wrap
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'generate-gdk-pixbuf-loaders-cache-file))
           (add-after 'glib-or-gtk-wrap 'wrap-gdk-pixbuf
             ;; This phase is necessary for xournalpp to load SVG icons.
             (lambda _
