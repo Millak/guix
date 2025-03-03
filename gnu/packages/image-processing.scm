@@ -893,27 +893,8 @@ including 2D color images.")
          (add-before 'check 'set-home
            (lambda _
              (setenv "HOME" "/tmp") #t)))))
-    (inputs
-     (list vips
-           glib
-           libtiff
-           gtk+-2
-           libxml2
-           libexif
-           libjpeg-turbo ;required by vips.pc
-           (librsvg-for-system)
-           fftw
-           libgsf
-           imagemagick
-           orc
-           matio
-           lcms
-           libwebp
-           openexr-2
-           poppler
-           gsl))
-    (native-inputs
-     (list flex bison pkg-config))
+    (inputs (list gsl gtk+-2 vips))
+    (native-inputs (list bison flex pkg-config))
     (home-page "https://github.com/libvips/nip2")
     (synopsis "Spreadsheet-like GUI for libvips")
     (description "This package provide a graphical user interface (GUI) for
