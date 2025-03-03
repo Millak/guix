@@ -163,6 +163,7 @@
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages music)
+  #:use-module (gnu packages pantheon)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -2401,7 +2402,7 @@ and provides animations for switching between backgrounds.")
 (define-public swaynotificationcenter
   (package
     (name "swaynotificationcenter")
-    (version "0.8.0")
+    (version "0.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2409,7 +2410,7 @@ and provides animations for switching between backgrounds.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1c3gd6mlr209jzzrh5jmws2lawnn3gr6smvzcw74kkpi3wvs7l0k"))))
+               (base32 "0cx3ql7qb2wajck1vip9sm2a122jv9x8g2r0bnw4rrxd91yca7a9"))))
     (build-system meson-build-system)
     (arguments (list #:configure-flags #~(list "-Dsystemd-service=false")))
     (native-inputs
@@ -2417,11 +2418,13 @@ and provides animations for switching between backgrounds.")
            gobject-introspection
            pkg-config
            python-minimal
+           sassc
            scdoc
            vala))
     (inputs
      (list json-glib
            glib
+           granite-6
            gtk+
            gtk-layer-shell
            libhandy
