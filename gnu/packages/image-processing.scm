@@ -747,7 +747,7 @@ the OpenCV-Python library.")
 (define-public vips
   (package
     (name "vips")
-    (version "8.15.3")
+    (version "8.16.1")
     (source
      (origin
        (method git-fetch)
@@ -756,7 +756,7 @@ the OpenCV-Python library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nxzhs4gwhpm4j9hlca8s97xh1b1p1cawnwdc69rmxkrf714hlgj"))))
+        (base32 "0qy3vsh8mrkdbmdyfandydfp0miqqqiisqfagp1mnwd5xvwyqwm2"))))
     (build-system meson-build-system)
     (native-inputs
      (list gobject-introspection pkg-config))
@@ -784,7 +784,7 @@ the OpenCV-Python library.")
            orc
            pango
            poppler))
-    (home-page "https://libvips.github.io/libvips/")
+    (home-page "https://www.libvips.org/")
     (synopsis "Multithreaded image processing system with low memory needs")
     (description
      "VIPS is a demand-driven, horizontally threaded image processing library.
