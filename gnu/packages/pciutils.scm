@@ -91,7 +91,7 @@ Each database is contained in a specific package output, such as the
                                            "share/hwdata/pci.ids")
                         "pci.ids")))
          (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda _
              ;; There's no 'configure' script, just a raw makefile.
              (substitute* "Makefile"
                #$@(if (%current-target-system)
@@ -109,13 +109,13 @@ Each database is contained in a specific package output, such as the
                         "STRIP=\n"))
                      '())
                (("^PREFIX=.*$")
-                (string-append "PREFIX := " (assoc-ref outputs "out")
+                (string-append "PREFIX := " #$output
                                "\n"))
                (("^MANDIR:=.*$")
                 ;; By default the thing tries to automatically
                 ;; determine whether to use $prefix/man or
                 ;; $prefix/share/man, and wrongly so.
-                (string-append "MANDIR := " (assoc-ref outputs "out")
+                (string-append "MANDIR := " #$output
                                "/share/man\n"))
 
                (("^SHARED=.*$")
@@ -136,27 +136,25 @@ Each database is contained in a specific package output, such as the
                (("(.*INSTALL.*)update-pciids.8(.*)" _ head tail)
                 (string-append head tail)))))
          (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda _
              ;; Install the commands, library, and .pc files.
              (invoke "make" "install" "install-lib"))))
 
        ;; Make sure programs have an RPATH so they can find libpciutils.so.
-       #:make-flags #~(list #$(string-append "CC="
-                                          (if (%current-target-system)
-                                              (cc-for-target)
-                                              "gcc"))
-                          (string-append "LDFLAGS=-Wl,-rpath="
-                                         (assoc-ref %outputs "out") "/lib"))
+      #:make-flags
+      #~(list #$(string-append "CC=" (cc-for-target))
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
 
-       ;; No test suite.
-       #:tests? #f))
+      ;; No test suite.
+      #:tests? #f))
     (native-inputs
      (list hwdata pkg-config which))
     (inputs
-     `(,@(if (not (target-hurd?))
-             `(("kmod" ,kmod))
-             '())
-       ("zlib" ,zlib)))
+     (append
+      (if (not (target-hurd?))
+          (list kmod)
+          '())
+      (list zlib)))
     (home-page "https://mj.ucw.cz/sw/pciutils/")
     (synopsis "Programs for inspecting and manipulating PCI devices")
     (description
