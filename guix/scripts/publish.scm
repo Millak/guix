@@ -256,9 +256,6 @@ usage."
     (public-key-file . ,%public-key-file)
     (private-key-file . ,%private-key-file)
 
-    ;; Default number of workers when caching is enabled.
-    (workers . ,(current-processor-count))
-
     (address . ,(make-socket-address AF_INET INADDR_ANY 0))
     (repl . #f)))
 
@@ -1272,7 +1269,12 @@ return the corresponding socket.  Otherwise return #f."
            (nar-path  (assoc-ref opts 'nar-path))
            (repl-port (assoc-ref opts 'repl))
            (cache     (assoc-ref opts 'cache))
-           (workers   (assoc-ref opts 'workers))
+           (workers   (or (assoc-ref opts 'workers)
+                          ;; Default number of workers when caching is
+                          ;; enabled. Do this here to delay calling
+                          ;; (current-processor-count) until guix-publish is
+                          ;; called
+                          (current-processor-count)))
 
            ;; Read the key right away so that (1) we fail early on if we can't
            ;; access them, and (2) we can then drop privileges.
