@@ -3035,7 +3035,16 @@ by the test.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--numprocesses" "auto")))
+      #:test-flags #~(list "--numprocesses" "auto")
+      #:phases
+      (if (target-riscv64?)
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'extend-test-timeout
+                (lambda _
+                  ;; Some architectures need an even longer timeout.
+                  (substitute* "tests/test_pytest_mypy.py"
+                    (("60\\.0") "180.0")))))
+          #~%standard-phases)))
     (native-inputs
      (list python-pexpect
            python-pytest-xdist
