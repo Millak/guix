@@ -12600,56 +12600,27 @@ data, and scientific formats.")
 (define-public python-pyvips
   (package
     (name "python-pyvips")
-    (version "2.2.1")
+    (version "3.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyvips" version))
+       (method git-fetch) ; PyPI does not include test helpers
+       (uri (git-reference
+             (url "https://github.com/libvips/pyvips")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1dfbwwvnnsk4g2kj1pw654z9jq3mb72l1m8ma29858jpn12vn7dm"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               ;; Maybe switch to API mode (i.e., build the C extension)?
-               ;; It is advertised as faster to start up and run.
-               ;; However, even with ‘pkg-config’ and ‘python-pkgconfig’ in
-               ;; ‘native-inputs’, the API mode build fails with:
-               ;;
-               ;;   Falling back to ABI mode. Details: unable to find pkg-config package "vips"
-               ;;
-               ;; The build doesn't actually fail without the below
-               ;; substitution, it's just slower because ‘setup.py’ tries
-               ;; (unsuccessfully) to download the Python ‘pkgconfig’ module.
-               (add-after 'unpack 'fix-build
-                 (lambda _
-                   (substitute* "setup.py"
-                     (("^( +setup_)API\\(\\)\n" _ prefix)
-                      (string-append prefix "ABI()\n")))))
-               (add-after 'unpack 'fix-paths
-                 (lambda _
-                   (substitute* "pyvips/__init__.py"
-                     (("^( +_vips_libname) = '(libvips.so.42)'"
-                       _ var libname)
-                      (format #f "~a = '~a/lib/~a'"
-                              var #$(this-package-input "vips") libname))
-                     (("^( +_gobject_libname) = '(libgobject-2.0.so.0)'"
-                       _ var libname)
-                      (format #f "~a = '~a/lib/~a'"
-                              var #$(this-package-input "glib") libname)))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python" "setup.py" "test")))))))
+        (base32 "017x7i8ssghsdpncjfhk5shdq31784hb5xjalrxl918s86rjwakp"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pyperf
+     (list pkg-config
+           python-pyperf
            python-pytest
-           python-pytest-flake8
-           python-pytest-runner))
+           python-setuptools
+           python-wheel))
     (inputs
      (list glib vips))
     (propagated-inputs
-     (list python-cffi))
+     (list python-cffi python-pkgconfig))
     (home-page "https://github.com/libvips/pyvips")
     (synopsis "Python bindings for VIPS")
     (description "The @code{pyvips} package provides Python bindings for VIPS,
@@ -39304,9 +39275,8 @@ written in C.")
     (name "python-pyvips-for-python-scooby")
     (arguments
      (substitute-keyword-arguments (package-arguments python-pyvips)
-       ((#:phases phases)
+       ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
-            (delete 'fix-paths)
             ;; The checks won't succeed without VIPS.
             (delete 'check)
             (delete 'sanity-check)))))
