@@ -2379,7 +2379,7 @@ scripted in a Python-like language.")
 (define-public godot
   (package
     (name "godot")
-    (version "4.3")
+    (version "4.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2388,7 +2388,7 @@ scripted in a Python-like language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hqjlhjhxyp1kll7s68b34kisvba1d5dsr804flc0bw4f47l2sdz"))
+                "1la1sk6v3scpgvv7gpqxbmh6vybz5v67jbl19ks07i50g8bpiswx"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
@@ -2421,9 +2421,11 @@ scripted in a Python-like language.")
                               ;; which is no longer in the glslang output
                               ;; after the most recent update.
                               "glslang"
+                              "jolt_physics"
                               "jpeg-compressor"
                               "libktx"
                               "libsimplewebm"
+                              "manifold"
                               "meshoptimizer"
                               "minimp3"
                               "miniupnpc"
@@ -2489,9 +2491,9 @@ scripted in a Python-like language.")
               ;; Scons does not use the environment variables by default,
               ;; but this substitution makes it do so.
               (substitute* "SConstruct"
-                (("env = Environment\\(tools=custom_tools\\)")
+                (("env = Environment\\(tools=\\[\\]\\)")
                  (string-append
-                  "env = Environment(tools=custom_tools)\n"
+                  "env = Environment(tools=[])\n"
                   "env = Environment(ENV=os.environ)")))))
           (add-after 'scons-use-env 'fix-dlopen-paths
             (lambda* (#:key inputs #:allow-other-keys)
