@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2018, 2019, 2023, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -79,26 +79,31 @@
   #:export (make-gcc-arm-none-eabi-4.9
             make-gcc-arm-none-eabi-6
             make-gcc-arm-none-eabi-7-2018-q2-update
+            make-gcc-arm-none-eabi-9-2020-q2-update
             make-gcc-arm-none-eabi-12.3.rel1
 
             make-gcc-vc4
 
             make-newlib-arm-none-eabi
             make-newlib-arm-none-eabi-7-2018-q2-update
+            make-newlib-arm-none-eabi-9-2020-q2-update
             make-newlib-arm-none-eabi-12.3.rel1
 
             make-newlib-nano-arm-none-eabi
             make-newlib-nano-arm-none-eabi-7-2018-q2-update
+            make-newlib-nano-arm-none-eabi-9-2020-q2-update
             make-newlib-nano-arm-none-eabi-12.3.rel1
 
             make-arm-none-eabi-toolchain-4.9
             make-arm-none-eabi-toolchain-6
             make-arm-none-eabi-toolchain-7-2018-q2-update
+            make-arm-none-eabi-toolchain-9-2020-q2-update
             make-arm-none-eabi-toolchain-12.3.rel1
 
             make-arm-none-eabi-nano-toolchain-4.9
             make-arm-none-eabi-nano-toolchain-6
             make-arm-none-eabi-nano-toolchain-7-2018-q2-update
+            make-arm-none-eabi-nano-toolchain-9-2020-q2-update
             make-arm-none-eabi-nano-toolchain-12.3.rel1
 
             make-gdb-arm-none-eabi
@@ -475,6 +480,145 @@ embedded-7-branch/")
     (make-base-newlib-arm-none-eabi-7-2018-q2-update (make-newlib-nano-arm-none-eabi))))
 
 
+;;; The following definitions are for the "9-2020-q2-update" variant of the
+;;; ARM cross toolchain as offered on https://developer.arm.com
+(define make-gcc-arm-none-eabi-9-2020-q2-update
+  (mlambda ()
+    (let ((xgcc (cross-gcc "arm-none-eabi"
+                           #:xgcc gcc-9
+                           #:xbinutils (cross-binutils "arm-none-eabi")))
+          (commit "13861a80750d118fbdca6006ab175903bacbb7ec")
+          (revision "1"))
+      (package (inherit xgcc)
+               (version (git-version "9-2020-q2-update" revision commit))
+               (source
+                (origin
+                  (inherit (package-source xgcc))
+                  (method git-fetch)
+                  (uri (git-reference
+                        (url "git://gcc.gnu.org/git/gcc.git")
+                        (commit commit)))
+                  (file-name (git-file-name "gcc-arm-embedded" version))
+                  (sha256
+                   (base32
+                    "1cshb1wbynjac3icbf2na633k4d8r7nqn4nv0d65q6f78w295h97"))
+                  (patches
+                   (append
+                    (origin-patches (package-source gcc-9))
+                    (search-patches
+                     "gcc-10-cross-environment-variables.patch")))))
+               (native-inputs
+                (modify-inputs (package-native-inputs xgcc)
+                  (delete "isl")
+                  (prepend flex isl-0.18)))
+               (arguments
+                (substitute-keyword-arguments (package-arguments xgcc)
+                  ((#:phases phases)
+                   #~(modify-phases #$phases
+                       (add-after 'unpack 'expand-version-string
+                         (lambda _
+                           (make-file-writable "gcc/DEV-PHASE")
+                           (with-output-to-file "gcc/DEV-PHASE"
+                             (lambda ()
+                               (display "9-2020-q2-update")))))
+                       (add-after 'unpack 'fix-genmultilib
+                         (lambda _
+                           (substitute* "gcc/genmultilib"
+                             (("#!/bin/sh")
+                              (string-append "#!" (which "sh"))))))
+                       (add-after 'set-paths 'augment-CPLUS_INCLUDE_PATH
+                         (lambda* (#:key inputs #:allow-other-keys)
+                           (let ((gcc (assoc-ref inputs  "gcc")))
+                             ;; Remove the default compiler from
+                             ;; CPLUS_INCLUDE_PATH to prevent header conflict
+                             ;; with the GCC from native-inputs.
+                             (setenv "CPLUS_INCLUDE_PATH"
+                                     (string-join
+                                      (delete (string-append gcc "/include/c++")
+                                              (string-split
+                                               (getenv "CPLUS_INCLUDE_PATH")
+                                               #\:))
+                                      ":"))
+                             (format #t
+                                     "environment variable `CPLUS_INCLUDE_PATH'\
+ changed to ~a~%"
+                                     (getenv "CPLUS_INCLUDE_PATH")))))))
+                  ((#:configure-flags flags)
+                   ;; The configure flags are largely identical to the flags
+                   ;; used by the "GCC ARM embedded" project.
+                   #~(append (list "--enable-multilib"
+                                   "--with-newlib"
+                                   "--with-multilib-list=rmprofile"
+                                   "--with-host-libstdcxx=-static-libgcc \
+-Wl,-Bstatic,-lstdc++,-Bdynamic -lm"
+                                   "--enable-plugins"
+                                   "--disable-decimal-float"
+                                   "--disable-libffi"
+                                   "--disable-libgomp"
+                                   "--disable-libmudflap"
+                                   "--disable-libquadmath"
+                                   "--disable-libssp"
+                                   "--disable-libstdcxx-pch"
+                                   "--disable-nls"
+                                   "--disable-shared"
+                                   "--disable-threads"
+                                   "--disable-tls")
+                             (delete "--disable-multilib" #$flags)))))
+               (native-search-paths
+                (list (search-path-specification
+                       (variable "CROSS_C_INCLUDE_PATH")
+                       (files '("arm-none-eabi/include")))
+                      (search-path-specification
+                       (variable "CROSS_CPLUS_INCLUDE_PATH")
+                       (files '("arm-none-eabi/include/c++"
+                                "arm-none-eabi/include/c++/arm-none-eabi"
+                                "arm-none-eabi/include")))
+                      (search-path-specification
+                       (variable "CROSS_LIBRARY_PATH")
+                       (files '("arm-none-eabi/lib")))))))))
+
+(define make-base-newlib-arm-none-eabi-9-2020-q2-update
+  ;; This is the same commit as used for the 9-2020-q2-update release
+  ;; according to the release.txt.
+  (mlambda (base)
+    (let ((commit "6d79e0a58866548f435527798fbd4a6849d05bc7")
+          (revision "0"))
+      (package
+        (inherit base)
+        (version (git-version "3.3.0" revision commit))
+        (source
+         (origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "http://sourceware.org/git/newlib-cygwin.git")
+                 (commit commit)))
+           (file-name (git-file-name "newlib" version))
+           (sha256
+            (base32
+             "095j23mg928rmf4yqmj39wc0nsd207liqrdw4ygh58nygsm4gpmh"))))
+        (arguments
+         (substitute-keyword-arguments (package-arguments base)
+           ;; The configure flags are identical to the flags used by the "GCC
+           ;; ARM embedded" project.
+           ((#:configure-flags flags)
+            `(cons* "--enable-newlib-io-c99-formats"
+                    "--enable-newlib-retargetable-locking"
+                    "--with-headers=yes"
+                    ,flags))))
+        (native-inputs
+         `(("xbinutils" ,(cross-binutils "arm-none-eabi"))
+           ("xgcc" ,(make-gcc-arm-none-eabi-9-2020-q2-update))
+           ("texinfo" ,texinfo)))))))
+
+(define make-newlib-arm-none-eabi-9-2020-q2-update
+  (mlambda ()
+    (make-base-newlib-arm-none-eabi-9-2020-q2-update (make-newlib-arm-none-eabi))))
+
+(define make-newlib-nano-arm-none-eabi-9-2020-q2-update
+  (mlambda ()
+    (make-base-newlib-arm-none-eabi-9-2020-q2-update (make-newlib-nano-arm-none-eabi))))
+
+
 ;;; The following definitions are for the "12.3.rel1" variant of the
 ;;; ARM cross toolchain as offered on https://developer.arm.com
 (define-public make-gcc-arm-none-eabi-12.3.rel1
@@ -722,6 +866,18 @@ languages are C and C++.")
     (make-arm-none-eabi-toolchain
      (make-gcc-arm-none-eabi-7-2018-q2-update)
      (make-newlib-nano-arm-none-eabi-7-2018-q2-update))))
+
+(define make-arm-none-eabi-toolchain-9-2020-q2-update
+  (mlambda ()
+    (make-arm-none-eabi-toolchain
+     (make-gcc-arm-none-eabi-9-2020-q2-update)
+     (make-newlib-arm-none-eabi-9-2020-q2-update))))
+
+(define make-arm-none-eabi-nano-toolchain-9-2020-q2-update
+  (mlambda ()
+    (make-arm-none-eabi-toolchain
+     (make-gcc-arm-none-eabi-9-2020-q2-update)
+     (make-newlib-nano-arm-none-eabi-9-2020-q2-update))))
 
 (define make-arm-none-eabi-toolchain-12.3.rel1
   (mlambda ()
