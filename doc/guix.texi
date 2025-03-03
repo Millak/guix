@@ -47925,7 +47925,7 @@ the required command using the appropriate service type.
 The service of this type allows to specify a list of files, which will
 go to @file{~/.guix-home/files}, usually this directory contains
 configuration files (to be more precise it contains symlinks to files in
-@file{/gnu/store}), which should be placed in @file{$XDG_CONFIG_DIR} or
+@file{/gnu/store}), which should be placed in @file{$XDG_CONFIG_HOME} or
 in rare cases in @file{$HOME}.  It accepts extension values in the
 following format:
 
@@ -48104,14 +48104,14 @@ while visiting each one of the @code{directories}.
 The service is very similar to @code{home-files-service-type} (and
 actually extends it), but used for defining files, which will go to
 @file{~/.guix-home/files/.config}, which will be symlinked to
-@file{$XDG_CONFIG_DIR} by @code{home-symlink-manager-service-type} (for
+@file{$XDG_CONFIG_HOME} by @code{home-symlink-manager-service-type} (for
 example) during activation.  It accepts extension values in the
 following format:
 
 @lisp
 `(("sway/config" ,sway-file-like-object)
   ;; -> ~/.guix-home/files/.config/sway/config
-  ;; -> $XDG_CONFIG_DIR/sway/config (by symlink-manager)
+  ;; -> $XDG_CONFIG_HOME/sway/config (by symlink-manager)
   ("tmux/tmux.conf" ,(local-file "./tmux.conf")))
 @end lisp
 @end defvar
@@ -48142,9 +48142,9 @@ Creates new symlinks the following way: It looks @file{files/} directory
 (usually defined with @code{home-files-service-type},
 @code{home-xdg-configuration-files-service-type} and maybe some others),
 takes the files from @file{files/.config/} subdirectory and put
-respective links in @env{XDG_CONFIG_DIR}.  For example symlink for
+respective links in @env{XDG_CONFIG_HOME}.  For example symlink for
 @file{files/.config/sway/config} will end up in
-@file{$XDG_CONFIG_DIR/sway/config}.  The rest files in @file{files/}
+@file{$XDG_CONFIG_HOME/sway/config}.  The rest files in @file{files/}
 outside of @file{files/.config/} subdirectory will be treated slightly
 different: symlink will just go to @file{$HOME}.
 @file{files/.some-program/config} will end up in
@@ -48965,7 +48965,7 @@ Whether GnuPG is already configured to pass all traffic through
 @uref{https://torproject.org, Tor}.
 
 @item @code{refresh-guix-keyrings?} (default: @code{#f}) (type: boolean)
-Guix creates a few keyrings in the @var{$XDG_CONFIG_DIR}, such as when running
+Guix creates a few keyrings in the @var{$XDG_CONFIG_HOME}, such as when running
 @code{guix import} (@pxref{Invoking guix import}).  Setting this to @code{#t}
 will also refresh any keyrings which Guix has created.
 
