@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014-2016, 2021, 2024 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2018, 2020-2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -410,7 +410,10 @@ intelligible and easily correctable.")
         (base32 "17jwcgc3jdp41rvxqi7zdsysfpjgzqq4z1l345qwffp1an6yaaqk"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DBUILD_TESTS=YES")
+     `(#:configure-flags
+       '("-DBUILD_TESTS=YES"
+         ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1078404
+         "-DCMAKE_CXX_FLAGS=-fpermissive")
        #:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-lang
