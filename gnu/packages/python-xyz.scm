@@ -23686,11 +23686,6 @@ members = [
           (add-after 'unpack 'prepare-source
             (lambda _
               (delete-file "native/Cargo.lock")))
-          (add-after 'configure 'dont-vendor-self
-            (lambda* (#:key vendor-dir #:allow-other-keys)
-              ;; Don't keep the whole tarball in the vendor directory
-              (delete-file-recursively
-                (string-append vendor-dir "/libcst-" #$version ".tar.zst"))))
           (replace 'build
             (assoc-ref py:%standard-phases 'build))
           (add-after 'install 'wrap

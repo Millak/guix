@@ -116,10 +116,7 @@
           (add-after 'configure 'fix-cargo-inputs-vendoring
             (lambda _
               ;; Reproduce the original layout, fails with config.
-              (rename-file ".cargo/config" ".cargo/config.toml")
-              ;; Wrongly placed by configure
-              (delete-file-recursively
-               (string-append ".cargo/vendor/clamav-" #$version ".tar.zst"))))
+              (rename-file ".cargo/config" ".cargo/config.toml")))
           (add-after 'patch-cargo-checksums 'cmake-configure
             (lambda* (#:key outputs #:allow-other-keys)
               ((assoc-ref cmake:%standard-phases 'configure)
