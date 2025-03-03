@@ -220,7 +220,7 @@
 (define-public alsa-scarlett-gui
   (package
     (name "alsa-scarlett-gui")
-    (version "0.4.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -229,7 +229,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1397z3c232n3zpqmpc77lbwv8z5szsbagawl3l7hiizn152hkgpv"))))
+                "14c5yk6gp2bqkcyl78r9hnnlxidpdpmrwpf05dcq6zyca8l0mkr9"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -244,7 +244,8 @@
               (substitute* "src/Makefile"
                 (("	cc -o")
                  (string-append "	"
-                                #$(cc-for-target) " -o")))
+                                #$(cc-for-target) " -o"))
+                (("-Werror") ""))
               (chdir "src")))
           (add-after 'install 'wrap-program
             (lambda* (#:key inputs #:allow-other-keys)
