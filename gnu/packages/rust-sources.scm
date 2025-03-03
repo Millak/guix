@@ -245,3 +245,36 @@
      (synopsis "Safe, fast, small crypto using Rust")
      (description "This package provided safe, fast, small crypto using Rust.")
      (license (list license:isc license:openssl)))))
+
+(define-public rust-smithay-for-niri
+  (let ((commit "0cd3345c59f7cb139521f267956a1a4e33248393")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "rust-smithay")
+       (version (git-version "0.4.0" revision commit))
+       (source (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                       (url "https://github.com/Smithay/smithay")
+                       (commit commit)))
+                 (file-name (git-file-name name version))
+                 (sha256
+                  (base32
+                   "191h87bpzg0l1ihfb4hmx00b86pfb5mwwc6s8i49al0vigc14l37"))))
+       (build-system cargo-build-system)
+       (arguments
+        (list #:skip-build? #t
+              #:cargo-package-crates ''("smithay" "smithay-drm-extras")))
+       (inputs (cargo-inputs 'rust-smithay-for-niri))
+       (home-page "https://github.com/Smithay/smithay")
+       (synopsis "Smithy for Rust Wayland compositors")
+       (description
+        "Smithay aims to provide building blocks to create wayland compositors
+in Rust.  While not being a full-blown compositor, it'll provide objects and
+interfaces implementing common functionalities that pretty much any compositor
+will need, in a generic fashion.
+
+It supports the @code{wayland}, @code{wayland-protocols}, and some external
+extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
+       (license license:expat)))))
