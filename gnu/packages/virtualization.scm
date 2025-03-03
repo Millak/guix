@@ -595,29 +595,6 @@ server and embedded PowerPC, and S390 guests.")
     (supported-systems (fold delete %supported-systems
                              '("mips64el-linux" "i586-gnu" "x86_64-gnu")))))
 
-;; QEMU >= 8.1.0's riscv64 binfmt service is unreliable.
-(define-public qemu-7.2.4
-  (package
-    (inherit qemu)
-    (name "qemu")
-    (version "7.2.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://download.qemu.org/qemu-"
-                           version ".tar.xz"))
-       (sha256
-        (base32 "0795l8xsy67fnh4mbdz40jm880iisd7q6d7ly6nfzpac3gjr8zyf"))
-       (patches (search-patches "qemu-7.2.4-build-info-manual.patch"
-                                "qemu-disable-aarch64-migration-test.patch"
-                                "qemu-fix-agent-paths.patch"))
-       (modules (origin-modules (package-source qemu)))
-       (snippet (origin-snippet (package-source qemu)))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments qemu)
-       ((#:tests? tests #f) ;migration tests still fail
-        #f)))))
-
 (define-public qemu-minimal
   ;; QEMU without GUI support, only supporting the host's architecture
   (package/inherit qemu
