@@ -39,6 +39,35 @@
 ;;; These packages are hidden, as they are not interesting to users.
 ;;;
 
+(define-public rust-pcre2-utf32-0.2
+  (hidden-package
+   (package
+     (name "rust-pcre2-utf32")
+     (version "0.2.9")
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/fish-shell/rust-pcre2")
+                     (commit (string-append version "-utf32"))))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "0mhjw7fvrzxb3fd0c534a17qgy6svz0z8269d2fs6q8aw11610mr"))
+               (modules '((guix build utils)))
+               (snippet '(delete-file-recursively "pcre2-sys/upstream"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:cargo-package-crates
+            ''("pcre2-sys" "pcre2")))
+     (inputs (cargo-inputs 'rust-pcre2-utf32-0.2))
+     (home-page "https://github.com/fish-shell/rust-pcre2")
+     (synopsis "High level wrapper library for PCRE2")
+     (description
+      "This package provides @code{fish} shell's fork of @code{rust-pcre2} with
+UTF-32 support.")
+     (license (list license:expat license:unlicense)))))
+
 (define-public rust-pipewire-for-niri
   (let ((commit "fd3d8f7861a29c2eeaa4c393402e013578bb36d9")
         (revision "0"))
