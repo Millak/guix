@@ -70,7 +70,7 @@ Each database is contained in a specific package output, such as the
 (define-public pciutils
   (package
     (name "pciutils")
-    (version "3.8.0")
+    (version "3.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -78,7 +78,8 @@ Each database is contained in a specific package output, such as the
                     version ".tar.xz"))
               (sha256
                (base32
-                "01aglgw9ds9qiswcbi2lx90lswncikrlyv8mmp4haix8542bvvci"))))
+                "09j9rfjaw2ahdwvvlp7ldjgn522pbbqhh0zm396n60l555w1zwbp"))
+              (patches (search-patches "pciutils-hurd64.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -89,14 +90,6 @@ Each database is contained in a specific package output, such as the
              (copy-file (search-input-file (or native-inputs inputs)
                                            "share/hwdata/pci.ids")
                         "pci.ids")))
-         #$@(if (target-hurd64?)
-               #~((add-after 'unpack 'apply-hurd64-patch
-                    (lambda _
-                      (let ((patch-file
-                             #$(local-file
-                                (search-patch "pciutils-hurd64.patch"))))
-                        (invoke "patch" "--force" "-p1" "-i" patch-file)))))
-               #~())
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              ;; There's no 'configure' script, just a raw makefile.
