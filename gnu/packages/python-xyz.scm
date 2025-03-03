@@ -39721,13 +39721,9 @@ etc. to check code that uses @code{orjson}.")
             (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
             (assoc-ref py:%standard-phases 'install)))
-      #:cargo-inputs
-      `(("rust-archery" ,rust-archery-1)
-        ("rust-pyo3" ,rust-pyo3-0.19)
-        ("rust-rpds" ,rust-rpds-1))
       #:install-source? #false))
     (inputs
-     (list maturin))
+     (cons maturin (cargo-inputs 'python-rpds-py)))
     (native-inputs
      (list python-wrapper))
     (home-page "https://github.com/crate-py/rpds")

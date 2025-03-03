@@ -124,6 +124,10 @@
   (crate-source "arc-swap" "1.7.1"
                 "0mrl9a9r9p9bln74q6aszvf22q1ijiw089jkrmabfqkbj31zixv9"))
 
+(define rust-archery-1.2.1
+  (crate-source "archery" "1.2.1"
+                "0sdqlmybcvd0rzv22ac3k3xxm5anr1gpm03sf02iy0jmrlhyvqpa"))
+
 (define rust-arrayvec-0.7.6
   (crate-source "arrayvec" "0.7.6"
                 "0l1fz4ccgv6pm609rif37sl5nv5k6lbzi7kkppgzqzh1vwix20kw"))
@@ -1171,6 +1175,10 @@
   (crate-source "indexmap" "2.9.0"
                 "07m15a571yywmvqyb7ms717q9n42b46badbpsmx215jrg7dhv9yf"))
 
+(define rust-indoc-1.0.9
+  (crate-source "indoc" "1.0.9"
+                "01l3b4ami6sck57yrn8n2z44jifph2m3jiivkws7w2njbvfrk9xz"))
+
 (define rust-indoc-2.0.6
   (crate-source "indoc" "2.0.6"
                 "1gbn2pkx5sgbd9lp05d2bkqpbfgazi0z3nvharh5ajah11d29izl"))
@@ -1725,22 +1733,42 @@
                 "125y7h40mkwb64j4v2v7s6f69ilk745kg60w1s2cq62cw8im93pm"
                 #:snippet '(delete-file "src/arch/wasm32.o")))
 
+(define rust-pyo3-0.19.2
+  (crate-source "pyo3" "0.19.2"
+                "0f1aqx947mzsrk05zdm9w2702lj5k9s97y9w9lxwkp2avk7sd0g6"))
+
 (define rust-pyo3-0.23.5
   (crate-source "pyo3" "0.23.5"
                 "0wm8z6jgg18z2cgr99wc34mbkffhcnb50igmq5d1ff6ghpyvyy3p"
                 #:snippet '(delete-file-recursively "branding")))
 
+(define rust-pyo3-build-config-0.19.2
+  (crate-source "pyo3-build-config" "0.19.2"
+                "19bb7aqyvr4kmh8b2lnrmcv9251j8yxw7l7xyr77m3s3pk876v07"))
+
 (define rust-pyo3-build-config-0.23.5
   (crate-source "pyo3-build-config" "0.23.5"
                 "1yqhw1k466k65rqvy2d4xz2shl0hzkry1xlxinciigzkdvlcpxll"))
+
+(define rust-pyo3-ffi-0.19.2
+  (crate-source "pyo3-ffi" "0.19.2"
+                "1nc4696k03ydyiy1f69l3ywknavjzxzag2mscrh2bgkywx1fwg75"))
 
 (define rust-pyo3-ffi-0.23.5
   (crate-source "pyo3-ffi" "0.23.5"
                 "13fxvxijl59vilv39akdzwqd1l7fb6c70f53n27irfy0672b9wg9"))
 
+(define rust-pyo3-macros-0.19.2
+  (crate-source "pyo3-macros" "0.19.2"
+                "1lggr5pnpmdj0cznlhw7ykm1qka3wlymwzfxqql6a4vyb6clrsyz"))
+
 (define rust-pyo3-macros-0.23.5
   (crate-source "pyo3-macros" "0.23.5"
                 "1nm9i19aff7zn245v35qb0lbr3cxr19zdgcayq84fg7n509j1hpv"))
+
+(define rust-pyo3-macros-backend-0.19.2
+  (crate-source "pyo3-macros-backend" "0.19.2"
+                "0dlm4pg29hjmlqx15gcy9cmnabvc8ycy60hcvjg8hm62flhw2zcl"))
 
 (define rust-pyo3-macros-backend-0.23.5
   (crate-source "pyo3-macros-backend" "0.23.5"
@@ -1891,6 +1919,10 @@
                 "02ii3nsciska0sj23ggxaz8gj64ksw8nbpfjcwxlh037chb7sfap"))
 
 (define rust-ring-0.17.14 rust-ring-0.17)
+
+(define rust-rpds-1.1.0
+  (crate-source "rpds" "1.1.0"
+                "194hjbsicmgqi3dyllqrz09mmhh597m2j9l49lr16cyfscambqd0"))
 
 (define rust-rstest-0.22.0
   (crate-source "rstest" "0.22.0"
@@ -2376,6 +2408,10 @@
   (crate-source "tracing-subscriber" "0.3.19"
                 "0220rignck8072i89jjsh140vmh14ydwpdwnifyaf3xcnpn9s678"))
 
+(define rust-triomphe-0.1.14
+  (crate-source "triomphe" "0.1.14"
+                "11fciha522hrz6pkafy3xlq20w405w9dqvy9ln7ba1s8v8k7g3zg"))
+
 (define rust-try-lock-0.2.5
   (crate-source "try-lock" "0.2.5"
                 "0jqijrrvm1pyq34zn1jmy2vihd4jcrjlvsh4alkjahhssjnsn8g4"))
@@ -2432,6 +2468,10 @@
 (define rust-unicode-xid-0.2.6
   (crate-source "unicode-xid" "0.2.6"
                 "0lzqaky89fq0bcrh6jj6bhlz37scfd8c7dsj5dq7y32if56c1hgb"))
+
+(define rust-unindent-0.1.11
+  (crate-source "unindent" "0.1.11"
+                "171may3v15wzc10z64i8sahdz49d031v7424mjsifa205ml6sxp1"))
 
 (define rust-unindent-0.2.4
   (crate-source "unindent" "0.2.4"
@@ -3970,6 +4010,43 @@
                                            rust-unicode-ident-1.0.18
                                            rust-unindent-0.2.4
                                            rust-vcpkg-0.2.15))
+                     (python-rpds-py =>
+                                     (list rust-archery-1.2.1
+                                      rust-autocfg-1.4.0
+                                      rust-bitflags-2.9.0
+                                      rust-cfg-if-1.0.0
+                                      rust-indoc-1.0.9
+                                      rust-libc-0.2.171
+                                      rust-lock-api-0.4.12
+                                      rust-memoffset-0.9.1
+                                      rust-once-cell-1.21.3
+                                      rust-parking-lot-0.12.3
+                                      rust-parking-lot-core-0.9.10
+                                      rust-proc-macro2-1.0.94
+                                      rust-pyo3-0.19.2
+                                      rust-pyo3-build-config-0.19.2
+                                      rust-pyo3-ffi-0.19.2
+                                      rust-pyo3-macros-0.19.2
+                                      rust-pyo3-macros-backend-0.19.2
+                                      rust-quote-1.0.40
+                                      rust-redox-syscall-0.5.10
+                                      rust-rpds-1.1.0
+                                      rust-scopeguard-1.2.0
+                                      rust-smallvec-1.15.0
+                                      rust-syn-1.0.109
+                                      rust-target-lexicon-0.12.16
+                                      rust-triomphe-0.1.14
+                                      rust-unicode-ident-1.0.18
+                                      rust-unindent-0.1.11
+                                      rust-windows-targets-0.52.6
+                                      rust-windows-aarch64-gnullvm-0.52.6
+                                      rust-windows-aarch64-msvc-0.52.6
+                                      rust-windows-i686-gnu-0.52.6
+                                      rust-windows-i686-gnullvm-0.52.6
+                                      rust-windows-i686-msvc-0.52.6
+                                      rust-windows-x86-64-gnu-0.52.6
+                                      rust-windows-x86-64-gnullvm-0.52.6
+                                      rust-windows-x86-64-msvc-0.52.6))
                      (rust-bindgen-cli =>
                                        (list rust-aho-corasick-1.1.3
                                         rust-annotate-snippets-0.11.5
