@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -618,7 +618,7 @@ powerful microcontroller board: Axoloti Core.")
 (define-public ksoloti-runtime
   (package
     (name "ksoloti-runtime")
-    (version "1.0.12-8")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -627,7 +627,7 @@ powerful microcontroller board: Axoloti Core.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00ghkz3fhmmza24qrmhhz8n90n5q465fk9bld3hrfijf8sf4532i"))
+        (base32 "0lf4jqd1jwqmapp597zj33zgq7576i1fkww8aqckrpbknnmydrw5"))
        (modules '((guix build utils)))
        ;; Remove pre-built Java binaries.
        (snippet
@@ -646,15 +646,13 @@ powerful microcontroller board: Axoloti Core.")
        #~(modify-phases %standard-phases
            (add-after 'unpack 'patch-paths
              (lambda* (#:key inputs #:allow-other-keys)
-               ;; prepare ChibiOS
-               (invoke "unzip" "-o" (assoc-ref inputs "chibios"))
-               (invoke "mv" "ChibiOS_2.6.9" "chibios")
-               (with-directory-excursion "chibios/ext"
-                 (invoke "unzip" "-o" "fatfs-0.9-patched.zip"))
-
                ;; Remove source of non-determinism in ChibiOS
                (substitute* "chibios/os/various/shell.c"
                  (("#ifdef __DATE__") "#if 0"))
+
+               (substitute* "firmware/compile_firmware_linux.sh"
+                 (("make -j16")
+                  "make USE_VERBOSE_COMPILE=yes"))
 
                ;; Patch shell paths
                (substitute* '("src/main/java/qcmds/QCmdCompileFirmware.java"
@@ -663,24 +661,19 @@ powerful microcontroller board: Axoloti Core.")
                  (("/bin/sh") (which "sh")))
 
                ;; Override cross compiler base name
-               (substitute* '("firmware/Makefile.patch"
-                              "firmware_axoloti_legacy/Makefile.patch")
+               (substitute* '"firmware/Makefile.patch.mk"
                  (("arm-none-eabi-(gcc|g\\+\\+|objcopy|objdump|size)" tool)
                   (which tool)))
 
                ;; XXX: for some reason the whitespace substitution does not
                ;; work, so we disable it.
-               (substitute* '("firmware/Makefile.patch"
-                              "firmware_axoloti_legacy/Makefile.patch")
+               (substitute* "firmware/Makefile.patch.mk"
                  (("^BUILDDIR=.*") "BUILDDIR=${axoloti_libraries}/build\n"))
 
                ;; Hardcode full path to compiler tools
                (substitute* '("firmware/Makefile"
                               "firmware/flasher/Makefile"
-                              "firmware/mounter/Makefile"
-                              "firmware_axoloti_legacy/Makefile"
-                              "firmware_axoloti_legacy/flasher/Makefile"
-                              "firmware_axoloti_legacy/mounter/Makefile")
+                              "firmware/mounter/Makefile")
                  (("TRGT =.*")
                   (string-append "TRGT = "
                                  (assoc-ref inputs "cross-toolchain")
@@ -688,9 +681,7 @@ powerful microcontroller board: Axoloti Core.")
 
                ;; Hardcode path to "make"
                (substitute* '("firmware/compile_firmware_linux.sh"
-                              "firmware/compile_patch_linux.sh"
-                              "firmware_axoloti_legacy/compile_firmware_linux.sh"
-                              "firmware_axoloti_legacy/compile_patch_linux.sh")
+                              "firmware/compile_patch_linux.sh")
                  (("make") (which "make")))
 
                ;; Hardcode path to "dfu-util"
@@ -705,7 +696,8 @@ powerful microcontroller board: Axoloti Core.")
                  (substitute* "compile_firmware.sh"
                    (("^\"\\$\\{axoloti.*_firmware\\}/compile_firmware_linux.sh" m)
                     (string-append (which "bash") " " m)))
-                 (invoke "sh" "compile_firmware.sh"))))
+                 (invoke "sh" "compile_firmware.sh" "BOARD_KSOLOTI_CORE")
+                 (invoke "sh" "compile_firmware.sh" "BOARD_AXOLOTI_CORE"))))
            (replace 'install
              (lambda* (#:key inputs #:allow-other-keys)
                (let* ((share (string-append #$output "/share/ksoloti/"))
@@ -715,7 +707,6 @@ powerful microcontroller board: Axoloti Core.")
                                "/patches/[^/]+/[^/]+$"
                                "/objects/[^/]+/[^/]+$"
                                "/firmware/.+"
-                               "/firmware_axoloti_legacy/.+"
                                "/chibios/[^/]+$"
                                "/chibios/boards/ST_STM32F4_DISCOVERY/[^/]+$"
                                "/chibios/(ext|os|docs)/.+"
@@ -741,20 +732,12 @@ powerful microcontroller board: Axoloti Core.")
                                              'pre  'post))))
                            files)))))))
     (inputs
-     `(("chibios"
-        ,(origin
-           (method url-fetch)
-           (uri "mirror://sourceforge/chibios/ChibiOS%20GPL3/Version%202.6.9/ChibiOS_2.6.9.zip")
-           (sha256
-            (base32
-             "0lb5s8pkj80mqhsy47mmq0lqk34s2a2m3xagzihalvabwd0frhlj"))))
-       ;; for compiling patches
+     `(;; for compiling patches
        ("make" ,gnu-make)
        ;; for compiling firmware
-       ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-4.9))
+       ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-9-2020-q2-update))
        ;; for uploading compiled patches and firmware
        ("dfu-util" ,dfu-util)))
-    (native-inputs (list unzip))
     (home-page "https://ksoloti.github.io/")
     (synopsis "Audio development environment for the Ksoloti board")
     (description
@@ -892,7 +875,10 @@ This package provides the runtime.")
                                         toolchain "/arm-none-eabi/lib" "\n"
                                         (which "java")
                                         " -Xbootclasspath/a:" marlin.jar
+                                        " --add-exports=java.desktop/sun.java2d.pipe=ALL-UNNAMED"
+                                        " --add-exports=java.base/sun.security.action=ALL-UNNAMED"
                                         " -Dsun.java2d.renderer=org.marlin.pisces.MarlinRenderingEngine"
+                                        " -Dsun.java2d.d3d=false"
                                         " -Dsun.java2d.dpiaware=true"
                                         " -Daxoloti_release=" runtime
                                         " -Daxoloti_runtime=" runtime
@@ -901,8 +887,8 @@ This package provides the runtime.")
           (add-after 'install 'strip-jar-timestamps
             (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
     (inputs
-     `(("openjdk" ,openjdk11 "jdk")
-       ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-4.9))
+     `(("openjdk" ,openjdk17 "jdk")
+       ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-9-2020-q2-update))
        ("java-autocomplete" ,java-autocomplete)
        ("java-flatlaf" ,java-flatlaf)
        ("java-flatlaf-intellij-themes" ,java-flatlaf-intellij-themes)
