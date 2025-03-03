@@ -1228,7 +1228,7 @@ Debian or a derivative using @command{debootstrap}.")
 (define-public rvvm
   (package
     (name "rvvm")
-    (version "0.5")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1237,7 +1237,7 @@ Debian or a derivative using @command{debootstrap}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ldabcrmpa044bahpqa6ymwbhhwy69slh77f0m3421sq6j50l06p"))))
+                "1mbb1c9r33am2z27a17xkjw5gpzvz41wywx1g021s0w34lmsax76"))))
     (build-system cmake-build-system)
     (arguments
      (list
