@@ -3487,7 +3487,7 @@ compiles to GTKBuilder XML.")
             (lambda _
               (substitute* "tools/cmb_init_dev.py"
                 (("\"cc") (string-append "\"" #$(cc-for-target))))))
-          (add-after 'wrap 'python-wrap (assoc-ref python:%standard-phases 'wrap))
+          (add-after 'install 'python-wrap (assoc-ref python:%standard-phases 'wrap))
           (delete 'check)
           (add-after 'install 'add-install-to-pythonpath
             (assoc-ref python:%standard-phases 'add-install-to-pythonpath))
