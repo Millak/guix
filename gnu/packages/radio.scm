@@ -3254,8 +3254,8 @@ satellites.")
     (license license:gpl3)))
 
 (define-public chirp
-  (let ((commit "9e4335230929b5e07c95a5bbd8051a6051f9bdfc")
-        (revision "2"))
+  (let ((commit "1219bee0d39ca3778acdf5d7f0a92c1e8208bae9")
+        (revision "3"))
     (package
       (name "chirp")
       (version (git-version "0.4.0" revision commit))
@@ -3267,7 +3267,7 @@ satellites.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1zamjrrxn63gm9ahyy26grwd3qq0bzx1wpn91d5rxxik718lz9yk"))))
+          (base32 "19z3f05zppg8w4z4sdich8d173sd87501l0p8l1vn1awgky2q0r8"))))
       (build-system python-build-system)
       (native-inputs
        (list python-mock
