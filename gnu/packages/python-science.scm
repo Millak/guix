@@ -999,7 +999,10 @@ of regular expressions from text data and automatic test generation.")
                           "test_simple_open"
                           "test_slice_onplane"
                           "test_spline_3D"
-                          "test_svg")
+                          "test_svg"
+                          ;; Following tests require network:
+                          "test_fuze"
+                          "test_remote")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
