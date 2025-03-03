@@ -187,7 +187,7 @@
                       (unless (file-exists? directory)
                         (mkdir-p/perms directory
                                        (getpw #$%readymedia-user-account)
-                                       #o755)))
+                                       #o775)))
                     (list #$cache-directory
                           #$log-directory
                           #$@(map readymedia-media-directory-path
