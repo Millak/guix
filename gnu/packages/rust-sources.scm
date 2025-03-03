@@ -39,6 +39,40 @@
 ;;; These packages are hidden, as they are not interesting to users.
 ;;;
 
+(define-public rust-pipewire-for-niri
+  (let ((commit "fd3d8f7861a29c2eeaa4c393402e013578bb36d9")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "rust-pipewire")
+       (version (git-version "0.8.0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://gitlab.freedesktop.org/pipewire/pipewire-rs.git")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "1hzyhz7xg0mz8a5y9j6yil513p1m610q3j9pzf6q55vdh5mcn79v"))))
+       (build-system cargo-build-system)
+       (arguments
+        (list #:skip-build? #t
+              #:cargo-package-crates
+              ''("libspa-sys" "libspa" "pipewire-sys" "pipewire")
+              #:phases
+              #~(modify-phases %standard-phases
+                  ;; Avoid circular dependency.
+                  (add-after 'unpack 'remove-dev-dependencies
+                    (lambda _
+                      (substitute* "libspa/Cargo.toml"
+                        (("^pipewire.*") "")))))))
+       (inputs (cargo-inputs 'rust-pipewire-for-niri))
+       (home-page "https://pipewire.org/")
+       (synopsis "Rust bindings for PipeWire")
+       (description "This package provides Rust bindings for PipeWire.")
+       (license license:expat)))))
+
 (define-public rust-ring-0.17
   (hidden-package
    (package
