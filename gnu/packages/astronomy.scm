@@ -7026,6 +7026,36 @@ pipelines.")
 orbit around the Earth.")
     (license license:expat)))
 
+(define-public python-stsci-skypac
+  (package
+    (name "python-stsci-skypac")
+    (version "1.0.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stsci_skypac" version))
+       (sha256
+        (base32 "0amfknfxzrmia0d8x83i9h2v5760ynvfgfs0kzpb1ib0vyaci671"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in PyPI or git
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-spherical-geometry
+           python-stsci-imagestats
+           python-stsci-tools
+           python-stwcs))
+    (home-page "https://stsci-skypac.readthedocs.io/en/latest")
+    (synopsis "Sky matching on image mosaic")
+    (description
+     "This package implements a functionality to match sky on image mosaic.")
+    (license license:bsd-3)))
+
 (define-public python-stsci-tools
   (package
     (name "python-stsci-tools")
