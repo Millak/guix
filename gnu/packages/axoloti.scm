@@ -858,18 +858,19 @@ This package provides the runtime.")
                              (runtime   (search-input-directory inputs
                                                                 "share/ksoloti"))
                              (toolchain (assoc-ref inputs "cross-toolchain"))
+                             (libstdc++ (assoc-ref inputs "libstdc++"))
                              (includes  (string-append
                                          toolchain
-                                         "/arm-none-eabi/include/:"
-                                         toolchain
                                          "/arm-none-eabi/include/c++:"
+                                         libstdc++
+                                         "/arm-none-eabi/include/c++/arm-none-eabi/thumb/v7-m/nofp:"
                                          toolchain
-                                         "/arm-none-eabi/include/c++/arm-none-eabi/armv7e-m"))
+                                         "/arm-none-eabi/include/"))
                              (marlin.jar
                               (search-input-file inputs "/share/java/marlin.jar")))
                         (display
                          (string-append "#!" (which "sh") "\n"
-                                        "export CROSS_CPATH=" includes "\n"
+                                        "export PATH=" toolchain "/bin:$PATH\n"
                                         "export CROSS_CPLUS_INCLUDE_PATH=" includes "\n"
                                         "export CROSS_LIBRARY_PATH="
                                         toolchain "/arm-none-eabi/lib" "\n"
