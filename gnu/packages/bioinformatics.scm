@@ -22681,8 +22681,8 @@ patterns.")
       (license license:gpl3))))
 
 (define-public r-voltron
-  (let ((commit "381754801c2d0cf44c8a3a25326f3a89eef17411")
-        (revision "4"))
+  (let ((commit "21886d82292dc46521da2a03d978d78f3bd7210b")
+        (revision "5"))
     (package
       (name "r-voltron")
       (version (git-version "0.2.0" revision commit))
@@ -22694,7 +22694,7 @@ patterns.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1x8b51qlxz4zc23asz4wmvhy7fbvxnhn5svlalgdrj7bibq345qq"))))
+          (base32 "00d49c1zwd0nbcxc5rzzv6251bcgkcwmzpfr2k6r5l6zg58i6v3m"))))
       (properties `((upstream-name . "VoltRon")))
       (build-system r-build-system)
       (arguments
@@ -22709,11 +22709,21 @@ patterns.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "R/conversion.R"
                   (("return\\(NULL\\)")
-                   (string-append "Sys.setenv(GUIX_PYTHONPATH=\""
-                                  (getenv "GUIX_PYTHONPATH")
-                                  "\"); return(\""
-                                  (search-input-file inputs "/bin/python3")
-                                  "\")"))))))))
+                   (string-append
+                    "source(paste0(system.file(package=\"VoltRon\"), \"/guix-refs.R\"));\n"
+                    "return(guix_python);")))))
+            ;; We do this outside of the source code to ensure that
+            ;; references are accessible to Guix.
+            (add-after 'install 'record-python-reference
+              (lambda* (#:key inputs #:allow-other-keys)
+                (mkdir-p (string-append #$output "/site-library/VoltRon/"))
+                (call-with-output-file (string-append #$output "/site-library/VoltRon/guix-refs.R")
+                  (lambda (port)
+                    (format port "\
+Sys.setenv(GUIX_PYTHONPATH=\"~a\");
+guix_python <- \"~a\";"
+                            (getenv "GUIX_PYTHONPATH")
+                            (search-input-file inputs "/bin/python3")))))))))
       (inputs
        (list opencv
              ;; These Python inputs are used via reticulate.
