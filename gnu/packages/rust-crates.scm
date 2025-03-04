@@ -3586,6 +3586,14 @@
 ;;; Cargo inputs.
 ;;;
 
+;; TODO: Maintain this automatically too.
+(define-public mesa-cargo-inputs
+  `(("paste" ,rust-paste-1.0.15)
+    ("proc-macro2" ,rust-proc-macro2-1.0.94)
+    ("quote" ,rust-quote-1.0.40)
+    ("syn" ,rust-syn-2.0.100)
+    ("unicode-ident" ,rust-unicode-ident-1.0.18)))
+
 (define-cargo-inputs lookup-cargo-inputs
                      (cargo-audit =>
                                   (list rust-abscissa-core-0.8.2
