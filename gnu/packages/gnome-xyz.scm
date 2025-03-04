@@ -21,6 +21,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
 ;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
+;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1780,3 +1781,37 @@ palette.")
 notifications to STDOUT in order to allow the user to process notifications any
 way they prefer.")
     (license license:expat)))
+
+(define-public libpqmarble
+  (package
+    (name "libpqmarble")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/raggesilver/marble")
+             ;; Tag for v2.0.0 is currently missing, so use commit instead
+             (commit "f240b2ec7d5cdacb8fdcc553703420dc5101ffdb")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jx53yadqkcsfk9khkqmapznd8g9xg98wkgkigh964dj6gpp7fx1"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-gtk4-update-icon-cache
+                          (lambda _
+                            (substitute* "build-aux/meson/postinstall.py"
+                              (("gtk-update-icon-cache")
+                               "true")))))))
+    (native-inputs (list pkg-config
+                         vala
+                         (list glib "bin")  ;for glib-compile-schemas, etc.
+                         desktop-file-utils ;for update-desktop-database
+                         gobject-introspection))
+    (inputs (list gtk))
+    (home-page "https://gitlab.gnome.org/raggesilver/marble")
+    (synopsis "Utility library for GNOME apps")
+    (description "@code{libpqmarble} is a utility library for GNOME apps.")
+    (license license:gpl3+)))
