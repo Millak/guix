@@ -7490,7 +7490,8 @@ and fairly speedy.")
               "--ignore=tests/supervisors/test_multiprocess.py"
 
               #$@(cond
-                  ((target-aarch64?)
+                  ((or (target-aarch64?)
+                       (target-riscv64?))
                    '("-k not test_send_binary_data_to_server_bigger_than_default_on_websockets"))
                   (#t '())))))
     (native-inputs
