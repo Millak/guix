@@ -2024,48 +2024,64 @@ also comes with a built-in image and sound editor.")
       (license license:expat))))
 
 (define-public grafx2
-  (package
-    (name "grafx2")
-    (version "2.4")
-    (source (origin
-              (method url-fetch)
-              ;; XXX: There is no URL that contains the version. :(
-              (uri "http://pulkomandy.tk/projects/GrafX2/downloads/21")
-              (file-name (string-append "grafx2-" version ".tgz"))
-              (sha256
-               (base32
-                "0svsy6rqmdj11b400c242i2ixihyz0hds0dgicqz6g6dcgmcl62q"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; no configure script
-         (add-before 'build 'change-to-src-directory
-           (lambda _
-             (chdir "src")
-             #t)))
-       #:make-flags
-       ;; SDL header files are referenced without the preceeding "SDL/".
-       (list (string-append "CFLAGS=-I"
-                            (assoc-ref %build-inputs "sdl-union")
-                            "/include/SDL"
-                            " -fcommon")
-             (string-append "prefix="
-                            (assoc-ref %outputs "out")))
-       #:tests? #f)) ; no check target
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libpng lua-5.1
-           (sdl-union (list sdl sdl-image sdl-ttf))))
-    (synopsis "Bitmap paint program")
-    (description "GrafX2 is a bitmap paint program inspired by the Amiga
+  (let ((3rd/6502                       ;GPLv3+, used in source form
+         (origin
+           (method url-fetch)
+           (uri "https://github.com/redcode/6502/releases/download/v0.1/6502-v0.1.tar.xz")
+           (sha256
+            (base32 "03wlndlmfsz51x7hmrfs02r3fzqk8a0grbzm2h80pm33f4r0z9dv"))))
+        (3rd/recoil                     ;GPLv2+, does not install a library
+         (origin
+           (method url-fetch)
+           (uri "https://downloads.sourceforge.net/project/recoil/recoil/6.4.2/recoil-6.4.2.tar.gz")
+           (sha256
+            (base32 "1p73cgfacia2gxvswhdixk6grpp9rs2n5258axh5vdb6ly8w3pi3")))))
+    (package
+      (name "grafx2")
+      (version "2.9")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/GrafX2/grafX2")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0rf85pm40nmp9f95adbzzfx2ypvqjl51wqvk461c4bk8z7anlniz"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(begin
+              (mkdir "3rdparty/archives")
+              (copy-file #$3rd/6502
+                         "3rdparty/archives/6502-v0.1.tar.xz")
+              (copy-file #$3rd/recoil
+                         "3rdparty/archives/recoil-6.4.2.tar.gz")))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)          ; no configure script
+            (add-before 'build 'change-to-src-directory
+              (lambda _
+                (chdir "src"))))
+        #:make-flags
+        #~(list "API=sdl2"
+                (string-append "PREFIX="
+                               (assoc-ref %outputs "out")))
+        #:tests? #f))                  ; no check target
+      (native-inputs
+       (list pkg-config which))
+      (inputs
+       (list fontconfig lua (sdl-union (list sdl2 sdl2-image sdl2-ttf))))
+      (synopsis "Bitmap paint program")
+      (description "GrafX2 is a bitmap paint program inspired by the Amiga
 programs Deluxe Paint and Brilliance.  Specializing in 256-color drawing, it
 includes a very large number of tools and effects that make it particularly
 suitable for pixel art, game graphics, and generally any detailed graphics
 painted with a mouse.")
-    (home-page "http://pulkomandy.tk/projects/GrafX2")
-    (license license:gpl2))) ; GPLv2 only
+      (home-page "http://pulkomandy.tk/projects/GrafX2")
+      (license license:gpl2)))) ; GPLv2 only
 
 (define-public ois
   (package
