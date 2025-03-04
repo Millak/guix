@@ -50,6 +50,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
@@ -69,12 +70,14 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages scheme)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages texinfo)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -126,7 +129,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
 (define-public fish
   (package
     (name "fish")
-    (version "3.7.1")
+    (version "4.0.1")
     (source
      (origin
        (method url-fetch)
@@ -134,30 +137,66 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                            "releases/download/" version "/"
                            "fish-" version ".tar.xz"))
        (sha256
-        (base32 "0l5jlg0vplqln7ijqwirp1xl4j9npimzm58k77grj1yd8db9yk31"))))
+        (base32 "1db2qxlls9f8n6sjcj4dz7j22113nhfz5i8zy9ff30vj41q3mmjf"))
+       ;; TODO: Unbundle corrosion.
+       (patches (search-patches "corrosion-honor-CARGO_BUILD_TARGET.patch"))))
     (build-system cmake-build-system)
     (inputs
-     (list fish-foreign-env ncurses pcre2
-           python))  ; for fish_config and manpage completions
+     (cons* fish-foreign-env
+            ncurses
+            pcre2
+            python                    ;for fish_config and manpage completions
+            (cargo-inputs 'fish)))
     (native-inputs
-     (list doxygen groff ; for 'fish --help'
-           procps))             ; for the test suite
+     (append
+      (list doxygen
+            groff                       ;for 'fish --help'
+            pkg-config
+            procps                      ;for the test suite
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
     (arguments
      (list
-      #:modules '((guix build cmake-build-system)
-                  ((guix build gnu-build-system) #:prefix gnu:)
-                  (guix build utils))
+      #:out-of-source? #f
+      #:imported-modules
+      (append %cargo-build-system-modules
+              %cmake-build-system-modules)
+      #:modules
+      '(((guix build cargo-build-system) #:prefix cargo:)
+        (guix build cmake-build-system)
+        ((guix build gnu-build-system) #:prefix gnu:)
+        (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-guix-vendored-dependencies
+            (lambda _
+              (substitute* "Cargo.toml"
+                (("git.*tag.*,")
+                 "version = \"*\","))))
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
          (add-after 'unpack 'set-env
            (lambda _
              ;; some tests write to $HOME
              (setenv "HOME" (getcwd))
              #t))
          (add-after 'unpack 'patch-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((coreutils (assoc-ref inputs "coreutils"))
-                   (bash (assoc-ref inputs "bash")))
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+             (let ((coreutils (assoc-ref (or native-inputs inputs) "coreutils"))
+                   (bash (assoc-ref (or native-inputs inputs) "bash")))
                ;; This test sporadically fails in the build container
                ;; because of leftover zombie processes, which are not
                ;; reaped automatically:
@@ -173,7 +212,8 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                (substitute* "tests/checks/vars_as_commands.fish"
                  (("/usr/bin") "/tmp"))
                ;; These contain absolute path references.
-               (substitute* "src/fish_tests.cpp"
+               (substitute* '("src/builtins/tests/test_tests.rs"
+                              "src/tests/highlight.rs")
                  (("/bin/echo" echo) (string-append coreutils echo))
                  (("/bin/ca" ca) (string-append coreutils ca))
                  (("\"(/bin/c)\"" _ c) (string-append "\"" coreutils c "\""))
@@ -181,24 +221,16 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                   (string-append coreutils ls-not-a-path))
                  (("/bin/ls" ls) (string-append coreutils ls))
                  (("(/bin/)\"" _ bin) (string-append coreutils bin "\""))
-                 (("/bin -" bin) (string-append coreutils bin))
-                 (((string-append
-                    "do_test\\(is_potential_path\\("
-                    "L\"/usr\", wds, vars, PATH_REQUIRE_DIR\\)\\);"))
-                  "")
+                 (("/bin\", \"-" bin) (string-append coreutils bin))
                  ;; Not all mentions of /usr... need to exist, but these do.
                  (("\"/usr(|/lib)\"" _ subdirectory)
                   (string-append "\"/tmp" subdirectory "\"")))
-               (substitute*
-                 (append (find-files "tests" ".*\\.(in|out|err)$")
-                         (find-files "tests/checks" ".*\\.fish"))
+               (substitute* (find-files "tests")
                  (("/bin/pwd" pwd) (string-append coreutils pwd))
                  (("/bin/echo" echo) (string-append coreutils echo))
                  (("/bin/sh" sh) (string-append bash sh))
-                 (("/bin/ls" ls) (string-append coreutils ls)))
-               (substitute* (find-files "tests" ".*\\.(in|out|err)$")
-                 (("/usr/bin") (string-append coreutils "/bin")))
-               #t)))
+                 (("/bin/ls" ls) (string-append coreutils ls))
+                 (("/test/root/bin") "")))))
          ;; Source /etc/fish/config.fish from $__fish_sysconf_dir/config.fish.
          (add-after 'patch-tests 'patch-fish-config
            (lambda _
@@ -215,10 +247,9 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
              #t))
          ;; Embed absolute paths.
          (add-before 'install 'embed-absolute-paths
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "share/functions/__fish_print_help.fish"
-               (("nroff") (which "nroff")))
-             #t))
+               (("nroff") (search-input-file inputs "bin/nroff")))))
          ;; Enable completions, functions and configurations in user's and
          ;; system's guix profiles by adding them to __extra_* variables.
          (add-before 'install 'patch-fish-extra-paths

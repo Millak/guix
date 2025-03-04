@@ -2284,6 +2284,10 @@
                 "0aw7diz39z3mk22k0mp7jk7qiaaagfvggzly1baqg2jf4vpf8xg7"
                 #:snippet '(delete-file-recursively "assets")))
 
+(define rust-lru-0.12.5
+  (crate-source "lru" "0.12.5"
+                "0f1a7cgqxbyhrmgaqqa11m3azwhcc36w0v5r4izgbhadl3sg8k13"))
+
 (define rust-lz4-flex-0.10.0
   (crate-source "lz4_flex" "0.10.0"
                 "10sgbj93sagbl0ngzqvnlkldzbfz5vnzr7fry8sgssy299cp534b"))
@@ -2761,6 +2765,10 @@
   (crate-source "pathdiff" "0.2.3"
                 "1lrqp4ip05df8dzldq6gb2c1sq2gs54gly8lcnv3rhav1qhwx56z"))
 
+(define rust-pcre2-0.2.9.85b7afb rust-pcre2-utf32-0.2)
+
+(define rust-pcre2-sys-0.2.9.85b7afb rust-pcre2-utf32-0.2)
+
 (define rust-pem-3.0.5
   (crate-source "pem" "3.0.5"
                 "1wwfk8sbyi9l18fvvn6z9p2gy7v7q7wimbhvrvixxj8a8zl3ibrq"))
@@ -2798,6 +2806,10 @@
 (define rust-phf-codegen-0.10.0
   (crate-source "phf_codegen" "0.10.0"
                 "1k8kdad9wk2d5972k6jmjki2xpdy2ky4zd19rv7ybm2dpjlc7cag"))
+
+(define rust-phf-codegen-0.11.3
+  (crate-source "phf_codegen" "0.11.3"
+                "0si1n6zr93kzjs3wah04ikw8z6npsr39jw4dam8yi9czg2609y5f"))
 
 (define rust-phf-generator-0.10.0
   (crate-source "phf_generator" "0.10.0"
@@ -3247,6 +3259,10 @@
   (crate-source "rpds" "1.1.0"
                 "194hjbsicmgqi3dyllqrz09mmhh597m2j9l49lr16cyfscambqd0"))
 
+(define rust-rsconf-0.2.2
+  (crate-source "rsconf" "0.2.2"
+                "1p5w6qiskg43f5qhsh6slpc3klmhhyf76xvmzkkh215gy5czhamx"))
+
 (define rust-rstest-0.22.0
   (crate-source "rstest" "0.22.0"
                 "0dlrn6y4z5xgsvf6ky3lrjwsxpvi13sizlkwnqs1gmmxc873yhkv"))
@@ -3270,6 +3286,19 @@
 (define rust-rusqlite-0.32.1
   (crate-source "rusqlite" "0.32.1"
                 "0vlx040bppl414pbjgbp7qr4jdxwszi9krx0m63zzf2f2whvflvp"))
+
+(define rust-rust-embed-8.6.0
+  (crate-source "rust-embed" "8.6.0"
+                "0vxz02gqj9d65ym7ygbnwwrbgzh88zjqs2b1zk4vabb20i8vlfhb"
+                #:snippet '(delete-file-recursively "examples")))
+
+(define rust-rust-embed-impl-8.6.0
+  (crate-source "rust-embed-impl" "8.6.0"
+                "1bms1vmb9z8rcwrjdk1rzmb3wi08mmh7jbz1m1d2r384prrqq68z"))
+
+(define rust-rust-embed-utils-8.6.0
+  (crate-source "rust-embed-utils" "8.6.0"
+                "16mxa8asv0aq04fnbz1748rrzl8sc7frmjj2529c538cyk4wsbss"))
 
 (define rust-rustc-demangle-0.1.24
   (crate-source "rustc-demangle" "0.1.24"
@@ -3468,6 +3497,10 @@
   (crate-source "serial_test" "0.5.1"
                 "0pchc7imdi9wv8xxnwkb9lzs6cg06ghs0gaajjb834y8837wpg70"))
 
+(define rust-serial-test-1.0.0
+  (crate-source "serial_test" "1.0.0"
+                "04864v5ain4nan2k5l32sr3bxpg0sfxxs2iki3xxcq78g9s3132k"))
+
 (define rust-serial-test-2.0.0
   (crate-source "serial_test" "2.0.0"
                 "0b9v0csv9wxl1gcjq99plwimxbmhgr6kzbwqyb457qh3d22xsmhf"))
@@ -3475,6 +3508,10 @@
 (define rust-serial-test-derive-0.5.1
   (crate-source "serial_test_derive" "0.5.1"
                 "1m8sd97xr8dn6p9by0xwfqm0rz8cbn1ghs5l1fv1xd6xzvgddb5j"))
+
+(define rust-serial-test-derive-1.0.0
+  (crate-source "serial_test_derive" "1.0.0"
+                "0scscldvlz3an9v0spcizaqp5wa2y4w15bk4ink8jpgq2pgq76h7"))
 
 (define rust-serial-test-derive-2.0.0
   (crate-source "serial_test_derive" "2.0.0"
@@ -3740,6 +3777,11 @@
 (define rust-terminal-size-0.4.2
   (crate-source "terminal_size" "0.4.2"
                 "1vdm5xhzn7sqcsr762vmnavkhid3hs8w8qjyh9iwrr1990f4iij5"))
+
+(define rust-terminfo-0.9.0
+  (crate-source "terminfo" "0.9.0"
+                "0qp6rrzkxcg08vjzsim2bw7mid3vi29mizrg70dzbycj0q7q3snl"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-termtree-0.5.1
   (crate-source "termtree" "0.5.1"
@@ -4173,6 +4215,10 @@
 (define rust-wide-0.7.32
   (crate-source "wide" "0.7.32"
                 "08mb6iqdscqiqrbfkjrnfr876ah4cc0cx5pjilz3yqw1k9mmgda1"))
+
+(define rust-widestring-1.2.0
+  (crate-source "widestring" "1.2.0"
+                "0zg04qvpk2xysbbwhdgyilgn4p9igvyj9fhzl7pckam1khvz6z6x"))
 
 (define rust-wild-2.2.1
   (crate-source "wild" "2.2.1"
@@ -5079,6 +5125,87 @@
                                      rust-windows-x86-64-gnullvm-0.52.6
                                      rust-windows-x86-64-msvc-0.52.6
                                      rust-winnow-0.7.4))
+                     (fish =>
+                           (list rust-allocator-api2-0.2.21
+                                 rust-autocfg-1.4.0
+                                 rust-bitflags-2.9.0
+                                 rust-block-buffer-0.10.4
+                                 rust-cc-1.2.18
+                                 rust-cfg-if-1.0.0
+                                 rust-cfg-aliases-0.2.1
+                                 rust-cpufeatures-0.2.17
+                                 rust-crypto-common-0.1.6
+                                 rust-dashmap-5.5.3
+                                 rust-digest-0.10.7
+                                 rust-equivalent-1.0.2
+                                 rust-errno-0.3.11
+                                 rust-fnv-1.0.7
+                                 rust-foldhash-0.1.5
+                                 rust-generic-array-0.14.7
+                                 rust-getrandom-0.3.2
+                                 rust-hashbrown-0.14.5
+                                 rust-hashbrown-0.15.2
+                                 rust-jobserver-0.1.33
+                                 rust-lazy-static-1.5.0
+                                 rust-libc-0.2.171
+                                 rust-lock-api-0.4.12
+                                 rust-log-0.4.27
+                                 rust-lru-0.12.5
+                                 rust-memchr-2.7.4
+                                 rust-minimal-lexical-0.2.1
+                                 rust-nix-0.29.0
+                                 rust-nom-7.1.3
+                                 rust-num-traits-0.2.19
+                                 rust-once-cell-1.21.3
+                                 rust-parking-lot-0.12.3
+                                 rust-parking-lot-core-0.9.10
+                                 rust-pcre2-0.2.9.85b7afb
+                                 rust-pcre2-sys-0.2.9.85b7afb
+                                 rust-phf-0.11.3
+                                 rust-phf-codegen-0.11.3
+                                 rust-phf-generator-0.11.3
+                                 rust-phf-shared-0.11.3
+                                 rust-pkg-config-0.3.32
+                                 rust-portable-atomic-1.11.0
+                                 rust-proc-macro2-1.0.94
+                                 rust-quote-1.0.40
+                                 rust-r-efi-5.2.0
+                                 rust-rand-0.8.5
+                                 rust-rand-core-0.6.4
+                                 rust-redox-syscall-0.5.11
+                                 rust-rsconf-0.2.2
+                                 rust-rust-embed-8.6.0
+                                 rust-rust-embed-impl-8.6.0
+                                 rust-rust-embed-utils-8.6.0
+                                 rust-same-file-1.0.6
+                                 rust-scopeguard-1.2.0
+                                 rust-serial-test-1.0.0
+                                 rust-serial-test-derive-1.0.0
+                                 rust-sha2-0.10.8
+                                 rust-shlex-1.3.0
+                                 rust-siphasher-1.0.1
+                                 rust-smallvec-1.15.0
+                                 rust-syn-1.0.109
+                                 rust-syn-2.0.100
+                                 rust-terminfo-0.9.0
+                                 rust-typenum-1.18.0
+                                 rust-unicode-ident-1.0.18
+                                 rust-version-check-0.9.5
+                                 rust-walkdir-2.5.0
+                                 rust-wasi-0.14.2+wasi-0.2.4
+                                 rust-widestring-1.2.0
+                                 rust-winapi-util-0.1.9
+                                 rust-windows-sys-0.59.0
+                                 rust-windows-targets-0.52.6
+                                 rust-windows-aarch64-gnullvm-0.52.6
+                                 rust-windows-aarch64-msvc-0.52.6
+                                 rust-windows-i686-gnu-0.52.6
+                                 rust-windows-i686-gnullvm-0.52.6
+                                 rust-windows-i686-msvc-0.52.6
+                                 rust-windows-x86-64-gnu-0.52.6
+                                 rust-windows-x86-64-gnullvm-0.52.6
+                                 rust-windows-x86-64-msvc-0.52.6
+                                 rust-wit-bindgen-rt-0.39.0))
                      (librsvg =>
                               (list rust-adler2-2.0.0
                                     rust-aho-corasick-1.1.3
