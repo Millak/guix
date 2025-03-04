@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2019, 2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2019, 2021, 2023-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2020, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -1155,10 +1155,7 @@ CONFIG_TOOLS_KWBIMAGE=n"))))
 (System on Chip)."
   (let* ((board (string-append board "-" (symbol->string soc)))
          (base (make-u-boot-package board "aarch64-linux-gnu"
-                                    #:configs configs))
-         (atf (match soc
-                ('rk3399 arm-trusted-firmware-rk3399)
-                ('rk3328 arm-trusted-firmware-rk3328))))
+                                    #:configs configs)))
     (package
       (inherit base)
       (arguments
@@ -1167,9 +1164,11 @@ CONFIG_TOOLS_KWBIMAGE=n"))))
           #~(modify-phases #$phases
               (add-after 'unpack 'set-environment
                 (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((atf (assoc-ref inputs #$(package-name atf))))
-                    (setenv "BL31" (string-append atf "/bl31.elf")))))))))
-      (inputs (modify-inputs (package-inputs base) (append atf))))))
+                  (setenv "BL31" (search-input-file inputs "/bl31.elf"))))))))
+      (inputs (modify-inputs (package-inputs base)
+                (append (match soc
+                          ('rk3399 arm-trusted-firmware-rk3399)
+                          ('rk3328 arm-trusted-firmware-rk3328))))))))
 
 (define-public u-boot-am335x-boneblack
   (let ((base (make-u-boot-package
