@@ -3479,22 +3479,9 @@ support, watch support (like @command{top}) and a tree view.")
        (sha256
         (base32 "1zyiaifg6mcd4wwhhbxk8adzhph6qz4wxzgagvg3ijp95j58dpga"))))
     (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
-                       ("rust-heck" ,rust-heck-0.4)
-                       ("rust-indexmap" ,rust-indexmap-2)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-syn" ,rust-syn-2)
-                       ("rust-tempfile" ,rust-tempfile-3)
-                       ("rust-toml" ,rust-toml-0.8))
-       #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
-        ("rust-serial-test" ,rust-serial-test-2))))
+    (arguments (list #:install-source? #f))
     (native-inputs (list python-cython))
+    (inputs (cargo-inputs 'rust-cbindgen-0.28))
     (home-page "https://github.com/mozilla/cbindgen")
     (synopsis "Tool for generating C bindings to Rust code")
     (description
@@ -3512,22 +3499,7 @@ support, watch support (like @command{top}) and a tree view.")
        (uri (crate-uri "cbindgen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1sqm3axr678d72yihgmpr9d17mj99ccibxfqhw53mgzwzkbqvkiz"))))
-    (arguments
-     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
-                       ("rust-heck" ,rust-heck-0.4)
-                       ("rust-indexmap" ,rust-indexmap-2)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-syn" ,rust-syn-2)
-                       ("rust-tempfile" ,rust-tempfile-3)
-                       ("rust-toml" ,rust-toml-0.8))
-       #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
-        ("rust-serial-test" ,rust-serial-test-2))))))
+        (base32 "1sqm3axr678d72yihgmpr9d17mj99ccibxfqhw53mgzwzkbqvkiz"))))))
 
 (define-public rust-cbindgen-0.26
   (package
