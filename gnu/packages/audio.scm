@@ -52,6 +52,7 @@
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2029,6 +2030,34 @@ language and software synthesizer.")
   language, and recompiled back into a binary SMF file.")
       (home-page "https://github.com/markc/midicomp")
       (license license:agpl3))))
+
+(define-public mt32emu
+  (package
+    (name "mt32emu")
+    (version "2.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/munt/munt")
+             (commit
+              (string-append "libmt32emu_"
+                             (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06d3jzx69nwy9jj6jv9q6rhq5399mp51w6d5mijg3fmwr4al13fd"))))
+    (build-system cmake-build-system)
+    (arguments (list
+                #:tests? #f             ;no tests.
+                #:configure-flags #~(list "-Dmunt_WITH_MT32EMU_SMF2WAV=FALSE"
+                                          "-Dmunt_WITH_MT32EMU_QT=FALSE")))
+    (home-page "https://sourceforge.net/projects/munt/")
+    (synopsis "Pre-GM Roland MIDI device emulator")
+    (description
+     "libmt32emu is a C/C++ library which approximately emulates
+the Roland MT-32, CM-32L and LAPC-I synthesizer modules. It is part of the
+Munt project.")
+    (license license:gpl2+)))
 
 (define-public clalsadrv
   (package
