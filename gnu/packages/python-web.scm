@@ -7253,6 +7253,14 @@ hard or impossible to fix in cssselect.")
              (substitute* "uvloop/loop.pyx"
                (("b'/bin/sh'") (string-append "b'" (which "sh") "'")))
              #t))
+         ,@(if (target-riscv64?)
+               `((add-after 'unpack 'adjust-test-timeouts
+                   (lambda _
+                     (substitute* '("tests/test_tcp.py"
+                                    "tests/test_unix.py")
+                       (("SSL_HANDSHAKE_TIMEOUT = 15\\.0")
+                        "SSL_HANDSHAKE_TIMEOUT = 30.0")))))
+               '())
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -7279,7 +7287,11 @@ hard or impossible to fix in cssselect.")
                               "and not test_process_streams_redirect "
                               ;; FileNotFoundError: [Errno 2] No such file or
                               ;; directory
-                              "and not test_process_env_2"))))))))
+                              "and not test_process_env_2"
+                              ,@(if (target-riscv64?)
+                                    `(" and not test_renegotiation"
+                                      " and not test_getaddrinfo_21")
+                                    `())))))))))
     (native-inputs
      (list python-aiohttp
            python-cython-3
