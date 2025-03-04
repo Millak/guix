@@ -1648,7 +1648,7 @@ operate properly.")
 (define-public ffmpeg-7
   (package
     (name "ffmpeg")
-    (version "7.0.2")
+    (version "7.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
@@ -1706,7 +1706,7 @@ operate properly.")
            texinfo
            speex
            vulkan-headers
-           yasm))
+           nasm))
     (arguments
      (list
       #:test-target "fate"
@@ -1843,7 +1843,7 @@ operate properly.")
             (lambda* (#:key outputs configure-flags #:allow-other-keys)
               (let ((out (assoc-ref outputs "out")))
                 (substitute* "configure"
-                  (("#! /bin/sh") (string-append "#!" (which "sh"))))
+                  (("#! */bin/sh") (string-append "#!" (which "sh"))))
                 (setenv "SHELL" (which "bash"))
                 (setenv "CONFIG_SHELL" (which "bash"))
                 (apply invoke
