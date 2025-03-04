@@ -43,18 +43,27 @@
   #:use-module (guix build-system ant)
   #:use-module (guix build-system gnu))
 
+(define (icu4?-uri variant version)
+  (string-append
+   "https://github.com/unicode-org/icu/releases/download/release-"
+   (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
+   "/icu4" variant "-"
+   (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
+   "-src.tgz"))
+
+(define (icu4c-uri version)
+  (icu4?-uri "c" version))
+
+(define (icu4j-uri version)
+  (icu4?-uri "j" version))
+
 (define-public icu4c
   (package
     (name "icu4c")
     (version "73.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://github.com/unicode-org/icu/releases/download/release-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
-                    "/icu4c-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
-                    "-src.tgz"))
+              (uri (icu4c-uri version))
               (sha256
                (base32 "0iccpdvc0kvpww5a31k9gjkqigyz016i7v80r9zamd34w4fl6mx4"))
               (patches
@@ -121,12 +130,7 @@ C/C++ part.")
     (version "71.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://github.com/unicode-org/icu/releases/download/release-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
-                    "/icu4c-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
-                    "-src.tgz"))
+              (uri (icu4c-uri version))
               (sha256
                (base32
                 "1gqywaqj9jmdwrng9lm6inyqmi5j2cz36db9dcqg3yk13zjyd9v7"))))))
@@ -138,12 +142,7 @@ C/C++ part.")
     (version "75.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://github.com/unicode-org/icu/releases/download/release-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
-                    "/icu4c-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
-                    "-src.tgz"))
+              (uri (icu4c-uri version))
               (sha256
                (base32
                 "1vya31v549pq89kgr02jajwi7gc7qw0mv6n4265pxs6jwkrqv5nb"))))))
@@ -154,12 +153,7 @@ C/C++ part.")
     (version "70.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://github.com/unicode-org/icu/releases/download/release-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
-                    "/icu4c-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
-                    "-src.tgz"))
+              (uri (icu4c-uri version))
               (sha256
                (base32
                 "1m9zgkaf5lyh65nyc6n0n5bs2f5k53nnj1ih6nskpwbvq4l5884d"))))
@@ -184,12 +178,7 @@ C/C++ part.")
     (version "69.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://github.com/unicode-org/icu/releases/download/release-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
-                    "/icu4c-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
-                    "-src.tgz"))
+              (uri (icu4c-uri version))
               (sha256
                (base32
                 "0icps0avkwy5df3wwc5kybxcg63hcgk4phdh9g244g0xrmx7pfjc"))))))
@@ -217,12 +206,7 @@ C/C++ part.")
     (version "70.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://github.com/unicode-org/icu/releases/download/release-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
-                    "/icu4j-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
-                    ".tgz"))
+              (uri (icu4j-uri version))
               (sha256
                (base32 "0qrs75iyzn19kf54q55jn8wf6xjlpkrihdwqpxm39jdh2hz4cgvj"))))
     (build-system ant-build-system)
