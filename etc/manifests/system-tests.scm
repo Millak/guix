@@ -53,7 +53,7 @@ instance."
     (map (lambda (test)
            (system-test
             (inherit test)
-            (value (mparameterize %store-monad ((current-guix-package guix))
+            (value (store-parameterize ((current-guix-package guix))
                      (system-test-value test)))))
          (match (getenv "TESTS")
            (#f

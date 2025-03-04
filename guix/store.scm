@@ -178,6 +178,7 @@
             store-lift
             store-lower
             run-with-store
+            store-parameterize
             %guile-for-build
             current-system
             set-current-system
@@ -1919,6 +1920,7 @@ This is a mutating version that should be avoided.  Prefer the functional
 (define-alias %store-monad %state-monad)
 (define-alias store-return state-return)
 (define-alias store-bind state-bind)
+(define-alias store-parameterize state-parameterize)
 
 ;; Instantiate templates for %STORE-MONAD since it's syntactically different
 ;; from %STATE-MONAD.

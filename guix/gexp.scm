@@ -733,26 +733,28 @@ x86_64-linux when COREUTILS is lowered."
   (lambda (parameterized system target)
     (match (parameterized-bindings parameterized)
       (((parameters values) ...)
-       (let ((fluids (map parameter-fluid parameters))
-             (thunk  (parameterized-thunk parameterized)))
-         ;; Install the PARAMETERS for the dynamic extent of THUNK.
-         (with-fluids* fluids
-           (map (lambda (thunk) (thunk)) values)
-           (lambda ()
-             ;; Special-case '%current-system' and '%current-target-system' to
-             ;; make sure we get the desired effect.
-             (let ((system (if (memq %current-system parameters)
-                               (%current-system)
-                               system))
-                   (target (if (memq %current-target-system parameters)
-                               (%current-target-system)
-                               target)))
-               (match (thunk)
-                 ((? struct? obj)
-                  (lower-object obj system #:target target))
-                 (obj                             ;store item
-                  (with-monad %store-monad
-                    (return obj)))))))))))
+       (let ((thunk (parameterized-thunk parameterized))
+             (values (map (lambda (thunk) (thunk)) values)))
+         ;; Install the PARAMETERS for the store monad.
+         (state-with-parameters parameters values
+           ;; Install the PARAMETERS for the dynamic extent of THUNK.
+           ;; Special-case '%current-system' and '%current-target-system' to
+           ;; make sure we get the desired effect.
+           (with-fluids* (map parameter-fluid parameters)
+             values
+             (lambda ()
+               (let ((system (if (memq %current-system parameters)
+                                 (%current-system)
+                                 system))
+                     (target (if (memq %current-target-system parameters)
+                                 (%current-target-system)
+                                 target)))
+                 (match (thunk)
+                   ((? struct? obj)
+                    (lower-object obj system #:target target))
+                   (obj                             ;store item
+                    (with-monad %store-monad
+                      (return obj))))))))))))
 
   expander => (lambda (parameterized lowered output)
                 (match (parameterized-bindings parameterized)

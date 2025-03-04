@@ -136,18 +136,16 @@
          %monads
          %monad-run))
 
-(test-assert "mparameterize"
+(test-assert "state-parameterize"
   (let ((parameter (make-parameter 'outside)))
-    (every (lambda (monad run)
-             (equal?
-              (run (mlet monad ((outer (return (parameter)))
-                                (inner
-                                 (mparameterize monad ((parameter 'inside))
-                                   (return (parameter)))))
-                     (return (list outer inner (parameter)))))
-              '(outside inside outside)))
-           %monads
-           %monad-run)))
+    (equal?
+     (run-with-state
+         (mlet %state-monad ((outer (return (parameter)))
+                             (inner
+                              (state-parameterize ((parameter 'inside))
+                                  (return (parameter)))))
+           (return (list outer inner (parameter)))))
+     '(outside inside outside))))
 
 (test-assert "mlet* + text-file + package-file"
   (run-with-store %store

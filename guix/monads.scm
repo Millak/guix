@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2017, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2015, 2017, 2022, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,6 +20,7 @@
 (define-module (guix monads)
   #:use-module ((system syntax)
                 #:select (syntax-local-binding))
+  #:autoload   (guix deprecation) (warn-about-deprecation)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -40,7 +42,6 @@
             mbegin
             mwhen
             munless
-            mparameterize
             lift0 lift1 lift2 lift3 lift4 lift5 lift6 lift7 lift
             listm
             foldm
@@ -58,7 +59,9 @@
             set-current-state
             state-push
             state-pop
-            run-with-state))
+            run-with-state
+            state-parameterize
+            mparameterize))
 
 ;;; Commentary:
 ;;;
@@ -399,21 +402,6 @@ expression."
          (mbegin %current-monad
            mexp0 mexp* ...)))))
 
-(define-syntax mparameterize
-  (syntax-rules ()
-    "This form implements dynamic scoping, similar to 'parameterize', but in a
-monadic context."
-    ((_ monad ((parameter value) rest ...) body ...)
-     (let ((old-value (parameter)))
-       (mbegin monad
-         ;; XXX: Non-local exits are not correctly handled.
-         (return (parameter value))
-         (mlet monad ((result (mparameterize monad (rest ...) body ...)))
-           (parameter old-value)
-           (return result)))))
-    ((_ monad () body ...)
-     (mbegin monad body ...))))
-
 (define-syntax define-lift
   (syntax-rules ()
     ((_ liftn (args ...))
@@ -599,5 +587,49 @@ state is assumed to be a list."
 the previous state as a monadic value."
   (lambda (state)
     (values state (cons value state))))
+
+(define-public (state-with-parameters parameters parameter-values mval)
+  "Set PARAMETERS to PARAMETER-VALUES for the dynamic extent of MVAL, a value
+in the state monad."
+  (define (set-value parameter value)
+    (parameter value))
+
+  (lambda (state)
+    ;; XXX: 'with-fluids*' does not work with prompts, therefore the parameters
+    ;; are set globally. This leaves the parameters changed upon a non-local
+    ;; exit and restores them only after running MVAL to completion. See
+    ;; <https://issues.guix.gnu.org/76485>.
+    (let ((old-values (map set-value parameters parameter-values)))
+      (call-with-values
+          (lambda ()
+            (mval state))
+        (lambda (value state)
+          (map set-value parameters old-values)
+          (values value state))))))
+
+(define-syntax state-parameterize
+  (syntax-rules ()
+    "This form implements dynamic scoping, similar to 'parameterize', but also
+in the monadic context of the state monad."
+    ((_ ((param value) ...) body ...)
+     (let ((parameters (list param ...))
+           (values (list value ...)))
+       (state-with-parameters parameters values
+         ;; Install the parameters also for the evaluation of body ...
+         (with-fluids* (map parameter-fluid parameters)
+           values
+           (lambda ()
+             (mbegin %state-monad body ...))))))))
+
+(define-syntax mparameterize                  ;can be removed after 2026-03-05
+  (lambda (s)
+    "This is the old form for 'state-parameterize', which pretended to work
+with any monad but was in fact specialized for '%state-monad'."
+    (syntax-case s ()
+      ((_ monad bindings body ...)
+       (begin
+         (warn-about-deprecation 'mparameterize (current-source-location)
+                                 #:replacement 'state-parameterize)
+         #'(state-parameterize bindings body ...))))))
 
 ;;; monads.scm end here

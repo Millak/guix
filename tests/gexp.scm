@@ -451,6 +451,26 @@
     (return (string=? (derivation-file-name drv)
                       (derivation-file-name result)))))
 
+(test-assertm "with-parameters for %graft?"
+  (mlet* %store-monad ((replacement -> (package
+                                         (inherit %bootstrap-guile)
+                                         (name (string-upcase
+                                                (package-name
+                                                 %bootstrap-guile)))))
+                       (guile -> (package
+                                   (inherit %bootstrap-guile)
+                                   (replacement replacement)))
+                       (drv0   (package->derivation %bootstrap-guile))
+                       (drv1   (package->derivation replacement))
+                       (obj0 -> (with-parameters ((%graft? #f))
+                                  guile))
+                       (obj1 -> (with-parameters ((%graft? #t))
+                                  guile))
+                       (result0 (lower-object obj0))
+                       (result1 (lower-object obj1)))
+    (return (and (eq? drv0 result0)
+                 (eq? drv1 result1)))))
+
 (test-assert "with-parameters + file-append"
   (let* ((system (match (%current-system)
                    ("aarch64-linux" "x86_64-linux")

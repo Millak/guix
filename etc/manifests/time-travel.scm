@@ -22,7 +22,7 @@
 (use-modules (srfi srfi-9) (ice-9 match)
              (guix channels) (guix gexp)
              ((guix store) #:select (%store-monad))
-             ((guix monads) #:select (mparameterize return))
+             ((guix monads) #:select (store-parameterize return))
              ((guix git) #:select (%repository-cache-directory))
              ((guix build utils) #:select (mkdir-p)))
 
@@ -40,9 +40,9 @@
      ;; When this manifest is evaluated by Cuirass, make sure it does not
      ;; fiddle with the cached checkout that Cuirass is also using since
      ;; concurrent accesses are unsafe.
-     (mparameterize %store-monad ((%repository-cache-directory
-                                   (string-append (%repository-cache-directory)
-                                                  "/time-travel/" system)))
+     (store-parameterize ((%repository-cache-directory
+                           (string-append (%repository-cache-directory)
+                                          "/time-travel/" system)))
        (return (mkdir-p (%repository-cache-directory)))
        (latest-channel-derivation channels)))))
 
