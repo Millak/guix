@@ -5213,27 +5213,6 @@ minimum contrast levels, and more.")
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
-           #:cargo-inputs
-           `(("rust-anyhow" ,rust-anyhow-1)
-             ("rust-bincode" ,rust-bincode-1)
-             ("rust-clap" ,rust-clap-4)
-             ("rust-clap-complete" ,rust-clap-complete-4)
-             ("rust-clap-complete-fig" ,rust-clap-complete-fig-4)
-             ("rust-color-print" ,rust-color-print-0.3)
-             ("rust-dirs" ,rust-dirs-5)
-             ("rust-dunce" ,rust-dunce-1)
-             ("rust-fastrand" ,rust-fastrand-2)
-             ("rust-glob" ,rust-glob-0.3)
-             ("rust-nix" ,rust-nix-0.29)
-             ("rust-ouroboros" ,rust-ouroboros-0.18)
-             ("rust-rinja" ,rust-rinja-0.3)
-             ("rust-serde" ,rust-serde-1)
-             ("rust-which" ,rust-which-6))
-           #:cargo-development-inputs
-           `(("rust-assert-cmd" ,rust-assert-cmd-2)
-             ("rust-rstest" ,rust-rstest-0.23)
-             ("rust-rstest-reuse" ,rust-rstest-reuse-0.7)
-             ("rust-tempfile" ,rust-tempfile-3))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-references
@@ -5272,6 +5251,7 @@ minimum contrast levels, and more.")
                      (copy-file "contrib/completions/zoxide.elv"
                                 (string-append elvish-completions-dir
                                                "/zoxide"))))))))
+    (inputs (cargo-inputs 'zoxide))
     (home-page "https://github.com/ajeetdsouza/zoxide/")
     (synopsis "Fast way to navigate your file system")
     (description
