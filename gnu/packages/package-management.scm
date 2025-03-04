@@ -1025,7 +1025,7 @@ transactions from C or Python.")
              guix
              guix-data-service
              guix-build-coordinator
-             guile-fibers
+             guile-fibers-next
              guile-knots
              guile-pfds
              guile-prometheus
@@ -1036,7 +1036,7 @@ transactions from C or Python.")
              guix
              guix-data-service
              guix-build-coordinator
-             guile-fibers
+             guile-fibers-next
              guile-knots
              guile-pfds
              guile-prometheus
@@ -1859,7 +1859,7 @@ in an isolated environment, in separate namespaces.")
                                           "guile-prometheus"
                                           "guile-sqlite3"
                                           "guile-gnutls"
-                                          "guile-fibers"
+                                          "guile-fibers-next"
                                           "guile-knots")))
                        (wrap-program file
                          `("GUILE_LOAD_PATH" ":" prefix
@@ -1892,7 +1892,7 @@ in an isolated environment, in separate namespaces.")
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers
+             guile-fibers-next
              guile-knots
              guile-prometheus
              guile-lib
@@ -1906,7 +1906,7 @@ in an isolated environment, in separate namespaces.")
        (list guile-json-4
              guile-gcrypt
              guix
-             guile-fibers
+             guile-fibers-next
              guile-knots
              guile-prometheus
              guile-lib

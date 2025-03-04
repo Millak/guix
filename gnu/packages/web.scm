@@ -5446,7 +5446,7 @@ Cloud.")
              bash-minimal))
       (propagated-inputs
        (list guix
-             guile-fibers
+             guile-fibers-next
              guile-knots
              guile-json-4
              guile-email
