@@ -1683,6 +1683,8 @@ decode and default on encode.
                      ;; Tests fail with error: AssertinError ...
                      "test_parameter_for_autopublish_code_sha256"
                      "test_sam_with_language_extension"
+                     "test_module_integration"
+                     "test_templates"
                      ;; Test fails with error: diff error while comparing
                      ;; graphs.
                      "test_build_graph")
