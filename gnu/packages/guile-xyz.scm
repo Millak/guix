@@ -6646,8 +6646,8 @@ is an attempt to combine both into something useful.")
       (license license:asl2.0))))
 
 (define-public guile-knots
-  (let ((commit "f41d1853ceb9f8d297fc756925a08f6d11d30d10")
-        (revision "12"))
+  (let ((commit "3aab1be1e7ece854ff20e4e5b84c1be2165c0234")
+        (revision "13"))
     (package
     (name "guile-knots")
     (version (git-version "0" revision commit))
@@ -6658,20 +6658,20 @@ is an attempt to combine both into something useful.")
                     (commit commit)))
               (sha256
                (base32
-                "1rfl2dk57pc7dmvn7rm80mj4q0la5bv1x1smkq7mzsfpcyzps6mg"))
+                "13cji86c5jzp2zb3qffb9jkx34ykas2vwibm83pzl1158mk9npbd"))
               (file-name (string-append name "-" version "-checkout"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config
            autoconf
            automake
-           guile-3.0
+           guile-next
            guile-lib
-           guile-fibers))
+           guile-fibers-next))
     (inputs
-     (list guile-3.0))
+     (list guile-next))
     (propagated-inputs
-     (list guile-fibers))
+     (list guile-fibers-next))
     (home-page "https://git.cbaines.net/guile/knots")
     (synopsis "Patterns and functionality to use with Guile Fibers")
     (description
