@@ -520,7 +520,9 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
                                                    "subprojects/" name))
                                  (overlay-dir (string-append
                                                "subprojects/packagefiles/" name)))
-                             (copy-recursively source subproject-dest)
+                             (mkdir-p subproject-dest)
+                             (invoke "tar" "xf" source "-C" subproject-dest
+                                     "--strip-components=1")
                              ;; Normally when the patch_directory wrap file property
                              ;; is specified, meson automatically copies from
                              ;; packagefiles, but this is not the case here (only
@@ -534,23 +536,9 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
 directory = ~a
 "
                                          name))))))
-                        '#+(map (lambda (pkg)
-                                  (let ((name (package-upstream-name* pkg))
-                                        (version (package-version pkg)))
-                                    (list (package-upstream-name* pkg)
-                                          (file-append pkg
-                                                       "/share/cargo/src/"
-                                                       name "-" version))))
-                                (let ((from-crates-io
-                                       (cut module-ref
-                                            (resolve-interface
-                                             '(gnu packages crates-io))
-                                            <>)))
-                                  (list (from-crates-io 'rust-syn-2)
-                                        (from-crates-io 'rust-unicode-ident-1)
-                                        (from-crates-io 'rust-quote-1)
-                                        (from-crates-io 'rust-proc-macro2-1)
-                                        (from-crates-io 'rust-paste-1))))))))
+                        '#+(module-ref (resolve-interface
+                                        '(gnu packages rust-crates))
+                                       'mesa-cargo-inputs)))))
                 #~())
          (add-after 'unpack 'set-home-directory
            ;; Build tries to use a shader cache (non-fatal error).
