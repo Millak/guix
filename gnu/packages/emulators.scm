@@ -571,7 +571,7 @@ older games.")
   ;; This is not a patch staging area for DOSBox, but an unaffiliated fork.
   (package
     (name "dosbox-staging")
-    (version "0.81.0")
+    (version "0.82.0")
     (source
      (origin
        (method git-fetch)
@@ -580,32 +580,27 @@ older games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fkshxaq12pd72v8m2f3a6d6jk9gh39hn0846gfkfinvw7yykzrl"))))
+        (base32 "1s4c6fiyjm91dnmkval9fvsqszc6yjq5b6pq895xi606dn29b85d"))))
     (build-system meson-build-system)
     (arguments
-     (list #:configure-flags
-           #~(list
-              ;; These both try to git clone subprojects.
-              "-Dunit_tests=disabled"   ; gtest
-              "-Duse_mt32emu=false")
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-includes
+               (add-after 'unpack 'skip-failing-tests
                  (lambda _
-                   ;; This unnecessary file has an encoding error.
-                   (delete-file "./src/libs/sdlcd/macosx/SDLOSXCAGuard.h")
-                   (substitute* (find-files "." "\\.(cpp|h)")
-                     (("^(#[[:space:]]*include <)(SDL[_.])" _ include file)
-                      (string-append include "SDL2/" file))))))))
+                   (substitute* "tests/meson.build"
+                     ;; XXX: This test fails with "Segmentation fault".
+                     (("[{].*'shell_cmds'.*,") "")))))))
     (native-inputs
      (list pkg-config))
     (inputs
      (list alsa-lib
            fluidsynth
+           googletest
            iir
            libpng
            libslirp
            mesa
+           mt32emu
            opusfile
            sdl2
            sdl2-image
