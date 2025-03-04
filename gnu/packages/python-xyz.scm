@@ -32233,7 +32233,8 @@ standard error channel (stderr) in your program.")
                  "not test_is_block_device"
 
                  ,@(cond
-                    ((target-aarch64?)
+                    ((or (target-aarch64?)
+                         (target-riscv64?))
                      '(" and not test_keyboardinterrupt_during_test"))
                     (#t '()))
 
