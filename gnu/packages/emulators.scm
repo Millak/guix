@@ -23,6 +23,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2025 Andrew Wong <wongandj@icloud.comg>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4062,6 +4063,74 @@ on a Commodore C64, C128 etc.")
     ;; Some files are LGPL 2.1--but we aren't building from or installing those.
     ;; zlib license with an (non-)advertising clause.
     (license license:zlib)))
+
+(define-public flycast
+  (package
+    (name "flycast")
+    (version "2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/flyinghead/flycast")
+             (commit (string-append "v" version))
+             ;; There are many bundled packages here included as git
+             ;; submodules. Removing many of them would require patching the
+             ;; source code and repository layout.
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ainy75gkrvilcm89hq6wq9md41w0mxgp6l27q5fzrxxykpjh6ym"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (substitute* "CMakeLists.txt"
+                      (("add_subdirectory\\(core/deps/Vulkan-Headers\\)")
+                       "find_package(VulkanHeaders)"))
+                    (with-directory-excursion "core/deps"
+                      (for-each delete-file-recursively
+                                '("SDL"
+                                  "Spout"
+                                  "Syphon"
+                                  "Vulkan-Headers"
+                                  "breakpad"
+                                  "discord-rpc"
+                                  "libzip"
+                                  "oboe")))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no test suite
+      #:configure-flags
+      #~(list "-DUSE_ALSA=ON"
+              "-DUSE_BREAKPAD=OFF"
+              "-DUSE_DX11=OFF"
+              "-DUSE_DX9=OFF"
+              ;; The USE_HOST_GLSLANG option is not implemented correctly.
+              ;; (see: https://github.com/flyinghead/flycast/issues/1843)
+              "-DUSE_HOST_GLSLANG=OFF"
+              "-DUSE_HOST_LIBZIP=ON"
+              "-DUSE_HOST_SDL=ON"
+              "-DUSE_LIBAO=ON"
+              "-DUSE_LUA=ON"
+              "-DUSE_PULSEAUDIO=ON"
+              "-DUSE_VULKAN=ON")))
+    (inputs (list alsa-lib
+                  ao
+                  curl
+                  glslang
+                  libzip
+                  lua
+                  miniupnpc
+                  pulseaudio
+                  sdl2
+                  spirv-tools
+                  vulkan-headers
+                  pkg-config))
+    (home-page "https://github.com/flyinghead/flycast")
+    (synopsis "Sega Dreamcast, Naomi, Naomi 2, and Atomiswave emulator")
+    (description "Flycast is a multi-platform Sega Dreamcast, Naomi, Naomi 2,
+and Atomiswave emulator derived from reicast.")
+    (license license:gpl2+)))
 
 (define-public freedisksysrom
   ;; There is no release; use the latest commit.
