@@ -1426,16 +1426,7 @@ Documentation} for more information (for example by running @samp{info
                  ;; OpenSSL license incompatibilities.
                  "# CONFIG_SPL_FIT_SIGNATURE is not set"))))
     (package
-      (inherit base)
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'patch-header
-                (lambda _
-                  (substitute* "include/config_distro_bootcmd.h"
-                    (("\"scsi_need_init=")
-                     "\"setenv scsi_need_init")))))))))))
+      (inherit base))))
 
 (define-public u-boot-pinebook-pro-rk3399
   (make-u-boot-rockchip-package "pinebook-pro" 'rk3399))
