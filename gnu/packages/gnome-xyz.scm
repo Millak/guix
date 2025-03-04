@@ -66,6 +66,7 @@
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-science)
@@ -1814,4 +1815,48 @@ way they prefer.")
     (home-page "https://gitlab.gnome.org/raggesilver/marble")
     (synopsis "Utility library for GNOME apps")
     (description "@code{libpqmarble} is a utility library for GNOME apps.")
+    (license license:gpl3+)))
+
+(define-public blackbox-terminal
+  (package
+    (name "blackbox-terminal")
+    (version "0.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/raggesilver/blackbox")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g7n2z0m7jjbn93zvx3ix7ph4mpncwq80cjjc2prp878cksj3g3r"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:configure-flags #~(list "-Dblackbox_is_flatpak=false")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-gtk4-update-icon-cache
+                          (lambda _
+                            (substitute* "build-aux/meson/postinstall.py"
+                              (("gtk-update-icon-cache")
+                               "true")))))))
+    (native-inputs (list pkg-config
+                         vala
+                         python
+                         desktop-file-utils ;for update-desktop-database
+                         (list glib "bin") ;for glib-compile-schemas, etc.
+                         gettext-minimal))
+    (inputs (list gtk
+                  vte-with-sixel
+                  json-glib
+                  libpqmarble
+                  libadwaita
+                  pcre2
+                  libxml2
+                  libgee
+                  librsvg))
+    (home-page "https://gitlab.gnome.org/raggesilver/blackbox/")
+    (synopsis "Beautiful GTK 4 terminal")
+    (description
+     "@code{blackbox-terminal} is an elegant and customizable terminal for GNOME.")
     (license license:gpl3+)))
