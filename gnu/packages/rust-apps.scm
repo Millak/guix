@@ -3513,19 +3513,7 @@ support, watch support (like @command{top}) and a tree view.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0jdbxmn5h5nlr4bifx85gny309djv5djs9q78fa1d7sj0wdw2sys"))))
-    (arguments
-     `(#:cargo-inputs (("rust-clap" ,rust-clap-3)
-                       ("rust-heck" ,rust-heck-0.4)
-                       ("rust-indexmap" ,rust-indexmap-1)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-proc-macro2" ,rust-proc-macro2-1)
-                       ("rust-quote" ,rust-quote-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-syn" ,rust-syn-1)
-                       ("rust-tempfile" ,rust-tempfile-3)
-                       ("rust-toml" ,rust-toml-0.5))
-       #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-0.5))))))
+    (inputs (cargo-inputs 'rust-cbindgen-0.26))))
 
 (define-public rust-cbindgen-0.24
   (package
