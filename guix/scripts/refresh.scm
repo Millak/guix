@@ -61,7 +61,7 @@
 
 (define %default-options
   ;; Alist of default option values.
-  '())
+  '((key-download . auto)))
 
 (define %options
   ;; Specification of the command-line options.
@@ -135,7 +135,7 @@
         (option '("key-download") #t #f
                 (lambda (opt name arg result)
                   (match arg
-                    ((or "interactive" "always" "never")
+                    ((or "auto" "interactive" "always" "never")
                      (alist-cons 'key-download (string->symbol arg)
                                  result))
                     (x
