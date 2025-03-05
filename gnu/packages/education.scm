@@ -230,18 +230,18 @@ of categories with some of the activities available in that category.
         (base32 "1my67r7x6j7snidnj47v3ndhf3i5sxn0zqj4d8apaw6mbqms96vj"))))
     (build-system qt-build-system)
     (arguments
-     `(#:qtbase ,qtbase
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'start-xorg-server
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; The test suite requires a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             ;; The test suite wants to write to /homeless-shelter
-             (setenv "HOME" (getcwd)))))
-       #:configure-flags (list "-DQML_BOX2D_MODULE=disabled"
-                               "-DBUILD_TESTING=TRUE")))
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'start-xorg-server
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; The test suite requires a running X server.
+                   (system "Xvfb :1 &")
+                   (setenv "DISPLAY" ":1")
+                   ;; The test suite wants to write to /homeless-shelter
+                   (setenv "HOME" (getcwd)))))
+           #:configure-flags #~(list "-DQML_BOX2D_MODULE=disabled"
+                                     "-DBUILD_TESTING=TRUE")))
     (native-inputs
      (list extra-cmake-modules
            gettext-minimal
