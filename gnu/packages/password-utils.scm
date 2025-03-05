@@ -229,7 +229,7 @@ human.")
 (define-public keepassxc
   (package
     (name "keepassxc")
-    (version "2.7.9")
+    (version "2.7.10")
     (source
      (origin
        (method url-fetch)
@@ -237,7 +237,7 @@ human.")
                            "/releases/download/" version "/keepassxc-"
                            version "-src.tar.xz"))
        (sha256
-        (base32 "1za6xnwnq68gswz8vh7s5wia1bdhnia11hcb7p3dl3f049gy8i1w"))))
+        (base32 "1ylxh72bpf4pzsj13j8zlxpidp6aygaikw454n228v4q81j6vrsw"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -269,14 +269,20 @@ human.")
                  (string-append
                   "QString::fromUtf8(\""
                   (search-input-file inputs "bin/wl-copy")
-                  "\")")))))
+                  "\")")))
+              (substitute* "src/gui/Clipboard.cpp"
+                (("\"wl-copy\"")
+                 (format #f "~s" (search-input-file inputs "bin/wl-copy"))))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;; "TestCli::testClip() Compared values are not the same".
-                ;;   Actual   (((clipboard->text()))): ""
-                ;;   Expected (QString("Password"))  : "Password"
-                (invoke "ctest" "--exclude-regex" "testcli")))))))
+                ;; Entries have recently become sorted per the locale, and
+                ;; causes testentrymodel to fail when using the C locale (see:
+                ;; https://github.com/keepassxreboot/keepassxc/issues/11813).
+                ;; testClip runs 'xclip', which hangs in the container,
+                ;; perhaps because it lacks a TTY.
+                (invoke "ctest" "--exclude-regex"
+                        "testentrymodel|testcli")))))))
     (native-inputs
      (append
       (list qttools-5)
