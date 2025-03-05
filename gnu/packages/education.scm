@@ -219,7 +219,7 @@ of categories with some of the activities available in that category.
 (define-public gcompris-qt
   (package
     (name "gcompris-qt")
-    (version "4.3")
+    (version "25.0.12")
     (source
      (origin
        (method url-fetch)
@@ -227,10 +227,11 @@ of categories with some of the activities available in that category.
              "mirror://kde/stable/gcompris/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
-        (base32 "1ixm0gdpxpbkz2zspvvrkwdjadrc03wxm4d1kk1ckv3f8f3i7sn7"))))
+        (base32 "1my67r7x6j7snidnj47v3ndhf3i5sxn0zqj4d8apaw6mbqms96vj"))))
     (build-system qt-build-system)
     (arguments
-     `(#:phases
+     `(#:qtbase ,qtbase
+       #:phases
        (modify-phases %standard-phases
          (add-before 'check 'start-xorg-server
            (lambda* (#:key inputs #:allow-other-keys)
@@ -246,19 +247,17 @@ of categories with some of the activities available in that category.
            gettext-minimal
            kdoctools
            perl
-           qttools-5
+           pkg-config
+           qttools
            xorg-server-for-tests))
     (inputs
      (list openssl
            python-wrapper
-           qtbase-5
-           qtcharts-5
-           qtdeclarative-5
-           qtgraphicaleffects
-           qtmultimedia-5
-           qtquickcontrols2-5
-           qtsensors-5
-           qtsvg-5))
+           qtcharts
+           qtdeclarative
+           qtmultimedia
+           qtsensors
+           qtsvg))
     (home-page "https://gcompris.net/index-en.html")
     (synopsis "Educational games for small children")
     (description
