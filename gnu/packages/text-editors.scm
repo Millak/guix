@@ -37,6 +37,7 @@
 ;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -104,6 +105,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libbsd)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp-check)
   #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages llvm)
@@ -1898,3 +1900,35 @@ highlighting for dozens of languages.  Jed is very small and fast.")
      "XNEdit is a fast and classic X11 text editor, based on NEdit,
 with full unicode support and antialiased text rendering.")
     (license license:gpl2+)))
+
+(define-public dte
+  (package
+    (name "dte")
+    (version "1.11.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/craigbarnes/dte")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q43jvhj6r1ws58ngpcq8mzj4di7mj2a4bmigk9zy0f3riagnlv1"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list util-linux))
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (home-page "https://craigbarnes.gitlab.io/dte/")
+    (synopsis "Small and easy to use console text editor")
+    (description
+     "@command{dte} is a portable console text editor with features like multiple buffers/tabs,
+syntax highlighting, customizable color scheme (including support for 24-bit true
+colours), kitty keyboard protocol, editorconfig support, amongst other features.")
+    (license license:gpl2)))
