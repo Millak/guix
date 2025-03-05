@@ -1547,6 +1547,9 @@ pretty simple, REST API.")
     (build-system meson-build-system)
     (arguments
      (list
+      #:modules '((guix build meson-build-system)
+                  (guix build utils)
+                  (ice-9 format))
       #:configure-flags
       #~(list "-Ddriver_qemu=enabled"
               "-Dqemu_user=nobody"
@@ -1573,12 +1576,31 @@ pretty simple, REST API.")
               (substitute* "scripts/meson-install-dirs.py"
                 (("destdir = .*")
                  "destdir = '/tmp'"))))
-          (add-after 'unpack 'use-absolute-dnsmasq
+          (add-after 'unpack 'patch-commands
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((dnsmasq (search-input-file inputs "sbin/dnsmasq")))
-                (substitute* "src/util/virdnsmasq.c"
-                  (("#define DNSMASQ \"dnsmasq\"")
-                   (string-append "#define DNSMASQ \"" dnsmasq "\""))))))
+              (let-syntax
+                  ((patch-command-define
+                    ;; Patch lines of the form: #define COMMAND "command"
+                    (lambda (x)
+                      (syntax-case x ()
+                        ((_ file command)
+                         (with-syntax ((pattern (datum->syntax x 'pattern)))
+                           #'(let ((pattern
+                                    (format #f "(#define ~:@(~a~) )\"~a\""
+                                            command command)))
+                               (substitute* file
+                                 ((pattern dummy head)
+                                  (format
+                                   #f "~a~s" head
+                                   (search-input-file
+                                    inputs (string-append "sbin/"
+                                                          command))))))))))))
+                (with-directory-excursion "src/util"
+                  (patch-command-define "virdnsmasq.c" "dnsmasq")
+                  (patch-command-define "virfirewall.h" "ebtables")
+                  (patch-command-define "virfirewall.h" "iptables")
+                  (patch-command-define "virfirewall.h" "ip6tables")
+                  (patch-command-define "virfirewall.h" "nft")))))
           (add-before 'configure 'disable-broken-tests
             (lambda _
               (let ((tests (list "commandtest"         ; hangs idly
@@ -1601,7 +1623,6 @@ pretty simple, REST API.")
            dbus
            dmidecode
            dnsmasq
-           ebtables
            eudev
            fuse-2
            gnutls
@@ -1615,6 +1636,7 @@ pretty simple, REST API.")
            libtirpc                     ;for <rpc/rpc.h>
            libxml2
            lvm2                         ;for libdevmapper
+           nftables
            openssl
            parted
            `(,util-linux "lib")
