@@ -1595,31 +1595,31 @@ pretty simple, REST API.")
     (inputs
      (list acl
            attr
-           fuse-2
-           libxml2
-           eudev
-           libpciaccess
-           gnutls
-           dbus
-           json-c
-           libpcap
-           libnl
-           libssh2                      ;optional
-           libtirpc                     ;for <rpc/rpc.h>
-           `(,util-linux "lib")
-           lvm2                         ;for libdevmapper
-           curl
-           openssl
-           readline
-           cyrus-sasl
-           yajl
            audit
+           curl
+           cyrus-sasl
+           dbus
            dmidecode
            dnsmasq
            ebtables
-           parted
+           eudev
+           fuse-2
+           gnutls
            iproute
-           iptables))
+           iptables
+           json-c
+           libnl
+           libpcap
+           libpciaccess
+           libssh2                      ;optional
+           libtirpc                     ;for <rpc/rpc.h>
+           libxml2
+           lvm2                         ;for libdevmapper
+           openssl
+           parted
+           `(,util-linux "lib")
+           readline
+           yajl))
     (native-inputs
      (list bash-completion
            gettext-minimal
