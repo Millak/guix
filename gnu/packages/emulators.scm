@@ -583,13 +583,9 @@ older games.")
         (base32 "1s4c6fiyjm91dnmkval9fvsqszc6yjq5b6pq895xi606dn29b85d"))))
     (build-system meson-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'skip-failing-tests
-                 (lambda _
-                   (substitute* "tests/meson.build"
-                     ;; XXX: This test fails with "Segmentation fault".
-                     (("[{].*'shell_cmds'.*,") "")))))))
+     ;; XXX: When build with debugoptimized, some assertions and tests will
+     ;; fail.
+     (list #:build-type "release"))
     (native-inputs
      (list pkg-config))
     (inputs
