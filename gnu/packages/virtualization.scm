@@ -1535,14 +1535,14 @@ pretty simple, REST API.")
 (define-public libvirt
   (package
     (name "libvirt")
-    (version "8.6.0")
+    (version "10.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/libvirt-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1qisvbshbcd5305mrb4vni559k52id7c8iw4dwdydbf97b24f658"))
+        (base32 "15jpfrn3d2zyhbm5ip7bmpjb6ch2bfxm1h6yfgh0l3bw3g9ppgg1"))
        (patches (search-patches "libvirt-add-install-prefix.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -1587,7 +1587,11 @@ pretty simple, REST API.")
                                  "virnetsockettest"))) ; tries to network
                 (substitute* "tests/meson.build"
                   (((format #f ".*'name': '(~a)'.*" (string-join tests "|")))
-                   ""))))))))
+                   "")))))
+          (add-before 'configure 'fix-test-data
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "tests/qemuvhostuserdata/usr/libexec")
+                (("^cat") (search-input-file inputs "bin/cat"))))))))
     (inputs
      (list acl
            attr
@@ -1597,6 +1601,7 @@ pretty simple, REST API.")
            libpciaccess
            gnutls
            dbus
+           json-c
            libpcap
            libnl
            libssh2                      ;optional
