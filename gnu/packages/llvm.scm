@@ -26,7 +26,7 @@
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
-;;; Copyright © 2023-2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023-2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -568,7 +568,8 @@ output), and Binutils.")
     ("16.0.6" . "0jxmapg7shwkl88m4mqgfjv4ziqdmnppxhjz6vz51ycp2x4nmjky")
     ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")
     ("18.1.8" . "1l9wm0g9jrpdf309kxjx7xrzf13h81kz8bbp0md14nrz38qll9la")
-    ("19.1.7" . "18hkfhsm88bh3vnj21q7f118vrcnf7z6q1ylnwbknyb3yvk0343i")))
+    ("19.1.7" . "18hkfhsm88bh3vnj21q7f118vrcnf7z6q1ylnwbknyb3yvk0343i")
+    ("20.1.0" . "1ny66g8g186scb3mxqy5hdxbs03rrf1qs1y6smf7574vidxpr9pk")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"
@@ -583,6 +584,8 @@ output), and Binutils.")
     ("18.1.8" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))
     ("19.1.7" . ("clang-18.0-libc-search-path.patch"
+                 "clang-17.0-link-dsymutil-latomic.patch"))
+    ("20.1.0" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))))
 
 (define (llvm-monorepo version)
@@ -1604,6 +1607,37 @@ Library.")
 
 (define-public clang-toolchain-19
   (make-clang-toolchain clang-19 libomp-19))
+
+(define-public llvm-20
+  (make-llvm "20.1.0"))
+
+(define-public clang-runtime-20
+  (clang-runtime-from-llvm llvm-20))
+
+(define-public clang-20
+  (clang-from-llvm
+   llvm-20 clang-runtime-20
+   #:tools-extra
+   (origin
+     (method url-fetch)
+     (uri (llvm-uri "clang-tools-extra"
+                    (package-version llvm-20)))
+     (sha256
+      (base32
+       "19ksp5qnl5p5jqywfvvff8jjb0vbwmj33q58g1nhyj1ik48h9rcq")))))
+
+(define-public libomp-20
+  (package
+    (inherit libomp-15)
+    (version (package-version llvm-20))
+    (source (llvm-monorepo version))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-15)
+       (replace "clang" clang-20)
+       (replace "llvm" llvm-20)))))
+
+(define-public clang-toolchain-20
+  (make-clang-toolchain clang-20 libomp-20))
 
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
