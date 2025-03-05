@@ -564,7 +564,7 @@ directory.")
 (define-public sdl2-image
   (package (inherit sdl-image)
     (name "sdl2-image")
-    (version "2.6.3")
+    (version "2.8.8")
     (source
      (origin
        (method url-fetch)
@@ -572,7 +572,7 @@ directory.")
         (string-append "https://www.libsdl.org/projects/SDL_image/release/"
                        "SDL2_image-" version ".tar.gz"))
        (sha256
-        (base32 "0b1i6r46pzvyp924pwn74d78gvkyif15ghbxkfp8yz0xpzjrn74k"))))
+        (base32 "02p3gh4mc8dgf26bl30rfirwi0qspq6453lcwg8208pzv9pva4r2"))))
     (propagated-inputs
      (propagated-inputs-with-sdl2 sdl-image))
     (properties '((upstream-name . "SDL2_image")))))
