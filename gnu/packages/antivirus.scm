@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
+;;; Copyright © 2023 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
@@ -27,8 +28,11 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cmake)
@@ -40,6 +44,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages rust-apps)
@@ -185,3 +190,39 @@ anti-virus engine available in the form of a shared library.")
                    (license:non-copyleft "libclamav/strlcat.c") ;"OpenBSD" license
                    license:asl2.0       ;libclamav/yara*
                    license:expat))))    ;shared/getopt.[ch]
+
+(define-public yara
+  (package
+    (name "yara")
+    (version "4.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/VirusTotal/yara")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qaw1zv618jkqa5g39p1sdv8s6a7q23ayqfrqv0bj2z1g4nmn95g"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* "tests/test-rules.c"
+                (("/bin/sh")
+                 (string-append #$(this-package-input "bash-minimal")
+                                "/bin/sh"))))))))
+    (inputs (list openssl bash-minimal))
+    (native-inputs (list autoconf automake libtool protobuf pkg-config))
+    (home-page "https://github.com/VirusTotal/yara")
+    (synopsis "Pattern matching swiss knife")
+    (description
+     "YARA is a tool aimed at helping malware researchers to identify and
+classify malware samples.  With YARA you can create rules that evaluate
+conditions based on textual and binary patterns.  This package also provides
+an executable to scan files, folders, and running processes and report those
+that match said rules.")
+    (license license:bsd-3)))
