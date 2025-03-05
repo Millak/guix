@@ -843,7 +843,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Zheng Junjie"
                        "z572@z572.online")
-  core-packages qt)
+  core-packages qt kde)
 
 (define-member (person "Jelle Licht"
                        "jlicht@fsfe.org")
