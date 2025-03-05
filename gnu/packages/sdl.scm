@@ -388,7 +388,7 @@ other supporting functions for SDL.")
     (description "SDL_image is an image file loading library for SDL that
 supports the following formats: BMP, GIF, JPEG, LBM, PCX, PNG, PNM, TGA, TIFF,
 WEBP, XCF, XPM, and XV.")
-    (home-page "https://www.libsdl.org/projects/SDL_image/")
+    (home-page "https://github.com/libsdl-org/SDL_image")
     (license license:zlib)))
 
 (define-public sdl-mixer
@@ -802,6 +802,29 @@ and other support functions wrapped up in an add-on, C-based library
 for the Simple Direct Media (SDL) cross-platform API layer.")
     (license license:zlib)
     (properties '((upstream-name . "SDL3_gfx")))))
+
+(define-public sdl3-image
+  (package (inherit sdl2-image)
+    (name "sdl3-image")
+    (version "3.2.4")
+    (source
+     (origin
+      (method url-fetch)
+      (uri
+       (string-append "https://www.libsdl.org/projects/SDL_image/release/"
+                      "SDL3_image-" version ".tar.gz"))
+      (sha256
+       (base32 "10n1rxyswchd8vppalh2bl3ah5fww5chd5cdvnhds7r60invs9d7"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; Link the libraries instead of dlopening them.
+     '(#:configure-flags '("-DSDLIMAGE_AVIF_SHARED=OFF"
+                           "-DSDLIMAGE_TIF_SHARED=OFF"
+                           "-DSDLIMAGE_WEBP_SHARED=OFF"
+                           "-DSDLIMAGE_TESTS=ON")))
+    (propagated-inputs
+     (list sdl3 libavif libjpeg-turbo libpng libtiff libwebp))
+    (properties '((upstream-name . "SDL3_image")))))
 
 (define-public sdl3-ttf
   (package
