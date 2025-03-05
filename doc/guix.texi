@@ -18228,11 +18228,6 @@ The daemon itself is still able to write to the store: it remounts it
 read-write in its own ``name space.''
 @end defvar
 
-@defvar %runtime-variable-data
-This file system is mounted as @file{/run} and contains system
-information data describing the system since it was booted.
-@end defvar
-
 @defvar %binary-format-file-system
 The @code{binfmt_misc} file system, which allows handling of arbitrary
 executable file types to be delegated to user space.  This requires the
