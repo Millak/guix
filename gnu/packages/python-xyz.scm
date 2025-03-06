@@ -623,6 +623,28 @@ after class definitions.")
 check docstrings.")
     (license license:expat)))
 
+(define-public python-flake8-import-order
+  (package
+    (name "python-flake8-import-order")
+    (version "0.18.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flake8-import-order" version))
+       (sha256
+        (base32 "03lh1n98lx8ncrr6n8cv5qj3birvqyqbpfhisw4hqgnsjbw42fg2"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pycodestyle python-setuptools))
+    (native-inputs (list python-setuptools python-wheel python-pytest
+                         python-pylama python-flake8))
+    (home-page "https://github.com/PyCQA/flake8-import-order")
+    (synopsis
+     "Flake8 and pylama plugin that checks the ordering of import statements")
+    (description
+     "This package provieds a flake8 and pylama plugin that checks the ordering
+of import statements.")
+    (license license:lgpl3)))
+
 (define-public python-flexcache
   (package
     (name "python-flexcache")
