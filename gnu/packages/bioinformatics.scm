@@ -24342,6 +24342,51 @@ copy number estimation, as described by
 @url{doi:10.1016/j.cell.2012.04.023,Nik-Zainal et al.}")
    (license license:gpl3)))
 
+(define-public r-bayesprism
+  (package
+    (name "r-bayesprism")
+    (version "2.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Danko-Lab/BayesPrism")
+             ;; The version string in the DESCRIPTION file was changed to
+             ;; 2.2.2 in this commit.
+             (commit "5d43190d5fdfc900571ae1b05b9dcad9ee6b8b2b")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rlq6nv1adc9w1ync8834kv59ksixxzbpf3xlbxi5s8x54gv4q9y"))))
+    (properties `((upstream-name . "BayesPrism")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "BayesPrism"))))))
+    (propagated-inputs (list r-biocparallel
+                             r-gplots
+                             r-matrix
+                             r-nmf
+                             r-scran
+                             r-snowfall
+                             r-r-utils))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/Danko-Lab/BayesPrism")
+    (synopsis "Bayesian cell type and gene expression deconvolution")
+    (description
+     "BayesPrism includes deconvolution and embedding learning modules.
+The deconvolution module models a prior from cell type-specific expression
+profiles from scRNA-seq to jointly estimate the posterior distribution of cell
+type composition and cell type-specific gene expression from bulk RNA-seq
+expression of tumor samples.  The embedding learning module uses
+@dfn{Expectation-maximization} (EM) to approximate the tumor expression using
+a linear combination of malignant gene programs while conditional on the
+inferred expression and fraction of non-malignant cells estimated by the
+deconvolution module.")
+    (license license:gpl3)))
+
 (define-public r-catch
   (let ((commit "196ddd5a51b1a5f5daa01de53fdaad9b7505e084")
         (revision "1"))
