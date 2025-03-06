@@ -8550,16 +8550,17 @@ users.")
     (name "network-manager")
     ;; Note: NetworkManager still follows the odd/even major version number
     ;; for development/stable releases scheme; be sure to use a stable one.
-    (version "1.50.0")
+    (version "1.52.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/NetworkManager/"
-                                  (version-major+minor version) "/"
-                                  "NetworkManager-" version ".tar.xz"))
-              (patches (search-patches "network-manager-plugin-path.patch"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://gitlab.freedesktop.org/"
+                                        "NetworkManager/NetworkManager"))
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qv6ma7lhznwcjybl9kwbnbv28k1ca0r9n65ak2fnv35i8wff0zw"))))
+                "0fx3yvqrwc9fqphhwvchxls0lgizlz7bxww3riijlvx3pkypqbyr"))))
     (build-system meson-build-system)
     (outputs '("out"
                "doc"))                  ; 8 MiB of gtk-doc HTML
@@ -8577,8 +8578,6 @@ users.")
          "-Dsuspend_resume=elogind"
          "-Dsystemdsystemunitdir=no"
          "-Dsession_tracking_consolekit=false"
-         "-Ddhcpcd=no"
-         "-Ddhcpcanon=no"
          "-Dcrypto=gnutls"
          "-Diwd=true"
          "-Dnm_cloud_setup=false"
@@ -8592,9 +8591,7 @@ users.")
          (string-append "-Ddbus_conf_dir="
                         #$output "/etc/dbus-1/system.d")
          (string-append "-Dmodprobe=" (search-input-file %build-inputs
-                                                         "bin/modprobe"))
-         (string-append "-Ddhclient=" (search-input-file %build-inputs
-                                                         "sbin/dhclient")))
+                                                         "bin/modprobe")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-dlopen-call-to-libjansson.so
@@ -8667,6 +8664,7 @@ users.")
            curl
            cyrus-sasl
            dbus-glib
+           dhcpcd
            dnsmasq
            elogind
            eudev
@@ -8684,6 +8682,7 @@ users.")
            libselinux
            mobile-broadband-provider-info
            modem-manager
+           nftables
            newt                         ;for the 'nmtui' console interface
            openresolv                   ;alternative resolv.conf manager
            polkit
