@@ -3783,6 +3783,24 @@ offers the bricks to build efficient and scalable distributed machine
 learning libraries.")
     (license license:asl2.0)))
 
+(define-public dmlc-core-next
+  ;; Apache Tvm needs the latest code from git commits in May 2024 or later.
+  (let ((commit "13341857549852a9a86b1894b5ba84c6276ab381")
+        (revision "1"))
+    (package
+      (inherit dmlc-core)
+      (name "dmlc-core")
+      (version (git-version "0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dmlc/dmlc-core")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hj6h103lal3cm5mnry9lrm3d7aij89rxv46yv6y49vzd5hbnfbd")))))))
+
 (define-public xgboost
   (package
     (name "xgboost")
