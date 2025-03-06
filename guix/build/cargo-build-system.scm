@@ -65,6 +65,7 @@
   "Check if PATH refers to a crate source, namely a gzipped tarball with a
 Cargo.toml file present at its root."
     (and (not (directory-exists? path)) ; not a tarball
+         (not (string-suffix? "py" path))   ; sanity-check.py
          ;; First we print out all file names within the tarball to see if it
          ;; looks like the source of a crate. However, the tarball will include
          ;; an extra path component which we would like to ignore (since we're
