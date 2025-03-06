@@ -14542,6 +14542,39 @@ provide error correction, haplotype reconstruction and estimation of the
 frequency of the different genetic variants present in a mixed sample.")
     (license license:gpl3+)))
 
+(define-public sickle
+  (package
+    (name "sickle")
+    (version "1.33")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/najoshi/sickle")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bnq480lpylq9sfsa1y71b4qz0ipi2zjnp8ds48fh10ijlwmwmdc"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;There are no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "sickle" (string-append #$output "/bin")))))))
+    (propagated-inputs (list zlib))
+    (home-page "https://github.com/najoshi/sickle")
+    (synopsis "Adaptive trimming tool for FASTQ files using quality")
+    (description
+     "Sickle is a tool that trims reads based on quality and length
+thresholds.  It uses sliding windows to detect low-quality bases at the 3'-end
+and high-quality bases at the 5'-end.  Additionally, it discards reads based
+on the length threshold.")
+    (license license:expat)))
+
 (define-public ruby-bio-kseq
   (package
     (name "ruby-bio-kseq")
