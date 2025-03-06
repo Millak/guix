@@ -322,7 +322,7 @@ your computer.")
 (define-public isoimagewriter
   (package
     (name "isoimagewriter")
-    (version "24.12.1")
+    (version "24.12.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -331,7 +331,7 @@ your computer.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gjgmrkwn06w18vb9h76w6dln93jsh1c3mc7v71d99jzcc5hc9i4"))))
+                "0vrxki3iixa35fimsy20wv3pipp3xnkd6i13vdb4hhv8zzip320b"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kauth
