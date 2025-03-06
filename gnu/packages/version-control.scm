@@ -1238,7 +1238,11 @@ provides an integration with GitHub and GitLab.")
      "Game of Trees (Got) is a version control system which prioritizes ease of use
 and simplicity over flexibility.")
     (license license:isc)
-    (home-page "https://gameoftrees.org/")))
+    (home-page "https://gameoftrees.org/")
+    (properties
+     ;; Can lint for updates, but not update in place.
+     '((release-monitoring-url . "https://gameoftrees.org/releases/")
+       (lint-hidden-cpe-vendors . ("got_project"))))))
 
 (define-public xdiff
   (let ((revision "0")
