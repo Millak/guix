@@ -1,0 +1,18 @@
+Fix build of cpptest by correcting relative include paths
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 757b0d1a8..546ecd516 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -778,6 +778,11 @@ endif()
+ if(GTEST_FOUND)
+   tvm_file_glob(GLOB_RECURSE TEST_SRCS tests/cpp/*.cc)
+   add_executable(cpptest ${TEST_SRCS})
++
++  # fix building cpptest if we don't use 3rdParty subtree as when building with GNU Guix
++  # allowng relative paths starting with ../../.. to point to the top of the source dir
++  target_include_directories(cpptest PRIVATE tests/cpp/runtime)
++
+   # include runtime files for unit testing
+   target_link_libraries(cpptest PRIVATE ${TVM_TEST_LIBRARY_NAME} GTest::GTest GTest::Main GTest::gmock pthread dl)
+   if(DEFINED LLVM_LIBS)
