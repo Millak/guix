@@ -1288,7 +1288,8 @@ UTF-8 and UTF-16 encoding.")
               (sha256
                (base32
                 "14smciid19lvkxqznfig77jxn5s4iq3jpb47vh5a6zcaqp7gvg8m"))
-              (patches (search-patches "tinyxml-use-stl.patch"))))
+              (patches (search-patches "tinyxml-use-stl.patch"
+                                       "tinyxml-CVE-2023-34194.patch"))))
     (build-system gnu-build-system)
     ;; This library is missing *a lot* of the steps to make it usable, so we
     ;; have to add them here, like every other distro must do.

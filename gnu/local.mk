@@ -2349,6 +2349,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tidy-CVE-2015-5522+5523.patch		\
   %D%/packages/patches/timewarrior-time-sensitive-tests.patch	\
   %D%/packages/patches/tinydir-fix-cbehave-test.patch		\
+  %D%/packages/patches/tinyxml-CVE-2023-34194.patch		\
   %D%/packages/patches/tinyxml-use-stl.patch			\
   %D%/packages/patches/tk-find-library.patch			\
   %D%/packages/patches/tla2tools-build-xml.patch		\
