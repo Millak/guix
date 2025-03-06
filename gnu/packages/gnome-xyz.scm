@@ -20,6 +20,7 @@
 ;;; Copyright © 2022 Sughosha <sughosha@proton.me>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
+;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -766,15 +767,17 @@ faster window switching.")
                     (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
                 (substitute* "data/org.gnome.Shell.Extensions.GSConnect.desktop.in"
                   (("gapplication") gapplication))
-                (for-each
-                 (lambda (file)
-                   (substitute* file
-                     (("'use strict';")
-                      (string-append "'use strict';\n\n"
-                                     "'" gi-typelib-path "'.split(':').forEach("
-                                     "path => imports.gi.GIRepository.Repository."
-                                     "prepend_search_path(path));"))))
-                 '("src/extension.js" "src/prefs.js")))))
+                (for-each (lambda (file)
+                            (with-atomic-file-replacement
+                             file
+                             (lambda (input output)
+                               (format output "~a"
+                                       (string-append
+                                        "'" gi-typelib-path "'.split(':').forEach("
+                                        "path => imports.gi.GIRepository.Repository."
+                                        "prepend_search_path(path));\n"))
+                               (dump-port input output))))
+                          '("src/extension.js" "src/prefs.js")))))
           (add-after 'install 'wrap-daemons
             (lambda _
               (let* ((out #$output)
