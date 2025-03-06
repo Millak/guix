@@ -686,6 +686,32 @@ directory.")
 mappings intended for the use with SDL2's game controller functionality.")
       (license license:zlib))))
 
+(define-public sdl3-gfx
+  (package
+    (name "sdl3-gfx")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sabdul-khabir/SDL3_gfx")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18g9qavk0wh1bvfh6gdi5q75fd57dk0gp5r20c80x7xnp2ywywih"))))
+    (build-system cmake-build-system)
+    (arguments (list #:configure-flags
+                     #~(list "-DBUILD_TESTS=ON")))
+    (propagated-inputs (list sdl3))
+    (home-page "https://github.com/sabdul-khabir/SDL3_gfx")
+    (synopsis "SDL3 graphics drawing primitives")
+    (description
+     "This package provides Graphics drawing primitives
+and other support functions wrapped up in an add-on, C-based library
+for the Simple Direct Media (SDL) cross-platform API layer.")
+    (license license:zlib)
+    (properties '((upstream-name . "SDL3_gfx")))))
+
 (define-public guile-sdl
   (package
     (name "guile-sdl")
