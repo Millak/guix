@@ -584,6 +584,25 @@ Sorensen distance, plus some bonuses.  All distance computations are
 implemented in pure Python, and most of them are also implemented in C.")
     (license license:gpl2+)))
 
+(define-public python-flake8-class-newline
+  (package
+    (name "python-flake8-class-newline")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flake8-class-newline" version))
+       (sha256
+        (base32 "1w8z88asz90jm1msz06vi7dj0da8sfw5ajyvabfv7f4fr0iljk2i"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-flake8))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/AlexanderVanEck/flake8-class-newline")
+    (synopsis "Flake8 lint for newline after class definitions")
+    (description "This package provides a flake8 extension to lint for newline
+after class definitions.")
+    (license license:expat)))
+
 (define-public python-flake8-docstrings
   (package
     (name "python-flake8-docstrings")
