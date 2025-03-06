@@ -1408,35 +1408,66 @@ vector data.")
 (define-public gdal
   (package
     (name "gdal")
-    (version "3.6.1")
+    (version "3.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                     "http://download.osgeo.org/gdal/" version "/gdal-"
-                     version ".tar.gz"))
+                     "https://github.com/OSGeo/gdal/releases/download/v"
+                     version "/gdal-" version ".tar.gz"))
               (sha256
                (base32
-                "1qckwnygszxkkq40bf87s3m1sab6jj9jyakdvskh0qf7dq8zjarf"))
+                "1ml9l1c4psb1nc760nvs4vbibwf288d4anxip9sisrwl4q6nj579"))
               (modules '((guix build utils)))
               (snippet
-                `(begin
-                   ;; TODO: frmts contains a lot more bundled code.
-                   (for-each delete-file-recursively
-                     ;; bundled code
-                     '("frmts/png/libpng"
-                       "frmts/gif/giflib"
-                       "frmts/jpeg/libjpeg"
-                       "frmts/jpeg/libjpeg12"
-                       "frmts/gtiff/libtiff"
-                       "frmts/gtiff/libgeotiff"
-                       "frmts/zlib"
-                       "ogr/ogrsf_frmts/geojson/libjson"))))))
+               `(begin
+                  ;; TODO: frmts contains a lot more bundled code.
+                  (for-each delete-file-recursively
+                            ;; bundled code
+                            '("frmts/png/libpng"
+                              "frmts/gif/giflib"
+                              "frmts/jpeg/libjpeg"
+                              "frmts/jpeg/libjpeg12"
+                              "frmts/gtiff/libtiff"
+                              "frmts/gtiff/libgeotiff"
+                              ;; We need to keep frmts/zlib/contrib/infback9
+                              ;; because the cmake file unconditionally
+                              ;; depends on it for deflate64.  The infback9.h
+                              ;; header file is also referenced in parts of
+                              ;; the code.
+                              ;;"frmts/zlib"
+                              "ogr/ogrsf_frmts/geojson/libjson"))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       (list "-DGDAL_USE_INTERNAL_LIBS=WHEN_NO_EXTERNAL"
-             "-DGDAL_USE_JPEG12_INTERNAL=OFF")))
+     (list
+      #:tests? #f
+      #:modules '((guix build cmake-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:imported-modules `(,@%cmake-build-system-modules
+                           (guix build python-build-system))
+      #:configure-flags
+      #~(list "-DGDAL_USE_INTERNAL_LIBS=WHEN_NO_EXTERNAL"
+              "-DGDAL_USE_JPEG12_INTERNAL=OFF"
+              "-DGDAL_USE_LERC_INTERNAL=ON"
+              (string-append "-DCMAKE_INSTALL_RPATH=" #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'swap-files
+            (lambda _
+              ;; The RPATH of the binaries in build/swig/python/build/ is
+              ;; rewritten in build/swig/python/for_install/build/.  For
+              ;; unknown reasons the files in the former directory are
+              ;; installed when it should be those in the latter directory.
+              ;; So we copy them ourselves.
+              (with-directory-excursion "../build/swig/python/for_install/build"
+                (for-each (lambda (file)
+                            (install-file file
+                                          (string-append
+                                           #$output
+                                           "/lib/python"
+                                           (python:python-version #$(this-package-native-input "python"))
+                                           "/site-packages/osgeo")))
+                          (find-files "." "\\.so"))))))))
     (inputs
      (list curl
            expat
@@ -1458,6 +1489,7 @@ vector data.")
            postgresql ; libpq
            proj
            qhull
+           shapelib
            sqlite
            swig
            zlib
