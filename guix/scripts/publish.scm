@@ -61,6 +61,7 @@
   #:use-module (guix cache)
   #:use-module (guix ui)
   #:use-module (guix scripts)
+  #:use-module (guix derivations)
   #:use-module ((guix utils)
                 #:select (with-atomic-file-output compressed-file?))
   #:use-module ((guix build utils)
@@ -693,11 +694,14 @@ requested using POOL."
 (define* (render-nar store request store-item
                      #:key (compression %no-compression))
   "Render archive of the store path corresponding to STORE-ITEM."
-  (let ((store-path (string-append %store-directory "/" store-item)))
+  (let* ((store-path (string-append %store-directory "/" store-item))
+         (derivations (map read-derivation-from-file
+                           (valid-derivers store store-path)))
+         (substitutable? (every substitutable-derivation? derivations)))
     ;; The ISO-8859-1 charset *must* be used otherwise HTTP clients will
     ;; interpret the byte stream as UTF-8 and arbitrarily change invalid byte
     ;; sequences.
-    (if (valid-path? store store-path)
+    (if (and substitutable? (valid-path? store store-path))
         (values `((content-type . (application/x-nix-archive
                                    (charset . "ISO-8859-1")))
                   (x-nar-compression . ,compression))
