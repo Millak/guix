@@ -515,4 +515,5 @@ seen in a terminal.")
      "Highlight converts source code to HTML, XHTML, RTF, LaTeX,
 TeX, SVG, BBCode and terminal escape sequences with colored syntax
 highlighting.  Language definitions and color themes are customizable.")
-    (license gpl3+)))
+    (license gpl3+)
+    (properties '((lint-hidden-cpe-vendors . ("highlight"))))))
