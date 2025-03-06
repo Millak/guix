@@ -761,6 +761,19 @@ faster window switching.")
                  "gtk_update_icon_cache: false")
                 (("update_desktop_database: true")
                  "update_desktop_database: false"))))
+          ;; TODO: Remove after 'patch-shebangs is fixed to handle '/usr/bin/env -S'
+          ;; shebangs (see bug#74450).
+          (add-after 'unpack 'patch-gjs-shebangs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each (lambda (file)
+                          (substitute* file
+                            (("^#!/usr/bin/env -S gjs.*$")
+                             (string-append "#!" (which "gjs") " -m"))))
+                        '("installed-tests/minijasmine"
+                          "src/gsconnect-preferences"
+                          "src/service/nativeMessagingHost.js"
+                          "src/service/daemon.js"
+                          "webextension/gettext.js"))))
           (add-before 'configure 'fix-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((gapplication (search-input-file inputs "/bin/gapplication"))
