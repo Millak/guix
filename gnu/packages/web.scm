@@ -5652,7 +5652,10 @@ grep and friends let you play with text.  It is written in portable C.  jq can
 mangle the data format that you have into the one that you want with very
 little effort, and the program to do so is often shorter and simpler than
 you'd expect.")
-    (license (list license:expat license:cc-by3.0))))
+    (license (list license:expat license:cc-by3.0))
+    ;; Both those CVEs are actually fixed in version 1.7.1.
+    (properties `((lint-hidden-cve . ("CVE-2023-50246"
+                                      "CVE-2023-50268"))))))
 
 (define-public go-github-com-mikefarah-yq-v4
   (package
