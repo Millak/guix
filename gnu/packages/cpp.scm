@@ -310,6 +310,27 @@ Segmentation and Registration Toolkit.")
 parser, IO and conversion utilities.")
     (license license:gpl2+)))
 
+(define-public rang
+  (package
+    (name "rang")
+    (version "3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/agauniyal/rang")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x2fp7zjjivgxblvx1j0qphn4ln6jq42x7xr757fywm3k03y7bil"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ; no tests
+    (home-page "https://agauniyal.github.io/rang/")
+    (synopsis "Header only terminal C++ library")
+    (description
+     "Rang is a minimal, header only C++ library for terminal goodies.")
+    (license license:asl2.0)))
+
 (define-public range-v3
   (package
     (name "range-v3")
