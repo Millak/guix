@@ -5218,6 +5218,27 @@ the test cases.")
 plotting components.")
     (license license:expat)))
 
+(define-public julia-polylog
+  (package
+    (name "julia-polylog")
+    (version "2.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Expander/PolyLog.jl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rfmlh5rvgh84qvvachqgvy0ra5yym28vj09xlw9cq19bkyids64"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/Expander/PolyLog.jl")
+    (synopsis "Implementation of polylogarithms in Julia")
+    (description
+     "This package implements real and complex polylogarithms,
+including the real and complex dilogarithm and trilogarithm in Julia.")
+    (license license:expat)))
+
 (define-public julia-pooledarrays
   (package
     (name "julia-pooledarrays")
