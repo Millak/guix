@@ -778,13 +778,16 @@ faster window switching.")
                                         "prepend_search_path(path));\n"))
                                (dump-port input output))))
                           '("src/extension.js" "src/prefs.js")))))
-          (add-after 'install 'wrap-daemons
+          (add-after 'install 'wrap-programs
             (lambda _
               (let* ((out #$output)
-                     (service-dir
-                      (string-append out "/share/gnome-shell/extensions"
-                                     "/gsconnect@andyholmes.github.io/service"))
+                     (gsconnect-dir (string-append
+                                     out "/share/gnome-shell/extensions"
+                                     "/gsconnect@andyholmes.github.io"))
+                     (service-dir (string-append gsconnect-dir "/service"))
                      (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                (wrap-program (string-append gsconnect-dir "/gsconnect-preferences")
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))
                 (wrap-program (string-append service-dir "/daemon.js")
                   `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (inputs
