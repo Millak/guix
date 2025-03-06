@@ -28,6 +28,7 @@
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 Lars Bilke <lars.bilke@ufz.de>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,6 +57,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system r)
+  #:use-module (guix build-system zig)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -73,6 +75,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages busybox)
   #:use-module (gnu packages c)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
@@ -121,6 +124,7 @@
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -610,6 +614,82 @@ writing GeoTIFF information tags.")
                    license:bsd-3
                    (license:non-copyleft "file://LICENSE"
                                          "See LICENSE in the distribution.")))))
+
+(define-public mepo
+  (package
+    (name "mepo")
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~mil/mepo")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "025nxkilar3gdif2f1zsiy27614x2hbpcmh38sl61ng37aji0jw4"))))
+    (build-system zig-build-system)
+    (arguments
+     (list #:install-source? #f
+           ;; Work around https://github.com/ziglang/zig/issues/17384
+           #:zig-build-flags #~(list "--search-prefix" #$curl)
+           #:zig-release-type "safe"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-scripts
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((bin-dirs
+                          (map (lambda (bin)
+                                 (dirname (search-input-file inputs bin)))
+                               '("bin/column" ;util-linux
+                                 "bin/gpspipe" ;gpsd
+                                 "bin/jq"
+                                 "bin/xargs" ;busybox
+                                 "bin/xwininfo"
+                                 "bin/zenity"))))
+                     (for-each (lambda (script)
+                                 (wrap-program
+                                   (string-append #$output "/bin/" script)
+                                   `("PATH" ":" prefix ,bin-dirs)))
+                       '("mepo_dl.sh"
+                         "mepo_generated_osmtags.sh"
+                         "mepo_geojson_import.sh"
+                         "mepo_ui_central_menu.sh"
+                         "mepo_ui_helper_menu.sh"
+                         "mepo_ui_helper_pref_pan.sh"
+                         "mepo_ui_menu_dbg_queueclear.sh"
+                         "mepo_ui_menu_dbg_queuedownloadinteractive.sh"
+                         "mepo_ui_menu_dbg_queuedownloadnoninteractive.sh"
+                         "mepo_ui_menu_pin_drop.sh"
+                         "mepo_ui_menu_pref_fontsize.sh"
+                         "mepo_ui_menu_pref_network.sh"
+                         "mepo_ui_menu_pref_stateload.sh"
+                         "mepo_ui_menu_pref_statesave.sh"
+                         "mepo_ui_menu_pref_url.sh"
+                         "mepo_ui_menu_pref_zoom.sh"
+                         "mepo_ui_menu_reposition_nominatim.sh"
+                         "mepo_ui_menu_route_graphhopper.sh"
+                         "mepo_ui_menu_route_mobroute.sh"
+                         "mepo_ui_menu_search_nominatim.sh"
+                         "mepo_ui_menu_search_overpass.sh"
+                         "mepo_ui_menu_user_pin_updater.sh"))))))))
+    (native-inputs (list pkg-config))
+    ;; TODO: package Mobroute
+    (inputs (list bash-minimal busybox curl gpsd jq ncurses
+                  sdl2 sdl2-gfx sdl2-image sdl2-ttf
+                  util-linux xwininfo zenity))
+    (home-page "https://mepo.lrdu.org")
+    (synopsis "OpenStreetMap map viewer")
+    (description
+     "Mepo is a fast, simple, and hackable OSM map viewer for desktop and
+mobile Linux devices.  It supports Wayland and X Windows.
+
+Mepo works both offline and online, features a minimalist both touch/mouse
+and keyboard compatible interface, and offers a simple and powerful JSON API
+to allow the user to change and add functionality such as adding their own
+search and routing scripts, adding arbitrary buttons/keybindings to the UI,
+and more.")
+    (license license:gpl3+)))
 
 (define-public librasterlite2
   (package
