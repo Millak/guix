@@ -91,7 +91,7 @@
 ;;; Copyright © 2020 Diego N. Barbato <dnbarbato@posteo.de>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019 Kristian Trandem <kristian@devup.no>
-;;; Copyright © 2020, 2021, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020, 2021, 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021, 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -583,6 +583,26 @@ arbitrary sequences. Included metrics are Levenshtein, Hamming, Jaccard, and
 Sorensen distance, plus some bonuses.  All distance computations are
 implemented in pure Python, and most of them are also implemented in C.")
     (license license:gpl2+)))
+
+(define-public python-flake8-docstrings
+  (package
+    (name "python-flake8-docstrings")
+    (version "1.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flake8_docstrings" version))
+       (sha256
+        (base32 "1bs1m5kqw25sn68f06571q5s3aaxd06mv7k952bqdrhnvi4cg32c"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-flake8 python-pydocstyle))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/pycqa/flake8-docstrings")
+    (synopsis "Extension for flake8 which uses pydocstyle to check docstrings")
+    (description
+     "This package provides a extension for flake8 which uses pydocstyle to
+check docstrings.")
+    (license license:expat)))
 
 (define-public python-flexcache
   (package
