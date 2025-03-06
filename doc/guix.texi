@@ -49,7 +49,7 @@ Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2021, 2022 Marius Bakke@*
 Copyright @copyright{} 2017, 2019, 2020, 2022 Hartmut Goebel@*
-Copyright @copyright{} 2017, 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer@*
+Copyright @copyright{} 2017, 2019--2025 Maxim Cournoyer@*
 Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*
 Copyright @copyright{} 2017 George Clemmer@*
 Copyright @copyright{} 2017 Andy Wingo@*
@@ -25738,6 +25738,12 @@ A list of regular expressions denoting polkit rules provided by any
 package that should not be installed.  By default, every polkit rule
 added by any package referenced in the other fields are installed.
 
+@item @code{keyring} (type: gnome-keyring-configuration-or-#f)
+A <gnome-keyring-configuration> record used to better integrate the
+GNOME keyring with the system.  Refer to the documentation of the
+@code{gnome-keyring-service-type} for more information.  If you'd rather
+avoid integrating the GNOME keyring, you can set this to @code{#f}.
+
 @end table
 @end deftp
 
@@ -26755,7 +26761,9 @@ Possible values are:
 @defvar gnome-keyring-service-type
 This is the type of the service that adds the
 @uref{https://wiki.gnome.org/Projects/GnomeKeyring, GNOME Keyring}.  Its
-value is a @code{gnome-keyring-configuration} object (see below).
+value is a @code{gnome-keyring-configuration} object (see below).  Note
+that there is no need to use this service when using
+@code{gnome-desktop-service-type}, which includes it.
 
 This service adds the @code{gnome-keyring} package to the system profile
 and extends PAM with entries using @code{pam_gnome_keyring.so}, unlocking
