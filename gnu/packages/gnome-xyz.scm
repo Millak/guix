@@ -778,8 +778,12 @@ faster window switching.")
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((gapplication (search-input-file inputs "/bin/gapplication"))
                     (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-                (substitute* "data/org.gnome.Shell.Extensions.GSConnect.desktop.in"
-                  (("gapplication") gapplication))
+                (for-each
+                 (lambda (file)
+                   (substitute* file
+                     (("gapplication") gapplication)))
+                 '("data/org.gnome.Shell.Extensions.GSConnect.desktop.in"
+                   "data/org.gnome.Shell.Extensions.GSConnect.Preferences.desktop.in"))
                 (for-each (lambda (file)
                             (with-atomic-file-replacement
                              file
