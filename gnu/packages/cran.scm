@@ -44149,6 +44149,31 @@ fast interface using subsampling and confidence regions for variable
 importance.")
     (license license:gpl3+)))
 
+(define-public r-rrf
+  (package
+    (name "r-rrf")
+    (version "1.9.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RRF" version))
+       (sha256
+        (base32 "05sswrqjrwyyk9aha7fvvw78iymgv89y0asl5cqfl9fg7gsw9ghs"))))
+    (properties `((upstream-name . "RRF")))
+    (build-system r-build-system)
+    (native-inputs (list gfortran))
+    (home-page "https://sites.google.com/site/houtaodeng/rrf")
+    (synopsis "Regularized random forest")
+    (description
+     "Feature Selection with Regularized Random Forest.  This package is based
+on the @code{randomForest} package by Andy Liaw.  The key difference is the
+@code{RRF()} function that builds a regularized random forest.  Fortran
+original by Leo Breiman and Adele Cutler, R port by Andy Liaw and Matthew
+Wiener, Regularized random forest for classification by Houtao Deng,
+Regularized random forest for regression by Xin Guan.  Reference: Houtao
+Deng (2013) <doi:10.48550/@code{arXiv.1306.0237>}.")
+    (license license:gpl2+)))
+
 (define-public r-contfrac
   (package
     (name "r-contfrac")
