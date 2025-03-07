@@ -120,7 +120,8 @@ as small as possible, often without sacrificing speed.  It is faster than the
 GNU Bourne-Again Shell (@command{bash}) at most scripted tasks.  Dash is a
 direct descendant of NetBSD's Almquist Shell (@command{ash}).")
     (license (list license:bsd-3
-                   license:gpl2+))))    ; mksignames.c
+                   license:gpl2+))  ; mksignames.c
+    (properties '((lint-hidden-cpe-vendors . ("plotly"))))))
 
 (define-public fish
   (package
