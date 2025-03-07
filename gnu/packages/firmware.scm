@@ -1884,6 +1884,11 @@ or passthrough board.")
    #:description
    "This package provides the firmware for the Keychron C2 Pro ANSI white with default keymap."))
 
+(define-public qmk-firmware-keychron-c3-pro-ansi-red-default
+  (make-qmk-firmware-keychron "keychron/c3_pro/ansi/red" "default"
+   #:description
+   "This package provides the firmware for the Keychron C3 Pro ANSI Red with default keymap."))
+
 (define-public qmk-firmware-keychron-v3-ansi-default
   (make-qmk-firmware-keychron "keychron/v3/ansi" "default"
    #:description
