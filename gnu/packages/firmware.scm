@@ -1899,6 +1899,11 @@ or passthrough board.")
    #:description
    "This package provides the firmware for the Keychron Q0 Base with default keymap."))
 
+(define-public qmk-firmware-keychron-q0-plus-default
+  (make-qmk-firmware-keychron "keychron/q0/plus" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q0 Plus with default keymap."))
+
 (define-public qmk-firmware-keychron-v3-ansi-default
   (make-qmk-firmware-keychron "keychron/v3/ansi" "default"
    #:description
