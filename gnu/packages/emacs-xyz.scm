@@ -644,7 +644,7 @@ summarizing text using an LLM.")
 (define-public emacs-chatgpt-shell
   (package
     (name "emacs-chatgpt-shell")
-    (version "2.12.2")
+    (version "2.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -653,7 +653,7 @@ summarizing text using an LLM.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wvfqgzhhqq2n0nvx5cqbn74bh79pzxmhlss4fxdx487y86rs8w7"))))
+                "1vlvwim1v14cvd4w3bd10xfzaw3mhsiv5qh4ka67jgninq8kjls5"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases
