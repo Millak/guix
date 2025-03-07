@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -67,20 +67,19 @@ using a Runfile.")
     (name "task-spooler")
     (version "1.0.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-              "https://vicerveza.homeunix.net/~viric/soft/ts/ts-"
-              version ".tar.gz"))
-        (sha256
-         (base32 "0a5l8bjq869lvqys3amsil933vmm9b387axp1jv3bi9xah8k70zs"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://viric.name/soft/ts/ts-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0a5l8bjq869lvqys3amsil933vmm9b387axp1jv3bi9xah8k70zs"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:make-flags
       #~(let ((c-flags "-g -O2"))
           (list (string-append "PREFIX=" #$output)
-                #$(string-append "CC=" (cc-for-target))
+                (string-append "CC=" #$(cc-for-target))
                 (string-append "CFLAGS=" c-flags)))
       #:phases
       #~(modify-phases %standard-phases
@@ -94,16 +93,19 @@ using a Runfile.")
                 (("\\bts\\b") "tsp"))
               ;; Patch gzip/sendmail/shell paths.
               (substitute* '("execute.c" "list.c")
-                (("execlp\\(\"(gzip|sh)\"" all exe)
-                 (format #f "execlp(~s"
-                         (search-input-file
-                          inputs (string-append "/bin/" exe)))))
-              (substitute* "list.c"
-                (("/bin/sh\\b") (which "sh")))
+                (("execlp\\(\"gzip\"")
+                 (format #f "execlp(\"~a/bin/gzip\""
+                         #$(this-package-input "gzip")))
+                (("execlp\\(\"sh\"")
+                 (format #f "execlp(\"~a/bin/sh\""
+                         #$(this-package-input "bash-minimal")))
+                (("/bin/sh\\b")
+                 (format #f "~a/bin/sh"
+                         #$(this-package-input "bash-minimal"))))
               (substitute* "mail.c"
-                (("execl\\(\"/usr/sbin/sendmail\"")
-                 (format #f "execl(~s"
-                         (search-input-file inputs "/sbin/sendmail"))))))
+                (("/usr/sbin/sendmail")
+                 (format #f "~a/sbin/sendmail"
+                         #$(this-package-input "sendmail"))))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (if tests?
@@ -114,8 +116,9 @@ using a Runfile.")
                   (format #t "test suite not run ~%")))))))
     (inputs
      (list bash-minimal gzip sendmail))
+    (home-page "https://viric.name/soft/ts/")
     (synopsis "UNIX task queue system")
-    (description "Task spooler lets users run shell commands asynchronously
-one after the other in a separate process.")
-    (home-page "https://vicerveza.homeunix.net/~viric/soft/ts/")
+    (description
+     "Task spooler lets users run shell commands asynchronously one after the
+other in a separate process.")
     (license license:gpl2+)))
