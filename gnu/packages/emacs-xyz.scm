@@ -8092,9 +8092,12 @@ then refine or modify the search results.")
     (synopsis "Provides a REPL buffer connected to a Ruby subprocess in Emacs")
     (description
      "@code{inf-ruby} provides a Read Eval Print Loop (REPL) buffer, allowing
-for easy interaction with a ruby subprocess.  Features include support for
-detecting specific uses of Ruby, e.g. when using rails, and using a
-appropriate console.")
+for easy interaction with a Ruby subprocess.  Features include support for
+detecting specific uses of Ruby, e.g., when using Rails, and using an
+appropriate console.
+
+If you are using Guix shell with @file{manifest.scm}, the
+@code{inf-ruby-wrapper-command} customization variable could be helpful.")
     (license license:gpl3+)))
 
 (define-public emacs-chruby-el
