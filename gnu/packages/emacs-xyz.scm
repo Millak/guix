@@ -10199,21 +10199,21 @@ src blocks.")
 (define-public emacs-ol-notmuch
   (package
     (name "emacs-ol-notmuch")
-    (version "2.0.2")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.sr.ht/~tarsius/ol-notmuch")
+             (url "https://github.com/tarsius/ol-notmuch")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1hqppr7z3b9wwlsh5ahv3n3snqll6ipdczk47g72bihzjvg9fxyn"))
+         "1xipph77bzxhd6jspxz0ppja4p0wzrkhp4y41nix3lcky3f7a6s1"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat emacs-notmuch emacs-org))
-    (home-page "https://git.sr.ht/~tarsius/ol-notmuch")
+    (home-page "https://github.com/tarsius/ol-notmuch")
     (synopsis "Links to notmuch messages for Emacs' Org mode")
     (description
      "This package implements links to Notmuch messages and searches for
