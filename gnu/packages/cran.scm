@@ -44087,6 +44087,35 @@ Analysis Toolkit (GATK) to load tables and plot data.  The GATK is a toolkit
 for variant discovery in high-throughput sequencing data.")
     (license license:expat)))
 
+(define-public r-intrees
+  (package
+    (name "r-intrees")
+    (version "1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "inTrees" version))
+       (sha256
+        (base32 "18gbw7v4xbsxdifk32qga3h3j17w40ljs1mkk0b4fzwin9z4sh27"))))
+    (properties `((upstream-name . "inTrees")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-arules
+                             r-data-table
+                             r-gbm
+                             r-rrf
+                             r-xgboost
+                             r-xtable))
+    (home-page "https://cran.r-project.org/package=inTrees")
+    (synopsis "Interpret Tree Ensembles")
+    (description
+     "For tree ensembles such as random forests, regularized random forests and
+gradient boosted trees, this package provides functions for: extracting,
+measuring and pruning rules; selecting a compact rule set; summarizing rules
+into a learner; calculating frequent variable interactions; formatting rules in
+latex code.  Reference: Interpreting tree ensembles with @code{inTrees} (Houtao
+Deng, 2019, <doi:10.1007/s41060-018-0144-8>).")
+    (license license:gpl3+)))
+
 (define-public r-randomforestexplainer
   (package
     (name "r-randomforestexplainer")
