@@ -1864,6 +1864,11 @@ or passthrough board.")
           (make-gcc-arm-none-eabi-12.3.rel1)
           (cross-binutils "arm-none-eabi")))))))
 
+(define-public qmk-firmware-keychron-c1-pro-ansi-rgb-default
+  (make-qmk-firmware-keychron "keychron/c1_pro/ansi/rgb" "default"
+   #:description
+   "This package provides the firmware for the Keychron C1 Pro ANSI RGB with default keymap."))
+
 (define-public qmk-firmware-keychron-v3-ansi-default
   (make-qmk-firmware-keychron "keychron/v3/ansi" "default"
    #:description
