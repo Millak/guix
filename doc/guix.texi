@@ -21594,6 +21594,95 @@ which provides the @code{networking} Shepherd service.
 @end table
 @end deftp
 
+@cindex DHCPCD, networking service
+
+@defvar dhcpcd-service-type
+This the type for a service running @command{dhcpcd}, a @acronym{DHCP,
+Dynamic Host Configuration Protocol} client that can be used as a
+replacement for the historical ISC client supported by
+@code{dhcp-client-service-type}.
+
+Its value must be a @code{dhcpcd-configuration} record, as described
+below.  As an example, consider the following setup which runs
+@command{dhcpcd} with a local @acronym{DNS, Domain Name System}
+resolver:
+
+@lisp
+(service dhcpcd-service-type
+  (dhcpcd-configuration
+    (option '("rapid_commit" "interface_mtu"))
+    (no-option '("nd_rdnss"
+                 "dhcp6_name_servers"
+                 "domain_name_servers"
+                 "domain_name"
+                 "domain_search"))
+    (static '("domain_name_servers=127.0.0.1"))
+    (no-hook '("hostname")))))
+@end lisp
+@end defvar
+
+@deftp {Data Type} dhcpcd-configuration
+Available @code{dhcpcd-configuration} fields are:
+
+@table @asis
+@item @code{interfaces} (default: @code{()}) (type: list)
+List of networking interfaces---e.g., @code{"eth0"}---to start a DHCP
+client for.  If no interface is specified (i.e., the list is empty) then
+@command{dhcpcd} discovers available Ethernet interfaces, that can be
+configured, automatically.
+
+@item @code{command-arguments} (default: @code{("-q" "-q")}) (type: list)
+List of additional command-line options.
+
+@item @code{host-name} (default: @code{""}) (type: maybe-string)
+Host name to send via DHCP, defaults to the current system host name.
+
+@item @code{duid} (default: @code{""}) (type: maybe-string)
+DHCPv4 clients require a unique client identifier, this option uses the
+DHCPv6 Unique Identifier as a DHCPv4 client identifier as well.  For
+more information, refer to @uref{https://www.rfc-editor.org/rfc/rfc4361, RFC 4361}
+and @code{dhcpcd.conf(5)}.
+
+@item @code{persistent?} (default: @code{#t}) (type: boolean)
+When true, automatically de-configure the interface when @command{dhcpcd}
+exits.
+
+@item @code{option} (default: @code{("rapid_commit" "domain_name_servers" "domain_name" "domain_search" "host_name" "classless_static_routes" "interface_mtu")}) (type: list-of-strings)
+List of options to request from the server.
+
+@item @code{require} (default: @code{("dhcp_server_identifier")}) (type: list-of-strings)
+List of options to require in responses.
+
+@item @code{slaac} (default: @code{"private"}) (type: maybe-string)
+Interface identifier used for SLAAC generated IPv6 addresses.
+
+@item @code{no-option} (default: @code{()}) (type: list-of-strings)
+List of options to remove from the message before it's processed.
+
+@item @code{no-hook} (default: @code{()}) (type: list-of-strings)
+List of hook script which should not be invoked.
+
+@item @code{static} (default: @code{()}) (type: list-of-strings)
+DHCP client can request different options from a DHCP server, through
+@code{static} it is possible to configure static values for selected
+options.  For example, @code{"domain_name_servers=127.0.0.1"}.
+
+@item @code{vendor-class-id} (type: maybe-string)
+Set the DHCP Vendor Class (e.g., @code{MSFT}).  For more information,
+refer to @uref{https://www.rfc-editor.org/rfc/rfc2132#section-9.13,RFC
+2132}.
+
+@item @code{client-id} (type: maybe-string)
+Use the interface hardware address or the given string as a client
+identifier, this is matually exclusive with the @code{duid} option.
+
+@item @code{extra-content} (type: maybe-string)
+Extra content to append to the configuration as-is.
+
+@end table
+@end deftp
+
+
 @cindex NetworkManager
 
 @defvar network-manager-service-type

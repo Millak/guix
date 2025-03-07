@@ -109,6 +109,24 @@
             dhcpd-configuration-pid-file
             dhcpd-configuration-interfaces
 
+            dhcpcd-service-type
+            dhcpcd-configuration
+            dhcpcd-configuration?
+            dhcpcd-configuration-interfaces
+            dhcpcd-configuration-command-arguments
+            dhcpcd-configuration-host-name
+            dhcpcd-configuration-duid
+            dhcpcd-configuration-persistent?
+            dhcpcd-configuration-option
+            dhcpcd-configuration-require
+            dhcpcd-configuration-slaac
+            dhcpcd-configuration-no-option
+            dhcpcd-configuration-no-hook
+            dhcpcd-configuration-static
+            dhcpcd-configuration-vendor-class-id
+            dhcpcd-configuration-client-id
+            dhcpcd-configuration-extra-content
+
             ntp-configuration
             ntp-configuration?
             ntp-configuration-ntp
@@ -491,6 +509,149 @@ Protocol (DHCP) client, on all the non-loopback network interfaces.")))
           (service-extension activation-service-type dhcpd-activation)))
    (description "Run a DHCP (Dynamic Host Configuration Protocol) daemon.  The
 daemon is responsible for allocating IP addresses to its client.")))
+
+
+;;
+;; DHCPCD.
+;;
+
+(define (serialize-field-name field-name)
+  (let ((str (symbol->string field-name)))
+    (string-replace-substring
+      (if (string-suffix? "?" str)
+        (string-drop-right str 1)
+        str)
+      "-" "")))
+
+(define (dhcpcd-serialize-string field-name value)
+  (if (equal? field-name 'extra-content)
+      #~(string-append #$value "\n")
+      #~(format #f "~a ~a~%" #$(serialize-field-name field-name) #$value)))
+
+(define (dhcpcd-serialize-boolean field-name value)
+  (if value
+    #~(format #f "~a~%" #$(serialize-field-name field-name))
+    ""))
+
+(define (dhcpcd-serialize-list-of-strings field-name value)
+  #~(string-append #$@(map (cut dhcpcd-serialize-string field-name <>) value)))
+
+;; Some fields (e.g. host-name) can be specified with an empty string argument.
+;; Therefore, we need a maybe type to differentiate disabled/empty-string.
+(define-maybe string (prefix dhcpcd-))
+
+(define-configuration dhcpcd-configuration
+  (interfaces
+    (list '())
+    "List of networking interfaces---e.g., @code{\"eth0\"}---to start a DHCP client
+for.  If no interface is specified (i.e., the list is empty) then @command{dhcpcd}
+discovers available Ethernet interfaces, that can be configured, automatically."
+    empty-serializer)
+  (command-arguments
+    (list '("-q" "-q"))
+    "List of additional command-line options."
+    empty-serializer)
+
+  ;; The following defaults replicate the default dhcpcd configuration file.
+  ;;
+  ;; See https://github.com/NetworkConfiguration/dhcpcd/tree/v10.0.10#configuration
+  (host-name
+    (maybe-string "")
+    "Host name to send via DHCP, defaults to the current system host name.")
+  (duid
+    (maybe-string "")
+    "DHCPv4 clients require a unique client identifier, this option uses the DHCPv6
+Unique Identifier as a DHCPv4 client identifier as well.  For more information, refer
+to @uref{https://www.rfc-editor.org/rfc/rfc4361, RFC 4361} and @code{dhcpcd.conf(5)}.")
+  (persistent?
+    (boolean #t)
+    "When true, automatically de-configure the interface when @command{dhcpcd} exits.")
+  (option
+    (list-of-strings
+      '("rapid_commit"
+        "domain_name_servers"
+        "domain_name"
+        "domain_search"
+        "host_name"
+        "classless_static_routes"
+        "interface_mtu"))
+    "List of options to request from the server.")
+  (require
+    (list-of-strings '("dhcp_server_identifier"))
+    "List of options to require in responses.")
+  (slaac
+    (maybe-string "private")
+    "Interface identifier used for SLAAC generated IPv6 addresses.")
+
+  ;; Common options not set in the default configuration file.
+  (no-option
+    (list-of-strings '())
+    "List of options to remove from the message before it's processed.")
+  (no-hook
+    (list-of-strings '())
+    "List of hook script which should not be invoked.")
+  (static
+    (list-of-strings '())
+    "DHCP client can request different options from a DHCP server, through
+@code{static} it is possible to configure static values for selected options.  For
+example, @code{\"domain_name_servers=127.0.0.1\"}.")
+  (vendor-class-id
+    maybe-string
+    "Set the DHCP Vendor Class (e.g., @code{MSFT}).  For more information, refer
+to @uref{https://www.rfc-editor.org/rfc/rfc2132#section-9.13,RFC 2132}.")
+  (client-id
+    maybe-string
+    "Use the interface hardware address or the given string as a client identifier,
+this is matually exclusive with the @code{duid} option.")
+
+  ;; Escape hatch for the generated configuration file.
+  (extra-content
+    maybe-string
+    "Extra content to append to the configuration as-is.")
+
+  (prefix dhcpcd-))
+
+(define (dhcpcd-config-file config)
+  (mixed-text-file "dhcpcd.conf"
+    (serialize-configuration
+      config
+      dhcpcd-configuration-fields)))
+
+(define dhcpcd-account-service
+  (list (user-group (name "dhcpcd") (system? #t))
+        (user-account
+          (name "dhcpcd")
+          (group "dhcpcd")
+          (system? #t)
+          (comment "dhcpcd daemon user")
+          (home-directory "/var/empty")
+          (shell (file-append shadow "/sbin/nologin")))))
+
+(define (dhcpcd-shepherd-service config)
+  (let* ((config-file (dhcpcd-config-file config))
+         (command-args (dhcpcd-configuration-command-arguments config))
+         (ifaces (dhcpcd-configuration-interfaces config)))
+    (list (shepherd-service
+            (documentation "dhcpcd daemon.")
+            (provision '(networking))
+            (requirement '(user-processes udev))
+            (actions (list (shepherd-configuration-action config-file)))
+            (start
+              #~(make-forkexec-constructor
+                    (list (string-append #$dhcpcd "/sbin/dhcpcd")
+                          #$@command-args "-B" "-f" #$config-file #$@ifaces)))
+            (stop #~(make-kill-destructor))))))
+
+(define dhcpcd-service-type
+  (service-type (name 'dhcpcd)
+                (description "Run the dhcpcd daemon.")
+                (extensions
+                 (list (service-extension account-service-type
+                                          (const dhcpcd-account-service))
+                       (service-extension shepherd-root-service-type
+                                          dhcpcd-shepherd-service)))
+                (compose concatenate)
+                (default-value (dhcpcd-configuration))))
 
 
 ;;;

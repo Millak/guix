@@ -32,6 +32,7 @@
   #:use-module (guix store)
   #:use-module (guix monads)
   #:use-module (guix modules)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
@@ -44,6 +45,7 @@
             %test-inetd
             %test-openvswitch
             %test-dhcpd
+            %test-dhcpcd
             %test-tor
             %test-iptables
             %test-ipfs))
@@ -672,6 +674,110 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
    (name "dhcpd")
    (description "Test a running DHCP daemon configuration.")
    (value (run-dhcpd-test))))
+
+
+;;;
+;;; DHCPCD Daemon
+;;;
+
+(define %dhcpcd-os
+  (let ((base-os
+          (simple-operating-system
+            (service dhcpcd-service-type
+                     (dhcpcd-configuration
+                       (command-arguments '("--debug" "--logfile" "/dev/console"))
+                       (interfaces '("ens3")))))))
+    (operating-system
+      (inherit base-os)
+      (packages
+        (append (list dhcpcd iproute)
+                (operating-system-packages base-os))))))
+
+(define (run-dhcpcd-test)
+  "Run tests in %dhcpcd-os with a running dhcpcd daemon on localhost."
+  (define os
+    (marionette-operating-system
+     %dhcpcd-os
+     #:imported-modules '((gnu services herd))))
+
+  (define vm
+    (virtual-machine os))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-64)
+                       (gnu build marionette))
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (define (wait-for-lease)
+            (marionette-eval
+              '(begin
+                 (use-modules (ice-9 popen) (ice-9 rdelim))
+
+                 (let loop ((i 15))
+                   (if (> i 0)
+                     (let* ((port (open-input-pipe "dhcpcd --dumplease ens3"))
+                            (output (read-string port)))
+                       (close-port port)
+                       (unless (string-contains output "reason=BOUND")
+                         (sleep 1)
+                         (loop (- i 1))))
+                     (error "failed to obtain a DHCP lease"))))
+              marionette))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "dhcpcd")
+
+          (test-assert "service is running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+
+                ;; Make sure the 'dhcpcd' command is found.
+                (setenv "PATH" "/run/current-system/profile/sbin")
+
+                (wait-for-service 'networking))
+             marionette))
+
+          (test-assert "IPC socket exists"
+            (marionette-eval
+              '(file-exists? "/var/run/dhcpcd/ens3.sock")
+              marionette))
+
+          (test-equal "IPC is functional"
+            0
+            (marionette-eval
+              '(status:exit-val
+                 (system* "dhcpcd" "--dumplease" "ens3"))
+              marionette))
+
+          (test-equal "aquires IPv4 address via DHCP"
+            1
+            (and
+              (wait-for-lease)
+              (marionette-eval
+                '(begin
+                   (use-modules (ice-9 popen) (ice-9 rdelim))
+
+                   (let* ((port  (open-input-pipe "ip -4 address show dev ens3"))
+                          (lines (string-split (read-string port) #\newline)))
+                     (close-port port)
+                     (length
+                       (filter (lambda (line)
+                                 (string-contains line "scope global dynamic"))
+                               lines))))
+                marionette)))
+
+          (test-end))))
+  (gexp->derivation "dhcpcd-test" test))
+
+(define %test-dhcpcd
+  (system-test
+   (name "dhcpcd")
+   (description "Test that the dhcpcd obtains IP DHCP leases.")
+   (value (run-dhcpcd-test))))
 
 
 ;;;
