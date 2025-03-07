@@ -10516,7 +10516,8 @@ program for nucleotide and protein sequences.")
        "MUSIC is an algorithm for identification of enriched regions at
 multiple scales in the read depth signals from ChIP-Seq experiments.")
       ;; See https://github.com/gersteinlab/MUSIC/issues/6
-      (license license:gpl2+))))
+      (license license:gpl2+)
+      (properties '((lint-hidden-cpe-vendors . ("apple")))))))
 
 (define-public newick-utils
   ;; There are no recent releases so we package from git.
