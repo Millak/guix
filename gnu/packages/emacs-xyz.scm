@@ -24767,17 +24767,17 @@ close, copy, cut, paste, undo, redo.")
     ;; The emacs package version does not match the password-store version,
     ;; even though it is part of the same repository.  When updating, look at
     ;; the version declared in password-store.el.
-    (version "2.3.0")
+    (version "2.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "git://git.zx2c4.com/password-store")
-             (commit "26d2dae04bb76a87be6960861c10432820cd5d55")))
+             (url "https://git.zx2c4.com/password-store")
+             (commit "b5e965a838bb68c1227caa2cdd874ba496f10149")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1pkx6pgkkpddxrshzq3x8ilfwqjw9gawnbbskcbssxc88wrpbcjb"))))
+         "0hb5zm7hdp7vmqk39a9s1iyncx4swmwfq30dnnzkjk2y08lnb7ac"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -24787,10 +24787,8 @@ close, copy, cut, paste, undo, redo.")
             (lambda _
               (copy-file "contrib/emacs/password-store.el"
                          "password-store.el")
-              (delete-file-recursively "contrib")
-              (delete-file-recursively "man")
-              (delete-file-recursively "src")
-              (delete-file-recursively "tests")))
+              (for-each delete-file-recursively
+                        '("contrib" "man" "src" "tests"))))
           (add-after 'extract-el-file 'patch-executables
             (lambda* (#:key inputs #:allow-other-keys)
               (emacs-substitute-variables "password-store.el"
@@ -24799,7 +24797,7 @@ close, copy, cut, paste, undo, redo.")
     (inputs
      (list password-store))
     (propagated-inputs
-     (list emacs-s emacs-with-editor))
+     (list emacs-with-editor))
     (home-page "https://git.zx2c4.com/password-store/tree/contrib/emacs")
     (synopsis "Password store (pass) support for Emacs")
     (description
