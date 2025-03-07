@@ -28598,7 +28598,7 @@ sections for bookmarks, Projectile projects, Org Agenda and more.")
 (define-public emacs-slime-company
   (package
     (name "emacs-slime-company")
-    (version "1.6")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
@@ -28607,7 +28607,7 @@ sections for bookmarks, Projectile projects, Org Agenda and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05dnnc4ms5c9yp9h65k2gbkg3pw9k38nx5wzlwdlfr4shqmw54w0"))))
+        (base32 "1lzl08fadjn58s9r8kcn1m2sj8qpkg230cjx382jkd5h7ahksx1n"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-slime emacs-company))
