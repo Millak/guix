@@ -15859,7 +15859,7 @@ Emacs buffers.")
 (define-public emacs-markdown-mode
   (package
     (name "emacs-markdown-mode")
-    (version "2.6")
+    (version "2.7")
     (source
      (origin
        (method git-fetch)
@@ -15868,7 +15868,7 @@ Emacs buffers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i0b32z3zis39k412xa7jsikp5wdv2rxvbg8slm4phwi31n52r47"))))
+        (base32 "1w6y18bg0fpvb5xwr827ynzbj0f0nh3dms3n0xq6hg38dcyly46b"))))
     (build-system emacs-build-system)
     (home-page "https://jblevins.org/projects/markdown-mode/")
     (synopsis "Emacs Major mode for Markdown files")
