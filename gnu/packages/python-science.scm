@@ -174,6 +174,39 @@ scientific codes by steering the implementation towards usability and
 maintainability.")
     (license license:bsd-3)))
 
+(define-public python-algopy
+  (package
+    (name "python-algopy")
+    (version "0.6.0") ; the higher versions requir NumPy 2+ stack
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "algopy" version))
+       (sha256
+        (base32 "1vjrzzxa3gvyh2zvm1vwg0s6a7dv23rihgdvgyj1vqniyymp91nq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy))
+    (home-page "https://pythonhosted.org/algopy")
+    (synopsis "Algorithmic Differentation in Python")
+    (description
+     "AlgoPy provides a functionality to differentiate functions implemented
+as computer programs by using Algorithmic Differentiation (AD) techniques in
+the forward and reverse mode.
+
+The forward mode propagates univariate Taylor polynomials of arbitrary order.
+Hence it is also possible to use AlgoPy to evaluate higher-order derivative
+tensors.  The reverse mode is also known as backpropagation and can be found
+in similar form in tools like PyTorch.  Speciality of AlgoPy is the
+possibility to differentiate functions that contain matrix functions as
++,-,*,/, dot, solve, qr, eigh, cholesky.")
+    (license license:bsd-3)))
+
 (define-public python-cmocean
   (package
     (name "python-cmocean")
