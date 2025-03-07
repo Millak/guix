@@ -872,24 +872,6 @@ features require SQL translation to be provided by the package author.")
 and density estimation.")
     (license (list license:gpl2+ license:gpl3+))))
 
-(define-public r-chron
-  (package
-    (name "r-chron")
-    (version "2.3-62")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "chron" version))
-              (sha256
-               (base32
-                "18dyy4fn48d4m7azqbqpazhvy9mwl1k494zl7gxckfrx4ivjrb87"))))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/chron")
-    (synopsis "Chronological R objects which can handle dates and times")
-    (description
-     "This package provides chronological R objects which can handle dates and
-times.")
-    (license license:gpl2)))
-
 (define-public r-data-table
   (package
     (name "r-data-table")
