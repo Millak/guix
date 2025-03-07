@@ -16279,7 +16279,7 @@ efficient tabs plugin for Emacs with a lot of customization options.")
 (define-public emacs-org-remark
   (package
     (name "emacs-org-remark")
-    (version "1.2.2")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -16288,7 +16288,7 @@ efficient tabs plugin for Emacs with a lot of customization options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b6nmd64jzy6a7fz4x5p276sl36xa72y3ajbl72vr5ndqp94rlz1"))))
+                "0npw7niqjhxspnaw4f2wnrjz5wr7qfkib0865hcri3aq8ccd46xr"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-org))
     (home-page "https://nobiot.github.io/org-remark/")
