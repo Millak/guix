@@ -5875,17 +5875,18 @@ any Python package.")
 (define-public python-milc
   (package
     (name "python-milc")
-    (version "1.6.8")
+    (version "1.9.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "milc" version))
               (sha256
                (base32
-                "1pnwdg2653lc82qsv6c0kv9qcydh2f6w5mx5l4227zy1f6kr7b52"))))
+                "1kkiric668mikc5d3jn1x27jrasqlqlyj8lh6d7zp8a866icjan0"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-appdirs python-argcomplete python-colorama
-                             python-halo python-spinners))
-    (native-inputs (list python-setuptools python-wheel))
+                             python-halo python-spinners python-platformdirs
+                             python-types-colorama))
+    (native-inputs (list python-setuptools python-wheel python-pip))
     (home-page "https://github.com/clueboard/milc")
     (synopsis "Python library for command line interface programs")
     (description "MILC is a Python library for developing command line
