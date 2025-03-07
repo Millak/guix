@@ -2014,6 +2014,11 @@ or passthrough board.")
    #:description
    "This package provides the firmware for the Keychron Q3 ISO with default keymap and with encoder."))
 
+(define-public qmk-firmware-keychron-q3-jis-default
+  (make-qmk-firmware-keychron "keychron/q3/jis" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q3 JIS with default keymap."))
+
 (define-public qmk-firmware-keychron-v3-ansi-default
   (make-qmk-firmware-keychron "keychron/v3/ansi" "default"
    #:description
