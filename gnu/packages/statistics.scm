@@ -1974,29 +1974,6 @@ the header files from the templated Armadillo library.")
     ;; later, as is the rest of 'Rcpp'.
     (license license:gpl2+)))
 
-(define-public r-catools
-  (package
-    (name "r-catools")
-    (version "1.18.3")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "caTools" version))
-              (sha256
-               (base32
-                "1n380hnddj29nrzsqf462a1h3xy55qk4q45i5287ffd2lx13j6z7"))))
-    (properties `((upstream-name . "caTools")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-bitops))
-    (home-page "https://cran.r-project.org/web/packages/caTools")
-    (synopsis "Various tools including functions for moving window statistics")
-    (description
-     "This package contains several basic utility functions including:
-moving (rolling, running) window statistic functions, read/write for GIF and
-ENVI binary files, fast calculation of AUC, LogitBoost classifier, base64
-encoder/decoder, round-off-error-free sum and cumsum, etc.")
-    (license license:gpl3+)))
-
 (define-public r-rprojroot
   (package
     (name "r-rprojroot")
