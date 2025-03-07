@@ -12911,7 +12911,7 @@ extensive face definitions than the \"official\" Emacs variant.")
 (define-public emacs-solarized-theme
   (package
     (name "emacs-solarized-theme")
-    (version "2.0.4")
+    (version "2.0.5")
     (source
      (origin
        (method git-fetch)
@@ -12920,7 +12920,7 @@ extensive face definitions than the \"official\" Emacs variant.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18z36nzyh4dsd8igys37x0r3lnav77fvjrkxv48v3yjsrwli19gl"))))
+        (base32 "0nwyax9dikpw4fcplnk0az9k1pk02wnhkadvfp325s7rl2j8y23b"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash))
