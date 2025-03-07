@@ -26858,7 +26858,7 @@ without disturbing alignment.")
 (define-public emacs-macrostep
   (package
     (name "emacs-macrostep")
-    (version "0.9.4")
+    (version "0.9.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26867,7 +26867,7 @@ without disturbing alignment.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f0rjpjwzpw6hxqbh8ghr7838slf7w22z7szy68bbg3bbnrjjlai"))))
+                "1sdi8kmcvf39p1m6bahnzi3h0djg23lppb2hf1y1snihcf3ibwi9"))))
     (build-system emacs-build-system)
     (arguments
      (list
