@@ -4677,7 +4677,7 @@ programs such as @code{vi}, @code{top}, @code{htop} or even @code{emacs
 (define-public emacs-mistty
   (package
     (name "emacs-mistty")
-    (version "1.3")
+    (version "1.4")
     (source
      (origin
        (method git-fetch)
@@ -4686,7 +4686,7 @@ programs such as @code{vi}, @code{top}, @code{htop} or even @code{emacs
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wyhv6skml0p9lajhmfbwc8wm3r1107kgwyvh31dyi9m4zhc52zh"))))
+        (base32 "1garqzcx14mwakbrp5p2vqynlbh819w8gjnf24x4xhv5aa5xy81j"))))
     (build-system emacs-build-system)
     (arguments
      (list
