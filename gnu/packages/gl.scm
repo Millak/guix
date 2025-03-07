@@ -991,7 +991,8 @@ encoding together.")
     (description
      "SOIL is a tiny C library used primarily for uploading textures into
 OpenGL.")
-    (license license:public-domain)))
+    (license license:public-domain)
+    (properties '((lint-hidden-cpe-vendors . ("roots"))))))
 
 (define-public glfw
   (package
