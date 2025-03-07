@@ -8301,7 +8301,7 @@ Lisp.")
 (define-public emacs-paren-face
   (package
     (name "emacs-paren-face")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -8310,7 +8310,7 @@ Lisp.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zj99wz8649ixxvz3d0qg1sbi2sb54g42qwgi0ngqzr6qzdc03wa"))))
+        (base32 "1j619m08lz6bg2kr4jm2rbyn2r8a9f1z124ashzjkiwky0mvs1v9"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
