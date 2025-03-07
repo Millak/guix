@@ -1414,13 +1414,13 @@ corresponding layout." layout))
 (define-public qmk
   (package
     (name "qmk")
-    (version "1.1.2")
+    (version "1.1.6")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "qmk" version))
               (sha256
                (base32
-                "1619q9v90740dbg8xpzqlhwcasz42xj737803aiip8qc3a7zhwgq"))))
+                "0l4b5bi6x1i9bh3ik73yisn1pq1bhgiksiddvg3cxy7jmgdnqhyw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
