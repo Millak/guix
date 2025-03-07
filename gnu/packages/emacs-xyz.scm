@@ -29414,7 +29414,7 @@ the GIF result.")
 (define-public emacs-go-translate
   (package
     (name "emacs-go-translate")
-    (version "3.0.7")
+    (version "3.0.9")
     (source
      (origin
        (method git-fetch)
@@ -29423,7 +29423,7 @@ the GIF result.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0603iq1vjbm44sl7qrmkdfcqzzc703h1g5hdcswpj7pi0w7fxb4s"))))
+        (base32 "1j5knkb8h0wpr6pzvrb6kvisjkm4kkd7jzad6h566sn0si2x9y5g"))))
     (build-system emacs-build-system)
     (arguments
      (list
