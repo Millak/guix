@@ -39712,6 +39712,7 @@ personal wiki.")
      (list emacs-dash
            emacs-el-job
            emacs-llama
+           emacs-magit
            emacs-org
            emacs-persist
            emacs-transient))
