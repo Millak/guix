@@ -1358,6 +1358,30 @@ are included as well.")
     ;; Any version of the GPL.
     (license license:gpl3+)))
 
+(define-public r-checkmate
+  (package
+    (name "r-checkmate")
+    (version "2.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "checkmate" version))
+       (sha256
+        (base32
+         "1qw81bs3lhwr1m6wlbs0l0j669051n60x4ca2821599ddhnp6mbj"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-backports))
+    (native-inputs
+     (list r-knitr r-testthat))
+    (home-page "https://github.com/mllg/checkmate")
+    (synopsis "Fast and versatile argument checks")
+    (description
+     "This package provides tests and assertions to perform frequent argument
+checks.  A substantial part of the package was written in C to minimize any
+worries about execution time overhead.")
+    (license license:bsd-3)))
+
 (define-public r-chorddiag
   (package
     (name "r-chorddiag")
