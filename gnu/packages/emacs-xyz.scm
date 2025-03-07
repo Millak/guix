@@ -17313,7 +17313,7 @@ multiple project types.")
 (define-public emacs-tp
   (package
     (name "emacs-tp")
-    (version "0.6")
+    (version "0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17322,7 +17322,7 @@ multiple project types.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14vdn5syv7jghxvqlih9gvh82755r5gd8yxskq8bv6wkm4b0y0cs"))))
+                "1hv0j4dzwamhm2gp5123j415mq13347v5lsbxlrksha5nw9h7kds"))))
     (build-system emacs-build-system)
     (home-page "https://codeberg.org/martianh/tp.el")
     (synopsis "Utilities to create transient menus for POSTing to an API")
