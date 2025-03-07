@@ -27668,7 +27668,7 @@ and doesn't require memorisation of commands.
 (define-public emacs-logview
   (package
     (name "emacs-logview")
-    (version "0.19.1")
+    (version "0.19.2")
     (source
      (origin
        (method git-fetch)
@@ -27677,7 +27677,7 @@ and doesn't require memorisation of commands.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qgkmjw5prc5zrsccdmh9wfr1fyk9jfdfnqn6ldsbi7jhbr71366"))))
+        (base32 "1dhs2l2lx1gvvwg840a9y4nf2zxk9nljpyr8xqzi3si8wa7b3jdj"))))
     (propagated-inputs
      (list emacs-compat emacs-datetime emacs-extmap))
     (build-system emacs-build-system)
