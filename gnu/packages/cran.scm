@@ -1452,6 +1452,44 @@ additions (tooltips, bipartite diagram type).")
 times.")
     (license license:gpl2)))
 
+(define-public r-clubsandwich
+  (package
+    (name "r-clubsandwich")
+    (version "0.5.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "clubSandwich" version))
+       (sha256
+        (base32
+         "1y9iy86w2440y22279is7vgi9m9v876p5954nhq5lg9ghpzbwzdq"))))
+    (properties `((upstream-name . "clubSandwich")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-lifecycle r-sandwich))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/jepusto/clubSandwich")
+    (synopsis
+     "Cluster-robust (Sandwich) variance estimators with small-sample corrections")
+    (description
+     "This package provides several cluster-robust variance estimators (i.e.,
+sandwich estimators) for ordinary and weighted least squares linear regression
+models, including the bias-reduced linearization estimator introduced by Bell
+and McCaffrey (2002)
+@url{http://www.statcan.gc.ca/pub/12-001-x/2002002/article/9058-eng.pdf} and
+developed further by Pustejovsky and Tipton (2017)
+@url{doi:10.1080/07350015.2016.1247004}.  The package includes functions for
+estimating the variance- covariance matrix and for testing single- and
+multiple-contrast hypotheses based on Wald test statistics.  Tests of single
+regression coefficients use Satterthwaite or saddle-point corrections.  Tests
+of multiple-contrast hypotheses use an approximation to Hotelling's T-squared
+distribution.  Methods are provided for a variety of fitted models, including
+@code{lm()} and @code{mlm} objects, @code{glm()}, ivreg (from package
+@code{AER}), @code{plm()} (from package @code{plm}), @code{gls()} and
+@code{lme()} (from @code{nlme}), @code{robu()} (from @code{robumeta}), and
+@code{rma.uni()} and @code{rma.mv()} (from @code{metafor}).")
+    (license license:gpl3)))
+
 (define-public r-celestial
   (package
     (name "r-celestial")
