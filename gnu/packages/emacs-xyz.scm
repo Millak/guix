@@ -2602,6 +2602,7 @@ you will die.  The game builds the list of words from the active buffer.")
               (substitute* "test-speed-type.el"
                 (("\\(ert-deftest speed-type--retrieve-test .*" all)
                  (string-append all " (skip-unless nil)"))))))))
+    (native-inputs (list emacs-dash))
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/dakra/speed-type")
     (synopsis "Practice touch/speed typing in GNU Emacs")
