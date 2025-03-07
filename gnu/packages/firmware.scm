@@ -2223,6 +2223,12 @@ or passthrough board.")
   (make-qmk-firmware-keychron "keychron/v3/ansi" "default"
    #:description
    "This package provides the firmware for the Keychron V3 ANSI with default keymap."))
+
+(define-public qmk-firmware-keychron-v3-iso-default
+  (make-qmk-firmware-keychron "keychron/v3/iso" "default"
+   #:description
+   "This package provides the firmware for the Keychron V3 ISO with default keymap."))
+
 (define-public firmware-senoko
   (package
     (name "firmware-senoko")
