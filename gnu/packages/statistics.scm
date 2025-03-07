@@ -7279,121 +7279,118 @@ Java package that provides routines for various statistical distributions.")
     (license license:gpl2+)))
 
 (define-public emacs-ess
-  (let ((commit "ab2faeca1ba6c456333312c58f58ef9e5ef4aa8b")
-        (version "24.01.1")
-        (revision "1"))
-    (package
-      (name "emacs-ess")
-      (version (git-version version revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/emacs-ess/ESS")
-               (commit commit)))
-         (sha256
-          (base32 "0jfdfqpa3x1zm65cllkzhqir057xd3hxi4z2ddii1i26zy56iikf"))
-         (file-name (git-file-name name version))
-         (modules '((guix build utils)))
-         (snippet
-          #~(begin
-              ;; Stop ESS from trying to bundle an external julia-mode.el.
-              (substitute* "lisp/Makefile"
-                ((" \\$\\(JULIAS)") "")
-                (("\ttest.*julia-mode.*\\.el") ""))
-              ;; Only build docs in info format.
-              (substitute* "doc/Makefile"
-                (("all  : info text")
-                 "all  : info")
-                (("install: install-info install-other-docs")
-                 "install: install-info"))
-              ;; Stop install-info from trying to update the info directory.
-              (substitute* "doc/Makefile"
-                ((".*/dir.*") ""))
-              ;; Avoid generating ess-autoloads.el twice.
-              (substitute* "Makefile"
-                (("all: lisp doc etc autoloads")
-                 "all: lisp doc etc"))
-              ;; Install to correct directories.
-              (substitute* "Makefile"
-                (("mkdir -p \\$\\(ESSDESTDIR)")
-                 "$(MAKE) -C lisp install; $(MAKE) -C doc install")
-                (("\\$\\(INSTALL) -R \\./\\* \\$\\(ESSDESTDIR)/")
-                 "$(MAKE) -C etc install"))))))
-      (build-system gnu-build-system)
-      (arguments
-       (let ((base-directory "/share/emacs/site-lisp"))
-         (list
-          #:modules '((guix build gnu-build-system)
-                      (guix build utils)
-                      (guix build emacs-utils))
-          #:imported-modules `(,@%default-gnu-imported-modules
-                               (guix build emacs-build-system)
-                               (guix build emacs-utils))
-          #:make-flags
-          #~(list (string-append "PREFIX=" #$output)
-                  (string-append "ETCDIR=" #$output #$base-directory "/etc")
-                  (string-append "LISPDIR=" #$output #$base-directory)
-                  (string-append "INFODIR=" #$output "/share/info"))
-          #:phases
-          #~(modify-phases %standard-phases
-              (delete 'configure)
-              (add-before 'check 'skip-failing-tests
-                (lambda _
-                  (let-syntax
-                      ((disable-tests
-                        (syntax-rules ()
-                          ((_ ())
-                           (syntax-error "test names list must not be empty"))
-                          ((_ (test-name ...))
-                           (substitute* (find-files "test" "\\.el$")
-                             (((string-append "^\\(ert-deftest " test-name ".*")
-                               all)
-                              (string-append all "(skip-unless nil)\n"))
-                             ...))))
-                       (disable-etests  ;different test syntax
-                        (syntax-rules ()
-                          ((_ ())
-                           (syntax-error "test names list must not be empty"))
-                          ((_ (test-name ...))
-                           (for-each
-                            (lambda (file)
-                              (emacs-batch-edit-file file
-                                '(progn
-                                  (dolist (test (list test-name ...))
-                                          (goto-char (point-min))
-                                          (let ((s (format "etest-deftest %s "
-                                                           test)))
-                                            (when (search-forward s nil t)
-                                              (beginning-of-line)
-                                              (kill-sexp))))
-                                  (basic-save-buffer))))
-                            (find-files "test" "\\.el$"))))))
-                    (disable-tests ("ess--derive-connection-path"
-                                    "ess-eval-line-test"
-                                    "ess-eval-region-test"
-                                    "ess-mock-remote-process"
-                                    "ess-r-load-ESSR-github-fetch-no"
-                                    "ess-r-load-ESSR-github-fetch-yes"
-                                    "ess-set-working-directory-test"
-                                    "ess-test-r-startup-directory"))
-                    (disable-etests ("ess-r-eval-ns-env-roxy-tracebug-test"
-                                     "ess-r-eval-sink-freeze-test"
-                                     ;; Looks like an off-by-one error.
-                                     "ess--command-browser-unscoped-essr")))))
-              (replace 'check
-                (lambda* (#:key tests? #:allow-other-keys)
-                  (when tests? (invoke "make" "test"))))))))
-      (native-inputs (list perl r-roxygen2 texinfo))
-      (inputs (list emacs-minimal r-minimal))
-      (propagated-inputs (list emacs-julia-mode))
-      (home-page "https://ess.r-project.org/")
-      (synopsis "Emacs mode for statistical analysis programs")
-      (description
-       "Emacs Speaks Statistics (ESS) is an add-on package for GNU Emacs.  It
+  (package
+    (name "emacs-ess")
+    (version "25.01.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emacs-ess/ESS")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0v56b47qidpyxvyk0q487qxhj9si0jkm852frl832iraks02l5h5"))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Stop ESS from trying to bundle an external julia-mode.el.
+            (substitute* "lisp/Makefile"
+              ((" \\$\\(JULIAS)") "")
+              (("\ttest.*julia-mode.*\\.el") ""))
+            ;; Only build docs in info format.
+            (substitute* "doc/Makefile"
+              (("all  : info text")
+               "all  : info")
+              (("install: install-info install-other-docs")
+               "install: install-info"))
+            ;; Stop install-info from trying to update the info directory.
+            (substitute* "doc/Makefile"
+              ((".*/dir.*") ""))
+            ;; Avoid generating ess-autoloads.el twice.
+            (substitute* "Makefile"
+              (("all: lisp doc etc autoloads")
+               "all: lisp doc etc"))
+            ;; Install to correct directories.
+            (substitute* "Makefile"
+              (("mkdir -p \\$\\(ESSDESTDIR)")
+               "$(MAKE) -C lisp install; $(MAKE) -C doc install")
+              (("\\$\\(INSTALL) -R \\./\\* \\$\\(ESSDESTDIR)/")
+               "$(MAKE) -C etc install"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (let ((base-directory "/share/emacs/site-lisp"))
+       (list
+        #:modules '((guix build gnu-build-system)
+                    (guix build utils)
+                    (guix build emacs-utils))
+        #:imported-modules `(,@%default-gnu-imported-modules
+                             (guix build emacs-build-system)
+                             (guix build emacs-utils))
+        #:make-flags
+        #~(list (string-append "PREFIX=" #$output)
+                (string-append "ETCDIR=" #$output #$base-directory "/etc")
+                (string-append "LISPDIR=" #$output #$base-directory)
+                (string-append "INFODIR=" #$output "/share/info"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-before 'check 'skip-failing-tests
+              (lambda _
+                (let-syntax
+                    ((disable-tests
+                      (syntax-rules ()
+                        ((_ ())
+                         (syntax-error "test names list must not be empty"))
+                        ((_ (test-name ...))
+                         (substitute* (find-files "test" "\\.el$")
+                           (((string-append "^\\(ert-deftest " test-name ".*")
+                             all)
+                            (string-append all "(skip-unless nil)\n"))
+                           ...))))
+                     (disable-etests  ;different test syntax
+                      (syntax-rules ()
+                        ((_ ())
+                         (syntax-error "test names list must not be empty"))
+                        ((_ (test-name ...))
+                         (for-each
+                          (lambda (file)
+                            (emacs-batch-edit-file file
+                              '(progn
+                                (dolist (test (list test-name ...))
+                                        (goto-char (point-min))
+                                        (let ((s (format "etest-deftest %s "
+                                                         test)))
+                                          (when (search-forward s nil t)
+                                            (beginning-of-line)
+                                            (kill-sexp))))
+                                (basic-save-buffer))))
+                          (find-files "test" "\\.el$"))))))
+                  (disable-tests ("ess--derive-connection-path"
+                                  "ess-eval-line-test"
+                                  "ess-eval-region-test"
+                                  "ess-mock-remote-process"
+                                  "ess-r-load-ESSR-github-fetch-no"
+                                  "ess-r-load-ESSR-github-fetch-yes"
+                                  "ess-set-working-directory-test"
+                                  "ess-test-r-startup-directory"))
+                  (disable-etests ("ess-r-eval-ns-env-roxy-tracebug-test"
+                                   "ess-r-eval-sink-freeze-test"
+                                   ;; Looks like an off-by-one error.
+                                   "ess--command-browser-unscoped-essr")))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests? (invoke "make" "test"))))))))
+    (native-inputs (list perl r-roxygen2 texinfo))
+    (inputs (list emacs-minimal r-minimal))
+    (propagated-inputs (list emacs-julia-mode))
+    (home-page "https://ess.r-project.org/")
+    (synopsis "Emacs mode for statistical analysis programs")
+    (description
+     "Emacs Speaks Statistics (ESS) is an add-on package for GNU Emacs.  It
 is designed to support editing of scripts and interaction with various
 statistical analysis programs such as R, Julia, and JAGS.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-poly-r
   (package
