@@ -5855,6 +5855,23 @@ any Python package.")
      "Extras is a set of extensions to the Python standard library.")
     (license license:expat)))
 
+(define-public python-types-colorama
+  (package
+    (name "python-types-colorama")
+    (version "0.4.15.20240311")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-colorama" version))
+       (sha256
+        (base32 "0ylwp6r6k69icsd96zbsan7i1x0rwj427lv5jpxi8avxs6c7z3m2"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for colorama")
+    (description "This package provides typing stubs for colorama.")
+    (license license:asl2.0)))
+
 (define-public python-milc
   (package
     (name "python-milc")
