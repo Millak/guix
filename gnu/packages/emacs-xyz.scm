@@ -20751,30 +20751,31 @@ conversion for Emacs Lisp.")
     (license license:gpl2+)))
 
 (define-public emacs-cdlatex
-  (package
-    (name "emacs-cdlatex")
-    (version "4.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cdominik/cdlatex")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1jj9vmhc4s3ych08bjm1c2xwi81z1p20rj7bvxrgvb5aga2ghi9d"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-auctex))
-    (home-page "https://github.com/cdominik/cdlatex")
-    (synopsis "Fast Emacs input methods for LaTeX environments and
+  (let ((commit "fac070f0164ac9f5859cb4cccba7d29a65c337f3")) ;version bump
+    (package
+      (name "emacs-cdlatex")
+      (version "4.18.5")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cdominik/cdlatex")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1851nf6bghgzh9nbv8x92yzgdc9rl2jiiwqw2kpninr5myk7fh9y"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-auctex))
+      (home-page "https://github.com/cdominik/cdlatex")
+      (synopsis "Fast Emacs input methods for LaTeX environments and
 math")
-    (description "CDLaTeX is an Emacs minor mode supporting fast
+      (description "CDLaTeX is an Emacs minor mode supporting fast
 insertion of environment templates and math in LaTeX.  Similar
 commands are also offered as part of the AUCTeX package, but it is not
 the same - CDLaTeX focuses on speediness for inserting LaTeX
 constructs.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-cnfonts
   (package
