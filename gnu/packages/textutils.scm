@@ -281,7 +281,9 @@ encoding, supporting Unicode version 9.0.0.")
                            "releases/download/v" version
                            "/confuse-" version ".tar.xz"))
        (sha256
-        (base32 "043hqqykpprgrkw9s2hbdlxr308a7yxwsgxj4m8aadg1401hmm8x"))))
+        (base32 "043hqqykpprgrkw9s2hbdlxr308a7yxwsgxj4m8aadg1401hmm8x"))
+       (patches
+        (search-patches "libconfuse-CVE-2022-40320.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
