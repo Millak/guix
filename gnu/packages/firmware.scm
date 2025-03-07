@@ -2140,7 +2140,7 @@ or passthrough board.")
    "This package provides the firmware for the Keychron Q9 Plus ANSI with default keymap and with encoder."))
 
 (define-public qmk-firmware-keychron-s1-ansi-rgb-default
-  (make-qmk-firmware-keychron "keychron/s1/ansi-rgb" "default"
+  (make-qmk-firmware-keychron "keychron/s1/ansi/rgb" "default"
    #:description
    "This package provides the firmware for the Keychron S1 ANSI RGB with default keymap."))
 
