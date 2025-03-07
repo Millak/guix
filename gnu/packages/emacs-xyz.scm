@@ -2576,7 +2576,7 @@ you will die.  The game builds the list of words from the active buffer.")
 (define-public emacs-speed-type
   (package
     (name "emacs-speed-type")
-    (version "1.3")
+    (version "1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2585,7 +2585,7 @@ you will die.  The game builds the list of words from the active buffer.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nnvk3qnn61hg5rgwpiy1dqg6sqfh1m5256sbsk2pwrdmk54k85k"))))
+                "1rw3lgm65jxcs7vbj0055ays4wv23mk2kj3xivnqmhnm030vk868"))))
     (build-system emacs-build-system)
     (arguments
      (list
