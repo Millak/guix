@@ -2010,7 +2010,7 @@ as the current patch using @code{a}, and it can be discarded using @code{k}.  Ot
 (define-public emacs-magit-svn
   (package
     (name "emacs-magit-svn")
-    (version "2.2.3")
+    (version "2.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2019,7 +2019,7 @@ as the current patch using @code{a}, and it can be discarded using @code{k}.  Ot
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v1y4fir1plz4kj0cvkcd29wibli4dw7vp4fmbxq4df76d8iy8yd"))))
+                "0x419qz80ir9ni94j3n08a5ygfq1265fpr13dsnxjjnlwjbq7sx7"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-dash emacs-with-editor emacs-magit))
     (home-page "https://github.com/magit/magit-svn")
