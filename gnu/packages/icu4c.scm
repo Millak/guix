@@ -43,19 +43,13 @@
   #:use-module (guix build-system ant)
   #:use-module (guix build-system gnu))
 
-(define (icu4?-uri variant version)
+(define (icu4c-uri version)
   (string-append
    "https://github.com/unicode-org/icu/releases/download/release-"
    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
-   "/icu4" variant "-"
+   "/icu4c-"
    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
    "-src.tgz"))
-
-(define (icu4c-uri version)
-  (icu4?-uri "c" version))
-
-(define (icu4j-uri version)
-  (icu4?-uri "j" version))
 
 (define-public icu4c
   (package
@@ -218,7 +212,12 @@ C/C++ part.")
     (version "70.1")
     (source (origin
               (method url-fetch)
-              (uri (icu4j-uri version))
+              (uri (string-append
+                    "https://github.com/unicode-org/icu/releases/download/release-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\- x)) version)
+                    "/icu4j-"
+                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
+                    ".tgz"))
               (sha256
                (base32 "0qrs75iyzn19kf54q55jn8wf6xjlpkrihdwqpxm39jdh2hz4cgvj"))))
     (build-system ant-build-system)
