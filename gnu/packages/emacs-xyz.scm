@@ -1640,7 +1640,7 @@ posts, and participate in discussions on Discourse, directly from Emacs.")
 (define-public emacs-disproject
   (package
     (name "emacs-disproject")
-    (version "1.3.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1649,7 +1649,7 @@ posts, and participate in discussions on Discourse, directly from Emacs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03wf14vilnysj9szcffsadhw86p68v3083dv98d99c8axm51n6hz"))))
+        (base32 "0550bfqbprbr9s36xgyrwdg2mrry28j5cbd7fms980ixn6a4vcx5"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-transient))
     (home-page "https://github.com/aurtzy/disproject")
