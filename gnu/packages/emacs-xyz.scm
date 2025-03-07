@@ -22467,15 +22467,15 @@ or @code{treemacs}, but leveraging @code{Dired} to do the job of display.")
 (define-public emacs-dirvish
   (package
     (name "emacs-dirvish")
-    (version "2.0.53")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/alexluigit/dirvish")
-                    (commit "c535e2147171be5506f4ff34e862bacbfb3de768")))
+                    (commit "2.1.0")))
               (sha256
                (base32
-                "1nmp5ci4dvcpih6phfhk66s98lf8b49qd35ymy29kqkf5v4cnwga"))
+                "01mihv8p8ljdw19n0cqhaixyk8ic58zz2r8qhwy7900xpyn3b91w"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
