@@ -40507,7 +40507,7 @@ web development.")
 (define-public emacs-iter2
   (package
     (name "emacs-iter2")
-    (version "2.0")
+    (version "2.2")
     (source
      (origin
        (method git-fetch)
@@ -40516,7 +40516,7 @@ web development.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17rraqidypxypmvqrh8k0ja57is178q72p6fxj3wlp7mbld1hcp3"))))
+        (base32 "09g2sa364g1s25q9a3d9kn6xs78rgpn6w2axkkd0qviakr290ilz"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/doublep/iter2")
     (synopsis "Reimplementation of Elisp generators")
