@@ -2064,6 +2064,11 @@ or passthrough board.")
    #:description
    "This package provides the firmware for the Keychron Q65 ANSI with default keymap and with encoder."))
 
+(define-public qmk-firmware-keychron-q6-ansi-default
+  (make-qmk-firmware-keychron "keychron/q6/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q6 ANSI with default keymap."))
+
 (define-public qmk-firmware-keychron-v3-ansi-default
   (make-qmk-firmware-keychron "keychron/v3/ansi" "default"
    #:description
