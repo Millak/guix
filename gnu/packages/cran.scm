@@ -1113,6 +1113,25 @@ Backends are modular such that any subset of backends is supported.")
 Applied regression, Second Edition, Sage, 2011.")
     (license license:gpl2+)))
 
+(define-public r-cardata
+  (package
+    (name "r-cardata")
+    (version "3.0-5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "carData" version))
+       (sha256
+        (base32 "06j52rpbqi6fj7chfjwjbwbr6slrbb7i3aygv66gnfiyndcp3rq2"))))
+    (properties `((upstream-name . "carData")))
+    (build-system r-build-system)
+    (home-page "https://r-forge.r-project.org/projects/car/")
+    (synopsis "Data sets for the book Companion to Applied Regression")
+    (description
+     "This package provides datasets to accompany J. Fox and S. Weisberg, An R
+Companion to Applied Regression, Third Edition, Sage.")
+    (license license:gpl2+)))
+
 (define-public r-cards
   (package
     (name "r-cards")
