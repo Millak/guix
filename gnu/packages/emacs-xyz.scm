@@ -4322,7 +4322,7 @@ code completion and project management support.")
 (define-public emacs-auto-compile
   (package
     (name "emacs-auto-compile")
-    (version "2.0.4")
+    (version "2.0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4331,7 +4331,7 @@ code completion and project management support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cd42xigvw7fy2qy5kn0xlc97sp03w8ja6qjs2y22h29xva6fwsl"))))
+                "1mclnf6ichsjdnjd1b6bg4vqhhjpy6y3458khnxvr1fpn67h6iny"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat emacs-packed))
     (home-page "https://github.com/emacscollective/auto-compile")
