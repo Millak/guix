@@ -223,10 +223,10 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                 (string-append
                  "\n\n"
                  "# Patched by Guix.\n"
-                 "# Enable completions, functions and configurations in user's"
-                 " and system's guix profiles by adding them to __extra_*"
+                 "# Enable completions, functions and configurations in user's,"
+                 " home's and system's guix profiles by adding them to __extra_*"
                  " variables.\n"
-                 "set -l __guix_profile_paths ~/.guix-profile"
+                 "set -l __guix_profile_paths ~/.guix-profile ~/.guix-home/profile"
                  " /run/current-system/profile\n"
                  "set __extra_completionsdir"
                  " $__guix_profile_paths\"/etc/fish/completions\""
