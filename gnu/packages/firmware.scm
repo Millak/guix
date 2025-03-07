@@ -62,6 +62,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages efi)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages embedded)
   #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
@@ -1515,6 +1516,7 @@ keyboard definition in KEYBOARD-SOURCE-DIRECTORY."
                          (string-replace-substring keymap "_" "-")))
     ;; Note: When updating this package, make sure to also update the commit
     ;; used for the LUFA submodule in the 'copy-lufa-source' phase below.
+    ;; Note: If you update this you WILL lose support for ergodox.
     (version "0.22.3")
     (source (origin
               (method git-fetch)
@@ -1752,6 +1754,120 @@ or passthrough board.")
     (home-page "https://github.com/xobs/senoko-chibios-3/")
     (license license:gpl3+)))
 
+(define (make-qmk-newlib-nano-arm-none-eabi)
+  (let ((base (make-newlib-nano-arm-none-eabi)))
+    (package
+      (inherit base)
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "xgcc" (make-gcc-arm-none-eabi-12.3.rel1)))))))
+
+(define* (make-qmk-firmware-keychron keyboard keymap
+                                     #:key (description "")
+                                     keymap-json
+                                     keymap-source-directory
+                                     keyboard-source-directory)
+  (let ((base (make-qmk-firmware keyboard keymap
+                                 #:description description
+                                 #:keymap-json keymap-json
+                                 #:keymap-source-directory keymap-source-directory
+                                 #:keyboard-source-directory keyboard-source-directory)))
+    (package
+      (inherit base)
+      (name (string-append "qmk-firmware-"
+                           (regexp-substitute/global #f "[_/]" keyboard
+                                                     'pre "-" 'post)
+                           "-"
+                           (string-replace-substring keymap "_" "-")))
+      ;; Note: When updating this package, make sure to also update the commit
+      ;; used for the LUFA submodule in the 'copy-lufa-source' phase below.
+      (version "0.28.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/qmk/qmk_firmware")
+                      (commit version)))
+                (file-name (git-file-name "qmk-firmware" version))
+                (sha256
+                 (base32
+                  "1skj7iq6dad48xhy2ljjmwpbhhdv3gk7cmi28lh3xfsnxphm4v8r"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (replace 'copy-lufa-source
+                ;; QMK carries a custom fork of LUFA as a git submodule; make sure
+                ;; the same commit is used (see:
+                ;; https://github.com/qmk/qmk_firmware/tree/master/lib).
+                (lambda _
+                  (copy-recursively
+                   #$(let ((commit "549b97320d515bfca2f95c145a67bd13be968faa"))
+                       (origin
+                         (inherit (package-source lufa))
+                         (uri (git-reference
+                               (url "https://github.com/qmk/lufa")
+                               (commit commit)))
+                         (file-name (git-file-name "lufa" commit))
+                         (sha256
+                          (base32
+                           "1rmhm4rxvq8skxqn6vc4n4ly1ak6whj7c386zbsci4pxx548n9h4"))))
+                   "lib/lufa")))
+              (add-after 'unpack 'setenv
+                (lambda _
+                  ;; Because newlib-nano is also compiled without FPU.
+                  (setenv "USE_FPU" "no")))
+              (add-after 'unpack 'copy-chibios-source
+                (lambda _
+                  ;; Newest version.
+                  (copy-recursively
+                   #$(origin
+                       (method git-fetch)
+                       (uri (git-reference
+                             (url "https://github.com/qmk/ChibiOS")
+                             (commit "2365f844292513ea0ee9eea6ab778d56f9ccd3b9")))
+                                        ;(file-name (git-file-name name version))
+                       (sha256
+                        (base32
+                         "1ivkrx4nv0sa4nfryzbq5h40vs7vik8p0dp9czjh2srql520y7yq")))
+                   "lib/chibios")))
+              (add-after 'unpack 'copy-printf-source
+                ;; Newest version.
+                (lambda _
+                  (copy-recursively
+                   #$(origin
+                       (method git-fetch)
+                       (uri (git-reference
+                             (url "https://github.com/qmk/printf.git")
+                             (commit "c2e3b4e10d281e7f0f694d3ecbd9f320977288cc")))
+                                        ;(file-name (git-file-name name version))
+                       (sha256
+                        (base32
+                         "0r501hkk0idwfm6qs09g1wb808ga452gz39dw32x13rmg3a901s6")))
+                   "lib/printf")))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (prepend
+          (package
+            (inherit (make-qmk-newlib-nano-arm-none-eabi))
+            (native-search-paths
+             (list (search-path-specification
+                    (variable "CROSS_C_INCLUDE_PATH")
+                    (files '("arm-none-eabi/include")))
+                   (search-path-specification
+                    (variable "CROSS_CPLUS_INCLUDE_PATH")
+                    (files '("arm-none-eabi/include"
+                             "arm-none-eabi/include/c++"
+                             "arm-none-eabi/include/c++/arm-none-eabi")))
+                   (search-path-specification
+                    (variable "CROSS_LIBRARY_PATH")
+                    (files '("arm-none-eabi/lib"))))))
+          (make-gcc-arm-none-eabi-12.3.rel1)
+          (cross-binutils "arm-none-eabi")))))))
+
+(define-public qmk-firmware-keychron-v3-ansi-default
+  (make-qmk-firmware-keychron "keychron/v3/ansi" "default"
+   #:description
+   "This package provides the firmware for the Keychron V3 ANSI with default keymap."))
 (define-public firmware-senoko
   (package
     (name "firmware-senoko")
