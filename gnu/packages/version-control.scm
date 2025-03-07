@@ -591,20 +591,7 @@ Python 3.3 and later, rather than on Python 2.")
     (description
      "Git is a free distributed version control system designed to handle
 everything from small to very large projects with speed and efficiency.")
-    ;; XXX: Ignore this CVE to work around a name clash with the unrelated
-    ;; "cpe:2.3:a:jenkins:git" package.  The proper fix is for (guix cve) to
-    ;; account for "vendor names".
-    (properties '((lint-hidden-cve . ("CVE-2018-1000182"
-                                      "CVE-2018-1000110"
-                                      "CVE-2019-1003010"
-                                      "CVE-2020-2136"
-                                      "CVE-2021-21684"
-                                      "CVE-2022-30947"
-                                      "CVE-2022-30948"
-                                      "CVE-2022-30949"
-                                      "CVE-2022-36882"
-                                      "CVE-2022-36883"
-                                      "CVE-2022-36884"))
+    (properties '((lint-hidden-cpe-vendors . ("jenkins"))
                   (upstream-name . "git")))
     (license license:gpl2)
     (home-page "https://git-scm.com/")))
