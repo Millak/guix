@@ -2145,7 +2145,7 @@ or passthrough board.")
    "This package provides the firmware for the Keychron S1 ANSI RGB with default keymap."))
 
 (define-public qmk-firmware-keychron-s1-ansi-white-default
-  (make-qmk-firmware-keychron "keychron/s1/ansi-white" "default"
+  (make-qmk-firmware-keychron "keychron/s1/ansi/white" "default"
    #:description
    "This package provides the firmware for the Keychron S1 ANSI white with default keymap."))
 
