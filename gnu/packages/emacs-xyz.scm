@@ -2714,7 +2714,7 @@ organizing remote Go repository clones.")
 (define-public emacs-ghub
   (package
     (name "emacs-ghub")
-    (version "4.2.0")
+    (version "4.2.2")
     (source
      (origin
        (method git-fetch)
@@ -2723,7 +2723,7 @@ organizing remote Go repository clones.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dlvhpwz4i2z70xh4rzkq8d1wfhbc6n0hp17kdwsy5x5d891dczi"))))
+        (base32 "1bd8lnhv50brfxqwyk7jmgrig0cahkam7ggwaifaz8vb8m456yar"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -2748,7 +2748,11 @@ organizing remote Go repository clones.")
     (native-inputs
      (list texinfo))
     (propagated-inputs
-     (list emacs-compat emacs-dash emacs-let-alist emacs-treepy))
+     (list emacs-compat
+           emacs-dash
+           emacs-llama
+           emacs-let-alist
+           emacs-treepy))
     (home-page "https://github.com/magit/ghub")
     (synopsis "Emacs client libraries for the APIs of various Git forges")
     (description
