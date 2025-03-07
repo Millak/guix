@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2019 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2016-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016, 2017, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016-2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
@@ -11790,8 +11790,8 @@ using @code{python-isort}.")
     (license license:gpl3+)))
 
 (define-public emacs-pythonic
-  (let ((commit "c1e5643e044f1faaf6ecfadc719b981c048aeb79")
-        (revision "0"))
+  (let ((commit "9eff417654c1fc3eca367c357b5b2cddb3fd8ce4")
+        (revision "1"))
     (package
       (name "emacs-pythonic")
       (version (git-version "0.2" revision commit))
@@ -11803,7 +11803,7 @@ using @code{python-isort}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1bl2ds73g59v8q90kmjpchvzqrjdli3hmigzw5gv2yl548p7yppb"))))
+          (base32 "0hbvy8wdi5dgxn86j8z54y2fhcvm605xxm6xv054nl6fw2hh2h5h"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-f emacs-s emacs-tramp))
       (home-page "https://github.com/pythonic-emacs/pythonic")
