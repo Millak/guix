@@ -2474,6 +2474,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/xterm-370-explicit-xcursor.patch		\
   %D%/packages/patches/xygrib-fix-finding-data.patch		\
   %D%/packages/patches/xygrib-newer-proj.patch			\
+  %D%/packages/patches/yajl-CVE-2023-33460.patch		\
   %D%/packages/patches/yggdrasil-extra-config.patch	\
   %D%/packages/patches/zig-0.9-build-respect-PKG_CONFIG-env-var.patch	\
   %D%/packages/patches/zig-0.9-fix-runpath.patch		\

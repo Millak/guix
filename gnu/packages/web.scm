@@ -1749,7 +1749,9 @@ C.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00yj06drb6izcxfxfqlhimlrb089kka0w0x8k27pyzyiq7qzcvml"))))
+                "00yj06drb6izcxfxfqlhimlrb089kka0w0x8k27pyzyiq7qzcvml"))
+              (patches
+               (search-patches "yajl-CVE-2023-33460.patch"))))
     (build-system cmake-build-system)
     (arguments
      '(#:phases
