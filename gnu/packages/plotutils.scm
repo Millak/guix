@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
@@ -67,14 +67,14 @@
 (define-public asymptote
   (package
     (name "asymptote")
-    (version "2.95")
+    (version "3.01")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asymptote/"
                            version "/asymptote-" version ".src.tgz"))
        (sha256
-        (base32 "1rvqmjp6gich2fvxgl2d31d84z31zkkd4abmh1dvrpdn5k84yq0m"))
+        (base32 "115hjza0ic2mh3y2qjkvzpsx8cpy0yghklpbv8qhdgznqc5001bs"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled RapidJSON.
@@ -85,7 +85,7 @@
     ;; "help" command in interactive mode, so adding a "doc" output is not
     ;; currently useful.
     (native-inputs
-     (list autoconf
+     (list autoconf-2.71
            automake
            bison
            boost
@@ -145,6 +145,7 @@
           (add-after 'unpack 'locate-tirpc
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* (list "configure.ac")
+                (("GCLIB=\".*/libgc.a\"") "GCLIB=\"-lgc\"")
                 (("/usr/include/tirpc")
                  (search-input-directory inputs "include/tirpc")))))
           (add-after 'unpack 'unbundle-rapidjson
