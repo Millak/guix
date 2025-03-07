@@ -2194,6 +2194,11 @@ or passthrough board.")
    #:description
    "This package provides the firmware for the Keychron V2 ANSI with default keymap."))
 
+(define-public qmk-firmware-keychron-v2-ansi-encoder-default
+  (make-qmk-firmware-keychron "keychron/v2/ansi_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron V2-ansi-encoder with default keymap."))
+
 (define-public qmk-firmware-keychron-v3-ansi-default
   (make-qmk-firmware-keychron "keychron/v3/ansi" "default"
    #:description
