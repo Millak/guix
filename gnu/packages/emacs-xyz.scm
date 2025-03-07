@@ -14491,14 +14491,14 @@ expression.")
 (define-public emacs-counsel
   (package
     (name "emacs-counsel")
-    (version "0.14.2")
+    (version "0.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "counsel-" version ".tar"))
        (sha256
-        (base32 "13119alyzr2xipk3jra3iawplqkqgvv0gdcm4yd527z592b0s7f0"))))
+        (base32 "1mw13iw7ygnigjarcfg7lazrdwk7l17clxs2igf75kdkk4l4jgb4"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-ivy emacs-swiper))
