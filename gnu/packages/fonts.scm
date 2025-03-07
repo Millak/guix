@@ -247,6 +247,33 @@ well as other mediums.")
 ligatures for common programming multi-character combinations.")
     (license license:silofl1.1)))
 
+(define-public font-lisnoti
+  (let ((commit "9adec42aa352918bfb399c4f0b273f191b922836")
+        (revision "1"))
+    (package
+      (name "font-lisnoti")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Lisnoti/Lisnoti")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0agy7l2qjmdxvw52bbmnfxqxc5n7l76pq5ha4zg1c1fk8vnkapk7"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/Lisnoti/Lisnoti")
+      (synopsis "Proportional sans serif font for general use and code")
+      (description
+       "Lisnoti is a proportional sans serif font derived from Noto's sans
+serif fonts and is intended for both general use and for writing
+computer code, including in a maths and science context.
+
+Lisnoti is available in regular, italic, bold and bold-italic
+variants.")
+      (license license:silofl1.1))))
+
 (define-public font-inconsolata
   (package
     (name "font-inconsolata")
