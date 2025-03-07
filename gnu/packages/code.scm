@@ -22,6 +22,7 @@
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
@@ -875,29 +877,51 @@ the C, C++, C++/CLI, Objective‑C, C#, and Java programming languages.")
     (license license:lgpl3+)))
 
 (define-public indent
-  (package
-   (name "indent")
-   (version "2.2.13")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnu/indent/indent-" version
-                                ".tar.gz"))
-            (sha256
-             (base32 "15c0ayp9rib7hzvrcxm5ijs0mpagw5y8kf5w0jr9fryfqi7n6r4y"))
-            ;; Remove patch when updating.
-            (patches (search-patches "indent-CVE-2024-0911.patch"))))
-   (build-system gnu-build-system)
-   (native-inputs
-    (list texinfo))
-   (synopsis "Code reformatter")
-   (description
-    "Indent is a program that makes source code easier to read by
+  ;; XXX: Not released anymore, but some patches fix CVEs.
+  (let ((commit "1737c929cbe2ec8a181107df9742894a44c57f71")
+        (revision "0"))
+    (package
+      (name "indent")
+      (version (git-version "2.2.13" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.savannah.gnu.org/git/indent")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "138bqlwvfjv3w1plw2zzf0nqw38lhgimzx1gic6p8r5kizjp9123"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-bootstrap
+                   (lambda _
+                     (substitute* "bootstrap"
+                       (("^(wget|\\./configure|rm)" all)
+                        (string-append "#" all)))
+                     (call-with-output-file "doc/version.texi"
+                       (lambda (port)
+                         (format port "\
+@set UPDATED
+@set EDITION ~a
+@set VERSION ~a"
+                                 #$version
+                                 #$version))))))))
+      (native-inputs
+       (list autoconf-2.71 automake gettext-minimal texinfo))
+      (home-page "https://www.gnu.org/software/indent/")
+      (synopsis "Code reformatter")
+      (description
+       "Indent is a program that makes source code easier to read by
 reformatting it in a consistent style.  It can change the style to one of
 several different styles such as GNU, BSD or K&R.  It has some flexibility to
 deal with incomplete or malformed syntax.  GNU indent offers several
 extensions over the standard utility.")
-   (license license:gpl3+)
-   (home-page "https://www.gnu.org/software/indent/")))
+      (license license:gpl3+)
+      (properties '((lint-hidden-cves . ("CVE-2023-40305"
+                                         "CVE-2024-0911")))))))
 
 (define-public amalgamate
   (let* ((commit "c91f07eea1133aa184f652b8f1398eaf03586208")
