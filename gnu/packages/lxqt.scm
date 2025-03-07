@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -865,6 +866,30 @@ LXDE.")
     (description "LXImage-Qt is the Qt port of LXImage, a simple and fast
 image viewer.")
     (license license:gpl2+)))
+
+(define-public lxqt-wallet
+  (package
+    (name "lxqt-wallet")
+    (version "4.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lxqt/lxqt_wallet")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0krs2x4ivx9n3q98v0q91f53q19rji3qhv5rl9xbhgylxralr135"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #f)) ;No tests
+    (inputs (list libsecret qtbase qttools kwallet))
+    (home-page "https://github.com/lxqt/lxqt_wallet")
+    (synopsis "Password storage for LXQt")
+    (description
+     "The lxqt_wallet project provides secure storage of information that
+can be presented in key-values pairs, such as passwords associated to user
+names.")
+    (license license:bsd-2)))
 
 (define-public obconf-qt
   (package
