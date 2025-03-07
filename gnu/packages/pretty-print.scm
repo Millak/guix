@@ -173,7 +173,7 @@ different programming languages.")
 (define-public fmt-11
   (package
     (name "fmt")
-    (version "11.0.2")
+    (version "11.1.4")
     (source
      (origin
        (method git-fetch)
@@ -182,7 +182,7 @@ different programming languages.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v9k57zj34axagkxwkmg73gs9h15i6c8nv9hsgwjwmi82pinv8r0"))))
+        (base32 "040mzvj9a3h0jpf5hb5l0rlxr22wd9hqvj8xlddfl0mzi2az2imi"))))
     (build-system cmake-build-system)
     (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
     (home-page "https://fmt.dev")
