@@ -9086,7 +9086,7 @@ next, or locate errors.")
 (define-public emacs-roguel-ike
   (package
     (name "emacs-roguel-ike")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method git-fetch)
@@ -9095,7 +9095,7 @@ next, or locate errors.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19rdmx8wwkl9ivbnykbmib6qj9grrblhrsrnibynb1ih0gzs6z2s"))))
+        (base32 "02yq2qy17gafkayzxfvf9nwm950cw54hlqgzc4mjb21al75rfyrn"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-popup))
