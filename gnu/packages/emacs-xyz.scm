@@ -25570,7 +25570,7 @@ timestamps by providing a @code{ts} struct.")
 (define-public emacs-circadian
   (package
     (name "emacs-circadian")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -25579,7 +25579,7 @@ timestamps by providing a @code{ts} struct.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1blpk69ba2dira5av3ad854h4xkxxl5f47mkbjbgmzjlqihv8q3p"))))
+        (base32 "0kxa8hky56xmg8szii23yai0w8zfh3ql7mazn9ff77aa8lx6mplm"))))
     (build-system emacs-build-system)
     (arguments
      (list
