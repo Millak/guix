@@ -442,7 +442,7 @@ compatible.")
 (define-public emacs-age
   (package
     (name "emacs-age")
-    (version "0.1.6")
+    (version "0.1.7")
     (source
      (origin
        (method git-fetch)
@@ -451,7 +451,7 @@ compatible.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1703ijdgahanzkrs0w3j1l563969qnsw872vkdsmfj7qw1940ndj"))))
+        (base32 "014zdv86qsi48yyy6z40ix514ssixw39jd34sj5wsxbngm03w14l"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/anticomputer/age.el")
     (synopsis "Age Encryption support for Emacs")
