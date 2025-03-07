@@ -15925,7 +15925,7 @@ like @code{org-edit-src-code} but for arbitrary regions.")
 (define-public emacs-projectile
   (package
     (name "emacs-projectile")
-    (version "2.8.0")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
@@ -15935,7 +15935,7 @@ like @code{org-edit-src-code} but for arbitrary regions.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "022ca1185ywmw8pjpkrxkd6d2wp4vbq67x2w724iiw2asy69j7wb"))))
+         "0ax32qzf21iwanmahynlvlm5ma2gzkik6099f7c3d15h1i0k6azp"))))
     (build-system emacs-build-system)
     (arguments
      (list
