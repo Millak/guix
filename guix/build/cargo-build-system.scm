@@ -34,6 +34,7 @@
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 textual-ports)
   #:use-module (ice-9 threads)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -61,22 +62,36 @@
          (bin-dep? (lambda (dep) (find bin? (get-kinds dep)))))
     (find bin-dep? (manifest-targets))))
 
+(define (cargo-package? dir)
+  "Check if directory DIR contains a single package, or a Cargo workspace with
+root package."
+  (let ((manifest-file (in-vicinity dir "Cargo.toml")))
+    (and (file-exists? manifest-file)
+         (string-contains
+          (call-with-input-file manifest-file get-string-all)
+          "[package]"))))
+
 (define (crate-src? path)
   "Check if PATH refers to a crate source, namely a gzipped tarball with a
 Cargo.toml file present at its root."
-    (and (not (directory-exists? path)) ; not a tarball
-         (not (string-suffix? "py" path))   ; sanity-check.py
-         ;; First we print out all file names within the tarball to see if it
-         ;; looks like the source of a crate. However, the tarball will include
-         ;; an extra path component which we would like to ignore (since we're
-         ;; interested in checking if a Cargo.toml exists at the root of the
-         ;; archive, but not nested anywhere else). We do this by cutting up
-         ;; each output line and only looking at the second component. We then
-         ;; check if it matches Cargo.toml exactly and short circuit if it does.
-         (apply invoke (list "sh" "-c"
-                             (string-append "tar -tf " path
-                                            " | cut -d/ -f2"
-                                            " | grep -q '^Cargo.toml$'")))))
+  (if (directory-exists? path)
+      ;; The build system only handles sources containing single crate.
+      ;; Workspaces should be packaged into crates (via 'package phase)
+      ;; and used in inputs.
+      (cargo-package? path)
+      (and (not (string-suffix? "py" path)) ;sanity-check.py
+           ;; First we print out all file names within the tarball to see
+           ;; if it looks like the source of a crate. However, the tarball
+           ;; will include an extra path component which we would like to
+           ;; ignore (since we're interested in checking if a Cargo.toml
+           ;; exists at the root of the archive, but not nested anywhere
+           ;; else). We do this by cutting up each output line and only
+           ;; looking at the second component. We then check if it matches
+           ;; Cargo.toml exactly and short circuit if it does.
+           (invoke "sh" "-c"
+                   (string-append "tar -tf " path
+                                  " | cut -d/ -f2"
+                                  " | grep -q '^Cargo.toml$'")))))
 
 (define* (unpack-rust-crates #:key inputs (vendor-dir "guix-vendor")
                              #:allow-other-keys)
@@ -161,14 +176,18 @@ libraries or executables."
          (and (crate-src? path)
               ;; Gracefully handle duplicate inputs
               (not (file-exists? crate-dir))
-              (mkdir-p crate-dir)
-              ;; Cargo crates are simply gzipped tarballs but with a .crate
-              ;; extension. We expand the source to a directory name we control
-              ;; so that we can generate any cargo checksums.
-              ;; The --strip-components argument is needed to prevent creating
-              ;; an extra directory within `crate-dir`.
-              (format #t "Unpacking ~a~%" name)
-              (invoke "tar" "xf" path "-C" crate-dir "--strip-components" "1")))))
+              (if (directory-exists? path)
+                  (copy-recursively path crate-dir)
+                  (begin
+                    (mkdir-p crate-dir)
+                    ;; Cargo crates are simply gzipped tarballs but with a
+                    ;; .crate extension. We expand the source to a directory
+                    ;; name we control so that we can generate any cargo
+                    ;; checksums.  The --strip-components argument is needed to
+                    ;; prevent creating an extra directory within `crate-dir`.
+                    (format #t "Unpacking ~a~%" name)
+                    (invoke "tar" "xf" path "-C" crate-dir
+                            "--strip-components" "1")))))))
     inputs)
 
   ;; For cross-building
