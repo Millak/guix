@@ -5168,14 +5168,17 @@ a set of simplified face specifications and a user-supplied color palette.")
 (define-public emacs-howm
   (package
     (name "emacs-howm")
-    (version "1.5.0")
+    (version "1.5.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://howm.sourceforge.jp/a/"
-                           "howm-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kaorahi/howm")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0hl3pv6rhljcj4wajccwcy82h9cxp9n8wzn2hwpy05baxc52wy5x"))))
+        (base32
+         "1q1srqb852537l4x3acch9k8d5mgmzm35k5jy1kbhjmvmr2kmi09"))))
     (build-system gnu-build-system)
     (native-inputs
      (list emacs-minimal))
@@ -5192,7 +5195,7 @@ a set of simplified face specifications and a user-supplied color palette.")
        (modify-phases %standard-phases
          (add-after 'install 'make-autoloads
            (assoc-ref emacs:%standard-phases 'make-autoloads)))))
-    (home-page "https://howm.osdn.jp/")
+    (home-page "https://kaorahi.github.io/howm/")
     (synopsis "Note-taking tool for Emacs")
     (description "Howm is a note-taking tool for Emacs.  Like
 @code{emacs-wiki.el}, it facilitates using hyperlinks and doing full-text
