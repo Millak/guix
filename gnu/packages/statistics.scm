@@ -4516,38 +4516,6 @@ bootstrap test for generalized linear mixed models.")
 Companion to Applied Regression, Third Edition, Sage.")
     (license license:gpl2+)))
 
-(define-public r-car
-  (package
-    (name "r-car")
-    (version "3.1-3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "car" version))
-       (sha256
-        (base32 "1gs9prinmxn4l6w8lyig3mzm1j2zfq3yhkznm1igd5ar74jc1wjr"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-abind
-           r-cardata
-           r-formula
-           r-lme4
-           r-mass
-           r-mgcv
-           r-nlme
-           r-nnet
-           r-pbkrtest
-           r-quantreg
-           r-scales))
-    (native-inputs
-     (list r-knitr))
-    (home-page "https://r-forge.r-project.org/projects/car/")
-    (synopsis "Companion to applied regression")
-    (description
-      "This package provides functions and datasets from book Companion
-to Applied regression, Second Edition, Sage, 2011.")
-    (license license:gpl2+)))
-
 (define-public r-rcppprogress
   (package
     (name "r-rcppprogress")
