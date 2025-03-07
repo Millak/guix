@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020,2021,2024 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2020, 2021, 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021, 2022, 2023, 2024, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
@@ -133,6 +133,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages openkinect)
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
@@ -1187,7 +1188,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "7.0.11")
+    (version "9.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1195,7 +1196,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "1qn7w6pb1n5gx73z1zqbv140chh4307y8764z7xkdvric9i48qj4"))
+                "0rr4k5hx4kjbfi4q3jdhamv1gjb0b1nwmmrrdg7ig18335bpw14s"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1208,8 +1209,9 @@ Emacs).")
                                #$(this-package-input "opencascade-occt")
                                "/include/opencascade")
                 "-DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON"
-                "-DKICAD_USE_EGL=ON"    ;because wxWidgets uses EGL
-                "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
+                "-DKICAD_USE_EGL=OFF"
+                "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE"
+                "-DCMAKE_BUILD_TYPE=RelWithDebInfo")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-ngspice-detection
@@ -1240,16 +1242,16 @@ Emacs).")
             (variable "KICAD") ;to find kicad-doc
             (files '("")))
            (search-path-specification
-            (variable "KICAD7_TEMPLATE_DIR")
+            (variable "KICAD9_TEMPLATE_DIR")
             (files '("share/kicad/template")))
            (search-path-specification
-            (variable "KICAD7_SYMBOL_DIR")
+            (variable "KICAD9_SYMBOL_DIR")
             (files '("share/kicad/symbols")))
            (search-path-specification
-            (variable "KICAD7_FOOTPRINT_DIR")
+            (variable "KICAD9_FOOTPRINT_DIR")
             (files '("share/kicad/footprints")))
            (search-path-specification
-            (variable "KICAD7_3DMODEL_DIR")
+            (variable "KICAD9_3DMODEL_DIR")
             (files '("share/kicad/3dmodels")))))
     (native-inputs (list boost
                          desktop-file-utils
@@ -1266,14 +1268,19 @@ Emacs).")
                   hicolor-icon-theme
                   libngspice
                   libsm
+                  libgit2
+                  libsecret
                   mesa
                   opencascade-occt
                   openssl
                   python-wrapper
                   gtk+
-                  wxwidgets
+                  wxwidgets-sans-egl
+                  nng
                   python-wxpython
-                  gdk-pixbuf))
+                  protobuf
+                  gdk-pixbuf
+                  (list zstd "lib")))
     (home-page "https://www.kicad.org/")
     (synopsis "Electronics Design Automation Suite")
     (description
@@ -1295,7 +1302,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10iwp35xywdz15a83vialzfd46rjw6mlz174dxawm2rw4ws2n7j4"))))
+                "0xxys0ld2irzvfr6slh8xfcv4kmsnqnfxf4cwc9nwinljcwi20gi"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1329,7 +1336,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "057zmhf4h3p3p4y6jqxch9cj1wqf129k6kmvx2gshb9lgda0kjr8"))))
+                "0l8da2ix917jlsj6v5zclc1cb5pvjaxwmys0gjdv55ic31hhfyyw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1358,7 +1365,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r9v8v41n0yrgwsqaksskmdgb9vyw1sb92xh81bwrv2ag3p5vdg7"))))
+                "16zslgvjg4swgkkvnd9fmiks3wzg63364d03hixiyzcpjlgk2bbk"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1375,7 +1382,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lcy1av7ixg1f7arflk50jllpc1749sfvf3h62hkxsz97wkr97xj"))))
+                "0bg54lg1iw01gw06ajg34y7x4y36wm6ls3jnpjy13i18d4ik77g4"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -1392,7 +1399,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mykfwwik7472i4r0isc5szj3dnmvd0538p0vlmzh4rcgj3pj3vm"))))
+                "0zs29zn8qjgxv0w1vyr8yxmj02m8752zagn4vcraqgik46dwg2id"))))
     (synopsis "Official KiCad project and worksheet templates")
     (description "This package contains the official KiCad project and
 worksheet templates.")))
