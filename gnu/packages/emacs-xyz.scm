@@ -11807,7 +11807,7 @@ using @code{python-isort}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0hbvy8wdi5dgxn86j8z54y2fhcvm605xxm6xv054nl6fw2hh2h5h"))))
+          (base32 "00rkab305iwbn61jspcbxhvbwryf91ly7jz1axa2fzdkfqaj6727"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-f emacs-s emacs-tramp))
       (home-page "https://github.com/pythonic-emacs/pythonic")
