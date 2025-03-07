@@ -2509,7 +2509,7 @@ compository, supporting the following features:
                   pipewire
                   playerctl
                   pulseaudio
-                  spdlog
+                  spdlog-1.13
                   wayland
                   wireplumber))
     (native-inputs

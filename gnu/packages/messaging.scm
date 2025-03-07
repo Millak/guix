@@ -2446,7 +2446,7 @@ QMatrixClient project.")
            olm
            openssl
            re2
-           spdlog
+           spdlog-1.13
            zlib))
     (native-inputs
      (list googletest pkg-config))
@@ -2525,7 +2525,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            qtwayland
            qtsvg
            re2
-           spdlog
+           spdlog-1.13
            vulkan-headers
            vulkan-loader
            xdg-utils                    ; xdg-open for opening URLs

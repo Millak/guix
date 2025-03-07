@@ -213,7 +213,7 @@ It aims to be fully compliant with DLNA and UPnP-AV standards.")
            libmatroska
            libupnp
            pugixml
-           spdlog
+           spdlog-1.13
            sqlite
            taglib
            `(,util-linux "lib")
