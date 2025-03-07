@@ -1880,7 +1880,7 @@ speed.")
         (base32 "18vgkvh7w6zw4jn2aj1mp0yv98m4fk52ay6da0wh4pm194gyaczb"))))))
 
 (define-public pzstd
-  (package/inherit zstd-1.5.6
+  (package/inherit zstd-1.5.7
     (name "pzstd")
     (outputs '("out"))
     (inputs
