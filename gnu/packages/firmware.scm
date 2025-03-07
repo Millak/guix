@@ -2079,6 +2079,11 @@ or passthrough board.")
    #:description
    "This package provides the firmware for the Keychron Q6 ISO with default keymap."))
 
+(define-public qmk-firmware-keychron-q6-iso-encoder-default
+  (make-qmk-firmware-keychron "keychron/q6/iso_encoder" "default"
+   #:description
+   "This package provides the firmware for the Keychron Q6 ISO with default keymap and with encoder."))
+
 (define-public qmk-firmware-keychron-v3-ansi-default
   (make-qmk-firmware-keychron "keychron/v3/ansi" "default"
    #:description
