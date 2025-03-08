@@ -179,14 +179,14 @@ This package is part of the KDE games module.")
 (define-public libkmahjongg
   (package
     (name "libkmahjongg")
-    (version "24.12.1")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/libkmahjongg-" version ".tar.xz"))
        (sha256
-        (base32 "1ynrgk6fkybdzycj4gafc1n9x868ixhwk71mihmi7hlaiq1r9rd8"))))
+        (base32 "1ipn2c70nszji8n9hadp44hqdc9zqaz29i6sizb8mwhlh9dxnayv"))))
     (build-system qt-build-system)
     (arguments
      (list
