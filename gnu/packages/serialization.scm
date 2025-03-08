@@ -619,6 +619,20 @@ preserve existing comment in unserialization/serialization steps, making
 it a convenient format to store user input files.")
     (license license:expat)))
 
+(define-public jsoncpp/pinned
+  (hidden-package
+   ;; Version that rarely changes, depended on by CMake.
+   (package/inherit jsoncpp
+     (version "1.9.6")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference (url (package-home-page jsoncpp)) (commit version)))
+        (file-name (git-file-name (package-name jsoncpp) version))
+        (sha256
+         (base32
+          "070xg4i52z3yv5b9bw5k95qskw0daivh0njka87mzj0d3zf1qsyy")))))))
+
 ;; Tensorflow does not build with jsoncpp 1.8.x.  It is built with commit
 ;; 4356d9bba191e1e16ce7a92073cbf3e63564e973, which lies between version 1.7.2
 ;; and 1.7.3.
