@@ -121,7 +121,7 @@ generator library for C++.")
 ;; of the standard build process. To make things easier, we bootstrap
 ;; and patch shebangs here, so we don't have to worry about it later.
 (define libdvdnav/kodi
-  (let ((commit "6.0.0-Leia-Alpha-3"))
+  (let ((commit "6.1.1"))
     (package
       (name "libdvdnav-bootstrapped")
       (version commit)
@@ -133,7 +133,7 @@ generator library for C++.")
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "0qwlf4lgahxqxk1r2pzl866mi03pbp7l1fc0rk522sc0ak2s9jhb"))))
+                  "190wp4czs4594496vc6ifswg24wijd7c1z0whdkjdaf26rff5xha"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f
