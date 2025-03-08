@@ -1850,51 +1850,53 @@ other systems that want to manipulate WebAssembly files.")
     (license license:asl2.0)))
 
 (define-public wasm3
-  (package
-    (name "wasm3")
-    (version "0.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/wasm3/wasm3")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "07zzmk776j8ydyxhrnnjiscbhhmz182a62r6aix6kfk5kq2cwia2"))))
-    (build-system cmake-build-system)
-    (arguments
-     ;; The default WASI option "uvwasi" causes CMake to initiate a 'git
-     ;; clone' which cannot happen within the build container.
-     '(#:configure-flags '("-DBUILD_WASI=simple")
-       ;; No check target.  There are tests but they require a network
-       ;; connection to download the WebAssembly core test suite.
-       #:tests? #f
-       ;; There is no install target.  Instead, we have to manually copy the
-       ;; wasm3 build artifacts to the output directory.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bindir (string-append out "/bin"))
-                    (includedir (string-append out "/include"))
-                    (libdir (string-append out "/lib")))
-               (mkdir-p bindir)
-               (mkdir-p includedir)
-               (mkdir-p libdir)
-               (copy-file "wasm3" (string-append bindir "/wasm3"))
-               (for-each (lambda (header)
-                           (copy-file header
-                                      (string-append includedir "/"
-                                                     (basename header))))
-                         (find-files "../source/source" "\\.h$"))
-               (copy-file "source/libm3.a"
-                          (string-append libdir "/libm3.a"))))))))
-    (home-page "https://github.com/wasm3/wasm3")
-    (synopsis "WebAssembly interpreter")
-    (description "WASM3 is a fast WebAssembly interpreter.")
-    (license license:expat)))
+  ;; Use an unreleased version with 'm3_GetTableFunction' for tic80.
+  (let ((commit "139076a98b8321b67f850a844f558b5e91b5ac83"))
+    (package
+      (name "wasm3")
+      (version (git-version "0.5.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/wasm3/wasm3")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0329kx43n0ns9qxj813239wna69qyi9ghfb1sks46f39h24q0n3x"))))
+      (build-system cmake-build-system)
+      (arguments
+       ;; The default WASI option "uvwasi" causes CMake to initiate a 'git
+       ;; clone' which cannot happen within the build container.
+       '(#:configure-flags '("-DBUILD_WASI=simple")
+         ;; No check target.  There are tests but they require a network
+         ;; connection to download the WebAssembly core test suite.
+         #:tests? #f
+         ;; There is no install target.  Instead, we have to manually copy the
+         ;; wasm3 build artifacts to the output directory.
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bindir (string-append out "/bin"))
+                      (includedir (string-append out "/include"))
+                      (libdir (string-append out "/lib")))
+                 (mkdir-p bindir)
+                 (mkdir-p includedir)
+                 (mkdir-p libdir)
+                 (copy-file "wasm3" (string-append bindir "/wasm3"))
+                 (for-each (lambda (header)
+                             (copy-file header
+                                        (string-append includedir "/"
+                                                       (basename header))))
+                           (find-files "../source/source" "\\.h$"))
+                 (copy-file "source/libm3.a"
+                            (string-append libdir "/libm3.a"))))))))
+      (home-page "https://github.com/wasm3/wasm3")
+      (synopsis "WebAssembly interpreter")
+      (description "WASM3 is a fast WebAssembly interpreter.")
+      (license license:expat))))
 
 (define-public wasm-micro-runtime
   (package
