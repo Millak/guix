@@ -89,6 +89,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -4291,6 +4292,38 @@ written (and providing API) in C.  Current implementation covers YANG 1.0 (RFC
 B.A.T.M.A.N. mesh networking routing protocol provided by the Linux kernel
 module @code{batman-adv}, for Layer 2.")
    (license license:gpl2+)))
+
+(define-public naett
+  (package
+    (name "naett")
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/erkkah/naett")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nnnps1755h8yawzpf71fm4g2hqdja4zw993ilsaad3z7p464q47"))))
+    (build-system copy-build-system)
+    (inputs (list curl))
+    (arguments
+     (list #:install-plan
+           #~'(("naett.h" "include/")
+               ("libnaett.so" "lib/"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'build
+                 (lambda _
+                   (invoke #$(cc-for-target)
+                           "-o" "libnaett.so"
+                           "-shared" "-fPIC" "-O2" "naett.c"
+                           "-lcurl" "-lpthread"))))))
+    (synopsis "Tiny HTTP client library")
+    (home-page "https://github.com/erkkah/naett")
+    (description "This package provides a tiny HTTP client library in C.")
+    (license license:unlicense)))
 
 (define-public pagekite
   (package
