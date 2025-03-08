@@ -549,37 +549,37 @@ following formats:
         (base32 "0qky885fl63d5ih5d3rggm8rhp00sk6lny26qljyz3gga8n9y6ki"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-desktop-file
-           (lambda _
-             (substitute* "data/com.github.geigi.cozy.desktop"
-               (("Exec=com.github.geigi.cozy") "Exec=cozy"))))
-         (add-after 'install 'patch-executable-name
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion
-                 (string-append (assoc-ref outputs "out") "/bin")
-               (rename-file "com.github.geigi.cozy" "cozy"))))
-         (add-after 'wrap 'wrap-libs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out               (assoc-ref outputs "out"))
-                    (pylib             (string-append
-                                        out "/lib/python"
-                                        ,(version-major+minor
-                                          (package-version python))
-                                        "/site-packages"))
-                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
-                    (gst-plugin-path   (getenv "GST_PLUGIN_SYSTEM_PATH"))
-                    (libmagic-path     (string-append
-                                        (assoc-ref %build-inputs "file")
-                                        "/lib"))
-                    (python-path     (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/cozy")
-                 `("LD_LIBRARY_PATH" ":" prefix (,libmagic-path))
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-                 `("GUIX_PYTHONPATH" ":" prefix (,python-path ,pylib)))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-desktop-file
+            (lambda _
+              (substitute* "data/com.github.geigi.cozy.desktop"
+                (("Exec=com.github.geigi.cozy") "Exec=cozy"))))
+          (add-after 'install 'patch-executable-name
+            (lambda _
+              (with-directory-excursion (string-append #$output "/bin")
+                (rename-file "com.github.geigi.cozy" "cozy"))))
+          (add-after 'wrap 'wrap-libs
+            (lambda _
+              (let* ((pylib             (string-append
+                                         #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version
+                                             (this-package-native-input
+                                              "python-wrapper")))
+                                         "/site-packages"))
+                     (gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
+                     (gst-plugin-path   (getenv "GST_PLUGIN_SYSTEM_PATH"))
+                     (libmagic-path     #$(file-append
+                                           (this-package-input "file") "/lib"))
+                     (python-path     (getenv "GUIX_PYTHONPATH")))
+                (wrap-program (string-append #$output "/bin/cozy")
+                  `("LD_LIBRARY_PATH" ":" prefix (,libmagic-path))
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
+                  `("GUIX_PYTHONPATH" ":" prefix (,python-path ,pylib)))))))))
     (native-inputs
      (list desktop-file-utils
            gettext-minimal
