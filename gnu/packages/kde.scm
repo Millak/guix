@@ -1892,14 +1892,14 @@ creating routes by drag and drop and more.")
 (define-public okular
   (package
     (name "okular")
-    (version "24.12.2")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1pjn2pjc4diamadnchyqjlcqlmnr82sjz7ny4yp3w2lhx9yw4v03"))))
+        (base32 "1836wiiq6frvz4ddsi1iir4dkmd9p0lc4mwd5pn5swbb03f9824d"))))
     (build-system qt-build-system)
     (arguments
      (list
