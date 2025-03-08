@@ -22,7 +22,7 @@
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Jonas Freimuth <jonas.freimuth@posteo.de>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -2338,6 +2338,32 @@ definitions.  Medians are extremely useful due to their high breakdown
 point (up to 50% contamination) and have a number of nice applications in
 machine learning, computer vision, and high-dimensional statistics.")
     (license license:asl2.0)))
+
+(define-public python-nestle
+  (package
+    (name "python-nestle")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nestle" version))
+       (sha256
+        (base32 "0v94qcqwl519vqhd4wb1zhx4x4q9xhbck8g2h0v2n4mwxgz9irsx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in PyPI or Git
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/kbarbary/nestle")
+    (synopsis "Nested sampling algorithms for evaluating Bayesian evidence")
+    (description
+     "This package provides an implementation of
+@url{https://en.wikipedia.org/wiki/Nested_sampling_algorithm, Nested Sampling}
+algorithms for evaluating Bayesian evidence.")
+    (license license:expat)))
 
 (define-public python-arviz
   (package
