@@ -257,7 +257,15 @@ using the CMake build system.")
                            "!defined(__GNU__)")))))
                  #~()))))
     (inputs
-     (list libuv bzip2 curl expat file jsoncpp libarchive rhash zlib))
+     (list bzip2
+           curl
+           expat
+           file
+           jsoncpp/pinned
+           libarchive
+           libuv
+           rhash
+           zlib))
     (native-search-paths
      (list (search-path-specification
             (variable "CMAKE_PREFIX_PATH")
