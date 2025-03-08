@@ -1020,6 +1020,39 @@ consist of a set of LALR(1) parsing tables and a driver routine written in the
 C programming language.")
     (license license:public-domain)))
 
+(define-public argparse
+  (package
+    (name "argparse")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cofyc/argparse")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zb0b2aikk4dasjzsyiyf2xn1hbld8gf8np3843zcg9wbxydd8zd"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ;no configure script
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (inc (string-append out "/include"))
+                          (lib (string-append out "/lib")))
+                     (install-file "argparse.h" inc)
+                     (install-file "libargparse.so" lib)))))))
+    (synopsis "Command line arguments parsing library")
+    (home-page "https://github.com/cofyc/argparse")
+    (description
+     "This C library provides high-level arguments parsing solutions inspired
+by Python's @code{argparse} module.")
+    (license license:expat)))
+
 (define-public aws-c-common
   (package
     (name "aws-c-common")
