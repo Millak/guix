@@ -96,14 +96,14 @@ This package is part of the KDE games module.")
 (define-public picmi
   (package
     (name "picmi")
-    (version "24.12.1")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/picmi-" version ".tar.xz"))
        (sha256
-        (base32 "1xxcpg4siwvm26lwi6y6pwkykd3lj8nmj5r2ys719k8mym2wjqj8"))))
+        (base32 "0sks50c9gfhvwb4mghi1b1hnrrnqqv0y4hjwhqgrmqgcg1ddbk16"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
