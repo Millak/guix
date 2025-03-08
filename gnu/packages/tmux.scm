@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Alex Bosco <me@alexbos.co>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,9 +30,11 @@
 
 (define-module (gnu packages tmux)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix packages)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
@@ -41,12 +44,17 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-vcs)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages sphinx))
+  #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages ssh)
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control))
 
 (define-public tmux
   (package
@@ -395,3 +403,52 @@ also displays a textual bar graph of the current percent usage.
 The system load average is also displayed.")
     (home-page "https://github.com/thewtex/tmux-mem-cpu-load")
     (license license:asl2.0)))
+
+(define-public tmux-plugin-sessionizer
+  (package
+    (name "tmux-plugin-sessionizer")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tmux-sessionizer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fwdc8jyx9fab442c6zsl3yn8nh1s5h35g97cgqhyp3blxl6h9ix"))
+       (snippet #~(begin
+                    (use-modules (guix build utils))
+                    (substitute* "Cargo.toml"
+                      (("\"vendored-openssl\"")
+                       ""))))))
+    (build-system cargo-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list openssl libgit2-1.8 libssh2))
+    (arguments
+     `(#:cargo-inputs (("rust-aho-corasick" ,rust-aho-corasick-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-clap-complete" ,rust-clap-complete-4)
+                       ("rust-config" ,rust-config-0.14)
+                       ("rust-crossterm" ,rust-crossterm-0.28)
+                       ("rust-dirs" ,rust-dirs-5)
+                       ("rust-error-stack" ,rust-error-stack-0.5)
+                       ("rust-git2" ,rust-git2-0.19)
+                       ("rust-nucleo" ,rust-nucleo-0.5)
+                       ("rust-ratatui" ,rust-ratatui-0.28)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-shell-words" ,rust-shell-words-1)
+                       ("rust-shellexpand" ,rust-shellexpand-3)
+                       ("rust-toml" ,rust-toml-0.8))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-assert-cmd" ,rust-assert-cmd-2)
+                                   ("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-predicates" ,rust-predicates-3)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/jrmoulton/tmux-sessionizer")
+    (synopsis "Fuzzy find Git repositories and open them as Tmux sessions")
+    (description
+     "Tmux Sessionizer is a command-line tool to fuzzy find all the Git
+repositories in a list of specified folders and open them as a new tmux session.
+For @code{git worktrees}, this tool opens all checked out worktrees as new windows.")
+    (license license:expat)))
