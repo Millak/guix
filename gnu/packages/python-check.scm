@@ -575,6 +575,41 @@ Built-in integration with @url{http://nedbatchelder.com/code/coverage/, coverage
 @end table")
     (license license:expat)))
 
+(define-public python-line-profiler
+  (package
+    (name "python-line-profiler")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "line_profiler" version))
+       (sha256
+        (base32 "15hs8pmv7pcilnhhp0l5pamjihmh7zlnvvpsnf046lbnz0jhzq89"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: Test can't compare the versions: AssertionError: Version
+      ;; Mismatch: kernprof and line_profiler must be in
+      ;; sync. kernprof.line_profiler = . kernprof.__version__ = 4.2.0.
+      #~(list "--deselect=tests/test_cli.py::test_version_agreement")))
+    (native-inputs
+     (list python-cython-3
+           python-pytest
+           python-setuptools
+           python-ubelt
+           python-wheel
+           python-xdoctest))
+    (home-page "https://github.com/pyutils/line_profiler")
+    (synopsis "Line-by-line profiler for Python")
+    (description
+     "This package provides @code{line_profiler} - a Python module for doing
+line-by-line profiling of functions.  @code{kernprof} is a convenient script
+for running either @code{line_profiler} or the Python standard library's
+cProfile or profile modules, depending on what is available.  It's a
+successor of @url{https://github.com/rkern/line_profiler}.")
+    (license license:bsd-3)))
+
 (define-public python-pytest-click
   (package
     (name "python-pytest-click")
