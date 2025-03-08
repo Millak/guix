@@ -147,7 +147,6 @@
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ; No tests
-           #:cmake cmake-next           ; Requires cmake >= 3.28
            #:configure-flags
            #~(list "-DARES_BUILD_LOCAL=FALSE"
                    "-DARES_BUILD_OFFICIAL=TRUE"

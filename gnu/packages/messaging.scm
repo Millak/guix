@@ -2402,7 +2402,6 @@ notifications, and Python scripting support.")
      (list olm openssl qtkeychain-qt6 qtmultimedia))
     (arguments
      (list #:qtbase qtbase
-           #:cmake cmake-next
            #:configure-flags
            #~(list "-DBUILD_TESTING=ON"
                    "-DBUILD_SHARED_LIBS=ON")

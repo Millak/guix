@@ -4151,7 +4151,6 @@ be used for realtime video capture via Linux-specific APIs.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:cmake cmake-next                ;needs cmake >= 3.28
       #:tests? #f
       #:configure-flags
       #~(let ((libdir (string-append (assoc-ref %outputs "out") "/lib")))

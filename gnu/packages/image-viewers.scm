@@ -1292,7 +1292,6 @@ any user may run.  Everything is free and privacy is the first concern.")
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ; no tests.
-           #:cmake cmake-next
            #:configure-flags
            #~ (list "-DMARCH_NATIVE=OFF"
                     "-DCMAKE_BUILD_TYPE=Release"

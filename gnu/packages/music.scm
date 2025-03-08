@@ -627,7 +627,6 @@ playing your music.")
       (build-system cmake-build-system)
       (arguments
        (list
-        #:cmake cmake                   ;needs 3.25
         #:tests? #false                 ;there are none
         #:phases
         #~(modify-phases %standard-phases

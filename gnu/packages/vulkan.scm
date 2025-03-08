@@ -225,8 +225,7 @@ translation between LLVM IR and SPIR-V.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:cmake ,cmake-minimal-3.30
-       #:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+     `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
                            "-DALLOW_EXTERNAL_SPIRV_TOOLS=ON"
                            ,@(if (target-riscv64?)
                                  `("-DCMAKE_EXE_LINKER_FLAGS=-latomic")

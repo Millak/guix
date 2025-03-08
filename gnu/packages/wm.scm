@@ -393,8 +393,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
                 "0mn97wlzc5ccywbq87ka7a27jajkdkgypkfzkcan014viph80wif"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:cmake cmake-next
-           #:tests? #f                  ;No tests.
+     (list #:tests? #f                  ;No tests.
            #:configure-flags #~'("-DNO_HYPRPM=True")
            #:phases
            #~(modify-phases %standard-phases

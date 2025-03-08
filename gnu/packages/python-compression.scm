@@ -835,8 +835,7 @@ wrapper.  It provides a backport of the @code{Path} object.")
                      (lambda _
                        (setenv "LIBDEFLATE_PREFIX"
                                #$(this-package-input "libdeflate")))))))
-    ;; CMake >= 3.26 required.
-    (native-inputs (list cmake-next python-pytest python-scikit-build-core))
+    (native-inputs (list cmake-minimal python-pytest python-scikit-build-core))
     (inputs (list libdeflate))
     (home-page "https://github.com/dcwatson/deflate")
     (synopsis "Python wrapper for @code{libdeflate}")

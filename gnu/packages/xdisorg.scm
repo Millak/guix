@@ -261,8 +261,7 @@ command line, without displaying a keyboard at all.")
                 "0cwbd9cdbg40frhircwfbaxdqh11s8jqq9dqy228j9zvb27y2b72"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:cmake cmake-next
-           ;; TODO: Figure out what's expected in the test environment.
+     (list ;; TODO: Figure out what's expected in the test environment.
            #:tests? #f))
     (native-inputs
      (list gcc-15 hyprwayland-scanner pkg-config))
@@ -3944,9 +3943,7 @@ This package is the fork of hsetroot by Hyriand.")
         (base32 "0h0iibncjl780nnwvf1mfmqckdzzc4b4fphflj4mq56nswf697ha"))))
     (build-system cmake-build-system)
     (arguments
-     (list
-      #:cmake cmake-next
-      #:tests? #f)) ;No tests.
+     (list #:tests? #f)) ;No tests.
     (native-inputs
      (list gcc-15
            pkg-config))
@@ -3984,8 +3981,7 @@ reduce percieved brightness below the monitor's minimum.")
       (base32 "1f0vcp0c9d3m9v3avajprpv14khnv3wk3y9fi3pcwr5xf2alaxv2"))))
    (build-system cmake-build-system)
    (arguments
-    `(#:cmake ,cmake-next
-      #:phases
+    `(#:phases
       (modify-phases %standard-phases
                      ;; remove when fixed
                      (add-after 'unpack 'fixgldiscover
@@ -4034,9 +4030,7 @@ GPU-accelerated screen locking utility.")
              (base32
               "0j3hbqfx40cjxkvaiqzfij8pgblg2hyv9lbbjjh4iahciwgh7623"))))
    (build-system cmake-build-system)
-   (arguments
-    `(#:tests? #f ;; no test
-      #:cmake ,cmake-next))
+   (arguments '(#:tests? #f)) ;; no test
    (native-inputs (list gcc-14 pkg-config))
    (inputs
     (list cairo

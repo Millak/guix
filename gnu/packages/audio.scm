@@ -4329,7 +4329,6 @@ using Guix System.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:cmake cmake-next
       #:build-type "Release"
       ;; The build system uses CMake modules features that are only available
       ;; when using Ninja.
