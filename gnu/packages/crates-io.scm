@@ -66643,9 +66643,66 @@ random generic types.")
 interfaces.")
     (license license:expat)))
 
+(define-public rust-ratatui-0.28
+  (package
+    (inherit rust-ratatui-0.29)
+    (name "rust-ratatui")
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ratatui" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00w3jw6xay3nrqkhwl0226j102wpdd2a5gkmjaciammymxjs79jv"))))
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=backend::test::tests::buffer_view_with_overwrites"
+                            "--skip=buffer::buffer::tests::renders_emoji::case_2_polarbear"
+                            "--skip=buffer::buffer::tests::renders_emoji::case_3_eye_speechbubble"
+                            "--skip=text::span::tests::width")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cassowary" ,rust-cassowary-0.3)
+                       ("rust-compact-str" ,rust-compact-str-0.8)
+                       ("rust-crossterm" ,rust-crossterm-0.28)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-instability" ,rust-instability-0.3)
+                       ("rust-itertools" ,rust-itertools-0.13)
+                       ("rust-lru" ,rust-lru-0.12)
+                       ("rust-palette" ,rust-palette-0.7)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-strum" ,rust-strum-0.26)
+                       ("rust-strum-macros" ,rust-strum-macros-0.26)
+                       ("rust-termion" ,rust-termion-4)
+                       ("rust-termwiz" ,rust-termwiz-0.22)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-truncate" ,rust-unicode-truncate-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-argh" ,rust-argh-0.1)
+                                   ("rust-color-eyre" ,rust-color-eyre-0.6)
+                                   ("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-crossterm" ,rust-crossterm-0.28)
+                                   ("rust-derive-builder" ,rust-derive-builder-0.20)
+                                   ("rust-fakeit" ,rust-fakeit-1)
+                                   ("rust-font8x8" ,rust-font8x8-0.3)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-indoc" ,rust-indoc-2)
+                                   ("rust-octocrab" ,rust-octocrab-0.39)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+                                   ("rust-rstest" ,rust-rstest-0.22)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-tracing" ,rust-tracing-0.1)
+                                   ("rust-tracing-appender" ,rust-tracing-appender-0.2)
+                                   ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
+
 (define-public rust-ratatui-0.27
   (package
-   (inherit rust-ratatui-0.29)
+   (inherit rust-ratatui-0.28)
    (name "rust-ratatui")
    (version "0.27.0")
    (source
