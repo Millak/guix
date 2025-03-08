@@ -33737,10 +33737,10 @@ The Mumi package to use.
 @item @code{mailer?} (default: @code{#true})
 Whether to enable or disable the mailer component.
 
-@item @code{mumi-configuration-sender}
+@item @code{sender}
 The email address used as the sender for comments.
 
-@item @code{mumi-configuration-smtp}
+@item @code{smtp}
 A URI to configure the SMTP settings for Mailutils.  This could be
 something like @code{sendmail:///path/to/bin/msmtp} or any other URI
 supported by Mailutils.  @xref{SMTP Mailboxes, SMTP Mailboxes,,
