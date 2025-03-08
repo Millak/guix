@@ -296,7 +296,7 @@ a focus on simplicity and productivity.")
 (define-public mruby
   (package
     (name "mruby")
-    (version "3.2.0")
+    (version "3.3.0")
     (source
      (origin
        (method git-fetch)
@@ -306,7 +306,7 @@ a focus on simplicity and productivity.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0c0scaqbnywrd9z1z4rnnj345rjc3vbklszm0rc6y6rzx1cxnsij"))))
+         "0zynr6dk0zxdip53il0qr0rhyzmjicpkxs63l77acpx8b05h8amc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -333,11 +333,14 @@ a focus on simplicity and productivity.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin"))
-                    (lib (string-append out "/lib")))
+                    (lib (string-append out "/lib"))
+                    (inc (string-append out "/include")))
                (mkdir-p bin)
                (copy-recursively "build/host/bin" bin)
                (mkdir-p lib)
-               (copy-recursively "build/host/lib" lib))
+               (copy-recursively "build/host/lib" lib)
+               (mkdir-p inc)
+               (copy-recursively "include" inc))
              #t)))))
     (native-inputs
      (list ruby bison))
