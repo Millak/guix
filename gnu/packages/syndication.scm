@@ -403,7 +403,7 @@ Features:
 (define-public liferea
   (package
     (name "liferea")
-    (version "1.13.4")
+    (version "1.14.6")
     (source
      (origin
        (method git-fetch)
@@ -412,7 +412,7 @@ Features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g9463bvswsm899j6dfhslcg6np70m5wq143mjicr24zy8d17bm7"))))
+        (base32 "1d701rjjpf2d8i88xdl7m9bi5lfl88920aj7wajk3vl1fwg3pzqp"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
