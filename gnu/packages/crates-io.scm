@@ -1876,8 +1876,33 @@ it outputs messages to Android's logcat.")
 with ANSI strings.")
     (license license:expat)))
 
+(define-public rust-ansi-to-html-0.2
+  (package
+    (name "rust-ansi-to-html")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ansi-to-html" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0r07skcd0rp4fwww66hn2sal4f7p4nhq2zjpk7pkamr8zjj87qhj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-regex" ,rust-regex-1))
+       #:cargo-development-inputs (("rust-divan" ,rust-divan-0.1)
+                                   ("rust-flate2" ,rust-flate2-1)
+                                   ("rust-insta" ,rust-insta-1))))
+    (home-page
+     "https://github.com/Aloso/to-html/tree/master/crates/ansi-to-html")
+    (synopsis "ANSI escape codes to HTML converter")
+    (description
+     "This package provides an ANSI escape codes to HTML converter.")
+    (license license:expat)))
+
 (define-public rust-ansi-to-html-0.1
   (package
+    (inherit rust-ansi-to-html-0.2)
     (name "rust-ansi-to-html")
     (version "0.1.3")
     (source
@@ -1887,17 +1912,11 @@ with ANSI strings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "18kwlgr3vfsij8gvl7vxw11yl628b1s8z2pldh73z4zzq2693gf7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
                        ("rust-regex" ,rust-regex-1)
                        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs (("rust-insta" ,rust-insta-1))))
-    (home-page
-     "https://github.com/Aloso/to-html/tree/master/crates/ansi-to-html")
-    (synopsis "ANSI escape codes to HTML converter")
-    (description "This package provides an ANSI escape codes to HTML converter.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-insta" ,rust-insta-1))))))
 
 (define-public rust-ansi-width-0.1
   (package
