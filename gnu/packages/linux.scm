@@ -8216,6 +8216,15 @@ interface in sysfs, which can be accomplished with the included udev rules.")
                 (("= /usr") (string-append "= " #$output))
                 (("= /etc") (string-append "= " #$output "/etc"))
                 (("install -d -m 755 \\$\\(_VAR\\)") "#"))))
+          (add-before 'build 'fix-perl-calls
+            ;; Shell scripts in "bat.d" and "func.d" call "perl".  Fix
+            ;; invocation without wrapping every one of them.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (append (find-files "bat.d" ".")
+                                   (find-files "func.d" "."))
+                (("(^|[^/])perl" _ prefix)
+                 (string-append prefix
+                                (search-input-file inputs "bin/perl"))))))
           (replace 'install
             (lambda _ (invoke "make" "install-tlp" "install-man-tlp")))
           (add-after 'install 'wrap
