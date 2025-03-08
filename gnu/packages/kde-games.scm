@@ -628,14 +628,14 @@ This package is part of the KDE games module.")
 (define-public klines
   (package
     (name "klines")
-    (version "24.12.1")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/klines-" version ".tar.xz"))
        (sha256
-        (base32 "0crbz3vlz95yyddyp0j67rq307lbdl9i0qcmh4y4j2i53rw81gc2"))))
+        (base32 "1s4b1vabygiqcjvlxj0j7xzk0f9r0rwkk1lhzyy5fx6qzyakbmry"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
