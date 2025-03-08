@@ -17,6 +17,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Julian Flake <flake@uni-koblenz.de>
 ;;; Copyright © 2025 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2025 André Batista <nandre@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -969,6 +970,30 @@ to produce new complete file system images or add-on images to be appended
 to the read file system image.
 Supported extensions to ISO 9660 are Rock Ridge, Joliet, AAIP, zisofs.")
     (license gpl2+)))
+
+(define-public libudfread
+  (package
+    (name "libudfread")
+    (version "1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://download.videolan.org/pub/videolan/libudfread/"
+                    name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "05c943ymw94nzjxf7v102916frqk7icgw4gb244wx23jn8cnz56m"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list automake autoconf libtool pkg-config))
+    (home-page "https://code.videolan.org/videolan/libudfread")
+    (synopsis "C library to read UDF file systems")
+    (description "@code{libudfread} is a C library for reading
+@acronym{UDF, Universal Disk Format} file systems.  @acronym{UDF, Universal
+Disk Format} is a file system mostly used for DVDs and other optical media.
+It supports read-only media (DVD/CD-R) and rewritable media that wears out
+(DVD/CD-RW).")
+    (license lgpl2.1+)))
 
 (define-public cdrkit-libre
   (package
