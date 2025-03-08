@@ -1052,14 +1052,14 @@ This package is part of the KDE games module.")
 (define-public kiriki
   (package
     (name "kiriki")
-    (version "24.12.1")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kiriki-" version ".tar.xz"))
        (sha256
-        (base32 "0zb9100l1wfg2xxppjal0lgacqava46yf04qr8bgya41mj4099md"))))
+        (base32 "0r3za1787j1cfcpyx4h3gds8nwfaxrwai3jjd5lfd9zv9cqzky84"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
