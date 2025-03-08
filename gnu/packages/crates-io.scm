@@ -51307,17 +51307,17 @@ framework.")
      "This package provides plug and play high performance fuzzy matcher.")
     (license license:mpl2.0)))
 
-(define-public rust-nucleo-matcher-0.2
+(define-public rust-nucleo-matcher-0.3
   (package
     (name "rust-nucleo-matcher")
-    (version "0.2.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nucleo-matcher" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0mxxz58acszkgxha4wy459fkcx6f8sh55d803wnid1p25x02nw0v"))))
+        (base32 "11dc5kfin1n561qdcg0x9aflvw876a8vldmqjhs5l6ixfcwgacxz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cov-mark" ,rust-cov-mark-1)
@@ -51329,6 +51329,19 @@ framework.")
     (description
      "This package provides plug and play high performance fuzzy matcher.")
     (license license:mpl2.0)))
+
+(define-public rust-nucleo-matcher-0.2
+  (package
+    (inherit rust-nucleo-matcher-0.3)
+    (name "rust-nucleo-matcher")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nucleo-matcher" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mxxz58acszkgxha4wy459fkcx6f8sh55d803wnid1p25x02nw0v"))))))
 
 (define-public rust-num-0.4
   (package
