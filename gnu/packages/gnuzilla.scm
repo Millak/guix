@@ -272,37 +272,6 @@ in C/C++.")
     (inputs (modify-inputs (package-inputs mozjs)
               (replace "icu4c" icu4c-71)))))
 
-(define-public mozjs-91
-  (package
-    (inherit mozjs)
-    (version "91.13.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ftp.mozilla.org/pub/firefox"
-                                  "/releases/" version "esr/source/firefox-"
-                                  version "esr.source.tar.xz"))
-              (sha256
-               (base32
-                "0qh7j960wdp5zcfqhkj8ki47spp9i9ms12xx0v0kxvmmw36jpgjk"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments mozjs)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-before 'check 'disable-timezone-tests
-              (lambda _
-                (with-directory-excursion "../js/src/tests"
-                  ;; FIXME: Assertion failed: got "2021a", expected "2021a3"?
-                  (delete-file "non262/Intl/DateTimeFormat/timeZone_version.js")
-                  ;; XXX: Delete all tests that test time zone functionality,
-                  ;; because the test suite uses /etc/localtime to figure out
-                  ;; the offset from the hardware clock, which does not work
-                  ;; in the build container.  See <tests/non262/Date/shell.js>.
-                  (delete-file-recursively "non262/Date")
-                  (delete-file
-                   "non262/Intl/DateTimeFormat/tz-environment-variable.js"))))))))
-    (inputs (modify-inputs (package-inputs mozjs)
-              (replace "icu4c" icu4c-69)))))
-
 (define-public mozjs-78
   (package
     (inherit mozjs)
