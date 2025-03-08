@@ -191,7 +191,7 @@ generator library for C++.")
       (license (list license:gpl2+ license:lgpl2.1+)))))
 
 (define libdvdcss/kodi
-  (let ((commit "1.4.2-Leia-Beta-5"))
+  (let ((commit "1.4.3"))
     (package
       (name "libdvdcss-bootstrapped")
       (version commit)
@@ -203,7 +203,7 @@ generator library for C++.")
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "0j41ydzx0imaix069s3z07xqw9q95k7llh06fc27dcn6f7b8ydyl"))))
+                  "1xvs3vhdjjrm019rk907bd4lw7jh3wb7rh88zqd3xv8iq3apbcg6"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f
