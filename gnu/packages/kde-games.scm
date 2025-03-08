@@ -449,14 +449,14 @@ This package is part of the KDE games module.")
 (define-public konquest
   (package
     (name "konquest")
-    (version "24.12.1")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/konquest-" version ".tar.xz"))
        (sha256
-        (base32 "1jq7xfd9h19p02vmkvvjz48k35i5npfz302mq6lgj6pwwn683v4w"))))
+        (base32 "0d5v7f851ar2psyiva0gfhhp8c89rz63vq5hy0gasm39mxfhii03"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
