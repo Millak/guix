@@ -35,7 +35,8 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages wxwidgets))
+  #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xorg))
 
 (define-public python-plover-stroke
   (package
@@ -88,7 +89,17 @@
                 `("QT_PLUGIN_PATH" prefix
                   (,(search-input-directory inputs "/lib/qt5/plugins/")))
                 `("LD_LIBRARY_PATH" prefix
-                  (,(string-append #$(this-package-input "dbus") "/lib")))))))))
+                  (,(string-append #$(this-package-input "dbus") "/lib"))))))
+          (add-after 'wrap-executable 'run-on-xwayland
+            ;; By default, Plover won't run on Wayland, and requires a call to
+            ;; xhost to run on XWayland.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((plover (string-append #$output "/bin/plover"))
+                     (xhost (search-input-file inputs "bin/xhost")))
+                (substitute* plover
+                  (("exec .*" line)
+                   (string-append xhost " +si:localuser:$USER\n"
+                                  line)))))))))
     (native-inputs
      (list python-babel
            python-mock
@@ -107,7 +118,8 @@
            python-rtf-tokenize
            python-wcwidth
            python-xlib
-           qtsvg-5))
+           qtsvg-5
+           xhost))
     (home-page "https://www.openstenoproject.org/plover/")
     (synopsis "Stenography engine")
     (description
