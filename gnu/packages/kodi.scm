@@ -90,8 +90,8 @@
   #:use-module (gnu packages assembly))
 
 (define-public crossguid
-  (let ((commit "fef89a4174a7bf8cd99fa9154864ce9e8e3bf989")
-        (revision "2"))
+  (let ((commit "ca1bf4b810e2d188d04cb6286f957008ee1b7681")
+        (revision "3"))
     (package
       (name "crossguid")
       (version (string-append "0.0-" revision "." (string-take commit 7)))
@@ -104,31 +104,10 @@
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "1blrkc7zcqrqcr5msvhyhm98s2jvm9hr0isqs4288q2r4mdnrfq0"))))
-      (build-system gnu-build-system)
+                  "1x3jc4q6di79x3nlx36394s03yv1j1j5k0x6zljyk5iq78y4mfyz"))))
+      (build-system cmake-build-system)
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)          ; no configure script
-           (replace 'build
-             (lambda _
-               (invoke "g++" "-c" "guid.cpp" "-o" "guid.o"
-                        "-DGUID_LIBUUID")
-               (invoke "ar" "rvs" "libcrossguid.a" "guid.o")))
-           (replace 'check
-             (lambda _
-               (invoke "g++" "-c" "test.cpp" "-o" "test.o")
-               (invoke "g++" "-c" "testmain.cpp" "-o" "testmain.o")
-               (invoke "g++" "test.o" "guid.o" "testmain.o"
-                       "-o" "test" "-luuid")
-               (invoke (string-append (getcwd) "/test"))))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (install-file "guid.h" (string-append out "/include"))
-                 (install-file "libcrossguid.a"
-                               (string-append out "/lib"))
-                 #t))))))
+       '(#:tests? #f))
       (inputs
        `(("libuuid" ,util-linux "lib")))
       (synopsis "Lightweight universal identifier library")
