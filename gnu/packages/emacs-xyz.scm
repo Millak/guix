@@ -10232,18 +10232,25 @@ by a query, so both a link can refer to several mails.")
 (define-public emacs-debbugs
   (package
     (name "emacs-debbugs")
-    (version "0.43")
+    (version "0.44")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/debbugs-"
                            version ".tar"))
        (sha256
-        (base32 "1jzdr7bp48incg1bdnq4s1ldnyp6hncz0mydy0bizk3c68chsls5"))))
+        (base32 "02kb24rscbhs4w6xknf5d6l1cicy99b0004hr20pkki6faapzpx2"))))
     (build-system emacs-build-system)
-    (arguments '(#:include '("\\.el$" "\\.wsdl$" "\\.info$")))
-    (propagated-inputs
-     (list emacs-soap-client))
+    (arguments
+     (list
+      #:include #~(list "\\.el$" "\\.wsdl$" "\\.info$")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'add-test-dir-to-emacs-load-path
+                     (lambda _
+                       (setenv "EMACSLOADPATH"
+                               (string-append (getcwd) "/test:"
+                                              (getenv "EMACSLOADPATH"))))))))
+    (propagated-inputs (list emacs-soap-client))
     (home-page "https://elpa.gnu.org/packages/debbugs.html")
     (synopsis "Access the Debbugs bug tracker in Emacs")
     (description
