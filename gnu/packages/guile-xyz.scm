@@ -88,6 +88,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -6218,57 +6219,42 @@ schedulers.")
     (license license:gpl3+)))
 
 (define-public guile-libyaml
-  (let ((commit "2bdacb72a65ab63264b2edc9dac9692df7ec9b3e")
-        (revision "2"))
-    (package
-      (name "guile-libyaml")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/mwette/guile-libyaml")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1bssby1ri1vjll2rvi8b33xr2ghwjyxsd4yc15najj3h8n2ss87i"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:modules (((guix build guile-build-system)
-                     #:prefix guile:)
-                    ,@%default-gnu-modules)
-         #:imported-modules ((guix build guile-build-system)
-                             ,@%default-gnu-imported-modules)
-         #:tests? #false ; there are none
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-after 'unpack 'remove-unused-files
-             (lambda* (#:key inputs #:allow-other-keys)
-               (for-each delete-file '("guix.scm" "demo1.yml" "demo1.scm"))))
-           (add-before 'build 'build-ffi
-             (lambda* (#:key inputs #:allow-other-keys)
-               (invoke "guild" "compile-ffi"
-                       "--no-exec" ; allow us to patch the generated file
-                       "yaml/libyaml.ffi")
-               (substitute* "yaml/libyaml.scm"
-                 (("dynamic-link \"libyaml\"")
-                  (format #false "dynamic-link \"~a/lib/libyaml\""
-                          (assoc-ref inputs "libyaml"))))))
-           (replace 'build
-             (assoc-ref guile:%standard-phases 'build))
-           (delete 'install))))
-      (inputs
-       (list guile-3.0 libyaml))
-      (propagated-inputs
-       (list guile-bytestructures nyacc))
-      (home-page "https://github.com/mwette/guile-libyaml")
-      (synopsis "Guile wrapper for libyaml")
-      (description
-       "This package provides a simple yaml module for Guile using the
-ffi-helper from nyacc.")
-      (license license:lgpl3+))))
+  (package
+    (name "guile-libyaml")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mwette/guile-libyaml")
+             (commit (string-append "V" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bssby1ri1vjll2rvi8b33xr2ghwjyxsd4yc15najj3h8n2ss87i"))
+       (snippet #~(for-each delete-file
+                            '("guix.scm" "demo1.yml" "demo1.scm")))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'build-ffi
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "GUILE_AUTO_COMPILE" "0")
+              (invoke "guild" "compile-ffi" "--no-exec" "yaml/libyaml.ffi")
+              (substitute* "yaml/libyaml.scm"
+                (("dynamic-link \"libyaml\"")
+                 (format #f "dynamic-link \"~a/lib/libyaml\""
+                         (assoc-ref inputs "libyaml")))))))))
+    (native-inputs (list gcc guile-3.0 nyacc))
+    (inputs (list libyaml))
+    (propagated-inputs (list guile-bytestructures nyacc))
+    (home-page "https://github.com/mwette/guile-libyaml")
+    (synopsis "Guile wrapper for libyaml")
+    (description
+     "This package provides a simple yaml module for Guile using the ffi-helper from
+nyacc.")
+    (license license:lgpl3+)))
 
 (define-public schmutz
   (let ((commit "f8043e6c258d2e29d153bc37cb17b130fee0579f")
