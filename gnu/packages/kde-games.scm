@@ -1336,14 +1336,14 @@ This package is part of the KDE games module.")
 (define-public killbots
   (package
     (name "killbots")
-    (version "24.12.1")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/killbots-" version ".tar.xz"))
        (sha256
-        (base32 "0zjlj311klarlx3bqb2h3a2q5wqph0m988d9aff4ravzdg58rv6d"))))
+        (base32 "1d86h8l5gl3x240k86iri9wg6k9km9warcnapf3579hiwaw37bfl"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
