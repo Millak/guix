@@ -204,6 +204,26 @@ extracting and viewing ZIP archives.  This version is extracted from
 the @code{zlib} source.")
     (license (package-license zlib))))
 
+(define-public kubazip
+  (package
+    (name "kubazip")
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kuba--/zip")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "182p059nvs5vpdzmmkn2g6mphsvkjdcxq6gpbh58dcsjj507j9ab"))))
+    (build-system cmake-build-system)
+    (synopsis "Simple zip library")
+    (home-page "https://github.com/kuba--/zip")
+    (description
+     "This package provides a simple zip library based on miniz.")
+    (license license:unlicense)))
+
 (define-public fastjar
   (package
    (name "fastjar")
