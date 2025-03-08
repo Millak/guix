@@ -990,7 +990,7 @@ applications in mind and the idea to make logging fun.")
 (define-public python-ubelt
   (package
     (name "python-ubelt")
-    (version "1.0.1")
+    (version "1.3.6")
     (source
      (origin
        (method git-fetch)
@@ -999,34 +999,31 @@ applications in mind and the idea to make logging fun.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0hac9nqqvqfbca2s4g0mp1fnj0ah60bg9fb8234ibna3jww8qs33"))))
-    (build-system python-build-system)
+        (base32 "1v2kf9lbdfaf9nppdq45rfanz4bdd2v6x59iajcznwgc4jmhj2na"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (setenv "HOME" "/tmp") ;else the test suite hangs
-                     (invoke "pytest" "-vv" "-k"
-                             (string-append
-                              ;; The builder user home doesn't match HOME,
-                              ;; which causes this test to fail.
-                              "not userhome "
-                              ;; This one pointlessly tries
-                              ;; locating various binaries on
-                              ;; the path.
-                              "and not find_exe"))))))))
-    (propagated-inputs (list python-ordered-set))
+     (list
+      ;; The builder user home doesn't match HOME, which causes this test to
+      ;; fail.
+      #:test-flags #~(list "-k" "not userhome")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")))))) ;else the test suite hangs
     (native-inputs
      (list python-pytest
            python-requests
+           python-setuptools
+           python-wheel
            python-xdoctest))
+    (propagated-inputs
+     (list python-ordered-set))
     (home-page "https://github.com/Erotemic/ubelt")
     (synopsis "Python library for hashing, caching, timing and more")
-    (description "Ubelt is a small library of simple functions that extend the
-Python standard library.  It includes an @acronym{API, Application Programming
+    (description
+     "Ubelt is a small library of simple functions that extend the Python
+standard library.  It includes an @acronym{API, Application Programming
 Interface} to simplify common problems such as caching, timing, computing
 progress, among other things.")
     (license license:asl2.0)))
