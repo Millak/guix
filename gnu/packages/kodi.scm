@@ -156,7 +156,7 @@ generator library for C++.")
       (license license:gpl2+))))
 
 (define libdvdread/kodi
-  (let ((commit "6.0.0-Leia-Alpha-3"))
+  (let ((commit "6.1.3"))
     (package
       (name "libdvdread-bootstrapped")
       (version commit)
@@ -168,7 +168,7 @@ generator library for C++.")
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "1xxn01mhkdnp10cqdr357wx77vyzfb5glqpqyg8m0skyi75aii59"))))
+                  "0by70r55575xa9rl8dp8594lxhm475splslvafskqid30n9cpq8h"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f
