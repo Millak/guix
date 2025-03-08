@@ -11,7 +11,7 @@
 ;;; Copyright © 2019, 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2020, 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2022 Simen Endsjø <simendsjo@gmail.com>
@@ -2024,7 +2024,8 @@ WSGIPassAuthorization On
   (mumi    mumi-configuration-mumi (default mumi))
   (mailer? mumi-configuration-mailer? (default #t))
   (sender  mumi-configuration-sender (default #f))
-  (smtp    mumi-configuration-smtp (default #f)))
+  (smtp    mumi-configuration-smtp (default #f))
+  (file-tags mumi-configuration-file-tags (default '())))
 
 (define %mumi-activation
   (with-imported-modules '((guix build utils))
@@ -2056,6 +2057,18 @@ WSGIPassAuthorization On
 
 (define %mumi-worker-log "/var/log/mumi.worker.log")
 
+(define mumi-config-file
+  (match-record-lambda <mumi-configuration>
+      (file-tags)
+    (computed-file "mumi.conf"
+                   #~(begin
+                       (use-modules (srfi srfi-26))
+
+                       (call-with-output-file #$output
+                         (cut write
+                              '((file-tags . #$file-tags))
+                              <>))))))
+
 (define (mumi-shepherd-services config)
   (define environment
     #~(list "LC_ALL=en_US.utf8"
@@ -2071,6 +2084,8 @@ WSGIPassAuthorization On
             (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
                       `(#$(file-append mumi "/bin/mumi") "web"
+                        ,(string-append "--config="
+                                        #$(mumi-config-file config))
                         ,@(if #$mailer? '() '("--disable-mailer")))
                       #:environment-variables #$environment
                       #:user "mumi" #:group "mumi"
@@ -2081,7 +2096,9 @@ WSGIPassAuthorization On
             (documentation "Mumi bug-tracking web interface database worker.")
             (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
-                      '(#$(file-append mumi "/bin/mumi") "worker")
+                      `(#$(file-append mumi "/bin/mumi") "worker"
+                        ,(string-append "--config="
+                                        #$(mumi-config-file config)))
                       #:environment-variables #$environment
                       #:user "mumi" #:group "mumi"
                       #:log-file #$%mumi-worker-log))
@@ -2092,6 +2109,8 @@ WSGIPassAuthorization On
             (requirement '(user-processes networking))
             (start #~(make-forkexec-constructor
                       `(#$(file-append mumi "/bin/mumi") "mailer"
+                        ,(string-append "--config="
+                                        #$(mumi-config-file config))
                         ,@(if #$sender
                               (list (string-append "--sender=" #$sender))
                               '())

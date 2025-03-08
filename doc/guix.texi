@@ -33746,6 +33746,12 @@ something like @code{sendmail:///path/to/bin/msmtp} or any other URI
 supported by Mailutils.  @xref{SMTP Mailboxes, SMTP Mailboxes,,
 mailutils, GNU@tie{}Mailutils}.
 
+@item @code{file-tags}
+Association list mapping tags to filename regular expressions. Keys are
+tag names, and values are lists of regular expressions.  For each entry
+of the association list, the tag is applied if a filename referred to in
+a patch matches any of the regular expressions.
+
 @end table
 @end deftp
 
