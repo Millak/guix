@@ -818,17 +818,17 @@ attacks on the privacy of Tor users.")
 
 ;; We copy the official build id, which can be found there:
 ;; https://cdn.mullvad.net/browser/update_responses/update_1/release.
-(define %mullvadbrowser-build-date "20250203100000")
+(define %mullvadbrowser-build-date "20250303093702")
 
 ;; To find the last version, look at
 ;; https://mullvad.net/en/download/browser/linux.
-(define %mullvadbrowser-version "14.0.5")
+(define %mullvadbrowser-version "14.0.7")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/mullvadbrowser/<%mullvadbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-mullvad-browser-".
-(define %mullvadbrowser-firefox-version "128.7.0esr-14.0-1-build2")
+(define %mullvadbrowser-firefox-version "128.8.0esr-14.0-1-build2")
 
 ;; See tor-browser-build/projects/translation/config.
 (define mullvadbrowser-translation-base
@@ -836,11 +836,11 @@ attacks on the privacy of Tor users.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "93eddbd3888852c09e130d536fb3c9bd7e4e6f57")))
+          (commit "21fed48fc58df9e6c4d9f67b048fcae831df50c9")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "1s0lys5kzdgd1vk8la4vd5kkfpb5kvaf2rhd0vgzq4fva7gflm94"))))
+      "1gs2b9bak7rglpbswkm47jwj3yd76361xblvyxjfsbji9igjj7za"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define mullvadbrowser-translation-specific
@@ -848,11 +848,11 @@ attacks on the privacy of Tor users.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "6a1ef41c664a5185e25ca2c4bbf5d7447bd888a7")))
+          (commit "d279ce2add9a5bb3fc71f24b55679e3e0706f0eb")))
     (file-name "translation-mullvad-browser")
     (sha256
      (base32
-      "0jgxgynyzcph82j3bjkw0qfwkakmz8529lmx7v1ggbh3fvn7wa4l"))))
+      "1bnclgln8ibxslnqs2lmmlww7q0qgar7lkhc69dkr1w1cpxjcrr9"))))
 
 (define mullvadbrowser-assets
   ;; This is a prebuilt Mullvad Browser from which we take the assets we need.
@@ -868,7 +868,7 @@ attacks on the privacy of Tor users.")
          version "/mullvad-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "0l544hl9kbashcx9qrih1qf1zz2cdny733ry1r1v13g85760ipyb"))))
+         "0z9wvhprn8w6lfi3vsd9qk8fdl6gxq9z07awx7r5vrk1813mj0ry"))))
     (arguments
      (list
       #:install-plan
@@ -911,7 +911,7 @@ Mullvad Browser.")
          %mullvadbrowser-firefox-version ".tar.xz"))
        (sha256
         (base32
-         "04val15xsfl118d18xpnhhy5cshlgkdpp58y0ja306glx453kcpl"))))
+         "0w6r13wli2z4hpww4gb8hy99grvmcffpp4nkn1jljcxk316jcrcy"))))
     (arguments
      (substitute-keyword-arguments (package-arguments mullvadbrowser-base)
        ((#:phases phases)
