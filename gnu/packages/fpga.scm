@@ -34,6 +34,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
@@ -56,6 +57,7 @@
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
@@ -416,22 +418,23 @@ FPGA place and route tool.")
      (origin
        (method url-fetch)
        (uri (list (string-append "mirror://sourceforge/gtkwave/"
-                                 "gtkwave-" version "/"
-                                 "gtkwave-" version ".tar.gz")
+                                 "gtkwave-gtk3-" version "/"
+                                 "gtkwave-gtk3-" version ".tar.gz")
                   (string-append "https://gtkwave.sourceforge.net/"
                                  "gtkwave-" version ".tar.gz")))
        (sha256
-        (base32 "15w3x3zx5klqg1vjkakixw9zwfnkib7gf376knf5sryakd3bc1av"))))
-    (build-system gnu-build-system)
+        (base32 "0ikk49zyar5aiq7pg9whi4nfzq7xm8sz7bn3b6vaylkdimw4bajl"))))
+    (build-system glib-or-gtk-build-system)
     (native-inputs
      (list gperf pkg-config))
     (inputs
-     (list tcl tk gtk+-2))
+     (list gtk+ tcl tk))
     (arguments
      (list #:configure-flags
-           #~(list (string-append "--with-tcl="
-                                  (assoc-ref %build-inputs "tcl")
-                                  "/lib")
+           #~(list "--enable-gtk3"
+                   (string-append "--with-tcl="
+                    (assoc-ref %build-inputs "tcl")
+                    "/lib")
                    (string-append "--with-tk="
                                   (assoc-ref %build-inputs "tk")
                                   "/lib"))))
