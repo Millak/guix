@@ -33807,6 +33807,31 @@ ignore files such as @file{.gitignore} against file paths.")
 ignore files.")
     (license license:asl2.0)))
 
+(define-public rust-ihex-3
+  (package
+    (name "rust-ihex")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ihex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wlzfyy5fsqgpki5vdapw0jjczqdm6813fgd3661wf5vfi3phnin"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--"
+                            "--skip=test_reader_respects_all_newline_formats")))
+    (home-page "http://github.com/martinmroz/ihex")
+    (synopsis
+     "Rust library for parsing and generating Intel HEX (or IHEX) objects")
+    (description
+     "This package provides a Rust library for parsing and generating Intel
+HEX (or IHEX) objects.  This format is commonly used for representing compiled
+program code and data to be loaded into a microcontroller, flash memory or
+ROM.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-im-rc-15
   (package
     (name "rust-im-rc")
