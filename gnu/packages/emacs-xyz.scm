@@ -23590,6 +23590,10 @@ fragment in a dedicated buffer just like editing a source block.")
        (sha256
         (base32 "19y69qw79miim9cz5ji54gwspjkcp9g2c1xr5s7jj2fiabnxax6b"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "emacs" "--batch" "-L" "."
+                             "-l" "test/emamux-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/syohex/emacs-emamux")
     (synopsis "Manipulate Tmux from Emacs")
     (description
