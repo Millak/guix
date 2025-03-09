@@ -293,7 +293,7 @@ your computer.")
 (define-public francis
   (package
     (name "francis")
-    (version "24.05.2")
+    (version "24.12.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -302,7 +302,7 @@ your computer.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lm0gh035qc9ip9hs00gxl3y9d9a8846ggypzgzngkqazic9i82k"))))
+                "02jhbwq1407x172y7vfgk6j4mb1lpaxm97ckfz5qhdxdh8mnqsmf"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kirigami
