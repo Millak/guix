@@ -3676,37 +3676,44 @@ data structures and to operate on them.")
   (deprecated-package "emacs-poke" poke))
 
 (define-public pcb2gcode
-  (package
-   (name "pcb2gcode")
-   (version "2.5.0")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/pcb2gcode/pcb2gcode")
-           (commit (string-append "v" version))
-           (recursive? #t)))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32
-       "01s41znkcq9x1rinsdqrrdj8p35isckrcxs14ajsi7wr39n1m5kk"))))
-   (build-system gnu-build-system)
-   (inputs
-    (list boost
-          geos
-          gerbv
-          glibmm
-          gtkmm-2
-          (librsvg-for-system)))
-   (native-inputs
-    (list autoconf automake libtool pkg-config))
-   (home-page "https://github.com/pcb2gcode/pcb2gcode")
-   (synopsis "Generate G-code for milling PCBs")
-   (description "pcb2gcode is a command-line program for isolation routing
-and drilling of PCBs.  It takes Gerber files as input and outputs G-code files
-for the milling of PCBs.  It also includes an autoleveller for the automatic
-dynamic calibration of the milling depth.")
-   (license license:gpl3+)))
+  ;; XXX: The latest release was on <2022-09-12>, but master branch contains a
+  ;; lot of changes and fixes from that time, use the latest commit
+  ;; instead. Revert to version tag when it's available.
+  (let ((commit "8c084afd00c6653dfa9cbf24a1dbeeb24f592aa9")
+        (revision "0"))
+    (package
+      (name "pcb2gcode")
+      (version (git-version "2.5.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pcb2gcode/pcb2gcode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19hyzd1601l51bwlv43j8l602nfacbjwqf54m5xsmj50718bcks2"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf
+             automake
+             libtool
+             pkg-config))
+      (inputs
+       (list boost
+             geos
+             gerbv
+             glibmm
+             gtkmm-2
+             (librsvg-for-system)))
+      (home-page "https://github.com/pcb2gcode/pcb2gcode")
+      (synopsis "Generate G-code for milling PCBs")
+      (description
+       "pcb2gcode is a command-line program for isolation routing and drilling
+of PCBs.  It takes Gerber files as input and outputs G-code files for the
+milling of PCBs.  It also includes an autoleveller for the automatic dynamic
+calibration of the milling depth.")
+      (license license:gpl3+))))
 
 ;; libdxfrw has no readme, no version release, no tags.  Initial commit says
 ;; "libdxfrw-0.6.3 import", but it shares no git history with "upstream"
