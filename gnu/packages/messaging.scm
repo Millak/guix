@@ -3737,16 +3737,12 @@ a text snippet), using @code{libphonenumber}.")
                            "-C" (string-append "src/" unpack-path))))
                (add-after 'install 'install-doc
                  (lambda* (#:key unpack-path #:allow-other-keys)
-                   (let ((man1 (string-append #$output "/share/man1"))
-                         (man5 (string-append #$output "/share/man5")))
-                     (mkdir-p man1)
-                     (mkdir-p man5)
-                     (install-file
-                      (string-append "src/" unpack-path "/doc/senpai.1")
-                      man1)
-                     (install-file
-                      (string-append "src/" unpack-path "/doc/senpai.5")
-                      man5))))
+                   (install-file
+                    (string-append "src/" unpack-path "/doc/senpai.1")
+                    (string-append #$output "/share/man/man1"))
+                   (install-file
+                    (string-append "src/" unpack-path "/doc/senpai.5")
+                    (string-append #$output "/share/man/man5"))))
                (add-after 'install 'install-desktop-file
                 (lambda* (#:key unpack-path #:allow-other-keys)
                   (install-file
