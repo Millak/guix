@@ -2522,44 +2522,46 @@ Automated palette selection is supported.")
     (license license:expat)))
 
 (define-public drawpile
-  ;; This commit fix building with libmicrohttpd>=0.71.
-  (let ((commit "ed1a75deb113da2d1df91a28f557509c4897130e")
-        (revision "1"))
-    (package
-      (name "drawpile")
-      (version (string-append "2.1.17-" revision "." (string-take commit 9)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/drawpile/Drawpile")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1y21h1hk9ipkjvhjgas0c5hkjyan92vsxbxrn60c906hzqln2fr1"))))
-      (build-system qt-build-system)
-      (arguments
-       '(#:configure-flags
-         (list "-DTESTS=ON" "-DTOOLS=ON" "-DKIS_TABLET=ON")))
-      (native-inputs
-       (list extra-cmake-modules pkg-config))
-      (inputs
-       (list giflib
-             karchive-5
-             kdnssd-5
-             libmicrohttpd
-             libsodium
-             libvpx
-             libxi
-             ;; ("miniupnpc" ,miniupnpc) ;segfaults for some reason
-             qtbase-5
-             qtkeychain
-             qtmultimedia-5
-             qtsvg-5
-             qtx11extras))
-      (home-page "https://drawpile.net")
-      (synopsis "Collaborative drawing program")
-      (description "Drawpile is a drawing program that allows share the canvas
+  (package
+    (name "drawpile")
+    (version "2.2.2-beta.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/drawpile/Drawpile")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w6vfdm6rmnpn6s8kzm8blbaidlsg8q6spv95m7fnwr3984hf6hb"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DTESTS=ON" "-DTOOLS=ON" "-DKIS_TABLET=ON")))
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (inputs
+     (list giflib
+           karchive
+           kdnssd
+           libmicrohttpd
+           libsodium
+           libvpx
+           libwebp
+           libxi
+           libxkbcommon
+           libzip
+           miniupnpc
+           qtbase
+           qtkeychain
+           qtmultimedia
+           qtsvg
+           qtx11extras
+           vulkan-headers))
+    (home-page "https://drawpile.net")
+    (synopsis "Collaborative drawing program")
+    (description "Drawpile is a drawing program that allows share the canvas
 with other users in real time.
 
 Some feature highlights:
@@ -2575,7 +2577,7 @@ Some feature highlights:
 @item Encrypted connections using SSL
 @item Automatic port forwarding with UPnP
 @end itemize\n")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public openxr
   (package
