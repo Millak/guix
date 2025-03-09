@@ -43474,6 +43474,7 @@ process via its IPC interface.")
                  (base32
                   "03yjg14rvcxn59wga4jvx28ii16bx5ym93fzfyssm67gqwgyb2gf"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
       (home-page "https://www.emacswiki.org/emacs/WanderLust")
       (synopsis "Library for making portable Emacs Lisp programs")
       (description
