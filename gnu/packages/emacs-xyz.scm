@@ -29936,6 +29936,7 @@ autosuggestions with:
           (base32
            "0bslgm9rz7whk0ll21028dsl22wbd289cdc95qj8hhlk8m4hlp2h"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; missing tests
       (home-page "https://gitlab.petton.fr/DamienCassou/desktop-environment")
       (synopsis "Control your GNU/Linux desktop environment from Emacs")
       (description
