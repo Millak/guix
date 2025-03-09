@@ -18727,6 +18727,8 @@ being deleted, changed, yanked, or pasted when using evil commands")
        (sha256
         (base32 "1fczxygg1blfmlwswck49rllww77rc7qn91wqw1kvjwfz31sk8z4"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "ert-runner" ".")))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/minad/goggles")
     (synopsis "Pulse modified region")
     (description "Goggles highlights the modified region using Pulse.
