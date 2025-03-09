@@ -46,6 +46,7 @@
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pdf)
+  #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
@@ -348,6 +349,38 @@ your computer.")
     (description
      "This package provides a tool to write ISO files to USB disks.")
     (license license:gpl3+)))
+
+(define-public kamera
+  (package
+    (name "kamera")
+    (version "24.12.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kamera-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1jvd5lhjpfl9zs53qg69440awqxxhzdkjni0pqk80y953kfsghx0"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kcmutils
+           kconfig
+           kconfigwidgets
+           kxmlgui
+           ki18n
+           kio
+           libgphoto2))
+    (home-page "https://apps.kde.org/kamera/")
+    (synopsis "KDE integration to digital cameras")
+    (description
+     "Kamera provides a configuration tool and a KIO worker to read and write
+to camera devices supported by @code{libgphoto2} using
+@acronym{PTP,Pictute Transfer Protocol}.")
+    (license license:gpl2+)))
 
 (define-public kate
   (package
