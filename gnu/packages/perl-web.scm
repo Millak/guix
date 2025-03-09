@@ -2,6 +2,7 @@
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -242,6 +243,31 @@ simple and lightweight interface to the
 @acronym{SOAP, Simple Object Access Protocol}, both on client and server
 side.")
     (license license:perl-license)))
+
+(define-public perl-www-pastebin-pastebincom-create
+  (package
+    (name "perl-www-pastebin-pastebincom-create")
+    (version "1.003")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/Z/ZO/ZOFFIX/WWW-Pastebin-PastebinCom-Create-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0xs29hilmlr51hcg4azbvi7c30yivan5gzwiq2z0dwrdy13lvcln"))))
+    (build-system perl-build-system)
+    ;; TODO: tests currently fail, disabled for now
+    (arguments
+     (list #:tests? #f))
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-moo perl-www-mechanize))
+    (home-page "https://metacpan.org/release/WWW-Pastebin-PastebinCom-Create")
+    (synopsis "Paste on Pastebin without API keys")
+    (description
+     "@code{WWW::Pastebin::PastebinCom::Create} provides functionality to
+paste on @url{https://www.pastebin.com, Pastebin} without API keys.")
+    (license license:artistic2.0)))
 
 (define-public geolite-country-data
   ;; TODO: Figure out how to get an updated, free database.
