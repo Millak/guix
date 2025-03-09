@@ -23268,6 +23268,7 @@ additions:
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dired-hacks))
+    (native-inputs (list emacs-ert-runner))
     (synopsis "Sidebar for Emacs using Dired")
     (description
      "This package provides a sidebar for Emacs similar to @code{NeoTree}
