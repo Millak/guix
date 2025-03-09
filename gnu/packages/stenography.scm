@@ -92,16 +92,19 @@
                   (,(search-input-directory inputs "/lib/qt5/plugins/")))
                 `("LD_LIBRARY_PATH" prefix
                   (,(string-append #$(this-package-input "dbus") "/lib"))))))
-          (add-after 'wrap-executable 'run-on-xwayland
-            ;; By default, Plover won't run on Wayland, and requires a call to
-            ;; xhost to run on XWayland.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let* ((plover (string-append #$output "/bin/plover"))
-                     (xhost (search-input-file inputs "bin/xhost")))
-                (substitute* plover
-                  (("exec .*" line)
-                   (string-append xhost " +si:localuser:$USER\n"
-                                  line)))))))))
+          (add-after 'install 'install-udev-rules
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (rules (string-append out "/lib/udev/rules.d")))
+                (mkdir-p rules)
+                (call-with-output-file
+                    (string-append rules "/99-plover-uinput.rules")
+                  (lambda (port)
+                    (display
+                     (string-append
+                      "KERNEL==\"uinput\", MODE=\"0660\", "
+                      "GROUP=\"input\", OPTIONS+=\"static_node=uinput\"\n")
+                     port)))))))))
     (native-inputs
      (list python-babel
            python-evdev
