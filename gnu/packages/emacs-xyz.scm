@@ -13567,7 +13567,8 @@ package provides a light and a dark variant.")
                   "16d7adqi07lzzr0qipl1fbag9l8kiyr3xrqxi528pimcisbg85d3"))))
       (build-system emacs-build-system)
       (arguments
-       (list #:phases
+       (list #:tests? #f                ; no tests
+             #:phases
              #~(modify-phases %standard-phases
                  ;; These are intended for old versions of Emacs and do not
                  ;; compile with emacs>=24.
