@@ -355,7 +355,7 @@ file system, and many more features.")
 (define-public newsraft
   (package
     (name "newsraft")
-    (version "0.27")
+    (version "0.28")
     (source
      (origin
        (method git-fetch)
@@ -364,7 +364,7 @@ file system, and many more features.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "170dwv6v9755mdy4w91r4mk6r5d713rxi71hppqws3bsh2g4bmrj"))))
+        (base32 "10i5khna9wpaisarmzym9dvfaq91mnf1wvwsymnzl052d4n106l9"))))
     (build-system gnu-build-system)
     (arguments
      (list
