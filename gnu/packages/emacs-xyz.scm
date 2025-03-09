@@ -8177,6 +8177,7 @@ something with a bit more flair than the Modus themes.")
        (sha256
         (base32 "16r4j27j9yfdiy841w9q5ykkc6n3wrm7hvfacagb32mydk821ijg"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; XXX: test defined twice
     (propagated-inputs
      (list emacs-s emacs-dash emacs-f))
     (home-page "https://github.com/ecukes/espuds")
