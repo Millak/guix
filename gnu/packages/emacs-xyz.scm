@@ -15370,6 +15370,7 @@ windows.")
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-avy))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/abo-abo/ace-window")
     (synopsis "Quickly switch windows in Emacs")
     (description
