@@ -35998,7 +35998,8 @@ all of your projects, then override or add variables on a per-project basis.")
     (build-system emacs-build-system)
     (arguments
      (list
-      #:lisp-directory "lisp"))
+      #:lisp-directory "lisp"
+      #:test-command #~(list "make" "tests")))
     (propagated-inputs (list emacs-casual-lib emacs-avy))
     (home-page "https://github.com/kickingvegas/casual-avy")
     (synopsis "Transient-based porcelain for avy")
