@@ -18616,7 +18616,8 @@ manager.")
           (base32
            "1hxhw1rsm0wbrhz85gfabncanijpxd47g5yrdnl3bbm499z1gsvg"))))
       (arguments
-       `(#:phases
+       `(#:test-command (list "make" "test")
+         #:phases
          (modify-phases %standard-phases
            (add-before 'check 'fix-test-helpers
              (lambda _
