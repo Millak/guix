@@ -35,7 +35,7 @@
 (define-public polyml
   (package
     (name "polyml")
-    (version "5.9")
+    (version "5.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -44,7 +44,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hhij8y0kvchg9rarzrcr9i0f629s2chbg258b0jscicjv9ghi6w"))))
+                "1s7lpnxg826r2lm2c81j9a61zwljy2ybkqwadjiwrfi0hmbczn89"))))
     (build-system gnu-build-system)
     (inputs
      (list gmp lesstif libffi libx11 libxt))
