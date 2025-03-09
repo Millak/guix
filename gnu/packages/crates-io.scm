@@ -32880,6 +32880,28 @@ SystemTime}}.")
      "This package provides a Humantime serialization timestamp format.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-hxdmp-0.2
+  (package
+    (name "rust-hxdmp")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hxdmp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1c66j4z423w2lc3iqzzbg10y8ip58i90lpx7mimq8rklibr2fyx1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #false                  ;doctest fails.
+       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page "https://github.com/rustyhorde/hxdmp")
+    (synopsis "Small utility to create hexdump output from byte slices")
+    (description
+     "This package provides a small utility to create hexdump output from byte
+slices.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-hyphenation-0.8
   (package
     (name "rust-hyphenation")
