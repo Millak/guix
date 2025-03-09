@@ -229,7 +229,9 @@ notification area icon for Syncthing.  Supported Syncthing features:
         (base32 "1mw7kxj0smcf4vgpxai7m9vncdx2d3blxqy13hffvza0fxnwkv37"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/syncthing/notify"))
+     (list
+      #:parallel-tests? #f
+      #:import-path "github.com/syncthing/notify"))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://github.com/syncthing/notify")
