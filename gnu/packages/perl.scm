@@ -37,6 +37,7 @@
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
+;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2020, 2023 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
@@ -4286,6 +4287,42 @@ hierarchy the overloads are declared and where the code implementing it is.")
     (description "This module is a data dumper optimized for logging of
 arbitrary parameters.")
     (license (package-license perl))))
+
+(define-public perl-devel-repl
+  (package
+    (name "perl-devel-repl")
+    (version "1.003029")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/E/ET/ETHER/Devel-REPL-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0s9w8ws2ckv0mbvns2irq4npmvj6chf6iyy3z0pspaz3izcfp1vw"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-test-fatal))
+    (propagated-inputs (list perl-app-nopaste
+                             perl-b-keywords
+                             perl-data-dump-streamer
+                             perl-data-dumper-concise
+                             perl-file-next
+                             perl-lexical-persistence
+                             perl-module-refresh
+                             perl-module-runtime
+                             perl-moose
+                             perl-moosex-getopt
+                             perl-moosex-object-pluggable
+                             perl-namespace-autoclean
+                             perl-ppi
+                             perl-ppi-xs
+                             perl-sys-sigaction
+                             perl-task-weaken))
+    (home-page "https://metacpan.org/release/Devel-REPL")
+    (synopsis "Modern Perl interactive shell.")
+    (description "@code{Devel::REPL} is a modern Perl interactive
+shell.")
+    (license license:perl-license)))
 
 (define-public perl-devel-stacktrace
   (package
