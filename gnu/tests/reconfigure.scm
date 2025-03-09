@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
-;;; Copyright © 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -190,13 +190,12 @@ Shepherd (PID 1) by unloading obsolete services and loading new services."
      (operating-system
        (inherit %simple-os)
        (services (modify-services %base-services
-                   (syslog-service-type
-                    config => (syslog-configuration
-                               (inherit config)
-                               (config-file
-                                (plain-file
-                                 "syslog.conf"
-                                 "*.* /dev/console\n")))))))
+                   (shepherd-system-log-service-type
+                    config
+                    =>
+                    (system-log-configuration
+                     (inherit config)
+                     (message-destination #~(const '("/dev/console"))))))))
      #:imported-modules '((gnu services herd)
                           (guix combinators))))
 

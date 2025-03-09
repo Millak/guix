@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2020-2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -33,6 +33,7 @@
   #:use-module (gnu services base)
   #:use-module (gnu services nfs)
   #:use-module (gnu services networking)
+  #:use-module (gnu services shepherd)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages nfs)
@@ -170,14 +171,12 @@
       (services
        ;; Enable debugging output.
        (modify-services (operating-system-user-services os)
-         (syslog-service-type config
-                              =>
-                              (syslog-configuration
-                               (inherit config)
-                               (config-file
-                                (plain-file
-                                 "syslog.conf"
-                                 "*.* /dev/console\n")))))))))
+         (shepherd-system-log-service-type
+          config
+          =>
+          (system-log-configuration
+           (inherit config)
+           (message-destination #~(const '("/dev/console"))))))))))
 
 (define (run-nfs-server-test)
   "Run a test of an OS running a service of NFS-SERVICE-TYPE."
@@ -287,14 +286,12 @@ directories can be mounted.")
                                  "*(rw,insecure,no_subtree_check,\
 crossmnt,fsid=root,no_root_squash,insecure,async)")))))
            (modify-services (operating-system-user-services os)
-             (syslog-service-type config
-                                  =>
-                                  (syslog-configuration
-                                   (inherit config)
-                                   (config-file
-                                    (plain-file
-                                     "syslog.conf"
-                                     "*.* /dev/console\n"))))))))
+             (shepherd-system-log-service-type
+              config
+              =>
+              (system-log-configuration
+               (inherit config)
+               (message-destination #~(const '("/dev/console")))))))))
        #:requirements '(nscd)
        #:imported-modules '((gnu services herd)
                             (guix combinators)))))

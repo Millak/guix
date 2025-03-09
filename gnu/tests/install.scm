@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
@@ -52,6 +52,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu services desktop)
   #:use-module (gnu services networking)
+  #:use-module (gnu services shepherd)
   #:use-module (gnu services xorg)
   #:use-module (guix store)
   #:use-module (guix monads)
@@ -1783,27 +1784,25 @@ build (current-guix) and then store a couple of full system images.")
 ;;; Installation through the graphical interface.
 ;;;
 
-(define %syslog-conf
-  ;; Syslog configuration that dumps to /dev/console, so we can see the
-  ;; installer's messages during the test.
-  (computed-file "syslog.conf"
-                 #~(begin
-                     (copy-file #$%default-syslog.conf #$output)
-                     (chmod #$output #o644)
-                     (let ((port (open-file #$output "a")))
-                       (display "\n*.info /dev/console\n" port)
-                       #t))))
-
 (define (operating-system-with-console-syslog os)
   "Return OS with a syslog service that writes to /dev/console."
   (operating-system
     (inherit os)
-    (services (modify-services (operating-system-user-services os)
-                (syslog-service-type config
-                                     =>
-                                     (syslog-configuration
-                                      (inherit config)
-                                      (config-file %syslog-conf)))))))
+    (services
+     (modify-services (operating-system-user-services os)
+       (shepherd-system-log-service-type
+        config
+        =>
+        (system-log-configuration
+         (inherit config)
+         (message-destination
+          #~(lambda (message)
+              (let ((destinations ((default-message-destination-procedure)
+                                   message)))
+                (if (<= (system-log-message-priority message)
+                        (system-log-priority info))
+                    (cons "/dev/console" destinations)
+                    destinations))))))))))
 
 (define %root-password "foo")
 

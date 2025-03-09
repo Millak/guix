@@ -984,14 +984,12 @@ non-ASCII names from /tmp.")
                                               (inherit config)
                                               (debug-level 3)
                                               (log-file "/dev/console")))
-                       (syslog-service-type config
-                                            =>
-                                            (syslog-configuration
-                                             (inherit config)
-                                             (config-file
-                                              (plain-file
-                                               "syslog.conf"
-                                               "*.* /dev/console\n")))))))))
+                       (shepherd-system-log-service-type
+                        config
+                        =>
+                        (system-log-configuration
+                         (inherit config)
+                         (message-destination #~(const '("/dev/console"))))))))))
 
 (define (run-nss-mdns-test)
   ;; Test resolution of '.local' names via libc.  Start the marionette service

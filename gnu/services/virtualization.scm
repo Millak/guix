@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ryan Moe <ryan.moe@gmail.com>
-;;; Copyright © 2018, 2020-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020, 2021, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
@@ -1289,17 +1289,20 @@ that will be listening to receive secret keys on ADDRESS."
          (_ #f))
        (virtual-build-machine-port-forwardings config)))
 
-(define %minimal-vm-syslog-config
-  ;; Minimal syslog configuration for a VM.
-  (plain-file "vm-syslog.conf" "\
-# Log most messages to the console, which goes to the serial
-# output, allowing the host to log it.
-*.info;auth.notice;authpriv.none       -/dev/console
-
-# The rest.
-*.=debug                               -/var/log/debug
-authpriv.*;auth.info                    /var/log/secure
-"))
+(define %system-log-message-destination
+  ;; Shepherd system log message destination procedure.  Log most messages to
+  ;; the console, which goes to the serial output, allowing the host to log
+  ;; it.
+  #~(lambda (message)
+      (cond ((= (system-log-priority debug)
+                (system-log-message-priority message))
+             '("/var/log/debug"))
+            ((member (system-log-message-facility message)
+                     (list (system-log-facility authorization)
+                           (system-log-facility authorization/private)))
+             '("/var/log/secure"))
+            (else
+             '("/dev/console")))))
 
 (define %virtual-build-machine-operating-system
   (operating-system
@@ -1349,10 +1352,10 @@ authpriv.*;auth.info                    /var/log/secure
                                            (inherit config)
                                            (authorize-key? #f)
                                            (use-substitutes? #f)))
-                       (syslog-service-type config =>
-                                            (syslog-configuration
-                                             (config-file
-                                              %minimal-vm-syslog-config)))
+                       (shepherd-system-log-service-type
+                        config =>
+                        (system-log-configuration
+                         (message-destination %system-log-message-destination)))
                        (delete mingetty-service-type)
                        (delete console-font-service-type))))))
 
