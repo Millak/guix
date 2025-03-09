@@ -33054,6 +33054,7 @@ allowing users to log in and solve problems of their choice using Emacs.")
                   "15nkrjgi64f829isfd6xrhl4zw8jirr8pkas7nisrbk1av868hx0"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; tests require networking
       (propagated-inputs
        (list emacs-deferred emacs-ctable))
       (synopsis "RPC stack for Emacs Lisp")
