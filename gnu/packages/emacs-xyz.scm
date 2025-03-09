@@ -11050,7 +11050,7 @@ mode.")
              tree-sitter-python
              tree-sitter-typescript))
       (native-inputs
-       (list python-minimal))
+       (list emacs-ert-runner python-minimal))
       (home-page "https://www.masteringemacs.org/article/combobulate-structured-movement-editing-treesitter")
       (synopsis "Structured editing and navigation in Emacs with tree-sitter")
       (description
