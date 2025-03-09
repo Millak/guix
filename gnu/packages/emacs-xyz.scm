@@ -31832,6 +31832,7 @@ files) are provided.")
         (base32
          "100aa0vs1gjwpkfdc7avwv5v3sicj2npqfr1y3dsib3pimp21l6w"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/clarete/hackernews.el")
     (synopsis "Hacker News client for Emacs")
     (description "The @command{hackernews} package is able to fetch stories
