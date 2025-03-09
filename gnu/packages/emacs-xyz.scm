@@ -5262,7 +5262,7 @@ links.")
                             (string-append #$output "/share/info")))))))
     (inputs (list the-silver-searcher))     ; 'ag' executable
     (native-inputs
-     (list python-sphinx texinfo))
+     (list emacs-ert-runner emacs-undercover python-sphinx texinfo))
     (propagated-inputs
      (list emacs-dash emacs-s))
     (home-page "https://github.com/Wilfred/ag.el")
