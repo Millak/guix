@@ -19551,6 +19551,7 @@ using Org mode and transients.")
          "0sjybrcnb2sl33swy3q664vqrparajcl0m455gciiih2j87hwadc"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")))
     (home-page "https://github.com/lewang/flx")
     (synopsis "Fuzzy matching for Emacs")
     (description
