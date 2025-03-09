@@ -9226,6 +9226,7 @@ with Emacs.")
      ;; the testing framework, test-hdl, requires network
      `(#:tests? #f
        #:test-command '("make")))
+    (propagated-inputs (list tree-sitter-vhdl))
     (home-page "https://github.com/gmlarumbe/vhdl-ts-mode/")
     (synopsis "VHDL Tree-sitter mode")
     (description
