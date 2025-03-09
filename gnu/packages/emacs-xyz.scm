@@ -4566,6 +4566,7 @@ required.")
         (base32
          "147dz79vg4ym5wg3d544bw2khdb2j3hr73rw4qfm64wf0q2dj0vk"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-avy))
     (home-page "https://github.com/abo-abo/ace-link")
