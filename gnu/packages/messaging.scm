@@ -3746,7 +3746,12 @@ a text snippet), using @code{libphonenumber}.")
                       man1)
                      (install-file
                       (string-append "src/" unpack-path "/doc/senpai.5")
-                      man5)))))))
+                      man5))))
+               (add-after 'install 'install-desktop-file
+                (lambda* (#:key unpack-path #:allow-other-keys)
+                  (install-file
+                    (string-append "src/" unpack-path "/contrib/senpai.desktop")
+                    (string-append #$output "/share/applications")))))))
     (native-inputs
      (list go-codeberg-org-emersion-go-scfg
            go-git-sr-ht-rockorager-vaxis
