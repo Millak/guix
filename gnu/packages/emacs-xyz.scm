@@ -20342,6 +20342,7 @@ stuff (words, region, lines) around in Emacs.")
                 (sha256
                  (base32 "0ln06dprnivx9zxm6n23ppyx7x4kbn0f85pxwvkq32aq7wnqz82m"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; tests appear to require bazel
       (home-page "https://github.com/bazelbuild/emacs-bazel-mode")
       (synopsis "Bazel support for Emacs")
       (description
