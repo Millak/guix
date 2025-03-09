@@ -132,62 +132,60 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
 
 (define-public ntp
   (package
-   (name "ntp")
-   (version "4.2.8p18")
-   (source
+    (name "ntp")
+    (version "4.2.8p18")
+    (source
      (origin
        (method url-fetch)
        (uri (list (string-append
                    "https://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-"
-                   (version-major+minor version)
-                   "/ntp-" version ".tar.gz")
-                  (string-append
-                   "http://archive.ntp.org/ntp4/ntp-"
-                   (version-major+minor version)
-                   "/ntp-" version ".tar.gz")))
+                   (version-major+minor version) "/ntp-" version ".tar.gz")
+                  (string-append "http://archive.ntp.org/ntp4/ntp-"
+                                 (version-major+minor version) "/ntp-" version
+                                 ".tar.gz")))
        (sha256
         (base32 "1rb8yksqxjcsjvww9kwnw1242qzszwixh916jj254a8szgrwb16g"))
+       (patches (search-patches
+                 "ntp-fix-dereferencing-the-wrong-variable.patch"))
        (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove the bundled copy of libevent, but we must keep
-           ;; sntp/libevent/build-aux since configure.ac contains
-           ;; AC_CONFIG_AUX_DIR([sntp/libevent/build-aux])
-           (rename-file "sntp/libevent/build-aux"
-                        "sntp/libevent:build-aux")
-           (delete-file-recursively "sntp/libevent")
-           (mkdir "sntp/libevent")
-           (rename-file "sntp/libevent:build-aux"
-                        "sntp/libevent/build-aux")))))
-   (native-inputs (list which pkg-config))
-   (inputs
-    (cons* openssl
-           libevent
-           ;; Build with POSIX capabilities support on GNU/Linux.  This allows
-           ;; 'ntpd' to run as non-root (when invoked with '-u'.)
-           (if (target-linux?)
-               (list libcap)
-               '())))
-   (arguments
-    (list
-     ;; Pass "--with-yielding-select=yes" so that 'configure' knows whether
-     ;; 'select' yields when using pthreads in a cross-compilation context.
-     #:configure-flags
-     #~(list "--with-yielding-select=yes")
-     #:phases
-     #~(modify-phases %standard-phases
-         (add-after 'unpack 'disable-network-test
-           (lambda _
-             (substitute* "tests/libntp/Makefile.in"
-               (("test-decodenetnum\\$\\(EXEEXT\\) ") "")))))))
-   (build-system gnu-build-system)
-   (synopsis "Real time clock synchronization system")
-   (description "NTP is a system designed to synchronize the clocks of
+       (snippet '(begin
+                   ;; Remove the bundled copy of libevent, but we must keep
+                   ;; sntp/libevent/build-aux since configure.ac contains
+                   ;; AC_CONFIG_AUX_DIR([sntp/libevent/build-aux])
+                   (rename-file "sntp/libevent/build-aux"
+                                "sntp/libevent:build-aux")
+                   (delete-file-recursively "sntp/libevent")
+                   (mkdir "sntp/libevent")
+                   (rename-file "sntp/libevent:build-aux"
+                                "sntp/libevent/build-aux")))))
+    (native-inputs (list which pkg-config))
+    (inputs (cons* openssl libevent
+                   ;; Build with POSIX capabilities support on GNU/Linux.  This allows
+                   ;; 'ntpd' to run as non-root (when invoked with '-u'.)
+                   (if (target-linux?)
+                       (list libcap)
+                       '())))
+    (arguments
+     (list
+      ;; Pass "--with-yielding-select=yes" so that 'configure' knows whether
+      ;; 'select' yields when using pthreads in a cross-compilation context.
+      #:configure-flags
+      #~(list "--with-yielding-select=yes")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-network-test
+            (lambda _
+              (substitute* "tests/libntp/Makefile.in"
+                (("test-decodenetnum\\$\\(EXEEXT\\) ")
+                 "")))))))
+    (build-system gnu-build-system)
+    (synopsis "Real time clock synchronization system")
+    (description "NTP is a system designed to synchronize the clocks of
 computers over a network.")
-   (license (l:x11-style
-             "https://www.eecis.udel.edu/~mills/ntp/html/copyright.html"
-             "A non-copyleft free licence from the University of Delaware"))
-   (home-page "https://www.ntp.org")))
+    (license (l:x11-style
+              "https://www.eecis.udel.edu/~mills/ntp/html/copyright.html"
+              "A non-copyleft free licence from the University of Delaware"))
+    (home-page "https://www.ntp.org")))
 
 (define-public openntpd
   (package

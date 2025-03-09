@@ -1,0 +1,45 @@
+Subject: [PATCH] Fix dereferencing the wrong variable
+
+In line 1911 in ntp_io.c, the code calls `create_interface(port, ep2)` and saves
+the return value in the variable `ep`, which is then checked to not be `NULL` in
+the next line. In case `ep` is `NULL`, the code starting in line 1923 is
+executed. Keep in mind that `ep` is `NULL` in this branch. The error is logged
+in line 1928 and the address inside `ep` is converted using `stoa` by calling
+`stoa(&ep->sin)`. This would normally be fine since `socktoa` catches a `NULL`
+pointer in line 43 in socktoa.c but `&ep->sin` isn't `NULL` but 0x24 as the
+field isn't the first one in the `endpt` struct.
+
+This then causes a segmentation fault by dereferencing the pointer `0x24` in
+line 46 as the code tries to get the address family using `AF(sock)`.
+
+This only happens when ntpd cannot create an interface which seems to happen at
+boot time leading to 6 crashes on my machine on average.
+
+The issue is that someone accidentally typed `ep` instead of the correct `ep2`.
+
+This bug is being tracked as 3968 and 3928 upstream.
+---
+ ntpd/ntp_io.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ntpd/ntp_io.c b/ntpd/ntp_io.c
+index 9d79fe4..0e761ff 100644
+--- a/ntpd/ntp_io.c
++++ b/ntpd/ntp_io.c
+@@ -1921,11 +1921,11 @@ update_interfaces(
+ 		}
+ 		else {
+ 			DPRINT_INTERFACE(3,
+-				(ep, "updating ", " new - FAILED"));
++				(ep2, "updating ", " new - FAILED"));
+
+ 			msyslog(LOG_ERR,
+ 				"cannot bind address %s",
+-				stoa(&ep->sin));
++				stoa(&ep2->sin));
+ 		}
+ 		free(ep2);
+ 	}
+--
+2.48.1
+
