@@ -20303,6 +20303,14 @@ each question.")
        (sha256
         (base32 "1jrr59iazih3imkl9ja1lbni9v3xv6b8gmqs015g2mxhlql35jka"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "emacs" "-l" "ecukes"
+                             "--batch" "--eval"
+                             (string-append
+                              "(let ((ecukes-exclude-tags"
+                              "'(\"only-in-emacs-23\" \"not-in-emacs-24.5\")))"
+                              "(ecukes))"))))
+    (native-inputs (list emacs-ecukes emacs-evil))
     (home-page "https://github.com/rejeep/drag-stuff")
     (synopsis "Drag stuff around in Emacs")
     (description
