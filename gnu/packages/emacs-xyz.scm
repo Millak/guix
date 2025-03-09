@@ -23987,6 +23987,9 @@ and performs syntax checks on them.")
        (sha256
         (base32 "0y8154ykrashgg0bina5ambdrxw2qpimycvjldrk9d67hrccfh3m"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "emacs" "-l" "cl-lib"
+                             "--batch" "-l" "enwc-test.el")))
     (home-page "https://savannah.nongnu.org/p/enwc")
     (synopsis "The Emacs Network Client")
     (description
