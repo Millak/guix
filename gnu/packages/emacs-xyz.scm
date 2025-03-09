@@ -25567,6 +25567,8 @@ region of the buffer, while the latter works on rectangular selections.")
                  (base32
                   "1p25h191bm0h5b3w5apg7wks51k7pb7h4dlww4jbl9ri4d33fzcl"))))
       (build-system emacs-build-system)
+      (arguments (list #:test-command
+                       #~(list "emacs" "-Q" "--script" "src/test.el")))
       (home-page "https://github.com/smihica/emmet-mode")
       (synopsis "Unofficial Emmet's support for Emacs")
       (description
