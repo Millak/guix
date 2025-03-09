@@ -21546,6 +21546,7 @@ conversion for Emacs Lisp.")
          (sha256
           (base32 "1851nf6bghgzh9nbv8x92yzgdc9rl2jiiwqw2kpninr5myk7fh9y"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
       (propagated-inputs
        (list emacs-auctex))
       (home-page "https://github.com/cdominik/cdlatex")
