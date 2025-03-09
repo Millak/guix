@@ -16277,17 +16277,28 @@ generate mocks from those interfaces.")
     (arguments
      (list
       #:import-path "github.com/viant/toolbox"
-      #:test-flags #~(list "-skip" "TestCase_To|Test_NewReplayService")
-      #:test-subdirs #~(list "bridge/..."
-                             "cred/..."
-                             "data/..."
-                             "format/..."
-                             "sampler/..."
-                             "secret/..."
-                             "ssh/..."
-                             "test/..."
-                             "unsafe/..."
-                             "url/...")))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestCase_To"
+                             "Test_NewReplayService")
+                       "|"))
+      #:test-subdirs
+      #~(list "bridge/..."
+              "cred/..."
+              ;; Tests fail on i686-linux system:
+              ;; <...>/conversion_test.go:142:17: cannot use 2323232323223
+              ;; (untyped int constant) as int value in argument to aMap.Put
+              ;; (overflows).
+              #$@(if (target-64bit?)
+                     '("data/...")
+                     '())
+              "format/..."
+              "sampler/..."
+              "secret/..."
+              "ssh/..."
+              "test/..."
+              "unsafe/..."
+              "url/...")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     ;; XXX: No go.mod to list dependencies, see
