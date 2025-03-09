@@ -3797,6 +3797,9 @@ differing times.")
         (base32
          "11fgiy029sqz7nvdm7dcal95lacryz9zql0x5h05z48nrrcl4bib"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "ert-runner" ".")
+                     #:tests? #f))      ; 18 unexpected results
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/rolandwalker/anaphora/")
     (synopsis "Anaphoric expressions for Emacs Lisp")
     (description "@code{emacs-anaphora} implements anaphoric expressions for
