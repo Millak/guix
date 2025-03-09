@@ -24724,6 +24724,8 @@ literate programming tools for exporting, weaving and tangling.")
           (base32
            "02xnkgsrq54bpk26z9cs352r5rq0scmzw2czlq2pyq1332g6lycd"))))
       (build-system emacs-build-system)
+      (arguments (list #:test-command #~(list "ert-runner" ".")))
+      (native-inputs (list emacs-ert-runner))
       (home-page "https://github.com/fredericgiquel/ansible-doc")
       (synopsis "Ansible documentation for Emacs")
       (description
