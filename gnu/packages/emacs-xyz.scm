@@ -7980,6 +7980,7 @@ This mode supports Apache HTTP Server 2.4 and major modules.")
        (sha256
         (base32 "1dqx5wjmaxxl3xdj0kh2q157d4x9ygfwn4fschcw9vwm5jrcph51"))))
     (build-system emacs-build-system)
+    (native-inputs (list emacs-buttercup))
     (home-page "https://github.com/raxod502/apheleia")
     (synopsis "Reformat buffer stably")
     (description
