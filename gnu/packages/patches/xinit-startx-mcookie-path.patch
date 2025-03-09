@@ -1,0 +1,23 @@
+This patch fixes two bugs in upstream mcookie detection: 1) If mcookie is not
+detected, we still need to set HAS_COOKIE_HANDLER and MK_COOKIE, and 2) the
+value for MK_COOKIE must be a string in order to disallow further preprocessor
+expansions.
+
+In particular for 2, if we fail to surround the path in quotes, our path
+contains the token "linux", which gcc further expands, creating an invalid
+path.
+
+--- a/configure.ac	2025-03-08 16:48:34.476791744 +0900
++++ b/configure.ac	2025-03-08 16:48:30.208791623 +0900
+@@ -157,8 +157,10 @@
+     fi
+ fi
+ if test "x$MCOOKIE" != x ; then
+-	STARTX_COOKIE_FLAGS='-DHAS_COOKIE_MAKER -DMK_COOKIE="$(MCOOKIE)"'
++	STARTX_COOKIE_FLAGS='-DHAS_COOKIE_MAKER -DMK_COOKIE="'"'"'$(MCOOKIE)'"'"'"'
+ 	AC_MSG_NOTICE([startx will depend on "$MCOOKIE" to generate xauth cookies])
++else
++	STARTX_COOKIE_FLAGS='-DHAS_COOKIE_MAKER -DMK_COOKIE='
+ fi
+ AC_SUBST(STARTX_COOKIE_FLAGS)
+ 

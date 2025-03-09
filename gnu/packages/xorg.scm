@@ -42,6 +42,7 @@
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 宋文武 <iyzsong@envs.net>
+;;; Copyright © 2025 B. Wilson <elaexuotee@wilsonb.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5898,14 +5899,13 @@ The XCB util-wm module provides the following libraries:
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0npx32mi035xkz26gp7raps5xsq4v7rgayy1q794h4d3lqhryh46"))))
+                "0npx32mi035xkz26gp7raps5xsq4v7rgayy1q794h4d3lqhryh46"))
+              (patches
+                (search-patches "xinit-startx-mcookie-path.patch"))))
     (build-system gnu-build-system)
-    (inputs
-     (list xorgproto libx11))
-    (native-inputs
-     (list pkg-config))
-    (propagated-inputs
-     (list xauth))
+    (inputs (list libx11 util-linux xorgproto))
+    (native-inputs (list pkg-config))
+    (propagated-inputs (list xauth))
     (home-page "https://www.x.org/")
     (synopsis "Commands to start the X Window server")
     (description
