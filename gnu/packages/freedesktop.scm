@@ -1544,15 +1544,16 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
   (package
     (inherit wayland-protocols)
     (name "wayland-protocols-next")
-    (version "1.38")
+    (version "1.41")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://gitlab.freedesktop.org/wayland/"
-                                  "wayland-protocols/-/releases/" version "/downloads/"
-                                  "wayland-protocols-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/wayland/wayland-protocols")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ghxb0w7rbq3kdv9lhm1iwcjh6p3sx1gxb3crqh2p78m0ln2j5zz"))))))
+                "148wh3cw88pv1adbhmkr13ass2vznzpa03hc3f6hwmwfv4bjsdlr"))))))
 
 (define-public wayland-utils
   (package
