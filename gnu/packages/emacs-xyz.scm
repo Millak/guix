@@ -36158,6 +36158,7 @@ all of your projects, then override or add variables on a per-project basis.")
        (sha256
         (base32 "0x2x3ci5i428wgagbwjh9qp2zlflkzlrkbpi6qa4fv7dq3vgkrv2"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/raxod502/el-patch")
     (synopsis "Future-proof your Emacs customizations")
     (description "This package allows for an alternate definition of an Elisp
