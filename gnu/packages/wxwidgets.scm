@@ -12,6 +12,7 @@
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -180,6 +181,21 @@ and many other languages.")
        ((#:configure-flags flags #~'())
         #~(append #$flags '("--with-gtk=2")))))))
 
+(define-public wxwidgets-sans-egl
+  ;; This is needed for prusaslicer:
+  ;; <https://github.com/NixOS/nixpkgs/issues/193135>.)
+  ;; and KiCAD:
+  ;; <https://forum.kicad.info/t/kicad-8-0-x-could-not-use-opengl-debian-guix/53203/7>
+  ;; Relevant debian bug report:
+  ;; <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1024147;msg=5>
+  ;; Tl;dr; wxWidgets uses EGL but Glew 2.2 doesn't. Leading to errors.
+  (package/inherit wxwidgets
+    (name "wxwidgets-sans-egl")
+    (arguments
+       (substitute-keyword-arguments (package-arguments wxwidgets)
+         ((#:configure-flags flags)
+          #~(cons "--disable-glcanvasegl" #$flags))))))
+
 (define-public wxwidgets-3.0
   (package
     (inherit wxwidgets)
@@ -272,7 +288,7 @@ and many other languages.")
   (let ((commit "78aa2dc0ea7ce99dc19adc1140f74c3e2e3f3a26")
         (revision "0"))
     (package
-      (inherit wxwidgets)
+      (inherit wxwidgets-sans-egl)
       (name "prusa-wxwidgets")
       (version (git-version "3.2.0" revision commit))
       (home-page "https://github.com/prusa3d/wxWidgets")
@@ -293,11 +309,6 @@ and many other languages.")
                        (prepend nanosvg)))
       (arguments
        (substitute-keyword-arguments (package-arguments wxwidgets)
-         ((#:configure-flags flags)
-          ;; To fix 3D rendering in PrusaSlicer, wxWidgets must be compiled with
-          ;; "--disable-glcanvasegl" flag (see
-          ;; <https://github.com/NixOS/nixpkgs/issues/193135>.)
-          #~(cons "--disable-glcanvasegl" #$flags))
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'copy-nanosvg-source
