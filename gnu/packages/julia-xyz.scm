@@ -1104,6 +1104,29 @@ changes for functions that perform a change of variables (like coordinate
 transformations).")
     (license license:expat)))
 
+(define-public julia-clausenfunctions
+  (package
+    (name "julia-clausenfunctions")
+    (version "1.16.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Expander/ClausenFunctions.jl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vwzbx3nykm6zv4hkpwhfhc0x58zafn8s9xlw6xlj4glaf0v11sk"))))
+    (build-system julia-build-system)
+    (propagated-inputs (list julia-polylog))
+    (home-page "https://github.com/Expander/ClausenFunctions.jl")
+    (synopsis "Clausen functions in Julia")
+    (description
+     "This package provides Julia implementations of the
+Standard Clausen functions and Glaisher-Clausen functions of integer
+order for real or complex arguments.")
+    (license license:expat)))
+
 (define-public julia-codeczlib
   (package
     (name "julia-codeczlib")
