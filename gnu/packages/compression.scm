@@ -183,16 +183,7 @@ in compression.")
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'enter-source
-           (lambda _ (chdir "contrib/minizip") #t))
-         (add-after 'install 'remove-crypt-h
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Remove <minizip/crypt.h> because it interferes with libc's
-             ;; <crypt.h> given that 'minizip.pc' says "-I…/include/minizip".
-             ;; Fedora does the same:
-             ;; <https://src.fedoraproject.org/rpms/zlib/c/4d2785ec3116947872f6f32dc4104e6d36d8a7a4?branch=master>.
-             (let ((out (assoc-ref outputs "out")))
-               (delete-file (string-append out "/include/minizip/crypt.h"))
-               #t))))))
+           (lambda _ (chdir "contrib/minizip"))))))
     (native-inputs
      (list autoconf automake libtool))
     (propagated-inputs (list zlib))
