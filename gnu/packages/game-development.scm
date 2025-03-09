@@ -3693,7 +3693,7 @@ progresses the level, or you may regenerate tiles as the world changes.")
 (define-public raylib
   (package
     (name "raylib")
-    (version "5.0")
+    (version "5.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3703,7 +3703,7 @@ progresses the level, or you may regenerate tiles as the world changes.")
               ;; TODO: Unbundle src/external
               (sha256
                (base32
-                "0327licmylwlh5iyzw35pq7ci2d15rp3jms5i9p0vfg1rlv2sjw0"))))
+                "1dhy9ghbwvz0s434j03rfa2l6wxcfj028vlkk1xbf5q97vin5pr7"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f  ;no test
@@ -3722,8 +3722,14 @@ progresses the level, or you may regenerate tiles as the world changes.")
 #define MA_ENABLE_ONLY_SPECIFIC_BACKENDS
 #define MA_ENABLE_PULSEAUDIO
 #include \"external/miniaudio.h\"
-")))))))
-    (inputs (list glfw pulseaudio))
+"))))
+               (add-after 'install 'install-api-files
+                 ;; For generating bindings.
+                 (lambda _
+                   (copy-recursively
+                    (string-append #$source "/parser/output")
+                    (string-append #$output "/share/raylib")))))))
+    (inputs (list glfw-3.4 pulseaudio))
     (native-inputs (list pkg-config))
     (synopsis "C library for videogame programming")
     (description
