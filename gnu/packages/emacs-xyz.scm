@@ -25444,6 +25444,7 @@ functionality is inherited from @code{hcl-mode}.")
         (base32
          "15cjwvfv5xdhbym4ms71zdkng4381d3hsdk3kvvx2kycxff52rih"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/purcell/exec-path-from-shell")
     (synopsis "Get environment variables such as @env{PATH} from the shell")
     (description
