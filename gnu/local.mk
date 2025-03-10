@@ -840,6 +840,7 @@ GNU_SYSTEM_MODULES =				\
 						\
   %D%/tests.scm					\
   %D%/tests/audio.scm				\
+  %D%/tests/avahi.scm				\
   %D%/tests/base.scm				\
   %D%/tests/cachefilesd.scm			\
   %D%/tests/ci.scm				\
