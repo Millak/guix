@@ -168,6 +168,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
+  #:use-module (gnu packages lsof)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages mail)
@@ -6818,3 +6819,83 @@ backup directories or just finding duplicate files.")
 services.  It aggregates system logs and blocks repeat offenders using one of
 several firewall backends.")
     (license license:isc)))
+
+(define-public px
+  (package
+    (name "px")
+    (version "3.6.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/walles/px.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zhh3y8caww6rxy9ppg60ls1505s5z1jmnahr5v31r94vzlp4h8v"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-git
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* (find-files "px" "\\.py$")
+                    ;; We don't have MacOS X programs.
+                    (("px_exec_util[.]run[(]\\[\"(vm_stat)\"" all x)
+                     (string-append "px_exec_util.run([\""
+                                    "/bin/false"
+                                    "\""))
+                    ;; Patch names of executables in "sbin".
+                    (("px_exec_util[.]run[(]\\[\"(sysctl)\"" all x)
+                     (string-append "px_exec_util.run([\""
+                                    (search-input-file inputs
+                                                       (string-append "sbin/" x))
+                                    "\""))
+                    ;; Patch names of executables in "bin".
+                    (("px_exec_util[.]run[(]\\[\"([^/\"]*)\"" all x)
+                     (string-append "px_exec_util.run([\""
+                                    (search-input-file inputs
+                                                       (string-append "bin/" x))
+                                    "\"")))
+                   (substitute* "px/px_process.py"
+                    ;; Patch path name of "ps" executable.
+                    (("\"/bin/ps\"") (string-append "\""
+                                                    (assoc-ref inputs "procps")
+                                                    "/bin/ps\"")))
+                   (substitute* '("setup.py"  "devbin/update_version_py.py")
+                    ;; Patch "git describe", replacing it by its result.
+                    (("subprocess.check_output.*git.*describe.*")
+                     (string-append "\"" #$version "\"\n")))))
+               (add-before 'check 'prepare-check
+                 (lambda _
+                   (substitute* "tests/px_terminal_test.py"
+                    ;; We don't have /etc/passwd so the output will not say "root".
+                    (("root") "0   "))
+                   (substitute* "tests/px_process_test.py"
+                    ;; Our containers don't have the kernel visible.
+                    (("len[(]all_processes[)] >= 4")
+                     "len(all_processes) >= 3")
+                    ;; We don't have /etc/passwd so the output will not say "root".
+                    (("\"root\"") "\"0\""))
+                   (setenv "PYTEST_ADDOPTS"
+                           (string-append "-vv -k \"not "
+                                          (string-join
+                                           '(;; Network tests cannot succeed.
+                                             "test_stdfds_ipc_and_network"
+                                             ;; Network tests cannot succeed.
+                                             "test_str_resolve"
+                                             ;; Tiny difference in color.
+                                             "test_to_screen_lines_unbounded")
+                                           " and not ")
+                                          "\"")))))))
+    (native-inputs
+     (list pkg-config python-setuptools python-wheel python-pytest
+           python-pytest-runner python-dateutil))
+    (inputs
+     (list lsof net-tools procps sysstat util-linux))
+    (synopsis "ps, top and pstree for human beings")
+    (description "This package provides a way to figure out which processes
+communicate with which other processes.  It provides more usable versions
+of ps, top and pstree.")
+    (home-page "https://github.com/walles/px")
+    (license license:expat)))
