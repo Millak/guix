@@ -8133,21 +8133,21 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
     ;; licensed under the PFSL, BSD 2-clause, and GPLv3+ licenses.
     (license (list license:public-domain license:psfl license:bsd-2 license:gpl3+))))
 
-;; awscli refuses to be built with docutils < 0.16.
-(define-public python-docutils-0.15
+;; awscli refuses to be built with docutils < 0.17.
+(define-public python-docutils-0.16
   (package
     (inherit python-docutils)
-    (version "0.15")
+    (version "0.16")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "docutils" version))
               (sha256
                (base32
-                "0ja8q6mdj6xv62jjw3phv8j5nfqi5x8hnfy4pqfcjcgz4b34k8sl"))))
+                "1z3qliszqca9m719q3qhdkh0ghh90g500avzdgi7pl77x5h3mpn2"))))
     ;; tests contain Python 2 syntax.
     (arguments '(#:tests? #false))
     (native-inputs
-     (list python-setuptools-57))))
+     (list python-setuptools))))
 
 (define-public python-docx
   (package

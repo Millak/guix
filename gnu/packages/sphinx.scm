@@ -600,7 +600,7 @@ supported with @code{sphinx-issues}.")
                    (substitute* "setup.py"
                      (("sphinx>=2,<5")
                       "sphinx>=2,<6")))))))
-    (propagated-inputs (list python-docutils-0.15 python-sphinx-5))
+    (propagated-inputs (list python-docutils-0.16 python-sphinx-5))
     (native-inputs
      (list python-pytest
            python-pytest-regressions

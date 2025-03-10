@@ -5296,7 +5296,7 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
      (list groff-minimal
            python-botocore
            python-colorama
-           python-docutils-0.15
+           python-docutils-0.16
            python-pyyaml
            python-rsa
            python-s3transfer))
