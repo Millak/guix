@@ -10922,7 +10922,7 @@ the Wolfram language.")
 (define-public python-mathics-core
   (package
     (name "python-mathics-core")
-    (version "8.0.0")
+    (version "8.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10931,7 +10931,7 @@ the Wolfram language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ymxwbjj51kplw94q17ha2cjs9vhv4b1cqd131mw1b5sxdrlig59"))))
+                "1ikgw3w3silxisih92g1wgcwb37k7qkwfmdv5r6yy4ki74qvyk5q"))))
     (arguments
      `(;; <https://github.com/pytest-dev/pytest/pull/10173> is missing .closed
        #:test-flags '("-s")
