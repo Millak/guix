@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
-;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2016, 2025 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -22,9 +22,11 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (gnu packages assembly)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages vim))
 
@@ -62,6 +64,45 @@ and history.  A generic virtual machine environment, vmgen, is also
 included.")
     (home-page "https://www.gnu.org/software/gforth/")
     (license license:gpl3+)))
+
+(define-public freeforth2
+  (package
+    (name "freeforth2")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dan4thewin/FreeForth2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nnbvqvv0q7mcy2paxknl97zk6vphflvqp3dy741p0kaghcpgli7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "test"
+           #:system "i686-linux"        ;requires 32-bit gcc
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output)
+                   "LD=gcc -m32 -nostartfiles -lc")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (substitute* "fflin.boot"
+                     (("/usr/local/share/ff")
+                      (string-append #$output "/share/ff"))
+                     ;; Increase the size of ffpath for store path.
+                     (("46[+] create ffpath")
+                      "256+ create ffpath")))))))
+    (native-inputs (list fasm))
+    (synopsis "Lightweight x86 Forth")
+    (home-page "https://github.com/dan4thewin/FreeForth2")
+    (description
+     "FreeForth2 offers a lightweight Forth for x86 GNU/Linux that deftly
+blends assembly and Forth.")
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (license license:asl2.0)))
 
 (define-public smithforth
   (package
