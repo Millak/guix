@@ -2604,14 +2604,7 @@ execution of any hook written in any language before every commit.")
              (patches (search-patches "mercurial-hg-extension-path.patch"))
              (sha256
               (base32
-               "01nqvp3cvidlz9z5vm05vpq81r6x10jwwfcaz0gw9anz0l60f8hw"))
-             (modules '((guix build utils)))
-             (snippet
-              '(substitute* (find-files "tests" "\\.(t|sh)$")
-                 ;; grep 3.8 emits deprecation warnings for 'egrep' and
-                 ;; 'fgrep' which breaks expected test output.
-                 (("egrep") "grep -E")
-                 (("fgrep") "grep -F")))))
+               "01nqvp3cvidlz9z5vm05vpq81r6x10jwwfcaz0gw9anz0l60f8hw"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
