@@ -611,7 +611,15 @@ supported with @code{sphinx-issues}.")
         (sha256
          (base32 "1ivqz6yv96a2jp59kylg1gbkrmzq6zwilppz3ij0zrkjn25zb97k"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-docutils-0.15 python-sphinx-4))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'loosen-requirements
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("sphinx>=2,<5")
+                      "sphinx>=2,<6")))))))
+    (propagated-inputs (list python-docutils-0.15 python-sphinx-5))
     (native-inputs
      (list python-pytest
            python-pytest-regressions
