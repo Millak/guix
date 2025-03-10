@@ -103,14 +103,14 @@ UI builder called FLUID that can be used to create applications in minutes.")
 (define-public fltk
   (package
     (inherit fltk-1.3)
-    (version "1.4.1")
+    (version "1.4.2")
     (source (origin
       (method git-fetch)
       (uri (git-reference
               (url "https://github.com/fltk/fltk")
               (commit (string-append "release-" version))))
       (sha256
-       (base32 "0ii49imyw29drkhc9dvyiiybc9qy19fxc91wl6w2gmc3xsmdzd6z"))))))
+       (base32 "0xyimyraxp6czv85n4g63w50dziyv50kzf9xhmxrrz9d6fl3syss"))))))
 
 
 (define-public ntk
