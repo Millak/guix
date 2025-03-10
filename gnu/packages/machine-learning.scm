@@ -990,8 +990,8 @@ sample proximities between pairs of cases.")
     (license license:gpl3+)))
 
 (define-public r-rcppml/devel
-  (let ((commit "e685b3bd7909d3ae74c98f85f81bc0bb679bce23")
-        (revision "1"))
+  (let ((commit "5449a5b479908f40f56cf911f11e0a7e156d207f")
+        (revision "2"))
     (package
       (name "r-rcppml-devel")
       (version (git-version "0.5.6" revision commit))
@@ -1003,7 +1003,7 @@ sample proximities between pairs of cases.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "18ykh9s9h3x79az7qm3pg48iqm0nmkh2wkppc9wx0lq7kjfqm67a"))))
+                  "0sfn6cm8qqsv1g80wc6pimldr0q11vfqik0hcynp8dfrkmvzhj8n"))))
       (properties `((upstream-name . "RcppML")))
       (build-system r-build-system)
       (propagated-inputs (list r-matrix r-rcpp))
