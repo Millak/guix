@@ -1095,6 +1095,41 @@ cross-validation.")
 for Snakemake and its plugins.")
     (license license:expat)))
 
+(define-public python-snakemake-interface-executor-plugins
+  (package
+    (name "python-snakemake-interface-executor-plugins")
+    (version "9.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://github.com/snakemake/"
+                                 "snakemake-interface-executor-plugins"))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kjjcgkk1rbavb687x5ayw35ayhsnhpg9262k317x911wqpsj2fm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python3" "tests/tests.py")))))))
+    (propagated-inputs (list python-argparse-dataclass
+                             python-snakemake-interface-common
+                             python-throttler))
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page (string-append "https://github.com/snakemake/"
+                              "python-snakemake-interface-executor-plugins"))
+    (synopsis "Interface for Snakemake executor plugins")
+    (description
+     "This package provides a stable interface for interactions between Snakemake and
+its executor plugins.")
+    (license license:expat)))
+
 (define-public python-tdda
   (package
     (name "python-tdda")
