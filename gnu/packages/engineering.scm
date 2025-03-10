@@ -4911,6 +4911,69 @@ netlists from the drawn schematic, allowing the simulation of the circuit.")
       (home-page "https://xschem.sourceforge.io/stefan/index.html")
       (license license:gpl2+))))
 
+(define-public bcnc
+  (package
+    (name "bcnc")
+    (version "0.9.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bCNC" version))
+       (sha256
+        (base32 "1wsz5ppgncn992znj9wpkvjkf87m93zb2pdzlas53nnj2j4pz9vw"))
+       ;; Comment out opencv-python which cannot be detected because
+       ;; the opencv python library lacks necessary metadata files.
+       ;; https://github.com/opencv/opencv-python/issues/944
+       (modules '((guix build utils)))
+       (snippet '(substitute* "setup.py"
+                  (("\"opencv-python.*" line)
+                   (string-append "# " line))
+                  (("\\+.*" line)
+                   (string-append "# " line))))))
+    (build-system pyproject-build-system)
+    ;; Tests require pyautogui which is not packaged yet.
+    (arguments
+     (list
+      #:tests? #f)) ; all tests depend on not packaged pyautogui
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (inputs
+     (list `(,python "tk")))
+    (propagated-inputs
+     (list opencv
+           python-numpy
+           python-pillow
+           python-pyserial
+           python-shxparser
+           python-svgelements))
+    (home-page "https://github.com/vlachoudis/bCNC")
+    (synopsis "Swiss army knife for all your CNC/g-code needs")
+    (description
+     "GrblHAL CNC command sender, autoleveler, g-code editor, digitizer, CAM
+and swiss army knife for all your CNC needs.  The sender is robust and fast
+able to work nicely with old or slow hardware.")
+    (license (list license:gpl2+
+                   ;; XXX: Check if the mentioned sources may be unbundled,
+                   ;; they specify their own compatible licenses as take from
+                   ;; project's README:
+                   ;;
+                   ;; Numpy-STL (https://github.com/WoLpH/numpy-stl)
+                   ;; lib/stl
+                   ;; Python-Utils (https://github.com/WoLpH/python-utils)
+                   ;; lib/python_utils
+                   license:bsd-3
+
+                   ;; MeshCut (https://github.com/julienr/meshcut)
+                   ;; Copyright (c) 2015 Julien Rebetez
+                   ;; lib/mescut.py
+                   ;; lib/ply.py
+                   ;; lib/utils.py
+                   ;; svg.path (https://github.com/regebro/svg.path)
+                   ;; Copyright (c) 2013-2014 Lennart Regebro
+                   ;; lib/svg/*
+                   license:expat))))
+
 (define-public candle
   ;; The latest tagged version 1.2b fails on the build stage due to
   ;; non-supported g++ flags so we need to use the latest commit from the
