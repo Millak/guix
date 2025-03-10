@@ -11021,13 +11021,13 @@ Mathics3.")
 (define-public python-mathics-django
   (package
     (name "python-mathics-django")
-    (version "8.0.0")
+    (version "8.0.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "mathics_django" version))
+       (uri (pypi-uri "Mathics_Django" version))
        (sha256
-        (base32 "02rwmbzb6dgsz5brwanyv3lahlc2zyhyv0xshmii652mhrgkv9gg"))))
+        (base32 "1cwvm72w6c3vz49gj09ihiwicj291ia51xhkxgi9z88a9vszx5pq"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:phases
