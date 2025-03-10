@@ -10025,6 +10025,16 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas")))))))))
       #:tests? #f                     ;we're only generating the documentation
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-external-deps
+            (lambda _
+              ;; XXX: Avoid theme-switcher to avoid sphinx error
+              ;; TemplateNotFound('theme-switcher.html')
+              ;; XXX: Avoid version-switcher because it depends on the value
+              ;; of external https://numpy.org/doc/_static/versions.json
+              (substitute* "doc/source/conf.py"
+                (("\
+\"navbar_end\": \\[\"theme-switcher\", \"version-switcher\", ")
+                 "\"navbar_end\": ["))))
           (add-before 'build 'add-gnu-freefont-to-texmf
             (lambda _
               ;; XXX: The Sphinx-generated tex output specifies the GNU
@@ -10070,6 +10080,7 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas")))))))))
                     (("\"contents\"") "'index'")
                     ;; Disable Sphinx extensions that produce broken Texinfo.
                     ((".*'numpydoc'.*") "")
+                    ((".*'sphinx.ext.autodoc'.*") "")
                     ((".*'sphinx.ext.autosummary'.*") ""))
                   (invoke "make" "info" sphinxopts)
                   ;; Install the HTML documentation.
@@ -10093,13 +10104,15 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas")))))))))
            python-pandas
            python-pydata-sphinx-theme
            python-scipy                 ;used by matplotlib
-           python-sphinx-4
+           python-sphinx
+           python-sphinx-design
            python-sphinx-panels
            texinfo
            (texlive-updmap.cfg
             (list texlive-cbfonts
                   texlive-cm-super
                   texlive-expdlist
+                  texlive-fandol
                   texlive-greek-fontenc
                   texlive-latexmk
                   texlive-polyglossia
