@@ -197,7 +197,10 @@ sources.")
               " and not test_viewcode"
               ;; These fail with pygments 2.10+.  They are harmless.
               " and not test_additional_targets_should_not_be_translated"
-              " and not test_additional_targets_should_be_translated"))
+              " and not test_additional_targets_should_be_translated"
+              ;; As in Sphinx@6:
+              ;; AssertionError: assert...list of weak references to the object...
+              " and not test_autodoc_default_options"))
       #:phases
       '(modify-phases %standard-phases
          (add-before 'check 'pre-check
