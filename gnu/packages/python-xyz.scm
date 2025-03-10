@@ -20085,6 +20085,25 @@ be set via config files and/or environment variables.")
 connection pool.")
     (license license:expat)))
 
+(define-public python-argparse-dataclass
+  (package
+    (name "python-argparse-dataclass")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "argparse_dataclass" version))
+       (sha256
+        (base32 "0zr9r4n00x2wi5kyzw3bxvrdp5k113jw7f9p4f414bsaj4f69aq9"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/mivade/argparse_dataclass")
+    (synopsis "Declarative command-line interfaces using argparse and dataclasses")
+    (description
+     "This package provides declarative command-line interfaces using argparse
+and dataclasses.")
+    (license license:expat)))
+
 (define-public python-argparse-manpage
   (package
     (name "python-argparse-manpage")
