@@ -433,23 +433,24 @@ historical data.")
 (define-public python-carbon
   (package
     (name "python-carbon")
-    (version "1.1.8")
+    (version "1.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "carbon" version))
        (sha256
         (base32
-         "1wb91fipk1niciffq5xwqbh8g7rl7ghdam4m97cjbig12i5qr4cm"))))
-    (build-system python-build-system)
+         "0p6yjxif5ly5wkllnaw41w2zy9y0nffgfk91v861fn6c26lmnfy1"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          ;; Don't install to /opt
          (add-after 'unpack 'do-not-install-to-/opt
            (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1") #t)))))
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs
-     (list python-cachetools python-txamqp python-urllib3 python-whisper))
+     (list python-cachetools python-twisted python-txamqp python-urllib3))
     (home-page "https://graphiteapp.org/")
     (synopsis "Backend data caching and persistence daemon for Graphite")
     (description "Carbon is a backend data caching and persistence daemon for
