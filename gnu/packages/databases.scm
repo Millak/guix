@@ -4850,7 +4850,7 @@ with integrated support for finding required rows quickly.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "18.1.0")
+    (version "19.0.1")
     (source
      (origin
        (method git-fetch)
@@ -4860,7 +4860,7 @@ with integrated support for finding required rows quickly.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "02gg3cm83ilp9z7yp2l4mr164zrym90dw4sxyd98k9s2fvdvyxf0"))))
+         "0l7nc12ykh6b9pcf20mvs4xsk9cyz7a45sdfs08rhilrhd8g10dn"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4889,6 +4889,9 @@ with integrated support for finding required rows quickly.")
               ;; is unfortunate because jemalloc increases performance:
               ;; https://arrow.apache.org/blog/2018/07/20/jemalloc/.
               "-DARROW_JEMALLOC=OFF"
+              ;; System mimalloc is not suported and must be bundled:
+              ;; https://github.com/apache/arrow/issues/42211.
+              "-DARROW_MIMALLOC=OFF"
 
               ;; The CMake option ARROW_DEPENDENCY_SOURCE is a global
               ;; option that instructs the build system how to resolve
