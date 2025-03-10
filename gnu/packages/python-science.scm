@@ -1163,6 +1163,40 @@ its executor plugins.")
 between Snakemake and its report plugins.")
     (license license:expat)))
 
+(define-public python-snakemake-interface-software-deployment-plugins
+  (package
+    (name "python-snakemake-interface-software-deployment-plugins")
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://github.com/snakemake/"
+                   "snakemake-interface-software-deployment-plugins"))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b4kkznfyfck9f92pkimhyl13ljisfn67rsilm1a5inq2ywpmxba"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python3" "tests/tests.py")))))))
+    (propagated-inputs (list python-argparse-dataclass
+                             python-snakemake-interface-common))
+    (native-inputs (list python-poetry-core))
+    (home-page (string-append "https://github.com/snakemake/"
+                "snakemake-interface-software-deployment-plugins"))
+    (synopsis "Interface for Snakemake software deployment plugins")
+    (description
+     "This package provides a stable interface for interactions between Snakemake and
+its software deployment plugins.")
+    (license license:expat)))
+
 (define-public python-tdda
   (package
     (name "python-tdda")
