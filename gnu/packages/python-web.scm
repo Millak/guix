@@ -7486,72 +7486,75 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
     (outputs '("out" "doc"))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-doc
-           (lambda _
-             (invoke "make" "-C" "docs" "PAPER=a4" "html" "info")
-             (delete-file "docs/build/texinfo/Makefile")
-             (delete-file "docs/build/texinfo/Gunicorn.texi")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 (begin
-                   (invoke "pytest" "-vv"
-                           ;; Disable the geventlet tests because eventlet uses
-                           ;; dnspython, which does not work in the build
-                           ;; container due to lack of /etc/resolv.conf, etc.
-                           "--ignore=tests/workers/test_geventlet.py"))
-                 (format #t "test suite not run~%"))))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((doc (string-append (assoc-ref outputs "doc")
-                                        "/share/doc/" ,name "-" ,version))
-                    (html (string-append doc "/html"))
-                    (info (string-append doc "/info"))
-                    (examples (string-append doc "/examples")))
-               (mkdir-p html)
-               (mkdir-p info)
-               (mkdir-p examples)
-               (copy-recursively "docs/build/html" html)
-               (copy-recursively "docs/build/texinfo" info)
-               (copy-recursively "examples" examples)
-               (for-each (lambda (file)
-                           (copy-file file (string-append doc "/" file)))
-                         '("README.rst" "NOTICE" "LICENSE" "THANKS")))))
-         ;; XXX: The wrap phase includes native inputs on PYTHONPATH, (see
-         ;; <https://bugs.gnu.org/25235>), leading to an inflated closure
-         ;; size.  Override it to only add the essential entries.
-         (replace 'wrap
-           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (python (assoc-ref (or native-inputs inputs) "python"))
-                    (sitedir (string-append "/lib/python"
-                                            (python-version python)
-                                            "/site-packages")))
-               (wrap-program (string-append out "/bin/gunicorn")
-                 `("PYTHONPATH" ":" prefix
-                   ,(map (lambda (output)
-                           (string-append output sitedir))
-                         (list python out))))))))))
+     `(#:test-flags
+       ;; Disable the geventlet tests because eventlet uses dnspython, which
+       ;; does not work in the build container due to lack of /etc/resolv.conf
+       '("--ignore=tests/workers/test_geventlet.py")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'build 'build-doc
+                    (lambda _
+                      (invoke "make"
+                              "-C"
+                              "docs"
+                              "PAPER=a4"
+                              "html"
+                              "info")
+                      (delete-file "docs/build/texinfo/Makefile")
+                      (delete-file "docs/build/texinfo/Gunicorn.texi")))
+                  (add-after 'install 'install-doc
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((doc (string-append (assoc-ref outputs "doc")
+                                                 "/share/doc/"
+                                                 ,name "-"
+                                                 ,version))
+                             (html (string-append doc "/html"))
+                             (info (string-append doc "/info"))
+                             (examples (string-append doc "/examples")))
+                        (mkdir-p html)
+                        (mkdir-p info)
+                        (mkdir-p examples)
+                        (copy-recursively "docs/build/html" html)
+                        (copy-recursively "docs/build/texinfo" info)
+                        (copy-recursively "examples" examples)
+                        (for-each (lambda (file)
+                                    (copy-file file
+                                               (string-append doc "/" file)))
+                                  '("README.rst" "NOTICE" "LICENSE" "THANKS")))))
+                  ;; XXX: The wrap phase includes native inputs on PYTHONPATH, (see
+                  ;; <https://bugs.gnu.org/25235>), leading to an inflated closure
+                  ;; size.  Override it to only add the essential entries.
+                  (replace 'wrap
+                    (lambda* (#:key native-inputs inputs outputs
+                              #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (python (assoc-ref (or native-inputs inputs)
+                                                "python"))
+                             (sitedir (string-append "/lib/python"
+                                                     (python-version python)
+                                                     "/site-packages")))
+                        (wrap-program (string-append out "/bin/gunicorn")
+                          `("PYTHONPATH" ":" prefix
+                            ,(map (lambda (output)
+                                    (string-append output sitedir))
+                                  (list python out))))))))))
     (inputs (list bash-minimal))
-    (native-inputs
-     (list binutils ;; for ctypes.util.find_library()
-           python-aiohttp
-           python-gevent
-           python-pytest
-           python-pytest-cov
-           python-sphinx
-           texinfo))
+    (native-inputs (list binutils ;for ctypes.util.find_library()
+                         python-aiohttp
+                         python-gevent
+                         python-pytest
+                         python-pytest-cov
+                         python-sphinx
+                         texinfo))
     (propagated-inputs (list python-packaging python-setuptools python-wheel))
     (home-page "https://gunicorn.org/")
     (synopsis "Python WSGI HTTP Server for UNIX")
-    (description "Gunicorn ‘Green Unicorn’ is a Python WSGI HTTP
+    (description
+     "Gunicorn ‘Green Unicorn’ is a Python WSGI HTTP
 Server for UNIX.  It’s a pre-fork worker model ported from Ruby’s
 Unicorn project.  The Gunicorn server is broadly compatible with
 various web frameworks, simply implemented, light on server resources,
 and fairly speedy.")
-  (license license:expat)))
+    (license license:expat)))
 
 (define-public gunicorn-next
   (package
