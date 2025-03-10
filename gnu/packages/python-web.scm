@@ -2486,9 +2486,9 @@ and that could be anything you want.")
               (string-join
                (list "not test_remotesettingschanged_repr"
                      ;; This test exceededs the Hypothesis deadline.
-                     ,@(if (target-riscv64?)
-                           `("test_changing_max_frame_size")
-                           '())
+                     #$@(if (target-riscv64?)
+                            #~("test_changing_max_frame_size")
+                            #~())
                      "test_streamreset_repr"
                      "test_settingsacknowledged_repr"
                      "test_connectionterminated_repr[None-None]"
