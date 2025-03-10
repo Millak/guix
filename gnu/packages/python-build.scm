@@ -344,18 +344,6 @@ facilitate packaging Python projects, where packaging includes:
                    license:asl2.0       ;packaging is dual ASL2/BSD-2
                    license:bsd-2))))
 
-;; This is the last version with use_2to3 support.
-(define-public python-setuptools-57
-  (package
-    (inherit python-setuptools)
-    (version "57.5.0")
-    (source (origin
-              (inherit (package-source python-setuptools))
-              (uri (pypi-uri "setuptools" version))
-              (sha256
-               (base32
-                "091sp8lrin7qllrhhx7y0iiv5gdb1d3l8a1ip5knk77ma1njdlyr"))))))
-
 (define-public python-wheel
   (package
     (name "python-wheel")
