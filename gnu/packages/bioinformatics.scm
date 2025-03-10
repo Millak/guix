@@ -12564,8 +12564,8 @@ sankey, alluvial and sankey bump plots in @code{ggplot2}.")
       (license license:expat))))
 
 (define-public r-gutils
-  (let ((commit "10e36c7b580aacb2d952140a3fdd82418aaddea6")
-        (revision "1"))
+  (let ((commit "fc24db6f73898c3c25e400e7d627e3e5229003f2")
+        (revision "2"))
     (package
       (name "r-gutils")
       (version (git-version "0.2.0" revision commit))
@@ -12577,7 +12577,7 @@ sankey, alluvial and sankey bump plots in @code{ggplot2}.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1wq9kd1afzy7ii510r20c4n9fkykj6p15q5c85ws27h1q5w4ghxy"))))
+                  "11ijzy1zyjv2wgxrfcaan7g82jl27skd41hw4s2xh9lijkn8ilwh"))))
       (properties `((upstream-name . "gUtils")))
       (build-system r-build-system)
       (propagated-inputs
