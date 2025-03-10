@@ -16,7 +16,7 @@
 ;;; Copyright © 2016, 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016, 2017, 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2016-2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016-2022, 2024–2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Clément Lassieur <clement@lassieur.org>
@@ -3526,6 +3526,29 @@ Distributed @acronym{Source Control Management, SCM} system.")
     (synopsis "Alarm clock for Emacs")
     (description "Alarm Clock provides an alarm clock for Emacs.")
     (license license:gpl3+)))
+
+(define-public emacs-world-time-mode
+  (let ((commit "ce7a3b45c87eb24cfe61eee453175d64f741d7cc")
+        (revision "0"))
+    (package
+      (name "emacs-world-time-mode")
+      (version (git-version "0.0.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/nicferrier/emacs-world-time-mode")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0i00xm4rynbp2v3gm6h46ajgj8h8nxnsjh6db1659b0hbpnah0ji"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/nicferrier/emacs-world-time-mode")
+      (synopsis "Show whole days of world time")
+      (description "@code{emacs-world-time-mode} shows time zones in your
+@code{display-time-world-list} formatted as a list of whole days with the
+differing times.")
+      (license license:gpl3+))))
 
 (define-public emacs-anaphora
   (package
