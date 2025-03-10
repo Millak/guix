@@ -228,7 +228,8 @@
       ;; <https://bugs.gnu.org/40527>.
       #:tests? (or (%current-target-system)
                    (not (string=? "i686-linux" (%current-system))))
-      #:parallel-tests? (not (target-arm32?))
+      #:parallel-tests? (not (or (target-arm32?)
+                                 (target-riscv64?)))
       #:configure-flags
       #~(let ((gcc (search-input-file %build-inputs "/bin/gcc"))
               (openbios (search-input-file %build-inputs
@@ -362,6 +363,11 @@
               ((target-riscv64?)
                #~((add-after 'unpack 'disable-some-tests
                     (lambda _
+                      ;; Extend the test timeout for this test:
+                      (substitute* "tests/unit/meson.build"
+                        (("test-crypto-tlssession': 90")
+                         "test-crypto-tlssession': 180"))
+
                       ;; qemu.qmp.QMPConnectError:
                       ;; Unexpected empty reply from server
                       (delete-file "tests/qemu-iotests/040")
