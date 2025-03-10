@@ -31,6 +31,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
@@ -53,6 +54,8 @@
   #:use-module (gnu packages m4)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages swig)
@@ -566,3 +569,33 @@ Additionally your user must be member of the @code{plugdev} group.")
      "UHDM is a complete modeling of the IEEE SystemVerilog Object Model with
 VPI Interface, Elaborator, Serialization, Visitor and Listener.")
     (license license:asl2.0)))
+
+(define-public python-vsg
+  (package
+    (name "python-vsg")
+    (version "3.30.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jeremiah-c-leary/vhdl-style-guide/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kgknd491s4ldmcw9s5j38frcfs55kxfifl52svy5q0vgg1qixq1"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools
+                         python-wheel
+                         ;; tests
+                         python-coverage
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-html
+                         python-pytest-xdist))
+    (propagated-inputs (list python-pyyaml))
+    (home-page "https://github.com/jeremiah-c-leary/vhdl-style-guide/")
+    (synopsis "Coding style enforcement for VHDL")
+    (description
+     "VSG lets you define a VHDL coding style and provides a command-line tool
+to enforce it.")
+    (license license:gpl3+)))
