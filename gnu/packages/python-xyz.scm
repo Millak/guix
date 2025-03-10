@@ -29988,6 +29988,29 @@ validation testing and application logic.")
              (substitute* "numba/tests/test_import.py"
                (("def test_no_accidental_warnings")
                 "def disabled_test_no_accidental_warnings"))
+             ;; These tests fail due to result rounding depending on CPU.
+             (substitute* "numba/tests/test_looplifting.py"
+               (("def test_lift_objectmode_issue_4223")
+                "def disabled_test_lift_objectmode_issue_4223"))
+             (substitute* "numba/tests/test_extending.py"
+               (("def test_series_ufunc")
+                "def disabled_test_series_ufunc")
+               (("def test_index_ufunc")
+                "def disabled_test_index_ufunc"))
+             (substitute* "numba/tests/test_array_exprs.py"
+               (("def test_explicit_output")
+                "def disabled_test_explicit_output"))
+             (substitute* "numba/tests/test_target_extension.py"
+               (("def test_basic_offload")
+                "def disabled_test_basic_offload"))
+             (substitute* "numba/tests/test_np_functions.py"
+               (("def test_windowing")
+                "def disabled_test_windowing"))
+             ;; This fails nondeterministically, possibly depending on CPU.
+             ;; https://github.com/numba/numba/issues/8282.
+             (substitute* "numba/tests/test_function_type.py"
+               (("def test_wrapper_address_protocol_libm")
+                "def disabled_test_wrapper_address_protocol_libm"))
              ;; Some tests timeout or crash on some architectures.
              ,@(cond
                 ((target-aarch64?)
