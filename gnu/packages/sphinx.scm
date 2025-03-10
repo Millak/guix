@@ -270,25 +270,6 @@ sources.")
            (texlive-updmap.cfg
             (list texlive-cm-super texlive-tex-gyre))))))
 
-;; Some packages do not support Sphinx 5 yet.  Remove when unused.
-(define-public python-sphinx-4
-  (package
-    (inherit python-sphinx-5)
-    (version "4.5.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Sphinx" version))
-              (sha256
-               (base32
-                "1rp28jryxwy24y8vpacclqihbizyi6b1s6id86pibvm46ybcmy3v"))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-sphinx)
-       (replace "python-docutils" python-docutils-0.15)))
-    (native-inputs
-     (modify-inputs (package-native-inputs python-sphinx)
-       (delete python-flit-core)
-       (append python-setuptools python-wheel)))))
-
 (define-public python-sphinxcontrib-apidoc
   (package
     (name "python-sphinxcontrib-apidoc")
