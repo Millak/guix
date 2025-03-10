@@ -1130,6 +1130,39 @@ for Snakemake and its plugins.")
 its executor plugins.")
     (license license:expat)))
 
+(define-public python-snakemake-interface-report-plugins
+  (package
+    (name "python-snakemake-interface-report-plugins")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://github.com/snakemake/"
+                                 "snakemake-interface-report-plugins"))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i6z9vk6nv2m3jsym0glrb7h9isdlfza2yq14vbqcslybdi9ykfa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;circular dependency on snakemake
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python3" "tests/tests.py")))))))
+    (propagated-inputs (list python-snakemake-interface-common python-pytest))
+    (native-inputs (list python-poetry-core))
+    (home-page (string-append "https://github.com/snakemake/"
+                              "python-snakemake-interface-report-plugins"))
+    (synopsis "Interface for Snakemake report plugins")
+    (description "This package provides a stable interface for interactions
+between Snakemake and its report plugins.")
+    (license license:expat)))
+
 (define-public python-tdda
   (package
     (name "python-tdda")
