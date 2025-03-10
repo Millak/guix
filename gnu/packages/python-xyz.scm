@@ -663,6 +663,29 @@ processes, in parallel, in the console, with an interactive TUI.")
 edit distance algorithm for Python in Cython for high performance.")
     (license license:bsd-3)))
 
+(define-public python-shxparser
+  (package
+    (name "python-shxparser")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "shxparser" version))
+       (sha256
+        (base32 "0w7j5ywskandp91v74966pw1pvq9d5zrx5gkjcn84xi8wsyf8hc5"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-svgelements
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/tatarize/shxparser")
+    (synopsis "SHX line font parser")
+    (description
+     "This is a pure python parser for SHX Hershey font files that are an
+AutoCad format which can encode single line fonts.  This format is used for
+many CNC and laser operations.")
+    (license license:expat)))
+
 (define-public python-takethetime
   (package
     (name "python-takethetime")
