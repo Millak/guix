@@ -2263,7 +2263,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
       #:configure-flags #~(list "--enable-openmp" "--enable-cider"
                                 "--enable-xspice" "--with-ngshared")))
     (native-inputs (list bison flex))
-    (inputs (list libxaw openmpi))
+    (inputs (list openmpi))
     (home-page "https://ngspice.sourceforge.net/")
     (synopsis "Mixed-level/mixed-signal circuit simulator")
     (description
@@ -2282,19 +2282,16 @@ an embedded event driven algorithm.")
     (inherit libngspice)
     (name "ngspice")
     (arguments
-     (substitute-keyword-arguments
-       (strip-keyword-arguments
-         (list #:tests?)
-         (package-arguments libngspice))
+     (substitute-keyword-arguments (package-arguments libngspice)
+       ;; Tests require a X server running, so we keep them disabled
        ((#:configure-flags flags)
-        #~(cons "--with-readline=yes"
-                (delete "--with-ngshared"
-                        #$flags)))
+        #~(cons*  "--enable-rpath" "--with-x" "--with-readline=yes"
+                 (delete "--with-ngshared" #$flags)))
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'delete-scripts)))))
     (native-inputs (list perl))
-    (inputs (list libngspice readline))))
+    (inputs (list libngspice readline libxaw libx11))))
 
 (define trilinos-serial-xyce
   ;; Note: This is a Trilinos containing only the packages Xyce needs, so we
