@@ -1066,6 +1066,35 @@ utilizing the power of scikit-learn, e.g., for pre-processing or doing
 cross-validation.")
       (license license:gpl3+))))
 
+(define-public python-snakemake-interface-common
+  (package
+    (name "python-snakemake-interface-common")
+    (version "1.17.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/snakemake/snakemake-interface-common")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19fyqs048zdvrmq5sdayzch850kwsyv2x6xn57cjjzcm4zpjrh9w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python3" "tests/tests.py")))))))
+    (native-inputs (list python-poetry-core python-pytest))
+    (propagated-inputs (list python-argparse-dataclass python-configargparse))
+    (home-page "https://github.com/snakemake/snakemake-interface-common")
+    (synopsis "Common functions and classes for Snakemake and its plugins")
+    (description "This package provides common functions and classes
+for Snakemake and its plugins.")
+    (license license:expat)))
+
 (define-public python-tdda
   (package
     (name "python-tdda")
