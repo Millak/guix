@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2022, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -376,7 +376,7 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
            (normal-tty "tty6")
 
            ;; The usual services.
-           (service syslog-service-type)
+           (service shepherd-system-log-service-type)
 
            ;; Use the Avahi daemon to discover substitute servers on the local
            ;; network.  It can be faster than fetching from remote servers.
