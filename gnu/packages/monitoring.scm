@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -838,6 +839,25 @@ snapshots, without displaying anything.  When put into the foreground again,
 display resumes.
 @end itemize")
     (license license:bsd-2)))
+
+(define-public python-rrdtool
+  (package
+    (name "python-rrdtool")
+    (version "0.1.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rrdtool" version))
+       (sha256
+        (base32 "0l8lbarzfwbwnq9jm9gv4mmrxgjlb9hbz27sa8b703qa7s5zy2jz"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests in pypi archive
+    (inputs (list rrdtool))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/commx/python-rrdtool")
+    (synopsis "Python bindings for rrdtool")
+    (description "This package provides Python bindings for rrdtool.")
+    (license license:lgpl2.1)))
 
 (define-public python-statsd
   (package
