@@ -13312,7 +13312,7 @@ def get_requires_for_build_sdist(config_settings=None):
            python-pytest-enabler
            python-pytest-flake8
            python-pytest-mypy
-           python-setuptools-57
+           python-setuptools
            python-setuptools-scm))
     (propagated-inputs
      (list python-zipp))
