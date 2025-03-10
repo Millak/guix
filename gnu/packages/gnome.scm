@@ -8558,6 +8558,7 @@ users.")
                                         "NetworkManager/NetworkManager"))
                     (commit version)))
               (file-name (git-file-name name version))
+              (patches (search-patches "network-manager-plugin-path.patch"))
               (sha256
                (base32
                 "0fx3yvqrwc9fqphhwvchxls0lgizlz7bxww3riijlvx3pkypqbyr"))))
