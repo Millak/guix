@@ -69,6 +69,7 @@
   #:use-module (gnu packages prometheus)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rrdtool)
@@ -461,45 +462,69 @@ and persisting them to disk using the Whisper time-series library.")
     (license license:asl2.0)))
 
 (define-public graphite-web
-  (package
-    (name "graphite-web")
-    (version "1.1.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "graphite-web" version))
-       (sha256
-        (base32
-         "0nnk3kwn0b6bq9xnmv9bac6hpcbdgpgwf283c1ck5nm80panh61z"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f               ;XXX: not in PyPI release & requires database
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               ;; Allow newer versions of django-tagging.
-               (("django-tagging==") "django-tagging>=")
-               ;; And Django.
-               (("Django>=1\\.8,<3\\.1") "Django>=1.8,<4"))))
-         ;; Don't install to /opt
-         (add-after 'unpack 'do-not-install-to-/opt
-           (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1") #t)))))
-    (propagated-inputs
-     (list python-cairocffi
-           python-django-3.2
-           python-django-tagging
-           python-pyparsing
-           python-pytz
-           python-six
-           python-urllib3))
-    (home-page "https://graphiteapp.org/")
-    (synopsis "Scalable realtime graphing system")
-    (description "Graphite is a scalable real-time graphing system that does
+  (let ((commit "49c28e2015d605ad9ec93524f7076dd924a4731a")
+        (revision "2"))
+    (package
+      (name "graphite-web")
+      (version (git-version "1.1.10" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/graphite-project/graphite-web")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bcc6jh7gyp8f54dzy4zza1z46gk3530r952pi86irf834z106sg"))))
+      (build-system pyproject-build-system)
+      (arguments
+       `(#:tests? #f               ;XXX: Requires database, unable to run now
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'relax-requirements
+             (lambda _
+               (substitute* "setup.py"
+                 ;; Allow newer versions of django-tagging.
+                 (("django-tagging==") "django-tagging>=")
+                 ;; And Django.
+                 (("Django>=3\\.2,<4") "Django>=4,<5"))))
+           ;; Don't install to /opt
+           (add-after 'unpack 'do-not-install-to-/opt
+             (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1")))
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (mkdir-p "storage/log/webapp")
+                 (with-directory-excursion "webapp"
+                   (invoke "./manage.py" "test" "--pythonpath=." "tests"
+                           "-k" (string-join
+                                 (list
+                                  "not test_dashboard_save_temporary_xss_key"
+                                  "test_dashboard_save_temporary_xss_name")
+                                 " and not ")))))))))
+      (native-inputs
+       (list python-carbon
+             python-mock
+             python-pytest
+             python-rrdtool
+             python-setuptools
+             python-tzdata
+             python-wheel
+             python-whisper))
+      (propagated-inputs
+       (list python-cairocffi
+             python-django-4.2
+             python-django-tagging
+             python-pyparsing
+             python-pytz
+             python-six
+             python-urllib3))
+      (home-page "https://graphiteapp.org/")
+      (synopsis "Scalable realtime graphing system")
+      (description "Graphite is a scalable real-time graphing system that does
 two things: store numeric time-series data, and render graphs of this data on
 demand.")
-    (license license:asl2.0)))
+      (license license:asl2.0))))
 
 (define-public python-prometheus-client
   (package
