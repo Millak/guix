@@ -785,6 +785,8 @@ directly access various slots (e.g. X, obs, var), or convert the data into
           (base32 "10nw5v69gn4pxb4g5gd8nh9r1ywd6yczapl3dpdfms0434wcmkxm"))))
       (properties `((upstream-name . "anpan")))
       (build-system r-build-system)
+      ;; Tests require a configured r-cmdstanr.
+      (arguments (list #:tests? #false))
       (propagated-inputs (list r-ape
                                r-cmdstanr
                                r-data-table
