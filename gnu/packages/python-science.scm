@@ -1197,6 +1197,41 @@ between Snakemake and its report plugins.")
 its software deployment plugins.")
     (license license:expat)))
 
+(define-public python-snakemake-interface-storage-plugins
+  (package
+    (name "python-snakemake-interface-storage-plugins")
+    (version "3.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://github.com/snakemake/"
+                                 "snakemake-interface-storage-plugins"))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05n5xgwagb01nyzi8xfvp0nvdfl24lxidgksm7k86p68n1rijd5a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;circular dependency on snakemake
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python3" "tests/tests.py")))))))
+    (propagated-inputs (list python-reretry python-snakemake-interface-common
+                             python-throttler python-wrapt))
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page (string-append "https://github.com/snakemake/"
+                              "snakemake-interface-storage-plugins"))
+    (synopsis "Interface for Snakemake storage plugins")
+    (description
+     "This package provides a stable interface for interactions between
+Snakemake and its storage plugins.")
+    (license license:expat)))
+
 (define-public python-tdda
   (package
     (name "python-tdda")
