@@ -1731,7 +1731,7 @@ decode and default on encode.
 (define-public python-cfn-lint
   (package
     (name "python-cfn-lint")
-    (version "1.22.1")
+    (version "1.28.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1740,7 +1740,7 @@ decode and default on encode.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zz121r9yv1irwdbk07s7958fh43h3r3q39qcj0gv4kpgb0vdf32"))))
+                "0n1v05516s0zy64v1a7f7pj5h9lscvbkkwnlgmys7g8lydlgf0v4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
