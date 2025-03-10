@@ -27,6 +27,7 @@
 ;;; Copyright © 2024 Marco Baggio <marco.baggio@mdc-berlin.de>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Rick Huijzer <ikbenrickhuyzer@gmail.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +68,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -82,6 +84,7 @@
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -4523,6 +4526,125 @@ compagnies.")
      "This package provides a Python library for working with NeuroML descriptions of
 neuronal models")
     (license license:bsd-3)))
+
+(define-public snakemake
+  (package
+    (name "snakemake")
+    (version "8.29.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "snakemake" version))
+       (sha256
+        (base32 "1ilpmrjmnc529p4gw2x23ik1d8b5pm6k1dhq08dknvfjsf3vgyjr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Unclear why these tests fail.
+         "--ignore=tests/test_report_href/test_script.py"
+         "--ignore=tests/test_script_py/scripts/test_explicit_import.py"
+         "--ignore=tests/test_output_index.py"
+         ;; We don't care about testing old python@3.7 on Guix.
+         "--ignore=tests/test_conda_python_3_7_script/test_script.py"
+         ;; Those require additional snakemake plugins.
+         "--ignore=tests/test_api.py"
+         "--ignore=tests/test_executor_test_suite.py"
+         ;; We don't care about lints.
+         "--ignore=tests/test_linting.py"
+         ;; These tests attempt to change S3 buckets on AWS and fail
+         ;; because there are no AWS credentials.
+         "--ignore=tests/test_tibanna"
+         ;; It's a similar story with this test, which requires access
+         ;; to the Google Storage service.
+         "--ignore=tests/test_google_lifesciences")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-assets-download
+            (lambda _
+              (substitute* "setup.py"
+                (("^from assets import Assets") "")
+                (("^Assets\\.deploy\\(\\)") ""))))
+          ;; For cluster execution Snakemake will call Python.  Since there is
+          ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
+          ;; fix this by calling the snakemake wrapper instead.
+          (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
+            (lambda _
+              (substitute* "snakemake/executors/__init__.py"
+                (("self\\.get_python_executable\\(\\),")
+                 "")
+                (("\"-m snakemake\"")
+                 (string-append "\"" #$output
+                                "/bin/snakemake" "\""))
+                ;; The snakemake command produced by format_job_exec contains
+                ;; references to /gnu/store.  Prior to patching above that's
+                ;; just a reference to Python; after patching it's a reference
+                ;; to the snakemake executable.
+                ;;
+                ;; In Tibanna execution mode Snakemake arranges for a certain
+                ;; Docker image to be deployed to AWS.  It then passes its own
+                ;; command line to Tibanna.  This is misguided because it only
+                ;; ever works if the local Snakemake command was run inside
+                ;; the same Docker image.  In the case of using Guix this is
+                ;; never correct, so we need to replace the store reference.
+                (("tibanna_args.command = command")
+                 (string-append
+                  "tibanna_args.command = command.replace('"
+                  #$output "/bin/snakemake', 'python3 -m snakemake')")))))
+          (add-after 'unpack 'patch-version
+            (lambda _
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(\\)")
+                 (format #f "version=~s" #$version)))
+              (substitute* '("snakemake/_version.py"
+                             "versioneer.py")
+                (("0\\+unknown") #$version))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests?  #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")))))))
+    (inputs
+     (list python-appdirs
+           python-conda-inject
+           python-configargparse
+           python-connection-pool
+           python-dpath
+           python-gitpython
+           python-humanfriendly
+           python-immutables
+           python-jinja2
+           python-jsonschema
+           python-nbformat
+           python-packaging
+           python-psutil
+           python-pulp
+           python-pyyaml
+           python-requests
+           python-reretry
+           python-smart-open
+           python-snakemake-interface-common
+           python-snakemake-interface-executor-plugins
+           python-snakemake-interface-report-plugins
+           python-snakemake-interface-storage-plugins
+           python-tabulate
+           python-throttler
+           python-wrapt
+           python-yte))
+    (native-inputs
+     (list python-docutils
+           python-numpy
+           python-pandas
+           python-setuptools
+           python-tomli
+           python-wheel))
+    (home-page "https://snakemake.readthedocs.io")
+    (synopsis "Python-based execution environment for make-like workflows")
+    (description
+     "Snakemake aims to reduce the complexity of creating workflows by
+providing a clean and modern domain specific specification language (DSL) in
+Python style, together with a fast and comfortable execution environment.")
+    (license license:expat)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
