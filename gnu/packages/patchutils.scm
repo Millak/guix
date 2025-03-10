@@ -366,7 +366,7 @@ you to figure out what is going on in that merge you keep avoiding.")
 (define-public patchwork
   (package
     (name "patchwork")
-    (version "3.1.1")
+    (version "3.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -375,7 +375,7 @@ you to figure out what is going on in that merge you keep avoiding.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0is9d4gf93jcbyshyj2k3kjyrjnvimrm6bai6dbcx630md222j5w"))))
+                "04ikawdyhjwspxvhazbp5f5vym672y0jcw8rd2m75h9ipcpnyxim"))))
     (build-system python-build-system)
     (arguments
      `(;; TODO: Tests require a running database
@@ -499,7 +499,7 @@ if __name__ == \"__main__\":
     (inputs
      (list python-wrapper))
     (propagated-inputs
-     (list python-django-3.2
+     (list python-django
            ;; TODO: Make this configurable
            python-psycopg2
            python-mysqlclient
