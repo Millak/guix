@@ -4858,6 +4858,28 @@ to process this file format.")
 \"tables\" of grobs.")
     (license license:gpl2+)))
 
+(define-public r-gtools
+  (package
+    (name "r-gtools")
+    (version "3.9.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gtools" version))
+       (sha256
+        (base32
+         "0jqpvygxgr4m1rgaj5rzd048fwxvpcr4n1vx8bfabc9d2p0vdsfy"))))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/gtools")
+    (synopsis "Various R programming tools")
+    (description
+     "This package contains a collection of various functions to assist in R
+programming, such as tools to assist in developing, updating, and maintaining
+R and R packages, calculating the logit and inverse logit transformations,
+tests for whether a value is missing, empty or contains only @code{NA} and
+@code{NULL} values, and many more.")
+    (license license:gpl2)))
+
 (define-public r-guix-install
   (package
     (name "r-guix-install")
