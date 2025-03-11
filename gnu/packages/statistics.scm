@@ -1356,32 +1356,6 @@ main goal of this library is giving to specific applications all the
 functionalities needed to treat uncertainties in studies.")
     (license license:lgpl3+)))
 
-(define-public r-multitaper
-  (package
-    (name "r-multitaper")
-    (version "1.0-17")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "multitaper" version))
-       (sha256
-        (base32
-         "1wqa2whcjxwjqg9z46i48dvrga17fdj63r05kg993r1fpriclc1l"))))
-    (build-system r-build-system)
-    (native-inputs
-     (list gfortran))
-    (home-page "https://github.com/wesleyburr/multitaper/")
-    (synopsis "Multitaper spectral analysis tools")
-    (description
-     "This package implements multitaper spectral estimation
-techniques using prolate spheroidal sequences (Slepians) and sine
-tapers for time series analysis.  It includes an adaptive weighted
-multitaper spectral estimate, a coherence estimate, Thomson's Harmonic
-F-test, and complex demodulation.  The Slepians sequences are
-generated efficiently using a tridiagonal matrix solution, and
-jackknifed confidence intervals are available for most estimates.")
-    (license license:gpl2+)))
-
 (define-public r-rversions
   (package
     (name "r-rversions")
