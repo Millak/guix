@@ -5138,6 +5138,27 @@ data.")
 can read and write both the metadata and the cell data in a Sheet.")
     (license license:expat)))
 
+(define-public r-pbapply
+  (package
+    (name "r-pbapply")
+    (version "1.7-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pbapply" version))
+       (sha256
+        (base32
+         "04xf1p7c0066cwnxfmzaikbc322bxnw022ziv8kkhzlc6268rvdf"))))
+    (build-system r-build-system)
+    (native-inputs (list r-future))
+    (home-page "https://github.com/psolymos/pbapply")
+    (synopsis "Adding progress bar to apply functions")
+    (description
+     "This lightweight package that adds progress bar to vectorized R
+functions apply.  The implementation can easily be added to functions where
+showing the progress is useful e.g. bootstrap.")
+    (license license:gpl2)))
+
 (define-public r-permute
   (package
    (name "r-permute")
