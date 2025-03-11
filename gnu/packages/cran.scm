@@ -3677,6 +3677,35 @@ distributions, and for computing empirical @dfn{higher criticism} (HC) scores
 and the corresponding decision threshold.")
     (license license:gpl3+)))
 
+(define-public r-fit-models
+  (package
+    (name "r-fit-models")
+    (version "0.64")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fit.models" version))
+       (sha256
+        (base32
+         "1nk4x2q8cv79zcls61saf627ac0fci6jcrd6lmzk61asm2zhc27p"))))
+    (properties `((upstream-name . "fit.models")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-lattice))
+    (native-inputs (list r-mass))
+    (home-page "https://cran.r-project.org/web/packages/fit.models")
+    (synopsis "Compare fitted models")
+    (description
+     "The @code{fit.models} function and its associated methods (coefficients,
+print, summary, plot, etc.) were originally provided in the @code{robust}
+package to compare robustly and classically fitted model objects.  The aim of
+the @code{fit.models} package is to separate this fitted model object
+comparison functionality from the robust package and to extend it to support
+fitting methods (e.g., classical, robust, Bayesian, regularized, etc.) more
+generally.")
+    ;; Any version of the GPL
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-formatr
   (package
     (name "r-formatr")
