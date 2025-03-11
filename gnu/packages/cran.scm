@@ -4512,6 +4512,30 @@ Titterington's method, Moments, Trimmed L-Moments and Distributional Least
 Absolutes.")
     (license license:gpl2+)))
 
+(define-public r-glinternet
+  (package
+    (name "r-glinternet")
+    (version "1.0.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "glinternet" version))
+       (sha256
+        (base32
+         "0aphdscj0s6kqxlkgqkw2d6snrylz6hiis6307pl8ldh7q5cvm33"))))
+    (build-system r-build-system)
+    (home-page "http://web.stanford.edu/~hastie/Papers/glinternet_jcgs.pdf")
+    (synopsis "Learning interactions via hierarchical group-lasso regularization")
+    (description "Group-Lasso INTERaction-NET.  Fits linear
+pairwise-interaction models that satisfy strong hierarchy: if an interaction
+coefficient is estimated to be nonzero, then its two associated main effects
+also have nonzero estimated coefficients.  Accommodates categorical
+variables (factors) with arbitrary numbers of levels, continuous variables,
+and combinations thereof.  Implements the machinery described in the paper
+\"Learning interactions via hierarchical group-lasso regularization\" (JCGS
+2015, Volume 24, Issue 3).  Michael Lim & Trevor Hastie (2015)")
+    (license license:gpl2)))
+
 (define-public r-glmpca
   (package
     (name "r-glmpca")
