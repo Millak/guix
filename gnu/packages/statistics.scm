@@ -2664,32 +2664,6 @@ approximate, exact searches, fixed radius searches, bd and kb trees.")
 mixture models.")
     (license license:gpl2+)))
 
-(define-public r-lars
-  (package
-    (name "r-lars")
-    (version "1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "lars" version))
-       (sha256
-        (base32
-         "17al1g0pvfz9frs2kxicqr8dyp7ciz3x87yx2l4lqd53ls6nm7n6"))))
-    (build-system r-build-system)
-    (inputs
-     (list gfortran))
-    (home-page "https://web.stanford.edu/~hastie/Papers/LARS/")
-    (synopsis "Least angle regression software")
-    (description
-     "Least Angle Regression (\"LAR\") is a model selection algorithm; a
-useful and less greedy version of traditional forward selection methods.  A
-simple modification of the LAR algorithm implements Tibshirani's Lasso; the
-Lasso modification of LARS calculates the entire Lasso path of coefficients
-for a given problem at the cost of a single least squares fit.  Another LARS
-modification efficiently implements epsilon Forward Stagewise linear
-regression.")
-    (license license:gpl2)))
-
 (define-public r-randomforest
   (package
     (name "r-randomforest")
