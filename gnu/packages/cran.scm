@@ -7539,6 +7539,49 @@ an improved interface).  The recommended routine @code{logspline()} uses an
 algorithm from @url{doi:10.1214/aos/1031594728,Stone et al (1997)}.")
     (license license:asl2.0)))
 
+(define-public r-lubridate
+  (package
+    (name "r-lubridate")
+    (version "1.9.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lubridate" version))
+       (sha256
+        (base32
+         "1ha68ri36gcq573j7s71m284166qd1ywran62h9d88nn4gi7wjw6"))))
+    (build-system r-build-system)
+    (properties
+     '((updater-extra-native-inputs . ("tzdata-for-tests"))))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; We need this for one failing test.
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "LOCALTIME"
+                     (search-input-file inputs
+                                        "share/zoneinfo/localtime"))
+             (setenv "TZ" "UTC")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
+    (propagated-inputs
+     (list r-generics r-timechange))
+    (native-inputs
+     (list r-knitr r-testthat r-vctrs tzdata-for-tests))
+    (home-page "https://cran.r-project.org/web/packages/lubridate/")
+    (synopsis "Make dealing with dates a little easier")
+    (description
+     "This package provides functions to work with date-times and time-spans:
+fast and user friendly parsing of date-time data, extraction and updating of
+components of a date-time (years, months, days, hours, minutes, and seconds),
+algebraic manipulation on date-time and time-span objects.  The
+@code{lubridate} package has a consistent and memorable syntax that makes
+working with dates easy and fun.")
+    (license license:gpl2)))
+
 (define-public r-ggpmisc
   (package
     (name "r-ggpmisc")
