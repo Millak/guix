@@ -2155,6 +2155,37 @@ functions are included.")
 copy-pasting vectors and tables to text painless.")
     (license license:expat)))
 
+(define-public r-datasaurus
+  (package
+    (name "r-datasaurus")
+    (version "0.1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "datasauRus" version))
+       (sha256
+        (base32
+         "0lkf32py342nswm8k4x1hf9j5pnbx2xipzfaj54z6d58a2nlgii1"))))
+    (properties `((upstream-name . "datasauRus")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/lockedata/datasauRus")
+    (synopsis "Datasets from the Datasaurus Dozen")
+    (description
+     "The Datasaurus Dozen is a set of datasets with the same summary
+statistics.  They retain the same summary statistics despite having radically
+different distributions.  The datasets represent a larger and quirkier object
+lesson that is typically taught via Anscombe's Quartet (available in the
+'datasets' package).  Anscombe's Quartet contains four very different
+distributions with the same summary statistics and as such highlights the
+value of visualisation in understanding data, over and above summary
+statistics.  As well as being an engaging variant on the Quartet, the data is
+generated in a novel way.  The simulated annealing process used to derive
+datasets from the original Datasaurus is detailed in \"Same Stats, Different
+Graphs: Generating Datasets with Varied Appearance and Identical Statistics
+through Simulated Annealing\" @url{doi:10.1145/3025453.3025912}.")
+    (license license:expat)))
+
 (define-public r-datawizard
   (package
     (name "r-datawizard")
