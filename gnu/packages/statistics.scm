@@ -1583,23 +1583,6 @@ disk (or a connection).")
 scaling functions for R.")
     (license license:gpl2+)))
 
-(define-public r-gridbase
-  (package
-    (name "r-gridbase")
-    (version "0.4-7")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "gridBase" version))
-              (sha256
-               (base32
-                "09jzw4rzwf2y5lcz7b16mb68pn0fqigv34ff7lr6w3yi9k91i1xy"))))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/gridBase")
-    (synopsis "Integration of base and grid graphics")
-    (description
-     "This package provides an integration of base and grid graphics for R.")
-    (license license:gpl2+)))
-
 (define-public r-latticeextra
   (package
     (name "r-latticeextra")
