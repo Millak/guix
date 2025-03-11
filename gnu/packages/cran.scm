@@ -3898,6 +3898,30 @@ well as symmetric and asymmetric discriminant projections for visualisation of
 the separation of groupings.")
   (license license:gpl2+)))
 
+(define-public r-futile-logger
+  (package
+    (name "r-futile-logger")
+    (version "1.4.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "futile.logger" version))
+              (sha256
+               (base32
+                "1r3nayk0z9n1svbf8640vw90dal5q07nkn0gv4bnva3pbzb352sy"))))
+    (properties `((upstream-name . "futile.logger")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-futile-options r-lambda-r))
+    (native-inputs (list r-testthat))
+    (home-page "https://cran.r-project.org/web/packages/futile.logger")
+    (synopsis "Logging utility for R")
+    (description
+     "This package provides a simple yet powerful logging utility.  Based
+loosely on log4j, futile.logger takes advantage of R idioms to make logging a
+convenient and easy to use replacement for @code{cat} and @code{print}
+statements.")
+    (license license:lgpl3+)))
+
 (define-public r-fuzzyjoin
   (package
     (name "r-fuzzyjoin")
