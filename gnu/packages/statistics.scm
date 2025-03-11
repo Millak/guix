@@ -4404,39 +4404,6 @@ parameter estimation; L-moment ratio diagram; plot vs.  quantiles of an
 extreme-value distribution.")
     (license license:cpl1.0)))
 
-(define-public r-gld
-  (package
-    (name "r-gld")
-    (version "2.6.7")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "gld" version))
-        (sha256
-          (base32 "0w50nn1cp8mzjxp8403ymqh7f3iz0nk5wa8ms97d02lqp2jgfvyc"))))
-    (properties `((upstream-name . "gld")))
-    (build-system r-build-system)
-    (propagated-inputs (list r-e1071 r-lmom))
-    (home-page
-      "https://cran.r-project.org/package=gld")
-    (synopsis
-      "Estimation and Use of the Generalised (Tukey) Lambda Distribution")
-    (description
-      "The generalised lambda distribution, or Tukey lambda distribution,
-provides a wide variety of shapes with one functional form.  This package
-provides random numbers, quantiles, probabilities, densities and
-density quantiles for four different types of the distribution, the FKML
-(Freimer et al 1988), RS (Ramberg and Schmeiser 1974), GPD (van Staden
-and Loots 2009) and FM5 - see documentation for details.  It provides the
-density function, distribution function, and Quantile-Quantile plots.
-It implements a variety of estimation methods for the distribution,
-including diagnostic plots.  Estimation methods include the starship (all
-4 types), method of L-Moments for the GPD and FKML types, and a number
-of methods for only the FKML type.  These include maximum likelihood,
-maximum product of spacings, Titterington's method, Moments, Trimmed
-L-Moments and Distributional Least Absolutes.")
-    (license license:gpl2+)))
-
 (define-public xlispstat
   (let ((commit "f1bea6053df658ee48612bf1f63c35de99e2c649")
         (revision "0"))
