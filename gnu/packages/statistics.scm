@@ -2798,26 +2798,6 @@ which, one can calculate integrals over truncated regions for multivariate
 normals.")
     (license license:gpl2)))
 
-(define-public r-numderiv
-  (package
-    (name "r-numderiv")
-    (version "2016.8-1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "numDeriv" version))
-       (sha256
-        (base32
-         "0idk02pqkziik932bd8k72d1q775g1is3m4bc861pcxfz6gx3i6q"))))
-    (properties `((upstream-name . "numDeriv")))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/numDeriv")
-    (synopsis "Accurate numerical derivatives")
-    (description
-     "This package provides methods for calculating accurate numerical
-first and second order derivatives.")
-    (license license:gpl2)))
-
 (define-public r-sn
   (package
     (name "r-sn")
