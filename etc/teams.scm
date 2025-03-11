@@ -791,7 +791,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Ekaitz Zarraga"
                        "ekaitz@elenq.tech")
-  bootstrap zig)
+  bootstrap zig electronics)
 
 (define-member (person "Divya Ranjan Pattanaik"
                        "divya@subvertising.org")
