@@ -5256,6 +5256,35 @@ options on a per-package basis.  Options set by a given package only apply to
 that package, other packages are unaffected.")
     (license license:expat)))
 
+(define-public r-pkgmaker
+  (package
+    (name "r-pkgmaker")
+    (version "0.32.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pkgmaker" version))
+       (sha256
+        (base32
+         "0cr95vmsb4gkl917wg4wwq8jihvwasdg18qzhk2cq224lrrh8awp"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat
+           r-codetools
+           r-digest
+           r-registry
+           r-stringr
+           r-withr
+           r-xtable))
+    (native-inputs (list r-testthat))
+    (home-page "https://renozao.github.io/pkgmaker")
+    (synopsis "Package development utilities")
+    (description
+     "This package provides some low-level utilities to use for R package
+development.  It currently provides managers for multiple package specific
+options and registries, vignette, unit test and bibtex related utilities.")
+    (license license:gpl2+)))
+
 (define-public r-plyr
   (package
     (name "r-plyr")
