@@ -5237,6 +5237,25 @@ of blocks (groups of samples).  @code{permute} also allows split-plot designs,
 in which the whole-plots or split-plots or both can be freely exchangeable.")
    (license license:gpl2+)))
 
+(define-public r-pkgconfig
+  (package
+    (name "r-pkgconfig")
+    (version "2.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "pkgconfig" version))
+              (sha256
+               (base32
+                "0l1qph8zyi2sic3k2qcd7vlfl7rzfh1q7z7zvjkl5f7y1x2fy3rk"))))
+    (build-system r-build-system)
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/gaborcsardi/pkgconfig")
+    (synopsis "Private configuration for R packages")
+    (description "This package provides the functionality to set configuration
+options on a per-package basis.  Options set by a given package only apply to
+that package, other packages are unaffected.")
+    (license license:expat)))
+
 (define-public r-plyr
   (package
     (name "r-plyr")
