@@ -9570,6 +9570,26 @@ are computed via non-Monte Carlo methods.")
 metrics for evaluating models.")
     (license license:gpl2+)))
 
+(define-public r-modeltools
+  (package
+    (name "r-modeltools")
+    (version "0.2-23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "modeltools" version))
+       (sha256
+        (base32
+         "1vqh69256h344sbj5affm0kmc77dakrxp6442xfdnfd0y5d8sgkb"))))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/modeltools")
+    (synopsis "Tools and classes for statistical models")
+    (description
+     "This package provides a collection of tools to deal with statistical
+models.  The functionality is experimental and the user interface is likely to
+change in the future.")
+    (license license:gpl2)))
+
 (define-public r-munsell
   (package
     (name "r-munsell")
