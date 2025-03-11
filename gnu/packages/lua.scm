@@ -134,6 +134,11 @@ for configuration, scripting, and rapid prototyping.")
 (define-public lua-5.4
   (package (inherit lua)
            (version "5.4.6")
+           (arguments
+            (substitute-keyword-arguments (package-arguments lua)
+              ((#:make-flags flags)
+               (append (delete "linux" flags)
+                       '("linux-readline")))))
            (source (origin
                      (method url-fetch)
                      (uri (string-append "https://www.lua.org/ftp/lua-"
