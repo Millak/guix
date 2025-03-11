@@ -3807,36 +3807,6 @@ package has a consistent and memorable syntax that makes working with dates
 easy and fun.")
     (license license:gpl2)))
 
-(define-public r-forcats
-  (package
-    (name "r-forcats")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "forcats" version))
-       (sha256
-        (base32
-         "0ki5c84n7xm4iw4aj629l51hm84f6p5wa3bw88d1wbnr15wibfy5"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-cli
-           r-glue
-           r-lifecycle
-           r-magrittr
-           r-rlang
-           r-tibble))
-    (native-inputs
-     (list r-knitr r-testthat))
-    (home-page "https://forcats.tidyverse.org")
-    (synopsis "Tools for working with factors")
-    (description "This package provides helpers for reordering factor
-levels (including moving specified levels to front, ordering by first
-appearance, reversing, and randomly shuffling), and tools for modifying factor
-levels (including collapsing rare levels into other, \"anonymizing\", and
-manually \"recoding\").")
-    (license license:gpl3)))
-
 (define-public r-tgconfig
   (let ((commit "15cf199436ae0b2ac0006b2ca7f0aeeb5c9d4445")
         (revision "1"))
