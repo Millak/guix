@@ -3130,30 +3130,6 @@ models.  The functionality is experimental and the user interface is likely
 to change in the future.")
     (license license:gpl2)))
 
-(define-public r-flexmix
-  (package
-    (name "r-flexmix")
-    (version "2.3-19")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "flexmix" version))
-       (sha256
-        (base32
-         "1s8jpii6ws6hra8w11fn3x84wrdrrlycnrhn5ijy6ibdpc6a9xdd"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-lattice r-modeltools r-nnet))
-    (home-page "https://cran.r-project.org/web/packages/flexmix")
-    (synopsis "Flexible mixture modeling")
-    (description
-     "This package implements a general framework for finite mixtures of
-regression models using the EM algorithm.  FlexMix provides the E-step and
-all data handling, while the M-step can be supplied by the user to easily
-define new models.  Existing drivers implement mixtures of standard linear
-models, generalized linear models and model-based clustering.")
-    (license license:gpl2+)))
-
 (define-public r-mclust
   (package
     (name "r-mclust")
