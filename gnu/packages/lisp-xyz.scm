@@ -31822,6 +31822,55 @@ the abstraction and portability layer as thin as possible.")
 (define-public ecl-usocket
   (sbcl-package->ecl-package sbcl-usocket))
 
+(define-public sbcl-alive-lsp
+ (package
+  (name "sbcl-alive-lsp")
+  (version "0.2.11")
+  (source
+   (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/nobody-famous/alive-lsp")
+          (commit (string-append "v" version))))
+    (file-name (git-file-name "sbcl-alive-lsp" version))
+    (sha256
+     (base32 "1dmgglrg7294vx8qacc5d2hkhfrids1iacihj2l8czrvwc3i19yz"))))
+  (build-system asdf-build-system/sbcl)
+  (inputs
+   (list sbcl-usocket
+         sbcl-cl-json
+         sbcl-bordeaux-threads
+         sbcl-flexi-streams))
+  (home-page "https://github.com/nobody-famous/alive-lsp")
+  (synopsis "Common Lisp Alive LSP")
+  (description "This package provides a Language Server Protocol
+implementation for use with the
+@url{https://github.com/nobody-famous/alive, Alive} Visual Studio Code
+extension.
+
+It can be used in Emacs like this:
+
+@example
+(require 'lsp)
+(defun lsp-lisp-alive-start-ls ()
+ \"Start the alive-lsp.\"
+ (interactive)
+ (when-let (((lsp--port-available \"localhost\" lsp-lisp-alive-port)))
+  (lsp-async-start-process #'ignore #'ignore
+   \"sbcl\"
+   \"--eval\"
+   \"(require :asdf)\"
+   \"--eval\"
+   \"(asdf:load-system :alive-lsp)\"
+   \"--eval\"
+   (format \"(alive/server::start :port %s)\"
+    lsp-lisp-alive-port))))
+@end example")
+  (license license:unlicense)))
+
+(define-public cl-alive-lsp
+ (sbcl-package->cl-source-package sbcl-alive-lsp))
+
 (define-public sbcl-utf8-input-stream
   (let ((commit "d33b57a4d439c2f0877e5513be45eb6940d92c68")
         (revision "0"))
