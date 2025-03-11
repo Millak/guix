@@ -188,10 +188,14 @@
                         (mkdir-p/perms directory
                                        (getpw #$%readymedia-user-account)
                                        #o775)))
-                    (list #$cache-directory
-                          #$log-directory
-                          #$@(map readymedia-media-directory-path
-                                  media-directories)))))))
+                    (list #$@(map readymedia-media-directory-path
+                                  media-directories)))
+          (for-each (lambda (directory)
+                      (unless (file-exists? directory)
+                        (mkdir-p/perms directory
+                                       (getpw #$%readymedia-user-account)
+                                       #o755)))
+                    (list #$cache-directory #$log-directory))))))
 
 (define readymedia-service-type
   (service-type
