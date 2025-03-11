@@ -3552,6 +3552,28 @@ McNemar's Z-statistic with continuity correction, or using CSM test.
 Calculates confidence intervals for the difference in proportion.")
     (license license:gpl2)))
 
+(define-public r-fail
+  (package
+    (name "r-fail")
+    (version "1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fail" version))
+       (sha256
+        (base32
+         "0vfm6kmpmgsamda5p0sl771kbnsscan31l2chzssyw93kwmams7d"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bbmisc r-checkmate))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/mllg/fail")
+    (synopsis "File abstraction interface layer (FAIL)")
+    (description
+     "This package provides a more comfortable interface to work with R data
+or source files in a key-value fashion.")
+    (license license:bsd-3)))
+
 (define-public r-fateid
   (package
     (name "r-fateid")

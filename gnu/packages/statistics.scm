@@ -1465,28 +1465,6 @@ the versions that @code{r-release} and @code{r-oldrel} refer to, and also all
 previous R versions and their release dates.")
     (license license:expat)))
 
-(define-public r-fail
-  (package
-    (name "r-fail")
-    (version "1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "fail" version))
-       (sha256
-        (base32
-         "0vfm6kmpmgsamda5p0sl771kbnsscan31l2chzssyw93kwmams7d"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-bbmisc r-checkmate))
-    (native-inputs (list r-testthat))
-    (home-page "https://github.com/mllg/fail")
-    (synopsis "File abstraction interface layer (FAIL)")
-    (description
-     "This package provides a more comfortable interface to work with R data
-or source files in a key-value fashion.")
-    (license license:bsd-3)))
-
 (define-public r-roxygen2
   (package
     (name "r-roxygen2")
