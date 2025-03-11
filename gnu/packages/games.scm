@@ -2129,6 +2129,47 @@ built-in level editor.")
            license:public-domain
            license:silofl1.1))))
 
+(define-public kgames
+  (package
+    (name "kgames")
+    (version "2.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/keith-packard/kgames")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09alaszhwnzzv5b0cxv5dia9y0fm63n2igv42ydkq299h7avb5fq"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags
+           #~'("-Duser-menu=false"
+               "-Dbindir=bin")))
+    (native-inputs
+     (list bison flex pkg-config))
+    (inputs
+     (list cairo
+           fontconfig
+           freetype
+           librsvg
+           libx11
+           libxaw
+           libxft
+           libxmu
+           libxpm
+           libxrender
+           ncurses))
+    (synopsis "Xaw based solitaire games")
+    (home-page "https://github.com/keith-packard/kgames")
+    (description
+     "This package provides a collection of solitaire games: kaces, kcanfield,
+kcribbage, kdominos, kklondike, kmcarlo, kmontana, kslyfox, kspider, ktabby,
+kthieves, ktowers, xmille and xreversi.")
+    ;; Code is under BSD-3 and Expat, card images are under CC0.
+    (license (list license:bsd-3 license:expat license:cc0))))
+
 (define-public knightsgame
   (package
     (name "knightsgame")
