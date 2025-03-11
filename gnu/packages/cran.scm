@@ -5189,6 +5189,30 @@ modification of F-tests for linear mixed effects models and a parametric
 bootstrap test for generalized linear mixed models.")
     (license license:gpl2+)))
 
+(define-public r-pcapp
+  (package
+    (name "r-pcapp")
+    (version "2.0-5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pcaPP" version))
+       (sha256
+        (base32
+         "043w3g3f57j2d0irnrxm58mzzisg7xmnsl17v7wijsh1czcswkv7"))))
+    (properties `((upstream-name . "pcaPP")))
+    (build-system r-build-system)
+    ;; Vignettes attempt to load the missing file "load.package.name.R".
+    (arguments (list #:test-types '(list "tests")))
+    (propagated-inputs
+     (list r-mvtnorm))
+    (home-page "https://cran.r-project.org/web/packages/pcaPP")
+    (synopsis "Robust PCA by projection pursuit")
+    (description
+     "This package provides functions for robust @dfn{principal component
+analysis} (PCA) by projection pursuit.")
+    (license license:gpl3+)))
+
 (define-public r-permute
   (package
    (name "r-permute")
