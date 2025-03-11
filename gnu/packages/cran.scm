@@ -5567,6 +5567,27 @@ R packages that praise their users.")
 prototype-based, rather than class-based object oriented ideas.")
     (license license:gpl2+)))
 
+(define-public r-pryr
+  (package
+    (name "r-pryr")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "pryr" version))
+              (sha256
+               (base32
+                "013p2xxd51kr9ddx051cvn45mzgj44fm47nkchdb13l0885a7hb8"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-codetools r-lobstr r-rcpp r-stringr))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/hadley/pryr")
+    (synopsis "Tools for computing on the R language")
+    (description
+     "This package provides useful tools to pry back the covers of R and
+understand the language at a deeper level.")
+    (license license:gpl2)))
+
 (define-public r-rcolorbrewer
   (package
     (name "r-rcolorbrewer")
