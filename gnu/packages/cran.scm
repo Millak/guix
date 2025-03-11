@@ -3787,6 +3787,38 @@ levels (including collapsing rare levels into other, \"anonymizing\", and
 manually \"recoding\").")
     (license license:gpl3)))
 
+(define-public r-foreach
+  (package
+    (name "r-foreach")
+    (version "1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "foreach" version))
+       (sha256
+        (base32
+         "1r5gdf9fp3rprvrhf0gzl9qmmqhgdn5gscpm5hk8zxpraf3qscsn"))))
+    (build-system r-build-system)
+    ;; Tests require doparallel, which we cannot add because of a dependency
+    ;; cycle.
+    (arguments (list #:tests? #false))
+    (propagated-inputs
+     (list r-codetools r-iterators))
+    (native-inputs
+     (list r-knitr))
+    (home-page "https://cran.r-project.org/web/packages/foreach")
+    (synopsis "Foreach looping construct for R")
+    (description
+     "This package provides support for the @code{foreach} looping construct.
+@code{foreach} is an idiom that allows for iterating over elements in a
+collection, without the use of an explicit loop counter.  This package in
+particular is intended to be used for its return value, rather than for its
+side effects.  In that sense, it is similar to the standard @code{lapply}
+function, but doesn't require the evaluation of a function.  Using
+@code{foreach} without side effects also facilitates executing the loop in
+parallel.")
+    (license license:asl2.0)))
+
 (define-public r-formatr
   (package
     (name "r-formatr")
