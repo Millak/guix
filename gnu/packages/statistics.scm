@@ -1919,28 +1919,6 @@ definitions, pattern matching, guard statements, built-in (optional) type
 safety.")
     (license license:lgpl3+)))
 
-(define-public r-futile-options
-  (package
-    (name "r-futile-options")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "futile.options" version))
-              (sha256
-               (base32
-                "0w15agpi88y3qkv6fl72zy2pzyplzgvnj41a4ixhg64mw1sck73s"))))
-    (properties
-     `((upstream-name . "futile.options")))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/futile.options")
-    (synopsis "Options management framework")
-    (description
-     "The futile.options subsystem provides an easy user-defined options
-management system that is properly scoped.  This means that options created
-via @code{futile.options} are fully self-contained and will not collide with
-options defined in other packages.")
-    (license license:lgpl3+)))
-
 (define-public r-segmented
   (package
     (name "r-segmented")
