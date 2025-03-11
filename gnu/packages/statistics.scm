@@ -2911,29 +2911,6 @@ which, one can calculate integrals over truncated regions for multivariate
 normals.")
     (license license:gpl2)))
 
-(define-public r-mnormt
-  (package
-    (name "r-mnormt")
-    (version "2.1.1")
-    (source
-     (origin
-       (method url-fetch)
-        (uri (cran-uri "mnormt" version))
-        (sha256
-          (base32
-           "020ka48jsxm9l109ksvy2l17xcpm51avm0l971dgs2mgg01sgz4m"))))
-    (build-system r-build-system)
-    (native-inputs
-     (list gfortran))
-    (home-page "http://azzalini.stat.unipd.it/SW/Pkg-mnormt")
-    (synopsis "Multivariate normal and \"t\" distributions")
-    (description
-     "This package provides functions for computing the density and the
-distribution function of multivariate normal and \"t\" random variables, and
-for generating random vectors sampled from these distributions.  Probabilities
-are computed via non-Monte Carlo methods.")
-    (license license:gpl2+)))
-
 (define-public r-numderiv
   (package
     (name "r-numderiv")
