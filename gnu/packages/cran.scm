@@ -2186,6 +2186,45 @@ Graphs: Generating Datasets with Varied Appearance and Identical Statistics
 through Simulated Annealing\" @url{doi:10.1145/3025453.3025912}.")
     (license license:expat)))
 
+(define-public r-data-table
+  (package
+    (name "r-data-table")
+    (version "1.16.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "data.table" version))
+              (sha256
+               (base32
+                "1pww4qq7zsvq1k9gdrx1wf0p190ic4mv7kr30bk1s4dwmsrlnxkj"))))
+    (properties
+     `((upstream-name . "data.table")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; These two phases are needed for 3 otherwise failing tests
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp")))
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC+1")
+             (setenv "TZDIR"
+                     (search-input-directory inputs "share/zoneinfo")))))))
+    (inputs
+     (list zlib))
+    (native-inputs
+     (list pkg-config r-knitr tzdata-for-tests))
+    (home-page "https://github.com/Rdatatable/data.table/wiki")
+    (synopsis "Enhanced version of data.frame R object")
+    (description
+     "The R package @code{data.table} is an extension of @code{data.frame}
+providing functions for fast aggregation of large data (e.g. 100GB in RAM),
+fast ordered joins, fast add/modify/delete of columns by group, column listing
+and fast file reading.")
+    (license license:gpl3+)))
+
 (define-public r-datawizard
   (package
     (name "r-datawizard")
