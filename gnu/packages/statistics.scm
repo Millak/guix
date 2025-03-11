@@ -2628,29 +2628,6 @@ models.  The functionality is experimental and the user interface is likely
 to change in the future.")
     (license license:gpl2)))
 
-(define-public r-mclust
-  (package
-    (name "r-mclust")
-    (version "6.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "mclust" version))
-       (sha256
-        (base32
-         "0xb726ssy224mzfg37nq5hffkdwi2hwjp1y9gwngk9vfbs703myx"))))
-    (build-system r-build-system)
-    (native-inputs
-     (list gfortran r-knitr))
-    (home-page "https://www.stat.washington.edu/mclust/")
-    (synopsis "Gaussian mixture modelling for model-based clustering etc.")
-    (description
-     "This package provides Gaussian finite mixture models fitted via EM
-algorithm for model-based clustering, classification, and density estimation,
-including Bayesian regularization, dimension reduction for visualisation,
-and resampling-based inference.")
-    (license license:gpl2+)))
-
 (define-public r-prabclus
   (package
     (name "r-prabclus")
