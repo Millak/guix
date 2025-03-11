@@ -2152,29 +2152,6 @@ parallel.")
 using the parallel package.")
     (license license:gpl2+)))
 
-(define-public r-domc
-  (package
-    (name "r-domc")
-    (version "1.3.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "doMC" version))
-       (sha256
-        (base32
-         "18qrcvqwm4cclvk8spvyi281y8prwzivj52xmzk1l9a82j2ny65j"))))
-    (properties `((upstream-name . "doMC")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-foreach r-iterators))
-    (native-inputs (list r-runit))
-    (home-page "https://cran.r-project.org/web/packages/doMC")
-    (synopsis "Foreach parallel adaptor for the 'parallel' package")
-    (description
-     "This package provides a parallel backend for the @code{%dopar%} function
-using the multicore functionality of the parallel package.")
-    (license license:gpl2+)))
-
 (define-public r-dt
   (let* ((extension-origin
           (lambda (name version hash)
