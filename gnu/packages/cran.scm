@@ -2419,11 +2419,15 @@ also provided.")
     (home-page "https://cran.r-project.org/web/packages/DEoptimR")
     (synopsis "Differential evolution optimization in pure R")
     (description
-     "This package provides a differential evolution (DE) stochastic
+     "This package provides a @dfn{differential evolution} (DE) stochastic
 algorithms for global optimization of problems with and without constraints.
-The aim is to curate a collection of its state-of-the-art variants that (1) do
-not sacrifice simplicity of design, (2) are essentially tuning-free, and (3)
-can be efficiently implemented directly in the R language.")
+The aim is to curate a collection of its state-of-the-art variants that
+
+@enumerate
+@item do not sacrifice simplicity of design,
+@item are essentially tuning-free, and
+@item can be efficiently implemented directly in the R language.
+@end enumerate")
     (license license:gpl2+)))
 
 (define-public r-desc
