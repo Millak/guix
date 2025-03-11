@@ -7219,6 +7219,30 @@ would an ordinary data.frame.  The @code{LaF} vignette gives an overview of
 the functionality provided.")
     (license license:gpl3)))
 
+(define-public r-lambda-r
+  (package
+    (name "r-lambda-r")
+    (version "1.2.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "lambda.r" version))
+              (sha256
+               (base32
+                "1mh1g0gsd58gng0hb29vww2yqb2jfs07kba5kxnnqck5j3izwlnj"))))
+    (properties `((upstream-name . "lambda.r")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-formatr))
+    (native-inputs (list r-testit))
+    (home-page "https://cran.r-project.org/web/packages/lambda.r")
+    (synopsis "Functional programming extension for R")
+    (description
+     "This package provides a language extension to efficiently write
+functional programs in R.  Syntax extensions include multi-part function
+definitions, pattern matching, guard statements, built-in (optional) type
+safety.")
+    (license license:lgpl3+)))
+
 (define-public r-lattice
   (package
     (name "r-lattice")

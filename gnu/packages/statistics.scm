@@ -1808,30 +1808,6 @@ supporting FTP/FTPS/TFTP (uploads and downloads), SSL/HTTPS, telnet, dict,
 ldap, and also supports cookies, redirects, authentication, etc.")
     (license license:bsd-3)))
 
-(define-public r-lambda-r
-  (package
-    (name "r-lambda-r")
-    (version "1.2.4")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "lambda.r" version))
-              (sha256
-               (base32
-                "1mh1g0gsd58gng0hb29vww2yqb2jfs07kba5kxnnqck5j3izwlnj"))))
-    (properties `((upstream-name . "lambda.r")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-formatr))
-    (native-inputs (list r-testit))
-    (home-page "https://cran.r-project.org/web/packages/lambda.r")
-    (synopsis "Functional programming extension for R")
-    (description
-     "This package provides a language extension to efficiently write
-functional programs in R.  Syntax extensions include multi-part function
-definitions, pattern matching, guard statements, built-in (optional) type
-safety.")
-    (license license:lgpl3+)))
-
 (define-public r-segmented
   (package
     (name "r-segmented")
