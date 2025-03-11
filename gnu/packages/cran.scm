@@ -9144,6 +9144,35 @@ and operations on them using LAPACK and SuiteSparse.")
 using modular prediction and response module classes.")
     (license license:gpl2+)))
 
+(define-public r-matrixstats
+  (package
+    (name "r-matrixstats")
+    (version "1.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "matrixStats" version))
+              (sha256
+               (base32
+                "05fcbpwrrs3y5ia15x88x7br7ympf5mg31qh7sj05hkg7rgnr68j"))))
+    (properties `((upstream-name . "matrixStats")))
+    (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list r-covr r-r-rsp)) ;used to build vignettes
+    (home-page "https://github.com/HenrikBengtsson/matrixStats")
+    (synopsis "Methods applying to vectors and matrix rows and columns")
+    (description
+     "This package provides methods operating on rows and columns of matrices,
+e.g.  @code{rowMedians()}, @code{rowRanks()}, and @code{rowSds()}.  There are
+also some vector-based methods, e.g. @code{binMeans()}, @code{madDiff()} and
+@code{weightedMedians()}.  All methods have been optimized for speed and
+memory usage.")
+    (license license:artistic2.0)))
+
 (define-public r-matrixtests
   (package
     (name "r-matrixtests")
