@@ -3682,30 +3682,6 @@ approximate, exact searches, fixed radius searches, bd and kb trees.")
 published by the statistics blog FiveThirtyEight.")
     (license license:expat)))
 
-(define-public r-cowplot
-  (package
-    (name "r-cowplot")
-    (version "1.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "cowplot" version))
-       (sha256
-        (base32
-         "0wxjynpbamyimpms7psbac7xgwswzlidczpc037q20y5yld9fml7"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-ggplot2 r-gtable r-rlang r-scales))
-    (native-inputs
-     (list r-knitr r-testthat))
-    (home-page "https://github.com/wilkelab/cowplot")
-    (synopsis "Streamlined plot theme and plot annotations for ggplot2")
-    (description
-     "This package provides some helpful extensions and modifications to the
-ggplot2 package to combine multiple ggplot2 plots into one and label them with
-letters, as is often required for scientific publications.")
-    (license license:gpl2)))
-
 (define-public r-mixtools
   (package
     (name "r-mixtools")
