@@ -3221,6 +3221,27 @@ package.")
                      license:expat
                      license:wtfpl2)))))
 
+(define-public r-dynamictreecut
+  (package
+    (name "r-dynamictreecut")
+    (version "1.63-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dynamicTreeCut" version))
+       (sha256
+        (base32
+         "1fadbql7g5r2vvlkr89nlrjxwp4yx4xrdqmv077qvmnx9vv0f4w3"))))
+    (properties `((upstream-name . "dynamicTreeCut")))
+    (build-system r-build-system)
+    (home-page
+     "https://cran.r-project.org/web/packages/dynamicTreeCut/index.html")
+    (synopsis "Detect clusters in hierarchical clustering dendrograms")
+    (description
+     "This package contains methods for the detection of clusters in
+hierarchical clustering dendrograms.")
+    (license license:gpl2+)))
+
 (define-public r-e1071
   (package
     (name "r-e1071")
