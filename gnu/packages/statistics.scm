@@ -1583,34 +1583,6 @@ disk (or a connection).")
 scaling functions for R.")
     (license license:gpl2+)))
 
-(define-public r-latticeextra
-  (package
-    (name "r-latticeextra")
-    (version "0.6-30")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "latticeExtra" version))
-       (sha256
-        (base32
-         "1vcy4xr6c53nbvnxikjnlf5kd3n5hf4d8dzj5d41hj322dlsfl65"))))
-    (properties `((upstream-name . "latticeExtra")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-interp
-           r-jpeg
-           r-lattice
-           r-mass
-           r-png
-           r-rcolorbrewer))
-    (home-page "https://latticeextra.r-forge.r-project.org/")
-    (synopsis "Extra graphical utilities based on lattice")
-    (description
-     "Building on the infrastructure provided by the lattice package, this
-package provides several new high-level graphics functions and methods, as
-well as additional utilities such as panel and axis annotation functions.")
-    (license license:gpl2+)))
-
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
