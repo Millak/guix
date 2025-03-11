@@ -3619,26 +3619,6 @@ perform @dfn{independent component analysis} (ICA) and projection pursuit.")
 forest of trees using random inputs, for classification and regression.")
     (license license:gpl2+)))
 
-(define-public r-diptest
-  (package
-    (name "r-diptest")
-    (version "0.77-1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "diptest" version))
-       (sha256
-        (base32
-         "04r8c6xy5vympxaxmgnjib4pqh97f9k6b43i66qhzkl3yh0awki2"))))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/diptest")
-    (synopsis "Hartigan's dip test statistic for unimodality")
-    (description
-     "This package computes Hartigan's dip test statistic for unimodality,
-multimodality and provides a test with simulation based p-values, where the
-original public code has been corrected.")
-    (license license:gpl2+)))
-
 (define-public r-modeltools
   (package
     (name "r-modeltools")
