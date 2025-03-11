@@ -4053,28 +4053,6 @@ imputations.  This allows missing data dependencies to be explored with minimal
 deviation from the common work patterns of @code{ggplot2} and tidy data.")
     (license license:expat)))
 
-(define-public r-lmom
-  (package
-    (name "r-lmom")
-    (version "3.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "lmom" version))
-        (sha256
-          (base32 "165dqz8yv3wak77935shz8axcck6jg5h7fnyy0ih9dzin3npng6s"))))
-    (properties `((upstream-name . "lmom")))
-    (build-system r-build-system)
-    (native-inputs (list gfortran))
-    (home-page "https://cran.r-project.org/package=lmom")
-    (synopsis "L-Moments for R")
-    (description
-      "This package provides functions related to L-moments: computation
-of L-moments and trimmed L-moments of distributions and data samples;
-parameter estimation; L-moment ratio diagram; plot vs.  quantiles of an
-extreme-value distribution.")
-    (license license:cpl1.0)))
-
 (define-public xlispstat
   (let ((commit "f1bea6053df658ee48612bf1f63c35de99e2c649")
         (revision "0"))

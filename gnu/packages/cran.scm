@@ -7472,6 +7472,28 @@ C++ library for numerical linear algebra and RcppEigen glue.")
 axis} (SMA), and @dfn{ranged major axis} (RMA).")
     (license license:gpl2)))
 
+(define-public r-lmom
+  (package
+    (name "r-lmom")
+    (version "3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lmom" version))
+       (sha256
+        (base32 "165dqz8yv3wak77935shz8axcck6jg5h7fnyy0ih9dzin3npng6s"))))
+    (properties `((upstream-name . "lmom")))
+    (build-system r-build-system)
+    (native-inputs (list gfortran))
+    (home-page "https://cran.r-project.org/package=lmom")
+    (synopsis "L-Moments for R")
+    (description
+     "This package provides functions related to L-moments: computation of
+L-moments and trimmed L-moments of distributions and data samples; parameter
+estimation; L-moment ratio diagram; plot vs. quantiles of an extreme-value
+distribution.")
+    (license license:cpl1.0)))
+
 (define-public r-ggpmisc
   (package
     (name "r-ggpmisc")
