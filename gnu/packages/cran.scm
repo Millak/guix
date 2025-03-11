@@ -9123,6 +9123,27 @@ Applied Statistics with S\" (4th edition, 2002) by Venables and Ripley.")
 and operations on them using LAPACK and SuiteSparse.")
     (license license:gpl2+)))
 
+(define-public r-matrixmodels
+  (package
+    (name "r-matrixmodels")
+    (version "0.5-3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "MatrixModels" version))
+       (sha256
+        (base32
+         "03zjfxjk4l2dl1117slz163w0ky675d23sjfni4d7fdhqq359ny2"))))
+    (properties `((upstream-name . "MatrixModels")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix))
+    (home-page "https://cran.r-project.org/web/packages/MatrixModels")
+    (synopsis "Modelling with sparse and dense matrices")
+    (description
+     "This package models with sparse and dense matrix matrices,
+using modular prediction and response module classes.")
+    (license license:gpl2+)))
+
 (define-public r-matrixtests
   (package
     (name "r-matrixtests")
