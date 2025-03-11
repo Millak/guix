@@ -3972,6 +3972,44 @@ whether they are similar by some comparison.  Implementations include string
 distance and regular expression matching.")
     (license license:expat)))
 
+(define-public r-gdata
+  (package
+    (name "r-gdata")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gdata" version))
+       (sha256
+        (base32
+         "0qiqfrk0qi8k1f6kvfkgp43algjdgfx6w5xmqrpyzh535gfrcfnv"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-gtools))
+    (native-inputs (list r-runit))
+    (home-page "https://cran.r-project.org/web/packages/gdata")
+    (synopsis "Various R programming tools for data manipulation")
+    (description
+     "This package provides various R programming tools for data manipulation,
+including:
+
+@itemize
+@item medical unit conversions
+@item combining objects
+@item character vector operations
+@item factor manipulation
+@item obtaining information about R objects
+@item generating fixed-width format files
+@item extricating components of date and time objects
+@item operations on columns of data frames
+@item matrix operations
+@item operations on vectors and data frames
+@item value of last evaluated expression
+@item wrapper for @code{sample} that ensures consistent behavior for
+  both scalar and vector arguments
+@end itemize\n")
+    (license license:gpl2+)))
+
 (define-public r-gdtools
   (package
     (name "r-gdtools")
