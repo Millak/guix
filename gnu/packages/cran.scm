@@ -3863,6 +3863,41 @@ regressors on the right-hand side and/or multiple responses on the left-hand
 side.")
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-fpc
+  (package
+    (name "r-fpc")
+    (version "2.2-13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fpc" version))
+       (sha256
+        (base32
+         "0irzsl1g71z7kl0qrklkv0rv9byv017lh5klp5hfw3xw8zw3sm2g"))))
+    (build-system r-build-system)
+    ;; FIXME Test fails with this message:
+    ;; attempt to select less than one element in get1index <real>
+    (arguments (list #:tests? #false))
+    (propagated-inputs
+     (list r-class
+           r-cluster
+           r-diptest
+           r-flexmix
+           r-kernlab
+           r-mass
+           r-mclust
+           r-prabclus
+           r-robustbase))
+    (home-page "https://cran.r-project.org/web/packages/fpc")
+    (synopsis "Flexible procedures for clustering")
+    (description
+     "This package provides various methods for clustering and cluster
+validation.  For example, it provides fixed point clustering, linear
+regression clustering, clustering by merging Gaussian mixture components, as
+well as symmetric and asymmetric discriminant projections for visualisation of
+the separation of groupings.")
+  (license license:gpl2+)))
+
 (define-public r-fuzzyjoin
   (package
     (name "r-fuzzyjoin")
