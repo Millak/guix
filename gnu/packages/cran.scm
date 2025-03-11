@@ -1684,6 +1684,34 @@ to any arbitrary string.  In this case, it is up to you to set valid values.")
 or a given luminosity.")
     (license license:cc0)))
 
+(define-public r-commonmark
+  (package
+    (name "r-commonmark")
+    (version "1.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "commonmark" version))
+       (sha256
+        (base32
+         "1sw6nizfbb88358r6mafiqiqdwd49cvf507g5cqggf72x3xxqshx"))))
+    (properties
+     ;; We can't have r-testthat among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
+    (build-system r-build-system)
+    (arguments (list #:tests? #false))
+    (home-page "https://cran.r-project.org/web/packages/commonmark")
+    (synopsis "CommonMark and Github Markdown rendering in R")
+    (description
+     "The CommonMark specification defines a rationalized version of markdown
+syntax.  This package uses the @code{cmark} reference implementation for
+converting markdown text into various formats including HTML, LaTeX and groff
+man.  In addition, it exposes the markdown parse tree in XML format.  The
+latest version of this package also adds support for Github extensions
+including tables, autolinks and strikethrough text.")
+    (license license:bsd-2)))
+
 (define-public r-consort
   (package
     (name "r-consort")
