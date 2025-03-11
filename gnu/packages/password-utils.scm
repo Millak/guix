@@ -720,7 +720,7 @@ them out, at the source.")
 (define-public libpwquality
   (package
     (name "libpwquality")
-    (version "1.4.4")
+    (version "1.4.5")
     (source (origin
               (method url-fetch)
               (uri (list
@@ -732,7 +732,7 @@ them out, at the source.")
                                    "libpwquality-" version ".tar.bz2")))
               (sha256
                (base32
-                "0id5a8bi8xnjg11g9vzrl2xbpx65mfxclxcvis7zx1v8vhisyfyl"))))
+                "1209l7ba51rjsq724hi8my0s11xpslp9hhif9p89jp9hbnviikvg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
