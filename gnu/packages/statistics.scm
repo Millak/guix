@@ -2821,36 +2821,6 @@ tokenization of R code, and helpers for interacting with the tokenized
 representation of R code.")
     (license license:expat)))
 
-(define-public r-ggthemes
-  (package
-    (name "r-ggthemes")
-    (version "5.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "ggthemes" version))
-              (sha256
-               (base32
-                "03mxigi34nd05wjigm8lpcbyhp4c8jxz7zm04qs27clbzsn1jj07"))))
-    (properties
-     '((updater-extra-native-inputs . ("r-dplyr"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-ggplot2
-           r-lifecycle
-           r-purrr
-           r-scales
-           r-stringr
-           r-tibble))
-    (native-inputs (list r-dplyr r-testthat))
-    (home-page "https://cran.rstudio.com/web/packages/ggthemes")
-    (synopsis "Extra themes, scales and geoms for @code{ggplot2}")
-    (description "This package provides extra themes and scales for
-@code{ggplot2} that replicate the look of plots by Edward Tufte and
-Stephen Few in Fivethirtyeight, The Economist, Stata, Excel, and The
-Wall Street Journal, among others.  This package also provides
-@code{geoms} for Tufte's box plot and range frame.")
-    (license license:gpl2)))
-
 (define-public r-statmod
   (package
     (name "r-statmod")
