@@ -4654,6 +4654,35 @@ belong to the Generalized Empirical Likelihood family of estimators (Smith
     (description "This package lets you manage Google Drive files from R.")
     (license license:expat)))
 
+(define-public r-googlesheets
+  (package
+    (name "r-googlesheets")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "googlesheets" version))
+       (sha256
+        (base32 "13n6vkdcbz78sbxq5xrj0zhq0dpriz6cyq13v3raa92152l88rm5"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cellranger
+           r-dplyr
+           r-httr
+           r-jsonlite
+           r-purrr
+           r-readr
+           r-stringr
+           r-tibble
+           r-tidyr
+           r-xml2))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/jennybc/googlesheets")
+    (synopsis "Manage Google spreadsheets from R")
+    (description "This package provides tools to interact with Google Sheets
+from within R.")
+    (license license:expat)))
+
 (define-public r-googlevis
   (package
     (name "r-googlevis")
