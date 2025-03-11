@@ -5159,6 +5159,36 @@ functions apply.  The implementation can easily be added to functions where
 showing the progress is useful e.g. bootstrap.")
     (license license:gpl2)))
 
+(define-public r-pbkrtest
+  (package
+    (name "r-pbkrtest")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pbkrtest" version))
+       (sha256
+        (base32
+         "0qxswrk54r40qmi9ky7jzv53mrlr2w2mrlf1czma597nzrb52gmh"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-broom
+           r-doby
+           r-dplyr
+           r-lme4
+           r-mass
+           r-matrix
+           r-numderiv))
+    (native-inputs
+     (list r-knitr))
+    (home-page "https://people.math.aau.dk/~sorenh/software/pbkrtest/")
+    (synopsis "Methods for linear mixed model comparison")
+    (description
+     "This package implements a parametric bootstrap test and a Kenward Roger
+modification of F-tests for linear mixed effects models and a parametric
+bootstrap test for generalized linear mixed models.")
+    (license license:gpl2+)))
+
 (define-public r-permute
   (package
    (name "r-permute")
