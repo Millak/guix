@@ -2457,6 +2457,61 @@ DESCRIPTION files.  It is intended for packages that create or manipulate
 other packages.")
     (license license:expat)))
 
+(define-public r-desctools
+  (package
+    (name "r-desctools")
+    (version "0.99.59")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "DescTools" version))
+       (sha256
+        (base32 "1xiw8741brv3771vf18clj240i8p0wn8367fv1f6vwxwxlqrclkr"))))
+    (properties `((upstream-name . "DescTools")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list r-boot
+           r-cli
+           r-data-table
+           r-exact
+           r-expm
+           r-gld
+           r-haven
+           r-httr
+           r-mass
+           r-mvtnorm
+           r-rcpp
+           r-readxl
+           r-rstudioapi
+           r-withr))
+    (native-inputs (list gfortran r-r-rsp))
+    (home-page "https://andrisignorell.github.io/DescTools/")
+    (synopsis "Tools for descriptive statistics")
+    (description
+     "This package provides a collection of miscellaneous basic statistic
+functions and convenience wrappers for efficiently describing data.
+The author's intention was to create a toolbox, which facilitates the
+(notoriously time consuming) first descriptive tasks in data analysis,
+consisting of calculating descriptive statistics, drawing graphical summaries
+and reporting the results.  The package contains furthermore functions to
+produce documents using MS Word (or PowerPoint) and functions to import data
+from Excel.  Many of the included functions can be found scattered in other
+packages and other sources written partly by Titans of R.  The reason for
+collecting them here, was primarily to have them consolidated in ONE instead
+of dozens of packages (which themselves might depend on other packages which
+are not needed at all), and to provide a common and consistent interface as
+far as function and arguments naming, NA handling, recycling rules etc.  are
+concerned.  Google style guides were used as naming rules (in absence of
+convincing alternatives).  The BigCamelCase style was consequently applied to
+functions borrowed from contributed R packages as well.")
+    (license license:gpl2+)))
+
 (define-public r-dfidx
   (package
     (name "r-dfidx")
