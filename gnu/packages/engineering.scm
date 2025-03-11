@@ -2260,7 +2260,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                        (delete-file-recursively
                         (string-append #$output
                                        "/share/ngspice/scripts")))))
-      #:configure-flags #~(list "--enable-openmp" "--enable-ciderlib"
+      #:configure-flags #~(list "--enable-openmp" "--enable-cider"
                                 "--enable-xspice" "--with-ngshared")))
     (native-inputs (list bison flex))
     (inputs (list libxaw openmpi))
