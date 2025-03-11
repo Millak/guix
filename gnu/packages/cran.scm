@@ -1712,6 +1712,27 @@ latest version of this package also adds support for Github extensions
 including tables, autolinks and strikethrough text.")
     (license license:bsd-2)))
 
+(define-public r-compquadform
+  (package
+    (name "r-compquadform")
+    (version "1.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "CompQuadForm" version))
+       (sha256
+        (base32
+         "1i30hrqdk64q17vsn918c3q79brchgx2wzh1gbsgbn0dh1ncabq4"))))
+    (properties `((upstream-name . "CompQuadForm")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/CompQuadForm")
+    (synopsis "Distribution function of quadratic forms in normal variables")
+    (description
+     "This package provides functions to compute the distribution function of
+quadratic forms in normal variables using Imhof's method, Davies's algorithm,
+Farebrother's algorithm or Liu et al.'s algorithm.")
+    (license license:gpl2+)))
+
 (define-public r-consort
   (package
     (name "r-consort")
