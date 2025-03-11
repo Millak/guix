@@ -35,6 +35,7 @@
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 宋文武 <iyzsong@envs.net>
+;;; Copyright © 2025 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3356,6 +3357,30 @@ Programmers can use it in their games to make objects move in realistic ways and
 make the game world more interactive.  From the game engine's point of view, a
 physics engine is just a system for procedural animation.")
     (license license:expat)))
+
+(define-public box2d-3
+  (package
+   (inherit box2d)
+   (name "box2d")
+   (version "3.0.0")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/erincatto/box2d")
+           (commit (string-append "v" version))))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32 "0m01c23mxvg96zypqyi2fpkd1dsvgflafi3ncga6ihdvxbwaybk5"))))
+   (build-system cmake-build-system)
+   (arguments
+    (substitute-keyword-arguments
+        (package-arguments box2d)
+      ((#:test-target _) "")            ; no check
+      ((#:configure-flags original-flags)
+       `(cons* "-DBOX2D_UNIT_TESTS=OFF" ; enkiTS need for all test apps
+               "-DBOX2D_SAMPLES=OFF"
+               (delete "-DBOX2D_BUILD_TESTBED=OFF" ,original-flags)))))))
 
 (define-public libtcod
   (package
