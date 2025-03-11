@@ -13,7 +13,7 @@
 ;;; Copyright © 2021 WinterHound <winterhound@yandex.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Christian Miller <christian.miller@dadoes.de>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
@@ -88,6 +88,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages lxqt)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages kde)
@@ -1124,16 +1125,17 @@ server written in C++ for Unix-like operating systems.")
 (define-public snuik
   (package
     (name "snuik")
-    (version "0.0")
+    (version "0.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dezyne.org/download/snuik/"
                            name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lm6mbgfjzjk3pvzp1y9wkdz9dr2qyl1c6ib1hqxrnvkmlciy5p5"))))
-    (native-inputs (list guile-3.0))
-    (inputs (list bash-minimal guile-3.0 guile-8sync))
+        (base32 "1hqhni5xgm7jg8md305clix1r3dbxkq6fw93kxzar1nv7wvy7z38"))))
+    (native-inputs (list guile-3.0
+                         ngircd))       ;for live test
+    (inputs (list bash-minimal guile-3.0 guile-goblins))
     (build-system guile-build-system)
     (arguments
      (list
@@ -1165,7 +1167,7 @@ server written in C++ for Unix-like operating systems.")
                      (guile (string-append guile "/bin/guile"))
                      (build-guile #$(this-package-native-input "guile"))
                      (build-guile (string-append build-guile "/bin/guile"))
-                     (guile-8sync #$(this-package-input "guile-8sync"))
+                     (guile-goblins #$(this-package-input "guile-goblins"))
                      (out #$output)
                      (bin (string-append out "/bin"))
                      (effective (read
@@ -1175,11 +1177,11 @@ server written in C++ for Unix-like operating systems.")
                      (path (list (string-append guile "/bin")))
                      (scm-dir (string-append "/share/guile/site/" effective))
                      (scm-path (list (string-append out scm-dir)
-                                     (string-append guile-8sync scm-dir)))
+                                     (string-append guile-goblins scm-dir)))
                      (go-dir (string-append "/lib/guile/" effective
                                             "/site-ccache/"))
                      (go-path (list (string-append out go-dir)
-                                    (string-append guile-8sync go-dir))))
+                                    (string-append guile-goblins go-dir))))
                 (mkdir-p "bin")
                 (copy-file "snuik.sh" "bin/snuik")
                 (substitute* "bin/snuik"
@@ -1192,10 +1194,10 @@ server written in C++ for Unix-like operating systems.")
                   `("GUILE_LOAD_PATH" ":" prefix ,scm-path)
                   `("GUILE_LOAD_COMPILED_PATH" ":" prefix ,go-path))))))))
     (home-page "https://gitlab.com/janneke/snuik")
-    (synopsis "IRC bot using Guile-8sync")
-    (description "@code{Snuik} is an IRC bot using the GNU 8sync (for
-now).  It has some basic functionality only, such as seen, tell, and
-what.")
+    (synopsis "IRC bot using Guile-goblins")
+    (description "@code{Snuik} is an IRC bot in Guile Goblins.  It has
+some basic functionality only, such as greeting, feed, identify, info,
+seen, tell, and what.")
     (license license:gpl3+)))
 
 (define-public soju
