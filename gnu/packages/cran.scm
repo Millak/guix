@@ -5523,6 +5523,31 @@ measures, clustering of presence-absence, abundance and multilocus genetical
 data for species delimitation, nearest neighbor based noise detection.")
     (license license:gpl2+)))
 
+(define-public r-praise
+  (package
+    (name "r-praise")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "praise" version))
+       (sha256
+        (base32
+         "1gfyypnvmih97p2r0php9qa39grzqpsdbq5g0fdsbpq5zms5w0sw"))))
+    (properties
+     ;; We can't have r-testthat among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
+    (build-system r-build-system)
+    ;; Tests require r-testthat, which depends on r-praise.
+    (arguments (list #:tests? #false))
+    (home-page "https://github.com/gaborcsardi/praise")
+    (synopsis "Functions to praise users")
+    (description
+     "This package provides template functions to assist in building friendly
+R packages that praise their users.")
+    (license license:expat)))
+
 (define-public r-proto
   (package
     (name "r-proto")
