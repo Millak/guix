@@ -7409,6 +7409,49 @@ complete distance matrix between all pairs of samples, only the distances
 between a set of landmarks and the samples are calculated.")
     (license license:gpl3)))
 
+(define-public r-lme4
+  (package
+    (name "r-lme4")
+    (version "1.1-36")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lme4" version))
+       (sha256
+        (base32
+         "0vyqmbz1zv3xh45ivfjl9dxpr5n8b48g1k70r58952hd994h7q5l"))))
+    (build-system r-build-system)
+    (properties
+     '((updater-ignored-native-inputs . ("r-car" "r-gamm4"))))
+    (propagated-inputs
+     (list r-boot
+           r-lattice
+           r-mass
+           r-matrix
+           r-minqa
+           r-nlme
+           r-nloptr
+           r-rcpp
+           r-rcppeigen
+           r-reformulas))
+    (native-inputs
+     (list r-devtools
+           r-ggplot2
+           r-knitr
+           r-mgcv
+           r-optimx
+           r-statmod
+           r-testthat
+           r-tibble))
+    (home-page "https://cran.r-project.org/web/packages/lme4")
+    (synopsis "Linear mixed-effects models using eigen and S4")
+    (description
+      "This package provides fit linear and generalized linear mixed-effects
+models.  The models and their components are represented using S4 classes and
+methods.  The core computational algorithms are implemented using the Eigen
+C++ library for numerical linear algebra and RcppEigen glue.")
+    (license license:gpl2+)))
+
 (define-public r-lmodel2
   (package
     (name "r-lmodel2")
