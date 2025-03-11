@@ -5410,6 +5410,24 @@ directly from R.  Once uploaded to a plotly account, plotly graphs (and the
 data behind them) can be viewed and modified in a web browser.")
     (license license:x11)))
 
+(define-public r-plotrix
+  (package
+    (name "r-plotrix")
+    (version "3.8-4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "plotrix" version))
+              (sha256
+               (base32
+                "1mp8mb79prgf5fzlaix4fvslr4q67hrzxqdv3kr7mik1mf9jv8p6"))))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/plotrix")
+    (synopsis "Various plotting functions")
+    (description
+     "This package provides lots of plotting, various labeling, axis and color
+scaling functions for R.")
+    (license license:gpl2+)))
+
 (define-public r-plyr
   (package
     (name "r-plyr")
