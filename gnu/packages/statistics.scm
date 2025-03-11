@@ -3945,32 +3945,6 @@ method to correct for outcome reporting bias in a meta-analysis (van Aert &
 Wicherts, 2020).")
     (license license:gpl2+)))
 
-(define-public r-logspline
-  (package
-    (name "r-logspline")
-    (version "2.1.22")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "logspline" version))
-        (sha256
-          (base32
-            "00pdcfj1hmafxzs7gqw3n072p6pxp9hvsdm062n0xkiby6igffkp"))))
-    (properties `((upstream-name . "logspline")))
-    (build-system r-build-system)
-    (native-inputs (list gfortran))
-    (home-page
-      "https://cran.r-project.org/web/packages/logspline/")
-    (synopsis
-      "Routines for Logspline Density Estimation")
-    (description
-      "Contains routines for logspline density estimation.  The function
-@code{oldlogspline()} uses the same algorithm as the logspline package version
-1.0.x; i.e., the Kooperberg and Stone (1992) algorithm (with an improved
-interface).  The recommended routine @code{logspline()} uses an algorithm from
-@url{doi:10.1214/aos/1031594728,Stone et al (1997)}.")
-    (license license:asl2.0)))
-
 (define-public r-norm
   (package
     (name "r-norm")
