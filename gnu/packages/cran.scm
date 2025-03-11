@@ -19248,6 +19248,48 @@ implementation of an approximate nearest neighbor search using hierarchical
 @acronym{NSW, Navigable Small World} graphs.")
     (license license:asl2.0)))
 
+(define-public r-naniar
+  (package
+    (name "r-naniar")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "naniar" version))
+              (sha256
+               (base32
+                "0i3gijr1l7hbcp75cyj26pxmm493lnvasl8aba9vv4w8lz1lck59"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cli
+           r-dplyr
+           r-forcats
+           r-ggplot2
+           r-glue
+           r-lifecycle
+           r-magrittr
+           r-norm
+           r-purrr
+           r-rlang
+           r-tibble
+           r-tidyr
+           r-upsetr
+           r-vctrs
+           r-viridis
+           r-visdat))
+    (native-inputs
+     (list r-knitr r-testthat))
+    (home-page "https://github.com/njtierney/naniar")
+    (synopsis
+     "Data structures, summaries, and visualisations for missing data")
+    (description
+     "Missing values are ubiquitous in data and need to be explored and
+handled in the initial stages of analysis.  The package provides data
+structures and functions that facilitate the plotting of missing values and
+examination of imputations.  This allows missing data dependencies to be
+explored with minimal deviation from the common work patterns of
+@code{ggplot2} and tidy data.")
+    (license license:expat)))
+
 (define-public r-nestedcv
   (package
     (name "r-nestedcv")
