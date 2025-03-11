@@ -7494,6 +7494,27 @@ estimation; L-moment ratio diagram; plot vs. quantiles of an extreme-value
 distribution.")
     (license license:cpl1.0)))
 
+(define-public r-locfit
+  (package
+    (name "r-locfit")
+    (version "1.5-9.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "locfit" version))
+       (sha256
+        (base32
+         "1fg3qha36hvmibfrin1rndarr5zk0v55nj0q5h5inpqkzdl4p5ls"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-lattice))
+    (home-page "https://cran.r-project.org/web/packages/locfit")
+    (synopsis "Local regression, likelihood and density estimation")
+    (description
+     "This package provides functions used for local regression, likelihood
+and density estimation.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-ggpmisc
   (package
     (name "r-ggpmisc")
