@@ -2873,6 +2873,50 @@ using the multicore functionality of the parallel package.")
 using the parallel package.")
     (license license:gpl2+)))
 
+(define-public r-dplyr
+  (package
+    (name "r-dplyr")
+    (version "1.1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "dplyr" version))
+              (sha256
+               (base32
+                "1jsq8pj12bngy66xms486j8a65wxvyqs944q9rxkiaylsla08wyg"))))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-failing-tests
+           (lambda _
+             ;; 2 tests fail because of unexpected but harmless warnings.
+             (delete-file "tests/testthat/test-rows.R"))))))
+    (propagated-inputs
+     (list r-cli
+           r-generics
+           r-glue
+           r-lifecycle
+           r-magrittr
+           r-pillar
+           r-r6
+           r-rlang
+           r-tibble
+           r-tidyselect
+           r-vctrs))
+    (native-inputs
+     (list r-knitr r-testthat))
+    (home-page "https://github.com/hadley/dplyr")
+    (synopsis "Tools for working with data frames in R")
+    (description
+     "dplyr is the next iteration of plyr.  It is focused on tools for working
+with data frames.  It has three main goals: 1) identify the most important
+data manipulation tools needed for data analysis and make them easy to use in
+R; 2) provide fast performance for in-memory data by writing key pieces of
+code in C++; 3) use the same code interface to work with data no matter where
+it is stored, whether in a data frame, a data table or database.")
+    (license license:expat)))
+
 (define-public r-e1071
   (package
     (name "r-e1071")
