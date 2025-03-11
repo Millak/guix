@@ -3603,26 +3603,6 @@ method to correct for outcome reporting bias in a meta-analysis (van Aert &
 Wicherts, 2020).")
     (license license:gpl2+)))
 
-(define-public r-norm
-  (package
-    (name "r-norm")
-    (version "1.0-11.1")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "norm" version))
-              (sha256
-               (base32
-                "1g33g721c0f2b275b334ir6n0h81fh567vs9vrxk60y21z1ydzy2"))))
-    (build-system r-build-system)
-    (native-inputs
-     (list gfortran))
-    (home-page "https://cran.r-project.org/web/packages/norm/")
-    (synopsis "Analysis of multivariate normal datasets with missing values")
-    (description "Multiple imputation of multivariate continuous data under a
-normal model.")
-    ;; Custom license, see https://cran.r-project.org/web/packages/norm/LICENSE.
-    (license (license:non-copyleft "file://LICENSE"))))
-
 (define-public xlispstat
   (let ((commit "f1bea6053df658ee48612bf1f63c35de99e2c649")
         (revision "0"))

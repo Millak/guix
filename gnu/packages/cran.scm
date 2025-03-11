@@ -19489,6 +19489,26 @@ available online as well as original implementations of various other
 algorithms.")
     (license license:lgpl3)))
 
+(define-public r-norm
+  (package
+    (name "r-norm")
+    (version "1.0-11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "norm" version))
+              (sha256
+               (base32
+                "1g33g721c0f2b275b334ir6n0h81fh567vs9vrxk60y21z1ydzy2"))))
+    (build-system r-build-system)
+    (native-inputs (list gfortran))
+    (home-page "https://cran.r-project.org/web/packages/norm/")
+    (synopsis "Analysis of multivariate normal datasets with missing values")
+    (description "This package provides an integrated set of functions for the
+analysis of multivariate normal datasets with missing values, including
+implementation of the EM algorithm, data augmentation, and multiple
+imputation.")
+    (license license:gpl2+)))
+
 (define-public r-numero
   (package
     (name "r-numero")
