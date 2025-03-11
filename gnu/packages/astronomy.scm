@@ -6809,6 +6809,119 @@ System (WCS) tags.  Users should not need to install this directly; instead,
 install an implementation package such as gwcs.")
     (license license:bsd-3)))
 
+(define-public python-pint-pulsar
+  (package
+    (name "python-pint-pulsar")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/nanograv/PINT")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i8vznjgbdhrfv6kcq33zvsn6q40r29sscy8fmk13vx2zfwl8nf0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Tests failing with assertion on not correct precision
+                    ;; or missing data files.
+                    (list "not test_astropy_observatory"
+                          "test_copy_wideband_fitter_object"
+                          "test_IERS_B_builtin_agree_with_IERS_Auto_dX"
+                          "test_astropy_observatory"
+                          "test_time_construction_jds_exact[tdb]"
+                          "test_copy_toa_object"
+                          "test_copy_residuals"
+                          "test_copy_fitter_object")
+                    " and not ")
+              ;; XXX: The most of the tests require additional data, select
+              ;; files where they may run without it and check how to enable
+              ;; more.
+              "tests/test_Galactic.py"
+              "tests/test_all_component_and_model_builder.py"
+              "tests/test_astrometry.py"
+              "tests/test_astropy_observatory.py"
+              "tests/test_astropy_times.py"
+              "tests/test_astropy_version.py"
+              "tests/test_binary_generic.py"
+              "tests/test_binconvert.py"
+              "tests/test_compare.py"
+              "tests/test_compare_model.py"
+              "tests/test_compare_model_ecl_vs_icrs.py"
+              "tests/test_convert_parfile.py"
+              "tests/test_copy.py"
+              "tests/test_covariance_matrix.py"
+              "tests/test_datafiles.py"
+              "tests/test_derived_quantities.py"
+              "tests/test_derivedparams.py"
+              "tests/test_dmxrange_add_sub.py"
+              "tests/test_erfautils.py"
+              "tests/test_eventstats.py"
+              "tests/test_funcpar.py"
+              "tests/test_kepler.py"
+              "tests/test_leapsec.py"
+              "tests/test_model_manual.py"
+              "tests/test_numpy.py"
+              "tests/test_observatory_envar.py"
+              "tests/test_observatory_metadata.py"
+              "tests/test_parfile.py"
+              "tests/test_parunits.py"
+              "tests/test_pb.py"
+              "tests/test_phase.py"
+              "tests/test_pickle.py"
+              "tests/test_plk_widget.py"
+              "tests/test_plot_utils.py"
+              "tests/test_plrednoise.py"
+              "tests/test_pmtransform_units.py"
+              "tests/test_precision.py"
+              "tests/test_prefix_param_inheritance.py"
+              "tests/test_priors.py"
+              "tests/test_process_parfile.py"
+              "tests/test_pulsar_mjd.py"
+              "tests/test_pulsar_position.py"
+              "tests/test_reduced_precision.py"
+              "tests/test_satobs.py"
+              "tests/test_t2binary2pint.py"
+              "tests/test_tcb2tdb.py"
+              "tests/test_templates.py"
+              "tests/test_variety_parfiles.py"
+              "tests/test_version.py")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-versioneer
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-corner
+           python-emcee
+           python-jplephem
+           python-loguru
+           python-matplotlib
+           python-nestle
+           python-numdifftools
+           python-numpy
+           python-pyerfa
+           python-scipy
+           python-uncertainties))
+    (home-page "https://github.com/nanograv/PINT")
+    (synopsis "Software for high-precision pulsar timing")
+    (description
+     "PINT is not TEMPO3 - package providing a Pulsar Timing, written in
+Python from scratch.
+Features:
+@itemize
+@item a robust system to produce high-precision timing results that is
+completely independent of TEMPO and Tempo2
+@item a system that is easy to extend and modify due to a good design
+and the use of a modern programming language, techniques, and libraries
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-rad
   (package
     (name "python-rad")
