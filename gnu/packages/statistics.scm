@@ -587,27 +587,6 @@ the execution time of R expressions.")
 understand the language at a deeper level.")
     (license license:gpl2)))
 
-(define-public r-memoise
-  (package
-    (name "r-memoise")
-    (version "2.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "memoise" version))
-              (sha256
-               (base32
-                "1srdzv2bp0splislrabmf1sfbqfi3hn189nq7kxhgjn8k3p38l7q"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-cachem r-rlang))
-    (native-inputs (list r-testthat))
-    (home-page "https://github.com/hadley/memoise")
-    (synopsis "Memoise functions for R")
-    (description
-     "This R package caches the results of a function so that when
-you call it again with the same arguments it returns the pre-computed value.")
-    (license license:expat)))
-
 (define-public r-praise
   (package
     (name "r-praise")
