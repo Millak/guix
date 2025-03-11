@@ -2712,21 +2712,6 @@ It also provides lots of helper functions---e.g., to ease the handling of
 package descriptions or to unify multiple existing APIs into a single API.")
     (license license:asl2.0)))
 
-(define-public python-pytooling-4
-  (package
-    (inherit python-pytooling)
-    (name "python-pytooling")
-    (version "4.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pyTooling/pyTooling/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1midq2im2ksdy0knssnlwijdkjk0hwjxk5xin93xg4l7j89kvmj3"))))))
-
 (define-public python-colorlog
   (package
     (name "python-colorlog")
