@@ -8309,6 +8309,44 @@ mode,ephemerides of pulse phase behavior (in the form of polynomial
 expansions) are calculated from input timing models.")
     (license license:gpl2+)))
 
+(define-public tempo2
+  (package
+    (name "tempo2")
+    (version "2025.02.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://bitbucket.org/psrsoft/tempo2")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06494q0zff1qj813y70r014ifm60cminhk7lisy4by022mr6wd3k"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pathes
+            (lambda _
+              (substitute* (list "bootstrap" "plugin/make_build_settings.sh")
+                (("/bin/bash") (which "bash"))
+                (("/bin/echo") "echo")))))))
+    (native-inputs
+     (list autoconf
+           automake
+           gfortran
+           libtool
+           pkg-config))
+    (home-page "https://bitbucket.org/psrsoft/tempo2")
+    (synopsis "High precision pulsar timing tool")
+    (description
+     "Tempo2 is a pulsar timing package, based on the old FORTRAN TEMPO code
+to address some shortcomings in that code for high precision pulsar timing.
+See related paper
+@url{https://ui.adsabs.harvard.edu/abs/2006MNRAS.369..655H/abstract}.")
+    (license license:gpl3+)))
+
 (define-public unsio
   ;; There is no versioned tag, use the latest commit.
   (let ((commit "25e52468298e1194c9726ef5dba9d5fbb46870f5")
