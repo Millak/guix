@@ -23067,7 +23067,7 @@ created by @code{git format-patch}, from @code{magit}, @code{dired} and
 (define-public emacs-git-email
   (package
     (name "emacs-git-email")
-    (version "0.7.0")
+    (version "0.7.2")
     (source
      (origin
        (method git-fetch)
@@ -23076,7 +23076,7 @@ created by @code{git format-patch}, from @code{magit}, @code{dired} and
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mda886spz48jvv00xv7ki4154z02bwqbwjfa7clvdw83lfp33am"))))
+        (base32 "0p8c449nvn77bxmq1pinpw47lx6gj1k08yrxgi8bc8xrwkni9glp"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
