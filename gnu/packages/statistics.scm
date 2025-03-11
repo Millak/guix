@@ -2306,30 +2306,6 @@ approximate, exact searches, fixed radius searches, bd and kb trees.")
 forest of trees using random inputs, for classification and regression.")
     (license license:gpl2+)))
 
-(define-public r-prabclus
-  (package
-    (name "r-prabclus")
-    (version "2.3-4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "prabclus" version))
-       (sha256
-        (base32
-         "0wmcw0iz0a4q0x83v36ldv8b67czcpw3g18v68i3v9284rbj6xnd"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-mass r-mclust))
-    (native-inputs (list r-spatialreg r-spdep))
-    (home-page "https://cran.r-project.org/web/packages/prabclus")
-    (synopsis "Parametric bootstrap tests for spatial neighborhood clustering")
-    (description
-     "This package provides distance-based parametric bootstrap tests for
-clustering with spatial neighborhood information.  It implements some distance
-measures, clustering of presence-absence, abundance and multilocus genetical
-data for species delimitation, nearest neighbor based noise detection.")
-    (license license:gpl2+)))
-
 (define-public r-robustbase
   (package
     (name "r-robustbase")
