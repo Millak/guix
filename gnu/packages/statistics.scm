@@ -2750,29 +2750,6 @@ It supports dense and sparse matrices on integer, floating point and complex num
 decompositions of such matrices, and solutions of linear systems.")
     (license license:gpl2+)))
 
-(define-public r-modelmetrics
-  (package
-    (name "r-modelmetrics")
-    (version "1.2.2.2")
-    (source
-     (origin
-       (method url-fetch)
-        (uri (cran-uri "ModelMetrics" version))
-        (sha256
-         (base32
-          "0mrlsw4c5y1vdsqynxr2dcvmhh5h37pnd71jw5a5djpbda9g21jy"))))
-    (properties `((upstream-name . "ModelMetrics")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-data-table r-rcpp))
-    (native-inputs (list r-testthat))
-    (home-page "https://cran.r-project.org/web/packages/ModelMetrics")
-    (synopsis "Rapid calculation of model metrics")
-    (description
-     "Written in C++ using @code{Rcpp}, this package provides a collection of
-metrics for evaluating models.")
-    (license license:gpl2+)))
-
 (define-public r-quantreg
   (package
     (name "r-quantreg")
