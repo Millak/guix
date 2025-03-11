@@ -9660,6 +9660,25 @@ custom model weighting schemes.")
 Munsell colour system.")
     (license license:expat)))
 
+(define-public r-mvtnorm
+  (package
+    (name "r-mvtnorm")
+    (version "1.3-3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "mvtnorm" version))
+              (sha256
+               (base32
+                "0wa1zal0q8zawqrjllx70kakn3ynpsm0imb3mmc956y89d9py3p2"))))
+    (build-system r-build-system)
+    (native-inputs
+     (list gfortran r-numderiv))
+    (home-page "https://mvtnorm.R-forge.R-project.org")
+    (synopsis "Package for multivariate normal and t-distributions")
+    (description "This package can compute multivariate normal and
+t-probabilities, quantiles, random deviates and densities.")
+    (license license:gpl2)))
+
 (define-public r-shadowtext
   (package
     (name "r-shadowtext")
