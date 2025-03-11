@@ -3599,6 +3599,27 @@ memory-saving routines for clustering of vector data, which go beyond what the
 existing packages provide.")
     (license license:bsd-2)))
 
+(define-public r-fastica
+  (package
+    (name "r-fastica")
+    (version "1.2-7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fastICA" version))
+       (sha256
+        (base32
+         "08cw1aszsi4i8asfrzyyz66wl70g50y1dndmf8j8kqvhw1r6kdxw"))))
+    (properties `((upstream-name . "fastICA")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/fastICA")
+    (synopsis "FastICA algorithms to perform ICA and projection pursuit")
+    (description
+     "This package provides an implementation of the FastICA algorithm to
+perform @dfn{independent component analysis} (ICA) and projection pursuit.")
+    ;; Any GPL version.
+    (license license:gpl3+)))
+
 (define-public r-fateid
   (package
     (name "r-fateid")
