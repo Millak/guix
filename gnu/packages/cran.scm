@@ -4113,6 +4113,27 @@ dumbbell charts, the ability to encircle points and coordinate-system-based
 text annotations.")
     (license license:agpl3)))
 
+(define-public r-ggbeeswarm
+  (package
+    (name "r-ggbeeswarm")
+    (version "0.7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggbeeswarm" version))
+              (sha256
+               (base32
+                "1rcw54isai05np4fj19vcxx2vcxq7y2nm3az9m8xwbc9pdjs4z7x"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-beeswarm r-cli r-ggplot2 r-lifecycle r-vipor))
+    (home-page "https://github.com/eclarke/ggbeeswarm")
+    (synopsis "Categorical scatter (violin point) plots")
+    (description
+     "This package provides two methods of plotting categorical scatter plots
+such that the arrangement of points within a category reflects the density of
+data at that region, and avoids over-plotting.")
+    (license license:gpl2+)))
+
 (define-public r-ggbreak
   (package
     (name "r-ggbreak")
