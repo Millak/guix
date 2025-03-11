@@ -4835,6 +4835,29 @@ gene set and related information, and provides read, write and other utilities
 to process this file format.")
     (license license:artistic2.0)))
 
+(define-public r-gtable
+  (package
+    (name "r-gtable")
+    (version "0.3.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gtable" version))
+              (sha256
+               (base32
+                "1vz0kpj1hh3iz27yaax4i3l9n018py455p4f5nfn92r727xaa1fk"))))
+    (properties `((upstream-name . "gtable")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cli r-glue r-lifecycle r-rlang))
+    (native-inputs
+     (list r-knitr r-testthat))
+    (home-page "https://cran.r-project.org/web/packages/gtable")
+    (synopsis "R library to arrange grobs in tables")
+    (description
+     "Gtable is a collection of tools to make it easier to work with
+\"tables\" of grobs.")
+    (license license:gpl2+)))
+
 (define-public r-guix-install
   (package
     (name "r-guix-install")
