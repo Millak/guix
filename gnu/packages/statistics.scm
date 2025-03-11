@@ -1532,33 +1532,6 @@ previous R versions and their release dates.")
 or source files in a key-value fashion.")
     (license license:bsd-3)))
 
-(define-public r-desc
-  (package
-    (name "r-desc")
-    (version "1.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "desc" version))
-       (sha256
-        (base32
-         "09ig14bm68cps6d1mrmj6hhjr01i6gz1ri35qpkwk3yp7nkqsijl"))))
-    (properties
-     ;; We can't have r-testthat among the inputs here to avoid a dependency
-     ;; cycle.
-     '((updater-ignored-native-inputs . ("r-testthat"))))
-    (build-system r-build-system)
-    (arguments (list #:tests? #false))
-    (propagated-inputs
-     (list r-cli r-r6))
-    (home-page "https://github.com/r-pkgs/desc")
-    (synopsis "Manipulate DESCRIPTION Files")
-    (description
-     "This package provides tools to read, write, create, and manipulate
-DESCRIPTION files.  It is intended for packages that create or manipulate
-other packages.")
-    (license license:expat)))
-
 (define-public r-roxygen2
   (package
     (name "r-roxygen2")
