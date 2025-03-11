@@ -2512,6 +2512,47 @@ convincing alternatives).  The BigCamelCase style was consequently applied to
 functions borrowed from contributed R packages as well.")
     (license license:gpl2+)))
 
+(define-public r-devtools
+  (package
+    (name "r-devtools")
+    (version "2.4.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "devtools" version))
+              (sha256
+               (base32
+                "0jwh14clyj5flygpmifk01avs7mbnj2s1686pxzfrkcshfyhw5iq"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cli
+           r-desc
+           r-ellipsis
+           r-fs
+           r-lifecycle
+           r-memoise
+           r-miniui
+           r-pkgbuild
+           r-pkgdown
+           r-pkgload
+           r-profvis
+           r-rcmdcheck
+           r-remotes
+           r-rlang
+           r-roxygen2
+           r-rversions
+           r-sessioninfo
+           r-testthat
+           r-urlchecker
+           r-usethis
+           r-withr))
+    (native-inputs
+     (list r-knitr r-mockery r-testthat))
+    (home-page "https://github.com/hadley/devtools")
+    (synopsis "Tools to make developing R packages easier")
+    (description "The devtools package is a collection of package development
+tools to simplify the devolpment of R packages.")
+    (license license:gpl2+)))
+
 (define-public r-dfidx
   (package
     (name "r-dfidx")
