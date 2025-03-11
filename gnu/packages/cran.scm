@@ -4433,6 +4433,29 @@ This package provides a simple way to produce such plots using ggplot2.  In
 addition it can convert any categorical axis into a combination matrix axis.")
     (license license:gpl3)))
 
+(define-public r-git2r
+  (package
+    (name "r-git2r")
+    (version "0.35.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "git2r" version))
+              (sha256
+               (base32
+                "0i76pf7nfdf989fwdhx233kp3qqimqqjhdj4r4jx6yx1bklg06i9"))))
+    (build-system r-build-system)
+    (inputs
+     (list libgit2 zlib))
+    (native-inputs
+     (list pkg-config tzdata-for-tests))
+    (home-page "https://github.com/ropensci/git2r")
+    (synopsis "Access Git repositories with R")
+    (description
+     "This package provides an R interface to the libgit2 library, which is a
+pure C implementation of the Git core methods.")
+    ;; GPLv2 only with linking exception.
+    (license license:gpl2)))
+
 (define-public r-glba
   (package
     (name "r-glba")
