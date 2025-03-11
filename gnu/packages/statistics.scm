@@ -2520,32 +2520,6 @@ dataset in O(N log N) time using Arya and Mount's ANN library.  Provides
 approximate, exact searches, fixed radius searches, bd and kb trees.")
     (license license:gpl3+)))
 
-(define-public r-mixtools
-  (package
-    (name "r-mixtools")
-    (version "2.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "mixtools" version))
-       (sha256
-        (base32
-         "03by64xi7yka0hzc1qyz1jdqzah6isvr3cdsc7g5v6hb4f178kl5"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-kernlab
-           r-mass
-           r-plotly
-           r-scales
-           r-segmented
-           r-survival))
-    (home-page "https://cran.r-project.org/web/packages/mixtools")
-    (synopsis "Tools for analyzing finite mixture models")
-    (description
-     "This package provides a collection of R functions for analyzing finite
-mixture models.")
-    (license license:gpl2+)))
-
 (define-public r-randomforest
   (package
     (name "r-randomforest")
