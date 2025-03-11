@@ -2368,7 +2368,7 @@ algorithms for evaluating Bayesian evidence.")
 (define-public python-arviz
   (package
     (name "python-arviz")
-    (version "0.20.0")
+    (version "0.21.0")
     (source (origin
               (method git-fetch)        ; PyPI misses some test files
               (uri (git-reference
@@ -2377,7 +2377,7 @@ algorithms for evaluating Bayesian evidence.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dk25jmsljan6pfcq0s06vgk7gg20qqhk0zqnpd8dw94dhw2mnpa"))))
+                "02bqpl61gzn65vhwspi6gx9ln2wlwh8xm418i8vhmls44rvszcxf"))))
     (build-system pyproject-build-system)
     (arguments
      ;; FIXME: matplotlib tests fail because of the "--save" test flag.
