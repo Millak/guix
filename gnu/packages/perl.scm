@@ -994,7 +994,7 @@ compiling the surrounding scope.")
     (home-page "https://metacpan.org/release/B-Utils")
     (synopsis "Helper functions for op tree manipulation")
     (description "@code{B::Utils} provide helper functions for op
-tree manupulation.")
+tree manipulation.")
     (license license:perl-license)))
 
 (define-public perl-b-keywords
