@@ -3899,30 +3899,6 @@ simple slopes, standardized coefficients, regions of significance (Johnson &
 Neyman, 1936; cf.  Spiller et al., 2012), etc.")
     (license license:gpl3)))
 
-(define-public r-mumin
-  (package
-    (name "r-mumin")
-    (version "1.48.4")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "MuMIn" version))
-              (sha256
-               (base32
-                "04zn63snv218c44nllfh8bqh5xg0gamd9fcpwxisvi9gwb3f20i0"))))
-    (properties `((upstream-name . "MuMIn")))
-    (build-system r-build-system)
-    (propagated-inputs (list r-insight r-matrix r-nlme))
-    (native-inputs (list r-mgcv r-survival))
-    (home-page "https://cran.r-project.org/package=MuMIn")
-    (synopsis "Multi-Model Inference")
-    (description
-     "Tools for performing model selection and model averaging.  Automated model
-selection through subsetting the maximum model, with optional constraints for
-model inclusion.  Model parameter and prediction averaging based on model
-weights derived from information criteria (AICc and alike) or custom model
-weighting schemes.")
-    (license license:gpl2)))
-
 (define-public ruby-enumerable-statistics
   (package
     (name "ruby-enumerable-statistics")
