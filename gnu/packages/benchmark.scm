@@ -52,10 +52,11 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
-  #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
@@ -403,7 +404,7 @@ setup against another one.")
 (define-public python-benchexec
   (package
     (name "python-benchexec")
-    (version "3.24")
+    (version "3.29")
     (source
      (origin
        (method git-fetch)
@@ -412,18 +413,29 @@ setup against another one.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14yllwinbvifrin29vbm9ibjzswri0isvc6476ygf0whlg90z24j"))))
+        (base32 "0vcafk20sg8bwh9qqwf94d6hqk0kq3yhiraknf7jsjisf2mrksjk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags #~(list "--exclude=runexecutor")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((prog (search-input-file inputs "bin/fuse-overlayfs")))
+                (substitute* "benchexec/container.py"
+                  (("shutil.which\\(\"fuse-overlayfs\"\\)")
+                   (string-append "\"" prog "\""))))))
           (add-before 'check 'skip-failing-tests
             (lambda _
               (delete-file-recursively "benchexec/test_integration"))))))
-    (propagated-inputs (list python-pyyaml))
-    (native-inputs (list coreutils python-lxml python-nose))
+    (propagated-inputs (list fuse-overlayfs python-pyyaml))
+    (native-inputs
+     (list coreutils
+           python-lxml
+           python-nose
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/sosy-lab/benchexec/")
     (synopsis "Framework for Reliable Benchmarking")
     (description
