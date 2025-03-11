@@ -9476,6 +9476,28 @@ the execution time of R expressions.")
 data derived from /etc/mime.types in UNIX-type systems.")
     (license license:gpl2)))
 
+(define-public r-minqa
+  (package
+    (name "r-minqa")
+    (version "1.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "minqa" version))
+       (sha256
+        (base32
+         "0rslvg4imaijzb5z6vzsx4zqhrna1jk6qkp2kxnzqy0rn2wy8har"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list gfortran))
+    (home-page "https://optimizer.r-forge.r-project.org")
+    (synopsis "Derivative-free optimization algorithms by quadratic approximation")
+    (description
+     "This package provides a derivative-free optimization by quadratic
+approximation based on an interface to Fortran implementations by
+M. J. D. Powell.")
+    (license license:gpl2)))
+
 (define-public r-munsell
   (package
     (name "r-munsell")
