@@ -55,7 +55,7 @@
 (define-public gambas
   (package
     (name "gambas")
-    (version "3.20.1")
+    (version "3.20.2")
     (source
      (origin
        (method git-fetch)
@@ -64,13 +64,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fw3nark7vaw4vbmdvaaqb0an4838k0hhwwvc3dqd7f2033d41xq"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Fix desktop file creation, upstream commit bbaa7b40.
-        '(substitute* "comp/src/gb.gui.base/.src/_Gui.class"
-           (("If sDir Begins [(]User\\.Home & \"/\"[)]" all)
-            (string-append all " And If Access(sDir, gb.Write)"))))))
+        (base32 "060f8w19jf78mappqgy11873ss3h97gi47ga3c1ws1bazix9x7rk"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -122,10 +116,8 @@
               (let* ((out (assoc-ref outputs "out"))
                      (appdir (string-append out "/share/applications"))
                      (icondir (string-append out "/share/pixmaps")))
-                (install-file "app/desktop/gambas3.desktop"
-                              (string-append appdir "/gambas3.desktop"))
-                (install-file "app/desktop/gambas3.png"
-                              (string-append icondir "/gambas3.png"))))))))
+                (install-file "app/desktop/gambas3.desktop" appdir)
+                (install-file "app/desktop/gambas3.png" icondir)))))))
     (native-inputs
      (list autoconf
            automake
