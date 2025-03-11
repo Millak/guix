@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,12 +20,17 @@
   #:use-module (srfi srfi-26)
   #:use-module (gnu home services)
   #:use-module (gnu home services shepherd)
+  #:use-module (gnu packages irc)
   #:use-module (gnu packages messaging)
+  #:use-module (gnu services)
   #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
+  #:use-module (gnu services messaging)
+  #:use-module ((gnu system shadow) #:select (account-service-type))
   #:use-module (guix records)
   #:use-module (guix gexp)
-  #:export (home-znc-configuration
+  #:export (home-snuik-service-type
+            home-znc-configuration
             home-znc-service-type))
 
 ;;;
@@ -64,3 +69,15 @@
    (description
     "Install and configure @command{znc}, an @acronym{IRC, Internet Relay
 Chat} bouncer, as a Shepherd service.")))
+
+
+;;;
+;;; Snuik.
+;;;
+(define home-snuik-service-type
+  (service-type
+   (inherit (system->home-service-type
+             (remove-service-extensions snuik-service-type
+                                        (list account-service-type
+                                              activation-service-type))))
+   (default-value (for-home (snuik-configuration)))))

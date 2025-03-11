@@ -49814,6 +49814,34 @@ znc} for more information.
 @end table
 @end deftp
 
+@cindex irc-bot
+@cindex snuik
+The @uref{https://gitlab.com/janneke/snuik, Snuik IRC bot} can be run as
+a daemon to aid talking to users that are currently offline.  With the
+@code{(gnu home services messaging)} service, you can configure Snuik to
+run upon login.
+
+@defvar home-snuik-service-type
+This is the type of the Snuik home service, whose value is a
+@code{home-snuik-configuration} object.
+@end defvar
+
+You may specify a custom configuration by providing a
+@code{snuik-configuration} record, exactly like for
+@code{snuik-service-type} and wrapping it in @code{for-home}.  Here is
+an example of a service and its configuration that you could add to the
+@code{services} field of your @code{home-environment}:
+
+@lisp
+(service home-snuik-service-type
+         (for-home
+          (snuik-configuration
+           (server "irc.oftc.net")
+           (nick "sneek")
+           (password "snuik is sneeky")
+           (channels '("#reproducible-builds"))))
+@end lisp
+
 @node Media Home Services
 @subsection Media Home Services
 
