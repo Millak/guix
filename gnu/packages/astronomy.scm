@@ -8168,6 +8168,34 @@ Moon position, etc.")
 any arbitrary astrometric projection defined in the WCS standard.")
     (license license:gpl3+)))
 
+(define-public tempo
+  (package
+    (name "tempo")
+    (version "13.103")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/tempo/tempo-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1ghml56sd7rhwymrlqlvj3g12hjyqvk2sjl08rqlf5y7dwdp0nvl"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list gfortran))
+    (home-page "https://github.com/nanograv/tempo")
+    (synopsis "Pulsar timing data analysis program")
+    (description
+     "Tempo analyzes pulsar timing data.  Pulse times of arrival (TOAs),
+pulsar model parameters, and coded instructions are read from one or more
+input files.  The TOAs are fitted by a pulse timing model incorporating
+transformation to the solar-system barycenter, pulsar rotation and spin-down
+and, where necessary, one of several binary models.  Program output includes
+parameter values and uncertainties, residual pulse arrival times, chi-squared
+statistics, and the covariance matrix of the model.  In prediction
+mode,ephemerides of pulse phase behavior (in the form of polynomial
+expansions) are calculated from input timing models.")
+    (license license:gpl2+)))
+
 (define-public unsio
   ;; There is no versioned tag, use the latest commit.
   (let ((commit "25e52468298e1194c9726ef5dba9d5fbb46870f5")
