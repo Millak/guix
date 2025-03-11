@@ -163,6 +163,8 @@
   #:use-module (gnu packages wm)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages logging)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages)
   #:use-module (ice-9 match))
 
@@ -3523,7 +3525,7 @@ create layout indicator widgets.")
 (define-public j4-dmenu-desktop
   (package
     (name "j4-dmenu-desktop")
-    (version "2.18")
+    (version "3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3532,22 +3534,27 @@ create layout indicator widgets.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gxpgifzy0hnpd0ymw3r32amzr32z3bgb90ldjzl438p6h1q0i26"))))
-    (build-system cmake-build-system)
+                "15jlb0si77sndnl5annys0dq2gkwwvzn1d2jwjay9i3xdivzmfb2"))))
+    (build-system meson-build-system)
     (native-inputs
-     (list catch2))
+     (list catch2-3 pkg-config))
+    (inputs (list spdlog fmt-11))
     (arguments
-     `(#:configure-flags '("-DWITH_GIT_CATCH=off")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'find-catch
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("PATH_SUFFIXES catch") "PATH_SUFFIXES catch2"))
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "./j4-dmenu-tests" "exclude:SearchPath/XDG_DATA_HOME"))))))
+     (list
+      #:configure-flags
+      #~(list #$(string-append
+                 "-Denable-tests="
+                 (if (%current-target-system)
+                     "false"
+                     "true")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-shell-path-in-tests
+            (lambda _
+              (substitute* (list "tests/ShellUnquote.cc"
+                                 "tests/TestFieldCodes.cc")
+                (("/bin/sh")
+                 (which "sh"))))))))
     (synopsis "Fast desktop menu")
     (description
      "j4-dmenu-desktop is a replacement for i3-dmenu-desktop.  Its purpose
