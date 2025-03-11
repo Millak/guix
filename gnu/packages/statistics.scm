@@ -2717,31 +2717,6 @@ for handling censored survival data.  Portfolio selection methods based on
 expected shortfall risk are also included.")
     (license license:gpl2+)))
 
-(define-public r-nloptr
-  (package
-    (name "r-nloptr")
-    (version "2.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "nloptr" version))
-       (sha256
-        (base32
-         "1snqvav2pxjhssn1nld49mjj89cn2zv7gjn2y8ch22gbzmfzbnjc"))))
-    (build-system r-build-system)
-    (native-inputs
-     (list gfortran pkg-config r-knitr))
-    (inputs (list nlopt))
-    (home-page "https://cran.r-project.org/web/packages/nloptr")
-    (synopsis "R interface to NLopt")
-    (description
-     "This package is interface to NLopt, a library for nonlinear
-optimization.  NLopt is a library for nonlinear optimization, providing a
-common interface for a number of different free optimization routines
-available online as well as original implementations of various other
-algorithms.")
-    (license license:lgpl3)))
-
 (define-public r-pbkrtest
   (package
     (name "r-pbkrtest")
