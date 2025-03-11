@@ -39,14 +39,14 @@
   ;; yet, so we'll keep both for just a little longer.
   (package
     (name "ncdu")
-    (version "1.21")
+    (version "1.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "19h1jvgiw7dvpxlhg6sqzc1c8gjkaj7z9girc255gkkbnjlx7558"))))
+                "0sqp39lkryjljvvrwv0x37a9fklg3g060iqhh42i5m84vjbc1mha"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
