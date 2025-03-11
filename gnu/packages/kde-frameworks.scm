@@ -1859,30 +1859,6 @@ your network devices and also provides a library for parsing connection settings
 which are used in DBus communication.")
     (license license:lgpl2.1+)))
 
-(define-public networkmanager-qt5
-  (package
-    (inherit networkmanager-qt)
-    (name "networkmanager-qt5")
-    (version "5.116.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version)
-                    "/networkmanager-qt-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0s8vc3qqx76f70vql77hb3nxkn6b3hvzdm6bgcpnnxqhw6j80khb"))))
-    (native-inputs
-     (list extra-cmake-modules dbus pkg-config))
-    (propagated-inputs
-     ;; Headers contain #include <NetworkManager.h> and
-     ;;                 #include <libnm/NetworkManager.h>
-     (list network-manager))
-    (inputs
-     (list qtbase-5))
-    (properties `((upstream-name . "networkmanager-qt")))))
-
 (define-public oxygen-icons
   (package
     (name "oxygen-icons")
