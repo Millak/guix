@@ -800,57 +800,6 @@ matter where it is stored, whether in a data frame, a data table or
 database.")
     (license license:expat)))
 
-(define-public r-dbplyr
-  (package
-    (name "r-dbplyr")
-    (version "2.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "dbplyr" version))
-       (sha256
-        (base32
-         "1zxw4ignzm2fzixsf6n80f44b9q7434vamy2xj4v31wlx3dmnixv"))))
-    (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; We need this for one failing test.
-         (add-before 'check 'set-timezone
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "TZ" "UTC+1")
-             (setenv "TZDIR"
-                     (search-input-directory inputs
-                                             "share/zoneinfo")))))))
-    (propagated-inputs
-     (list r-blob
-           r-cli
-           r-dbi
-           r-dplyr
-           r-glue
-           r-lifecycle
-           r-magrittr
-           r-pillar
-           r-purrr
-           r-r6
-           r-rlang
-           r-tibble
-           r-tidyr
-           r-tidyselect
-           r-vctrs
-           r-withr))
-    (native-inputs
-     (list r-knitr r-rsqlite r-testthat tzdata-for-tests))
-    (home-page "https://github.com/tidyverse/dbplyr")
-    (synopsis "Dplyr back end for databases")
-    (description
-     "This package provides a dplyr back end for databases that allows you to
-work with remote database tables as if they are in-memory data frames.  Basic
-features works with any database that has a @code{DBI} back end; more advanced
-features require SQL translation to be provided by the package author.")
-    (license license:expat)))
-
 (define-public r-locfit
   (package
     (name "r-locfit")
