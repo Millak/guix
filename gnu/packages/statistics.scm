@@ -1961,36 +1961,6 @@ matrices.  It includes Cholesky decomposition and backsolving as well as
 standard R subsetting and Kronecker products.")
     (license license:gpl2+)))
 
-(define-public r-glmnet
-  (package
-   (name "r-glmnet")
-   (version "4.1-8")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (cran-uri "glmnet" version))
-     (sha256
-      (base32 "1znw1p1mi7nv39l7albcg6sfxj7a1jyjw85hb3ginv870z7fbnqx"))))
-   (build-system r-build-system)
-   (native-inputs
-    (list gfortran r-knitr r-testthat))
-   (propagated-inputs
-    (list r-foreach
-          r-matrix
-          r-rcpp
-          r-rcppeigen
-          r-shape
-          r-survival))
-   (home-page "https://www.jstatsoft.org/article/view/v033i01")
-   (synopsis "Lasso and elastic-net regularized generalized linear models")
-   (description
-    "The glmnet package provides efficient procedures for fitting the entire
-lasso or elastic-net regularization path for linear and Poisson regression, as
-well as logistic, multinomial, Cox, multiple-response Gaussian and grouped
-multinomial models.  The algorithm uses cyclical coordinate descent in a
-path-wise fashion.")
-   (license license:gpl2+)))
-
 (define-public r-pkgmaker
   (package
     (name "r-pkgmaker")
