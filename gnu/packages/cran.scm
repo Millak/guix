@@ -9439,6 +9439,25 @@ parameter estimation by GCV, REML or UBRE/AIC.  The library includes a
 distributions beyond the exponential family.")
     (license license:gpl2+)))
 
+(define-public r-microbenchmark
+  (package
+    (name "r-microbenchmark")
+    (version "1.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "microbenchmark" version))
+              (sha256
+               (base32
+                "0pvn94zfv50imz5g39wyqbqaa7fkl0h5sy98ic9as4b842lr47ix"))))
+    (build-system r-build-system)
+    (native-inputs (list r-runit))
+    (home-page "https://cran.r-project.org/web/packages/microbenchmark/")
+    (synopsis "Accurate timing functions for R")
+    (description
+     "This package provides infrastructure to accurately measure and compare
+the execution time of R expressions.")
+    (license license:bsd-2)))
+
 (define-public r-mime
   (package
     (name "r-mime")
