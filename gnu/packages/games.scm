@@ -4845,7 +4845,7 @@ This package expects the game(s) to be placed in subdirectories of
                (add-before 'configure 'disable-data-install
                  (lambda _
                    (substitute* "CMakeLists.txt"
-                     (("^install\\(.*STK_DATA_DIR" &)
+                     (("^install\\(DIRECTORY.*STK_DATA_DIR" &)
                       (string-append "# " &))))))))
     (inputs
      (list curl
