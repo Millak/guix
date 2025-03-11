@@ -1982,29 +1982,6 @@ that reshape did.  In particular, built-in methods only work for data frames,
 and tidyr provides no margins or aggregation.")
     (license license:expat)))
 
-(define-public r-purrr
-  (package
-    (name "r-purrr")
-    (version "1.0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "purrr" version))
-       (sha256
-        (base32
-         "0m4fkd047z0p7pd0vp819h6x6n7rmrmi53kvdbjslp8wclj3f0bc"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-cli r-lifecycle r-magrittr r-rlang r-vctrs))
-    (native-inputs
-     (list r-knitr r-lubridate r-testthat r-tibble r-tidyselect))
-    (home-page "https://github.com/hadley/purrr")
-    (synopsis "Functional programming tools")
-    (description
-     "This package completes R's functional programming tools with missing
-features present in other programming languages.")
-    (license license:gpl3+)))
-
 (define-public r-rematch
   (package
     (name "r-rematch")
