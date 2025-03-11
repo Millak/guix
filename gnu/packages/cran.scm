@@ -4710,6 +4710,45 @@ Google.  @code{googleVis} makes use of the internal R HTTP server to display
 the output locally.")
     (license license:gpl2+)))
 
+(define-public r-gplots
+  (package
+    (name "r-gplots")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gplots" version))
+       (sha256
+        (base32
+         "0isgbzsj0zkbzp5zvcz4nkc70rm33pcvcmfd6jiiqiw7nilirqqj"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-catools r-gtools r-kernsmooth))
+    (native-inputs
+     (list r-knitr))
+    (home-page "https://cran.r-project.org/web/packages/gplots")
+    (synopsis "Various R programming tools for plotting data")
+    (description
+     "This package provides various R programming tools for plotting data,
+including:
+
+@itemize
+@item calculating and plotting locally smoothed summary function
+@item enhanced versions of standard plots
+@item manipulating colors
+@item calculating and plotting two-dimensional data summaries
+@item enhanced regression diagnostic plots
+@item formula-enabled interface to @code{stats::lowess} function
+@item displaying textual data in plots
+@item balloon plots
+@item plotting \"Venn\" diagrams
+@item displaying Open-Office style plots
+@item plotting multiple data on same region, with separate axes
+@item plotting means and confidence intervals
+@item spacing points in an x-y plot so they don't overlap
+@end itemize\n")
+    (license license:gpl2+)))
+
 (define-public r-gsignal
   (package
     (name "r-gsignal")
