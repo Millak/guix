@@ -2668,13 +2668,13 @@ discrete, and conditional dimensions.")
 (define-public python-deepxde
   (package
     (name "python-deepxde")
-    (version "1.13.1")
+    (version "1.13.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "deepxde" version))
               (sha256
                (base32
-                "11dna52fhqs4id92k81p19lnm92z9rl90d65k8677in8di74qq9n"))))
+                "11fm9c717pf2j5kb7skvy1nshdqz76m783ndxsd3q3lr5lkqg087"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f                  ; there are no tests
