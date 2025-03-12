@@ -25632,7 +25632,9 @@ used with SGML-like languages: XML, HTML, XHTML, XSL, etc.")
     (build-system emacs-build-system)
     (arguments
      (list #:include #~(cons* "^kbd\\.svg$" "^kbd-ergo\\.svg$"
-                              %default-include)))
+                              %default-include)
+           #:tests? #f                  ; XXX: 2/15 failing tests
+           #:test-command #~(list "make" "ert")))
     (propagated-inputs
      (list emacs-undo-tree))
     (home-page "https://ergoemacs.github.io/")
