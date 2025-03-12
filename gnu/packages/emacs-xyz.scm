@@ -17922,6 +17922,10 @@ for search-based navigation of buffers.")
        (sha256
         (base32 "0ml9yp3qaiwn7iixyxvsj3fxn7gw913qxisr47df57q4ka912law"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "emacs" "-Q" "--batch"
+                                  "-l" "test/test-util.el"
+                                  "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-helm))
     (home-page "https://github.com/syohex/emacs-helm-ag")
