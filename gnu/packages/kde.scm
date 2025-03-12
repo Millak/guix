@@ -1437,14 +1437,14 @@ transport data and for performing public transport journey queries.")
 (define-public ksanecore
   (package
     (name "ksanecore")
-    (version "24.12.1")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                              "/src/ksanecore-" version ".tar.xz"))
        (sha256
-        (base32 "0bh7i2qh5jdxfgy122vbwin7g46s16kdmam6szj14zc1ggnhqvfb"))))
+        (base32 "06g43b1l72aghkhcn59ss8kjc4sammn5ii5x5sql34kmvgiwamwk"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
