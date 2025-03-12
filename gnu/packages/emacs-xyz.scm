@@ -33940,6 +33940,7 @@ constant expressions.")
         (base32
          "05966l3af9lg4nlsz6wrq282ipwxh19ggirfyabjrr1syw3v2crn"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/emacs-pe/docker-tramp.el")
     (synopsis "TRAMP integration for docker containers")
     (description
