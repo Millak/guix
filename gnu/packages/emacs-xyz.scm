@@ -23722,7 +23722,10 @@ Event} protocol.")
         (base32 "1nskmygjhg01dz4jwvs8ixxk0dn3wa9sx7vym6dbs1i11pd761xn"))))
     (build-system emacs-build-system)
     (arguments
-     (list #:emacs emacs))              ;need libxml support
+     (list #:emacs emacs              ;need libxml support
+           #:test-command #~(list "emacs" "--batch"
+                                  "-l" "tests/ement-tests.el"
+                                  "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-persist
            emacs-plz
