@@ -993,14 +993,14 @@ features include brush stabilizers, brush engines and wrap-around mode.")
 (define-public massif-visualizer
   (package
     (name "massif-visualizer")
-    (version "24.12.1")
+    (version "24.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/massif-visualizer-" version ".tar.xz"))
        (sha256
-        (base32 "0b42qigfypnipdqlnprqffgz99ksnfqms6r49vnvycaqfkk76n1r"))))
+        (base32 "09da7qlrq21rb2971wx43790ki6hk7xn255j82kfmx2kp9ilwvxm"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config shared-mime-info))
