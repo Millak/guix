@@ -38,6 +38,7 @@
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
+;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -172,6 +173,7 @@ such as mate-panel and xfce4-panel.")
   (package
     (name "cairo")
     (version "1.18.2")
+    (replacement cairo-1.18.4)
     (source
      (origin
        (method url-fetch)
@@ -237,6 +239,21 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
       license:mpl1.1))
     ;; Hide and have cairo-with-documentation public.
     (properties '((hidden? . #t)))))
+
+;;; TODO: This newer version resolves an issue when writing PDFs.  Remove
+;;; after ungrafting cairo.
+(define cairo-1.18.4
+  (package
+    (inherit cairo)
+    (version "1.18.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://cairographics.org/releases/cairo-"
+                       version ".tar.xz"))
+       (sha256
+        (base32 "1jrcqfcna0358aqrk7rnys1hwq6k36ilr9r62bg26j3fi8hdhpj4"))))))
 
 (define-public cairo-with-documentation
   ;; cairo's docs must be built in a separate package since it requires
