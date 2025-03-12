@@ -828,3 +828,10 @@ which will be used as a snippet in origin."
              (("\\(integer_decimal\n") "(integer_decimal)\n")
              (("\\(integer\\)") "")
              (("\"0\")") "\"0\"")))))))
+
+(define-public tree-sitter-yaml
+  (tree-sitter-grammar
+   "yaml" "YAML"
+   "0z5fz9hiafzapi0ijhyz8np6rksq6c1pb16xv1vhnlfh75rg6zyv"
+   "0.7.0"
+   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-yaml"))
