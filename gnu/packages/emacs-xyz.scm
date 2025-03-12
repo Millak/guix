@@ -36078,7 +36078,9 @@ all of your projects, then override or add variables on a per-project basis.")
     (build-system emacs-build-system)
     (arguments
      (list
-      #:lisp-directory "lisp"))
+      #:lisp-directory "lisp"
+      ;; Tests require “casual-lib-test-utils”, which are not installed.
+      #:tests? #f))
     (propagated-inputs (list emacs-casual-lib))
     (home-page "https://github.com/kickingvegas/casual-dired")
     (synopsis "Transient-based porcelain for Dired")
