@@ -360,7 +360,7 @@ database.")
 (define-public sage
   (package
     (name "sage")
-    (version "10.6.beta7")
+    (version "10.6.beta9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -369,8 +369,7 @@ database.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lr9v38w5ljvrgywyr3hfvw4dmbzqv1cr67dmrfxj3zplrp3qzvy"))
-              (patches (search-patches "sage-update-pari-gp.patch"))))
+                "0hj882wbyax5w7kilh6gwczz0gy0gnhpkz0608sn2yzc4r484w2d"))))
     (build-system pyproject-build-system)
     (native-inputs
       (list autoconf automake m4 pkg-config ; for ./bootstrap
