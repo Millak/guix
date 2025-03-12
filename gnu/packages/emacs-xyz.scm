@@ -21647,6 +21647,7 @@ configuration of Chinese fonts.")
        (sha256
         (base32 "0jmmxav45sbch9prdxipd04rdmyh5ca1r9lpdlj61b5c4vlm4282"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; tests require networking
     (propagated-inputs
      (list emacs-dash emacs-expand-region emacs-multiple-cursors
            emacs-powerline emacs-spaceline))
