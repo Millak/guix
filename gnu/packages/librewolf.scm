@@ -200,23 +200,23 @@
 ;;; but since in Guix only the latest packaged Rust is officially supported,
 ;;; it is a tradeoff worth making.
 ;;; 0: https://firefox-source-docs.mozilla.org/writing-rust-code/update-policy.html
-;; 135.0 wants 1.83, but it's not available in Guix yet.
+;; 136.0 wants 1.84, but it's not available in Guix yet.
 (define rust-librewolf rust-1.82)
 
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20250209210057")
+(define %librewolf-build-id "20250306064037")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "135.0-1")
+    (version "136.0-2")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "0q5r2q6q56kyzl5pknrir9bzlhmzbvv9hi5gi4852izgcali4zl2"
-      #:librewolf-hash "0fg4vji5xb17pgvq7jnfz4dq08gi0rl998xhj37hfm5zxs19y8jk"
+      #:firefox-hash "0mvg53fr9zi6pq2pwa6qzqi88brqig1wlzic9sz52i4knx733viv"
+      #:librewolf-hash "0zb5f6hml7nmyf8hms66s07ba97x2px2hgqqi4lmwr5hm9mf942z"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
@@ -392,6 +392,17 @@
                      (lambda _
                        (setenv "MOZ_BUILD_DATE"
                                #$%librewolf-build-id)))
+                   ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1927380
+                   (add-before 'configure 'patch-icu-lookup
+                     (lambda _
+                       (let* ((file "js/moz.configure")
+                              (old-content (call-with-input-file file get-string-all)))
+                         (substitute* file
+                           (("icu-i18n >= 76.1" all)
+                            (string-append all ", icu-uc >= 76.1")))
+                         (if (string=? old-content
+                                       (pk (call-with-input-file file get-string-all)))
+                             (error "substitute did nothing, phase requires an update")))))
                    (replace 'configure
                      (lambda* (#:key inputs outputs configure-flags
                                #:allow-other-keys)
@@ -671,7 +682,7 @@
                   gtk+
                   gtk+-2
                   hunspell
-                  icu4c-75
+                  icu4c-76
                   jemalloc
                   libcanberra
                   libevent
@@ -679,7 +690,7 @@
                   libgnome
                   libjpeg-turbo
                   libnotify
-                  libpng-apng
+                  libpng-apng-for-librewolf
                   libva
                   libvpx
                   libwebp
