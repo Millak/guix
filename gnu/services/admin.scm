@@ -404,10 +404,7 @@ This service is deprecated and slated for removal after 2025-06-15.")
                              schedule)
                        (command '(#$program))))
              (stop #~(make-timer-destructor))
-             (actions (list (shepherd-action
-                             (name 'trigger)
-                             (documentation "Trigger log cleanup.")
-                             (procedure #~trigger-timer))))
+             (actions (list shepherd-trigger-action))
              (documentation "Periodically delete old log files."))))))
 
 (define log-cleanup-service-type
@@ -671,10 +668,7 @@ which lets you search for packages that provide a given file.")
                    ;; again.
                    #:wait-for-termination? #t))
          (stop #~(make-timer-destructor))
-         (actions (list (shepherd-action
-                         (name 'trigger)
-                         (documentation "Trigger unattended system upgrade.")
-                         (procedure #~trigger-timer)))))))
+         (actions (list shepherd-trigger-action)))))
 
 (define unattended-upgrade-service-type
   (service-type

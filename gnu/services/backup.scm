@@ -255,11 +255,7 @@ command-line arguments to the current job @command{restic backup} invocation."))
                                                 max-duration)))
                       (stop
                        #~(make-timer-destructor))
-                      (actions (list (shepherd-action
-                                      (name 'trigger)
-                                      (documentation "Manually trigger a backup,
-without waiting for the scheduled time.")
-                                      (procedure #~trigger-timer)))))))
+                      (actions (list shepherd-trigger-action)))))
 
 (define (restic-guix-wrapper-package jobs)
   (package

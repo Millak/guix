@@ -72,6 +72,7 @@
             shepherd-action-procedure
 
             shepherd-configuration-action
+            shepherd-trigger-action
 
             %default-modules
 
@@ -403,6 +404,13 @@ of the service's configuration file."
    (procedure #~(lambda (_)
                   (format #t "~a~%" #$file)
                   #$file))))
+
+(define shepherd-trigger-action
+  ;; Action to trigger a timer.
+  (shepherd-action
+   (name 'trigger)
+   (documentation "Trigger immediate execution of this timer.")
+   (procedure #~trigger-timer)))
 
 (define (shepherd-configuration-file services shepherd)
   "Return the shepherd configuration file for SERVICES.  SHEPHERD is used
