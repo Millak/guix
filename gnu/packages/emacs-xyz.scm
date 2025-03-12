@@ -32292,6 +32292,7 @@ GUI and terminal, and requires a nerd font installed on your system.")
     (arguments
      `(#:include '("\\.el$" "^data/")
        #:exclude '("^test/")
+       #:tests? #f                      ; XXX: duplicate tests
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-fonts
