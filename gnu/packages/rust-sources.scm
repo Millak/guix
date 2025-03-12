@@ -102,6 +102,38 @@ UTF-32 support.")
        (description "This package provides Rust bindings for PipeWire.")
        (license license:expat)))))
 
+(define-public rust-pubgrub-for-uv
+  (let ((commit "b70cf707aa43f21b32f3a61b8a0889b15032d5c4")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "rust-pubgrub")
+       (version (git-version "0.3.0" revision commit))
+       (source (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                       (url "https://github.com/astral-sh/pubgrub")
+                       (commit commit)))
+                 (file-name (git-file-name name version))
+                 (sha256
+                  (base32
+                   "08rfk4hh2cx4v8fi62j365mwga3fgww9wcfszq7i5g4zmlhp8p8l"))
+                 (modules '((guix build utils)))
+                 ;; Pretend to be version 0.3.0.
+                 (snippet
+                  '(substitute* "Cargo.toml"
+                     (("0\\.3\\.0-alpha\\.1") "0.3.0")))))
+       (build-system cargo-build-system)
+       (arguments
+        (list #:skip-build? #t
+              #:cargo-package-crates ''("version-ranges" "pubgrub")))
+       (inputs (cargo-inputs 'rust-pubgrub-for-uv))
+       (home-page "https://github.com/pubgrub-rs/pubgrub")
+       (synopsis "PubGrub version solving algorithm")
+       (description
+        "This package provides the @code{PubGrub} version solving algorithm.")
+       (license license:mpl2.0)))))
+
 (define-public rust-ring-0.17
   (hidden-package
    (package
