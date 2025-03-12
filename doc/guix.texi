@@ -27213,9 +27213,10 @@ following fields:
 The Guix package to use.
 
 @item @code{schedule} (default: @code{%default-package-database-update-schedule})
-String or G-exp denoting an mcron schedule for the periodic
-@command{guix locate --update} job (@pxref{Guile Syntax,,, mcron,
-GNU@tie{}mcron}).
+This is the schedule of the periodic @command{guix locate --update} job,
+expressed as a string in traditional cron syntax or as a gexp evaluating
+to a Shepherd calendar event (@pxref{Timers,,, shepherd, The GNU
+Shepherd Manual}).
 
 @item @code{method} (default: @code{'store})
 Indexing method for @command{guix locate}.  The default value,

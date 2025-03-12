@@ -529,23 +529,37 @@ terms of CPU and input/output.")
             "G-exp denoting the channels to use when updating the database
 (@pxref{Channels})."))
 
-(define (package-database-mcron-jobs configuration)
+(define (package-database-shepherd-services configuration)
   (match-record configuration <package-database-configuration>
     (package schedule method channels)
     (let ((channels (scheme-file "channels.scm" channels)))
-      (list #~(job #$schedule
-                   ;; XXX: The whole thing's running as "root" just because it
-                   ;; needs write access to /var/cache/guix/locate.
-                   (string-append #$(file-append package "/bin/guix")
-                                  " time-machine -C " #$channels
-                                  " -- locate --update --method="
-                                  #$(symbol->string method)))))))
+      (list (shepherd-service
+             (provision '(package-database-update))
+             (requirement '(user-processes guix-daemon))
+             (modules '((shepherd service timer)))
+             ;; XXX: The whole thing's running as "root" just because it needs
+             ;; write access to /var/cache/guix/locate.
+             (start #~(make-timer-constructor
+                       #$(if (string? schedule)
+                             #~(cron-string->calendar-event #$schedule)
+                             schedule)
+                       (command '(#$(file-append package "/bin/guix")
+                                  "time-machine" "-C" #$channels
+                                  "--" "locate" "--update"
+                                  #$(string-append
+                                     "--method=" (symbol->string method))))
+                       #:wait-for-termination? #t))
+             (stop #~(make-timer-destructor))
+             (documentation
+              "Periodically update the system-wide package database that can
+be queried by the 'guix locate' command.")
+             (actions (list shepherd-trigger-action)))))))
 
 (define package-database-service-type
   (service-type
    (name 'package-database)
-   (extensions (list (service-extension mcron-service-type
-                                        package-database-mcron-jobs)))
+   (extensions (list (service-extension shepherd-root-service-type
+                                        package-database-shepherd-services)))
    (description
     "Periodically update the package database used by the @code{guix locate} command,
 which lets you search for packages that provide a given file.")
