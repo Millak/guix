@@ -48,6 +48,7 @@
 ;;; Copyright © 2021 Renzo Poddighe <renzo@poddighe.nl>
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Niklas Eklund <niklas.eklund@posteo.net>
+;;; Copyright © 2021 Calum Irwin <calumirwin1@gmail.com>
 ;;; Copyright © 2021 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
@@ -3250,6 +3251,31 @@ then take a break.  The window changes appearance while you take the break.
 It changes again when your break is over.  Then you just resume typing.
 Xwrits hides itself until you should take another break.")
     (license license:gpl2)))
+
+(define-public wlrctl
+  (package
+    (name "wlrctl")
+    (version "0.2.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~brocellous/wlrctl")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1g8w7nypxvfnisxwg7jsmafg6hl433p00b5rbpgwcr6v444xqq76"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config scdoc))
+    (inputs (list libxkbcommon wayland))
+    (home-page "https://git.sr.ht/~brocellous/wlrctl")
+    (synopsis "Command line utility for wlroots automation and extensions")
+    (description
+     "wlrctl is a command line utility for miscellaneous wlroots Wayland
+extensions.  At this time, wlrctl supports the foreign-toplevel-mangement
+(window/toplevel command), virtual-keyboard (keyboard command), and
+virtual-pointer (pointer command) protocols.")
+    (license license:expat)))
 
 (define-public xsettingsd
   (package
