@@ -2910,7 +2910,7 @@ Graphics (PNGs), intended as an easy-to-use replacement for @code{libpng}.")
 (define-public libsixel
   (package
     (name "libsixel")
-    (version "1.10.3")
+    (version "1.10.5")
     (source
      (origin
        (method git-fetch)
@@ -2919,7 +2919,7 @@ Graphics (PNGs), intended as an easy-to-use replacement for @code{libpng}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nny4295ipy4ajcxmmh04c796hcds0y7z7rv3qd17mj70y8j0r2d"))))
+        (base32 "1j85p8s5cy7vz1ph9vsvcmxdrr8yi57pgv8vz1xp6dr715jc3g51"))))
     (build-system meson-build-system)
     (arguments
      (list
