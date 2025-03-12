@@ -430,7 +430,7 @@ This service is deprecated and slated for removal after 2025-06-15.")
   ;; Regexps of directories excluded from the 'locate' database.
   (list (%store-prefix)
         "/tmp" "/var/tmp" "/var/cache" ".*/\\.cache"
-        "/run/udev"))
+        "/run/udev" "/dev"))
 
 (define (string-or-gexp? obj)
   (or (string? obj) (gexp? obj)))
