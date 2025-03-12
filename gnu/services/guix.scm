@@ -615,33 +615,47 @@ ca-certificates.crt file in the system profile."
       (requirement '(user-processes postgres))
       (one-shot? #t)
       (start
-       (with-extensions (cons package
-                              ;; This is a poorly constructed Guile load path,
-                              ;; since it contains things that aren't Guile
-                              ;; libraries, but it means that the Guile
-                              ;; libraries needed for the Guix Data Service
-                              ;; don't need to be individually specified here.
-                              (append
-                               (map second (package-inputs package))
-                               (map second (package-propagated-inputs package))))
-         #~(lambda _
-             (use-modules (guix-data-service database)
-                          (guix-data-service model git-repository)
-                          (guix-data-service model build-server))
+       #~(make-forkexec-constructor
+          (list
+           #$(program-file
+              "data-service-setup-database"
+              (with-extensions
+                  (cons package
+                        ;; This is a poorly constructed Guile load path, since
+                        ;; it contains things that aren't Guile libraries, but
+                        ;; it means that the Guile libraries needed for the
+                        ;; Guix Data Service don't need to be individually
+                        ;; specified here.
+                        (append
+                         (map second (package-inputs package))
+                         (map second (package-propagated-inputs package))))
+                #~(lambda _
+                    (use-modules (guix-data-service database)
+                                 (guix-data-service model git-repository)
+                                 (guix-data-service model build-server))
 
-             (begin
-               ((@ (guix-data-service database) run-sqitch))
+                    (begin
+                      ((@ (guix-data-service database) run-sqitch))
 
-               #$@(if git-repositories
-                      #~(((@ (guix-data-service model git-repository)
-                             specify-git-repositories)
-                          '(#$@git-repositories)))
-                      '())
-               #$@(if build-servers
-                      #~(((@ (guix-data-service model build-server)
-                             specify-build-servers)
-                          '(#$@build-servers)))
-                      '())))))
+                      #$@(if git-repositories
+                             #~(((@ (guix-data-service model git-repository)
+                                    specify-git-repositories)
+                                 '(#$@git-repositories)))
+                             '())
+                      #$@(if build-servers
+                             #~(((@ (guix-data-service model build-server)
+                                    specify-build-servers)
+                                 '(#$@build-servers)))
+                             '()))))))
+          #:user #$user
+          #:group #$group
+          #:directory "/var/lib/guix-data-service"
+          #:environment-variables
+          `(,(string-append
+              "GUIX_LOCPATH="
+              #$(libc-utf8-locales-for-target) "/lib/locale")
+            "LC_ALL=en_US.utf8")
+          #:log-file "/var/log/guix-data-service/setup-database.log"))
       (auto-start? #t))
 
      (shepherd-service
