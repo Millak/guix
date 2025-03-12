@@ -618,7 +618,9 @@ of a package, and INPUT-NAMES, a list of package specifications such as
   ;; Emit a warning if some inputs of PACKAGE are likely to should not be
   ;; an input at all.
   (let ((input-names '("python-pip"
-                       "python-pre-commit")))
+                       "python-pre-commit"
+                       "tzdata"
+                       "nss-certs")))
     (map (lambda (input)
            (make-warning
             package
