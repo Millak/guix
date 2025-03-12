@@ -10351,6 +10351,7 @@ the current Cargo project.")
       (file-name (git-file-name name version))
       (sha256
        (base32 "1vvhzidnpzf25z5qn85zx7cpwaavd22vsds4q9y5mpmf8hi526l6"))))
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-flycheck))
     (build-system emacs-build-system)
