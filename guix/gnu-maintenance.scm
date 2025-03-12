@@ -677,7 +677,13 @@ also updated to the latest version, as explained in the doc of the
 \"rewrite-url\" procedure used."
   (let* ((current-version (package-version package))
          (name (package-upstream-name package))
-         (url (canonicalize-url directory base-url))
+         (url (if (string-null? directory)
+                  base-url
+                  (string-append base-url directory
+                                 ;; Ensure URL ends with a trailing slash.
+                                 (if (string-suffix? "/" directory)
+                                     ""
+                                     "/"))))
          (url (if rewrite-url?
                   (rewrite-url url current-version #:to-version version
                                #:partial-version? partial-version?)
