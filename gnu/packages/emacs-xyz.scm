@@ -28246,6 +28246,7 @@ throw a shell history.")
         (base32
          "1wlqyl03hhnflbyay3qlvdzqzvv5rbybcjpfddggda7ias9h0pr4"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-makey))
     (home-page "https://framagit.org/steckerhalter/discover-my-major/")
