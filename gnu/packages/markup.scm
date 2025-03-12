@@ -15,6 +15,7 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -448,27 +449,20 @@ GitHub cmark fork (@code{cmark-gfm}).")
 (define-public python-markdownify
   (package
     (name "python-markdownify")
-    (version "0.11.6")
+    (version "1.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "markdownify" version))
+       (method git-fetch) ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/matthewwithanm/python-markdownify")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1zlvwiapcvzaz7nmviffz3q147h1skf2amh83npqwk4z1h7296q0"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests? (invoke "pytest" "-v" "tests")))))))
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-beautifulsoup4 python-six))
-    (home-page
-     "https://github.com/matthewwithanm/python-markdownify")
+        (base32 "09gh3grgiaiyhgpd1fias9xac45d4zw37ikkzyaavsixfzg0akbr"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (propagated-inputs (list python-beautifulsoup4 python-six))
+    (home-page "https://github.com/matthewwithanm/python-markdownify")
     (synopsis "Converts HTML to Markdown")
     (description "This package provides @code{markdownify} a Python library to
 convert HTML to Markdown.")
