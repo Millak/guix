@@ -27171,8 +27171,9 @@ The GNU@tie{}Findutils package from which the @command{updatedb} command
 is taken.
 
 @item @code{schedule} (default: @code{%default-file-database-update-schedule})
-String or G-exp denoting an mcron schedule for the periodic
-@command{updatedb} job (@pxref{Guile Syntax,,, mcron, GNU@tie{}mcron}).
+This is the schedule of database updates, expressed as a string in
+traditional cron syntax or as a gexp evaluating to a Shepherd calendar
+event (@pxref{Timers,,, shepherd, The GNU Shepherd Manual}).
 
 @item @code{excluded-directories} (default @code{%default-file-database-excluded-directories})
 List of regular expressions of directories to ignore when building the

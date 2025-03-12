@@ -462,7 +462,7 @@ the latter should instead be indexed by @command{guix locate} (@pxref{Invoking
 guix locate}).  This list is passed to the @option{--prunepaths} option of
 @command{updatedb} (@pxref{Invoking updatedb,,, find, GNU@tie{}Findutils})."))
 
-(define (file-database-mcron-jobs configuration)
+(define (file-database-shepherd-services configuration)
   (match-record configuration <file-database-configuration>
     (package schedule excluded-directories)
     (let ((updatedb (program-file
@@ -481,13 +481,27 @@ guix locate}).  This list is passed to the @option{--prunepaths} option of
                                 #$(string-append "--prunepaths="
                                                  (string-join
                                                   excluded-directories)))))))
-      (list #~(job #$schedule #$updatedb)))))
+      (list (shepherd-service
+             (provision '(file-database-update))
+             (requirement '(user-processes))
+             (modules '((shepherd service timer)))
+             (start #~(make-timer-constructor
+                       #$(if (string? schedule)
+                             #~(cron-string->calendar-event #$schedule)
+                             schedule)
+                       (command '(#$updatedb))
+                       #:wait-for-termination? #t))
+             (stop #~(make-timer-destructor))
+             (documentation
+              "Periodically update the system-wide file database that can be
+queried by the 'locate' command.")
+             (actions (list shepherd-trigger-action)))))))
 
 (define file-database-service-type
   (service-type
    (name 'file-database)
-   (extensions (list (service-extension mcron-service-type
-                                        file-database-mcron-jobs)))
+   (extensions (list (service-extension shepherd-root-service-type
+                                        file-database-shepherd-services)))
    (description
     "Periodically update the file database used by the @command{locate} command,
 which lets you search for files by name.  The database is created by running
