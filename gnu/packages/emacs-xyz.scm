@@ -36026,7 +36026,9 @@ all of your projects, then override or add variables on a per-project basis.")
     (arguments
      (list
       #:lisp-directory "lisp"
-      #:test-command #~(list "make" "tests")))
+      #:test-command #~(list "make" "tests")
+      ;; Tests require “casual-lib-test-utils”, which are not installed.
+      #:tests? #f))
     (propagated-inputs (list emacs-casual-lib emacs-avy))
     (home-page "https://github.com/kickingvegas/casual-avy")
     (synopsis "Transient-based porcelain for avy")
