@@ -5776,7 +5776,8 @@ Its features are:
         (base32 "1l74c2f2xjzsp3i331sw3db4fhbvdbwyd856j1ygldwrh4rli9ml"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:emacs ,emacs))                 ;need libxml support
+     (list #:emacs emacs                ;need libxml support
+           #:tests? #f))                ;tests require missing data
     (propagated-inputs
      (list emacs-compat
            emacs-dash
