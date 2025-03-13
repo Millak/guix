@@ -845,6 +845,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "z572@z572.online")
   core-packages qt kde)
 
+(define-member (person "Sughosha"
+                       "sughosha@disroot.org")
+  kde)
+
 (define-member (person "Jelle Licht"
                        "jlicht@fsfe.org")
   javascript)
