@@ -27157,8 +27157,10 @@ and @code{erc-send-modify-hook} to download and show images.")
        (sha256
         (base32 "1kc1jzk10nfd2v20g8dwnb6a944afrwdwnkzl06w4ba8k4yim7gi"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "ert-runner" "test")))
     (propagated-inputs
      (list emacs-helm))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/syohex/emacs-helm-gtags")
     (synopsis "Emacs Helm interface to GNU Global")
     (description
