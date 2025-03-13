@@ -5634,6 +5634,7 @@ event in various configured timezones.")
           (base32
             "00ldvz6r10vwwmk6f3az534p0340ywn7knsg2bmvbvh3q51vyl9i"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/ocaml/caml-mode")
     (synopsis "Caml mode for GNU Emacs")
     (description
