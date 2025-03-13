@@ -42372,6 +42372,7 @@ usual, using mostly unprefixed keys.")
        (sha256
         (base32 "0zsjbpq0s0xdxd9r541f04bj1khhgzhdlzr0m4p17zjh1zardbpi"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://www.myrkr.in-berlin.de/dictionary/index.html")
     (synopsis "Emacs client for dictionary servers")
     (description "This package provides commands for interacting with a
