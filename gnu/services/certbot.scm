@@ -27,7 +27,6 @@
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu services shepherd)
-  #:use-module (gnu services mcron)
   #:use-module (gnu services web)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages tls)
@@ -220,46 +219,56 @@ deploy."
                '#$commands)
               (exit script-code))))))))
 
-(define (certbot-renewal-jobs config)
-  (list
-   ;; Attempt to renew the certificates twice per day, at a random minute
-   ;; within the hour.  See https://eff-certbot.readthedocs.io/.
-   #~(job '(next-minute-from (next-hour '(0 12)) (list (random 60)))
-          #$(certbot-command config))))
+(define (certbot-renewal-shepherd-services config)
+  (list (shepherd-service
+         (provision '(certbot-certificate-renewal))
+         (requirement '(user-processes nginx))
+         (modules '((shepherd service timer)))
+         (start #~(make-timer-constructor
+                   ;; Attempt to renew the certificates twice per day.  See
+                   ;; https://eff-certbot.readthedocs.io/.
+                   (calendar-event #:minutes '(22) #:hours '(0 12))
+                   (command '(#$(certbot-command config)))
+                   #:wait-for-termination? #t))
+         (stop #~(make-timer-destructor))
+         (documentation "Periodically run the 'certbot' command to renew X.509
+certificates.")
+         (actions
+          (list shepherd-trigger-action
+                (shepherd-configuration-action (certbot-command config)))))
 
-(define (certbot-renewal-one-shot config)
-  (list
-   ;; Renew certificates when the system first starts. This is a one-shot
-   ;; service, because the mcron configuration will take care of running this
-   ;; periodically. This is most useful the very first time the system starts,
-   ;; to overwrite our self-signed certificates as soon as possible without
-   ;; user intervention.
-   (shepherd-service
-    (provision '(renew-certbot-certificates))
-    (requirement '(nginx))
-    (one-shot? #t)
-    (start #~(lambda _
-               ;; This needs the network, but there's no reliable way to know
-               ;; if the network is up other than trying. If we fail due to a
-               ;; connection error we retry a number of times in the hope that
-               ;; the network comes up soon.
-               (let loop ((attempt 0))
-                 (let ((code (status:exit-val
-                              (system* #$(certbot-command config)))))
-                   (cond
-                    ((and (= code 2)      ; Exit code 2 means connection error
-                          (< attempt 12)) ; Arbitrarily chosen max attempts
-                     (sleep 10)           ; Arbitrarily chosen retry delay
-                     (loop (1+ attempt)))
-                    ((zero? code)
-                     ;; Success!
-                     #t)
-                    (else
-                     ;; Failure.
-                     #f))))))
-    (auto-start? #t)
-    (documentation "Call certbot to renew certificates.")
-    (actions (list (shepherd-configuration-action (certbot-command config)))))))
+        ;; Renew certificates when the system first starts. This is a one-shot
+        ;; service, because the timer above takes care of running this
+        ;; periodically.  This is most useful the very first time the system
+        ;; starts, to overwrite our self-signed certificates as soon as
+        ;; possible without user intervention.
+        (shepherd-service
+         (provision '(renew-certbot-certificates))
+         (requirement '(user-processes nginx))
+         (one-shot? #t)
+         (start #~(lambda _
+                    ;; This needs the network, but there's no reliable way to know
+                    ;; if the network is up other than trying. If we fail due to a
+                    ;; connection error we retry a number of times in the hope that
+                    ;; the network comes up soon.
+                    (let loop ((attempt 0))
+                      (let ((code (status:exit-val
+                                   (system* #$(certbot-command config)))))
+                        (cond
+                         ((and (= code 2) ; Exit code 2 means connection error
+                               (< attempt 12)) ; Arbitrarily chosen max attempts
+                          (sleep 10)          ; Arbitrarily chosen retry delay
+                          (loop (1+ attempt)))
+                         ((zero? code)
+                          ;; Success!
+                          #t)
+                         (else
+                          ;; Failure.
+                          #f))))))
+         (auto-start? #t)
+         (documentation "Run 'certbot' to renew certificates at boot time.")
+         (actions
+          (list (shepherd-configuration-action (certbot-command config)))))))
 
 (define (generate-certificate-gexp certbot-cert-directory rsa-key-size)
   (match-lambda
@@ -354,10 +363,8 @@ deploy."
                                           (compose list certbot-configuration-package))
                        (service-extension activation-service-type
                                           certbot-activation)
-                       (service-extension mcron-service-type
-                                          certbot-renewal-jobs)
                        (service-extension shepherd-root-service-type
-                                          certbot-renewal-one-shot)))
+                                          certbot-renewal-shepherd-services)))
                 (compose concatenate)
                 (extend (lambda (config additional-certificates)
                           (certbot-configuration
