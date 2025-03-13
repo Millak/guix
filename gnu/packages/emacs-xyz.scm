@@ -43369,6 +43369,7 @@ for pdb allowing completion in a @code{*gud-pdb*} buffer.")
         (base32 "1580cfpfmsjwiq6v2vsqjwhzj9m4lrhhf3nffmbzp36r6q5n8611"))
        (file-name (git-file-name name version))))
    (build-system emacs-build-system)
+   (arguments (list #:tests? #f))       ; tests require networking
    (propagated-inputs (list emacs-mmm-mode))
    (home-page "https://bitbucket.org/olanilsson/bitbake-modes")
    (synopsis "Emacs major modes for bitbake")
