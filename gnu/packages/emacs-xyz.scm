@@ -41795,6 +41795,10 @@ original package.")
          (sha256
           (base32 "0crxjy1ykgb429z8ikjv5iy8vg5i0qn8n86p2lgri4glx45sxxx0"))))
       (build-system emacs-build-system)
+      (arguments (list #:test-command
+                       #~(list "emacs" "--batch" "-l" "bind-map-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (native-inputs (list emacs-evil))
       (home-page "https://github.com/justbur/emacs-bind-map")
       (synopsis "Bind personal keymaps in multiple locations")
       (description
