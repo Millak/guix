@@ -25066,8 +25066,22 @@ Features:
        (sha256
         (base32 "06ayyw8nim5fi819hr30x54wx2ba6aqvlh7r0vld06xc0zsjdhm3"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (add-after 'unpack 'patch-Makefile
+                           (lambda _
+                             (substitute* "Makefile"
+                               (("-Q") "")
+                               (("-L [^.]*") "")
+                               (("deps/") "")
+                               ((" deps") "")))))))
     (propagated-inputs
      (list emacs-evil))
+    (native-inputs (list emacs-lua-mode
+                         emacs-markdown-mode
+                         emacs-tuareg
+                         emacs-yaml-mode))
     (home-page "https://github.com/redguardtoo/evil-matchit")
     (synopsis "Vim matchit ported into Emacs")
     (description
