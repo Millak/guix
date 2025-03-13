@@ -41658,6 +41658,7 @@ and allows for an arbitrary number of leader keys.")
        (sha256
         "1fdgl31zc15cysv1yys95j0106i2fwfxb3qcwwh7f3mcz2snr2md")))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))       ; no actual tests
     (home-page "https://codeberg.org/divyaranjan/binder")
     (synopsis
      "Binder is a global minor mode to facilitate working on multiple files")
