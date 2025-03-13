@@ -2565,19 +2565,24 @@ capabilities.")
     (home-page "https://dthompson.us/projects/sly.html")
     (license license:gpl3+)))
 
+(define* (g-golf-source #:key version hash)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://git.savannah.gnu.org/git/g-golf.git")
+          (commit (string-append "v" version))))
+    (file-name (git-file-name "g-golf" version))
+    (hash hash)))
+
 (define-public guile-g-golf
   (package
     (name "guile-g-golf")
     (version "0.8.1")
     (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.savannah.gnu.org/git/g-golf.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "044iidjd24cjncvx510ai46is9jxni72iz8pxyi34g4p7gbbcbi7"))))
+     (g-golf-source #:version version
+                    #:hash
+                    (content-hash
+                     "044iidjd24cjncvx510ai46is9jxni72iz8pxyi34g4p7gbbcbi7")))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2865,6 +2870,13 @@ writing a Guix package.")))
   (package
     (inherit guile-g-golf)
     (name "g-golf-adw-1-examples")
+    ;; XXX: Update version when we have a recent enough libadwaita.
+    (version "0.8.0")
+    (source
+     (g-golf-source #:version version
+                    #:hash
+                    (content-hash
+                     "14b6pjchra0axqifpm90m7jbxla2sarhd7bfhzqbn7d14b74sv2d")))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
