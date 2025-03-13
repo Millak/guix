@@ -1287,6 +1287,8 @@ uploading PlatformIO projects.")
                               "kotl/.*"
                               "\\.kotl$"
                               %default-include)
+           ;; XXX: tests want to download requirements very badly
+           #:tests? #f
            #:phases
            #~(modify-phases %standard-phases
                ;; Fix build issues about missing "domainname" and
