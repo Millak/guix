@@ -19112,7 +19112,19 @@ pasting into and from @code{tmux} paste buffers.")
         (base32
          "1xi4sd75pzhgcd9lzhx18hlzbrwh5q9gbscb1971qn94mzxwd60r"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")
+                     #:tests? #f        ; XXX: broken docstring
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (add-after 'unpack 'patch-Makefile
+                           (lambda _
+                             (substitute* "Makefile"
+                               (("-Q") "")
+                               (("-L [^.]*") "")
+                               (("deps/") "")
+                               ((" deps") "")))))))
     (propagated-inputs (list emacs-evil))
+    (native-inputs (list emacs-web-mode))
     (home-page "https://github.com/redguardtoo/evil-nerd-commenter")
     (synopsis "Comment and uncomment lines efficiently")
     (description
