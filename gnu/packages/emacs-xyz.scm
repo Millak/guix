@@ -25575,6 +25575,7 @@ to with quicklink-style selections.")
         (base32
          "0z7cilgiz6krvl5h2z72hkch43qxmypb0k6p5vxn5lx1p6v0mrf2"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://jblevins.org/projects/deft/")
     (synopsis "Quickly browse, filter, and edit plain text notes")
     (description
