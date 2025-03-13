@@ -25103,8 +25103,15 @@ evil mode using @kbd{%}.  It is a port of @code{matchit} for Vim.")
        (sha256
         (base32 "1di4qz5fbrlwbg16c2j0m7y8zqfxw027qd7zqmc3rwk9znbhg7wl"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f        ; XXX: 39/41 test failures
+                     #:test-command
+                     #~(list "emacs" "--batch" "-L" "."
+                             "-L" "tests/evil-tests"
+                             "-l" "tests/evil-smartparens-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-evil emacs-smartparens))
+    (native-inputs (list emacs-evil-surround))
     (home-page "https://github.com/expez/evil-smartparens")
     (synopsis "Emacs Evil integration for Smartparens")
     (description "@code{emacs-evil-smartparens} is an Emacs minor mode which
