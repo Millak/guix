@@ -1487,10 +1487,10 @@ data types.")
     (build-system gnu-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments python)
-       ((#:configure-flags flags '())
-        `(cons "--with-pydebug" ,flags))))
-    (synopsis
-     "Python with the debug hooks enabled")
+       ((#:configure-flags configure-flags)
+        #~(append #$configure-flags
+                  (list "--with-pydebug")))))
+    (synopsis "Python with the debug hooks enabled")
     (description
      "This variant of Python provides an interpreter built with
 @code{--with-pydebug} to help develop and debug extensions.  See
