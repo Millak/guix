@@ -39659,6 +39659,11 @@ It also provides original Helm commands: @command{helm-cider-spec},
                  (base32
                   "1xp2hjhn52k6l1g6ypva6dsklpawni7gvjafbz6404f9dyxflh7l"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f      ; XXX: void-variable peg-stack
+                       #:test-command
+                       #~(list "emacs" "--batch" "-L" "." "-L" "tests"
+                               "-l" "tests/edn-tests"
+                               "-f" "ert-run-tests-batch-and-exit")))
       (propagated-inputs
        (list emacs-peg))
       (synopsis "Read and write EDN from Elisp")
