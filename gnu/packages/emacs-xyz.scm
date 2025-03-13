@@ -11061,6 +11061,7 @@ mode.")
          (sha256
           (base32 "063w2sm0c7xhg3ml31xp870azb0sv7z689lnbnjnbl3rfdy4kg50"))))
       (build-system emacs-build-system)
+      (arguments (list #:test-command #~(list "ert-runner" "tests")))
       (propagated-inputs
        (list tree-sitter-javascript
              tree-sitter-python
