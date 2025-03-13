@@ -33,7 +33,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
-;;; Copyright © 2024 Spencer King <spencer.king@wustl.edu>
+;;; Copyright © 2024, 2025 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -1643,7 +1643,7 @@ card.  It offers:
 (define-public ne
   (package
     (name "ne")
-    (version "3.3.3")
+    (version "3.3.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1652,7 +1652,7 @@ card.  It offers:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0c9hw4la9jv9ils71iz978rxj5bsv9q915y90w7gkyiljvyxpdcm"))))
+                "0nlbfidwsjsdvb82d8cikimd5ym1qlv45bw6bgk8h6zx012w9hwz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list perl texinfo))
