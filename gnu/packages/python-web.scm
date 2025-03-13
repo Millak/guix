@@ -7296,9 +7296,9 @@ hard or impossible to fix in cssselect.")
                      "test_process_env_2"
                      ;; socket.gaierror: [Errno -2] Name or service not known
                      "test_getaddrinfo_21"
-                     ,@(if (target-riscv64?)
-                           `("test_renegotiation")
-                           `()))
+                     #$@(if (target-riscv64?)
+                            `("test_renegotiation")
+                            `()))
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -7310,14 +7310,14 @@ hard or impossible to fix in cssselect.")
               ;; Replace hardcoded shell command.
               (substitute* "uvloop/loop.pyx"
                 (("b'/bin/sh'") (string-append "b'" (which "sh") "'")))))
-          ,@(if (target-riscv64?)
-                `((add-after 'unpack 'adjust-test-timeouts
-                   (lambda _
-                     (substitute* '("tests/test_tcp.py"
-                                    "tests/test_unix.py")
-                       (("SSL_HANDSHAKE_TIMEOUT = 15\\.0")
-                        "SSL_HANDSHAKE_TIMEOUT = 30.0")))))
-                '())
+          #$@(if (target-riscv64?)
+                 `((add-after 'unpack 'adjust-test-timeouts
+                    (lambda _
+                      (substitute* '("tests/test_tcp.py"
+                                     "tests/test_unix.py")
+                        (("SSL_HANDSHAKE_TIMEOUT = 15\\.0")
+                         "SSL_HANDSHAKE_TIMEOUT = 30.0")))))
+                 '())
           (add-before 'check 'pre-check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
