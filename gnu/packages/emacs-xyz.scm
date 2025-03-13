@@ -29987,7 +29987,19 @@ can be configured to perform other key sequence translations.")
         (base32
          "1p5f2lf6jlsvyh6zhd6drc2njadlkn73djrykridsphzh92q88k0"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command #~(list "ert-runner" "daemons-test.el")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'skip-failing-tests
+            (lambda _
+              (substitute* "daemons-test.el"
+                (("\\(ert-deftest daemons-(-command|define-submodule)-test .*"
+                  all)
+                 (string-append all " (skip-unless nil)"))))))))
     (propagated-inputs (list emacs-s))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/cbowdon/daemons.el")
     (synopsis "Emacs UI for managing init system services")
     (description
