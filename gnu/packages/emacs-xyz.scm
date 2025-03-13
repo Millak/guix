@@ -28108,10 +28108,12 @@ messages.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0a5nr3zwcb36nw4j7xzknvd14gxp52ilgs07hddcjjyxmhrrfmav"))))
-    ;; TODO: Run tests.
     (build-system emacs-build-system)
-    (inputs
-     (list emacs-undercover)) ; For tests.
+    (native-inputs
+     (list emacs-assess
+           emacs-buttercup
+           emacs-ert-runner
+           emacs-undercover))
     (home-page "https://github.com/DamienCassou/beginend")
     (synopsis "Redefine @code{M-<} and @code{M->} for Emacs modes")
     (description "@code{beginend} redefines @code{M-<} and @code{M->}
