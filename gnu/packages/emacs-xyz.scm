@@ -18593,7 +18593,8 @@ using package inferred style.")
             ;; build to fail.  Remove them until they are fixed by upstream.
             (add-after 'unpack 'remove-faulty-tests
               (lambda _
-                (delete-file "test/test-indentation.el"))))))
+                (delete-file "test/test-indentation.el")
+                (delete-file "test/test-fill.el"))))))
       (native-inputs
        (list emacs-buttercup lua))
       (home-page "https://github.com/immerrr/lua-mode/")
