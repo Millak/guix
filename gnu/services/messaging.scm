@@ -59,7 +59,10 @@
             bitlbee-service-type
 
             quassel-configuration
-            quassel-service-type))
+            quassel-service-type
+
+            snuik-configuration
+            snuik-service-type))
 
 ;;; Commentary:
 ;;;
@@ -1002,3 +1005,112 @@ a gateway between IRC and chat networks.")))
                  "Run @url{https://quassel-irc.org/,quasselcore}, the backend
 for the distributed IRC client quassel, which allows you to connect from
 multiple machines simultaneously.")))
+
+
+;;;
+;;; Snuik.
+;;;
+(define-maybe integer (no-serialization))
+(define-configuration/no-serialization snuik-configuration
+  (snuik         (package snuik)       "The snuik package to use.")
+  (server        maybe-string          "The IRC server to connect to.")
+  (port          maybe-integer         "The port used by the IRC server.")
+  (nick          maybe-string          "The nickname for snuik to use.")
+  (password      maybe-string          "The password to use when logging in.")
+  (password-file maybe-string          "The file to read the password from.")
+  (channels      (list-of-strings '()) "The channels for snuik to join.")
+  (extra-options (list-of-strings '()) "Extra options to be passed to snuik.")
+  (home-service? (boolean for-home?)   "Running as home service?"))
+
+(define (snuik-services config)
+  "Return a <shepherd-service> for snuik with CONFIG."
+  (match-record config
+      <snuik-configuration>
+      (snuik server port nick password password-file channels extra-options
+             home-service?)
+    (let* ((password-file (snuik-configuration-password-file config))
+           (mappings `(,@(if home-service?
+                             '()
+                             `(,(file-system-mapping
+                                 (source "/var/run/snuik")
+                                 (target source)
+                                 (writable? #t))
+                               ,@(if password-file
+                                     (list (file-system-mapping
+                                            (source password-file)
+                                            (target source)))
+                                     '())))))
+           (snuik (least-authority-wrapper
+                   (file-append snuik "/bin/snuik")
+                   #:name "snuik"
+                   #:mappings mappings
+                   #:namespaces (delq 'net %namespaces)))
+           (command
+            #~'(#$snuik
+                #$@(if (and server (not (eq? server %unset-value)))
+                       (list (string-append "--server=" server))
+                       #~())
+                #$@(if (and port (not (eq? port %unset-value)))
+                       (list (string-append "--port=" (number->string port)))
+                       #~())
+                #$@(if (and nick (not (eq? nick %unset-value)))
+                       (list (string-append "--nick=" nick))
+                       #~())
+                #$@(if (and password (not (eq? password %unset-value)))
+                       (list (string-append "--password=" password))
+                       #~())
+                #$@(if (and password-file (not (eq? password-file %unset-value)))
+                       (list (string-append "--password-file=" password-file))
+                       #~())
+                #$@(if (pair? channels)
+                       (list (string-append "--channels=" (string-join channels ",")))
+                       #~())
+                #$@extra-options))
+           (log-file #~(string-append
+                        #$(if home-service? #~%user-log-dir "/var/log")
+                        "/snuik.log")))
+      (list (shepherd-service
+             (documentation "Run the snuik IRC bot.")
+             (provision '(snuik))
+             (requirement (if home-service? '() '(user-processes networking)))
+             (modules (if home-service?
+                          '((shepherd support)) ;for '%user-log-dir'
+                          '()))
+             (start #~(make-forkexec-constructor
+                       #$command
+                       #:log-file #$log-file
+                       #:user #$(and (not home-service?) "snuik")
+                       #:group #$(and (not home-service?) "snuik")))
+             (stop #~(make-kill-destructor)))))))
+
+(define snuik-activation
+  (with-imported-modules '((guix build utils))
+    #~(begin
+        (use-modules (guix build utils))
+        (let* ((user (getpw "snuik"))
+               (directory "/var/run/snuik"))
+          (mkdir-p directory)
+          (chown directory (passwd:uid user) (passwd:gid user))))))
+
+(define %snuik-accounts
+  (list (user-group (name "snuik") (system? #t))
+        (user-account
+         (name "snuik")
+         (group "snuik")
+         (system? #t)
+         (comment "Snuik IRC bot user")
+         (home-directory "/var/run/snuik")
+         (shell (file-append shadow "/sbin/nologin")))))
+
+(define snuik-service-type
+  (service-type
+   (name 'home-snuik)
+   (description "Run the Snuik IRC bot.")
+   (default-value (snuik-configuration))
+   (extensions
+    (list (service-extension activation-service-type
+                             (const snuik-activation))
+          (service-extension account-service-type
+                             (const %snuik-accounts))
+          (service-extension shepherd-root-service-type
+                             snuik-services)))))

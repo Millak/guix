@@ -36,7 +36,7 @@ Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Efraim Flashner@*
 Copyright @copyright{} 2016 John Darrington@*
 Copyright @copyright{} 2016, 2017 Nikita Gillmann@*
-Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024 Janneke Nieuwenhuizen@*
+Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Janneke Nieuwenhuizen@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Julien Lepiller@*
 Copyright @copyright{} 2016 Alex ter Weele@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*
@@ -30215,6 +30215,63 @@ interfaces specified in the comma delimited @var{interface}, on
 @item @code{loglevel} (default: @code{"Info"})
 The level of logging desired.  Accepted values are Debug, Info, Warning
 and Error.
+@end table
+@end deftp
+
+@cindex irc-bot
+@cindex snuik
+The @uref{https://gitlab.com/janneke/snuik, Snuik IRC bot} can be run as
+a daemon to aid talking to users that are currently offline.  With the
+@code{(gnu services messaging)} service, you can configure it by adding
+a @code{snuik-service-type} service to the @code{services} field of your
+operating system declaration.
+
+@defvar snuik-service-type
+This is the type of the Snuik service, whose value is a
+@code{snuik-configuration} object.
+@end defvar
+
+Here is an example of a service and its configuration:
+
+@lisp
+(service snuik-service-type
+         (snuik-configuration
+          (password-file "/var/run/snuik/.password.snuik")
+          (channels '("#bootstrappable"
+                      "#dezyne"
+                      "#guix-risc-v"
+                      "#lilypond"))))
+@end lisp
+
+@deftp {Data Type} snuik-configuration
+Available @code{snuik-configuration} fields are:
+
+@table @asis
+@item @code{snuik} (default: @code{snuik}) (type: package)
+The Snuik package to use.
+
+@item @code{server} (default: @code{"irc.libera.chat"})
+The IRC server to connect to.
+
+@item @code{port} (default: @code{6665}) (type: integer)
+Port number used by the IRC server.
+
+@item @code{nick} (default: @code{"snuik"}) (type: string)
+The nickname for snuik to use.
+
+@item @code{password} (default: @code{#f}) (type: string)
+The password to use when logging in.
+
+@item @code{password-file} (default: @code{".password.<nick>})
+The file to read the password from to use when logging in.
+
+@item @code{channels} (default: @code{'("##botchat")})
+The channels for snuik to join, a list of strings.
+
+@item @code{extra-options} (default: @code{'()})
+Extra options will be passed to @command{snuik}, please run
+@command{snuik --help } for more information.
+
 @end table
 @end deftp
 
