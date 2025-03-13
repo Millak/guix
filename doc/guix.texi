@@ -42127,6 +42127,7 @@ in its default configuration with:
 @end defvar
 
 @c %start of fragment
+
 @deftp {Data Type} fstrim-configuration
 Available @code{fstrim-configuration} fields are:
 
@@ -42134,11 +42135,11 @@ Available @code{fstrim-configuration} fields are:
 @item @code{package} (default: @code{util-linux}) (type: file-like)
 The package providing the @command{fstrim} command.
 
-@item @code{schedule} (default: @code{"0 0 * * 0"}) (type: mcron-time)
-Schedule for launching @command{fstrim}.  This can be a procedure, a
-list or a string.  For additional information, see @ref{Guile
-Syntax,,Job specification,mcron,the mcron manual}.  By default this is
-set to run weekly on Sunday at 00:00.
+@item @code{schedule} (default: @code{"0 0 * * 0"}) (type: Shepherd calendar event)
+Schedule for launching @command{fstrim}, expressed as a string in
+traditional cron syntax or as a gexp evaluating to a Shepherd calendar
+event (@pxref{Timers,,, shepherd,The GNU Shepherd Manual}).  By default
+this is set to run weekly on Sunday at 00:00.
 
 @item @code{listed-in} (default: @code{'("/etc/fstab" "/proc/self/mountinfo")}) (type: maybe-list-of-strings)
 List of files in fstab or kernel mountinfo format.  All missing or empty
@@ -42157,7 +42158,10 @@ Extra options to append to @command{fstrim} (run @samp{man fstrim} for
 more information).
 
 @end table
+
 @end deftp
+
+
 @c %end of fragment
 
 @cindex modprobe

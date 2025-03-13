@@ -34,7 +34,6 @@
   #:use-module (gnu services admin)
   #:use-module (gnu services base)
   #:use-module (gnu services configuration)
-  #:use-module (gnu services mcron)
   #:use-module (gnu services shepherd)
   #:use-module (gnu packages linux)
   #:use-module (srfi srfi-1)
@@ -196,8 +195,8 @@ representation."
 ;;; fstrim
 ;;;
 
-(define (mcron-time? x)
-  (or (procedure? x) (string? x) (list? x)))
+(define (shepherd-calendar-event? x)
+  (or (string? x) (gexp? x)))
 
 (define-maybe list-of-strings (prefix fstrim-))
 
@@ -216,11 +215,11 @@ representation."
     "The package providing the @command{fstrim} command."
     empty-serializer)
   (schedule
-   (mcron-time "0 0 * * 0")
-   "Schedule for launching @command{fstrim}.  This can be a procedure, a list
-or a string.  For additional information, see @ref{Guile Syntax,,
-Job specification, mcron, the mcron manual}.  By default this is set to run
-weekly on Sunday at 00:00."
+   (shepherd-calendar-event "0 0 * * 0")
+   "Schedule for launching @command{fstrim}, expressed as a string in
+traditional cron syntax or as a gexp evaluating to a Shepherd calendar
+event (@pxref{Timers,,, shepherd, The GNU Shepherd Manual}).  By default this
+is set to run weekly on Sunday at 00:00."
    empty-serializer)
   ;; The following are fstrim-related options.
   (listed-in
@@ -251,26 +250,31 @@ more information)."
                   rcons
                   fstrim-configuration-fields))
 
-(define (fstrim-mcron-job config)
-  (match-record config <fstrim-configuration> (package schedule)
-    #~(job
-       ;; Note: The “if” below is to ensure that
-       ;; lists are ungexp'd correctly since @var{schedule}
-       ;; can be either a procedure, a string or a list.
-       #$(if (list? schedule)
-             #~'(#$@schedule)
-             schedule)
-       (lambda ()
-         (system* #$(file-append package "/sbin/fstrim")
-                  #$@(serialize-fstrim-configuration config)))
-       "fstrim")))
+(define (fstrim-shepherd-services config)
+  (match-record config <fstrim-configuration>
+    (package schedule)
+    (list (shepherd-service
+           (provision '(fstrim))
+           (requirement '(user-processes))
+           (modules '((shepherd service timer)))
+           (start #~(make-timer-constructor
+                     #$(if (string? schedule)
+                           #~(cron-string->calendar-event #$schedule)
+                           schedule)
+                     (command
+                      (list #$(file-append package "/sbin/fstrim")
+                            #$@(serialize-fstrim-configuration config)))
+                     #:wait-for-termination? #t))
+           (stop #~(make-timer-destructor))
+           (documentation "Periodically run the 'fstrim' command.")
+           (actions (list shepherd-trigger-action))))))
 
 (define fstrim-service-type
   (service-type
    (name 'fstrim)
    (extensions
-    (list (service-extension mcron-service-type
-                             (compose list fstrim-mcron-job))))
+    (list (service-extension shepherd-root-service-type
+                             fstrim-shepherd-services)))
    (description "Discard unused blocks from file systems.")
    (default-value (fstrim-configuration))))
 
