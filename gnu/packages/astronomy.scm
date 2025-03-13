@@ -3134,7 +3134,9 @@ zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
               "--ignore=glue_astronomy/io/spectral_cube/tests/test_spectral_cube.py"
               "--ignore=glue_astronomy/io/spectral_cube/tests/test_spectral_cube.py"
               "--ignore=glue_astronomy/translators/tests/test_trace.py"
-              "--ignore=glue_astronomy/translators/tests/test_trace.py")))
+              "--ignore=glue_astronomy/translators/tests/test_trace.py"
+              ;; This is a Numpy DeprecationWarning, remove it on next update.
+              "-k" "not test_spectral_cube_io")))
     (propagated-inputs
      (list python-astropy
            python-glue-core
