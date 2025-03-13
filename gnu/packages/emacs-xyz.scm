@@ -33196,7 +33196,12 @@ or a window into some windows according to a layout recipe.")
                   "1a1n9b5gw6985qi1dm56vyw8jacx4k3jyl4cadkhj38rz24yiyx8"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-window-layout))
+      (arguments (list #:test-command
+                       #~(list "emacs" "--batch" "-L" "."
+                               "-l" "test-e2wm-pst-class.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (propagated-inputs
+       (list emacs-window-layout))
       (home-page "https://github.com/kiwanami/emacs-window-manager")
       (synopsis "Equilibrium Emacs Window Manager")
       (description "E2WM is a window manager for Emacs.  It enables to
