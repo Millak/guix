@@ -34,7 +34,6 @@
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
   #:use-module (gnu services dbus)
-  #:use-module (gnu services mcron)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)
@@ -43,6 +42,7 @@
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (guix gexp)
+  #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module (guix deprecation)
   #:use-module (srfi srfi-1)
@@ -757,7 +757,7 @@ strongSwan.")))
   (monitor-ips?           wireguard-configuration-monitor-ips? ;boolean
                           (default #f))
   (monitor-ips-interval   wireguard-configuration-monitor-ips-interval
-                          (default '(next-minute (range 0 60 5)))) ;string | list
+                          (default "*/5 * * * *"))       ;string | list
   (pre-up                 wireguard-configuration-pre-up ;list of strings
                           (default '()))
   (post-up                wireguard-configuration-post-up ;list of strings
@@ -919,117 +919,126 @@ public key, if any."
          '()
          peers)))
 
-(define (wireguard-shepherd-service config)
+(define (wireguard-monitoring-program config)
   (match-record config <wireguard-configuration>
-    (wireguard interface shepherd-requirement)
+    (interface monitor-ips-interval peers)
+    (let ((host-names (endpoint-host-names peers)))
+      (when (null? host-names)
+        (warning (G_ "'monitor-ips?' is #t but no host name to monitor~%")))
+
+      ;; Loosely based on WireGuard's own 'reresolve-dns.sh' shell script
+      ;; (see: https://raw.githubusercontent.com/WireGuard/wireguard-tools/
+      ;; master/contrib/reresolve-dns/reresolve-dns.sh).
+      (program-file
+       (format #f "wireguard-~a-monitoring" interface)
+       (with-imported-modules (source-module-closure
+                               '((gnu services herd)
+                                 (guix build utils)))
+         #~(begin
+             (use-modules (gnu services herd)
+                          (guix build utils)
+                          (ice-9 popen)
+                          (ice-9 match)
+                          (ice-9 textual-ports)
+                          (srfi srfi-1)
+                          (srfi srfi-26))
+
+             (define (resolve-host name)
+               "Return the IP address resolved from NAME."
+               (let* ((ai (car (getaddrinfo name)))
+                      (sa (addrinfo:addr ai)))
+                 (inet-ntop (sockaddr:fam sa)
+                            (sockaddr:addr sa))))
+
+             (define wg #$(file-append wireguard-tools "/bin/wg"))
+
+             #$(procedure-source strip-port/maybe)
+
+             (define service-name
+               '#$(wireguard-service-name interface))
+
+             (when (live-service-running
+                    (current-service service-name))
+               (let* ((pipe (open-pipe* OPEN_READ wg "show"
+                                        #$interface "endpoints"))
+                      (lines (string-split (get-string-all pipe)
+                                           #\newline))
+                      ;; IPS is an association list mapping
+                      ;; public keys to IP addresses.
+                      (ips (map (match-lambda
+                                  ((public-key ip)
+                                   (cons public-key
+                                         (strip-port/maybe ip))))
+                                (map (cut string-split <> #\tab)
+                                     (remove string-null?
+                                             lines)))))
+                 (close-pipe pipe)
+                 (for-each
+                  (match-lambda
+                    ((key . host-name)
+                     (let ((resolved-ip (resolve-host
+                                         (strip-port/maybe
+                                          host-name)))
+                           (current-ip (assoc-ref ips key)))
+                       (unless (string=? resolved-ip current-ip)
+                         (format #t "resetting `~a' peer \
+endpoint to `~a' due to stale IP (`~a' instead of `~a')~%"
+                                 key host-name
+                                 current-ip resolved-ip)
+                         (invoke wg "set" #$interface "peer" key
+                                 "endpoint" host-name)))))
+                  '#$host-names)))))))))
+
+(define (wireguard-shepherd-services config)
+  (match-record config <wireguard-configuration>
+    (wireguard interface monitor-ips? monitor-ips-interval shepherd-requirement)
     (let ((wg-quick (file-append wireguard "/bin/wg-quick"))
           (auto-start? (wireguard-configuration-auto-start? config))
-          (config (wireguard-configuration-file config)))
-      (list (shepherd-service
+          (config-file (wireguard-configuration-file config)))
+      (define monitoring-service
+        (and monitor-ips?
+             (shepherd-service
+              (provision (list (symbol-append
+                                (wireguard-service-name interface)
+                                '-monitoring)))
+              (requirement (list 'user-processes
+                                 (wireguard-service-name interface)))
+              (modules '((shepherd service timer)))
+              (start #~(make-timer-constructor
+                        #$(if (string? monitor-ips-interval)
+                              #~(cron-string->calendar-event
+                                 #$monitor-ips-interval)
+                              monitor-ips-interval)
+                        (command '(#$(wireguard-monitoring-program config)))
+                        #:wait-for-termination? #t))
+              (stop #~(make-timer-destructor))
+              (documentation "Monitor the Wireguard VPN tunnel.")
+              (actions (list shepherd-trigger-action)))))
+
+      (cons (shepherd-service
              (requirement `(networking user-processes ,@shepherd-requirement))
              (provision (list (wireguard-service-name interface)))
              (start #~(lambda _
-                       (invoke #$wg-quick "up" #$config)))
+                        (invoke #$wg-quick "up" #$config-file)))
              (stop #~(lambda _
-                       (invoke #$wg-quick "down" #$config)
+                       (invoke #$wg-quick "down" #$config-file)
                        #f))                       ;stopped!
-             (actions (list (shepherd-configuration-action config)))
+             (actions (list (shepherd-configuration-action config-file)))
              (auto-start? auto-start?)
-             (documentation "Run the Wireguard VPN tunnel"))))))
-
-(define (wireguard-monitoring-jobs config)
-  ;; Loosely based on WireGuard's own 'reresolve-dns.sh' shell script (see:
-  ;; https://raw.githubusercontent.com/WireGuard/wireguard-tools/
-  ;; master/contrib/reresolve-dns/reresolve-dns.sh).
-  (match-record config <wireguard-configuration>
-    (interface monitor-ips? monitor-ips-interval peers)
-    (let ((host-names (endpoint-host-names peers)))
-      (if monitor-ips?
-          (if (null? host-names)
-              (begin
-                (warn "monitor-ips? is #t but no host name to monitor")
-                '())
-              ;; The mcron monitor job may be a string or a list; ungexp strips
-              ;; one quote level, which must be added back when a list is
-              ;; provided.
-              (list
-               #~(job
-                  (if (string? #$monitor-ips-interval)
-                      #$monitor-ips-interval
-                      '#$monitor-ips-interval)
-                  #$(program-file
-                     (format #f "wireguard-~a-monitoring" interface)
-                     (with-imported-modules (source-module-closure
-                                             '((gnu services herd)
-                                               (guix build utils)))
-                       #~(begin
-                           (use-modules (gnu services herd)
-                                        (guix build utils)
-                                        (ice-9 popen)
-                                        (ice-9 match)
-                                        (ice-9 textual-ports)
-                                        (srfi srfi-1)
-                                        (srfi srfi-26))
-
-                           (define (resolve-host name)
-                             "Return the IP address resolved from NAME."
-                             (let* ((ai (car (getaddrinfo name)))
-                                    (sa (addrinfo:addr ai)))
-                               (inet-ntop (sockaddr:fam sa)
-                                          (sockaddr:addr sa))))
-
-                           (define wg #$(file-append wireguard-tools "/bin/wg"))
-
-                           #$(procedure-source strip-port/maybe)
-
-                           (define service-name '#$(wireguard-service-name
-                                                    interface))
-
-                           (when (live-service-running
-                                  (current-service service-name))
-                             (let* ((pipe (open-pipe* OPEN_READ wg "show"
-                                                      #$interface "endpoints"))
-                                    (lines (string-split (get-string-all pipe)
-                                                         #\newline))
-                                    ;; IPS is an association list mapping
-                                    ;; public keys to IP addresses.
-                                    (ips (map (match-lambda
-                                                ((public-key ip)
-                                                 (cons public-key
-                                                       (strip-port/maybe ip))))
-                                              (map (cut string-split <> #\tab)
-                                                   (remove string-null?
-                                                           lines)))))
-                               (close-pipe pipe)
-                               (for-each
-                                (match-lambda
-                                  ((key . host-name)
-                                   (let ((resolved-ip (resolve-host
-                                                       (strip-port/maybe
-                                                        host-name)))
-                                         (current-ip (assoc-ref ips key)))
-                                     (unless (string=? resolved-ip current-ip)
-                                       (format #t "resetting `~a' peer \
-endpoint to `~a' due to stale IP (`~a' instead of `~a')~%"
-                                               key host-name
-                                               current-ip resolved-ip)
-                                       (invoke wg "set" #$interface "peer" key
-                                               "endpoint" host-name)))))
-                                '#$host-names)))))))))
-          '()))))                     ;monitor-ips? is #f
+             (documentation "Run the Wireguard VPN tunnel"))
+            (or (and=> monitoring-service list)
+                '())))))
 
 (define wireguard-service-type
   (service-type
    (name 'wireguard)
    (extensions
     (list (service-extension shepherd-root-service-type
-                             wireguard-shepherd-service)
+                             wireguard-shepherd-services)
           (service-extension activation-service-type
                              wireguard-activation)
           (service-extension profile-service-type
                              (compose list
-                                      wireguard-configuration-wireguard))
-          (service-extension mcron-service-type
-                             wireguard-monitoring-jobs)))
+                                      wireguard-configuration-wireguard))))
    (description "Set up Wireguard @acronym{VPN, Virtual Private Network}
 tunnels.")))

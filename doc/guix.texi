@@ -35758,9 +35758,10 @@ IP address that no longer correspond to their freshly resolved host
 name.  Set this to @code{#t} if one or more endpoints use host names
 provided by a dynamic DNS service to keep the sessions alive.
 
-@item @code{monitor-ips-interval} (default: @code{'(next-minute (range 0 60 5))})
-The time interval at which the IP monitoring job should run, provided as
-an mcron time specification (@pxref{Guile Syntax,,,mcron}).
+@item @code{monitor-ips-interval} (default: @code{"*/5 * * * *"})
+This is the monitoring schedule, expressed as a string in traditional
+cron syntax or as a gexp evaluating to a Shepherd calendar event
+(@pxref{Timers,,, shepherd, The GNU Shepherd Manual}).
 
 @item @code{private-key} (default: @code{"/etc/wireguard/private.key"})
 The private key file for the interface.  It is automatically generated
