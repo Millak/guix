@@ -44256,6 +44256,8 @@ variations, including non-standard base32 encodings.")
                (base32
                 "0hmn3jlsqgpc602lbcs9wzw0hgr5qpjdcxi2hjlc1cp27ilyscnf"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "ert-runner" "ert-tests")))
+    (native-inputs (list emacs-ert-runner))
     (synopsis "Visual navigation through mark rings in Emacs")
     (description "This package provides a way for the user to navigate
 through mark rings (in both directions, and globally or locally).")
