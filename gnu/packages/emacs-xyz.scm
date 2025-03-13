@@ -15941,6 +15941,7 @@ asynchronously, with Counsel and Ivy.  Simply call
        (sha256
         (base32 "1vp39r5njfzchkqv9g0w77whazp070anh9gmbkp3z4n3xxbik27f"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-counsel emacs-projectile))
     (home-page "https://github.com/ericdanan/counsel-projectile")
