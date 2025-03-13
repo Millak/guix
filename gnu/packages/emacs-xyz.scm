@@ -38989,6 +38989,7 @@ replicate some of the features of the Doom modeline package.")
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-s))
+    (native-inputs (list emacs-ert-runner emacs-flycheck emacs-magit))
     (home-page "https://github.com/davidshepherd7/frames-only-mode")
     (synopsis "Use frames instead of Emacs windows")
     (description
