@@ -3371,20 +3371,24 @@ coroutine-specific markup.")
 (define-public python-asyncpg
   (package
     (name "python-asyncpg")
-    (version "0.25.0")
+    (version "0.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asyncpg" version))
        (sha256
-        (base32 "0h1573lp4607nppflnnjrhn7yrfy6i54cm98gi4qbcikjykfdy33"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-typing-extensions))
+        (base32 "0lf8xbrsb2ycpqx1vzlb05p48g5sh9zq24a8yh17cw5nia9fjlf5"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list postgresql
            python-cython
            python-pytest
-           python-uvloop))
+           python-uvloop
+           python-distro
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-async-timeout))
     (home-page "https://github.com/MagicStack/asyncpg")
     (synopsis "Fast PostgreSQL database client library for Python")
     (description "@code{asyncpg} is a database interface library designed
