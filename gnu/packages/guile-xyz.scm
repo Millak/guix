@@ -2878,7 +2878,10 @@ writing a Guix package.")))
       #:phases
       (with-imported-modules `((guix build guile-build-system)
                                ,@%default-gnu-imported-modules)
-        #~(modify-phases %standard-phases
+        ;; With above modules, %standard-phases would not be from
+        ;; glib-or-gtk-build-system anymore:
+        #~(modify-phases (@ (guix build glib-or-gtk-build-system)
+                            %standard-phases)
             (add-after 'unpack 'prepare-examples
               (lambda _
                 (chdir "examples/adw-1")
