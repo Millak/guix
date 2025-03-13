@@ -613,6 +613,7 @@ input via a small child-frame spawned at the position of the cursor.")
         (base32
          "0laj9gbwhr0n8jf0y7fb3a564rsi8kghpk1g95xhckr4fggz997r"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs (list emacs-eros emacs-sesman emacs-queue))
     (home-page "https://git.sr.ht/~abcdw/emacs-arei")
     (synopsis "Asynchronous Reliable Extensible IDE")
