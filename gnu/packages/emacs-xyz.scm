@@ -20365,6 +20365,14 @@ are common in Chromium-derived projects.")
        (sha256
         (base32 "08pqz0xfih761hmaq1hs3fzmkxn2jhzfbkqrkisl84ayla8shnrn"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (add-before 'check 'set-home
+                           (lambda _
+                             (setenv "HOME" (getenv "TMPDIR"))
+                             (mkdir-p (string-append (getenv "HOME")
+                                                     "/.emacs.d")))))))
     (propagated-inputs (list emacs-compat emacs-emacsql))
     (home-page "https://thanosapollo.org/projects/gnosis")
     (synopsis "Spaced repetition system for GNU Emacs")
