@@ -21376,6 +21376,7 @@ actually changing the buffer's text.")
        (sha256
         (base32 "0vfqyhzf3lyrhn788fbyc4p3lf36fkh8qnxvg6vddg4bxmqcjnsw"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")))
     (home-page "https://github.com/dgutov/diff-hl")
     (synopsis "Highlight uncommitted changes using VC")
     (description
