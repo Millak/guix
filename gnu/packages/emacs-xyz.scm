@@ -28058,6 +28058,43 @@ buffer.")
        "This package provides Company backend for Lua programming language.")
       (license license:gpl3+))))
 
+(define-public emacs-assess
+  (package
+    (name "emacs-assess")
+    (version "0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/assess-" version
+                           ".tar"))
+       (sha256
+        (base32 "1wka2idr63bn8fgh0cz4lf21jvlhkr895y0xnh3syp9vrss5hzsp"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f                  ; XXX: tests fail to find m-buffer
+           #:test-command
+           #~(list "emacs" "--batch" "--directory=."
+                   "--load" "assess-discover.el"
+                   "--eval" "(assess-discover-run-and-exit-batch t)")))
+    (propagated-inputs (list emacs-m-buffer-el))
+    (native-inputs (list emacs-load-relative))
+    (home-page "https://elpa.gnu.org/packages/assess.html")
+    (synopsis "Test support functions")
+    (description
+     "This  provides functions to support ert, the Emacs Regression Test
+framework.  It includes
+@itemize
+@item a set of predicates for comparing strings, buffers and file contents.
+@item explainer functions for all predicates giving useful output macros
+for creating many temporary buffers at once, and for restoring the buffer list.
+@item methods for testing indentation, by comparison or \"round-tripping\".
+@item methods for testing fontification.
+@end itemize
+Assess aims to be a stateless and noiseless as possible, leaving Emacs
+unchanged whether the tests succeed or fail and suppressing extraneous
+messages.")
+    (license license:gpl3+)))
+
 (define-public emacs-beginend
   (package
     (name "emacs-beginend")
