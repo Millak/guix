@@ -4025,10 +4025,12 @@ Unicode-to-LaTeX conversion.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'remove-unwanted-dev-dependencies
+               (add-after 'unpack 'remove-unwanted-pytest-options
                  (lambda _
-                   (substitute* "requirements-dev.txt"
-                     (("(check-manifest|coverage|coveralls|pytest-cov|twine)")
+                   (substitute* "setup.cfg"
+                     (("doctest_optionflags.*")
+                      "")
+                     (("--cov.*")
                       "")))))))
     (propagated-inputs
      (list python-numpy))
@@ -4036,7 +4038,6 @@ Unicode-to-LaTeX conversion.")
      (list python-cython
            python-pytest
            python-setuptools
-           python-sphinx
            python-twine
            python-wheel))
     (home-page "https://unidata.github.io/cftime/")
