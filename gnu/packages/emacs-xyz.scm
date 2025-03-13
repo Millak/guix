@@ -12986,7 +12986,9 @@ number.")
       (build-system emacs-build-system)
       (arguments
        `(#:include (cons* "^features\\/" "snippets\\/" "^support\\/"
-                          %default-include)))
+                          %default-include)
+         ;; XXX: tests require gherkin (>= 2.11.8, < 4.0.0)
+         #:tests? #f))
       (home-page "https://github.com/michaelklishin/cucumber.el/")
       (synopsis "Emacs mode for editing Gherkin plain text user stories")
       (description "Major mode for editing Gherkin (popularized by the
