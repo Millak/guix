@@ -342,7 +342,8 @@ for easily building fast, scalable network applications.  Node.js uses an
 event-driven, non-blocking I/O model that makes it lightweight and efficient,
 perfect for data-intensive real-time applications that run across distributed
 devices.")
-    (supported-systems (delete "riscv64-linux" %supported-systems))
+    (supported-systems (fold delete %supported-systems
+                             '("powerpc-linux" "riscv64-linux")))
     (home-page "https://nodejs.org/")
     (license license:expat)
     (properties '((max-silent-time . 7200)   ;2h, needed on ARM
@@ -991,7 +992,8 @@ fi"
            `(,nghttp2 "lib")
            openssl
            zlib))
-    (supported-systems %supported-systems)
+    (supported-systems
+      (cons "riscv64-linux" (package-supported-systems node-bootstrap)))
     (properties (alist-delete 'hidden? (package-properties node-bootstrap)))))
 
 (define-public node node-lts)
