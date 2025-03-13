@@ -15670,6 +15670,7 @@ state and will work even without lispy being enabled.")
           (base32
            "1j92ll2afvcp891fxra3sawxg000cs3ra01wxksiil2dg5zpzzkn"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; XXX: tests need a TTY?
       (propagated-inputs (list emacs-ivy))
       (home-page "https://github.com/abo-abo/function-args")
       (synopsis "C/C++ completion for GNU Emacs")
