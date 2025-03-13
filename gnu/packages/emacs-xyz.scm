@@ -30260,10 +30260,17 @@ defaults.")
          (sha256
           (base32 "0p83p90faq1p02lmsfs7zrnky3cyzgy8z4m83a81r9kakjzhkrnb"))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:test-command
+             #~(list "emacs" "--no-init-file" "--batch"
+                     "--eval=(require 'ecukes)" "--eval=(ecukes)")))
       (propagated-inputs
        (list emacs-evil))
       (native-inputs
-       (list emacs-espuds))
+       (list emacs-ecukes
+             emacs-espuds
+             emacs-evil-numbers
+             emacs-evil-surround))
       (home-page "https://github.com/gabesoft/evil-mc")
       (synopsis "Interactive search compatible with @code{multiple-cursors}")
       (description "This package can be used with @code{multiple-cursors} to
