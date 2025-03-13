@@ -15608,7 +15608,11 @@ navigate code in a tree-like fashion.")
                     (dolist (test '("lispy-eval-python-str"
                                     "lispy-outline-add-0"
                                     "lispy--clojure-dot-object"
-                                    "lispy--pretty-args"))
+                                    "lispy--pretty-args"
+                                    "lispy-flatten"
+                                    "lispy-move-up"
+                                    "lispy-move-down" ; XXX: defined twice?
+                                    "lispy-move-down"))
                             (goto-char (point-min))
                             (re-search-forward
                              (concat "ert-deftest " test))
