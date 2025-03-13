@@ -7301,29 +7301,29 @@ hard or impossible to fix in cssselect.")
                            `()))
                     " and not "))
       #:phases
-       #~(modify-phases %standard-phases
-         (add-after 'unpack 'preparations
-           (lambda _
-             ;; Use packaged libuv.
-             (substitute* "setup.py" (("self.use_system_libuv = False")
-                                      "self.use_system_libuv = True"))
-             ;; Replace hardcoded shell command.
-             (substitute* "uvloop/loop.pyx"
-               (("b'/bin/sh'") (string-append "b'" (which "sh") "'")))))
-         ,@(if (target-riscv64?)
-               `((add-after 'unpack 'adjust-test-timeouts
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'preparations
+            (lambda _
+              ;; Use packaged libuv.
+              (substitute* "setup.py" (("self.use_system_libuv = False")
+                                       "self.use_system_libuv = True"))
+              ;; Replace hardcoded shell command.
+              (substitute* "uvloop/loop.pyx"
+                (("b'/bin/sh'") (string-append "b'" (which "sh") "'")))))
+          ,@(if (target-riscv64?)
+                `((add-after 'unpack 'adjust-test-timeouts
                    (lambda _
                      (substitute* '("tests/test_tcp.py"
                                     "tests/test_unix.py")
                        (("SSL_HANDSHAKE_TIMEOUT = 15\\.0")
                         "SSL_HANDSHAKE_TIMEOUT = 30.0")))))
-               '())
-         (add-before 'check 'pre-check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Remove Python module, which conflicts with the installed
-               ;; version, but lacks the built C module.
-               (delete-file-recursively "uvloop")))))))
+                '())
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Remove Python module, which conflicts with the installed
+                ;; version, but lacks the built C module.
+                (delete-file-recursively "uvloop")))))))
     (native-inputs
      (list python-aiohttp
            python-cython-3
