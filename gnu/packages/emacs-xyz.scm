@@ -26008,6 +26008,7 @@ object @code{nil} corresponds 1:1 with @code{NULL} in the database.")
         (base32
          "1gmad6gszy7imx3sq6s1sdkhgpmylp0c11p85ilz553cxyzv4n2r"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-compat emacs-emacsql))
     (home-page "https://github.com/emacscollective/closql")
