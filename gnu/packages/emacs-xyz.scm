@@ -5168,6 +5168,7 @@ is set.")
        (sha256
         (base32 "061id540spjycgy2xshj8kwgdngkjinznhx2qp5pmqzzx7z7rpfb"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/raxod502/ctrlf/")
     (synopsis "Single-buffer text search in Emacs")
     (description "CTRLF (pronounced @emph{control F}) is an intuitive and
