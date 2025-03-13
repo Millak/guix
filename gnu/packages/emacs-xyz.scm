@@ -11472,6 +11472,7 @@ completion candidate when using the Company text completion framework.")
     (inputs
      (list emacs-company emacs-company-math emacs-dash emacs-yasnippet))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/cpitclaudel/company-coq")
     (synopsis "Emacs extensions for Proof General's Coq mode")
     (description "This package includes a collection of Company mode backends
