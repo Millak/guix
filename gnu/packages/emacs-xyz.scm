@@ -32411,6 +32411,8 @@ backends, including the @command{wordnet} offline backend.")
         (base32
          "0bqwmh4lcnbn5gcn38qg4jjfs9bfkbr4dj4dafglgds6a5lhznws"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "ert-runner" "ert-tests")))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/editorconfig/editorconfig-emacs")
     (synopsis "Define and maintain consistent coding styles between different
 editors and IDEs")
