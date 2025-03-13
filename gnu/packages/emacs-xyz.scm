@@ -30529,6 +30529,30 @@ conversion scenarios.")
         (base32
          "0rwpij2bm8d4jq2w5snkp88mfryplw8166dsrjm407n2p6xr48zx"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-failing-tests
+            (lambda _
+              (let-syntax
+                  ((disable-tests
+                    (syntax-rules ()
+                      ((_ file ())
+                       (syntax-error "test names list must not be empty"))
+                      ((_ file (test-name ...))
+                       (substitute* file
+                         (((string-append "^\\(ert-deftest " test-name ".*") all)
+                          (string-append all "(skip-unless nil)\n")) ...)))))
+                ;; These tests fail due to a missing requirement:
+                ;;   (void-function facemenu-set-face)
+                (disable-tests
+                 "test/google-translate-core-ui-test.el"
+                 ("test-google-translate--suggestion"
+                  "test-google-translate--text-phonetic/show-phonetic"
+                  "test-google-translate--translation-phonetic/show-phonetic"
+                  "test-google-translate--translated-text"))))))))
+    (native-inputs (list emacs-el-mock emacs-ert-runner))
     (home-page "https://github.com/atykhonov/google-translate")
     (synopsis "Emacs interface to Google Translate")
     (description
