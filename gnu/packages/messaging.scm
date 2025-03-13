@@ -2207,7 +2207,7 @@ is also scriptable and extensible via Guile.")
 (define-public libstrophe
   (package
     (name "libstrophe")
-    (version "0.12.3")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
@@ -2216,7 +2216,7 @@ is also scriptable and extensible via Guile.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17wxaqdcwhm34bl31g9fmsgmnsd7znyxcb9dhw9lmaghkql1sf0h"))))
+        (base32 "1ih28ys8nsk66n6x9s31khc946q35rma90fgrq0jvxxhgj2bqwz7"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags '(list "--disable-static")
@@ -2233,7 +2233,7 @@ is also scriptable and extensible via Guile.")
                                                     #$name "-" #$version "/")))
               (install-file "MIT-LICENSE.txt" license-directory)))))))
     (inputs
-     (list expat openssl))
+     (list expat openssl zlib))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (synopsis "C library for writing XMPP clients")
