@@ -25597,6 +25597,7 @@ directories of plain text notes, inspired by Notational Velocity.")
        (sha256
         (base32 "1jnqzywzqq8jzvqaiba5szmj9zbxx9kvdmnaldwgldi8yyiy7il4"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/syohex/emacs-anzu")
     (synopsis "Show number of matches in mode-line while searching")
     (description
