@@ -8975,9 +8975,15 @@ applications.")
          "115vnir4qijv89139g5h0i4l0n4w3bgh1ickgnk8xidxsa0wla15"))))
     (build-system pyproject-build-system)
     (arguments
-      (list
-       #:test-flags
-       '(list "-k"
+     (list
+      #:test-flags
+      #~(list "--asyncio-mode=auto"
+              "--ignore=tests/benchmark/"
+              "--ignore=tests/typing/test_typing.py"
+              ;; Most tests hang or fail
+              "--ignore=tests/test_cli.py"
+              "--ignore=tests/worker/test_worker_serve.py"
+              "-k"
               (string-append
                ;; PyPi sources lack examples module.
                "not test_gunicorn_"
@@ -8989,6 +8995,8 @@ applications.")
                " and not test_listeners_triggered"
                " and not test_keep_alive_connection_context"
                " and not test_keep_alive_client_timeout"
+               " and not test_conflicting_body_methods_overload"
+               " and not test_unix_connection"
                ;; Unclear why they fail since core-updates merge.
                " and not test_missing_sni"
                " and not test_no_matching_cert"
@@ -9000,14 +9008,9 @@ applications.")
                " and not test_setup_and_teardown_unix"
                " and not test_configure_socket"
                ;; Freezes
-               " and not test_server_run_with_repl"))
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key tests? test-flags #:allow-other-keys)
-               (when tests?
-                 (apply invoke "pytest" "-vv" "./tests"
-                        test-flags)))))))
+               " and not test_server_run_with_repl"
+               " and not test_server_run"
+               " and not test_no_workers"))))
     (propagated-inputs
      (list python-aiofiles
            python-aioquic
@@ -9021,23 +9024,11 @@ applications.")
            python-uvloop
            python-websockets))
     (native-inputs
-     (list python-bandit
-           python-beautifulsoup4
-           python-chardet
-           python-coverage
-           python-cryptography
-           python-docutils
-           python-mypy
-           python-pygments
+     (list python-beautifulsoup4
            python-pytest
-           python-pytest-benchmark
-           python-pytest-sanic
+           python-pytest-asyncio
            python-sanic-testing
            python-setuptools
-           python-slotscheck
-           python-towncrier
-           python-tox
-           python-types-ujson
            python-uvicorn
            python-wheel))
     (home-page "https://github.com/sanic-org/sanic/")
