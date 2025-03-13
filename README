@@ -108,3 +108,18 @@ but exposes all the API as Scheme.
   - The [[https://www.gnu.org/s/gsrc/][GNU Source Release Collection]] (GSRC) is a user-land software
     distribution; unlike Guix, it relies on core tools available on the
     host system
+
+* Copyright Notices
+
+GNU Guix is made available under the GNU GPL version 3 or later license, and
+authors retain their copyright.  For copyright notices, we adhere to the
+guidance documented in (info "(maintain) Copyright Notices"), and explicitly
+allow ranges instead of individual years.  Here's an example of the preferred
+style used for copyright notices in source file headers:
+
+#+begin_comment
+Copyright © 2019-2023, 2025 Your Name <your@email.com>
+#+end_comment
+
+Meaning there were copyright-able changes made for the years 2019, 2020, 2021,
+2022, 2023 and 2025.
