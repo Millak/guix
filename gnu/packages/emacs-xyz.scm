@@ -36701,6 +36701,7 @@ with passwords for paths matching regexps.")
        (sha256
         (base32 "1d2krw9x1mw6jn1q07nbq2qi92fms85q3i9wa2q5drs3368l55vr"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")))
     (propagated-inputs
      (list emacs-ivy))
     (home-page "https://github.com/redguardtoo/eacl")
