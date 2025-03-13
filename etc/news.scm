@@ -37,6 +37,44 @@
 (channel-news
  (version 0)
 
+ (entry (commit "0e51c6547ffdaf91777f7383da4a52a1a07b7286")
+        (title
+         (en "Incompatible upgrade of the Syncthing service"))
+        (body
+         (en "The @code{syncthing-service-type} has received an incompatible
+upgrade.  This means that if you are already using the Syncthing service, you
+will have to manually adjust your service declaration.
+
+If your @code{syncthing-configuration} declares a value for @code{config-file},
+then you need to remove @file{~/.config/syncthing/config.xml}, so that
+it does not exist after reconfiguring.  For example:
+
+@example
+mv ~/.config/syncthing/config.xml ~/.config/syncthing/config.xml.bak 2> /dev/null
+@end example
+
+Additionally, you should ensure the @file{*.pem} files in
+@file{~/.local/state/syncthing/} refer to the desired Syncthing device ID.
+Early adopters of the @code{config-file} field of
+@code{syncthing-configuration}, and people that previously configured Syncthing
+from @file{~/.config} will have their Syncthing device ID change if they do not
+move the @file{*.pem} files from @file{~/.config/syncthing} to
+@file{~/.local/state/syncthing}.  You can preserve your device ID by running the
+following command:
+
+@example
+cp ~/.config/syncthing/*.pem  ~/.local/state/syncthing/
+@end example
+
+Note that if you specified @code{config-file} previously and had your Syncthing
+device ID change, and would like your original device ID back, then do NOT run
+the above.
+
+Finally, there are some obscure fields of the various Syncthing records
+that were renamed (notably, booleans now end in '?').  Refer to the
+documentation of @code{syncthing-config-file} in the Networking Services of the
+Guix manual to see the new names.")))
+
  (entry (commit "41e62cb10c3049610dc854f1d3e9b91aebd73aed")
         (title
          (en "Removable devices now mount under @file{/run/media/$USER} instead of @file{/media}")
