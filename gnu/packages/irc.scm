@@ -1135,7 +1135,8 @@ server written in C++ for Unix-like operating systems.")
         (base32 "1hqhni5xgm7jg8md305clix1r3dbxkq6fw93kxzar1nv7wvy7z38"))))
     (native-inputs (list guile-3.0
                          ngircd))       ;for live test
-    (inputs (list bash-minimal guile-3.0 guile-goblins))
+    (inputs
+     (list bash-minimal guile-3.0 guile-fibers guile-gnutls guile-goblins))
     (build-system guile-build-system)
     (arguments
      (list
@@ -1167,6 +1168,8 @@ server written in C++ for Unix-like operating systems.")
                      (guile (string-append guile "/bin/guile"))
                      (build-guile #$(this-package-native-input "guile"))
                      (build-guile (string-append build-guile "/bin/guile"))
+                     (guile-fibers #$(this-package-input "guile-fibers"))
+                     (guile-gnutls #$(this-package-input "guile-gnutls"))
                      (guile-goblins #$(this-package-input "guile-goblins"))
                      (out #$output)
                      (bin (string-append out "/bin"))
@@ -1177,18 +1180,32 @@ server written in C++ for Unix-like operating systems.")
                      (path (list (string-append guile "/bin")))
                      (scm-dir (string-append "/share/guile/site/" effective))
                      (scm-path (list (string-append out scm-dir)
+                                     (string-append guile-fibers scm-dir)
+                                     (string-append guile-gnutls scm-dir)
                                      (string-append guile-goblins scm-dir)))
                      (go-dir (string-append "/lib/guile/" effective
                                             "/site-ccache/"))
                      (go-path (list (string-append out go-dir)
+                                    (string-append guile-fibers go-dir)
+                                    (string-append guile-gnutls go-dir)
                                     (string-append guile-goblins go-dir))))
                 (mkdir-p "bin")
-                (copy-file "snuik.sh" "bin/snuik")
+                (with-output-to-file "bin/snuik"
+                  (lambda _
+                    (display "\
+#!@GUILE@ --no-auto-compile
+!#
+(set! %load-path (append '(\"@guilemoduledir@\") %load-path))
+(set! %load-compiled-path (append '(\"@guileobjectdir@\") %load-compiled-path))
+((@ (snuik) main) (command-line)) ")))
+                (chmod "bin/snuik" #o755)
                 (substitute* "bin/snuik"
-                  (("@SHELL@") bash))
+                  (("@GUILE@") guile)
+                  (("@guilemoduledir@") (string-append #$output "/" scm-dir))
+                  (("@guileobjectdir@")  (string-append #$output "/" go-dir)))
                 (chmod "snuik" #o755)
                 (install-file "bin/snuik" bin)
-                (wrap-script (string-append out "/bin/snuik")
+                (wrap-program (string-append #$output "/bin/snuik")
                   `("PATH" ":" prefix ,path)
                   `("GUILE_AUTO_COMPILE" ":" = ("0"))
                   `("GUILE_LOAD_PATH" ":" prefix ,scm-path)
