@@ -21852,6 +21852,7 @@ documentation search and a source and class browser.")
          (sha256
           (base32 "01kb74nlkp4fvpbz6wdx776q3v7jfknhax1qmg85kj2ilkadfrd0"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
       (home-page "https://github.com/zonuexe/composer.el")
       (synopsis "Emacs interface for managing PHP dependencies with Composer")
       (description
