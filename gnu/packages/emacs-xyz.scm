@@ -43767,6 +43767,14 @@ latest Emacs.")
                  (base32
                   "0alc6vn9nrw1gbliampacx238jwihif4sfa96j3p2q2nkaqin0p0"))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'check 'set-home
+                   (lambda _
+                     (setenv "HOME" (getenv "TMPDIR"))
+                     (mkdir-p (string-append (getenv "HOME")
+                                             "/.emacs.d/elpa")))))))
       (propagated-inputs (list emacs-apel-lb emacs-oauth2))
       (home-page "https://www.emacswiki.org/emacs/WanderLust")
       (synopsis
