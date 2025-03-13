@@ -17704,6 +17704,7 @@ parsing utility.")
        (sha256
         (base32 "0jqg2hmh7qsgqywwd6fy3k8z8j45nqhpdzr3hw4hd5s2hry3zhg1"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")))
     (home-page "https://github.com/yoshiki/yaml-mode")
     (synopsis "Major mode for editing YAML files")
     (description
