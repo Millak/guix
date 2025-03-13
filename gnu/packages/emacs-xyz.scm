@@ -7877,6 +7877,7 @@ representation.")
        (sha256
         (base32 "0qjp1gind95py0zfc3a32j7g6bmdh0pszpyiazqqzxm3rz82m7rn"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/syohex/emacs-git-gutter")
     (synopsis "See and manage hunks of text in a version control system")
     (description
