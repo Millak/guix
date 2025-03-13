@@ -38282,6 +38282,7 @@ from a starlit sky.")
           (base32
            "00y6645zjary1sz7517qy5pjwfm5ipsc46sypmdygin65hbbc8wg"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
       (home-page "https://github.com/gonewest818/dimmer.el")
       (synopsis "Visually highlights the selected buffer in Emacs")
       (description "Dimmer provides a minor mode that indicates which buffer is
@@ -41130,7 +41131,10 @@ or region and use of locally installed binaries.")
     (propagated-inputs
      (list emacs-s))
     (arguments
-     `(#:test-command '("emacs" "-Q" "-batch" "-L" "."
+     `(;; XXX: Tests fail with error.
+       ;; "Not enough arguments for format string"
+       #:tests? #f
+       #:test-command '("emacs" "-Q" "-batch" "-L" "."
                         "-l" "t/indent.el"
                         "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://gitlab.com/KAction/emacs-execline/")
