@@ -27522,6 +27522,7 @@ never confused by comments or @code{foo-bar} matching @code{foo}.")
          (sha256
           (base32 "16dpg0d8p4fqjl2nir290iim9bb7f87rwnxs16lx67dasvbfawph"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
       (home-page "https://code.librehq.com/qhong/crdt.el")
       (synopsis "Real-time collaborative editing environment")
       (description
