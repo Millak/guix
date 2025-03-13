@@ -2641,7 +2641,7 @@ capabilities.")
     (propagated-inputs
      (list gobject-introspection))
     (home-page "https://www.gnu.org/software/g-golf/")
-    (synopsis "Guile bindings for GObject Introspection")
+    (synopsis "Guile Object Library for GNOME")
     (description
      "G-Golf (Gnome: (Guile Object Library for)) is a library for developing
 modern applications in Guile Scheme.  It comprises a direct binding to the
