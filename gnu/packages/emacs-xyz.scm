@@ -18130,6 +18130,7 @@ Makefile targets.")
           (base32
            "14jvhhw4chl94dgfwbyy7yirwchvcz5zrsgr9w6qy4z0fhqba41a"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
       (propagated-inputs
        (list emacs-helm emacs-ivy emacs-projectile))
       (home-page "https://github.com/abo-abo/helm-make")
