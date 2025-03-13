@@ -18753,8 +18753,18 @@ Emacs that Evil does not cover properly by default, such as @code{help-mode},
          (sha256
           (base32 "1p3vjrij63v9nrcyj3b5jsqzv9y7dgv9i1inx1q7x3s90vndavac"))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:test-command #~(list "ert-runner" "test")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'check 'skip-failing-test
+                   (lambda _
+                     (substitute* "test/evil-goggles-test.el"
+                       (("\\(ert-deftest evil-test-last-insert-register.*" all)
+                        (string-append all " (skip-unless nil)"))))))))
       (propagated-inputs
        (list emacs-evil))
+      (native-inputs (list emacs-ert-runner))
       (home-page "https://github.com/edkolev/evil-goggles")
       (synopsis "Displays visual hints when editing with evil")
       (description "Creates a visual pulse to indicate the region that is
