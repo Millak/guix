@@ -1880,6 +1880,7 @@ size.")
        (sha256
         (base32 "0nvkpy3bv9816hvgm91fv9l8lla4xras4i05579bs7bc8fck1mr3"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/magit/git-modes")
