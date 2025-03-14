@@ -10860,6 +10860,25 @@ optionally preserving color.")
 generation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-lyft-protoc-gen-star-v2-next
+  ;; The latest (2.0.3) version lacks some fixes, this variant points to the
+  ;; latest commit on master branch.
+  (let ((commit "496ad1ac90a4573d8b89f09e6ef5f8e25dd4adb8")
+        (revision "0"))
+  (package
+    (inherit go-github-com-lyft-protoc-gen-star-v2)
+    (name "go-github-com-lyft-protoc-gen-star-v2")
+    (version (git-version "2.0.3" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lyft/protoc-gen-star")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jdgzaq3r1bs12f0a0y84vnrc01m9xzvsk55cvcfspkv14pscqjy")))))))
+
 (define-public go-github-com-magiconair-properties
   (package
     (name "go-github-com-magiconair-properties")
