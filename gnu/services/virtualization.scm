@@ -40,7 +40,6 @@
   #:use-module (gnu services base)
   #:use-module (gnu services configuration)
   #:use-module (gnu services dbus)
-  #:use-module (gnu services mcron)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services ssh)
   #:use-module (gnu services)
@@ -1353,6 +1352,23 @@ that will be listening to receive secret keys on ADDRESS."
             (else
              '("/dev/console")))))
 
+(define gc-service-type                           ;TODO: Factorize.
+  (shepherd-service-type
+   'garbage-collection
+   (lambda _
+     (shepherd-service
+      (provision '(gc))
+      (requirement '(user-processes guix-daemon))
+      (start #~(make-timer-constructor
+                (calendar-event #:minutes '(12))
+                (command
+                 '("/run/current-system/profile/bin/guix" "gc" "-F2G"))
+                #:wait-for-termination? #t))
+      (stop #~(make-timer-constructor))
+      (actions (list shepherd-trigger-action))))
+   #t
+   (description "Periodically collect garbage.")))
+
 (define %virtual-build-machine-operating-system
   (operating-system
     (host-name "build-machine")
@@ -1385,9 +1401,7 @@ that will be listening to receive secret keys on ADDRESS."
                                (openssh openssh-sans-x)))
 
                      ;; Run GC once per hour.
-                     (simple-service 'perdiodic-gc mcron-service-type
-                                     (list #~(job "12 * * * *"
-                                                  "guix gc -F 2G")))
+                     (service gc-service-type)
 
                      (modify-services %base-services
                        ;; By default, the secret service introduces a
