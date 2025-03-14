@@ -584,6 +584,35 @@ Sorensen distance, plus some bonuses.  All distance computations are
 implemented in pure Python, and most of them are also implemented in C.")
     (license license:gpl2+)))
 
+(define-public python-flexcache
+  (package
+    (name "python-flexcache")
+    (version "0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flexcache" version))
+       (sha256
+        (base32 "0mh6c3s0ykmnnhzys72xq5ls4myzpz1y86fmz0ngw6v2l3aknx0q"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-mpl
+           python-pytest-subtests
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-typing-extensions))
+    (home-page "https://github.com/hgrecco/flexcache")
+    (synopsis "Caching transformed versions of a source object")
+    (description
+     "This package implements a functionality to cache on disk the result of
+expensive calculations.  It was started as part of
+@url{https://github.com/hgrecco/pint, Pint}, the Python units package.")
+    (license license:bsd-3)))
+
 (define-public python-jsonpath-ng
   (package
     (name "python-jsonpath-ng")
