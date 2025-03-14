@@ -4682,7 +4682,7 @@ information tool.")
                                                "/share/hwdata/pci.ids")
                                 (string-append "-DCUSTOM_AMDGPU_IDS_PATH="
                                                #$(this-package-input "libdrm")
-                                               "share/libdrm/amdgpu.ids"))))
+                                               "/share/libdrm/amdgpu.ids"))))
     (inputs (list dbus
                   glib
                   hwdata
