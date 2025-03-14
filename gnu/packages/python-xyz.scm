@@ -141,7 +141,7 @@
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2023 Ontje Lünsdorf <ontje.luensdorf@dlr.de>
-;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © c4droid <c4droid@foxmail.com>
@@ -765,6 +765,32 @@ many CNC and laser operations.")
      "This package implements a functionality for time taking using context
 managers.")
     (license license:expat)))
+
+(define-public python-tatsu
+  (package
+    (name "python-tatsu")
+    (version "5.13.1")
+    (source
+     (origin
+       (method git-fetch) ; no tests in PyPI releasefor tests
+       (uri (git-reference
+             (url "https://github.com/neogeny/TatSu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pdq9d45vbp7j600ig4k21mv2wipvmz05dji91x7kifhzfl5i6w9"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://tatsu.readthedocs.io/en/stable/")
+    (synopsis "PEG/Packrat Parser generator for Python")
+    (description
+     "TatSu (竜) takes a grammar in a variation of Extended Backus-Naur
+Form (EBNF) as input, and outputs a memoizing Parsing Expression Grammar (PEG)
+or Packrat parser in Python.")
+    (license license:bsd-2)))
 
 (define-public python-trubar
   (package
