@@ -26,9 +26,9 @@
 ;;; Copyright © 2021-2025 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2021, 2022, 2023 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
-;;; Copyright © 2021, 2024 Charles Jackson <charles.b.jackson@protonmail.com>
+;;; Copyright © 2021, 2024, 2025 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2021, 2022, 2023, 2024 jgart <jgart@dismail.de>
+;;; Copyright © 2021-2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
@@ -1516,6 +1516,47 @@ Clojure, as well as several expansions on the idea.")
 
 (define-public ecl-arrows
   (sbcl-package->ecl-package sbcl-arrows))
+
+(define-public asdf-cli
+  (package
+    (name "asdf-cli")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~charje/asdf-cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "asdf-cli" version))
+       (sha256
+        (base32 "0ihq898riv5awna2l3vm0fpawfb2ihh1sy75lsh6454s45mlpmlj"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     (list
+      #:tests? #f ; There are no tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* _
+              (setenv "HOME" (getcwd))
+              (invoke "./build")))
+          (add-after 'build 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (install-file "asdf" bin)))))))
+    (inputs
+     (list sbcl-command-line-args
+           sbcl-cl-annot))
+    (propagated-inputs
+     (list sbcl
+           cl-quickproject))
+    (home-page "https://git.sr.ht/~charje/asdf-cli")
+    (synopsis "Access ASDF from the command line")
+    (description
+     "Command line interface (CLI) that wraps Common Lisp ASDF (Common Lisp
+build system) and Common Lisp quickproject for building and creating new
+Common Lisp (ASDF) projects from the command line.")
+    (license license:agpl3+)))
 
 (define-public sbcl-asdf-finalizers
   (let ((commit "7f537f6c598b662ae987c6acc268dd27c25977e0")
