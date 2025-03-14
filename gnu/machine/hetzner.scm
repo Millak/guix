@@ -77,6 +77,7 @@
             hetzner-configuration-location
             hetzner-configuration-server-type
             hetzner-configuration-ssh-key
+            hetzner-configuration-ssh-public-key
             hetzner-configuration?
             hetzner-environment-type))
 
@@ -204,20 +205,24 @@ Have you run 'guix archive --generate-key'?")
             (default "fsn1"))
   (server-type hetzner-configuration-server-type ; string
                (default "cx42"))
-  (ssh-key hetzner-configuration-ssh-key)) ; string
+  (ssh-public-key hetzner-configuration-ssh-public-key ; public-key | string
+                  (thunked)
+                  (default (public-key-from-file (hetzner-configuration-ssh-key this-hetzner-configuration)))
+                  (sanitize
+                   (lambda (value)
+                     (if (string? value) (public-key-from-file value) value))))
+  (ssh-key hetzner-configuration-ssh-key
+           (default #f))) ; #f | string
 
 (define (hetzner-configuration-ssh-key-fingerprint config)
   "Return the SSH public key fingerprint of CONFIG as a string."
-  (and-let* ((file-name (hetzner-configuration-ssh-key config))
-             (privkey (private-key-from-file file-name))
-             (pubkey (private-key->public-key privkey))
+  (and-let* ((pubkey (hetzner-configuration-ssh-public-key config))
              (hash (get-public-key-hash pubkey 'md5)))
     (bytevector->hex-string hash)))
 
 (define (hetzner-configuration-ssh-key-public config)
   "Return the SSH public key of CONFIG as a string."
-  (and-let* ((ssh-key (hetzner-configuration-ssh-key config))
-             (public-key (public-key-from-file ssh-key)))
+  (let ((public-key (hetzner-configuration-ssh-public-key config)))
     (format #f "ssh-~a ~a" (get-key-type public-key)
             (public-key->string public-key))))
 

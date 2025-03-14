@@ -46014,9 +46014,14 @@ equivalent.  Other server types and their current prices can be found
 server type is currently not supported, since its rescue system is too
 small to bootstrap a Guix system from.
 
-@item @code{ssh-key}
-The file name of the SSH private key to use to authenticate with the
-remote host.
+@item @code{ssh-key} (default: @code{#f})
+If specified, the file name of the SSH private key to use to
+authenticate with the remote host.
+
+@item @code{ssh-public-key} (default: extracted from @code{ssh-key})
+If specified, either a public key as returned by
+@code{string->public-key} or the path to the SSH public key to use to
+authenticate with the remote host.
 
 @end table
 
@@ -46080,7 +46085,7 @@ shared vCPUs and 32 GB of RAM on the @code{x86_64} architecture.
        (environment hetzner-environment-type)
        (configuration (hetzner-configuration
                        (server-type "cpx51")
-                       (ssh-key "/home/charlie/.ssh/id_rsa")))))
+                       (ssh-public-key "/home/charlie/.ssh/id_rsa.pub")))))
 @end lisp
 
 @vindex GUIX_HETZNER_API_TOKEN
