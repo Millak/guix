@@ -5950,6 +5950,31 @@ integration with Edebug allows stepping into Lisp expressions that are part of
 the Font Lock keywords.")
     (license license:gpl3+)))
 
+(define-public emacs-font-utils
+  ;; latest release from 10 years ago
+  (let ((commit "abc572eb0dc30a26584c0058c3fe6c7273a10003")
+        (revision "0"))
+    (package
+      (name "emacs-font-utils")
+      (version (git-version "0.7.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rolandwalker/font-utils/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hx3k2zx2kdavivr1b957jq7kcwk301yzw77aprxzbs7jz73a35x"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/rolandwalker/font-utils/")
+      (synopsis "Utility functions for working with fonts in Emacs")
+      (description
+       "@code{Font-utils} is a collection of functions for working with fonts.  This
+library has no user-level interface, it is only useful for programming in Emacs
+Lisp.")
+      (license license:bsd-2))))
+
  (define-public emacs-fontaine
    (package
      (name "emacs-fontaine")
