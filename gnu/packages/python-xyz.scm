@@ -613,6 +613,34 @@ expensive calculations.  It was started as part of
 @url{https://github.com/hgrecco/pint, Pint}, the Python units package.")
     (license license:bsd-3)))
 
+(define-public python-flexparser
+  (package
+    (name "python-flexparser")
+    (version "0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flexparser" version))
+       (sha256
+        (base32 "1cpn5scxnxbd2jrnany4znzzn9im5h5gwr59bp62rglman89hv96"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-mpl
+           python-pytest-subtests
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-typing-extensions))
+    (home-page "https://github.com/hgrecco/flexparser")
+    (synopsis "Parsing made fun ... using typing")
+    (description "This project provides a typed parser.  It was started as
+part of @url{https://github.com/hgrecco/pint, Pint}, the Python units
+package. ")
+    (license license:bsd-3)))
+
 (define-public python-jsonpath-ng
   (package
     (name "python-jsonpath-ng")
