@@ -6788,8 +6788,9 @@ elementary stream are provided.")
    (version "1.13.4")
    (source (origin
             (method url-fetch)
-            (uri (string-append "http://p.outlyer.net/vcs/files/vcs-" version
-				".tar.gz"))
+            (uri (string-append "https://github.com/outlyer-net/"
+                                "video-contact-sheet/releases/download/"
+                                version "/vcs-" version ".tar.gz"))
             (sha256
              (base32
               "0jsl93r0rnybjcipqbww5hwsr9ln6kz1qnf32qfxdvhfw52n27fw"))))
@@ -6819,7 +6820,7 @@ create video contact sheets (previews) of videos.  Any video supported by
 MPlayer and FFmpeg can be used.  A note of warning: Unlike most similar tools
 VCS, by default, makes screenshots the same size as the video, see the manual
 for details on how to change this.")
-   (home-page "https://p.outlyer.net/vcs/")
+   (home-page "https://github.com/outlyer-net/video-contact-sheet")
    (license license:lgpl2.1+)))
 
 (define-public svtplay-dl
