@@ -1,0 +1,15 @@
+Honor the LINUX_MODULE_DIRECTORY environment variable.
+
+Upstream-status: N/A
+
+--- a/src/util/virpci.c
++++ b/src/util/virpci.c
+@@ -1459,6 +1459,7 @@ virPCIDeviceFindBestVFIOVariant(virPCIDevice *dev,
+     }
+ 
+     uname(&unameInfo);
+-    modulesAliasPath = g_strdup_printf("/lib/modules/%s/modules.alias", unameInfo.release);
++    char* modulepath = getenv("LINUX_MODULE_DIRECTORY");
++    modulesAliasPath = g_strdup_printf("%s/%s/modules.alias", modulepath ? modulepath : "/lib/modules", unameInfo.release);
+     if (virFileReadAll(modulesAliasPath, 8 * 1024 * 1024, &modulesAliasContent) < 0)
+         return -1;

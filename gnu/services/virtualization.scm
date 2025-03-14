@@ -508,11 +508,14 @@ potential infinite waits blocking libvirt."))
                      (list (string-append #$libvirt "/sbin/libvirtd")
                            "-f" #$config-file
                            #$@(if listen-tcp? '("--listen") '()))
-                     ;; For finding qemu and ip binaries.
+                     ;; For finding qemu, ip binaries and kernel modules.
                      #:environment-variables
-                     (list (string-append
-                            "PATH=/run/current-system/profile/bin:"
-                            "/run/current-system/profile/sbin"))))
+                     (list
+                      (string-append
+                       "PATH=/run/current-system/profile/bin:"
+                       "/run/current-system/profile/sbin")
+                      "LINUX_MODULE_DIRECTORY="
+                      "/run/booted-system/kernel/lib/modules")))
            (stop #~(make-kill-destructor))))))
 
 (define libvirt-service-type

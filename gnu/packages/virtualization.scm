@@ -1562,7 +1562,8 @@ pretty simple, REST API.")
                            version ".tar.xz"))
        (sha256
         (base32 "15jpfrn3d2zyhbm5ip7bmpjb6ch2bfxm1h6yfgh0l3bw3g9ppgg1"))
-       (patches (search-patches "libvirt-add-install-prefix.patch"))))
+       (patches (search-patches "libvirt-add-install-prefix.patch"
+                                "libvirt-respect-modules-path.patch"))))
     (build-system meson-build-system)
     (arguments
      (list

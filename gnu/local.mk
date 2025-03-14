@@ -1674,6 +1674,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/librewolf-neuter-locale-download.patch	\
   %D%/packages/patches/librewolf-use-system-wide-dir.patch	\
   %D%/packages/patches/libvirt-add-install-prefix.patch	\
+  %D%/packages/patches/libvirt-respect-modules-path.patch	\
   %D%/packages/patches/libziparchive-add-includes.patch		\
   %D%/packages/patches/lightdm-arguments-ordering.patch		\
   %D%/packages/patches/lightdm-vnc-ipv6.patch			\
