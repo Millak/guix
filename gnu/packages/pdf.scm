@@ -52,6 +52,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system ant)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
@@ -84,6 +85,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages lesstif)
@@ -1790,3 +1792,92 @@ Keywords: html2pdf, htmltopdf")
     (description
      "Sioyek is a PDF viewer with a focus on textbooks and research papers.")
     (license license:gpl3+)))
+
+(define-public pdftk
+  (package
+    (name "pdftk")
+    (version "3.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://gitlab.com/pdftk-java/pdftk/-/archive/v"
+                           version "/pdftk-v" version ".tar.gz"))
+       (sha256
+        (base32 "11mj0phf78pkbdzvnfhl7n4z476fiv1zjfbf2cx9wlsq8vjpv54w"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:jdk openjdk11
+      #:tests? #f  ; no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'copy-lib-files
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir-p "lib")
+              (for-each
+               (lambda (lib)
+                 (copy-file lib (string-append "lib/" (basename lib))))
+               (append
+                (find-files (assoc-ref inputs "java-bouncycastle") "\\.jar$")
+                (find-files (assoc-ref inputs "java-commons-lang3") "\\.jar$")))))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin"))
+                     (share (string-append out "/share"))
+                     (lib (string-append out "/lib"))
+                     (doc (string-append share "/doc/pdftk"))
+                     (man1 (string-append share "/man/man1")))
+                (mkdir-p bin)
+                (mkdir-p lib)
+                (mkdir-p doc)
+                (mkdir-p man1)
+                (install-file "build/jar/pdftk.jar" lib)
+                ;; Install dependencies.
+                (for-each
+                 (lambda (dep-jar)
+                   (symlink dep-jar
+                            (string-append lib "/" (basename dep-jar))))
+                 (append
+                  (find-files (assoc-ref inputs "java-bouncycastle") "\\.jar$")
+                  (find-files (assoc-ref inputs "java-commons-lang3") "\\.jar$")))
+                ;; Create wrapper script.
+                (with-output-to-file (string-append bin "/pdftk")
+                  (lambda _
+                    (format #t
+                           "#!~a/bin/bash~@
+                            CLASSPATH=~a/lib/pdftk.jar:~a/lib/*~@
+                            exec ~a/bin/java -cp $CLASSPATH com.gitlab.pdftk_java.pdftk \"$@\"~%"
+                            (assoc-ref inputs "bash")
+                            out
+                            out
+                            (assoc-ref inputs "openjdk"))))
+                ;; Make the wrapper executable.
+                (chmod (string-append bin "/pdftk") #o755)
+                (copy-recursively "doc" doc)
+                (install-file "pdftk.1" man1)))))))
+    (inputs
+     (list bash java-bouncycastle java-commons-lang3 openjdk11))
+    (home-page "https://gitlab.com/pdftk-java/pdftk")
+    (synopsis "Tool for manipulating PDF documents")
+    (description
+     "This package provides a tool for doing everyday things with PDF
+documents.  It can:
+@itemize
+@item Merge PDF documents or collate PDF page scans
+@item Split PDF pages into a new document
+@item Rotate PDF documents or pages
+@item Decrypt input as necessary (password required)
+@item Encrypt output as desired
+@item Fill PDF forms with X/FDF data and/or flatten forms
+@item Generate FDF data stencils from PDF forms
+@item Apply a background watermark or a foreground stamp
+@item Report PDF metrics, bookmarks and metadata
+@item Add/Update PDF bookmarks or metadata
+@item Attach files to PDF pages or the PDF document
+@item Unpack PDF attachments
+@item Burst a PDF document into single pages
+@item Uncompress and re-compress page streams
+@item Repair corrupted PDF (where possible)
+@end itemize")
+    (license license:gpl2+)))
