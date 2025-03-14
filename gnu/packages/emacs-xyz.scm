@@ -1429,8 +1429,8 @@ when typing parentheses directly or commenting out code line by line.")
 
 (define-public emacs-puni
   ;; No tagged release upstream
-  (let ((commit "72e091ef30e0c9299dbcd0bc4669ab9bb8fb6e47")
-        (revision "2"))
+  (let ((commit "f430f5b0a14c608176e3376058eb380ab0824621")
+        (revision "3"))
     (package
       (name "emacs-puni")
       (version (git-version "0" revision commit))
@@ -1442,7 +1442,7 @@ when typing parentheses directly or commenting out code line by line.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ns2r6nwakdnzjiq84qqzn85wwahc0k738awx9kxn9p0q2prpx5j"))))
+                  "0kvxll2yx4lh5x04cigdizncp2kbva1iidz9fjnbi8qqfm6pq5qq"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-with-editor))
       (home-page "https://github.com/AmaiKinono/puni")
