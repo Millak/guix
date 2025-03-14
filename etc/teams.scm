@@ -703,7 +703,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Efraim Flashner"
                        "efraim@flashner.co.il")
-  embedded bootstrap julia rust)
+  embedded bootstrap rust)
 
 (define-member (person "jgart"
                        "jgart@dismail.de")
