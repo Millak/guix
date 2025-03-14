@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019-2024 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2025 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020, 2024 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
@@ -19852,6 +19852,34 @@ not counting tests)
 
 (define-public ecl-lev
   (sbcl-package->ecl-package sbcl-lev))
+
+(define-public sbcl-linear-programming
+  (package
+    (name "sbcl-linear-programming")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/neil-lindquist/linear-programming")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-linear-programming" version))
+       (sha256
+        (base32 "1gygqq02qh73mpswwrsjvdsjv4hjiqspky1vf4wcyllybai0jxn1"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-fiveam))
+    (inputs (list sbcl-alexandria sbcl-iterate))
+    (synopsis "Common Lisp linear programming")
+    (description
+     "This is a Common Lisp library for solving linear programming problems.")
+    (home-page "https://neil-lindquist.github.io/linear-programming/")
+    (license license:expat)))
+
+(define-public cl-linear-programming
+  (sbcl-package->cl-source-package sbcl-linear-programming))
+
+(define-public ecl-linear-programming
+  (sbcl-package->ecl-package sbcl-linear-programming))
 
 (define-public sbcl-linedit
   (let ((commit "0561c97dfca2f5854fcc66558a567a9875ddcb8f")
