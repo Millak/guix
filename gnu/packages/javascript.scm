@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages java)
   #:use-module (gnu packages node)
@@ -864,6 +866,93 @@ dependency.  It includes a command line interpreter with contextual colorization
 implemented in Javascript and a small built-in standard library with C library
 wrappers.")
     (license license:expat)))
+
+(define-public test262-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference (url "https://github.com/tc39/test262")
+                        (commit "e7a84b0a090ca86cc05f2e90116115c8c2a7c059")))
+    (file-name "test262")
+    (sha256 (base32 "0y1w6ypjpam6dal75cwvwwmrrhh7glx9pp812yxvy8rc8w9sfwyw"))
+    (modules '((guix build utils)))
+    (snippet #~(begin
+                 (for-each delete-file
+                           (list "ECMA TR-104.pdf" "docs/coverage.html"
+                                 "docs/ES3_ES5_Changes.xlsx"))))))
+
+(define-public quickjs-ng
+  (package
+    (name "quickjs-ng")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quickjs-ng/quickjs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lbjayp6x5784dxa7ll67isjjiqajg4hx3ls6fyzzfk6hd44jkzw"))))
+    (arguments
+     (list
+      ;; Data model is ILP32 in 32bit, LP64 in 64bit
+      ;; https://docs.oracle.com/cd/E19620-01/805-3024/lp64-1/index.html
+      #:tests? (and (not (%current-target-system))
+                    (target-64bit?))
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS:BOOL=TRUE"
+              "-DQJS_BUILD_EXAMPLES:BOOL=FALSE"
+              "-DQJS_BUILD_CLI_WITH_MIMALLOC:BOOL=TRUE"
+              "-DQJS_ENABLE_ASAN:BOOL=FALSE"
+              "-DQJS_ENABLE_UBSAN:BOOL=FALSE"
+              "-DQJS_ENABLE_MSAN:BOOL=FALSE"
+              "-DQJS_ENABLE_TSAN:BOOL=FALSE"
+              ;; Only works with static build
+              "-DQJS_BUILD_LIBC:BOOL=FALSE"
+              #$@(if (or (target-riscv64?)
+                         (target-ppc32?))
+                     #~("-DCMAKE_EXE_LINKER_FLAGS=-latomic")
+                     #~()))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'prepare-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("test262.conf" "test262-fast.conf"
+                             "test262_errors.txt")
+                (("test262/")
+                 (string-append (assoc-ref inputs "test262") "/")))
+              (substitute* "tests/test_std.js"
+                (("/bin/sh")
+                 (which "sh")))
+              (substitute* "Makefile"
+                ((" \\$\\(QJS\\)")
+                 "")
+                (("BUILD_DIR=build")
+                 "BUILD_DIR=../build"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../source"
+                  (invoke "make" "test")
+                  (invoke "make" "test262-fast")
+                  (invoke "make" "microbench")
+                  (invoke "../build/qjs" "-c" "examples/hello.js" "-o" "hello")
+                  (invoke "./hello")
+                  (invoke "../build/api-test"))))))))
+    (build-system cmake-build-system)
+    (native-inputs (list test262-source))
+    (inputs (list mimalloc))
+    (home-page "https://quickjs-ng.github.io/quickjs/")
+    (synopsis "Small embeddable Javascript engine")
+    (description
+     "@code{quickjs-ng} supports the ES2023 specification including modules,
+asynchronous generators, proxies, BigInt, BigDecimal, BigFloat and operator
+overloading.  It can compile Javascript sources to executables with no external
+dependency.  It includes a command line interpreter with contextual colorization
+implemented in Javascript and a small built-in standard library with C library
+wrappers.")
+    ;; 3-clause BSD license for test262
+    (license (list license:expat license:bsd-3))))
 
 (define-public duktape
   (package
