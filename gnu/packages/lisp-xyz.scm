@@ -19881,6 +19881,43 @@ not counting tests)
 (define-public ecl-linear-programming
   (sbcl-package->ecl-package sbcl-linear-programming))
 
+(define-public sbcl-linear-programming-glpk
+  (package
+    (name "sbcl-linear-programming-glpk")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/neil-lindquist/linear-programming-glpk")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-linear-programming-glpk" version))
+       (sha256
+        (base32 "1ci7i41z20vql3rj4cd2ss8r4baqsqcq5xkmq1yd7ls5w3qdh9h2"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-fiveam))
+    (inputs (list glpk sbcl-cffi sbcl-linear-programming))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/ffi.lisp"
+                     (("libglpk.so")
+                      (search-input-file inputs "/lib/libglpk.so"))))))))
+    (synopsis "GLPK backend for linear-programming library")
+    (description
+     "This is a backend for the linear-programming Common Lisp library using
+the GNU Linear Programming Kit (GLPK) library.")
+    (home-page "https://github.com/neil-lindquist/linear-programming-glpk")
+    (license license:gpl3)))
+
+(define-public cl-linear-programming-glpk
+  (sbcl-package->cl-source-package sbcl-linear-programming-glpk))
+
+(define-public ecl-linear-programming-glpk
+  (sbcl-package->ecl-package sbcl-linear-programming-glpk))
+
 (define-public sbcl-linedit
   (let ((commit "0561c97dfca2f5854fcc66558a567a9875ddcb8f")
         (revision "1"))
