@@ -969,7 +969,7 @@ dynamic library for the C language implementation of HEALPix.")
 (define-public imppg
   (package
     (name "imppg")
-    (version "1.9.2-beta")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -978,12 +978,15 @@ dynamic library for the C language implementation of HEALPix.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13kqvl9ay4x0ia7iikxbhg96pp46f1awr382p05gxdvsxksq900v"))))
+        (base32 "0cq7syrcclf1ykaxpjv73a30g4m8fbnqdphfs13932i0a7vgkaid"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      ;; See <https://github.com/GreatAttractor/imppg/issues/28>.
-      #:tests? (target-x86-64?)))
+      ;; Tests fail on i686 see:
+      ;; <https://github.com/GreatAttractor/imppg/issues/28>;
+      ;; Tests hang on any architectures see:
+      ;; <https://github.com/GreatAttractor/imppg/issues/34>.
+      #:tests? #f))
     (native-inputs
      (list boost pkg-config))
     (inputs
