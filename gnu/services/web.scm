@@ -2059,14 +2059,15 @@ WSGIPassAuthorization On
 
 (define mumi-config-file
   (match-record-lambda <mumi-configuration>
-      (file-tags)
+      (mailer? file-tags)
     (computed-file "mumi.conf"
                    #~(begin
                        (use-modules (srfi srfi-26))
 
                        (call-with-output-file #$output
                          (cut write
-                              '((file-tags . #$file-tags))
+                              '((mailer-enabled? . #$mailer?)
+                                (file-tags . #$file-tags))
                               <>))))))
 
 (define (mumi-shepherd-services config)
@@ -2085,8 +2086,7 @@ WSGIPassAuthorization On
             (start #~(make-forkexec-constructor
                       `(#$(file-append mumi "/bin/mumi") "web"
                         ,(string-append "--config="
-                                        #$(mumi-config-file config))
-                        ,@(if #$mailer? '() '("--disable-mailer")))
+                                        #$(mumi-config-file config)))
                       #:environment-variables #$environment
                       #:user "mumi" #:group "mumi"
                       #:log-file #$%mumi-log))
