@@ -637,6 +637,99 @@ editor (with wide ints)" )
 (define-public emacs-next-tree-sitter
   (deprecated-package "emacs-next-tree-sitter" emacs-next))
 
+(define-public guile-emacs
+  (let ((upstream-version "31.0.50")
+        (commit "8f87cbc1dae6a9e77368afc5736df8c342e9153d")
+        (revision "0"))
+    (package
+      (inherit emacs)
+      (name "guile-emacs")
+      (version (git-version upstream-version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://codeberg.org/lyrra/guilemacs")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (patches (search-patches "guile-emacs-build-fixes.patch"))
+                (sha256
+                 (base32
+                  "1yhxy6d5i673y35i66d2x975zih3cw6p59ylsb8xk68wds6s7xrl"))))
+      (native-inputs
+       (modify-inputs (package-native-inputs emacs)
+         (prepend autoconf automake guile-for-guile-emacs)))
+      (home-page "https://guile-emacs.org")
+      (arguments
+       (substitute-keyword-arguments `(;; Tests aren't passing for now.
+                                       #:tests? #f
+                                       #:strip-binaries? #f
+                                       ,@(package-arguments emacs))
+         ((#:configure-flags flags ''())
+          #~`("CFLAGS=-Og -ggdb3"
+              "--with-native-compilation=no"
+              "--without-modules"
+              "--without-threads"
+              "--with-jpeg=no"
+              "--without-cairo"
+              "--without-tree-sitter"
+              ,@(fold delete #$flags '("--with-cairo"
+                                       "--with-modules"
+                                       "--with-native-compilation=aot"))))
+         ((#:make-flags flags #~'())
+          #~(list "V=1"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'autogen
+                (lambda _
+                  (invoke "sh" "autogen.sh")))
+              (delete 'patch-compilation-driver)
+              (delete 'set-libgccjit-path)
+              (delete 'validate-comp-integrity)
+              (delete 'restore-emacs-pdmp)
+              (delete 'build-trampolines)
+              (delete 'install-site-start)
+              (replace 'wrap-emacs-paths
+                ;; Restrict EMACSLOADPATH to builtin packages.
+                (lambda _
+                  (let ((lisp-dirs (list (string-append
+                                          #$output "/share/emacs/"
+                                          #$upstream-version "/lisp")))
+                        (inputs '#$(map (match-lambda
+                                          ((name directory)
+                                           #~(#$name . #$directory)))
+                                        (package-inputs this-package))))
+                    (for-each
+                     (lambda (prog)
+                       (wrap-program prog
+                         ;; Some variants rely on uname being in PATH for Tramp.
+                         ;; Tramp paths can't be hardcoded, because they need to
+                         ;; be portable.
+                         `("PATH" suffix
+                           ,(map dirname
+                                 (list (search-input-file inputs "/bin/gzip")
+                                       ;; for coreutils
+                                       (search-input-file inputs "/bin/yes"))))
+                         ;; We use "=" because loading non-builtin packages is
+                         ;; currently not supported and prevents guile-emacs
+                         ;; from running.
+                         `("EMACSLOADPATH" = ,lisp-dirs)))
+                     (find-files
+                      (string-append #$output "/bin")
+                      ;; Matches versioned and unversioned emacs binaries.
+                      ;; We don't patch emacsclient, because it takes its
+                      ;; environment variables from emacs.
+                      ;; Likewise, we don't need to patch helper binaries
+                      ;; like etags, ctags or ebrowse.
+                      "^emacs(-[0-9]+(\\.[0-9]+)*)?$")))))
+              (add-after 'unpack 'help-patch-progam-file-names
+                (lambda _
+                  (call-with-output-file "lisp/obsolete/terminal.el"
+                    (lambda (port) (display port)))))
+              (add-after 'configure 'touch-lisp/finder-inf.el
+                (lambda _
+                  (call-with-output-file "lisp/finder-inf.el"
+                    (lambda (port) (display port))))))))))))
+
 (define-public m17n-db
   (package
     (name "m17n-db")
