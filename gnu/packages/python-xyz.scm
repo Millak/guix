@@ -2155,13 +2155,12 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
 (define-public python-pint
   (package
     (name "python-pint")
-    (version "0.23")
+    (version "0.24.4")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "Pint" version))
+              (uri (pypi-uri "pint" version))
               (sha256
-               (base32
-                "1d69dqs0j907x4hgz2k8f3zjzhgs9zvlw2k0gi955g3dc28rnl71"))))
+               (base32 "100vp5jg2sqj5wxaflj1rqjv2pk4fd55l2h2sdn7m0vlnlwm89rm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2181,8 +2180,8 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
            python-pytest-mpl python-pytest-subtests
            python-setuptools python-setuptools-scm python-wheel))
     (propagated-inputs
-     (list python-typing-extensions
-           python-uncertainties))
+     (list python-flexcache python-flexparser
+           python-platformdirs python-typing-extensions))
     (home-page "https://github.com/hgrecco/pint")
     (synopsis "Physical quantities module")
     (description
