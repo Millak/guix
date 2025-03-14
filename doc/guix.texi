@@ -39883,8 +39883,11 @@ The service takes a @code{ganeti-watcher-configuration} object.
 @item @code{ganeti} (default: @code{ganeti})
 The @code{ganeti} package to use for this service.
 
-@item @code{schedule} (default: @code{'(next-second-from (next-minute (range 0 60 5)))})
-How often to run the script.  The default is every five minutes.
+@item @code{schedule} (default: @code{"*/5 * * * *"})
+When to run the script, expressed either as a string in traditional cron
+syntax or as a gexp representing a Shepherd calendar event
+(@pxref{Timers,,, shepherd, The GNU Shepherd Manual}).  The default is
+every five minutes.
 
 @item @code{rapi-ip} (default: @code{#f})
 This option needs to be specified only if the RAPI daemon is configured to use

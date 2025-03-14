@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,14 +20,11 @@
 (define-module (gnu services ganeti)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu services)
-  #:use-module (gnu services mcron)
   #:use-module (gnu services shepherd)
   #:use-module (guix gexp)
   #:use-module (guix records)
-
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
-
   #:export (ganeti-noded-configuration
             ganeti-noded-configuration?
             ganeti-noded-configuration-ganeti
@@ -644,9 +642,8 @@ information to OS install scripts or instances.")))
   (ganeti        ganeti-watcher-configuration-ganeti        ;file-like
                  (default ganeti))
   (schedule      ganeti-watcher-configuration-schedule      ;list | string
-                 (default '(next-second-from
-                            ;; Run every five minutes.
-                            (next-minute (range 0 60 5)))))
+                 ;; Run every 5 minutes.
+                 (default "*/5 * * * *"))
   (rapi-ip       ganeti-watcher-configuration-rapi-ip       ;#f | string
                  (default #f))
   (job-age       ganeti-watcher-configuration-job-age       ;integer
@@ -660,36 +657,47 @@ information to OS install scripts or instances.")))
   (match-lambda
     (($ <ganeti-watcher-configuration> ganeti _ rapi-ip job-age verify-disks?
                                        debug?)
-     #~(lambda ()
-         (system* #$(file-append ganeti "/sbin/ganeti-watcher")
-                  #$@(if rapi-ip
-                         #~((string-append "--rapi-ip=" #$rapi-ip))
-                         #~())
-                  #$(string-append "--job-age=" (number->string job-age))
-                  #$@(if verify-disks?
-                         #~()
-                         #~("--no-verify-disks"))
-                  #$@(if debug?
-                         #~("--debug")
-                         #~()))))))
+     #~(#$(file-append ganeti "/sbin/ganeti-watcher")
+        #$@(if rapi-ip
+               #~((string-append "--rapi-ip=" #$rapi-ip))
+               #~())
+        #$(string-append "--job-age=" (number->string job-age))
+        #$@(if verify-disks?
+               #~()
+               #~("--no-verify-disks"))
+        #$@(if debug?
+               #~("--debug")
+               #~())))))
 
-(define (ganeti-watcher-jobs config)
+(define (ganeti-timer name schedule command)
+  "Return a Shepherd timer providing NAME and running COMMAND, a list-valued
+gexp."
+  (shepherd-service
+   (provision (list name))
+   (requirement '(user-processes))
+   (modules '((shepherd service timer)))
+   (start #~(make-timer-constructor
+             #$(if (string? schedule)
+                   #~(cron-string->calendar-event #$schedule)
+                   schedule)
+             (command '(#$@command))
+             #:wait-for-termination? #t))
+   (stop #~(make-timer-destructor))
+   (documentation "Periodically run a Ganeti maintenance job.")
+   (actions (list shepherd-trigger-action))))
+
+(define (ganeti-watcher-service config)
   (match config
     (($ <ganeti-watcher-configuration> _ schedule)
-     (list
-      #~(job #$@(match schedule
-                  ((? string?)
-                   #~(#$schedule))
-                  ((? list?)
-                   #~('#$schedule)))
-             #$(ganeti-watcher-command config)
-             "ganeti-watcher")))))
+     (list (ganeti-timer 'ganeti-watcher
+                         schedule
+                         (ganeti-watcher-command config))))))
 
 (define ganeti-watcher-service-type
   (service-type (name 'ganeti-watcher)
                 (extensions
-                 (list (service-extension mcron-service-type
-                                          ganeti-watcher-jobs)))
+                 (list (service-extension shepherd-root-service-type
+                                          ganeti-watcher-service)))
                 (default-value (ganeti-watcher-configuration))
                 (description
                  "@command{ganeti-watcher} is a periodically run script that
@@ -714,34 +722,23 @@ is declared offline by known master candidates.")))
                    ;; Run the node cleaner at 02:45 every day.
                    (default "45 2 * * *")))
 
-(define ganeti-cleaner-jobs
+(define ganeti-cleaner-service
   (match-lambda
     (($ <ganeti-cleaner-configuration> ganeti master-schedule node-schedule)
-     (list
-      #~(job #$@(match master-schedule
-                  ((? string?)
-                   #~(#$master-schedule))
-                  ((? list?)
-                   #~('#$master-schedule)))
-             (lambda ()
-              (system* #$(file-append ganeti "/sbin/ganeti-cleaner")
-                       "master"))
-             "ganeti master cleaner")
-      #~(job #$@(match node-schedule
-                  ((? string?)
-                   #~(#$node-schedule))
-                  ((? list?)
-                   #~('#$node-schedule)))
-             (lambda ()
-               (system* #$(file-append ganeti "/sbin/ganeti-cleaner")
-                        "node"))
-             "ganeti node cleaner")))))
+     (list (ganeti-timer 'ganeti-master-cleaner
+                         master-schedule
+                         #~(#$(file-append ganeti "/sbin/ganeti-cleaner")
+                            "master"))
+           (ganeti-timer 'ganeti-node-cleaner
+                         node-schedule
+                         #~(#$(file-append ganeti "/sbin/ganeti-cleaner")
+                            "node"))))))
 
 (define ganeti-cleaner-service-type
   (service-type (name 'ganeti-cleaner)
                 (extensions
-                 (list (service-extension mcron-service-type
-                                          ganeti-cleaner-jobs)))
+                 (list (service-extension shepherd-root-service-type
+                                          ganeti-cleaner-service)))
                 (default-value (ganeti-cleaner-configuration))
                 (description
                  "@command{ganeti-cleaner} is a script that removes old files
@@ -804,7 +801,8 @@ than 21 days from @file{/var/lib/ganeti/queue/archive}.")))
 
 (define ganeti-shepherd-services
   (match-lambda
-    (($ <ganeti-configuration> _ noded confd wconfd luxid rapi kvmd mond metad)
+    (($ <ganeti-configuration> _ noded confd wconfd luxid rapi kvmd mond metad
+                               watcher cleaner)
      (append (ganeti-noded-service noded)
              (ganeti-confd-service confd)
              (ganeti-wconfd-service wconfd)
@@ -812,13 +810,9 @@ than 21 days from @file{/var/lib/ganeti/queue/archive}.")))
              (ganeti-rapi-service rapi)
              (ganeti-kvmd-service kvmd)
              (ganeti-mond-service mond)
-             (ganeti-metad-service metad)))))
-
-(define ganeti-mcron-jobs
-  (match-lambda
-    (($ <ganeti-configuration> _ _ _ _ _ _ _ _ _ watcher cleaner)
-     (append (ganeti-watcher-jobs watcher)
-             (ganeti-cleaner-jobs cleaner)))))
+             (ganeti-metad-service metad)
+             (ganeti-watcher-service watcher)
+             (ganeti-cleaner-service cleaner)))))
 
 (define-record-type* <ganeti-os>
   ganeti-os make-ganeti-os ganeti-os?
@@ -1122,9 +1116,7 @@ in /etc/ganeti/instance-$os for OS."
                        (service-extension etc-service-type
                                           ganeti-etc-service)
                        (service-extension profile-service-type
-                                          (compose list ganeti-configuration-ganeti))
-                       (service-extension mcron-service-type
-                                          ganeti-mcron-jobs)))
+                                          (compose list ganeti-configuration-ganeti))))
                 (default-value (ganeti-configuration (os %default-ganeti-os)))
                 (description
                  "Ganeti is a family of services that are designed to run
