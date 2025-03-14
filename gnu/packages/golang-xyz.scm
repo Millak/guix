@@ -3833,6 +3833,45 @@ files based on a .gitignore document.")
 information about the music/image/video that is Now Playing on the system.")
       (license license:expat))))
 
+(define-public go-github-com-envoyproxy-protoc-gen-validate
+  (package
+    (name "go-github-com-envoyproxy-protoc-gen-validate")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bufbuild/protoc-gen-validate")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yd77gnsn9bbiihbkdyn9klwbv314l6ar83z4kivpn9mr93xysch"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/envoyproxy/protoc-gen-validate/tests
+            (delete-file-recursively "tests")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/envoyproxy/protoc-gen-validate"))
+    (propagated-inputs
+     (list go-github-com-iancoleman-strcase
+           go-github-com-lyft-protoc-gen-star-v2-next
+           go-golang-org-x-net
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/envoyproxy/protoc-gen-validate")
+    (synopsis "Protocol Buffer Validation for Go, Java, Python, and C++")
+    (description
+     "PGV is a protoc plugin to generate polyglot message validators.  While
+protocol buffers effectively guarantee the types of structured data, they
+cannot enforce semantic rules for values.  This plugin adds support to
+protoc-generated code to validate such constraints.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-flopp-go-findfont
   (package
     (name "go-github-com-flopp-go-findfont")
@@ -20088,6 +20127,41 @@ editor.")
     (native-inputs (package-propagated-inputs go-github-com-google-gops))
     (propagated-inputs '())
     (inputs '())))
+
+(define-public protoc-gen-validate
+  (package
+    (inherit go-github-com-envoyproxy-protoc-gen-validate)
+    (name "protoc-gen-validate")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-envoyproxy-protoc-gen-validate)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'build
+              (lambda* (#:key import-path #:allow-other-keys #:rest arguments)
+                (for-each
+                 (lambda (cmd)
+                   (apply (assoc-ref %standard-phases 'build)
+                          `(,@arguments #:import-path ,cmd)))
+                 (list import-path
+                       (string-append import-path
+                                      "/cmd/protoc-gen-validate-cpp")
+                       (string-append import-path
+                                      "/cmd/protoc-gen-validate-go")
+                       (string-append import-path
+                                      "/cmd/protoc-gen-validate-java")))))))))
+    (native-inputs (package-propagated-inputs
+                    go-github-com-envoyproxy-protoc-gen-validate))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     (string-append (package-description
+                     go-github-com-envoyproxy-protoc-gen-validate)
+                    "\nThis package provides command line interface (CLI)
+tools."))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
