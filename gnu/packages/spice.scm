@@ -68,14 +68,14 @@
   (package
     (name "usbredir")
     (home-page "https://spice-space.org")
-    (version "0.14.0")
+    (version "0.15.0")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "/download/" name "/" name "-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0cm3pal2fmi5168i3vdy18qw2wmvhfy02fn9li2sx3rjg1fgnkcj"))))
+                "0q890pzi0744isnw72lxk59aaqvhmg1dli8j35la123n4y0a7hkd"))))
     (build-system meson-build-system)
     (propagated-inputs (list libusb))
     (inputs (list glib))
