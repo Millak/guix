@@ -1326,7 +1326,7 @@ of one or more RISC-V harts.")
 (define-public libosinfo
   (package
     (name "libosinfo")
-    (version "1.10.0")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
@@ -1334,7 +1334,7 @@ of one or more RISC-V harts.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "0193sdvv9yj3h6wwhj441d2fhccc7fh0m36sl0fv5pl0ql7y0lm2"))))
+         "1dn6pzv0gzkxrjvi60cdzdmyxqlcsvinbrbds91xm4v7wbn5g1dd"))))
     (build-system meson-build-system)
     (arguments
      (list
