@@ -3116,7 +3116,7 @@ degradation and failure.")
 (define-public fdupes
   (package
     (name "fdupes")
-    (version "2.2.1")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
@@ -3124,10 +3124,10 @@ degradation and failure.")
                            "releases/download/v" version "/"
                            "fdupes-" version ".tar.gz"))
        (sha256
-        (base32 "13b9qph8nmxwns9n28im3f7bdzhpjas51vckm9b7h5ghlffbfsw4"))))
+        (base32 "1irab60gkjmnvk1l0x92cb5vh9zw9g0vgr3s82mir93zpvn8v3c0"))))
     (build-system gnu-build-system)
     (inputs
-     (list ncurses pcre2))
+     (list ncurses pcre2 sqlite))
     (home-page "https://github.com/adrianlopezroche/fdupes")
     (synopsis "Identify duplicate files")
     (description
