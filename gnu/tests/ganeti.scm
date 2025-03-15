@@ -117,7 +117,7 @@
                        (gnu build marionette))
 
           (define marionette
-            (make-marionette (list #$vm)))
+            (make-marionette (list #$vm "-m" "1024")))
 
           (test-runner-current (system-test-runner #$output))
           (test-begin "ganeti")
