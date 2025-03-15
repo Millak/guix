@@ -154,9 +154,8 @@
           (test-eq "watcher pause"
             0
             (marionette-eval
-             '(begin
-                (system* #$(file-append ganeti "/sbin/gnt-cluster")
-                         "watcher" "pause" "1h"))
+             '(system* #$(file-append ganeti "/sbin/gnt-cluster")
+                       "watcher" "pause" "1h")
              marionette))
 
           (test-assert "force-start wconfd"
@@ -174,8 +173,7 @@
           (test-eq "gnt-cluster verify 1"
             0
             (marionette-eval
-             '(begin
-                (system* #$(file-append ganeti "/sbin/gnt-cluster") "verify"))
+             '(system* #$(file-append ganeti "/sbin/gnt-cluster") "verify")
              marionette))
 
           ;; Try stopping and starting daemons with daemon-util like
@@ -183,33 +181,29 @@
           (test-eq "daemon-util stop-all"
             0
             (marionette-eval
-             '(begin
-                (system* #$(file-append ganeti "/lib/ganeti/daemon-util")
-                         "stop-all"))
+             '(system* #$(file-append ganeti "/lib/ganeti/daemon-util")
+                       "stop-all")
              marionette))
 
           (test-eq "daemon-util start-all"
             0
             (marionette-eval
-             '(begin
-                (system* #$(file-append ganeti "/lib/ganeti/daemon-util")
-                         "start-all"))
+             '(system* #$(file-append ganeti "/lib/ganeti/daemon-util")
+                       "start-all")
              marionette))
 
           ;; Check that the cluster is still healthy after the daemon restarts.
           (test-eq "gnt-cluster verify 2"
             0
             (marionette-eval
-             '(begin
-                (system* #$(file-append ganeti "/sbin/gnt-cluster") "verify"))
+             '(system* #$(file-append ganeti "/sbin/gnt-cluster") "verify")
              marionette))
 
           (test-eq "watcher continue"
             0
             (marionette-eval
-             '(begin
-                (system* #$(file-append ganeti "/sbin/gnt-cluster")
-                         "watcher" "continue"))
+             '(system* #$(file-append ganeti "/sbin/gnt-cluster")
+                       "watcher" "continue")
              marionette))
 
           ;; Try accessing the RAPI.
@@ -244,9 +238,8 @@
           (test-eq "gnt-cluster destroy"
             0
             (marionette-eval
-             '(begin
-                (system* #$(file-append ganeti "/sbin/gnt-cluster")
-                         "destroy" "--yes-do-it"))
+             '(system* #$(file-append ganeti "/sbin/gnt-cluster")
+                       "destroy" "--yes-do-it")
              marionette))
 
           (test-end))))
