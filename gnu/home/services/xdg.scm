@@ -2,6 +2,7 @@
 ;;; Copyright © 2021, 2022 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -309,8 +310,8 @@ disable a directory, point it to the $HOME.")))
 ;;                    '((exec . "echo hi"))))))))))
 
 ;; See
-;; <https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html>
-;; <https://specifications.freedesktop.org/mime-apps-spec/mime-apps-spec-latest.html>
+;; <https://specifications.freedesktop.org/shared-mime-info-spec/latest/>
+;; <https://specifications.freedesktop.org/mime-apps-spec/latest/>
 
 (define (serialize-alist field-name val)
   (define (serialize-mimelist-entry key val)
