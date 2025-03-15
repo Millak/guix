@@ -172,10 +172,13 @@
                   (substitute* "net/tramp.el"
                     ;; Patch the line after "(defcustom tramp-remote-path".
                     (("\\(tramp-default-remote-path")
-                     (format #f "(tramp-default-remote-path ~s ~s ~s ~s "
-                             "~/.guix-profile/bin" "~/.guix-profile/sbin"
-                             "/run/current-system/profile/bin"
-                             "/run/current-system/profile/sbin")))
+                     (format
+                      #f "(tramp-default-remote-path ~s ~s ~s ~s ~s ~s ~s "
+                      "/run/privileged/bin"
+                      "~/.guix-profile/bin" "~/.guix-profile/sbin"
+                      "~/.guix-home/bin" "~/.guix-home/sbin"
+                      "/run/current-system/profile/bin"
+                      "/run/current-system/profile/sbin")))
 
                   ;; Make sure Man looks for C header files in the right
                   ;; places.
@@ -184,7 +187,8 @@
                      (string-join
                       (list line
                             "\"~/.guix-profile/include\""
-                            "\"/var/guix/profiles/system/profile/include\"")
+                            "\"~/.guix-home/include\""
+                            "\"/run/current-system/profile/include\"")
                       " ")))))))
     (build-system gnu-build-system)
     (arguments
