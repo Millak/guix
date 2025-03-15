@@ -569,7 +569,7 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
 (define-public uftrace
   (package
     (name "uftrace")
-    (version "0.11")
+    (version "0.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -577,7 +577,7 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0gk0hv3rnf5czvazz1prg21rf9qlniz42g5b389n8a29hqj4q6xr"))
+               (base32 "0p1iy70hc4vl3j16j9vvlh5amvk06l3m35iic2crpavm240dw7y7"))
               (patches (search-patches "uftrace-fix-tests.patch"))))
     (build-system gnu-build-system)
     (arguments

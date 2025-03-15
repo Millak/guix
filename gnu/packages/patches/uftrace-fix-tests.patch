@@ -1,12 +1,4 @@
 Adjust test expectations to match the guix platform
---- a/tests/t192_lib_name.py
-+++ b/tests/t192_lib_name.py
-@@ -44,4 +44,4 @@ class TestCase(TestBase):
-         ver = v.split('\n')[0].split(') ')[1]
-         ver.strip()
- 
--        return re.sub("libc-[\d.]+.so", "libc-%s.so" % ver, result)
-+        return re.sub("libc-2.26.so", "libc.so.6", result)
 --- a/tests/t251_exception4.py
 +++ b/tests/t251_exception4.py
 @@ -5,16 +5,18 @@ from runtest import TestBase
