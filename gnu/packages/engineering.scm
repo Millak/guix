@@ -5039,7 +5039,7 @@ form, numpad.
 (define-public rizin
   (package
     (name "rizin")
-    (version "0.7.2")
+    (version "0.7.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5047,7 +5047,7 @@ form, numpad.
                     version "/rizin-src-v" version ".tar.xz"))
               (sha256
                (base32
-                "0ajqng66b01phs0hjygg9phyc8p3fs0a1isbc0zmxdz2bas3zzzw"))))
+                "008jcfbp836g2sya4aqkbkfir6h1xhq0pq53p8w3r16wwl88j4gp"))))
     (build-system meson-build-system)
     (arguments
      (list
