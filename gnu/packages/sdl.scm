@@ -151,16 +151,16 @@ hardware.")
   (package
     (inherit sdl2)
     (name "sdl3")
-    (version "3.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/libsdl-org/SDL")
-                    (commit (string-append "release-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "11hrhvf74in0amdrmhcf11ll48pxqbidyqawr9hx2cgdwlzdjll1"))))
+    (version "3.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/libsdl-org/SDL/"
+                           "releases/download/release-"
+                           version "/SDL3-" version ".tar.gz"))
+       (sha256
+        (base32
+         "00yv0273fvljp916kjvcmr60bl97pd95xdpjrn77dpk1nfmqyf0k"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -169,8 +169,10 @@ hardware.")
       #~(list "-DSDL_SHARED=ON"
               "-DSDL_ALSA_SHARED=OFF"
               "-DSDL_PULSEAUDIO_SHARED=OFF"
+              "-DSDL_PIPEWIRE_SHARED=OFF"
               "-DSDL_X11_SHARED=OFF"
               "-DSDL_WAYLAND_SHARED=OFF"
+              "-DSDL_WAYLAND_LIBDECOR_SHARED=OFF"
               "-DSDL_KMSDRM=ON"
               "-DSDL_KMSDRM_SHARED=OFF"
               (string-append
@@ -179,7 +181,24 @@ hardware.")
                 (list
                  (string-append #$(this-package-input "eudev") "/lib")
                  (string-append #$(this-package-input "vulkan-loader") "/lib"))
-                ";")))))))
+                ";")))))
+    ;; Many inputs need to be propagated for the sake of pkg-config.
+    (propagated-inputs
+     (list alsa-lib
+           libxcursor                   ;enables X11 cursor support
+           libxkbcommon
+           libxrandr
+           pipewire
+           pulseaudio
+           wayland))
+    (inputs
+     (list dbus
+           eudev                           ;for discovering input devices
+           glib
+           ibus-minimal
+           libdecor
+           vulkan-loader
+           wayland-protocols))))
 
 (define-public sdl12-compat
   (package
