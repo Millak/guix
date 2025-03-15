@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2024, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Carlo Holl <carloholl@gmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 ZmnSCPxj jxPCSnmZ <ZmnSCPxj@protonmail.com>
@@ -2255,32 +2255,21 @@ providing common functions for the technical analysis of financial market data."
 (define-public ta-lib
   (package
     (name "ta-lib")
-    (version "0.4.0")
+    (version "0.6.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/ta-lib/ta-lib/"
-                           version "/ta-lib-" version "-src.tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TA-Lib/ta-lib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0lf69nna0aahwpgd9m9yjzbv2fbfn081djfznssa84f0n7y1xx4z"))))
+        (base32 "012sp7s1fxp6lnh3am0r6r46ya9jwnarkvlvq21w2nndqd4n4d39"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'link-math-library
-           (lambda _
-             (substitute* "src/Makefile.am"
-               (("ta_common/libta_common.la")
-                "ta_common/libta_common.la -lm"))
-             (substitute* "src/Makefile.in"
-               (("\\$\\(libta_lib_la_LDFLAGS\\) \\$\\(LDFLAGS\\) -o \\$@")
-                "$(libta_lib_la_LDFLAGS) $(LDFLAGS) -lm -o $@")))))
-       ;; Parallel build fails with:
-       ;; mv -f .deps/gen_code-gen_code.Tpo .deps/gen_code-gen_code.Po
-       ;; mv: cannot stat '.deps/gen_code-gen_code.Tpo': No such file or directory
-       ;; Makefile:254: recipe for target 'gen_code-gen_code.o' failed
-       #:parallel-build? #f
-       #:configure-flags '("--disable-static")))
+     (list #:tests? #f ; no tests
+           #:configure-flags #~(list "--disable-static")))
+    (native-inputs (list autoconf-2.71 automake libtool))
     (home-page "https://ta-lib.org")
     (synopsis "Technical analysis library")
     (description
