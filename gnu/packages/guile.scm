@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2016, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2016, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
@@ -612,20 +612,20 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
                            #:deep? #f))
 
 (define-public guile-for-guile-emacs
-  (let ((commit "4b9b8277733729f5b825f78fadfead9fc3630e7e")
-        (revision "0"))
+  (let ((commit "e62c0d1b32f625fcbaa733c32a88622846aee905")
+        (revision "2"))
     (package (inherit guile-next)
       (name "guile-for-guile-emacs")
       (version (git-version "3.0.7-81" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "git://git.savannah.gnu.org/guile.git")
+                      (url "https://codeberg.org/lyrra/guile")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0fgkcv29581kqkxqq6y48xly72970qs7016qhs6c4ilygg0gyfqb"))))
+                  "0xfnd99iws9dwk5va8bmqpysmb8pnb1w91rw7rbfzzklyfvpibh6"))))
       (arguments
        (substitute-keyword-arguments (package-arguments guile-next)
          ((#:phases phases '%standard-phases)
