@@ -329,18 +329,17 @@ related to the configuration of a Ganeti cluster.")))
     "Forcefully start wconfd even on non-master nodes (dangerous!).")
    (procedure #~(lambda _
                   (format #t "Forcefully starting the wconfd daemon...~%")
-                  (action 'ganeti-wconfd 'enable)
-                  (dynamic-wind
+                  (enable-service (lookup-service 'ganeti-wconfd))
+                  (call-with-output-file #$%wconfd-force-node-hint
+                    (const #t))
+                  (catch #t
                     (lambda ()
-                      (false-if-exception
-                       (call-with-output-file #$%wconfd-force-node-hint
-                         (lambda (port)
-                           (const #t)))))
-                    (lambda ()
-                      (action 'ganeti-wconfd 'restart))
-                    (lambda ()
+                      (perform-service-action (lookup-service 'ganeti-wconfd)
+                                              'restart)
+                      (delete-file #$%wconfd-force-node-hint))
+                    (lambda _
                       (delete-file #$%wconfd-force-node-hint)))
-                    #t))))
+                  #t))))
 
 (define ganeti-wconfd-service
   (match-lambda
