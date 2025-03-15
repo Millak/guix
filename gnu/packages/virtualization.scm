@@ -1356,13 +1356,18 @@ of one or more RISC-V harts.")
                                                  "share/osinfo")))))))))
     (inputs (list libsoup libxml2 libxslt osinfo-db))
     (native-inputs
-     (list `(,glib "bin")                ;glib-mkenums, etc.
+     (list `(,glib "bin")               ;glib-mkenums, etc.
            gobject-introspection
            gtk-doc/stable
            hwdata
            vala
            intltool
            pkg-config))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "OSINFO_SYSTEM_DIR")
+            (separator #f)              ;single entry
+            (files '("share/osinfo")))))
     (home-page "https://libosinfo.org/")
     (synopsis "Operating system information database")
     (description "libosinfo is a GObject based library API for managing
