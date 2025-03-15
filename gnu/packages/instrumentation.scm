@@ -577,7 +577,8 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0gk0hv3rnf5czvazz1prg21rf9qlniz42g5b389n8a29hqj4q6xr"))))
+               (base32 "0gk0hv3rnf5czvazz1prg21rf9qlniz42g5b389n8a29hqj4q6xr"))
+              (patches (search-patches "uftrace-fix-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -587,10 +588,7 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
       #:make-flags
       #~(list
          (string-append "CC=" #$(cc-for-target)))
-      ;; runtest hangs at some point -- probably due to
-      ;; failed socket connection -- but we want to keep the
-      ;; unit tests.  Change the target to "test" when fixed.
-      #:test-target "unittest"
+      #:test-target "test"
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
@@ -606,13 +604,34 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
                 (when target
                   (setenv "CROSS_COMPILE" (string-append target "-"))))
               (setenv "SHELL" (which "sh"))
+              (let ((python #$(this-package-input "python"))
+                    (luajit #$(this-package-input "luajit")))
+                (setenv "LDFLAGS" (string-append "-Wl," "-rpath=" python "/lib"
+                                                 ":" luajit "/lib")))
               (invoke "./configure"
                       (string-append "--prefix="
-                                     #$output)))))))
+                                     #$output))))
+          (add-before 'check 'fix-shebang
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tests/t220_trace_script.py"
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh")))))
+          (add-after 'unpack 'delete-network-tests
+            (lambda _
+              ;; These tests require network capability (localhost)
+              (for-each delete-file
+                        '("tests/t141_recv_basic.py"
+                          "tests/t142_recv_multi.py"
+                          "tests/t143_recv_kernel.py"
+                          "tests/t150_recv_event.py"
+                          "tests/t151_recv_runcmd.py"
+                          "tests/t167_recv_sched.py")))))))
     (inputs
      (list capstone
            elfutils
            libunwind
+           python ;; libpython3.10.so for python scripting
+           luajit ;; libluajit-5.1.so for lua scripting
            ncurses))
     (native-inputs
      (list luajit
@@ -625,6 +644,5 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
 programs written in C/C++.  It is heavily inspired by the ftrace framework of
 the Linux kernel, while supporting userspace programs.  It supports various
 kind of commands and filters to help analysis of the program execution and
-performance.  It provides the command @command{uftrace}.  User that want to do
-scripting need to install python-3 or luajit in their profile.")
+performance.  It provides the command @command{uftrace}.")
     (license license:gpl2)))
