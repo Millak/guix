@@ -586,14 +586,14 @@ sets, both THUMB and ARM mode.")
 (define-public intel-xed
   (package
     (name "intel-xed")
-    (version "2023.08.21")
+    (version "2025.03.02")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/intelxed/xed")
              (commit (string-append "v" version))))
-       (sha256 (base32 "1zv99m5h3n3w6jcpplznq030s5mlwg5llz3vgfwpfl5l8laz1032"))
+       (sha256 (base32 "1h1q1rq96mh0jaqsg5pwmxwrcbpb83i79kblzfqszlq2nn0ih55j"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
