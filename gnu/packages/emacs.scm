@@ -12,7 +12,7 @@
 ;;; Copyright © 2017, 2019, 2020, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2017, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -69,6 +69,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages lesstif)   ; motif
   #:use-module (gnu packages linux)     ; alsa-lib, gpm
   #:use-module (gnu packages mail)      ; for mailutils
@@ -639,8 +640,8 @@ editor (with wide ints)" )
 
 (define-public guile-emacs
   (let ((upstream-version "31.0.50")
-        (commit "8f87cbc1dae6a9e77368afc5736df8c342e9153d")
-        (revision "0"))
+        (commit "f2d0459d6a4cda8b7c38b6fb12a55f1330ba50fa")
+        (revision "2"))
     (package
       (inherit emacs)
       (name "guile-emacs")
@@ -651,18 +652,25 @@ editor (with wide ints)" )
                       (url "https://codeberg.org/lyrra/guilemacs")
                       (commit commit)))
                 (file-name (git-file-name name version))
-                (patches (search-patches "guile-emacs-build-fixes.patch"))
                 (sha256
                  (base32
-                  "1yhxy6d5i673y35i66d2x975zih3cw6p59ylsb8xk68wds6s7xrl"))))
+                  "0ry0dn9xrndpz54hs92dnnsw4xa4qn4lz898ldlh2rs47ah1f4wl"))))
       (native-inputs
        (modify-inputs (package-native-inputs emacs)
          (prepend autoconf automake guile-for-guile-emacs)))
+      (inputs
+       (modify-inputs (package-inputs emacs)
+         (prepend imagemagick)))
       (home-page "https://guile-emacs.org")
+      (synopsis "Emacs text editor powered by Guile('s elisp implementation)")
+      (description
+       "Guile-Emacs brings Emacs and Guile together by providing a new Elisp
+implementation based on Guile's compiler technology, serving as the basis for
+a more expressive and extensible version of Elisp.
+
+Started in 2014 as a GSOC project, Guile-Emacs was resurrected in 2024.")
       (arguments
-       (substitute-keyword-arguments `(;; Tests aren't passing for now.
-                                       #:tests? #f
-                                       #:strip-binaries? #f
+       (substitute-keyword-arguments `(#:strip-binaries? #f
                                        ,@(package-arguments emacs))
          ((#:configure-flags flags ''())
           #~`("CFLAGS=-Og -ggdb3"
@@ -672,6 +680,7 @@ editor (with wide ints)" )
               "--with-jpeg=no"
               "--without-cairo"
               "--without-tree-sitter"
+              "--with-imagemagick"
               ,@(fold delete #$flags '("--with-cairo"
                                        "--with-modules"
                                        "--with-native-compilation=aot"))))
