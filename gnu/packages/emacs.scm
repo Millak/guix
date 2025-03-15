@@ -624,6 +624,7 @@ editor (with wide ints)" )
     (version (git-version "31.0.50" revision commit))
     (source
      (origin
+       (inherit (package-source emacs-minimal))
        (method git-fetch)
        (uri (git-reference
              (url "https://git.savannah.gnu.org/git/emacs.git")
