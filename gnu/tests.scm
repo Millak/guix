@@ -53,6 +53,7 @@
 
             %simple-os
             simple-operating-system
+            operating-system-with-console-syslog
 
             system-test
             system-test?
@@ -267,6 +268,26 @@ the system under test."
   (operating-system (inherit %simple-os)
                     (services (cons* user-services ... %base-services))))
 
+
+(define (operating-system-with-console-syslog os)
+  "Return OS with a system log service that writes to /dev/console."
+  (operating-system
+    (inherit os)
+    (services
+     (modify-services (operating-system-user-services os)
+       (shepherd-system-log-service-type
+        config
+        =>
+        (system-log-configuration
+         (inherit config)
+         (message-destination
+          #~(lambda (message)
+              (let ((destinations ((default-message-destination-procedure)
+                                   message)))
+                (if (<= (system-log-message-priority message)
+                        (system-log-priority info))
+                    (cons "/dev/console" destinations)
+                    destinations))))))))))
 
 
 ;;;
