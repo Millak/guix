@@ -30907,7 +30907,10 @@ provided by other Emacs packages dealing with pass:
       (build-system emacs-build-system)
       (inputs (list imagemagick))
       (arguments
-       `(#:phases
+       `(#:test-command
+         (list "emacs" "--batch" "-l" "image+.el" "-l" "image+-test.el"
+               "-f" "ert-run-tests-batch-and-exit")
+         #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'configure
              (lambda* (#:key inputs outputs #:allow-other-keys)
