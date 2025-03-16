@@ -10347,6 +10347,9 @@ errors.")
         (base32 "1fh6j5w2387nh2fwwjphkhq17cgj5m2q5k0fhidvgc2w65lzbr1r"))))
     (propagated-inputs
      (list emacs-dash emacs-flycheck emacs-let-alist))
+    (native-inputs (list emacs-buttercup
+                         rust-bootstrap
+                         `(,rust-bootstrap "cargo")))
     (build-system emacs-build-system)
     (home-page "https://github.com/flycheck/flycheck-rust")
     (synopsis "Rust/Cargo support for Flycheck")
