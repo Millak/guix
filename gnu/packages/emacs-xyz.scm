@@ -40274,6 +40274,8 @@ files and subdirectories when appropriate.")
        (sha256
         (base32 "0hlqvq3j4f6g16nj3bm2wbkncn8hv8c8iqd0sch3w80wwqnr622y"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "ert-runner" "test")))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/wentasah/meson-mode")
     (synopsis "Major mode for Meson build system files")
     (description
