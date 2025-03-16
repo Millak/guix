@@ -4709,31 +4709,30 @@ astronomical tables
 (define-public python-mpl-animators
   (package
     (name "python-mpl-animators")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mpl_animators" version))
        (sha256
-        (base32 "0xxzwxp2zss2s5ci6d349nfdc4hcbm10pqmf5zf14yn66plc1r4k"))))
+        (base32 "1jscdgx1ynqvidh0kc6jxhjlp7lxhilwnp5pb6ddi7nb10as90kz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-         (add-before 'check 'set-home
-           (lambda _
-             ;; Relax matplotlib warning: ... because the default path
-             ;; (/homeless-shelter/.config/matplotlib) is not a writable
-             ;; directory ...
-             (setenv "HOME" "/tmp"))))))
+          (add-before 'check 'set-home
+            (lambda _
+              ;; Relax matplotlib warning: ... because the default path
+              ;; (/homeless-shelter/.config/matplotlib) is not a writable
+              ;; directory ...
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-pytest
            python-pytest-doctestplus
            python-pytest-mpl
-           python-pytest-xdist
            python-setuptools
-           python-setuptools-scm
+           python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
      (list python-astropy
