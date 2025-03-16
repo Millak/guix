@@ -829,7 +829,7 @@ It is a fork of Clementine aimed at music collectors and audiophiles.")
 (define-public cmus
   (package
     (name "cmus")
-    (version "2.11.0")
+    (version "2.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -838,7 +838,7 @@ It is a fork of Clementine aimed at music collectors and audiophiles.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k50z99v2yqshycx6mbk4g5bsaalg5dgzjv3xvwq14abwkw44hli"))))
+                "17ljajx0098q8qx02krkc71nd502i24n0gf2kkg0r2v4ddn2467j"))))
     (build-system gnu-build-system)
     (arguments
      (list
