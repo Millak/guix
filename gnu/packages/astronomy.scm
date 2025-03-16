@@ -2578,13 +2578,44 @@ cosmological parameters e.g. redshift or luminosity-distance.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Tests require Internet access to https://hst-crds.stsci.edu and
-      ;; additional test data. See:
-      ;; https://github.com/spacetelescope/crds/blob/master/setup_test_cache
-      #:tests? #f))
+      #:test-flags
+      ;; XXX: Tests require a complex set up and test data, try to run some
+      ;; minimal portion of unit tests to persist package comparability during
+      ;; updates.
+      #~(map
+         (lambda (ignore) (format #f "--ignore=~a" ignore))
+         ;; Introduce cycle: python-crds -> python-stdatamodels -> python-crds
+         (list "test/bestrefs/test_bestrefs.py"
+               ;; Network is required to access <https://hst-crds.stsci.edu>.
+               "test/bestrefs/"
+               "test/submit/"
+               ;; XXX: Excluding test files which tests fail the most, maybe
+               ;; find a way how to enable/fix them.
+               "test/certify/test_certify.py"
+               "test/core/test_cmdline.py"
+               "test/core/test_heavy_client.py"
+               "test/core/test_reftypes.py"
+               "test/core/test_rmap.py"
+               "test/core/test_substitutions.py"
+               "test/misc/test_check_archive.py"
+               "test/misc/test_synphot.py"
+               "test/refactoring/test_refactor.py"
+               "test/roman/test_roman.py"
+               "test/test_bad_files.py"
+               "test/test_build6.py"
+               "test/test_diff.py"
+               "test/test_list.py"
+               "test/test_matches.py"
+               "test/test_rowdiff.py"
+               "test/test_sync.py"))))
     (native-inputs
-     (list python-setuptools
+     (list python-mock
+           python-pytest
+           python-pytest-astropy
+           python-pytest-doctestplus
+           python-setuptools
            python-setuptools-scm
+           python-stsynphot
            python-wheel))
     (propagated-inputs
      (list python-asdf
