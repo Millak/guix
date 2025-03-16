@@ -2152,48 +2152,6 @@ Java objects.")
 Markdown.  All extensions are found under the module namespace of pymdownx.")
     (license license:expat)))
 
-(define-public python-pint
-  (package
-    (name "python-pint")
-    (version "0.24.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pint" version))
-       (sha256
-        (base32 "100vp5jg2sqj5wxaflj1rqjv2pk4fd55l2h2sdn7m0vlnlwm89rm"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "--ignore=pint/testsuite/benchmarks")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              ;; PermissionError: [Errno 13] Permission denied:
-              ;; '/homeless-shelter'
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-mpl
-           python-pytest-subtests
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-flexcache
-           python-flexparser
-           python-platformdirs
-           python-typing-extensions))
-    (home-page "https://github.com/hgrecco/pint")
-    (synopsis "Physical quantities module")
-    (description
-     "Pint is a Python package to define, operate and manipulate physical
-quantities: the product of a numerical value and a unit of measurement.  It
-allows arithmetic operations between them and conversions from and to
-different units.")
-    (license license:bsd-3)))
-
 (define-public python-plotext
   (package
     (name "python-plotext")
