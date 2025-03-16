@@ -6823,7 +6823,7 @@ several firewall backends.")
 (define-public px
   (package
     (name "px")
-    (version "3.6.5")
+    (version "3.6.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6832,7 +6832,7 @@ several firewall backends.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zhh3y8caww6rxy9ppg60ls1505s5z1jmnahr5v31r94vzlp4h8v"))))
+                "0kqwi1qb6hvk4si1dynz4q56lxy5161b50fgsvlfk9dnb6gwln6i"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -6862,10 +6862,10 @@ several firewall backends.")
                     (("\"/bin/ps\"") (string-append "\""
                                                     (assoc-ref inputs "procps")
                                                     "/bin/ps\"")))
-                   (substitute* '("setup.py"  "devbin/update_version_py.py")
+                   (substitute* "setup.py"
                     ;; Patch "git describe", replacing it by its result.
-                    (("subprocess.check_output.*git.*describe.*")
-                     (string-append "\"" #$version "\"\n")))))
+                    (("\\[\"git\", \"describe\", \"--dirty\"\\]")
+                     (string-append "[\"echo\", \"" #$version "\"]")))))
                (add-before 'check 'prepare-check
                  (lambda _
                    (substitute* "tests/px_terminal_test.py"
