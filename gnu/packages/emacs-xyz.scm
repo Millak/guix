@@ -15106,6 +15106,11 @@ package @code{emacs-major-mode-hydra} for a user-friendly interface.")
        (sha256
         (base32 "0l5b681mrpk12lx5c16m7kc13p29z6zismwg1llsjg7cdmrmsrcb"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "emacs" "--no-init-file" "--batch"
+                   "--eval=(require 'ecukes)" "--eval=(ecukes)")))
+    (native-inputs (list emacs-ecukes))
     (home-page "https://github.com/rudolfochrist/interleave")
     (synopsis "Emacs minor mode to interleave notes and text books")
     (description
