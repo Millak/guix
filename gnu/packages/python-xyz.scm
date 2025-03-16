@@ -2156,32 +2156,35 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
   (package
     (name "python-pint")
     (version "0.24.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pint" version))
-              (sha256
-               (base32 "100vp5jg2sqj5wxaflj1rqjv2pk4fd55l2h2sdn7m0vlnlwm89rm"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pint" version))
+       (sha256
+        (base32 "100vp5jg2sqj5wxaflj1rqjv2pk4fd55l2h2sdn7m0vlnlwm89rm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      '(list "--ignore=pint/testsuite/benchmarks"
-             "-k" (string-append
-                   ;; This test tries to write to $HOME/.cache/pint.
-                   "not test_auto"
-                   ;; Our pytest can't match RuntimeWarning for some reason.
-                   ;; Note: python-pint@0.24.4 would work around this, too.
-                   " and not test_nonnumeric_magnitudes"
-                   ;; Fails with "Group USCSLengthInternational already
-                   ;; present in registry"
-                   " and not test_load_definitions_stage_2"))))
+      #:test-flags #~(list "--ignore=pint/testsuite/benchmarks")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; PermissionError: [Errno 13] Permission denied:
+              ;; '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-pytest python-pytest-benchmark python-pytest-cov
-           python-pytest-mpl python-pytest-subtests
-           python-setuptools python-setuptools-scm python-wheel))
+     (list python-pytest
+           python-pytest-mpl
+           python-pytest-subtests
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
-     (list python-flexcache python-flexparser
-           python-platformdirs python-typing-extensions))
+     (list python-flexcache
+           python-flexparser
+           python-platformdirs
+           python-typing-extensions))
     (home-page "https://github.com/hgrecco/pint")
     (synopsis "Physical quantities module")
     (description
