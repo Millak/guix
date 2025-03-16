@@ -16052,6 +16052,11 @@ be removed from the front.  This type of data structure is sometimes called an
         (base32 "0a1n2v09h0n7d9p2izflqqang4ny0b46dlqvmxvkkik4bb6f4wcz"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "emacs" "--batch" "-L" "."
+                             "-l" "test/test-quickrun.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
+    (native-inputs (list python-wrapper))
     (home-page "https://github.com/emacsorphanage/quickrun")
     (synopsis "Execute editing buffer and show its output quickly")
     (description
