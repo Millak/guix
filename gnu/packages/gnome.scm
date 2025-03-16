@@ -12192,7 +12192,7 @@ micro-pauses and rest breaks, and restricts you to your daily limit.")
 (define-public ghex
   (package
     (name "ghex")
-    (version "42.3")
+    (version "46.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/ghex/"
@@ -12200,7 +12200,7 @@ micro-pauses and rest breaks, and restricts you to your daily limit.")
                                   "ghex-" version ".tar.xz"))
               (sha256
                (base32
-                "1vsd6l78pymdrsgdgj7xhxyrf09j4w08zrbvs8qdn8a9na50zm5d"))))
+                "0c8zcsng3925sw3bxffyj4lczna389k7rzv2p0h0v9wpcfipdwm8"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -12221,7 +12221,8 @@ micro-pauses and rest breaks, and restricts you to your daily limit.")
            yelp-tools))
     (inputs
      (list at-spi2-core
-           gtk))
+           gtk
+           libadwaita))
     (synopsis "GNOME hexadecimal editor")
     (description "The GHex program can view and edit files in two ways:
 hexadecimal or ASCII.  It is useful for editing binary files in general.")
