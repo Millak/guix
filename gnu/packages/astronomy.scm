@@ -4335,26 +4335,29 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
                   (apply invoke "pytest" "-v" test-flags))))))))
     (native-inputs
      (list nss-certs-for-test
-           python-astropy-healpix
            python-matplotlib
-           ;; python-mocpy : Not packed yet, optional
            python-pytest-astropy
            python-pytest-dependency
-           python-regions
+           python-pytest-doctestplus
            python-setuptools
            python-wheel))
     (propagated-inputs
      (list python-astropy
+           python-astropy-healpix
            python-beautifulsoup4
+           python-boto3
            python-html5lib
            python-keyring
+           ;; python-mocpy : Not packed yet, optional and Rust is required
            python-numpy
            python-pyvo
+           python-regions
            python-requests))
     (home-page "https://astroquery.readthedocs.io/en/latest/index.html")
     (synopsis "Access online astronomical data resources")
-    (description "Astroquery is a package that contains a collection of tools
-to access online Astronomical data.  Each web service has its own sub-package.")
+    (description
+     "Astroquery is a package that contains a collection of tools to access
+online Astronomical data.  Each web service has its own sub-package.")
     (license license:bsd-3)))
 
 (define-public python-astroscrappy
