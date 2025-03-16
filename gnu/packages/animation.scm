@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2023, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
@@ -95,7 +95,7 @@ rendering vector based animations and art in realtime.")
     (license license:expat)))
 
 ;; ETL, synfig, and Synfig Studio are updated in tandem.
-(define synfig-version "1.4.4")
+(define synfig-version "1.5.3")
 
 (define-public etl
   (package
@@ -108,7 +108,7 @@ rendering vector based animations and art in realtime.")
                                   "/ETL-" version ".tar.gz"))
               (sha256
                (base32
-                "1jnahpxvrdxrll7b7av3zxabm5j3nlz6m3vg4sib2278v1wf91yc"))))
+                "1gq63fj714a66g7fz3016ki1c73362sj73fy5005iyy1phn4s3v4"))))
     (build-system gnu-build-system)
     (inputs (list glibmm-2.66))
     (native-inputs (list pkg-config))
@@ -131,7 +131,7 @@ C++ @dfn{Standard Template Library} (STL).")
                                   "/synfig-" version ".tar.gz"))
               (sha256
                (base32
-                "01kgfmjfjk5y0v9ldmxzc8zzvbiaakz7nzg4hkj24gj3j6h8566d"))))
+                "1a0ya2cdm5rskrhn033jwsg2ycg0b9dpqq5kndnzvn2sdvp9qg4i"))))
     (build-system gnu-build-system)
     (inputs
      (list boost
@@ -178,7 +178,7 @@ for tweening, preventing the need to hand-draw each frame.")
                                   "/synfigstudio-" version ".tar.gz"))
               (sha256
                (base32
-                "07xjgs1qw0rwpihpcspj92rzwy5zizi86l9x2x7w6sysrj0wd4w8"))))
+                "1rdvyy5l8fl1gv60gvpw0zmbihdg2a048x8bwqbwj2za6qx00hvz"))))
     (build-system gnu-build-system)
     (arguments
      (list
