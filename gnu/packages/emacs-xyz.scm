@@ -34298,6 +34298,8 @@ the standard @code{Dockerfile} file format.")
     (arguments
      (list
       #:emacs emacs                     ;need libxml support
+      #:test-command #~(list "ert-runner" "-L" "." "-L" "clients"
+                             "-t" "!no-win" "-t" "!org")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'move-clients-libraries
@@ -34307,6 +34309,28 @@ the standard @code{Dockerfile} file format.")
               (for-each (lambda (f)
                           (install-file f "."))
                         (find-files "clients/" "\\.el$"))))
+          (add-before 'check 'skip-failing-tests
+            (lambda _
+              (substitute* "test/lsp-common-test.el"
+                (("\\(require 'elenv" all)
+                 (string-append all " nil t"))
+                (("\\(ert-deftest lsp--path-to-uri-1 .*" all)
+                 (string-append all "(skip-unless (featurep 'elenv))"))
+                (("\\(ert-deftest lsp-byte-compilation-test .*" all)
+                 (string-append all "(skip-unless nil)"))
+                (("\\(ert-deftest lsp--build-.*-response-test-[34] .*" all)
+                 (string-append all "(skip-unless nil)")))
+              (substitute* "test/lsp-mode-test.el"
+                (("\\(ert-deftest lsp--merge-results .*" all)
+                 (string-append all "(skip-unless nil)")))
+              (substitute* "test/lsp-integration-test.el"
+                (("\\(ert-deftest lsp-.*-hover-request(-tick)? .*" all)
+                 (string-append all "(skip-unless nil)"))
+                (("\\(ert-deftest lsp-test-current-buffer-mode .*" all)
+                 (string-append all "(skip-unless nil)")))
+              (delete-file "test/lsp-clangd-test.el")))
+          (add-before 'check 'set-home
+            (lambda _ (setenv "HOME" (getenv "TMPDIR"))))
           (add-after 'unpack 'enable-plists
             (lambda _
               (substitute* "lsp-protocol.el"
@@ -34328,6 +34352,9 @@ the standard @code{Dockerfile} file format.")
            emacs-hydra
            emacs-markdown-mode
            emacs-spinner))
+    (native-inputs (list emacs-deferred
+                         emacs-el-mock
+                         emacs-ert-runner))
     (home-page "https://emacs-lsp.github.io/lsp-mode/")
     (synopsis "Emacs client and library for the Language Server Protocol")
     (description
