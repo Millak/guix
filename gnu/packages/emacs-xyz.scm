@@ -28206,6 +28206,7 @@ by their Projectile root directory.")
        (sha256
         (base32 "0mnxh6annmys4h1xhc2c7l7ajp4pwvdg68n30x7a21ad9qlvizil"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/purcell/ibuffer-vc")
     (synopsis "Group Ibuffer's list by revision control system indications")
     (description
