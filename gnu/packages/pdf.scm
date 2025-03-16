@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2021, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2021, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
@@ -1554,7 +1554,7 @@ multiple files.")
 (define-public pdfpc
   (package
     (name "pdfpc")
-    (version "4.6.0")
+    (version "4.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1563,9 +1563,7 @@ multiple files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kj84sf5hgr2v2ra6dxmxqcr173h17cpnhg9lcq36shdbdnncwg4"))
-       (patches
-        (search-patches "pdfpc-build-with-vala-0.56.patch"))))
+        (base32 "1sx3ivnwyfr32hf1424aafpljhq5nm6pngl2zhvjsb24gnp45y3w"))))
     (build-system cmake-build-system)
     (arguments '(#:tests? #f))           ; no test target
     (inputs (list
@@ -1580,7 +1578,7 @@ multiple files.")
              poppler
              pango
              vala
-             webkitgtk-with-libsoup2))
+             webkitgtk-for-gtk3))
     (native-inputs
      (list pkg-config))
     (home-page "https://pdfpc.github.io/")
