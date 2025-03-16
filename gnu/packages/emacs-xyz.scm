@@ -34935,6 +34935,7 @@ workspaces with a LSP-compliant server running.")
                (base32
                 "0cmxdd3fgyiixg81zmxa0j68slhkq8rg5z840cx4dbb3j9w06yd1"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-helm emacs-lsp-mode emacs-dash))
     (home-page "https://github.com/emacs-lsp/helm-lsp")
