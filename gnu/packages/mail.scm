@@ -4265,7 +4265,7 @@ It is a replacement for the @command{urlview} program.")
 (define-public mumi
   (package
     (name "mumi")
-    (version "0.9.0")
+    (version "0.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4274,7 +4274,7 @@ It is a replacement for the @command{urlview} program.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hg0f92388fli1l341ilgqqpga6bigg6fsfimlkf7f8qxngp2l7d"))))
+                "12i6xy1pwb5rs7qd6ld1kglgcydjg9lfplvg3mbim9az8sz30dyy"))))
     (build-system gnu-build-system)
     (arguments
      (list
