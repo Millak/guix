@@ -3147,8 +3147,6 @@ across many files.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Broken upstram, see <https://github.com/glue-viz/glue-qt/issues/23>.
-      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-env-version
