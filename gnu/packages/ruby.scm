@@ -7,7 +7,7 @@
 ;;; Copyright © 2015, 2016, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2019-2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2017-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
@@ -12797,7 +12797,14 @@ part of the Prawn PDF generator.")
                             "test_culling_strategy_oldest_fork_worker"
                             "test_usr1_fork_worker")
                 (skip-tests "test/test_integration_pumactl.rb"
-                            "test_refork_cluster"))))
+                            "test_refork_cluster")
+                ;; The Openssl certificate has expired, causing these tests to fail.
+                (skip-tests "test/test_puma_server_ssl.rb"
+                            "test_verify_fail_if_client_expired_cert"
+                            "test_verify_client_cert"
+                            "test_server_ssl_with_cert_pem_and_key_pem")
+                (skip-tests "test/test_integration_ssl.rb"
+                            "test_ssl_run_with_curl_client"))))
           (add-before 'check 'relax-test-case-timeout
             (lambda _
               ;; The default value is 45 s and easily causes timeouts.
