@@ -37,7 +37,8 @@
   #:use-module (gnu packages)
   #:use-module (guix packages)
   #:use-module (guix git-download)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE)))
 
 (define-public w3m
   (package
@@ -79,6 +80,7 @@
            zlib))
     (native-inputs
      (list gettext-minimal perl pkg-config))
+    (native-search-paths (list $SSL_CERT_DIR $SSL_CERT_FILE))
     (home-page "https://w3m.sourceforge.net/")
     (synopsis "Text-mode web browser")
     (description
