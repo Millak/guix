@@ -24122,6 +24122,7 @@ experimental support exists for Connman.")
        (sha256
         (base32 "04na9m3z3k94jjqcqps95xcmvjklnddhli2xaac16m4ackw2wv9b"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test" "INIT_PACKAGES=t")))
     (home-page "https://github.com/purcell/inheritenv/releases")
     (synopsis "Emacs temp buffers inherit buffer-local environment variables")
     (description
