@@ -40897,6 +40897,7 @@ go directly to where they belong.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:test-command #~(list "ert-runner" "tests")
       #:phases
       #~(modify-phases %standard-phases
           ;; Move the extensions source files to the top level, which
@@ -40924,7 +40925,7 @@ go directly to where they belong.")
     (inputs
      (list graphviz))
     (native-inputs
-     (list texinfo))
+     (list emacs-ert-runner texinfo))
     (propagated-inputs
      (list emacs-dash
            emacs-emacsql
