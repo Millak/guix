@@ -7825,6 +7825,7 @@ files and directories.")
         (base32 "15r0pzdmimm72jx26zgdxf7fwwcppl45vvh33xx5wnhqzd140hwn"))))
     (arguments
      (list
+      #:tests? #f                       ; no actual tests
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'add-contrib
                      (lambda _
