@@ -7058,7 +7058,7 @@ for Un*x systems with X11.")
 (define-public freeciv
   (package
    (name "freeciv")
-   (version "3.1.3")
+   (version "3.1.4")
    (source
     (origin
      (method url-fetch)
@@ -7070,7 +7070,7 @@ for Un*x systems with X11.")
                   (version-major+minor version) "/" version
                   "/freeciv-" version ".tar.xz")))
      (sha256
-      (base32 "0bvz5hqppj589w08bzrfzf5m6nwfwrzgg03lqb3p8hspjkx8c43l"))))
+      (base32 "1r4n6bqvazsn6q41xq5l86xj7rpfi4dxva6mhz17ql640fwrp68l"))))
    (build-system gnu-build-system)
    (inputs
     (list curl cyrus-sasl gtk+ sdl2-mixer sqlite zlib))
