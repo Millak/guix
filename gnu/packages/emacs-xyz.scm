@@ -20020,7 +20020,8 @@ provides functions to convert hash tables from and to alists and plists.")
         (base32 "1x08dz18zhifkhrwdbh57izzidaf6vy1vb865f4xrqs6blgfiwj4"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #f                      ; tests require el-expectations
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'remove-tests
            ;; Guile builder complains about null characters in some
