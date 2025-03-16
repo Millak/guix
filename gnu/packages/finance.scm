@@ -2231,20 +2231,36 @@ interactive controls.  This package provides a GTK+ graphical user interface
 (define-public python-ta-lib
   (package
     (name "python-ta-lib")
-    (version "0.4.32")
+    (version "0.6.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "TA-Lib" version))
+       ;; Git repo contains Make rules to regenerate precompiled files
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TA-Lib/ta-lib-python")
+             (commit (string-append "TA_Lib-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "186sgkpggy50gs2pa2p22zppl57xgfhpmja5l13xiskv44iw6x7v"))))
-    (build-system python-build-system)
-    (inputs
-     (list ta-lib))
-    (propagated-inputs
-     (list python-numpy))
-    (native-inputs
-     (list python-cython python-nose python-pandas))
+        (base32 "1qf00rnsn3s38yxqym1q4bdh98yykik5jdw492gn5ymddr499n1f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Ignore Polars test (not packaged, depends on Rust)
+      #:test-flags #~(list "--ignore" "tests/test_polars.py")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'delete-precompiled-files
+                     (lambda _
+                       (delete-file "talib/_ta_lib.c")))
+                   (add-before 'build 'regenerate-talibc
+                     (lambda _
+                       (invoke "make" "cython"))))))
+    (inputs (list ta-lib))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-cython-3
+                         python-pandas
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/mrjbq7/ta-lib")
     (synopsis "Python wrapper for TA-Lib")
     (description
