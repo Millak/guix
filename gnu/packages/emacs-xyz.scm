@@ -10393,6 +10393,7 @@ the current Cargo project.")
         (base32
          "00py39n1383761wq6wp194pvyk94ydqdbxj9kl64g9jnipkp7849"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-flycheck emacs-package-lint))
     (home-page "https://github.com/purcell/flycheck-package")
