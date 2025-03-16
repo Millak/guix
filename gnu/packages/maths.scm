@@ -4168,7 +4168,7 @@ programming language.")
 (define-public python-ducc0
   (package
     (name "python-ducc0")
-    (version "0.36.0")
+    (version "0.37.1")
     (source
      (origin
        (method git-fetch)
@@ -4178,21 +4178,26 @@ programming language.")
                       "ducc0_" (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pfj7k5s3d237r7diqrd7cgvf8p5zms6pp64nfdildx49kwggwab"))))
+        (base32 "0pckbip2ffmiwm73wrpvif3gy0a09v9b9kbyallp520l6l69n4k8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "python/test")
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "python/test")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-env
             (lambda _
               (setenv "DUCC0_OPTIMIZATION" "portable-strip"))))))
     (native-inputs
-     (list pybind11
+     (list cmake-minimal
+           pybind11
+           python-nanobind
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-pytest-xdist
+           python-scikit-build-core
+           python-setuptools))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://gitlab.mpcdf.mpg.de/mtr/ducc")
