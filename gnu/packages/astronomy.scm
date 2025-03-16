@@ -3561,13 +3561,13 @@ on:
 (define-public python-pixell
   (package
     (name "python-pixell")
-    (version "0.28.0")
+    (version "0.28.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pixell" version))
        (sha256
-        (base32 "11xd0ld329vr3spg5nzszn0bxzahnvkrh2akkd7qff33ndf75hkk"))))
+        (base32 "1li6gcplqi1az9hf6kl1gsykdrrf62wra91n17r97s041hj70n3a"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list gfortran
