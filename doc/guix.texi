@@ -18461,7 +18461,7 @@ command from the package with the same name.  It relies on the
 @code{dm-crypt} Linux kernel module.
 @end defvar
 
-@deffn {Procedure} luks-device-mapping-with-options [#:key-file]
+@deffn {Procedure} luks-device-mapping-with-options [#:key-file #:allow-discards?]
 Return a @code{luks-device-mapping} object, which defines LUKS block
 device encryption using the @command{cryptsetup} command from the
 package with the same name.  It relies on the @code{dm-crypt} Linux
@@ -18483,6 +18483,15 @@ given location at the time of the unlock attempt.
  (type (luks-device-mapping-with-options
         #:key-file "/crypto.key")))
 @end lisp
+
+
+@code{allow-discards?} allows the use of discard (TRIM) requests for the
+underlying device.  This is useful for solid state drives.  However,
+this option can have a negative security impact because it can make
+file system level operations visible on the physical device.  For more
+information, refer to the description of the @code{--allow-discards}
+option in the @code{cryptsetup-open(8)} man page.
+
 @end deffn
 
 @defvar raid-device-mapping

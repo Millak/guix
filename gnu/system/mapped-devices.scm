@@ -194,9 +194,10 @@ option of @command{guix system}.\n")
 ;;; Common device mappings.
 ;;;
 
-(define* (open-luks-device source targets #:key key-file)
+(define* (open-luks-device source targets #:key key-file allow-discards?)
   "Return a gexp that maps SOURCE to TARGET as a LUKS device, using
-'cryptsetup'."
+'cryptsetup'.  When ALLOW-DISCARDS? is true, the use of discard (TRIM)
+requests is allowed for the underlying device."
   (with-imported-modules (source-module-closure
                           '((gnu build file-systems)
                             (guix build utils))) ;; For mkdir-p
@@ -234,17 +235,20 @@ option of @command{guix system}.\n")
                                             (loop (- tries-left 1))))))
                           (error "LUKS partition not found" source))
                       source)))
-             ;; We want to fallback to the password unlock if the keyfile fails.
-             (or (and keyfile
-                      (zero? (system*/tty
-                              #$(file-append cryptsetup-static "/sbin/cryptsetup")
-                              "open" "--type" "luks"
-                              "--key-file" keyfile
-                              partition #$target)))
-                 (zero? (system*/tty
-                         #$(file-append cryptsetup-static "/sbin/cryptsetup")
-                         "open" "--type" "luks"
-                         partition #$target)))))))))
+             (let ((cryptsetup #$(file-append cryptsetup-static
+                                              "/sbin/cryptsetup"))
+                   (cryptsetup-flags (cons*
+                                      "open" "--type" "luks" partition #$target
+                                      (if #$allow-discards?
+                                          '("--allow-discards")
+                                          '()))))
+               ;; We want to fallback to the password unlock if the keyfile
+               ;; fails.
+               (or (and keyfile
+                        (zero? (apply system*/tty cryptsetup
+                                      "--key-file" keyfile cryptsetup-flags)))
+                   (zero? (apply system*/tty cryptsetup
+                                 cryptsetup-flags))))))))))
 
 (define (close-luks-device source targets)
   "Return a gexp that closes TARGET, a LUKS device."
@@ -286,13 +290,15 @@ option of @command{guix system}.\n")
               ((gnu build file-systems)
                #:select (find-partition-by-luks-uuid system*/tty))))))
 
-(define* (luks-device-mapping-with-options #:key key-file)
+(define* (luks-device-mapping-with-options #:key key-file allow-discards?)
   "Return a luks-device-mapping object with open modified to pass the arguments
 into the open-luks-device procedure."
   (mapped-device-kind
    (inherit luks-device-mapping)
-   (open (λ (source targets) (open-luks-device source targets
-                                               #:key-file key-file)))))
+   (open (λ (source targets)
+           (open-luks-device source targets
+                             #:key-file key-file
+                             #:allow-discards? allow-discards?)))))
 
 (define (open-raid-device sources targets)
   "Return a gexp that assembles SOURCES (a list of devices) to the RAID device
