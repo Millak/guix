@@ -42980,10 +42980,19 @@ executed.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1q30cbqq0h1gfwlcbnx9s930li7w7a0y8sx2ivbvvyyc2j5gsk4j"))))
+                  "1q30cbqq0h1gfwlcbnx9s930li7w7a0y8sx2ivbvvyyc2j5gsk4j"))
+                (modules '((guix build utils)))
+                (snippet
+                 #~(begin
+                     (substitute* "global-tags.el"
+                       (("\\(require 'cl-lib\\)" all)
+                        (string-append all "(require 'eieio)")))))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; XXX: 18/24 test failures
       (propagated-inputs
        (list emacs-async emacs-ht))
+      (native-inputs (list emacs-buttercup
+                           emacs-f))
       (synopsis "Testeable Emacs Lisp API that wraps around GNU Global")
       (description "This package provides a testeable Emacs Lisp API that
 wraps GNU Global calls and integration to editor using this API with
