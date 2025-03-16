@@ -25488,6 +25488,7 @@ the pipeline, featuring the support for running @code{emacsclient}.")
          (sha256
           (base32 "0gjxi84d95sx5fw8q2a8szfhq6kb4xzwq0xr9a3pirkiga9hxymz"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;tests require a working jupyter
       (propagated-inputs
        (list emacs-company              ;optional
              emacs-markdown-mode        ;optional
