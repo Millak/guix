@@ -109,7 +109,8 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE)))
 
 (define-public midori
   (package
@@ -375,6 +376,7 @@ and the GTK+ toolkit.")
                   zlib
                   gzip
                   bzip2))
+    (native-search-paths (list $SSL_CERT_DIR $SSL_CERT_FILE))
     (arguments
      (list #:configure-flags
            #~(let ((openssl #$(this-package-input "openssl")))
@@ -396,7 +398,7 @@ and the GTK+ toolkit.")
            #~(modify-phases %standard-phases
                (add-before 'configure 'set-makefile-shell
                  (lambda _ (substitute* "po/makefile.inn"
-                        (("/bin/sh") (which "sh")))))
+                             (("/bin/sh") (which "sh")))))
                (replace 'install
                  (lambda* (#:key (make-flags '()) #:allow-other-keys)
                    (apply invoke "make" "install-full" make-flags))))))
