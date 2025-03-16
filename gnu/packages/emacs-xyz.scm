@@ -15654,7 +15654,9 @@ S-expression.")
                 (file-name (git-file-name name version))))
       (propagated-inputs
        (list emacs-evil emacs-lispy))
+      (native-inputs (list emacs-ert-runner))
       (build-system emacs-build-system)
+      (arguments (list #:test-command #~(list "ert-runner" "tests")))
       (synopsis "Minor mode for integrating Evil with lispy")
       (description
        "LispyVille's main purpose is to provide a Lisp editing environment
