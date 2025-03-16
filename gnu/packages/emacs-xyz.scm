@@ -1230,6 +1230,7 @@ system.")
                (base32
                 "19q8qlq4s2kfydpadkq1zd92611dvq7dr8vlhlbd9gplzpx7dhfd"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")))
     (propagated-inputs (list emacs-seq))
     (home-page "https://github.com/hsluv/hsluv-emacs")
     (synopsis "HSLuv color space conversions")
