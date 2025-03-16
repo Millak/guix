@@ -33,6 +33,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2026 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,6 +77,7 @@
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages djvu)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages game-development)
@@ -1813,15 +1815,25 @@ PDF.  Indeed @command{pdfposter} was inspired by @command{poster}.")
     (version "2.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://pdfgrep.org/download/"
-                           name "-" version ".tar.gz"))
+       (file-name (git-file-name name version))
+       (method git-fetch)
        (sha256
-        (base32
-         "1jr0qqvkcb3xz0ps111cqwwxp1b5g5rrf75ab5whkvy0whqyaq86"))))
+        (base32 "0bykm8rbvd6g725gw0jas2ijq0w16pa657q6idp1yzgqcmjzmx98"))
+       (uri (git-reference
+             (url "https://gitlab.com/pdfgrep/pdfgrep.git")
+             (commit (string-append "v" version))))))
     (build-system gnu-build-system)
     (arguments
      (list
+      #:configure-flags
+      ;; Install the built manpage and shell completions.
+      #~(list "--enable-doc"
+              ;; error: ‘malloc’ has not been declared in ‘::’
+              ;; error: ‘realloc’ has not been declared in ‘::’
+              #$@(if (%current-target-system)
+                     #~("ac_cv_func_malloc_0_nonnull=yes"
+                        "ac_cv_func_realloc_0_nonnull=yes")
+                     #~()))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-cpp-paths
@@ -1830,16 +1842,20 @@ PDF.  Indeed @command{pdfposter} was inspired by @command{poster}.")
                                  "src/search.cc")
                 (("cpp\\/poppler") "poppler")))))))
     (native-inputs
-     (list pkg-config))
+     (list asciidoc                     ;bin/a2x builds doc/pdfgrep.1
+           autoconf
+           automake
+           libgcrypt                    ;share/aclocal
+           pkg-config))
     (inputs
      (list libgcrypt pcre poppler))
     (home-page "https://pdfgrep.org")
     (synopsis "Command-line utility to search text in PDF files")
     (description
-     "Pdfgrep searches in pdf files for strings matching a regular expression.
-Support some GNU grep options as file name output, page number output,
-optional case insensitivity, count occurrences, color highlights and search in
-multiple files.")
+     "Pdfgrep searches in PDF files for strings matching a regular
+expression.  It supports some GNU grep options such as: file name
+output, page number output, optional case insensitivity, count
+occurrences, color highlights and search in multiple files.")
     (license license:gpl2+)))
 
 (define-public pdfpc
