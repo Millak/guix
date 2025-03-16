@@ -7906,6 +7906,7 @@ display and behaviour is easily customisable.")
          (sha256
           (base32 "13bqq5r8ys2mmw1ffsm6hn6fji0vq3nx3slw98c9dgbvlprkaiip"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
       (propagated-inputs
        (list emacs-git-gutter emacs-fringe-helper))
       (home-page "https://github.com/emacsorphanage/git-gutter-fringe")
