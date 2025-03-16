@@ -6860,16 +6860,18 @@ channels
 (define-public python-radiospectra
   (package
     (name "python-radiospectra")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "radiospectra" version))
        (sha256
-        (base32 "1mqdh90hpq7sc9lybmc7y33g84vswf7w0r5hs57rf3a9hzfxad90"))))
+        (base32 "14p4hp9yncyjsrbys0yjq7jbj0n9wf0x5sy67kilqrw14d1xvzch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home-env
@@ -6877,16 +6879,21 @@ channels
               ;; Tests require HOME to be set.
               ;;  Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-pytest-doctestplus
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-sunpy-soar
+           python-wheel))
     (propagated-inputs
      (list python-cdflib
            python-matplotlib
            python-numpy
            python-scipy
            python-sunpy))
-    (native-inputs
-     (list python-pytest-astropy
-           python-setuptools-scm
-           python-sunpy-soar))
     (home-page "https://docs.sunpy.org/projects/radiospectra")
     (synopsis "Support for radio spectra on solar physics")
     (description
