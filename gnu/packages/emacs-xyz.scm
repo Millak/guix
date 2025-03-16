@@ -22542,6 +22542,34 @@ gnugo-image-display-mode}.")
        (sha256
         (base32 "0s0k18ibi4b2vn6l7rwdk79g6ck6xafxzzbja8a8y0r8ljfssfgb"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "make" "test"
+                                  ;; XXX: Do not load gnuplot-debug-context,
+                                  ;; because it requires gnuplot-test-context.
+                                  "LOAD=-l gnuplot -l gnuplot-context \
+                                        -l gnuplot-gui -l gnuplot-tests \
+                                        -l gnuplot-test-context")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'number-tests
+                 (lambda _
+                   ;; variant of ert-number-tests
+                   (define (gnuplot-number-tests file test-name)
+                     (emacs-batch-edit-file file
+                       `(let ((i 0))
+                          (while (re-search-forward
+                                  ,(string-append "gnuplot-test-comment "
+                                                  test-name)
+                                  nil t)
+                            (goto-char (match-beginning 0))
+                            (kill-region (match-beginning 0) (match-end 0))
+                            (insert (format "gnuplot-test-comment %s-%d"
+                                            ,test-name i))
+                            (setq i (+ i 1)))
+                          (basic-save-buffer))))
+                   (gnuplot-number-tests
+                    "gnuplot-tests.el"
+                    "gnuplot-comment-with-single-quotes"))))))
     (home-page "https://github.com/emacsorphanage/gnuplot-mode")
     (synopsis "Emacs major mode for interacting with Gnuplot")
     (description
