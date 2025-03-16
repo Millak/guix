@@ -25523,6 +25523,12 @@ features.")
        (sha256
         (base32 "0jqrgq15jz6pvx38pnwkizzfiih0d3nxqphyrc92nqpcyimg8b6g"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "emacs" "--batch" "-l" "test/test-helper.el"
+                             "-l" "test/test-indentation.el"
+                             "-l" "test/test-command.el"
+                             "-l" "test/test-highlighting.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/syohex/emacs-hcl-mode")
     (synopsis "Major mode for the Hashicorp Configuration Language")
     (description
