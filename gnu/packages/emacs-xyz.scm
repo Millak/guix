@@ -39473,6 +39473,7 @@ within @code{isearch-mode}.")
           (base32
            "1limw82zd8jz3mhh9rqlmhj4cjhfgybs9argfjid1an3vpyhc85i"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
       (propagated-inputs
        (list emacs-helm))
       (synopsis "Mount/unmount volumes in Linux via Helm")
