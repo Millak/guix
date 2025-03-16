@@ -14590,6 +14590,7 @@ between symbols.")
                (base32
                 "0yhy29khisj8cr359d6f2x2zyfjcvvhyyg0kkkvifzqnzkkaa9v0"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/tarsius/hl-todo")
