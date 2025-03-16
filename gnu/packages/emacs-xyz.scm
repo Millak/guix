@@ -30782,6 +30782,7 @@ See @code{helm-exwm-switch-browser} for an example.")
           (base32
            "1a2yfxhz04klwhcandqvfzysxp6b7bxyxx1xk1x3kds5hif5fkl4"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
       (propagated-inputs
        (list emacs-dash emacs-flycheck emacs-helm))
       (home-page "https://github.com/yasuyk/helm-flycheck")
