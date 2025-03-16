@@ -1649,7 +1649,7 @@ namespaces, classes and other types that together form a C++ binding.")
 
 ;; telegram-desktop requires a more recent version of cppgir
 (define-public cppgir-for-telegram-desktop
-  (let ((commit "9c4f5820d94d62ab451501f016bfea97156518f4")
+  (let ((commit "2e96cab8ed40df326815b87b1e4b449e0c1a5947")
         (revision "0"))
     (package
       (inherit cppgir)
@@ -1664,4 +1664,4 @@ namespaces, classes and other types that together form a C++ binding.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1fa9nf4yljfarihaqj5kd98yysrky7q316mh6l5b1rq39ga15k9b")))))))
+          (base32 "0rdcgnriw8s5fqyx2v4218ii647l4fl1s9crnm9ihzf9bpl2p5p9")))))))
