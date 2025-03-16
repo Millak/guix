@@ -17946,6 +17946,7 @@ as well as features for editing search results.")
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-helm))
+    (native-inputs (list emacs-buttercup))
     (home-page "https://github.com/emacsorphanage/helm-swoop")
     (synopsis "Filter and jump to lines in an Emacs buffer using Helm")
     (description
