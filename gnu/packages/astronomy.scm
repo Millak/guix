@@ -3134,7 +3134,7 @@ across many files.")
 (define-public python-glue-qt
   (package
     (name "python-glue-qt")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method git-fetch) ; no fresh release PyPI
@@ -3143,7 +3143,7 @@ across many files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zh25y8c98lzsnha4pxm17s6bkkab97rzw9zaik8asrxhc0kgypd"))))
+        (base32 "14qzxszpzjz57bl75ybj8jlx73cd8lsgbb8id9gx4anq9sydzgqj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
