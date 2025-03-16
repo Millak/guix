@@ -2568,13 +2568,13 @@ cosmological parameters e.g. redshift or luminosity-distance.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "12.0.9")
+    (version "12.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crds" version))
        (sha256
-        (base32 "0cf6pr6lixqhmvig9ajhh68yd1ri7dninamakvs728mjd5nswmw3"))))
+        (base32 "1h4il1gpk3219lskd17vfa5wpbpj2mhacv2yv9v4v33kwzfjb5w7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2582,21 +2582,22 @@ cosmological parameters e.g. redshift or luminosity-distance.")
       ;; additional test data. See:
       ;; https://github.com/spacetelescope/crds/blob/master/setup_test_cache
       #:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-asdf
            python-astropy
+           python-beautifulsoup4
            python-boto3
            python-filelock
            python-numpy
            python-parsley
            python-pysynphot
+           python-requests
            python-roman-datamodels
-           python-stsynphot
-           python-requests))
-    (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-stsynphot))
     (home-page "https://hst-crds.stsci.edu")
     (synopsis "Calibration Reference Data System for HST and JWST")
     (description
