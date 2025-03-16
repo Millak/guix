@@ -1725,43 +1725,28 @@ this, it is not actually easy to include a custom kernel configuration from the
 definition, but don't worry, there are other ways to work with what we do have.
 
 There are two ways to create a kernel with a custom kernel configuration.  The
-first is to provide a standard @file{.config} file during the build process by
-including an actual @file{.config} file as a native input to our custom
-kernel.  The following is a snippet from the custom @code{'configure} phase of
-the @code{make-linux-libre} package definition:
+first is to provide a standard @file{defconfig} to @code{customize-linux}
+procedure.  To produce such file you need to obtain Linux source code, create a
+@file{.config} file (using @code{make menuconfig} command, for example) or
+provide one you already have.  After that you will need to run
+@code{make savedefconfig} command within the kernel source tree---this will
+produce the @file{defconfig} file which we can be used to build a custom kernel.
+
+Below is a sample kernel package.
 
 @lisp
-(let ((build  (assoc-ref %standard-phases 'build))
-      (config (assoc-ref (or native-inputs inputs) "kconfig")))
-
-  ;; Use a custom kernel configuration file or a default
-  ;; configuration file.
-  (if config
-      (begin
-        (copy-file config ".config")
-        (chmod ".config" #o666))
-      (invoke "make" ,defconfig)))
-@end lisp
-
-Below is a sample kernel package.  The @code{linux-libre} package is nothing
-special and can be inherited from and have its fields overridden like any
-other package:
-
-@lisp
-(define-public linux-libre/E2140
+(define-public my-linux-libre
   (package
-    (inherit linux-libre)
-    (native-inputs
-     `(("kconfig" ,(local-file "E2140.config"))
-      ,@@(alist-delete "kconfig"
-                      (package-native-inputs linux-libre))))))
+    (inherit (customize-linux
+              #:linux linux-libre
+              #:defconfig
+              (local-file "defconfig")))
+    (name "my-linux-libre")))
 @end lisp
 
-In the same directory as the file defining @code{linux-libre-E2140} is a file
-named @file{E2140.config}, which is an actual kernel configuration file.  The
-@code{defconfig} keyword of @code{make-linux-libre} is left blank here, so the
-only kernel configuration in the package is the one which was included in the
-@code{native-inputs} field.
+In the same directory as the file defining @code{my-linux-libre} is a file
+named @file{defconfig}. This way you way you can provide kernel options
+you want to have in the result kernel.
 
 The second way to create a custom kernel is to pass a new value to the
 @code{extra-options} keyword of the @code{make-linux-libre} procedure.  The
