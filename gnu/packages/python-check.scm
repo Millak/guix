@@ -3298,29 +3298,32 @@ interactions, which will update them to correspond to the new API.")
 (define-public python-vulture
   (package
     (name "python-vulture")
-    (version "2.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "vulture" version))
-              (sha256
-               (base32
-                "0cl0v3dadxvff0pgq1j120m064a3nmnbjjylkmcxp7zd2jh81yv7"))))
+    (version "2.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vulture" version))
+       (sha256
+        (base32 "05c4kfg6s2zf7lzplq53ihjf19knf3pmpv4nnzmdwf0i5a87g0nb"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "pytest" "-vv" "tests" "-k"
-                                      ;; skip test that uses python-pint
-                                      ;; pint has many dependencies
-                                      "not test_whitelists_with_python")))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list
+                     ;; Skip test that uses python-pint pint has many
+                     ;; dependencies.
+                     "not test_whitelists_with_python"
+                     ;; FileNotFoundError: [Errno 2] No such file or
+                     ;; directory: 'pytype'
+                     "test_pytype")
+                    " and not "))))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-setuptools
            python-wheel))
-    (propagated-inputs (list python-toml))
+    (propagated-inputs
+     (list python-toml))
     (home-page "https://github.com/jendrikseipp/vulture")
     (synopsis "Find dead Python code")
     (description
