@@ -2583,7 +2583,7 @@ core/thread.")
 (define-public mako
   (package
     (name "mako")
-    (version "1.9.0")
+    (version "1.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2592,24 +2592,9 @@ core/thread.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wcyhnpah1g5qpixfwlpybsjcl22iv39jrxlbi84xv2gfyi2vmj2"))))
+                "0hv083k3gp1gl2gxi91f2xf21hcn33z68j6r5844hzi7g8wwmp9v"))))
     (build-system meson-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-makoctl
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "makoctl"
-                     (("^BUSCTL=.*$")
-                      (string-append
-                       "BUSCTL="
-                       (search-input-file inputs "bin/basuctl")
-                       "\n"))
-                     (("jq ")
-                      (string-append
-                       (search-input-file inputs "bin/jq")
-                       " "))))))))
-    (inputs (list basu cairo gdk-pixbuf jq pango wayland))
+    (inputs (list basu cairo gdk-pixbuf pango wayland))
     (native-inputs (list pkg-config scdoc wayland-protocols))
     (home-page "https://wayland.emersion.fr/mako")
     (synopsis "Lightweight Wayland notification daemon")
