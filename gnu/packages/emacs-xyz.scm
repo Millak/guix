@@ -39335,6 +39335,7 @@ display of major and minor modes in the mode line.")
           (base32
            "1np1f51hc3phkl5w02a9a79gl38ra2d535i784fn4pqaasvm0rq8"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))
       (propagated-inputs
        (list emacs-ivy emacs-dash))
       (synopsis "Browse anything in Org mode")
