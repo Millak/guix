@@ -29313,6 +29313,7 @@ compilation/grep buffers.  Works with @code{wgrep}, @code{ack}, @code{ag},
         (base32
          "0aanl83k66nbp5dpsckmj4dgkclkr208nrbl7wmjnqlkg0qzgifz"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/mkcms/interactive-align/")
     (synopsis "Interactive align-regexp command in Emacs")
     (description "Interactive align-regexp command in Emacs")
