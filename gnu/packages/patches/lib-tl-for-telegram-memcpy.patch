@@ -1,0 +1,26 @@
+From 7e08865a01b265bd884bb9e39ecc86497bcf5203 Mon Sep 17 00:00:00 2001
+From: Arseniy Zaostrovnykh <necto.ne@gmail.com>
+Date: Sun, 16 Mar 2025 20:56:37 +0100
+Subject: [PATCH] tl/tl_basic_types.h: Fix compile error for missing memcpy.
+
+ * tl/tl_basic_types.h: Add include for cstring to fix the compilation
+      error about missing memcpy raised by gcc 11.
+---
+ tl/tl_basic_types.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tl/tl_basic_types.h b/tl/tl_basic_types.h
+index 5eadf62..e9b6da5 100644
+--- a/tl/tl_basic_types.h
++++ b/tl/tl_basic_types.h
+@@ -11,6 +11,7 @@
+ #include "base/bytes.h"
+
+ #include <QtCore/QVector>
++#include <cstring>
+
+ namespace tl {
+ namespace details {
+--
+2.48.1
+

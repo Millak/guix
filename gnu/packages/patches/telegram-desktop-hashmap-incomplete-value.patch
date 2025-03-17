@@ -1,0 +1,59 @@
+From 3865a179b3aed172bac4a3dcd1f320270de16dcf Mon Sep 17 00:00:00 2001
+From: Arseniy Zaostrovnykh <necto.ne@gmail.com>
+Date: Sun, 16 Mar 2025 20:49:16 +0100
+Subject: [PATCH] dialogs_inner_widget: Fix use-before-def compile error.
+
+ * Telegram/SourceFiles/dialogs/dialogs_inner_widget.h: Include headers
+      and eagerly define TagCache to avoid using under-defined types for
+      std::unsigned_map values.
+ * Telegram/SourceFiles/dialogs/dialogs_inner_widget.cpp: Remove the
+      definition of TagCache that is now in the header.
+---
+ Telegram/SourceFiles/dialogs/dialogs_inner_widget.cpp | 5 -----
+ Telegram/SourceFiles/dialogs/dialogs_inner_widget.h   | 7 ++++++-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/Telegram/SourceFiles/dialogs/dialogs_inner_widget.cpp b/Telegram/SourceFiles/dialogs/dialogs_inner_widget.cpp
+index 39e047897..9687405aa 100644
+--- a/Telegram/SourceFiles/dialogs/dialogs_inner_widget.cpp
++++ b/Telegram/SourceFiles/dialogs/dialogs_inner_widget.cpp
+@@ -247,11 +247,6 @@ struct InnerWidget::PeerSearchResult {
+ 	BasicRow row;
+ };
+
+-struct InnerWidget::TagCache {
+-	Ui::ChatsFilterTagContext context;
+-	QImage frame;
+-};
+-
+ Key InnerWidget::FilterResult::key() const {
+ 	return row->key();
+ }
+diff --git a/Telegram/SourceFiles/dialogs/dialogs_inner_widget.h b/Telegram/SourceFiles/dialogs/dialogs_inner_widget.h
+index 2500f43d1..c85c5ce32 100644
+--- a/Telegram/SourceFiles/dialogs/dialogs_inner_widget.h
++++ b/Telegram/SourceFiles/dialogs/dialogs_inner_widget.h
+@@ -16,6 +16,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
+ #include "ui/effects/animations.h"
+ #include "ui/rp_widget.h"
+ #include "ui/userpic_view.h"
++#include "dialogs/dialogs_common.h"
++#include "ui/chat/chats_filter_tag.h"
+
+ namespace style {
+ struct DialogRow;
+@@ -226,7 +228,10 @@ private:
+ 	struct CollapsedRow;
+ 	struct HashtagResult;
+ 	struct PeerSearchResult;
+-	struct TagCache;
++	struct TagCache {
++		Ui::ChatsFilterTagContext context;
++		QImage frame;
++	};
+
+ 	enum class JumpSkip {
+ 		PreviousOrBegin,
+--
+2.48.1
+

@@ -1843,6 +1843,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mcrypt-CVE-2012-4527.patch			\
   %D%/packages/patches/libmemcached-build-with-gcc7.patch	\
   %D%/packages/patches/libmhash-hmac-fix-uaf.patch		\
+  %D%/packages/patches/lib-tl-for-telegram-memcpy.patch	\
   %D%/packages/patches/llama-cpp-vulkan-optional.patch	\
   %D%/packages/patches/llhttp-ponyfill-object-fromentries.patch	\
   %D%/packages/patches/lvm2-no-systemd.patch    		\
@@ -2302,8 +2303,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/texinfo-headings-single.patch		\
   %D%/packages/patches/texinfo-5-perl-compat.patch		\
   %D%/packages/patches/telegram-desktop-allow-disable-libtgvoip.patch   \
+  %D%/packages/patches/telegram-desktop-hashmap-incomplete-value.patch	\
+  %D%/packages/patches/telegram-desktop-qguiapp.patch		\
   %D%/packages/patches/telegram-desktop-unbundle-cppgir.patch   \
-  %D%/packages/patches/telegram-desktop-unbundle-gsl.patch      \
   %D%/packages/patches/telegram-purple-adjust-test.patch	\
   %D%/packages/patches/telepathy-glib-fix-test.patch	\
   %D%/packages/patches/teuchos-remove-duplicate-using.patch	\

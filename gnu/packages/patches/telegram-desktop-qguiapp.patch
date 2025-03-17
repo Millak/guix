@@ -1,0 +1,26 @@
+From 1f0dd322053c462c1ac291948a42f7187cfd37ae Mon Sep 17 00:00:00 2001
+From: Arseniy Zaostrovnykh <necto.ne@gmail.com>
+Date: Sun, 16 Mar 2025 20:45:06 +0100
+Subject: [PATCH] current_geo_location_linux.cpp: Add a missing include.
+
+* Telegram/SourceFiles/platform/linux/current_geo_location_linux.cpp:
+    Fix the missing class compilation failure reported by gcc-11.
+---
+ .../SourceFiles/platform/linux/current_geo_location_linux.cpp    | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Telegram/SourceFiles/platform/linux/current_geo_location_linux.cpp b/Telegram/SourceFiles/platform/linux/current_geo_location_linux.cpp
+index 7015af739..326ccbf28 100644
+--- a/Telegram/SourceFiles/platform/linux/current_geo_location_linux.cpp
++++ b/Telegram/SourceFiles/platform/linux/current_geo_location_linux.cpp
+@@ -10,6 +10,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
+ #include "core/current_geo_location.h"
+ #include "base/platform/linux/base_linux_library.h"
+
++#include <QGuiApplication>
+ #include <gio/gio.h>
+
+ namespace Platform {
+--
+2.48.1
+
