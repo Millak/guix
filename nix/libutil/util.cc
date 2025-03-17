@@ -1279,6 +1279,9 @@ void commonChildInit(Pipe & logPipe)
     if (setsid() == -1)
         throw SysError(format("creating a new session"));
 
+    /* Close the read end so only the parent holds a reference to it.  */
+    logPipe.readSide.close();
+
     /* Dup the write side of the logger pipe into stderr. */
     if (dup2(logPipe.writeSide, STDERR_FILENO) == -1)
         throw SysError("cannot pipe standard error into log file");
