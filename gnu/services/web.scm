@@ -882,6 +882,7 @@ of index files."
              #~(lambda _
                  (invoke #$nginx-binary "-c" #$config-file #$@args)
                  (match '#$args
+                   (("-s" "stop") #f)
                    (("-s" . _) #t)
                    (_
                     ;; When FILE is true, we cannot be sure that PID-FILE will
