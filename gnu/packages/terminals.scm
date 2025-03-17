@@ -851,7 +851,7 @@ eye-candy, customizable, and reasonably lightweight.")
 (define-public foot
   (package
     (name "foot")
-    (version "1.20.2")
+    (version "1.21.0")
     (home-page "https://codeberg.org/dnkl/foot")
     (source
      (origin
@@ -861,7 +861,7 @@ eye-candy, customizable, and reasonably lightweight.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m6i361wg86zxah28lp9kdxawifrzgz2gbvs9b0ynwl7292nhw5n"))))
+        (base32 "19hkw4g2l00wasmk5dn34rf3bhqh6zbwwhvz98bdcv90p761jws4"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -878,14 +878,14 @@ eye-candy, customizable, and reasonably lightweight.")
                         (list wayland pkg-config-for-build)
                         '())
                     (list ncurses ;for 'tic'
-                          pkg-config scdoc wayland-protocols)))
+                          pkg-config scdoc wayland-protocols-next)))
     (native-search-paths
      ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
      ;; provided for usability reasons.  See <https://bugs.gnu.org/22138>.
      (list (search-path-specification
             (variable "TERMINFO_DIRS")
             (files '("share/terminfo")))))
-    (inputs (list fcft libxkbcommon wayland wayland-protocols))
+    (inputs (list fcft libxkbcommon wayland wayland-protocols-next))
     (synopsis "Wayland-native terminal emulator")
     (description
      "@command{foot} is a terminal emulator for systems using the Wayland
