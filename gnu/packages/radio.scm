@@ -1653,7 +1653,7 @@ instances over the network, and general QSO and DXpedition logging.")
 (define-public wsjtx
   (package
     (name "wsjtx")
-    (version "2.6.1")
+    (version "2.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1662,7 +1662,7 @@ instances over the network, and general QSO and DXpedition logging.")
              (commit (string-append "wsjtx-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lqd77v9xm58k9g9kfwxva3mmzm1yyk1v27nws5j1a293zfg2hkw"))))
+        (base32 "1d000ndqxh7chkzaig848xp3any0mr6swzf0vdzprkr1jm6dj0q0"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f   ; No test suite
@@ -1682,12 +1682,12 @@ instances over the network, and general QSO and DXpedition logging.")
      (list boost
            fftw
            fftwf
+           hamlib
            libusb
            qtbase-5
            qtmultimedia-5
-           qtserialport-5
-           wsjtx-hamlib))
-    (home-page "https://www.physics.princeton.edu/pulsar/k1jt/wsjtx.html")
+           qtserialport-5))
+    (home-page "https://wsjt.sourceforge.io/wsjtx.html")
     (synopsis "Weak-signal ham radio communication program")
     (description
      "WSJT-X implements communication protocols or modes called FT4, FT8,
