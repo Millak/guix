@@ -16,6 +16,7 @@
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -522,3 +523,40 @@ application you like and simply select the NoiseTorch Virtual Microphone as
 input to torch the sound of your mechanical keyboard, computer fans, trains
 and the likes.")
     (license l:gpl3)))
+
+(define-public apulse
+  (package
+    (name "apulse")
+    (version "0.1.13")
+    (home-page "https://github.com/i-rinat/apulse")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p6fh6ah5v3qz7dxhcsixx38bxg44ypbim4m03bxk3ls5i9xslmn"))))
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:configure-flags
+           ;; Ensure the RUNPATH contains the .../lib/apulse directory.
+           #~(list (string-append "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-rpath="
+                                  #$output "/lib/apulse:"))))
+    (native-inputs (list pkg-config))
+    (inputs (list alsa-lib glib))
+    (build-system cmake-build-system)
+    (synopsis "PulseAudio emulation for ALSA")
+    (description " Apulse provides an alternative partial implementation of
+the PulseAudio API.  It consists of a loader script and a number of shared
+libraries with the same names as from original PulseAudio, so applications
+could dynamically load them and think they are talking to PulseAudio.
+
+Internally, no separate sound mixing daemon is used.  Instead, apulse relies
+on ALSA's dmix, dsnoop, and plug plugins to handle multiple sound sources and
+capture streams running at the same time.  dmix plugin muxes multiple playback
+streams; dsnoop plugin allow multiple applications to capture from a single
+microphone; and plug plugin transparently converts audio between various
+sample formats, sample rates and channel numbers.")
+    (license l:expat)))
