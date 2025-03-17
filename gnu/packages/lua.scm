@@ -1301,20 +1301,24 @@ Notable examples are GTK+, GStreamer and Webkit.")
                 "0aimsjpcpkh3kk65f0pg1z2bp6d83rn4dg6pgbx1yv14s9kms5ab"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         ;; `make install` isn't available, so we have to do it manually
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (lua-version ,(this-lua-version)))
-               (install-file "lpeg.so"
-                             (string-append out "/lib/lua/" lua-version))
-               (install-file "re.lua"
-                             (string-append out "/share/lua/" lua-version))
-               #t))))
-       #:test-target "test"))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          ;; `make install` isn't available, so we have to do it manually
+          (replace 'install
+            (lambda _
+              (let ((lua-version #$(this-lua-version)))
+                (install-file
+                 "lpeg.so"
+                 (string-append #$output "/lib/lua/" lua-version))
+                (install-file
+                 "re.lua"
+                 (string-append #$output "/share/lua/" lua-version))))))
+      #:test-target
+      "test"))
     (inputs (list lua))
     (synopsis "Pattern-matching library for Lua")
     (description
