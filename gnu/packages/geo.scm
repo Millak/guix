@@ -3304,14 +3304,14 @@ growing set of geoscientific methods.")
 (define-public qgis
   (package
     (name "qgis")
-    (version "3.34.6")
+    (version "3.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://qgis.org/downloads/qgis-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "1zqyyrbv53vrrh372g503qh8kmy2dlsxcck28khhkh2262m5qfap"))))
+        (base32 "1s04wy3iy7amm4jn5y5j9pw54isizhqq2mr10ld5ldz2gqwl7dq4"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3357,17 +3357,20 @@ growing set of geoscientific methods.")
                                "ProcessingQgisAlgorithmsTestPt3"
                                "ProcessingQgisAlgorithmsTestPt4"
                                "ProcessingGdalAlgorithmsVectorTest"
-                               "ProcessingGrass7AlgorithmsImageryTest"
-                               "ProcessingGrass7AlgorithmsRasterTestPt1"
-                               "ProcessingGrass7AlgorithmsRasterTestPt2"
-                               "ProcessingGrass7AlgorithmsVectorTest"
+                               "ProcessingGrassAlgorithmsImageryTest"
+                               "ProcessingGrassAlgorithmsRasterTestPt1"
+                               "ProcessingGrassAlgorithmsRasterTestPt2"
+                               "ProcessingGrassAlgorithmsVectorTest"
+                               "ProcessingGrassAlgsPostgreRasterProvider"
                                "test_core_authconfig"
                                "test_core_authmanager"
                                "test_core_compositionconverter"
                                "test_core_expression"
+                               "test_core_gdalprovider"
                                "test_core_gdalutils"
                                "test_core_labelingengine"
                                "test_core_layoutpicture"
+                               "test_core_ogrprovider"
                                "test_core_project"
                                "test_core_coordinatereferencesystem"
                                "test_core_overlayexpression"
