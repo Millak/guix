@@ -1007,22 +1007,22 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
       (inherit base)
       (name "ovmf-x86-64")
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
-          ((#:phases phases)
-           #~(modify-phases #$phases
-               (replace 'install
-                 (lambda _
-                   (let ((fmw (string-append #$output "/share/firmware")))
-                     (mkdir-p fmw)
-                     (for-each
-                       (lambda (file)
-                         (copy-file
-                           (string-append "Build/OvmfX64/RELEASE_GCC"
-                                          "/FV/" file ".fd")
-                           (string-append fmw "/" (string-downcase file) "_x64.bin")))
-                       (list "OVMF"
-                             "OVMF_CODE"
-                             "OVMF_VARS"))))))))))))
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (replace 'install
+                (lambda _
+                  (let ((fmw (string-append #$output "/share/firmware")))
+                    (mkdir-p fmw)
+                    (for-each
+                     (lambda (file)
+                       (copy-file
+                        (string-append "Build/OvmfX64/RELEASE_GCC"
+                                       "/FV/" file ".fd")
+                        (string-append fmw "/" (string-downcase file) "_x64.bin")))
+                     (list "OVMF"
+                           "OVMF_CODE"
+                           "OVMF_VARS"))))))))))))
 
 (define-public ovmf-i686
   (let ((base (make-ovmf-firmware "i686")))
