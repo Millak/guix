@@ -16,7 +16,7 @@
 ;;; Copyright © 2023 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023, 2024 Nguyễn Gia Phong <cnx@loang.net>
-;;; Copyright © 2026 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2025, 2026 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -108,6 +108,8 @@
      (list
        #:test-target "test"
        #:parallel-tests? #f
+       #:configure-flags
+       #~(list (string-append "STRIP=" #$(strip-for-target)))
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'configure 'patch-absolute-paths
