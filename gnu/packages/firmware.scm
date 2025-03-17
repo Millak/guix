@@ -8,7 +8,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
@@ -1001,6 +1001,10 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
       (license (list license:expat
                      license:bsd-2 license:bsd-3 license:bsd-4)))))
 
+(define (ovmf-aux-file name)
+  "Return as a gexp the auxiliary OVMF file corresponding to NAME."
+  (local-file (search-auxiliary-file (string-append "ovmf/" name))))
+
 (define-public ovmf-x86-64
   (let ((base (make-ovmf-firmware "x86_64")))
     (package
@@ -1022,7 +1026,25 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
                         (string-append fmw "/" (string-downcase file) "_x64.bin")))
                      (list "OVMF"
                            "OVMF_CODE"
-                           "OVMF_VARS"))))))))))))
+                           "OVMF_VARS")))))
+              (add-after 'install 'install-qemu-firmware-metadata
+                (lambda _
+                  ;; The QEMU firmware metadata files are taken from the
+                  ;; Fedora project (see:
+                  ;; https://src.fedoraproject.org/rpms/edk2/tree/rawhide).
+                  (let ((51-edk2-ovmf-2m-raw-x64-nosb.json-source
+                         #$(ovmf-aux-file "51-edk2-ovmf-2m-raw-x64-nosb.json"))
+                        (51-edk2-ovmf-2m-raw-x64-nosb.json-dest
+                         (string-append #$output "/share/qemu/firmware/"
+                                        "51-edk2-ovmf-2m-raw-x64-nosb.json")))
+                    (mkdir-p (dirname 51-edk2-ovmf-2m-raw-x64-nosb.json-dest))
+                    (copy-file 51-edk2-ovmf-2m-raw-x64-nosb.json-source
+                               51-edk2-ovmf-2m-raw-x64-nosb.json-dest)
+                    (substitute* 51-edk2-ovmf-2m-raw-x64-nosb.json-dest
+                      (("/usr/share/edk2/ovmf/OVMF_(CODE|VARS).fd" _ kind)
+                       (string-append
+                        #$output "/share/firmware/ovmf_"
+                        (string-downcase kind) "_x64.bin")))))))))))))
 
 (define-public ovmf-i686
   (let ((base (make-ovmf-firmware "i686")))
