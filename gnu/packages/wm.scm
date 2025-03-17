@@ -79,6 +79,7 @@
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Tomáš Čech <sleep_walker@gnu.org>
+;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1941,6 +1942,31 @@ its size
 customizable status bars for their desktop environment.  It has built-in
 functionality to display information about the most commonly used services.")
     (license license:expat)))
+
+(define-public wlclock
+  (package
+    (name "wlclock")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~leon_plickat/wlclock/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ijicaizq9b4mkvpm9c5llmj5aqfyyasg7ll02py47yqf68khw38"))))
+    (build-system meson-build-system)
+    (inputs (list cairo wayland wayland-protocols))
+    (native-inputs (list cmake-minimal pkg-config))
+    (home-page "https://git.sr.ht/~leon_plickat/wlclock/")
+    (synopsis "Digital analog clock for Wayland desktops")
+    (description "Wlclock is a digital analog clock for Wayland desktops.
+wlclock is inspired by xclock and the default configuration has been chosen to
+mimic it.  However unlike xclock, wlclock is not a regular window but a
+desktop-widget.  A Wayland compositor must implement the Layer-Shell and
+XDG-Output for wlclock to work.")
+    (license license:gpl3)))
 
 (define-public wlroots
   (package
