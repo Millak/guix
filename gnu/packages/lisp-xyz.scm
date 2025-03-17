@@ -24162,8 +24162,8 @@ variable portably in Common Lisp.")
   (sbcl-package->ecl-package sbcl-path-parse))
 
 (define-public sbcl-pathname-utils
-  (let ((commit "f28068a79825f37002e96d13dfd739172382bf94")
-        (revision "3"))
+  (let ((commit "3309d65a568acc392ade6a4096c940eb15e1149e")
+        (revision "4"))
     (package
       (name "sbcl-pathname-utils")
       (version (git-version "1.1.0" revision commit))
@@ -24175,7 +24175,7 @@ variable portably in Common Lisp.")
                (commit commit)))
          (file-name (git-file-name "cl-pathname-utils" version))
          (sha256
-          (base32 "10xs0wnnkbdiirr1cb7q7hzi2zmksfsrj0p7yws0j1l215vz8qs8"))))
+          (base32 "0w7h0qhi53myakfbwvwgr9srbz5mmgsdcbynzkh5vjiibwjg1c3i"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
@@ -24184,7 +24184,7 @@ variable portably in Common Lisp.")
       (home-page "https://shinmera.github.io/pathname-utils/")
       (synopsis "Collection of utilities to help with pathname operations")
       (description
-       "This package provides a Common Lisp system a with collection of common
+       "This package provides a Common Lisp system with a collection of common
 tests and operations to help handling pathnames.  It does not actually deal in
 handling the accessing of files on the underlying system however.")
       (license license:zlib))))
