@@ -1402,17 +1402,19 @@ Grammars (PEGs).")
                 "16fffbrgfcw40kskh2bn9q7m3gajffwd2f35rafynlnd7llwj1qj"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:make-flags
-       (list "INSTALL=install -pD"
-             (string-append "INSTALLPATH=printf "
-                            (assoc-ref %outputs "out")
-                            "/lib/lua/"
-                            ,(this-lua-version)
-                            "/bit/bit.so"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "INSTALL=install -pD"
+              (string-append "INSTALLPATH=printf "
+                             #$output
+                             "/lib/lua/"
+                             #$(this-lua-version)
+                             "/bit/bit.so"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (inputs (list lua))
     (home-page "https://bitop.luajit.org/index.html")
     (synopsis "Bitwise operations on numbers for Lua")
