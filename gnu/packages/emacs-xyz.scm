@@ -644,7 +644,7 @@ summarizing text using an LLM.")
 (define-public emacs-chatgpt-shell
   (package
     (name "emacs-chatgpt-shell")
-    (version "2.13.1")
+    (version "2.16.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -653,19 +653,24 @@ summarizing text using an LLM.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vlvwim1v14cvd4w3bd10xfzaw3mhsiv5qh4ka67jgninq8kjls5"))))
+                "1xq4hfr3m5sgi9wrr3nrp6fsnnw8d044gz0y50d4h46cvq8c6f2g"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
                ;; This phase prevents build phase failure.
-               (add-before 'build 'generate-empty-config-file
+               (add-after 'unpack 'generate-empty-config-file
                  (lambda _
                    (setenv "HOME" (getcwd))
                    (mkdir-p ".emacs.d")
                    (call-with-output-file ".emacs.d/.chatgpt-shell.el"
                      (lambda (port)
-                       (display "nil" port))))))))
+                       (display "nil" port))))))
+           #:tests? #t
+           #:test-command #~(list "emacs" "-Q" "--batch"
+                                  "-l" "test_chatgpt-shell.el"
+                                  "-l" "chatgpt-shell.el"
+                                  "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs (list emacs-shell-maker))
     (home-page "https://github.com/xenodium/chatgpt-shell")
     (synopsis "ChatGPT and DALL-E Emacs shells and Org Babel libraries")
