@@ -399,7 +399,7 @@ data structures for C++.")
 (define-public c++-gsl
   (package
     (name "c++-gsl")
-    (version "4.0.0")
+    (version "4.2.0")
     (source
      (origin
        (method git-fetch)
@@ -411,7 +411,7 @@ data structures for C++.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "0dgb3rb6x2276d3v7x568m3zhqr67rhk8ynqgm3c304avnmcaw3i"))))
+        (base32 "08w3ppd43wx9vq641ljw5izjd7p5w7drynw13ll9shwy41ydif9n"))))
     (build-system cmake-build-system)
     (native-inputs
      (list googletest pkg-config))
