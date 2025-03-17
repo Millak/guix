@@ -27127,7 +27127,7 @@ search for files on your machine.  These services are provided by the
 The first one, @code{file-database-service-type}, periodically runs the
 venerable @command{updatedb} command (@pxref{Invoking updatedb,,, find,
 GNU Findutils}).  That command populates a database of file names that
-you can then search with the @command{locate} command (@pxref{Invoing
+you can then search with the @command{locate} command (@pxref{Invoking
 locate,,, find, GNU Findutils}), as in this example:
 
 @example
