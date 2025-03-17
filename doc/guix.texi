@@ -33792,6 +33792,34 @@ something like @code{sendmail:///path/to/bin/msmtp} or any other URI
 supported by Mailutils.  @xref{SMTP Mailboxes, SMTP Mailboxes,,
 mailutils, GNU@tie{}Mailutils}.
 
+@item @code{packages}
+List of @code{<mumi-package-configuration>} objects representing
+packages configured on Mumi.
+
+@end table
+@end deftp
+
+@deftp {Data Type} mumi-package-configuration
+Data type representing the configuration of a package on Mumi.  This
+type has the following fields:
+
+@table @asis
+@item @code{name}
+Name of the package.
+
+@item @code{display-name}
+Display name used for this package in the web interface.
+
+@item @code{debbugs-packages}
+List of Debbugs packages this package refers to.
+
+@item @code{bug-email-address}
+Email address to send bug reports to.
+
+@item @code{patch-email-address}
+Email address to send patches to, if that is different from
+@code{bug-email-address}.
+
 @item @code{file-tags}
 Association list mapping tags to filename regular expressions. Keys are
 tag names, and values are lists of regular expressions.  For each entry

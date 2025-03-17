@@ -298,6 +298,16 @@
             mumi-configuration-mailer?
             mumi-configuration-sender
             mumi-configuration-smtp
+            mumi-configuration-packages
+
+            mumi-package-configuration
+            mumi-package-configuration?
+            mumi-package-configuration-name
+            mumi-package-configuration-display-name
+            mumi-package-configuration-debbugs-packages
+            mumi-package-configuration-bug-email-address
+            mumi-package-configuration-patch-email-address
+            mumi-package-configuration-file-tags
 
             mumi-service-type
 
@@ -2025,7 +2035,21 @@ WSGIPassAuthorization On
   (mailer? mumi-configuration-mailer? (default #t))
   (sender  mumi-configuration-sender (default #f))
   (smtp    mumi-configuration-smtp (default #f))
-  (file-tags mumi-configuration-file-tags (default '())))
+  (packages mumi-configuration-packages (default '())))
+
+(define-record-type* <mumi-package-configuration>
+  mumi-package-configuration make-mumi-package-configuration
+  mumi-package-configuration?
+  (name mumi-package-configuration-name)
+  (display-name mumi-package-configuration-display-name
+                (default #f))
+  (debbugs-packages mumi-package-configuration-debbugs-packages)
+  (bug-email-address mumi-package-configuration-bug-email-address
+                     (default #f))
+  (patch-email-address mumi-package-configuration-patch-email-address
+                       (default #f))
+  (file-tags mumi-package-configuration-file-tags
+             (default '())))
 
 (define %mumi-activation
   (with-imported-modules '((guix build utils))
@@ -2057,9 +2081,30 @@ WSGIPassAuthorization On
 
 (define %mumi-worker-log "/var/log/mumi.worker.log")
 
+(define mumi-package-configuration->alist
+  (match-record-lambda <mumi-package-configuration>
+      (name display-name debbugs-packages bug-email-address
+            patch-email-address file-tags)
+    `(,name
+      ,@(if display-name
+            `((display-name . ,display-name))
+            '())
+      ,@(if debbugs-packages
+            `((debbugs-packages . ,debbugs-packages))
+            '())
+      ,@(if bug-email-address
+            `((bug-email-address . ,bug-email-address))
+            '())
+      ,@(if patch-email-address
+            `((patch-email-address . ,patch-email-address))
+            '())
+      ,@(match file-tags
+          (() '())
+          (_ `((file-tags . ,file-tags)))))))
+
 (define mumi-config-file
   (match-record-lambda <mumi-configuration>
-      (mailer? file-tags)
+      (mailer? packages)
     (computed-file "mumi.conf"
                    #~(begin
                        (use-modules (srfi srfi-26))
@@ -2067,7 +2112,9 @@ WSGIPassAuthorization On
                        (call-with-output-file #$output
                          (cut write
                               '((mailer-enabled? . #$mailer?)
-                                (file-tags . #$file-tags))
+                                (packages
+                                 . #$(map mumi-package-configuration->alist
+                                          packages)))
                               <>))))))
 
 (define (mumi-shepherd-services config)
