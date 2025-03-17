@@ -4396,7 +4396,7 @@ execution mechanism for Common Lisp.")))
 (define-public sbcl-cl-autowrap
   (let ((revision "2")
         (commit "a5d71ebd7c21b87f449db1e16ab815750d7c0ea4"))
-    ;; no taged branches
+    ;; no tagged branches
     (package
       (name "sbcl-cl-autowrap")
       (version (git-version "1.0" revision commit))
@@ -13728,7 +13728,7 @@ them as strings.")
   (sbcl-package->ecl-package sbcl-decimals))
 
 (define-public sbcl-deeds
-  ;; taged branch is outdated
+  ;; tagged branch is outdated
   (let ((revision "1")
         (commit "f5df54eac79b58a34030e0eb8acf3952c788410d"))
     (package
@@ -18583,7 +18583,7 @@ codes header file found on Linux and FreeBSD.")
       (synopsis
        "Encoding/end-of-line detection and external-format abstraction for Common Lisp")
       (description
-       "Inquisitor is a cross-implementation library provding
+       "Inquisitor is a cross-implementation library providing
 encoding/end-of-line detection and external-format abstraction for Common Lisp.")
       (license license:expat))))
 
@@ -19718,7 +19718,7 @@ needed.  The low-level command API is fully mapped however.")
              sbcl-queues))
       (synopsis "ANSI CL adaptation of the SBCL mailbox utility")
       (description
-       "This package provides an ANSI CL adaptation of the SBCL mailbox utilty.")
+       "This package provides an ANSI CL adaptation of the SBCL mailbox utility.")
       (home-page "https://github.com/lem-project/lem-mailbox")
       (license license:expat))))
 
@@ -21534,7 +21534,7 @@ whole lot more into a single form.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               ;; Upstream changed the maintaner.
+               ;; Upstream changed the maintainer.
                ;; legacy https://github.com/gwkkwg/metacopy
                (url "https://github.com/hraban/metacopy")
                (commit commit)))
@@ -25565,7 +25565,7 @@ values in other options.")
            (add-after 'unpack 'replace-*base-directory*-var
              (lambda* (#:key outputs #:allow-other-keys)
                ;; In the ASD, the author makes an attempt to
-               ;; programatically determine the location of the
+               ;; programmatically determine the location of the
                ;; source-code so lisp can call into "py4cl.py". We can
                ;; hard-code this since we know where this file will
                ;; reside.
@@ -26553,7 +26553,7 @@ Rucksack with some enhancements.")
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-build
              (lambda _
-               ;; File faild to load, and we don't use it as tests are
+               ;; File failed to load, and we don't use it as tests are
                ;; disabled, so let's delete it.
                (delete-file "rutilsx-test.asd"))))))
       (inputs
