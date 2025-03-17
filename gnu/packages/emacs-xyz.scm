@@ -42107,26 +42107,26 @@ Fennel code within Emacs.")
 
 (define-public emacs-org-modern
   (package
-   (name "emacs-org-modern")
-   (version "1.6")
-   (source
+    (name "emacs-org-modern")
+    (version "1.7")
+    (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/minad/org-modern")
              (commit version)))
        (sha256
-        (base32 "0a7viid1lrn02w1n4yjivjyssbd1qq850giqwnp3mrjf9adwzh2a"))
+        (base32 "04bmlwc81d8h8n10xb2nhwmcvn1701nr73hxajl6hasswzqqmh70"))
        (file-name (git-file-name name version))))
-   (build-system emacs-build-system)
-   (propagated-inputs (list emacs-compat))
-   (home-page "https://github.com/minad/org-modern")
-   (synopsis "Modern Org style")
-   (description
-"Org Modern implements a modern style for your Org buffers using font locking
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://github.com/minad/org-modern")
+    (synopsis "Modern Org style")
+    (description
+     "Org Modern implements a modern style for your Org buffers using font locking
 and text properties.  The package styles headlines, keywords, tables and
 source blocks.")
-   (license license:gpl3+)))
+    (license license:gpl3+)))
 
 (define-public emacs-org-margin
   (let* ((commit "4013b59ff829903a7ab86b95593be71aa5c9b87d")
