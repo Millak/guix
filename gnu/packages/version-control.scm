@@ -322,14 +322,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git-minimal
   (package
     (name "git-minimal")
-    (version "2.48.1")
+    (version "2.49.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1bc29w1cd1akbnpfjc7sl5ms7cc8vy7xjl1cbplm3sy1bmgm8p8w"))))
+               "0a2nm2szhn47dm0m1f1kmg1rikb7saqj67zr25n9yzhbb77r10b1"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -635,7 +635,8 @@ everything from small to very large projects with speed and efficiency.")
             (delete 'remove-unusable-perl-commands)
             (replace 'patch-makefiles
               (lambda _
-                (substitute* "Makefile"
+                (substitute* (find-files "." "Makefile")
+                  (("/bin/sh") (which "sh"))
                   (("/usr/bin/perl") (which "perl"))
                   (("/usr/bin/python") (which "python3")))))
             (add-after 'build 'build-subtree
@@ -796,7 +797,7 @@ everything from small to very large projects with speed and efficiency.")
                                ".tar.xz"))
                          (sha256
                           (base32
-                           "11k871fz119f6hbzvfg64hr7vdbaqd8x2brg5mhbyvadz9xdw3jc"))))))))))))
+                           "1my4qax2wxlhxsyf3wjxllsc2jy9lm97w78alllrgfjgihb46irf"))))))))))))
     (native-inputs
      (modify-inputs (package-native-inputs git-minimal)
        ;; For subtree documentation.
