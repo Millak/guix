@@ -1923,6 +1923,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/nyacc-binary-literals.patch		\
   %D%/packages/patches/obs-modules-location.patch		\
   %D%/packages/patches/ocaml-multiple-definitions.patch		\
+  %D%/packages/patches/ogre-next-add-riscv64-support.patch		\
   %D%/packages/patches/ocaml-4.07-dynamically-allocate-signal-stack.patch	\
   %D%/packages/patches/ocaml-4.09-dynamically-allocate-signal-stack.patch	\
   %D%/packages/patches/ocaml-4.09-multiple-definitions.patch	\

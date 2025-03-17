@@ -1,0 +1,28 @@
+from https://github.com/OGRECave/ogre-next/pull/478
+
+From 12081a8f1a0e676ac618dd7c4c1d2e8390c07278 Mon Sep 17 00:00:00 2001
+From: Eric Long <i@hack3r.moe>
+Date: Mon, 18 Nov 2024 21:56:13 +0800
+Subject: [PATCH] Add riscv64 to 64-bit architectures
+
+---
+ OgreMain/include/OgrePlatform.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/OgreMain/include/OgrePlatform.h b/OgreMain/include/OgrePlatform.h
+index f9f7a12e46..a977aa2958 100644
+--- a/OgreMain/include/OgrePlatform.h
++++ b/OgreMain/include/OgrePlatform.h
+@@ -81,7 +81,8 @@ THE SOFTWARE.
+ #if defined( __x86_64__ ) || defined( _M_X64 ) || defined( _M_X64 ) || defined( _M_AMD64 ) || \
+     defined( __ppc64__ ) || defined( __PPC64__ ) || defined( __arm64__ ) || defined( __aarch64__ ) || \
+     defined( _M_ARM64 ) || defined( __mips64 ) || defined( __mips64_ ) || defined( __alpha__ ) || \
+-    defined( __ia64__ ) || defined( __e2k__ ) || defined( __s390__ ) || defined( __s390x__ )
++    defined( __ia64__ ) || defined( __e2k__ ) || defined( __s390__ ) || defined( __s390x__ ) || \
++    (defined(__riscv) && __riscv_xlen == 64)
+ #    define OGRE_ARCH_TYPE OGRE_ARCHITECTURE_64
+ #else
+ #    define OGRE_ARCH_TYPE OGRE_ARCHITECTURE_32
+-- 
+2.47.1
+

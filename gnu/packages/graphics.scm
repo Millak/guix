@@ -29,7 +29,7 @@
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022, 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2022, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022, 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 dan <i@dan.games>
@@ -1354,6 +1354,7 @@ graphics.")
                     (url "https://github.com/OGRECave/ogre-next")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
+              (patches (search-patches "ogre-next-add-riscv64-support.patch"))
               (sha256
                (base32
                 "1yrlg3s654xbp95208h9a2b8jcwdk69r6sjvll0aiyvxm4c056cw"))))
@@ -1361,7 +1362,14 @@ graphics.")
                  ((#:tests? _ #f)
                   ;; The test suite is currently disabled by the build system
                   ;; (see: https://github.com/OGRECave/ogre-next/issues/466).
-                  #f)))
+                  #f)
+                 ((#:configure-flags flags #~(list))
+                  (if (target-riscv64?)
+                      #~(cons*
+                         "-DOGRE_SIMD_SSE2=OFF"
+                         "-DOGRE_SIMD_NEON=OFF"
+                         #$flags)
+                      flags))))
     (inputs
      (modify-inputs (package-inputs ogre)
        (append rapidjson)))))
