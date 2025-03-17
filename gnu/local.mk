@@ -1413,6 +1413,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gd-fix-tests-on-i686.patch		\
   %D%/packages/patches/gd-brect-bounds.patch			\
   %D%/packages/patches/gdb-hurd64.patch				\
+  %D%/packages/patches/gdb-16-hurd64.patch				\
   %D%/packages/patches/gdk-pixbuf-honor-GUIX_GDK_PIXBUF_MODULE_FILES.patch	\
   %D%/packages/patches/gdm-default-session.patch		\
   %D%/packages/patches/gdm-remove-hardcoded-xwayland-path.patch	\

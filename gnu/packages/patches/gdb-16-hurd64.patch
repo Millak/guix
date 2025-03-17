@@ -1,0 +1,867 @@
+from https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=5110839934507dca11761e538ce3158849c1354b
+
+From 5110839934507dca11761e538ce3158849c1354b Mon Sep 17 00:00:00 2001
+From: Flavio Cruz <flaviocruz@gmail.com>
+Date: Sun, 2 Feb 2025 23:15:22 -0500
+Subject: [PATCH] Port GDB to Hurd x86_64.
+
+This port extends the existing i686 port to support x86_64 by reusing
+existing code whenever it makes sense.
+
+* gdb/amd64-gnu-tdep.c: Adds logic for handling signal frames and
+  position of amd64 registers in the different Hurd structs.
+  The signal code is very similar to i686, except the trampoline code
+  is adapted.
+* gdb/config/i386/nm-i386gnu.h: renamed to gdb/config/i386/nm-x86-gnu.h
+  and adapt it for x86_64.
+* gdb/config/i386/i386gnu.mn: renamed to gdb/config/i386/nm-x86-gnu.mn
+  and reuse it for x86_64.
+* gdb/configure.host: recognize gnu64 as a host.
+* gdb/configure.nat: recognize gnu64 host and update existing i386gnu to
+  reuse the new shared files.
+* gdb/configure.tgt: recognize x86_64-*-gnu* triplet and use
+  amd64-gnu-tdep.c.
+* gdb/i386-gnu-tdep.c: added i386_gnu_thread_state_reg_offset that is
+  copied from i386-gnu-nat.c. This makes it similar to amd64.
+* gdb/i386-gnu-nat.c: rename it to x86-gnu-nat.c since we reuse this for
+  i386 and amd64. Updated REG_ADDR to use one of the structures. Added
+  VALID_REGISTER to make sure it's a register we can provide at this time
+  (not all of them are available in amd64). FLAGS_REGISTER is either rfl
+  or efl depending on the arch. Renamed functions and class from i386 to x86
+  whenever they can be reused.
+
+Tested on Hurd x86_64 and i686.
+---
+ gdb/Makefile.in                               |   4 +-
+ gdb/amd64-gnu-tdep.c                          | 231 ++++++++++++++++++
+ .../i386/{nm-i386gnu.h => nm-x86-gnu.h}       |   7 +
+ gdb/config/i386/{i386gnu.mn => x86-gnu.mn}    |   0
+ gdb/configure.host                            |   1 +
+ gdb/configure.nat                             |  27 +-
+ gdb/configure.tgt                             |   6 +-
+ gdb/i386-gnu-tdep.c                           |  13 +-
+ gdb/{i386-gnu-nat.c => x86-gnu-nat.c}         | 171 +++++++++----
+ 9 files changed, 403 insertions(+), 57 deletions(-)
+ create mode 100644 gdb/amd64-gnu-tdep.c
+ rename gdb/config/i386/{nm-i386gnu.h => nm-x86-gnu.h} (83%)
+ rename gdb/config/i386/{i386gnu.mn => x86-gnu.mn} (100%)
+ rename gdb/{i386-gnu-nat.c => x86-gnu-nat.c} (68%)
+
+diff --git a/gdb/Makefile.in b/gdb/Makefile.in
+index b726b1dc612..1619c8253dc 100644
+--- a/gdb/Makefile.in
++++ b/gdb/Makefile.in
+@@ -741,6 +741,7 @@ ALL_64_TARGET_OBS = \
+ 	amd64-darwin-tdep.o \
+ 	amd64-dicos-tdep.o \
+ 	amd64-fbsd-tdep.o \
++	amd64-gnu-tdep.o \
+ 	amd64-linux-tdep.o \
+ 	amd64-netbsd-tdep.o \
+ 	amd64-obsd-tdep.o \
+@@ -1700,6 +1701,7 @@ ALLDEPFILES = \
+ 	amd64-dicos-tdep.c \
+ 	amd64-fbsd-nat.c \
+ 	amd64-fbsd-tdep.c \
++	amd64-gnu-tdep.c \
+ 	amd64-linux-nat.c \
+ 	amd64-linux-tdep.c \
+ 	amd64-nat.c \
+@@ -1755,7 +1757,6 @@ ALLDEPFILES = \
+ 	i386-dicos-tdep.c \
+ 	i386-fbsd-nat.c \
+ 	i386-fbsd-tdep.c \
+-	i386-gnu-nat.c \
+ 	i386-gnu-tdep.c \
+ 	i386-linux-nat.c \
+ 	i386-linux-tdep.c \
+@@ -1882,6 +1883,7 @@ ALLDEPFILES = \
+ 	vax-tdep.c \
+ 	windows-nat.c \
+ 	windows-tdep.c \
++	x86-gnu-nat.c \
+ 	x86-nat.c \
+ 	x86-tdep.c \
+ 	xcoffread.c \
+diff --git a/gdb/amd64-gnu-tdep.c b/gdb/amd64-gnu-tdep.c
+new file mode 100644
+index 00000000000..435095e3359
+--- /dev/null
++++ b/gdb/amd64-gnu-tdep.c
+@@ -0,0 +1,231 @@
++/* Target-dependent code for the GNU Hurd.
++   Copyright (C) 2024 Free Software Foundation, Inc.
++
++   This file is part of GDB.
++
++   This program is free software; you can redistribute it and/or modify
++   it under the terms of the GNU General Public License as published by
++   the Free Software Foundation; either version 3 of the License, or
++   (at your option) any later version.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
++
++#include "defs.h"
++#include "extract-store-integer.h"
++#include "gdbcore.h"
++#include "osabi.h"
++#include "solib-svr4.h"
++
++#include "amd64-tdep.h"
++#include "glibc-tdep.h"
++
++/* Recognizing signal handler frames.  */
++
++/* When the GNU/Hurd libc calls a signal handler, the return address points
++   inside the trampoline assembly snippet.
++
++   If the trampoline function name can not be identified, we resort to reading
++   memory from the process in order to identify it.  */
++
++static const gdb_byte gnu_sigtramp_code[] =
++{
++/* rpc_wait_trampoline: */
++  0x48, 0xc7, 0xc0, 0xe7, 0xff, 0xff, 0xff,	/* mov    $-25,%rax */
++  0x0f, 0x05,					/* syscall */
++  0x49, 0x89, 0x04, 0x24,			/* mov    %rax,(%r12) */
++  0x48, 0x89, 0xdc,				/* mov    %rbx,%rsp */
++
++/* trampoline: */
++  0x5f,			                        /* pop    %rdi */
++  0x5e,						/* pop    %rsi */
++  0x5a,						/* pop    %rdx */
++  0x48, 0x83, 0xc4, 0x08,			/* add    $0x8,%rsp */
++  0x41, 0xff, 0xd5,				/* call   *%r13 */
++
++/* RA HERE */
++  0x48, 0x8b, 0x7c, 0x24, 0x10,			/* mov    0x10(%rsp),%rdi */
++  0xc3,						/* ret */
++
++/* firewall: */
++  0xf4,						/* hlt */
++};
++
++#define GNU_SIGTRAMP_LEN (sizeof gnu_sigtramp_code)
++#define GNU_SIGTRAMP_TAIL 7			/* length of tail after RA */
++
++/* If THIS_FRAME is a sigtramp routine, return the address of the
++   start of the routine.  Otherwise, return 0.  */
++
++static CORE_ADDR
++amd64_gnu_sigtramp_start (frame_info_ptr this_frame)
++{
++  CORE_ADDR pc = get_frame_pc (this_frame);
++  gdb_byte buf[GNU_SIGTRAMP_LEN];
++
++  if (!safe_frame_unwind_memory (this_frame,
++				 pc + GNU_SIGTRAMP_TAIL - GNU_SIGTRAMP_LEN,
++				 buf))
++    return 0;
++
++  if (memcmp (buf, gnu_sigtramp_code, GNU_SIGTRAMP_LEN) != 0)
++    return 0;
++
++  return pc;
++}
++
++/* Return whether THIS_FRAME corresponds to a Hurd sigtramp routine.  */
++
++static int
++amd64_gnu_sigtramp_p (const frame_info_ptr &this_frame)
++{
++  CORE_ADDR pc = get_frame_pc (this_frame);
++  const char *name;
++
++  find_pc_partial_function (pc, &name, NULL, NULL);
++
++  /* If we have a NAME, we can check for the trampoline function */
++  if (name != NULL && strcmp (name, "trampoline") == 0)
++    return 1;
++
++  return amd64_gnu_sigtramp_start (this_frame) != 0;
++}
++
++/* Offset to sc_i386_thread_state in sigcontext, from <bits/sigcontext.h>.  */
++#define AMD64_GNU_SIGCONTEXT_THREAD_STATE_OFFSET 32
++
++/* Assuming THIS_FRAME is a Hurd sigtramp routine, return the
++   address of the associated sigcontext structure.  */
++
++static CORE_ADDR
++amd64_gnu_sigcontext_addr (const frame_info_ptr &this_frame)
++{
++  struct gdbarch *gdbarch = get_frame_arch (this_frame);
++  enum bfd_endian byte_order = gdbarch_byte_order (gdbarch);
++  CORE_ADDR pc;
++  CORE_ADDR sp;
++  gdb_byte buf[8];
++
++  get_frame_register (this_frame, AMD64_RSP_REGNUM, buf);
++  sp = extract_unsigned_integer (buf, 8, byte_order);
++
++  pc = amd64_gnu_sigtramp_start (this_frame);
++  if (pc)
++    {
++      CORE_ADDR sigcontext_addr;
++
++      /* The sigcontext structure address is passed as the third argument
++       * of the signal handler but %RDX is not saved across calls. Luckily,
++       * the structured is saved underneath the &__sigreturn and a dummy word
++       * to fill the slot for the address for __sigreturn to return to.
++       */
++      read_memory (sp + 16, buf, 8);
++      sigcontext_addr = extract_unsigned_integer (buf, 8, byte_order);
++      return sigcontext_addr + AMD64_GNU_SIGCONTEXT_THREAD_STATE_OFFSET;
++    }
++
++  error (_("Couldn't recognize signal trampoline."));
++  return 0;
++}
++
++/* Mapping between the general-purpose registers in `struct
++   sigcontext' format (starting at sc_i386_thread_state)
++   and GDB's register cache layout.  */
++
++/* From <bits/sigcontext.h>.  */
++static int amd64_gnu_sc_reg_offset[] =
++{
++  15 * 8,			/* %rax */
++  12 * 8,			/* %rbx */
++  14 * 8,			/* %rcx */
++  13 * 8,			/* %rdx */
++  10 * 8,			/* %rsi */
++  9 * 8,			/* %rdi */
++  10 * 8,			/* %rbp */
++  11 * 8,			/* %rsp */
++  0 * 8,			/* %r8 ...  */
++  8 * 8,
++  7 * 8,
++  6 * 8,
++  3 * 8,
++  2 * 8,
++  1 * 8,
++  0 * 8,			/* ... %r15 */
++  16 * 8,			/* %rip */
++  18 * 8,			/* %eflags */
++  17 * 8,			/* %cs */
++};
++
++/* From <sys/ucontext.h>.  */
++static int amd64_gnu_gregset_reg_offset[] =
++{
++  10 * 8,			/* %rax */
++  5 * 8,			/* %rbx */
++  11 * 8,			/* %rcx */
++  12 * 8,			/* %rdx */
++  13 * 8,			/* %rsi */
++  14 * 8,			/* %rdi */
++  4 * 8,			/* %rbp */
++  19 * 8,			/* %rsp */
++  9 * 8,			/* %r8 ...  */
++  8 * 8,
++  7 * 8,
++  6 * 8,
++  3 * 8,
++  2 * 8,
++  1 * 8,
++  0 * 8,			/* ... %r15 */
++  16 * 8,			/* %rip */
++  18 * 8,			/* %eflags */
++  17 * 8,			/* %cs */
++  -1,				  /* %ss */
++  -1,				  /* %ds */
++  -1,				  /* %es */
++  -1,				  /* %fs */
++  -1,				  /* %gs */
++};
++
++static void
++amd64_gnu_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
++{
++  i386_gdbarch_tdep *tdep = gdbarch_tdep<i386_gdbarch_tdep> (gdbarch);
++
++  amd64_init_abi (info, gdbarch,
++      amd64_target_description (X86_XSTATE_SSE_MASK, true));
++
++  /* Enable TLS support.  */
++  set_gdbarch_fetch_tls_load_module_address (gdbarch,
++      svr4_fetch_objfile_link_map);
++
++  /* Hurd uses SVR4-style shared libraries.  */
++  set_gdbarch_skip_trampoline_code (gdbarch, find_solib_trampoline_target);
++
++  /* Hurd uses the dynamic linker included in the GNU C Library.  */
++  set_gdbarch_skip_solib_resolver (gdbarch, glibc_skip_solib_resolver);
++
++  tdep->gregset_reg_offset = amd64_gnu_gregset_reg_offset;
++  tdep->gregset_num_regs = ARRAY_SIZE (amd64_gnu_gregset_reg_offset);
++  tdep->sizeof_gregset = 21 * 8; /* sizeof (struct i386_thread_state); */
++
++  tdep->sigtramp_p = amd64_gnu_sigtramp_p;
++  tdep->sigcontext_addr = amd64_gnu_sigcontext_addr;
++  tdep->sc_reg_offset = amd64_gnu_sc_reg_offset;
++  tdep->sc_num_regs = ARRAY_SIZE (amd64_gnu_sc_reg_offset);
++
++  /* Hurd uses SVR4-style shared libraries.  */
++  set_solib_svr4_fetch_link_map_offsets
++    (gdbarch, svr4_lp64_fetch_link_map_offsets);
++}
++
++void _initialize_amd64_gnu_tdep ();
++void
++_initialize_amd64_gnu_tdep ()
++{
++  gdbarch_register_osabi (bfd_arch_i386, bfd_mach_x86_64,
++			  GDB_OSABI_HURD, amd64_gnu_init_abi);
++}
+diff --git a/gdb/config/i386/nm-i386gnu.h b/gdb/config/i386/nm-x86-gnu.h
+similarity index 83%
+rename from gdb/config/i386/nm-i386gnu.h
+rename to gdb/config/i386/nm-x86-gnu.h
+index d2d5de83948..ed4d1729227 100644
+--- a/gdb/config/i386/nm-i386gnu.h
++++ b/gdb/config/i386/nm-x86-gnu.h
+@@ -22,9 +22,16 @@
+ /* Thread flavors used in re-setting the T bit.  */
+ #define THREAD_STATE_FLAVOR		i386_REGS_SEGS_STATE
+ #define THREAD_STATE_SIZE		i386_THREAD_STATE_COUNT
++#ifdef __x86_64__
++#define THREAD_STATE_SET_TRACED(state) \
++	((struct i386_thread_state *) (state))->rfl |= 0x100
++#define THREAD_STATE_CLEAR_TRACED(state) \
++	((((struct i386_thread_state *) (state))->rfl &= ~0x100), 1)
++#else
+ #define THREAD_STATE_SET_TRACED(state) \
+   	((struct i386_thread_state *) (state))->efl |= 0x100
+ #define THREAD_STATE_CLEAR_TRACED(state) \
+   	((((struct i386_thread_state *) (state))->efl &= ~0x100), 1)
++#endif /* __x86_64__ */
+ 
+ #endif /* CONFIG_I386_NM_I386GNU_H */
+diff --git a/gdb/config/i386/i386gnu.mn b/gdb/config/i386/x86-gnu.mn
+similarity index 100%
+rename from gdb/config/i386/i386gnu.mn
+rename to gdb/config/i386/x86-gnu.mn
+diff --git a/gdb/configure.host b/gdb/configure.host
+index 22855cdbdf8..fdd651987e3 100644
+--- a/gdb/configure.host
++++ b/gdb/configure.host
+@@ -183,6 +183,7 @@ x86_64-*-mingw*)        gdb_host=mingw64
+ 			gdb_host_obs=mingw-hdep.o
+ 			;;
+ x86_64-*-cygwin*)	gdb_host=cygwin64 ;;
++x86_64-*-gnu*)		gdb_host=gnu64 ;;
+ m32r*-*-linux*)          gdb_host=linux ;;
+ 
+ xtensa*-*-linux*)	gdb_host=linux ;;
+diff --git a/gdb/configure.nat b/gdb/configure.nat
+index 9e78091250a..7b3896217d2 100644
+--- a/gdb/configure.nat
++++ b/gdb/configure.nat
+@@ -211,23 +211,44 @@ case ${gdb_host} in
+ 		;;
+ 	esac
+ 	;;
++    gnu64)
++	case ${gdb_host_cpu} in
++	    i386)
++		# Host: x86_64 running the GNU Hurd
++		NATDEPFILES='x86-gnu-nat.o gnu-nat.o \
++		     x86-nat.o nat/x86-dregs.o \
++		     amd64-nat.o fork-child.o \
++		     nat/fork-inferior.o \
++		     notify_S.o process_reply_S.o msg_reply_S.o \
++		     msg_U.o exc_request_U.o exc_request_S.o'
++		HAVE_NATIVE_GCORE_HOST=1
++
++		NAT_FILE='nm-x86-gnu.h'
++		MH_CFLAGS='-D_GNU_SOURCE'
++
++		XM_CLIBS='-lshouldbeinlibc'
++
++		nat_makefile_frag="${srcdir}/config/${gdb_host_cpu}/x86-gnu.mn"
++		;;
++	esac
++	;;
+     i386gnu)
+ 	case ${gdb_host_cpu} in
+ 	    i386)
+ 		# Host: Intel 386 running the GNU Hurd
+-		NATDEPFILES='i386-gnu-nat.o gnu-nat.o \
++		NATDEPFILES='x86-gnu-nat.o gnu-nat.o \
+ 		     x86-nat.o nat/x86-dregs.o fork-child.o \
+ 		     nat/fork-inferior.o \
+ 		     notify_S.o process_reply_S.o msg_reply_S.o \
+ 		     msg_U.o exc_request_U.o exc_request_S.o'
+ 		HAVE_NATIVE_GCORE_HOST=1
+ 
+-		NAT_FILE='nm-i386gnu.h'
++		NAT_FILE='nm-x86-gnu.h'
+ 		MH_CFLAGS='-D_GNU_SOURCE'
+ 
+ 		XM_CLIBS='-lshouldbeinlibc'
+ 
+-		nat_makefile_frag="${srcdir}/config/${gdb_host_cpu}/i386gnu.mn"
++		nat_makefile_frag="${srcdir}/config/${gdb_host_cpu}/x86-gnu.mn"
+ 		;;
+ 	esac
+ 	;;
+diff --git a/gdb/configure.tgt b/gdb/configure.tgt
+index f7b9e32cba9..18a15c032c3 100644
+--- a/gdb/configure.tgt
++++ b/gdb/configure.tgt
+@@ -327,7 +327,7 @@ i[34567]86-*-linux*)
+ 	;;
+ i[34567]86-*-gnu*)
+ 	# Target: Intel 386 running the GNU Hurd
+-	gdb_target_obs="i386-gnu-tdep.o solib-svr4.o"
++	gdb_target_obs="i386-gnu-tdep.o glibc-tdep.o solib-svr4.o"
+ 	;;
+ i[34567]86-*-cygwin*)
+ 	# Target: Intel 386 running win32
+@@ -734,6 +734,10 @@ x86_64-*-openbsd*)
+ x86_64-*-rtems*)
+ 	gdb_target_obs="${amd64_tobjs} ${i386_tobjs} i386-bsd-tdep.o"
+ 	;;
++x86_64-*-gnu*)
++	# Target: x86_64 running the GNU Hurd
++	gdb_target_obs="amd64-gnu-tdep.o glibc-tdep.o solib-svr4.o"
++	;;
+ xtensa*-*-*linux*)
+ 	# Target: GNU/Linux Xtensa
+ 	gdb_target_obs="xtensa-linux-tdep.o symfile-mem.o linux-tdep.o"
+diff --git a/gdb/i386-gnu-tdep.c b/gdb/i386-gnu-tdep.c
+index 98e11518a91..5ffc1388ec0 100644
+--- a/gdb/i386-gnu-tdep.c
++++ b/gdb/i386-gnu-tdep.c
+@@ -21,6 +21,7 @@
+ #include "osabi.h"
+ #include "solib-svr4.h"
+ 
++#include "glibc-tdep.h"
+ #include "i386-tdep.h"
+ 
+ /* Recognizing signal handler frames.  */
+@@ -72,8 +73,7 @@ i386_gnu_sigtramp_start (const frame_info_ptr &this_frame)
+   return pc;
+ }
+ 
+-/* Return whether THIS_FRAME corresponds to a GNU/Linux sigtramp
+-   routine.  */
++/* Return whether THIS_FRAME corresponds to a Hurd sigtramp routine.  */
+ 
+ static int
+ i386_gnu_sigtramp_p (const frame_info_ptr &this_frame)
+@@ -178,9 +178,18 @@ i386gnu_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
+   /* GNU uses ELF.  */
+   i386_elf_init_abi (info, gdbarch);
+ 
++  /* Hurd uses SVR4-style shared libraries.  */
++  set_gdbarch_skip_trampoline_code (gdbarch, find_solib_trampoline_target);
+   set_solib_svr4_fetch_link_map_offsets
+     (gdbarch, svr4_ilp32_fetch_link_map_offsets);
+ 
++  /* Hurd uses the dynamic linker included in the GNU C Library.  */
++  set_gdbarch_skip_solib_resolver (gdbarch, glibc_skip_solib_resolver);
++
++  /* Enable TLS support.  */
++  set_gdbarch_fetch_tls_load_module_address (gdbarch,
++					     svr4_fetch_objfile_link_map);
++
+   tdep->gregset_reg_offset = i386gnu_gregset_reg_offset;
+   tdep->gregset_num_regs = ARRAY_SIZE (i386gnu_gregset_reg_offset);
+   tdep->sizeof_gregset = 19 * 4;
+diff --git a/gdb/i386-gnu-nat.c b/gdb/x86-gnu-nat.c
+similarity index 68%
+rename from gdb/i386-gnu-nat.c
+rename to gdb/x86-gnu-nat.c
+index 52d4a4b7cec..da3b7e923dd 100644
+--- a/gdb/i386-gnu-nat.c
++++ b/gdb/x86-gnu-nat.c
+@@ -34,7 +34,13 @@ extern "C"
+ #include "floatformat.h"
+ #include "regcache.h"
+ 
++
++#ifdef __x86_64__
++#include "amd64-tdep.h"
++#include "amd64-nat.h"
++#else
+ #include "i386-tdep.h"
++#endif
+ 
+ #include "inf-child.h"
+ #include "i387-tdep.h"
+@@ -42,21 +48,82 @@ extern "C"
+ /* Offset to the thread_state_t location where REG is stored.  */
+ #define REG_OFFSET(reg) offsetof (struct i386_thread_state, reg)
+ 
++#ifdef __x86_64__
++
+ /* At REG_OFFSET[N] is the offset to the thread_state_t location where
+    the GDB register N is stored.  */
+-static int reg_offset[] =
++static int amd64_gnu_thread_state_reg_offset[] =
+ {
+-  REG_OFFSET (eax), REG_OFFSET (ecx), REG_OFFSET (edx), REG_OFFSET (ebx),
+-  REG_OFFSET (uesp), REG_OFFSET (ebp), REG_OFFSET (esi), REG_OFFSET (edi),
+-  REG_OFFSET (eip), REG_OFFSET (efl), REG_OFFSET (cs), REG_OFFSET (ss),
+-  REG_OFFSET (ds), REG_OFFSET (es), REG_OFFSET (fs), REG_OFFSET (gs)
++  REG_OFFSET (rax),		/* %rax */
++  REG_OFFSET (rbx),		/* %rbx */
++  REG_OFFSET (rcx),		/* %rcx */
++  REG_OFFSET (rdx),		/* %rdx */
++  REG_OFFSET (rsi),		/* %rsi */
++  REG_OFFSET (rdi),		/* %rdi */
++  REG_OFFSET (rbp),		/* %rbp */
++  REG_OFFSET (ursp),	/* %rsp */
++  REG_OFFSET (r8),		/* %r8 ...  */
++  REG_OFFSET (r9),
++  REG_OFFSET (r10),
++  REG_OFFSET (r11),
++  REG_OFFSET (r12),
++  REG_OFFSET (r13),
++  REG_OFFSET (r14),
++  REG_OFFSET (r15),		/* ... %r15 */
++  REG_OFFSET (rip),		/* %rip */
++  REG_OFFSET (rfl),		/* %rflags */
++  REG_OFFSET (cs)	    /* %cs */
+ };
+ 
+-#define REG_ADDR(state, regnum) ((char *)(state) + reg_offset[regnum])
++static const int amd64_gnu_thread_state_num_regs =
++  ARRAY_SIZE (amd64_gnu_thread_state_reg_offset);
++
++#define REG_ADDR(state, regnum) \
++  ((char *)(state) + amd64_gnu_thread_state_reg_offset[regnum])
++#define VALID_REGISTER(regnum) \
++  ((regnum) >= 0 && (regnum) < amd64_gnu_thread_state_num_regs)
++#define NUM_GREGS amd64_gnu_thread_state_num_regs
++#define FLAGS_REGISTER rfl
++
++#else
++
++/* At REG_OFFSET[N] is the offset to the thread_state_t location where
++   the GDB register N is stored.  */
++static int i386_gnu_thread_state_reg_offset[] =
++{
++  REG_OFFSET (eax),	/* %eax */
++  REG_OFFSET (ecx),	/* %ecx */
++  REG_OFFSET (edx),	/* %edx */
++  REG_OFFSET (ebx),	/* %ebx */
++  REG_OFFSET (uesp),	/* %esp */
++  REG_OFFSET (ebp),	/* %ebp */
++  REG_OFFSET (esi),	/* %esi */
++  REG_OFFSET (edi),	/* %edi */
++  REG_OFFSET (eip),	/* %eip */
++  REG_OFFSET (efl),	/* %efl */
++  REG_OFFSET (cs),	/* %cs */
++  REG_OFFSET (ss),	/* %ss */
++  REG_OFFSET (ds),	/* %ds */
++  REG_OFFSET (es),	/* %es */
++  REG_OFFSET (fs),	/* %fs */
++  REG_OFFSET (gs)	/* gs */
++};
++
++static const int i386_gnu_thread_state_num_regs =
++  ARRAY_SIZE (i386_gnu_thread_state_reg_offset);
++
++#define REG_ADDR(state, regnum) \
++  ((char *)(state) + i386_gnu_thread_state_reg_offset[regnum])
++#define VALID_REGISTER(regnum) \
++  ((regnum) >= 0 && (regnum) < i386_gnu_thread_state_num_regs)
++#define NUM_GREGS i386_gnu_thread_state_num_regs
++#define FLAGS_REGISTER efl
++
++#endif  /* __x86_64__ */
+ 
+ 
+ 
+-/* The i386 GNU Hurd target.  */
++/* The x86 GNU Hurd target.  */
+ 
+ #ifdef i386_DEBUG_STATE
+ using gnu_base_target = x86_nat_target<gnu_nat_target>;
+@@ -64,13 +131,13 @@ using gnu_base_target = x86_nat_target<gnu_nat_target>;
+ using gnu_base_target = gnu_nat_target;
+ #endif
+ 
+-struct i386_gnu_nat_target final : public gnu_base_target
++struct x86_gnu_nat_target final : public gnu_base_target
+ {
+   void fetch_registers (struct regcache *, int) override;
+   void store_registers (struct regcache *, int) override;
+ };
+ 
+-static i386_gnu_nat_target the_i386_gnu_nat_target;
++static x86_gnu_nat_target the_x86_gnu_nat_target;
+ 
+ /* Get the whole floating-point state of THREAD and record the values
+    of the corresponding (pseudo) registers.  */
+@@ -105,7 +172,7 @@ fetch_fpregs (struct regcache *regcache, struct proc *thread)
+ 
+ /* Fetch register REGNO, or all regs if REGNO is -1.  */
+ void
+-i386_gnu_nat_target::fetch_registers (struct regcache *regcache, int regno)
++x86_gnu_nat_target::fetch_registers (struct regcache *regcache, int regno)
+ {
+   struct proc *thread;
+   ptid_t ptid = regcache->ptid ();
+@@ -118,7 +185,7 @@ i386_gnu_nat_target::fetch_registers (struct regcache *regcache, int regno)
+     error (_("Can't fetch registers from thread %s: No such thread"),
+ 	   target_pid_to_str (ptid).c_str ());
+ 
+-  if (regno < I386_NUM_GREGS || regno == -1)
++  if (VALID_REGISTER (regno) || regno == -1)
+     {
+       thread_state_t state;
+ 
+@@ -137,7 +204,7 @@ i386_gnu_nat_target::fetch_registers (struct regcache *regcache, int regno)
+ 
+ 	  proc_debug (thread, "fetching all register");
+ 
+-	  for (i = 0; i < I386_NUM_GREGS; i++)
++	  for (i = 0; i < NUM_GREGS; i++)
+ 	    regcache->raw_supply (i, REG_ADDR (state, i));
+ 	  thread->fetched_regs = ~0;
+ 	}
+@@ -152,7 +219,7 @@ i386_gnu_nat_target::fetch_registers (struct regcache *regcache, int regno)
+ 	}
+     }
+ 
+-  if (regno >= I386_NUM_GREGS || regno == -1)
++  if (!VALID_REGISTER(regno) || regno == -1)
+     {
+       proc_debug (thread, "fetching floating-point registers");
+ 
+@@ -195,7 +262,7 @@ store_fpregs (const struct regcache *regcache, struct proc *thread, int regno)
+ 
+ /* Store at least register REGNO, or all regs if REGNO == -1.  */
+ void
+-i386_gnu_nat_target::store_registers (struct regcache *regcache, int regno)
++x86_gnu_nat_target::store_registers (struct regcache *regcache, int regno)
+ {
+   struct proc *thread;
+   struct gdbarch *gdbarch = regcache->arch ();
+@@ -209,7 +276,7 @@ i386_gnu_nat_target::store_registers (struct regcache *regcache, int regno)
+     error (_("Couldn't store registers into thread %s: No such thread"),
+ 	   target_pid_to_str (ptid).c_str ());
+ 
+-  if (regno < I386_NUM_GREGS || regno == -1)
++  if (VALID_REGISTER (regno) || regno == -1)
+     {
+       thread_state_t state;
+       thread_state_data_t old_state;
+@@ -230,14 +297,14 @@ i386_gnu_nat_target::store_registers (struct regcache *regcache, int regno)
+ 
+       /* Save the T bit.  We might try to restore the %eflags register
+ 	 below, but changing the T bit would seriously confuse GDB.  */
+-      trace = ((struct i386_thread_state *)state)->efl & 0x100;
++      trace = ((struct i386_thread_state *)state)->FLAGS_REGISTER & 0x100;
+ 
+       if (!was_aborted && was_valid)
+ 	/* See which registers have changed after aborting the thread.  */
+ 	{
+ 	  int check_regno;
+ 
+-	  for (check_regno = 0; check_regno < I386_NUM_GREGS; check_regno++)
++	  for (check_regno = 0; check_regno < NUM_GREGS; check_regno++)
+ 	    if ((thread->fetched_regs & (1 << check_regno))
+ 		&& memcpy (REG_ADDR (&old_state, check_regno),
+ 			   REG_ADDR (state, check_regno),
+@@ -262,7 +329,7 @@ i386_gnu_nat_target::store_registers (struct regcache *regcache, int regno)
+ 
+ 	  proc_debug (thread, "storing all registers");
+ 
+-	  for (i = 0; i < I386_NUM_GREGS; i++)
++	  for (i = 0; i < NUM_GREGS; i++)
+ 	    if (REG_VALID == regcache->get_register_status (i))
+ 	      regcache->raw_collect (i, REG_ADDR (state, i));
+ 	}
+@@ -276,11 +343,11 @@ i386_gnu_nat_target::store_registers (struct regcache *regcache, int regno)
+ 	}
+ 
+       /* Restore the T bit.  */
+-      ((struct i386_thread_state *)state)->efl &= ~0x100;
+-      ((struct i386_thread_state *)state)->efl |= trace;
++      ((struct i386_thread_state *)state)->FLAGS_REGISTER &= ~0x100;
++      ((struct i386_thread_state *)state)->FLAGS_REGISTER |= trace;
+     }
+ 
+-  if (regno >= I386_NUM_GREGS || regno == -1)
++  if (!VALID_REGISTER (regno) || regno == -1)
+     {
+       proc_debug (thread, "storing floating-point registers");
+ 
+@@ -295,7 +362,7 @@ i386_gnu_nat_target::store_registers (struct regcache *regcache, int regno)
+ /* Get debug registers for thread THREAD.  */
+ 
+ static void
+-i386_gnu_dr_get (struct i386_debug_state *regs, struct proc *thread)
++x86_gnu_dr_get (struct i386_debug_state *regs, struct proc *thread)
+ {
+   mach_msg_type_number_t count = i386_DEBUG_STATE_COUNT;
+   kern_return_t err;
+@@ -310,7 +377,7 @@ i386_gnu_dr_get (struct i386_debug_state *regs, struct proc *thread)
+ /* Set debug registers for thread THREAD.  */
+ 
+ static void
+-i386_gnu_dr_set (const struct i386_debug_state *regs, struct proc *thread)
++x86_gnu_dr_set (const struct i386_debug_state *regs, struct proc *thread)
+ {
+   kern_return_t err;
+ 
+@@ -324,23 +391,23 @@ i386_gnu_dr_set (const struct i386_debug_state *regs, struct proc *thread)
+ /* Set DR_CONTROL in THREAD.  */
+ 
+ static void
+-i386_gnu_dr_set_control_one (struct proc *thread, void *arg)
++x86_gnu_dr_set_control_one (struct proc *thread, void *arg)
+ {
+   unsigned long *control = (unsigned long *) arg;
+   struct i386_debug_state regs;
+ 
+-  i386_gnu_dr_get (&regs, thread);
++  x86_gnu_dr_get (&regs, thread);
+   regs.dr[DR_CONTROL] = *control;
+-  i386_gnu_dr_set (&regs, thread);
++  x86_gnu_dr_set (&regs, thread);
+ }
+ 
+ /* Set DR_CONTROL to CONTROL in all threads.  */
+ 
+ static void
+-i386_gnu_dr_set_control (unsigned long control)
++x86_gnu_dr_set_control (unsigned long control)
+ {
+   inf_update_procs (gnu_current_inf);
+-  inf_threads (gnu_current_inf, i386_gnu_dr_set_control_one, &control);
++  inf_threads (gnu_current_inf, x86_gnu_dr_set_control_one, &control);
+ }
+ 
+ /* Parameters to set a debugging address.  */
+@@ -354,20 +421,20 @@ struct reg_addr
+ /* Set address REGNUM (zero based) to ADDR in THREAD.  */
+ 
+ static void
+-i386_gnu_dr_set_addr_one (struct proc *thread, void *arg)
++x86_gnu_dr_set_addr_one (struct proc *thread, void *arg)
+ {
+   struct reg_addr *reg_addr = (struct reg_addr *) arg;
+   struct i386_debug_state regs;
+ 
+-  i386_gnu_dr_get (&regs, thread);
++  x86_gnu_dr_get (&regs, thread);
+   regs.dr[reg_addr->regnum] = reg_addr->addr;
+-  i386_gnu_dr_set (&regs, thread);
++  x86_gnu_dr_set (&regs, thread);
+ }
+ 
+ /* Set address REGNUM (zero based) to ADDR in all threads.  */
+ 
+ static void
+-i386_gnu_dr_set_addr (int regnum, CORE_ADDR addr)
++x86_gnu_dr_set_addr (int regnum, CORE_ADDR addr)
+ {
+   struct reg_addr reg_addr;
+ 
+@@ -377,13 +444,13 @@ i386_gnu_dr_set_addr (int regnum, CORE_ADDR addr)
+   reg_addr.addr = addr;
+ 
+   inf_update_procs (gnu_current_inf);
+-  inf_threads (gnu_current_inf, i386_gnu_dr_set_addr_one, &reg_addr);
++  inf_threads (gnu_current_inf, x86_gnu_dr_set_addr_one, &reg_addr);
+ }
+ 
+ /* Get debug register REGNUM value from only the one LWP of PTID.  */
+ 
+ static unsigned long
+-i386_gnu_dr_get_reg (ptid_t ptid, int regnum)
++x86_gnu_dr_get_reg (ptid_t ptid, int regnum)
+ {
+   struct i386_debug_state regs;
+   struct proc *thread;
+@@ -392,7 +459,7 @@ i386_gnu_dr_get_reg (ptid_t ptid, int regnum)
+   inf_update_procs (gnu_current_inf);
+ 
+   thread = inf_tid_to_thread (gnu_current_inf, ptid.lwp ());
+-  i386_gnu_dr_get (&regs, thread);
++  x86_gnu_dr_get (&regs, thread);
+ 
+   return regs.dr[regnum];
+ }
+@@ -400,46 +467,50 @@ i386_gnu_dr_get_reg (ptid_t ptid, int regnum)
+ /* Return the inferior's debug register REGNUM.  */
+ 
+ static CORE_ADDR
+-i386_gnu_dr_get_addr (int regnum)
++x86_gnu_dr_get_addr (int regnum)
+ {
+   gdb_assert (DR_FIRSTADDR <= regnum && regnum <= DR_LASTADDR);
+ 
+-  return i386_gnu_dr_get_reg (inferior_ptid, regnum);
++  return x86_gnu_dr_get_reg (inferior_ptid, regnum);
+ }
+ 
+ /* Get DR_STATUS from only the one thread of INFERIOR_PTID.  */
+ 
+ static unsigned long
+-i386_gnu_dr_get_status (void)
++x86_gnu_dr_get_status (void)
+ {
+-  return i386_gnu_dr_get_reg (inferior_ptid, DR_STATUS);
++  return x86_gnu_dr_get_reg (inferior_ptid, DR_STATUS);
+ }
+ 
+ /* Return the inferior's DR7 debug control register.  */
+ 
+ static unsigned long
+-i386_gnu_dr_get_control (void)
++x86_gnu_dr_get_control (void)
+ {
+-  return i386_gnu_dr_get_reg (inferior_ptid, DR_CONTROL);
++  return x86_gnu_dr_get_reg (inferior_ptid, DR_CONTROL);
+ }
+ #endif /* i386_DEBUG_STATE */
+ 
+-void _initialize_i386gnu_nat ();
++void _initialize_x86_gnu_nat ();
+ void
+-_initialize_i386gnu_nat ()
++_initialize_x86_gnu_nat ()
+ {
+ #ifdef i386_DEBUG_STATE
+-  x86_dr_low.set_control = i386_gnu_dr_set_control;
++  x86_dr_low.set_control = x86_gnu_dr_set_control;
+   gdb_assert (DR_FIRSTADDR == 0 && DR_LASTADDR < i386_DEBUG_STATE_COUNT);
+-  x86_dr_low.set_addr = i386_gnu_dr_set_addr;
+-  x86_dr_low.get_addr = i386_gnu_dr_get_addr;
+-  x86_dr_low.get_status = i386_gnu_dr_get_status;
+-  x86_dr_low.get_control = i386_gnu_dr_get_control;
++  x86_dr_low.set_addr = x86_gnu_dr_set_addr;
++  x86_dr_low.get_addr = x86_gnu_dr_get_addr;
++  x86_dr_low.get_status = x86_gnu_dr_get_status;
++  x86_dr_low.get_control = x86_gnu_dr_get_control;
++#ifdef __x86_64__
++  x86_set_debug_register_length (8);
++#else
+   x86_set_debug_register_length (4);
++#endif
+ #endif /* i386_DEBUG_STATE */
+ 
+-  gnu_target = &the_i386_gnu_nat_target;
++  gnu_target = &the_x86_gnu_nat_target;
+ 
+   /* Register the target.  */
+-  add_inf_child_target (&the_i386_gnu_nat_target);
++  add_inf_child_target (&the_x86_gnu_nat_target);
+ }
+-- 
+2.47.1
+

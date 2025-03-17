@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -175,6 +176,19 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
               (sha256
                (base32
                 "0k9i8mizg4hby020k53kqmc835pajh9c8d5klv5s1ddm6p6hqdc3"))))))
+
+(define-public gdb-16
+  (package
+    (inherit gdb-14)
+    (version "16.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gdb/gdb-"
+                                  version ".tar.xz"))
+              (patches (search-patches "gdb-16-hurd64.patch"))
+              (sha256
+               (base32
+                "0681906z34jy134jkn820jzf8b4l42ki6sjkj33kfp7l4dzwn0j0"))))))
 
 (define-public gdb
   ;; The "default" version.
