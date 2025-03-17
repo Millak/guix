@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2017-2019, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2019, 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +44,7 @@
   (let ((userns-file "/proc/sys/kernel/unprivileged_userns_clone"))
     (if (file-exists? userns-file)
         (eqv? #\1 (call-with-input-file userns-file read-char))
-        #t)))
+        (user-namespace-supported?))))
 
 (define (setgroups-supported?)
   "Return #t if the setgroups proc file, introduced in Linux-libre 3.19,
