@@ -8158,6 +8158,26 @@ Microsoft Word (.docx) documents.")
      "This package provides a tiny LRU cache implementation and decorator.")
     (license license:bsd-4)))
 
+(define-public python-reretry
+  (package
+    (name "python-reretry")
+    (version "0.11.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "reretry" version))
+       (sha256
+        (base32 "1qrjsjzah8gw1bciqn8bhrj80fjjg13qg8jks7qs4bjipv71yygj"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/leshchenko1979/reretry")
+    (synopsis "Functional decorator for retrying on exceptions")
+    (description
+     "This package is a fork from the retry package, but with some of added
+community-sourced features.  It provides an easy to use, but functional
+decorator for retrying on exceptions.")
+    (license license:asl2.0)))
+
 (define-public python-restructuredtext-lint
   (package
     (name "python-restructuredtext-lint")
