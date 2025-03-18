@@ -7,6 +7,7 @@
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
   #:use-module (gnu image)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages firmware)
   #:use-module (gnu packages gdb)
   #:autoload   (gnu packages gnupg) (guile-gcrypt)
   #:use-module (gnu packages package-management)
@@ -106,6 +108,7 @@
             libvirt-configuration-ca-file
             libvirt-configuration-cert-file
             libvirt-configuration-crl-file
+            libvirt-configuration-firmwares
             libvirt-configuration-host-uuid
             libvirt-configuration-host-uuid-source
             libvirt-configuration-keepalive-count
@@ -204,6 +207,9 @@
       (format #t "# ~a = \"\"\n" (uglify-field-name field-name))
       (serialize-string field-name val)))
 
+(define list-of-file-likes?
+  (list-of file-like?))
+
 (define-configuration libvirt-configuration
   (libvirt
    (file-like libvirt)
@@ -211,7 +217,12 @@
   (qemu
    (file-like qemu)
    "Qemu package.")
-
+  (firmwares
+   (list-of-file-likes (list ovmf-x86-64))
+   "List of UEFI/BIOS firmware packages to make available.  Each firmware
+package should contain a @file{share/qemu/firmware/@var{NAME}.json} QEMU
+firmware metadata file."
+   (serializer empty-serializer))
   (listen-tls?
    (boolean #t)
    "Flag listening for secure TLS connections on the public TCP/IP port.
@@ -539,7 +550,6 @@ potential infinite waits blocking libvirt."))
         (use-modules (guix build utils))
         (mkdir-p #$sock-dir))))
 
-
 (define (libvirt-shepherd-service config)
   (let* ((config-file (libvirt-conf-file config))
          (libvirt (libvirt-configuration-libvirt config))
@@ -552,7 +562,8 @@ potential infinite waits blocking libvirt."))
                      (list (string-append #$libvirt "/sbin/libvirtd")
                            "-f" #$config-file
                            #$@(if listen-tcp? '("--listen") '()))
-                     ;; For finding qemu, ip binaries and kernel modules.
+                     ;; For finding qemu, firmwares, the 'ip' command and
+                     ;; kernel modules.
                      #:environment-variables
                      (list
                       (string-append
@@ -563,28 +574,44 @@ potential infinite waits blocking libvirt."))
                        "/run/booted-system/kernel/lib/modules"))))
            (stop #~(make-kill-destructor))))))
 
+(define (/etc/qemu/firmware config)
+  (let ((firmwares (libvirt-configuration-firmwares config)))
+    `(("qemu"
+       ,(computed-file
+         "etc-qemu-firmware"
+         (with-imported-modules '((guix build union))
+           #~(begin
+               (use-modules (guix build union) (srfi srfi-26))
+               (mkdir #$output)
+               (union-build (string-append #$output "/firmware")
+                            (map (cut string-append <> "/share/qemu/firmware")
+                                 (list #$@firmwares))))))))))
+
 (define libvirt-service-type
-  (service-type (name 'libvirt)
-		(extensions
-                 (list
-                  (service-extension polkit-service-type
-                                     (compose list libvirt-configuration-libvirt))
-                  (service-extension profile-service-type
-                                     (lambda (config)
-                                       (list
-                                        (libvirt-configuration-libvirt config)
-                                        (libvirt-configuration-qemu config))))
-                  (service-extension activation-service-type
-                                     %libvirt-activation)
-                  (service-extension shepherd-root-service-type
-                                     libvirt-shepherd-service)
-                  (service-extension account-service-type
-                                     (const %libvirt-accounts))))
-                (default-value (libvirt-configuration))
-                (description "Run @command{libvirtd}, a daemon of the libvirt
+  (service-type
+   (name 'libvirt)
+   (extensions
+    (list
+     (service-extension polkit-service-type
+                        (compose list libvirt-configuration-libvirt))
+     (service-extension profile-service-type
+                        (lambda (config)
+                          (list (libvirt-configuration-libvirt config)
+                                (libvirt-configuration-qemu config))))
+     ;; Libvirt only considers the $libvirt/share/qemu/firmware and
+     ;; /etc/qemu/firmware directories to locate the QEMU firmware metadata
+     ;; specifications.
+     (service-extension etc-service-type /etc/qemu/firmware)
+     (service-extension activation-service-type
+                        %libvirt-activation)
+     (service-extension shepherd-root-service-type
+                        libvirt-shepherd-service)
+     (service-extension account-service-type
+                        (const %libvirt-accounts))))
+   (default-value (libvirt-configuration))
+   (description "Run @command{libvirtd}, a daemon of the libvirt
 virtualization management system.  This daemon runs on host servers and
 performs required management tasks for virtualized guests.")))
-
 
 (define-record-type* <virtlog-configuration>
   virtlog-configuration make-virtlog-configuration
@@ -636,11 +663,6 @@ performs required management tasks for virtualized guests.")))
                 (default-value (virtlog-configuration))
                 (description "Run @command{virtlogd}, a daemon libvirt that is
 used to manage logs from @acronym{VM, virtual machine} consoles.")))
-
-(define (generate-libvirt-documentation)
-  (generate-documentation
-   `((libvirt-configuration ,libvirt-configuration-fields))
-   'libvirt-configuration))
 
 
 ;;;

@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,7 +70,8 @@
   (define vm
     (virtual-machine
      (operating-system os)
-     (port-forwardings '())))
+     (port-forwardings '())
+     (memory-size 512)))
 
   (define test
     (with-imported-modules '((gnu build marionette))
@@ -133,6 +135,35 @@
                 (chdir "/tmp")
                 (system* #$(file-append libvirt "/bin/virsh")
                          "-c" "qemu:///system" "net-start" "default"))
+             marionette))
+
+          (test-assert "configured firmwares are available to libvirt"
+            (marionette-eval
+             '(begin
+                (use-modules (ice-9 popen)
+                             (ice-9 textual-ports)
+                             (srfi srfi-1)
+                             (srfi srfi-26))
+                (let* ((conf-firmwares (list #$@(libvirt-configuration-firmwares
+                                                 (libvirt-configuration))))
+                       (virsh #$(file-append libvirt "/bin/virsh"))
+                       (input-pipe (open-pipe*
+                                    OPEN_READ
+                                    virsh "-c" "qemu:///system"
+                                    "domcapabilities" "--xpath"
+                                    "/domainCapabilities/os/loader/value/text()"))
+                       (output (get-string-all input-pipe))
+                       (found-firmwares (string-split (string-trim-both output)
+                                                      #\newline)))
+                  (close-pipe input-pipe)
+                  ;; Check that every configured firmware package is covered
+                  ;; by at least by one firmware file available to libvirt.
+                  (every (lambda (conf-firmware)
+                           ;; The firmwares listed by virsh contains their
+                           ;; full file names, not just their package output.
+                           (any (cut string-prefix? conf-firmware <>)
+                                found-firmwares))
+                         conf-firmwares)))
              marionette))
 
           (test-end))))
