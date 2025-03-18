@@ -32645,17 +32645,6 @@ concurrency on top of asyncio, and works in harmony with the native SC of trio
 itself.")
     (license license:expat)))
 
-;; TODO: This will become the default on the python-team branch.  Dataclasses
-;; is part of Python.
-(define-public python-anyio/without-dataclasses
-  (package
-    (inherit python-anyio)
-    (propagated-inputs
-     (list python-contextvars
-           python-idna
-           python-sniffio
-           python-typing-extensions))))
-
 (define-public python-argh
   ;; There are 21 commits since the latest release containing important
   ;; improvements.

@@ -594,7 +594,7 @@ JavaScript build steps.")
               (setenv "PATH"
                       (string-append #$output "/bin:" (getenv "PATH"))))))))
     (propagated-inputs
-     (list python-anyio/without-dataclasses
+     (list python-anyio
            python-argon2-cffi
            python-jinja2
            python-jupyter-client
