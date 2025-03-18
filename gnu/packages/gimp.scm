@@ -451,12 +451,10 @@ that is extensible via a plugin system.")
                      (substitute* "app/gimp-version.c"
                        (("CC_VERSION") (string-append "\"" cc-version "\""))))))
                (add-after 'install 'move-doc
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let ((out (assoc-ref outputs "out"))
-                         (doc (assoc-ref outputs "doc")))
-                     (mkdir-p (string-append doc "/share"))
-                     (rename-file (string-append out "/share/doc")
-                                  (string-append doc "/share/doc"))))))))
+                 (lambda _
+                   (mkdir-p (string-append #$output:doc "/share"))
+                   (rename-file (string-append #$output "/share/doc")
+                                (string-append #$output:doc "/share/doc")))))))
     (inputs (modify-inputs (package-inputs gimp)
               (replace "gtk+" gtk+)
               (prepend libxmu libxt)
