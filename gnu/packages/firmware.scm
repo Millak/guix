@@ -1187,6 +1187,9 @@ interface standards, such as:
                        (prepend (cross-gcc "arm-none-eabi")
                                 (cross-binutils "arm-none-eabi")))))))
 
+(define-public arm-trusted-firmware-rk3588
+  (make-arm-trusted-firmware "rk3588"))
+
 (define-public arm-trusted-firmware-imx8mq
   ;; Remove debug symbols because of limited OCRAM.
   (make-arm-trusted-firmware "imx8mq" #:make-flags '()))

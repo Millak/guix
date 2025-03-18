@@ -1167,6 +1167,7 @@ CONFIG_TOOLS_KWBIMAGE=n"))))
                   (setenv "BL31" (search-input-file inputs "/bl31.elf"))))))))
       (inputs (modify-inputs (package-inputs base)
                 (append (match soc
+                          ('rk3588 arm-trusted-firmware-rk3588)
                           ('rk3399 arm-trusted-firmware-rk3399)
                           ('rk3328 arm-trusted-firmware-rk3328))))))))
 
