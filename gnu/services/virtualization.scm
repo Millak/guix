@@ -95,6 +95,51 @@
             hurd-vm-service-type
 
             libvirt-configuration
+            libvirt-configuration-access-drivers
+            libvirt-configuration-addr
+            libvirt-configuration-admin-keepalive-count
+            libvirt-configuration-admin-keepalive-interval
+            libvirt-configuration-audit-level
+            libvirt-configuration-auth-tcp
+            libvirt-configuration-auth-tls
+            libvirt-configuration-auth-unix-ro
+            libvirt-configuration-auth-unix-rw
+            libvirt-configuration-ca-file
+            libvirt-configuration-cert-file
+            libvirt-configuration-crl-file
+            libvirt-configuration-host-uuid
+            libvirt-configuration-host-uuid-source
+            libvirt-configuration-keepalive-count
+            libvirt-configuration-keepalive-interval
+            libvirt-configuration-key-file
+            libvirt-configuration-libvirt
+            libvirt-configuration-listen-tcp?
+            libvirt-configuration-listen-tls?
+            libvirt-configuration-log-filters
+            libvirt-configuration-log-level
+            libvirt-configuration-log-outputs
+            libvirt-configuration-max-anonymous-clients
+            libvirt-configuration-max-client-requests
+            libvirt-configuration-max-clients
+            libvirt-configuration-max-queued-clients
+            libvirt-configuration-max-requests
+            libvirt-configuration-max-workers
+            libvirt-configuration-mdns-adv?
+            libvirt-configuration-min-workers
+            libvirt-configuration-ovs-timeout
+            libvirt-configuration-prio-workers
+            libvirt-configuration-qemu
+            libvirt-configuration-sasl-allowed-usernames
+            libvirt-configuration-tcp-port
+            libvirt-configuration-tls-allowed-dn-list
+            libvirt-configuration-tls-no-verify-cert
+            libvirt-configuration-tls-port
+            libvirt-configuration-tls-priority
+            libvirt-configuration-unix-sock-dir
+            libvirt-configuration-unix-sock-group
+            libvirt-configuration-unix-sock-ro-perms
+            libvirt-configuration-unix-sock-rw-perms
+
             libvirt-service-type
             virtlog-configuration
             virtlog-service-type
