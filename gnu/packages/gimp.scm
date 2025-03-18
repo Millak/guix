@@ -425,7 +425,7 @@ that is extensible via a plugin system.")
   (package
     (inherit gimp)
     (name "gimp-next")
-    (version "3.0.0-RC3")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
@@ -433,7 +433,7 @@ that is extensible via a plugin system.")
                            (version-major+minor version)
                            "/gimp-" version ".tar.xz"))
        (sha256
-        (base32 "1v1qgq7yy6q4vkdm9qzhsw6w7lxbmfb4g2016lzkl29dy9y55yv1"))))
+        (base32 "081d3n88fcly67qmp0zf4a1b5r5vdj4gnj9cwp0cmn0vklywmwck"))))
     (build-system meson-build-system)
     (arguments
      (list #:modules `((ice-9 popen)
