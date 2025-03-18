@@ -15678,20 +15678,29 @@ function signatures.")
 (define-public python-yte
   (package
     (name "python-yte")
-    (version "1.2.0")
+    (version "1.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "yte" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/koesterlab/yte")
+             (commit (string-append "v" version))))
        (sha256
-        (base32 "07hm1warpqi4ifqgkaz5sg887x4a44yhxafmpf835ywnpchg4s03"))))
-    (build-system python-build-system)
+        (base32 "01hxl47bfb0jp2rh6qb6wrm6m8p5rfk21gksqb8qxxv9a037dnsv"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
-    (propagated-inputs (list python-plac python-pyyaml))
+           (lambda _ (setenv "HOME" "/tmp")))
+         (replace 'check
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
+             (when tests?
+               (apply invoke "pytest"
+                      (append test-flags (list "tests.py")))))))))
+    (propagated-inputs (list python-dpath python-plac python-pyyaml))
+    (native-inputs (list python-numpy python-poetry-core python-pytest))
     (home-page "https://github.com/koesterlab/yte")
     (synopsis "YAML template engine with Python expressions")
     (description
