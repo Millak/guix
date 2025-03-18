@@ -9228,6 +9228,48 @@ name/ID compression and quality score compression derived from fqzcomp.")
 (define-public htslib
   (package
     (name "htslib")
+    (version "1.21")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/samtools/htslib/releases/download/"
+                    version "/htslib-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "08qq1yn6lqqnww532s11nr6gz0gfpn58rn3gy90kd5pl6pki1dc4"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "htscodecs")))))
+    (build-system gnu-build-system)
+    ;; Let htslib translate "gs://" and "s3://" to regular https links with
+    ;; "--enable-gcs" and "--enable-s3". For these options to work, we also
+    ;; need to set "--enable-libcurl".
+    (arguments
+     `(#:configure-flags '("--enable-gcs"
+                           "--enable-libcurl"
+                           "--enable-s3"
+                           "--with-external-htscodecs")))
+    (inputs
+     (list bzip2 curl openssl xz))
+    ;; This is referred to in the pkg-config file as a required library.
+    (propagated-inputs
+     (list htscodecs zlib))
+    (native-inputs
+     (list perl))
+    (home-page "https://www.htslib.org")
+    (synopsis "C library for reading/writing high-throughput sequencing data")
+    (description
+     "HTSlib is a C library for reading/writing high-throughput sequencing
+data.  It also provides the @command{bgzip}, @command{htsfile}, and
+@command{tabix} utilities.")
+    ;; Files under cram/ are released under the modified BSD license;
+    ;; the rest is released under the Expat license
+    (license (list license:expat license:bsd-3))))
+
+(define-public htslib-1.19
+  (package
+    (inherit htslib)
     (version "1.19")
     (source (origin
               (method url-fetch)
