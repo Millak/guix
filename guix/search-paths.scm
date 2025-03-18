@@ -45,6 +45,7 @@
             $SSL_CERT_FILE
             $TZDIR
             $SGML_CATALOG_FILES
+            $XDG_DATA_DIRS
             $XML_CATALOG_FILES
 
             %gcc-search-paths
@@ -195,6 +196,11 @@
    (files '("xml"))
    (file-pattern "^catalog\\.xml$")
    (file-type 'regular)))
+
+(define $XDG_DATA_DIRS
+  (search-path-specification
+   (variable "XDG_DATA_DIRS")
+   (files '("share"))))
 
 (define %libxslt-search-paths
   (list $SGML_CATALOG_FILES $XML_CATALOG_FILES))
