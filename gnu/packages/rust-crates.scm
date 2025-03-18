@@ -28,10 +28,6 @@
 ;;;
 ;;; This file is managed by ‘guix import’.  Do NOT add definitions manually.
 ;;;
-;;; Commit changes to: https://codeberg.org/guix/guix-rust-registry
-;;;
-
-;;;
 ;;; Rust libraries fetched from crates.io and non-workspace development
 ;;; snapshots.
 ;;;

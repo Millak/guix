@@ -106,6 +106,7 @@ Scheme tutorials
 Packaging
 
 * Packaging Tutorial::          A tutorial on how to add packages to Guix.
+* Packaging Workflows::         Real life examples on working with specific build systems.
 
 Packaging Tutorial
 
@@ -129,6 +130,16 @@ Programmable and automated package definition
 * Recursive importers::
 * Automatic update::
 * Inheritance::
+
+Packaging Workflows
+
+* Packaging Rust Crates::
+
+Packaging Rust Crates
+
+* Common Workflow for Rust Packaging::
+* Cargo Workspaces and Development Snapshots::
+* Using Rust Libraries in Other Build Systems::
 
 System Configuration
 
@@ -519,6 +530,7 @@ them.
 
 @menu
 * Packaging Tutorial::          A tutorial on how to add packages to Guix.
+* Packaging Workflows::         Real life examples on working with specific build systems.
 @end menu
 
 @node Packaging Tutorial
@@ -1598,6 +1610,371 @@ The @uref{https://guix.gnu.org/manual/en/html_node/Defining-Packages.html, packa
 @item
 @uref{https://guix.gnu.org/guix-ghm-andreas-20130823.pdf, ``GNU Guix: Package without a scheme!''}, by Andreas Enge
 @end itemize
+
+@node Packaging Workflows
+@section Packaging Workflows
+
+The following sections provide real-life examples on working with specific build
+systems, serving as extensions to the concise packaging guidelines
+(@pxref{Packaging Guidelines,,, guix, GNU Guix Reference Manual}).
+
+@menu
+* Packaging Rust Crates::
+@end menu
+
+@node Packaging Rust Crates
+@subsection Packaging Rust Crates
+
+In preparation, add the following packages to our environment:
+
+@example
+$ guix shell rust rust:cargo cargo-audit cargo-license
+@end example
+
+@menu
+* Common Workflow for Rust Packaging::
+* Cargo Workspaces and Development Snapshots::
+* Using Rust Libraries in Other Build Systems::
+@end menu
+
+@node Common Workflow for Rust Packaging
+@subsubsection Common Workflow for Rust Packaging
+
+In this example, we'll package @code{cargo-audit}, which is published on the
+@uref{https://crates.io, crates.io} Rust package repository.  All its
+dependencies are on crates.io as well.
+
+@enumerate
+@item
+Since @code{cargo-audit} is available on crates.io, we can generate a template
+via the crates.io importer (@pxref{Invoking guix import,,, guix, GNU Guix
+Reference Manual}):
+
+@example
+$ guix import crate cargo-audit
+@end example
+
+After manual editing, we'll have the following definiton:
+
+@lisp
+(define-public cargo-audit
+  (package
+    (name "cargo-audit")
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-audit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a00yqpckkw86zh2hg7ra82c5fx0ird5766dyynimbvqiwg2ps0n"))))
+    (build-system cargo-build-system)
+    (arguments (list #:install-source? #f))
+    (inputs (cargo-inputs 'cargo-audit))
+    (home-page "https://rustsec.org/")
+    (synopsis "Audit Cargo.lock for crates with security vulnerabilities")
+    (description
+     "This package provides a Cargo subcommand, @@command@{cargo audit@}, to
+audit @@file@{Cargo.lock@} for crates with security vulnerabilities.")
+    (license (list license:asl2.0 license:expat))))
+@end lisp
+
+The identifier used to invoke @code{cargo-inputs}, in this case
+@code{'cargo-audit}, must be unique, usually matching the variable name of the
+package.
+
+@item
+Unpack package source and navigate to the unpacked directory, then run the
+following commands:
+
+@example
+$ cargo generate-lockfile
+$ cargo audit
+$ cargo license
+@end example
+
+@command{cargo generate-lockfile} updates dependencies to compatible versions.
+Applying it to all Rust applications helps reduce a great number of Rust
+libraries we need to check later.  Although sometimes libraries may fail to
+follow the @uref{https://semver.org/, semantic versioning} scheme, it's still
+acceptable.
+
+@command{cargo audit} checks known vulnerabilities and @command{cargo license}
+checks licenses, for all the dependencies.  We must have an acceptable output of
+@command{cargo audit} and ensure all dependencies are licensed with our
+supported licenses (@pxref{Defining Packages,,, guix, GNU Guix Reference
+Manual}).
+
+@item
+Import dependencies from the generated lockfile:
+
+@example
+$ guix import --insert=gnu/packages/rust-crates.scm \
+      crate --lockfile=/path/to/Cargo.lock cargo-audit
+
+# Or use short options, in this case the shell processes file names
+# before passing them to Guix, allowing tilde expansion, for example.
+$ guix import -i gnu/packages/rust-crates.scm \
+      crate -f /path/to/Cargo.lock cargo-audit
+@end example
+
+@code{cargo-audit} here must be consistent with the identifier used for
+@code{cargo-inputs} invocation in the package definition.
+
+At this stage, the package @code{cargo-audit} is buildable.
+
+@item
+Finally we'll unbundle the vendored dependencies.  The lockfile importer
+inserts @code{TODO:} comments for libraries with high probability of
+bundled dependencies.  @code{cargo-build-system} also performs
+additional check for binary files in its
+@code{check-for-pregenerated-files} phase, which usually indicates
+bundling:
+
+@example
+$ ./pre-inst-env guix build cargo-audit
+@dots{}
+starting phase `check-for-pregenerated-files'
+Searching for binary files...
+./guix-vendor/rust-async-compression-0.4.21.tar.gz/tests/artifacts/dictionary-rust
+./guix-vendor/rust-async-compression-0.4.21.tar.gz/tests/artifacts/dictionary-rust-other
+./guix-vendor/rust-async-compression-0.4.21.tar.gz/tests/artifacts/lib.rs.zst
+./guix-vendor/rust-async-compression-0.4.21.tar.gz/tests/artifacts/long-window-size-lib.rs.zst
+./guix-vendor/rust-winapi-i686-pc-windows-gnu-0.4.0.tar.gz/lib/libwinapi_aclui.a
+./guix-vendor/rust-winapi-i686-pc-windows-gnu-0.4.0.tar.gz/lib/libwinapi_activeds.a
+./guix-vendor/rust-winapi-i686-pc-windows-gnu-0.4.0.tar.gz/lib/libwinapi_asycfilt.a
+./guix-vendor/rust-winapi-i686-pc-windows-gnu-0.4.0.tar.gz/lib/libwinapi_amsi.a
+@dots{}
+@end example
+
+Although Rust libraries are not publicly exported, we can still select them via
+the Guix command-line interface via a Guile expression:
+
+@example
+$ guix build --expression='(@@@@ (gnu packages rust-crates) rust-ring-0.17.14)'
+@end example
+
+To unbundle most dependencies, a snippet is sufficient:
+
+@lisp
+(define rust-curl-sys-0.4.80+curl-8.12.1
+  (crate-source "curl-sys" "0.4.80+curl-8.12.1"
+                "0d7ppx4kq77hc5nyff6jydmfabpgd0i3ppjvn8x0q833mhpdzxsm"
+                #:snippet '(delete-file-recursively "curl")))
+@end lisp
+
+@lisp
+(define rust-bzip2-sys-0.1.13+1.0.8
+  (crate-source "bzip2-sys" "0.1.13+1.0.8"
+                "056c39pgjh4272bdslv445f5ry64xvb0f7nph3z7860ln8rzynr2"
+                #:snippet
+                '(begin
+                   (delete-file-recursively "bzip2-1.0.8")
+                   (delete-file "build.rs")
+                   (with-output-to-file "build.rs"
+                     (lambda _
+                       (format #t "fn main() @{~@@
+                        println!(\"cargo:rustc-link-lib=bz2\");~@@
+                        @}~%"))))))
+@end lisp
+
+In a more complex case, where unbundling one dependency requires a build process
+that involves other packages, we should make a full package in @code{(gnu
+packages rust-sources)} first and reference it in the imported definition.
+
+For example, we have defined a @code{rust-ring-0.17} in @code{(gnu packages
+rust-sources)}, then the imported definition in @code{(gnu packages
+rust-crates)} should be modified to reference it.
+
+@lisp
+(define rust-ring-0.17.14 rust-ring-0.17)
+@end lisp
+
+When one dependency can be safely removed, modify it to @code{#f}.
+
+@lisp
+(define rust-openssl-src-300.4.2+3.4.1 #f)
+@end lisp
+
+To facilitate various tasks in the common workflow, several scripts are provided
+in the @file{etc/teams/rust} directory of Guix source tree.
+@end enumerate
+
+@node Cargo Workspaces and Development Snapshots
+@subsubsection Cargo Workspaces and Development Snapshots
+
+In this example, we'll package @code{niri}, which depends on development
+snapshots (also Cargo workspaces here).
+
+As we can't ensure compatibility of a development snapshot, before executing
+@command{cargo generate-lockfile}, we should modify @file{Cargo.toml} to pin it
+to a known working revision.
+
+To use our packaged development snapshots, it's also necessary to modify
+@file{Cargo.toml} in a build phase, with a package-specific substitution
+pattern.
+
+@lisp
+(define-public niri
+  (package
+   (name "niri")
+   (version "25.02")
+   (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/YaLTeR/niri")
+                   (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "0vzskaalcz6pcml687n54adjddzgf5r07gggc4fhfsa08h1wfd4r"))))
+   (build-system cargo-build-system)
+   (arguments
+    (list #:install-source? #f
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'use-guix-vendored-dependencies
+                (lambda _
+                  (substitute* "Cargo.toml"
+                    (("# version =.*")
+                     "version = \"*\"")
+                    (("git.*optional")
+                     "version = \"*\", optional")
+                    (("^git = .*")
+                     "")))))))
+   (native-inputs
+    (list pkg-config))
+   (inputs
+    (cons* clang
+           libdisplay-info
+           libinput-minimal
+           libseat
+           libxkbcommon
+           mesa
+           pango
+           pipewire
+           wayland
+           (cargo-inputs 'niri)))
+   (home-page "https://github.com/YaLTeR/niri")
+   (synopsis "Scrollable-tiling Wayland compositor")
+   (description
+    "Niri is a scrollable-tiling Wayland compositor which arranges windows in a
+scrollable format.  It is considered stable for daily use and performs most
+functions expected of a Wayland compositor.")
+   (license license:gpl3+)))
+@end lisp
+
+@code{niri} has Cargo workspace dependencies.  When packaging a Cargo
+workspace dependency, parameter @code{#:cargo-package-crates} is
+required.
+
+@lisp
+(define-public rust-pipewire-0.8.0.fd3d8f7
+  (let ((commit "fd3d8f7861a29c2eeaa4c393402e013578bb36d9")
+        (revision "0"))
+    (package
+      (name "rust-pipewire")
+      (version (git-version "0.8.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.freedesktop.org/pipewire/pipewire-rs.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hzyhz7xg0mz8a5y9j6yil513p1m610q3j9pzf6q55vdh5mcn79v"))))
+      (build-system cargo-build-system)
+      (arguments
+       (list #:skip-build? #t
+             #:cargo-package-crates
+             ''("libspa-sys" "libspa" "pipewire-sys" "pipewire")))
+      (inputs (cargo-inputs 'rust-pipewire-0.8.0.fd3d8f7))
+      (home-page "https://pipewire.org/")
+      (synopsis "Rust bindings for PipeWire")
+      (description "This package provides Rust bindings for PipeWire.")
+      (license license:expat))))
+@end lisp
+
+Don't forget to modify all workspace members in @code{(gnu packages
+rust-crates)}:
+
+@lisp
+(define rust-pipewire-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
+(define rust-pipewire-sys-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
+@dots{}
+(define rust-libspa-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
+(define rust-libspa-sys-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
+@end lisp
+
+@node Using Rust Libraries in Other Build Systems
+@subsubsection Using Rust Libraries in Other Build Systems
+
+In this example, we'll package @code{libchewing}, which combines two build
+systems.
+
+When building Rust packages in other build systems, we need to add @code{rust},
+and @code{rust:cargo} to @code{native-inputs}, import and use modules from both
+build systems, and apply necessary build phases from @code{cargo-build-system}.
+
+For cross-compilation support, we'll also add @code{rust-sysroot} created with
+@code{(make-rust-sysroot (%current-target-system))} to @code{native-inputs}, and
+set @code{#:cargo-target} for @code{cargo-build-system}'s build phases.
+
+@lisp
+(define-public libchewing
+  (package
+    (name "libchewing")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chewing/libchewing")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gh64wvrk5pn0fhmpvj1j99d5g7f7697rk96zbkc8l72yjr819z5"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:imported-modules
+           (append %cmake-build-system-modules
+                   %cargo-build-system-modules)
+           #:modules
+           '(((guix build cargo-build-system) #:prefix cargo:)
+             (guix build cmake-build-system)
+             (guix build utils))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'prepare-cargo-build-system
+                 (lambda args
+                   (for-each
+                    (lambda (phase)
+                      (format #t "Running cargo phase: ~a~%" phase)
+                      (apply (assoc-ref cargo:%standard-phases phase)
+                             ;; For cross-compilation.
+                             #:cargo-target #$(cargo-triplet)
+                             args))
+                    '(unpack-rust-crates
+                      configure
+                      check-for-pregenerated-files
+                      patch-cargo-checksums)))))))
+    (native-inputs
+     (append
+      (list rust `(,rust "cargo") )
+      ;; For cross-compilation.
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs
+     (cons* corrosion ncurses sqlite (cargo-inputs 'libchewing)))
+    (synopsis "Chinese phonetic input method")
+    (description "Chewing is an intelligent phonetic (Zhuyin/Bopomofo) input
+method, one of the most popular choices for Traditional Chinese users.")
+    (home-page "https://chewing.im/")
+    (license license:lgpl2.1+)))
+@end lisp
+
 
 @c *********************************************************************
 @node System Configuration

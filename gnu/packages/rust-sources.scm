@@ -37,10 +37,6 @@
   #:use-module (gnu packages textutils))
 
 ;;;
-;;; Commit changes to: https://codeberg.org/guix/guix-rust-registry
-;;;
-
-;;;
 ;;; Cargo workspaces and Rust libraries requiring external inputs to unbundle.
 ;;; These packages are hidden, as they are not interesting to users.
 ;;;
