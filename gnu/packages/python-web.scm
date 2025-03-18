@@ -8440,7 +8440,7 @@ Swagger.")
 (define-public python-pecan
   (package
     (name "python-pecan")
-    (version "1.4.1")
+    (version "1.6.1")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi release
@@ -8450,28 +8450,17 @@ Swagger.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "10lz0cqafx3j24m52vv9ph0bxrzyx6wv2dgz7g9kfm60lhaskqkh"))))
-    (build-system python-build-system)
+         "1ybjvpws741bvxd7aq5hh8gv5sk9836hb9afgalqsm0lxsq0li3a"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "test-requirements.txt"
-                ;; Drop extraneous virtualenv requirement.
-                ((".*virtualenv.*") ""))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "pecan")))))))
+      #:test-flags '(list "--pyargs" "pecan")))
     (native-inputs
      (list gunicorn
            python-genshi
            python-jinja2
            python-pytest
-           python-sqlalchemy
-           uwsgi))
+           python-sqlalchemy))
     (propagated-inputs
      (list python-logutils
            python-mako
