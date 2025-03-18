@@ -9202,7 +9202,7 @@ performance.")
 (define-public htscodecs
   (package
     (name "htscodecs")
-    (version "1.6.0")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/samtools/htscodecs/"
@@ -9210,7 +9210,7 @@ performance.")
                                   version "/htscodecs-" version ".tar.gz"))
               (sha256
                (base32
-                "1h0827g9svil9jnjbpdlxjbl44rai5b95m61hs9ifbqrz9nvnjjb"))))
+                "0n962938clim15d5mmggsm7ki2ycyjwqvjgddihjlpdsr5qv28aq"))))
     (build-system gnu-build-system)
     (inputs (list bzip2 zlib))
     (home-page "https://github.com/samtools/htscodecs")
