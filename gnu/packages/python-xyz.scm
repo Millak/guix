@@ -15176,6 +15176,33 @@ character level, as opposed to most VCS systems, which opt for a line-based
 approach.")
     (license license:expat)))
 
+(define-public python-throttler
+  (package
+    (name "python-throttler")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uburuntu/throttler")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1gn21x0zkm7rr7qijlz7nvw7z0mm1j2r0r2lslg7wln1z36gjkbw"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-aiohttp
+                         python-codecov
+                         python-flake8
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-cov
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/uburuntu/throttler")
+    (synopsis "Throttling with asyncio support")
+    (description
+     "This is a Python package for easy throttling with asyncio support.")
+    (license license:expat)))
+
 (define-public snakemake
   (package
     (name "snakemake")
