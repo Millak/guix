@@ -542,8 +542,8 @@ failed to switch systems while deploying '~a':~%~{~s ~}")
                                         host
                                         (inferior-exception-arguments c))))
                               os))
-          (parameterize ((%current-system system)
-                         (%current-target-system #f))
+          (store-parameterize ((%current-system system)
+                               (%current-target-system #f))
             (with-roll-back #t
               (mbegin %store-monad
                 (upgrade-shepherd-services (eval/error-handling c
