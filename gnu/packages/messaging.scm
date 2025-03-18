@@ -988,7 +988,6 @@ authentication.")
            dbus
            dbus-glib
            ;; evolution-data-server
-           farstream
            gnutls
            gstreamer
            ;; gtkspell2
@@ -1025,9 +1024,10 @@ authentication.")
     (arguments
      `(#:configure-flags
        (list
-        (string-append "CFLAGS=-I"
-                       (assoc-ref %build-inputs "gst-plugins-base")
-                       "/include/gstreamer-1.0")
+        ;; XXX: Disable voice and video calls until Farstream is back to life:
+        ;; <https://issues.guix.gnu.org/75739>.
+        "--disable-vv"
+
         "--disable-gtkspell"
         "--disable-gevolution"
         "--enable-cap"
