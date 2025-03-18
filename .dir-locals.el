@@ -1,5 +1,38 @@
-;; Per-directory local variables for GNU Emacs 23 and later.
+;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013,2014 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
+;;; Copyright © 2015 David Thompson <davet@gnu.org>
+;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
+;;; Copyright © 2018-2020 Caleb Ristvedt <caleb.ristvedt@cune.org>
+;;; Copyright © 2020-2023,2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
+;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
+;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2022 Brian Cully <bjc@kublai.com>
+;;; Copyright © 2023 (unmatched-parenthesis <paren@disroot.org>
+;;; Copyright © 2024 Christopher Baines <mail@cbaines.net>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 David Elsing <david.elsing@posteo.net>
+;;; This file is part of GNU Guix.
+;;;
+;;; GNU Guix is free software; you can redistribute it and/or modify it
+;;; under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 3 of the License, or (at
+;;; your option) any later version.
+;;;
+;;; GNU Guix is distributed in the hope that it will be useful, but
+;;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;; Per-directory local variables for GNU Emacs 23 and later.
 ((nil
   . ((fill-column . 78)
      (tab-width   .  8)
