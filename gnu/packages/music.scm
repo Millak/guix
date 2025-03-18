@@ -3809,8 +3809,14 @@ follows a traditional multi-track tape recorder control paradigm.")
         (base32 "1lz2mvk4gqsyf92yxd3aaldx0d0qi28h4rnnvsaz4ls0ccqm80nk"))))
     (build-system waf-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'python3.11-compatibility
+           (lambda _
+             (substitute* '("waflib/Context.py"
+                            "waflib/ConfigSet.py")
+               (("'rU'") "'r'"))))
          (add-after 'unpack 'remove-sse-flags
            (lambda* (#:key system #:allow-other-keys)
              (unless (or (string-prefix? "x86_64" system)
