@@ -15129,15 +15129,23 @@ GA4GH Task Execution API.")
 (define-public python-toposort
   (package
     (name "python-toposort")
-    (version "1.6")
+    (version "1.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "toposort" version))
        (sha256
         (base32
-         "1b2hppzjg3p006qya3yfdnp76dwq8frl97lypdam0kw4xxb8yhm7"))))
-    (build-system python-build-system)
+         "1gd66z5dy6j7qs5qkj1pg0vb15rwd571yq02fkm9d9nhaff4gfxz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (invoke "python3" "-m" "test.test_toposort"))))))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://gitlab.com/ericvsmith/toposort")
     (synopsis "Topological sort algorithm")
     (description
