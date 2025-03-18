@@ -25729,6 +25729,8 @@ Mustache templating language renderer.")
               "-k" (string-append
                     ;; Don't install anything, thank you.
                     "not test_install_non_existent_extension"
+                    ;; _pybind11_conduit_v1_ not found.
+                    " and not test_wrap_coverage"
                     ;; See <https://github.com/duckdb/duckdb/issues/11961>.
                     " and not test_fetchmany"
                     ;; See <https://github.com/duckdb/duckdb/issues/10702>.
