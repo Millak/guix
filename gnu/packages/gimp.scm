@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2018, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016-2018, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
@@ -176,7 +176,7 @@ of a larger interface.")
 (define-public babl
   (package
     (name "babl")
-    (version "0.1.110")
+    (version "0.1.112")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://download.gimp.org/pub/babl/"
@@ -190,7 +190,7 @@ of a larger interface.")
                                         "/babl-" version ".tar.xz")))
               (sha256
                (base32
-                "0hsp7xqsmij8njxd0hz22mikgxad0q1yycb4ys4m69yn81svwixz"))))
+                "0yca08ay7jygj59bc6fi73pcipi1h6sams43rkzci1qp8a16csgv"))))
     (build-system meson-build-system)
     (arguments
      (list
