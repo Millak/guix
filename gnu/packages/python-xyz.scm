@@ -31105,13 +31105,13 @@ run on top of the dynamic task schedulers.")
 (define-public python-dask-image
   (package
     (name "python-dask-image")
-    (version "2023.8.1")
+    (version "2024.5.3")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "dask-image" version))
+       (uri (pypi-uri "dask_image" version))
        (sha256
-        (base32 "1dh49lvirf5fbgq5hw1c4972czg5w12fg9y689cinyjjn22qk6jy"))))
+        (base32 "0g4293n1vjlpyxbvd1xz3pz9an9z4rnsw1m7lynhm00m0bgiz7qc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -31127,7 +31127,15 @@ run on top of the dynamic task schedulers.")
              "--ignore=tests/test_dask_image/test_ndfourier/test_core.py"
              "--ignore=tests/test_dask_image/test_ndinterp/test_spline_filter.py"
              "--ignore=tests/test_dask_image/test_ndmeasure/test_core.py"
-             "--ignore=tests/test_dask_image/test_ndmeasure/test_find_objects.py")))
+             "--ignore=tests/test_dask_image/test_ndmeasure/test_find_objects.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^version_file.*") "")
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\""))))))))
     (propagated-inputs (list python-dask
                              python-numpy
                              python-pandas-2
@@ -31135,7 +31143,16 @@ run on top of the dynamic task schedulers.")
                              python-scipy
                              python-tifffile))
     (native-inputs
-     (list python-pytest-flake8 python-pytest))
+     (list python-coverage
+           python-flake8
+           python-pytest
+           python-pytest-cov
+           python-pytest-flake8
+           python-pytest-timeout
+           python-setuptools
+           python-setuptools-scm
+           python-twine
+           python-wheel))
     (home-page "https://github.com/dask/dask-image")
     (synopsis "Distributed image processing")
     (description "This is a package for image processing with Dask arrays.
