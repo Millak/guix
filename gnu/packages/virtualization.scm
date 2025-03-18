@@ -358,7 +358,10 @@
                 (("\\['ahci-test'\\]") "[]"))
               ;; This test appears to be flaky as well, probably resulting
               ;; from a race condition.
-              (delete-file "tests/qemu-iotests/tests/copy-before-write")))
+              (delete-file "tests/qemu-iotests/tests/copy-before-write")
+              ;; This test fails non-deterministically (see:
+              ;; https://gitlab.com/qemu-project/qemu/-/issues/2867).
+              (delete-file "tests/qemu-iotests/161")))
           #$@(cond
               ((target-riscv64?)
                #~((add-after 'unpack 'disable-some-tests
