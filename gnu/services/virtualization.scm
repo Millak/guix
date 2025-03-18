@@ -514,8 +514,9 @@ potential infinite waits blocking libvirt."))
                       (string-append
                        "PATH=/run/current-system/profile/bin:"
                        "/run/current-system/profile/sbin")
-                      "LINUX_MODULE_DIRECTORY="
-                      "/run/booted-system/kernel/lib/modules")))
+                      (string-append
+                       "LINUX_MODULE_DIRECTORY="
+                       "/run/booted-system/kernel/lib/modules"))))
            (stop #~(make-kill-destructor))))))
 
 (define libvirt-service-type
