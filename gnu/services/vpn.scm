@@ -88,6 +88,7 @@
             wireguard-configuration-post-up
             wireguard-configuration-pre-down
             wireguard-configuration-post-down
+            wireguard-configuration-shepherd-requirement
             wireguard-configuration-table
             wireguard-configuration-auto-start?
 
@@ -765,6 +766,8 @@ strongSwan.")))
                           (default '()))
   (post-down              wireguard-configuration-post-down ;list of strings
                           (default '()))
+  (shepherd-requirement   wireguard-configuration-shepherd-requirement ; list of symbols
+                          (default '()))
   (table                  wireguard-configuration-table ;string
                           (default "auto"))
   (auto-start?            wireguard-configuration-auto-start? ;boolean
@@ -918,12 +921,12 @@ public key, if any."
 
 (define (wireguard-shepherd-service config)
   (match-record config <wireguard-configuration>
-    (wireguard interface)
+    (wireguard interface shepherd-requirement)
     (let ((wg-quick (file-append wireguard "/bin/wg-quick"))
           (auto-start? (wireguard-configuration-auto-start? config))
           (config (wireguard-configuration-file config)))
       (list (shepherd-service
-             (requirement '(networking))
+             (requirement `(networking user-processes ,@shepherd-requirement))
              (provision (list (wireguard-service-name interface)))
              (start #~(lambda _
                        (invoke #$wg-quick "up" #$config)))

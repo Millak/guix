@@ -35739,6 +35739,10 @@ be executed before tearing down the interface.
 List of strings or G-expressions.  These are script snippets which will
 be executed after tearing down the interface.
 
+@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbols)
+A list of symbols naming Shepherd services that this service
+will depend on.
+
 @item @code{table} (default: @code{"auto"})
 The routing table to which routes are added, as a string.  There are two
 special values: @code{"off"} that disables the creation of routes
