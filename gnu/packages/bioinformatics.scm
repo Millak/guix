@@ -5473,7 +5473,7 @@ subgroups.")
 (define-public python-pysam
   (package
     (name "python-pysam")
-    (version "0.20.0")
+    (version "0.23.0")
     (source (origin
               (method git-fetch)
               ;; Test data is missing on PyPi.
@@ -5483,34 +5483,39 @@ subgroups.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dq6jwwm98lm30ijdgqc5xz5ppda4nj999y6qs78mhw8x0kij8gg"))
+                "0hk0ks6kqsm8252d0v1lw2d22x1awmxcr165nnhyacwbqh246skl"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; FIXME: Unbundle samtools and bcftools.
                           (delete-file-recursively "htslib")))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-flags
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "HTSLIB_MODE" "external")
-             (setenv "HTSLIB_LIBRARY_DIR"
-                     (string-append (assoc-ref inputs "htslib") "/lib"))
-             (setenv "HTSLIB_INCLUDE_DIR"
-                     (string-append (assoc-ref inputs "htslib") "/include"))
-             (setenv "LDFLAGS" "-lncurses")
-             (setenv "CFLAGS" "-D_CURSES_LIB=1")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Step out of source dir so python does not import from CWD.
-               (with-directory-excursion "tests"
-                 (setenv "HOME" "/tmp")
-                 (invoke "make" "-C" "pysam_data")
-                 (invoke "make" "-C" "cbcf_data")
-                 ;; The FileHTTP test requires network access.
-                 (invoke "pytest" "-k" "not FileHTTP"))))))))
+     (list
+      #:test-flags
+      ;; This test requires network access.
+      '(list "-k" "not FileHTTP" "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((":__legacy__") ""))))
+          (add-before 'build 'set-flags
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "HTSLIB_MODE" "external")
+              (setenv "HTSLIB_LIBRARY_DIR"
+                      (string-append (assoc-ref inputs "htslib") "/lib"))
+              (setenv "HTSLIB_INCLUDE_DIR"
+                      (string-append (assoc-ref inputs "htslib") "/include"))
+              (setenv "LDFLAGS" "-lncurses")
+              (setenv "CFLAGS" "-D_CURSES_LIB=1")))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests"
+                  (setenv "HOME" "/tmp")
+                  (invoke "make" "-C" "pysam_data")
+                  (invoke "make" "-C" "cbcf_data"))))))))
     (propagated-inputs
      (list htslib))                    ; Included from installed header files.
     (inputs
