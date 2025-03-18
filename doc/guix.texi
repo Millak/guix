@@ -42824,6 +42824,7 @@ unprivileged users to run @command{podman} commands:
 
 @lisp
 (use-service-modules containers networking @dots{})
+(use-modules (gnu system accounts))  ;for 'subid-range'
 
 (operating-system
   ;; @dots{}
