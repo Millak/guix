@@ -28193,17 +28193,30 @@ in human-readable HTML format.")
 (define-public python-ratelimiter
   (package
     (name "python-ratelimiter")
-    (version "1.2.0")
+    (version "1.2.0.post1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ratelimiter" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/RazerM/ratelimiter")
+             ;; From https://github.com/RazerM/ratelimiter/pull/11
+             (commit "59a0827c434706d62b89e16a220e4ae12e618858")))
        (sha256
         (base32
-         "1dhz85mj5bqd2mij84ncs6pz32hgidr79hay4aqfmzaa4rbb497p"))))
-    (build-system python-build-system)
+         "1v34w12f41j0l2gy9ji9ip01kj4idjfjx7a97wrlr1ibxi7hg3bs"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f))          ; There are no tests in the pypi archive.
+     (list #:phases
+           '(modify-phases %standard-phases
+              (add-after 'unpack 'pytest-compatibility
+                (lambda _
+                  (substitute* "tests/conftest.py"
+                    (("pytest.collect.File") "pytest.File")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/RazerM/ratelimiter")
     (synopsis "Simple rate limiting object")
     (description
