@@ -34853,25 +34853,17 @@ dates in almost any string formats commonly found on web pages.")
 (define-public python-dpath
   (package
     (name "python-dpath")
-    (version "2.0.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dpath" version))
        (sha256
         (base32
-         "1ymi9ssk7i0mx3mviplf4csfvzibdd6wyj4qzj6s487n9xgnp85y"))))
-    (build-system python-build-system)
+         "0gkavmc44f9cj3kch68343r2ajsbvbsjcmsmkqhkzsjmvhqfdxrl"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-hypothesis python-mock python-nose))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             ;; This invocation is taken from tox.ini.
-             (invoke "nosetests" "-d" "-v" "tests/"))))))
+     (list python-hypothesis python-nose2 python-setuptools python-wheel))
     (home-page "https://github.com/akesterson/dpath-python")
     (synopsis "File-system-like pathing and searching for dictionaries")
     (description
