@@ -118,6 +118,7 @@
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
@@ -1145,6 +1146,100 @@ intuitive syntax and trivial integration.")
 
 (define-public json-modern-cxx
   (deprecated-package "json-modern-cxx" nlohmann-json))
+
+(define-public jthread
+  (let ((commit "0fa8d394254886c555d6faccd0a3de819b7d47f8")
+        (revision "0"))
+    (package
+      (name "jthread")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/josuttis/jthread")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11cq4zh7pv86c62ah5im00gxr4cw6d396dp9117z8s271j4lrp6f"))
+         (snippet
+          ;; NOTE: remove precompiled PDFs.
+          #~(begin
+              (use-modules (guix build utils))
+              (for-each (lambda (file)
+                          (delete-file file))
+                        (find-files "." ".pdf"))
+              (delete-file-recursively "doc")))))
+      (outputs '("out" "doc"))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (delete 'build)
+            (add-after 'unpack 'cd-and-generate-makefile
+              (lambda _
+                (call-with-output-file "source/Makefile.h"
+                  (lambda (port)
+                    ;; GCC 2.95 fails to deal with anonymous unions in glibc's
+                    ;; 'struct_rusage.h', so skip that.
+                    (display "CXX17 := c++ -std=c++17 -pthread\n" port)))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "make" "-C" "source"))))
+            (add-after 'check 'build-docs
+              (lambda _
+                (with-directory-excursion "tex"
+                  ;; NOTE: remove strict versioning.
+                  (substitute* "styles.tex"
+                    (("lst@CheckVersion\\{1.6\\}")
+                     "lst@CheckVersion{1.10}"))
+                  (invoke "pdflatex" "std")
+                  (invoke "pdflatex" "std")))) ;Rerun to update references.
+            (replace 'install
+              (lambda _
+                (for-each (lambda (file)
+                            (install-file file
+                                          (string-append #$output "/include")))
+                          '("source/condition_variable_any2.hpp"
+                            "source/stop_token.hpp" "source/jthread.hpp"))))
+            (add-after 'install 'install-doc
+              (lambda _
+                (let ((out (string-append #$output:doc "/share/doc/")))
+                  (mkdir-p out)
+                  (copy-file "tex/std.pdf"
+                             (string-append out
+                                            #$name "-"
+                                            #$version ".pdf"))))))))
+      (native-inputs
+       (list perl
+             (texlive-updmap.cfg
+              (list texlive-ulem
+                    texlive-rsfs
+                    texlive-memoir
+                    texlive-substr
+                    texlive-xcolor
+                    texlive-isodate
+                    texlive-caption
+                    texlive-relsize
+                    texlive-extract
+                    texlive-xpatch
+                    texlive-xkeyval
+                    texlive-jknapltx
+                    texlive-booktabs
+                    texlive-enumitem
+                    texlive-etoolbox
+                    texlive-listings
+                    texlive-microtype
+                    texlive-underscore))))
+      (home-page "https://github.com/josuttis/jthread")
+      (synopsis "C++ class for a joining and cooperative interruptible thread")
+      (description
+       "This package provides a reference implementation of @code{std::jthread},
+a cooperatively interruptible thread that is joined upon destruction.")
+      (license license:cc-by4.0))))
 
 (define-public tomlplusplus
   (package
