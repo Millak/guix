@@ -79,6 +79,8 @@
 ;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2024 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -135,6 +137,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages file-systems)
+  #:use-module (gnu packages firmware)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages game-development)
@@ -14596,3 +14599,73 @@ or @acronym{RDP, Remote Desktop Protocol}.")
     (description "This package provides a graphical frontend for
 GNU Privacy Guard built with libadwaita.")
     (license license:expat)))
+
+(define-public gnome-software
+  (package
+    (name "gnome-software")
+    (version "46.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "mirror://gnome/sources/"
+                       name "/"
+                       (version-major version) "/"
+                       name "-" version ".tar.xz"))
+       (sha256 (base32 "0b5y9z64582aarw3v92wjm63yib2q85ylny1k7k4d2y48jivirb9"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:test-options
+      ;; The plugins test suite requires a D-Bus system session, which
+      ;; attempts to set its session under /var/run and fails.
+      #~(list "--no-suite=plugins")
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list "-Dhardcoded_proprietary_webapps=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-iso-codes
+            (lambda _
+              (with-directory-excursion "src"
+                (substitute* "./gs-language.c"
+                  (("DATADIR")
+                   (format #f "\"~a/share\"" #$iso-codes))))))
+          (add-before 'install 'disable-gtk-update-icon-cache
+            (lambda _
+              (setenv "DESTDIR" "/")
+              ;; Needed for complete RUNPATHs, but not actually needed at runtime.
+              (copy-file
+               "../build/lib/libgnomesoftware.so.20"
+               (string-append #$output "/lib/libgnomesoftware.so.20")))))))
+    (native-inputs
+     (list docbook-xsl
+           gettext-minimal
+           `(,glib "bin")
+           gtk-doc
+           libglib-testing
+           libxslt                      ;for xsltproc
+           pkg-config
+           sysprof
+           valgrind))
+    (inputs
+     (list appstream
+           flatpak
+           fwupd
+           gdk-pixbuf
+           gtk
+           json-glib
+           libadwaita
+           libgudev
+           libostree
+           libsoup-minimal
+           libxmlb
+           malcontent
+           packagekit
+           polkit))
+    (synopsis "Graphical software manager for GNOME")
+    (description "GNOME Software allows you to find and install new
+applications and system extensions and remove existing installed
+applications.")
+    (license license:gpl2+)
+    (home-page "https://apps.gnome.org/en/Software/")))
