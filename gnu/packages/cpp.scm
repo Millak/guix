@@ -3692,6 +3692,33 @@ std::variant (formerly boost::variant) for C++11/14.")
 based on the implementation of std::variant in libc++.")
     (license license:boost1.0)))
 
+(define-public nativefiledialog-extended
+  (package
+    (name "nativefiledialog-extended")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/btzy/nativefiledialog-extended")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15l0jy3v4p6rgg9dk8zr80lqp51s32ii62cm4s90400ragdgh10v"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
+    (native-inputs (list pkg-config))
+    (inputs (list gtk+))
+    (home-page "https://github.com/btzy/nativefiledialog-extended")
+    (synopsis "Native file dialog library with C and C++ bindings")
+    (description
+     "This package provides a library that portably invokes native file open,
+folder select and file save dialogs.  It allows the specification of a default
+file name and location, as well as filters with friendly names (such as
+\"source files\" or \"image files\") where supported.")
+    (license license:zlib)))
+
 (define-public tsl-hopscotch-map
   (package
     (name "tsl-hopscotch-map")
