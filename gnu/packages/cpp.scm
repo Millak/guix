@@ -1958,6 +1958,66 @@ Google's C++ code base.")
            #~(cons* "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
                     (delete "-DBUILD_SHARED_LIBS=ON" #$flags)))))))))
 
+(define-public miniaudio
+  (package
+    (name "miniaudio")
+    (version "0.11.22")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mackron/miniaudio")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pjaiq71x24n9983vkhjxrsbraa24053h727db22b1rb2xyfrzm3"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+          (delete 'configure)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests/_build"
+                  (let ((tests '("conversion" "filtering" "generation")))
+                    (mkdir "bin")
+                    ;; Compile tests
+                    (for-each (lambda (test)
+                                (invoke "gcc"
+                                        (string-append "../" test "/" test
+                                                       ".c")
+                                        "-o"
+                                        (string-append "bin/" test)
+                                        "-ldl"
+                                        "-lm"
+                                        "-lpthread"
+                                        "-Wall"
+                                        "-Wextra"
+                                        "-Wpedantic")
+                                (let ((bin (string-append "./bin/" test)))
+                                  (if (string= test "filtering")
+                                      ;; NOTE: the 'filtering' test
+                                      ;; requires an input file.
+                                      (invoke bin bin)
+                                      (invoke bin))))
+                              tests))))))
+          (replace 'install
+            (lambda _
+              (install-file "miniaudio.h"
+                            (string-append #$output "/include"))
+              (copy-recursively "extras"
+                                (string-append #$output
+                                               "/include/extras/")))))))
+    (home-page "https://miniaud.io")
+    (synopsis "Audio playback and capture library for C and C++")
+    (description
+     "Miniaudio is an audio playback and capture library for C and C++.  It is
+made up of a single source file and has no external dependencies.")
+    (license license:expat)))
+
 (define-public abseil-cpp-cxxstd17
   (abseil-cpp-for-c++-standard abseil-cpp 17))  ;XXX: the default with GCC 11?
 
