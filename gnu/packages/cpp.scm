@@ -547,6 +547,32 @@ strings, configuration, bit streams, threading, translation, and cross-platform
 operating system functions.")
     (license license:zlib)))
 
+(define-public lunasvg
+  (package
+    (name "lunasvg")
+    (version "3.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sammycage/lunasvg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14ppk3k6sdbf3lwhv2gjqy32vwa7ck9jcj9xfk0fxwfqbvbp6608"))))
+    (build-system cmake-build-system)
+    (inputs (list plutovg))
+    (arguments
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
+       #:tests? #f)) ;No tests.
+    (home-page "https://github.com/sammycage/lunasvg")
+    (synopsis "SVG rendering and manipulation library in C++")
+    (description
+     "LunaSVG is an SVG rendering library in C++, designed to be
+lightweight and portable, offering efficient rendering and manipulation of
+Scalable Vector Graphics (SVG) files.")
+    (license license:expat)))
+
 (define-public rttr
   (package
     (name "rttr")
