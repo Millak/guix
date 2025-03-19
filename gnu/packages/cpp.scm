@@ -615,6 +615,28 @@ the name of the library itself, which is written in C++.")
       (license (list license:expat        ; cJSON
                      license:bsd-4)))))   ; everything else (LICENSE.txt)
 
+(define-public plutovg
+  (package
+    (name "plutovg")
+    (version "0.0.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sammycage/plutovg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y2w0qhs89bnh440z1xj65vg4c71rlwinxgs3p8bvh2fmbi7lqff"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
+       #:tests? #f)) ;No tests.
+    (home-page "https://github.com/sammycage/plutovg")
+    (synopsis "Tiny 2D vector graphics library in C")
+    (description "PlutoVG is a standalone 2D vector graphics library in C.")
+    (license license:expat)))
+
 (define-public pystring
   (package
     (name "pystring")
