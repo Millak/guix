@@ -16677,6 +16677,38 @@ Heap.")
 (define-public ecl-funds
   (sbcl-package->ecl-package sbcl-funds))
 
+(define-public sbcl-fuzzy-dates
+  (let ((commit "d6a2c229870a633594afc15a07fb16082960dfba")
+        (revision "0"))
+    (package
+      (name "sbcl-fuzzy-dates")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/shinmera/fuzzy-dates")
+               (commit commit)))
+         (file-name (git-file-name "cl-fuzzy-dates" version))
+         (sha256
+          (base32 "0qaig90b91nrwgxs55c8zaah5iq72rgxw1clmjqw0iilfg5wgllr"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-parachute))
+      (inputs (list sbcl-cl-ppcre
+                    sbcl-documentation-utils))
+      (home-page "https://github.com/vindarel/fuzzy-dates")
+      (synopsis "Fuzzily parse date and time strings")
+      (description
+       "Library to fuzzily parse time and date strings into a universal-time
+timestamp.")
+      (license license:zlib))))
+
+(define-public cl-fuzzy-dates
+  (sbcl-package->cl-source-package sbcl-fuzzy-dates))
+
+(define-public ecl-fuzzy-dates
+  (sbcl-package->ecl-package sbcl-fuzzy-dates))
+
 (define-public sbcl-fuzzy-match
   (let ((commit "e46ca41ef4641461f7be006782e3cfdcf73ba98a")
         (revision "1"))
