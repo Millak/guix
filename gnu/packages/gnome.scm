@@ -12904,6 +12904,7 @@ integrate seamlessly with the GNOME desktop.")
                            "gnome-boxes-" version ".tar.xz"))
        (sha256
         (base32 "1b9ya5pcb5dfii0qs9r167a3kxymdsq624bpi1nvzbwgar15ypyh"))))
+    (outputs '("out" "debug"))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
