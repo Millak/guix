@@ -2235,6 +2235,42 @@ leveraging built-in functionality.")
 purpose finder.")
       (license license:gpl3+))))
 
+(define-public emacs-ezf
+  (let ((commit "038513f7bd335981430f5d3386d533272567cefd")
+        (revision "0"))
+    (package
+      (name "emacs-ezf")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mickeynp/ezf")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0nrby8f3magyjwwyqk9bqyrgh04vlm8alajzng9x507n42pb7bn7"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #t
+             #:test-command #~(list "emacs" "--batch"
+                                    "-l" "ezf.el" "-l" "ezf-test.el"
+                                    "-f" "ert-run-tests-batch-and-exit")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'install 'install-script
+                   (lambda _
+                     (install-file "ezf"
+                                   (string-append #$output "/bin")))))))
+      (propagated-inputs
+       (list emacs-helm))
+      (home-page "https://github.com/mickeynp/ezf")
+      (synopsis "Emacs Fuzzy Finder")
+      (description "Emacs Fuzzy Finder is like fzf, but it leverages the power
+of your Emacs instance to filter and select candidates.  Use ezf as part of
+piping and command substitutions to manually select and filter matches.")
+      (license license:gpl3+))))
+
 (define-public emacs-pacfiles-mode
   (package
     (name "emacs-pacfiles-mode")
