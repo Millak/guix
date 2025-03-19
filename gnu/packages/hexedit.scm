@@ -28,11 +28,24 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages man)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages curl)
+  #:use-module (gnu packages llvm)
+  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages boost)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages antivirus)
+  #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages engineering)
   #:use-module (gnu packages pretty-print)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -205,6 +218,170 @@ Development Environment} (IDE).")
     (description "This package provides a C-like domain-specific language used
 for specifying patterns in the ImHex Hex Editor.")
     (license license:lgpl2.1)))
+
+;; imhex-patterns can not currently be built by imhex-pattern-language alone,
+;; see above for a rationale.  Thus, we only return an origin.
+(define (make-imhex-patterns version sha256-hash)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/WerWolv/ImHex-Patterns")
+          (commit (string-append "ImHex-v" version))))
+    (file-name (git-file-name "imhex-patterns" version))
+    (sha256 sha256-hash)))
+
+(define-public imhex
+  (let* ((version "1.37.4")
+         (imhex-patterns
+          (make-imhex-patterns
+           version
+           (base32 "0m9g93fzmj2rsgaq25y4mmfigjh1xxyh41zjs6lp5ydsl5hhrn6q"))))
+    (package
+      (name "imhex")
+      (version version)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/WerWolv/ImHex")
+               (commit (string-append "v" version))
+               (recursive? #t)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0l3fpizkz2ykdirbn9alddnnsg75w6kwpp92nvmird13l80z1sdr"))
+         (modules '((guix build utils) (ice-9 ftw) (ice-9 match)))
+         (snippet
+          #~(begin
+              ;; XXX: imhex-pattern-language is missing the necessary packaging
+              ;; structure to be linked independently.  See the comment on its
+              ;; package.
+              (copy-recursively #$imhex-pattern-language
+                                "lib/external/pattern_language")
+              ;; Drop `imhex-patterns' in the source tree.
+              (copy-recursively #$imhex-patterns "ImHex-Patterns")
+
+              ;; NOTE: `libwolv' does not have an install target. Until the
+              ;; maintainers create one, it will remain bundled.
+              ;; NOTE: `libromfs' it's meant to be bundled and cannot be
+              ;; compiled independently. Until the maintainers support
+              ;; building it independently, it will remain bundled.
+              ;; NOTE: `hashlibplus' has been left as a submodule since it's a
+              ;; fork which only makes sense within ImHex.
+              ;; XXX: `imgui' is a fork with several experimental features.
+              ;; Unbundle once they're upstreamed.
+              (with-directory-excursion "lib/third_party"
+                (for-each
+                 (lambda (dir)
+                   (unless (member dir '("." ".."
+                                         "HashLibPlus" "libwolv" "libromfs"
+                                         "imgui"
+                                         ;; Needs source to include miniaudio.h
+                                         "miniaudio"
+                                         "microtar")) ; XXX: unbundle
+                     (delete-file-recursively dir)))
+                 (scandir "."))
+
+                ;; Force use of system miniaudio.
+                (delete-file "miniaudio/include/miniaudio.h")
+
+                (for-each
+                 (match-lambda
+                   ((src . dst) (copy-recursively src dst)))
+                 `((#$(package-source xdgpp) . "xdgpp"))))
+
+              ;; Adjust CMake build scripts accordingly.
+              (substitute* "cmake/build_helpers.cmake"
+                (("add_subdirectory\\(\\$\\{THIRD_PARTY_.*\\}/jthread .*\\)")
+                 "")
+                (("set\\(JTHREAD_LIBRARIES .*\\)") ""))
+
+              ;; Update sources.
+              (substitute* (append (find-files "lib/libimhex" "\\.[ch](pp)?")
+                                   (find-files "main" "\\.[ch](pp)?")
+                                   (find-files "plugins" "\\.[ch](pp)?"))
+                (("#include <jthread\\.hpp>") ""))
+              (substitute* "plugins/ui/source/ui/menu_items.cpp"
+                (("\\.\\./\\.\\./\\.\\./\\.\\./lib/libimhex/include/")
+                 ""))))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        ;; NOTE: there is an issue with the way the test library is linked
+        ;; with the output binaries. Tests are intrusive and should not be
+        ;; shipped with the release, when the issue is fixed we could add a
+        ;; phase which builds the package with the tests and runs the
+        ;; testsuite and a second build phase which prepares the output
+        ;; binary.
+        #:configure-flags
+        ''("-DIMHEX_ENABLE_UNIT_TESTS=ON"
+           "-DIMHEX_OFFLINE_BUILD=ON"
+           ;; NOTE: required for the `validate-runpath' phase.
+           ;; If OFF, the pluggings won't be able to find `libimhex.so'.
+           "-DIMHEX_PLUGIN_ADD_INSTALL_PREFIX_TO_RPATH=ON"
+
+           "-DUSE_SYSTEM_NLOHMANN_JSON=ON"
+           "-DUSE_SYSTEM_CAPSTONE=ON"
+           "-DUSE_SYSTEM_LUNASVG=ON"
+           "-DUSE_SYSTEM_CLI11=ON"
+           "-DUSE_SYSTEM_BOOST=ON"
+           "-DUSE_SYSTEM_EDLIB=ON"
+           "-DUSE_SYSTEM_YARA=ON"
+           "-DUSE_SYSTEM_LLVM=ON"
+           "-DUSE_SYSTEM_FMT=ON"
+           "-DUSE_SYSTEM_NFD=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda _
+                (substitute* "main/gui/source/window/linux_window.cpp"
+                  (("dbus-send")
+                   #$(file-append dbus "/bin/dbus-send")))
+                (substitute* "cmake/build_helpers.cmake"
+                  (("Boost REQUIRED")
+                   "Boost COMPONENTS regex REQUIRED"))))
+            (add-before 'check 'build-tests
+              (lambda _
+                (invoke "make" "unit_tests"))))))
+      (native-inputs
+       (list cli11
+             nlohmann-json
+             pkg-config
+             python
+             python-wrapper
+             ruby
+             gcc-14))
+      (inputs
+       (list yara
+             boost
+             capstone
+             curl
+             edlib
+             fmt
+             glfw
+             libarchive
+             libffi
+             llvm-17
+             lunasvg
+             plutovg
+             mbedtls
+             mesa
+             miniaudio
+             nativefiledialog-extended
+             xz
+             fontconfig
+             lz4
+             `(,zstd "lib")
+             zlib
+             freetype))
+      (home-page "https://imhex.werwolv.net")
+      (synopsis "Hex Editor to display, decode and analyze binary data")
+      (description "ImHex is a hex editor with many advanced features that can
+often only be found in paid applications.  Such features are a completely
+custom binary template and pattern language to decode and highlight structures
+in the data, a graphical node-based data processor to pre-process values
+before they're displayed, a disassembler, diffing support, bookmarks and much
+much more.")
+      (license license:gpl2))))
 
 (define-public bvi
   (package
