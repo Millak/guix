@@ -3362,8 +3362,14 @@ Python.")
            ;; SOURCE_DATE_EPOCH is respected, which we set to some time in
            ;; 1980.
            (lambda _ (setenv "SOURCE_DATE_EPOCH" "315532800")))
-         (add-after 'unpack 'python3.10-compatibility
+         (add-after 'unpack 'python3.11-compatibility
            (lambda _
+             ;; Py_TYPE was changed to an inline static function in Python
+             ;; 3.11, so it cannot be used on the left-hand side.
+             (substitute* "tensorflow/python/lib/core/bfloat16.cc"
+               (("Py_TYPE\\(&NPyBfloat16_Descr\\) = &PyArrayDescr_Type;")
+                "Py_SET_TYPE(&NPyBfloat16_Descr, &PyArrayDescr_Type);"))
+
              ;; See https://github.com/tensorflow/tensorflow/issues/20517#issuecomment-406373913
              (substitute* '("tensorflow/python/eager/pywrap_tfe_src.cc"
                             "tensorflow/python/lib/core/ndarray_tensor.cc"
@@ -3413,6 +3419,16 @@ Python.")
                 (string-append m
                                " and not isinstance(existing, type(object.__or__))")))
 
+             ;; ArgSpec has been replaced with FullArgSpec.
+             (substitute* "tensorflow/python/util/tf_inspect.py"
+               (("ArgSpec = _inspect.ArgSpec") "\
+ArgSpec = namedtuple('ArgSpec', [ 'args', 'varargs', 'keywords', 'defaults' ])
+def makeargspec(s):
+  return ArgSpec(args=s.args, varargs=s.varargs, keywords=s.varkw, defaults=s.defaults)
+")
+               (("_inspect.getargspec\\((.*)\\)" m target)
+                (string-append "makeargspec(_inspect.getfullargspec(" target "))")))
+
              ;; Fix the build with numpy >= 1.19.
              ;; Suggested in https://github.com/tensorflow/tensorflow/issues/41086#issuecomment-656833081
              (substitute* "tensorflow/python/lib/core/bfloat16.cc"
@@ -3433,7 +3449,22 @@ Python.")
              (substitute* '("tensorflow/python/framework/fast_tensor_util.pyx"
                             "tensorflow/python/estimator/canned/linear_testing_utils.py")
                (("np.asscalar") "np.ndarray.item"))))
-         (add-after 'python3.10-compatibility 'chdir
+         (add-after 'python3.11-compatibility 'numpy-compatibility
+           (lambda _
+             (substitute* (cons* "tensorflow/compiler/xla/python/xla_client.py"
+                                 "tensorflow/contrib/layers/python/ops/sparse_ops_test.py"
+                                 (find-files "tensorflow/python/" "\\.py$"))
+               (("np.object") "object"))
+             (substitute* (append
+                           '("tensorflow/compiler/tests/unary_ops_test.py"
+                             "tensorflow/compiler/xla/python/xla_client.py"
+                             "tensorflow/compiler/xla/python/xla_client_test.py")
+                           (find-files "tensorflow/python/" "\\.py$")
+                           (find-files "tensorflow/contrib/" "\\.py$"))
+               (("np.bool,") "bool,")
+               (("np.bool\\)") "bool)")
+               (("np.bool:") "bool:"))))
+         (add-after 'numpy-compatibility 'chdir
            (lambda _ (chdir "tensorflow/contrib/cmake")))
          (add-after 'chdir 'disable-downloads
            (lambda* (#:key inputs #:allow-other-keys)
