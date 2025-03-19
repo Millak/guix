@@ -43,7 +43,8 @@
 ;;; Copyright © 2024 Peepo Froggings <peepofroggings@tutanota.de>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
-
+;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
+;;;
 ;;; This file is part of GNU Guix.
 ;;;
 ;;; GNU Guix is free software; you can redistribute it and/or modify it
@@ -467,6 +468,29 @@ Objective C headers for use with foreign function call interfaces.  It uses
 the @code{Clang/LLVM} infrastructure to extract the data, and emits it in
 various formats, including @code{json}.")
     (license license:gpl2+)))
+
+(define-public edlib
+  (package
+    (name "edlib")
+    (version "1.2.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Martinsos/edlib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ibpxs3r8ii2s3g7kdbyr8brg6ha5l0fb21idw8531gx9v2qzh4v"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
+    (home-page "https://github.com/Martinsos/edlib")
+    (synopsis "Lightweight library for sequence alignment")
+    (description "This package provides a lightweight library for calculating
+the edit distance between two sequences and finding an optimal alignment path
+for transforming one sequence into another.")
+    (license license:expat)))
 
 (define-public expected-lite
   (package
