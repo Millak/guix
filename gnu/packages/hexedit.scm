@@ -4,6 +4,7 @@
 ;;; Copyright © 2018, 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,17 +23,23 @@
 
 (define-module (gnu packages hexedit)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages cpp)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages pretty-print)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system cmake))
 
 (define-public hexedit
   (package
@@ -136,6 +143,68 @@ low-level functionality of a debugger with the usability of an @dfn{Integrated
 Development Environment} (IDE).")
     (home-page "https://hte.sourceforge.net/")
     (license license:gpl2)))
+
+;; NOTE: The install target of imhex-pattern-language falls short in a few areas
+;; that make this package difficult to use outside of ImHex.  Neither header
+;; files nor package information (using e.g. pkg-config or CMake files) are
+;; currently available.
+(define-public imhex-pattern-language
+  (package
+    (name "imhex-pattern-language")
+    (version "1.37.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/WerWolv/PatternLanguage")
+             (commit (string-append "ImHex-v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13mlbclg2r3axv6vz4dsyry5azc6xavcbdkvwan6zyaq9ngk7r3r"))
+       (modules '((guix build utils) (ice-9 ftw)))
+       (snippet #~(begin
+                    ;; NOTE: the `throwing-ptr' hasn't been updated in 6 years
+                    ;; and the testsuite expects to use an outdated version of
+                    ;; Conan, since this library if not interesting to have it
+                    ;; in Guix it will remain bundled.
+                    ;; NOTE: `libwolf' does not have an install target. Until
+                    ;; the maintainers create one, it will be bundled.
+                    (with-directory-excursion "external"
+                      (for-each
+                       (lambda (dir)
+                         (unless (member dir '("." ".." "libwolv" "throwing_ptr"))
+                           (delete-file-recursively dir)))
+                       (scandir ".")))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags ''("-DLIBPL_SHARED_LIBRARY=ON"
+                           "-DLIBPL_ENABLE_TESTS=ON"
+                           "-DUSE_SYSTEM_NLOHMANN_JSON=ON"
+                           "-DUSE_SYSTEM_CLI11=ON"
+                           "-DUSE_SYSTEM_FMT=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-rel-paths
+            (lambda _
+              (substitute* "tests/include/test_patterns/test_pattern_format.hpp"
+                (("../tests/files/export/")
+                 "../source/tests/files/export/"))))
+          (add-after 'build 'build-tests
+            (lambda _
+              (invoke "make" "pattern_language_tests" "plcli")))
+          (add-before 'check 'plcli-integration-tests
+            (lambda _
+              (with-directory-excursion "../source"
+                (invoke "python3" "tests/integration/integration.py"
+                        "../build/cli/plcli")))))))
+    (native-inputs (list cli11 gcc-14 fmt-11 nlohmann-json python))
+    (home-page "https://imhex.werwolv.net")
+    (synopsis "Pattern language used by the ImHex Hex Editor")
+    (description "This package provides a C-like domain-specific language used
+for specifying patterns in the ImHex Hex Editor.")
+    (license license:lgpl2.1)))
 
 (define-public bvi
   (package
