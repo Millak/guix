@@ -749,6 +749,40 @@ combination of these streams.")
 enabled in different parts of your code.")
       (license license:zlib)))
 
+(define-public xdgpp
+  (let ((commit "f01f810714443d0f10c333d4d1d9c0383be41375")
+        (revision "0"))
+    (package
+      (name "xdgpp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~danyspin97/xdgpp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1w8da10whrhc7j82jf90814m3blabkl9s0kg8hv8h2fj5y3ji7hw"))))
+      (build-system gnu-build-system)
+      (native-inputs (list catch2))
+      (arguments
+       (list
+        #:test-target "test"
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (replace 'install
+              (lambda _
+                (install-file "xdg.hpp"
+                              (string-append #$output "/include")))))))
+      (home-page "https://git.sr.ht/~danyspin97/xdgpp")
+      (synopsis "C++17 implementation of the XDG Base Directory Specification")
+      (description
+       "This package provides a header-only library to retrieve the file names
+of XDG base directories, such as XDG_CONFIG_HOME.")
+      (license license:expat))))
+
 (define-public xsimd
   (package
     (name "xsimd")
