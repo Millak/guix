@@ -20869,6 +20869,10 @@ above over the network.")
         (base32
          "0pm6va26kadjvbai4qsnjc2bk379w2nk6h3b5f0c2yv3q5na0p49"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "buttercup" "-L" ".")))
+    (native-inputs
+     (list emacs-buttercup))
     (propagated-inputs
      (list emacs-dash emacs-f emacs-helm emacs-org emacs-s))
     (home-page "https://github.com/alphapapa/helm-org-rifle")
