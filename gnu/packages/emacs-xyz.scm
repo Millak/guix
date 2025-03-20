@@ -34515,6 +34515,16 @@ to Metals.")
                (base32
                 "162bxyhiqz4saxvh6n3sdb9hx7px5wpy45wbfg5aiqzlqwgqyg42"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(apply list "ert-runner" "-L" "."
+                    "-t" "'!no-win'" "-t" "'!org'"
+                    (apply append
+                           (map
+                            (lambda (file)
+                              (list "-l" file))
+                            (find-files "test" "\\.el"))))))
+    (native-inputs (list emacs-ert-runner emacs-rustic))
     (propagated-inputs
      (list emacs-dash emacs-lsp-mode emacs-markdown-mode emacs-flycheck))
     (home-page "https://github.com/emacs-lsp/lsp-ui")
