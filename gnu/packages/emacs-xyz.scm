@@ -25722,6 +25722,15 @@ needed.")
        (sha256
         (base32 "0jc8j421mlflspg24jvrqc2n3y5n3cpk3hjy560il8g36xi1049p"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f  ; Tests require a tty.
+           #:test-command
+           #~(apply list "emacs"
+                    (append
+                     (apply append
+                            (map (lambda (file) (list "-l" file))
+                                 (find-files "." "\\.el")))
+                     (list "-f" "ert-run-tests-batch-and-exit")))))
     (propagated-inputs
      (list emacs-password-store emacs-f))
     (home-page "https://github.com/NicolasPetton/pass")
