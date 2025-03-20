@@ -10647,6 +10647,9 @@ src blocks.")
          "1xipph77bzxhd6jspxz0ppja4p0wzrkhp4y41nix3lcky3f7a6s1"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "make" "check-declare")))
     (propagated-inputs
      (list emacs-compat emacs-notmuch emacs-org))
     (home-page "https://github.com/tarsius/ol-notmuch")
