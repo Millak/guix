@@ -7429,6 +7429,8 @@ want to ensure that some modes have no ligatures at all.")
        (sha256
         (base32 "0q1z07z0nkvzplmsqni25hqhv81x3r7f1xahjjkskmllrhksz0bh"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f)) ; Linting but not testing.
     (home-page "https://github.com/rnkn/olivetti")
     (synopsis "Emacs minor mode for a nice writing environment")
     (description "This package provides an Emacs minor mode that puts writing
