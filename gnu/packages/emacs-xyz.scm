@@ -2471,6 +2471,9 @@ bottom, or top, of the buffer, or to a trash file.")
        (sha256
         (base32 "1rinshdxln1wvzf7by8gq9wiqgcqy406k5jl1f86jd17b3wv5bxx"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "make" "check-declare")))
     (propagated-inputs
      (list emacs-compat emacs-dash))
     (home-page "https://github.com/tarsius/minions")
