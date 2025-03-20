@@ -349,7 +349,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
 (define-public vulkan-loader
   (package
     (name "vulkan-loader")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
        (method git-fetch)
@@ -359,7 +359,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0glix3clqkdbi9kqcp8abmglqpgjd2r2bjqvi11r8sair0z54hnf"))))
+         "1y6wqc8adzg7ndmbr95nzhcxf93qsfndfdnsym5pkbjfx454151d"))))
     (build-system cmake-build-system)
     (arguments
      (list
