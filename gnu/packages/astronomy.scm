@@ -7282,6 +7282,63 @@ transformation for the imaging instruments on the @acronym{Hubble Space
 Telescope, HST}).")
     (license license:bsd-3)))
 
+(define-public python-sunkit-magex
+  (package
+    (name "python-sunkit-magex")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sunkit_magex" version))
+       (sha256
+        (base32 "1jx1nvb6addnsmafq1s0wrxlcpk0p2hcp6b8ldw0q3sz2dzfpcb0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              (string-join
+               ;; Some issue with presision in this test.
+               (list "not test_adapt_map"
+                     ;; NotImplementedError: is_full_sun_synoptic_map is only
+                     ;; implemented for ['CEA', 'CAR'] projections and not
+                     "test_car_reproject")
+               " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            ;; FileNotFoundError: [Errno 2] No such file or directory:
+            ;; '/homeless-shelter/.config'
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-arraydiff
+           python-pytest-doctestplus
+           python-reproject
+           python-setuptools
+           python-setuptools-scm
+           python-streamtracer
+           python-sympy
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-scikit-image
+           python-scipy
+           python-sunpy))
+    (home-page "https://docs.sunpy.org/projects/sunkit-magex")
+    (synopsis "Solar Magnetic field Extrapolation")
+    (description
+     "This package provides a set of tools for the modelling of magnetic field
+data.  It is a SunPy affiliated package and is built on top of @code{sunpy}
+and @code{astropy}.")
+    ;; This project is Copyright (c) The SunPy Community and licensed under
+    ;; the terms of the GNU GPL v3+ license.  This package is based upon the
+    ;; Openastronomy packaging guide which is licensed under the BSD 3-clause
+    ;; license. See the licenses folder for more information.
+    (license (list license:gpl3+ license:bsd-3))))
+
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
