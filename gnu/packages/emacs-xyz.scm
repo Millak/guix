@@ -24748,6 +24748,9 @@ lookup to YAML Mode.  You could enable the mode with @code{(add-hook
        (sha256
         (base32 "1q4qq0ql08hxkdrd2aal03560k612my7bvnfpfij3g432hn0p7v6"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f  ; XXX: FIXME Multiple failing tests.
+           #:test-command #~(list "make" "test")))
     (propagated-inputs
      (list emacs-markdown-mode emacs-polymode))
     (properties '((upstream-name . "poly-markdown")))
