@@ -305,7 +305,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
 (define-public vulkan-headers/no-loader
   (package
     (name "vulkan-headers")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
        (method git-fetch)
@@ -315,7 +315,7 @@ Enhanced Subpixel Morphological Anti-Aliasing
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "13mmv5621z73hlfnsrccbcb4z0d7kwj92a081701vbpss45a4whj"))))
+         "0ncj4gqb5zmkgmd205frrq8rxxdqlissqpj2fq3wxkdbdyx7pwid"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; No tests.
