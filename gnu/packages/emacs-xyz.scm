@@ -39389,6 +39389,10 @@ It uses parseclj's shift-reduce parser internally.")
        (sha256
         (base32 "1iz7qbsq4whmb3iqy777jlm47chjp62313hc6nfcp0lfqsanmcmv"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "eldev" "--use-emacsloadpath" "-dtT" "-p" "test")))
+    (native-inputs (list emacs-eldev))
     (propagated-inputs (list emacs-a))
     (home-page "https://cider.mx")
     (synopsis "Clojure parser for Emacs Lisp")
