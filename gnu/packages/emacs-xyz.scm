@@ -32550,41 +32550,6 @@ classes like @command{<gtk-window>}.
 Emacs.")
     (license license:gpl3+)))
 
-(define-public emacs-matrix-client
-  (let ((commit "d2ac55293c96d4c95971ed8e2a3f6f354565c5ed"))
-    (package
-      (name "emacs-matrix-client")
-      (version (git-version "0.0.0" "6" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/jgkamat/matrix-client-el")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1scfv1502yg7x4bsl253cpr6plml1j4d437vci2ggs764sh3rcqq"))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-a
-             emacs-anaphora
-             emacs-dash
-             emacs-esxml
-             emacs-f
-             emacs-frame-purpose
-             emacs-ht
-             emacs-ov
-             emacs-rainbow-identifiers
-             emacs-request
-             emacs-s
-             emacs-tracking))
-      (home-page "https://github.com/jgkamat/matrix-client-el")
-      (synopsis "Matrix client for Emacs")
-      (description "@code{matrix-client} is a simple chat UI to Matrix.org
-rooms.  It also provides an API which allows Emacs to seamlessly create
-RPC channels with users and other software.")
-      (license license:gpl3+))))
-
 (define-public emacs-sesman
   (package
     (name "emacs-sesman")
