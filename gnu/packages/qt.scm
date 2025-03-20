@@ -313,7 +313,7 @@ window managers, that don't provide Qt integration by themselves.")
 (define-public kddockwidgets
   (package
     (name "kddockwidgets")
-    (version "2.1.0")
+    (version "2.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -322,7 +322,7 @@ window managers, that don't provide Qt integration by themselves.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s4s0y8kvkyf15d5kzcd5wik7n1jj9mxrmc60irlacfy93hmdaw0"))))
+                "0d0pxynlyfgavf6l1b1z7zpmbrzm96hkphnqnalr7mshm147450g"))))
     (build-system cmake-build-system)
     (arguments (list #:configure-flags #~(list
                                           "-DKDDockWidgets_QT6=ON"
