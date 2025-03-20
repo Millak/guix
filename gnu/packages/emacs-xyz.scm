@@ -14554,6 +14554,18 @@ perspective only its buffers are available by default.")
         (base32
          "0y29vyvqdfxcpmzkyv2c6msbshx2f680izk2r0djrqj08ii8zmpr"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "buttercup" "-L" "." "-L" "tests")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'tests-add-lexical-bindings
+                 (lambda _
+                   (substitute* "tests/test-persp-mode.el"
+                     (("\\(require 'buttercup-init\\)" all)
+                      (string-append ";;; -*- lexical-binding: t; -*-\n"
+                                     all))))))))
+    (native-inputs (list emacs-buttercup))
     (home-page "https://github.com/Bad-ptr/persp-mode.el")
     (synopsis "Switch between named \"perspectives\" shared among frames")
     (description
