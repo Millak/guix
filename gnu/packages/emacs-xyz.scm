@@ -31675,8 +31675,16 @@ buffers – other modes on the TODO list).
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0rjr5q73609bs8gx2h5lp7c7bk5nkplfqfd56ifwdrdzdfzn5khy"))))
+         "0rjr5q73609bs8gx2h5lp7c7bk5nkplfqfd56ifwdrdzdfzn5khy"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (delete-file-recursively "screenshots")
+                    ;; Contents of makem package, but no tests.
+                    (for-each delete-file
+                              '("makem.sh" "Makefile"))))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f)) ; No tests in source.
     (propagated-inputs
      (list emacs-async
            emacs-dash
