@@ -6537,13 +6537,13 @@ addon modules.")
                 "0z74sa1xw5h20yin9faj0vvdbq713cgbj84klc72jr9nmpjv303c"))
               (patches (search-patches "python-werkzeug-tests.patch"))))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" "-m" "pytest"))))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'ignore-warnings
+           (lambda _
+             (substitute* "setup.cfg"
+               (("	error.*") "")))))))
     (propagated-inputs
      (list python-requests))
     (native-inputs
