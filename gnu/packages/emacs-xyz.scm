@@ -34089,7 +34089,8 @@ and Projectile.")
                           dir))))))))
     (build-system emacs-build-system)
     (arguments
-     (list #:include #~(cons "^icons\\/" %default-include)))
+     (list #:tests? #f ; No tests.
+           #:include #~(cons "^icons\\/" %default-include)))
     (propagated-inputs
      (list emacs-lsp-mode emacs-treemacs))
     (home-page "https://github.com/emacs-lsp/lsp-treemacs")
