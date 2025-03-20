@@ -683,7 +683,7 @@ skipping loader dispatch overhead.")
 (define-public vulkan-memory-allocator
   (package
     (name "vulkan-memory-allocator")
-    (version "3.0.1")
+    (version "3.2.1")
     (source
      (origin
        (method git-fetch)
@@ -694,7 +694,7 @@ skipping loader dispatch overhead.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1hpzjwl5bgqv9hmf1fdldihfllcbdg515f391a200klg0rnixdds"))))
+         "0y8ccx080bqrgv71ggixxpl57vc5znq55rnvl4v4srfkjxhz6yiy"))))
     (build-system cmake-build-system)
     (arguments
      ;; no test
