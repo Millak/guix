@@ -10090,6 +10090,9 @@ for Flow files.")
      (list
       #:include #~(cons "\\.py$" %default-include)
       #:emacs emacs-no-x                ;need libxml support
+      #:tests? #f  ; Tests require a tty.
+      #:test-command
+      #~(list "emacs" "-l" "test-home/classic.el" "example.org")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'specify-python-location
