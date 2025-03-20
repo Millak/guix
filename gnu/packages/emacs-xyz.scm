@@ -39376,6 +39376,10 @@ data, including buffers, window configuration, variables, and more.")
        (sha256
         (base32 "0b2jralm5lm4z4lpkn8ygzfga67xsalaszc8gqqv36khmz2mrckc"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "eldev" "--use-emacsloadpath" "-dtT" "-p" "test")))
+    (native-inputs (list emacs-eldev))
     (propagated-inputs
      (list emacs-a emacs-parseclj))
     (home-page "https://cider.mx")
