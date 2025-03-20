@@ -41136,6 +41136,8 @@ Features:
         (base32 "19xwwpfcf0l9jh7xixyjd5adivj27jw00zvxb7n1240k5p332pzi"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f)) ; No tests.
     (home-page "https://github.com/JonWaltman/pcmpl-args.el")
     (synopsis "Enhanced shell command completion")
     (description
