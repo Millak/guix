@@ -8088,7 +8088,7 @@ to display dialog boxes from the commandline and shell scripts.")
 (define-public mutter
   (package
     (name "mutter")
-    (version "46.8")
+    (version "46.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8096,7 +8096,7 @@ to display dialog boxes from the commandline and shell scripts.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0qn9w74a3ycz2ms2avld8zwhcyw3gwhnqs6asxkqafzv99a87h7v"))))
+                "0ab4xbh72kd28zvhawkdfl04dkdcy57xapy977mx6q605zv1y1xm"))))
     ;; NOTE: Since version 3.21.x, mutter now bundles and exports forked
     ;; versions of cogl and clutter.  As a result, many of the inputs,
     ;; propagated-inputs, and configure flags used in cogl and clutter are
@@ -8116,6 +8116,9 @@ to display dialog boxes from the commandline and shell scripts.")
                         #$output "/lib/mutter-14")
          ;; Disable systemd support.
          "-Dsystemd=false"
+         ;; The native-unit test suite appears flaky (see:
+         ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/3909).
+         "-Dnative_tests=false"
          ;; Don't install tests.
          "-Dinstalled_tests=false"
          ;; The following flags are needed for the bundled clutter
@@ -8154,11 +8157,18 @@ to display dialog boxes from the commandline and shell scripts.")
                       (string-append #$output "/lib/udev"))))
           (add-after 'unpack 'disable-problematic-tests
             (lambda _
-              ;; The 'sync' variant of the X11 test fails for unknown reason
-              ;; (see: https://gitlab.gnome.org/GNOME/mutter/-/issues/3910).
-              (substitute* "src/tests/meson.build"
-                (("foreach mode: \\['', 'sync'\\]")
-                 "foreach mode: ['']"))))
+              (with-directory-excursion "src/tests"
+                (substitute* "meson.build"
+                  ;; The 'sync' variant of the X11 test fails for unknown reason
+                  ;; (see: https://gitlab.gnome.org/GNOME/mutter/-/issues/3910).
+                  (("foreach mode: \\['', 'sync'\\]")
+                   "foreach mode: ['']"))
+                (substitute* "clutter/conform/meson.build"
+                  ;; TODO: Re-instate the gesture test in a 47+ release.
+                  ;; The conform/gesture test fails non-deterministically on
+                  ;; some machines (see:
+                  ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/3521#note_2385427).
+                  ((".*'gesture',.*") "")))))
           (replace 'check
             (lambda* (#:key tests? test-options parallel-tests?
                       #:allow-other-keys)
@@ -8182,10 +8192,6 @@ to display dialog boxes from the commandline and shell scripts.")
 
                 (invoke "glib-compile-schemas" (getenv "GSETTINGS_SCHEMA_DIR"))
                 (invoke "pipewire" "--version") ;check for pipewire
-                ;; XXX: If the 'native-test' test fails, try increasing the
-                ;; sleep here (see:
-                ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/3909).
-                (system "pipewire & sleep 10") ;always returns 0 due to forking
 
                 (setenv "MESON_TESTTHREADS"
                         (if parallel-tests?
