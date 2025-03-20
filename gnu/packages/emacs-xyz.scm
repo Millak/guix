@@ -25627,6 +25627,7 @@ close, copy, cut, paste, undo, redo.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:test-command #~(list "make" "test")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'extract-el-file
