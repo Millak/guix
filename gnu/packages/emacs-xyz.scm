@@ -18094,17 +18094,24 @@ implementation.")
         (base32 "02lilk85a7h9wxxvxr6k69p12wslbl9xp3jkcbdn11078fwhif6j"))))
     (build-system emacs-build-system)
     (arguments
-     '(#:include (cons* "^lein\\.sh$" "^clojure\\.sh$" %default-include)
-       #:exclude                        ;don't exclude 'cider-test.el'
-       '("^\\.dir-locals\\.el$" "^test/")
-       #:phases
-       ;; XXX: file "test/cider-tests.el" contains a bogus "/bin/command"
-       ;; string, and `patch-el-files' phase chokes on it (even though the
-       ;; file is excluded from installation).  Remove the phase altogether
-       ;; since there is no "/bin/executable" to replace in the code base
-       ;; anyway.
-       (modify-phases %standard-phases
-         (delete 'patch-el-files))))
+     (list
+      #:include #~(cons* "^lein\\.sh$" "^clojure\\.sh$" %default-include)
+      #:exclude                        ;don't exclude 'cider-test.el'
+      #~(list "^\\.dir-locals\\.el$" "^test/")
+      #:test-command
+      #~(list "eldev" "--use-emacsloadpath" "-dtT" "-p" "test")
+      #:phases
+      ;; XXX: file "test/cider-tests.el" contains a bogus "/bin/command"
+      ;; string, and `patch-el-files' phase chokes on it (even though the
+      ;; file is excluded from installation).  Remove the phase altogether
+      ;; since there is no "/bin/executable" to replace in the code base
+      ;; anyway.
+      #~(modify-phases %standard-phases
+          (delete 'patch-el-files)
+          (add-before 'check 'skip-failing-tests
+            (lambda _ ;; Require network.
+              (delete-file "test/cider-jar-tests.el"))))))
+    (native-inputs (list emacs-buttercup emacs-eldev))
     (propagated-inputs
      (list emacs-clojure-mode
            emacs-parseedn
