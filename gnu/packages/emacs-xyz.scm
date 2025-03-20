@@ -208,6 +208,7 @@
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages ebook)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages emacs-build)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
@@ -6979,33 +6980,6 @@ function.  For example, using the @code{next-error} function gets you to the
 next matching page.")
       (license license:gpl3+))))
 
-(define-public emacs-dash
-  (package
-    (name "emacs-dash")
-    (version "2.20.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/magnars/dash.el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "092kf61bi6dwl42yng69g3y55ni8afycqbpaqx9wzf8frx9myg6m"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'disable-byte-compile-error-on-warn
-                 (lambda _
-                   (substitute* "Makefile"
-                     (("\\(setq byte-compile-error-on-warn t\\)")
-                      "(setq byte-compile-error-on-warn nil)")))))))
-    (home-page "https://github.com/magnars/dash.el")
-    (synopsis "Modern list library for Emacs")
-    (description "This package provides a modern list API library for Emacs.")
-    (license license:gpl3+)))
-
 (define-public emacs-bui
   (package
     (name "emacs-bui")
@@ -7533,28 +7507,6 @@ allowing you to visit all previous states of the document if you need.")
 which is restored where possible when the file is loaded again.")
       (license license:gpl3+))))
 
-(define-public emacs-s
-  (package
-    (name "emacs-s")
-    (version "1.13.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/magnars/s.el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "010i92kagqbfis46n1ffa28fgkdkjp55n13b6f4izar5r7ixm6wx"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:test-command '("./run-tests.sh")))
-    (home-page "https://github.com/magnars/s.el")
-    (synopsis "Emacs string manipulation library")
-    (description "This package provides an Emacs library for manipulating
-strings.")
-    (license license:gpl3+)))
-
 (define-public emacs-inflections
   (package
     (name "emacs-inflections")
@@ -7787,29 +7739,6 @@ Markdown files.")
 You can check timelines, tweet, mark posts as favorites and so on with
 Emacs.")
     (license license:gpl2+)))
-
-(define-public emacs-f
-  (package
-    (name "emacs-f")
-    (version "0.21.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rejeep/f.el")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ccrcfhqfbv9qff38sfym69mai7k7z89yndi6nip8wi5hpd2addc"))))
-    (build-system emacs-build-system)
-    (arguments (list #:tests? #f))      ; circular dependency on ert-runner
-    (propagated-inputs
-     (list emacs-s emacs-dash))
-    (home-page "https://github.com/rejeep/f.el")
-    (synopsis "Emacs API for working with files and directories")
-    (description "This package provides an Emacs library for working with
-files and directories.")
-    (license license:gpl3+)))
 
 (define-public emacs-fountain-mode
   (package
@@ -8083,33 +8012,6 @@ Godot game engine in Emacs.  It features all the essentials, e.g., syntax
 highlighting, code folding, indentation, automatic pairing, auto-completion,
 and code formatting.")
     (license license:gpl3+)))
-
-(define-public emacs-el-mock
-  (let ((commit "6cfbc9de8f1927295dca6864907fe4156bd71910")
-        (revision "1"))
-    (package
-      (name "emacs-el-mock")
-      (version (git-version "1.25.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/rejeep/el-mock.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "09c3a1771v6kliwj0bn953pxxyjlk6q9kp31cxcr0nraik7d0mhk"))))
-      (build-system emacs-build-system)
-      (native-inputs (list emacs-ert-runner
-                           emacs-ert-expectations
-                           emacs-undercover))
-      (home-page "https://github.com/rejeep/el-mock.el")
-      (synopsis "Tiny mock and stub framework in Emacs Lisp")
-      (description
-       "Emacs Lisp Mock is a library for mocking and stubbing using readable
-syntax.  Most commonly Emacs Lisp Mock is used in conjunction with Emacs Lisp
-Expectations, but it can be used in other contexts.")
-      (license license:gpl3+))))
 
 (define-public emacs-ecukes
   (package
@@ -8755,50 +8657,6 @@ ERC, an Emacs client for IRC (Internet Relay Chat).  It relies on the
 @code{erc-track} module, and displays all the same information
 @code{erc-track} does in the mode line, but in an alternative format.")
       (license license:gpl3+))))
-
-(define-public emacs-shut-up
-  (package
-    (name "emacs-shut-up")
-    (version "0.3.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cask/shut-up")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bnmrwrhra6cpc3jjgwwzrydj5ps7q2dlkh2ag4j7rkyv4dlk351"))))
-    (build-system emacs-build-system)
-    (arguments (list #:tests? #f))      ; circular dependency on ert-runner
-    (home-page "https://github.com/cask/shut-up")
-    (synopsis "Silence Emacs")
-    (description "This package silences most output of Emacs when running an
-Emacs shell script.")
-    (license license:expat)))
-
-(define-public emacs-undercover
-  (package
-    (name "emacs-undercover")
-    (version "0.8.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/sviridov/undercover.el")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0qmvyy3xg5qi7ws8zcs934d6afsappr1a6pgfp796xpa9vdr4y6j"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-dash emacs-shut-up))
-    (home-page "https://github.com/sviridov/undercover.el")
-    (synopsis "Test coverage library for Emacs Lisp")
-    (description
-     "Undercover is a test coverage library for software written in Emacs
-Lisp.")
-    (license license:expat)))
 
 (define-public emacs-paren-face
   (package
@@ -10876,24 +10734,6 @@ interfaces, and even web browsers—piem is mostly about bridging some of these
 parts for convenience.")
     (license license:gpl3+)))
 
-(define-public emacs-ert-expectations
-  (package
-    (name "emacs-ert-expectations")
-    (version "0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri "https://www.emacswiki.org/emacs/download/ert-expectations.el")
-       (sha256
-        (base32
-         "0cwy3ilsid90abzzjb7ha2blq9kmv3gfp3icwwfcz6qczgirq6g7"))))
-    (build-system emacs-build-system)
-    (home-page "https://www.emacswiki.org/emacs/ert-expectations.el")
-    (synopsis "Simple unit test framework for Emacs Lisp")
-    (description "@code{emacs-ert-expectations} is a simple unit test
-framework for Emacs Lisp to be used with @code{ert}.")
-    (license license:gpl3+)))
-
 (define-public emacs-deferred
   (package
     (name "emacs-deferred")
@@ -11086,36 +10926,6 @@ Tree-sitter maintains a concrete syntax tree of your code; it gives
 Combobulate absolute clarity of all aspects of your code, enabling more
 correct movement and editing than you would otherwise have.")
       (license license:gpl3+))))
-
-(define-public emacs-compat
-  (package
-    (name "emacs-compat")
-    (version "30.0.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/emacs-compat/compat")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "020rn3l2sn0vzfhx30k47jd2cgvsddk0zfbizgb68hbajcxqfsl4"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.gnu.org/packages/compat.html")
-    (synopsis "Emacs Lisp compatibility library")
-    (description
-     "To allow for the usage of Emacs functions and macros that are defined
-in newer versions of Emacs, @code{compat.el} provides definitions that
-are installed ONLY if necessary.  These reimplementations of functions
-and macros are at least subsets of the actual implementations.  Be
-sure to read the documentation string to make sure.
-
-Not every function provided in newer versions of Emacs is provided
-here.  Some depend on new features from the core, others cannot be
-implemented to a meaningful degree.  The main audience for this
-library are not regular users, but package maintainers.  Therefore
-commands and user options are usually not implemented here.")
-    (license license:gpl3+)))
 
 (define-public emacs-company
   (package
@@ -22707,58 +22517,6 @@ comment out lines of code in evil mode.  It provides @code{gcc} to comment out
 lines, and @code{gc} to comment out the target of a motion.")
     (license license:gpl3+)))
 
-(define-public emacs-ansi
-  (let ((commit "2367fba7b3b2340364a30cd6de7f3eb6bb9898a3")
-        (revision "2"))
-    (package
-      (name "emacs-ansi")
-      (version (git-version "0.4.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/rejeep/ansi.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1n7h6l4icm6lks3zpvd83j1fzrnspw19rmz7c96vy7pdh1y4v3p3"))))
-      (build-system emacs-build-system)
-      ;; Tests for emacs-ansi have a circular dependency with ert-runner, and
-      ;; therefore cannot be run
-      (arguments (list #:tests? #f))
-      (home-page "https://github.com/rejeep/ansi.el")
-      (synopsis "Convert strings to ANSI")
-      (description "@code{emacs-ansi} defines functions that turns simple
-strings to ANSI strings.  Turning a string into an ANSI string can be to add
-color to a text, add color in the background of a text or adding a style, such
-as bold, underscore or italic.")
-      (license license:gpl3+))))
-
-(define-public emacs-commander
-  (package
-    (name "emacs-commander")
-    (version "0.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/rejeep/commander.el")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1j6hhyzww7wfwk6bllbb5mk4hw4qs8hsgfbfdifsam9c6i4spm45"))))
-    (build-system emacs-build-system)
-    ;; Tests for emacs-commander have a circular dependency with ert-runner, and
-    ;; therefore cannot be run
-    (arguments (list #:tests? #f))
-    (propagated-inputs
-     (list emacs-dash emacs-f emacs-s))
-    (home-page "https://github.com/rejeep/commander.el")
-    (synopsis "Emacs command line parser")
-    (description "@code{emacs-commander} provides command line parsing for
-Emacs.")
-    (license license:gpl3+)))
-
 (define-public emacs-eglot
   (package
     (name "emacs-eglot")
@@ -22943,59 +22701,6 @@ variable instead, to remind you of that variable's meaning.")
      "This package displays ElDoc documentations in a childframe.  The
 childfrme is selectable and scrollable with mouse, even thought the cursor is
 hidden.")
-    (license license:gpl3+)))
-
-(define-public emacs-ert-runner
-  (package
-    (name "emacs-ert-runner")
-    (version "0.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/rejeep/ert-runner.el")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "08gygn9fjank5gpi4v6ynrkn0jbknxbwsn7md4p9ndygdbmnkf98"))))
-    (build-system emacs-build-system)
-    (inputs
-     (list bash-minimal
-           emacs-ansi
-           emacs-commander
-           emacs-dash
-           emacs-f
-           emacs-s
-           emacs-shut-up))
-    ;; Tests for ert-runner have a circular dependency with ecukes, and therefore
-    ;; cannot be run
-    (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (source-directory (string-append
-                                      (getenv "TMPDIR") "/source")))
-               (substitute* "bin/ert-runner"
-                 (("ERT_RUNNER=\"\\$\\(dirname \\$\\(dirname \\$0\\)\\)")
-                  (string-append "ERT_RUNNER=\"" (elpa-directory out))))
-               (install-file "bin/ert-runner" (string-append out "/bin"))
-               (wrap-program (string-append out "/bin/ert-runner")
-                 (list "EMACSLOADPATH" ":" 'prefix
-                       ;; Do not capture the transient source directory in
-                       ;; the wrapper.
-                       (delete source-directory
-                               (string-split (getenv "EMACSLOADPATH")
-                                             #\:))))))))
-       #:include (cons* "^reporters/.*\\.el$" %default-include)))
-    (home-page "https://github.com/rejeep/ert-runner.el")
-    (synopsis "Opinionated Ert testing workflow")
-    (description "@code{ert-runner} is a tool for Emacs projects tested
-using ERT.  It assumes a certain test structure setup and can therefore make
-running tests easier.")
     (license license:gpl3+)))
 
 (define-public emacs-doctest
@@ -26690,60 +26395,6 @@ temperature shifting tools and brightness adaption software.")
     (synopsis "Parsing Expression Grammars in Elisp")
     (description "This package provides a macro that parses the current buffer
 according to a parsing expression grammar.")
-    (license license:gpl3+)))
-
-(define-public emacs-eldev
-  (package
-    (name "emacs-eldev")
-    (version "1.11.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/emacs-eldev/eldev")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0sf8xyzblc0fs2d65jgcycavnzmrp1wg0sfr29gjkq1kvzyl7phb"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:test-command #~(list "./bin/eldev" "-p" "-dtTC" "test")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'prepare-for-tests
-            (lambda _
-              (setenv "ELDEV_LOCAL" (getcwd))
-              (make-file-writable "test/project-i/project-i-autoloads.el")))
-          (add-after 'unpack 'skip-failing-tests
-            ;; FIXME: 2 tests are failing.  Skip them for now.
-            (lambda _
-              (delete-file "test/upgrade-self.el")))
-          (add-after 'install 'install-eldev-executable
-            ;; This constructs the eldev executable from templates and
-            ;; installs it in the specified directory.
-            (lambda _
-              (let ((bin (string-append #$output "/bin"))
-                    (site-lisp (elpa-directory #$output)))
-                (mkdir-p bin)
-                (setenv "HOME" (getcwd))
-                (invoke "./install.sh" bin)
-                (substitute* (string-append bin "/eldev")
-                  ;; Point ELDEV_LOCAL to the installation directory so that
-                  ;; eldev doesn't try to bootstrap itself from MELPA when
-                  ;; invoked.
-                  (("export ELDEV_EMACS.*" all)
-                   (string-append "export ELDEV_LOCAL=" site-lisp "\n" all)))))))))
-    (native-inputs
-     (list texinfo))                    ;for tests
-    (home-page "https://github.com/emacs-eldev/eldev/")
-    (synopsis "Emacs-based build tool for Elisp")
-    (description "Eldev (Elisp Development Tool) is an Emacs-based build tool,
-targeted solely at Elisp projects.  It is an alternative to Cask.  Unlike
-Cask, Eldev itself is fully written in Elisp and its configuration files are
-also Elisp programs.  For those familiar with the Java world, Cask can be seen
-as a parallel to Maven — it uses project description, while Eldev is sort of a
-parallel to Gradle — its configuration is a program on its own.")
     (license license:gpl3+)))
 
 (define-public emacs-with-simulated-input
@@ -30950,35 +30601,6 @@ provided by other Emacs packages dealing with pass:
 image, rotate it, save modified images, and more.")
       (license license:gpl3+))))
 
-(define-public emacs-package-lint
-  (package
-    (name "emacs-package-lint")
-    (version "0.25")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/purcell/package-lint")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1fvi79pwlvvdakcmvf6jv9ba400lqfjsdcshg2q4rnj5v1a797pn"))))
-    (arguments
-     (list #:include #~(cons "^data/" %default-include)
-           #:tests? #f                  ; XXX: 8/92 tests failing
-           #:test-command #~(list "make" "test" "INIT_PACKAGES=t")))
-    (build-system emacs-build-system)
-    (propagated-inputs (list emacs-compat))
-    (home-page "https://github.com/purcell/package-lint")
-    (synopsis "Linting library for Elisp package authors")
-    (description
-     "This provides a list of issues with the Emacs package metadata of a file,
-e.g., the package dependencies it requires.  Checks will currently be enabled
-only if a @samp{Package-Requires:} or @samp{Package-Version:} header is
-present in the file.")
-    (license license:gpl3+)))
-
 (define-public emacs-packed
   (package
     (name "emacs-packed")
@@ -32980,38 +32602,6 @@ RPC channels with users and other software.")
 interactive session association with the current contexts (project, directory,
 buffers).  While sesman can be used to manage arbitrary sessions, it primary
 targets the Emacs based IDEs (CIDER, ESS, Geiser, Robe, SLIME etc.)")
-    (license license:gpl3+)))
-
-(define-public emacs-buttercup
-  (package
-    (name "emacs-buttercup")
-    (version "1.37")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jorgenschaefer/emacs-buttercup")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0gkw1lmy8ynralrs4xwqsd06ww09xk5yqjdgw4r5c0zhp5dxn4ky"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:test-command #~(list "make" "test")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'install-bin
-            (lambda _
-              (install-file "bin/buttercup"
-                            (string-append #$output "/bin")))))))
-    (home-page "https://github.com/jorgenschaefer/emacs-buttercup")
-    (synopsis "Behavior driven emacs lisp testing framework")
-    (description "Buttercup is a behavior-driven development framework for
-testing Emacs Lisp code.  It groups related tests so they can share
-common set-up and tear-down code, and allows the programmer to \"spy\" on
-functions to ensure they are called with the right arguments during testing.")
     (license license:gpl3+)))
 
 (define-public emacs-cort
@@ -35770,26 +35360,6 @@ navigation controls.")
     (description "This package provides a global minor mode to inhibit
 screensaver activation in EXWM.")
     (license (list license:gpl3+))))
-
-(define-public emacs-ert-async
-  (package
-    (name "emacs-ert-async")
-    (version "0.1.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/rejeep/ert-async.el")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0hn9i405nfhjd1h9vnwj43nxbbz00khrwkjq0acfyxjaz1shfac9"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/rejeep/ert-async.el")
-    (synopsis "Async support for ERT")
-    (description "This package allows ERT to work with asynchronous tests.")
-    (license license:gpl3+)))
 
 (define-public emacs-prodigy
   (package
