@@ -38573,6 +38573,8 @@ fish-completion.  It can be used in both Eshell and M-x shell.")
           (base32
            "1p62gg8nnb6kmb9mk66230p0ap0zwwzhzdxr3j34z5ls574vr6s7"))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f)) ; No tests despite Makefile.
       (propagated-inputs (list emacs-helm))
       (home-page "https://github.com/emacsorphanage/helm-themes")
       (synopsis "Emacs theme selection with Helm interface")
