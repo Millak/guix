@@ -6104,6 +6104,36 @@ users' sessions over extended periods of time.")
 library for Python")
     (license license:asl2.0)))
 
+(define-public python-authlib
+  (package
+    (name "python-authlib")
+    (version "1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "authlib" version))
+       (sha256
+        (base32 "0blpvz2v2r8yvsgm1yr3n61mhwxvh1b0kyf2rp0i4wv6n3n8bg2w"))))
+    (build-system pyproject-build-system)
+    ;; No tests target.
+    (arguments (list #:tests? #false))
+    (propagated-inputs
+     (list python-cryptography
+           python-django
+           python-flask
+           python-httpx
+           python-requests
+           python-sqlalchemy-2
+           python-starlette
+           python-werkzeug))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://pypi.org/project/Authlib/1")
+    (synopsis "Build OAuth and OpenID Connect servers and clients")
+    (description
+     "This is a Python library for building OAuth and OpenID Connect servers
+and clients.")
+    (license license:bsd-3)))
+
 (define-public python-flask-oidc
   (package
     (name "python-flask-oidc")
