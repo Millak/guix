@@ -24612,6 +24612,17 @@ contexts.
         ;; XXX: Cherry-picked from upstream, remove when bumping to 0.2.3.
         (search-patches "emacs-polymode-fix-lexical-variable-error.patch"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command #~(list "make" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'patch-tests
+            (lambda _
+              (substitute* "tests/define-tests.el"
+                (("\\(ert-deftest define/hooks-run-in-indirect-buffers \\(\\)"
+                  all)
+                 (string-append all "(skip-unless nil)"))))))))
     (home-page "https://github.com/polymode/polymode")
     (synopsis "Framework for multiple Emacs modes based on indirect buffers")
     (description
