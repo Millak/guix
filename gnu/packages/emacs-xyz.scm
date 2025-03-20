@@ -12226,6 +12226,9 @@ using @code{python-isort}.")
        (sha256
         (base32 "0q6bib9nr6xiq6npzbngyfcjk87yyvwzq1zirr3z1h5wadm34lsk"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "emacs" "--batch" "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-deferred))
     (home-page "https://github.com/tkf/emacs-python-environment")
