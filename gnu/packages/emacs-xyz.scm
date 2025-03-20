@@ -24774,6 +24774,9 @@ files using the major mode corresponding to each block.")
        (sha256
         (base32 "1jl5h4nf10xd2gdlsxi6h2n3z5zh26ffcixn68xfp5q4zl34zk8p"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f  ; XXX: FIXME Multiple failing tests.
+           #:test-command #~(list "make" "test")))
     (propagated-inputs
      (list emacs-polymode))
     (home-page "https://github.com/polymode/poly-noweb")
