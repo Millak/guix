@@ -8418,15 +8418,16 @@ result.")
         (base32 "1a5rdpmvsgsjlc9sywism9pq7jd6n9qbcdsvpbfkq1npwhpifkbj"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; The repository contains both ripgrep and projectile-ripgrep
-         ;; packages. The latter has been merged into projectile itself.
-         (add-after 'unpack 'delete-projectile-ripgrep
-           (lambda _
-             (delete-file "projectile-ripgrep.el"))))))
-    (propagated-inputs
-     (list ripgrep))
+     (list #:test-command #~(list "ert-runner")
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; The repository contains both ripgrep and projectile-ripgrep
+               ;; packages. The latter has been merged into projectile itself.
+               (add-after 'unpack 'delete-projectile-ripgrep
+                 (lambda _
+                   (delete-file "projectile-ripgrep.el"))))))
+    (native-inputs (list emacs-ert-runner))
+    (propagated-inputs (list ripgrep))
     (home-page "https://github.com/nlamirault/ripgrep.el")
     (synopsis "Search using ripgrep from inside Emacs")
     (description "@code{ripgrep} is an Emacs search package based on the
@@ -34194,7 +34195,9 @@ interface for debuggers.")
         (base32 "177ira42l1p7zjb24c0vp4biip9sczlvbgzfahp4mhgfd9h8a6bx"))))
     (build-system emacs-build-system)
     (arguments
-     (list #:include #~(cons* "\\.png$" %default-include)))
+     (list #:include #~(cons* "\\.png$" %default-include)
+           #:test-command #~(list "ert-runner" "-L" ".")))
+    (native-inputs (list emacs-ert-runner))
     (propagated-inputs
      (list emacs-bui
            emacs-lsp-docker
