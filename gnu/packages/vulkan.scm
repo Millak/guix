@@ -470,7 +470,7 @@ API.")
   (package
     (name "shaderc")
     ;; shaderc doesn't follow the versioning scheme of vulkan sdk
-    (version "2024.0")
+    (version "2025.1")
     (source
      (origin
        (method git-fetch)
@@ -480,7 +480,7 @@ API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1m5jncn6y8c6g83f8nwh86hz33mvv03x7fyr5zq0ynwanrcpn2hb"))))
+         "0hbsvyyy5fzgal83z8kx4a3x9d2fnd2fcs53l3s9n0pyybip3i5j"))))
     (build-system cmake-build-system)
     (arguments
      `(;; FIXME: Skip most of the tests, because enabling system gtest breaks
