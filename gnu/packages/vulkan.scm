@@ -580,7 +580,7 @@ shader compilation.")
 (define-public vulkan-validationlayers
   (package
     (name "vulkan-validationlayers")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -595,7 +595,7 @@ shader compilation.")
                            "")))
               (sha256
                (base32
-                "1w6fsaicrgnzkj5vz2v86a2gk1n7478q6n66ac2920avnin9a64c"))))
+                "1dvgbgfxcp3ypy06j5m561j1gag0hk40zqd477cdv1kizv6i7nsk"))))
     (build-system cmake-build-system)
     (inputs (list glslang
                   libxrandr
