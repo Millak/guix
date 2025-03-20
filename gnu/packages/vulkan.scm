@@ -8,6 +8,7 @@
 ;;; Copyright © 2022, 2024 dan <i@dan.games>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,7 +53,7 @@
 (define-public spirv-headers
   (package
     (name "spirv-headers")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
        (method git-fetch)
@@ -61,7 +62,7 @@
              (commit (string-append "vulkan-sdk-" version))))
        (sha256
         (base32
-         "17jw5gwj2vmicyd6522b1zp7x551krfj826j0fg5kl0ixv0q08wk"))
+         "15l35w60sbw1i3a48057hvpvldf0lrlfmkz73bp456g2jn5vln23"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
