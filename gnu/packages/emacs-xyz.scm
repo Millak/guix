@@ -28988,7 +28988,18 @@ perform regression test for packages that provide font-lock rules.")
       (build-system emacs-build-system)
       (arguments
        (list
-        #:include #~(list "\\.el$" "\\.rkt$")))
+        #:include #~(list "\\.el$" "\\.rkt$")
+        #:test-command #~(list "make" "test")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'pre-check
+              (lambda _
+                (setenv "HOME" (dirname (getcwd)))
+                (substitute* "test/racket-tests.el"
+                  (("\\(ert-deftest racket-tests/(repl|run) .*" all)
+                   (string-append all "(skip-unless nil)"))))))))
+      (native-inputs
+       (list racket))
       (propagated-inputs
        (list emacs-faceup emacs-paredit emacs-pos-tip emacs-s))
       (home-page "https://www.racket-mode.com/")
