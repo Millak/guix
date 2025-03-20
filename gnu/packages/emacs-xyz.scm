@@ -36962,8 +36962,22 @@ text-property translator.")
                    "modules/org-noter-org-roam.el"
                    "modules/org-noter-pdf.el")
            #:exclude
-           #~(list "emacs-devel.el")))
-    (native-inputs (list emacs-log4e emacs-with-simulated-input))
+           #~(list "emacs-devel.el")
+           #:tests? #f ; Multiple failures with "Not at a drawer"
+           #:test-command
+           #~(list "buttercup" "-L" ".")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'pre-check
+                 (lambda _
+                   (setenv "HOME" (dirname (getcwd))))))))
+    (native-inputs (list emacs-buttercup
+                         emacs-djvu
+                         emacs-log4e
+                         emacs-nov-el
+                         emacs-org-roam
+                         emacs-pdf-tools
+                         emacs-with-simulated-input))
     (propagated-inputs (list emacs-org))
     (home-page "https://github.com/org-noter/org-noter")
     (synopsis "Synchronized, Org-mode, document annotator")
