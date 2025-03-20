@@ -1,0 +1,66 @@
+From 5396f4d6312b24eac79da2f70279df773443fd10 Mon Sep 17 00:00:00 2001
+From: Nicolas Graves <ngraves@ngraves.fr>
+Date: Wed, 19 Mar 2025 13:02:47 +0100
+Subject: [PATCH] Replace git.
+
+---
+ makem.sh | 34 +++++-----------------------------
+ 1 file changed, 5 insertions(+), 29 deletions(-)
+
+diff --git a/makem.sh b/makem.sh
+index fd81e0f..4ec9577 100755
+--- a/makem.sh
++++ b/makem.sh
+@@ -385,34 +385,13 @@ function byte-compile-file {
+ 
+ # ** Files
+ 
+-function submodules {
+-    # Echo a list of submodules's paths relative to the repo root.
+-    # TODO: Parse with bash regexp instead of cut.
+-    git submodule status | awk '{print $2}'
+-}
+-
+-function project-root {
+-    # Echo the root of the project (or superproject, if running from
+-    # within a submodule).
+-    root_dir=$(git rev-parse --show-superproject-working-tree)
+-    [[ $root_dir ]] || root_dir=$(git rev-parse --show-toplevel)
+-    [[ $root_dir ]] || error "Can't find repo root."
+-
+-    echo "$root_dir"
+-}
+-
+ function files-project {
+     # Echo a list of files in project; or with $1, files in it
+-    # matching that pattern with "git ls-files".  Excludes submodules.
+-    [[ $1 ]] && pattern="/$1" || pattern="."
+-
+-    local excludes
+-    for submodule in $(submodules)
+-    do
+-        excludes+=(":!:$submodule")
+-    done
+-
+-    git ls-files -- "$pattern" "${excludes[@]}"
++    # matching that pattern with "find".
++    if [[ $1 ]]
++    then find . -type f -name "$1" | sed 's|^\./||'
++    else find . -type f | sed 's|^\./||'
++    fi
+ }
+ 
+ function dirs-project {
+@@ -1223,9 +1202,6 @@ paths_temp+=("$package_initialize_file")
+ 
+ trap cleanup EXIT INT TERM
+ 
+-# Change to project root directory first.
+-cd "$(project-root)"
+-
+ # Discover project files.
+ files_project_feature=($(files-project-feature))
+ files_project_test=($(files-project-test))
+-- 
+2.48.1
+

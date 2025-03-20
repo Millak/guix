@@ -522,3 +522,62 @@ Lisp.")
       (description "This package provides a makefile to help checking Emacs
 packages.")
       (license license:gpl3+))))
+
+;; This is an alternative version patches for internal Guix tests.
+;; The user-facing version is in emacs-xyz.scm
+(define-public makem-minimal
+  (package
+    (name "makem")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alphapapa/makem.sh")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xqwfxkxgpcm3k2m2shwkwrm4asl59ik8867c3k1iwfj8xzfp089"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (delete-file-recursively "images")))))
+    (build-system emacs-build-system)
+    (arguments
+     (let ((patch (local-file
+                   (car (search-patches "makem-replace-git.patch")))))
+       (list
+        #:tests? #f
+        #:modules
+        '((guix build emacs-build-system)
+          (guix build utils)
+          (guix build emacs-utils)
+          (srfi srfi-26))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-file
+              (lambda* (#:key inputs #:allow-other-keys)
+                (invoke (search-input-file inputs "bin/patch")
+                        "--force" "--no-backup-if-mismatch"
+                        "-p1" "--input" #$patch)))
+            (add-after 'install 'install-bin
+              (lambda _
+                (let ((bin (string-append #$output "/bin")))
+                  (mkdir-p bin)
+                  (install-file "makem.sh" bin))))
+            (add-after 'install-bin 'wrap-script
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (wrap-program (string-append #$output "/bin/makem.sh")
+                  `("PATH" ":" prefix
+                    ,(map dirname
+                          (map (cut search-input-file inputs <>)
+                               (list "bin/find"
+                                     "bin/grep"
+                                     "bin/sed")))))))))))
+    (native-inputs (list patch))
+    (inputs
+     (list coreutils-minimal grep sed util-linux))  ; for getopt
+    (home-page "https://github.com/alphapapa/makem.sh")
+    (synopsis "Makefile-like script to help checking Emacs packages")
+    (description "This package provides a Makefile-like script and a transient
+menu for linting and testing Emacs packages.")
+    (license license:gpl3+)))
