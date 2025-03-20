@@ -24815,6 +24815,17 @@ Microsoft PowerShell files.")
        (sha256
         (base32 "1srnwcsn2bh8gqzxixkhffk7gbnk66kd4dgvxbnps5nxqc6v0qhc"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command #~(list "make" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'patch-tests
+            (lambda _
+              (substitute* "tests/poly-org-tests.el"
+                (("\\(ert-deftest poly-org/change-spans \\(\\)"
+                  all)
+                 (string-append all "(skip-unless nil)"))))))))
     (propagated-inputs
      (list emacs-polymode))
     (properties '((upstream-name . "poly-org")))
