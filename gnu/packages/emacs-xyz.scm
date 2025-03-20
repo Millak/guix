@@ -31628,20 +31628,21 @@ Tramp's own encoding methods for moving data between systems.")
     (license license:gpl3+)))
 
 (define-public emacs-pcre2el
-  (let ((commit "018531ba0cf8e2b28d1108136a0e031b6a45f1c1")) ;version bump
+  (let ((commit "b4d846d80dddb313042131cf2b8fbf647567e000")
+        (revision "0"))
     (package
       (name "emacs-pcre2el")
-      (version "1.12")
+      (version (git-version "1.12" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/joddie/pcre2el")
-               (commit version)))
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "09mzgrxcxr0a4k45k469vj9yh5ld8pi6v6kph7wvjsjd71q9rj4s"))))
+           "0h73d9f1zj74vjir2kiq4s2g5rai7b59z7da20kh862xnldfcxsx"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/joddie/pcre2el")
       (synopsis "Convert between PCRE, Emacs and rx regexp syntax")
