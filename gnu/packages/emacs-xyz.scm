@@ -30655,6 +30655,9 @@ e.g: @code{from:Peter to:Anne flag:attach search term}.")
         (base32
          "19w24isddzamkikq17vbv3y7ha22i7wc09d2nqw1j0qwhrrfkng9"))))
     (build-system emacs-build-system)
+    (arguments
+     ;; There's a test dir, but it's only for dev environment.
+     (list #:tests? #f))
     (propagated-inputs
      (list emacs-helm emacs-password-store))
     (home-page "https://github.com/emacs-helm/helm-pass")
