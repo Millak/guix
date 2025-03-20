@@ -11678,6 +11678,9 @@ characters and asynchronous fetching of completion candidates.")
        (sha256
         (base32 "1072lsin7dxadc0xyhy42wd0cw549axbbd4dy95wfmfcc1xbzjwv"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "ert-runner")))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/hvesalai/emacs-scala-mode")
     (synopsis "Emacs major mode for Scala")
     (description
