@@ -23742,10 +23742,12 @@ created by @code{git format-patch}, from @code{magit}, @code{dired} and
         (base32 "0p8c449nvn77bxmq1pinpw47lx6gj1k08yrxgi8bc8xrwkni9glp"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'install 'makeinfo
-                    (lambda _
-                      (invoke "makeinfo" "doc/git-email.texi"))))))
+     (list
+      #:tests? #f ; Makefile but no tests.
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'install 'makeinfo
+                     (lambda _
+                       (invoke "makeinfo" "doc/git-email.texi"))))))
     (inputs (list mu emacs-magit emacs-notmuch emacs-piem))
     (native-inputs (list texinfo))
     (license license:gpl3+)
