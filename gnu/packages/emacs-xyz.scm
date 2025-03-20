@@ -33693,6 +33693,8 @@ recursively.  The results are cached for speed.")
                (base32
                 "0yi73l7hm6x5pyalfmcv0mnklhc574xij35q8zkh6ahrnfbyv8ks"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f)) ; A makefile but no tests.
     (propagated-inputs
      (list emacs-dash emacs-magit))
     (synopsis "Support for Org links to Magit buffers")
