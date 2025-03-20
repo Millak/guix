@@ -34468,6 +34468,8 @@ files in Elisp.")
                  (base32
                   "0whjz5vh9xf35nvr5an52d7qsf2ayr2pfwvr37qhz1rjg0rv2kzd"))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f))  ; Makefile but no tests.
       (propagated-inputs
        (list emacs-dap-mode emacs-lsp-treemacs emacs-scala-mode))
       (home-page "https://github.com/emacs-lsp/lsp-metals")
