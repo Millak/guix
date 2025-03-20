@@ -16,6 +16,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Julian Flake <flake@uni-koblenz.de>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2020-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1595,13 +1596,13 @@ with the included @command{xfstests-check} helper.")
     (version "2.3.1")
     (outputs '("out" "module" "src"))
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/openzfs/zfs/releases"
-                            "/download/zfs-" version
-                            "/zfs-" version ".tar.gz"))
-        (sha256
-         (base32 "01lh3yxzh271hzzlgn4b5rj3wb4ckbhx08kfcgf0p4l6jdwk6ch5"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/openzfs/zfs/releases"
+                           "/download/zfs-" version
+                           "/zfs-" version ".tar.gz"))
+       (sha256
+        (base32 "01lh3yxzh271hzzlgn4b5rj3wb4ckbhx08kfcgf0p4l6jdwk6ch5"))))
     (build-system linux-module-build-system)
     (arguments
      (list
@@ -1702,24 +1703,33 @@ with the included @command{xfstests-check} helper.")
                 (("/sbin/modprobe")
                  (search-input-file inputs "/bin/modprobe")))))
           (replace 'build
-            (lambda _ (invoke "make")))
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+              (apply invoke "make"
+                     `(,@(if parallel-build?
+                             `("-j" ,(number->string (parallel-job-count)))
+                             '())
+                       ,@make-flags))))
           (replace 'install
-            (lambda* (#:key inputs native-inputs #:allow-other-keys)
-              (let* ((kmod (assoc-ref (or native-inputs inputs) "kmod")))
-                (invoke "make" "install"
-                        (string-append "DEFAULT_INITCONF_DIR="
-                                       #$output "/etc/default")
-                        (string-append "DEPMOD="
-                                       (search-input-file
-                                        (or native-inputs inputs)
-                                        "/bin/depmod"))
-                        (string-append "INSTALL_PATH=" #$output)
-                        (string-append "INSTALL_MOD_PATH=" #$output:module)
-                        "INSTALL_MOD_STRIP=1")
-                (install-file
-                 "contrib/bash_completion.d/zfs"
-                 (string-append #$output
-                                "/share/bash-completion/completions"))))))))
+            (lambda* (#:key inputs native-inputs
+                      make-flags parallel-build? #:allow-other-keys)
+              (apply invoke "make" "install"
+                     (string-append "DEFAULT_INITCONF_DIR="
+                                    #$output "/etc/default")
+                     (string-append "DEPMOD="
+                                    (search-input-file
+                                     (or native-inputs inputs)
+                                     "/bin/depmod"))
+                     (string-append "INSTALL_PATH=" #$output)
+                     (string-append "INSTALL_MOD_PATH=" #$output:module)
+                     "INSTALL_MOD_STRIP=1"
+                     `(,@(if parallel-build?
+                             `("-j" ,(number->string (parallel-job-count)))
+                             '())
+                       ,@make-flags))
+              (install-file
+               "contrib/bash_completion.d/zfs"
+               (string-append #$output
+                              "/share/bash-completion/completions")))))))
     (native-inputs
      (list attr kmod pkg-config))
     (inputs (list eudev
