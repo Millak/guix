@@ -644,7 +644,7 @@ use the Vulkan API.")
 (define-public vulkan-volk
   (package
     (name "vulkan-volk")
-    (version "1.3.280.0")
+    (version "1.4.304")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -653,7 +653,7 @@ use the Vulkan API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x4jhc8n9c4k8svmmcaxxs613xbsav7wam94gacddlm738cwp13v"))))
+                "0slgshhrr1l08wkc4n0ky2z670cfrnzw8gxdrznmja4ly13cc8pr"))))
     (build-system cmake-build-system)
     (arguments
      (list
