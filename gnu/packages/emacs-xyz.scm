@@ -34631,6 +34631,9 @@ real search.")
        (sha256
         (base32 "1xr78yw679swbl1bcwhk5k6qj1l9zr9nyl34ry2bpdryi370zkkp"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "make" "check-declare")))
     (propagated-inputs (list emacs-compat emacs-notmuch))
     (synopsis "Improved address completion for Notmuch")
     (description
