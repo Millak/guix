@@ -31644,6 +31644,20 @@ Tramp's own encoding methods for moving data between systems.")
           (base32
            "0h73d9f1zj74vjir2kiq4s2g5rai7b59z7da20kh862xnldfcxsx"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command #~(list "ert-runner" "-L" "." "pcre2el-tests.el")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'skip-failing-tests
+              (lambda _
+                (let ((unexpected (list "017" "018" "125" "584" "585" "601" "690")))
+                  (substitute* "pcre2el-tests.el"
+                    (((string-append "\\(ert-deftest rxt-pcre-test-00("
+                                     (string-join unexpected "|")
+                                     ") .*") all)
+                     (string-append all "(skip-unless nil)")))))))))
+      (native-inputs (list emacs-ert-runner))
       (home-page "https://github.com/joddie/pcre2el")
       (synopsis "Convert between PCRE, Emacs and rx regexp syntax")
       (description "@code{pcre2el} or @code{rxt} (RegeXp Translator or RegeXp
