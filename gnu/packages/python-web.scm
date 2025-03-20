@@ -6137,27 +6137,23 @@ and clients.")
 (define-public python-flask-oidc
   (package
     (name "python-flask-oidc")
-    (version "1.4.0")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "flask-oidc" version))
+       (uri (pypi-uri "flask_oidc" version))
        (sha256
         (base32
-         "0klgwpn2iy5y7011xh2c8zkryxdwkpxh7qjs3hp5cynl748ia4hc"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "nosetests")))))))
+         "1200xhqiqlqfmrq54v2p6cf3nny86njjw8r7sk5j59hlk9a683zk"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-flask python-itsdangerous python-oauth2client
-           python-six))
+     (list python-authlib
+           python-blinker
+           python-flask
+           python-requests
+           python-responses))
     (native-inputs
-     (list python-nose python-mock))
+     (list python-pytest python-poetry-core))
     (home-page "https://github.com/puiterwijk/flask-oidc")
     (synopsis "OpenID Connect extension for Flask")
     (description "@code{python-flask-oidc} provides an OpenID Connect extension
