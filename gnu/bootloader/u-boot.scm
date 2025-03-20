@@ -47,6 +47,7 @@
             u-boot-pinebook-bootloader
             u-boot-pinebook-pro-rk3399-bootloader
             u-boot-puma-rk3399-bootloader
+            u-boot-rock-4c-plus-rk3399-bootloader
             u-boot-rock64-rk3328-bootloader
             u-boot-rockpro64-rk3399-bootloader
             u-boot-sifive-unmatched-bootloader
@@ -251,6 +252,11 @@ is BLOCK-SIZE * COUNT, or FILE size if COUNT is not given."
    (inherit u-boot-bootloader)
    (package u-boot-puma-rk3399)
    (disk-image-installer install-puma-rk3399-u-boot)))
+
+(define u-boot-rock-4c-plus-rk3399-bootloader
+  (bootloader
+   (inherit u-boot-rockchip-bootloader)
+   (package u-boot-rock-4c-plus-rk3399)))
 
 (define u-boot-rock64-rk3328-bootloader
   (bootloader

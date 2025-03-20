@@ -683,6 +683,11 @@ The bootloader BOOTLOADER is installed to BOOTLOADER-TARGET."
                             "/dev/mmcblk0" ; SD card/eMMC (SD priority) storage
                             "ttyS2")) ; UART2 connected on the Pi2 bus
 
+(define rock-4c-plus-installation-os
+  (embedded-installation-os u-boot-rock-4c-plus-rk3399-bootloader
+                            "/dev/mmcblk0" ; SD card storage
+                            "ttyS2")) ;; Default UART as per the Linux DTS.
+
 (define rockpro64-installation-os
   (embedded-installation-os u-boot-rockpro64-rk3399-bootloader
                             "/dev/mmcblk0" ; SD card/eMMC (SD priority) storage

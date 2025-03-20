@@ -1492,6 +1492,13 @@ Documentation} for more information (for example by running @samp{info
 (define-public u-boot-firefly-rk3399
   (make-u-boot-rockchip-package "firefly" 'rk3399))
 
+(define-public u-boot-rock-4c-plus-rk3399
+  (let ((base (make-u-boot-rockchip-package
+               "rock-4c-plus" 'rk3399
+               '("CONFIG_USB=y"))))
+    (package
+      (inherit base))))
+
 (define-public u-boot-rockpro64-rk3399
   (let ((base (make-u-boot-rockchip-package
                "rockpro64" 'rk3399
