@@ -28,7 +28,7 @@
 ;;; Copyright © 2023 Andrew Kravchuk <awkravchuk@gmail.com>
 ;;; Copyright © 2024 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2024 bigbug <bigbookofbug@proton.me>
-;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Omar Bassam <omar.bassam88@gmail.com>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
@@ -382,7 +382,7 @@ interface.")
 (define-public clasp-cl
   (package
     (name "clasp-cl")
-    (version "2.6.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
@@ -390,16 +390,24 @@ interface.")
              "https://github.com/clasp-developers/clasp/releases/download/"
              version "/clasp-" version ".tar.gz"))
        (sha256
-        (base32 "10jjhcid6qp64gx29iyy5rqqijwy8hrvx66f0xabdj8w3007ky39"))))
+        (base32 "1sf8m0w3d4kagf4chb7viqndnr152crpsy979ll61krcfxaybc4j"))))
     (build-system gnu-build-system)
     (inputs
-     (list boost clang-15 fmt `(,gcc "lib") gmp libelf libunwind llvm-15))
+     (list boost clang-toolchain-19 fmt `(,gcc "lib") gmp libelf libunwind))
     (native-inputs
      (list binutils-gold ninja pkg-config sbcl))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (delete 'check)
+         (add-after 'unpack 'fix-sh-paths
+           (lambda _
+             (substitute* '("dependencies/quicklisp-client/asdf.lisp"
+                            "src/lisp/modules/asdf/uiop/run-program.lisp"
+                            "src/lisp/modules/asdf/uiop/launch-program.lisp"
+                            "src/lisp/regression-tests/extensions.lisp")
+               (("\"/bin/sh\"")
+                (string-append "\"" (which "sh") "\"")))))
          (add-after 'unpack 'patch-koga
            (lambda* _
              (call-with-port (open-file "src/koga/units.lisp" "a")
@@ -415,15 +423,16 @@ interface.")
                                     "/__fasls"))))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (clang (assoc-ref inputs "clang"))
-                   (ld-flags
-                    (string-join
-                     (apply append
-                            (map (lambda (f)
-                                   (list "-L" f "-rpath" f))
-                                 (string-split (getenv "LIBRARY_PATH") #\:)))
-                     ",")))
+             (let* ((out (assoc-ref outputs "out"))
+                    (clang (assoc-ref inputs "clang-toolchain"))
+                    (ld-flags (string-join
+                                (apply append
+                                  (map (lambda (f)
+                                         (list "-L" f "-rpath" f))
+                                       ;; prepend self in rpaths
+                                       (cons (string-append out "/lib")
+                                             (string-split (getenv "LIBRARY_PATH") #\:))))
+                                ",")))
                (invoke "sbcl"
                        "--script"
                        "./koga"
@@ -436,13 +445,23 @@ interface.")
                        "--package-path=/"
                        (string-append "--bin-path=" out "/bin")
                        (string-append "--lib-path=" out "/lib/clasp")
+                       (string-append "--dylib-path=" out "/lib")
+                       (string-append "--pkgconfig-path=" out "/lib/pkgconfig")
                        (string-append "--share-path=" out "/share/clasp")))))
          (replace 'build
-           (lambda* _
-             (invoke "ninja" "-C" "build")))
+           (lambda* (#:key parallel-build? #:allow-other-keys)
+             (let ((jobs (if parallel-build?
+                                (number->string (parallel-job-count))
+                                "1")))
+               (setenv "CLASP_BUILD_JOBS" jobs)
+               (invoke "ninja" "-C" "build" "-j" jobs))))
          (replace 'install
            (lambda* _
-             (invoke "ninja" "-C" "build" "install"))))))
+             (invoke "ninja" "-C" "build" "install")))
+         (add-after 'install 'install-lib
+             (lambda* (#:key outputs #:allow-other-keys)
+               (install-file "build/boehmprecise/lib/libclasp.so"
+                  (string-append (assoc-ref outputs "out") "/lib")))))))
     (home-page "https://clasp-developers.github.io/")
     (synopsis "Common Lisp implementation based on LLVM and C++")
     (description "Clasp is a new Common Lisp implementation that seamlessly
