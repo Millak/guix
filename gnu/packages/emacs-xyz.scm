@@ -13124,7 +13124,13 @@ started with 20 minutes.  All values are customizable.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gccih9wgi31m59flljw4cphfyhlfcqbjih91gkcnldq5z7n83nj"))))
+        (base32 "1gccih9wgi31m59flljw4cphfyhlfcqbjih91gkcnldq5z7n83nj"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (delete-file-recursively "images")
+                    ;; Contents of makem package, but no tests.
+                    (for-each delete-file
+                              '("makem.sh" "Makefile"))))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash
