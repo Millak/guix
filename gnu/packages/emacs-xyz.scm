@@ -26215,8 +26215,19 @@ a heuristic based on frequency and recency.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1y11rlnhi36lzhc1cagninv6hlcwbvj88xfr0g0xzpbzy7hys021"))))
+          (base32 "1y11rlnhi36lzhc1cagninv6hlcwbvj88xfr0g0xzpbzy7hys021"))
+         ;; Contents of makem package, but no tests.
+         (snippet #~(for-each delete-file '("makem.sh" "Makefile")))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'inject-makem
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (symlink (search-input-file inputs "/bin/makem.sh")
+                              "makem.sh"))))))
+      (native-inputs
+       (list makem-minimal))
       (propagated-inputs
        (list emacs-dash emacs-frecency emacs-helm emacs-org emacs-s))
       (home-page "https://github.com/alphapapa/org-recent-headings")
