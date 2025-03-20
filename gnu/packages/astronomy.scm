@@ -499,24 +499,29 @@ made to get a better separation of core libraries and applications.
 (define-public ccfits
   (package
     (name "ccfits")
-    (version "2.6")
+    (version "2.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://heasarc.gsfc.nasa.gov/docs/software/fitsio/ccfits/"
+             "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/ccfits/"
              "CCfits-" version ".tar.gz"))
        (sha256
-        (base32 "04l6na8vr5xadz3rbx62as79x1ch4994vbb625kx0dz5czdkkd1b"))))
+        (base32 "06mhvvdsaqvk3cc309gv6zd4lcxm5q5aialaq0n77gzczv94cdgn"))))
     (build-system cmake-build-system)
-    (inputs (list cfitsio))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON"
+              "-DTESTS=ON")))
+    (inputs (list cfitsio zlib))
     (home-page "https://heasarc.gsfc.nasa.gov/docs/software/fitsio/ccfits/")
     (synopsis "C++ interface to the CFITSIO")
     (description
      "CCfits is an object oriented interface to the cfitsio library.  It is
-designed to make the capabilities of cfitsio available to programmers working in
-C++.  It is written in ANSI C++ and implemented using the C++ Standard Library
-with namespaces, exception handling, and member template functions.")
+designed to make the capabilities of cfitsio available to programmers working
+in C++.  It is written in ANSI C++ and implemented using the C++ Standard
+Library with namespaces, exception handling, and member template functions.")
     (license (license:non-copyleft "file://License.txt"
                                    "See License.txt in the distribution."))))
 
