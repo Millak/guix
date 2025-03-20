@@ -429,7 +429,7 @@ and the ICD.")
 (define-public vulkan-tools
   (package
     (name "vulkan-tools")
-    (version "1.3.280.0")
+    (version "1.4.309.0")
     (source
      (origin
        (method git-fetch)
@@ -444,7 +444,7 @@ and the ICD.")
                      "// ASSERT_EQ(std::string(driver_properties.driverInfo)")))
        (sha256
         (base32
-         "0w0m04vscr4a6vr682g3mn7mfni740cmai9ylzlgfdggb77y58xz"))))
+         "0ywvvkra29y2cvw8i9laf4skn6cl7phrwshcc7z9dljb3il87cym"))))
     (build-system cmake-build-system)
     (inputs
      (list glslang libxrandr vulkan-loader wayland wayland-protocols))
