@@ -22076,6 +22076,10 @@ publishing them to various output formats such as HTML, LaTeX, or PDF.")
        (sha256
         (base32 "1n2ymd92qpvsby6ms0l3kjhdzzc47rri2aiscc6bs07hm4mjpr9q"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "emacs" "-Q" "-batch" "-L" "." "-l" "mustache-tests"
+                   "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-dash emacs-ht emacs-s))
     (home-page "https://github.com/Wilfred/mustache.el")
