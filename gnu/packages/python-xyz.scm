@@ -834,6 +834,63 @@ three consecutive points in a polyline or polygon
 @end itemize")
     (license license:expat)))
 
+(define-public python-streamtracer
+  (package
+    (name "python-streamtracer")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "streamtracer" version))
+       (sha256
+        (base32 "01ncr8q58xkz2dydjdg4a0c3kv4mpd6j1lzj4p0cmpg7jdi24cmr"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install))
+          (add-after 'install-python-module 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (add-after 'check 'check-python-module
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion #$output
+                  (invoke "pytest" "-vv"))))))
+      #:cargo-inputs
+      `(("rust-ndarray" ,rust-ndarray-0.16)
+        ("rust-numpy" ,rust-numpy-0.22)
+        ("rust-num-derive" ,rust-num-derive-0.4)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rayon-1" ,rust-rayon-1))
+      #:cargo-development-inputs
+      `(("rust-float-eq" ,rust-float-eq-1)
+        ("rust-pyo3" ,rust-pyo3-0.22))
+      #:install-source? #false))
+    (native-inputs
+     (list maturin
+           python-pytest
+           python-pytest-doctestplus
+           python-wrapper))
+    (propagated-inputs
+     (list python-numpy
+           python-packaging))
+    (home-page "https://github.com/sunpy/streamtracer")
+    (synopsis "Rapid streamline tracing in Python")
+    (description
+     "streamtracer is a Python package for rapid streamline tracing on
+regularly spaced grids.  The actual streamline tracing is done at a low level
+in Rust, with a nice Python API provided on top.")
+    (license license:gpl3+)))
+
 (define-public python-takethetime
   (package
     (name "python-takethetime")
