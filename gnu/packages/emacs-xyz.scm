@@ -42845,6 +42845,19 @@ local macros are documented in the docstring for @code{setup}.")
         (base32 "03iih7arjlfg8gdp4v2xglas9z519q1s11l28igr8l0m5y0pdrnk"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "emacs" "--batch" "-L" "test" "-l" "all-tests.el"
+              "-f" "ert-run-tests-batch-and-exit")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'patch-tests
+            (lambda _
+              (setenv "HOME" (dirname (getcwd)))
+              (substitute* "test/all-tests.el"
+                (("\\(file-truename \\(vc-git-root default-directory\\)\\)")
+                 (format #f "~s" (getcwd)))))))))
     (propagated-inputs (list emacs-map emacs-seq))
     (home-page "https://github.com/kaushalmodi/tomelr/")
     (synopsis "Emacs-Lisp library for converting S-expressions to TOML")
