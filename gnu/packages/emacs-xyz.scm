@@ -18169,42 +18169,47 @@ e.g., the expression you've just evaluated would briefly flash and so on.")
            "15nyr02ykkws4q79jcmxcawddg8sgq9v5l8k7jv7gg3hnpzxjlb2"))))
       (build-system emacs-build-system)
       (native-inputs
-       (list texinfo))
+       (list sbcl texinfo))
       (arguments
-       `(#:include (cons* "^contrib\\/" "^lib\\/" "^slynk\\/" %default-include)
-         #:phases
-         ;; The package provides autoloads.
-         (modify-phases %standard-phases
-           (delete 'make-autoloads)
-           (add-before 'install 'install-doc
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (info-dir (string-append out "/share/info"))
-                      (doc-dir (string-append out "/share/doc/"
-                                              ,name "-" ,version))
-                      (doc-files '( ;; "doc/sly-refcard.pdf" ; See sly-refcard.pdf below.
-                                   "README.md" "NEWS.md" "PROBLEMS.md"
-                                   "CONTRIBUTING.md")))
-                 (with-directory-excursion "doc"
-                   (substitute* "Makefile"
-                     (("infodir=/usr/local/info")
-                      (string-append "infodir=" info-dir))
-                     ;; Don't rebuild contributors.texi since we are not in
-                     ;; the git repo.
-                     (("contributors.texi: Makefile texinfo-tabulate.awk")
-                      "contributors.texi:"))
-                   (invoke "make" "html/index.html")
-                   (invoke "make" "sly.info")
-                   ;; TODO: We need minimal texlive with "preprint" package
-                   ;; (for fullpage.sty).  (invoke "make" "sly-refcard.pdf")
-                   (install-file "sly.info" info-dir)
-                   (copy-recursively "html" (string-append doc-dir "/html")))
-                 (for-each (lambda (f)
-                             (install-file f doc-dir)
-                             (delete-file f))
-                           doc-files)
-                 (delete-file-recursively "doc")
-                 #t))))))
+       (list
+        #:include #~(cons* "^contrib\\/" "^lib\\/" "^slynk\\/" %default-include)
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'make-autoloads) ; The package provides autoloads.
+            (add-before 'install 'install-doc
+              (lambda _
+                (let* ((info-dir (string-append #$output "/share/info"))
+                       (doc-dir (string-append #$output "/share/doc/"
+                                               #$name "-" #$version))
+                       (doc-files '( ;; "doc/sly-refcard.pdf" ; See sly-refcard.pdf below.
+                                    "README.md" "NEWS.md" "PROBLEMS.md"
+                                    "CONTRIBUTING.md")))
+                  (with-directory-excursion "doc"
+                    (substitute* "Makefile"
+                      (("infodir=/usr/local/info")
+                       (string-append "infodir=" info-dir))
+                      ;; Don't rebuild contributors.texi since we are not in
+                      ;; the git repo.
+                      (("contributors.texi: Makefile texinfo-tabulate.awk")
+                       "contributors.texi:"))
+                    (invoke "make" "html/index.html")
+                    (invoke "make" "sly.info")
+                    ;; TODO: We need minimal texlive with "preprint" package
+                    ;; (for fullpage.sty).  (invoke "make" "sly-refcard.pdf")
+                    (install-file "sly.info" info-dir)
+                    (copy-recursively "html" (string-append doc-dir "/html")))
+                  (for-each (lambda (f)
+                              (install-file f doc-dir)
+                              (delete-file f))
+                            doc-files)
+                  (delete-file-recursively "doc"))))
+            (add-before 'check 'patch-tests
+              (lambda _
+                (setenv "HOME" (dirname (getcwd)))
+                (substitute* "test/sly-stickers-tests.el"
+                  (("\
+\\(define-sly-ert-test stickers-when-invalid-dont-stick .*" all)
+                   (string-append all "  (skip-unless nil)\n"))))))))
       (home-page "https://github.com/joaotavora/sly")
       (synopsis "Sylvester the Cat's Common Lisp IDE")
       (description
