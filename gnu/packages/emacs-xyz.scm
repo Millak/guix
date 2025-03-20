@@ -34472,6 +34472,8 @@ files in Elisp.")
          (sha256
           (base32 "0qw824vdqk92r8hrrjsi7pd00rw60wf5jfjk1x3nhs06hijs0x0s"))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f)) ; No tests.
       (propagated-inputs (list emacs-dap-mode
                                emacs-lsp-mode
                                emacs-markdown-mode
