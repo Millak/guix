@@ -34674,6 +34674,9 @@ given search terms.")
        (sha256
         (base32 "00b0jzb6k629bwnrci36wmi2s48cddqva3v8b0bwz2ik43ba8d0n"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "make" "check-declare")))
     (propagated-inputs
      (list emacs-compat emacs-notmuch))
     (home-page "https://git.sr.ht/~tarsius/notmuch-maildir")
