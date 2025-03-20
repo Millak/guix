@@ -76,6 +76,7 @@
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 nik gaffney <nik@fo.am>
+;;; Copyright © 2025 Simon Streit <simon@netpanic.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3366,34 +3367,6 @@ environment or in a cluster.  The project can also be used to deploy
 virtualization environments using KVM/libvirt, Docker or LXC technologies to
 manage virtual machines and/or containers.")
     (license license:gpl3+)))
-
-(define-public emacs-ansible-doc
-  (let ((commit "86083a7bb2ed0468ca64e52076b06441a2f8e9e0"))
-    (package
-      (name "emacs-ansible-doc")
-      (version (git-version "0.4" "1" commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/lunaryorn/ansible-doc.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0lap404ch74w99n3xip176jr42b38xhyzkfnkyqg0g3wk2cd3aq8"))))
-      (build-system emacs-build-system)
-      ;; Unmaintained by upstream.
-      (home-page "https://github.com/lunaryorn/ansible-doc.el")
-      (synopsis "Ansible documentation for Emacs")
-      (description
-       "This package provides an Ansible documentation for GNU Emacs.
-
-@code{ansible-doc} allows you to view the documentation of an Ansible
-module and @code{ansible-doc-mode} minor mode adds documentation
-lookup to YAML Mode.  You could enable the mode with @code{(add-hook
-'yaml-mode-hook #'ansible-doc-mode)}.")
-      (license license:gpl3+))))
 
 (define-public cpulimit
   (package

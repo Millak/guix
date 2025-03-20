@@ -119,7 +119,7 @@
 ;;; Copyright © 2022, 2024, 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
-;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2023, 2025 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2022 Demis Balbach <db@minikn.xyz>
@@ -24032,6 +24032,35 @@ literate programming tools for exporting, weaving and tangling.")
     (description
      "This is an Emacs minor mode for editing Ansible files.")
     (license license:gpl2+)))
+
+(define-public emacs-ansible-doc
+  (let ((commit "648c844ab46f56c2c7ee25687ad2952a5d5eb4c7")
+        (revision "2")
+        (version "0.4"))
+    (package
+      (name "emacs-ansible-doc")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fredericgiquel/ansible-doc")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "02xnkgsrq54bpk26z9cs352r5rq0scmzw2czlq2pyq1332g6lycd"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/fredericgiquel/ansible-doc")
+      (synopsis "Ansible documentation for Emacs")
+      (description
+       "This package provides an Ansible documentation for GNU Emacs.
+
+@code{ansible-doc} allows you to view the documentation of an Ansible
+module and @code{ansible-doc-mode} minor mode adds documentation
+lookup to YAML Mode.  You could enable the mode with @code{(add-hook
+'yaml-mode-hook #'ansible-doc-mode)}.")
+      (license license:gpl3+))))
 
 (define-public emacs-polymode-ansible
   (package
