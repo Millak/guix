@@ -34113,6 +34113,9 @@ and implementation of treeview controls using treemacs as a tree renderer.")
                  (base32
                   "1ry8yxrb0172n1lnqi4av4wmqvhaqyh55ih2xs0hnd8b6ziywafq"))))
       (build-system emacs-build-system)
+      (arguments
+       ;; XXX: Tests are currently run interactively. See test/README.md.
+       (list #:tests? #f))
       (propagated-inputs (list emacs-lsp-mode emacs-yaml))
       (home-page "https://github.com/emacs-lsp/lsp-docker")
       (synopsis "Leverage LSP mode in Docker environment")
