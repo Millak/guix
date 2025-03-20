@@ -8688,6 +8688,8 @@ ERC, an Emacs client for IRC (Internet Relay Chat).  It relies on the
        (sha256
         (base32 "1j619m08lz6bg2kr4jm2rbyn2r8a9f1z124ashzjkiwky0mvs1v9"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "make" "check-declare")))
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/tarsius/paren-face")
