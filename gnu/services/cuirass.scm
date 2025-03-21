@@ -220,9 +220,8 @@
                         "--listen" #$host
                         "--port" #$(number->string port)
                         #$@(if parameters
-                               (list (string-append
-                                      "--parameters="
-                                      parameters))
+                               (list #~(string-append "--parameters="
+                                                      #$parameters))
                                '())
                         #$@web-extra-options)
 
@@ -259,9 +258,8 @@
                                               (number->string publish-port)))
                                        '())
                                 #$@(if parameters
-                                       (list (string-append
-                                              "--parameters="
-                                              parameters))
+                                       (list #~(string-append "--parameters="
+                                                              #$parameters))
                                        '())
                                 #$@(if trigger-url
                                        (list
