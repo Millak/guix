@@ -1085,6 +1085,34 @@ safety and thread safety guarantees.")
   (rust-bootstrapped-package rust-1.83 "1.84.1"
    "0xdk3g1xq33fy4m7q6l38ba9ydxbanccyb0vczvlk998jvababsy"))
 
+(define-public rust-1.85
+  (let ((base-rust
+         (rust-bootstrapped-package rust-1.84 "1.85.1"
+                                    "12i3jkxrc2bbd2d423q7krwkbc39wlwkjacsimx7b61m1359aa8g")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (snippet
+          '(begin
+             (for-each delete-file-recursively
+                       '("src/llvm-project"
+                         "vendor/jemalloc-sys-0.3.2"
+                         "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
+                         "vendor/openssl-src-111.28.2+1.1.1w/openssl"
+                         "vendor/tikv-jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
+                         "vendor/tikv-jemalloc-sys-0.6.0+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
+             ;; Remove vendored dynamically linked libraries.
+             ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+             ;; Also remove the bundled (mostly Windows) libraries.
+             (for-each delete-file
+                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))
+             ;; Adjust vendored dependency to explicitly use rustix with libc backend.
+             (substitute* '("vendor/tempfile-3.10.1/Cargo.toml"
+                            "vendor/tempfile-3.14.0/Cargo.toml")
+               (("features = \\[\"fs\"" all)
+                (string-append all ", \"use-libc\""))))))))))
 
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
@@ -1100,7 +1128,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.84))
+  (let ((base-rust rust-1.85))
     (package
       (inherit base-rust)
       (properties (append
@@ -1114,19 +1142,18 @@ safety and thread safety guarantees.")
          (snippet
           '(begin
              (for-each delete-file-recursively
-                       '("src/gcc"
-                         "src/llvm-project"
+                       '("src/llvm-project"
                          "vendor/jemalloc-sys-0.3.2/jemalloc"
                          "vendor/jemalloc-sys-0.5.3+5.3.0-patched/jemalloc"
-                         "vendor/jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
                          "vendor/openssl-src-111.17.0+1.1.1m/openssl"
                          "vendor/openssl-src-111.28.2+1.1.1w/openssl"
                          "vendor/tikv-jemalloc-sys-0.5.4+5.3.0-patched/jemalloc"
+                         "vendor/tikv-jemalloc-sys-0.6.0+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"
                          ;; These are referenced by the cargo output
                          ;; so we unbundle them.
                          "vendor/curl-sys-0.4.52+curl-7.81.0/curl"
                          "vendor/curl-sys-0.4.74+curl-8.9.0/curl"
-                         "vendor/curl-sys-0.4.77+curl-8.10.1/curl"
+                         "vendor/curl-sys-0.4.78+curl-8.11.0/curl"
                          "vendor/libffi-sys-2.3.0/libffi"
                          "vendor/libz-sys-1.1.3/src/zlib"
                          "vendor/libz-sys-1.1.20/src/zlib"))
@@ -1159,7 +1186,7 @@ safety and thread safety guarantees.")
               '("3.3.0"
                 "3.4.0"
                 "3.10.1"
-                "3.13.0"))))))
+                "3.14.0"))))))
       (arguments
        (substitute-keyword-arguments
          (strip-keyword-arguments '(#:tests?)
@@ -1292,7 +1319,7 @@ safety and thread safety guarantees.")
                    (substitute* "install.rs"
                      ,@(make-ignore-test-list
                         '("fn install_global_cargo_config")))
-                   (substitute* '("cargo_add/add_workspace_non_fuzzy/mod.rs"
+                   (substitute* '("cargo_add/normalize_name_path_existing/mod.rs"
                                   "cargo_info/within_ws_with_alternative_registry/mod.rs")
                      ,@(make-ignore-test-list
                         '("fn case")))
