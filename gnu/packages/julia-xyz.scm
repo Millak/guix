@@ -6296,6 +6296,26 @@ types can be added to a trait after the creation of the trait, whereas Union
 types are fixed after creation.")
     (license license:expat)))
 
+(define-public julia-simpletropical
+  (package
+    (name "julia-simpletropical")
+    (version "0.3.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scheinerman/SimpleTropical.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rdjg7bdayksdklv3h17cbdjj9gs5krbvmn8ri6jw10rgx5ca961"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/scheinerman/SimpleTropical.jl")
+    (synopsis "Julia implementation of tropical arithmetic")
+    (description "This package is an implementation of tropical (min-plus)
+arithmetic in Julia.")
+    (license license:expat)))
+
 (define-public julia-softglobalscope
   (package
     (name "julia-softglobalscope")
