@@ -1949,7 +1949,10 @@ execution when a test fails.")
                              "TestStackModeMultipleInvocationInheritance"
                              "TestStackModeMultipleInvocationInheritance2"
                              "TestStackModeMultipleInvocationInheritance3"
-                             "TestWatcher")
+                             "TestWatcher"
+                             #$@(if (target-arm?)
+                                    '("TestInfiniteLoopWithTrailingFail")
+                                    '()))
                        "|"))))
     (propagated-inputs
      (list go-github-com-jtolds-gls

@@ -5366,7 +5366,14 @@ daemon as described in
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/libp2p/go-yamux/v4"))
+      #:import-path "github.com/libp2p/go-yamux/v4"
+      #:test-flags
+      ;; Test fails on ARM with error: [ERR] yamux: Failed to read stream data
+      ;; on stream 1: receive window exceeded (remain: 262144, recv:
+      ;; 33554432).
+      #~(list #$@(if (target-arm?)
+                     '("-skip" "TestSendData_VeryLarge")
+                     '()))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -5396,8 +5403,9 @@ It is inspired by SPDY but is not interoperable with it.")
         (base32 "019jj3qwzrbqcgwzri5iwi1vh2cn0ms6k8fx14jlmy856b25yl3y"))))
     (build-system go-build-system)
     (arguments
-     (list
-      #:import-path "github.com/libp2p/go-yamux/v5"))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-libp2p-go-yamux-v4)
+       ((#:import-path _) "github.com/libp2p/go-yamux/v5")))))
 
 (define-public go-github-com-libp2p-zeroconf-v2
   (package
@@ -5561,19 +5569,22 @@ clients that speak the Gemini protocol.")
     (arguments
      (list
       #:import-path "github.com/marten-seemann/tcp"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "_test\\.go$")
-                  ;;  couldn't initialize from a wrapped conn: unknown
-                  ;;  connection type
-                  (("TestWrappedConn") "OffTestWrappedConn")
-                  ;; Get "https://golang.org/robots.txt": dial tcp: lookup
-                  ;; golang.org on [::1]:53: read udp [::1]:56806->[::1]:53:
-                  ;; read: connection refused
-                  (("TestInfo") "OffTestInfo"))))))))
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;;  Test fails with error: couldn't initialize from a wrapped
+               ;;  conn: unknown connection type.
+               (list "TestWrappedConn"
+                     ;; Get "https://golang.org/robots.txt": dial tcp: lookup
+                     ;; golang.org on [::1]:53: read udp
+                     ;; [::1]:56806->[::1]:53: read: connection refused
+                     "TestInfo"
+                     ;; Test fails on ARM with error: raw-control tcp
+                     ;; 127.0.0.1:49386: getsockopt: protocol not available.
+                     #$@(if (target-arm?)
+                            '("TestConcurrentReadWriteAndInfo")
+                            '()))
+               "|"))))
     (native-inputs
      (list go-golang-org-x-net))
     (propagated-inputs
@@ -5842,9 +5853,29 @@ types.")
      (list
       #:import-path "github.com/mdlayher/netlink"
       #:test-flags
-      ;; Test fails to start command "ip": exec: "ip": executable file not
-      ;; found in $PATH
-      #~(list "-skip" "TestIntegrationConnSetBuffersSyscallConn")))
+      #~(list "-skip"
+              (string-join
+               ;; Test fails to start command "ip": exec: "ip": executable
+               ;; file not found in $PATH
+               (list "TestIntegrationConnSetBuffersSyscallConn"
+                     #$@(if (target-arm?)
+                            ;; Tests fail on ARM systems with error: failed to
+                            ;; dial netlink: socket: protocol not supported.
+                            '("TestIntegrationConn"
+                              "TestIntegrationConnClosedConn"
+                              "TestIntegrationConnConcurrentClosePreventsReceive"
+                              "TestIntegrationConnConcurrentCloseUnblocksReceive"
+                              "TestIntegrationConnConcurrentOneConn"
+                              "TestIntegrationConnConcurrentSerializeExecute"
+                              "TestIntegrationConnExecuteTimeout"
+                              "TestIntegrationConnExplicitPID"
+                              "TestIntegrationConnReceiveTimeout"
+                              "TestIntegrationConnSendTimeout"
+                              "TestIntegrationConnSetBPF"
+                              "TestIntegrationConnSetBPFEmpty"
+                              "TestIntegrationConnStrict")
+                            '())
+                     "|")))))
     (propagated-inputs
      (list go-github-com-google-go-cmp
            go-github-com-josharian-native
@@ -5874,11 +5905,21 @@ sockets (AF_NETLINK).")
     (build-system go-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list
+         ;; One test fails on ARM with error: conn_linux_test.go:120:
+         ;; skipping, permission denied: failed to unshare network namespace:
+         ;; operation not permitted
+         #$@(if (target-arm?)
+                '("-skip" "TestLinuxBindToDevice")
+                '()))
       #:import-path "github.com/mdlayher/socket"))
     (native-inputs
      (list go-github-com-google-go-cmp))
     (propagated-inputs
-     (list go-golang-org-x-net go-golang-org-x-sync go-golang-org-x-sys))
+     (list go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
     (home-page "https://github.com/mdlayher/socket")
     (synopsis "Low-level network connection type with async I/O and deadline support")
     (description
@@ -6092,16 +6133,20 @@ presenting a small interface.")
     (arguments
      (list
       #:import-path "github.com/mikioh/tcp"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "_test\\.go$")
-                  ;;  Get "https://golang.org/robots.txt": dial tcp: lookup
-                  ;;  golang.org on [::1]:53: read udp [::1]:47181->[::1]:53:
-                  ;;  read: connection refused.
-                  (("TestInfo") "OffTestInfo"))))))))
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;;  Get "https://golang.org/robots.txt": dial tcp: lookup
+               ;;  golang.org on [::1]:53: read udp [::1]:47181->[::1]:53:
+               ;;  read: connection refused.
+               (list "TestInfo"
+                     #$@(if (target-arm?)
+                            ;; Test fails on ARM with error: raw-control tcp
+                            ;; 127.0.0.1:58464: getsockopt: protocol not
+                            ;; available.
+                            '("TestConcurrentReadWriteAndInfo")
+                            '()))
+               "|"))))
     (native-inputs
      (list go-golang-org-x-net))
     (propagated-inputs
@@ -8160,7 +8205,11 @@ ObjectStorage, PHY, etc.).")
                      "TestMsglvlGet"
                      "TestStats"
                      "TestDriverName"
-                     "TestBusInfo")
+                     "TestBusInfo"
+                     #$@(if (target-arm?)
+                            ;; Inappropriate ioctl for device.
+                            '("TestFeatures")
+                            '()))
                "|"))))
     (propagated-inputs
      (list go-golang-org-x-sys))

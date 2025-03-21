@@ -3186,25 +3186,31 @@ levels that works by wrapping the standard @code{log} library.")
      (list
       #:import-path "github.com/cilium/ebpf"
       #:test-flags
-      ;; Tests fail with errors:
-      ;; - neither debugfs nor tracefs are mounted
-      ;; - no such file or directory
-      #~(list "-skip" (string-join
-                       (list
-                        "TestNewEvent"
-                        "TestFSType"
-                        "TestEventID"
-                        "TestSanitizePath"
-                        "TestGetTracefsPath"
-                        ;; Tests failing on i686-linux system.
-                        #$@(if (target-x86?)
-                               '("TestAuxvVDSOMemoryAddress/auxv64le.bin"
-                                 "TestUnsafeB.*/.*_with_trailing_padding"
-                                 "TestUnsafeB.*/.*_with_interspersed_padding"
-                                 "TestUnsafeB.*/.*_between_slice_entries"
-                                 "TestUnsafeB.*/.*_between_array_entries")
-                               '()))
-                       "|"))
+      #~(list "-skip"
+              (string-join
+               ;; Tests fail with errors:
+               ;; - neither debugfs nor tracefs are mounted
+               ;; - no such file or directory
+               (list "TestNewEvent"
+                     "TestFSType"
+                     "TestEventID"
+                     "TestSanitizePath"
+                     "TestGetTracefsPath"
+                     ;; Tests failing on i686-linux system.
+                     #$@(if (target-x86?)
+                            '("TestAuxvVDSOMemoryAddress/auxv64le.bin"
+                              "TestUnsafeB.*/.*_with_trailing_padding"
+                              "TestUnsafeB.*/.*_with_interspersed_padding"
+                              "TestUnsafeB.*/.*_between_slice_entries"
+                              "TestUnsafeB.*/.*_between_array_entries")
+                            '())
+                     ;; Tests failing on ARM systems with error: reading vDSO
+                     ;; ELF: read /proc/self/mem: input/output error.
+                     #$@(if (target-arm?)
+                            '("TestVDSOVersion"
+                              "TestCurrentKernelVersion")
+                            '()))
+               "|"))
       ;; XXX: 337 tests failed and 664 passed when "..."  is preserved, run
       ;; some of available tests, figure out how to fix the rests.
       #:test-subdirs
@@ -5232,14 +5238,20 @@ program's running, don't expect consistent results between platforms
     (arguments
      (list
       #:import-path "github.com/elastic/gosigar"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "_test\\.go$")
-                  ;; error: open /etc/mtab: no such file or directory.
-                  (("TestFileSystemList") "OffTestFileSystemList"))))))))
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Test fails with error: open /etc/mtab: no such file or
+               ;; directory.
+               (list "TestFileSystemList"
+                     ;; Test fails on ARM with error: inetdiag_test.go:61:
+                     ;; protocol not supported.
+                     #$@(if (target-arm?)
+                            '("TestNetlinkInetDiag"
+                              ;; Expect "qemu-aarch64" to match "go(.exe)?"
+                              "TestProcExe")
+                            '()))
+               "|"))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -8994,7 +9006,11 @@ wrapper around @code{crypto/rand}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/jbenet/go-temp-err-catcher"))
+      #:import-path "github.com/jbenet/go-temp-err-catcher"
+      #:test-flags
+      ;; One test fails on ARM with error: tec_test.go:86: time difference is
+      ;; greater than 0s 71.555µs.
+      #~(list #$@(if (target-arm?) '("-skip" "TestDoubles") '()))))
     (home-page "https://github.com/jbenet/go-temp-err-catcher")
     (synopsis "Error handling helper library")
     (description "Package @code{temperrcatcher} provides a @code{TempErrCatcher}
@@ -9017,7 +9033,22 @@ object, which implements simple error-retrying functionality.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/jbenet/goprocess"))
+      #:import-path "github.com/jbenet/goprocess"
+      #:test-flags
+      #~(list "-short"
+              ;; Tests fail on ARM with error: periodic_test.go:31: time diff
+              ;; incorrect: 5ms 3.295666ms 15ms.
+              #$@(if (target-arm?)
+                     '("-skip" (string-join
+                                (list "TestEveryGoSeqParallel"
+                                      "TestEverySeq"
+                                      "TestTickSeq"
+                                      "TestTickSeqNoWait"
+                                      "TestTickerGoParallel"
+                                      "TestTickerGoSeq"
+                                      "TestTickerSeq")
+                                "|"))
+                     '()))))
     (native-inputs
      (list go-github-com-jbenet-go-cienv))
     (home-page "https://github.com/jbenet/goprocess")

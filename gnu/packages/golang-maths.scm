@@ -21,6 +21,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system go)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
@@ -299,7 +300,11 @@ format as binary16.")
               "mathext/..."
               "num/..."
               "optimize/..."
-              "spatial/..."
+              ;; Tests failing to compile on ARM systems with errors in
+              ;; goroutines.
+              #$@(if (target-x86-64?)
+                     '("spatial/...")
+                     '())
               "stat/..."
               "uniti/...")))
     (propagated-inputs
