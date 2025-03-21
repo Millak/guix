@@ -4085,13 +4085,13 @@ but has evolved to support other missions as well.")
 (define-public python-specreduce
   (package
     (name "python-specreduce")
-    (version "1.4.1")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "specreduce" version))
        (sha256
-        (base32 "14ba4ws2z3kpw007f3hpslgp5i6dx082xhql4aim7j82211gpj6s"))))
+        (base32 "0lx2v6wp5lrn9n7b6i15ib3a2rwndjhrm70h2r9mmx7vx44d9sd2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
