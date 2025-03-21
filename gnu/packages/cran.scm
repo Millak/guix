@@ -20510,6 +20510,31 @@ framework to allow users to specify, build, trade, and analyse quantitative
 financial trading strategies.")
     (license license:gpl3)))
 
+(define-public r-quantpsyc
+  (package
+    (name "r-quantpsyc")
+    (version "1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "QuantPsyc" version))
+       (sha256
+        (base32
+         "1dbj830p5837fiwa800nzsaf19lf95vc3n7jmds2q9v06mrz6syq"))))
+    (properties `((upstream-name . "QuantPsyc")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-boot
+           r-dplyr
+           r-mass
+           r-purrr))
+    (home-page "https://cran.r-project.org/web/packages/QuantPsyc/")
+    (synopsis "Quantitative psychology tools")
+    (description
+     "This package contains functions useful for data screening, testing
+moderation, mediation and estimating power.")
+    (license license:gpl2+)))
+
 (define-public r-quarto
   (package
     (name "r-quarto")

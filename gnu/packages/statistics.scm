@@ -3134,31 +3134,6 @@ files into/from Pandas DataFrames.  It is a wrapper around the C library
 @code{readstat}.")
     (license license:asl2.0)))
 
-(define-public r-quantpsyc
-  (package
-    (name "r-quantpsyc")
-    (version "1.6")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "QuantPsyc" version))
-        (sha256
-          (base32
-            "1dbj830p5837fiwa800nzsaf19lf95vc3n7jmds2q9v06mrz6syq"))))
-    (properties `((upstream-name . "QuantPsyc")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-boot
-           r-dplyr
-           r-mass
-           r-purrr))
-    (home-page "https://cran.r-project.org/web/packages/QuantPsyc/")
-    (synopsis "Quantitative Psychology Tools")
-    (description
-      "Contains functions useful for data screening, testing moderation,
-mediation and estimating power.")
-    (license license:gpl2+)))
-
 (define-public xlispstat
   (let ((commit "f1bea6053df658ee48612bf1f63c35de99e2c649")
         (revision "0"))
