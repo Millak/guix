@@ -5381,13 +5381,13 @@ SolarSoft data analysis environment.")
 (define-public python-sunpy-soar
   (package
     (name "python-sunpy-soar")
-    (version "1.11.0")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy_soar" version))
        (sha256
-        (base32 "015pc6m7bdmgyw2inmjv84fgsjj8x90f91gphyv9ql4xn6yspnc2"))))
+        (base32 "04zdfxb0y7m94lna6bikdc4rwa8n11wh42jyha0fxc604xhy2b3l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5429,6 +5429,7 @@ SolarSoft data analysis environment.")
            python-pytest-doctestplus
            python-responses
            python-setuptools
+           python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
      (list python-astropy
