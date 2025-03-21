@@ -15332,38 +15332,36 @@ possible, and falls back to moving the left or top border otherwise.")
         (base32
          "1cw513mh3gyl21qpmgwqjgpi8kwddmd4n69l4ax5a5pv3vvwrcx9"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "sh" "-c" "ert-runner < test/user-input.txt")
+           #:include #~(list "^[^/]+.el$"
+                             "^[^/]+.el.in$"
+                             "^dir$"
+                             "^[^/]+.info$"
+                             "^[^/]+.texi$"
+                             "^[^/]+.texinfo$"
+                             "^doc/dir$"
+                             "^doc/[^/]+.info$"
+                             "^doc/[^/]+.texi$"
+                             "^doc/[^/]+.texinfo$"
+                             "^layouts$")
+           #:exclude #~(list "^.dir-locals.el$"
+                             "^test.el$"
+                             "^tests.el$"
+                             "^[^/]+-test.el$"
+                             "^[^/]+-tests.el$")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'number-tests
+                          (lambda _
+                            (ert-number-tests "test/switch-test.el"
+                                              "purpose-test-temp-actions-1")))
+                        (add-after 'unpack 'create-test-file
+                          (lambda _
+                            (call-with-output-file "test/user-input.txt"
+                              (const #t)))))))
     (propagated-inputs
      (list emacs-let-alist emacs-imenu-list))
     (native-inputs (list emacs-ert-runner))
-    (arguments
-     '(#:test-command (list "sh" "-c" "ert-runner < test/user-input.txt")
-       #:include
-       '("^[^/]+.el$"
-         "^[^/]+.el.in$"
-         "^dir$"
-         "^[^/]+.info$"
-         "^[^/]+.texi$"
-         "^[^/]+.texinfo$"
-         "^doc/dir$"
-         "^doc/[^/]+.info$"
-         "^doc/[^/]+.texi$"
-         "^doc/[^/]+.texinfo$"
-         "^layouts$")
-       #:exclude
-       '("^.dir-locals.el$"
-         "^test.el$"
-         "^tests.el$"
-         "^[^/]+-test.el$"
-         "^[^/]+-tests.el$")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'number-tests
-                    (lambda _
-                      (ert-number-tests "test/switch-test.el"
-                                        "purpose-test-temp-actions-1")))
-                  (add-after 'unpack 'create-test-file
-                    (lambda _
-                      (call-with-output-file "test/user-input.txt"
-                        (const #t)))))))
     (home-page "https://github.com/bmag/emacs-purpose")
     (synopsis "Purpose-based window management for Emacs")
     (description "Purpose is a package that introduces the concept of a
