@@ -30775,6 +30775,7 @@ image, rotate it, save modified images, and more.")
        (sha256
         (base32 "0i2j5yk6xhv4rh3317f241y9llwf4wk18a6a4lkqrvbjpvi9yvn0"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/emacscollective/packed")
