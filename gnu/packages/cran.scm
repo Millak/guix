@@ -20535,6 +20535,38 @@ financial trading strategies.")
 moderation, mediation and estimating power.")
     (license license:gpl2+)))
 
+(define-public r-quantreg
+  (package
+    (name "r-quantreg")
+    (version "6.00")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "quantreg" version))
+       (sha256
+        (base32 "1avx7d2zlpsjlqpqyzagazkz0xwa0varjbl3qq5mcn4kdhk40pwb"))))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; This is needed for building vignettes
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list gfortran r-r-rsp))           ;for vignettes
+    (propagated-inputs
+     (list r-mass r-matrix r-matrixmodels r-sparsem r-survival))
+    (home-page "https://www.r-project.org")
+    (synopsis "Quantile regression")
+    (description
+     "This package provides an estimation and inference methods for models
+of conditional quantiles: linear and nonlinear parametric and non-parametric
+models for conditional quantiles of a univariate response and several methods
+for handling censored survival data.  Portfolio selection methods based on
+expected shortfall risk are also included.")
+    (license license:gpl2+)))
+
 (define-public r-quarto
   (package
     (name "r-quarto")
