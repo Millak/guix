@@ -1141,6 +1141,7 @@ object.")
        (sha256
         (base32 "1iv1c2mbvhn00ha46c6f98j9syc71xhjpk8m5wa5p32sk4wcc9f4"))))
     (build-system emacs-build-system)
+    (native-inputs (list emacs-el-mock emacs-ert-runner emacs-validate))
     (home-page "https://github.com/davidshepherd7/terminal-here")
     (synopsis "Open external terminals from Emacs")
     (description
