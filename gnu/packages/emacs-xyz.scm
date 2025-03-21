@@ -8766,7 +8766,8 @@ serve files and directory listings.")
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-simple-httpd emacs-js2-mode))
-    (arguments '(#:include '("\\.el$" "\\.js$" "\\.html$")))
+    (arguments '(#:tests? #f            ; no tests
+                 #:include '("\\.el$" "\\.js$" "\\.html$")))
     (home-page "https://github.com/skeeto/skewer-mode")
     (synopsis "Live web development in Emacs")
     (description
