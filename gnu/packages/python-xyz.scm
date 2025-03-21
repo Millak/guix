@@ -6727,24 +6727,38 @@ between Julian dates and Gregorian dates.")
 
 (define-public python-jsondiff
   (package
-   (name "python-jsondiff")
-   (version "1.2.0")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (pypi-uri "jsondiff" version))
-     (sha256
-      (base32
-       "00v3689175aqzdscrxpffm712ylp8jvcpqdg51ca22ni6721p51l"))))
-   (build-system python-build-system)
-   (native-inputs
-    (list python-nose python-nose-random))
-   (home-page
-    "https://github.com/fzumstein/jsondiff")
-   (synopsis "Compare JSON and JSON-like structures in Python")
-   (description "@code{jsondiff} is a Python library which lets you
-compare, diff, and patch JSON and JSON-like structures in Python.")
-   (license license:expat)))
+    (name "python-jsondiff")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jsondiff" version))
+       (sha256
+        (base32
+         "1zpp8l2ii9ic1sk6kdcqxk0v5q9pgdmdhg1h4vg8dfl6i8n1d3b5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^version_file.*") "")
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\""))))))))
+    (propagated-inputs (list python-pyyaml))
+    (native-inputs
+     (list python-hypothesis
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/fzumstein/jsondiff")
+    (synopsis "Compare JSON and JSON-like structures in Python")
+    (description "@code{jsondiff} is a Python library which lets you compare,
+diff, and patch JSON and JSON-like structures in Python.")
+    (license license:expat)))
 
 (define-public python-ddlparse
   (package
