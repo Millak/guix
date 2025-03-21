@@ -183,9 +183,8 @@
                                       (number->string threads)))
                                '())
                         #$@(if parameters
-                               (list (string-append
-                                      "--parameters="
-                                      parameters))
+                               (list #~(string-append "--parameters="
+                                                      #$parameters))
                                '())
                         #$@(if remote-server '("--build-remote") '())
                         #$@(if one-shot? '("--one-shot") '())
