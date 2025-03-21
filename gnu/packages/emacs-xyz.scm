@@ -15334,8 +15334,10 @@ possible, and falls back to moving the left or top border otherwise.")
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-let-alist emacs-imenu-list))
+    (native-inputs (list emacs-ert-runner))
     (arguments
-     '(#:include
+     '(#:test-command (list "sh" "-c" "ert-runner < test/user-input.txt")
+       #:include
        '("^[^/]+.el$"
          "^[^/]+.el.in$"
          "^dir$"
@@ -15352,7 +15354,16 @@ possible, and falls back to moving the left or top border otherwise.")
          "^test.el$"
          "^tests.el$"
          "^[^/]+-test.el$"
-         "^[^/]+-tests.el$")))
+         "^[^/]+-tests.el$")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'number-tests
+                    (lambda _
+                      (ert-number-tests "test/switch-test.el"
+                                        "purpose-test-temp-actions-1")))
+                  (add-after 'unpack 'create-test-file
+                    (lambda _
+                      (call-with-output-file "test/user-input.txt"
+                        (const #t)))))))
     (home-page "https://github.com/bmag/emacs-purpose")
     (synopsis "Purpose-based window management for Emacs")
     (description "Purpose is a package that introduces the concept of a
