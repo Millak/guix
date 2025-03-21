@@ -553,83 +553,83 @@ WSGI and the node exporter textfile collector.")
     (license license:asl2.0)))
 
 (define-public prometheus-node-exporter
-    (package
-      (name "prometheus-node-exporter")
-      (version "1.9.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/prometheus/node_exporter")
-                      (commit (string-append "v" version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0xs57jlmjj1vqac6xlkygg3xb08g356nlnc852ds1ia87911jvls"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:install-source? #f
-        #:build-flags
-        #~(list (string-append
-                 "-ldflags="
-                 "-X github.com/prometheus/common/version.Version=" #$version
-                 " -X github.com/prometheus/common/version.Revision=0"
-                 " -X github.com/prometheus/common/version.Branch=master"
-                 " -X github.com/prometheus/common/version.BuildUser=guix"
-                 " -X github.com/prometheus/common/version.BuildDate=n/a"))
-        #:embed-files #~(list "landing_page.css" "landing_page.html")
-        #:import-path "github.com/prometheus/node_exporter"
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'check 'pre-check
-              (lambda* (#:key tests? import-path #:allow-other-keys)
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "./ttar" "-C" "collector/fixtures"
-                          "-x" "-f" "collector/fixtures/sys.ttar")
-                  (invoke "./ttar" "-C" "collector/fixtures"
-                          "-x" "-f" "collector/fixtures/udev.ttar"))))
-            (add-after 'check 'post-check
-              (lambda* (#:key tests? import-path #:allow-other-keys)
-                (with-directory-excursion (string-append "src/" import-path)
-                  (for-each delete-file-recursively
-                            (list "collector/fixtures/sys"
-                                  "collector/fixtures/sys.ttar"
-                                  "collector/fixtures/udev"
-                                  "collector/fixtures/udev.ttar"))))))))
-      (propagated-inputs
-       (list go-github-com-alecthomas-kingpin-v2
-             go-github-com-beevik-ntp
-             go-github-com-coreos-go-systemd-v22
-             go-github-com-dennwc-btrfs
-             go-github-com-ema-qdisc
-             go-github-com-go-kit-log
-             go-github-com-godbus-dbus-v5
-             go-github-com-hashicorp-go-envparse
-             go-github-com-hodgesds-perf-utils
-             go-github-com-josharian-native
-             go-github-com-jsimonetti-rtnetlink
-             go-github-com-mattn-go-xmlrpc
-             go-github-com-mdlayher-ethtool
-             go-github-com-mdlayher-netlink
-             go-github-com-mdlayher-wifi
-             go-github-com-jsimonetti-rtnetlink-v2
-             go-github-com-opencontainers-selinux
-             go-github-com-prometheus-client-golang
-             go-github-com-prometheus-client-model
-             go-github-com-prometheus-common
-             go-github-com-prometheus-community-go-runit
-             go-github-com-prometheus-exporter-toolkit
-             go-github-com-prometheus-procfs-next
-             go-github-com-safchain-ethtool
-             go-golang-org-x-exp
-             go-golang-org-x-sys
-             go-howett-net-plist))
-      (home-page "https://github.com/prometheus/node_exporter")
-      (synopsis "Prometheus exporter for hardware and OS metrics")
-      (description
-       "Prometheus exporter for metrics exposed by *NIX kernels,
+  (package
+    (name "prometheus-node-exporter")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus/node_exporter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xs57jlmjj1vqac6xlkygg3xb08g356nlnc852ds1ia87911jvls"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:build-flags
+      #~(list (string-append
+               "-ldflags="
+               "-X github.com/prometheus/common/version.Version=" #$version
+               " -X github.com/prometheus/common/version.Revision=0"
+               " -X github.com/prometheus/common/version.Branch=master"
+               " -X github.com/prometheus/common/version.BuildUser=guix"
+               " -X github.com/prometheus/common/version.BuildDate=n/a"))
+      #:embed-files #~(list "landing_page.css" "landing_page.html")
+      #:import-path "github.com/prometheus/node_exporter"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "./ttar" "-C" "collector/fixtures"
+                        "-x" "-f" "collector/fixtures/sys.ttar")
+                (invoke "./ttar" "-C" "collector/fixtures"
+                        "-x" "-f" "collector/fixtures/udev.ttar"))))
+          (add-after 'check 'post-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "collector/fixtures/sys"
+                                "collector/fixtures/sys.ttar"
+                                "collector/fixtures/udev"
+                                "collector/fixtures/udev.ttar"))))))))
+    (propagated-inputs
+     (list go-github-com-alecthomas-kingpin-v2
+           go-github-com-beevik-ntp
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-dennwc-btrfs
+           go-github-com-ema-qdisc
+           go-github-com-go-kit-log
+           go-github-com-godbus-dbus-v5
+           go-github-com-hashicorp-go-envparse
+           go-github-com-hodgesds-perf-utils
+           go-github-com-josharian-native
+           go-github-com-jsimonetti-rtnetlink
+           go-github-com-mattn-go-xmlrpc
+           go-github-com-mdlayher-ethtool
+           go-github-com-mdlayher-netlink
+           go-github-com-mdlayher-wifi
+           go-github-com-jsimonetti-rtnetlink-v2
+           go-github-com-opencontainers-selinux
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-prometheus-common
+           go-github-com-prometheus-community-go-runit
+           go-github-com-prometheus-exporter-toolkit
+           go-github-com-prometheus-procfs-next
+           go-github-com-safchain-ethtool
+           go-golang-org-x-exp
+           go-golang-org-x-sys
+           go-howett-net-plist))
+    (home-page "https://github.com/prometheus/node_exporter")
+    (synopsis "Prometheus exporter for hardware and OS metrics")
+    (description
+     "Prometheus exporter for metrics exposed by *NIX kernels,
 written in Go with pluggable metric collectors.")
-      (license license:asl2.0)))
+    (license license:asl2.0)))
 
 (define-public go-github-com-prometheus-node-exporter
   (deprecated-package "go-github-com-prometheus-node-exporter"
