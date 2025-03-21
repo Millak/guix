@@ -17733,6 +17733,13 @@ Dust.js, React/JSX, Angularjs, ejs, etc.")
        (sha256
         (base32 "03n7amd2mfr4jmc4s1ar5ckm86knr7qarxxlkdhbnw3svy5kbc57"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'number-tests
+                 (lambda _
+                   (ert-number-tests "templatel-tests.el"
+                                     "render-expr-math-sub"))))))
     (home-page "https://clarete.li/templatel")
     (synopsis "Jinja inspired template language for Emacs Lisp")
     (description
