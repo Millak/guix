@@ -13885,6 +13885,7 @@ for Ivy and Company that make use of the library.")
        (sha256
         (base32 "02jrki6vzyfyi1bbslki5pk2348flh9dz18jkc4y7p60bvbr52cb"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/raxod502/selectrum/")
     (synopsis "Incremental narrowing in Emacs")
     (description "Selectrum is a solution for incremental narrowing in
