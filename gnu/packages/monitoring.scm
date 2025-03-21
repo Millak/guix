@@ -553,22 +553,18 @@ WSGI and the node exporter textfile collector.")
     (license license:asl2.0)))
 
 (define-public prometheus-node-exporter
-  ;; The latest release is failing to build, use the latest commit from the
-  ;; master branch.
-  (let ((commit "b8aac7c92e2d7f3dea56b2d4802d4ef3ee29c3cc")
-        (revision "0"))
     (package
       (name "prometheus-node-exporter")
-      (version (git-version "1.8.2" revision commit))
+      (version "1.9.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/prometheus/node_exporter")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0n2s2z168xzp6i0ihaqvvs8zinp1iqld45c6lj89x7wjv8m741j3"))))
+                  "0xs57jlmjj1vqac6xlkygg3xb08g356nlnc852ds1ia87911jvls"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -577,7 +573,7 @@ WSGI and the node exporter textfile collector.")
         #~(list (string-append
                  "-ldflags="
                  "-X github.com/prometheus/common/version.Version=" #$version
-                 " -X github.com/prometheus/common/version.Revision=" #$revision
+                 " -X github.com/prometheus/common/version.Revision=0"
                  " -X github.com/prometheus/common/version.Branch=master"
                  " -X github.com/prometheus/common/version.BuildUser=guix"
                  " -X github.com/prometheus/common/version.BuildDate=n/a"))
@@ -633,7 +629,7 @@ WSGI and the node exporter textfile collector.")
       (description
        "Prometheus exporter for metrics exposed by *NIX kernels,
 written in Go with pluggable metric collectors.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-github-com-prometheus-node-exporter
   (deprecated-package "go-github-com-prometheus-node-exporter"
