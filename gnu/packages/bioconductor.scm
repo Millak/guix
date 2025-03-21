@@ -11926,6 +11926,50 @@ you can do using the graphical user interface of Cytoscape, you can now do
 with a single RCy3 function.")
     (license license:expat)))
 
+(define-public r-recount
+  (package
+    (name "r-recount")
+    (version "1.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "recount" version))
+       (sha256
+        (base32 "0i512z370hrpgyddvgfd9mvcd0lhldbcs047q39brcf436a6glgs"))))
+    (properties `((upstream-name . "recount")))
+    (build-system r-build-system)
+    ;; 3 tests attempt to download data.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list r-biocparallel
+                             r-derfinder
+                             r-downloader
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-geoquery
+                             r-iranges
+                             r-rcurl
+                             r-rentrez
+                             r-rtracklayer
+                             r-s4vectors
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/leekgroup/recount")
+    (synopsis "Explore and download data from the recount project")
+    (description
+     "Explore and download data from the recount project available at
+https://jhubiostatistics.shinyapps.io/recount/.  Using the recount package you
+can download @code{RangedSummarizedExperiment} objects at the gene, exon or
+exon-exon junctions level, the raw counts, the phenotype metadata used, the
+urls to the sample coverage @code{bigWig} files or the mean coverage
+@code{bigWig} file for a particular study.  The
+@code{RangedSummarizedExperiment} objects can be used by different packages
+for performing differential expression analysis.  Using
+http://bioconductor.org/packages/derfinder you can perform annotation-agnostic
+differential expression analyses with the data from the recount project as
+described at
+@url{https://www.nature.com/nbt/journal/v35/n4/full/nbt.3838.html}.")
+    (license license:artistic2.0)))
+
 (define-public r-regioner
   (package
     (name "r-regioner")
