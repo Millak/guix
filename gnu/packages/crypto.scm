@@ -132,7 +132,7 @@
                ;; TODO: perhaps infer #:tests?
                (if #$(%current-target-system)
                    "OFF" "ON")))))
-    (native-inputs (list googletest))
+    (native-inputs (list googletest-1.12))
     (home-page "https://github.com/google/crc32c")
     (synopsis "Cyclic redundancy check")
     (description

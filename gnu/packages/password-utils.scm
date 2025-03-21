@@ -470,7 +470,7 @@ in an encrypted database, which is locked with a master key or key file.")
       #:configure-flags
       #~(list "-DGTEST_BUILD=OFF")))
     (native-inputs
-     (list gettext-minimal googletest perl zip))
+     (list gettext-minimal googletest-1.13 perl zip))
     (inputs
      (list curl
            file

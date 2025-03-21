@@ -551,7 +551,7 @@ character limit for implicit keys.")
                              "-DYAML_USE_SYSTEM_GTEST=ON")))
       (native-inputs
        (list python))
-      (inputs (list googletest))
+      (inputs (list googletest-1.8))
       (home-page "https://github.com/jbeder/yaml-cpp")
       (synopsis "YAML parser and emitter in C++")
       (description "YAML parser and emitter in C++ matching the YAML 1.2 spec.")
@@ -1061,7 +1061,7 @@ Apache Arrow-based Feather binary columnar serialization data frame format.")
               (lambda _
                 (copy-recursively
                  "include" (string-append #$output "/include")))))))
-      (native-inputs (list googletest))
+      (native-inputs (list googletest-1.12))
       (home-page "https://github.com/google/libnop")
       (synopsis "C++ Native Object Protocols")
       (description "@code{libnop} is a header-only library for serializing and

@@ -457,7 +457,7 @@ data structures for C++.")
         (base32 "08w3ppd43wx9vq641ljw5izjd7p5w7drynw13ll9shwy41ydif9n"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list googletest pkg-config))
+     (list googletest-1.13 pkg-config))
     (synopsis "Guidelines Support Library")
     (description "c++-gsl contains functions and types that are suggested for
 use by the C++ Core Guidelines maintained by the Standard C++ Foundation.")

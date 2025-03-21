@@ -1825,7 +1825,7 @@ current version of any major web browser.")
                   (("GTESTSRC_FOUND)")
                    "GTest_FOUND)")))))))
       (native-inputs (list valgrind/pinned))
-      (inputs (list googletest))
+      (inputs (list googletest-1.8))
       (home-page "https://github.com/Tencent/rapidjson")
       (synopsis "JSON parser/generator for C++ with both SAX/DOM style API")
       (description

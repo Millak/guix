@@ -1063,16 +1063,16 @@ report generation engine.")
 (define-public googletest
   (package
     (name "googletest")
-    (version "1.12.1")
+    (version "1.17.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/google/googletest")
-             (commit (string-append "release-" version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cv55x3amwrvfan9pr8dfnicwr8r6ar3yf6cg9v6nykd6m2v3qsv"))))
+        (base32 "1zn701fgmbk29y45p49sajaswm01i2bv89ds2kkbiq8i0p2cr08w"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
@@ -1085,21 +1085,6 @@ report generation engine.")
 discovery, death tests, assertions, parameterized tests and XML test report
 generation.")
     (license license:bsd-3)))
-
-(define-public googletest-1.17
-  (package
-    (inherit googletest)
-    (name "googletest")
-    (version "1.17.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/google/googletest")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1zn701fgmbk29y45p49sajaswm01i2bv89ds2kkbiq8i0p2cr08w"))))))
 
 (define-public googletest-1.13
   (package
@@ -1115,6 +1100,21 @@ generation.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1x5lr1k4kgw3i8d7c12vp759p0w8c8r2y8lwvqswswxvwygw8lid"))))))
+
+(define-public googletest-1.12
+  (package
+    (inherit googletest-1.13)
+    (name "googletest")
+    (version "1.12.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/googletest")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cv55x3amwrvfan9pr8dfnicwr8r6ar3yf6cg9v6nykd6m2v3qsv"))))))
 
 (define-public googletest-1.8
   (package

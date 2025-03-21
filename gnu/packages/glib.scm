@@ -1329,7 +1329,7 @@ Some codes examples can be find at:
             (lambda* (#:rest args)
               (apply (assoc-ref gnu:%standard-phases 'check)
                      #:test-target "sdbus-c++-unit-tests" args))))))
-    (native-inputs (list googletest-1.17 pkg-config))
+    (native-inputs (list googletest pkg-config))
     (inputs (list expat))
     (propagated-inputs (list elogind)) ;required by sdbus-c++.pc
     (home-page "https://github.com/Kistler-Group/sdbus-cpp")

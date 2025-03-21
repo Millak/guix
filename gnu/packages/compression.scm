@@ -1897,11 +1897,11 @@ speed.")
     (outputs '("out"))
     (inputs
      `(,@(if (%current-target-system)
-             `(("googletest" ,googletest))
+             `(("googletest" ,googletest-1.8))
              '())))
     (native-inputs
      `(,@(if (%current-system)
-             `(("googletest" ,googletest))
+             `(("googletest" ,googletest-1.8))
              '())))
     (arguments
      `(#:phases

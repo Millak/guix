@@ -346,7 +346,7 @@ distributions.")
                 (when tests?
                   (with-directory-excursion "tests"
                     (invoke "./fann_tests"))))))))
-      (native-inputs (list googletest))
+      (native-inputs (list googletest-1.8))
       (home-page "https://leenissen.dk/")
       (synopsis "Fast Artificial Neural Network")
       (description
@@ -3885,7 +3885,7 @@ and Darknet.")
              fxdiv
              psimd
              pthreadpool
-             googletest))
+             googletest-1.12))
       (native-inputs
        `(,python
          ,@(if (target-x86-64?) (list python-peachpy) '())
@@ -3935,7 +3935,7 @@ and Darknet.")
                   (("(TARGET_LINK_LIBRARIES.*) fp16 (.*)" _ before after)
                    (string-append before " " after))))))))
       (inputs (list clog cpuinfo fp16 fxdiv psimd pthreadpool))
-      (native-inputs (list googletest googlebenchmark))
+      (native-inputs (list googletest-1.12 googlebenchmark))
       (home-page "https://github.com/pytorch/qnnpack")
       (synopsis "Quantized Neural Network PACKage")
       (description "QNNPACK is a library for low-precision neural network
@@ -4682,7 +4682,7 @@ PyTorch.")
             fxdiv
             gemmlowp
             gloo
-            googletest
+            googletest-1.12
             googlebenchmark
             libuv
             miniz-for-pytorch

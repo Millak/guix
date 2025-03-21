@@ -2584,7 +2584,7 @@ for reverse engineers.")
                         (mkdir-p dir)
                         (symlink act (string-append dir "/act.linux"))))))))
     (native-inputs
-     (list automatic-component-toolkit googletest pkg-config))
+     (list automatic-component-toolkit googletest-1.12 pkg-config))
     (inputs
      (list `(,util-linux "lib") libzip libressl zlib))
     (synopsis "Implementation of the 3D Manufacturing Format (3MF) file standard")
@@ -4522,7 +4522,7 @@ facilitate the communication between Cura and its backend and similar code.")
         (base32 "0xp2r0m5wwfsh9wdb3biqzvfqfz5jsmyw4bww93aksw0rgli07bp"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list googletest pkg-config))
+     (list googletest-1.13 pkg-config))
     (inputs
      (list libarcus protobuf stb-image))
     (arguments

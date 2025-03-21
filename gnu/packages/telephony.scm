@@ -1162,7 +1162,7 @@ It supports the following smartphones:
     (inputs
      (list gsl libpcap lksctp-tools ncurses/tinfo openssl))
     (native-inputs
-     (list googletest pkg-config))
+     (list googletest-1.8 pkg-config))
     (synopsis "Performance testing tool for the SIP protocol")
     (description "SIPp can be used to test many real SIP equipements like SIP
 proxies, B2BUAs, SIP media servers, SIP/x gateways, and SIP PBXes.  It is also

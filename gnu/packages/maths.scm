@@ -8360,7 +8360,7 @@ find_package(louvain_communities)")
    (inputs (list btor2tools
                  boost cryptominisat louvain-community sqlite
                  gmp))
-   (native-inputs (list googletest pkg-config python-wrapper))
+   (native-inputs (list googletest-1.8 pkg-config python-wrapper))
    (home-page "https://boolector.github.io")
    (synopsis "Bitvector-based theory solver")
    (description "Boolector is a @acronym{SMT, satisfiability modulo theories}
@@ -10703,7 +10703,7 @@ high-performance multidimensional array containers for scientific computing.")
                 (patches (search-patches "fxdiv-system-libraries.patch"))))
       (build-system cmake-build-system)
       (inputs
-       (list googletest googlebenchmark))
+       (list googletest-1.8 googlebenchmark))
       (synopsis
        "C++ library for division via fixed-point multiplication by inverse")
       (description
@@ -10758,7 +10758,7 @@ when an application performs repeated divisions by the same divisor.")
       (native-inputs
        (list python-wrapper))
       (inputs
-       (list psimd googletest googlebenchmark))
+       (list psimd googletest-1.8 googlebenchmark))
       (synopsis "C++ library for half-precision floating point formats")
       (description
        "This header-only C++ library implements conversion to and from
@@ -11138,7 +11138,7 @@ systems and symbolic manipulations.")
                 ;; tensorflow.
                 "-DCMAKE_CXX_FLAGS=-fPIC ")))
       (inputs (list cpuinfo))
-      (native-inputs (list googletest))
+      (native-inputs (list googletest-1.12))
       (home-page "https://github.com/google/ruy")
       (synopsis "Matrix multiplication library")
       (description

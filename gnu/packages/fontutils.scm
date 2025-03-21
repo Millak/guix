@@ -173,7 +173,7 @@ anti-aliased glyph bitmap generation with 256 gray levels.")
                (base32
                 "17z8cxv48rfig5k7j3xk3bmbf7rm3kxsc3bazix96l0wws58r569"))))
     (build-system meson-build-system)
-    (native-inputs (list googletest pkg-config))
+    (native-inputs (list googletest-1.12 pkg-config))
     (inputs (list freetype lz4 woff2 zlib))
     (home-page "https://github.com/khaledhosny/ots")
     (synopsis "Sanitizer for OpenType fonts")

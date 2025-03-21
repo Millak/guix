@@ -1419,7 +1419,7 @@ sequences that lead from a given start lanelet to some goal lanelet(s).")
                   python
                   xerces-c
                   zlib))
-    (native-inputs (list googletest python))
+    (native-inputs (list googletest-1.8 python))
     (home-page "https://eclipse.org/sumo")
     (synopsis "Traffic simulator")
     (description "@acronym{SUMO, Simulation of Urban MObility} is a traffic
