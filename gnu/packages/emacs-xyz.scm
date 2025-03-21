@@ -33861,6 +33861,7 @@ Later you can insert it into an Org buffer using the command
        (sha256
         (base32 "1xcv7kqsrv39rk8fjd2sbl2wrr8mdb6y1xipifki4q7mry1c6v6w"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))       ; no tests
     (propagated-inputs
      (list emacs-compat
            emacs-forge
