@@ -4133,13 +4133,13 @@ instruments.")
 (define-public python-sunkit-image
   (package
     (name "python-sunkit-image")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunkit_image" version))
        (sha256
-        (base32 "0gdbg3g8jxcgkwd34ls6342zj90m6ncas4f655q9dh79lqy7hhm8"))))
+        (base32 "0x8w87vwdr78vcq0zha2y7xyfy16amc5aym4v8127xvphq1ff4v3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4157,7 +4157,6 @@ instruments.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-dask
-           python-pytest
            python-pytest-astropy
            python-pytest-mpl
            python-pytest-xdist
