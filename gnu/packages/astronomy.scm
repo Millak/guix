@@ -6224,7 +6224,7 @@ Features:
 (define-public python-pysat
   (package
     (name "python-pysat")
-    (version "3.2.1")
+    (version "3.2.2")
     (source
      (origin
        (method git-fetch) ; no tests data in the PyPI tarball
@@ -6233,7 +6233,7 @@ Features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xsxj66ybh7q3n68nlasz23x8lsdamny92r960gipzk8xmwwzmcw"))))
+        (base32 "0gm71zafigwc94s37wqyl86yjabpq6wx9izwxag74wg1ynhqyvf0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
