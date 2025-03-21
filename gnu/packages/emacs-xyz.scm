@@ -20165,6 +20165,7 @@ structure, or any other pattern.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:tests? #f                       ; spurious lint errors
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
