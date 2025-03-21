@@ -4665,6 +4665,7 @@ code completion and project management support.")
                (base32
                 "1mclnf6ichsjdnjd1b6bg4vqhhjpy6y3458khnxvr1fpn67h6iny"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs (list emacs-compat emacs-packed))
     (home-page "https://github.com/emacscollective/auto-compile")
     (synopsis "Automatically compile Emacs Lisp libraries")
