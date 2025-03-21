@@ -28949,6 +28949,7 @@ a monospaced typeface for code.")
        (sha256
         (base32 "1dhljrh44dsnixd8hbb11k6dgap8r8n7jknhfy2afdzq889fih74"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://gitlab.com/jabranham/mixed-pitch")
     (synopsis "Mix variable- and fixed-pitch fonts in the same Emacs buffer")
     (description
