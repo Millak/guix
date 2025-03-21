@@ -37677,7 +37677,12 @@ statements in OFX files.")
                         ;; The timestamp to local offset tests fail due to
                         ;; missing timezone data (see:
                         ;; https://github.com/danielrichman/strict-rfc3339/issues/9).
-                        "-k" "not LocalOffset")))))))
+                        "-k"
+                        #$@(if (or (target-x86-32?) (target-arm32?))
+                               ;; On 32-bit platforms the size of time_t is
+                               ;; too small for these tests.
+                               '("not LocalOffset and not TestTimestampToRFC3339UTCOffset")
+                               '("not LocalOffset")))))))))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/danielrichman/strict-rfc3339")
     (synopsis "RFC3339 procedures library")
