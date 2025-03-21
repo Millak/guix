@@ -25467,6 +25467,32 @@ working with Portable Executable (PE) files.  It makes to most information
 from the header, as well as section details and data available.")
     (license license:expat)))
 
+(define-public python-pyemd
+  (package
+    (name "python-pyemd")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyemd" version))
+              (sha256
+               (base32
+                "1zh0v47lxa33xg04jyvblzl1g4m3k2khx0b3xr6isnyinbkmlaxl"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs
+     (list python-cython-3
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/wmayner/pyemd")
+    (synopsis
+     "Wrapper for Pele and Werman's implementation of the Earth Mover's Distance")
+    (description
+     "This package provides a Python wrapper for Ofir Pele and Michael
+Werman's implementation of the Earth Mover's Distance.")
+    (license license:expat)))
+
 (define-public python-imagesize
   (package
     (name "python-imagesize")
