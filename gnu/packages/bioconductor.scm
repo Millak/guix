@@ -12168,6 +12168,38 @@ the available RAM.")
 HDF5 datasets.")
     (license license:bsd-2)))
 
+(define-public r-rnaagecalc
+  (package
+    (name "r-rnaagecalc")
+    (version "1.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "RNAAgeCalc" version))
+       (sha256
+        (base32 "1f4vvx56jfs3ag0z1d815ysg54ff5p5l13cqq2gl9xfq2glqv6qn"))))
+    (properties `((upstream-name . "RNAAgeCalc")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-ggplot2
+                             r-impute
+                             r-org-hs-eg-db
+                             r-recount
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/reese3928/RNAAgeCalc")
+    (synopsis "Multi-tissue transcriptional age calculator")
+    (description
+     "It has been shown that both DNA methylation and RNA transcription are
+linked to chronological age and age related diseases.  Several estimators have
+been developed to predict human aging from DNA level and RNA level.  Most of
+the human transcriptional age predictor are based on microarray data and
+limited to only a few tissues.  To date, transcriptional studies on aging
+using RNASeq data from different human tissues is limited.  The aim of this
+package is to provide a tool for across-tissue and tissue-specific
+transcriptional age calculation based on GTEx RNASeq data.")
+    (license license:gpl2)))
+
 (define-public r-rsamtools
   (package
     (name "r-rsamtools")
