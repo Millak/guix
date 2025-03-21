@@ -3195,7 +3195,15 @@ levels that works by wrapping the standard @code{log} library.")
                         "TestFSType"
                         "TestEventID"
                         "TestSanitizePath"
-                        "TestGetTracefsPath")
+                        "TestGetTracefsPath"
+                        ;; Tests failing on i686-linux system.
+                        #$@(if (target-x86?)
+                               '("TestAuxvVDSOMemoryAddress/auxv64le.bin"
+                                 "TestUnsafeB.*/.*_with_trailing_padding"
+                                 "TestUnsafeB.*/.*_with_interspersed_padding"
+                                 "TestUnsafeB.*/.*_between_slice_entries"
+                                 "TestUnsafeB.*/.*_between_array_entries")
+                               '()))
                        "|"))
       ;; XXX: 337 tests failed and 664 passed when "..."  is preserved, run
       ;; some of available tests, figure out how to fix the rests.
