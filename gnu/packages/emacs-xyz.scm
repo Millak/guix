@@ -24617,6 +24617,7 @@ in a generalized CSV (character-separated values) format.")
        (sha256
         (base32 "16bn8y2sd7kzihp8bxh4vyay16y91q3yc0gcd0bzywcx3hijqlfc"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/holomorph/transmission")
     (synopsis "Emacs interface to a Transmission session")
     (description "This package provides an Emacs interface to interact with a
