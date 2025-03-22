@@ -3897,14 +3897,19 @@ hosted on the virtual machine.
 
 @subsection Creating a virtual network switch
 
-A virtual network switch consists of a few components/configurations,
-such as a @abbr{TUN, network tunnel} interface, DHCP server (dnsmasq)
-and firewall rules (iptables).  The @command{virsh} command, provided by
-the @code{libvirt} package, makes it very easy to create a virtual
-switch.  You first need to choose a network subnet for your virtual
-switch; if your home LAN is in the @samp{192.168.1.0/24} network, you
-could opt to use e.g.@: @samp{192.168.2.0/24}.  Define an XML file,
-e.g.@: @file{/tmp/virbr0.xml}, containing the following:
+A virtual network switch consists of a virtual network device called a
+`virtual bridge', DHCP server (dnsmasq) and firewall rules
+(iptables). See the
+@url{https://wiki.libvirt.org/VirtualNetworking.html, libvirt Wiki
+article on Virtual Networking} for more details on the modes of
+operation, management and implementation of virtual network switches.
+
+The @command{virsh} command, provided by the @code{libvirt}
+package, makes it very easy to create a virtual switch.  You first need
+to choose a network subnet for your virtual switch; if your home LAN is
+in the @samp{192.168.1.0/24} network, you could opt to use e.g.@:
+@samp{192.168.2.0/24}.  Define an XML file, e.g.@:
+@file{/tmp/virbr0.xml}, containing the following:
 
 @example
 <network>
