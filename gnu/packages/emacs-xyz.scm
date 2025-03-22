@@ -21935,6 +21935,7 @@ containing words from the Rime project.")
        (sha256
         (base32 "0axi8vizr2pdswdnnkr409k926h9k7w3c18nbmb9j3pfc32inkjs"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; tests require emacs-pyim-basedict
     (propagated-inputs
      (list emacs-async emacs-posframe emacs-xr))
     (home-page "https://github.com/tumashu/pyim")
