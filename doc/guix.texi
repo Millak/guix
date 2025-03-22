@@ -41055,7 +41055,7 @@ committed using the message ``gitolite setup by GNU Guix''.
 Data type representing the configuration for @code{gitolite-service-type}.
 
 @table @asis
-@item @code{package} (default: @var{gitolite})
+@item @code{package} (default: @code{gitolite})
 Gitolite package to use.  There are optional Gitolite dependencies that
 are not included in the default package, such as Redis and git-annex.
 These features can be made available by using the @code{make-gitolite}
@@ -41072,21 +41072,21 @@ programs can be invoked by Gitolite's scripts:
 (make-gitolite (list redis git-annex))
 @end example
 
-@item @code{user} (default: @var{git})
+@item @code{user} (default: @code{"git"})
 User to use for Gitolite.  This will be user that you use when accessing
 Gitolite over SSH.
 
-@item @code{group} (default: @var{git})
+@item @code{group} (default: @code{"git"})
 Group to use for Gitolite.
 
-@item @code{home-directory} (default: @var{"/var/lib/gitolite"})
+@item @code{home-directory} (default: @code{"/var/lib/gitolite"})
 Directory in which to store the Gitolite configuration and repositories.
 
-@item @code{rc-file} (default: @var{(gitolite-rc-file)})
+@item @code{rc-file} (default: @code{(gitolite-rc-file)})
 A ``file-like'' object (@pxref{G-Expressions, file-like objects}),
 representing the configuration for Gitolite.
 
-@item @code{admin-pubkey} (default: @var{#f})
+@item @code{admin-pubkey} (default: @code{#f})
 A ``file-like'' object (@pxref{G-Expressions, file-like objects}) used to
 setup Gitolite.  This will be inserted in to the @file{keydir} directory
 within the gitolite-admin repository.
