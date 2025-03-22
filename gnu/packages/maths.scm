@@ -8181,7 +8181,7 @@ solver, that can compute Craig interpolants for various theories.")
           #:phases
           #~(modify-phases %standard-phases
               (add-after 'unpack 'fix-build-files
-                (lambda* (#:key outputs #:allow-other-keys)
+                (lambda _
                   (substitute* "Makefile.build"
                     (("SHELL=.*") "")
                     (("/sbin/ldconfig") (which "ldconfig")))
@@ -8190,8 +8190,7 @@ solver, that can compute Craig interpolants for various theories.")
                     (("/bin/ln") (which "ln"))
                     (("/sbin/ldconfig") (which "ldconfig"))
                     (("install_dir=.*")
-                     (string-append "install_dir="
-                                    (assoc-ref outputs "out")))))))))
+                     (string-append "install_dir=" #$output))))))))
    (inputs (list cudd gmp gperf libpoly))
    (native-inputs (list autoconf automake bash-minimal))
    (home-page "https://yices.csl.sri.com/")
