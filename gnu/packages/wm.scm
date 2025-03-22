@@ -1030,14 +1030,15 @@ desktop environment.")
     (name "icewm")
     (version "3.7.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/ice-wm/icewm/releases/download/"
-                    version "/icewm-" version ".tar.lz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ice-wm/icewm")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1n02y9i54b4xd0px6mfvwpvm2w796mg26iymsbq63xsjfcsqmvdl"))))
-    (build-system gnu-build-system)
+                "0zrj9ka9sglxchmkcgzdbjgzzzcfrfnk4ydhwzbi91vrrq7c6sh3"))))
+    (build-system cmake-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fontconfig
                   fribidi
@@ -1065,9 +1066,9 @@ desktop environment.")
                  ;; strtest.cc tests failing due to $HOME and /etc setup
                  ;; difference under guix
                  (lambda _
-                   (substitute* "src/Makefile.in"
-                     (("TESTS = strtest\\$\\(EXEEXT\\)")
-                      "TESTS = ")))))))
+                   (substitute* "src/CMakeLists.txt"
+                     (("add_test\\(strtest \\$\\{CMAKE_BINARY_DIR\\}/strtest\\)")
+                      "")))))))
     (home-page "https://ice-wm.org/")
     (synopsis "Window manager for the X Window System")
     (description
