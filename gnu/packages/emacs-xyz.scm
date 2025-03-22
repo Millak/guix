@@ -6969,7 +6969,8 @@ a command.")
         (base32 "0gqijnmj24phryi6n74iq410k0637j0li1ncdymxhk3bdmp4mb40"))))
     (build-system emacs-build-system)
     (arguments
-     (list #:phases
+     (list #:tests? #false              ;no tests
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-path
                  (lambda* (#:key inputs #:allow-other-keys)
