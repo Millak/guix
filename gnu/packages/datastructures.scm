@@ -121,11 +121,13 @@ and heaps.")
     (version "0.2.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/s-yata/marisa-trie/files/"
-                           "4832504/marisa-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/s-yata/marisa-trie")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1pk6wmi28pa8srb4szybrwfn71jldb61c5vgxsiayxcyg1ya4qqh"))))
+        (base32 "1hy8hfksizk1af6kg8z3b9waiz6d5ggd73fiqcvmhfgra36dscyq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
