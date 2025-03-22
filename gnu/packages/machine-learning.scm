@@ -19,11 +19,12 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Kiran Shila <me@kiranshila.com>
+;;; Copyright © 2022 Wiktor Zelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
@@ -330,6 +331,54 @@ sparsely connected networks.")
 classification, (C-SVC, nu-SVC), regression (epsilon-SVR, nu-SVR) and
 distribution estimation (one-class SVM).  It supports multi-class
 classification.")
+    (license license:bsd-3)))
+
+(define-public python-gpy
+  (package
+    (name "python-gpy")
+    (version "1.13.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "GPy" version))
+       (sha256
+        (base32 "083rl8nr4nmmr1pzn0g8gsc4wi9dnhj3jjhkwsssadm5vns5d0m3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'compatibility
+            (lambda _
+              ;; This file uses Python 2 statements
+              (delete-file "GPy/testing/mpi_test__.py")
+              (substitute* "setup.py"
+                (("scipy>=1.3.0,<1.12.0")
+                 "scipy>=1.3.0,<=1.13.0"))
+              ;; Use numpy.exp because scipy.ext no longer exists
+              (substitute* "GPy/kern/src/sde_standard_periodic.py"
+                (("sp\\.exp") "np.exp"))
+              (substitute* "GPy/kern/src/sde_stationary.py"
+                (("sp\\.poly1d") "np.poly1d")
+                (("sp\\.roots") "np.roots")))))))
+    (native-inputs
+     (list python-cython
+           python-matplotlib
+           python-pods
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy
+           python-paramz
+           python-scipy
+           python-six))
+    (home-page "https://sheffieldml.github.io/GPy/")
+    (synopsis "The Gaussian Process Toolbox")
+    (description
+     "@command{GPy} is a Gaussian Process (GP) framework written in
+Python, from the Sheffield machine learning group.  GPy implements a range of
+machine learning algorithms based on GPs.")
     (license license:bsd-3)))
 
 (define-public python-libsvm
