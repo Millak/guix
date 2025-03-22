@@ -6203,7 +6203,7 @@ that require it.")
 (define-public sysdig
   (package
     (name "sysdig")
-    (version "0.40.0-alpha6")           ;for the 0.20 patch to apply
+    (version "0.40.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6212,7 +6212,7 @@ that require it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pxmx3by0lckw7zv54wrg0cr13j1mhk2z0x4qachrf2mz5qjq2cd"))))
+                "1npm630fix7vssd7hiv2sh3jbs43jl748zbrhwpx8gly25zqvy1h"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
