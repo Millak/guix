@@ -231,14 +231,13 @@
        (file-name (git-file-name name version))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-file-names
-           (lambda _
-             (substitute* "configure.ac"
-               (("supath=`which su 2>/dev/null`")
-                "supath=/run/privileged/bin/su"))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-file-names
+                 (lambda _
+                   (substitute* "configure.ac"
+                     (("supath=`which su 2>/dev/null`")
+                      "supath=/run/privileged/bin/su")))))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
