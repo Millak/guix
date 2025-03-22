@@ -66,6 +66,7 @@
 ;;; Copyright © 2024 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2025 B. Wilson <elaexuotee@wilsonb.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5123,3 +5124,34 @@ back to the servers which know the data.")
 recording packets that are dropped by the kernel.  It provides the commands
 @command{dropwatch} and @command{dwdump}.")
     (license license:gpl2+)))
+
+(define-public openrdap
+  (package
+    (name "openrdap")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openrdap/rdap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w3kwxh3hvkp5x1m6i4ijydmpfpibgf9jkviqrvpcadh335989hn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:unpack-path "github.com/openrdap/rdap"
+      #:import-path "github.com/openrdap/rdap/cmd/rdap"))
+    (propagated-inputs (list go-golang-org-x-crypto
+                             go-github-com-mitchellh-go-homedir
+                             go-github-com-jarcoal-httpmock
+                             go-github-com-davecgh-go-spew
+                             go-github-com-alecthomas-kingpin-v2))
+    (home-page "https://www.openrdap.org/")
+    (synopsis "Command line RDAP client")
+    (description
+     "OpenRDAP is a command line client for the Registration Data Access
+Protocol.  RDAP is modern a replacement for WHOIS, which provides domain name
+and IP address registration information in JSON format over HTTP.")
+    (license license:expat)))
