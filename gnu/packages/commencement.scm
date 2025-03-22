@@ -161,27 +161,31 @@ the checkout from TARBALL, a tarball containing said checkout.
                 "0cf5vj5yxfvkgzvjvh2l7b2nz5ji5l534n9g4mfp8f5jsjqdrqjc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:implicit-inputs? #f
-       #:tests? #f
-       #:guile ,%bootstrap-guile
-       #:imported-modules ((guix build gnu-bootstrap)
-                           ,@%default-gnu-imported-modules)
-       #:phases
-       (begin
-         (use-modules (guix build gnu-bootstrap))
-         (modify-phases %standard-phases
-           (replace 'unpack
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let* ((source (assoc-ref inputs "source"))
-                      (guile-dir (assoc-ref inputs "guile"))
-                      (guile (string-append guile-dir "/bin/guile")))
-                 (invoke guile "--no-auto-compile" source)
-                 (chdir "bootar"))))
-           (replace 'configure (bootstrap-configure "Bootar" ,version
-                                                    '(".") "scripts"))
-           (replace 'build (bootstrap-build '(".")))
-           (replace 'install (bootstrap-install '(".") "scripts"))))))
-    (inputs `(("guile" ,%bootstrap-guile)))
+     (list #:implicit-inputs? #f
+           #:tests? #f
+           #:guile %bootstrap-guile
+           #:imported-modules `((guix build gnu-bootstrap)
+                                ,@%default-gnu-imported-modules)
+           #:modules `((guix build gnu-bootstrap)
+                       ,@%default-gnu-modules)
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'unpack
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let* ((source #+(package-source this-package))
+                          (guile (search-input-file inputs
+                                                    "/bin/guile")))
+                     (invoke guile "--no-auto-compile" source)
+                     (chdir "bootar"))))
+               (replace 'configure
+                 (bootstrap-configure "Bootar"
+                                      #$version
+                                      '(".") "scripts"))
+               (replace 'build
+                 (bootstrap-build '(".")))
+               (replace 'install
+                 (bootstrap-install '(".") "scripts")))))
+    (inputs (list %bootstrap-guile))
     (home-page "https://git.ngyro.com/bootar")
     (synopsis "Tar decompression and extraction in Guile Scheme")
     (description "Bootar is a simple Tar extractor written in Guile
