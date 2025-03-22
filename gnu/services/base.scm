@@ -2118,40 +2118,46 @@ proxy of 'guix-daemon'...~%")
                                 '())
                             '#$environment))
 
-                  (mkdir-p "/var/guix")
                   ;; Ensure that a fresh directory is used, in case the old
                   ;; one was more permissive and processes have a file
                   ;; descriptor referencing it hanging around, ready to use
                   ;; with openat.
                   (false-if-exception
                    (delete-file-recursively "/var/guix/daemon-socket"))
-                  (let ((perms #$(logand socket-directory-permissions
-                                         (lognot #o022))))
-                    (mkdir "/var/guix/daemon-socket" perms)
-                    ;; Override umask
-                    (chmod "/var/guix/daemon-socket" perms))
-
-                  (let* ((user #$socket-directory-user)
-                         (uid (if user (passwd:uid (getpwnam user)) -1))
-                         (group #$socket-directory-group)
-                         (gid (if group (group:gid (getgrnam group)) -1)))
-                    (chown "/var/guix/daemon-socket" uid gid))
 
                   (match args
                     (((= string->number (? integer? pid)))
                      ;; Start the guix-daemon in the same mnt namespace as
                      ;; PID.  This is necessary when running the installer.
+                     ;; Assume /var/guix/daemon-socket was created by a
+                     ;; previous 'start' call without arguments.
                      (fork+exec-command/container
                       daemon-command
                       #:pid pid
                       #:environment-variables environment-variables
                       #:log-file #$log-file))
                     (()
-                     (fork+exec-command daemon-command
-                                        #:environment-variables
-                                        environment-variables
-                                        #:log-file #$log-file))))))
-           (stop #~(make-kill-destructor))))))
+                     ;; Default to socket activation.
+                     (let ((socket (endpoint
+                                    (make-socket-address
+                                     AF_UNIX
+                                     "/var/guix/daemon-socket/socket")
+                                    #:name "socket"
+                                    #:socket-owner
+                                    (or #$socket-directory-user 0)
+                                    #:socket-group
+                                    (or #$socket-directory-group 0)
+                                    #:socket-directory-permissions
+                                    #$socket-directory-permissions)))
+                       ((make-systemd-constructor daemon-command
+                                                  (list socket)
+                                                  #:environment-variables
+                                                  environment-variables
+                                                  #:log-file #$log-file))))))))
+           (stop #~(lambda (value)
+                     (if (or (process? value) (integer? value))
+                         ((make-kill-destructor) value)
+                         ((make-systemd-destructor) value))))))))
 
 (define (guix-accounts config)
   "Return the user accounts and user groups for CONFIG."
