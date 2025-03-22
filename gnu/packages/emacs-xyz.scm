@@ -12987,6 +12987,15 @@ cards created in Org mode.")
        (sha256
         (base32 "12144hhiygvbx2ws01b47z4wqqd5jfbpxx4cn503mkqwcxzvpvgb"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "emacs" "--batch" "-l" "org-mime.el"
+                             "-l" "htmlize" "-l" "test/org-mime-tests.el")
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (add-before 'check 'set-home
+                           (lambda _
+                             (setenv "HOME" (getenv "TMPDIR")))))))
+    (native-inputs (list emacs-htmlize))
     (home-page "https://github.com/org-mime/org-mime")
     (synopsis "Send HTML email using Org mode HTML export")
     (description
