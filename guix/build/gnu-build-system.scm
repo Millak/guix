@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -317,8 +317,9 @@ makefiles."
          (libdir     (assoc-ref outputs "lib"))
          (includedir (assoc-ref outputs "include"))
          (docdir     (assoc-ref outputs "doc"))
-         (bash       (or (and=> (assoc-ref (or native-inputs inputs) "bash")
-                                (cut string-append <> "/bin/bash"))
+         (bash       (or (false-if-exception
+                          (search-input-file (or native-inputs inputs)
+                                             "/bin/bash"))
                          "/bin/sh"))
          (flags      `(,@(if target             ; cross building
                              '("CC_FOR_BUILD=gcc")

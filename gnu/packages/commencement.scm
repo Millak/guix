@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
@@ -317,7 +317,7 @@ pure Scheme to Tar and decompression in one easy step.")
     (native-inputs `(("bootar" ,bootar)))))
 
 (define (%boot-gash-inputs)
-  `(("bash" , gash-boot)                ; gnu-build-system wants "bash"
+  `(("bash" , gash-boot)               ;gnu-build-system used to expect "bash"
     ("coreutils" , gash-utils-boot)
     ("bootar" ,bootar)
     ("guile" ,%bootstrap-guile)))
