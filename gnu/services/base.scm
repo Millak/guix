@@ -2137,23 +2137,20 @@ proxy of 'guix-daemon'...~%")
                          (gid (if group (group:gid (getgrnam group)) -1)))
                     (chown "/var/guix/daemon-socket" uid gid))
 
-                  ;; Start the guix-daemon from a container, when supported,
-                  ;; to solve an installation issue. See the comment below for
-                  ;; more details.
-                  (fork+exec-command/container
-                   daemon-command
-
-                   ;; When running the installer, we need guix-daemon to
-                   ;; operate from within the same MNT namespace as the
-                   ;; installation container. In that case only, enter the
-                   ;; namespace of the process PID passed as start argument.
-                   ;; Otherwise, for symmetry purposes enter the caller
-                   ;; namespaces which is a no-op.
-                   #:pid (match args
-                           ((pid) (string->number pid))
-                           (else (getpid)))
-                   #:environment-variables environment-variables
-                   #:log-file #$log-file))))
+                  (match args
+                    (((= string->number (? integer? pid)))
+                     ;; Start the guix-daemon in the same mnt namespace as
+                     ;; PID.  This is necessary when running the installer.
+                     (fork+exec-command/container
+                      daemon-command
+                      #:pid pid
+                      #:environment-variables environment-variables
+                      #:log-file #$log-file))
+                    (()
+                     (fork+exec-command daemon-command
+                                        #:environment-variables
+                                        environment-variables
+                                        #:log-file #$log-file))))))
            (stop #~(make-kill-destructor))))))
 
 (define (guix-accounts config)
