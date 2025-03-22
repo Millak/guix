@@ -9884,11 +9884,10 @@ ability to store all Common Lisp data types into streams.")
   (package
     (name "sbcl-cl-str")
     (version "0.21")
-    (home-page "https://github.com/vindarel/cl-str")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url home-page)
+                    (url "https://github.com/vindarel/cl-str")
                     (commit version)))
               (sha256
                (base32 "0r9niyvkj7jyc93rxys6pgqazzpl1ybfryjn8jig721xhjxrsblm"))
@@ -9902,6 +9901,7 @@ ability to store all Common Lisp data types into streams.")
      (list sbcl-prove))
     (arguments
      `(#:asd-systems '("str")))
+    (home-page "https://vindarel.github.io/cl-str")
     (synopsis "Modern, consistent and terse Common Lisp string manipulation library")
     (description "A modern and consistent Common Lisp string manipulation
 library that focuses on modernity, simplicity and discoverability:
