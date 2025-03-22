@@ -3611,7 +3611,7 @@ for use with HTML5 video.")
                (base32
                 "18ixmm18wp3vlczzdq4wfnkr5kxpz9y217dnjb0mgkl3hv5bvnbp"))
               (patches (search-patches "avidemux-install-to-lib.patch"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (native-inputs
      (list perl pkg-config python-wrapper qttools-5 yasm))
     ;; FIXME: Once packaged, add libraries not found during the build.
@@ -3631,6 +3631,7 @@ for use with HTML5 video.")
            libxv
            pulseaudio
            qtbase-5
+           qtwayland-5
            sqlite
            zlib))
     (arguments
