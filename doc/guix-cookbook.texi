@@ -25,6 +25,7 @@ Copyright @copyright{} 2022, 2023 Maxim Cournoyer@*
 Copyright @copyright{} 2023-2024 Ludovic Courtès@*
 Copyright @copyright{} 2023 Thomas Ieong@*
 Copyright @copyright{} 2024 Florian Pelz@*
+Copyright @copyright{} 2025 45mg@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -3879,29 +3880,29 @@ COMMIT
 @section Routed network for libvirt
 @cindex Virtual network bridge interface
 @cindex networking, virtual bridge
-@cindex libvirt, virtual network bridge
+@cindex libvirt, virtual network switch
 
 If the machine hosting your virtual machines is connected wirelessly to
 the network, you won't be able to use a true network bridge as explained
 in the preceding section (@pxref{Network bridge for QEMU}).  In this
-case, the next best option is to use a @emph{virtual} bridge with static
-routing and to configure a libvirt-powered virtual machine to use it
-(via the @command{virt-manager} GUI for example).  This is similar to
-the default mode of operation of QEMU/libvirt, except that instead of
-using @abbr{NAT, Network Address Translation}, it relies on static
-routes to join the @abbr{VM, virtual machine} IP address to the
+case, the next best option is to use a @emph{virtual network switch}
+with static routing and to configure a libvirt-powered virtual machine
+to use it (via the @command{virt-manager} GUI for example).  This is
+similar to the default mode of operation of QEMU/libvirt, except that
+instead of using @abbr{NAT, Network Address Translation}, it relies on
+static routes to join the @abbr{VM, virtual machine} IP address to the
 @abbr{LAN, local area network}.  This provides two-way connectivity to
 and from the virtual machine, which is needed for exposing services
 hosted on the virtual machine.
 
-@subsection Creating a virtual network bridge
+@subsection Creating a virtual network switch
 
-A virtual network bridge consists of a few components/configurations,
+A virtual network switch consists of a few components/configurations,
 such as a @abbr{TUN, network tunnel} interface, DHCP server (dnsmasq)
 and firewall rules (iptables).  The @command{virsh} command, provided by
 the @code{libvirt} package, makes it very easy to create a virtual
-bridge.  You first need to choose a network subnet for your virtual
-bridge; if your home LAN is in the @samp{192.168.1.0/24} network, you
+switch.  You first need to choose a network subnet for your virtual
+switch; if your home LAN is in the @samp{192.168.1.0/24} network, you
 could opt to use e.g.@: @samp{192.168.2.0/24}.  Define an XML file,
 e.g.@: @file{/tmp/virbr0.xml}, containing the following:
 
