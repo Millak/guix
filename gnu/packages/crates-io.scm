@@ -13400,6 +13400,34 @@ the OS-level clipboard.")
 colorization.")
     (license license:expat)))
 
+(define-public rust-clipboard-0.5
+  (package
+    (name "rust-clipboard")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clipboard" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rxjfn811h09g6jpjjs2vx7z52wj6dxnflbwryfj6h03dij09a95"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-clipboard-win" ,rust-clipboard-win-2)
+         ("rust-objc" ,rust-objc-0.2)
+         ("rust-objc-foundation" ,rust-objc-foundation-0.1)
+         ("rust-objc-id" ,rust-objc-id-0.1)
+         ("rust-x11-clipboard" ,rust-x11-clipboard-0.3))))
+    (native-inputs (list python-minimal))
+    (home-page "https://github.com/aweinstock314/rust-clipboard")
+    (synopsis
+     "Library for getting and setting the contents of the clipboard")
+    (description
+     "This package provides a cross-platform Rust library for getting and
+setting the contents of the clipboard.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clippy-0.0.302
   (package
     (name "rust-clippy")
