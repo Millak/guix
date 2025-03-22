@@ -228,6 +228,22 @@ Windows Credential Manager.")
        (("rust-lazy-bytes-cast" ,rust-lazy-bytes-cast-5)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-clipboard-win-2
+  (package
+    (inherit rust-clipboard-win-4)
+    (name "rust-clipboard-win")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clipboard-win" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0svqk0lrw66abaxd6h7l4k4g2s5vd1dcipy34kzfan6mzvb97873"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-winapi" ,rust-winapi-0.3))))))
+
 (define-public rust-codepage-0.1
   (package
     (name "rust-codepage")
