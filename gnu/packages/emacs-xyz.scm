@@ -35858,6 +35858,7 @@ and searching through @code{Ctags} files.")
                 (sha256
                  (base32 "0cg4y7hy7xbq4vrbdicfzgvyaf3cjbx2zkqd4yl0y2garz71j99l"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no actual tests
       (propagated-inputs
        (list emacs-org emacs-async))
       (home-page "https://github.com/abo-abo/org-download")
