@@ -1028,7 +1028,7 @@ desktop environment.")
 (define-public icewm
   (package
     (name "icewm")
-    (version "3.7.1")
+    (version "3.7.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1036,7 +1036,7 @@ desktop environment.")
                     version "/icewm-" version ".tar.lz"))
               (sha256
                (base32
-                "1n5df4sjjsz0v8g5d7w6msbx86f4a3hljxfn8gsa0snmqm1fb1hd"))))
+                "1n02y9i54b4xd0px6mfvwpvm2w796mg26iymsbq63xsjfcsqmvdl"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fontconfig
