@@ -9941,6 +9941,8 @@ a file).")
           (base32
            "11wyha2q8y7bzqq3jrzix8n97ywvsibvddrahqcps1a1yqk4hzfz"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f      ; XXX: "Package cl is deprecated"
+                       #:test-command #~(list "make" "test")))
       (home-page "https://github.com/Malabarba/names/")
       (synopsis "Namespace implementation for Emacs Lisp")
       (description
