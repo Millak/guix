@@ -19,6 +19,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 45mg <45mg.writes@gmail.com>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2025 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -372,13 +373,13 @@ users are allowed."
              (default '()))
   (wifi-geolocation-url
    geoclue-configuration-wifi-geolocation-url
-   ;; Mozilla geolocation service:
-   (default "https://location.services.mozilla.com/v1/geolocate?key=geoclue"))
+   ;; BeaconDB geolocation service:
+   (default "https://api.beacondb.net/v1/geolocate?key=geoclue_guix.gnu.org"))
   (submit-data? geoclue-configuration-submit-data?
                 (default #f))
   (wifi-submission-url
    geoclue-configuration-wifi-submission-url
-   (default "https://location.services.mozilla.com/v1/submit?key=geoclue"))
+   (default "https://api.beacondb.net/v2/geosubmit"))
   (submission-nick geoclue-configuration-submission-nick
                    (default "geoclue"))
   (applications geoclue-configuration-applications
