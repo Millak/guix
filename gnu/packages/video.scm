@@ -3603,40 +3603,36 @@ for use with HTML5 video.")
     (name "avidemux")
     (version "2.7.8")
     (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "mirror://sourceforge/avidemux/avidemux/" version "/"
-                   "avidemux_" version ".tar.gz"))
-             (sha256
-              (base32
-               "00blv5455ry3bb86zyzk1xmq3rbqmbif62khc0kq3whza97l12k2"))
-             (patches (search-patches "avidemux-install-to-lib.patch"))))
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://sourceforge/avidemux/avidemux/" version "/"
+                    "avidemux_" version ".tar.gz"))
+              (sha256
+               (base32
+                "00blv5455ry3bb86zyzk1xmq3rbqmbif62khc0kq3whza97l12k2"))
+              (patches (search-patches "avidemux-install-to-lib.patch"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("qttools-5" ,qttools-5)
-       ("yasm" ,yasm)))
+     (list perl pkg-config python-wrapper qttools-5 yasm))
     ;; FIXME: Once packaged, add libraries not found during the build.
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("fribidi" ,fribidi)
-       ("glu" ,glu)
-       ("jack" ,jack-1)
-       ("lame" ,lame)
-       ("libaom" ,libaom)
-       ("libva" ,libva)
-       ("libvdpau" ,libvdpau)
-       ("libvorbis" ,libvorbis)
-       ("libvpx" ,libvpx)
-       ("libxv" ,libxv)
-       ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase-5)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           fontconfig
+           freetype
+           fribidi
+           glu
+           jack-1
+           lame
+           libaom
+           libva
+           libvdpau
+           libvorbis
+           libvpx
+           libxv
+           pulseaudio
+           qtbase-5
+           sqlite
+           zlib))
     (arguments
      `(#:tests? #f                      ; no check target
        #:phases
@@ -3648,8 +3644,7 @@ for use with HTML5 video.")
              (lambda _
                (with-directory-excursion "avidemux_core/ffmpeg_package"
                  (invoke "tar" "xf" (string-append ffmpeg ".tar.bz2"))
-                 (delete-file (string-append ffmpeg ".tar.bz2")))
-               #t))
+                 (delete-file (string-append ffmpeg ".tar.bz2")))))
            (add-after 'patch-source-shebangs 'repack-ffmpeg
              (lambda _
                (with-directory-excursion "avidemux_core/ffmpeg_package"
@@ -3659,14 +3654,12 @@ for use with HTML5 video.")
                          ;; avoid non-determinism in the archive
                          "--sort=name" "--mtime=@0"
                          "--owner=root:0" "--group=root:0")
-                 (delete-file-recursively ffmpeg))
-               #t))
+                 (delete-file-recursively ffmpeg))))
            (replace 'configure
              (lambda _
                ;; Copy-paste settings from the cmake build system.
                (setenv "CMAKE_LIBRARY_PATH" (getenv "LIBRARY_PATH"))
-               (setenv "CMAKE_INCLUDE_PATH" (getenv "C_INCLUDE_PATH"))
-               #t))
+               (setenv "CMAKE_INCLUDE_PATH" (getenv "C_INCLUDE_PATH"))))
            (replace 'build
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
@@ -3704,8 +3697,7 @@ for use with HTML5 video.")
                                   '("-DPLUGIN_UI=SETTINGS"))
                  ;; Remove .exe and .dll file.
                  (delete-file-recursively
-                  (string-append out "/share/ADM6_addons"))
-                 #t)))
+                  (string-append out "/share/ADM6_addons")))))
            (delete 'install)))))
     (home-page "http://fixounet.free.fr/avidemux/")
     (synopsis "Video editor")
