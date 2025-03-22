@@ -254,6 +254,48 @@ usual file attributes can be checked for inconsistencies.")
     (home-page "https://aide.github.io/")
     (license license:gpl2+)))
 
+(define-public daemontools
+  (package
+    (name "daemontools")
+    (version "0.76")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://cr.yp.to/daemontools/"
+                    "daemontools-" version ".tar.gz"))
+              (sha256
+               (base32
+                "07scvw88faxkscxi91031pjkpccql6wspk4yrlnsbrrb5c0kamd5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;; No tests as far as I can tell.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'chdir
+                 (lambda _
+                   (chdir #$(string-append "daemontools-" version))))
+               (delete 'configure)
+               (add-before 'build 'patch
+                 (lambda _
+                   (substitute* "src/error.h"
+                     (("extern int errno;")
+                      "#include <errno.h>"))))
+               (replace 'build
+                 (lambda _
+                   (invoke "package/compile")))
+               (replace 'install
+                 (lambda _
+                   (let ((bin (string-append #$output "/bin")))
+                     (for-each (lambda (file)
+                                 (install-file file bin))
+                               (find-files "command"))))))))
+    (synopsis "Tools for managing UNIX style services")
+    (description
+     "@code{daemontools} is a collection of tools for managing UNIX
+services.")
+    (license license:public-domain)
+    (home-page "https://cr.yp.to/daemontools.html")))
+
 (define-public hetznercloud-cli
   (package
     (name "hetznercloud-cli")
@@ -732,48 +774,6 @@ environments:
      "This package provides a program that collects various performance
 measurement data like CPU, memory, disk and network performance numbers.")
     (license license:artistic2.0)))
-
-(define-public daemontools
-  (package
-    (name "daemontools")
-    (version "0.76")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://cr.yp.to/daemontools/"
-                    "daemontools-" version ".tar.gz"))
-              (sha256
-               (base32
-                "07scvw88faxkscxi91031pjkpccql6wspk4yrlnsbrrb5c0kamd5"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:tests? #f ;; No tests as far as I can tell.
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'chdir
-                 (lambda _
-                   (chdir #$(string-append "daemontools-" version))))
-               (delete 'configure)
-               (add-before 'build 'patch
-                 (lambda _
-                   (substitute* "src/error.h"
-                     (("extern int errno;")
-                      "#include <errno.h>"))))
-               (replace 'build
-                 (lambda _
-                   (invoke "package/compile")))
-               (replace 'install
-                 (lambda _
-                   (let ((bin (string-append #$output "/bin")))
-                     (for-each (lambda (file)
-                                 (install-file file bin))
-                               (find-files "command"))))))))
-    (synopsis "Tools for managing UNIX style services")
-    (description
-     "@code{daemontools} is a collection of tools for managing UNIX
-services.")
-    (license license:public-domain)
-    (home-page "https://cr.yp.to/daemontools.html")))
 
 (define-public daemonize
   (package
