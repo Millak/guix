@@ -39,8 +39,7 @@ directory and configure all of the '.in' files with the bootstrap
 Guile and its module and object directories."
   (lambda* (#:key inputs outputs #:allow-other-keys)
     (let* ((out (assoc-ref outputs "out"))
-           (guile-dir (assoc-ref inputs "guile"))
-           (guile (string-append guile-dir "/bin/guile"))
+           (guile (search-input-file inputs "/bin/guile"))
            (moddir (string-append out "/share/guile/site/"
                                   (effective-version)))
            (godir (string-append out "/lib/guile/"
@@ -92,8 +91,7 @@ directories in MODULES, and all the executable files in the SCRIPTS
 directory."
   (lambda* (#:key inputs outputs #:allow-other-keys)
     (let* ((out (assoc-ref outputs "out"))
-           (guile-dir (assoc-ref inputs "guile"))
-           (guile (string-append guile-dir "/bin/guile"))
+           (guile (search-input-file inputs "/bin/guile"))
            (moddir (string-append out "/share/guile/site/"
                                   (effective-version)))
            (godir (string-append out "/lib/guile/"
