@@ -707,7 +707,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "jgart"
                        "jgart@dismail.de")
-  python lisp mentors)
+  lisp mentors)
 
 (define-member (person "Guillaume Le Vaillant"
                        "glv@posteo.net")
