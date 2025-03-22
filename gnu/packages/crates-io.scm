@@ -97466,6 +97466,28 @@ extended attributes.")
      "This package provides Rust bindings and wrappers for XCB.")
     (license license:expat)))
 
+(define-public rust-xcb-0.8
+  (package
+    (inherit rust-xcb-1)
+    (name "rust-xcb")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xcb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ph27r9nxyfy3hh1c7x85g6dciwxcinf6514pvw9ybhl4hzpm4ay"))))
+    (arguments
+     `(#:cargo-build-flags '("--features" "x11/xlib")
+       #:tests? #t ;FIXME: missing something
+       #:cargo-inputs
+         (("rust-libc" ,rust-libc-0.2)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-x11" ,rust-x11-2))))
+    (inputs (list mesa)) ;required by rust-x11-2
+    (native-inputs (list python pkg-config))))
+
 (define-public rust-xcursor-0.3
   (package
     (name "rust-xcursor")
