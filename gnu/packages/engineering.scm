@@ -924,15 +924,15 @@ required for Fritzing app.")
     (arguments
      ;; XXX: tests are built for the CMake build option but it seems to be
      ;; broken in 0.8.0.
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Patch hardcoded path before running qmake.
-               (substitute* "qelectrotech.pro" (("\\/usr\\/local") out))
-               (invoke "qmake")))))))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   ;; Patch hardcoded path before running qmake.
+                   (substitute* "qelectrotech.pro"
+                     (("\\/usr\\/local") #$output))
+                   (invoke "qmake"))))))
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
