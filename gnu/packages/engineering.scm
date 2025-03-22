@@ -774,6 +774,7 @@ multipole-accelerated algorithm.")
                                        "fasthenry-spUtils.patch"
                                        "fasthenry-spSolve.patch"
                                        "fasthenry-spFactor.patch"))))
+    (native-inputs (list gcc-9))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("CC=gcc" "RM=rm" "SHELL=sh" "all")
