@@ -747,31 +747,27 @@ measurement data like CPU, memory, disk and network performance numbers.")
                 "07scvw88faxkscxi91031pjkpccql6wspk4yrlnsbrrb5c0kamd5"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ;; No tests as far as I can tell.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir ,(string-append "daemontools-" version))
-             #t))
-         (delete 'configure)
-         (add-before 'build 'patch
-           (lambda _
-             (substitute* "src/error.h"
-               (("extern int errno;")
-                "#include <errno.h>"))
-             #t))
-         (replace 'build
-           (lambda _
-             (invoke "package/compile")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (for-each (lambda (file)
-                           (install-file file bin))
-                         (find-files "command")))
-             #t)))))
+     (list #:tests? #f ;; No tests as far as I can tell.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'chdir
+                 (lambda _
+                   (chdir #$(string-append "daemontools-" version))))
+               (delete 'configure)
+               (add-before 'build 'patch
+                 (lambda _
+                   (substitute* "src/error.h"
+                     (("extern int errno;")
+                      "#include <errno.h>"))))
+               (replace 'build
+                 (lambda _
+                   (invoke "package/compile")))
+               (replace 'install
+                 (lambda _
+                   (let ((bin (string-append #$output "/bin")))
+                     (for-each (lambda (file)
+                                 (install-file file bin))
+                               (find-files "command"))))))))
     (synopsis "Tools for managing UNIX style services")
     (description
      "@code{daemontools} is a collection of tools for managing UNIX
