@@ -787,7 +787,7 @@ of XDG base directories, such as XDG_CONFIG_HOME.")
 (define-public xsimd
   (package
     (name "xsimd")
-    (version "11.0.0")
+    (version "13.2.0")
     (source
      (origin
        (method git-fetch)
@@ -795,7 +795,7 @@ of XDG base directories, such as XDG_CONFIG_HOME.")
              (url "https://github.com/xtensor-stack/xsimd")
              (commit version)))
        (sha256
-        (base32 "148wylv88vp31rz7l357ch7k0l50apfk4x31qdqk9y4d2hj6ld3f"))
+        (base32 "1w3hffv5yr1xdl3f46dnnza3kixfgj13450181qf7spq2cknv2rg"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
