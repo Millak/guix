@@ -2253,6 +2253,7 @@ process, passing on the arguments as command line arguments.")
        (sha256
         (base32 "1jh6wspb6ijmkqvyaswqj60ixpgjj2ijcf0b53q48pfs5dwc97p4"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs (list emacs-magit))
     (synopsis "Magit extension for range diffs")
     (description
