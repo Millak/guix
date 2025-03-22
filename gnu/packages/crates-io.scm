@@ -42174,6 +42174,37 @@ consumption.")
     (description "Create ridiculously fast Lexers.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-logos-derive-0.12
+  (package
+    (name "rust-logos-derive")
+    (version "0.12.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "logos-derive" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "0v295x78vcskab88hshl530w9d1vn61cmlaic4d6dydsila4kn51"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ;;failing as out of date
+       #:cargo-inputs
+       (("rust-beef" ,rust-beef-0.5)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.6)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-utf8-ranges" ,rust-utf8-ranges-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
+    (home-page "https://github.com/maciejhirsz/logos")
+    (synopsis "Macros for deriving common traits for fast Lexers")
+    (description "This package provides macros for deriving common traits for
+fast Lexers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-loom-0.7
   (package
     (name "rust-loom")
