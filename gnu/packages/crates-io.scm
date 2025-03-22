@@ -40432,6 +40432,27 @@ values of all the exported APIs match the platform that libc is compiled for.")
 macros on libc without stdlib.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-libc-stdhandle-0.1
+  (package
+    (name "rust-libc-stdhandle")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libc-stdhandle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lbmg42kncl3yjgzx48d2sa3p78w4fmhs9c21dg4r4r8virj9b3d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/crlf0710/libc-stdhandle")
+    (synopsis "Helper functions for retrieving stdin, stdout and stderr")
+    (description
+     "This package provides helper functions for retrieving stdin, stdout and stderr.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-libcst-1
   (package
     (name "rust-libcst")
