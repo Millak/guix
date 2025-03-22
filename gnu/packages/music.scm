@@ -3925,17 +3925,17 @@ socket or command line.")
 (define-public synthpod
   (package
     (name "synthpod")
-    (version "0.1.6507")
+    (version "0.1.6715")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.open-music-kontrollers.ch/lv2/synthpod")
+                    (url "https://git.open-music-kontrollers.ch/~hp/synthpod")
                     ;; Version is not tagged but mentioned in VERSION file.
-                    (commit "6e84a075ea8fea95094dcbc2b30f968717a81960")))
+                    (commit "54c285cfe0fbd80dc574101a8a2952cf3374fc38")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1chazkdxjgjzfxqmlk4ywhilkj9l3bybd9xghjg9r67df2diqhbs"))))
+                "1axb7f6rd2x9kd4hzk9895zvqj0lwlmc3zj23yx17yypd0w7yg0c"))))
     (build-system meson-build-system)
     (arguments
      (list
