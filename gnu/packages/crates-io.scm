@@ -42127,6 +42127,24 @@ and attach/detach semantics.")
     (description "Create ridiculously fast Lexers.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-logos-0.12
+  (package
+    (inherit rust-logos-0.13)
+    (name "rust-logos")
+    (version "0.12.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "logos" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1w82qm3hck5cr6ax3j3yzrpf4zzbffahz126ahyqwyn6h8b072xz"))))
+    (arguments
+     `(#:skip-build? #t ;cargo errors due to age of this crate
+       #:cargo-inputs
+       (("rust-logos-derive" ,rust-logos-derive-0.12))))))
+
 (define-public rust-logos-codegen-0.13
   (package
     (name "rust-logos-codegen")
