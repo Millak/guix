@@ -6418,6 +6418,38 @@ platform-specific getters provided by winit, or another library.")
      `(#:tests? #f      ; Wants a running X server.
        #:cargo-inputs (("rust-x11rb" ,rust-x11rb-0.10))))))
 
+(define-public rust-x11-clipboard-0.3
+  (package
+    (inherit rust-x11-clipboard-0.8)
+    (name "rust-x11-clipboard")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x11-clipboard" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1smwyr23jns0dncm6bwv00xfxxy99bv6qlx6df7dkdcydk04kgc9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-xcb" ,rust-xcb-0.8))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             ;; Most tests require an X server.
+             (let ((xvfb (search-input-file (or native-inputs inputs)
+                                            "bin/Xvfb"))
+                   (display ":1"))
+               (setenv "DISPLAY" display)
+               (system (string-append xvfb " " display " &"))))))))
+    (native-inputs (list python xorg-server-for-tests pkg-config))
+    (inputs (list libx11 libxcb))
+    (home-page "https://github.com/quininer/x11-clipboard")
+    (synopsis "X11 clipboard support for Rust")
+    (description "This package provides X11 clipboard support for Rust.")
+    (license license:expat)))
+
 (define-public rust-x11-dl-2
   (package
     (name "rust-x11-dl")
