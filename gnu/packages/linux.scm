@@ -8230,7 +8230,9 @@ interface in sysfs, which can be accomplished with the included udev rules.")
           (add-after 'install 'wrap
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((bin (string-append (assoc-ref outputs "out") "/bin"))
-                     (bin-files (find-files bin ".*")))
+                     (sbin (string-append (assoc-ref outputs "out") "/sbin"))
+                     (bin-files (find-files bin ".*"))
+                     (sbin-files (find-files sbin ".*")))
                 (define (bin-directory input-name)
                   (let ((p (assoc-ref inputs input-name)))
                     (and p (string-append p "/bin"))))
@@ -8260,7 +8262,7 @@ interface in sysfs, which can be accomplished with the included udev rules.")
                                                 "pciutils"
                                                 "rfkill"
                                                 "wireless-tools"))))))
-                          bin-files)))))))
+                          (append bin-files sbin-files))))))))
     (home-page "https://linrunner.de/en/tlp/tlp.html")
     (synopsis "Power management tool for Linux")
     (description "TLP is a power management tool for Linux.  It comes with
