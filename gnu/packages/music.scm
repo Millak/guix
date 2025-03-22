@@ -5044,20 +5044,17 @@ plugins, a switch trigger, a toggle switch, and a peakmeter.")
 (define-public qmidiarp
   (package
     (name "qmidiarp")
-    (version "0.6.5")
+    (version "0.7.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/qmidiarp/qmidiarp/"
                                   version "/qmidiarp-" version ".tar.bz2"))
               (sha256
                (base32
-                "043yh1p0rrbj1v840y27529m9260g55gvh1km8az4jxy7mns58r2"))))
+                "0571y3b49dwcgxif0h4q5mlracm3wi338yawy0whmpdnpfzbvls0"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       (list "--enable-qt5")))
     (inputs
-     (list qtbase-5 alsa-lib jack-1 liblo lv2))
+     (list alsa-lib cairo glu jack-2 liblo lv2 pango qtbase-5))
     (native-inputs
      (list pkg-config qttools-5))
     (home-page "https://qmidiarp.sourceforge.net/")
