@@ -50,7 +50,7 @@
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 David Wilson <david@daviwil.com>
-;;; Copyright © 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
@@ -3601,7 +3601,7 @@ for use with HTML5 video.")
 (define-public avidemux
   (package
     (name "avidemux")
-    (version "2.7.8")
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3609,7 +3609,7 @@ for use with HTML5 video.")
                     "avidemux_" version ".tar.gz"))
               (sha256
                (base32
-                "00blv5455ry3bb86zyzk1xmq3rbqmbif62khc0kq3whza97l12k2"))
+                "18ixmm18wp3vlczzdq4wfnkr5kxpz9y217dnjb0mgkl3hv5bvnbp"))
               (patches (search-patches "avidemux-install-to-lib.patch"))))
     (build-system cmake-build-system)
     (native-inputs
@@ -3639,13 +3639,18 @@ for use with HTML5 video.")
       #:phases
       ;; Make sure files inside the included ffmpeg tarball are
       ;; patch-shebanged.
-      #~(let ((ffmpeg "ffmpeg-4.2.4"))
+      #~(let ((ffmpeg "ffmpeg-4.4.2"))
           (modify-phases %standard-phases
             (add-before 'patch-source-shebangs 'unpack-ffmpeg
               (lambda _
                 (with-directory-excursion "avidemux_core/ffmpeg_package"
                   (invoke "tar" "xf" (string-append ffmpeg ".tar.bz2"))
-                  (delete-file (string-append ffmpeg ".tar.bz2")))))
+                  (delete-file (string-append ffmpeg ".tar.bz2"))
+                  (with-directory-excursion ffmpeg
+                    (invoke
+                     "patch" "-p1" "--force" "-i"
+                     #$(local-file
+                        (search-patch "ffmpeg-4-binutils-2.41.patch")))))))
             (add-after 'patch-source-shebangs 'repack-ffmpeg
               (lambda _
                 (with-directory-excursion "avidemux_core/ffmpeg_package"
