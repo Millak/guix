@@ -4483,7 +4483,12 @@ on quantized 8-bit tensors.")
              fxdiv
              fp16
              psimd))
-      (native-inputs (list python-pyyaml python-wrapper))
+      (native-inputs
+       (append (if (target-riscv64?)
+                   ;; Required by "#include <riscv_vector.h>"
+                   (list gcc-14)
+                   (list))
+               (list python-pyyaml python-wrapper)))
       (synopsis "Optimized floating-point neural network inference operators")
       (description
        "XNNPACK is a highly optimized library of floating-point neural network
