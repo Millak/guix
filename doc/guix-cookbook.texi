@@ -167,6 +167,8 @@ Virtual Machines
 
 * Network bridge for QEMU::
 * Routed network for libvirt::
+* Custom NAT-based network for libvirt::
+* References: VM References.    Further reading on virtual machines.
 
 Advanced package management
 
@@ -3751,6 +3753,8 @@ to the usage and configuration of virtual machines on a Guix System.
 @menu
 * Network bridge for QEMU::
 * Routed network for libvirt::
+* Custom NAT-based network for libvirt::
+* References: VM References.    Further reading on virtual machines.
 @end menu
 
 @node Network bridge for QEMU
@@ -3974,6 +3978,133 @@ which should be static.
 After saving/applying this new static route, external connectivity
 should work from within your VM; you can e.g.@: run @samp{ping gnu.org}
 to verify that it functions correctly.
+
+@node Custom NAT-based network for libvirt
+@section Custom NAT-based network for libvirt
+
+As mentioned in the preceding section (@pxref{Routed network for libvirt}),
+libvirt allows virtual networks to be defined via XML files and managed
+by the @command{virsh} command.  The details of the creation and removal
+of virtual network switches are handled by libvirt, so the user does not
+have to deal with them.
+
+However, libvirt's handling of virtual network switches can sometimes
+clash with more complex networking setups.  In particular, the iptables
+rules inserted by libvirt for switches operating in the NAT mode can
+clash with existing iptables/nftables rules, leading to insecure or
+broken packet filtering.
+
+In such cases, the only solution is to manually set up a virtual network
+switch.  This section will provide instructions on how to do so using
+Guix System services.
+
+@subsection Creating the virtual network bridge
+
+The @code{static-networking-service-type} can be used to create a
+virtual network bridge and assign an IP address to it:
+
+@example lisp
+(service static-networking-service-type
+         (list (static-networking
+                ;; The default provision is 'networking; if you're using any
+                ;; other service with this provision, such as
+                ;; `network-manager-service-type`, then you need to change the
+                ;; default.
+                (provision '(static-networking))
+                (links
+                 (list (network-link
+                        (name "virbr0")
+                        (type 'bridge)
+                        (arguments '()))))
+                (addresses
+                 (list (network-address
+                        (device "virbr0")
+                        (value "192.168.10.1/24")))))))
+@end example
+
+@subsection Running dnsmasq for the virtual network bridge
+
+The @code{dnsmasq-service-type} can be used to provide DNS and DHCP for
+guests connected to this virtual network switch:
+
+@example lisp
+(service dnsmasq-service-type
+         (dnsmasq-configuration
+          ;; You can have multiple instances of `dnsmasq-service-type` as long
+          ;; as each one has a different provision.
+          (provision '(dnsmasq-virbr0))
+          (extra-options (list
+                          ;; Only bind to the virtual bridge. This
+                          ;; avoids conflicts with other running
+                          ;; dnsmasq instances.
+                          "--except-interface=lo"
+                          "--interface=virbr0"
+                          "--bind-dynamic"
+                          ;; IPv4 addresses to offer to VMs. This
+                          ;; should match the chosen subnet.
+                          "--dhcp-range=192.168.10.2,192.168.10.254"))))
+@end example
+
+@subsection Configuring NAT for the virtual network switch
+
+If you intend to use the virtual network switch in NAT mode, you will
+need to use nftables (or iptables) rules to set up IP masquerading.  The
+following example shows how to use @code{nftables-service-type} to do
+this:
+
+@example lisp
+(service nftables-service-type
+         (nftables-configuration
+          (ruleset
+           (plain-file "nftables.conf"
+                       "\
+table inet filter @{
+
+  chain input @{
+    type filter hook input priority filter; policy drop;
+    # Add your existing packet filtering rules here...
+    iifname virbr0 udp dport 67 counter accept comment \"allow dhcp on virbr0\"
+    iifname virbr0 meta l4proto @{tcp, udp@} th dport 53 accept \\
+        comment \"allow dns on virbr0\"
+  @}
+
+  chain forward @{
+    type filter hook forward priority filter; policy drop;
+    # Add your existing forwarding rules here...
+    iifname virbr0 accept comment \"allow outbound traffic from virbr0\"
+    oifname virbr0 ct state @{established, related @} accept \\
+        comment \"allow established traffic to virbr0\"
+  @}
+
+@}
+
+table inet nat @{
+  chain postrouting @{
+    type nat hook postrouting priority srcnat; policy accept;
+    # Add your existing nat rules here...
+    iifname virbr0 ip daddr @{ 224.0.0.0/24, 255.255.255.255/32 @} return \\
+        comment \"don't masquerade to reserved address blocks\"
+    iifname virbr0 oifname != virbr0 masquerade \\
+        comment \"masquerade all outgoing traffic from VMs\"
+  @}
+@}
+"))))
+@end example
+
+Ensure that you have IPv4 forwarding enabled (you can use
+@code{sysctl-service-type} for this).
+
+@node VM References
+@section References
+
+@itemize
+@item
+@uref{https://jamielinux.com/docs/libvirt-networking-handbook/index.html,
+The (unofficial) libvirt Networking Handbook}@*
+Note that this resource is rather outdated at the time of writing (as of
+March 2025, it was last updated in 2015).  Nevertheless, the authors of
+this chapter have found it to be a valuable source of information.
+@end itemize
 
 @c *********************************************************************
 @node Advanced package management
