@@ -2061,6 +2061,63 @@ proxy of 'guix-daemon'...~%")
                   (define discover?
                     (or (getenv "discover") #$discover?))
 
+                  (define daemon-command
+                    (cons* #$(file-append guix "/bin/guix-daemon")
+                           "--build-users-group" #$build-group
+                           "--max-silent-time"
+                           #$(number->string max-silent-time)
+                           "--timeout" #$(number->string timeout)
+                           "--log-compression"
+                           #$(symbol->string log-compression)
+                           #$@(if use-substitutes?
+                                  '()
+                                  '("--no-substitutes"))
+                           (string-append "--discover="
+                                          (if discover? "yes" "no"))
+                           "--substitute-urls" #$(string-join substitute-urls)
+                           #$@extra-options
+
+                           #$@(if chroot?
+                                  '()
+                                  '("--disable-chroot"))
+                           ;; Add CHROOT-DIRECTORIES and all their dependencies
+                           ;; (if these are store items) to the chroot.
+                           (append-map
+                            (lambda (file)
+                              (append-map (lambda (directory)
+                                            (list "--chroot-directory"
+                                                  directory))
+                                          (call-with-input-file file
+                                            read)))
+                            '#$(map references-file
+                                    chroot-directories))))
+
+                  (define environment-variables
+                    (append (list #$@(if tmpdir
+                                         (list (string-append "TMPDIR=" tmpdir))
+                                         '())
+
+                                  ;; Make sure we run in a UTF-8 locale so that
+                                  ;; 'guix offload' correctly restores nars
+                                  ;; that contain UTF-8 file names such as
+                                  ;; 'nss-certs'.  See
+                                  ;; <https://bugs.gnu.org/32942>.
+                                  (string-append "GUIX_LOCPATH="
+                                                 #$locales "/lib/locale")
+                                  "LC_ALL=en_US.utf8"
+                                  ;; Make 'tar' and 'gzip' available so
+                                  ;; that 'guix perform-download' can use
+                                  ;; them when downloading from Software
+                                  ;; Heritage via '(guix swh)'.
+                                  (string-append "PATH="
+                                                 #$(file-append tar "/bin") ":"
+                                                 #$(file-append gzip "/bin")))
+                            (if proxy
+                                (list (string-append "http_proxy=" proxy)
+                                      (string-append "https_proxy=" proxy))
+                                '())
+                            '#$environment))
+
                   (mkdir-p "/var/guix")
                   ;; Ensure that a fresh directory is used, in case the old
                   ;; one was more permissive and processes have a file
@@ -2084,35 +2141,7 @@ proxy of 'guix-daemon'...~%")
                   ;; to solve an installation issue. See the comment below for
                   ;; more details.
                   (fork+exec-command/container
-                   (cons* #$(file-append guix "/bin/guix-daemon")
-                          "--build-users-group" #$build-group
-                          "--max-silent-time"
-                          #$(number->string max-silent-time)
-                          "--timeout" #$(number->string timeout)
-                          "--log-compression"
-                          #$(symbol->string log-compression)
-                          #$@(if use-substitutes?
-                                 '()
-                                 '("--no-substitutes"))
-                          (string-append "--discover="
-                                         (if discover? "yes" "no"))
-                          "--substitute-urls" #$(string-join substitute-urls)
-                          #$@extra-options
-
-                          #$@(if chroot?
-                                 '()
-                                 '("--disable-chroot"))
-                          ;; Add CHROOT-DIRECTORIES and all their dependencies
-                          ;; (if these are store items) to the chroot.
-                          (append-map
-                           (lambda (file)
-                             (append-map (lambda (directory)
-                                           (list "--chroot-directory"
-                                                 directory))
-                                         (call-with-input-file file
-                                           read)))
-                           '#$(map references-file
-                                   chroot-directories)))
+                   daemon-command
 
                    ;; When running the installer, we need guix-daemon to
                    ;; operate from within the same MNT namespace as the
@@ -2123,33 +2152,7 @@ proxy of 'guix-daemon'...~%")
                    #:pid (match args
                            ((pid) (string->number pid))
                            (else (getpid)))
-
-                   #:environment-variables
-                   (append (list #$@(if tmpdir
-                                        (list (string-append "TMPDIR=" tmpdir))
-                                        '())
-
-                                 ;; Make sure we run in a UTF-8 locale so that
-                                 ;; 'guix offload' correctly restores nars
-                                 ;; that contain UTF-8 file names such as
-                                 ;; 'nss-certs'.  See
-                                 ;; <https://bugs.gnu.org/32942>.
-                                 (string-append "GUIX_LOCPATH="
-                                                #$locales "/lib/locale")
-                                 "LC_ALL=en_US.utf8"
-                                 ;; Make 'tar' and 'gzip' available so
-                                 ;; that 'guix perform-download' can use
-                                 ;; them when downloading from Software
-                                 ;; Heritage via '(guix swh)'.
-                                 (string-append "PATH="
-                                                #$(file-append tar "/bin") ":"
-                                                #$(file-append gzip "/bin")))
-                           (if proxy
-                               (list (string-append "http_proxy=" proxy)
-                                     (string-append "https_proxy=" proxy))
-                               '())
-                           '#$environment)
-
+                   #:environment-variables environment-variables
                    #:log-file #$log-file))))
            (stop #~(make-kill-destructor))))))
 
