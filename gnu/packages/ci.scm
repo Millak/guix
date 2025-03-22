@@ -84,7 +84,8 @@
                          (ice-9 rdelim)
                          (ice-9 popen)
                          (srfi srfi-1))
-             #:configure-flags #~'("--localstatedir=/var") ;for /var/log/cuirass
+             #:configure-flags #~'("--localstatedir=/var" ;for /var/log/cuirass
+                                   "--sysconfdir=/etc") ;for /etc/cuirass/forge-tokens
              ;; XXX: HTTP tests fail on aarch64 due to Fibers errors, disable them
              ;; on that architecture for now.
              #:tests? (let ((s (or (%current-target-system)
