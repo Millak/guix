@@ -12259,6 +12259,7 @@ using @code{python-isort}.")
          (sha256
           (base32 "00rkab305iwbn61jspcbxhvbwryf91ly7jz1axa2fzdkfqaj6727"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; missing tests
       (propagated-inputs (list emacs-f emacs-s emacs-tramp))
       (home-page "https://github.com/pythonic-emacs/pythonic")
       (synopsis "Utility functions for writing Pythonic in Emacs")
