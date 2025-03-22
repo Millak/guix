@@ -637,48 +637,56 @@ forms in a notation close to mathematical notation.
 UFL is part of the FEniCS Project.")
     (license license:lgpl3+)))
 
+
+;; XXX: This package is quite dated and upstream no longer maintains it: "This
+;; repository was archived by the owner on Feb 21, 2022. It is now read-only."
+;; <https://bitbucket.org/fenics-project/fiat> ->
+;; <https://github.com/FEniCS/fiat> while providing a new refactored fork
+;; <https://github.com/firedrakeproject/fiat>.
 (define-public python-fenics-fiat
   (package
     (name "python-fenics-fiat")
     (version "2019.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "fenics-fiat" version))
-        (sha256
-          (base32
-            "13sc7lma3d2mh43an7i4kkdbbk4cmvxjk45wi43xnjd7qc38zg4b"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-numpy python-sympy))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fenics-fiat" version))
+       (sha256
+        (base32 "13sc7lma3d2mh43an7i4kkdbbk4cmvxjk45wi43xnjd7qc38zg4b"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (with-directory-excursion "test"
-               ;; FIXME: three FIAT test modules are known to fail
-               ;; with recent versions of pytest (>= 4).  These are
-               ;; skipped for FIAT version 2019.1.0 pending an
-               ;; upstream pull request. For details see request #59
-               ;; at https://bitbucket.org/fenics-project/fiat/.
-               (invoke "py.test" "unit/"
-                       "--ignore=unit/test_fiat.py"
-                       "--ignore=unit/test_quadrature.py"
-                       "--ignore=unit/test_reference_element.py")))))))
+     (list
+      #:test-flags
+      #~(list
+         ;; FIXME: three FIAT test modules are known to fail with recent
+         ;; versions of pytest (>= 4).  These are skipped for FIAT version
+         ;; 2019.1.0 pending an upstream pull request. For details see request
+         ;; #59 at https://bitbucket.org/fenics-project/fiat/.
+         "--ignore=test/regression/"
+         "--ignore=test/unit/test_quadrature.py"
+         "--ignore=test/unit/test_reference_element.py"
+         "-k" (string-join
+               (list "not test_nodality"
+                     "test_basis_values")
+               " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy
+           python-sympy))
     (home-page "https://bitbucket.org/fenics-project/fiat/")
     (synopsis "Tabulation of finite element function spaces")
     (description
-      "The FInite element Automatic Tabulator (FIAT) supports
-generation of arbitrary order instances of the Lagrange elements on
-lines, triangles, and tetrahedra.  It is also capable of generating
-arbitrary order instances of Jacobi-type quadrature rules on the same
-element shapes.  Further, H(div) and H(curl) conforming finite element
-spaces such as the families of Raviart-Thomas, Brezzi-Douglas-Marini
-and Nedelec are supported on triangles and tetrahedra.  Upcoming
-versions will also support Hermite and nonconforming elements.
+     "The FInite element Automatic Tabulator (FIAT) supports generation of
+arbitrary order instances of the Lagrange elements on lines, triangles, and
+tetrahedra.  It is also capable of generating arbitrary order instances of
+Jacobi-type quadrature rules on the same element shapes.  Further, H(div) and
+H(curl) conforming finite element spaces such as the families of
+Raviart-Thomas, Brezzi-Douglas-Marini and Nedelec are supported on triangles
+and tetrahedra.  Upcoming versions will also support Hermite and nonconforming
+elements.
 
 FIAT is part of the FEniCS Project.")
     (license license:lgpl3+)))
