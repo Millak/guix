@@ -126,6 +126,7 @@ and heaps.")
              (url "https://github.com/s-yata/marisa-trie")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       (patches (search-patches "marisa-fix-MARISA_WORD_SIZE.patch"))
        (sha256
         (base32 "1hy8hfksizk1af6kg8z3b9waiz6d5ggd73fiqcvmhfgra36dscyq"))))
     (build-system gnu-build-system)
