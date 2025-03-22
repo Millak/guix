@@ -1745,7 +1745,7 @@ and the ability to read and write via stdin and stdout.")
 (define-public roxterm
   (package
     (name "roxterm")
-    (version "3.15.0")
+    (version "3.15.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1754,15 +1754,19 @@ and the ability to read and write via stdin and stdout.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19y4lxwj18pr231597rnyyk6f5hwvsajjv7w21wb5c62jjjyfrws"))))
+                "0jsdrs31mwpba851inwxpwnmy74k9nl4hs7bgbhba85dvqpw1xi2"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ; No tests
     (native-inputs
-     (list docbook-xsl docbook-xml (list glib "bin") libxml2 libxslt
+     (list docbook-xsl
+           docbook-xml
+           (list glib "bin")
+           libxml2
+           libxslt
            pkg-config))
     (inputs
-     (list dbus dbus-glib gtk+ pcre vte))
+     (list dbus dbus-glib gtk+ pcre vte/gtk+-3))
     (synopsis "Terminal emulator")
     (description "This package provides a terminal emulator with hyperlink
 support.  It's based on VTE and aimed at power users.")
