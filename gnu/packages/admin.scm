@@ -214,42 +214,6 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
-;; This package uses su instead of sudo (because of SpaceFM).
-(define-public ktsuss
-  (package
-    (name "ktsuss")
-    (version "2.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/nomius/ktsuss")
-         (commit version)))
-       (sha256
-        (base32 "0q9931f9hp47v1n8scli4bdg2rkjpf5jf8v7jj2gdn83aia1r2hz"))
-       (file-name (git-file-name name version))))
-    (build-system glib-or-gtk-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-file-names
-                 (lambda _
-                   (substitute* "configure.ac"
-                     (("supath=`which su 2>/dev/null`")
-                      "supath=/run/privileged/bin/su")))))))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (inputs
-     (list glib gtk+-2))
-    (synopsis "Graphical front end for @command{su}")
-    (description
-     "Ktsuss stands for ``Keep the @command{su} simple, stupid''.
-It is a graphical version of @command{su} written in C and GTK+ 2, with
-simplicity in mind.")
-    (home-page "https://github.com/nomius/ktsuss")
-    (license license:bsd-3)))
-
 (define-public aide
   (package
     (name "aide")
@@ -336,6 +300,42 @@ usual file attributes can be checked for inconsistencies.")
 for interacting with the @url{https://www.hetzner.com/,Hetzner Cloud}
 service.")
     (license license:expat)))
+
+;; This package uses su instead of sudo (because of SpaceFM).
+(define-public ktsuss
+  (package
+    (name "ktsuss")
+    (version "2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/nomius/ktsuss")
+         (commit version)))
+       (sha256
+        (base32 "0q9931f9hp47v1n8scli4bdg2rkjpf5jf8v7jj2gdn83aia1r2hz"))
+       (file-name (git-file-name name version))))
+    (build-system glib-or-gtk-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-file-names
+                 (lambda _
+                   (substitute* "configure.ac"
+                     (("supath=`which su 2>/dev/null`")
+                      "supath=/run/privileged/bin/su")))))))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (inputs
+     (list glib gtk+-2))
+    (synopsis "Graphical front end for @command{su}")
+    (description
+     "Ktsuss stands for ``Keep the @command{su} simple, stupid''.
+It is a graphical version of @command{su} written in C and GTK+ 2, with
+simplicity in mind.")
+    (home-page "https://github.com/nomius/ktsuss")
+    (license license:bsd-3)))
 
 (define-public progress
   (package
