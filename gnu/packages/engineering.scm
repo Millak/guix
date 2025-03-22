@@ -777,28 +777,27 @@ multipole-accelerated algorithm.")
     (native-inputs (list gcc-9))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("CC=gcc" "RM=rm" "SHELL=sh" "all")
-       #:parallel-build? #f
-       #:tests? #f ;; no tests-suite
-       #:modules ((srfi srfi-1)
-                  ,@%default-gnu-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-                  (lambda* (#:key outputs #:allow-other-keys)
-                    (let* ((out (assoc-ref outputs "out"))
-                           (data (string-append out "/share"))
-                           (bin (string-append out "/bin"))
-                           (doc (string-append data "/doc/" ,name "-" ,version))
-                           (examples (string-append doc "/examples")))
-                      (with-directory-excursion "bin"
-                        (for-each (lambda (f)
-                                    (install-file f bin))
-                                  (find-files "." ".*")))
-                      (copy-recursively "doc" doc)
-                      (copy-recursively "examples" examples)
-                      #t))))))
+     (list #:make-flags #~(list "CC=gcc" "RM=rm" "SHELL=sh" "all")
+           #:parallel-build? #f
+           #:tests? #f ;; no tests-suite
+           #:modules `((srfi srfi-1)
+                       ,@%default-gnu-modules)
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'install
+                 (lambda _
+                   (let* ((data (string-append #$output "/share"))
+                          (bin (string-append #$output "/bin"))
+                          (doc (string-append data "/doc/"
+                                              #$name "-" #$version))
+                          (examples (string-append doc "/examples")))
+                     (with-directory-excursion "bin"
+                       (for-each (lambda (f)
+                                   (install-file f bin))
+                                 (find-files "." ".*")))
+                     (copy-recursively "doc" doc)
+                     (copy-recursively "examples" examples)))))))
     (home-page "https://www.rle.mit.edu/cpg/research_codes.htm")
     (synopsis "Multipole-accelerated inductance analysis program")
     (description
