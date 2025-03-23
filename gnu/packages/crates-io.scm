@@ -16495,6 +16495,30 @@ to the @code{is_x86_feature_detected!} macro.")
      "This package provides various bitset capabilities for Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-entity-0.112
+  (package
+    (name "rust-cranelift-entity")
+    (version "0.112.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-entity" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "184xhfinqz1hsz9xyq4s2rbywrw15bsbl98vrn13gqb76pa5xf3h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cranelift-bitset" ,rust-cranelift-bitset-0.112)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Data structures for using entity references as mapping keys")
+    (description
+     "This package provides data structures for using entity references as
+mapping keys.")
+    (license (list license:asl2.0))))
+
 (define-public rust-crates-index-0.19
   (package
     (name "rust-crates-index")
