@@ -42846,6 +42846,26 @@ lexer.")
     (description "This package provides MAC address types.")
     (license (list license:asl2.0 license:expat))))
 
+;; 8 years old with no updates, so cutting the dependency chart 
+(define-public rust-macho-0.4
+  (package
+    (name "rust-macho")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "macho" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "011p1j9jlndbanmqy5y7lk1vn3mh4jk3chgjiw3wwnbfzkicdsvg"))))
+    (build-system cargo-build-system)
+    (arguments
+      (list #:skip-build? #t))
+    (home-page "https://github.com/richo/macho-rs")
+    (synopsis "Mach-O parser in rust")
+    (description "This package provides Mach-O parser in rust.")
+    (license license:expat)))
+
 (define-public rust-macro-rules-attribute-0.2
   (package
     (name "rust-macro-rules-attribute")
