@@ -16697,6 +16697,41 @@ mapping keys.")
 domain-specific language for instruction selection in Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-wasm-0.112
+  (package
+    (name "rust-cranelift-wasm")
+    (version "0.112.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-wasm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hiy6vw4zmbqp9figvpg97fqj24xvazi52wdxxa79afcjl48cy5q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cranelift-codegen" ,rust-cranelift-codegen-0.112)
+          ("rust-cranelift-entity" ,rust-cranelift-entity-0.112)
+          ("rust-cranelift-frontend" ,rust-cranelift-frontend-0.112)
+          ("rust-hashbrown" ,rust-hashbrown-0.14)
+          ("rust-itertools" ,rust-itertools-0.12)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-derive" ,rust-serde-derive-1)
+          ("rust-smallvec" ,rust-smallvec-1)
+          ("rust-wasmparser" ,rust-wasmparser-0.217)
+          ("rust-wasmtime-types" ,rust-wasmtime-types-25))
+       #:cargo-development-inputs
+         (("rust-target-lexicon" ,rust-target-lexicon-0.12)
+          ("rust-wat" ,rust-wat-1))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Translator from WebAssembly to Cranelift IR")
+    (description
+     "This package provides Translator from @code{WebAssembly} to Cranelift
+IR.")
+    (license (list license:asl2.0))))
+
 (define-public rust-crates-index-0.19
   (package
     (name "rust-crates-index")
