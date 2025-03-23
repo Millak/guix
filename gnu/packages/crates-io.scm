@@ -16697,6 +16697,28 @@ mapping keys.")
 domain-specific language for instruction selection in Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-native-0.112
+  (package
+    (name "rust-cranelift-native")
+    (version "0.112.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-native" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d2hjqfjy1f1y49807ll96zfpw09ximpikp9yhzk5vlld2psri7z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-codegen" ,rust-cranelift-codegen-0.112)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.12))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Support for targeting the host with Cranelift")
+    (description
+     "This package provides support for targeting the host with Cranelift.")
+    (license (list license:asl2.0))))
+
 (define-public rust-cranelift-wasm-0.112
   (package
     (name "rust-cranelift-wasm")
