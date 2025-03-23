@@ -14969,10 +14969,14 @@ automatically.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "08a15knkdq35pzjq82imff016fbfdib5q4glg2xmdy2b5fnk7jqa"))))
+         "08a15knkdq35pzjq82imff016fbfdib5q4glg2xmdy2b5fnk7jqa"))
+       (modules '((guix build utils)))
+       (snippet #~(begin (substitute* "test/pretty-hydra-test.el"
+                           (("\\(c1 \\(quote foo\\)\\)") "(c1 'foo)"))))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-hydra emacs-s))
+    (native-inputs (list emacs-ert-runner))
     (arguments
      `(#:exclude (cons "^major-mode-hydra\\.el" %default-exclude)))
     (home-page "https://github.com/jerrypnz/major-mode-hydra.el")
