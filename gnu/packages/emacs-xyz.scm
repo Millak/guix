@@ -38832,6 +38832,7 @@ service, and connect it with Emacs via inter-process communication.")
                     emacs-minimal
                     ;; Require wide-int support for 32-bit platform.
                     emacs-wide-int)
+        #:test-command #~(list "make" "test_el")
         #:include #~(cons "^etc\\/" %default-include)
         #:phases
         #~(modify-phases %standard-phases
@@ -38864,7 +38865,17 @@ service, and connect it with Emacs via inter-process communication.")
                 (substitute* "telega-core.el"
                   (("@TELEGA_SHARE@")
                    (string-append (elpa-directory (assoc-ref outputs "out"))
-                                  "/etc"))))))))
+                                  "/etc")))))
+            (delete 'check)
+            (add-after 'install 'check (assoc-ref %standard-phases 'check))
+            (add-before 'check 'set-home
+              (lambda _
+                (setenv "HOME" (getenv "TMPDIR"))))
+            (add-before 'check 'skip-ensure-dependencies
+              (lambda _
+                (substitute* "etc/telega-make.el"
+                  (("\\(telega-ensure-dependencies\\)" all)
+                   (string-append ";; " all))))))))
       (inputs
        (list emacs-telega-server ffmpeg tgs2png))
       (native-inputs '())
