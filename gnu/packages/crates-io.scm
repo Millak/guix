@@ -64038,6 +64038,29 @@ that must be shared-mutable, but merely may use atomic instructions to do so.")
 radix.")
     (license license:asl2.0)))
 
+(define-public rust-radix-heap-0.4
+  (package
+    (name "rust-radix-heap")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "radix-heap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00g6vq9dn5v5h8sj2298h6zk3pm3wq8qhacrnjak40b4yjfyrzsr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ordered-float" ,rust-ordered-float-2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/mpdn/radix-heap")
+    (synopsis "Fast monotone priority queues")
+    (description "Fast monotone priority queues.")
+    (license license:expat)))
+
 (define-public rust-radix-trie-0.2
   (package
     (name "rust-radix-trie")
