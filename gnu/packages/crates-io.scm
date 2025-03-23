@@ -96443,6 +96443,33 @@ and native running processes.")
         (base32 "19kslk9pv1bcyp85w63dn1adbp13kz7kjha80abnwz27bmbxvz9j"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-wasmprinter-0.226
+  (package
+    (name "rust-wasmprinter")
+    (version "0.226.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmprinter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hndbcy362irxbchk57a78kmz1yrvxw6iwv1x1p7a0bcz8b0afkm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate `wat`
+       #:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-termcolor" ,rust-termcolor-1)
+          ("rust-wasmparser" ,rust-wasmparser-0.226))))
+    (home-page
+     "https://github.com/bytecodealliance/wasm-tools/tree/main/crates/wasmprinter")
+    (synopsis
+     "Rust converter from the WebAssembly binary format to text")
+    (description
+     "This package provides a converter from the @code{WebAssembly} binary
+format to the text format.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-wasmtime-types-25
   (package
     (name "rust-wasmtime-types")
