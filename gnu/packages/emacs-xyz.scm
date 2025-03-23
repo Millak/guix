@@ -12942,8 +12942,14 @@ copy of the org-roam-dailies extension without org-roam.")
        (sha256
         (base32 "13y302lyscdqrba1sfx60yf5ji2xi7fbsvjsjbw7hiz63kg6rccy"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "emacs" "--batch" "-l" "assess-discover"
+                   "-L" "."
+                   "--eval" "(assess-discover-run-and-exit-batch t)")))
     (propagated-inputs
      (list emacs-org emacs-persist))
+    (native-inputs (list emacs-assess))
     (home-page "https://gitlab.com/phillord/org-drill")
     (synopsis "Flash card memorization system using Org mode")
     (description
