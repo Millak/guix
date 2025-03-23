@@ -26471,10 +26471,20 @@ work Nicolas Rougier.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0b3ixh8cqp9id1q1h2l6pl05n7vzk7ffp3ms5kxg8bvbn1l3c77l"))))
+                "0b3ixh8cqp9id1q1h2l6pl05n7vzk7ffp3ms5kxg8bvbn1l3c77l"))
+              (snippet #~(delete-file "makem.sh"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f                  ; tests exist but cannot be run…
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'inject-makem
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (symlink (search-input-file inputs "/bin/makem.sh")
+                            "makem.sh"))))))
     (propagated-inputs
      (list emacs-compat emacs-dash emacs-org emacs-s))
+    (native-inputs (list makem-minimal util-linux))
     (home-page "https://github.com/alphapapa/org-make-toc")
     (synopsis "Maintain a table of contents for an Org file")
     (description "This package facilitates the creation and maintenance of
