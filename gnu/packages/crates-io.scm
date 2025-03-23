@@ -96350,6 +96350,30 @@ and native running processes.")
                                    ("rust-rayon" ,rust-rayon-1)
                                    ("rust-wasm-encoder" ,rust-wasm-encoder-0.38))))))
 
+(define-public rust-wasmparser-0.99
+  (package
+    (inherit rust-wasmparser-0.118)
+    (name "rust-wasmparser")
+    (version "0.99.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lq1vr7xy504b22ccn6dxsh3agnx4z0h4krd867q8zy6mwbvgwwy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ;; undeclared crate wat
+       #:cargo-inputs
+         (("rust-indexmap" ,rust-indexmap-1)
+          ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-criterion" ,rust-criterion-0.3)
+          ("rust-once-cell" ,rust-once-cell-1)
+          ("rust-rayon" ,rust-rayon-1))))))
+
 (define-public rust-wasmparser-0.57
   (package
     (inherit rust-wasmparser-0.118)
