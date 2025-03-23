@@ -4967,6 +4967,7 @@ overwrite mode, it will turn into a block cursor.")
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-hydra emacs-let-alist emacs-seq emacs-spinner))
+      (native-inputs (list emacs-ert-runner emacs-undercover))
       (home-page "https://github.com/Malabarba/paradox")
       (synopsis "Paradox is an extension to Emacs packages menu")
       (description
