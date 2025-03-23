@@ -16364,6 +16364,9 @@ features:
                (base32
                 "186bpvqxx87kp3857mq0mzn1ddsvzmpijix810k6bdz8522x7zdw"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "emacs" "--batch" "-l" "typescript-mode-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/ananthakumaran/typescript.el")
     (synopsis "Emacs major mode for editing Typescript code")
     (description
