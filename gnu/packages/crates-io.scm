@@ -96505,6 +96505,29 @@ and native running processes.")
         (base32 "19kslk9pv1bcyp85w63dn1adbp13kz7kjha80abnwz27bmbxvz9j"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-wasmparser-dump-0.1
+  (package
+    (name "rust-wasmparser-dump")
+    (version "0.1.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmparser-dump" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m118dd2j3546ndk52vdkpl1hc3f65vj50jn0bfsvyy38f47ajsl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-wasmparser" ,rust-wasmparser-0.99))))
+    (home-page
+     "https://github.com/bytecodealliance/wasm-tools/tree/main/crates/dump")
+    (synopsis "Utility to dump debug information about the wasm binary format")
+    (description
+     "This package provides a utility to dump debug information about the wasm
+binary format.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmprinter-0.226
   (package
     (name "rust-wasmprinter")
