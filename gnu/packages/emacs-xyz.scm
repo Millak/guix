@@ -14447,6 +14447,7 @@ regardless of @code{highlight-symbol-idle-delay}.
        (sha256
         (base32 "0xqzn4j27xny3gmjan9phcl60zipp49p79nv57i7mpz8y0qahc59"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/wolray/symbol-overlay")
     (synopsis "Highlight symbols and perform various search operations on them")
     (description
