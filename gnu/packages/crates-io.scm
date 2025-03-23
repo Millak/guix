@@ -96167,6 +96167,29 @@ attribute that is not in the shared backend crate.")
        (("rust-proc-macro2" ,rust-proc-macro2-0.4)
         ("rust-quote" ,rust-quote-0.6))))))
 
+(define-public rust-wasm-encoder-0.217
+  (package
+    (name "rust-wasm-encoder")
+    (version "0.217.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasm-encoder" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m7q74bds9cijcdixrfraa0rs085s9nq2w5g4qlmh85ldpbiz5hh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t  ; unresolved import `wasmparser`
+       #:cargo-inputs (("rust-leb128" ,rust-leb128-0.2)
+                       ("rust-wasmparser" ,rust-wasmparser-0.217))))
+    (home-page
+     "https://github.com/bytecodealliance/wasm-tools/tree/main/crates/wasm-encoder")
+    (synopsis "Low-level WebAssembly encoder")
+    (description
+     "This package provides a low-level @code{WebAssembly} encoder.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-wasm-encoder-0.38
   (package
     (name "rust-wasm-encoder")
