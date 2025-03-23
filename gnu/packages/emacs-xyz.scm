@@ -20715,6 +20715,7 @@ been adapted to also work with mu4e.")
         (base32
          "013fig9i4fyx16krp2vfv953p3rwdzr38zs6i50af4pqz4vrcfvh"))))
     (build-system emacs-build-system)
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/akatov/pretty-mode")
     (synopsis "Redisplay parts of the buffer as Unicode symbols")
     (description
