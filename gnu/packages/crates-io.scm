@@ -35053,6 +35053,26 @@ Normalization Forms.")
     (description "This package provides proc macros for ICU data providers.")
     (license license:unicode)))
 
+(define-public rust-id-arena-2
+  (package
+    (name "rust-id-arena")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "id-arena" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01ch8jhpgnih8sawqs44fqsqpc7bzwgy0xpi6j0f4j0i5mkvr8i5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs (("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/fitzgen/id-arena")
+    (synopsis "Simple, id-based arena")
+    (description "This package provides a simple, id-based arena.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-idea-0.5
   (package
     (name "rust-idea")
