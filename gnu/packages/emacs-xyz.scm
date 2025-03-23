@@ -40095,6 +40095,7 @@ matching a given regexp.")
        (sha256
         (base32 "0pq53b8wrjbrxd5hnrcdi0z7mffp4bax55hn90k9ca3j76lhbn1k"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/10sr/switch-buffer-functions-el")
     (synopsis "Hooks run when switching current buffer")
     (description "This package provides a hook variable
