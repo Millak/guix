@@ -96647,6 +96647,47 @@ format to the text format.")
      "This package provides Macros for defining asm functions in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-cache-25
+  (package
+    (name "rust-wasmtime-cache")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-cache" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04fdhydin7xn82jc3jlrx9svlhrdwzjrjpnha0jrljn1md8albp5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+         '("--" "--skip=config::tests::test_disabled")
+       #:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-base64" ,rust-base64-0.21)
+          ("rust-directories-next" ,rust-directories-next-2)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-postcard" ,rust-postcard-1)
+          ("rust-rustix" ,rust-rustix-0.38)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-derive" ,rust-serde-derive-1)
+          ("rust-sha2" ,rust-sha2-0.10)
+          ("rust-toml" ,rust-toml-0.8)
+          ("rust-windows-sys" ,rust-windows-sys-0.52)
+          ("rust-zstd" ,rust-zstd-0.13))
+       #:cargo-development-inputs
+         (("rust-filetime" ,rust-filetime-0.2)
+          ("rust-once-cell" ,rust-once-cell-1)
+          ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
+          ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list (list zstd "lib")))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Support for automatic module caching with Wasmtime")
+    (description
+     "This package provides automatic module caching with Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-component-macro-25
   (package
     (name "rust-wasmtime-component-macro")
