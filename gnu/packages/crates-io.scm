@@ -96627,6 +96627,26 @@ format to the text format.")
      "This package provides a converter from WebAssembly binary format to text.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-wasmtime-asm-macros-25
+  (package
+    (name "rust-wasmtime-asm-macros")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-asm-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09x0j21wj9rcqbhhhdjw100ijc6zw2q9m7ckk8860b9wk3wwgq1h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Macros for defining asm functions in Wasmtime")
+    (description
+     "This package provides Macros for defining asm functions in Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-component-macro-25
   (package
     (name "rust-wasmtime-component-macro")
