@@ -2000,7 +2000,7 @@ client desktops.
 (define-public criu
   (package
     (name "criu")
-    (version "3.17.1")
+    (version "4.0")
     (source
      (origin
        (method git-fetch)
@@ -2009,7 +2009,7 @@ client desktops.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ff3xfcf0wfz02fc0qbj56mci1a0xdl8jzaihaw6qyjvgrsiq7fh"))))
+        (base32 "0p46z5iclyvvg1arvqhl3bdg1g2mny0pxyz6pr5n87cnj7maqphg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -2040,7 +2040,14 @@ client desktops.
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Hardcode arm version detection
              (substitute* "Makefile"
-               (("ARMV.*:=.*") "ARMV := 7\n"))
+               (("ARMV.*:=.*") "ARMV := 7\n")
+               (("^head-name :=.*")
+                (string-append "head-name := "
+                               ,(package-version this-package)
+                               "\n")))
+             ;; disable pip install
+             (substitute* "Makefile.install"
+               (("SKIP_PIP_INSTALL.*:=.*") "SKIP_PIP_INSTALL := 1\n"))
              ;; Hard-code the correct PLUGINDIR above.
              (substitute* "criu/include/plugin.h"
                (("/var") (string-append (assoc-ref outputs "out"))))))
@@ -2066,6 +2073,16 @@ client desktops.
                                            (package-version python))
                                          "/site-packages"))
                     (path (getenv "GUIX_PYTHONPATH")))
+               ;; manually install stuff that was pip-installed
+               (for-each (lambda (dir)
+                          (with-directory-excursion dir
+                            (setenv "GUIX_PYTHONPATH"
+                              (string-append site ":" path))
+                            (invoke "python3" "setup.py" "install"
+                              (string-append "--prefix=" out)
+                              "--no-compile" "--root=/"
+                              "--single-version-externally-managed")))
+                         (list "lib" "crit"))
                (wrap-program (string-append out "/bin/crit")
                  `("GUIX_PYTHONPATH" ":" prefix (,site ,path))))))
          (add-after 'install 'delete-static-libraries
@@ -2091,6 +2108,7 @@ client desktops.
            xmlto
            docbook-xml
            docbook-xsl
+           python-setuptools
            python-toolchain))
     (propagated-inputs
      ;; included by 'rpc.pb-c.h'
