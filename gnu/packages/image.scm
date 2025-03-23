@@ -2761,6 +2761,10 @@ GIF, TIFF, WEBP, BMP, PNG, XPM formats.")
                   (guix build utils))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'python3.11-compatibility
+           (lambda _
+             (substitute* "setup.py"
+               (("\"rU\"") "\"r\""))))
          (add-after 'install 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
          (add-after 'install 'wrap-program
