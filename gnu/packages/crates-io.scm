@@ -93604,6 +93604,42 @@ attribute that is not in the shared backend crate.")
 and native running processes.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-wasmparser-0.226
+  (package
+    (name "rust-wasmparser")
+    (version "0.226.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10dni5bd1nxns01dfgr4q0cckp9bbhcs8fqwbxz8v9ibrc6n0a5w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs
+         (("rust-bitflags" ,rust-bitflags-2)
+          ("rust-hashbrown" ,rust-hashbrown-0.15)
+          ("rust-indexmap" ,rust-indexmap-2)
+          ("rust-semver" ,rust-semver-1)
+          ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-criterion" ,rust-criterion-0.5)
+          ("rust-env-logger" ,rust-env-logger-0.11)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-once-cell" ,rust-once-cell-1)
+          ("rust-rayon" ,rust-rayon-1))))
+    (home-page
+     "https://github.com/bytecodealliance/wasm-tools/tree/main/crates/wasmparser")
+    (synopsis
+     "Event-driven library for parsing WebAssembly binary files")
+    (description
+     "This package provides a simple event-driven library for parsing
+@code{WebAssembly} binary files.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-wasmparser-0.218
   (package
     (name "rust-wasmparser")
