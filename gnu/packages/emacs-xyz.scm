@@ -9882,6 +9882,10 @@ the speedbar window.")
        (sha256
         (base32 "0py95c6i7bffidwkwld1j1h2isyq7psna2kz81jigzz0wi885pjr"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "emacs" "--batch" "-L" "."
+                             "-l" "test/rswitcher-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/DamienCassou/shell-switcher")
     (synopsis "Provide fast switching between shell buffers")
     (description
