@@ -2672,7 +2672,13 @@ partial release of the General MIDI sound set.")
            #:configure-flags
            #~(list
               ;; Add the output lib directory to the RUNPATH.
-              (string-append "--ldflags=-Wl,-rpath=" #$output "/lib"))))
+              (string-append "--ldflags=-Wl,-rpath=" #$output "/lib"))
+           #:phases
+           '(modify-phases %standard-phases
+              (add-after 'unpack 'python3.11-compatibility
+                (lambda _
+                  (substitute* "wscript"
+                    (("'rU'") "'r'")))))))
     (inputs
      (list libsndfile
            boost
