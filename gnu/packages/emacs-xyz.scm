@@ -33445,6 +33445,7 @@ stored playlists.")
                  (base32
                   "1gck7lvqxcr9ikrzlpvcf4408cq6i4s8ijgb0kdsbkfzv0w86934"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; tests require networking
       (propagated-inputs
        (list emacs-f emacs-json-mode emacs-let-alist emacs-request))
       (home-page "https://github.com/spiderbit/kodi-remote.el")
