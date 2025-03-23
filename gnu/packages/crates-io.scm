@@ -16391,18 +16391,18 @@ in @code{no_std}.  Alloc support is optional.")
 (define-public rust-cpp-demangle-0.4
   (package
     (name "rust-cpp-demangle")
-    (version "0.4.1")
+    (version "0.4.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "cpp_demangle" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1ikd484ja34z3mbc1r1zj3y6ymxv3sc5y1n7wrr63xn7vy5zjxic"))))
+                 "0z8c656jiwphnw1brkb0whm4kgh39h1msvgig2wc44yi58s8vrcn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-afl" ,rust-afl-0.12)
+       (("rust-afl" ,rust-afl-0.15)
         ("rust-cfg-if" ,rust-cfg-if-1))
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-4)
