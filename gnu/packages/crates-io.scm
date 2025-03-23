@@ -10824,6 +10824,30 @@ capabilities.")
         ("rust-error-chain" ,rust-error-chain-0.12)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-capstone-sys-0.16
+  (package
+    (name "rust-capstone-sys")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "capstone-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qshi53z72yciyqskswyll6i9q40yjxf90347b3bgzqi2wkq6wgy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.59)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-regex" ,rust-regex-1))))
+    (home-page
+     "https://github.com/capstone-rust/capstone-rs/tree/master/capstone-sys")
+    (synopsis "System bindings for the capstone disassembly library")
+    (description
+     "This package provides bindings for the capstone disassembly library.")
+    (license license:expat)))
+
 (define-public rust-captur-0.1
   (package
     (name "rust-captur")
