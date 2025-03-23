@@ -11790,6 +11790,7 @@ troubleshooting mainframes.")
          (sha256
           (base32 "1smxr5bkzbfrjx21vhrj1wagmqx5yd92i997dbgs16iaqbzzr7cz"))))
       (build-system emacs-build-system)
+      (arguments (list #:test-command #~(list "make" "test")))
       (home-page "https://github.com/ashinn/scheme-complete")
       (synopsis "Smart tab completion for Scheme in Emacs")
       (description
