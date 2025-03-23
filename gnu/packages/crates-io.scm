@@ -16555,6 +16555,25 @@ generator library.")
      "Code shared between cranelift-codegen-meta and cranelift-codegen.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-control-0.112
+  (package
+    (name "rust-cranelift-control")
+    (version "0.112.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-control" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m5pkmqv8fg07cx02k1gmr91yiy12ng6ys4ry7286imdhp3smnva"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "White-box fuzz testing framework")
+    (description "This package provides a white-box fuzz testing framework.")
+    (license (list license:asl2.0))))
+
 (define-public rust-cranelift-entity-0.112
   (package
     (name "rust-cranelift-entity")
