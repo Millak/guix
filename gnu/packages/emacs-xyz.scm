@@ -28399,10 +28399,20 @@ powerful Org contents.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i7r7i6r1s3bzw2vnmb5j052461n95bdj0kj0k8l9vbrhgs602v3"))))
+        (base32 "1i7r7i6r1s3bzw2vnmb5j052461n95bdj0kj0k8l9vbrhgs602v3"))
+       (modules '((guix build utils)))
+       (snippet #~(begin (delete-file "cort-test.el")
+                         (substitute* "org-re-reveal-tests.el"
+                           (("\\(load \"cort-test\"\\)")
+                            "(require 'cort)"))))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f        ; XXX: 48/57 failing tests
+                     #:test-command #~(list "emacs" "--batch" "-l" "cort"
+                                            "-l" "org-re-reveal-tests.el"
+                                            "-f" "cort-test-run")))
     (propagated-inputs
      (list emacs-htmlize emacs-org))
+    (native-inputs (list emacs-cort))
     (home-page "https://gitlab.com/oer/org-re-reveal")
     (synopsis "Build HTML presentations with reveal.js from Org source files")
     (description "This project started as fork of org-reveal.  It provides an
