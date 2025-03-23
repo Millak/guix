@@ -12564,14 +12564,17 @@ linting of manifests and integration with Puppet Debugger.")
            "0rxdsmx8826az4blhnnvqrx7bjky9hwph6gkyrh33sck26xhh3g5"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:phases
+       `(#:test-command (list "ert-runner" "tests"
+                              "-l" "tests/haskell-sort-imports-tests.el"
+                              "-l" "tests/haskell-str-tests.el")
+         #:phases
          (modify-phases %standard-phases
            (add-before 'install 'make-info
              (lambda _
                (invoke "makeinfo" "--no-split"
                        "-o" "purescript-mode.info" "purescript-mode.texi"))))))
       (native-inputs
-       (list texinfo))
+       (list emacs-ert-runner texinfo))
       (home-page "https://github.com/purescript-emacs/purescript-mode")
       (synopsis "Emacs major mode and related tools for Purescript")
       (description "This package provides an Emacs major mode for writing Purescript.")
