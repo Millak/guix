@@ -922,70 +922,70 @@ systems with no further dependencies.")
         (base32 "1w45dr2cmy32cvxwqaybf5m2ziraj929f4lxcwapv266r1a92kyk"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:configure-flags (list "--enable-polkit"
+     (list
+      #:configure-flags '(list "--enable-polkit"
                                "--without-systemdsystemunitdir" ; Not required
                                "--without-systemduserunitdir")  ; Not required
-       #:phases
-       (modify-phases %standard-phases
-         ;; Python references are not being patched in patch-phase of build,
-         ;; despite using python-wrapper as input. So we patch them manually.
-         (add-after 'unpack 'patch-python-references
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "apps"
-               (substitute* '("blueman-adapters.in" "blueman-applet.in"
-                              "blueman-manager.in" "blueman-mechanism.in"
-                              "blueman-rfcomm-watcher.in" "blueman-sendto.in"
-                              "blueman-services.in" "blueman-tray.in")
-                 (("@PYTHON@")
-                  (search-input-file inputs
-                                     (string-append
-                                      "/bin/python"
-                                      ,(version-major+minor
-                                        (package-version python)))))))))
-         ;; Fix loading of external programs.
-         (add-after 'unpack 'patch-external-programs
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("blueman/main/NetConf.py"
-                            "blueman/main/PPPConnection.py")
-               (("/usr/sbin/bluetoothd")
-                (search-input-directory inputs
-                                        "/libexec/bluetooth/bluetoothd"))
-               (("/sbin/iptables")
-                (search-input-file inputs "/sbin/iptables"))
-               (("/usr/sbin/pppd")
-                (search-input-file inputs "/sbin/pppd")))))
-         ;; Fix loading of pulseaudio libraries.
-         (add-after 'unpack 'patch-pulseaudio-libraries
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((pulseaudio (assoc-ref inputs "pulseaudio"))
-                    (pulse (string-append pulseaudio "/lib/libpulse.so.0"))
-                    (pulse-glib (string-append pulseaudio
-                                               "/lib/libpulse-mainloop-glib.so.0")))
-               (with-directory-excursion "blueman/main"
-                 (substitute* "PulseAudioUtils.py"
-                   (("libpulse.so.0") pulse)
-                   (("libpulse-mainloop-glib.so.0") pulse-glib))))))
-         ;; Fix running of blueman programs.
-         (add-after 'glib-or-gtk-wrap 'wrap-blueman-progs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/blueman-"))
-                    (libexec (string-append out "/libexec/blueman-"))
-                    (lib (string-append out "/lib/python"
-                                        ,(version-major+minor
-                                          (package-version python))
-                                        "/site-packages")))
-               (for-each
-                (lambda (program)
-                  (wrap-program program
-                    `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,lib))
-                    `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
-                (append
-                 (map (lambda (prog) (string-append bin prog))
-                      '("adapters" "applet" "manager"
-                        "sendto" "services" "tray"))
-                 (map (lambda (prog) (string-append libexec prog))
-                      '("mechanism" "rfcomm-watcher"))))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Python references are not being patched in patch-phase of build,
+          ;; despite using python-wrapper as input. So we patch them manually.
+          (add-after 'unpack 'patch-python-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "apps"
+                (substitute* '("blueman-adapters.in" "blueman-applet.in"
+                               "blueman-manager.in" "blueman-mechanism.in"
+                               "blueman-rfcomm-watcher.in" "blueman-sendto.in"
+                               "blueman-services.in" "blueman-tray.in")
+                  (("@PYTHON@")
+                   (search-input-file inputs
+                                      (string-append
+                                       "/bin/python"
+                                       #$(version-major+minor
+                                          (package-version (this-package-input "python-wrapper"))))))))))
+          ;; Fix loading of external programs.
+          (add-after 'unpack 'patch-external-programs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("blueman/main/NetConf.py"
+                             "blueman/main/PPPConnection.py")
+                (("/usr/sbin/bluetoothd")
+                 (search-input-directory inputs
+                                         "/libexec/bluetooth/bluetoothd"))
+                (("/sbin/iptables")
+                 (search-input-file inputs "/sbin/iptables"))
+                (("/usr/sbin/pppd")
+                 (search-input-file inputs "/sbin/pppd")))))
+          ;; Fix loading of pulseaudio libraries.
+          (add-after 'unpack 'patch-pulseaudio-libraries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((pulseaudio #$(this-package-input "pulseaudio"))
+                     (pulse (string-append pulseaudio "/lib/libpulse.so.0"))
+                     (pulse-glib (string-append pulseaudio
+                                                "/lib/libpulse-mainloop-glib.so.0")))
+                (with-directory-excursion "blueman/main"
+                  (substitute* "PulseAudioUtils.py"
+                    (("libpulse.so.0") pulse)
+                    (("libpulse-mainloop-glib.so.0") pulse-glib))))))
+          ;; Fix running of blueman programs.
+          (add-after 'glib-or-gtk-wrap 'wrap-blueman-progs
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((bin (string-append #$output "/bin/blueman-"))
+                     (libexec (string-append #$output "/libexec/blueman-"))
+                     (lib (string-append #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version (this-package-input "python-wrapper")))
+                                         "/site-packages")))
+                (for-each
+                 (lambda (program)
+                   (wrap-program program
+                     `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,lib))
+                     `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
+                 (append
+                  (map (lambda (prog) (string-append bin prog))
+                       '("adapters" "applet" "manager"
+                         "sendto" "services" "tray"))
+                  (map (lambda (prog) (string-append libexec prog))
+                       '("mechanism" "rfcomm-watcher"))))))))))
     (native-inputs
      (list python-cython
            `(,glib "bin")
