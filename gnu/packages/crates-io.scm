@@ -61995,6 +61995,33 @@ in codeblocks, while assuring quality with a powerful test suite.")
        (("rust-indoc" ,rust-indoc-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))))
 
+(define-public rust-pulley-interpreter-0.1
+  (package
+    (name "rust-pulley-interpreter")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pulley-interpreter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+          "19jkl3cm72023fkybp9ikc1a4d998cs0by8i3zdbd2w3ax2ql2f3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-arbitrary" ,rust-arbitrary-1)
+          ("rust-cranelift-bitset" ,rust-cranelift-bitset-0.112)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-sptr" ,rust-sptr-0.3))))
+    (home-page "https://github.com/bytecodealliance/wasmtime/tree/main/pulley")
+    (synopsis
+     "The Pulley interpreter with all the parts")
+    (description
+     "This package provides the pulley interpreter, its bytecode definition,
+encoder and decoder.")
+    (license (list license:asl2.0))))
+
 (define-public rust-pulse-0.5
   (package
     (name "rust-pulse")
