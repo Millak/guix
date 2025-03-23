@@ -96574,6 +96574,28 @@ format to the text format.")
 @code{WebAssembly} Text formats WAT and WAST.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-wat-1
+  (package
+    (name "rust-wat")
+    (version "1.226.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wat" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10b5jvlj33m8njjcfd1h7jwnjzvsz85h415pnasvh0f4y87ak2az"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-wast" ,rust-wast-226))))
+    (home-page
+     "https://github.com/bytecodealliance/wasm-tools/tree/main/crates/wat")
+    (synopsis "Rust parser for the WebAssembly Text format, WAT")
+    (description
+     "This package provides a parser for the
+@acronym{WAT, WebAssembly Text format}.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-watchexec-2
   (package
     (name "rust-watchexec")
