@@ -21144,6 +21144,7 @@ number on the left margin in Emacs.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:tests? #f                       ; no tests
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'makeinfo
