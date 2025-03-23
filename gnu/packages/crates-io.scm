@@ -96632,6 +96632,27 @@ format to the text format.")
 @code{WebAssembly} Text formats WAT and WAST.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-wast-35
+  (package
+    (inherit rust-wast-226)
+    (name "rust-wast")
+    (version "35.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wast" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s2d43g326dw21bygpalzjnr1fi83lx4afimg1h5hilrnkql1w9f"))))
+    (arguments
+     `(#:tests? #f ;undeclared crate wat/wasmparser
+       #:cargo-inputs
+         (("rust-leb128" ,rust-leb128-0.2)
+          ("rust-wasmparser-dump" ,rust-wasmparser-dump-0.1))
+       #:cargo-development-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-rayon" ,rust-rayon-1))))))
+
 (define-public rust-wat-1
   (package
     (name "rust-wat")
