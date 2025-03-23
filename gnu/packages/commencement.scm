@@ -205,29 +205,32 @@ pure Scheme to Tar and decompression in one easy step.")
     (inherit gash)
     (name "gash-boot")
     (arguments
-     `(#:implicit-inputs? #f
-       #:tests? #f
-       #:guile ,%bootstrap-guile
-       #:imported-modules ((guix build gnu-bootstrap)
-                           ,@%default-gnu-imported-modules)
-       #:phases
-       (begin
-         (use-modules (guix build gnu-bootstrap))
-         (modify-phases %standard-phases
-           (replace 'configure
-             (bootstrap-configure "Gash" ,(package-version gash)
-                                  '("gash") "scripts"))
-           (replace 'build (bootstrap-build '("gash")))
-           (replace 'install (bootstrap-install '("gash") "scripts"))
-           (add-after 'install 'install-symlinks
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (symlink (string-append out "/bin/gash")
-                          (string-append out "/bin/sh"))
-                 (symlink (string-append out "/bin/gash")
-                          (string-append out "/bin/bash")))))))))
-    (inputs `(("guile" ,%bootstrap-guile)))
-    (native-inputs `(("bootar" ,bootar)))))
+     (list #:implicit-inputs? #f
+           #:tests? #f
+           #:guile %bootstrap-guile
+           #:imported-modules `((guix build gnu-bootstrap)
+                                ,@%default-gnu-imported-modules)
+           #:modules `((guix build gnu-bootstrap)
+                       ,@%default-gnu-modules)
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (bootstrap-configure "Gash"
+                                      #$(package-version gash)
+                                      '("gash") "scripts"))
+               (replace 'build
+                 (bootstrap-build '("gash")))
+               (replace 'install
+                 (bootstrap-install '("gash") "scripts"))
+               (add-after 'install 'install-symlinks
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (symlink (string-append out "/bin/gash")
+                              (string-append out "/bin/sh"))
+                     (symlink (string-append out "/bin/gash")
+                              (string-append out "/bin/bash"))))))))
+    (inputs (list %bootstrap-guile))
+    (native-inputs (list bootar))))
 
 (define gash-utils-boot
   (package
