@@ -16598,6 +16598,32 @@ generator library.")
 mapping keys.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-isle-0.112
+  (package
+    (name "rust-cranelift-isle")
+    (version "0.112.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-isle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nyg52ga4svqihx22j3kqgl49imn2a0509cbghihqpp0ijannjj6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-codespan-reporting" ,rust-codespan-reporting-0.11)
+          ("rust-log" ,rust-log-0.4))))
+    (home-page
+     "https://github.com/bytecodealliance/wasmtime/tree/main/cranelift/isle")
+    (synopsis
+     "ISLE is a domain-specific language for instruction selection in Cranelift")
+    (description
+     "This package provides
+@acronym{ISLE, Instruction Selection and Lowering Expressions} which is a
+domain-specific language for instruction selection in Cranelift.")
+    (license (list license:asl2.0))))
+
 (define-public rust-crates-index-0.19
   (package
     (name "rust-crates-index")
