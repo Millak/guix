@@ -2637,7 +2637,7 @@ readable.")
 (define-public python-vedo
   (package
     (name "python-vedo")
-    (version "2022.2.0")
+    (version "2025.5.3")
     (source
      (origin
        (method git-fetch)
@@ -2646,43 +2646,34 @@ readable.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1hhv4xc4bphhd1zrnf7r6fpf65xvkdqmb1lh51qg1xpv91h2az0h"))))
-    (build-system python-build-system)
+        (base32 "0hrqyvcxxbc1wz0cnafc8rvsi5mj19kck4b6pmddh25rlhdcr5qb"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           ;; These tests require online data.
+     (list
+      ;; XXX: The whole test suite depends on the data from
+      ;; <https://vedo.embl.es/examples> providing samples which need to be
+      ;; downloaded during tests, find the way how to enable it.
+      #:tests? #f
+      #:phases
+       #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           ;; vtk does not provide Python metadata.
+           ;;
+           ;; ...checking requirements: ERROR: vedo==2025.5.3
+           ;; DistributionNotFound(Requirement.parse('vtk'), {'vedo'})
            (lambda _
-             (substitute* "tests/common/test_actors.py"
-               (("^st = .*") "")
-               (("^assert isinstance\\(st\\.GetTexture\\(\\), .*") ""))
-             (delete-file "tests/common/test_pyplot.py")))
-         (add-after 'build 'mpi-setup
-           ,%openmpi-setup)
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "tests"
-                 (for-each (lambda (dir)
-                             (with-directory-excursion dir
-                               (invoke "./run_all.sh")))
-                           '("common" "dolfin"))))))
-         ;; Disable the sanity check, which fails with the following error:
-         ;;
-         ;;   ...checking requirements: ERROR: vedo==2022.2.0 DistributionNotFound(Requirement.parse('vtk<9.1.0'), {'vedo'})
-         (delete 'sanity-check))))
+             (substitute* "pyproject.toml"
+               (("\"vtk\",") "")))))))
     (native-inputs
      (list pkg-config
-           python-pkgconfig))
+           python-pkgconfig
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list fenics
-           python-deprecated
+     (list python-deprecated
            python-matplotlib
            python-numpy
+           python-pygments
            vtk))
     (home-page "https://github.com/marcomusy/vedo")
     (synopsis
