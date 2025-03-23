@@ -4262,7 +4262,87 @@ into separate processes; and more.")
               (uri (pypi-uri "biopython" version))
               (sha256
                (base32
-                "1q55jhf76z3k6is3psis0ckbki7df26x7dikpcc3vhk1vhkwribh"))))))
+                "1q55jhf76z3k6is3psis0ckbki7df26x7dikpcc3vhk1vhkwribh"))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'python3.11-compatibility
+            (lambda _
+              ;; Py_TYPE was changed to an inline static function in Python
+              ;; 3.11, so it cannot be used on the left-hand side.
+              (substitute* "Bio/triemodule.c"
+                (("Py_TYPE\\(&Trie_Type\\) = &PyType_Type;")
+                 "Py_SET_TYPE(&Trie_Type, &PyType_Type);"))
+
+              ;; PY_SSIZE_T_CLEAN must be defined if s# notation is used.
+              ;; Note that this is no longer needed in Python 3.13.
+              (substitute* '("Bio/triemodule.c" "Bio/motifs/_pwm.c")
+                (("#include <Python.h>")
+                 "#define PY_SSIZE_T_CLEAN\n#include <Python.h>")
+                (("int s;") "Py_ssize_t s;"))
+
+              ;; The U mode is implicit in Python 3.11.
+              (substitute* '("Tests/test_KGML_nographics.py"
+                             "Tests/test_PDB.py")
+                (("'rU'") "'r'"))
+              (substitute* "Bio/SCOP/Cla.py"
+                (("\"rU\"") "\"r\""))
+
+              ;; ExactPosition class needs to define __str__.
+              (substitute* "Bio/SeqFeature.py"
+                (("class UncertainPosition" m)
+                 (string-append "\
+    # Must define this on Python 3.8 onwards because we redefine __repr__
+    def __str__(self):
+        return str(int(self))
+
+    def __add__(self, offset):
+        # By default preserve any subclass
+        return self.__class__(int(self) + offset)
+" m)))
+              ;; This was removed in Python 3.9 already
+              (substitute* "Bio/KEGG/KGML/KGML_parser.py"
+                (("self.entry.getchildren\\(\\)")
+                 "list(self.entry)")
+                (("element.getchildren\\(\\)")
+                 "list(element)"))
+              (substitute* "Bio/Phylo/NeXMLIO.py"
+                (("node.getchildren\\(\\)")
+                 "list(node)")
+                (("edge.getchildren\\(\\)")
+                 "list(edge)"))
+              (substitute* "Bio/Entrez/Parser.py"
+                (("child.getiterator\\(\\)")
+                 "list(child.iter())"))
+              (substitute* "Bio/SeqIO/UniprotIO.py"
+                (("alt_element.getiterator\\(NS \\+ ('.*')\\)" m something)
+                 (string-append "list(alt_element.iter(NS + " something "))"))
+                (("link_element.getiterator\\(NS \\+ ('.*')\\)" m something)
+                 (string-append "list(link_element.iter(NS + " something "))"))
+                (("loc_element.getiterator\\(NS \\+ ('.*')\\)" m something)
+                 (string-append "list(loc_element.iter(NS + " something "))"))
+                (("element.getiterator\\(NS \\+ ('.*')\\)" m something)
+                 (string-append "list(element.iter(NS + " something "))")))))
+          (add-after 'unpack 'numpy-compatibility
+            (lambda _
+              (substitute* '("Bio/Statistics/lowess.py"
+                             "Tests/test_Cluster.py")
+                (("numpy.float32") "float")
+                (("numpy.float") "float"))))
+          (add-before 'check 'set-home
+            ;; Some tests require a home directory to be set.
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python3" "setup.py" "build_ext" "--inplace")))
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* "Tests/run_tests.py"
+                ;; Do not run doctests.
+                (("self.tests.append\\(\"doctest\"\\)") "")
+                (("opt == \"--offline\"") "True")))))))))
 
 (define-public python-fastalite
   (package
