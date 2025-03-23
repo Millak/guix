@@ -40186,6 +40186,25 @@ requires non-const function calls to be computed.")
 length integer encoding.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-leb128fmt-0.1
+  (package
+    (name "rust-leb128fmt")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "leb128fmt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1chxm1484a0bly6anh6bd7a99sn355ymlagnwj3yajafnpldkv89"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/bluk/leb128fmt")
+    (synopsis "Library to encode and decode LEB128 compressed integers")
+    (description
+     "This package provides a library to encode and decode LEB128 compressed
+integers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lebe-0.5
   (package
     (name "rust-lebe")
