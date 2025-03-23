@@ -37443,6 +37443,7 @@ zip utility (default is @code{zip}).")
          (sha256
           (base32 "0jmiya3f9vv4v64p5kxla6wiiyv4wg4w7f4a6zmdrjcn11hflqmm"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no actual tests
       (home-page "https://sr.ht/~abrahms/ox-gemini")
       (synopsis "Export Org files in Gemini format")
       (description
