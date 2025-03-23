@@ -39108,6 +39108,7 @@ REPL appropriate to the current major mode.")
       (build-system emacs-build-system)
       (arguments
        (list
+        #:test-command #~(list "make" "test" "EMACS=emacs --batch")
         #:include #~(cons "^src/liberime-core.so$" %default-include)
         #:phases
         #~(modify-phases %standard-phases
