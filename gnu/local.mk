@@ -49,7 +49,7 @@
 # Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 # Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 # Copyright © 2022, 2024 Remco van 't Veer <remco@remworks.net>
-# Copyright © 2022, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+# Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 # Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 # Copyright © 2022 muradm <mail@muradm.net>
 # Copyright © 2022 Hilton Chain <hako@ultrarare.space>
@@ -1843,6 +1843,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mcrypt-CVE-2012-4527.patch			\
   %D%/packages/patches/libmemcached-build-with-gcc7.patch	\
   %D%/packages/patches/libmhash-hmac-fix-uaf.patch		\
+  %D%/packages/patches/libmodbus-disable-networking-test.patch \
   %D%/packages/patches/lib-tl-for-telegram-memcpy.patch	\
   %D%/packages/patches/llama-cpp-vulkan-optional.patch	\
   %D%/packages/patches/llhttp-ponyfill-object-fromentries.patch	\

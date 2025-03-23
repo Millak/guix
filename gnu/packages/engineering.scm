@@ -1733,7 +1733,7 @@ send break and throttle transmission speed.")
 (define-public libmodbus
   (package
     (name "libmodbus")
-    (version "3.1.10")
+    (version "3.1.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1742,15 +1742,20 @@ send break and throttle transmission speed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nbpk1n56kclab8fl32dxi46v2bwax3gfk1zkc796srm7vj42sbv"))))
+                "15rqrzamlp6cvixz6klnawlc9s3w34bapc1fs2c4amwyvi3n5xvp"))
+              ;; The patch removes a test that requires networking.
+              ;; See <https://github.com/stephane/libmodbus/issues/802>
+              (patches
+               (search-patches "libmodbus-disable-networking-test.patch"))))
     (build-system gnu-build-system)
-    (native-inputs (list autoconf automake libtool))
+    (native-inputs (list autoconf psmisc automake libtool))
     (synopsis "Library for the Modbus protocol")
     (description "@code{libmodbus} is a library to send/receive data with a
 device which respects the Modbus protocol.  This library can use a serial port
 or an Ethernet connection.")
     (home-page "https://libmodbus.org/")
     (license license:lgpl2.1+)))
+
 (define-public harminv
   (package
     (name "harminv")

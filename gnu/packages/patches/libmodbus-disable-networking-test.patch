@@ -1,0 +1,35 @@
+From 4fc47d8711650a1385bea0652e522af2c85129bc Mon Sep 17 00:00:00 2001
+From: "Artyom V. Poptsov" <poptsov.artyom@gmail.com>
+Date: Sun, 23 Mar 2025 09:44:34 +0300
+Subject: [PATCH] tests/unit-test-client: Disable a test requiring networking
+
+* tests/unit-test-client.c (main): Disable the test that requires networking
+as it fails with "Network is unreachable" (errno: 101) in environments where
+networking is not available (e.g. GNU Guix.) See
+<https://github.com/stephane/libmodbus/issues/802>.
+---
+ tests/unit-test-client.c | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/tests/unit-test-client.c b/tests/unit-test-client.c
+index a1813b1..58eaf5f 100644
+--- a/tests/unit-test-client.c
++++ b/tests/unit-test-client.c
+@@ -671,14 +671,6 @@ int main(int argc, char *argv[])
+     printf("7/8 Disable byte timeout: ");
+     ASSERT_TRUE(rc == 1, "");
+ 
+-    // Invalid in TCP or RTU mode...
+-    modbus_t *invalid_ctx = modbus_new_tcp("1.2.3.4", 1502);
+-    modbus_set_response_timeout(ctx, 0, 1);
+-    rc = modbus_connect(invalid_ctx);
+-    printf("8/8 Connection timeout: ");
+-    ASSERT_TRUE(rc == -1 && errno == ETIMEDOUT, "");
+-    modbus_free(invalid_ctx);
+-
+     /* Restore original response timeout */
+     modbus_set_response_timeout(ctx, old_response_to_sec, old_response_to_usec);
+ 
+-- 
+2.48.1
+
