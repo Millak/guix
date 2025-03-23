@@ -665,7 +665,7 @@ Filter) modules follow the convention of 1V / Octave.")
                              "waflib/ConfigSet.py")
                 (("'rU'") "'r'")))))))
     (inputs
-     (list jack-1
+     (list jack-2
            libsndfile
            libsamplerate
            ffmpeg-4                     ;for libavcodec
