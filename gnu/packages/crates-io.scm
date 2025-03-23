@@ -96401,6 +96401,32 @@ and native running processes.")
         (base32 "19kslk9pv1bcyp85w63dn1adbp13kz7kjha80abnwz27bmbxvz9j"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-wasmtime-types-25
+  (package
+    (name "rust-wasmtime-types")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1iwk7ih0bdr6qwfhi1mdifdh1nximhg3231qw9s4jyll2rw3mn66"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+           ("rust-cranelift-entity" ,rust-cranelift-entity-0.112)
+           ("rust-serde" ,rust-serde-1)
+           ("rust-serde-derive" ,rust-serde-derive-1)
+           ("rust-smallvec" ,rust-smallvec-1)
+           ("rust-wasmparser" ,rust-wasmparser-0.217))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "WebAssembly type definitions for Cranelift")
+    (description
+     "This package provides @code{WebAssembly} type definitions for Cranelift.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-wmemcheck-25
   (package
     (name "rust-wasmtime-wmemcheck")
