@@ -1122,78 +1122,79 @@ This library provides just sd-bus (and the busctl utility).")
                          "idn"
                          "nss-myhostname"
                          "nss-systemd")))
-       `(#:configure-flags ',(map (lambda (component)
-                                    (string-append "-D" component "=false"))
-                                  (delete "localed" components))
+       (list
+        #:configure-flags #~(list
+                             #$@(map (lambda (component)
+                                       (string-append "-D" component "=false"))
+                                     (delete "localed" components)))
 
-         ;; It doesn't make sense to test all of systemd.
-         #:tests? #f
+        ;; It doesn't make sense to test all of systemd.
+        #:tests? #f
 
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'set-xkeyboard-config-file-name
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; Set the file name to xkeyboard-config and kbd.
-               ;; This is used by 'localectl list-x11-keymap-layouts'
-               ;; and similar functions.
-               (let ((xkb (assoc-ref inputs "xkeyboard-config"))
-                     (kbd (assoc-ref inputs "kbd")))
-                 (substitute* "src/locale/localectl.c"
-                   (("/usr/share/X11/xkb/rules")
-                    (string-append xkb "/share/X11/xkb/rules")))
-                 (substitute* "src/basic/def.h"
-                   (("/usr/share/keymaps")
-                    (string-append kbd "/share/keymaps"))))))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               ;; Install 'localed', the D-Bus and polkit files, and
-               ;; 'localectl'.
-               (let* ((out (assoc-ref outputs "out"))
-                      (libexec (string-append out "/libexec/localed"))
-                      (bin     (string-append out "/bin"))
-                      (lib     (string-append out "/lib"))
-                      (dbus    (string-append out
-                                              "/share/dbus-1/system-services"))
-                      (conf    (string-append out
-                                              "/etc/dbus-1/system.d/"))
-                      (polkit  (string-append out
-                                              "/share/polkit-1/actions"))
-                      (data    (string-append out "/share/systemd")))
-                 (define (source-file regexp)
-                   (car (find-files ".." regexp)))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-xkeyboard-config-file-name
+              (lambda _
+                ;; Set the file name to xkeyboard-config and kbd.
+                ;; This is used by 'localectl list-x11-keymap-layouts'
+                ;; and similar functions.
+                (let ((xkb #$(this-package-input "xkeyboard-config"))
+                      (kbd #$(this-package-input "kbd")))
+                  (substitute* "src/locale/localectl.c"
+                    (("/usr/share/X11/xkb/rules")
+                     (string-append xkb "/share/X11/xkb/rules")))
+                  (substitute* "src/basic/def.h"
+                    (("/usr/share/keymaps")
+                     (string-append kbd "/share/keymaps"))))))
+            (replace 'install
+              (lambda _
+                ;; Install 'localed', the D-Bus and polkit files, and
+                ;; 'localectl'.
+                (let* ((out #$output)
+                       (libexec (string-append out "/libexec/localed"))
+                       (bin     (string-append out "/bin"))
+                       (lib     (string-append out "/lib"))
+                       (dbus    (string-append out
+                                               "/share/dbus-1/system-services"))
+                       (conf    (string-append out
+                                               "/etc/dbus-1/system.d/"))
+                       (polkit  (string-append out
+                                               "/share/polkit-1/actions"))
+                       (data    (string-append out "/share/systemd")))
+                  (define (source-file regexp)
+                    (car (find-files ".." regexp)))
 
-                 (mkdir-p libexec)
-                 (copy-file "systemd-localed"
-                            (string-append libexec "/localed"))
-                 (install-file "localectl" bin)
+                  (mkdir-p libexec)
+                  (copy-file "systemd-localed"
+                             (string-append libexec "/localed"))
+                  (install-file "localectl" bin)
 
-                 (let ((service-file (source-file
-                                      "\\.locale1\\.service$")))
-                   (substitute* service-file
-                     (("^Exec=.*$")
-                      (string-append "Exec=" libexec "/localed\n")))
-                   (install-file service-file dbus))
-                 (install-file (source-file "\\.locale1\\.policy$")
-                               polkit)
-                 (install-file (source-file "\\.locale1\\.conf$")
-                               conf)
-                 (for-each (lambda (file)
-                             (install-file file lib))
-                           (find-files "src/shared"
-                                       "libsystemd-shared.*\\.so"))
+                  (let ((service-file (source-file "\\.locale1\\.service$")))
+                    (substitute* service-file
+                      (("^Exec=.*$")
+                       (string-append "Exec=" libexec "/localed\n")))
+                    (install-file service-file dbus))
+                  (install-file (source-file "\\.locale1\\.policy$") polkit)
+                  (install-file (source-file "\\.locale1\\.conf$") conf)
+                  (for-each (lambda (file)
+                              (install-file file lib))
+                            (find-files "src/shared"
+                                        "libsystemd-shared.*\\.so"))
 
-                 (for-each
-                  (lambda (map)
-                    (install-file map data))
-                  (find-files
-                   ".."
-                   "^(kbd-model-map|language-fallback-map)$")))))))))
-    (native-inputs `(,@(package-native-inputs elogind)
-                     ("rsync" ,rsync)))
-    (inputs `(("libmount" ,util-linux "lib")
-              ("xkeyboard-config" ,xkeyboard-config)
-              ("kbd" ,kbd)
-              ,@(package-inputs elogind)))
+                  (for-each
+                   (lambda (map)
+                     (install-file map data))
+                   (find-files
+                    ".."
+                    "^(kbd-model-map|language-fallback-map)$")))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs elogind)
+       (append rsync)))
+    (inputs
+     (modify-inputs (package-inputs elogind)
+       (prepend `(,util-linux "lib")
+                kbd
+                xkeyboard-config)))
     (home-page "https://www.freedesktop.org/wiki/Software/systemd/localed/")
     (synopsis "Control the system locale and keyboard layout")
     (description
