@@ -96540,6 +96540,40 @@ format to the text format.")
     (description "This package provides a memcheck implementation for Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wast-226
+  (package
+    (name "rust-wast")
+    (version "226.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wast" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09lsn0gn2v9b1h92cll0h9qqsp0ysr6k18ihdjxyll81dnah7f8b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ;undeclared crate `wasmparser` and `wat`
+       #:cargo-inputs
+         (("rust-bumpalo" ,rust-bumpalo-3)
+          ("rust-gimli" ,rust-gimli-0.31)
+          ("rust-leb128fmt" ,rust-leb128fmt-0.1)
+          ("rust-memchr" ,rust-memchr-2)
+          ("rust-unicode-width" ,rust-unicode-width-0.2)
+          ("rust-wasm-encoder" ,rust-wasm-encoder-0.226))
+       #:cargo-development-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-libtest-mimic" ,rust-libtest-mimic-0.8)
+          ("rust-rand" ,rust-rand-0.8))))
+    (home-page
+     "https://github.com/bytecodealliance/wasm-tools/tree/main/crates/wast")
+    (synopsis
+     "Customizable Rust parsers for the WebAssembly Text formats WAT and WAST")
+    (description
+     "This package provides customizable Rust parsers for the
+@code{WebAssembly} Text formats WAT and WAST.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-watchexec-2
   (package
     (name "rust-watchexec")
