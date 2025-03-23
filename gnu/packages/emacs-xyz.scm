@@ -41113,6 +41113,7 @@ across all Org export back-ends.")
        (sha256
         (base32 "15r305lbci797nlh6m3xy1q0cwfz85x7k76adp71z8706n2w9j71"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs (list emacs-compat emacs-emacsql))
     (home-page "https://thanosapollo.org/projects/org-gnosis/")
     (synopsis "Roam-like note taking system.")
