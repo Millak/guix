@@ -151,7 +151,8 @@
        (sha256
         (base32 "13yd64ah93gkbdv7qq4cr6rhgl9979jjcjk3gkhnav1b7glns7dh"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags '("--release" "--" "--skip=macros")
+       #:cargo-inputs
        (("rust-async-std" ,rust-async-std-1)
         ("rust-atty" ,rust-atty-0.2)
         ("rust-cast" ,rust-cast-0.3)
