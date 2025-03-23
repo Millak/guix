@@ -8,7 +8,7 @@
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2020, 2021, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021, 2023, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020, 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -1549,7 +1549,7 @@ tools:
   ;; header
   (package
     (name "cpp-httplib")
-    (version "0.18.5")
+    (version "0.20.0")
     (source
      (origin
        (method git-fetch)
@@ -1557,7 +1557,7 @@ tools:
              (url "https://github.com/yhirose/cpp-httplib")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1jc31n4xdrknal4i1dvf8j6j9kafpczi0w5gbbi89xlir9dgm5kp"))
+        (base32 "0w5klyfsaws793xb0cbkjxg7lwrdm6f3m4z4v7pzkwl957f9q70m"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
