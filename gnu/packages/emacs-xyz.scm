@@ -42624,6 +42624,7 @@ dict.org) from within Emacs.")
        (sha256
         (base32 "0zjl7zyydx2pan2ashbwbp70nlmw17hq5w03sfk12wi7j1nihwbz"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/zevlg/multitran.el")
     (synopsis "Emacs interface to the multitran.com online dictionary")
     (description "@code{emacs-multitran} is a zero-dependency Emacs interface
