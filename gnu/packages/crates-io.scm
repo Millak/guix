@@ -41449,6 +41449,23 @@ next and previous lines.")
     (description "Convert string slice indices into line/column numbers")
     (license license:expat)))
 
+(define-public rust-line-numbers-0.3
+  (package
+    (name "rust-line-numbers")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "line-numbers" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p531c7w7viilf7q1k277zmy8ihl8064vx0r7jm5z02ki03ga9bv"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/wilfred/line-numbers")
+    (synopsis "Find line numbers in strings by byte offsets")
+    (description "Find line numbers in strings by byte offsets")
+    (license license:expat)))
+
 (define-public rust-linear-map-1
   (package
     (name "rust-linear-map")
