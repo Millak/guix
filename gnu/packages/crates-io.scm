@@ -97904,6 +97904,48 @@ file format.")
      "This package provides runtime support for the `wit-bindgen` crate.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-wit-parser-0.217
+  (package
+    (name "rust-wit-parser")
+    (version "0.217.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wit-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kdwk2s9qbchgpzf206x6vmbin6gcd11w3z39znawgj5h8lg1ap5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+         '("--release" "--"
+           "--skip=tests/ui/kinds-of-deps"
+           "--skip=tests/ui/simple-wasm-text")
+       #:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-id-arena" ,rust-id-arena-2)
+          ("rust-indexmap" ,rust-indexmap-2)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-semver" ,rust-semver-1)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-derive" ,rust-serde-derive-1)
+          ("rust-serde-json" ,rust-serde-json-1)
+          ("rust-unicode-xid" ,rust-unicode-xid-0.2)
+          ("rust-wasmparser" ,rust-wasmparser-0.217)
+          ("rust-wat" ,rust-wat-1))
+       #:cargo-development-inputs
+         (("rust-env-logger" ,rust-env-logger-0.11)
+          ("rust-libtest-mimic" ,rust-libtest-mimic-0.7)
+          ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+          ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page
+     "https://github.com/bytecodealliance/wasm-tools/tree/main/crates/wit-parser")
+    (synopsis
+     "Tooling for parsing wit files and working with their contents")
+    (description
+     "This package provides tooling for parsing and handling wit files.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-wl-clipboard-rs-0.8
   (package
     (name "rust-wl-clipboard-rs")
