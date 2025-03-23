@@ -10058,6 +10058,30 @@ and passes it back to the current Emacs.  In the meantime, current Emacs does
 not hang at all.")
     (license license:gpl3+)))
 
+(define-public emacs-elastic-modes
+  (let ((commit "ea49bb03b78cb9fd17655990223e3095f137a3ce")
+        (revision "1"))
+    (package
+      (name "emacs-elastic-modes")
+      (version "1.0.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jyp/elastic-modes")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1dkigkjw4i9nz5rl0dnic16ljdnp5cyz2xic3hc2myqnjlqnc6z6"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #false)) ;no tests
+      (propagated-inputs (list emacs-dash))
+      (home-page "https://github.com/jyp/elastic-modes")
+      (synopsis "Text and code alignment for variable-width fonts")
+      (description
+       "This is an Emacs package for text and code alignment for
+variable-width (i.e., proportional, or variable pitch) fonts.")
+      (license license:gpl3+))))
 
 (define-public emacs-elisp-demos
   (package
