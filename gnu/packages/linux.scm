@@ -3094,7 +3094,7 @@ module.")
 (define-public e2fsprogs
   (package
     (name "e2fsprogs")
-    (version "1.47.0")
+    (version "1.47.1")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -3103,7 +3103,7 @@ module.")
                    "e2fsprogs-" version ".tar.xz"))
              (sha256
               (base32
-               "1nymjw801lmlr5y6bg1zv9jsip5dkyxqislbdzpir4mx5czzajhl"))))
+               "1lg0k5fh41nl0ldbh76hwdx3g5kqzqyc245vljy88wnlgw2dqcss"))))
     (build-system gnu-build-system)
     (inputs (list `(,util-linux "lib")))
     (native-inputs (list pkg-config
