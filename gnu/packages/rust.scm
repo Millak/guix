@@ -1475,12 +1475,29 @@ safety and thread safety guarantees.")
                  (invoke "./x.py" "install" "clippy")
                  (invoke "./x.py" "install" "rust-analyzer")
                  (invoke "./x.py" "install" "rustfmt")))
+             (add-before 'patch-cargo-checksums 'save-old-library-manifest
+               (lambda _
+                 (copy-file "library/Cargo.lock" ".old-library-manifest")))
              (add-after 'install 'install-rust-src
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((out (assoc-ref outputs "rust-src"))
                        (dest "/lib/rustlib/src/rust"))
                    (mkdir-p (string-append out dest))
                    (copy-recursively "library" (string-append out dest "/library"))
+                   ;; rust-analyzer needs the original checksums; otherwise
+                   ;; it fails to cargo manifest in the stdlib, and then
+                   ;; analysis/inference involving stdlib structs doesn't work.
+                   ;;
+                   ;; For example, in the following trivial program:
+                   ;;
+                   ;; fn main() {
+                   ;;     let x = Vec::<usize>::new();
+                   ;; }
+                   ;;
+                   ;; rust-analyzer since version 1.82 can't infer
+                   ;; the type of x unless the following line is present.
+                   (copy-file ".old-library-manifest"
+                              (string-append out dest "/library/Cargo.lock"))
                    (copy-recursively "src" (string-append out dest "/src")))))
              (add-before 'install 'remove-uninstall-script
                (lambda _
