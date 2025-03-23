@@ -40083,6 +40083,8 @@ mode-line text (lighter) of major and minor modes.")
          (sha256
           (base32 "13wjbcxr3km4s96yhpavgs5acs5pvqv3ih1p84diqb3x3i6wd4pa"))))
       (build-system emacs-build-system)
+      (arguments (list #:test-command #~(list "ert-runner" "ert-tests")))
+      (native-inputs (list emacs-ert-runner))
       (home-page "https://github.com/EricCrosson/unkillable-scratch")
       (synopsis "Prevents the *scratch* buffer from being killed")
       (description "@code{unkillable-scratch} helps prevent killing buffers
