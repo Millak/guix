@@ -8726,6 +8726,7 @@ subconsciously blend out the parentheses.")
        (sha256
         (base32 "11b9mxxly3jsiha1znprkbfsgcxppjr2a6qza1xb3pysk3k8szha"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/purcell/page-break-lines")
     (synopsis "Display page breaks as tidy horizontal lines")
     (description
