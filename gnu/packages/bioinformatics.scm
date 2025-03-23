@@ -4214,21 +4214,30 @@ sequencing.")
 (define-public python-biopython
   (package
     (name "python-biopython")
-    (version "1.80")
+    (version "1.85")
     (source (origin
               (method url-fetch)
               ;; use PyPi rather than biopython.org to ease updating
               (uri (pypi-uri "biopython" version))
               (sha256
                (base32
-                "0hqf3jsxn2sphcx81fx7x3i69sarpjsi70fzw98f8rw7z2d5x02j"))))
+                "19m03s5rwcyiq5cs1kq9dzj7qvmfvm76idgn967ygr4x0msapbsx"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-home
            ;; Some tests require a home directory to be set.
-           (lambda _ (setenv "HOME" "/tmp"))))))
+           (lambda _ (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'numpy-compatibility
+           (lambda _
+             (substitute* "Bio/Cluster/__init__.py"
+               (("np.True_") "True"))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "Tests"
+                 (invoke "python3" "run_tests.py" "--offline"))))))))
     (propagated-inputs
      (list python-numpy))
     (native-inputs (list python-setuptools python-wheel))
