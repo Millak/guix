@@ -16514,6 +16514,25 @@ to the @code{is_x86_feature_detected!} macro.")
     (description "This package provides a forest of B+-trees for wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-codegen-shared-0.112
+  (package
+    (name "rust-cranelift-codegen-shared")
+    (version "0.112.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-codegen-shared" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18k3r6c40jj24jxjh7pbxmbyp7kpj85z8cxf690yv00zmppimy0q"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis
+     "Code shared between cranelift-codegen-meta and cranelift-codegen")
+    (description
+     "Code shared between cranelift-codegen-meta and cranelift-codegen.")
+    (license (list license:asl2.0))))
+
 (define-public rust-cranelift-entity-0.112
   (package
     (name "rust-cranelift-entity")
