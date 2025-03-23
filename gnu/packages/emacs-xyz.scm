@@ -11717,6 +11717,7 @@ commands and highlighting.")
        (sha256
         (base32 "0lv9ridzk9x6rkf7lj21srnszypyq04vqg05vl10zhpz1yqlnbjd"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/hvesalai/emacs-sbt-mode")
     (synopsis "Basic functionality for interacting with sbt inside Emacs")
     (description
