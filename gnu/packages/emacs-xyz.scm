@@ -40110,6 +40110,7 @@ launching other commands/applications from within Emacs, similar to the
        (sha256
         (base32 "1qr0spndzv03h0lcs2bjajadp9rg7clm506bnwbcqwfqxz9cxnvx"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/emacscollective/no-littering")
