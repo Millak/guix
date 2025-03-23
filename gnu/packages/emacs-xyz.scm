@@ -13830,6 +13830,7 @@ single theme but a set of guidelines with numerous implementations.")
        (sha256
         (base32 "164qqzmj1321rkvpiwpr5xnm1nbniibjkymfw5az32m2acdwk52j"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")))
     (home-page "https://github.com/hlissner/emacs-solaire-mode")
     (synopsis "Change background of file-visiting buffers in Emacs")
     (description
