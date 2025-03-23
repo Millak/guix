@@ -97786,6 +97786,32 @@ combinators library.")
         ("rust-memchr" ,rust-memchr-2)
         ("rust-terminal-size" ,rust-terminal-size-0.2))))))
 
+(define-public rust-witx-0.9
+  (package
+    (name "rust-witx")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "witx" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jzgmayh2jjbv70jzfka38g4bk4g1fj9d0m70qkxpkdbbixg4rp3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-thiserror" ,rust-thiserror-1)
+          ("rust-wast" ,rust-wast-35))
+       #:cargo-development-inputs
+         (("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/WebAssembly/WASI")
+    (synopsis "Parse and validate the witx file format")
+    (description "This package provides parsing and validation for the witx
+file format.")
+    (license license:asl2.0)))
+
 (define-public rust-wit-bindgen-rt-0.33
   (package
     (name "rust-wit-bindgen-rt")
