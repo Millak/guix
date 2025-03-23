@@ -6567,6 +6567,54 @@ in a PDF into an org file.")
       (home-page "https://github.com/fuxialexander/org-pdftools")
       (license license:gpl3+))))
 
+(define-public emacs-sage-shell-mode
+  (let ((commit "4291700e981a2105d55fa56382ba25046d3d268d")
+        (revision "1"))
+    (package
+      (name "emacs-sage-shell-mode")
+      (version (git-version "0.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sagemath/sage-shell-mode")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1dch7cwwslffgnzp1djlhz6a792ci42p4bvazxd9lqzhzal0rsbb"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 ;; Fix duplicate tests in test file.
+                 (add-before 'check 'remove-duplicate-test
+                   (lambda _
+                     (ert-number-tests "test/sage-shell-mode-test.el"
+                                       "sage-shell:parse-state-func-call-1")))
+                 ;; The test below is meant to be called from a CI environment
+                 ;; and can be ignored.
+                 (add-before 'check 'skip-failing-test
+                   (lambda _
+                     (substitute* "test/sage-shell-mode-test.el"
+                       (("\\(ert-deftest sage-shell:development-version-test .*"
+                         all)
+                        (string-append all "(skip-unless nil)\n"))))))
+             ;; The "test" command from the Makefile rebuilds everything.  Run
+             ;; the tests at a lower level.
+             #:test-command #~(list "emacs" "-Q" "-batch"
+                                    "-L" "."
+                                    "-l" "test/sage-shell-mode-test.el"
+                                    "-f" "ert-run-tests-batch-and-exit")))
+      (propagated-inputs (list emacs-deferred))
+      (home-page "https://github.com/sagemath/sage-shell-mode")
+      (synopsis "Emacs front-end for SageMath")
+      (description
+       "Sage Shell mode provides an Emacs front-end for SageMath.  It can run
+the Sage terminal inside Emacs, and allows editing @file{.sage} source files
+with a dedicated major mode and sending their contents directly to that
+terminal.")
+      (license license:gpl3+))))
+
 (define-public emacs-sakura-theme
   (package
     (name "emacs-sakura-theme")
