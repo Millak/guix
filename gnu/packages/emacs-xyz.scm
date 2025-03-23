@@ -24721,7 +24721,7 @@ the format.")
 (define-public emacs-nov-el
   (package
     (name "emacs-nov-el")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -24730,42 +24730,23 @@ the format.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "10507fdfx02wb3j7g34w4ii8rgnjbmriq63ir6x1agf38s3i9p52"))))
+        (base32 "1s1ar3c9819mzalybp0pi6pzzwwnihal7pjyin2804h1gbappli8"))))
     (build-system emacs-build-system)
     (arguments
      (list
-      #:emacs emacs                    ;need libxml
+      #:tests? #f ; no actual tests
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'embed-path-to-unzip
-            (lambda _
-              (substitute* "nov.el"
-                (("\\(executable-find \"unzip\"\\)")
-                 (string-append "\"" (which "unzip") "\""))))))))
-    (propagated-inputs
-     (list emacs-dash emacs-esxml))
-    (inputs
-     (list unzip))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "nov.el"
+                ("nov-unzip-program" (search-input-file inputs "/bin/unzip"))))))))
+    (propagated-inputs (list emacs-esxml))
+    (inputs (list unzip))
     (home-page "https://depp.brause.cc/nov.el/")
     (synopsis "Major mode for reading EPUBs in Emacs")
-    (description "@code{nov.el} provides a major mode for reading EPUB
-documents.
-
-Features:
-
-@itemize
-@item Basic navigation (jump to TOC, previous/next chapter)
-@item Remembering and restoring the last read position
-@item Jump to next chapter when scrolling beyond end
-@item Renders EPUB2 (@code{.ncx}) and EPUB3 (@code{<nav>}) TOCs
-@item Hyperlinks to internal and external targets
-@item Supports textual and image documents
-@item View source of document files
-@item Metadata display
-@item Image rescaling
-@end itemize
-")
+    (description
+     "@code{nov.el} provides a major mode for reading EPUB documents.")
     (license license:gpl3+)))
 
 (define-public epipe
