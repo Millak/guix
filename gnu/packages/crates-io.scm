@@ -96555,6 +96555,26 @@ binary format.")
 format to the text format.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-wasmtime-component-util-25
+  (package
+    (name "rust-wasmtime-component-util")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-component-util" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s1210kx2w78k712vvc4svh1c00x8x31n7brzp96d7b2aqmrvhpx"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis
+     "Utility types and functions for the component model in Wasmtime")
+    (description
+     "This package provides utility types and functions to support the
+component model in Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-types-25
   (package
     (name "rust-wasmtime-types")
