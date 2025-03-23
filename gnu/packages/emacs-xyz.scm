@@ -16394,8 +16394,29 @@ indentation and filling of comments and C preprocessor fontification.")
                (base32
                 "01chyr71b8893jxgf4wncpskfmg9iwfpcaxq0vfc6yaij46yfhky"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "emacs" "--batch" "-l" "tide-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (add-before 'check 'set-home
+                           (lambda _
+                             (setenv "HOME" (getenv "TMPDIR"))))
+                         (add-before 'check 'skip-package-refresh
+                           (lambda _
+                             (emacs-batch-edit-file "tide-tests.el"
+                               '(progn (search-forward "dolist (p")
+                                       (beginning-of-line)
+                                       (kill-sexp)
+                                       (basic-save-buffer)))))
+                         (add-before 'check 'skip-failing-tests
+                           (lambda _
+                             (substitute* "tide-tests.el"
+                               (("tide-list-servers/.*" all)
+                                (string-append all " (skip-unless nil)"))))))))
     (propagated-inputs
      (list emacs-dash emacs-flycheck emacs-s emacs-typescript-mode))
+    (native-inputs (list node))
     (home-page "https://github.com/ananthakumaran/tide")
     (synopsis "Typescript IDE for Emacs")
     (description
