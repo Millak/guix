@@ -96601,6 +96601,30 @@ component model in Wasmtime.")
      "This package provides @code{WebAssembly} type definitions for Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-wit-bindgen-25
+  (package
+    (name "rust-wasmtime-wit-bindgen")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-wit-bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "024nvja0bzmhfgash8g57pl4lpm4yfz3p5xkdsc2wlqxmiiiymrz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-heck" ,rust-heck-0.4)
+          ("rust-indexmap" ,rust-indexmap-2)
+          ("rust-wit-parser" ,rust-wit-parser-0.217))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Internal wit support for the wasmtime")
+    (description
+     "This package provides internal wit support for the wasmtime crate's macros.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-wmemcheck-25
   (package
     (name "rust-wasmtime-wmemcheck")
