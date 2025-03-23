@@ -35803,6 +35803,11 @@ expanding regions of text without modifying the actual contents.")
           (base32
            "1wy5qpnfri1gha2cnl6q20qar8dbl2mimpb43bnhmm2g3wgjyad6"))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:test-command
+             #~(list "emacs" "--no-init-file" "--batch"
+                     "--eval=(require 'ecukes)" "--eval=(ecukes)")))
+      (native-inputs (list emacs-ecukes))
       (home-page "https://github.com/asok/peep-dired")
       (synopsis "Preview files in another window")
       (description "This package provides a minor mode that allows files to be
