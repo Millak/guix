@@ -10824,6 +10824,36 @@ capabilities.")
         ("rust-error-chain" ,rust-error-chain-0.12)
         ("rust-libc" ,rust-libc-0.2))))))
 
+;; to build requires nom-1 which is 8 years old, required
+;; as part of rust-cranelift-codegen-0.112
+(define-public rust-capstone-0.12
+  (package
+    (name "rust-capstone")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "capstone" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0v2vfzpibdbbabi7nzqrbxn2i5p0a7m8hbhcdchjnnjqv4wa935h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-capstone-sys" ,rust-capstone-sys-0.16)
+                       ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+         (("rust-criterion" ,rust-criterion-0.3)
+          ("rust-macho" ,rust-macho-0.4)
+          ("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/capstone-rust/capstone-rs")
+    (synopsis
+     "High level bindings to the Capstone disassembly engine")
+    (description
+     "This package provides high level bindings to the Capstone disassembly
+engine.")
+    (license license:expat)))
+
 (define-public rust-capstone-sys-0.16
   (package
     (name "rust-capstone-sys")
