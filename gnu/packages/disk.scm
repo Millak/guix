@@ -30,6 +30,7 @@
 ;;; Copyright © 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1207,15 +1208,15 @@ to create devices with respective mappings for the ATARAID sets discovered.")
 (define-public libblockdev
   (package
     (name "libblockdev")
-    (version "3.1.1")
+    (version "3.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/storaged-project/"
                                   "libblockdev/releases/download/"
-                                  version "-1/libblockdev-" version ".tar.gz"))
+                                  version "/libblockdev-" version ".tar.gz"))
               (sha256
                (base32
-                "1ny2glwmb5dcdv2x0giinbyma9fhk59z8117k1kr15pm7yjk7jx5"))))
+                "19yzidh8i32327h8h7b9yx86yv1hm7kz1y91cn4gxzyypqd8wwy4"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1260,8 +1261,10 @@ to create devices with respective mappings for the ATARAID sets discovered.")
             eudev
             glib
             gptfdisk
+            json-glib-minimal
             keyutils
             kmod
+            libatasmart
             libbytesize
             libnvme
             libyaml
