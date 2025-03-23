@@ -95971,6 +95971,23 @@ and native running processes.")
         (base32 "19kslk9pv1bcyp85w63dn1adbp13kz7kjha80abnwz27bmbxvz9j"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-wasmtime-wmemcheck-25
+  (package
+    (name "rust-wasmtime-wmemcheck")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-wmemcheck" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1msl5sd49xsnaacwd25inc0yl8flpw1flach3mnma7zc1vrwad13"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Memcheck implementation for Wasmtime")
+    (description "This package provides a memcheck implementation for Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-watchexec-2
   (package
     (name "rust-watchexec")
