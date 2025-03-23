@@ -177,7 +177,7 @@ external dependencies.")
   (hidden-package
    (package
      (name "samba")
-     (version "4.17.0")
+     (version "4.18.1")
      (source
       ;; For updaters: the current PGP fingerprint is
       ;; 81F5E2832BD2545A1897B713AA99442FB680B620.
@@ -186,7 +186,7 @@ external dependencies.")
         (uri (string-append "https://download.samba.org/pub/samba/stable/"
                             "samba-" version ".tar.gz"))
         (sha256
-         (base32 "0fl2y5avmyxjadh6zz0fwz35akd6c4j9lldzp2kyvjrgm36qx1h4"))))
+         (base32 "03ncp49pfpzjla205y3xpb9iy61dz4pryyrvyz26422a4hpsmpnf"))))
      (build-system gnu-build-system)
      (arguments
       (list
