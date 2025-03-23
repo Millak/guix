@@ -29549,9 +29549,20 @@ Emacs minor mode to escape sequences in code.")
         (base32 "1m39alr4vi22wr0yd22yi3qkdykwh8vmkdlbbd8qm9z1g7mvl382"))))
     (build-system emacs-build-system)
     (arguments
-     (list #:include #~(cons* "\\.txt$" "\\.png$" %default-include)))
+     (list #:include #~(cons* "\\.txt$" "\\.png$" %default-include)
+           #:test-command #~(list "ert-runner"
+                                  "-L" "."
+                                  "-l" "test/activate.el")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'fix-test
+                 (lambda _
+                   (substitute* "test/activate.el"
+                     (("\\(dashboard-setup-startup-hook\\)" all)
+                      (string-append "(require 'dashboard)" all))))))))
     (propagated-inputs
      (list emacs-page-break-lines))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/rakanalh/emacs-dashboard")
     (synopsis "Startup screen extracted from Spacemacs")
     (description "This package provides an extensible Emacs dashboard, with
