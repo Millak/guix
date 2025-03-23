@@ -235,88 +235,108 @@ pure Scheme to Tar and decompression in one easy step.")
     (inherit gash-utils)
     (name "gash-utils-boot")
     (arguments
-     `(#:implicit-inputs? #f
-       #:tests? #f
-       #:guile ,%bootstrap-guile
-       #:imported-modules ((guix build gnu-bootstrap)
-                           ,@%default-gnu-imported-modules)
-       #:phases
-       (begin
-         (use-modules (guix build gnu-bootstrap))
-         (modify-phases %standard-phases
-           (add-after 'unpack 'set-load-path
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((gash (assoc-ref inputs "gash")))
-                 (add-to-load-path (string-append gash "/share/guile/site/"
-                                                  (effective-version))))))
-           (add-before 'configure 'pre-configure
-             (lambda _
-               (format #t "Creating gash/commands/testb.scm~%")
-               (copy-file "gash/commands/test.scm"
-                          "gash/commands/testb.scm")
-               (substitute* "gash/commands/testb.scm"
-                 (("gash commands test") "gash commands testb")
-                 (("apply test [(]cdr") "apply test/bracket (cdr"))
-               (for-each (lambda (script)
-                           (let ((target (string-append "scripts/"
-                                                        script ".in")))
-                             (format #t "Creating scripts/~a~%" target)
-                             (copy-file "scripts/template.in" target)
-                             (substitute* target
-                               (("@UTILITY@") script))))
-                         '("awk" "basename" "cat" "chmod" "cmp" "command"
-                           "compress" "cp" "cut" "diff" "dirname" "env"
-                           "expr" "false" "find" "grep" "head" "ln" "ls"
-                           "mkdir" "mv" "printf" "pwd" "reboot" "rm" "rmdir"
-                           "sed" "sleep" "sort" "tar" "test" "touch" "tr"
-                           "true" "uname" "uniq" "wc" "which"))
-               (format #t "Creating scripts/[.in~%")
-               (copy-file "scripts/template.in" "scripts/[.in")
-               (substitute* "scripts/[.in"
-                 (("@UTILITY@") "testb"))
-               (delete-file "scripts/template.in")))
-           (replace 'configure
-             (bootstrap-configure "Gash-Utils" ,(package-version gash-utils)
-                                  '("gash" "gash-utils") "scripts"))
-           (replace 'build (bootstrap-build '("gash" "gash-utils")))
-           (replace 'install
-             (bootstrap-install '("gash" "gash-utils") "scripts"))
-           ;; XXX: The scripts should add Gash to their load paths and
-           ;; this phase should not exist.
-           (add-after 'install 'copy-gash
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (moddir (string-append out "/share/guile/site/"
-                                             (effective-version)))
-                      (godir (string-append out "/lib/guile/"
-                                            (effective-version)
-                                            "/site-ccache"))
-                      (gash (assoc-ref inputs "gash"))
-                      (gash-moddir (string-append gash "/share/guile/site/"
-                                                  (effective-version)))
-                      (gash-godir (string-append gash "/lib/guile/"
-                                                 (effective-version)
-                                                 "/site-ccache")))
-                 (copy-file (string-append gash-moddir "/gash/compat.scm")
-                            (string-append moddir "/gash/compat.scm"))
-                 (copy-recursively (string-append gash-moddir "/gash/compat")
-                                   (string-append moddir "/gash/compat"))
-                 (copy-file (string-append gash-godir "/gash/compat.go")
-                            (string-append godir "/gash/compat.go"))
-                 (copy-recursively (string-append gash-godir "/gash/compat")
-                                   (string-append godir "/gash/compat")))))
-           ;; We need an external echo.
-           (add-after 'install 'make-echo
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (gash (assoc-ref inputs "gash")))
-                 (with-output-to-file (string-append out "/bin/echo")
-                   (lambda ()
-                     (display (string-append "#!" gash "/bin/gash\n"))
-                     (newline)
-                     (display "echo \"$@\"")
-                     (newline)))
-                 (chmod (string-append out "/bin/echo") #o755))))))))
+     (list #:implicit-inputs? #f
+           #:tests? #f
+           #:guile %bootstrap-guile
+           #:imported-modules `((guix build gnu-bootstrap)
+                                ,@%default-gnu-imported-modules)
+           #:modules `((guix build gnu-bootstrap)
+                       ,@%default-gnu-modules)
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-load-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((gash (assoc-ref inputs "gash")))
+                     (add-to-load-path (string-append gash
+                                                      "/share/guile/site/"
+                                                      (effective-version))))))
+               (add-before 'configure 'pre-configure
+                 (lambda _
+                   (format #t "Creating gash/commands/testb.scm~%")
+                   (copy-file "gash/commands/test.scm"
+                              "gash/commands/testb.scm")
+                   (substitute* "gash/commands/testb.scm"
+                     (("gash commands test")
+                      "gash commands testb")
+                     (("apply test [(]cdr")
+                      "apply test/bracket (cdr"))
+                   (for-each (lambda (script)
+                               (let ((target (string-append
+                                              "scripts/" script ".in")))
+                                 (format #t "Creating scripts/~a~%"
+                                         target)
+                                 (copy-file "scripts/template.in"
+                                            target)
+                                 (substitute* target
+                                   (("@UTILITY@") script))))
+                             '("awk" "basename" "cat" "chmod" "cmp" "command"
+                               "compress" "cp" "cut" "diff" "dirname" "env"
+                               "expr" "false" "find" "grep" "head" "ln" "ls"
+                               "mkdir" "mv" "printf" "pwd" "reboot" "rm" "rmdir"
+                               "sed" "sleep" "sort" "tar" "test" "touch" "tr"
+                               "true" "uname" "uniq" "wc" "which"))
+                   (format #t "Creating scripts/[.in~%")
+                   (copy-file "scripts/template.in" "scripts/[.in")
+                   (substitute* "scripts/[.in"
+                     (("@UTILITY@")
+                      "testb"))
+                   (delete-file "scripts/template.in")))
+               (replace 'configure
+                 (bootstrap-configure "Gash-Utils"
+                                      #$(package-version gash-utils)
+                                      '("gash" "gash-utils")
+                                      "scripts"))
+               (replace 'build
+                 (bootstrap-build '("gash" "gash-utils")))
+               (replace 'install
+                 (bootstrap-install '("gash" "gash-utils") "scripts"))
+               ;; XXX: The scripts should add Gash to their load paths and
+               ;; this phase should not exist.
+               (add-after 'install 'copy-gash
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (moddir (string-append out
+                                                 "/share/guile/site/"
+                                                 (effective-version)))
+                          (godir (string-append out "/lib/guile/"
+                                                (effective-version)
+                                                "/site-ccache"))
+                          (gash (assoc-ref inputs "gash"))
+                          (gash-moddir (string-append gash
+                                                      "/share/guile/site/"
+                                                      (effective-version)))
+                          (gash-godir (string-append gash
+                                                     "/lib/guile/"
+                                                     (effective-version)
+                                                     "/site-ccache")))
+                     (copy-file (string-append gash-moddir
+                                               "/gash/compat.scm")
+                                (string-append moddir
+                                               "/gash/compat.scm"))
+                     (copy-recursively (string-append gash-moddir
+                                                      "/gash/compat")
+                                       (string-append moddir
+                                                      "/gash/compat"))
+                     (copy-file (string-append gash-godir
+                                               "/gash/compat.go")
+                                (string-append godir
+                                               "/gash/compat.go"))
+                     (copy-recursively (string-append gash-godir
+                                                      "/gash/compat")
+                                       (string-append godir
+                                                      "/gash/compat")))))
+               ;; We need an external echo.
+               (add-after 'install 'make-echo
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (gash (search-input-file inputs "/bin/gash")))
+                     (with-output-to-file (string-append out "/bin/echo")
+                       (lambda ()
+                         (display (string-append "#!" gash "\n"))
+                         (newline)
+                         (display "echo \"$@\"")
+                         (newline)))
+                     (chmod (string-append out "/bin/echo") #o755)))))))
     (inputs `(("gash" ,gash-boot)
               ("guile" ,%bootstrap-guile)))
     (native-inputs `(("bootar" ,bootar)))))
