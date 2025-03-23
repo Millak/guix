@@ -16472,6 +16472,29 @@ to the @code{is_x86_feature_detected!} macro.")
      "This package provides Rust bindings to \"Valgrind Client Request\" interface.")
     (license license:expat)))
 
+(define-public rust-cranelift-bitset-0.112
+  (package
+    (name "rust-cranelift-bitset")
+    (version "0.112.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-bitset" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "198k4qxa0zwwfv8a5rwwwhvs7mx1r5isxkssy29gmkfqyyv1xniq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-arbitrary" ,rust-arbitrary-1)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Various bitset capabilities for use inside Cranelift")
+    (description
+     "This package provides various bitset capabilities for Cranelift.")
+    (license (list license:asl2.0))))
+
 (define-public rust-crates-index-0.19
   (package
     (name "rust-crates-index")
