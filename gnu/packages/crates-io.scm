@@ -97255,6 +97255,43 @@ for terminal and other window-less applications.")
      "This package provides a more efficient alternative to fmt::Display.")
     (license license:unicode)))
 
+(define-public rust-wu-diff-0.1
+  (package
+    (name "rust-wu-diff")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wu-diff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14w8yacn4hk9k4rfzshlgir966xbwgbwk3fvf0l461nyzhsnfglf"))
+       (snippet
+         #~(begin (use-modules (guix build utils))
+                  ;; rust-clippy
+                  (substitute* "Cargo.toml"
+                    (("version = \"0.0.209\"") "version = \"^0.0.*\""))
+                  ;; rust-criterion
+                  (substitute* "Cargo.toml"
+                    (("version = \"0.2\"") "version = \"0.3.*\""))
+                  ;; rust-image
+                  (substitute* "Cargo.toml"
+                    (("version = \"0.18.0\"") "version = \"^0.20.*\""))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; tests fail due to use of a feature
+       #:cargo-inputs (("rust-clippy" ,rust-clippy-0.0.302))
+       #:cargo-development-inputs
+       (("rust-base64" ,rust-base64-0.9)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-image" ,rust-image-0.20))))
+    (home-page "https://github.com/bokuweb/wu-diff-rs")
+    (synopsis
+     "Compute differences between two slices using Wu algorithm")
+    (description
+     "Compute differences between two slices using wu(the O(NP)) algorithm.")
+    (license license:expat)))
+
 (define-public rust-wycheproof-0.5
   (package
     (name "rust-wycheproof")
