@@ -1060,7 +1060,7 @@ This library provides just sd-bus (and the busctl utility).")
   ;; that it would make more sense to maintain a fork of the bits we need.
   (package
     (name "localed")
-    (version "241")
+    (version "257.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1068,18 +1068,11 @@ This library provides just sd-bus (and the busctl utility).")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0sy91flzbhpq58k7v0294pa2gxpr0bk27rcnxlbhk2fi6nc51d28"))
+                "06fackmig43p9xx1155vrr5bx8a6a1cfb958x5acxvvahi8lkg7a"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  ;; Connect to the right location for our D-Bus daemon.
-                  (substitute* '("src/basic/def.h"
-                                 "src/libsystemd/sd-bus/sd-bus.c"
-                                 "src/stdio-bridge/stdio-bridge.c")
-                    (("/run/dbus/system_bus_socket")
-                     "/var/run/dbus/system_bus_socket"))
-
                   ;; Don't insist on having systemd as PID 1 (otherwise
                   ;; 'localectl' would exit without doing anything.)
                   (substitute* "src/shared/bus-util.c"
@@ -1143,7 +1136,7 @@ This library provides just sd-bus (and the busctl utility).")
                   (substitute* "src/locale/localectl.c"
                     (("/usr/share/X11/xkb/rules")
                      (string-append xkb "/share/X11/xkb/rules")))
-                  (substitute* "src/basic/def.h"
+                  (substitute* "src/shared/kbd-util.c"
                     (("/usr/share/keymaps")
                      (string-append kbd "/share/keymaps"))))))
             (replace 'install
