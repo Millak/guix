@@ -42883,6 +42883,9 @@ Emacs.")
          (sha256
           (base32 "0sl3s5bfqmicpg4hp2k6qznrgj71dx0lz3dv2jyd48ys67m9x4dx"))))
       (build-system emacs-build-system)
+      ;;there are no tests
+      (arguments
+       (list #:tests? #f))
       (home-page "https://github.com/gmlarumbe/fpga")
       (synopsis "Emacs fpga & asic utilities")
       (description
