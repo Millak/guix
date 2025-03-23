@@ -2345,7 +2345,7 @@ X server: @code{handhelds}, @code{redglass} and @code{whiteglass}.")
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke `("make" "install" ,@make-flags
                              "THEME_NAME=Hackneyed-Dark")))))))
-    (native-inputs (list imagemagick inkscape/stable xcursorgen))
+    (native-inputs (list imagemagick inkscape/pinned xcursorgen))
     (home-page "https://gitlab.com/Enthymeme/hackneyed-x11-cursors")
     (synopsis "Classic cursor theme for X11")
     (description "Hackneyed is a scalable cursor theme mildly resembling old

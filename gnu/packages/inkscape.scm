@@ -30,6 +30,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
+  #:use-module (guix deprecation)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
@@ -62,7 +63,7 @@
 ;;; A variant of Inkscape intended to be bumped only on core-updates, to avoid
 ;;; rebuilding 2k+ packages through dblatex.  It should only be used as a
 ;;; native-input since it might not receive timely security updates.
-(define-public inkscape/stable
+(define-public inkscape/pinned
   (hidden-package
    (package
      (name "inkscape")
@@ -334,14 +335,16 @@ apart is its use of Scalable Vector Graphics (SVG), an XML-based W3C standard,
 as the native format.")
      (license license:gpl3+))))           ;see the file COPYING
 
+(define-deprecated/public-alias inkscape/stable inkscape/pinned)
+
 (define-public inkscape
   (package
-    (inherit inkscape/stable)
+    (inherit inkscape/pinned)
     (name "inkscape")
     (version "1.3.2")
     (source
      (origin
-       (inherit (package-source inkscape/stable))
+       (inherit (package-source inkscape/pinned))
        (method url-fetch)
        (uri (string-append "https://media.inkscape.org/dl/"
                            "resources/file/"
@@ -350,7 +353,7 @@ as the native format.")
         (base32 "0sq81smxwypgnp7r3wgza8w25dsz9qa8ga79sc85xzj3qi6q9lfv"))))
     (build-system cmake-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments inkscape/stable)
+     (substitute-keyword-arguments (package-arguments inkscape/pinned)
        ((#:configure-flags flags ''())
         ;; Enable ImageMagick support.
         #~(delete "-DWITH_IMAGE_MAGICK=OFF" #$flags))
@@ -359,7 +362,7 @@ as the native format.")
             #$@(if (target-x86-32?)
                    #~()            ;XXX: there are remaining failures on i686
                    #~((replace 'check
-                        ;; Re-instate the tests disabled in inkscape/stable, now that
+                        ;; Re-instate the tests disabled in inkscape/pinned, now that
                         ;; their ImageMagick requirement is satisfied.
                         (assoc-ref %standard-phases 'check))))
 
@@ -373,10 +376,10 @@ as the native format.")
                   ;; its own icons in pure environments.
                   `("GDK_PIXBUF_MODULE_FILE" =
                     (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))))))
-    (inputs (modify-inputs (package-inputs inkscape/stable)
+    (inputs (modify-inputs (package-inputs inkscape/pinned)
               (append imagemagick)))    ;for libMagickCore and libMagickWand
     (native-inputs
-     (modify-inputs (package-native-inputs inkscape/stable)
+     (modify-inputs (package-native-inputs inkscape/pinned)
                     ;; Only use 1 imagemagick across the package build.
                     (replace "imagemagick" imagemagick)))
-    (properties (alist-delete 'hidden? (package-properties inkscape/stable)))))
+    (properties (alist-delete 'hidden? (package-properties inkscape/pinned)))))

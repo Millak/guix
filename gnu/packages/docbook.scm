@@ -797,7 +797,7 @@ DB2LaTeX.")
    (package/inherit dblatex
      (inputs (modify-inputs (package-inputs dblatex)
                (replace "imagemagick" imagemagick/stable)
-               (replace "inkscape" inkscape/stable))))))
+               (replace "inkscape" inkscape/pinned))))))
 
 (define-public docbook-utils
   (package

@@ -1158,11 +1158,11 @@ window manager.")
                                   "backgrounds/xfce-verticals.svg"))
                       #t)))
 
-       #:disallowed-references (,inkscape/stable ,imagemagick)))
+       #:disallowed-references (,inkscape/pinned ,imagemagick)))
     (native-inputs
      (list xfce4-dev-tools
            ;; For our own ‘prepare-background-image’ phase.
-           inkscape/stable imagemagick))
+           inkscape/pinned imagemagick))
     (inputs
      (list exo
            garcon

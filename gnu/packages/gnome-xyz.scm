@@ -1336,7 +1336,7 @@ bar of the GNOME Shell.")
      (list `(,glib "bin") ; for glib-compile-resources
            gnome-shell
            gtk+
-           inkscape/stable
+           inkscape/pinned
            optipng
            pkg-config
            python

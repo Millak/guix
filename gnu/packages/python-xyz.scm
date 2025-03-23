@@ -10885,7 +10885,7 @@ toolkits.")
                          (string-append info "/matplotlib-figures"))))))))
     (native-inputs
      (list graphviz
-           inkscape/stable
+           inkscape/pinned
            python-colorspacious
            python-ipython
            python-ipywidgets
@@ -19297,7 +19297,7 @@ time.")
               ;; Tests need a writable HOME.
               (setenv "HOME" "/tmp"))))))
     (inputs
-     (list inkscape/stable pandoc))
+     (list inkscape/pinned pandoc))
     (native-inputs
      (list python-flaky
            python-hatchling

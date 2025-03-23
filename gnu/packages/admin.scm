@@ -2593,7 +2593,7 @@ command.")
      ;; For icons.
      (modify-inputs (package-native-inputs wpa-supplicant)
        (prepend imagemagick/stable
-                inkscape/stable)))
+                inkscape/pinned)))
     (build-system qt-build-system)
     (arguments
      (list
