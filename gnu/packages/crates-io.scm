@@ -703,6 +703,31 @@ the Rust programming language.")
     (license (list license:bsd-3
                    license:zlib))))
 
+(define-public rust-afl-0.15
+  (package
+    (name "rust-afl")
+    (version "0.15.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "afl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18k2y2kz60bj3xk5zzv1cg5nn0wnl2h75q1y6mszrjx5gbijz9c7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; We don't want to add AFL as an input
+       #:cargo-inputs (("rust-home" ,rust-home-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-xdg" ,rust-xdg-2))
+       #:cargo-development-inputs (("rust-arbitrary" ,rust-arbitrary-1))))
+    (home-page "https://github.com/rust-fuzz/afl.rs")
+    (synopsis "Fuzzing Rust code with american-fuzzy-lop")
+    (description
+     "This package provides Fuzzing Rust code with american-fuzzy-lop.")
+    (license license:asl2.0)))
+
 (define-public rust-afl-0.12
   (package
     (name "rust-afl")
