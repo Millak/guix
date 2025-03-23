@@ -14974,11 +14974,11 @@ automatically.")
        (snippet #~(begin (substitute* "test/pretty-hydra-test.el"
                            (("\\(c1 \\(quote foo\\)\\)") "(c1 'foo)"))))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:exclude #~(cons "^major-mode-hydra\\.el" %default-exclude)))
     (propagated-inputs
      (list emacs-dash emacs-hydra emacs-s))
     (native-inputs (list emacs-ert-runner))
-    (arguments
-     `(#:exclude (cons "^major-mode-hydra\\.el" %default-exclude)))
     (home-page "https://github.com/jerrypnz/major-mode-hydra.el")
     (synopsis "Major mode keybindings managed by Hydra")
     (description
