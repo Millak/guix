@@ -203,7 +203,7 @@ Installing Guix on a Cluster
 
 Guix System Management
 
-* Upgrade Postgres for Cuirass::  How to handle deprecation of the default postgres package.
+* Upgrade Postgres for Cuirass::  Upgrading from the default postgres.
 
 @end detailmenu
 @end menu
@@ -5551,7 +5551,7 @@ to unfold slightly different as we are used to and need slight
 adjustment.  This chapter intends to help with such manners.
 
 @menu
-* Upgrade Postgres for Cuirass:: Upgrading from the default postgres.
+* Upgrade Postgres for Cuirass::  Upgrading from the default postgres.
 @end menu
 
 @node Upgrade Postgres for Cuirass
