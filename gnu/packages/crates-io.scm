@@ -16495,6 +16495,25 @@ to the @code{is_x86_feature_detected!} macro.")
      "This package provides various bitset capabilities for Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-bforest-0.112
+  (package
+    (name "rust-cranelift-bforest")
+    (version "0.112.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-bforest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nzsgxy3har87kxb6znzfg8bplyy011g82f7yxcq1gi11pa2nyb9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-entity" ,rust-cranelift-entity-0.112))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Part of wasmtime, a forest of B+-trees")
+    (description "This package provides a forest of B+-trees for wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-cranelift-entity-0.112
   (package
     (name "rust-cranelift-entity")
