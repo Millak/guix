@@ -97713,6 +97713,29 @@ UTF-32 types are provided, including support for malformed encoding.")
      "This package provides a library for the wiggle code generator.")
     (license (list license:asl2.0))))
 
+(define-public rust-wiggle-macro-25
+  (package
+    (name "rust-wiggle-macro")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wiggle-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nrqxsdwdksnyqqb63yib5vli203j7f5wchk7knj26b2fhssxgdz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-proc-macro2" ,rust-proc-macro2-1)
+          ("rust-quote" ,rust-quote-1)
+          ("rust-syn" ,rust-syn-2)
+          ("rust-wiggle-generate" ,rust-wiggle-generate-25))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Wiggle code generator")
+    (description "This package provides Wiggle code generator.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wild-2
   (package
     (name "rust-wild")
