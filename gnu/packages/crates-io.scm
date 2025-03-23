@@ -96577,6 +96577,31 @@ binary format.")
 format to the text format.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-wasmprinter-0.217
+  (package
+    (name "rust-wasmprinter")
+    (version "0.217.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmprinter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j9smr0fmlqyrgsaxd6x6pl6isi67djm5limadi0275qsy16fk1j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `wat`
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-wasmparser" ,rust-wasmparser-0.217))))
+    (home-page
+     "https://github.com/bytecodealliance/wasm-tools/tree/main/crates/wasmprinter")
+    (synopsis
+     "Rust converter from WebAssembly binary format to text")
+    (description
+     "This package provides a converter from WebAssembly binary format to text.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-wasmtime-component-macro-25
   (package
     (name "rust-wasmtime-component-macro")
