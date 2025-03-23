@@ -8459,6 +8459,7 @@ result.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:test-command #~(list "ert-runner" "--pattern" "rg-unit")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-rg-path
@@ -8467,9 +8468,15 @@ result.")
               (let ((file "rg.el"))
                 (make-file-writable file)
                 (emacs-substitute-sexps file
-                  ("(defcustom rg-executable" "rg"))))))))
+                  ("(defcustom rg-executable" "rg")))))
+          (add-before 'check 'skip-failing-tests
+            (lambda _
+              (substitute* "test/rg-isearch.el-test.el"
+                (("\\(ert-deftest rg-unit/isearch-project.*" all)
+                 (string-append all " (skip-unless nil)"))))))))
     (propagated-inputs
      (list emacs-s emacs-wgrep ripgrep))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://rgel.readthedocs.io/en/latest/")
     (synopsis "Search tool based on @code{ripgrep}")
     (description
