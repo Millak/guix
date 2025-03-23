@@ -647,15 +647,23 @@ Filter) modules follow the convention of 1V / Octave.")
                "1npks71ljc48w6858l9bq30kaf5nph8z0v61jkfb70xb9np850nl"))))
     (build-system waf-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:configure-flags
-       (list
-        (string-append "LDFLAGS=-Wl,-rpath=" (assoc-ref %outputs "out") "/lib")
-        "--enable-fftw3f"
-        "--enable-jack"
-        "--enable-sndfile"
-        "--enable-samplerate"
-        "--enable-avcodec")))
+     (list
+      #:tests? #f                      ; no check target
+      #:configure-flags
+      #~(list
+         (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+         "--enable-fftw3f"
+         "--enable-jack"
+         "--enable-sndfile"
+         "--enable-samplerate"
+         "--enable-avcodec")
+       #:phases
+       '(modify-phases %standard-phases
+          (add-after 'unpack 'python3.11-compatibility
+            (lambda _
+              (substitute* '("waflib/Context.py"
+                             "waflib/ConfigSet.py")
+                (("'rU'") "'r'")))))))
     (inputs
      (list jack-1
            libsndfile
