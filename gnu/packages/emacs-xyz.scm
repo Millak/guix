@@ -37463,8 +37463,30 @@ producing output appropriate for Haunt's @code{html-reader}.")
         (base32
          "054ln6x92qyicvc5l1m9yjqqzwpg3j66v0shxsypp97vfw2d3ww6"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "make" "ert")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'pre-check
+                 (lambda _
+                   (mkdir ".git")
+                   (call-with-output-file ".git/config"
+                     (const #t))
+                   (emacs-batch-edit-file "test/setup-ox-hugo.el"
+                     '(progn
+                       (search-forward "when ox-hugo-missing-packages")
+                       (beginning-of-line)
+                       (kill-sexp)
+                       (basic-save-buffer)))
+                   (mkdir ".ox-hugo-tmp")
+                   (setenv "OX_HUGO_TMP_DIR"
+                           (string-append (getcwd) "/.ox-hugo-tmp")))))))
     (propagated-inputs
      (list emacs-tomelr))
+    (native-inputs (list emacs-toc-org
+                         emacs-citeproc-el
+                         emacs-org-ref
+                         emacs-org))
     (home-page "https://ox-hugo.scripter.co")
     (synopsis "Hugo markdown back-end for Org export engine")
     (description
