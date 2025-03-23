@@ -4623,8 +4623,8 @@ standard MIDI file with the csvmidi program.")
     (license license:public-domain)))
 
 (define-public mididings
-  (let ((commit "d98265be8afe7da20a5c7cfd0515f0d5fae5c53a")
-        (revision "1"))
+  (let ((commit "bc71ea9c86bdc0b02364b11ab7331e8b3a86bb4f")
+        (revision "2"))
     (package
       (name "mididings")
       (version (git-version "0" revision commit))
@@ -4636,8 +4636,8 @@ standard MIDI file with the csvmidi program.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1a8i4yac5jjkq0vh73nwkv0j7vnvfwbzzagam4xdl1gpnc26n5xi"))))
-      (build-system pyproject-build-system)
+                  "1f0f8bpqbc1av0ggv6wjicymc2klliwdl1m5blmjcvy39q3cwd59"))))
+      (build-system meson-build-system)
       (arguments
        (list
         #:phases
@@ -4653,6 +4653,7 @@ standard MIDI file with the csvmidi program.")
        (list alsa-lib
              boost
              jack-2
+             python
              `(,python "tk")
              python-dbus
              python-decorator
