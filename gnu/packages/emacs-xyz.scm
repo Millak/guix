@@ -20645,6 +20645,7 @@ automatically discovered and presented in recency order.")
                (base32
                 "0mfbqr03302gk38aamlg1lgdznd6y3blcc3zizfb72ppb87j78mc"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")))
     (home-page "https://github.com/skangas/url-scgi/")
     (synopsis "SCGI support for url.el")
     (description
