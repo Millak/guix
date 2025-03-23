@@ -2,6 +2,7 @@
 ;;; Copyright © 2018 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -109,7 +110,8 @@
                               "test/ext3test.2.dump"
                               "test/ext4test.2.dump"
                               "test/ext2test-percent.2.dump"
-                              "test/mke2fs.2.dump")
+                              "test/mke2fs.2.dump"
+                              "test/mke2fs.3.dump")
                  (("root") "unknown"))))
            (add-before 'check 'setenv-check
              (lambda _
