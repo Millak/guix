@@ -757,12 +757,14 @@ interaction.")
     (name "podofo")
     (version "0.9.8")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/podofo/podofo/" version
-                                  "/podofo-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/podofo/podofo")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m2icjy35jd0900g0fyfrmf0zsldv1chfc1q0zcqlaqrbzhhgrjx"))))
+                "1fyv0zbl6zs93wy0qb3mjkfm99pgz5275nkzss115ww2w04h0ssl"))))
     (build-system cmake-build-system)
     (native-inputs
      (list cppunit pkg-config))
@@ -776,17 +778,17 @@ interaction.")
            openssl
            zlib))
     (arguments
-     `(#:configure-flags
-       (list "-DPODOFO_BUILD_SHARED=ON")
+     (list
+       #:configure-flags
+         #~(list "-DPODOFO_BUILD_SHARED=ON")
        #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((freetype (assoc-ref inputs "freetype")))
+         #~(modify-phases %standard-phases
+           (add-before 'configure 'patch
+             (lambda _
                ;; Look for freetype include files in the correct place.
                (substitute* "cmake/modules/FindFREETYPE.cmake"
-                 (("/usr/local") freetype))))))))
-    (home-page "https://podofo.sourceforge.net")
+                 (("/usr/local") #$freetype)))))))
+    (home-page "https://github.com/podofo/podofo")
     (synopsis "Tools to work with the PDF file format")
     (description
      "PoDoFo is a C++ library and set of command-line tools to work with the
