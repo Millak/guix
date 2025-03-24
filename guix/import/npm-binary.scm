@@ -2,6 +2,7 @@
 ;;; Copyright © 2019, 2020 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2020, 2023, 2024 Jelle Licht <jlicht@fsfe.org>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,6 +34,7 @@
   #:use-module (ice-9 regex)
   #:use-module (json)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-41)
   #:use-module (srfi srfi-9)
@@ -158,11 +160,11 @@
         (sort svs semver>?)))
 
 (define* (resolve-package name #:optional (svr *semver-range-any*))
-  (let ((meta (lookup-meta-package* name)))
-    (and meta
-         (let* ((version (semver-latest (or (meta-package-versions meta) '()) svr))
-                (pkg (meta-package-package meta version)))
-           pkg))))
+  (and-let*
+      ((meta (lookup-meta-package* name))
+       (version (semver-latest (or (meta-package-versions meta) '()) svr))
+       (pkg (meta-package-package meta version)))
+    pkg))
 
 
 ;;;
