@@ -7752,6 +7752,7 @@ set.")
     (native-inputs
      (list doc++
            doxygen
+           ghostscript
            python
            python-breathe
            python-sphinx
@@ -7824,6 +7825,7 @@ set.")
                                                 configure-flags)))))))
                (add-after 'build 'build-docs
                  (lambda _
+                   (setenv "HOME" (getcwd))
                    (invoke "make" "-C" "docs")))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
