@@ -29562,6 +29562,34 @@ futures-rs library.")
 derived from an internal hasher used in FireFox and Rustc.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-fxprof-processed-profile-0.6
+  (package
+    (name "rust-fxprof-processed-profile")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fxprof-processed-profile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ggsn3im2bfcnxic0jzk00qgiacfrg2as6i4d8kj87kzxl52rl97"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-bitflags" ,rust-bitflags-2)
+          ("rust-debugid" ,rust-debugid-0.8)
+          ("rust-fxhash" ,rust-fxhash-0.2)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs
+         (("rust-assert-json-diff" ,rust-assert-json-diff-2))))
+    (home-page "https://github.com/mstange/samply/")
+    (synopsis
+     "Create profiles in Firefox Profiler's processed profile JSON format")
+    (description
+     "This package provides functions for Firefox Profilers JSON format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-galil-seiferas-0.1
   (package
     (name "rust-galil-seiferas")
