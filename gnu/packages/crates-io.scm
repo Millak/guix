@@ -10904,6 +10904,31 @@ remote procedure call protocol")
     (description "This package provides Capability-based primitives.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-cap-std-3
+  (package
+    (name "rust-cap-std")
+    (version "3.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cap-std" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02anyab4z2dja2yl0y9g0gdiqa71d542c4mmnk6dd4yhx3ld7ny3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arf-strings" ,rust-arf-strings-0.7)
+                       ("rust-camino" ,rust-camino-1)
+                       ("rust-cap-primitives" ,rust-cap-primitives-3)
+                       ("rust-io-extras" ,rust-io-extras-0.18)
+                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
+                       ("rust-rustix" ,rust-rustix-0.38))))
+    (home-page "https://github.com/bytecodealliance/cap-std")
+    (synopsis "Capability-based version of the Rust standard library")
+    (description
+     "Capability-based version of the Rust standard library.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-caps-0.5
   (package
     (name "rust-caps")
