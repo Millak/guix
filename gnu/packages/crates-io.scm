@@ -90960,6 +90960,35 @@ tree_magic_mini.")
 
 ;; The rust-tree-sitter packages are rust dependencies and are separate
 ;; from the tree-sitter and tree-sitter-cli package.
+(define-public rust-tree-sitter-0.24
+  (package
+    (name "rust-tree-sitter")
+    (version "0.24.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xbg9i3kvz316mhwciq147b7kzxqmbvwcl1bw7dd5izzlzzpsf55"))))
+    (build-system cargo-build-system)
+    (arguments
+      ;; tests fail due to use of undeclared crate/module `tree_sitter_rust`
+      ;; appears to be circular
+     `(#:tests? #f
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.70)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.8)
+                       ("rust-streaming-iterator" ,rust-streaming-iterator-0.1)
+                       ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1)
+                       ("rust-wasmtime-c-api-impl" ,rust-wasmtime-c-api-impl-25))))
+    (home-page "https://tree-sitter.github.io/tree-sitter")
+    (synopsis "Rust bindings to the tree-sitter parsing library")
+    (description
+     "This package provides Rust bindings to the tree-sitter parsing library.")
+    (license license:expat)))
+
 (define-public rust-tree-sitter-0.20
   (package
     (name "rust-tree-sitter")
