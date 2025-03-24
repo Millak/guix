@@ -38328,6 +38328,33 @@ primitives to an @code{io::Write}.")
 format.")
     (license license:expat)))
 
+(define-public rust-ittapi-sys-0.4
+  (package
+    (name "rust-ittapi-sys")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ittapi-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z7lgc7gwlhcvkdk6bg9sf1ww4w0b41blp90hv4a4kq6ji9kixaj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+         '("--release" "--"
+           "--skip=test_ittnotify_bindings_up_to_date"
+           "--skip=test_jitprofiling_bindings_up_to_date")
+       #:cargo-inputs (("rust-cc" ,rust-cc-1))
+       #:cargo-development-inputs
+         (("rust-bindgen" ,rust-bindgen-0.68)
+          ("rust-diff" ,rust-diff-0.1))))
+    (inputs (list clang))
+    (home-page "https://github.com/intel/ittapi/tree/master/rust/ittapi-sys")
+    (synopsis "Rust bindings for ittapi")
+    (description "This package provides Rust bindings for ittapi.")
+    (license (list license:gpl2 license:bsd-3))))
+
 (define-public rust-ivf-0.1
   (package
     (name "rust-ivf")
