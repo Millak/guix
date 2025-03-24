@@ -10855,6 +10855,35 @@ remote procedure call protocol")
     (description "Cap'n Proto code generation.")
     (license license:expat)))
 
+(define-public rust-cap-primitives-3
+  (package
+    (name "rust-cap-primitives")
+    (version "3.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cap-primitives" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sf3wffaw8mp0v0llg3i0rns0d8rhvsmf66cx2wdh8r2xnp5zhcg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f     ; use of undeclared crate `cap_tempfile`
+       #:cargo-inputs (("rust-ambient-authority" ,rust-ambient-authority-0.0.2)
+                       ("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-fs-set-times" ,rust-fs-set-times-0.20)
+                       ("rust-io-extras" ,rust-io-extras-0.18)
+                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
+                       ("rust-ipnet" ,rust-ipnet-2)
+                       ("rust-maybe-owned" ,rust-maybe-owned-0.3)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59)
+                       ("rust-winx" ,rust-winx-0.36))))
+    (home-page "https://github.com/bytecodealliance/cap-std")
+    (synopsis "Capability-based primitives")
+    (description "This package provides Capability-based primitives.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-caps-0.5
   (package
     (name "rust-caps")
