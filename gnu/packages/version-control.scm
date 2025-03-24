@@ -4312,49 +4312,44 @@ defects faster.")
     (license license:expat)))
 
 (define-public gita
-  (let ((commit "e41b504dca90a25e9be27f296da7ce22e5782893")
-        (revision "1"))
     (package
       (name "gita")
-      (version (git-version "0.12.9" revision commit))
+      (version "0.16.7.2")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/nosarthur/gita")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1k03zgcbhl91cgyh4k7ywyjp00y63q4bqbimncqh5b3lni8l8j5l"))))
-      (build-system python-build-system)
+                  "118dzmjgml0c32yllr2178ash2hvgn201i463bv4y0qbywajm9ax"))))
+      (build-system pyproject-build-system)
       (native-inputs
        (list git ;for tests
-             python-pytest))
+             python-pytest
+             python-setuptools
+             python-wheel))
       (propagated-inputs
-       (list python-pyyaml))
+       (list python-argcomplete))
       (arguments
-       `(#:phases
+       `(#:test-flags '("--ignore" "tests/test_main.py")
+         #:phases
          (modify-phases %standard-phases
-           (replace 'check
+           (add-before 'check 'pre-check
              (lambda* (#:key inputs outputs #:allow-other-keys)
-               (substitute* "tests/test_main.py"
-                 (("'gita\\\\n'") "'source\\n'")
-                 (("'gita'") "'source'"))
                (invoke (search-input-file inputs "/bin/git")
-                       "init")
-               (add-installed-pythonpath inputs outputs)
-               (invoke (search-input-file inputs "/bin/pytest")
-                       "-vv" "tests")))
+                       "init")))
            (add-after 'install 'install-shell-completions
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
                       (bash-completion (string-append out "/etc/bash_completion.d"))
                       (zsh-completion (string-append out "/etc/zsh/site-functions")))
                  (mkdir-p bash-completion)
-                 (copy-file ".gita-completion.bash"
+                 (copy-file "auto-completion/bash/.gita-completion.bash"
                             (string-append bash-completion "/gita"))
                  (mkdir-p zsh-completion)
-                 (copy-file ".gita-completion.zsh"
+                 (copy-file "auto-completion/zsh/.gita-completion.zsh"
                             (string-append zsh-completion "/_gita"))))))))
       (home-page "https://github.com/nosarthur/gita")
       (synopsis "Command-line tool to manage multiple Git repos")
@@ -4369,7 +4364,7 @@ commit message side by side
 @end itemize
 
 If several repos are related, it helps to see their status together.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public ghq
   (package
