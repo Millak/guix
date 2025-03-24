@@ -96605,6 +96605,31 @@ and native running processes.")
        (sha256
         (base32 "1fwqlp5q0q1ci5xlxr87jswmi636v77h0m1gq29zvfbmk5la19b5"))))))
 
+(define-public rust-wasmparser-0.202
+  (package
+    (inherit rust-wasmparser-0.218)
+    (name "rust-wasmparser")
+    (version "0.202.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmparser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04qljgwjv6a6nn9sx6bbz167s0dim4liphgp1sc8ngygscaqb6fn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; undeclared crate `wat`
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-semver" ,rust-semver-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-env-logger" ,rust-env-logger-0.11)
+                                   ("rust-log" ,rust-log-0.4)
+                                   ("rust-once-cell" ,rust-once-cell-1)
+                                   ("rust-rayon" ,rust-rayon-1))))))
+
 (define-public rust-wasmparser-0.118
   (package
     (inherit rust-wasmparser-0.218)
