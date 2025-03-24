@@ -96816,6 +96816,24 @@ component model in Wasmtime.")
     (description "This package provides utilities for JIT icache maintenance.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-slab-25
+  (package
+    (name "rust-wasmtime-slab")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-slab" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14akpsamzvhhqxmjjxmbb5yhfgfyr4v31z1w96gq69y3ihdblp7p"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Uni-typed slab with a free list for use in Wasmtime")
+    (description
+     "This package provides uni-typed slab with a free list for use in Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-types-25
   (package
     (name "rust-wasmtime-types")
