@@ -96981,6 +96981,26 @@ format to the text format.")
      "This package provides a high-level API to expose the Wasmtime runtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-c-api-macros-25
+  (package
+    (name "rust-wasmtime-c-api-macros")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-c-api-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1diql4fxxc3q84pz9hs5szhh78vxxsb0p49mhwbv0vslshx22b44"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Support macros for @code{wasmtime-c-api}")
+    (description "Rust support macros for @code{wasmtime-c-api}.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-cache-25
   (package
     (name "rust-wasmtime-cache")
