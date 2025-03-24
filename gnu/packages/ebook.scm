@@ -176,7 +176,7 @@ with Microsoft Compiled HTML (CHM) files")
            libusb
            openssl
            optipng
-           podofo
+           podofo-0.9
            poppler
            python-apsw
            python-beautifulsoup4

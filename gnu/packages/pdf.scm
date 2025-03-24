@@ -752,7 +752,7 @@ minimalistic interface and an interface that mainly focuses on keyboard
 interaction.")
     (license license:zlib)))
 
-(define-public podofo
+(define-public podofo-0.9
   (package
     (name "podofo")
     (version "0.9.8")
@@ -788,6 +788,42 @@ interaction.")
                ;; Look for freetype include files in the correct place.
                (substitute* "cmake/modules/FindFREETYPE.cmake"
                  (("/usr/local") #$freetype)))))))
+    (home-page "https://github.com/podofo/podofo")
+    (synopsis "Tools to work with the PDF file format")
+    (description
+     "PoDoFo is a C++ library and set of command-line tools to work with the
+PDF file format.  It can parse PDF files and load them into memory, and makes
+it easy to modify them and write the changes to disk.  It is primarily useful
+for applications that wish to do lower level manipulation of PDF, such as
+extracting content or merging files.")
+    (license license:lgpl2.0+)))
+
+(define-public podofo
+  (package
+    (name "podofo")
+    (version "0.10.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/podofo/podofo")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ffdx3ghz0an3fkz72m0q77g5ipcriapxnphha20gk4b575a93v5"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list cppunit pkg-config))
+    (inputs
+     (list fontconfig
+           freetype
+           libjpeg-turbo
+           libpng
+           libtiff
+           libxml2
+           lua-5.1
+           openssl
+           zlib))
     (home-page "https://github.com/podofo/podofo")
     (synopsis "Tools to work with the PDF file format")
     (description
