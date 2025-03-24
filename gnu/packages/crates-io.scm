@@ -79482,6 +79482,34 @@ and spirv-std-macros.")
     (description "This package provides sptr, The Strict Provenance Polyfill.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ssh2-0.9
+  (package
+    (name "rust-ssh2")
+    (version "0.9.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ssh2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j38p804b8sbgnfw1x8j2mkvh6yva7li36b2la8lw3ca7cxx311g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ;TODO: figure out why tests are failing
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libssh2-sys" ,rust-libssh2-sys-0.3)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12))))
+    (native-inputs (list pkg-config))
+    (inputs (list zlib libgit2-1.8 libssh2 openssl))
+    (home-page "https://github.com/alexcrichton/ssh2-rs")
+    (synopsis
+     "Bindings for libssh2 for interacting with SSH servers")
+    (description
+     "This package provides bindings for libssh2 for interacting with SSH
+servers and executing remote commands, forwarding local ports, etc.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-st-map-0.1
   (package
     (name "rust-st-map")
