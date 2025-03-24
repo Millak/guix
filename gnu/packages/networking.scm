@@ -554,8 +554,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
 (define-public librecast
   (package
     (name "librecast")
-    ;; Use commit fixing test suite hang in 0.9.1.
-    (version "0.9.1-1-g5ab5f63")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -564,7 +563,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1abiwgllm8l7jcx5hkgljbk2zddnn7y9mi7s4xmxi2k81a49zghb"))))
+        (base32 "04h7hzm0j9cvcd5skrbnyd69pidbrxzqsnciz0yxwbb883nd5kmq"))))
     (build-system gnu-build-system)
     (arguments
      (list
