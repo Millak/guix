@@ -96794,6 +96794,28 @@ component model in Wasmtime.")
      "This package provides JIT debug interfaces support for Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-jit-icache-coherence-25
+  (package
+    (name "rust-wasmtime-jit-icache-coherence")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-jit-icache-coherence" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zf2isaqgh6f8mj5ss86mawx5dwyr0xgrffnsxd68kv25kii8wsx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Utilities for JIT icache maintenance")
+    (description "This package provides utilities for JIT icache maintenance.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-types-25
   (package
     (name "rust-wasmtime-types")
