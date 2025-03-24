@@ -3538,30 +3538,6 @@ running your code against a large number of randomly generated input
 scenarios.")
     (license license:expat)))
 
-(define-public python-nose-randomly
-  (package
-    (name "python-nose-randomly")
-    (version "1.2.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "nose-randomly" version))
-       (sha256
-        (base32 "0z662rqhfk4bjmg806mn4frb8nz4gbh7mrddsrhfffp1g4yklj3y"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-nose python-numpy))
-    (home-page "https://github.com/adamchainz/nose-randomly")
-    (synopsis
-     "Nose plugin to randomly order tests and control random.seed")
-    (description
-     "This is a @code{Nose} plugin to randomly order tests which can be quite
-powerful in discovering hidden flaws in the tests themselves, while helping to
-reduce inter-test dependencies.  It also helps in controlling @code{random.seed},
-by resetting it to a repeatable number for each test, enabling the tests to
-create data based on random numbers and yet remain repeatable.")
-    (license license:bsd-3)))
-
 (define-public python-nose-timer
   (package
     (name "python-nose-timer")
