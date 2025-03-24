@@ -4312,48 +4312,48 @@ defects faster.")
     (license license:expat)))
 
 (define-public gita
-    (package
-      (name "gita")
-      (version "0.16.7.2")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/nosarthur/gita")
-                      (commit (string-append "v" version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "118dzmjgml0c32yllr2178ash2hvgn201i463bv4y0qbywajm9ax"))))
-      (build-system pyproject-build-system)
-      (native-inputs
-       (list git ;for tests
-             python-pytest
-             python-setuptools
-             python-wheel))
-      (propagated-inputs
-       (list python-argcomplete))
-      (arguments
-       `(#:test-flags '("--ignore" "tests/test_main.py")
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'pre-check
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (invoke (search-input-file inputs "/bin/git")
-                       "init")))
-           (add-after 'install 'install-shell-completions
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bash-completion (string-append out "/etc/bash_completion.d"))
-                      (zsh-completion (string-append out "/etc/zsh/site-functions")))
-                 (mkdir-p bash-completion)
-                 (copy-file "auto-completion/bash/.gita-completion.bash"
-                            (string-append bash-completion "/gita"))
-                 (mkdir-p zsh-completion)
-                 (copy-file "auto-completion/zsh/.gita-completion.zsh"
-                            (string-append zsh-completion "/_gita"))))))))
-      (home-page "https://github.com/nosarthur/gita")
-      (synopsis "Command-line tool to manage multiple Git repos")
-      (description "This package provides a command-line tool to manage
+  (package
+    (name "gita")
+    (version "0.16.7.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nosarthur/gita")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "118dzmjgml0c32yllr2178ash2hvgn201i463bv4y0qbywajm9ax"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list git ;for tests
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-argcomplete))
+    (arguments
+     `(#:test-flags '("--ignore" "tests/test_main.py")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (invoke (search-input-file inputs "/bin/git")
+                     "init")))
+         (add-after 'install 'install-shell-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bash-completion (string-append out "/etc/bash_completion.d"))
+                    (zsh-completion (string-append out "/etc/zsh/site-functions")))
+               (mkdir-p bash-completion)
+               (copy-file "auto-completion/bash/.gita-completion.bash"
+                          (string-append bash-completion "/gita"))
+               (mkdir-p zsh-completion)
+               (copy-file "auto-completion/zsh/.gita-completion.zsh"
+                          (string-append zsh-completion "/_gita"))))))))
+    (home-page "https://github.com/nosarthur/gita")
+    (synopsis "Command-line tool to manage multiple Git repos")
+    (description "This package provides a command-line tool to manage
 multiple Git repos.
 
 This tool does two things:
@@ -4364,7 +4364,7 @@ commit message side by side
 @end itemize
 
 If several repos are related, it helps to see their status together.")
-      (license license:expat)))
+    (license license:expat)))
 
 (define-public ghq
   (package
