@@ -323,6 +323,30 @@ interface.")
     (home-page "https://codeberg.org/ifreund/zig-xkbcommon")
     (license license:expat)))
 
+(define-public zig-zigimg
+  ;; No tagged release.
+  (let ((commit "52f10dd3e3b1cd4614fe72a8a8f0eddc7700bc0a")
+        (revision "0"))
+    (package
+      (name "zig-zigimg")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/zigimg/zigimg")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "187nh49rdv37arlvf056jiv58n4y87q2pm6qvznn75zrszjlvp0b"))))
+      (build-system zig-build-system)
+      (home-page "https://github.com/zigimg/zigimg")
+      (synopsis "Zig image library")
+      (description
+       "@code{zigimg} is a Zig library for reading and writing different image
+formats.")
+      (license license:expat))))
+
 (define-public zig-zls-0.10
   (package
     (name "zig-zls")
