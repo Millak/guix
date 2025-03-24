@@ -44309,6 +44309,31 @@ parallelize and optimize.")
 async code in Rust.")
     (license license:expat)))
 
+(define-public rust-maybe-owned-0.3
+  (package
+    (name "rust-maybe-owned")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "maybe-owned" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d3sqiv59i06k73x6p7mf294zgdfb2qkky127ipfnjj9mr9wgb2g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+         (("rust-serde-derive" ,rust-serde-derive-1)
+          ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/rustonaut/maybe-owned")
+    (synopsis
+     "Provides a @code{MaybeOwned} Rust type")
+    (description
+     "This package provides provides @code{MaybeOwned} and
+@code{MaybeOwnedMut`} types that does not require @code{ToOwned}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-maybe-rayon-0.1
   (package
     (name "rust-maybe-rayon")
