@@ -19590,10 +19590,20 @@ language name mapping.")
          (sha256
           (base32 "15y9x5wkg3fqndc04w2sc650fnwimxp4gjgpv9xvvdm9x4v433x6"))))
       (build-system asdf-build-system/sbcl)
-      (arguments '(#:tests? #f)) ; There are no tests.
       (inputs
         (list sbcl-stdutils
               sbcl-s-xml-rpc))
+      (arguments
+       (list #:tests? #f ; There are no tests.
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-build
+                   (lambda _
+                     ;; Remove a declaration causing a type conflict with
+                     ;; recent versions of SBCL.
+                     (substitute* "src/my-meta.lisp"
+                       (("\\(type simple-base-string ,source-symbol\\)")
+                        "")))))))
       (home-page "https://langutils.common-lisp.dev/")
       (synopsis "Common Lisp natural language processing toolkit")
       (description
