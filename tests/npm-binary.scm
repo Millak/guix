@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Jelle Licht <jlicht@fsfe.org>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,42 +25,35 @@
   #:use-module (srfi srfi-64)
   #:use-module (ice-9 iconv)
   #:use-module (ice-9 match)
+  #:use-module (json)
   #:export (run-test))
 
-(define foo-json
-  "{
-  \"name\": \"foo\",
-  \"dist-tags\": {
-    \"latest\": \"1.2.3\",
-    \"next\": \"2.0.1-beta4\"
-  },
-  \"description\": \"General purpose utilities to foo your bars\",
-  \"homepage\": \"https://github.com/quartz/foo\",
-  \"repository\": \"quartz/foo\",
-  \"versions\": {
-    \"1.2.3\": {
-      \"name\": \"foo\",
-      \"description\": \"General purpose utilities to foo your bars\",
-      \"version\": \"1.2.3\",
-      \"author\": \"Jelle Licht <jlicht@fsfe.org>\",
-      \"devDependencies\": {
-        \"node-megabuilder\": \"^0.0.2\"
-      },
-      \"dependencies\": {
-        \"bar\": \"^0.1.0\"
-      },
-      \"repository\": {
-        \"url\": \"quartz/foo\"
-      },
-      \"homepage\": \"https://github.com/quartz/foo\",
-      \"license\": \"MIT\",
-      \"dist\": {
-        \"tarball\": \"https://registry.npmjs.org/foo/-/foo-1.2.3.tgz\"
-      }
-    }
-  }
-}")
+(define* (foo-json #:key (license "MIT"))
+  "Create a JSON description of an example foo npm package, optionally using a
+different @var{license}."
+  (scm->json-string
+   `((name . "foo")
+     (dist-tags . ((latest . "1.2.3")
+                   (next . "2.0.1-beta4")))
+     (description . "General purpose utilities to foo your bars")
+     (homepage . "https://github.com/quartz/foo")
+     (repository . "quartz/foo")
+     (versions
+      . ((1.2.3
+          . ((name . "foo")
+             (description . "General purpose utilities to foo your bars")
+             (version . "1.2.3")
+             (author . "Jelle Licht <jlicht@fsfe.org>")
+             (devDependencies . ((node-megabuilder . "^0.0.2")))
+             (dependencies . ((bar . "^0.1.0")))
+             (repository . ((url . "quartz/foo")))
+             (homepage . "https://github.com/quartz/foo")
+             (license . ,license)
+             (dist
+              . ((tarball
+                  . "https://registry.npmjs.org/foo/-/foo-1.2.3.tgz"))))))))))
 
+;; Dependency JSON for the bar package
 (define bar-json
   "{
   \"name\": \"bar\",
@@ -87,61 +81,85 @@
   }
 }")
 
-(define test-source-hash
-  "")
-
 (define test-source
   "Empty file\n")
+
+(define test-source-hash
+  (bytevector->nix-base32-string
+   (gcrypt-sha256 (string->bytevector test-source "utf-8"))))
 
 (define have-guile-semver?
   (false-if-exception (resolve-interface '(semver))))
 
+(define* (foo-sexp #:key (license 'license:expat))
+  `(package
+     (name "node-foo")
+     (version "1.2.3")
+     (source (origin
+               (method url-fetch)
+               (uri "https://registry.npmjs.org/foo/-/foo-1.2.3.tgz")
+               (sha256
+                (base32 "1n0h7zg9zzv4f7yn2gp0mq1v107im7pi6qq4k6q86rixz71ijklh"))))
+     (build-system node-build-system)
+     (arguments
+      (list #:tests? #f
+            #:phases
+            (gexp (modify-phases %standard-phases
+                    (delete 'build)
+                    (add-after 'patch-dependencies 'delete-dev-dependencies
+                      (lambda _
+                        (modify-json
+                         (delete-dependencies '("node-megabuilder")))))))))
+     (inputs (list node-bar-0.1.2))
+     (home-page "https://github.com/quartz/foo")
+     (synopsis "General purpose utilities to foo your bars")
+     (description "General purpose utilities to foo your bars")
+     (license ,license)))
+
 (test-begin "npm")
 
 (unless have-guile-semver? (test-skip 1))
-(test-assert "npm-binary->guix-package"
+(test-assert "npm-binary->guix-package base case"
   (mock ((guix http-client) http-fetch
          (lambda* (url #:rest _)
            (match url
              ("https://registry.npmjs.org/foo"
-              (values (open-input-string foo-json)
-                      (string-length foo-json)))
+              (let ((json-foo (foo-json)))
+                (values (open-input-string json-foo)
+                        (string-length json-foo))))
              ("https://registry.npmjs.org/bar"
               (values (open-input-string bar-json)
                       (string-length bar-json)))
              ("https://registry.npmjs.org/foo/-/foo-1.2.3.tgz"
-              (set! test-source-hash
-                    (bytevector->nix-base32-string
-                     (gcrypt-sha256 (string->bytevector test-source "utf-8"))))
               (values (open-input-string test-source)
                       (string-length test-source))))))
-        (match (npm-binary->guix-package "foo")
-          (`(package
-              (name "node-foo")
-              (version "1.2.3")
-              (source (origin
-                        (method url-fetch)
-                        (uri "https://registry.npmjs.org/foo/-/foo-1.2.3.tgz")
-                        (sha256
-                         (base32
-                          ,test-source-hash))))
-              (build-system node-build-system)
-              (arguments
-               (list #:tests? #f
-                     #:phases
-                     (gexp (modify-phases %standard-phases
-                             (delete 'build)
-                             (add-after 'patch-dependencies 'delete-dev-dependencies
-                               (lambda _
-                                 (modify-json
-                                  (delete-dependencies '("node-megabuilder")))))))))
-              (inputs (list node-bar-0.1.2))
-              (home-page "https://github.com/quartz/foo")
-              (synopsis "General purpose utilities to foo your bars")
-              (description "General purpose utilities to foo your bars")
-              (license license:expat))
-           #t)
-          (x
-           (pk 'fail x #f)))))
+        (let ((sexp-foo (foo-sexp)))
+          (match (npm-binary->guix-package "foo")
+            (sexp-foo
+             #t)
+            (x
+             (pk 'fail x #f))))))
+
+(test-assert "npm-binary->guix-package with multiple licenses"
+  (mock ((guix http-client) http-fetch
+         (lambda* (url #:rest _)
+           (match url
+             ("https://registry.npmjs.org/foo"
+              (let ((json-foo (foo-json #:license #("MIT" "Apache2.0"))))
+                (values (open-input-string json-foo)
+                        (string-length json-foo))))
+             ("https://registry.npmjs.org/bar"
+              (values (open-input-string bar-json)
+                      (string-length bar-json)))
+             ("https://registry.npmjs.org/foo/-/foo-1.2.3.tgz"
+              (values (open-input-string test-source)
+                      (string-length test-source))))))
+        (let ((sexp-foo (foo-sexp
+                         #:license '(list license:expat license:asl2.0))))
+          (match (npm-binary->guix-package "foo")
+            (sexp-foo
+             #t)
+            (x
+             (pk 'fail x #f))))))
 
 (test-end "npm")

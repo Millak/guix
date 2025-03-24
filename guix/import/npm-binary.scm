@@ -105,7 +105,17 @@
               (match (assoc "type" alist)
                 ((_ . (? string? type))
                  (spdx-string->license type))
-                (_ #f)))))
+                (_ #f)))
+             ((? vector? vector)
+              (match (filter-map
+                      (match-lambda
+                        ((? string? str) (spdx-string->license str))
+                        (_ #f))
+                      (vector->list vector))
+                ((license rest ...)
+                 (cons* license rest))
+                ((license)
+                 license)))))
   (description package-revision-description             ;string
                "description" empty-or-string)
   (dist package-revision-dist "dist" json->dist))       ;dist
@@ -250,7 +260,9 @@
            (home-page ,home-page)
            (synopsis ,synopsis)
            (description ,description)
-           (license ,license))
+           (license ,(if (list? license)
+                         `(list ,@license)
+                         license)))
         (map (match-lambda (($ <package-revision> name version)
                             (list name (semver->string version))))
              resolved-deps))))
