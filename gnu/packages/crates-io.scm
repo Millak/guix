@@ -11027,6 +11027,32 @@ remote procedure call protocol")
      "Capability-based version of the Rust standard library.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-cap-time-ext-3
+  (package
+    (name "rust-cap-time-ext")
+    (version "3.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cap-time-ext" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lzaz7c1gjxld1rrr8dvm91xwili6ky85ywm3555cgq3zhh6nwxx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ambient-authority" ,rust-ambient-authority-0.0.2)
+                       ("rust-cap-primitives" ,rust-cap-primitives-3)
+                       ("rust-cap-std" ,rust-cap-std-3)
+                       ("rust-iana-time-zone" ,rust-iana-time-zone-0.1)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-winx" ,rust-winx-0.36))))
+    (home-page "https://github.com/bytecodealliance/cap-std")
+    (synopsis "Extension traits for @code{SystemClock}")
+    (description
+     "Extension traits for @code{SystemClock} and @code{MonotonicClock}.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-caps-0.5
   (package
     (name "rust-caps")
