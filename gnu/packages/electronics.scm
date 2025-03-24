@@ -619,7 +619,7 @@ some tool-specific options are set.")
 (define-public python-vsg
   (package
     (name "python-vsg")
-    (version "3.30.0")
+    (version "3.31.0")
     (source
      (origin
        (method git-fetch)
@@ -628,7 +628,7 @@ some tool-specific options are set.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kgknd491s4ldmcw9s5j38frcfs55kxfifl52svy5q0vgg1qixq1"))))
+        (base32 "08na5iwn6f1gkvklbslhrvdsk9kcqf7hdcn7g27fy0dr6xw9kd82"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools
                          python-wheel
