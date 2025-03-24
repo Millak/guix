@@ -96742,6 +96742,51 @@ format to the text format.")
 component model in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-environ-25
+  (package
+    (name "rust-wasmtime-environ")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-environ" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ghzsdpf75qj61bc2rv4dv7slz3721m3d2mpwfycas68pbvml6rz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-cpp-demangle" ,rust-cpp-demangle-0.4)
+          ("rust-cranelift-bitset" ,rust-cranelift-bitset-0.112)
+          ("rust-cranelift-entity" ,rust-cranelift-entity-0.112)
+          ("rust-gimli" ,rust-gimli-0.29)
+          ("rust-indexmap" ,rust-indexmap-2)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-object" ,rust-object-0.36)
+          ("rust-postcard" ,rust-postcard-1)
+          ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
+          ("rust-semver" ,rust-semver-1)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-derive" ,rust-serde-derive-1)
+          ("rust-target-lexicon" ,rust-target-lexicon-0.12)
+          ("rust-wasm-encoder" ,rust-wasm-encoder-0.217)
+          ("rust-wasmparser" ,rust-wasmparser-0.217)
+          ("rust-wasmprinter" ,rust-wasmprinter-0.217)
+          ("rust-wasmtime-component-util" ,rust-wasmtime-component-util-25)
+          ("rust-wasmtime-types" ,rust-wasmtime-types-25))
+       #:cargo-development-inputs
+         (("rust-clap" ,rust-clap-4)
+          ("rust-env-logger" ,rust-env-logger-0.10)
+          ("rust-wat" ,rust-wat-1))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis
+     "Standalone environment support for WebAssembly code in Cranelift")
+    (description
+     "This package provides Standalone environment support for
+@code{WebAssembly} code in Cranelift.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-fiber-25
   (package
     (name "rust-wasmtime-fiber")
