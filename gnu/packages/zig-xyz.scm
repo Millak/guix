@@ -38,6 +38,64 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages zig))
 
+(define-public beanbag
+  (package
+    (name "beanbag")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/bwbuhse/beanbag")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d2h5bqicqnyawswdq7bg1w9frjk0ra2sva1as2qgc5s7pjclyql"))
+       (snippet (rename-zig-dependencies '(("clap" . "zig-clap")
+                                           ("zigimg" . "zig-zigimg"))))))
+    (build-system zig-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:zig-release-type "safe"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-deps
+            (lambda* (#:key inputs #:allow-other-keys)
+              (delete-file-recursively "protocol")
+              (substitute* "build.zig"
+                (("protocol/(wlr-layer-shell-unstable-v1.xml)" _ file)
+                 (string-append
+                  (search-input-file
+                   inputs
+                   (in-vicinity "share/wlr-protocols/unstable/" file)))))))
+          ;; TODO: Support test-target when changing zig-build-system next time.
+          (replace 'check
+            (lambda* (#:key tests? zig-test-flags target parallel-tests?
+                      #:allow-other-keys)
+              (when (and tests? (not target))
+                (let ((old-destdir (getenv "DESTDIR")))
+                  (setenv "DESTDIR" "test-out") ;; Avoid colisions with the build output
+                  (let ((call `("zig" "build" "check" "--verbose"
+                                ,(string-append
+                                  "-j" (if parallel-tests?
+                                           (number->string (parallel-job-count))
+                                           "1"))
+                                ,@zig-test-flags)))
+                    (format #t "running: ~s~%" call)
+                    (apply invoke call))
+                  (if old-destdir
+                      (setenv "DESTDIR" old-destdir)
+                      (unsetenv "DESTDIR")))))))))
+    (inputs (list wlr-protocols zig-clap zig-pixman zig-wayland zig-zigimg))
+    (native-inputs (list pkg-config))
+    (home-page "https://codeberg.org/bwbuhse/beanbag")
+    (synopsis "Wallpaper application for Wayland compositors")
+    (description
+     "@command{beanbag} is a wallpaper application for Wayland compositors,
+heavily inspired by @code{wbg}.")
+    (license license:gpl3+)))
+
 (define-public river
   (package
     (name "river")
