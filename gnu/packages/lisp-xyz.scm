@@ -6504,8 +6504,8 @@ common of which is probably Active Directory.")
   (sbcl-package->ecl-package sbcl-cl-gss))
 
 (define-public sbcl-cl-gtk4
-  (let ((commit "d116905e7b68508d03681a50b3b24d63e7b111e4")
-        (revision "1"))
+  (let ((commit "c05d3ec6849e9319c6655f6d77dda086064dd295")
+        (revision "2"))
     (package
       (name "sbcl-cl-gtk4")
       (version (git-version "1.0.0" revision commit))
@@ -6517,7 +6517,7 @@ common of which is probably Active Directory.")
                (commit commit)))
          (file-name (git-file-name "cl-gtk4" version))
          (sha256
-          (base32 "0mprmmvbagnflvhynn51l42nbwr08rld99ls0c48m5lpjn0ja4zc"))))
+          (base32 "05r1zw9jhhliflkbamw96gp585xc1cz7dx28sz67mki34mc19s8v"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:asd-systems '("cl-gtk4" "cl-gdk4")))
