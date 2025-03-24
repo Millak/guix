@@ -7736,7 +7736,7 @@ set.")
 (define-public hypre
   (package
     (name "hypre")
-    (version "2.20.0")
+    (version "2.32.0")
     (source
      (origin
        (method git-fetch)
@@ -7745,7 +7745,7 @@ set.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14iqjwg5sv1qjn7c2cfv0xxmn9rwamjrhh9hgs8fjbywcbvrkjdi"))))
+        (base32 "1hlydh15wz0yv5bgry7yyx4pvrl656mifhqjgifzf6dyksfvwpl7"))))
     (build-system gnu-build-system)
     (outputs '("out"                    ;5.3 MiB of headers and libraries
                "doc"))                  ;12 MiB of documentation
@@ -7755,6 +7755,7 @@ set.")
            python
            python-breathe
            python-sphinx
+           python-sphinx-rtd-theme
            (texlive-updmap.cfg
             (list texlive-adjustbox
                   texlive-alphalph
