@@ -90982,6 +90982,26 @@ tree_magic_mini.")
      "This package provides Rust bindings to the Tree-sitter parsing library.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-language-0.1
+  (package
+    (name "rust-tree-sitter-language")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-language" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1f14p8i09yrfsf9708jmayy0km78n9pqzxmf31xzd0vk45q3j0f4"))))
+    (build-system cargo-build-system)
+    (home-page "https://tree-sitter.github.io/tree-sitter")
+    (synopsis
+     "The tree-sitter language type, used by the library and languages")
+    (description
+     "This package provides the tree-sitter language type, used by the
+library and by language implementations.")
+    (license license:expat)))
+
 (define-public rust-treeline-0.1
   (package
     (name "rust-treeline")
