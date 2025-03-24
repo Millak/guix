@@ -18255,16 +18255,37 @@ implementations of ASN.1-based codecs and protocols.")
 (define-public python-asn1tools
   (package
     (name "python-asn1tools")
-    (version "0.166.0")
+    (version "0.167.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asn1tools" version))
        (sha256
-        (base32 "1hragm8dsm10rlyz67xslj01bycprlnimdmq1i2acns6kl6difpn"))))
-    (build-system python-build-system)
+        (base32 "1cpm6m3znagc553bc5l0rhwg2fccrl0k8m1pbvn6x2kqdmpkzmfa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Tests fail with error: IndexError: string index out of
+                    ;; range.  It may be some incompatability wit pyparsing,
+                    ;; see <https://github.com/eerimoq/asn1tools/issues/167>.
+                    (list "not test_c_source"
+                          "test_command_line_generate_c_source_oer"
+                          "test_command_line_generate_c_source_uper"
+                          "test_command_line_generate_rust_source_uper"
+                          "test_missing_parameterized_value"
+                          "test_c_source"
+                          "test_parse_parameterization")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-bitstruct python-diskcache python-prompt-toolkit
+     (list python-bitstruct
+           python-diskcache
+           python-prompt-toolkit
            python-pyparsing))
     (home-page "https://github.com/eerimoq/asn1tools")
     (synopsis  "ASN.1 parsing, encoding and decoding")
