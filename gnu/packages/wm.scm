@@ -362,7 +362,7 @@ commands (lock/unlock/before-sleep) and inhibit.")
 (define-public hyprland
   (package
     (name "hyprland")
-    (version "0.47.2")
+    (version "0.48.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/hyprwm/Hyprland"
@@ -379,7 +379,7 @@ commands (lock/unlock/before-sleep) and inhibit.")
                               "subprojects"))))
               (sha256
                (base32
-                "1srgzg94978alv16wnx3r973rjwhph8781apzpr9q514kry49x77"))))
+                "1adzdlz5ay5wil4l34150ciqjiir3jlyyxikdw3nw7yxb83mss8j"))))
     (build-system cmake-build-system)
     (arguments
      (list #:cmake cmake-3.30
@@ -433,7 +433,7 @@ commands (lock/unlock/before-sleep) and inhibit.")
            re2-next
            udis86
            wayland
-           wayland-protocols
+           wayland-protocols-next
            xcb-util-errors
            xcb-util-wm
            xorg-server-xwayland))
@@ -442,6 +442,8 @@ commands (lock/unlock/before-sleep) and inhibit.")
     (description
      "Hyprland is a dynamic tiling Wayland compositor that doesn't sacrifice on
 its looks.")
+    (properties
+     `((upstream-name . "source")))
     (license license:bsd-3)))
 
 (define-public i3status
