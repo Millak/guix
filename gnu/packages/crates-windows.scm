@@ -3383,6 +3383,26 @@ icons and metadata for executables.")
      "A simple library wrapping a handful of useful winapi functions.")
     (license license:expat)))
 
+(define-public rust-winx-0.36
+  (package
+    (name "rust-winx")
+    (version "0.36.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winx" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bgls70sd0lxyhbklbs6ccchx0r2bbz0rcmgwxibhn0ryxvd6grz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/sunfishcode/winx")
+    (synopsis "Windows API helper library")
+    (description "This package provides a Windows API helper library.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wio-0.2
   (package
     (name "rust-wio")
