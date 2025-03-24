@@ -97220,6 +97220,37 @@ format to the text format.")
      "This package provides a high-level API to expose the Wasmtime runtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-c-api-impl-25
+  (package
+    (name "rust-wasmtime-c-api-impl")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-c-api-impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01fhnz3nwzqa7w5q1vvhy3dbxnqixzv5r0cr829j107nl15dpz7b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cap-std" ,rust-cap-std-3)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-wasmtime" ,rust-wasmtime-25)
+                       ("rust-wasmtime-c-api-macros" ,rust-wasmtime-c-api-macros-25)
+                       ("rust-wasmtime-wasi" ,rust-wasmtime-wasi-25)
+                       ("rust-wat" ,rust-wat-1))))
+    (native-inputs (list cmake-minimal))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "C API to expose the Wasmtime runtime")
+    (description "This package provides a C API for the Wasmtime runtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-c-api-macros-25
   (package
     (name "rust-wasmtime-c-api-macros")
