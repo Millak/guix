@@ -83588,6 +83588,42 @@ well.")
        #:cargo-development-inputs
        (("rust-itertools" ,rust-itertools-0.9))))))
 
+(define-public rust-system-interface-0.27
+  (package
+    (name "rust-system-interface")
+    (version "0.27.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "system-interface" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ic7qxkgxh8hbphcawcz2xdnb5lmlirkhj4158f5466ffkv94ifc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cap-async-std" ,rust-cap-async-std-3)
+                       ("rust-cap-fs-ext" ,rust-cap-fs-ext-3)
+                       ("rust-cap-std" ,rust-cap-std-3)
+                       ("rust-char-device" ,rust-char-device-0.16)
+                       ("rust-fd-lock" ,rust-fd-lock-4)
+                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
+                       ("rust-os-pipe" ,rust-os-pipe-1)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-socketpair" ,rust-socketpair-0.19)
+                       ("rust-ssh2" ,rust-ssh2-0.9)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59)
+                       ("rust-winx" ,rust-winx-0.36))
+       #:cargo-development-inputs
+         (("rust-cap-tempfile" ,rust-cap-tempfile-3)
+          ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/bytecodealliance/system-interface")
+    (synopsis "Extensions to the Rust standard library")
+    (description
+     "This package provides extensions to the Rust standard library.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-systemstat-0.2
   (package
     (name "rust-systemstat")
