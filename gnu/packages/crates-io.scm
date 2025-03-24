@@ -10839,6 +10839,29 @@ tracking memory usage and enabling limits to be set.")
      "Extension traits for capability-based file-system management.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-cap-net-ext-3
+  (package
+    (name "rust-cap-net-ext")
+    (version "3.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cap-net-ext" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y5s4fgz7hrnbcxcwi1ly0n68cnlmgvdknhsxsyg4ah4lrs8dija"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cap-primitives" ,rust-cap-primitives-3)
+                       ("rust-cap-std" ,rust-cap-std-3)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-smallvec" ,rust-smallvec-1))))
+    (home-page "https://github.com/bytecodealliance/cap-std")
+    (synopsis "Extension traits for networking")
+    (description
+     "Extension traits for networking, for example @code{TcpListener}.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-capnp-0.19
   (package
     (name "rust-capnp")
