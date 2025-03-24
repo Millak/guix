@@ -38328,6 +38328,28 @@ primitives to an @code{io::Write}.")
 format.")
     (license license:expat)))
 
+(define-public rust-ittapi-0.4
+  (package
+    (name "rust-ittapi")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ittapi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cb41dapbximlma0vnar144m2j2km44g8g6zmv6ra4y42kk6z6bb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-ittapi-sys" ,rust-ittapi-sys-0.4)
+                       ("rust-log" ,rust-log-0.4))
+       #:cargo-development-inputs (("rust-scoped-env" ,rust-scoped-env-2))))
+    (home-page "https://github.com/intel/ittapi/tree/master/rust/ittapi")
+    (synopsis "High-level Rust bindings for ittapi")
+    (description "This package provides high-level Rust bindings for ittapi.")
+    (license (list license:gpl2 license:bsd-3))))
+
 (define-public rust-ittapi-sys-0.4
   (package
     (name "rust-ittapi-sys")
