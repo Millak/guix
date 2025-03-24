@@ -521,7 +521,7 @@ automated testing of HDL code.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.15.1")
+    (version "1.15.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -530,11 +530,12 @@ automated testing of HDL code.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hqkgwkvflha1fpch13byb8clwa97n6z1d9a2d34cqzsjrzkdx0k"))))
+                "1r6ba5jw4ja0hv366686d8haakm57h3fl95w81hda8haq6g0dj0q"))))
     (build-system gnu-build-system)
     (arguments
      (list #:out-of-source? #t
-           #:configure-flags #~(list "--enable-vhpi")
+           #:configure-flags #~(list "--enable-vhpi" "--enable-tcl" "--enable-gcov"
+                                     "--enable-llvm")
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'clean-up
                           (lambda _
@@ -550,8 +551,10 @@ automated testing of HDL code.")
            check)) ; for the tests
     (inputs
      (list elfutils
-           llvm-9
+           llvm
            libffi
+           readline
+           tcl
            `(,zstd "lib")))
     (synopsis "VHDL compiler and simulator")
     (description "This package provides a VHDL compiler and simulator.")
