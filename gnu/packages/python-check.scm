@@ -1201,13 +1201,14 @@ sub-package.")
          "0pyj2d45zagmzlajzqdnkw5yz8k49pkihbydsqkzm413qnkzb38q"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make the installed plugin discoverable by Pytest.
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Make the installed plugin discoverable by Pytest.
+              (add-installed-pythonpath inputs outputs)
+              (invoke "pytest" "-vv"))))))
     (native-inputs
      (list python-pytest python-setuptools ; needs setuptools >= 50.3.2
            python-setuptools-scm python-setuptools-declarative-requirements))
