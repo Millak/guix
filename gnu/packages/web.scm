@@ -6825,7 +6825,9 @@ deployments.")
                  (substitute* "bin/varnishd/mgt/mgt_shmem.c"
                    (("rm -rf") (string-append rm " -rf")))
                  (substitute* "bin/varnishtest/vtc_main.c"
-                   (("/bin/rm") rm)))
+                   (("/bin/rm") rm))
+                 (substitute* "bin/varnishd/mgt/mgt_main.c"
+                   (("rm -rf") (string-append rm " -rf"))))
                (substitute* "bin/varnishtest/tests/u00000.vtc"
                  (("/bin/echo") (which "echo")))))
            (add-after 'unpack 'remove-failing-tests
