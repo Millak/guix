@@ -3173,7 +3173,7 @@ CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
 (define-public fast-float
   (package
     (name "fast-float")
-    (version "6.1.6")
+    (version "8.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3182,7 +3182,7 @@ CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1y6mj2rw0dr89ddhk33gj1l76dfk4ai00kx9i22i6rjr0qylqhih"))))
+                "19x1yklf641yrpad6lk4cq3jmird10d5ig8hicm3p9lxh92k78cl"))))
     (build-system cmake-build-system)
     (arguments
      (list
