@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2023, 2024 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2015, 2016, 2023, 2024, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
@@ -62,7 +62,7 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
 
-(define %texlive-date "20240312")
+(define %texlive-date "20250308")
 (define %texlive-year (string-take %texlive-date 4))
 
 (define texlive-extra-src
@@ -72,7 +72,7 @@
                         %texlive-year "/texlive-"
                         %texlive-date "-extra.tar.xz"))
     (sha256 (base32
-             "15jlphblgqccycrqpqib1bvp8h996yxji8rfvbd5s6ydrm31j3vp"))))
+             "1lk9fsyvxayfz4xjplazwkjgamwk9p5yhxjlqk5ql4wvpkncysga"))))
 
 (define texlive-texmf-src
   (origin
@@ -81,7 +81,7 @@
                         %texlive-year "/texlive-"
                         %texlive-date "-texmf.tar.xz"))
     (sha256 (base32
-             "19y72ahd5isc8zgr6a6rl03al4jcx72bqsxa7gcqc7pmmbgf5sn8"))))
+             "1ky72r9z8v93nyns5109rkvx6wqlgqciwvrjpdp2y3dz61sdmp08"))))
 
 (define texlivebin
   (package
@@ -95,7 +95,7 @@
                            %texlive-date "-source.tar.xz"))
        (sha256
         (base32
-         "15pynqwajzh4bnbhylgd74qq9fcpxmmi54swqkx705k6077qfvbv"))
+         "03s92wj9z334azyxrxp5k20g323a1nj2j8la76j7gha3s6iv3zgz"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
