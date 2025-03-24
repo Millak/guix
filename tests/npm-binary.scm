@@ -133,7 +133,8 @@
                              (delete 'build)
                              (add-after 'patch-dependencies 'delete-dev-dependencies
                                (lambda _
-                                 (delete-dependencies '("node-megabuilder"))))))))
+                                 (modify-json
+                                  (delete-dependencies '("node-megabuilder")))))))))
               (inputs (list node-bar-0.1.2))
               (home-page "https://github.com/quartz/foo")
               (synopsis "General purpose utilities to foo your bars")

@@ -228,7 +228,8 @@
                   ((dev-names ...)
                    `((add-after 'patch-dependencies 'delete-dev-dependencies
                        (lambda _
-                         (delete-dependencies '(,@(reverse dev-names))))))))))
+                         (modify-json
+                          (delete-dependencies '(,@(reverse dev-names)))))))))))
           (values
            `(package
               (name ,name)
