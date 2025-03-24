@@ -41803,14 +41803,15 @@ single-cell and single-nucleus sequencing data.")
 (define-public rust-libssh2-sys-0.3
   (package
     (name "rust-libssh2-sys")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libssh2-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vkidqw5ll71ynqc93hgcq62iqkklzb5268zffd13ql7nwqa1j1d"))
+        (base32
+          "1f8i31h3666rl6sq7v64ajdq03hmylkh6c1vaf9828aaml2ly3i2"))
        (modules '((guix build utils)))
        (snippet
         '(begin (delete-file-recursively "libssh2")))))
