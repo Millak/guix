@@ -37,6 +37,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system tree-sitter)
+  #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
@@ -96,6 +97,29 @@
     (synopsis "Python bindings to the Tree-sitter parsing library")
     (description "This package provides Python bindings to the
 Tree-sitter parsing library.")
+    (license license:expat)))
+
+(define-public rust-tree-sitter-bash-0.23
+  (package
+    (name "rust-tree-sitter-bash")
+    (version "0.23.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-bash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bm5chcqq5fvfb505h87d6ab5ny9l60lxy0x5ga3ghrsc944v6ij"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cc" ,rust-cc-1)
+          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs
+         (("rust-tree-sitter" ,rust-tree-sitter-0.24))))
+    (home-page "https://github.com/tree-sitter/tree-sitter-bash")
+    (synopsis "Bash grammar for tree-sitter")
+    (description "This package provides a Bash grammar for tree-sitter.")
     (license license:expat)))
 
 (define-public tree-sitter
