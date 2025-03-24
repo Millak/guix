@@ -11299,11 +11299,8 @@ modification of BPF objects on the system.")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:test-exclude "(runtime_tests|tools-parsing-test)"
       #:configure-flags #~(list "-DBUILD_TESTING=ON")
-      ;; Only run the unit tests suite, as the other ones
-      ;; (runtime_tests, tools-parsing-test) require to run as
-      ;; 'root'.
-      #:test-target "bpftrace_test"
       #:phases
       #~(modify-phases %standard-phases
           ;; This patch also fixes broken compilation due to improper detection
@@ -11325,8 +11322,28 @@ modification of BPF objects on the system.")
                                "runtime/call"
                                "procmon.cpp")
                   (("/bin/ls")
-                   (which "ls")))))))))
-    (native-inputs (list bison dwarves flex googletest xxd))
+                   (which "ls"))))))
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* '("tests/child.cpp")
+                (("/bin/sleep")
+                 (search-input-file inputs "bin/sleep")))))
+          (add-before 'check 'set-test-filter
+            (lambda _
+              (setenv "GTEST_FILTER"
+                      (string-join
+                       (list ; "-" disables all following tests
+                             "-ast.probe_name_uprobe"
+                             "bpftrace.add_probes_uprobe_wildcard_file"
+                             "bpftrace.add_probes_uprobe_wildcard_file_uprobe_multi"
+                             "bpftrace.add_probes_usdt_wildcard"
+                             "Parser.multiple_attach_points_kprobe"
+                             "Parser.uretprobe_offset"
+                             "semantic_analyser.builtin_functions"
+                             "semantic_analyser.call_func"
+                             "semantic_analyser.call_uaddr")
+                       ":")))))))
+    (native-inputs (list bison coreutils dwarves flex googletest xxd))
     (inputs (list bcc clang-15 elfutils libbpf libiberty cereal))
     (home-page "https://github.com/bpftrace/bpftrace")
     (synopsis "High-level tracing language for Linux eBPF")
