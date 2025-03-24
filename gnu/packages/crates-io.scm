@@ -96742,6 +96742,33 @@ format to the text format.")
 component model in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-fiber-25
+  (package
+    (name "rust-wasmtime-fiber")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-fiber" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jmasl3839yxwn8qbpy708r6xbg9brblrs82zbk9d17jn0dwqp36"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-cc" ,rust-cc-1)
+          ("rust-cfg-if" ,rust-cfg-if-1)
+          ("rust-rustix" ,rust-rustix-0.38)
+          ("rust-wasmtime-asm-macros" ,rust-wasmtime-asm-macros-25)
+          ("rust-wasmtime-versioned-export-macros" ,rust-wasmtime-versioned-export-macros-25)
+          ("rust-wasmtime-versioned-export-macros" ,rust-wasmtime-versioned-export-macros-25)
+          ("rust-windows-sys" ,rust-windows-sys-0.52))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "Fiber support for Wasmtime")
+    (description "This package provides fiber support for Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-types-25
   (package
     (name "rust-wasmtime-types")
