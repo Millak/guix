@@ -3,6 +3,7 @@
 ;;; Copyright © 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2024 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -139,6 +140,27 @@ mission-critical safety and performance for financial services.")
     (description
      "Waylock is a small screen locker for Wayland compositors implementing the
 @code{ext-session-lock-v1} protocol.")
+    (license license:expat)))
+
+(define-public zig-clap
+  (package
+    (name "zig-clap")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hejsil/zig-clap")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xjskvyib3kai3nmp574zfm07yvjsbzsxfysj96ss9339nq07ix6"))))
+    (build-system zig-build-system)
+    (home-page "https://github.com/Hejsil/zig-clap")
+    (synopsis "Command line argument parsing library")
+    (description
+     "@code{clap} is a simple and easy to use command line argument parser
+library for Zig.")
     (license license:expat)))
 
 (define-public zig-diffz
