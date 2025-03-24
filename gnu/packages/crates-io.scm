@@ -2686,6 +2686,26 @@ coverage-guided, mutation-based fuzzers.")
 the pointer type is parameterizable.")
     (license license:mpl2.0)))
 
+(define-public rust-arf-strings-0.7
+  (package
+    (name "rust-arf-strings")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "arf-strings" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ncy11j7bk0ji94yb8nafyr5wvfg90q6vcbzcanpdbgyk4cy9szx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-rustix" ,rust-rustix-0.38))))
+    (home-page "https://github.com/bytecodealliance/arf-strings")
+    (synopsis "Encoding and decoding for ARF strings")
+    (description
+     "This package provides encoding and decoding for ARF strings.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-arg-enum-proc-macro-0.3
   (package
     (name "rust-arg-enum-proc-macro")
