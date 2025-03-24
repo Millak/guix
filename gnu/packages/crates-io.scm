@@ -12359,6 +12359,30 @@ chain, the first matching branch is the item that gets emitted.")
     (description "DEPRECATED. Use crossbeam-channel instead.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-char-device-0.16
+  (package
+    (name "rust-char-device")
+    (version "0.16.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "char-device" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lcvym9n8v01fwi2jmxx1rq51fqzls35jfxyxvdfyd3c1k3w804x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-io-extras" ,rust-io-extras-0.18)
+                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-winx" ,rust-winx-0.36))))
+    (home-page "https://github.com/sunfishcode/char-device")
+    (synopsis "Character Device I/O")
+    (description "This package provides Character Device I/O.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-charset-0.1
   (package
     (name "rust-charset")
