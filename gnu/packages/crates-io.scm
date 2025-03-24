@@ -10981,6 +10981,27 @@ remote procedure call protocol")
     (description "This package provides Capability-based primitives.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-cap-rand-3
+  (package
+    (name "rust-cap-rand")
+    (version "3.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cap-rand" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xvr0fj7x1qyj95pjdkbkzyix73r85p5qkk5mv8ndw4xnir378fy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ambient-authority" ,rust-ambient-authority-0.0.2)
+                       ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/bytecodealliance/cap-std")
+    (synopsis "Capability-based random number generators")
+    (description
+     "This package provides a capability-based random number generators.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-cap-std-3
   (package
     (name "rust-cap-std")
