@@ -19914,6 +19914,19 @@ not counting tests)
     (build-system asdf-build-system/sbcl)
     (native-inputs (list sbcl-fiveam))
     (inputs (list sbcl-alexandria sbcl-iterate))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-build
+                 (lambda _
+                   ;; Modify a type check causing a type conflict warning
+                   ;; with SBCL 2.5.2.
+                   (substitute* "src/simplex.lisp"
+                     (("\\(check-type tableau tableau\\)")
+                      "(unless (typep tableau 'tableau)
+                         (error 'type-error
+                                :datum tableau
+                                :expected-type 'tableau))")))))))
     (synopsis "Common Lisp linear programming")
     (description
      "This is a Common Lisp library for solving linear programming problems.")
