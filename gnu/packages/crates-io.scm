@@ -96769,6 +96769,31 @@ component model in Wasmtime.")
     (description "This package provides fiber support for Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-jit-debug-25
+  (package
+    (name "rust-wasmtime-jit-debug")
+    (version "25.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-jit-debug" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dwljjqkfj6wacvfn84bk0bxbhmxa3a7dj785qv53mg1xg332rqh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-object" ,rust-object-0.36)
+          ("rust-once-cell" ,rust-once-cell-1)
+          ("rust-rustix" ,rust-rustix-0.38)
+          ("rust-wasmtime-versioned-export-macros"
+             ,rust-wasmtime-versioned-export-macros-25))))
+    (home-page "https://github.com/bytecodealliance/wasmtime")
+    (synopsis "JIT debug interfaces support for Wasmtime")
+    (description
+     "This package provides JIT debug interfaces support for Wasmtime.")
+    (license (list license:asl2.0))))
+
 (define-public rust-wasmtime-types-25
   (package
     (name "rust-wasmtime-types")
