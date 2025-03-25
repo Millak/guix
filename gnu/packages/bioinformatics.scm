@@ -3903,7 +3903,7 @@ use-case, we encourage users to compose functions to achieve their goals.")
 (define-public python-biom-format
   (package
     (name "python-biom-format")
-    (version "2.1.12")
+    (version "2.1.16")
     (source
      (origin
        (method git-fetch)
@@ -3915,7 +3915,7 @@ use-case, we encourage users to compose functions to achieve their goals.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "06x2d8fv80jp86kd66fm3ragmxrpa2j0lzsbm337ziqjnpsdwc0f"))
+         "1npxjsi7r0w8diq6s37q21cqgrqifl7f483lfn72bn7qrvkvbpyz"))
        (modules '((guix build utils)))
        ;; Delete generated C files.
        (snippet
