@@ -2424,7 +2424,7 @@ to explore and analyze bulk RNA-seq data.")
 (define-public python-cell2cell
   (package
     (name "python-cell2cell")
-    (version "0.6.8")
+    (version "0.7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2433,7 +2433,7 @@ to explore and analyze bulk RNA-seq data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hwww0rcv8sc4k312n4d0jhbyix1jjqgv5djg25bw8127q5iym3s"))
+                "02cqc5rm0qkm0np1k7bim1w7f5qjnwf1jcm5albd9cpvfs4bwgdr"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2449,6 +2449,8 @@ to explore and analyze bulk RNA-seq data.")
                     (("'statannotations',") "")
                     ;; We provide version 1.0.4, which should be fine.
                     (("'gseapy == 1.0.3'") "'gseapy'")
+                    ;; We provide version 0.9.0, which should be fine.
+                    (("'tensorly == 0.8.1'") "'tensorly'")
                     ;; Using matplotlib 3.5.2 leads to this bug:
                     ;; https://github.com/earmingol/cell2cell/issues/19 but we
                     ;; can't package a different minor version of matplotlib
