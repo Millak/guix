@@ -6012,7 +6012,7 @@ time.")
      (list python-bx-python python-numpy python-pybigwig python-pysam
            zlib))
     (native-inputs
-     (list python-cython python-nose))
+     (list python-cython python-nose python-pyparsing))
     (home-page "https://crossmap.sourceforge.net/")
     (synopsis "Convert genome coordinates between assemblies")
     (description
