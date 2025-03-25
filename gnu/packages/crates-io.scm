@@ -97736,6 +97736,19 @@ format to the text format.")
 component model in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-component-util-24
+  (package
+    (inherit rust-wasmtime-component-util-25)
+    (name "rust-wasmtime-component-util")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-component-util" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nw2ylahww69dcxb2chgvhnci5j4hpp07rkkcc0yhh10g2pq2c7b"))))))
+
 (define-public rust-wasmtime-cranelift-25
   (package
     (name "rust-wasmtime-cranelift")
