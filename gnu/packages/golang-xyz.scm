@@ -57,6 +57,7 @@
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10159,7 +10160,7 @@ optionally preserving color.")
 (define-public go-github-com-lyft-protoc-gen-star-v2
   (package
     (name "go-github-com-lyft-protoc-gen-star-v2")
-    (version "2.0.3")
+    (version "2.0.4")
     (source
      (origin
        (method git-fetch)
@@ -10168,7 +10169,7 @@ optionally preserving color.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c0w7xlarzkmbfsxdknakmnm562q3whxgs3ck3icwrva3dim94qc"))))
+        (base32 "1ay8fni2m7ic811qjisinxiw1hl7c6fflwnv3hwlghsnwimnlq9f"))))
     (build-system go-build-system)
     (arguments
      (list
