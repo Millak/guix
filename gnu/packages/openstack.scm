@@ -115,20 +115,30 @@ formatters, and other extensions.")
 (define-public python-debtcollector
   (package
     (name "python-debtcollector")
-    (version "1.19.0")
+    (version "3.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "debtcollector" version))
         (sha256
-          (base32
-           "06c7vyn184y9f0lsrwaz13aq63hdz5fjrd191b8nifx6acsni42f"))))
-    (build-system python-build-system)
+         (base32 "0vzarkvjclci98d8lvkix6qj59f7rxp1qg2x6q6is7qfbg91g29a"))
+        (modules '((guix build utils)))
+        (snippet #~(begin
+                     (substitute* "test-requirements.txt"
+                       (("^(coverage|hacking|pre-commit).*")
+                        ""))))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-pbr python-six python-wrapt))
+     (list python-pbr python-wrapt))
     (native-inputs
-     (list ;; Tests.
-           python-subunit python-testrepository python-testtools))
+     (list python-doc8
+           python-fixtures
+           python-openstackdocstheme
+           python-reno
+           python-setuptools
+           python-stestr
+           python-testtools
+           python-wheel))
     (home-page "https://www.openstack.org/")
     (synopsis
      "Find deprecated patterns and strategies in Python code")
