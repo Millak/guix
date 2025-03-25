@@ -97050,6 +97050,25 @@ attribute that is not in the shared backend crate.")
      "This package provides a low-level @code{WebAssembly} encoder.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-wasm-encoder-0.215
+  (package
+    (inherit rust-wasm-encoder-0.226)
+    (name "rust-wasm-encoder")
+    (version "0.215.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasm-encoder" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0iw886v4jzvbwxakiswsk81824m51fjnjabxwdvnp3kbw3rnvdag"))))
+    (arguments
+     `(#:tests? #f      ; unresolved import `wasmparser`
+       #:cargo-inputs (("rust-leb128" ,rust-leb128-0.2)
+                       ("rust-wasmparser" ,rust-wasmparser-0.215))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-wasm-encoder-0.38
   (package
     (name "rust-wasm-encoder")
