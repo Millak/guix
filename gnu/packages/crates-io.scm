@@ -97423,6 +97423,21 @@ format to the text format.")
      "This package provides Macros for defining asm functions in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-asm-macros-24
+  (package
+    (inherit rust-wasmtime-asm-macros-25)
+    (name "rust-wasmtime-asm-macros")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-asm-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10s2ha7dd72g0mbbsf9vscqnsnp0pmllwir7njaxs4jxzav08l7l"))))
+    (arguments
+     `( #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1))))))
+
 (define-public rust-wasmtime-25
   (package
     (name "rust-wasmtime")
