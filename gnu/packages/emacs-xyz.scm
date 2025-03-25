@@ -22266,6 +22266,27 @@ using ERT.  It assumes a certain test structure setup and can therefore make
 running tests easier.")
     (license license:gpl3+)))
 
+(define-public emacs-doctest
+  (let ((commit "0620ab6283a4e4302761ac415354b0b2b889dcda")
+        (revision "0"))
+    (package
+      (name "emacs-doctest")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/ag91/doctest.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1g759f1ypw00vqbbcxa8yxf51bdmlrfdxybgjf4fmzzhvfbcpc4d"))))
+      (build-system emacs-build-system)
+      (synopsis "emacs-doctest")
+      (description "This package provides doctests for emacs elisp.")
+      (home-page "https://github.com/ag91/doctest")
+      (license license:gpl3+))))
+
 (define-public emacs-xtest
   (package
     (name "emacs-xtest")
