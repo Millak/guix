@@ -17011,6 +17011,23 @@ generator library.")
 mapping keys.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-entity-0.111
+  (package
+    (inherit rust-cranelift-entity-0.112)
+    (name "rust-cranelift-entity")
+    (version "0.111.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-entity" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "109bgivldrlhwawfd85v4gs787zsxzgcyi9w6j63mmsip970pw5j"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-bitset" ,rust-cranelift-bitset-0.111)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1))))))
+
 (define-public rust-cranelift-frontend-0.112
   (package
     (name "rust-cranelift-frontend")
