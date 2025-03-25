@@ -143,6 +143,27 @@ Tree-sitter parsing library.")
     (description "This package provides C grammar for tree-sitter.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-c-sharp-0.23
+  (package
+    (name "rust-tree-sitter-c-sharp")
+    (version "0.23.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-c-sharp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1c7w6wvjc54k6kh0qrlspm9ksr4y10aq4fv6b0bkaibvrb66mw37"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs (("rust-tree-sitter" ,rust-tree-sitter-0.24))))
+    (home-page "https://github.com/tree-sitter/tree-sitter-c-sharp")
+    (synopsis "C# grammar for tree-sitter")
+    (description "This package provides C# grammar for tree-sitter.")
+    (license license:expat)))
+
 (define-public tree-sitter
   (package
     (name "tree-sitter")
