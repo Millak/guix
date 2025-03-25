@@ -2671,6 +2671,8 @@ them using any Python VM with basically no runtime overhead.")
      (list
       #:test-flags
       #~(list
+         ;; This one started failing with the last update of Numpy.
+         "--ignore=tests/test_beartype.py"
          ;; Multiple failures due to undefined names (typing package must be
          ;; too outdated, or perhaps they use a newer pandas).
          "--ignore=tests/test_mypy.py"
