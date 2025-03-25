@@ -174,7 +174,7 @@ and others.")
            libvorbis
            sqlite
            zlib))
-    (home-page "https://sourceforge.net/projects/minidlna/")
+    (home-page "https://minidlna.sourceforge.net/")
     (synopsis "DLNA/UPnP-AV media server")
     (description "ReadyMedia (formerly known as MiniDLNA) is a simple media
 server, which serves multimedia content to compatible clients on the network.
