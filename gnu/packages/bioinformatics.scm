@@ -5355,16 +5355,16 @@ off-target reads for a capture method that targets CpG-rich region.")
 (define-public python-bx-python
   (package
     (name "python-bx-python")
-    (version "0.9.0")
+    (version "0.13.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/bxlab/bx-python")
-                    (commit "4f4a48d3f227ae390c1b22072867ba86e347bdef")))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c914rw8phiw7zwzngz9i9hdciz5lq53drwdbpl2bd2sf5bj2biy"))))
+                "13318a3lydyg8fxawdb7anrny9a1j1sc1q4nd6pjg8ki5zr9r713"))))
     (build-system pyproject-build-system)
     (arguments
      (list
