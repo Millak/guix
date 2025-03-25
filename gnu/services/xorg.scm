@@ -16,6 +16,7 @@
 ;;; Copyright © 2023 muradm <mail@muradm.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2025 Ian Eure <ian@retrospec.tv>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +44,7 @@
   #:use-module (gnu system privilege)
   #:use-module (gnu services base)
   #:use-module (gnu services dbus)
+  #:use-module (gnu services desktop)
   #:use-module (gnu packages base)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages xorg)
@@ -194,6 +196,8 @@ the first one in the list is loaded."
   ;; Default command-line arguments for X.
   '("-nolisten" "tcp"))
 
+(define %default-xorg-server xorg-server)
+
 ;; Configuration of an Xorg server.
 (define-record-type* <xorg-configuration>
   xorg-configuration make-xorg-configuration
@@ -217,9 +221,41 @@ the first one in the list is loaded."
   (extra-config     xorg-configuration-extra-config ;list of strings
                     (default '()))
   (server           xorg-configuration-server     ;file-like
-                    (default xorg-server))
+                    (default %default-xorg-server))
   (server-arguments xorg-configuration-server-arguments ;list of strings
                     (default %default-xorg-server-arguments)))
+
+(define (merge-xorg-configurations configs)
+  ;; Find whichever config has a non-default Xorg server.
+  (let ((config-with-server
+         (or
+          (find
+           (lambda (config)
+             (or (not (eq? %default-xorg-server
+                           (xorg-configuration-server config)))
+                 (not (eq? %default-xorg-server-arguments
+                           (xorg-configuration-server-arguments config)))))
+           (reverse configs))
+          (xorg-configuration))))
+
+    (xorg-configuration
+      (modules
+       (delete-duplicates (append-map xorg-configuration-modules configs)))
+      (fonts
+       (delete-duplicates (append-map xorg-configuration-fonts configs)))
+      (drivers
+       (delete-duplicates (append-map xorg-configuration-drivers configs)))
+      (resolutions
+       (delete-duplicates (append-map xorg-configuration-resolutions configs)))
+      (extra-config
+       (append-map xorg-configuration-extra-config configs))
+      (keyboard-layout
+       (any xorg-configuration-keyboard-layout (reverse configs)))
+      ;; Use the later config with non-default server for both these fields.
+      (server
+       (xorg-configuration-server config-with-server))
+      (server-arguments
+       (xorg-configuration-server-arguments config-with-server)))))
 
 (define (xorg-configuration->file config)
   "Compute an Xorg configuration file corresponding to CONFIG, an
@@ -347,7 +383,7 @@ EndSection\n" port)
                   (newline port)))
 
               (for-each (lambda (config)
-                          (display config port))
+                          (display (string-append config "\n\n") port))
                         '#$(xorg-configuration-extra-config config))))))
 
     (computed-file "xserver.conf" build)))
@@ -644,16 +680,12 @@ a `service-extension', as used by `set-xorg-configuration'."
     ((_ configuration-record service-type-definition)
      (service-type
        (inherit service-type-definition)
-       (compose (lambda (extensions)
-                  (match extensions
-                    (() #f)
-                    ((config . _) config))))
-       (extend (lambda (config xorg-configuration)
-                 (if xorg-configuration
-                     (configuration-record
-                      (inherit config)
-                      (xorg-configuration xorg-configuration))
-                     config)))))))
+       (compose cons*)
+       (extend (lambda (config xorg-configurations)
+                 (configuration-record
+                  (inherit config)
+                  (xorg-configuration
+                    (merge-xorg-configurations xorg-configurations)))))))))
 
 (define (xorg-server-profile-service config)
   ;; XXX: profile-service-type only accepts <package> objects.
