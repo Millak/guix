@@ -629,7 +629,13 @@ ciphers, message digests and key derivation functions.")
                 ;; PyOpenSSL runs tests against a certificate with a fixed
                 ;; expiry time.  To ensure successful builds in the future,
                 ;; set the time to roughly the release date.
-                (invoke "faketime" "2024-07-20" "pytest" "-vv" "-k"
+                (invoke "faketime" "2024-07-20" "pytest" "-vv"
+                        "--deselect"
+                        ;; This test seems to fail when using faketime, at
+                        ;; least on aarch64-linux with OSError: [Errno 22]
+                        ;; Invalid argument
+                        "tests/test_ssl.py::TestDTLS::test_timeout"
+                        "-k"
                         ;; This test tries to look up certificates from
                         ;; the compiled-in default path in OpenSSL, which
                         ;; does not exist in the build environment.
