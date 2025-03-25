@@ -195,8 +195,17 @@
       (build-system pyproject-build-system)
       (arguments
        (list
+        #:imported-modules `((guix build glib-or-gtk-build-system)
+                             ,@%pyproject-build-system-modules)
+        #:modules '(((guix build glib-or-gtk-build-system)
+                     #:prefix glib-or-gtk:)
+                    (guix build pyproject-build-system)
+                    (guix build utils))
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+              (assoc-ref glib-or-gtk:%standard-phases
+                         'generate-gdk-pixbuf-loaders-cache-file))
             (replace 'check
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
@@ -208,7 +217,18 @@
                                          "test_import_aacircuit_export_pdf")
                                        ","))
                   (setenv "HOME" "/tmp")
-                  (invoke "xvfb-run" "./testrunner.sh")))))))
+                  (invoke "xvfb-run" "./testrunner.sh"))))
+            (add-after 'wrap 'glib-or-gtk-wrap
+              (assoc-ref glib-or-gtk:%standard-phases
+                         'glib-or-gtk-wrap))
+            (add-after 'glib-or-gtk-wrap 'wrap-aacircuit
+              (lambda* (#:key outputs #:allow-other-keys)
+                (wrap-program (string-append (assoc-ref outputs "out")
+                                             "/bin/aacircuit")
+                  `("GDK_PIXBUF_MODULE_FILE" =
+                    (,(getenv "GDK_PIXBUF_MODULE_FILE")))
+                  `("GI_TYPELIB_PATH" ":" prefix
+                    (,(getenv "GI_TYPELIB_PATH")))))))))
       (native-inputs
        ;; XXX: Test runner may be migrated to Pytest
        ;; <https://docs.pytest.org/en/7.1.x/how-to/nose.html> after report to
@@ -218,8 +238,9 @@
              python-setuptools
              python-wheel
              xvfb-run))
-      (propagated-inputs
-       (list gtk+
+      (inputs
+       (list bash-minimal
+             gtk+
              python-bresenham
              python-platformdirs
              python-pycairo
