@@ -2490,6 +2490,46 @@ attempting to maintain ISTP compliance
      "This package contains a helper functionality to test ROMAN and JWST.")
     (license license:bsd-3)))
 
+(define-public python-cesium
+  (package
+    (name "python-cesium")
+    (version "0.12.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cesium" version))
+              (sha256
+               (base32
+                "0jr0ycqz9ns6mcskm4sxx92k40fj3v0x9knjaw5ac9f3mpqxsfbv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The installed test files contain the /gnu/store location, not the
+          ;; location of the discovered test files from the build directory.
+          ;; The test framework doesn't like this.  The easiest way around
+          ;; this mismatch is to jump to the output directory.
+          (add-before 'check 'check-chdir
+            (lambda _ (chdir #$output))))))
+    (propagated-inputs
+     (list python-click ;XXX required by python-dask
+           python-cloudpickle
+           python-dask
+           python-gatspy
+           python-joblib
+           python-numpy
+           python-pandas
+           python-scikit-learn
+           python-scipy
+           python-toolz))
+    (native-inputs (list python-cython python-pytest python-setuptools-scm
+                         python-setuptools python-wheel))
+    (home-page "https://pypi.org/project/cesium/")
+    (synopsis "Library for time-series feature extraction and processing")
+    (description
+     "Cesium is a library for time-series feature extraction and processing.")
+    (license license:bsd-3)))
+
 (define-public python-cmyt
   (package
     (name "python-cmyt")
