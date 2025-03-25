@@ -49,7 +49,7 @@
 ;;; Copyright © 2018 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
 ;;; Copyright © 2016, 2018 Tomáš Čech <sleep_walker@gnu.org>
-;;; Copyright © 2018-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018, 2019, 2021, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -19416,7 +19416,6 @@ time.")
            texlive-lm
            texlive-lm-math
            texlive-mathpazo
-           texlive-ms
            texlive-parskip
            texlive-pdfcol
            texlive-pgf

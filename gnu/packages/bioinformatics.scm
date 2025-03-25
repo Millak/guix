@@ -7506,7 +7506,6 @@ data and settings.")
                   texlive-examplep
                   texlive-forloop
                   texlive-listofitems
-                  texlive-ms
                   texlive-natbib
                   texlive-pgf           ;tikz
                   texlive-readarray
