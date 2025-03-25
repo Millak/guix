@@ -2020,6 +2020,23 @@ library}.")
        (sha256
         (base32 "0ik69y0vddg0myp0zdbkmklma0qkkrqzwlqwkij1zirklz6hl1ss"))))
     (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       ,#~(modify-phases %standard-phases
+            ;; In order to let Guile find the compiled library when used with
+            ;; Guix' `with-extension', hardcode the final path to the library.
+            ;; See <https://issues.guix.gnu.org/74532>.
+            (add-after 'unpack 'set-extension-file-name
+              (lambda* (#:key outputs #:allow-other-keys)
+                (substitute* "scm/yamlpp.scm"
+                  (("\\(load-extension \"libguile-yamlpp\"(.*)\\)" _ init)
+                   (format #f "(load-extension \"~a/lib/guile/3.0/libguile-yamlpp\"~a)"
+                           (assoc-ref outputs "out") init)))))
+            ;; Move 'check after installation, so that the foreign library is
+            ;; present where we expect it (as we hardcode its path above).
+            (delete 'check)
+            (add-after 'install 'check
+              (assoc-ref %standard-phases 'check)))))
     (native-inputs (list autoconf automake libtool pkg-config))
     (inputs (list guile-3.0 yaml-cpp))
     (native-search-paths
