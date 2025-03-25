@@ -156,6 +156,7 @@
 ;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Lee Thompson <lee.p.thomp@gmail.com>
+;;; Copyright @ 2025 Amy Pillow <amypillow@lavache.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39200,6 +39201,24 @@ mercury-mode provided by Emacs as a wrapper around prolog-mode.")
 a text quoting style that partially boxes in the left hand side of an area of
 text, such a marking style might be used to show externally included text or
 example code.")
+    (license license:gpl3+)))
+
+(define-public emacs-boxy
+  (package
+    (name "emacs-boxy")
+    (version "2.0.0")
+    (source (origin
+	      (method url-fetch)
+	      (uri (string-append "https://elpa.gnu.org/packages/boxy-"
+                                  version ".tar"))
+	      (sha256
+               (base32 "1vfgwgk3vzzp2cy7n0qwhn7hzjxbp9vzxp1al1pkynv9hfs503gb"))))
+    (build-system emacs-build-system)
+    (home-page "https://gitlab.com/grinn.amy/boxy")
+    (synopsis "A boxy layout framework for Emacs")
+    (description "@code{boxy} provides an interface to create a 3D
+representation of boxes. Other packages can use this library to create
+expandable menus for interacting with hierarchical data.")
     (license license:gpl3+)))
 
 (define-public emacs-buffer-env
