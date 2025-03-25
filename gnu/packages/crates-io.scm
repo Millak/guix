@@ -17124,6 +17124,28 @@ mapping keys.")
     (description "This package provides a Cranelift IR builder helper.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-frontend-0.111
+  (package
+    (inherit rust-cranelift-frontend-0.112)
+    (name "rust-cranelift-frontend")
+    (version "0.111.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-frontend" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13xd0i2n7d3mvgdjf7kh25qmxj6lw84mix5cdmqvnq26y25y3maj"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-codegen" ,rust-cranelift-codegen-0.111)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.12))
+       #:cargo-development-inputs
+         (("rust-env-logger" ,rust-env-logger-0.10)
+          ("rust-similar" ,rust-similar-2))))))
+
 (define-public rust-cranelift-isle-0.112
   (package
     (name "rust-cranelift-isle")
