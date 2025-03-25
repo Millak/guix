@@ -17259,6 +17259,34 @@ domain-specific language for instruction selection in Cranelift.")
 IR.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-wasm-0.111
+  (package
+    (inherit rust-cranelift-wasm-0.112)
+    (name "rust-cranelift-wasm")
+    (version "0.111.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-wasm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yc5d4jkr5rybn8b6g4zryw40l74sr5qdvr61zrivzmiyqggv6a8"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-codegen" ,rust-cranelift-codegen-0.111)
+                       ("rust-cranelift-entity" ,rust-cranelift-entity-0.111)
+                       ("rust-cranelift-frontend" ,rust-cranelift-frontend-0.111)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-itertools" ,rust-itertools-0.12)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-wasmparser" ,rust-wasmparser-0.215)
+                       ("rust-wasmtime-types" ,rust-wasmtime-types-24))
+       #:cargo-development-inputs
+         (("rust-target-lexicon" ,rust-target-lexicon-0.12)
+          ("rust-wat" ,rust-wat-1))))))
+
 (define-public rust-crates-index-0.19
   (package
     (name "rust-crates-index")
