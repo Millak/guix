@@ -1863,6 +1863,34 @@ formatting in the terminal.  It comes with a collection of color codes and
 names for 256 color terminal setups.")
     (license license:expat)))
 
+(define-public python-colored-traceback
+  ;; No tags in upstream repository.
+  (let ((commit "98e6dea7111f7681db823c518f18026374a832b9")
+        (revision "0"))
+    (package
+      (name "python-colored-traceback")
+      (version (git-version "0.4.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/staticshock/colored-traceback.py")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19d5mpwk7398b8fjh6abnr96wz70vf5vb4p207r8sny748rwx451"))))
+      (build-system pyproject-build-system)
+      (arguments
+       ;; Tests are incompatible with current python version.
+       (list #:tests? #f))
+      (propagated-inputs (list python-colorama python-pygments))
+      (native-inputs (list python-setuptools python-wheel))
+      (home-page "https://github.com/staticshock/colored-traceback.py")
+      (synopsis "Automatically color uncaught exception tracebacks")
+      (description "This package provides python utilities to automatically
+color uncaught exception tracebacks.")
+      (license license:isc))))
+
 (define-public python-colorful
   (package
     (name "python-colorful")
