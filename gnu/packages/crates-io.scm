@@ -16923,6 +16923,19 @@ generator library.")
      "Code shared between cranelift-codegen-meta and cranelift-codegen.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-codegen-shared-0.111
+  (package
+    (inherit rust-cranelift-codegen-shared-0.112)
+    (name "rust-cranelift-codegen-shared")
+    (version "0.111.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-codegen-shared" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1aqglxxqdp2qgrgvdm18lpdmmk7dwjzrvy7caffy62x316krdz4i"))))))
+
 (define-public rust-cranelift-control-0.112
   (package
     (name "rust-cranelift-control")
