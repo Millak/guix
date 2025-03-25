@@ -24878,35 +24878,6 @@ callback-heavy mode of interaction typical in some Kivy applications.")
 without requiring an event loop, useful for creative responsive GUIs.")
     (license license:expat)))
 
-(define-public python-asynctest
-  (package
-    (name "python-asynctest")
-    (version "0.13.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "asynctest" version))
-              (sha256
-               (base32
-                "1b3zsy7p84gag6q8ai2ylyrhx213qdk2h2zb6im3xn0m5n264y62"))))
-    (build-system python-build-system)
-    (arguments
-     ;; The test suite appears to be incompatible with Python 3.9+, completes
-     ;; with 25 failures and 41 errors out of 220 tests (see:
-     ;; https://github.com/Martiusweb/asynctest/issues/149).
-     (list #:tests? #f
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "unittest" "test")))))))
-    (home-page "https://github.com/Martiusweb/asynctest/")
-    (synopsis "Unittest extensions for testing asyncio libraries")
-    (description
-     "The @code{asynctest} Python package is built on top of the standard
-@code{unittest} module and cuts down boilerplate code when testing libraries
-for @code{asyncio}.")
-    (license license:asl2.0)))
-
 (define-public python-binaryornot
   (package
     (name "python-binaryornot")
