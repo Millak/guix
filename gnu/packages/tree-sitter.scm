@@ -164,6 +164,27 @@ Tree-sitter parsing library.")
     (description "This package provides C++ grammar for tree-sitter.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-css-0.23
+  (package
+    (name "rust-tree-sitter-css")
+    (version "0.23.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-css" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17mjy7f1s3cq8dacxaj3ixhqixlra4755gkz5b8m04yljjblimjs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs (("rust-tree-sitter" ,rust-tree-sitter-0.24))))
+    (home-page "https://github.com/tree-sitter/tree-sitter-css")
+    (synopsis "CSS grammar for tree-sitter")
+    (description "This package provides CSS grammar for tree-sitter.")
+    (license license:expat)))
+
 (define-public rust-tree-sitter-c-sharp-0.23
   (package
     (name "rust-tree-sitter-c-sharp")
