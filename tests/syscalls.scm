@@ -149,6 +149,15 @@
             ((_ . status)
              (= 42 (status:exit-val status))))))))
 
+(test-equal "unshare"
+  EPERM
+  ;; Unless running as root, (unshare CLONE_NEWNS) returns EPERM.
+  (catch 'system-error
+    (lambda ()
+      (unshare CLONE_NEWNS))
+    (lambda args
+      (system-error-errno args))))
+
 (unless perform-container-tests?
   (test-skip 1))
 (test-assert "setns"

@@ -145,6 +145,7 @@
             CLONE_NEWPID
             CLONE_NEWNET
             clone
+            unshare
             setns
 
             kexec-load-file
@@ -1212,6 +1213,23 @@ are shared between the parent and child processes."
                    (list flags (strerror err))
                    (list err))
             ret)))))
+
+(define unshare
+  (let ((proc (syscall->procedure int "unshare" (list int))))
+    (lambda (flags)
+      "Disassociate the current process from parts of its execution context
+according to FLAGS, which must be a logical or of CLONE_NEW* constants.
+
+Note that CLONE_NEWUSER requires that the calling process be single-threaded,
+which is possible if and only if libgc is running a single marker thread; this
+can be achieved by setting the GC_MARKERS environment variable to 1.  If the
+calling process is multi-threaded, this throws to 'system-error' with EINVAL."
+      (let-values (((ret err)
+                    (without-automatic-finalization (proc flags))))
+        (unless (zero? ret)
+          (throw 'system-error "unshare" "~a: ~A"
+                 (list flags (strerror err))
+                 (list err)))))))
 
 (define setns
   ;; Some systems may be using an old (pre-2.14) version of glibc where there
