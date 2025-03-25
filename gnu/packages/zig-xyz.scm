@@ -555,4 +555,38 @@ Language Server Protocol} for the Zig programming language.")
        (modify-inputs (package-native-inputs base)
          (replace "zig" zig-0.13))))))
 
+(define-public zig-zls-0.14
+  (let ((base zig-zls-0.13))
+    (package
+      (inherit base)
+      (name "zig-zls")
+      (version "0.14.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zigtools/zls")
+                      (commit version)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1al4ry22y56v1jbph3vb6la2ln8dxc8hb3g7byng6yf8czx2g4q3"))
+                (snippet
+                 (rename-zig-dependencies
+                  '(("diffz" . "zig-diffz")
+                    ("known_folders" . "zig-known-folders")
+                    ("lsp-codegen" . "zig-lsp-codegen"))))))
+      (arguments
+       (list #:zig (this-package-native-input "zig")
+             #:install-source? #f
+             #:zig-release-type "safe"
+             #:zig-build-flags ''("-Dpie")))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" zig-0.14)))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (prepend zig-lsp-codegen)
+         (replace "zig-diffz" zig-diffz-for-zig-zls-0.14)
+         (replace "zig-known-folders" zig-known-folders-for-zig-0.14))))))
+
 (define-public zig-zls zig-zls-0.13)
