@@ -155,6 +155,7 @@
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 Lee Thompson <lee.p.thomp@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28965,11 +28966,12 @@ interactive loop.")
     (license license:gpl3+)))
 
 (define-public emacs-eros
-  (let ((commit "dd8910279226259e100dab798b073a52f9b4233a")
-        (revision "2"))
+  (let ((commit "a9a92bdc6be0521a6a06eb464be55ed61946639c")
+        (revision "0"))
     (package
       (name "emacs-eros")
-      (version (git-version "0.0.1" revision commit))
+      ;; No tag or release, version taken from `eros.el'.
+      (version (git-version "0.1.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -28978,12 +28980,16 @@ interactive loop.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "08chj3a0lw4ygi2sv7wj0i6ihfbi8jhylr8p92inif8b88r6wg3k"))))
+          (base32 "04nkqsvh8c988hc3ajigs206ad64204qdhhqzdvm3k7m7qiiwga8"))))
       (build-system emacs-build-system)
+      (arguments
+       ;; No tests found in source
+       (list
+        #:tests? #f))
       (home-page "https://github.com/xiongtx/eros")
       (synopsis "Evaluation result overlays")
-      (description "@code{eros} provides evaluation result overlays.")
+      (description "@code{eros} provides result overlays for evaluating Emacs
+Lisp.")
       (license license:gpl3+))))
 
 (define-public emacs-geiser-eros
