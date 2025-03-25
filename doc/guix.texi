@@ -15316,14 +15316,7 @@ signing keys.  OpenPGP signatures are checked against keys from this keyring;
 missing keys are downloaded to this keyring as well (see
 @option{--key-download} below).
 
-You can export keys from your default GPG keyring into a keybox file using
-commands like this one:
-
-@example
-gpg --export rms@@gnu.org | kbxutil --import-openpgp >> mykeyring.kbx
-@end example
-
-Likewise, you can fetch keys to a specific keybox file like this:
+You can fetch keys to a specific keybox file like this:
 
 @example
 gpg --no-default-keyring --keyring mykeyring.kbx \
