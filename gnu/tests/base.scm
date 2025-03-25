@@ -1157,6 +1157,13 @@ test."
           (test-runner-current (system-test-runner #$output))
           (test-begin "guix-daemon")
 
+          (test-assert "guix-service is running"
+            ;; Wait for 'guix-daemon' to be up.
+            (marionette-eval '(begin
+                                (use-modules (gnu services herd))
+                                (start-service 'guix-daemon))
+                             marionette))
+
           #$(guix-daemon-test-cases #~marionette)
 
           (test-end))))
