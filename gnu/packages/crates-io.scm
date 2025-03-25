@@ -97909,6 +97909,26 @@ component model in Wasmtime.")
      "This package provides @code{WebAssembly} type definitions for Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-types-24
+  (package
+    (inherit rust-wasmtime-types-25)
+    (name "rust-wasmtime-types")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10fshfyag3pyn2001f71ki9kjrcqbiis53i7w05ac14758y6yan9"))))
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cranelift-entity" ,rust-cranelift-entity-0.111)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-wasmparser" ,rust-wasmparser-0.215))))))
+
 (define-public rust-wasmtime-versioned-export-macros-25
   (package
     (name "rust-wasmtime-versioned-export-macros")
