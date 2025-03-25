@@ -10785,6 +10785,32 @@ canonical filesystem paths.")
 tracking memory usage and enabling limits to be set.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cap-async-std-3
+  (package
+    (name "rust-cap-async-std")
+    (version "3.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cap-async-std" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j5v6vlsfhnwv90bb7dywwvm7lb6jmxl6fddipmxd49wv3a8sbrd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arf-strings" ,rust-arf-strings-0.7)
+                       ("rust-async-std" ,rust-async-std-1)
+                       ("rust-camino" ,rust-camino-1)
+                       ("rust-cap-primitives" ,rust-cap-primitives-3)
+                       ("rust-io-extras" ,rust-io-extras-0.18)
+                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
+                       ("rust-rustix" ,rust-rustix-0.38))))
+    (home-page "https://github.com/bytecodealliance/cap-std")
+    (synopsis "Capability-based version of async-std")
+    (description
+     "This package provides capability-based version of async-std.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-capnp-0.19
   (package
     (name "rust-capnp")
@@ -10874,32 +10900,6 @@ remote procedure call protocol")
     (synopsis "Cap'n Proto code generation")
     (description "Cap'n Proto code generation.")
     (license license:expat)))
-
-(define-public rust-cap-async-std-3
-  (package
-    (name "rust-cap-async-std")
-    (version "3.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cap-async-std" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1j5v6vlsfhnwv90bb7dywwvm7lb6jmxl6fddipmxd49wv3a8sbrd"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-arf-strings" ,rust-arf-strings-0.7)
-                       ("rust-async-std" ,rust-async-std-1)
-                       ("rust-camino" ,rust-camino-1)
-                       ("rust-cap-primitives" ,rust-cap-primitives-3)
-                       ("rust-io-extras" ,rust-io-extras-0.18)
-                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
-                       ("rust-rustix" ,rust-rustix-0.38))))
-    (home-page "https://github.com/bytecodealliance/cap-std")
-    (synopsis "Capability-based version of async-std")
-    (description
-     "This package provides capability-based version of async-std.")
-    (license (list license:asl2.0 license:asl2.0 license:expat))))
 
 (define-public rust-cap-primitives-3
   (package
