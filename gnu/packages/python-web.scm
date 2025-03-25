@@ -4397,6 +4397,26 @@ verification of the SSL peer.")
     (home-page "https://github.com/cedadev/ndg_httpsclient/")
     (license license:bsd-3)))
 
+(define-public python-netaddr
+  (package
+    (name "python-netaddr")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "netaddr" version))
+       (sha256
+         (base32
+          "0hx2npi0wnhwlcybilgwlddw6qffx1mb7a3sj4p9s7bvl33mgk6n"))))
+    (build-system python-build-system)
+    (arguments `(#:tests? #f)) ;; No tests.
+    (home-page "https://github.com/drkjam/netaddr/")
+    (synopsis "Pythonic manipulation of  network addresses")
+    (description
+      "A Python library for representing and manipulating IPv4, IPv6, CIDR, EUI
+and MAC network addresses.")
+    (license license:bsd-3)))
+
 (define-public python-nh3
   (package
     (name "python-nh3")
