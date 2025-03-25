@@ -17185,6 +17185,23 @@ domain-specific language for instruction selection in Cranelift.")
      "This package provides support for targeting the host with Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-native-0.111
+  (package
+    (inherit rust-cranelift-native-0.112)
+    (name "rust-cranelift-native")
+    (version "0.111.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-native" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15wganqa055p37jqri5nwb5r5f9lgw1lwsglqfpsj9kp0yj6azcn"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-codegen" ,rust-cranelift-codegen-0.111)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.12))))))
+
 (define-public rust-cranelift-wasm-0.112
   (package
     (name "rust-cranelift-wasm")
