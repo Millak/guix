@@ -97567,6 +97567,19 @@ format to the text format.")
     (description "Rust support macros for @code{wasmtime-c-api}.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-c-api-macros-24
+  (package
+    (inherit rust-wasmtime-c-api-macros-25)
+    (name "rust-wasmtime-c-api-macros")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-c-api-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05ws2h4d46hhfs4r16lnb1zp7469j2hv5g3nnq59h7c1ccicmq5x"))))))
+
 (define-public rust-wasmtime-cache-25
   (package
     (name "rust-wasmtime-cache")
