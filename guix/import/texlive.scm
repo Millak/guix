@@ -777,7 +777,7 @@ VERSION."
                     #:repo repo
                     #:version version
                     #:repo->guix-package texlive->guix-package
-                    #:guix-name downstream-package-name))
+                    #:guix-name (cut downstream-package-name "texlive-" <>)))
 
 ;;;
 ;;; Updates.
