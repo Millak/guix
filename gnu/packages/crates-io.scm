@@ -16817,6 +16817,22 @@ to the @code{is_x86_feature_detected!} macro.")
      "This package provides various bitset capabilities for Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-bitset-0.111
+  (package
+    (inherit rust-cranelift-bitset-0.112)
+    (name "rust-cranelift-bitset")
+    (version "0.111.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-bitset" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09fx9idpmc41kxhb8ivy8wrpjwwypc4l73la8l274285f0cb9jrg"))))
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1))))))
+
 (define-public rust-cranelift-bforest-0.112
   (package
     (name "rust-cranelift-bforest")
