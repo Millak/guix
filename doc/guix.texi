@@ -44769,7 +44769,7 @@ Living Network Alliance}, networking protocols that can be used for
 media streaming and device interoperability within a local network.  For
 now, this module provides the @code{readymedia-service-type}.
 
-@uref{https://sourceforge.net/projects/minidlna/, ReadyMedia} (formerly
+@uref{https://minidlna.sourceforge.net/, ReadyMedia} (formerly
 known as MiniDLNA) is a DLNA/UPnP-AV media server.  The project's
 daemon, @code{minidlnad}, can serve media files (audio, pictures, and
 video) to DLNA/UPnP-AV clients available on the network.
