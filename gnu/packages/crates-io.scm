@@ -16852,6 +16852,21 @@ to the @code{is_x86_feature_detected!} macro.")
     (description "This package provides a forest of B+-trees for wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-bforest-0.111
+  (package
+    (inherit rust-cranelift-bforest-0.112)
+    (name "rust-cranelift-bforest")
+    (version "0.111.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-bforest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d3s98kmgjbsvq7459i6cnf1l7iwlawb9dn8kq49jxm75rkcc8zq"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cranelift-entity" ,rust-cranelift-entity-0.111))))))
+
 (define-public rust-cranelift-codegen-0.112
   (package
     (name "rust-cranelift-codegen")
