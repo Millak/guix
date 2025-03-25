@@ -1352,8 +1352,8 @@ creates the Glib 'gschemas.compiled' file."
         (return #f))))
 
 (define* (gtk-icon-themes manifest #:optional system)
-  "Return a derivation that unions all icon themes from manifest entries and
-creates the GTK+ 'icon-theme.cache' file for each theme."
+  "Return a derivation that builds the @file{icon-theme.cache} file for each
+icon theme.  It's used by GTK applications to speedup icons loading."
   (define gtk+  ; lazy reference
     (module-ref (resolve-interface '(gnu packages gtk)) 'gtk+))
 
@@ -1382,23 +1382,29 @@ creates the GTK+ 'icon-theme.cache' file for each theme."
             (let* ((destdir  (string-append #$output "/share/icons"))
                    (icondirs (filter file-exists?
                                      (map (cut string-append <> "/share/icons")
-                                          '#$(manifest-inputs manifest)))))
-
+                                          '#$(manifest-inputs manifest))))
+                   (cache-file-name "icon-theme.cache")
+                   (scratchdir (string-append (getcwd) "/icons")))
               ;; Union all the icons.
-              (mkdir-p (string-append #$output "/share"))
-              (union-build destdir icondirs
+              (union-build scratchdir icondirs
                            #:log-port (%make-void-port "w"))
 
               ;; Update the 'icon-theme.cache' file for each icon theme.
               (for-each
                (lambda (theme)
-                 (let ((dir (string-append destdir "/" theme)))
-                   ;; Occasionally DESTDIR contains plain files, such as
+                 (let* ((dir (string-append scratchdir "/" theme))
+                        (cache-file (string-append dir "/" cache-file-name)))
+                   ;; Occasionally SCRATCHDIR contains plain files, such as
                    ;; "abiword_48.png".  Ignore these.
                    (when (file-is-directory? dir)
                      (ensure-writable-directory dir)
-                     (system* #+gtk-update-icon-cache "-t" dir "--quiet"))))
-               (scandir destdir (negate (cut member <> '("." "..")))))))))
+                     (system* #+gtk-update-icon-cache "-t" dir "--quiet")
+                     (when (file-exists? cache-file)
+                       (mkdir-p (string-append destdir "/" theme))
+                       (copy-file
+                        cache-file
+                        (string-append destdir "/" theme "/" cache-file-name))))))
+               (scandir scratchdir (negate (cut member <> '("." "..")))))))))
 
     ;; Don't run the hook when there's nothing to do.
     (if %gtk+
