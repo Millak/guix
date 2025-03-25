@@ -17019,6 +17019,19 @@ mapping keys.")
 domain-specific language for instruction selection in Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-isle-0.111
+  (package
+    (inherit rust-cranelift-isle-0.112)
+    (name "rust-cranelift-isle")
+    (version "0.111.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-isle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17s3ybmlfg7r5zmnjk49q7gpvkvdv6wls3jz43hzvl5n0wc91y9i"))))))
+
 (define-public rust-cranelift-native-0.112
   (package
     (name "rust-cranelift-native")
