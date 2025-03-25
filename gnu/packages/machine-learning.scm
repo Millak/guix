@@ -2681,27 +2681,24 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
     (license license:expat)))
 
 (define-public python-autograd
-  (let* ((commit "c6d81ce7eede6db801d4e9a92b27ec5d409d0eab")
-         (revision "0")
-         (version (git-version "1.5" revision commit)))
     (package
       (name "python-autograd")
-      (home-page "https://github.com/HIPS/autograd")
+      (version "1.7.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url home-page)
-                      (commit commit)))
+                      (url "https://github.com/HIPS/autograd")
+                      (commit (string-append "v" version))))
                 (sha256
                  (base32
-                  "04kljgydng42xlg044h6nbzxpban1ivd6jzb8ydkngfq88ppipfk"))
+                  "1fpnmm3mzw355iq7w751j4mjfcr0yh324cxidba1l22652gg8r8m"))
                 (file-name (git-file-name name version))))
-      (version version)
       (build-system pyproject-build-system)
       (native-inputs
-       (list python-nose python-pytest python-setuptools python-wheel))
+       (list python-hatchling python-pytest))
       (propagated-inputs
        (list python-future python-numpy))
+      (home-page "https://github.com/HIPS/autograd")
       (synopsis "Efficiently computes derivatives of NumPy code")
       (description "Autograd can automatically differentiate native Python and
 NumPy code.  It can handle a large subset of Python's features, including loops,
@@ -2711,7 +2708,7 @@ of derivatives.  It supports reverse-mode differentiation
 scalar-valued functions with respect to array-valued arguments, as well as
 forward-mode differentiation, and the two can be composed arbitrarily.  The
 main intended application of Autograd is gradient-based optimization.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public lightgbm
   (package
