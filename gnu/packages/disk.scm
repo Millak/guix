@@ -511,14 +511,14 @@ scheme.")
 (define-public ddrescue
   (package
     (name "ddrescue")
-    (version "1.29")
+    (version "1.29.1")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/ddrescue/ddrescue-"
                           version ".tar.lz"))
       (sha256
-       (base32 "18rr02kgbb94hlqi9cwfis69sbpfgc7y7v6h5yx9zcskg0r19901"))))
+       (base32 "0xfx0hg3kkc6d3z0z9g1ingg2bnzcp1vjspcl8spi016y1fx9myx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "CXX=" ,(cxx-for-target)))))
