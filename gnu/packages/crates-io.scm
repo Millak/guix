@@ -16987,6 +16987,19 @@ generator library.")
     (description "This package provides a white-box fuzz testing framework.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-control-0.111
+  (package
+    (inherit rust-cranelift-control-0.112)
+    (name "rust-cranelift-control")
+    (version "0.111.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-control" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "121cw7yn0ffjrica9pcj7sn1zpd5syipxfwn70r039g06nqgqfsc"))))))
+
 (define-public rust-cranelift-entity-0.112
   (package
     (name "rust-cranelift-entity")
