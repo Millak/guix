@@ -359,7 +359,7 @@ asdf-build-system."
   (team 'go
         #:name "Go team"
         #:scope (list "gnu/packages/configuration-management.scm"
-                      "gnu/packages/golang(-.+|)\\.scm$"
+                      (make-regexp* "gnu/packages/golang(-.+|)\\.scm$")
                       "gnu/packages/syncthing.scm"
                       "gnu/packages/terraform.scm"
                       "guix/build-system/go.scm"
