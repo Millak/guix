@@ -271,6 +271,8 @@ commit hash and its date rather than a proper release tag."
                          (tests? #f)              ; nothing can be done
                          (test-flags ''())
                          (test-subdirs ''("..."))
+                         (parallel-build? #t)
+                         (parallel-tests? #t)
                          (allow-go-reference? #f)
                          (system (%current-system))
                          (goarch (first (go-target target)))
@@ -325,6 +327,8 @@ commit hash and its date rather than a proper release tag."
                     #:tests? #$tests?
                     #:test-flags #$test-flags
                     #:test-subdirs #$test-subdirs
+                    #:parallel-build? #$parallel-build?
+                    #:parallel-tests? #$parallel-tests?
                     #:make-dynamic-linker-cache? #f ;cross-compiling
                     #:allow-go-reference? #$allow-go-reference?
                     #:inputs %build-inputs))))
