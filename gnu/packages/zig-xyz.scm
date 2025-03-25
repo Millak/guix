@@ -27,6 +27,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system zig)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages man)
@@ -284,6 +285,27 @@ library for Zig.")
 across several operating systems.")
       (home-page "https://github.com/ziglibs/known-folders")
       (license license:expat))))
+
+(define-public zig-known-folders-for-zig-0.14
+  (let ((commit "aa24df42183ad415d10bc0a33e6238c437fc0f59")
+        (revision "1")
+        (base zig-known-folders))
+    (package
+      (inherit base)
+      (name "zig-known-folders")
+      (version (git-version "0.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ziglibs/known-folders")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ilq3hqprrwpbz7ckp01g4ksl41jq57rd7zf622w3immy6apc8k2"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:zig _ #f) zig-0.14))))))
 
 (define-public zig-pixman
   (package
