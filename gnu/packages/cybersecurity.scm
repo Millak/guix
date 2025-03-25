@@ -3,6 +3,7 @@
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,9 +31,11 @@
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages time)
   #:use-module (gnu packages bioinformatics)      ;python-intervaltree
   #:use-module (gnu packages emulators))
@@ -123,24 +126,26 @@ chains of gadgets to execute system calls.")
 (define-public pwntools
   (package
     (name "pwntools")
-    (version "4.4.0")
+    (version "4.15.0b1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pwntools" version))
        (sha256
         (base32
-         "1qw7j0wwm1878aia08gyw5xljjr26qsbp45w65n4qff672sha5n5"))))
+         "091fsk9rvbjkcsp8mmww0ka26dvznmj4pbqwaiygcw90g3v94zgd"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f))                 ;XXX: needs a specific version of unicorn
     (propagated-inputs
      (list capstone
+           python-colored-traceback
            python-dateutil
            python-intervaltree
            python-mako
            python-packaging
            python-paramiko
+           python-pathlib2
            python-psutil
            python-pyelftools
            python-pygments
@@ -148,9 +153,14 @@ chains of gadgets to execute system calls.")
            python-pysocks
            python-requests
            ropgadget
+           python-rpyc
            python-six
            python-sortedcontainers
+           python-unix-ar
+           python-zstandard
            unicorn))
+    (native-inputs
+     (list python-setuptools python-toml python-wheel))
     (home-page "https://github.com/Gallopsled/pwntools")
     (synopsis
      "Capture-the-flag (CTF) framework and exploit development library")
