@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2020, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2020, 2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
@@ -63,7 +63,8 @@
 
             %hello-dependencies-manifest
             guix-daemon-test-cases
-            %test-guix-daemon))
+            %test-guix-daemon
+            %test-guix-daemon-unprivileged))
 
 (define %simple-os
   (simple-operating-system))
@@ -1121,7 +1122,7 @@ test."
                               (system-error-errno args)))
                          #$marionette))))
 
-(define (run-guix-daemon-test os)
+(define (run-guix-daemon-test os name)
   (define test-image
     (image (operating-system os)
            (format 'compressed-qcow2)
@@ -1168,7 +1169,7 @@ test."
 
           (test-end))))
 
-  (gexp->derivation "guix-daemon-test" test))
+  (gexp->derivation name test))
 
 (define %test-guix-daemon
   (system-test
@@ -1190,4 +1191,34 @@ test."
                               %base-user-accounts)))
                #:imported-modules '((gnu services herd)
                                     (guix combinators)))))
-      (run-guix-daemon-test os)))))
+      (run-guix-daemon-test os "guix-daemon-test")))))
+
+(define %test-guix-daemon-unprivileged
+  (system-test
+   (name "guix-daemon-unprivileged")
+   (description
+    "Test 'guix-daemon' behavior on a multi-user system, where 'guix-daemon'
+runs unprivileged.")
+   (value
+    (let ((os (marionette-operating-system
+               (let ((base (operating-system-with-gc-roots
+                            %daemon-os
+                            (list (profile
+                                   (name "hello-build-dependencies")
+                                   (content %hello-dependencies-manifest))))))
+                 (operating-system
+                   (inherit base)
+                   (kernel-arguments '("console=ttyS0"))
+                   (users (cons (user-account
+                                 (name "user")
+                                 (group "users"))
+                                %base-user-accounts))
+                   (services
+                    (modify-services (operating-system-user-services base)
+                      (guix-service-type
+                       config => (guix-configuration
+                                  (inherit config)
+                                  (privileged? #f)))))))
+               #:imported-modules '((gnu services herd)
+                                    (guix combinators)))))
+      (run-guix-daemon-test os "guix-daemon-unprivileged-test")))))

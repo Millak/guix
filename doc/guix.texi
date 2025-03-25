@@ -1037,6 +1037,14 @@ number of steps must be taken: creating a new dedicated
 files to @code{guix-daemon}, and ensuring that the @command{guix-daemon}
 program runs as @code{guix-daemon}.
 
+On Guix System, these steps are carried out automatically when you set
+the @code{privileged?} field of the @code{guix-configuration} record to
+@code{#f} and reconfigure (@pxref{guix-configuration-type,
+@code{guix-configuration}}).
+
+However, on a foreign distribution, the process is manual.  The
+following paragraphs describe what you need to do.
+
 @quotation Warning
 Follow the instructions below only after making sure you have a recent
 version of @command{guix-daemon} with support for unprivileged
@@ -20108,6 +20116,36 @@ This data type represents the configuration of the Guix build daemon.
 @item @code{guix} (default: @var{guix})
 The Guix package to use.  @xref{Customizing the System-Wide Guix} to
 learn how to provide a package with a pre-configured set of channels.
+
+@cindex unprivileged @command{guix-daemon}
+@cindex rootless @command{guix-daemon}
+@item @code{privileged?} (default: @code{#t})
+Whether to run @command{guix-daemon} as root.
+
+When true, @command{guix-daemon} runs with root privileges and build
+processes run under unprivileged user accounts as specified by
+@code{build-group} and @code{build-accounts} (see below); when false,
+@command{guix-daemon} run as the @code{guix-daemon} user, which is
+unprivileged, and so do build processes.  The unprivileged or
+``rootless'' mode can reduce the impact of some classes of
+vulnerabilities that could affect the daemon.
+
+The default is currently @code{#t} (@command{guix-daemon} runs with root
+privileges) but may eventually be changed to @code{#f}.
+
+@quotation Warning
+When changing this option, @file{/gnu/store}, @file{/var/guix}, and
+@file{/etc/guix} have their ownership automatically changed by the
+@code{guix-ownership} service to either the @code{guix-daemon} user or
+the @code{root} user (@pxref{unprivileged-daemon-migration}).
+
+This can take a while, especially if @file{/gnu/store} is big; it cannot
+be interrupted and @command{guix-daemon} cannot be used until it has
+completed.
+@end quotation
+
+@xref{Build Environment Setup}, for more information on the two ways to
+run @command{guix-daemon}.
 
 @item @code{build-group} (default: @code{"guixbuild"})
 Name of the group for build user accounts.

@@ -1918,6 +1918,102 @@ archive' public keys, with GUIX."
                                    #$machines))
                  machines-file))))
 
+(define (run-with-writable-store)
+  "Return a wrapper that runs the given command under the specified UID and
+GID in a context where the store is writable, even if it was bind-mounted
+read-only via %IMMUTABLE-STORE (this wrapper must run as root)."
+  (program-file "run-with-writable-store"
+                (with-imported-modules (source-module-closure
+                                        '((guix build syscalls)))
+                  #~(begin
+                      (use-modules (guix build syscalls)
+                                   (ice-9 match))
+
+                      (define (ensure-writable-store store)
+                        ;; Create a new mount namespace and remount STORE with
+                        ;; write permissions if it's read-only.
+                        (unshare CLONE_NEWNS)
+                        (let ((fs (statfs store)))
+                          (unless (zero? (logand (file-system-mount-flags fs)
+                                                 ST_RDONLY))
+                            (mount store store "none"
+                                   (logior MS_BIND MS_REMOUNT)))))
+
+                      (match (command-line)
+                        ((_ user group command args ...)
+                         (ensure-writable-store #$(%store-prefix))
+                         (let ((uid (or (string->number user)
+                                        (passwd:uid (getpwnam user))))
+                               (gid (or (string->number group)
+                                        (group:gid (getgrnam group)))))
+                           (setgroups #())
+                           (setgid gid)
+                           (setuid uid)
+                           (apply execl command command args))))))))
+
+(define (guix-ownership-change-program)
+  "Return a program that changes ownership of the store and other data files
+of Guix to the given UID and GID."
+  (program-file
+   "validate-guix-ownership"
+   (with-imported-modules (source-module-closure
+                           '((guix build utils)))
+     #~(begin
+         (use-modules (guix build utils)
+                      (ice-9 ftw)
+                      (ice-9 match))
+
+         (define (lchown file uid gid)
+           (let ((parent (open (dirname file) O_DIRECTORY)))
+             (chown-at parent (basename file) uid gid
+                       AT_SYMLINK_NOFOLLOW)
+             (close-port parent)))
+
+         (define (change-ownership directory uid gid)
+           ;; chown -R UID:GID DIRECTORY
+           (file-system-fold (const #t)                              ;enter?
+                             (lambda (file stat result)              ;leaf
+                               (if (eq? 'symlink (stat:type stat))
+                                   (lchown file uid gid)
+                                   (chown file uid gid)))
+                             (const #t)           ;down
+                             (lambda (directory stat result) ;up
+                               (chown directory uid gid))
+                             (const #t)           ;skip
+                             (lambda (file stat errno result)
+                               (format (current-error-port)
+                                       "i/o error: ~a: ~a~%"
+                                       file (strerror errno))
+                               #f)
+                             #t                   ;seed
+                             directory
+                             lstat))
+
+         (define (claim-data-ownership uid gid)
+           (format #t "Changing file ownership for /gnu/store \
+and data directories to ~a:~a...~%"
+                   uid gid)
+           (change-ownership #$(%store-prefix) uid gid)
+           (let ((excluded '("." ".." "profiles" "userpool")))
+             (for-each (lambda (directory)
+                         (change-ownership (in-vicinity "/var/guix" directory)
+                                           uid gid))
+                       (scandir "/var/guix"
+                                (lambda (file)
+                                  (not (member file
+                                               excluded))))))
+           (chown "/var/guix" uid gid)
+           (change-ownership "/etc/guix" uid gid)
+           (mkdir-p "/var/log/guix")
+           (change-ownership "/var/log/guix" uid gid))
+
+         (match (command-line)
+           ((_ (= string->number (? integer? uid))
+               (= string->number (? integer? gid)))
+            (setlocale LC_ALL "C.UTF-8")          ;for file name decoding
+            (setvbuf (current-output-port) 'line)
+            (claim-data-ownership uid gid)))))))
+
 (define-record-type* <guix-configuration>
   guix-configuration make-guix-configuration
   guix-configuration?
@@ -1959,6 +2055,8 @@ archive' public keys, with GUIX."
                     (default #f))
   (tmpdir           guix-tmpdir                   ;string | #f
                     (default #f))
+  (privileged?      guix-configuration-privileged?
+                    (default #t))
   (build-machines   guix-configuration-build-machines ;list of gexps | '()
                     (default '()))
   (environment      guix-configuration-environment  ;list of strings
@@ -2021,7 +2119,7 @@ proxy of 'guix-daemon'...~%")
                     (environ environment)
                     #t)))))
 
-(define (guix-shepherd-service config)
+(define (guix-shepherd-services config)
   "Return a <shepherd-service> for the Guix daemon service with CONFIG."
   (define locales
     (let-system (system target)
@@ -2030,16 +2128,57 @@ proxy of 'guix-daemon'...~%")
           glibc-utf8-locales)))
 
   (match-record config <guix-configuration>
-    (guix build-group build-accounts chroot? authorize-key? authorized-keys
+    (guix privileged?
+          build-group build-accounts chroot? authorize-key? authorized-keys
           use-substitutes? substitute-urls max-silent-time timeout
           log-compression discover? extra-options log-file
           http-proxy tmpdir chroot-directories environment
           socket-directory-permissions socket-directory-group
           socket-directory-user)
     (list (shepherd-service
+           (provision '(guix-ownership))
+           (requirement '(user-processes user-homes))
+           (one-shot? #t)
+           (start #~(lambda ()
+                      (let* ((store #$(%store-prefix))
+                             (stat (lstat store))
+                             (privileged? #$(guix-configuration-privileged?
+                                             config))
+                             (change-ownership #$(guix-ownership-change-program))
+                             (with-writable-store #$(run-with-writable-store)))
+                        ;; Check whether we're switching from privileged to
+                        ;; unprivileged guix-daemon, or vice versa, and adjust
+                        ;; file ownership accordingly.  Spawn a child process
+                        ;; if and only if something needs to be changed.
+                        ;;
+                        ;; Note: This service remains in 'starting' state for
+                        ;; as long as CHANGE-OWNERSHIP is running.  That way,
+                        ;; 'guix-daemon' starts only once we're done.
+                        (cond ((and (not privileged?)
+                                    (or (zero? (stat:uid stat))
+                                        (zero? (stat:gid stat))))
+                               (let ((user (getpwnam "guix-daemon")))
+                                 (format #t "Changing to unprivileged guix-daemon.~%")
+                                 (zero?
+                                  (system* with-writable-store "0" "0"
+                                           change-ownership
+                                           (number->string (passwd:uid user))
+                                           (number->string (passwd:gid user))))))
+                              ((and privileged?
+                                    (and (not (zero? (stat:uid stat)))
+                                         (not (zero? (stat:gid stat)))))
+                               (format #t "Changing to privileged guix-daemon.~%")
+                               (zero? (system* with-writable-store "0" "0"
+                                               change-ownership "0" "0")))
+                              (else #t)))))
+           (documentation "Ensure that the store and other data files used by
+guix-daemon have the right ownership."))
+
+          (shepherd-service
            (documentation "Run the Guix daemon.")
            (provision '(guix-daemon))
            (requirement `(user-processes
+                          guix-ownership
                           ,@(if discover? '(avahi-daemon) '())))
            (actions (list shepherd-set-http-proxy-action
                           shepherd-discover-action))
@@ -2063,8 +2202,15 @@ proxy of 'guix-daemon'...~%")
                     (or (getenv "discover") #$discover?))
 
                   (define daemon-command
-                    (cons* #$(file-append guix "/bin/guix-daemon")
-                           "--build-users-group" #$build-group
+                    (cons* #$@(if privileged?
+                                  #~()
+                                  #~(#$(run-with-writable-store)
+                                     "guix-daemon" "guix-daemon"))
+
+                           #$(file-append guix "/bin/guix-daemon")
+                           #$@(if privileged?
+                                  #~("--build-users-group" #$build-group)
+                                  #~())
                            "--max-silent-time"
                            #$(number->string max-silent-time)
                            "--timeout" #$(number->string timeout)
@@ -2145,9 +2291,11 @@ proxy of 'guix-daemon'...~%")
                                      "/var/guix/daemon-socket/socket")
                                     #:name "socket"
                                     #:socket-owner
-                                    (or #$socket-directory-user 0)
+                                    (or #$socket-directory-user
+                                        #$(if privileged? 0 "guix-daemon"))
                                     #:socket-group
-                                    (or #$socket-directory-group 0)
+                                    (or #$socket-directory-group
+                                        #$(if privileged? 0 "guix-daemon"))
                                     #:socket-directory-permissions
                                     #$socket-directory-permissions)))
                        ((make-systemd-constructor daemon-command
@@ -2162,15 +2310,31 @@ proxy of 'guix-daemon'...~%")
 
 (define (guix-accounts config)
   "Return the user accounts and user groups for CONFIG."
-  (cons (user-group
-         (name (guix-configuration-build-group config))
-         (system? #t)
+  `(,@(if (guix-configuration-privileged? config)
+          '()
+          (list (user-group (name "guix-daemon") (system? #t))
+                (user-account
+                 (name "guix-daemon")
+                 (group "guix-daemon")
+                 (system? #t)
+                 (supplementary-groups '("kvm"))
+                 (comment "Guix Daemon User")
+                 (home-directory "/var/empty")
+                 (shell (file-append shadow "/sbin/nologin")))))
 
-         ;; Use a fixed GID so that we can create the store with the right
-         ;; owner.
-         (id 30000))
-        (guix-build-accounts (guix-configuration-build-accounts config)
-                             #:group (guix-configuration-build-group config))))
+    ;; When reconfiguring from privileged to unprivileged, the running daemon
+    ;; (privileged) relies on the availability of the build accounts and build
+    ;; group until 'guix system reconfigure' has completed.  The simplest way
+    ;; to meet this requirement is to create these accounts unconditionally so
+    ;; they are not removed in the middle of the 'reconfigure' process.
+    ,(user-group
+      (name (guix-configuration-build-group config))
+      (system? #t)
+
+      ;; Use a fixed GID so that we can create the store with the right owner.
+      (id 30000))
+    ,@(guix-build-accounts (guix-configuration-build-accounts config)
+                           #:group (guix-configuration-build-group config))))
 
 (define (guix-activation config)
   "Return the activation gexp for CONFIG."
@@ -2228,7 +2392,7 @@ proxy of 'guix-daemon'...~%")
   (service-type
    (name 'guix)
    (extensions
-    (list (service-extension shepherd-root-service-type guix-shepherd-service)
+    (list (service-extension shepherd-root-service-type guix-shepherd-services)
           (service-extension account-service-type guix-accounts)
           (service-extension activation-service-type guix-activation)
           (service-extension profile-service-type
