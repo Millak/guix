@@ -117,6 +117,7 @@
    "xmltex"
    ;; Category 3.
    "biber"
+   "biber-ms"
    "context"
    "cluttex"
    "esptopdf"
