@@ -2553,7 +2553,7 @@ standard feature selection algorithms.")
 (define-public python-cleanlab
   (package
     (name "python-cleanlab")
-    (version "2.7.0")
+    (version "2.7.1")
     ;; The version on pypi does not come with tests.
     (source (origin
               (method git-fetch)
@@ -2563,7 +2563,7 @@ standard feature selection algorithms.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f8v5246nzy22r7zswv9vbpxc7wxaqjwry9iq0fqjp2ffch88h6j"))))
+                "073w45azq496x4bhrh8mdywcrg3gk33n13w1pqh1kiykw826ld9b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
