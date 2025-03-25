@@ -5188,22 +5188,23 @@ more.")
   (package
     (name "python-asyncua")
     (version "1.1.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/FreeOpcUa/opcua-asyncio.git")
-                     (commit (string-append "v" version))
-                     (recursive? #t)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0aisj8cpfhq50h4pv2p0c9iw5cqy3hxhn5adp8wd01c46dhg6y2x"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FreeOpcUa/opcua-asyncio.git")
+             (commit (string-append "v" version))
+             ;; XXX: It clones <https://github.com/OPCFoundation/UA-Nodeset>
+             ;; submodule, check if it may be unbundled.
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0aisj8cpfhq50h4pv2p0c9iw5cqy3hxhn5adp8wd01c46dhg6y2x"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-asynctest
+     (list python-pytest
            python-pytest-asyncio-0.21
            python-pytest-mock
-           python-pytest-runner
            python-setuptools
            python-wheel))
     (propagated-inputs
