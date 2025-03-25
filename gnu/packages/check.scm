@@ -3037,7 +3037,8 @@ by the test.")
      (list
       #:test-flags #~(list "--numprocesses" "auto")
       #:phases
-      (if (target-riscv64?)
+      (if (or (target-riscv64?)
+              (target-ppc64le?))
           #~(modify-phases %standard-phases
               (add-after 'unpack 'extend-test-timeout
                 (lambda _
