@@ -994,6 +994,10 @@ non-ASCII names from /tmp.")
 ;;; Build daemon.
 ;;;
 
+(define %daemon-os
+  (operating-system-with-console-syslog
+   (simple-operating-system)))
+
 (define (manifest-entry-without-grafts entry)
   "Return ENTRY with grafts disabled on its contents."
   (manifest-entry
@@ -1168,7 +1172,7 @@ test."
     (let ((os (marionette-operating-system
                (operating-system
                  (inherit (operating-system-with-gc-roots
-                           %simple-os
+                           %daemon-os
                            (list (profile
                                   (name "hello-build-dependencies")
                                   (content %hello-dependencies-manifest)))))
