@@ -4707,30 +4707,27 @@ DKIM and ARC sign messages and output the corresponding signature headers.")
 (define-public python-aiosmtpd
   (package
     (name "python-aiosmtpd")
-    (version "1.2.2")
+    (version "1.4.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/aio-libs/aiosmtpd")
-             (commit version)))
+             (commit (string-append "v" version))))
        (sha256
-        (base32 "0083d6nf75xv8nq1il6jabz36v6c452svy4p402csxwwih5pw6sk"))
+        (base32 "0b5y94zc8pq75sjwsifblzgjnliyclkwypi68b2zffrxcdnz27r2"))
        (file-name (git-file-name name version))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-failing-tests
-           (lambda _
-             ;; This test uses an expired certificate.
-             (delete-file "aiosmtpd/tests/test_smtps.py")
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "python" "-m" "nose2" "-v"))))))
+     ;; This QA test requires git.
+     (list #:test-flags ''("-k" "not test_ge_master")))
     (native-inputs
-     (list python-flufl-testing python-nose2))
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-atpublic))
     (home-page "https://aiosmtpd.readthedocs.io/")
