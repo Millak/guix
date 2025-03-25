@@ -99187,6 +99187,24 @@ UTF-32 types are provided, including support for malformed encoding.")
     (description "This package provides Wiggle code generator.")
     (license (list license:asl2.0))))
 
+(define-public rust-wiggle-macro-24
+  (package
+    (inherit rust-wiggle-macro-25)
+    (name "rust-wiggle-macro")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wiggle-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lprggw2zf6cnpng16hk514s4fqsh090wv7f3nf8zgqpzxgkkvvw"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-wiggle-generate" ,rust-wiggle-generate-24))))))
+
 (define-public rust-wild-2
   (package
     (name "rust-wild")
