@@ -16904,6 +16904,22 @@ to the @code{is_x86_feature_detected!} macro.")
 generator library.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-codegen-meta-0.111
+  (package
+    (inherit rust-cranelift-codegen-meta-0.112)
+    (name "rust-cranelift-codegen-meta")
+    (version "0.111.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-codegen-meta" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bs0g25dqjg9v5w53a84lq6kxgw3kaylb92043l3rfmv3021nm4f"))))
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cranelift-codegen-shared" ,rust-cranelift-codegen-shared-0.111))))))
+
 (define-public rust-cranelift-codegen-shared-0.112
   (package
     (name "rust-cranelift-codegen-shared")
