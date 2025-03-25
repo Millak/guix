@@ -4,6 +4,7 @@
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2024 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025 Meredith Oleander <mereditholeander@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -221,6 +222,31 @@ mission-critical safety and performance for financial services.")
      "@code{clap} is a simple and easy to use command line argument parser
 library for Zig.")
     (license license:expat)))
+
+(define-public zig-lsp-codegen
+  (let ((commit "063a98c13a2293d8654086140813bdd1de6501bc")
+        (revision "0"))
+    (package
+      (name "zig-lsp-codegen")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/zigtools/zig-lsp-codegen")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "041lk25x050pz7yc781fn8bfpzci4kdrz8mw69sjs2f5mpyn4d1b"))))
+      (build-system zig-build-system)
+      (arguments (list #:zig zig-0.14))
+      (home-page "https://zigtools.github.io/zig-lsp-codegen/")
+      (synopsis "Generate @code{std.json} compatible Zig code")
+      (description
+       "This package provides a Zig library to generate @code{std.json}
+compatible Zig code based on the @acronym{LSP, Language Server Protocol} meta
+model.")
+      (license license:expat))))
 
 (define-public zig-diffz
   (let ((commit "420fcb22306ffd4c9c3c761863dfbb6bdbb18a73")
