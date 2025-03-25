@@ -10811,6 +10811,34 @@ tracking memory usage and enabling limits to be set.")
      "This package provides capability-based version of async-std.")
     (license (list license:asl2.0 license:asl2.0 license:expat))))
 
+(define-public rust-cap-fs-ext-3
+  (package
+    (name "rust-cap-fs-ext")
+    (version "3.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cap-fs-ext" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qfj0qw9zflg49ggl7zrr79445qra6g52szkq1whv63qfgfyyy3z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arf-strings" ,rust-arf-strings-0.7)
+                       ("rust-async-std" ,rust-async-std-1)
+                       ("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-camino" ,rust-camino-1)
+                       ("rust-cap-async-std" ,rust-cap-async-std-3)
+                       ("rust-cap-primitives" ,rust-cap-primitives-3)
+                       ("rust-cap-std" ,rust-cap-std-3)
+                       ("rust-io-lifetimes" ,rust-io-lifetimes-2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.59))))
+    (home-page "https://github.com/bytecodealliance/cap-std")
+    (synopsis "Extension traits for file systems")
+    (description
+     "Extension traits for capability-based file-system management.")
+    (license (list license:asl2.0 license:asl2.0 license:expat))))
+
 (define-public rust-capnp-0.19
   (package
     (name "rust-capnp")
