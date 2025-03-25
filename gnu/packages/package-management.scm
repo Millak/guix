@@ -1556,8 +1556,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "bacdd64432f3b2f04fb07c99fc83bcd4067e7e09")
-        (revision "124"))
+  (let ((commit "4cf3b589651cb8dd80b826f42859b6364b4b0e38")
+        (revision "125"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1568,7 +1568,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0bb5pjbi5bx650vmpxf5ginswkr1s0aqx8cif82asxwhjn5nqz6g"))
+                  "15wmx14xrdqkz4i6ijl8mb2c2s0bx8x4850kln8b5dqj4r8qn561"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
