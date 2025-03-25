@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2020, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2020, 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
@@ -460,6 +460,12 @@ accounts among ACCOUNTS+GROUPS."
   (define accounts
     (filter user-account? accounts+groups))
 
+  (define regular-account-names
+    (filter-map (lambda (account)
+                  (and (not (user-account-system? account))
+                       (user-account-name account)))
+                accounts))
+
   ;; Create home directories only once 'file-systems' is up.  This makes sure
   ;; they are created in the right place if /home lives on a separate
   ;; partition.
@@ -480,6 +486,17 @@ accounts among ACCOUNTS+GROUPS."
                       (activate-user-home
                        (map sexp->user-account
                             (list #$@(map user-account->gexp accounts))))
+
+                      ;; Create the user's profile directory upfront:
+                      ;; guix-daemon lacks permissions to create it when it is
+                      ;; running as an unprivileged user.
+                      (for-each (lambda (account)
+                                  (let ((profile (in-vicinity
+                                                  "/var/guix/profiles/per-user"
+                                                  account))
+                                        (owner (getpwnam account)))
+                                    (mkdir-p/perms profile owner #o755)))
+                                '#$regular-account-names)
                       #t)))                       ;success
          (documentation "Create user home directories."))))
 
