@@ -98042,6 +98042,19 @@ component model in Wasmtime.")
     (description "This package provides a memcheck implementation for Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-wmemcheck-24
+  (package
+    (inherit rust-wasmtime-wmemcheck-25)
+    (name "rust-wasmtime-wmemcheck")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-wmemcheck" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pi2ildp32cld807i23gmkgf045f4fmm3cll4hxlnxjils12kbx5"))))))
+
 (define-public rust-wast-226
   (package
     (name "rust-wast")
