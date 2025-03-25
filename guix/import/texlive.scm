@@ -768,7 +768,7 @@ associated Guix package, or #f on failure.  Fetch metadata for a specific
 version whenever VERSION keyword is specified.  Otherwise, grab package latest
 release.  When DATABASE is provided, fetch metadata from there, ignoring
 VERSION."
-    (let ((version (or version (first (texlive-tags)))))
+    (let ((version (find-version (texlive-tags) version #t)))
       (tlpdb->package name version (or database (tlpdb/cached version))))))
 
 (define* (texlive-recursive-import name #:key repo version)
