@@ -99612,6 +99612,29 @@ multi-character wildcard operator.")
 combinators library.")
     (license license:expat)))
 
+(define-public rust-winch-codegen-0.22
+  (package
+    (inherit rust-winch-codegen-0.23)
+    (name "rust-winch-codegen")
+    (version "0.22.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winch-codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "093va64ljlx0si7xag8qw4m72a5zd379sr1dpd4g11ll376gxms6"))))
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cranelift-codegen" ,rust-cranelift-codegen-0.111)
+                       ("rust-gimli" ,rust-gimli-0.29)
+                       ("rust-regalloc2" ,rust-regalloc2-0.9)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.12)
+                       ("rust-wasmparser" ,rust-wasmparser-0.215)
+                       ("rust-wasmtime-cranelift" ,rust-wasmtime-cranelift-24)
+                       ("rust-wasmtime-environ" ,rust-wasmtime-environ-24))))))
+
 (define-public rust-winnow-0.6
   (package
     (name "rust-winnow")
