@@ -16913,6 +16913,47 @@ to the @code{is_x86_feature_detected!} macro.")
     (description "This package provides Low-level code generator library.")
     (license (list license:asl2.0))))
 
+(define-public rust-cranelift-codegen-0.111
+  (package
+    (inherit rust-cranelift-codegen-0.112)
+    (name "rust-cranelift-codegen")
+    (version "0.111.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cranelift-codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13zpd1ka2q2jp02yhyadvb3nwm1k43961zgzbbwz8fc3x3wamlcc"))))
+    (arguments
+     `(#:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-bumpalo" ,rust-bumpalo-3)
+          ("rust-capstone" ,rust-capstone-0.12)
+          ("rust-cranelift-bforest" ,rust-cranelift-bforest-0.111)
+          ("rust-cranelift-bitset" ,rust-cranelift-bitset-0.111)
+          ("rust-cranelift-codegen-meta" ,rust-cranelift-codegen-meta-0.111)
+          ("rust-cranelift-codegen-shared" ,rust-cranelift-codegen-shared-0.111)
+          ("rust-cranelift-control" ,rust-cranelift-control-0.111)
+          ("rust-cranelift-entity" ,rust-cranelift-entity-0.111)
+          ("rust-cranelift-isle" ,rust-cranelift-isle-0.111)
+          ("rust-gimli" ,rust-gimli-0.29)
+          ("rust-hashbrown" ,rust-hashbrown-0.14)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-postcard" ,rust-postcard-1)
+          ("rust-regalloc2" ,rust-regalloc2-0.9)
+          ("rust-rustc-hash" ,rust-rustc-hash-1)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-derive" ,rust-serde-derive-1)
+          ("rust-sha2" ,rust-sha2-0.10)
+          ("rust-smallvec" ,rust-smallvec-1)
+          ("rust-souper-ir" ,rust-souper-ir-2)
+          ("rust-target-lexicon" ,rust-target-lexicon-0.12))
+       #:cargo-development-inputs
+         (("rust-criterion" ,rust-criterion-0.5)
+          ("rust-env-logger" ,rust-env-logger-0.10)
+          ("rust-similar" ,rust-similar-2))))))
+
 (define-public rust-cranelift-codegen-meta-0.112
   (package
     (name "rust-cranelift-codegen-meta")
