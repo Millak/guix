@@ -4119,14 +4119,24 @@ protocol.")
 (define-public python-ncls
   (package
     (name "python-ncls")
-    (version "0.0.65")
+    (version "0.0.68")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "ncls" version))
               (sha256
                (base32
-                "1wx06xqknd2r98w8z93f47g5dpxzn92kamhj8vkq0nj569hf7cg1"))))
-    (build-system python-build-system)
+                "14xsnzr34xa4rwfcdjry9aqjs8i03s9fzy6jgrwj3fr3n6msbal1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Those tests fail with warnings (not errors) for the Numpy update.
+     ;; Remove it at next python-team iteration.
+     (list #:test-flags ''("--ignore=examples/test_all_overlaps_both.py"
+                           "--ignore=examples/test_find_overlap_list.py")))
+    (native-inputs (list python-cython
+                         python-pandas
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
     (propagated-inputs (list python-numpy))
     (home-page "https://github.com/endrebak/ncls")
     (synopsis "Nested containment list data structure")
