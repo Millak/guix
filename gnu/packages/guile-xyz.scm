@@ -332,7 +332,7 @@ currently does not do much, but it might in the future.")
        (uri (git-reference
              (url "https://github.com/aconchillo/guile-oauth")
              (commit version)))
-       (file-name (string-append name "-" version "-checkout"))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "002hgs4xfrrz0rqa6n1078cn7vz5f70azw1kpljvb4dmv228gfxq"))))
     (build-system gnu-build-system)
