@@ -54,7 +54,7 @@
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
-;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022, 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 msimonin <matthieu.simonin@inria.fr>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
@@ -4400,18 +4400,20 @@ verification of the SSL peer.")
 (define-public python-netaddr
   (package
     (name "python-netaddr")
-    (version "0.8.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "netaddr" version))
        (sha256
-         (base32
-          "0hx2npi0wnhwlcybilgwlddw6qffx1mb7a3sj4p9s7bvl33mgk6n"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f)) ;; No tests.
-    (home-page "https://github.com/drkjam/netaddr/")
-    (synopsis "Pythonic manipulation of  network addresses")
+        (base32 "12p4ysgawhgkka0sz1dkwgwc2za80dxdp9wvfxivfldmjnc3sg2w"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://netaddr.readthedocs.io")
+    (synopsis "Pythonic manipulation of network addresses")
     (description
       "A Python library for representing and manipulating IPv4, IPv6, CIDR, EUI
 and MAC network addresses.")
