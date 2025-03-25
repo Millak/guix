@@ -9667,9 +9667,10 @@ include_dirs = ~:*~a/include~%"
                                      `(" and not test_identityless_reduction_huge_array"
                                        " and not (TestKind and test_all)")
                                    '())
-                              ;; This test fails when building from aarch64-linux.
+                              ;; These tests fail when building from aarch64-linux.
                               #$@(if (target-arm32?)
-                                   `(" and not test_features")
+                                   `(" and not test_features"
+                                     " and not test_unary_spurious_fpexception")
                                    '())
                               ;; These tests seem to fail on machines without
                               ;; an FPU is still under investigation upstream.
