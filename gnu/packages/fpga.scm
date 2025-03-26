@@ -595,21 +595,22 @@ using different abstraction levels.")
 (define-public verilator
   (package
     (name "verilator")
-    (version "5.028")
+    (version "5.034")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/verilator/verilator")
+             (url "https://github.com/verilator/verilator/")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q9facgfdwwmf2ax65aznhqmk8qfisq9k5p8wrxrw6qqy38vl0k2"))))
+        (base32 "14alpa2z4fqbbsyx67dz50nqcvfis8pha84545h28xmglrzm13yn"))))
     (native-inputs
      (list autoconf
            automake
            bison
            flex
+           help2man
            gettext-minimal
            python
            ;; And a couple of extras for the test suite:
@@ -617,7 +618,7 @@ using different abstraction levels.")
            gdb/pinned
            which))
     (inputs
-     (list help2man perl python systemc))
+     (list perl python systemc))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -636,22 +637,13 @@ using different abstraction levels.")
                (lambda ()
                  (display "set auto-load safe-path /"))))))
        #:test-target "test"))
-    ;; #error "Something failed during ./configure as config_build.h is incomplete.
-    ;; Perhaps you used autoreconf, don't." -- so we won't. ^^
-    (home-page "https://www.veripool.org/projects/verilator/")
-    (synopsis "Fast Verilog/SystemVerilog simulator")
+    (home-page "https://www.veripool.org/verilator/")
+    (synopsis "Verilog/SystemVerilog simulator")
     (description
-     "Verilator is invoked with parameters similar to GCC or Synopsys’s VCS.
-It ``Verilates'' the specified Verilog or SystemVerilog code by reading it,
+     "Verilator transforms the specified Verilog or SystemVerilog code by reading it,
 performing lint checks, and optionally inserting assertion checks and
 coverage-analysis points.  It outputs single- or multi-threaded @file{.cpp}
-and @file{.h} files, the ``Verilated'' code.
-
-The user writes a little C++/SystemC wrapper file, which instantiates the
-Verilated model of the user’s top level module.  These C++/SystemC files are
-then compiled by a C++ compiler (GCC/Clang/etc.).  The resulting executable
-performs the design simulation.  Verilator also supports linking its generated
-libraries, optionally encrypted, into other simulators.")
+and @file{.h} files.")
     (license license:lgpl3)))
 
 (define-public fftgen
