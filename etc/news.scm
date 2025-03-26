@@ -37,6 +37,95 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "e2583b5a17bfdedc1d24b3bab2d752fbf8fa6db6")
+        (title
+         (en "Guix System can run @command{guix-daemon} without root
+privileges")
+         (de "Guix System kann @command{guix-daemon} ohne root-Berechtigungen
+ausführen")
+         (fr "Guix System peut faire tourner @command{guix-daemon} sans
+privilèges"))
+        (body
+         (en "On Guix System, @code{guix-service-type} can now be configured
+to run the build daemon, @command{guix-daemon}, without root privileges.  In
+that configuration, the daemon runs with the authority of the
+@code{guix-daemon} user, which we think can reduce the impact of some classes
+of vulnerabilities that could affect it.
+
+For now, this is opt-in: you have to change @code{guix-configuration} to set
+the @code{privileged?} field to @code{#f}.  When you do this, all the files in
+@file{/gnu/store}, @file{/var/guix}, etc. will have their ownership changed to
+the @code{guix-daemon} user (instead of @code{root}); this can take a while,
+especially if the store is big.  To learn more about it, run:
+
+@example
+info guix --index-search=guix-service-type
+@end example
+
+Running @command{guix-daemon} without root privileges will likely become the
+default in the future.
+
+Users of Guix on other distributions can find information on how to migrate in
+the manual:
+
+@example
+info guix --index-search=migration
+@end example")
+         (de "Auf Guix System kann @code{guix-service-type} jetzt so
+konfiguriert werden, dass der Erstellungs-Daemon @command{guix-daemon} ohne
+root-Berechtigungen ausgeführt wird.  In dieser Konfiguration läuft der Daemon
+mit den Berechtigungen des Benutzers @code{guix-daemon}, wovon wir glauben,
+dass es die Auswirkungen mancher Schwachstellen-Kategorien verringert, die ihn
+betreffen könnten.
+
+Fürs Erste bleibt es Ihnen überlassen: Sie müssen @code{guix-configuration}
+anpassen und dort das Feld @code{privileged?} auf @code{#f} setzen.  Wenn Sie
+das tun, wird der Besitzer aller Dateien in @file{/gnu/store},
+@file{/var/guix}, usw. auf den Benutzer @code{guix-daemon} geändert (anstelle
+von @code{root}); das kann eine Weile dauern, besonders wenn der Store groß
+ist.  Um mehr zu erfahren, führen Sie aus:
+
+@example
+info guix --index-search=guix-service-type
+@end example
+
+Schließlich wird das Ausführen von @command{guix-daemon} ohne
+root-Berechtigungen wahrscheinlich die Vorgabe.
+
+Wer Guix auf anderen Distributionen benutzt, kann sich mit dem Handbuch
+informieren, wie man umsteigt:
+
+@example
+info guix --index-search=migration
+@end example")
+         (fr "Sur Guix System, @code{guix-service-type} peut maintenant être
+configuré pour faire tourner le démon de compilation, @command{guix-daemon},
+sans privilèges ``root''.  Dans cette configuration, le démon s'exécute avec
+l'autorité du compte @code{guix-daemon}, ce qui selon nous réduit l'impact de
+certaines classes de vulnérabilités qui pourraient l'affecter.
+
+Pour le moment, c'est à activer explicitement : il faut changer
+@code{guix-configuration} pour mettre le champ @code{privileged?} à @code{#f}.
+Tous les fichiers de @file{/gnu/store}, @file{/var/guix}, etc. voient alors
+leur propriétaire changé pour @code{guix-daemon} (au lieu de @code{root}) ;
+cette opération peut prendre un moment, particulièrement si le dépôt est gros.
+Pour en savoir plus, lancer :
+
+@example
+info guix --index-search=guix-service-type
+@end example
+
+L'exécution de @command{guix-daemon} sans privilèges se fera probablement par
+défaut à l'avenir.
+
+Pour l'utilisation de Guix sur d'autres distributions, des informations sur
+comment migrer se trouver dans le manuel :
+
+@example
+info guix --index-search=migration
+@end example")))
+
  (entry (commit "3e9e164154af6245389af5a1781473b36263ad20")
         (title
          (en "Incompatible changes in the @code{node-build-system}")
