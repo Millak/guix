@@ -3013,6 +3013,29 @@ replacement.")
 programs.")
     (license license:gpl3+)))
 
+(define-public emacs-lean4-mode
+  (package
+    (name "emacs-lean4-mode")
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/leanprover-community/lean4-mode.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i4l614n0hs02y0a4xfnzc4xkilkp6bzx28pys4jkp96vp2ivf0c"))))
+    (build-system emacs-build-system)
+    ;; TODO: Just emacs-magit-section instead of emacs-magit would be enough.
+    (propagated-inputs
+     (list emacs-compat emacs-lsp-mode emacs-dash emacs-magit))
+    (synopsis "Lean 4 major mode for Emacs")
+    (description "This package provides a major mode for the Lean theorem
+prover, version 4.")
+    (home-page "https://lean-lang.org/")
+    (license license:asl2.0)))
+
 (define-public emacs-dante
   (package
     (name "emacs-dante")
