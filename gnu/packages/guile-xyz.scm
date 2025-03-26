@@ -4813,7 +4813,7 @@ debugging code.")
               (uri (git-reference
                     (url "https://github.com/artyom-poptsov/guile-png")
                     (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0hgdp8fgyg6rdy130fsn4nnb58c98lsrayjyy5491l53814ggy65"))))
