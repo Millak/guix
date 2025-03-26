@@ -155,7 +155,8 @@
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages zig))
 
 (define-public gmt
   (package
@@ -618,7 +619,7 @@ writing GeoTIFF information tags.")
 (define-public mepo
   (package
     (name "mepo")
-    (version "1.3.3")
+    (version "1.3.4")
     (source
      (origin
        (method git-fetch)
@@ -627,15 +628,25 @@ writing GeoTIFF information tags.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "025nxkilar3gdif2f1zsiy27614x2hbpcmh38sl61ng37aji0jw4"))))
+        (base32 "0cz4ihz4mw1v47x3xycyayfs28xlns2war2dif31awzg02a3rlfl"))))
     (build-system zig-build-system)
     (arguments
      (list #:install-source? #f
-           ;; Work around https://github.com/ziglang/zig/issues/17384
-           #:zig-build-flags #~(list "--search-prefix" #$curl)
+           #:zig zig-0.14
            #:zig-release-type "safe"
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-geoclue-demos-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "scripts/mepo_ui_menu_user_pin_updater.sh"
+                     (("/usr/libexec/geoclue-2.0/demos/agent")
+                      (search-input-file
+                        inputs
+                        "libexec/geoclue-2.0/demos/agent"))
+                     (("/usr/libexec/geoclue-2.0/demos/where-am-i")
+                      (search-input-file
+                        inputs
+                        "libexec/geoclue-2.0/demos/where-am-i")))))
                (add-after 'install 'wrap-scripts
                  (lambda* (#:key inputs #:allow-other-keys)
                    (let ((bin-dirs
@@ -675,7 +686,7 @@ writing GeoTIFF information tags.")
                          "mepo_ui_menu_user_pin_updater.sh"))))))))
     (native-inputs (list pkg-config))
     ;; TODO: package Mobroute
-    (inputs (list bash-minimal busybox curl gpsd jq ncurses
+    (inputs (list bash-minimal busybox curl geoclue gpsd jq ncurses
                   sdl2 sdl2-gfx sdl2-image sdl2-ttf
                   util-linux xwininfo zenity))
     (home-page "https://mepo.lrdu.org")
