@@ -3368,7 +3368,7 @@ available:
               (uri (git-reference
                     (url "https://github.com/ijp/minikanren")
                     (commit "e844d85512f8c055d3f96143ee506007389a25e3")))
-              (file-name (string-append name "-" version "-checkout"))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0r50jlpzi940jlmxyy3ddqqwmj5r12gb4bcv0ssini9v8km13xz6"))))
