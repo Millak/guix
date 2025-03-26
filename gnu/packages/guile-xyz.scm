@@ -631,7 +631,7 @@ pictures) for email addresses using the Libravatar specification.")
                 (sha256
                  (base32
                   "097vny990wp2qpjij6a5a5gwc6fxzg5wk56inhy18iki5v6pif1p"))
-                (file-name (string-append name "-" version "-checkout"))))
+                (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
        (list
