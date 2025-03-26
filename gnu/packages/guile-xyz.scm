@@ -3083,7 +3083,7 @@ provides access to that interface and its types from the Scheme level.")
                 (uri (git-reference
                       (url "https://github.com/fisherdj/miniAdapton")
                       (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "09q51zkw2fypad5xixskfzw2cjhjgs5cswdp3i7cpp651rb3zndh"))))
