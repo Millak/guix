@@ -21,7 +21,28 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages storage)
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages commencement)
+  #:use-module (gnu packages llvm)
+  #:use-module (gnu packages backup)
+  #:use-module (gnu packages elf)
+  #:use-module (gnu packages bootstrap)
+  #:use-module (gnu packages maths)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages compression)
+  #:use-module (guix build-system python)
+
+  #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages elf)
+  #:use-module (gnu packages libbsd)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages dpdk)
+  #:use-module (gnu packages check)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -271,3 +292,149 @@ storage protocols (S3, NFS, and others) through the RADOS gateway.")
                    license:cc-by-sa3.0           ;documentation
                    license:bsd-3                 ;isa-l,jerasure,++
                    license:expat))))             ;civetweb,java bindings
+
+(define-public spdk
+  (package
+    (name "spdk")
+    (version "24.09")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spdk/spdk")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1cx0yj3ibmbngqsjdlnh7qg7as9mzpbiw0zscraw07b4rs6g0s6q"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; FIXME: Issue with dpdk: error: depends on
+      ;; 'libspdk_env_dpdk_rpc.so.6.0', which cannot be found in RUNPATH
+      #:tests? #f
+      #:imported-modules
+      (append %default-gnu-imported-modules
+              %python-build-system-modules)
+      #:validate-runpath? #f
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  ((guix build python-build-system) #:prefix python:)
+                  (ice-9 rdelim)
+                  (ice-9 popen))
+      #:configure-flags
+      #~(list "--with-shared"
+              (string-append "--prefix=" #$output)
+              (string-append "--with-dpdk=" #$(this-package-input "dpdk")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'substitute-git-submodules
+            (lambda _
+              (rmdir "isa-l")
+              (symlink #$(package-source (this-package-input "isa-l")) "isa-l")))
+          (replace 'configure
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (substitute* "configure"
+                (("#! /bin/sh") (string-append "#!" (which "sh"))))
+              (setenv "CC" #$(cc-for-target))
+              (setenv "CFLAGS" "-mssse3")
+              (setenv "CONFIG_SHELL" (which "bash"))
+              (setenv "LDFLAGS" "-lbsd")
+              (setenv "SHELL" (which "bash"))
+              (apply invoke "./configure" configure-flags)))
+          (add-before 'install 'set-install-environment
+            ;; same as ceph
+            (lambda _
+              (let ((py3sitedir
+                     (string-append #$output "/lib/python"
+                                    #$(version-major+minor
+                                       (package-version python))
+                                    "/site-packages")))
+                (setenv "PYTHONPATH" py3sitedir))))
+          (add-after 'install 'patchelf
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((binaries '("iscsi_tgt" "nvmf_tgt"
+                                 "spdk_dd" "spdk_lspci" "spdk_nvme_discover"
+                                 "spdk_tgt" "spdk_top" "spdk_trace"
+                                 "spdk_nvme_identify" "spdk_nvme_perf"
+                                 "spdk_trace_record" "vhost"))
+                     (ld-so (search-input-file inputs #$(glibc-dynamic-linker)))
+                     (libs
+                      (list
+                       (string-append #$(this-package-input "libbsd") "/lib")
+                       (string-append #$(this-package-input "libarchive") "/lib")
+                       (string-append #$(this-package-input "numactl") "/lib")
+                       (string-append #$(gexp-input util-linux "lib") "/lib")
+                       (string-append #$(this-package-input "openssl") "/lib")
+                       (string-append #$(this-package-input "openlibm") "/lib")
+                       (string-append #$(this-package-input "libaio") "/lib")
+                       (string-append #$(this-package-input "dpdk") "/lib")
+                       (string-append #$(this-package-input "fuse") "/lib")
+                       (string-append #$(this-package-input "gcc") "/lib")
+                       (string-append #$(this-package-input "glibc") "/lib")))
+                     (rpath* (apply string-append (map (lambda (l) (string-append l ":")) libs))))
+                (for-each
+                 (lambda (b)
+                   (let ((file (string-append #$output "/bin/" b)))
+                     (invoke "patchelf" "--set-interpreter" ld-so file)
+                     (let* ((pipe (open-pipe* OPEN_READ "patchelf" "--print-rpath" file))
+                            (line (read-line pipe)))
+                       (and (zero? (close-pipe pipe))
+                            (invoke "patchelf" "--set-rpath" (string-append rpath* line)
+                                    file)))
+                     (wrap-program file
+                       `("LD_LIBRARY_PATH" ":" prefix (,(string-append #$output "/lib"))))))
+                 binaries))))
+          (add-after 'patchelf 'python:wrap
+            (assoc-ref python:%standard-phases 'wrap))
+          (add-after 'python:wrap 'wrap-python-scripts
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((scripts '("bin/spdk_cli" "bin/spdk_rpc" ))
+                     (dependencies (map (lambda (input)
+                                          (assoc-ref inputs input))
+                                        '("python-configshell-fb")))
+                     (python-version #$(version-major+minor (package-version python)))
+                     (sitedir (lambda (package)
+                                (string-append package "/lib/python"
+                                               python-version "/site-packages")))
+                     (PYTHONPATH (string-join (map sitedir (cons #$output dependencies)) ":")))
+                (for-each (lambda (executable)
+                            (wrap-program (string-append #$output "/" executable)
+                              `("GUIX_PYTHONPATH" ":" prefix (,PYTHONPATH))))
+                          scripts)))))))
+    (native-inputs
+     (list autoconf
+           automake
+           patchelf
+           pkg-config
+           python-wrapper))
+    (inputs
+     (list cunit
+           dpdk
+           elfutils
+           fuse
+           (list gcc "lib")
+           glibc
+           isa-l
+           jansson
+           libaio
+           libarchive
+           libbsd
+           libnl
+           libpcap
+           ncurses
+           numactl
+           openlibm
+           openssl
+           python-configshell-fb
+           python-pip             ; XXX: expected by install, check why
+           python-setuptools      ;
+           python-wheel           ;
+           (list util-linux "lib") ;; <uuid.h>
+           zlib
+           zstd))
+    (home-page "https://spdk.io/")
+    (synopsis "Storage Performance Development Kit")
+    (description
+     "@acronym{Storage Performance Development Kit, SPDK} provides a set of
+tools and libraries for writing high performance,scalable, user-mode storage
+applications.")
+    (license license:bsd-3)))
