@@ -162,6 +162,7 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages ragel)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
@@ -284,6 +285,35 @@ in the MUA, it is first passed to Anubis, which performs additional processing
 to the message before passing it on for delivery by the MTA.  Anubis may, for
 example, modify the message headers or body, or encrypt or sign the message.")
     (home-page "https://www.gnu.org/software/anubis/manual/")
+    (license license:gpl3+)))
+
+(define-public birdtray
+  (package
+    (name "birdtray")
+    (version "1.11.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gyunaev/birdtray")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14vb3lj8129im0d61d5zsgb1fwmsw9977g3abqhnv0bk6qzjsgxf"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/gyunaev/birdtray")
+    (inputs (list qtbase-5 qtsvg-5 qtx11extras libx11))
+    (arguments
+     (list
+      #:tests? #f)) ;no test suite.
+    (synopsis "System tray indicator for Thunderbird/Icedove")
+    (description
+     "Birdtray is a free system tray notification for new mail for
+Thunderbird/Icedove.  Its features include an unread mail counter,
+snooze-able new mail notifications, configurable fonts for different
+accounts, a ``quick compose'' function with pre-configured templates,
+and a direct connection to the Thunderbird database, making it
+completely independent from the extension API.")
     (license license:gpl3+)))
 
 (define-public mailutils
