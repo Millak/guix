@@ -796,7 +796,7 @@ you send to a FIFO file.")
               (uri (git-reference
                     (url "https://github.com/artyom-poptsov/guile-dsv")
                     (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "1iavc1dg1899v519hvbzcmvdc16rahcwwvj68jycqdc5px5z285i"))))
