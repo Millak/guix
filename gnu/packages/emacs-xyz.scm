@@ -30118,7 +30118,7 @@ image, rotate it, save modified images, and more.")
 (define-public emacs-package-lint
   (package
     (name "emacs-package-lint")
-    (version "0.24")
+    (version "0.25")
     (source
      (origin
        (method git-fetch)
@@ -30128,7 +30128,7 @@ image, rotate it, save modified images, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0qbzhpmwsgrp6z541jc1cy7jqr7ipdindwfji210279v2w6yrj1p"))))
+         "1fvi79pwlvvdakcmvf6jv9ba400lqfjsdcshg2q4rnj5v1a797pn"))))
     (arguments
      (list #:include #~(cons "^data/" %default-include)))
     (build-system emacs-build-system)
