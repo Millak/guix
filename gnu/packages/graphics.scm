@@ -467,7 +467,10 @@ with the @command{autotrace} utility or as a C library, @code{libautotrace}.")
      `(#:tests? #f ; no tests (apparently)
        #:configure-flags
          (list
-          "-DEMBREE_ISPC_SUPPORT=OFF")))
+          "-DEMBREE_ISPC_SUPPORT=OFF"
+          ;; They SAY that that's the default--but it isn't
+          ;; (that would be AVX512--and that segfaults GCC (!)).
+          "-DEMBREE_MAX_ISA=AVX2")))
     (inputs
      (list tbb glfw))
     (home-page "https://www.embree.org/")
