@@ -3245,6 +3245,8 @@ phylogenetic trees also goes by the name simulationmethods for phylogenetic
 trees, synthetic data generation, or just phylogenetic tree simulation.")
     (license license:expat)))
 
+;; XXX: Probably unmaintained, build fails with Python 3.11, see
+;; <https://github.com/cancerit/parabam/issues/10>.
 (define-public python-parabam
   (package
     (name "python-parabam")
