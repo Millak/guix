@@ -1471,7 +1471,7 @@ works with Guile 1.4.x to 2.0.x.")
               (sha256
                (base32
                 "0f8rykqx3mdbi7mgvvanx65i9gn5wmb768vlzrbg002v38284bf2"))
-              (file-name (string-append name "-" version "-checkout"))))
+              (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config autoconf automake guile-3.0))
