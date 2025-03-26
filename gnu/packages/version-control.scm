@@ -1181,16 +1181,16 @@ provides an integration with GitHub and GitLab.")
 (define-public got
   (package
     (name "got")
-    (version "0.108")
+    (version "0.110")
     (source (origin
               (method url-fetch)
               (uri
-                (string-append
-                  "https://gameoftrees.org/releases/portable/got-portable-"
-                  version ".tar.gz"))
+               (string-append
+                "https://gameoftrees.org/releases/portable/got-portable-"
+                version ".tar.gz"))
               (sha256
                (base32
-                "1qnk5d1vyxyyqr6sc6wkc7b7w274zr0jv8vdq13sx1rmvl5353bc"))))
+                "0a8xcqqw09bddzgqqg1mrwqp36fqsf2zfvz7lqv55y770l9f8d9n"))))
     (inputs
      (list libevent
            `(,util-linux "lib")
