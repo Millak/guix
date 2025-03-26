@@ -1949,6 +1949,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/openbios-aarch64-riscv64-support.patch	\
   %D%/packages/patches/openboardview-use-system-imgui.patch	\
   %D%/packages/patches/openboardview-use-system-mpc.patch	\
+  %D%/packages/patches/openbox-add-fix-for-glib2-exposed-segfault.patch \
   %D%/packages/patches/openbox-python3.patch			\
   %D%/packages/patches/openjdk-currency-time-bomb.patch		\
   %D%/packages/patches/openjdk-currency-time-bomb2.patch	\

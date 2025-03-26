@@ -51,7 +51,7 @@
               (sha256
                (base32
                 "0vg2y1qddsdxkjv806mzpvmkgzliab8ll4s7zm7ma5jnriamirxb"))
-              (patches (search-patches "openbox-python3.patch"))))
+              (patches (search-patches "openbox-add-fix-for-glib2-exposed-segfault.patch" "openbox-python3.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
