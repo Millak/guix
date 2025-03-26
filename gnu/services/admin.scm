@@ -644,7 +644,8 @@ which lets you search for packages that provide a given file.")
 
           (format #t "starting upgrade...~%")
           (guard (c ((invoke-error? c)
-                     (report-invoke-error c)))
+                     (report-invoke-error c)
+                     (exit 1)))
             (apply invoke #$(file-append guix "/bin/guix")
                    "time-machine" "-C" #$channels
                    "--" "system" "reconfigure" #$arguments)
