@@ -23251,7 +23251,7 @@ alignments, trees and genomic annotations.")
 (define-public python-gffutils
   (package
     (name "python-gffutils")
-    (version "0.10.1")
+    (version "0.13")
     (source
      (origin
        (method git-fetch)
@@ -23261,27 +23261,28 @@ alignments, trees and genomic annotations.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1gkzk7ps6w3ai2r81js9s9bzpba0jmxychnd2da6n9ggdnf2xzqz"))))
-    (build-system python-build-system)
+         "148i7bk5bawrz19jp3nl0z859wdlldgrw8f0aw9wsprj8s3d713a"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Tests need to access the HOME directory
-               (setenv "HOME" "/tmp")
-               (invoke "nosetests" "-a" "!slow")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-HOME
+            (lambda _
+              ;; FileNotFoundError: [Errno 2] No such file or directory:
+              ;; '/homeless-shelter/.gffutils.test'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-argcomplete
            python-argh
            python-biopython
            python-pybedtools
            python-pyfaidx
-           python-simplejson
-           python-six))
-    (native-inputs
-     (list python-nose))
+           python-simplejson))
     (home-page "https://github.com/daler/gffutils")
     (synopsis "Tool for manipulation of GFF and GTF files")
     (description
