@@ -3306,19 +3306,29 @@ encountered in PDB files prior to simulation tasks.")
 (define-public python-peaks2utr
   (package
     (name "python-peaks2utr")
-    (version "1.2.0")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "peaks2utr" version))
               (sha256
                (base32
-                "1idp9cgwqxvryf4qqrc1xjsamfqn3jmr56kmjp2h1ysmckwmhw4v"))))
+                "104il0kk61q07b58g9xrss7xflwlbx4kzsmw9iih99lhfsii0wzg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; These two tests fail because file names are not URLs.
-      '(list "-k" "not test_annotation.py")))
+      ;; These tests fail because file names are not URLs.
+      '(list "-k" (string-join
+                   (list "not test_forward_strand_annotations"
+                         "test_matching_chr"
+                         "test_reverse_strand_annotations")
+                   " and not "))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.cfg"
+               (("==") ">=")))))))
     (propagated-inputs
      (list python-asgiref
            python-gffutils
