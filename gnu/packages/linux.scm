@@ -11770,3 +11770,28 @@ practical purposes indistinguishable from real devices.
 It provides a command line program and also a Python library.")
     (home-page "https://www.freedesktop.org/wiki/Evemu/")
     (license license:gpl3)))
+
+(define-public dualsensectl
+  (package
+    (name "dualsensectl")
+    (version "0.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/nowrep/dualsensectl.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05snsp5r3hc2yc1nf0w4aam1my4h0lkxnmy7k4glxvasd9jwahzw"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list eudev dbus hidapi))
+    (synopsis "Linux tool for controlling PS5 DualSense controller")
+    (description "This package provides a Linux tool for controlling a PS5
+DualSense controller.  It has to be already connected via USB or connected
+via Bluetooth.")
+    (home-page "https://github.com/nowrep/dualsensectl")
+    (license license:gpl2)))
