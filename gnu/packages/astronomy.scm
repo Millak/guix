@@ -2059,7 +2059,10 @@ simulated Astronomical data in Python.")
         "--ignore=astroML/density_estimation/tests/test_bayesian_blocks.py"
         "--ignore=astroML/density_estimation/tests/test_bayesian_blocks.py"
         "--ignore=astroML/density_estimation/tests/test_hist_binwidth.py"
-        "--ignore=astroML/density_estimation/tests/test_hist_binwidth.py")
+        "--ignore=astroML/density_estimation/tests/test_hist_binwidth.py"
+        ;; Disalbe tests with NumPy, see
+        ;; <https://github.com/astroML/astroML/issues/281>.
+        "--ignore=astroML/tests/test_resample.py")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'patch-build-system
@@ -2085,11 +2088,18 @@ simulated Astronomical data in Python.")
            ;; Some tests need this
            (lambda _
              (setenv "HOME" "/tmp"))))))
-    (propagated-inputs (list python-astropy python-matplotlib python-numpy
-                             python-scikit-learn python-scipy))
-    (native-inputs (list python-pytest-astropy-header python-pytest-cov
-                         python-pytest-doctestplus python-pytest-remotedata
-                         python-wheel))
+    (native-inputs
+     (list python-pytest-astropy-header
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-remotedata
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scikit-learn
+           python-scipy))
     (home-page "https://astroml.org")
     (synopsis "Tools for machine learning and data mining in astronomy")
     (description "This package provides tools for machine learning and data
