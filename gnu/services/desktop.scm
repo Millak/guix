@@ -1952,9 +1952,13 @@ rules."
          '("plasma-desktop"
            "plasma-workspace"
            "plasma-disks"
+           "kdeplasma-addons"
+           "kglobalaccel"
            "kinfocenter"
            "libksysguard"
+           "kpmcore"
            "ktexteditor"
+           "kwalletmanager"
            "powerdevil"
            "plasma-firewall"))))
 
