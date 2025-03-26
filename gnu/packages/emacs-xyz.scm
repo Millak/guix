@@ -33759,7 +33759,7 @@ processes for Emacs.")
 (define-public emacs-treemacs
   (package
     (name "emacs-treemacs")
-    (version "3.1")
+    (version "3.2")
     (source
      (origin
        (method git-fetch)
@@ -33768,11 +33768,10 @@ processes for Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rs0l0k9fd8xav627944jfm518yillcmjbdrkzjw3xq1wx80pn95"))))
+        (base32 "0z8pc7y8p32vhlv5ibr11mrd8r8fk09dfgsj7a63d48r992p7gih"))))
     (build-system emacs-build-system)
     (arguments
      (list
-      #:tests? #t
       #:test-command #~(list "make" "-C" "../.." "test")
       #:phases
       #~(modify-phases %standard-phases
