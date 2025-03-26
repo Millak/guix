@@ -1697,53 +1697,63 @@ on top of Baloo.")
      (list #:builder #~(begin
                          (mkdir #$output))))
     ;; TODO: cleanup, check what is no need
-    (propagated-inputs (list kdeclarative ;; require by sddm breeze theme
-                             plasma5support ;; require by sddm breeze theme
-                             qt5compat ;; require by sddm breeze theme
-                             kiconthemes ;; require by sddm breeze theme
-                             ksvg ;; require by sddm breeze theme
-                             qqc2-desktop-style ; qtquickcontrols2 theme
-                             ocean-sound-theme
-                             qtdeclarative
-                             qtsvg ;; for svg support
-                             qtbase ;; why?
-                             baloo
-                             breeze-icons ; default mouse icon
+    (propagated-inputs (list baloo
+                             bluedevil
                              breeze
                              breeze-gtk
-                             layer-shell-qt
+                             breeze-icons ;default mouse icon
+                             discover
                              drkonqi
-                             kactivitymanagerd ; require this run dbus
+                             kactivitymanagerd
+                             kdeclarative ;required by sddm breeze theme
                              kde-cli-tools
                              kdecoration
-                             kdeplasma-addons
-                             kpmcore
-                             ktexteditor
-                             kscreen
-                             libkscreen
-                             krdp
-                             ksystemstats
-                             kwallet
-                             kwalletmanager
-                             kwallet-pam
-                             kwin
-                             plasma-workspace-wallpapers
-                             libksysguard
-                             milou
-                             oxygen-sounds
-                             qqc2-breeze-style
                              kde-gtk-config
+                             kdeplasma-addons
+                             kglobalaccel
+                             kglobalacceld
+                             kiconthemes ;required by sddm breeze theme
                              kinfocenter
+                             kmenuedit
+                             kpmcore
+                             krdp
+                             kscreen
                              kscreenlocker
                              ksshaskpass
-                             discover
-                             kmenuedit
+                             ksvg ;required by sddm breeze theme
+                             ksystemstats
+                             ktexteditor
+                             kwallet
+                             kwallet-pam
+                             kwin
+                             layer-shell-qt
+                             libkscreen
+                             libksysguard
+                             milou
+                             ocean-sound-theme
+                             oxygen-sounds
                              partitionmanager
-                             plasma-welcome
+                             plasma5support ;required by sddm breeze theme
                              plasma-browser-integration
                              plasma-desktop
                              plasma-disks
+                             plasma-firewall
+                             plasma-integration
+                             plasma-nm
+                             plasma-pa
+                             plasma-systemmonitor
+                             plasma-vault
+                             plasma-welcome
+                             plasma-workspace
+                             plasma-workspace-wallpapers
                              polkit-kde-agent
+                             powerdevil
+                             qqc2-breeze-style
+                             qqc2-desktop-style ;for qtquickcontrols2 theme
+                             qt5compat ;required by sddm breeze theme
+                             qtbase ;for QT_PLUGIN_PATH and QML_IMPORT_PATH
+                             qtdeclarative
+                             qtsvg
                              system-settings
                              xdg-desktop-portal-kde
                              ;; module cyclic referencing
@@ -1758,19 +1768,12 @@ on top of Baloo.")
                              (module-ref
                               (resolve-interface
                                '(gnu packages kde-systemtools))
-                              'spectacle)
-                             plasma-firewall
-                             plasma-integration
-                             plasma-nm
-                             plasma-pa
-                             plasma-systemmonitor
-                             bluedevil
-                             ;; plasma-thunderbolt ;; waiting for bolt
-                             kglobalaccel
-                             kglobalacceld
-                             plasma-vault
-                             plasma-workspace
-                             powerdevil))
+                              'kwalletmanager)
+                             (module-ref
+                              (resolve-interface
+                               '(gnu packages kde-systemtools))
+                              'spectacle)))
+                             ;; plasma-thunderbolt ;waiting for bolt
     (synopsis "The KDE Plasma desktop environment")
     (home-page "https://kde.org/plasma-desktop/")
     (description
