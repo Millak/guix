@@ -506,7 +506,7 @@ f library for Emacs.")
                 (uri (git-reference
                       (url "https://github.com/ijp/guildhall")
                       (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "115bym7bg66h3gs399yb2vkzc2ygriaqsn4zbrg8f054mgy8wzn1"))))
