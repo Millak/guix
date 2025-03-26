@@ -2342,7 +2342,7 @@ provides tight coupling to Guix.")
        (uri (git-reference
              (url "https://github.com/artyom-poptsov/guile-ics")
              (commit (string-append "v" version))))
-       (file-name (string-append name "-" version "-checkout"))
+       (file-name (git-file-name name version))
        (sha256
         (base32
          "1zxclhyrsbp9v6sj36kmphiwqhb06rcm1zjskg5091py8361wjd6"))))
