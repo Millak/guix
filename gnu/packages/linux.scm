@@ -10639,30 +10639,16 @@ persistent over reboots.")
           (add-before 'build 'pre-build
             (lambda _
               (chdir "src")))
-          (add-after 'install 'install-linux-bpf-headers
-            ;; Workaround users such as 'dwarves' requiring btf_enum64
-            ;; definition from the kernel Linux >= 6 headers (see:
-            ;; https://github.com/acmel/dwarves/issues/49).
-            ;; TODO: Remove once our 'linux-libre-headers' package is
-            ;; upgraded to a >= 6 release.
-            (lambda _
-              (let ((linux-libre-headers #$(this-package-native-input
-                                            "linux-libre-headers")))
-                (for-each (lambda (f)
-                            (install-file (string-append linux-libre-headers
-                                                         "/include/" f)
-                                          (string-append #$output "/include/"
-                                                         (dirname f))))
-                          ;; This list contains btf.h and its transitive
-                          ;; dependencies.
-                          (list "asm/posix_types.h"
-                                "asm/types.h"
-                                "asm-generic/types.h"
-                                "asm-generic/int-ll64.h"
-                                "linux/btf.h"
-                                "linux/posix_types.h"
-                                "linux/stddef.h"
-                                "linux/types.h"))))))))
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys #:rest args)
+              (apply (assoc-ref %standard-phases 'install)
+                     (append args
+                             (list #:make-flags
+                                   (append (list "install"
+                                                 ;; Also install the kernel
+                                                 ;; user API (uAPI) headers.
+                                                 "install_uapi_headers")
+                                           make-flags)))))))))
     (native-inputs (list linux-libre-headers-latest pkg-config))
     (propagated-inputs (list elfutils zlib)) ;in Requires.private of libbpf.pc
     (home-page "https://github.com/libbpf/libbpf")
