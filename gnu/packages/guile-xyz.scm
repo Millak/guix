@@ -6887,7 +6887,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
 (define-public guile-goblins
   (package
     (name "guile-goblins")
-    (version "0.15.0")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
@@ -6896,7 +6896,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "1dyxh8xvl8f707dzfzckz4343z1iwfp7v6wwyryn5psy86gq328z"))))
+         "05qqryhhs9rci01j08nbchmif1h9889bwqqv830ywygl1bld50ys"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
