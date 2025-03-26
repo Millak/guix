@@ -6683,7 +6683,7 @@ is an attempt to combine both into something useful.")
               (sha256
                (base32
                 "1342a7rw9zqxgii5q4ahiqabmgqbvczjdx1308yf9k3d8x6gk41q"))
-              (file-name (string-append name "-" version "-checkout"))))
+              (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config
