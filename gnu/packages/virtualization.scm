@@ -38,7 +38,7 @@
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
-;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Karl Hallsby <karl@hallsby.com>
 ;;;
@@ -3189,15 +3189,15 @@ hive as XML.")
 (define-public libguestfs-minimal
   (package
     (name "libguestfs-minimal")
-    (version "1.53.6")
+    (version "1.54.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://libguestfs.org/download/"
+              (uri (string-append "https://download.libguestfs.org/"
                                   (version-major+minor version)
                                   "-stable/libguestfs-" version ".tar.gz"))
               (sha256
                (base32
-                "0vssarc3n4kv26fyjmkrrcvh55v41fhycba43pij3rc2izl72s2y"))
+                "0zhp59hczy2k5zm8hzzsimd3svd36sxn39a052ygfx9636nccgvf"))
               (patches
                (search-patches "libguestfs-syms.patch"))))
     (build-system gnu-build-system)
@@ -3219,7 +3219,7 @@ hive as XML.")
                    "--with-distro=\"Guix System\""
                    "--with-readline"
                    (string-append "LDFLAGS=-Wl,-rpath," %output "/lib"))
-           #:make-flags #~`("REALLY_INSTALL=yes")
+           #:make-flags #~'("REALLY_INSTALL=yes")
            #:phases
            #~(let* ((lib (string-append #$output "/lib"))
                     (lib/ocaml (string-append lib "/ocaml")))
@@ -3228,15 +3228,18 @@ hive as XML.")
                    (lambda _
                      (for-each patch-shebang
                                (find-files "."))
-                     (substitute* "ocaml/Makefile.in"
-                       (("\\$\\(DESTDIR\\)\\$\\(OCAMLLIB\\)")
+                     (substitute* "ocaml/Makefile.am"
+                       (("\\$\\(DESTDIR\\)\\$\\(INSTALL_OCAMLLIB\\)")
                         lib/ocaml))
                      ;; FIXME: Perl bindings have broken runpath,
                      ;; this substitution doesn't seem to work.
                      (substitute* "perl/Build.PL.in"
                        (("extra_linker_flags => \\[")
                         (string-append "extra_linker_flags => [
-        '-L" #$output "/lib',")))))
+        '-L" lib "',")))))
+                 (replace 'bootstrap
+                   (lambda _
+                     (invoke "autoreconf" "-vif")))
                  (replace 'check
                    (lambda* (#:key tests? make-flags #:allow-other-keys)
                      (when tests?
@@ -3272,6 +3275,8 @@ hive as XML.")
                                    (invoke "rm" "-rf" d))
                                  (list man-dir info-dir)))))))))
     (native-inputs (list augeas
+                         autoconf
+                         automake
                          bison
                          cpio
                          flex
@@ -3288,7 +3293,8 @@ hive as XML.")
                          po4a
                          xorriso
                          xz
-                         zstd))
+                         zstd
+                         (list zstd "lib")))
     (inputs
      (list file
            fuse
@@ -3351,9 +3357,6 @@ disks, resizing disks, and much more.")
                   (substitute* "m4/guestfs-bash-completion.m4"
                     (("`pkg-config --variable=completionsdir bash-completion`")
                      completions))
-                  (substitute* "ocaml/Makefile.am"
-                    (("\\$\\(DESTDIR\\)\\$\\(OCAMLLIB\\)")
-                     lib/ocaml))
                   (substitute* "lua/Makefile.am"
                     (("\\$\\(DESTDIR\\)\\$\\(lualibdir\\)")
                      lib/lua))
@@ -3370,9 +3373,7 @@ $LDFLAGS += \" -Wl,-rpath=" #$output "/lib \"
 create_header"))))))))))
     (native-inputs
      (modify-inputs (package-native-inputs libguestfs-minimal)
-       (prepend autoconf
-                automake
-                bash-completion
+       (prepend bash-completion
                 cdrtools
                 gobject-introspection
                 python
