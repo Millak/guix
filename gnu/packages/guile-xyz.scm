@@ -1914,7 +1914,7 @@ Scheme by using Guile’s foreign function interface.")
                 (uri (git-reference
                       (url "https://framagit.org/prouby/guile-mastodon.git")
                       (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "17ic44jypv1yq296w8b4nm99189fdgmdw1pdx0172x97dicsf2j6"))))
