@@ -1717,12 +1717,14 @@ on top of Baloo.")
                              kde-cli-tools
                              kdecoration
                              kdeplasma-addons
+                             kpmcore
                              ktexteditor
                              kscreen
                              libkscreen
                              krdp
                              ksystemstats
                              kwallet
+                             kwalletmanager
                              kwallet-pam
                              kwin
                              plasma-workspace-wallpapers
@@ -1736,6 +1738,7 @@ on top of Baloo.")
                              ksshaskpass
                              discover
                              kmenuedit
+                             partitionmanager
                              plasma-welcome
                              plasma-browser-integration
                              plasma-desktop
