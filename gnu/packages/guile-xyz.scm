@@ -1364,7 +1364,7 @@ using Guile's foreign function interface.")
               (sha256
                (base32
                 "19y33wg94pf0n98dkfqd1zbw93fgky4sawxsxl6s3vyqwl0yi5vh"))
-              (file-name (string-append name "-" version "-checkout"))))
+              (file-name (git-file-name name version))))
     (build-system guile-build-system)
     (arguments
      '(#:source-directory "src"
