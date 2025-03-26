@@ -1834,7 +1834,7 @@ extremely large and complex data collections.")
         (base32 "14gih7kmjx4h3lc7pg4fwcl28hf1qqkf2x7rljpxqvzkjrqbxi00"))
        (patches (search-patches "hdf5-config-date.patch"))))))
 
-(define-public hdf5-1.14
+(define-public hdf5
   (package
     (inherit hdf5-1.8)
     (version "1.14.3")
@@ -1871,10 +1871,6 @@ extremely large and complex data collections.")
                   ;; library file reproducible.
                   (("@UNAME_INFO@")
                    "Linux"))))))))))
-
-(define-public hdf5
-  ;; Default version of HDF5.
-  hdf5-1.10)
 
 ;; Keep this in sync with the current hdf5 package.
 (define-public hdf-java
@@ -2041,7 +2037,7 @@ System (Grid, Point and Swath).")
      (list autoconf automake gfortran libtool))
     (build-system gnu-build-system)
     (inputs
-     (list hdf5-1.14 zlib gctp))
+     (list hdf5 zlib gctp))
     (arguments
      (list
       #:configure-flags ''("--enable-install-include" "--enable-shared"
@@ -2076,13 +2072,13 @@ Swath).")
     (license (license:non-copyleft home-page))))
 
 (define-public hdf5-parallel-openmpi
-  (package/inherit hdf5-1.14                      ;use the latest
+  (package/inherit hdf5
     (name "hdf5-parallel-openmpi")
     (inputs
      `(("mpi" ,openmpi)
        ,@(package-inputs hdf5)))
     (arguments
-     (substitute-keyword-arguments (package-arguments hdf5-1.14)
+     (substitute-keyword-arguments (package-arguments hdf5)
        ((#:configure-flags flags)
         #~(cons "--enable-parallel"
                 (delete "--enable-cxx"
@@ -10630,7 +10626,7 @@ computation is supported via MPI.")
                   curl
                   fftw
                   gettext-minimal
-                  hdf5-1.14
+                  hdf5
                   libarchive
                   libx11
                   libxml2

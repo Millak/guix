@@ -7941,7 +7941,7 @@ similarity of community members.")
           (add-after 'unpack 'chdir
             (lambda _
               (chdir "python"))))))
-    (inputs (list hdf5))
+    (inputs (list hdf5-1.10))
     (propagated-inputs
      (list python-dateutil))
     (native-inputs
@@ -11349,7 +11349,7 @@ simultaneously.")
                 (install-file "libs/kfg/default.kfg" target)
                 (install-file "libs/kfg/certs.kfg" target)))))))
     (inputs
-     (list file hdf5 java-ngs libxml2 ngs-sdk ))
+     (list file hdf5-1.10 java-ngs libxml2 ngs-sdk ))
     (native-inputs (list perl))
     ;; NCBI-VDB requires SSE capability.
     (supported-systems '("i686-linux" "x86_64-linux"))

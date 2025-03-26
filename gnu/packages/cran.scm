@@ -14934,7 +14934,7 @@ dendrograms.")
          "14p7i1sj24ky87kd7qr3n9fc9l64s0bp0rwbyl6i2x69xn75gpsx"))))
     (build-system r-build-system)
     (inputs
-     (list zlib hdf5))
+     (list zlib hdf5-1.10))
     (native-inputs
      (list r-knitr r-testthat which))
     (propagated-inputs

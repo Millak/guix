@@ -1389,7 +1389,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
       `(("boost" ,boost)
         ("fftw" ,fftw)
         ("fftwf" ,fftwf)
-        ("hdf5" ,hdf5)
+        ("hdf5" ,hdf5-1.10)
         ("ilmbase" ,ilmbase) ; propagated by openexr, but needed explicitly
                              ; to create a configure-flag
         ("libjpeg" ,libjpeg-turbo)
