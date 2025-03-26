@@ -20,6 +20,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix build-system perl)
   #:use-module (gnu packages)
   #:use-module (gnu packages gcc)
@@ -73,6 +74,35 @@
     (description "This package provides the @code{Math::MatrixReal} module.
 It implements the data type \"matrix of real numbers\" (and consequently also
 \"vector of real numbers\").")
+    (license license:perl-license)))
+
+(define-public perl-math-interpolate
+  (package
+    (name "perl-math-interpolate")
+    (version "1.06")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/B/BZ/BZAJAC/Math-Interpolate-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "0snfrg9vk0f9bznpv274f21p65gxv08x4m1myg2l5k4yvyzjyl54"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              ;; perl doesn't like the original format.
+              (substitute* "Makefile.PL"
+               (("'MIN_PERL_VERSION'[ \t]*=>[ \t]*'5.004_01'")
+                "'MIN_PERL_VERSION' => '5.005'")))))))
+    (home-page "https://metacpan.org/release/Math-Interpolate")
+    (synopsis "Interpolate the value Y from X using a list of (X, Y) pairs")
+    (description "This packages allows you to interpolate the value Y from X
+using a list of (X, Y) pairs.")
     (license license:perl-license)))
 
 ;; This is NOT compatible with perl-pdl-2.095
