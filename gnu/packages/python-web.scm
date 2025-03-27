@@ -8688,17 +8688,24 @@ esprima.js)")
 (define-public python-js2py
   (package
     (name "python-js2py")
-    (version "0.71")
+    (version "0.74")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Js2Py" version))
        (sha256
-        (base32 "1kkzkys6dfcbdv51vqxr9cmak350ab4mmykb8dysx60lvl4i06x4"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #false)) ; none included
+        (base32 "0bwpp23qpx9amzqisiqvzlr17hr7vxqp4ry8lgxhw639hjmadwrr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; tests require Node
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-pyjsparser python-six python-tzlocal))
+     (list python-numpy
+           python-pyjsparser
+           python-tzlocal))
     (home-page "https://github.com/PiotrDabkowski/Js2Py")
     (synopsis "JavaScript to Python translator")
     (description
