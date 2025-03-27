@@ -97869,6 +97869,45 @@ component model in Wasmtime.")
 @code{WebAssembly} code in Cranelift.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-environ-24
+  (package
+    (inherit rust-wasmtime-environ-25)
+    (name "rust-wasmtime-environ")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-environ" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cd1lxx7f12p2i340zcky8j3v2aalpa0qfffg627il2d9mwa03g8"))))
+    (arguments
+     `(#:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-cpp-demangle" ,rust-cpp-demangle-0.4)
+          ("rust-cranelift-bitset" ,rust-cranelift-bitset-0.111)
+          ("rust-cranelift-entity" ,rust-cranelift-entity-0.111)
+          ("rust-gimli" ,rust-gimli-0.29)
+          ("rust-indexmap" ,rust-indexmap-2)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-object" ,rust-object-0.36)
+          ("rust-postcard" ,rust-postcard-1)
+          ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
+          ("rust-semver" ,rust-semver-1)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-derive" ,rust-serde-derive-1)
+          ("rust-target-lexicon" ,rust-target-lexicon-0.12)
+          ("rust-wasm-encoder" ,rust-wasm-encoder-0.215)
+          ("rust-wasmparser" ,rust-wasmparser-0.215)
+          ("rust-wasmprinter" ,rust-wasmprinter-0.215)
+          ("rust-wasmtime-component-util" ,rust-wasmtime-component-util-24)
+          ("rust-wasmtime-types" ,rust-wasmtime-types-24))
+       #:cargo-development-inputs
+         (("rust-clap" ,rust-clap-4)
+          ("rust-env-logger" ,rust-env-logger-0.10)
+          ("rust-wat" ,rust-wat-1))))))
+
+
 (define-public rust-wasmtime-fiber-25
   (package
     (name "rust-wasmtime-fiber")
