@@ -448,8 +448,8 @@ This service is deprecated and slated for removal after 2025-06-15.")
                  (if target
                      findutils
                      (canonical-package findutils))))
-    "The GNU@tie{}Findutils package from which the @command{updatedb} command
-is taken.")
+    "The package from which the @command{updatedb} command is taken.
+Examples of such packages are GNU@tie{}Findutils and Plocate.")
   (schedule
    (string-or-gexp %default-file-database-update-schedule)
    "String or G-exp denoting an mcron schedule for the periodic
@@ -468,15 +468,20 @@ guix locate}).  This list is passed to the @option{--prunepaths} option of
     (let ((updatedb (program-file
                      "updatedb"
                      #~(begin
+                         (define updatedb
+                           (let ((try (lambda (file)
+                                        (and (file-exists? file) file))))
+                             (or (try #$(file-append package "/bin/updatedb"))
+                                 (try #$(file-append package "/sbin/updatedb")))))
                          ;; 'updatedb' is a shell script that expects various
                          ;; commands in $PATH.
                          (setenv "PATH"
-                                 (string-append #$package "/bin:"
+                                 (string-append (dirname updatedb) ":"
                                                 #$(canonical-package coreutils)
                                                 "/bin:"
                                                 #$(canonical-package sed)
                                                 "/bin"))
-                         (execl #$(file-append package "/bin/updatedb")
+                         (execl updatedb
                                 "updatedb"
                                 #$(string-append "--prunepaths="
                                                  (string-join

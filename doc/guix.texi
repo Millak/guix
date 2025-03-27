@@ -27318,8 +27318,8 @@ with the following fields:
 
 @table @asis
 @item @code{package} (default: @code{findutils})
-The GNU@tie{}Findutils package from which the @command{updatedb} command
-is taken.
+The package from which the @command{updatedb} command is taken.
+Examples of such packages are GNU@tie{}Findutils and Plocate.
 
 @item @code{schedule} (default: @code{%default-file-database-update-schedule})
 This is the schedule of database updates, expressed as a string in
