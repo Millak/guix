@@ -2802,13 +2802,13 @@ instantly.")
 (define-public python-crosshair
   (package
     (name "python-crosshair")
-    (version "0.0.76")
+    (version "0.0.84")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crosshair-tool" version))
        (sha256
-        (base32 "1yvbhzs7r85gn4d7drl7p7vi1f5cga1xyy3mzxy3fglyf8kxyakh"))))
+        (base32 "1j6icn5f206yld9871p7a3v45jg8d8v4bhxh09lq3kzi09gr7maz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2830,7 +2830,7 @@ instantly.")
                 (("typing-inspect>=0.7.1") "typing-inspect>=0.6.0")
                 ;; 'sanity-check fails for z3-solver, although it is
                 ;; included in 'propagated-inputs.
-                (("z3-solver==4.13.0.0") ""))))
+                (("z3-solver>=4.13.0.0") ""))))
           (add-before 'check 'set-test-env
             (lambda _
               (setenv "PYTHONHASHSEED" "0")))))) ;tests rely on this value
@@ -2840,10 +2840,16 @@ instantly.")
            python-mypy
            python-numpy
            python-pytest
-           python-pytest-xdist))
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-typeshed-client
+     (list python-importlib-metadata
+           python-packaging
+           ;; python-pygls
+           python-typeshed-client
            python-typing-inspect
+           python-typing-extensions
            z3))
     (home-page "https://crosshair.readthedocs.io")
     (synopsis "Analysis tool for Python using symbolic execution")
