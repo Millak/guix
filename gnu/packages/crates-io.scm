@@ -97982,6 +97982,24 @@ component model in Wasmtime.")
     (description "This package provides utilities for JIT icache maintenance.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-jit-icache-coherence-24
+  (package
+    (inherit rust-wasmtime-jit-icache-coherence-25)
+    (name "rust-wasmtime-jit-icache-coherence")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-jit-icache-coherence" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08bhxblwk3hdf1f2r465k3f54d7sz507l6c8bwhz5j0yggpgfhy5"))))
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))))))
+
 (define-public rust-wasmtime-slab-25
   (package
     (name "rust-wasmtime-slab")
