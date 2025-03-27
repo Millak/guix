@@ -98285,6 +98285,25 @@ component model in Wasmtime.")
      "This package provides internal wit support for the wasmtime crate's macros.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-wit-bindgen-24
+  (package
+    (inherit rust-wasmtime-wit-bindgen-25)
+    (name "rust-wasmtime-wit-bindgen")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-wit-bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "142iga909hr06hvnspykrl7vjsbmab5g6cfxvmbm03ik5mdhi2y5"))))
+    (arguments
+     `(#:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-heck" ,rust-heck-0.4)
+          ("rust-indexmap" ,rust-indexmap-2)
+          ("rust-wit-parser" ,rust-wit-parser-0.215))))))
+
 (define-public rust-wasmtime-wmemcheck-25
   (package
     (name "rust-wasmtime-wmemcheck")
