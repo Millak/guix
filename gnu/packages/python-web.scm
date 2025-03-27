@@ -3317,13 +3317,13 @@ options.")
   (package
     (inherit python-cssutils)
     (name "python-css-parser")
-    (version "1.0.7")
+    (version "1.0.10")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "css-parser" version ".tar.gz"))
+       (uri (pypi-uri "css-parser" version))
        (sha256
-        (base32 "1ldv9s3an4pgk7b5x6z07rw9b5fdrasdldnf22829pb26b39dq15"))))
+        (base32 "0qs375slcwqd7slizh6hzkwxx7cdj36v8kwn0qrfji1kscm9f7mz"))))
     (home-page "https://github.com/ebook-utils/css-parser")
     (synopsis "Fork of cssutils modified for parsing ebooks")
     (description
