@@ -97935,6 +97935,29 @@ component model in Wasmtime.")
     (description "This package provides fiber support for Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-fiber-24
+  (package
+    (inherit rust-wasmtime-fiber-25)
+    (name "rust-wasmtime-fiber")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-fiber" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qz6crlvjjngknql1cqqrad9mpfmi6vqnd5pxs57py2g35kd7hsp"))))
+    (arguments
+     `(#:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-cc" ,rust-cc-1)
+          ("rust-cfg-if" ,rust-cfg-if-1)
+          ("rust-rustix" ,rust-rustix-0.38)
+          ("rust-wasmtime-asm-macros" ,rust-wasmtime-asm-macros-24)
+          ("rust-wasmtime-versioned-export-macros"
+                ,rust-wasmtime-versioned-export-macros-24)
+          ("rust-windows-sys" ,rust-windows-sys-0.52))))))
+
 (define-public rust-wasmtime-jit-debug-25
   (package
     (name "rust-wasmtime-jit-debug")
