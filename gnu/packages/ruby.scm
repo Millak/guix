@@ -29,7 +29,7 @@
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2021 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
-;;; Copyright © 2022-2024 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2022-2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
@@ -250,6 +250,7 @@ a focus on simplicity and productivity.")
   (package
     (inherit ruby-3.0)
     (version "3.1.4")
+    (replacement ruby-3.1.7)
     (source
      (origin
        (method url-fetch)
@@ -259,6 +260,22 @@ a focus on simplicity and productivity.")
        (sha256
         (base32
          "0kzr792rk9n9yrqlyrkc1a0cmbk5y194f7v7p4vwjdk0ww860v8v"))))))
+
++;;; TODO: This newer version resolves serveral CVEs.  Remove
++;;; after ungrafting ruby.
+(define ruby-3.1.7
+  (package
+    (inherit ruby-3.1)
+    (version "3.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.xz"))
+       (sha256
+        (base32
+         "0ddhh3nzfnwwb0ks3rsmf3w1m71ban30wf61djn8gnkbbd2wr2k5"))))))
 
 (define-public ruby-3.2
   (package
