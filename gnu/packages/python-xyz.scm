@@ -561,6 +561,43 @@ using NumPy-like idioms.")
 line drawing algorithm}.")
     (license license:expat)))
 
+(define-public python-crc
+  (package
+    (name "python-crc")
+    (version "7.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Nicoretti/crc/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b9164z6v3ng5s8564a0gjdzqws6zf5aqvk6mnzw7ysk6d5rbb9r"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-wheel))
+    (home-page "https://nicoretti.github.io/crc/")
+    (synopsis "Pure Python CRC library")
+    (description
+     "This library computes and verifies @acronym{Cyclic Redundancy Check,
+CRC} checksums, using predefined and custom CRC configurations.
+
+Configurations:
+@table @asis
+@item CRC8
+  CCITT AUTOSAR SAEJ1850 SAEJ1850_ZERO BLUETOOTH MAXIM-DOW
+@item CRC16
+  XMODEM GSM PROFIBUS MODBUS IBM-3740 KERMIT
+@item CRC32
+  CRC32 AUTOSAR BZIP2 POSIX
+@item CRC64
+  CRC64
+@end table")
+    (license license:bsd-2)))
+
 (define-public python-distance
   (package
     (name "python-distance")
