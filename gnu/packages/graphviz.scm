@@ -209,7 +209,7 @@ structure and layout algorithms.")
 (define-public python-uqbar
   (package
     (name "python-uqbar")
-    (version "0.6.9")
+    (version "0.7.2")
     (source
      (origin
        (method git-fetch)
@@ -218,27 +218,23 @@ structure and layout algorithms.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "037qj3rymm6xzdpklddfhmfp2p1bq9fi3jrvxj6gmharphd5z869"))))
+        (base32 "1limp2m2smg0l3v6vn2fwhjcw1d8gakw5v0q7krb03q539qiql87"))))
     (build-system pyproject-build-system)
-    (arguments  ; XXX: Disable failing tests.
-     (list #:test-flags '(list "tests" "-k" "not test_find_executable \
-and not test_sphinx_book_text_broken_strict")))
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "uqbar")))
     (native-inputs
      (list graphviz
-           python-flake8
-           python-isort
-           python-mypy
+           python-defusedxml
            python-pytest
            python-pytest-cov
            python-setuptools
+           python-typing-extensions
            python-wheel))
     (propagated-inputs
-     (list python-black python-sphinx-5 python-unidecode
-           (package/inherit python-sphinx-rtd-theme
-             (propagated-inputs
-              (modify-inputs
-                  (package-propagated-inputs python-sphinx-rtd-theme)
-                (replace "python-sphinx" python-sphinx-5))))))
+     (list python-black
+           python-sphinx
+           python-unidecode))
     (home-page "https://github.com/josiah-wolf-oberholtzer/uqbar")
     (synopsis "Tools for building documentation with Sphinx, Graphviz and LaTeX")
     (description
