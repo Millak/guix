@@ -1858,7 +1858,11 @@ typographic detail of symbols on the page.")
         (base32 "1y8s55b4mlsigm0xkk6qjpp08c75rv0swvjp0lj3cs6lgqdjxdjl"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list lilypond python-pytest python-setuptools python-wheel))
+     (list lilypond
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list abjad))
     (home-page "https://abjad.github.io")
