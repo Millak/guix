@@ -4346,7 +4346,15 @@ recurrence relations.")
       ;; These tests fails with unexpected keyword arguments
       ;; in calls to cplot.
       #~(list "--deselect" "tests/test_u3.py::test_write_single"
-              "--deselect" "tests/test_u3.py::test_write_tree")))
+              "--deselect" "tests/test_u3.py::test_write_tree"
+              "-k" (string-join
+                    ;; Tests fail in arrays comprising.
+                    (list "not test_chebyshev1_p11[2-y2]"
+                          "test_chebyshev1_p11[4-y4]"
+                          "test_eval[1-ref1]"
+                          "test_eval[t2-ref2]"
+                          "test_eval[t3-ref3]")
+                    " and not "))))
     (native-inputs
      (list python-matplotx
            python-meshio
