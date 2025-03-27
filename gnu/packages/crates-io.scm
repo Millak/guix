@@ -98000,6 +98000,19 @@ component model in Wasmtime.")
      "This package provides uni-typed slab with a free list for use in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-slab-24
+  (package
+    (inherit rust-wasmtime-slab-25)
+    (name "rust-wasmtime-slab")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-slab" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06nhwfhscvac0j2v5l8l4x1jqzh8js075ra8ncfcqxkc2padxxxw"))))))
+
 (define-public rust-wasmtime-types-25
   (package
     (name "rust-wasmtime-types")
