@@ -98029,6 +98029,23 @@ component model in Wasmtime.")
      "Contains macros for defining versioned exports in Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-versioned-export-macros-24
+  (package
+    (inherit rust-wasmtime-versioned-export-macros-25)
+    (name "rust-wasmtime-versioned-export-macros")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-versioned-export-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0spd553znfnkwly4lan46874bykjdlmd20fcy0k5p38igj22yvks"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))))
+
 (define-public rust-wasmtime-wasi-25
   (package
     (name "rust-wasmtime-wasi")
