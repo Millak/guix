@@ -29417,15 +29417,18 @@ python-mpv, but it uses the JSON IPC protocol instead of the C API.")
 (define-public python-jellyfin-apiclient
   (package
     (name "python-jellyfin-apiclient")
-    (version "1.9.2")
+    (version "1.11.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jellyfin-apiclient-python" version))
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/jellyfin/jellyfin-apiclient-python.git")
+         (commit (string-append "v" version))))
        (sha256
-        (base32 "0r67cp9nizvn3cbslgi30zpd3mw4a6zal0ygik3jv5lni1xdkk5w"))))
+        (base32 "1l30r7s4djvcsnf342af8mvh4c68v9b37j5y47k6cpaj8fj78lac"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools python-pytest python-wheel))
     (propagated-inputs (list python-certifi python-requests python-urllib3
                              python-websocket-client))
     (home-page "https://github.com/jellyfin/jellyfin-apiclient-python")
