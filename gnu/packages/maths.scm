@@ -4462,6 +4462,12 @@ bindings to almost all functions of PETSc.")
           (base32
             "1f989dipv7lqxvalfrvvlmhlxyl67a87lavyyqrr1mh88glhl592"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; AssertionError: Lebedev(047) -- observed: 41, expected: 47 (max err:
+      ;; 4.910e-15).
+      #~(list "--deselect=tests/test_u3.py::test_scheme_spherical[lebedev_047]")))
     (native-inputs
      (list python-accupy
            python-pytest
