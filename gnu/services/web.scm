@@ -1574,12 +1574,18 @@ files.")
                   "LC_ALL=en_US.utf8"))))
       (stop #~(make-kill-destructor))))))
 
+(define (anonip-log-files config)
+  "Return the list of log files produced by @command{anonip}."
+  (list (anonip-configuration-output config)))
+
 (define anonip-service-type
   (service-type
    (name 'anonip)
    (extensions
     (list (service-extension shepherd-root-service-type
                              anonip-shepherd-service)
+          (service-extension log-rotation-service-type
+                             anonip-log-files)
           (service-extension activation-service-type
                              anonip-activation)))
    (description

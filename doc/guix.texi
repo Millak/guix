@@ -21453,7 +21453,9 @@ The file name of the input log file to process.  The service creates a
 FIFO of this name.  The web server should write its logs to this FIFO.
 
 @item @code{output}
-The file name of the processed log file.
+The file name of the processed log file.  This file is subject to log
+rotation @i{via} the Shepherd's log rotation service (@pxref{Log
+Rotation}).
 @end table
 
 The following optional settings may be provided:
