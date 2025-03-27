@@ -97960,6 +97960,26 @@ component model in Wasmtime.")
      "This package provides JIT debug interfaces support for Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-jit-debug-24
+  (package
+    (inherit rust-wasmtime-jit-debug-25)
+    (name "rust-wasmtime-jit-debug")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-jit-debug" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qcq3jwvad3lckzdsdgrdk6bsyibxkj3qanpj9jba26bw1k7k5nw"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-object" ,rust-object-0.36)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-rustix" ,rust-rustix-0.38)
+        ("rust-wasmtime-versioned-export-macros"
+            ,rust-wasmtime-versioned-export-macros-24))))))
+
 (define-public rust-wasmtime-jit-icache-coherence-25
   (package
     (name "rust-wasmtime-jit-icache-coherence")
