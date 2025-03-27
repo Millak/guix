@@ -131,7 +131,7 @@ Copyright @copyright{} 2024 Dariqq@*
 Copyright @copyright{} 2024 Denis 'GNUtoo' Carikli@*
 Copyright @copyright{} 2024 Fabio Natali@*
 Copyright @copyright{} 2024 Arnaud Daby-Seesaram@*
-Copyright @copyright{} 2024 Nigko Yerden@*
+Copyright @copyright{} 2024-2025 Nigko Yerden@*
 Copyright @copyright{} 2024 Troy Figiel@*
 Copyright @copyright{} 2024 Sharlatan Hellseher@*
 Copyright @copyright{} 2024 45mg@*
@@ -22932,10 +22932,7 @@ Bridge obfs4 ...
 Bridge obfs4 ..."))
 	  (transport-plugins
 	   (list (tor-transport-plugin
-		  (program
-		   (file-append
-		    go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
-		    "/bin/lyrebird")))))))
+		  (program (file-append lyrebird "/bin/lyrebird")))))))
 @end lisp
 @end deftp
 
