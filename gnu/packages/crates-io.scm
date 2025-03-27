@@ -97824,6 +97824,38 @@ component model in Wasmtime.")
      "This package provides integration between Cranelift and Wasmtime.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-cranelift-24
+  (package
+    (inherit rust-wasmtime-cranelift-25)
+    (name "rust-wasmtime-cranelift")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-cranelift" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06h1pz31jmalazk3rz46xjppjbyx06hx69rvsmy99q7fg2hqrha2"))))
+    (arguments
+     `(#:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-cfg-if" ,rust-cfg-if-1)
+          ("rust-cranelift-codegen" ,rust-cranelift-codegen-0.111)
+          ("rust-cranelift-control" ,rust-cranelift-control-0.111)
+          ("rust-cranelift-entity" ,rust-cranelift-entity-0.111)
+          ("rust-cranelift-frontend" ,rust-cranelift-frontend-0.111)
+          ("rust-cranelift-native" ,rust-cranelift-native-0.111)
+          ("rust-cranelift-wasm" ,rust-cranelift-wasm-0.111)
+          ("rust-gimli" ,rust-gimli-0.29)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-object" ,rust-object-0.36)
+          ("rust-target-lexicon" ,rust-target-lexicon-0.12)
+          ("rust-thiserror" ,rust-thiserror-1)
+          ("rust-wasmparser" ,rust-wasmparser-0.215)
+          ("rust-wasmtime-environ" ,rust-wasmtime-environ-24)
+          ("rust-wasmtime-versioned-export-macros"
+                ,rust-wasmtime-versioned-export-macros-24))))))
+
 (define-public rust-wasmtime-environ-25
   (package
     (name "rust-wasmtime-environ")
