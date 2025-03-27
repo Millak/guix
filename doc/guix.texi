@@ -30901,6 +30901,219 @@ details.
 
 @c %end of fragment
 
+@subsubheading Pounce Service
+
+@cindex IRC (Internet Relay Chat)
+@cindex bouncer, IRC
+@cindex Bounced Network Connection, BNC
+@url{https://git.causal.agency/pounce/about/, pounce} is a multi-client,
+TLS-only IRC bouncer.  It maintains a persistent connection to an IRC
+server, acting as a proxy and buffer for a number of clients.
+
+@defvar pounce-service-type
+This is the service type for the pounce IRC bouncer.  Its value is a
+@code{pounce-configuration} configuration instance, which is documented
+below.
+
+@cindex IRC bouncer configuration for Libera.Chat
+@cindex Libera.Chat, IRC bouncer configuration
+The following example configures pounce to act as an IRC bouncer for the
+@url{https://libera.chat, Libera.Chat} server, using @acronym{CertFP,
+client certificate fingerprint} authentication to avoid leaking a
+sensitive password to the publicly readable store.  The equally
+sensitive TLS certificate file should be created in-place or transferred
+using a secure means such as SSH, prior to deploying the service.  The
+service activation will ensure the ownership and permissions of the
+certificate/key files are set correctly.  In the below example, it is
+placed at @file{/etc/pounce/libera.pem} on the target machine.  Pounce
+itself can be used to generate a TLS certificate, using the @samp{pounce
+-g libera.pem} command, which concatenates both the private key and the
+public certificate in the specified file name.  For more information
+regarding CertFP authentication, refer to @samp{man pounce} or the
+Libera.Chat guide at @url{https://libera.chat/guides/certfp}.
+
+@lisp
+(service pounce-service-type
+         (pounce-configuration
+          (host "irc.libera.chat")
+          (client-cert "/etc/pounce/libera.pem")
+          (nick "hannah")
+          (join (list "#gnu" "#guix" "#guile" "#hurd"))))
+@end lisp
+
+Once deployed on the target machine, pounce will act as an IRC server
+listening for TLS connections on the 6697 TCP port of the
+@samp{localhost} address of that machine.  By default, a self-signed
+certificate for pounce is created at
+@file{/var/lib/pounce/.config/pounce/localhost.cert}.  If you plan to
+expose the bouncer to the public Internet, it is advisable to use a
+@acronym{CA, Certificate Authority}-signed certificate, as can be
+obtained using a certificate service (@pxref{Certificate Services}), so
+that IRC clients can verify the certificate out of the box.  If you
+instead plan to connect to the bouncer strictly via a secure connection,
+for example using a @acronym{VPN, Virtual Private Network} or
+@acronym{SSH, Secure Shell}, then it is acceptable to simply let your
+IRC client trust the auto-generated, self-signed pounce certificate or
+even disable TLS certificate verification in your client.
+
+@cindex IRC bouncer configuration for OFTC
+@cindex OFTC, IRC bouncer configuration
+To connect to a second server, a second pounce instance is needed,
+taking care to specify the @code{provision} field of its
+@code{pounce-configuration} to avoid a name clash with the previous
+service, along with a distinct @code{local-port} and @code{log-file}.
+The following example shows how to configure another bouncer, this time
+for the @url{https://www.oftc.net, OFTC} IRC server.  Like in the
+previous example, CertFP authentication is used, which can be configured
+similarly.  For more details about using CertFP with the OFTC IRC
+server, refer to @url{https://www.oftc.net/NickServ/CertFP/}.
+
+@lisp
+(service pounce-service-type
+         (pounce-configuration
+          (shepherd-provision '(pounce-oftc))
+          (local-port 6698)
+          (log-file "/var/log/pounce-oftc.log")
+          (host "irc.oftc.net")
+          (client-cert "/etc/pounce/oftc.pem")
+          (nick "sena")
+          (join (list "#gcc" "#glibc"))))
+@end lisp
+
+@end defvar
+
+@c Auto-generated via (configuration->documentation 'pounce-configuration).
+@c %start of fragment
+
+@deftp {Data Type} pounce-configuration
+Available @code{pounce-configuration} fields are:
+
+@table @asis
+@item @code{pounce} (default: @code{pounce}) (type: file-like)
+The @code{pounce} package to use.
+
+@item @code{shepherd-provision} (default: @code{(pounce)}) (type: list-of-symbols)
+The name(s) of the service.
+
+@item @code{shepherd-requirement} (default: @code{(user-processes networking)}) (type: list-of-symbols)
+Shepherd requirements the service should depend on.
+
+@item @code{log-file} (default: @code{"/var/log/pounce.log"}) (type: string)
+The log file name to use.
+
+@item @code{verbose?} (type: maybe-boolean)
+When true, log IRC messages to standard output.
+
+@item @code{local-host} (default: @code{"localhost"}) (type: maybe-string)
+The host to bind to.
+
+@item @code{local-port} (default: @code{6697}) (type: maybe-port)
+The port to bind to.
+
+@item @code{local-ca} (type: maybe-string)
+Require clients to authenticate using a TLS client certificate either
+contained in or signed by a certificate in the file loaded from
+@code{local-ca}, a file name.  The file is reloaded when the SIGUSR1
+signal is received.
+
+@item @code{local-cert} (type: maybe-string)
+File name of the TLS certificate to load.  The file is reloaded when the
+SIGUSR1 signal is received.  Unless specified, a self-signed certificate
+is generated at @file{/var/lib/pounce/.config/pounce/@var{host}.pem},
+where @var{host} corresponds to the value of the @code{local-host}
+field.
+
+@item @code{local-priv} (type: maybe-string)
+File name of the private TLS key to load.  Unless specified, a key is
+generated at @file{/var/lib/pounce/.config/pounce/@var{host}.key}, where
+@var{host} corresponds to the value of the @code{local-host} field.
+
+@item @code{local-pass} (type: maybe-string)
+Require the server password pass for clients to connect.  The pass
+string must be hashed using @samp{pounce -x}.
+
+@item @code{size} (default: @code{4096}) (type: maybe-power-of-two)
+Set the number of messages contained in the buffer to @var{size}.  This
+sets the maximum number of recent messages which can be relayed to a
+reconnecting client.  The size must be a power of two.
+
+@item @code{bind} (type: maybe-string)
+Host to bind the @emph{source} address to when connecting to the server.
+To connect from any address over IPv4 only, use @samp{0.0.0.0}.  To
+connect from any address over IPv6 only, use @samp{::}.
+
+@item @code{host} (type: string)
+The host name to connect to.
+
+@item @code{port} (type: maybe-port)
+The port number to connect to.
+
+@item @code{pass} (type: maybe-string)
+Password to use to log in with the server.  The password must have been
+hashed via the @samp{pounce -x} command.
+
+@item @code{join} (type: maybe-list-of-strings)
+The list of channels to join.
+
+@item @code{mode} (type: maybe-string)
+The user mode.
+
+@item @code{user} (type: maybe-string)
+To set the username.  The default username is the same as the nickname.
+
+@item @code{nick} (default: @code{"pounce"}) (type: maybe-string)
+Set nickname to @var{nick}.
+
+@item @code{real} (type: maybe-string)
+Set the real name.  The default is @code{nick}.
+
+@item @code{away} (type: maybe-string)
+The away status to use when no clients are connected and no other away
+status has been set.
+
+@item @code{quit} (type: maybe-string)
+The message to use when quitting.
+
+@item @code{no-names?} (type: maybe-boolean)
+Do not request @samp{NAMES} for each channel when a client connects.
+This avoids already connected clients receiving unsolicited responses
+but prevents new clients from populating user lists.
+
+@item @code{queue-interval} (default: @code{200}) (type: maybe-number)
+Set the server send queue interval in milliseconds.  The queue is used
+to send automated messages from pounce to the server.  Messages from
+clients are sent to the server directly.
+
+@item @code{trust} (type: maybe-string)
+File name of a certificate to trust.  When used, server name
+verification is disabled.
+
+@item @code{client-cert} (type: maybe-string)
+The file name of the TLS client.  If the private key is in a separate
+file, it is loaded with @code{client-priv}.  With @code{sasl-external?},
+authenticate using SASL EXTERNAL.  Certificates can be generated with
+@samp{pounce -g}.  For more details, refer to ``Generating Client
+Certificates'' in @samp{man 1 pounce}.
+
+@item @code{client-priv} (type: maybe-string)
+The file name of the TLS client private key.
+
+@item @code{sasl-plain} (type: maybe-pair)
+A pair of the username and password in plain text to authenticate using
+SASL PLAIN.  Since this method requires the account password in plain
+text, it is recommended to use CertFP instead with @code{sasl-external}.
+
+@item @code{sasl-external?} (type: maybe-boolean)
+Authenticate using SASL EXTERNAL, also known as CertFP.  The TLS client
+certificate is loaded from @code{client-cert}.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 @subsubheading Quassel Service
 
 @cindex IRC (Internet Relay Chat)

@@ -149,6 +149,40 @@
             ngircd-channel-modes
             ngircd-channel-key-file
 
+            pounce-configuration
+            pounce-configuration-pounce
+            pounce-configuration-shepherd-provision
+            pounce-configuration-shepherd-requirement
+            pounce-configuration-log-file
+            pounce-configuration-verbose?
+            pounce-configuration-local-host
+            pounce-configuration-local-port
+            pounce-configuration-local-ca
+            pounce-configuration-local-cert
+            pounce-configuration-local-priv
+            pounce-configuration-local-pass
+            pounce-configuration-size
+            pounce-configuration-bind
+            pounce-configuration-host
+            pounce-configuration-port
+            pounce-configuration-pass
+            pounce-configuration-join
+            pounce-configuration-mode
+            pounce-configuration-user
+            pounce-configuration-nick
+            pounce-configuration-real
+            pounce-configuration-away
+            pounce-configuration-quit
+            pounce-configuration-no-names?
+            pounce-configuration-queue-interval
+            pounce-configuration-trust
+            pounce-configuration-client-cert
+            pounce-configuration-client-priv
+            pounce-configuration-sasl-plain
+            pounce-configuration-sasl-external?
+
+            pounce-service-type
+
             quassel-configuration
             quassel-service-type
 
@@ -1636,6 +1670,355 @@ wrapper for the 'ngircd' command."
    (description
     "Run @url{https://ngircd.barton.de/, ngIRCd}, a lightweight @acronym{IRC,
 Internet Relay Chat} daemon.")))
+
+
+;;;
+;;; Pounce.
+;;;
+(define (pounce-serialize-boolean field value)
+  "Boolean arguments for pounce serialize to their field name, minus the
+trailing '?'."
+  (let ((name (symbol->string field)))
+    (string-append (if (string-suffix? "?" name)
+                       (string-drop-right name 1)
+                       name)
+                   "\n")))
+
+(define (pounce-serialize-string field value)
+  (format #f "~a=~a~%" field value))
+
+(define (pounce-serialize-list-of-strings field value)
+  (format #f "~a=~{~a~^,~}~%" field value))
+
+(define (pounce-serialize-pair field value)
+  (match value
+    ((head . tail)
+     (format #f "~a=~a:~a~%" field head tail))))
+
+(define (power-of-two? x)
+  "Predicate to check if X is an exact power of two."
+  (exact-integer? (sqrt x)))
+
+(define pounce-serialize-number pounce-serialize-string)
+(define pounce-serialize-power-of-two pounce-serialize-number)
+(define pounce-serialize-port pounce-serialize-number)
+
+(define-maybe boolean (prefix pounce-))
+(define-maybe number (prefix pounce-))
+(define-maybe pair (prefix pounce-))
+(define-maybe port (prefix pounce-))
+(define-maybe power-of-two (prefix pounce-))
+(define-maybe string (prefix pounce-))
+(define-maybe list-of-strings (prefix pounce-))
+
+;;; For a reference w.r.t. which options require an argument, refer to the
+;;; `options' array defined in bounce.c.
+(define-configuration pounce-configuration
+  (pounce
+   (file-like pounce)
+   "The @code{pounce} package to use."
+   (serializer empty-serializer))
+
+  (shepherd-provision
+   (list-of-symbols '(pounce))
+   "The name(s) of the service."
+   (serializer empty-serializer))
+
+  (shepherd-requirement
+   (list-of-symbols '(user-processes networking))
+   "Shepherd requirements the service should depend on."
+   (serializer empty-serializer))
+
+  (log-file
+   (string "/var/log/pounce.log")
+   "The log file name to use."
+   (serializer empty-serializer))
+
+  (verbose?
+   maybe-boolean
+   "When true, log IRC messages to standard output.")
+
+  ;; Client options.
+  (local-host
+   (maybe-string "localhost")
+   "The host to bind to.")
+
+  (local-port
+   (maybe-port 6697)
+   "The port to bind to.")
+
+  (local-ca
+   maybe-string
+   "Require clients to authenticate using a TLS client certificate either
+contained in or signed by a certificate in the file loaded from
+@code{local-ca}, a file name.  The file is reloaded when the SIGUSR1 signal is
+received.")
+
+  (local-cert
+   maybe-string
+   "File name of the TLS certificate to load.  The file is reloaded when the
+SIGUSR1 signal is received.  Unless specified, a self-signed certificate is
+generated at @file{/var/lib/pounce/.config/pounce/@var{host}.pem}, where
+@var{host} corresponds to the value of the @code{local-host} field.")
+
+  (local-priv
+   maybe-string
+   "File name of the private TLS key to load.  Unless specified, a key is
+generated at @file{/var/lib/pounce/.config/pounce/@var{host}.key}, where
+@var{host} corresponds to the value of the @code{local-host} field.")
+
+  (local-pass
+   maybe-string
+   "Require the server password pass for clients to connect.  The pass string
+must be hashed using @samp{pounce -x}.")
+
+  (size
+   (maybe-power-of-two 4096)
+   "Set the number of messages contained in the buffer to @var{size}.  This
+sets the maximum number of recent messages which can be relayed to a
+reconnecting client.  The size must be a power of two.")
+
+  ;; Server options.
+  (bind
+   maybe-string
+   "Host to bind the @emph{source} address to when connecting to the server.
+To connect from any address over IPv4 only, use @samp{0.0.0.0}.  To connect
+from any address over IPv6 only, use @samp{::}." )
+
+  (host
+   string
+   "The host name to connect to.")
+
+  (port
+   maybe-port
+   "The port number to connect to.")
+
+  (pass
+   maybe-string
+   "Password to use to log in with the server.  The password must have been
+hashed via the @samp{pounce -x} command.")
+
+  (join
+   maybe-list-of-strings
+   "The list of channels to join.")
+
+  (mode maybe-string "The user mode.")
+
+  (user
+   maybe-string
+   "To set the username.  The default username is the same as the nickname.")
+
+  (nick
+   (maybe-string "pounce")
+   "Set nickname to @var{nick}.")
+
+  (real
+   maybe-string
+   "Set the real name.  The default is @code{nick}.")
+
+  (away
+   maybe-string
+   "The away status to use when no clients are connected and no other away
+status has been set.")
+
+  (quit
+   maybe-string
+   "The message to use when quitting.")
+
+  (no-names?
+   maybe-boolean
+   "Do not request @samp{NAMES} for each channel when a client connects.  This
+avoids already connected clients receiving unsolicited responses but prevents
+new clients from populating user lists.")
+
+  (queue-interval
+   (maybe-number 200)
+   "Set the server send queue interval in milliseconds.  The queue is used to
+send automated messages from pounce to the server.  Messages from clients are
+sent to the server directly.")
+
+  (trust
+   maybe-string
+   "File name of a certificate to trust.  When used, server name verification
+is disabled.")
+
+  (client-cert
+   maybe-string
+   "The file name of the TLS client.  If the private key is in a separate
+file, it is loaded with @code{client-priv}.  With @code{sasl-external?},
+authenticate using SASL EXTERNAL.  Certificates can be generated with
+@samp{pounce -g}.  For more details, refer to ``Generating Client
+Certificates'' in @samp{man 1 pounce}.")
+
+  (client-priv
+   maybe-string
+   "The file name of the TLS client private key.")
+
+  (sasl-plain
+   maybe-pair
+   "A pair of the username and password in plain text to authenticate using
+SASL PLAIN.  Since this method requires the account password in plain text, it
+is recommended to use CertFP instead with @code{sasl-external}.")
+
+  (sasl-external?
+   maybe-boolean
+   "Authenticate using SASL EXTERNAL, also known as CertFP.  The TLS client
+certificate is loaded from @code{client-cert}.")
+  (prefix pounce-))
+
+(define %pounce-account
+  (list (user-group (name "pounce") (system? #t))
+        (user-account
+          (name "pounce")
+          (group "pounce")
+          (system? #t)
+          (comment "Pounce daemon user")
+          (home-directory "/var/lib/pounce")
+          (shell (file-append shadow "/sbin/nologin")))))
+
+(define (pounce-activation config)
+  "Create the HOME directory for pounce as well as the default TLS certificate
+and key, if not explicitly provided."
+  (match-record config <pounce-configuration>
+                ( local-host local-ca local-cert local-priv
+                  trust client-cert client-priv)
+    (with-imported-modules (source-module-closure
+                            '((gnu build activation)))
+      #~(begin
+          (use-modules (gnu build activation)
+                       (srfi srfi-34))
+
+          (let* ((home "/var/lib/pounce")
+                 (user (getpwnam "pounce"))
+                 (confdir (string-append home "/.config/pounce"))
+                 (default-cert (string-append confdir "/" #$local-host ".pem"))
+                 (default-key (string-append confdir "/" #$local-host ".key")))
+
+            (define* (sanitize-permissions file #:optional (mode #o400))
+              (guard (c (#t #t))
+               (chown file (passwd:uid user) (passwd:gid user))
+               (chmod file mode)))
+
+            ;; Create home directory for pounce user.
+            (mkdir-p/perms home user #o755)
+
+            ;; Best effort at sanitizing the ownership/permissions of the
+            ;; certificate/keys.  Since a cert file may incorporate the
+            ;; security key, keep the permissions as tight as possible (owner
+            ;; read-only / #o400).
+            (when #$(maybe-value-set? local-ca)
+              (sanitize-permissions #$local-ca))
+            (if #$(maybe-value-set? local-cert)
+                (sanitize-permissions #$local-cert)
+                (sanitize-permissions default-cert))
+            (if #$(maybe-value-set? local-priv)
+                (sanitize-permissions #$local-priv)
+                (sanitize-permissions default-key))
+            (when #$(maybe-value-set? trust)
+              (sanitize-permissions #$trust))
+            (when #$(maybe-value-set? client-cert)
+              (sanitize-permissions #$client-cert))
+            (when #$(maybe-value-set? client-priv)
+              (sanitize-permissions #$client-priv))
+
+            ;; Generate a default self-signed TLS certificate and private key
+            ;; unless explicitly provided.
+            (unless #$(maybe-value-set? local-cert)
+              (unless (file-exists? default-cert)
+                (mkdir-p/perms confdir user #o755)
+                (let ((openssl #$(file-append openssl "/bin/openssl"))
+                      (args `("req" "-newkey" "rsa" "-x509" "-days" "3650"
+                              "-noenc" "-subj" "/C=CA/CN=Pounce Certificate"
+                              ,@(if #$(maybe-value-set? local-priv)
+                                    '() ;XXX: likely bogus case
+                                    (list "-keyout" default-key))
+                              "-out" ,default-cert)))
+
+                  ;; XXX: Manually guard against and report exceptions until
+                  ;; bug#77365 is addressed.
+                  (guard (c ((invoke-error? c)
+                             (format (current-error-port)
+                                     "pounce: error generating pounce tls \
+certificate: ~a~%" c)))
+                    (apply invoke openssl args))
+                  (sanitize-permissions default-cert #o444)
+                  (unless #$(maybe-value-set? local-priv)
+                    (sanitize-permissions default-key #o400))))))))))
+
+(define (serialize-pounce-configuration config)
+  "Return a file-like object corresponding to the serialized CONFIG
+<pounce-configuration> record."
+  (mixed-text-file "pounce.conf"
+                   (serialize-configuration config
+                                            pounce-configuration-fields)))
+
+(define (pounce-wrapper config)
+  "Take CONFIG, a <pounce-configuration> object, and provide a least-authority
+wrapper for the 'ngircd' command."
+  (match-record config <pounce-configuration>
+                (local-ca local-cert local-priv trust client-cert client-priv)
+    (let* ((pounce.conf (serialize-pounce-configuration config)))
+      (least-authority-wrapper
+       (file-append (pounce-configuration-pounce config) "/bin/pounce")
+       #:name "pounce-pola-wrapper"
+       ;; Expose all needed files, such as options corresponding to string
+       ;; file names.
+       #:mappings
+       (append
+        (list (file-system-mapping
+               (source pounce.conf)
+               (target source))
+              (file-system-mapping
+               (source "/var/lib/pounce")
+               (target source)
+               (writable? #t))
+              (file-system-mapping
+               (source "/var/log/pounce.log")
+               (target source)
+               (writable? #t)))
+        (filter-map (lambda (value)
+                      (if (maybe-value-set? value)
+                          (file-system-mapping
+                           (source value)
+                           (target source))
+                          #f))
+                    (list local-ca local-cert local-priv
+                          trust client-cert client-priv)))
+       #:user "pounce"
+       #:group "pounce"
+       #:preserved-environment-variables
+       (cons "HOME" %default-preserved-environment-variables)
+       ;; Without preserving the user namespace, pounce fails to access the
+       ;; provisioned TLS certificates due to permission errors.
+       #:namespaces (fold delq %namespaces '(net user))))))
+
+(define (pounce-shepherd-service config)
+  (let ((pounce.cfg (serialize-pounce-configuration config)))
+    (list (shepherd-service
+           (provision (pounce-configuration-shepherd-provision config))
+           (requirement (pounce-configuration-shepherd-requirement config))
+           (actions (list (shepherd-configuration-action pounce.cfg)))
+           (start #~(make-forkexec-constructor
+                     (list #$(pounce-wrapper config) #$pounce.cfg)
+                     #:environment-variables (list "HOME=/var/lib/pounce")
+                     #:log-file #$(pounce-configuration-log-file config)))
+           (stop  #~(make-kill-destructor))))))
+
+(define pounce-service-type
+  (service-type
+   (name 'pounce)
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             pounce-shepherd-service)
+          (service-extension profile-service-type
+                             (compose list pounce-configuration-pounce))
+          (service-extension account-service-type
+                             (const %pounce-account))
+          (service-extension activation-service-type
+                             pounce-activation)))
+   (description
+    "Run @url{https://git.causal.agency/pounce/about/, pounce},
+the IRC bouncer.")))
 
 
 ;;;
