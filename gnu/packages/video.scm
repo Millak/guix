@@ -6662,7 +6662,7 @@ brightness, contrast, and frame rate.")
 (define-public get-iplayer
   (package
     (name "get-iplayer")
-    (version "3.30")
+    (version "3.35")
     (source
       (origin
         (method git-fetch)
@@ -6671,7 +6671,7 @@ brightness, contrast, and frame rate.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1kzsdq1mhm5h83bbdbhh3jhpfvq4f13ly22mfd6vvmhj8mq084pi"))))
+         (base32 "074a1aazryjps44qlmj2lqg7vnx559q4s6k1k1jvgjvadf1fpb3y"))))
     (build-system perl-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
