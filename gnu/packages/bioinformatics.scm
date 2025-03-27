@@ -22181,7 +22181,7 @@ effective when applied to the signal dataset.")
 (define-public python-ont-fast5-api
   (package
     (name "python-ont-fast5-api")
-    (version "4.0.0")
+    (version "4.1.3")
     (source
      (origin
        (method git-fetch)
@@ -22191,7 +22191,7 @@ effective when applied to the signal dataset.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01hj4751j424lzic2sc4bz1f8w7i7fpkjpy3rgghdyl5lyfyb4s4"))
+         "05zwjgdnzdrqfifhgw9rp4s22g8ysvjfhlaq9nb6p68q6mijy098"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "ont_fast5_api/vbz_plugin"))))
