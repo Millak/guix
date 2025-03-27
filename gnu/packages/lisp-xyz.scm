@@ -20,7 +20,7 @@
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Adam Kandur <rndd@tuta.io>
-;;; Copyright © 2020-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2020-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021-2025 André A. Gomes <andremegafone@gmail.com>
@@ -20164,37 +20164,36 @@ environment for Common Lisp.")
 ;;   (sbcl-package->ecl-package sbcl-lisp-stat))
 
 (define-public sbcl-lispbuilder-sdl
-  (let ((commit "589b3c6d552bbec4b520f61388117d6c7b3de5ab"))
+  (let ((commit "9590d70044aa9054292357cf416571ba7b1e08fc")
+        (revision "2"))
     (package
       (name "sbcl-lispbuilder-sdl")
-      (version (git-version "0.9.8.2" "1" commit))
+      (version (git-version "0.9.8.2" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/lispbuilder/lispbuilder")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-lispbuilder-sdl" version))
          (sha256
-          (base32 "0zga59fjlhq3mhwbf80qwqwpkjkxqnn2mhxajlb8563vhn3dbafp"))))
+          (base32 "018sapnhqb60v7144h34n1an8njz88j35z7kanvnc6fj9gm8vhj1"))))
       (build-system asdf-build-system/sbcl)
-      (inputs
-       `(("cffi" ,sbcl-cffi)
-         ("trivial-garbage" ,sbcl-trivial-garbage)
-         ("sdl" ,sdl)))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'cd-sdl
              (lambda _
-               (chdir "lispbuilder-sdl")
-               #t))
+               (chdir "lispbuilder-sdl")))
            (add-after 'cd-sdl 'fix-paths
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "cffi/library.lisp"
-                 (("libSDL[^\"]*" all)
-                  (string-append (assoc-ref inputs "sdl") "/lib/" all)))
-               #t)))))
+                 (("libSDL-1.2.so" _)
+                  (search-input-file inputs "/lib/libSDL-1.2.so"))))))))
+      (inputs
+       (list sbcl-cffi
+             sbcl-trivial-garbage
+             sdl))
       (home-page "https://github.com/lispbuilder/lispbuilder/wiki/LispbuilderSDL")
       (synopsis "Common Lisp wrapper for SDL")
       (description
