@@ -9768,6 +9768,7 @@ lists)
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.22
       #:import-path "go.opencensus.io"
       #:test-flags
       #~(list "-skip"
@@ -9776,20 +9777,6 @@ lists)
                (list "TestAgainstSpecs/Successful_GET_call_to_https.*"
                      "TestAgainstSpecs/Successfully_POST_call_to_https.*")
                "|"))
-      #:test-subdirs
-      #~(list "exporter/..."
-              "internal"
-              ;; "internal/testpb/..." ; missing packages
-              "metric/..."
-              ;; "plugin/ocgrpc/..."   ; missing packages
-              "plugin/ochttp/..."
-              "plugin/runmetrics/..."
-              "resource/..."
-              "stats/..."
-              "tag"
-              "trace/..."
-              ;; "zpages"              ; missing packages
-              "zpages/internal/...")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
@@ -9802,7 +9789,7 @@ lists)
            go-github-com-google-go-cmp
            go-github-com-stretchr-testify
            go-golang-org-x-net
-           #; go-google-golang-org-grpc)) ; not packaged, long journey
+           go-google-golang-org-grpc))
     (home-page "https://opencensus.io/")
     (synopsis "Stats collection and distributed tracing framework")
     (description
