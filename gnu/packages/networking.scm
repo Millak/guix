@@ -4888,32 +4888,22 @@ daemon.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/slackhq/nebula"
       #:install-source? #f
-      ;; XXX: Pack missing packages for cmd/nebula-service
-      #:test-subdirs #~(list ".")
+      #:import-path "github.com/slackhq/nebula"
+      #:build-flags
+      #~(list (format #f "-ldflags=-X main.Build=~a" #$version))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'build
-            (lambda* (#:key import-path #:allow-other-keys)
-              ;; Suggested option to provide build time flags is not supported
-              ;; in Guix for go-build-system.
-              ;; -ldflags "-X main.Build=SOMEVERSION"
-              (substitute* (string-append "src/" import-path "/cmd/nebula/main.go")
-                (("Version: ")
-                 (string-append "Version: " #$version)))
-              ;; Build nebula and nebula-cert
-              (let* ((dir "github.com/slackhq/nebula")
-                     (nebula-cmd (string-append dir "/cmd/nebula"))
-                     (cert-cmd (string-append dir "/cmd/nebula-cert")))
-                (invoke "go" "build" nebula-cmd)
-                (invoke "go" "build" cert-cmd))))
-          (replace 'install
-            (lambda _
-              (let* ((out #$output)
-                     (bindir (string-append out "/bin")))
-                (install-file "nebula" bindir)
-                (install-file "nebula-cert" bindir)))))))
+            (lambda* (#:key import-path #:allow-other-keys #:rest arguments)
+              (for-each
+               (lambda (cmd)
+                 (apply (assoc-ref %standard-phases 'build)
+                        `(,@arguments #:import-path
+                          ,(string-append import-path "/cmd/" cmd))))
+               (list "nebula"
+                     "nebula-service"
+                     "nebula-cert")))))))
     (inputs
      (list go-dario-cat-mergo
            go-github-com-anmitsu-go-shlex
@@ -4942,8 +4932,7 @@ daemon.")
            go-golang-zx2c4-com-wireguard
            go-google-golang-org-protobuf
            go-gopkg-in-yaml-v2
-           ;go-gvisor-dev-gvisor  ; for nebula-service, not packed yet
-           ))
+           go-gvisor-dev-gvisor))
     (home-page "https://github.com/slackhq/nebula")
     (synopsis "Scalable, peer-to-peer overlay networking tool")
     (description
