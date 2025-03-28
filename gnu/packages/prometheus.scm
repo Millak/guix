@@ -257,7 +257,7 @@ Prometheus metrics.")
 (define-public go-github-com-prometheus-common
   (package
     (name "go-github-com-prometheus-common")
-    (version "0.61.0")
+    (version "0.63.0")
     (source
      (origin
        (method git-fetch)
@@ -266,7 +266,7 @@ Prometheus metrics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wng61rzvh27s2rlaadvjbffwgpn74p1wjrz6insl57k1pg3cmcn"))
+        (base32 "0jf6wqx16zipp2dyjd6n4fdkp5i1hh4ranjcm5iph5rdvcry06m3"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -274,9 +274,7 @@ Prometheus metrics.")
             ;; separated packages:
             ;;
             ;; - github.com/prometheus/common/assets
-            ;; - github.com/prometheus/common/sigv4
-            (for-each delete-file-recursively
-                      (list "assets" "sigv4"))))))
+            (delete-file-recursively "assets")))))
     (build-system go-build-system)
     (arguments
      (list
@@ -306,7 +304,6 @@ Prometheus metrics.")
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-alecthomas-kingpin-v2
-           go-github-com-go-kit-log
            go-github-com-google-go-cmp
            go-github-com-julienschmidt-httprouter
            go-github-com-munnerz-goautoneg
