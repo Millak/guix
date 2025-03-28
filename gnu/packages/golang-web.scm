@@ -10247,6 +10247,77 @@ the standard @code{context} package to store request-scoped values.")
     (description "This package is a Go Implementation of WireGuard.")
     (license license:expat)))
 
+(define-public go-google-golang-org-grpc
+  (package
+    (name "go-google-golang-org-grpc")
+    (version "1.69.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/grpc/grpc-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bvwnhgg04zhzwb9pxsv3n0c96hci5mdnpdaxr4ggy2m28df2q6m"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - google.golang.org/grpc/cmd/protoc-gen-go-grpc
+            ;; - google.golang.org/grpc/examples
+            ;; - google.golang.org/grpc/gcp/observability
+            ;; - google.golang.org/grpc
+            ;; - google.golang.org/grpc/interop/observability
+            ;; - google.golang.org/grpc/interop/xds
+            ;; - google.golang.org/grpc/security/advancedtls/examples
+            ;; - google.golang.org/grpc/security/advancedtls
+            ;; - google.golang.org/grpc/stats/opencensus
+            ;; - google.golang.org/grpc/test/tools
+            (for-each delete-file-recursively
+                      (list "cmd/protoc-gen-go-grpc"
+                            "examples"
+                            "gcp/observability"
+                            "interop/observability"
+                            "interop/xds"
+                            "security/advancedtls/examples"
+                            "security/advancedtls"
+                            "stats/opencensus"
+                            "test/tools"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:tests? #f ; TODO: full test suite needs more packages
+      #:import-path "google.golang.org/grpc"))
+    (propagated-inputs
+     (list go-github-com-cespare-xxhash-v2
+           ;; go-github-com-cncf-xds-go
+           ;; go-github-com-envoyproxy-go-control-plane
+           ;; go-github-com-envoyproxy-go-control-plane-envoy
+           go-github-com-golang-glog
+           go-github-com-golang-protobuf
+           go-github-com-google-go-cmp
+           go-github-com-google-uuid
+           ;; go-go-opentelemetry-io-contrib-detectors-gcp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-protobuf))
+    (home-page "https://google.golang.org/grpc")
+    (synopsis "Golang implementation of gRPC - HTTP/2 based RPC")
+    (description
+     "Package grpc implements an RPC system called @code{gRPC}.")
+    (license license:asl2.0)))
+
 (define-public go-gopkg-in-go-jose-go-jose-v2
   (package
     (inherit go-github-com-go-jose-go-jose-v3)
