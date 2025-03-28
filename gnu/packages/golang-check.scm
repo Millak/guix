@@ -343,6 +343,33 @@ test (using testing.TB's @code{TempDir}) and with a few helper methods.")
      "A testing library for Go programs.")
     (license license:expat)))
 
+(define-public go-github-com-coder-quartz
+  (package
+    (name "go-github-com-coder-quartz")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/coder/quartz")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08ghwy4i4h9shxchcly69pqprqqcs7pcvaprc7kjgghbvwbgr69k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/coder/quartz"))
+    (home-page "https://github.com/coder/quartz")
+    (synopsis "Golang time testing library for writing deterministic unit tests")
+    (description
+     "Package quartz is a library for testing time related code.  It exports
+an interface Clock that mimics the standard library time package functions.
+In production, an implementation that calls thru to the standard library is
+used.  In testing, a Mock clock is used to precisely control and intercept
+time functions.")
+    (license license:cc0)))
+
 (define-public go-github-com-corpix-uarand
   (package
     (name "go-github-com-corpix-uarand")
