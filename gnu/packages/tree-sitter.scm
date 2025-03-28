@@ -460,6 +460,29 @@ Tree-sitter parsing library.")
      "This package provides a Nix grammar for the Tree-sitter parsing library.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-objc-3
+  (package
+    (name "rust-tree-sitter-objc")
+    (version "3.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-objc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lp1570h6lwhknzq3nn9sf26cfkqbx99vrrm0mpigz13ciavpa4w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cc" ,rust-cc-1)
+          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs
+         (("rust-tree-sitter" ,rust-tree-sitter-0.24))))
+    (home-page "https://github.com/tree-sitter-grammars/tree-sitter-objc")
+    (synopsis "Objective-C grammar for tree-sitter")
+    (description "This package provides an Objective-C grammar for tree-sitter.")
+    (license license:expat)))
+
 (define-public tree-sitter
   (package
     (name "tree-sitter")
