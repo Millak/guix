@@ -323,47 +323,73 @@ void writeLine(int fd, string s)
 }
 
 
-static void _deletePath(const Path & path, unsigned long long & bytesFreed, size_t linkThreshold)
+static void _deletePathAt(int fd, const Path & path, const Path & fullPath, unsigned long long & bytesFreed, size_t linkThreshold)
 {
     checkInterrupt();
 
-    printMsg(lvlVomit, format("%1%") % path);
+    printMsg(lvlVomit, format("%1%") % fullPath);
 
 #ifdef HAVE_STATX
 # define st_mode stx_mode
 # define st_size stx_size
 # define st_nlink stx_nlink
+#define fstatat(fd, path, stat, flags)           \
+    statx(fd, path, flags, STATX_SIZE | STATX_NLINK | STATX_MODE, stat)
+#define fstat(fd, stat)   \
+    statx(fd, "", AT_EMPTY_PATH, STATX_SIZE | STATX_NLINK | STATX_MODE, stat)
     struct statx st;
-    if (statx(AT_FDCWD, path.c_str(),
-	      AT_SYMLINK_NOFOLLOW,
-	      STATX_SIZE | STATX_NLINK | STATX_MODE, &st) == -1)
-	throw SysError(format("getting status of `%1%'") % path);
 #else
-    struct stat st = lstat(path);
+    struct stat st;
 #endif
+    if (fstatat(fd, path.c_str(), &st, AT_SYMLINK_NOFOLLOW))
+        throw SysError(format("getting status of `%1%'") % fullPath);
 
+    /* Note: if another process modifies what is at 'path' between now and
+       when we actually delete it, this may be inaccurate, but I know of no
+       way to check which file we actually deleted after the fact. */
     if (!S_ISDIR(st.st_mode) && st.st_nlink <= linkThreshold)
 	bytesFreed += st.st_size;
 
     if (S_ISDIR(st.st_mode)) {
-        /* Make the directory writable. */
-        if (!(st.st_mode & S_IWUSR)) {
-            if (chmod(path.c_str(), st.st_mode | S_IWUSR) == -1)
-                throw SysError(format("making `%1%' writable") % path);
-        }
+      /* Note: fds required scales with depth of directory nesting */
+      AutoCloseFD dirfd = openat(fd, path.c_str(),
+                                 O_RDONLY |
+                                 O_DIRECTORY |
+                                 O_NOFOLLOW |
+                                 O_CLOEXEC);
+      if(!dirfd.isOpen())
+        throw SysError(format("opening `%1%'") % fullPath);
 
-        for (auto & i : readDirectory(path))
-            _deletePath(path + "/" + i.name, bytesFreed, linkThreshold);
+      /* st.st_mode may currently be from a different file than what we
+         actually opened, get it straight from the file instead */
+      if(fstat(dirfd, &st))
+        throw SysError(format("re-getting status of `%1'") % fullPath);
+
+      /* Make the directory writable. */
+      if (!(st.st_mode & S_IWUSR)) {
+        if (fchmod(dirfd, st.st_mode | S_IWUSR) == -1)
+          throw SysError(format("making `%1%' writable") % fullPath);
+      }
+
+      for (auto & i : readDirectory(dirfd))
+        _deletePathAt(dirfd, i.name, path + "/" + i.name, bytesFreed, linkThreshold);
     }
 
     int ret;
-    ret = S_ISDIR(st.st_mode) ? rmdir(path.c_str()) : unlink(path.c_str());
+    ret = unlinkat(fd, path.c_str(), S_ISDIR(st.st_mode) ? AT_REMOVEDIR : 0 );
     if (ret == -1)
-        throw SysError(format("cannot unlink `%1%'") % path);
+        throw SysError(format("cannot unlink `%1%'") % fullPath);
 
 #undef st_mode
 #undef st_size
 #undef st_nlink
+#undef fstatat
+#undef fstat
+}
+
+static void _deletePath(const Path & path, unsigned long long & bytesFreed, size_t linkThreshold)
+{
+  _deletePathAt(AT_FDCWD, path, path, bytesFreed, linkThreshold);
 }
 
 
