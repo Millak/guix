@@ -2246,7 +2246,7 @@ are both supported).")
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
        (method url-fetch)
@@ -2255,20 +2255,28 @@ are both supported).")
                        version ".tar.gz"))
        (sha256
         (base32
-         "0zygsxxwdxmpppr7vyzi2r7d854yjl6918w0lrs7k41iib9zy8zx"))))
+         "1yy7x9ycqg6c65k66z47p8mvj48qc0pa4as1lk1agj8ffn7mg7sa"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:configure-flags
-       (list
-        "--disable-static"
-        "--enable-notifications"
-        "--enable-python-plugins"
-        "--enable-c-plugins"
-        "--enable-plugins"
-        "--enable-otr"
-        "--enable-pgp"
-        "--enable-omemo"
-        "--enable-icons-and-clipboard")))
+     (list
+       #:configure-flags
+         #~(list
+           "--disable-static"
+           "--enable-notifications"
+           "--enable-python-plugins"
+           "--enable-c-plugins"
+           "--enable-plugins"
+           "--enable-otr"
+           "--enable-pgp"
+           "--enable-omemo"
+           "--enable-icons-and-clipboard")
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-python-plugins
+             (lambda _
+               ;; Py_XDECREF is a macro in Python 3.10
+               (substitute* "src/plugins/python_plugins.c"
+                 (("Py_XDECREF") "_Py_XDECREF")))))))
     (native-inputs
      (list autoconf
            autoconf-archive
