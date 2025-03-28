@@ -91221,6 +91221,29 @@ tree_magic_mini.")
      "This package provides Rust bindings to the tree-sitter parsing library.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-0.23
+  (package
+    (inherit rust-tree-sitter-0.24)
+    (name "rust-tree-sitter")
+    (version "0.23.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jn57vzsplng4ldjfyl626d1q662xl4ydmn1bibn7pdnlc1dy0q2"))))
+    (arguments
+      ;; test fail: undeclared crate tree-sitter-rust; cannot find value `parser`
+     `(#:tests? #f
+       #:cargo-inputs
+         (("rust-bindgen" ,rust-bindgen-0.70)
+          ("rust-cc" ,rust-cc-1)
+          ("rust-regex" ,rust-regex-1)
+          ("rust-regex-syntax" ,rust-regex-syntax-0.8)
+          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1)
+          ("rust-wasmtime-c-api-impl" ,rust-wasmtime-c-api-impl-24))))))
+
 (define-public rust-tree-sitter-0.20
   (package
     (name "rust-tree-sitter")
