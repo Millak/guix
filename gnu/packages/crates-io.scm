@@ -99553,6 +99553,29 @@ UTF-32 types are provided, including support for malformed encoding.")
      "This package provides runtime components for the Wiggle code generator.")
     (license (list license:asl2.0))))
 
+(define-public rust-wiggle-24
+  (package
+    (inherit rust-wiggle-25)
+    (name "rust-wiggle")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wiggle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0y3fv7z3pcj9z3jvidwjn9a3r3gyl4cpicpaalpmh5i2jn94qan7"))))
+    (arguments
+     `(#:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-async-trait" ,rust-async-trait-0.1)
+          ("rust-bitflags" ,rust-bitflags-2)
+          ("rust-thiserror" ,rust-thiserror-1)
+          ("rust-tracing" ,rust-tracing-0.1)
+          ("rust-wasmtime" ,rust-wasmtime-24)
+          ("rust-wiggle-macro" ,rust-wiggle-macro-24)
+          ("rust-witx" ,rust-witx-0.9))))))
+
 (define-public rust-wiggle-generate-25
   (package
     (name "rust-wiggle-generate")
