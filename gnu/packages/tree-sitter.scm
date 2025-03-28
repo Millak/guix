@@ -621,6 +621,29 @@ Tree-sitter parsing library.")
     (description "This package provides a Scala grammar for tree-sitter.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-toml-ng-0.7
+  (package
+    (name "rust-tree-sitter-toml-ng")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-toml-ng" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cgbwl6x33d033ws4dwf3nw2pyd37m0bwxbxhl776jdfk34c5bg9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cc" ,rust-cc-1)
+          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs
+         (("rust-tree-sitter" ,rust-tree-sitter-0.24))))
+    (home-page "https://github.com/tree-sitter-grammars/tree-sitter-toml")
+    (synopsis "TOML grammar for tree-sitter")
+    (description "This package provides a TOML grammar for tree-sitter.")
+    (license license:expat)))
+
 (define-public tree-sitter
   (package
     (name "tree-sitter")
