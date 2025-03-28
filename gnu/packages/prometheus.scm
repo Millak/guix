@@ -442,7 +442,7 @@ Protocol,ICMP} echo (ping) functionality.")
 (define-public go-github-com-prometheus-procfs
   (package
     (name "go-github-com-prometheus-procfs")
-    (version "0.15.1")
+    (version "0.16.0")
     (source
      (origin
        (method git-fetch)
@@ -451,7 +451,7 @@ Protocol,ICMP} echo (ping) functionality.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "116ns8k1yjdj9a2vq5czlpmafrhy0yw5y0bcm1qqbqnn57agg68m"))))
+        (base32 "0f692685zcssryd38bahmamd72iaiilngp92gl1s9177891f44gm"))))
     (build-system go-build-system)
     (arguments
      (list
