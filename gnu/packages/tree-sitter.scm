@@ -668,6 +668,29 @@ Tree-sitter parsing library.")
      "This package provides @code{TypeScript} and TSX grammars for tree-sitter.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-xml-0.7
+  (package
+    (name "rust-tree-sitter-xml")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-xml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cxnr3q72fvld0ia8xjc5hl0x4xw9s7wvpcpsma4z68xb4gh8w76"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cc" ,rust-cc-1)
+          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs
+         (("rust-tree-sitter" ,rust-tree-sitter-0.24))))
+    (home-page "https://github.com/tree-sitter-grammars/tree-sitter-xml")
+    (synopsis "XML & DTD grammars for tree-sitter")
+    (description "This package provides XML & DTD grammars for tree-sitter.")
+    (license license:expat)))
+
 (define-public tree-sitter
   (package
     (name "tree-sitter")
