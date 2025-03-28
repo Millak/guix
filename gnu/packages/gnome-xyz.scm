@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Sughosha <sughosha@proton.me>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
 ;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
@@ -545,7 +546,7 @@ copy, move, delete, or edit your files.")
 (define-public gnome-shell-extension-unite-shell
   (package
     (name "gnome-shell-extension-unite-shell")
-    (version "72") ;Listed as compatible on extensions.gnome.org
+    (version "82")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -554,7 +555,7 @@ copy, move, delete, or edit your files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "006m54ribfbqij0p3zzglzqjw1rbvw0f9468j7p6zdaf43vdvhgc"))))
+                "0kghsaq8p38r7ya0kd2ggcwjpq4f3gszrfk5x11ji2m91cfk9sh9"))))
     (build-system copy-build-system)
     (native-inputs (list `(,glib "bin") gettext-minimal))
     (inputs (list xprop))
