@@ -2341,13 +2341,13 @@ videoformats depend on the configuration flags of ffmpeg.")
 (define-public ffmpeg-progress-yield
   (package
     (name "ffmpeg-progress-yield")
-    (version "0.7.8")
+    (version "0.11.3")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "ffmpeg-progress-yield" version))
+              (uri (pypi-uri "ffmpeg_progress_yield" version))
               (sha256
                (base32
-                "07j6m8p8z8ybl75h0d4xzjl1pvkfzr0i73siysqcgrrahdgsxrls"))))
+                "14kmlvslnkd60c3v50ifzm46n26vaadwymxwh2br5pz1zqcn89pb"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Not sure if the test file actually does anything.
@@ -2365,7 +2365,7 @@ videoformats depend on the configuration flags of ffmpeg.")
                                 `("PATH" ":" prefix
                                   (,(search-input-file inputs ffm))))))))))
     (inputs (list bash-minimal ffmpeg))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/slhck/ffmpeg-progress-yield")
     (synopsis "Run an ffmpeg command with progress")
     (description "This package allows an ffmpeg command to run with progress.
