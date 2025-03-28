@@ -238,12 +238,8 @@ Prometheus metrics.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/prometheus/client_model"
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-        ;; Source-only package
-        (delete 'build))))
+      #:skip-build? #t
+      #:import-path "github.com/prometheus/client_model"))
     (propagated-inputs
      (list go-github-com-golang-protobuf))
     (home-page "https://github.com/prometheus/client_model")
