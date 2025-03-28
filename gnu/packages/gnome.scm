@@ -9443,10 +9443,6 @@ Libadwaita.")
               (substitute* "tests/datetime/test-endianess.c"
                 (("/usr/share/locale")
                  (search-input-directory inputs "share/locale")))
-              (substitute* "panels/system/region/cc-region-page.c"
-                (("\"gkbd-keyboard-display")
-                 (string-append "\"" (search-input-file
-                                      inputs "bin/gkbd-keyboard-display"))))
               (substitute* '("panels/network/net-device-bluetooth.c"
                              "panels/network/net-device-mobile.c"
                              "panels/network/connection-editor/net-connection-editor.c")
