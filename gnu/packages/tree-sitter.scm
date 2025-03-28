@@ -436,6 +436,30 @@ Tree-sitter parsing library.")
     (description "This package provides a Makefile grammar for tree-sitter.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-nix-0.0.2
+  (package
+    (name "rust-tree-sitter-nix")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-nix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0160v6rqal8lsw9slx7x52ccq7cc5lfk6xd088rdcxyk0n3lz39s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cc" ,rust-cc-1)
+          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs
+         (("rust-tree-sitter" ,rust-tree-sitter-0.24))))
+    (home-page "https://github.com/nix-community/tree-sitter-nix")
+    (synopsis "Nix grammar for the Tree-sitter parsing library")
+    (description
+     "This package provides a Nix grammar for the Tree-sitter parsing library.")
+    (license license:expat)))
+
 (define-public tree-sitter
   (package
     (name "tree-sitter")
