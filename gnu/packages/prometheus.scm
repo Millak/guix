@@ -488,26 +488,6 @@ Protocol,ICMP} echo (ping) functionality.")
 kernel, and process metrics from the @file{/proc} pseudo file system.")
     (license license:asl2.0)))
 
-;; To make it compatible with node_exporter, see
-;; <https://github.com/prometheus/node_exporter/issues/3143>.
-(define-public go-github-com-prometheus-procfs-next
-  (let ((commit "24ab3d8d880d820115eef19f7b0c2c38fffd6a25")
-        (revision "0"))
-    (hidden-package
-     (package
-       (inherit go-github-com-prometheus-procfs)
-       (name "go-github-com-prometheus-procfs")
-       (version (git-version "0.15.2" revision commit))
-       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                (url "https://github.com/prometheus/procfs")
-                (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32 "0fv3f83q5wigbpl6mdpk4k7bj8jabc81rap0ym95l7rpw93cdlim"))))))))
-
 (define-public go-github-com-prometheus-sigv4
   (package
     (name "go-github-com-prometheus-sigv4")

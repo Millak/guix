@@ -619,7 +619,7 @@ WSGI and the node exporter textfile collector.")
            go-github-com-prometheus-common
            go-github-com-prometheus-community-go-runit
            go-github-com-prometheus-exporter-toolkit
-           go-github-com-prometheus-procfs-next
+           go-github-com-prometheus-procfs
            go-github-com-safchain-ethtool
            go-golang-org-x-exp
            go-golang-org-x-sys
