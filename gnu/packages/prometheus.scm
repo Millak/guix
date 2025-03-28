@@ -564,6 +564,38 @@ kernel, and process metrics from the @file{/proc} pseudo file system.")
           (sha256
            (base32 "0fv3f83q5wigbpl6mdpk4k7bj8jabc81rap0ym95l7rpw93cdlim"))))))))
 
+(define-public go-github-com-prometheus-sigv4
+  (package
+    (name "go-github-com-prometheus-sigv4")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus/sigv4")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yw37lw4x2l20l02i6yd4m4x948vgrfyaa0csl155rdyq3ynwa5w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/prometheus/sigv4"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-common
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/prometheus/sigv4")
+    (synopsis "HTTP signed requests with Amazon's Signature Verification V4")
+    (description
+     "sigv4 provides a @code{http.RoundTripper} that will sign requests using
+Amazon's Signature Verification V4 signing procedure, using credentials from
+the default AWS credential chain.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-prometheus-statsd-exporter
   (package
     (name "go-github-com-prometheus-statsd-exporter")
