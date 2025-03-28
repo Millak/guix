@@ -98289,6 +98289,29 @@ component model in Wasmtime.")
      "This package provides integration between Wasmtime and Winch.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-winch-24
+  (package
+    (inherit rust-wasmtime-winch-25)
+    (name "rust-wasmtime-winch")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-winch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "027r6yxmk2m4f7b3b3664i5201l86q8xmw6fi1g50zy66k6l0dpf"))))
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cranelift-codegen" ,rust-cranelift-codegen-0.111)
+                       ("rust-gimli" ,rust-gimli-0.29)
+                       ("rust-object" ,rust-object-0.36)
+                       ("rust-target-lexicon" ,rust-target-lexicon-0.12)
+                       ("rust-wasmparser" ,rust-wasmparser-0.215)
+                       ("rust-wasmtime-cranelift" ,rust-wasmtime-cranelift-24)
+                       ("rust-wasmtime-environ" ,rust-wasmtime-environ-24)
+                       ("rust-winch-codegen" ,rust-winch-codegen-0.22))))))
+
 (define-public rust-wasmtime-wit-bindgen-25
   (package
     (name "rust-wasmtime-wit-bindgen")
