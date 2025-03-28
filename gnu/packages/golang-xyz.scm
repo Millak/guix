@@ -9862,6 +9862,45 @@ Goroutine-safe connections)
 manipulate processes in a safe way.")
     (license license:expat)))
 
+(define-public go-github-com-kimmachinegun-automemlimit
+  (package
+    (name "go-github-com-kimmachinegun-automemlimit")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KimMachineGun/automemlimit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sgm46dhd5yp2fjsmjszbv8fhvw1kip2c6p4qf4856ma0znr49p6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/KimMachineGun/automemlimit"
+      #:test-flags
+      ;; memlimit_linux_test.go:82: SetGoMemLimit() error = failed to set
+      ;; GOMEMLIMIT: process is not in cgroup, wantErr cgroups is not
+      ;; supported on this system
+      #~(list "-skip" "TestSetGoMemLimit/Unavailable")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (propagated-inputs
+     (list go-github-com-pbnjay-memory))
+    (home-page "https://github.com/KimMachineGun/automemlimit")
+    (synopsis "Automatically set GOMEMLIMIT to match cgroups(7) memory limit")
+    (description
+     "Automatically set
+@url{https://tip.golang.org/doc/gc-guide#Memory_limit,GOMEMLIMIT} to match
+Linux @url{https://man7.org/linux/man-pages/man7/cgroups.7.html,cgroups(7)}
+memory limit.")
+    (license license:expat)))
+
 (define-public go-github-com-kisielk-sqlstruct
   (package
     (name "go-github-com-kisielk-sqlstruct")
