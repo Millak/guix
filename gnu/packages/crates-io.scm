@@ -98334,6 +98334,52 @@ component model in Wasmtime.")
     (description "This package provides WASI implementation in Rust.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-wasi-24
+  (package
+    (inherit rust-wasmtime-wasi-25)
+    (name "rust-wasmtime-wasi")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-wasi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hz5w6wxd0hj84ppkriyg0iycsilwrxcwmsx0psjci08jgir93zq"))))
+    ;; tests fail, probably due to an unpublished internal crate
+    ;; called test-programs which is referenced in the github repo
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs
+         (("rust-anyhow" ,rust-anyhow-1)
+          ("rust-async-trait" ,rust-async-trait-0.1)
+          ("rust-bitflags" ,rust-bitflags-2)
+          ("rust-bytes" ,rust-bytes-1)
+          ("rust-cap-fs-ext" ,rust-cap-fs-ext-3)
+          ("rust-cap-net-ext" ,rust-cap-net-ext-3)
+          ("rust-cap-rand" ,rust-cap-rand-3)
+          ("rust-cap-std" ,rust-cap-std-3)
+          ("rust-cap-time-ext" ,rust-cap-time-ext-3)
+          ("rust-fs-set-times" ,rust-fs-set-times-0.20)
+          ("rust-futures" ,rust-futures-0.3)
+          ("rust-io-extras" ,rust-io-extras-0.18)
+          ("rust-io-lifetimes" ,rust-io-lifetimes-2)
+          ("rust-once-cell" ,rust-once-cell-1)
+          ("rust-rustix" ,rust-rustix-0.38)
+          ("rust-system-interface" ,rust-system-interface-0.27)
+          ("rust-thiserror" ,rust-thiserror-1)
+          ("rust-tokio" ,rust-tokio-1)
+          ("rust-tracing" ,rust-tracing-0.1)
+          ("rust-url" ,rust-url-2)
+          ("rust-wasmtime" ,rust-wasmtime-24)
+          ("rust-wiggle" ,rust-wiggle-24)
+          ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs
+         (("rust-tempfile" ,rust-tempfile-3)
+          ("rust-test-log" ,rust-test-log-0.2)
+          ("rust-tokio" ,rust-tokio-1)
+          ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
+
 (define-public rust-wasmtime-winch-25
   (package
     (name "rust-wasmtime-winch")
