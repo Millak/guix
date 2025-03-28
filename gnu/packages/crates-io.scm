@@ -97753,6 +97753,34 @@ format to the text format.")
      "Provides macros for deriving component interface types from Rust types.")
     (license (list license:asl2.0))))
 
+(define-public rust-wasmtime-component-macro-24
+  (package
+    (inherit rust-wasmtime-component-macro-25)
+    (name "rust-wasmtime-component-macro")
+    (version "24.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasmtime-component-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cnsip3cqlln4ks852ibjrksbqmklmlanc4qk916wn49sdr2bdvl"))))
+    (arguments
+     `(#:tests? #f      ; undeclared crate `wasmtime`
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-wasmtime-component-util" ,rust-wasmtime-component-util-24)
+                       ("rust-wasmtime-wit-bindgen" ,rust-wasmtime-wit-bindgen-24)
+                       ("rust-wit-parser" ,rust-wit-parser-0.215))
+       #:cargo-development-inputs
+         (("rust-prettyplease" ,rust-prettyplease-0.2)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-json" ,rust-serde-json-1)
+          ("rust-similar" ,rust-similar-2)
+          ("rust-tracing" ,rust-tracing-0.1))))))
+
 (define-public rust-wasmtime-component-util-25
   (package
     (name "rust-wasmtime-component-util")
