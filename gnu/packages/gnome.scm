@@ -1602,10 +1602,10 @@ extraction, and lookup for applications on the desktop.")
               ;; Allow the "Preview" button in the keyboard layout
               ;; selection dialog to display the layout.
               (substitute* "gnome-initial-setup/pages/keyboard/cc-input-chooser.c"
-                (("\"gkbd-keyboard-display")
+                (("\"tecla")
                  (string-append "\"" (search-input-file
                                       inputs
-                                      "bin/gkbd-keyboard-display")))))))))
+                                      "bin/tecla")))))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
@@ -1624,7 +1624,6 @@ extraction, and lookup for applications on the desktop.")
            json-glib
            mit-krb5
            libadwaita
-           libgnomekbd
            libgweather4
            libnma
            libpwquality
@@ -1633,6 +1632,7 @@ extraction, and lookup for applications on the desktop.")
            packagekit
            polkit
            rest-next
+           tecla
            upower
            webkitgtk))
     (synopsis "Initial setup wizard for GNOME desktop")
