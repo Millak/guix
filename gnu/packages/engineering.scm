@@ -1886,7 +1886,7 @@ fully-vectorial and three-dimensional methods.")
 (define-public meep
   (package
     (name "meep")
-    (version "1.29.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -1895,7 +1895,7 @@ fully-vectorial and three-dimensional methods.")
                 version "/meep-" version ".tar.gz"))
               (sha256
                (base32
-                "1511849g6wlpa42kfrj6zvmc3ivad9ync8r01xp2ld7r5j39y9v8"))))
+                "0fgbyg0b1g172ndi5cmmawd7j602g00hfr8waqjw3fa4s3zxgq09"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
