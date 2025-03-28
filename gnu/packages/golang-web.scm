@@ -10361,6 +10361,40 @@ the standard @code{context} package to store request-scoped values.")
        ((#:tests? _ #t) #f)
        ((#:import-path _) "gopkg.in/jcmturner/rpc.v2")))))
 
+(define-public go-k8s-io-cri-api
+  (package
+    (name "go-k8s-io-cri-api")
+    (version "0.32.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kubernetes/cri-api")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wzqf8860xp0k1y6csrksh37alzz3ksagwl3bv67r4x602l0zadv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "k8s.io/cri-api"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-gogo-protobuf
+           go-google-golang-org-grpc))
+    (home-page "https://github.com/kubernetes/cri-api")
+    (synopsis "Container Runtime Interface a plugin interface")
+    (description
+     "This package provides the definitions for the Container Runtime
+Interface (CRI).  CRI is a plugin interface which enables kubelet to use a
+wide variety of container runtimes, without the need to recompile.  CRI
+consists of a protocol buffers and @code{gRPC} API. Read more about CRI API at
+@@url{https://kubernetes.io/docs/concepts/architecture/cri/,kubernetes
+docs}.")
+    (license license:asl2.0)))
+
 (define-public go-k8s-io-kube-openapi
   (package
     (name "go-k8s-io-kube-openapi")
