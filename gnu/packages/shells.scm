@@ -553,14 +553,14 @@ ksh, and tcsh.")
 (define-public xonsh
   (package
     (name "xonsh")
-    (version "0.19.2")
+    (version "0.19.9")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "xonsh" version))
         (sha256
           (base32
-           "1c30p5qvn6c2l1jq7lby86m0cg9s2k3xrbbcznpc78jlv600dpfg"))
+           "0zf3fjjq0p9pngq48s8c14ywzv4b02y14vr9g93vgalqg96lrasc"))
         (modules '((guix build utils)))
         (snippet
          #~(begin
@@ -608,6 +608,7 @@ ksh, and tcsh.")
                            "test_sourcefile"
                            "test_spec_decorator_alias_output_format"
                            "test_spec_modifier_alias_output_format"
+                           "test_trace_in_script"
                            "test_vc_get_branch"
                            "test_xonsh_activator"
                            "test_xonsh_lexer")
