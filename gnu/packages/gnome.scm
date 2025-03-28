@@ -9587,14 +9587,13 @@ properties, screen resolution, and other GNOME parameters.")
             (add-before 'configure 'record-absolute-file-names
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((ibus-daemon (search-input-file inputs "bin/ibus-daemon"))
-                      (gkbd-keyboard-display
-                       (search-input-file inputs "bin/gkbd-keyboard-display")))
+                      (tecla (search-input-file inputs "bin/tecla")))
                   (substitute* "js/misc/ibusManager.js"
                     (("'ibus-daemon'")
                      (string-append "'" ibus-daemon "'")))
                   (substitute* "js/ui/status/keyboard.js"
-                    (("'gkbd-keyboard-display'")
-                     (string-append "'" gkbd-keyboard-display "'"))))))
+                    (("'tecla'")
+                     (string-append "'" tecla "'"))))))
             (add-before 'check 'pre-check
               (lambda* (#:key inputs #:allow-other-keys)
                 ;; Tests require a running X server.
@@ -9706,7 +9705,6 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            ibus
            libcanberra
            libcroco
-           libgnomekbd                  ;for gkbd-keyboard-display
            libgweather4
            libnma
            libsoup
@@ -9718,6 +9716,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            pulseaudio
            python-pygobject
            startup-notification
+           tecla                        ;for keyboard previews
            telepathy-logger
            upower
            ;; XXX: These requirements were added in 3.24, but no mention in NEWS.
