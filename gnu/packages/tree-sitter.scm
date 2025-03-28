@@ -320,6 +320,30 @@ Tree-sitter parsing library.")
     (description "This package provides a Java grammar for tree-sitter.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-javascript-0.23
+  (package
+    (name "rust-tree-sitter-javascript")
+    (version "0.23.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-javascript" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cf19p9rl96yqjjhzimhp0dpvp2xxq8fqg2w29nc25h4krcvyh5z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cc" ,rust-cc-1)
+          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs
+         (("rust-tree-sitter" ,rust-tree-sitter-0.24))))
+    (home-page "https://github.com/tree-sitter/tree-sitter-javascript")
+    (synopsis "JavaScript grammar for tree-sitter")
+    (description
+     "This package provides @code{JavaScript} grammar for tree-sitter.")
+    (license license:expat)))
+
 (define-public tree-sitter
   (package
     (name "tree-sitter")
