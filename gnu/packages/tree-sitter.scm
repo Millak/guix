@@ -251,6 +251,29 @@ Tree-sitter parsing library.")
     (description "This package provides a Go grammar for tree-sitter.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-haskell-0.23
+  (package
+    (name "rust-tree-sitter-haskell")
+    (version "0.23.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-haskell" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19057d99kaq7bn8k86baf7v4q4mjv8p5mjr7zh9vm32l0kjm2z4p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cc" ,rust-cc-1)
+          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs
+         (("rust-tree-sitter" ,rust-tree-sitter-0.23))))
+    (home-page "https://github.com/tree-sitter/tree-sitter-haskell")
+    (synopsis "Haskell grammar for tree-sitter")
+    (description "This package provides a Haskell grammar for tree-sitter.")
+    (license license:expat)))
+
 (define-public tree-sitter
   (package
     (name "tree-sitter")
