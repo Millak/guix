@@ -390,6 +390,29 @@ Tree-sitter parsing library.")
     (description "This package provides a Julia grammar for tree-sitter.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-lua-0.2
+  (package
+    (name "rust-tree-sitter-lua")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-lua" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07k4753h1nz3pbffcnclxjz2xcfvb6hb7jv0fs7cbzk517grmnsw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cc" ,rust-cc-1)
+          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs
+         (("rust-tree-sitter" ,rust-tree-sitter-0.23))))
+    (home-page "https://github.com/tree-sitter-grammars/tree-sitter-lua")
+    (synopsis "Lua grammar for tree-sitter")
+    (description "This package provides a Lua grammar for tree-sitter.")
+    (license license:expat)))
+
 (define-public tree-sitter
   (package
     (name "tree-sitter")
