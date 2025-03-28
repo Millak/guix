@@ -1363,7 +1363,7 @@ SHA-256, SHA-512, and WHIRLPOOL hashes.")
 (define-public mkp224o
   (package
     (name "mkp224o")
-    (version "1.5.0")
+    (version "1.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1371,13 +1371,16 @@ SHA-256, SHA-512, and WHIRLPOOL hashes.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0b2cn96wg4l8jkkqqp8l2295xlmm2jc8nrw6rdqb5g0zkpfmrxbb"))
+                "1d0mrp936if1zi8ss0mmywglsmrl0jx42x2sgnm56js8ij3g3g9q"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no test suite
        #:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'set-cflags
+           (lambda _
+             (setenv "CFLAGS" "-O3")))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((outdir (assoc-ref outputs "out"))
