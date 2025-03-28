@@ -483,6 +483,29 @@ Tree-sitter parsing library.")
     (description "This package provides an Objective-C grammar for tree-sitter.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-ocaml-0.23
+  (package
+    (name "rust-tree-sitter-ocaml")
+    (version "0.23.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-ocaml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xz3dkvb40b5anir8ld7547w2kibbms75y7i1kfhcn8p7ni09hck"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cc" ,rust-cc-1)
+          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs
+         (("rust-tree-sitter" ,rust-tree-sitter-0.24))))
+    (home-page "https://github.com/tree-sitter/tree-sitter-ocaml")
+    (synopsis "OCaml grammar for tree-sitter")
+    (description "This package provides an OCaml grammar for tree-sitter.")
+    (license license:expat)))
+
 (define-public tree-sitter
   (package
     (name "tree-sitter")
