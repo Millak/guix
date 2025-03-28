@@ -206,6 +206,28 @@ Tree-sitter parsing library.")
     (description "This package provides C# grammar for tree-sitter.")
     (license license:expat)))
 
+(define-public rust-tree-sitter-elixir-0.3
+  (package
+    (name "rust-tree-sitter-elixir")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-elixir" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0grdkbx6bqw3s1w3mkk94sibmhgdicdlqirjzpc57zdl8x348pg4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs (("rust-tree-sitter" ,rust-tree-sitter-0.23))))
+    (home-page "https://github.com/elixir-lang/tree-sitter-elixir")
+    (synopsis "Elixir grammar for the tree-sitter parsing library")
+    (description
+     "This package provides Elixir grammar for the tree-sitter parsing library.")
+    (license license:asl2.0)))
+
 (define-public tree-sitter
   (package
     (name "tree-sitter")
