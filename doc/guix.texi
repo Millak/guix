@@ -21808,7 +21808,7 @@ resolver:
                  "domain_name"
                  "domain_search"))
     (static '("domain_name_servers=127.0.0.1"))
-    (no-hook '("hostname")))))
+    (no-hook '("hostname"))))
 @end lisp
 @end defvar
 
