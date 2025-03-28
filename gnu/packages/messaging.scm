@@ -35,7 +35,7 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
@@ -905,44 +905,45 @@ dictionaries.  HexChat can be extended with multiple addons.")
     ;; Needed for the test suite.
     (native-inputs (list procps expect inetutils openssl))
     ;; XXX Add libident.
-    (inputs `(("zlib" ,zlib)
-              ("libwrap" ,tcp-wrappers)
-              ("gnutls" ,gnutls)
-              ,@(if (string-suffix? "-linux"
-                                    (or (%current-target-system)
-                                        (%current-system)))
-                    `(("linux-pam" ,linux-pam))
-                    '())))
+    (inputs
+     (append (list zlib
+                   tcp-wrappers
+                   gnutls)
+             (if (or (target-linux?) (target-hurd?))
+                 (list linux-pam)
+                 '())))
     (arguments
-     `(#:configure-flags
-       '("--with-gnutls" "--with-iconv" "--enable-ipv6" "--with-tcp-wrappers"
-         ,@(if (string-suffix? "-linux"
-                               (or (%current-target-system)
-                                   (%current-system)))
-               '("--with-pam")
-               '()))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Necessary for the test suite.
-         (add-after 'configure 'post-configure
-           (lambda _
-             (substitute* "src/ngircd/Makefile"
-               (("/bin/sh") (which "sh")))
-             ;; The default getpid.sh does a sloppy grep over 'ps -ax' output,
-             ;; which fails arbitrarily.
-             (with-output-to-file "src/testsuite/getpid.sh"
-               (lambda ()
-                 (display
-                  (string-append
-                   "#!" (which "sh") "\n"
-                   "ps -C \"$1\" -o pid=\n"))))
-             ;; Our variant of getpid.sh does not match interpreter names
-             ;; when the script's shebang is invoked directly as "./foo".
-             ;; Patch cases where the test suite relies on this.
-             (substitute* "src/testsuite/start-server.sh"
-               ;; It runs 'getpid.sh sh' to test if it works at all.  Run it on
-               ;; 'make' instead.
-               (("getpid.sh sh") "getpid.sh make")))))))
+     (list
+      #:configure-flags
+      #~(list "--with-gnutls"
+              "--with-iconv"
+              "--enable-ipv6"
+              "--with-tcp-wrappers"
+              #$@(if (or (target-linux?) (target-hurd?))
+                     #~("--with-pam")
+                     #~()))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Necessary for the test suite.
+          (add-after 'configure 'post-configure
+            (lambda _
+              (substitute* "src/ngircd/Makefile"
+                (("/bin/sh") (which "sh")))
+              ;; The default getpid.sh does a sloppy grep over 'ps -ax'
+              ;; output, which fails arbitrarily.
+              (with-output-to-file "src/testsuite/getpid.sh"
+                (lambda ()
+                  (display
+                   (string-append
+                    "#!" (which "sh") "\n"
+                    "ps -C \"$1\" -o pid=\n"))))
+              ;; Our variant of getpid.sh does not match interpreter names
+              ;; when the script's shebang is invoked directly as "./foo".
+              ;; Patch cases where the test suite relies on this.
+              (substitute* "src/testsuite/start-server.sh"
+                ;; It runs 'getpid.sh sh' to test if it works at all.  Run it on
+                ;; 'make' instead.
+                (("getpid.sh sh") "getpid.sh make")))))))
     (home-page "https://ngircd.barton.de/")
     (synopsis "Lightweight Internet Relay Chat server for small networks")
     (description
