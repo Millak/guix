@@ -355,62 +355,6 @@ metrics.")
      "This package provides Prometheus assets.")
     (license license:asl2.0)))
 
-(define-public go-github-com-prometheus-common-sigv4
-  (package
-    (name "go-github-com-prometheus-common-sigv4")
-    (version "0.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/prometheus/common")
-             (commit (go-version->git-ref version
-                                          #:subdir "sigv4"))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "08sdhxryl1jpy829qki8k2jy773xhrbr9wsk997pxhbbvl634gvb"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
-       (snippet
-        #~(begin
-            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
-            ;; guix/build/utils or guix/build-system/go.
-            (define (delete-all-but directory . preserve)
-              (define (directory? x)
-                (and=> (stat x #f)
-                       (compose (cut eq? 'directory <>) stat:type)))
-              (with-directory-excursion directory
-                (let* ((pred
-                        (negate (cut member <> (append '("." "..") preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (lambda (item)
-                              (if (directory? item)
-                                  (delete-file-recursively item)
-                                  (delete-file item)))
-                            items))))
-            (delete-all-but "." "sigv4")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/prometheus/common/sigv4"
-      #:unpack-path "github.com/prometheus/common"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-github-com-aws-aws-sdk-go
-           go-github-com-prometheus-client-golang
-           go-github-com-prometheus-common
-           go-gopkg-in-yaml-v2))
-    (home-page "https://github.com/prometheus/common")
-    (synopsis "HTTP signed requests with Amazon's Signature Verification V4")
-    (description
-     "This package provides a @code{http.RoundTripper} that will sign requests
-using Amazon's Signature Verification V4 signing procedure, using credentials
-from the default AWS credential chain.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-prometheus-community-pro-bing
   (package
     (name "go-github-com-prometheus-community-pro-bing")
