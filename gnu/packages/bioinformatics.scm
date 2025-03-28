@@ -15510,43 +15510,6 @@ samples into a single report.  It contains modules for a large number of
 common bioinformatics tools.")
     (license license:gpl3+)))
 
-(define-public variant-tools
-  (package
-    (name "variant-tools")
-    (version "3.1.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/vatlab/varianttools")
-             ;; There is no tag corresponding to version 3.1.2
-             (commit "813ae4a90d25b69abc8a40f4f70441fe09015249")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "12ibdmksj7icyqhks4xyvd61bygk4pjmxn618kp6vgk1af01y34g"))))
-    (build-system python-build-system)
-    (inputs
-     (list boost
-           c-blosc
-           gsl
-           hdf5
-           hdf5-blosc
-           python-cython
-           zlib))
-    (propagated-inputs
-     (list python-numpy python-pycurl python-pyzmq python-scipy
-           python-tables))
-    (home-page "https://vatlab.github.io/vat-docs/")
-    (synopsis "Analyze genetic variants from Next-Gen sequencing studies")
-    (description
-     "Variant tools is a tool for the manipulation, annotation,
-selection, simulation, and analysis of variants in the context of next-gen
-sequencing analysis.  Unlike some other tools used for next-gen sequencing
-analysis, variant tools is project based and provides a whole set of tools to
-manipulate and analyze genetic variants.")
-    (license license:gpl3+)))
-
 (define-public r-chromvarmotifs
   (let ((commit "38bed559c1f4770b6c91c80bf3f8ea965da26076")
         (revision "1"))
