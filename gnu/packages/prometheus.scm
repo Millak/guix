@@ -160,7 +160,7 @@ registry.")
 (define-public go-github-com-prometheus-client-golang
   (package
     (name "go-github-com-prometheus-client-golang")
-    (version "1.20.5")
+    (version "1.21.1")
     (source
      (origin
        (method git-fetch)
@@ -169,15 +169,13 @@ registry.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q3n22p5ic22xzha6mffh0m0jzbxrkyjrcmnxsnanl61jwb4rkpw"))
+        (base32 "01946gv7ncjzd0536dx0523safcdnwy64m7pa8b54vrwzryrvb7p"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
             ;; Submodules with their own go.mod files and packaged separately:
             ;;
-            ;; - dagger
             ;; - .bingo - fake module
-            (delete-file-recursively "dagger")
             (delete-file-recursively ".bingo")))))
     (build-system go-build-system)
     (arguments
