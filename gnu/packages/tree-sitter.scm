@@ -228,6 +228,29 @@ Tree-sitter parsing library.")
      "This package provides Elixir grammar for the tree-sitter parsing library.")
     (license license:asl2.0)))
 
+(define-public rust-tree-sitter-go-0.23
+  (package
+    (name "rust-tree-sitter-go")
+    (version "0.23.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree-sitter-go" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cc4w4p12inxpsn2hgpmbvw1nyf5cm0l9pa705hbw3928milfgdi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+         (("rust-cc" ,rust-cc-1)
+          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1))
+       #:cargo-development-inputs
+         (("rust-tree-sitter" ,rust-tree-sitter-0.24))))
+    (home-page "https://github.com/tree-sitter/tree-sitter-go")
+    (synopsis "Go grammar for tree-sitter")
+    (description "This package provides a Go grammar for tree-sitter.")
+    (license license:expat)))
+
 (define-public tree-sitter
   (package
     (name "tree-sitter")
