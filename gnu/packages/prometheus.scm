@@ -280,35 +280,28 @@ Prometheus metrics.")
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "github.com/prometheus/common"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v"
-                          ;; Skipp, as it requires
-                          ;; <github.com/prometheus/client_golang/prometheus>,
-                          ;; which introduces cycle.
-                          ;; "./config/..."
+      #:test-subdirs
+      #~(list
+         ;; Skipp, as it requires
+         ;; <github.com/prometheus/client_golang/prometheus>, which introduces
+         ;; cycle.
+         ;; "./config/..."
 
-                          ;; Some tests fail on non x86_64 architecture:
-                          ;; Cannot use 9223372036 (untyped int constant) as int
-                          ;; value in ;; struct literal (overflows).
-                          ;; Cannot use math.MaxInt64
-                          ;; (untyped int constant 9223372036854775807) as int value
-                          ;; in argument to HumanizeTimestamp (overflows)
-                          #$@(if (target-x86-64?)
-                                 '("./helpers/...")
-                                 '())
-                          "./expfmt/..."
-                          "./model/..."
-                          "./promlog/..."
-                          "./route/..."
-                          "./server/..."))))))))
+         ;; Some tests fail on non x86_64 architecture: Cannot use 9223372036
+         ;; (untyped int constant) as int value in ;; struct literal
+         ;; (overflows).  Cannot use math.MaxInt64 (untyped int constant
+         ;; 9223372036854775807) as int value in argument to HumanizeTimestamp
+         ;; (overflows)
+         #$@(if (target-x86-64?)
+                '("./helpers/...")
+                '())
+         "./expfmt/..."
+         "./model/..."
+         "./promlog/..."
+         "./route/..."
+         "./server/...")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -324,10 +317,20 @@ Prometheus metrics.")
            go-google-golang-org-protobuf
            go-gopkg-in-yaml-v2))
     (home-page "https://github.com/prometheus/common")
-    (synopsis "Prometheus metrics")
+    (synopsis "Shared Prometheus Golang components")
     (description
-     "This package provides tools for reading and writing Prometheus
-metrics.")
+     "This package provides Go libraries that are shared across Prometheus
+components.
+
+@itemize
+@item @code{config} - common configuration structures
+@item @code{expfmt} - decoding and encoding for the exposition format
+@item @code{model} - shared data structures
+@item @code{promslog} - a logging wrapper around log/slog
+@item @code{route} - a routing wrapper around httprouter using context.Context
+@item @code{server} - common servers
+@item @code{version} version information and metrics
+@end itemize")
     (license license:asl2.0)))
 
 (define-public go-github-com-prometheus-common-assets
