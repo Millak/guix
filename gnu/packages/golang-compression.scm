@@ -215,6 +215,7 @@ library included in the stdlib, and supports GIF, TIFF and PDF.")
     (build-system go-build-system)
     (arguments
      (list
+      #:test-flags #~(list "-short" "-tags=nounsafe")
       #:import-path "github.com/klauspost/compress"))
     (home-page "https://github.com/klauspost/compress")
     (synopsis "Go compression library")
