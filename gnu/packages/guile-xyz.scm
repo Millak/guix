@@ -4807,7 +4807,7 @@ debugging code.")
 (define-public guile-png
   (package
     (name "guile-png")
-    (version "0.7.3")
+    (version "0.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4816,17 +4816,36 @@ debugging code.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hgdp8fgyg6rdy130fsn4nnb58c98lsrayjyy5491l53814ggy65"))))
+                "0avzxdj08sk94mdwp9ax6s6vbm1dw775rr0knsdqc8ipp99vl9cb"))))
     (build-system gnu-build-system)
     (arguments
-     (list
-      #:make-flags #~(list "GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'strip))))
+     (list #:make-flags #~(list "GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
+           #:modules `(((guix build guile-build-system)
+                        #:select (target-guile-effective-version))
+                       ,@%default-gnu-modules)
+           #:imported-modules `((guix build guile-build-system)
+                                ,@%default-gnu-imported-modules)
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'strip)
+                        (add-after 'install 'wrap-program
+                          (lambda _
+                            (let* ((bin (string-append #$output "/bin"))
+                                   (version (target-guile-effective-version))
+                                   (scm (string-append "/share/guile/site/"
+                                                       version))
+                                   (go (string-append "/lib/guile/"
+                                                      version
+                                                      "/site-ccache")))
+                              (wrap-program (string-append bin "/png")
+                                `("GUILE_LOAD_PATH" prefix
+                                  (,(string-append #$output scm)))
+                                `("GUILE_LOAD_COMPILED_PATH" prefix
+                                  (,(string-append #$output go))))))))))
     (native-inputs (list autoconf
                          automake
                          pkg-config
                          texinfo
+                         help2man
                          ;; needed when cross-compiling.
                          guile-3.0
                          guile-lib
