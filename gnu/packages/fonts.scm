@@ -2417,23 +2417,28 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "1.0.27")
+    (version "1.0.29")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/be5invis/Sarasa-Gothic"
-                           "/releases/download/v" version
-                           "/Sarasa-TTC-" version ".7z"))
+                           "/releases/download/v"
+                           version
+                           "/Sarasa-TTC-"
+                           version
+                           ".7z"))
        (sha256
-        (base32 "19k11nl6sib8ms82jvvv23543p4xdzybgfflz2jxjim55w9d1v4y"))))
+        (base32 "1y82wp3rgm1xnn92f0jppgiqjsimdy83ljyh5q9dybzx3fp0x8w7"))))
     (build-system font-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'unpack
-                    (lambda* (#:key source #:allow-other-keys)
-                      (mkdir "source")
-                      (chdir "source")
-                      (invoke "7z" "x" source))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (mkdir "source")
+              (chdir "source")
+              (invoke "7z" "x" source))))))
     (native-inputs (list p7zip))
     (home-page "https://github.com/be5invis/Sarasa-Gothic")
     (license license:silofl1.1)
