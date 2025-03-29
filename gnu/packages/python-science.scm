@@ -2008,25 +2008,25 @@ Python module with the same interface, but (hopefully) faster.")
 (define-public python-bottleneck
   (package
     (name "python-bottleneck")
-    (version "1.3.7")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Bottleneck" version))
+       (uri (pypi-uri "bottleneck" version))
        (sha256
-        (base32 "1y410r3scfhs6s1j1jpxig01qlyn2hr2izyh1qsdlsfl78vpwip1"))))
-    (build-system python-build-system)
+        (base32 "1x29yj4yr12v646si63gkxj9b6lx1xk65536wqy4i9fyk4bqx3ps"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "setup.py" "pytest")))))))
-    (native-inputs
-     (list python-hypothesis python-pytest python-pytest-runner))
-    (propagated-inputs
-     (list python-numpy))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'rebuild-ext
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-wheel))
+    (propagated-inputs (list python-numpy))
     (home-page "https://github.com/pydata/bottleneck")
     (synopsis "Fast NumPy array functions written in C")
     (description
