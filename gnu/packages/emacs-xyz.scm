@@ -17323,6 +17323,45 @@ determines structure, this mode provides indentation and indentation command
 behavior very similar to that of Python mode.")
     (license license:gpl3+)))
 
+(define-public emacs-yari
+  (let ((revision "0")
+        (commit "de61285ceb21f56c29f4be12e2e65b2aa2bccf56"))
+    (package
+      (name "emacs-yari")
+      (version (git-version "0.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hron/yari.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0sik21rifw0q1rw4wrffnnwynsmgrv6w323gz3fw89cz6n8kqsgn"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "ert-runner")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-program-names
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "yari.el"
+                  ("yari-ri-program-name"
+                   (search-input-file inputs "/bin/ri"))
+                  ("yari-ruby-program-name"
+                   (search-input-file inputs "/bin/ruby"))))))))
+      (native-inputs (list emacs-ert-runner))
+      (inputs (list ruby))
+      (home-page "https://github.com/hron/yari.el")
+      (synopsis "Yet Another RI interface for Emacs")
+      (description
+       "This package provides an Emacs frontend to Ruby's @code{ri}
+documentation tool, and offers lookup and completion.  The main
+function you should use as interface to @code{ri} is @samp{M-x yari}.")
+      (license license:gpl3+))))
+
 (define-public emacs-gitlab-ci-mode
   (package
     (name "emacs-gitlab-ci-mode")
