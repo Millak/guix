@@ -694,13 +694,13 @@ genetic variation data.")
 (define-public python-scikit-build-core
   (package
     (name "python-scikit-build-core")
-    (version "0.10.7")
+    (version "0.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scikit_build_core" version))
        (sha256
-        (base32 "1y64d8rl39banfwdkszyd4sbzp795q8lj66yxrz2l84mwygvbjq4"))))
+        (base32 "0baaava7jvc69r5j803vjxvf2cnx0f3gjhqalipp7l4d1cgwg3vp"))))
     (build-system pyproject-build-system)
     ;; Tests are aborted with the admonition: "setup.py install is
     ;; deprecated. Use build and pip and other standards-based tools."
