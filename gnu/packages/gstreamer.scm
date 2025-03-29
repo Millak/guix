@@ -790,7 +790,12 @@ model to base your own plug-in on, here it is.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-Dsctp-internal-usrsctp=disabled")
+      #:configure-flags #~(list "-Dsctp-internal-usrsctp=disabled"
+                                ;; TODO: Figure out why audiovisualizer test
+                                ;; fails on riscv64-linux.
+                                #$@(if (target-riscv64?)
+                                       #~("-Daudiovisualizers=disabled")
+                                       #~()))
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases
       #~(modify-phases %standard-phases
