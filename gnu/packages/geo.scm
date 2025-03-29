@@ -245,15 +245,15 @@ BUFR and WMO GTS abbreviated header formats.")
 (define-public cdo
   (package
     (name "cdo")
-    (version "2.4.0")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://code.mpimet.mpg.de/attachments/download/29313/cdo-"
+             "https://code.mpimet.mpg.de/attachments/download/29864/cdo-"
              version ".tar.gz"))
        (sha256
-        (base32 "0b2d1d8r1lxs422dxajnmvjyhjwfichlkglv3yqm7wq7rjw0yyd4"))))
+        (base32 "1lapakdapccian650ifkwwasgkqr2k9m1qf8qd3ybgschqggk2s1"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
