@@ -146,16 +146,16 @@ C++ @dfn{Standard Template Library} (STL).")
     (propagated-inputs
      (list cairo
            etl
-           ffmpeg-4
+           ffmpeg
            fftw
            fontconfig
            freetype
-           glibmm-2.66
+           glibmm-2.66 ; latest possible version as of synfig 1.5.3
            imagemagick
-           libxml++-2
+           libxml++-2 ; libxml <= 2 required as of synfig 1.5.3
            libsigc++
-           mlt-6
-           openexr-2
+           mlt
+           openexr
            pango))
     (native-inputs
      (list intltool pkg-config))
