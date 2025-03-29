@@ -3900,10 +3900,6 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
       #:tests? #f                       ;requires "Kwalify"
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'configure 'override-LDFLAGS
-            (lambda _
-              (setenv "LDFLAGS"
-                      (string-append "-Wl,-rpath=" #$output "/lib"))))
           (add-after 'install 'wrap-executable
             (lambda _
               (let* ((frei0r #$(this-package-input "frei0r-plugins"))
