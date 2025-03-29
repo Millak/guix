@@ -246,7 +246,7 @@
             (marionette-eval
              '(begin
                 (use-modules (gnu services herd))
-                (start-service 'quassel))
+                (wait-for-service 'quassel))
              marionette))
 
           (test-assert "certificate file"
