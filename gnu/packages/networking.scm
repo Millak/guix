@@ -4542,14 +4542,14 @@ cables.")
 (define-public lldpd
   (package
     (name "lldpd")
-    (version "1.0.17")
+    (version "1.0.19")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.luffy.cx/files/lldpd/lldpd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1ki7c7ffys42s2wy5c94qriicgwx0wl9bm83xxkclasx2izifhwk"))
+        (base32 "0zwr1brzq41r6ji1gnqgnlg5sy0980w5n18xj3d3hlay7lbg6zgq"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4571,7 +4571,7 @@ cables.")
      (list libevent libxml2 openssl readline))
     (native-inputs
      (list pkg-config))
-    (home-page "https://vincentbernat.github.io/lldpd/")
+    (home-page "https://lldpd.github.io/")
     (synopsis "Locate neighbors of your network equipment")
     (description
      "The @dfn{Link Layer Discovery Protocol} (LLDP) is an industry standard
