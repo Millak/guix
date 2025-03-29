@@ -752,7 +752,7 @@ off' shooting directly from the controlling computer.")
 (define-public hugin
   (package
     (name "hugin")
-    (version "2021.0.0")
+    (version "2024.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hugin/hugin/hugin-"
@@ -760,7 +760,7 @@ off' shooting directly from the controlling computer.")
                                   "/hugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "1ngadsv22ii05kmvpzdivhwlks4pnv9ijz7j9srl8y54gy5flyh4"))))
+                "1r57bgq9dr2wi182vl6qm2kgaz2f6wz8sxikr14k3djfxgg0rv0k"))))
     (build-system cmake-build-system)
     (native-inputs
      (list gettext-minimal pkg-config))
@@ -780,35 +780,30 @@ off' shooting directly from the controlling computer.")
            libxi
            libxmu
            mesa
-           openexr-2
+           openexr
            sqlite
            vigra
            wxwidgets
            zlib))
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:configure-flags
-       (list
-        ;; The header files of ilmbase (propagated by openexr) are not found
-        ;; when included by the header files of openexr, and an explicit
-        ;; flag needs to be set.
-        (string-append "-DCMAKE_CXX_FLAGS=-I"
-                       (assoc-ref %build-inputs "ilmbase")
-                       "/include/OpenEXR")
-        ;; Disable installation of the Python scripting interface.
-        ;; It would require the additional inputs python and swig.
-        ;; Installation would need to be tweaked, as it tries to install
-        ;; into the python directory.
-        "-DBUILD_HSI=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'substitute
-           (lambda _
-             (substitute* "src/hugin1/base_wx/StitchingExecutor.cpp"
-               (("wxT\\(\"enblend\"\\)")
-                (string-append "wxT(\"" (which "enblend") "\")"))
-               (("wxT\\(\"enfuse\"\\)")
-                (string-append "wxT(\"" (which "enfuse") "\")"))))))))
+     (list
+      #:tests? #f                      ; no check target
+      #:configure-flags
+      #~(list
+         ;; Disable installation of the Python scripting interface.
+         ;; It would require the additional inputs python and swig.
+         ;; Installation would need to be tweaked, as it tries to install
+         ;; into the python directory.
+         "-DBUILD_HSI=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'substitute
+            (lambda _
+              (substitute* "src/hugin1/base_wx/StitchingExecutor.cpp"
+                (("wxT\\(\"enblend\"\\)")
+                 (string-append "wxT(\"" (which "enblend") "\")"))
+                (("wxT\\(\"enfuse\"\\)")
+                 (string-append "wxT(\"" (which "enfuse") "\")"))))))))
     (home-page "https://hugin.sourceforge.net/")
     (synopsis "Panorama photo stitcher")
     (description
