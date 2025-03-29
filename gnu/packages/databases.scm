@@ -1387,6 +1387,38 @@ pictures, sounds, or video.")
 
 (define-public postgresql postgresql-14)
 
+(define-public libpg-query-17
+  (package
+    (name "libpg-query")
+    (version "17-6.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/pganalyze/libpg_query.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1y4594pf2wl88m66z9xhxzmm675408dbw7bkg4snfcifij97f0c7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ; tests run as part of build
+           #:make-flags
+           #~(list (string-append "prefix=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+              (replace 'configure
+                (lambda _
+                  (setenv "CC" #$(cc-for-target)))))))
+    (native-inputs
+     (list which))
+    (synopsis "Postgres SQL parser")
+    (description "This package provides a Postgres SQL parser as a library.")
+    (home-page "https://github.com/pganalyze/libpg_query")
+    (license license:bsd-3)))
+
+(define-public libpg-query libpg-query-17)
+
 (define-public timescaledb
   (package
     (name "timescaledb")
