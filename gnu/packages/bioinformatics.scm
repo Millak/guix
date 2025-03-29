@@ -7473,6 +7473,10 @@ data and settings.")
            ;; SOURCE_DATE_EPOCH
            (lambda _
              (setenv "FORCE_SOURCE_DATE" "1")))
+         (add-before 'build 'use-writable-texmfvar
+           ;; Use writable TEXMFVAR to generate fonts.
+           (lambda _
+             (setenv "TEXMFVAR" "/tmp")))
          (add-after 'unpack 'fix-latex-errors
            (lambda _
              (with-fluids ((%default-port-encoding #f))

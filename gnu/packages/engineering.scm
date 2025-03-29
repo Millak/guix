@@ -747,7 +747,7 @@ featuring various improvements and bug fixes.")))
              #t))
          (add-before 'install 'make-pdf
            (lambda _
-             (setenv "HOME" "/tmp")     ; FIXME: for texlive font cache
+             (setenv "TEXMFVAR" "/tmp")     ;For texlive font cache
              (with-directory-excursion "doc"
                (and
                 (for-each (lambda (file)

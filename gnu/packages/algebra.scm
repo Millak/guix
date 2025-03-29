@@ -1417,6 +1417,7 @@ xtensor provides:
            ;; removed packages. It needs to be done after 'build since
            ;; it requires the gap binary.
            (lambda _
+             (setenv "TEXMFVAR" "/tmp") ;required to generate fonts
              (with-directory-excursion "doc"
                (invoke "./make_doc"))))
          (add-after 'install 'install-packages

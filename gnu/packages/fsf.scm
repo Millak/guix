@@ -50,6 +50,9 @@
       #:install-plan #~'(("faif-2.0.pdf" "share/doc/faif/"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'writable-texmfvar
+            ;; Generating font shapes require a writable TEXMFVAR directory.
+            (lambda _ (setenv "TEXMFVAR" "/tmp")))
           (add-before 'install 'build
             (lambda _
               (invoke "pdflatex" "faif-2.0.tex"))))))

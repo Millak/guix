@@ -103,6 +103,8 @@
                    #$output))))
             (add-after 'check 'build-doc
               (lambda* (#:key parallel-build? #:allow-other-keys)
+                ;; Generating font shapes require a writable TEXMFVAR.
+                (setenv "TEXMFVAR" "/tmp")
                 (invoke "make"
                         "-j" (if parallel-build?
                                  (number->string (parallel-job-count))

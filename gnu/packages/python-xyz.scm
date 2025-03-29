@@ -19341,8 +19341,9 @@ time.")
                                      (getenv "JUPYTER_PATH")))
               ;; jupyter-core demands this
               (setenv "JUPYTER_PLATFORM_DIRS" "1")
-              ;; Tests need a writable HOME.
-              (setenv "HOME" "/tmp"))))))
+              ;; Tests need writable HOME and TEXMFVAR.
+              (setenv "HOME" "/tmp")
+              (setenv "TEXMFVAR" "/tmp"))))))
     (inputs
      (list inkscape/pinned pandoc))
     (native-inputs

@@ -6283,6 +6283,8 @@ package contains a library with common configuration options.")
                                 "set(DUMMY\n")))))
           (add-after 'build 'build-doc
             (lambda _
+              ;; Generating font shapes require a writable TEXMFVAR directory.
+              (setenv "TEXMFVAR" "/tmp")
               (with-directory-excursion "../AMD/Doc"
                 (invoke "make"))))
           ;; Required for suitesparse-umfpack
@@ -6364,6 +6366,8 @@ matrix into block upper triangular form.")
                                 "set(DUMMY\n")))))
           (add-after 'build 'build-doc
             (lambda _
+              ;; Generating font shapes require a writable TEXMFVAR directory.
+              (setenv "TEXMFVAR" "/tmp")
               (with-directory-excursion "../CAMD/Doc"
                 (invoke "make"))))
           (add-after 'install 'install-doc
@@ -6555,6 +6559,7 @@ target_link_libraries(CHOLMOD_static PRIVATE ${METIS_LIBRARY} ${GKLIB_LIBRARY})"
                 (("SuiteSparse_metis_METIS") "METIS"))))
           (add-after 'build 'build-doc
             (lambda _
+              (setenv "TEXMFVAR" "/tmp") ;for font shapes generation
               (with-directory-excursion "../CHOLMOD/Doc"
                 (invoke "make"))))
           (add-after 'install 'install-doc
@@ -6657,6 +6662,7 @@ direct methods on both real and complex matrices.")
               (substitute* "../KLU/Doc/Makefile"
                 (("\\.\\./\\.\\./BTF/Include/btf.h")
                  (string-append #$suitesparse-btf "/include/btf.h")))
+              (setenv "TEXMFVAR" "/tmp") ;for generating font shapes
               (with-directory-excursion "../KLU/Doc"
                 (invoke "make"))))
           (add-after 'install 'install-doc
@@ -6716,6 +6722,7 @@ for real and complex matrices.")
               (substitute* "../LDL/Doc/Makefile"
                 (("\\.\\./\\.\\./BTF/Include/btf.h")
                  (string-append #$suitesparse-btf "/include/btf.h")))
+              (setenv "TEXMFVAR" "/tmp") ;for font shape generation
               (with-directory-excursion "../LDL/Doc"
                 (invoke "make"))))
           (add-after 'install 'install-doc
@@ -6799,6 +6806,8 @@ for reading and writing sparse matrices in the Rutherford/Boeing format.")
                                 "set(DUMMY\n")))))
           (add-after 'build 'build-doc
             (lambda _
+              ;; A writable TEXMFVAR is required for building font shapes.
+              (setenv "TEXMFVAR" "/tmp")
               ;; XeLaTeX fails with .eps graphics
               (with-directory-excursion "../Mongoose/Doc"
                 (for-each
@@ -6880,6 +6889,7 @@ edge cuts using a coarsening and refinement framework.")
                   ")\nset(DUMMY\n")))))
           (add-after 'build 'build-doc
             (lambda _
+              (setenv "TEXMFVAR" "/tmp") ;for font shapes generation
               (with-directory-excursion "../SPEX/Doc"
                 (invoke "make"))))
           (add-after 'install 'install-doc
@@ -6949,6 +6959,7 @@ LU factorization for solving unsymmetric sparse linear systems.")
                   ")\nset(DUMMY\n")))))
           (add-after 'build 'build-doc
             (lambda _
+              (setenv "TEXMFVAR" "/tmp") ;for generating font shapes
               (with-directory-excursion "../SPQR/Doc"
                 (invoke "make"))))
           (add-after 'install 'install-doc
@@ -7010,6 +7021,7 @@ matrices.")
                   ")\nset(DUMMY\n")))))
           (add-after 'build 'build-doc
             (lambda _
+              (setenv "TEXMFVAR" "/tmp") ;for generating font shapes
               (with-directory-excursion "../UMFPACK/Doc"
                 (invoke "make"))))
           (add-after 'install 'install-doc
@@ -7801,7 +7813,7 @@ set.")
                                                 configure-flags)))))))
                (add-after 'build 'build-docs
                  (lambda _
-                   (setenv "HOME" (getcwd))
+                   (setenv "TEXMFVAR" "/tmp")
                    (invoke "make" "-C" "docs")))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)

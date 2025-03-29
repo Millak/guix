@@ -402,7 +402,9 @@ will name the threaded machine type unless THREADS? is provided as #f."
           (add-after 'configure 'configure-environment-variables
             (lambda args
               ;; mats/6.ms needs HOME to be set:
-              (setenv "HOME" "/tmp")))
+              (setenv "HOME" "/tmp")
+              ;; Writable TEXMFVAR is required to generate font shapes.
+              (setenv "TEXMFVAR" "/tmp")))
           (replace 'build
             ;; need to override target for cross-compilation
             ;; https://racket.discourse.group/t/950/19
@@ -805,6 +807,7 @@ package @code{cs-bootstrap} to bootstrap its initial version of Chez Scheme.")
                         ;; the Makefile is referenced in the documentation
                         (copy-recursively "doc" doc-dir)
                         (install-file "ReadMe" doc-dir)
+                        (setenv "TEXMFVAR" "/tmp") ;for generating font shapes
                         (with-directory-excursion "doc"
                           (invoke "make")
                           (install-file "stex.html" doc-dir)
