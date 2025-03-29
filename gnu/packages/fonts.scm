@@ -2564,49 +2564,46 @@ emphasis while still being readable.")
     (license license:silofl1.1)))
 
 (define-public font-openmoji
-  (let ((commit "93f059dfb68401d49beaef7a3e09b80072b51a1f")
-        (revision "1"))
-   (package
+  (package
     (name "font-openmoji")
-    (version (git-version "14.0.0" revision commit))
+    (version "15.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/hfg-gmuend/openmoji/")
-             (commit commit)))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "16w4lg2y6qzb45j08l7cdwprjhprsm11jsm6nxzxwy2wzykd7gxk"))))
+        (base32 "1iil5jmkkqrqgq06q3gvgv7j1bq8499q3h2340prwlfi2sqcqzlk"))))
     (build-system font-build-system)
-    (arguments (list #:modules `((ice-9 ftw)
-                                 (guix build font-build-system)
-                                 (guix build utils))
-                     #:phases
-                     #~(modify-phases %standard-phases
-                         (add-after 'unpack 'chdir
-                           (lambda _ (chdir "font")))
-                         (add-after 'chdir 'strip-alternative-variants
-                           (lambda _
-                             (let ((keep '("OpenMoji-black-glyf"
-                                           "OpenMoji-color-glyf_colr_0"
-                                           "."
-                                           "..")))
-                               (for-each (lambda (f)
-                                           (unless (member f keep)
-                                             (delete-file-recursively f)))
-                                         (scandir ".")))))
-                         (add-before 'install-license-files 'chdir-back
-                           (lambda _ (chdir ".."))))))
-    (native-inputs
-     (list unzip))
+    (arguments
+     (list
+      #:modules `((ice-9 ftw)
+                  (guix build font-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "font")))
+          (add-after 'chdir 'strip-alternative-variants
+            (lambda _
+              (let ((keep '("OpenMoji-black-glyf" "OpenMoji-color-glyf_colr_0"
+                            "." "..")))
+                (for-each (lambda (f)
+                            (unless (member f keep)
+                              (delete-file-recursively f)))
+                          (scandir ".")))))
+          (add-before 'install-license-files 'chdir-back
+            (lambda _
+              (chdir ".."))))))
     (home-page "https://openmoji.org")
     (synopsis "Font for rendering emoji characters")
     (description
      "This package provides the OpenMoji font in both color and black
 variants.")
-    (license license:cc-by-sa4.0))))
+    (license license:cc-by-sa4.0)))
 
 (define-public font-dosis
   (package
