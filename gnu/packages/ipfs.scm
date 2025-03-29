@@ -2297,6 +2297,7 @@ types.")
        (snippet '(for-each delete-file-recursively
                            ;; TODO: unbundle the rest as well
                            '("vendor/bazil.org"
+                             "vendor/contrib.go.opencensus.io"
                              "vendor/github.com/AndreasBriese"
                              "vendor/github.com/DataDog"
                              "vendor/github.com/Jorropo"
@@ -2423,10 +2424,12 @@ types.")
                              "vendor/github.com/ucarion"
                              "vendor/github.com/whyrusleeping"
                              "vendor/github.com/wlynxg"
+                             "vendor/go.opencensus.io"
                              "vendor/go.uber.org"
                              "vendor/go4.org"
                              "vendor/golang.org"
                              "vendor/gonum.org"
+                             "vendor/google.golang.org/genproto/googleapis/rpc"
                              "vendor/google.golang.org/protobuf"
                              "vendor/gopkg.in"
                              "vendor/lukechampine.com")))))
@@ -2458,7 +2461,7 @@ types.")
                   ;; directory.
                   ;;
                   go-bazil-org-fuse
-                  ;;go-contrib-go-opencensus-io-exporter-prometheus
+                  go-contrib-go-opencensus-io-exporter-prometheus
                   go-github-com-blang-semver-v4
                   go-github-com-caddyserver-certmagic
                   go-github-com-cenkalti-backoff-v4
@@ -2532,7 +2535,7 @@ types.")
                   go-github-com-tidwall-sjson
                   go-github-com-whyrusleeping-go-sysinfo
                   go-github-com-whyrusleeping-multiaddr-filter
-                  ;;go-go-opencensus-io
+                  go-go-opencensus-io
                   ;;go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
                   ;;go-go-opentelemetry-io-contrib-propagators-autoprop
                   ;;go-go-opentelemetry-io-otel
@@ -2564,7 +2567,6 @@ types.")
                   go-github-com-felixge-httpsnoop             ; go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
                   go-github-com-gabriel-vasile-mimetype       ; github.com/ipfs/boxo
                   go-github-com-go-logr-stdr                  ; go.opentelemetry.io/otel
-                  go-github-com-golang-groupcache             ; go.opencensus.io/trace
                   go-github-com-google-gopacket               ; github.com/libp2p/go-libp2p-kad-dht
                   go-github-com-gorilla-mux                   ; github.com/ipfs/boxo
                   go-github-com-hashicorp-golang-lru          ; github.com/libp2p/go-libp2p-kad-dht
@@ -2575,7 +2577,6 @@ types.")
                   go-github-com-libp2p-go-cidranger           ; github.com/libp2p/go-libp2p-kbucket
                   go-github-com-libp2p-go-libp2p-asn-util     ; github.com/libp2p/go-libp2p-kbucket
                   go-github-com-libp2p-go-msgio               ; github.com/libp2p/go-libp2p-kad-dht
-                  go-github-com-prometheus-statsd-exporter    ; contrib.go.opencensus.io/exporter/prometheus
                   go-github-com-rs-cors                       ; github.com/ipfs/go-ipfs-cmds
                   go-github-com-samber-lo                     ; github.com/ipfs/boxo
                   go-github-com-whyrusleeping-base32          ; github.com/ipfs/boxo
