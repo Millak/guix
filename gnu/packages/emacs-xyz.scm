@@ -3773,6 +3773,33 @@ reformat the current buffer using a command-line program, together with an
 optional minor mode which can apply this command automatically on save.")
     (license license:gpl3+)))
 
+(define-public emacs-rescript-mode
+  (let ((commit "b9dda43cc52cd4a9b384c59fb0cc7a11f0bad230")
+        (revision "0"))
+    (package
+      (name "emacs-rescript-mode")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jjlee/rescript-mode")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "00pjn683zl5rcmwf86gs4ikxzz82d3rpmicpxhgy2m2xyrfxpz89"))
+                (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "ert-runner")))
+      (native-inputs
+       (list emacs-ert-runner))
+      (home-page "https://github.com/jjlee/rescript-mode")
+      (synopsis "Major mode for editing ReScript")
+      (description "This package provides a major mode for editing ReScript source code.")
+      (license license:gpl3))))
+
 (define-public emacs-language-id
   (package
     (name "emacs-language-id")
