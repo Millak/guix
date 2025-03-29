@@ -627,7 +627,7 @@ being rootless and not requiring any daemon to be running.")
 (define-public buildah
   (package
     (name "buildah")
-    (version "1.39.2")
+    (version "1.39.4")
     (source
      (origin
        (method git-fetch)
@@ -635,7 +635,7 @@ being rootless and not requiring any daemon to be running.")
              (url "https://github.com/containers/buildah")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0b16zhsf9g863wxjvqyapb6wa8dr6r1rwrpffy6hf98fnq38jyh8"))
+        (base32 "1jkkf3jk1i0df279c1si6h81dcrkind9cwifsxidv1yx57sysvzn"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -653,11 +653,7 @@ being rootless and not requiring any daemon to be running.")
           (add-after 'unpack 'set-env
             (lambda _
               ;; When running go, things fail because HOME=/homeless-shelter.
-              (setenv "HOME" "/tmp")
-              ;; Required for detecting btrfs in hack/btrfs* due to bug in GNU
-              ;; Make <4.4 causing CC not to be propagated into $(shell ...)
-              ;; calls.  Can be removed once we update to >4.3.
-              (setenv "CC" #$(cc-for-target))))
+              (setenv "HOME" "/tmp")))
           ;; Add -trimpath to build flags to avoid keeping references to go
           ;; packages.
           (add-after 'set-env 'patch-buildflags
