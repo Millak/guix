@@ -4595,25 +4595,23 @@ an implementation of LLDP.  It also supports some proprietary protocols.")
          "15kqaimwb2y8wvzpn73021bvay9mz1gqqfc40gk4hj6f84nz34h1"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target)))
+     (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
        #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         ;; No tests available.
-         (delete 'check)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((outdir (assoc-ref outputs "out"))
-                    (bindir (string-append outdir "/bin"))
-                    (mandir (string-append outdir "/share/man/man1"))
-                    (docdir (string-append outdir "/share/doc/hashcash-" ,version)))
-               ;; Install manually, as we don't need the `sha1' binary
-               (install-file "hashcash" bindir)
-               (install-file "hashcash.1" mandir)
-               (install-file "README" docdir)
-               (install-file "LICENSE" docdir)
-               (install-file "CHANGELOG" docdir)
-               #t))))))
+       #~(modify-phases %standard-phases
+           (delete 'configure)
+           ;; No tests available.
+           (delete 'check)
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((bindir (string-append #$output "/bin"))
+                     (mandir (string-append #$output "/share/man/man1"))
+                     (docdir (string-append #$output "/share/doc/hashcash-" #$version)))
+                 ;; Install manually, as we don't need the `sha1' binary
+                 (install-file "hashcash" bindir)
+                 (install-file "hashcash.1" mandir)
+                 (install-file "README" docdir)
+                 (install-file "LICENSE" docdir)
+                 (install-file "CHANGELOG" docdir)))))))
     (home-page "https://www.hashcash.org/")
     (synopsis "Denial-of-service countermeasure")
     (description "Hashcash is a proof-of-work algorithm, which has been used
