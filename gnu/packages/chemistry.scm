@@ -905,7 +905,7 @@ emphasis on quality rather than speed.")
     (inputs (list openblas))
     (native-inputs
      (list gfortran
-           (texlive-updmap.cfg
+           (texlive-local-tree
             (list texlive-epstopdf
                   texlive-latexmk))))
     (home-page "https://github.com/greglandrum/yaehmop")

@@ -10174,7 +10174,7 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
            python-sphinx-design
            python-sphinx-panels
            texinfo
-           (texlive-updmap.cfg
+           (texlive-local-tree
             (list texlive-cbfonts
                   texlive-cm-super
                   texlive-expdlist
@@ -14692,7 +14692,7 @@ computing.")
            python-sphinx
            python-sphinx-rtd-theme
            texinfo
-           (texlive-updmap.cfg
+           (texlive-local-tree
             (list texlive-latexmk
                   texlive-polyglossia
                   texlive-xetex
@@ -34793,8 +34793,10 @@ By default it uses the open Python vulnerability database Safety DB.")
     ;; Ideally, we would supersede texlive-xpatch with texlive-regexpatch once
     ;; the missing etoolbox.sty file is added
     (native-inputs
-     (list (texlive-updmap.cfg
-            (list texlive-xpatch texlive-lm
+     (list (texlive-local-tree
+            (list texlive-etoolbox
+                  texlive-lm
+                  texlive-regexpatch
                   texlive-xcolor))
            python-pip
            python-poetry-core

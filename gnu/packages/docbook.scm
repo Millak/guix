@@ -709,7 +709,7 @@ the in DocBook SGML DTDs.")
     (inputs
      (list bash-minimal
            texlive-bin
-           (texlive-updmap.cfg (list texlive-amsmath
+           (texlive-local-tree (list texlive-amsmath
                                      texlive-anysize
                                      texlive-appendix
                                      texlive-auxhook

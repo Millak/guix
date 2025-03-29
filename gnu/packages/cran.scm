@@ -8693,7 +8693,7 @@ palettes, color maps, and tools to evaluate them.")
            texlive-was                  ; upgreek.sty
            texlive-xcolor
            texlive-xpatch
-           (texlive-updmap.cfg (list
+           (texlive-local-tree (list
                                 texlive-amsfonts
                                 texlive-times
                                 texlive-lm))))
@@ -50726,7 +50726,7 @@ package online.")
            texlive-tools
            texlive-ulem
            texlive-upquote
-           (texlive-updmap.cfg (list texlive-lm))))
+           (texlive-local-tree (list texlive-lm))))
     (native-inputs (list r-testthat))
     (home-page "https://github.com/crsh/prereg")
     (synopsis

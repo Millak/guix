@@ -441,7 +441,7 @@ is the de-facto standard to access cryptographic devices")
            graphviz
            help2man
            pkg-config
-           (texlive-updmap.cfg)))
+           (texlive-local-tree)))
     (home-page "https://developers.yubico.com/yubico-piv-tool/")
     (synopsis "Interact with the PIV application on a YubiKey")
     (description

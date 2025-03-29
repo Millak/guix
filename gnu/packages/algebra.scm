@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022, 2023, 2024 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018, 2019, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2020-2022 Efraim Flashner <efraim@flashner.co.il>
@@ -269,7 +269,7 @@ the real span of the lattice.")
                (base32
                 "0qahws0jmmqv3v611zdwhvg0rz5a678lhi8z51x16yzrbj7mfc3x"))))
     (build-system gnu-build-system)
-    (native-inputs (list (texlive-updmap.cfg)))
+    (native-inputs (list (texlive-local-tree)))
     (inputs (list gmp libx11 perl readline))
     (arguments
      (list
@@ -473,7 +473,7 @@ precision.")
            hevea
            python-wrapper
            readline
-           (texlive-updmap.cfg)))
+           (texlive-local-tree)))
     (home-page "https://www-fourier.ujf-grenoble.fr/~parisse/giac.html")
     (synopsis "Computer algebra system")
     (description
@@ -1351,7 +1351,7 @@ xtensor provides:
            (for-each delete-file-recursively
                      '("extern" "hpcgap/extern"))))))
     (build-system gnu-build-system)
-    (native-inputs (list (texlive-updmap.cfg
+    (native-inputs (list (texlive-local-tree
                            (list texlive-enumitem
                                  texlive-etoolbox
                                  texlive-fancyvrb

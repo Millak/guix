@@ -1965,7 +1965,7 @@ to other packages unwillingly retained.  It may also help determine
 whether to split the package (@pxref{Packages with Multiple Outputs}),
 and which optional dependencies should be used.  In particular, avoid
 adding @code{texlive} as a dependency: because of its extreme size, use
-@code{texlive-updmap.cfg} procedure instead.
+@code{texlive-local-tree} procedure instead.
 
 @item
 Check that dependent packages (if applicable) are not affected by the

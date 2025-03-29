@@ -202,7 +202,7 @@
        ("autoconf" ,autoconf)
        ("automake" ,automake)
        ("libtool" ,libtool)
-       ("texlive" ,(texlive-updmap.cfg
+       ("texlive" ,(texlive-local-tree
                     (list texlive-epsf
                           texlive-texinfo)))
        ("texinfo" ,texinfo)

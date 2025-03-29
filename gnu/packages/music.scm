@@ -10,7 +10,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 nikita <nikita@n0.is>
 ;;; Copyright © 2017 Rodger Fox <thylakoid@openmailbox.org>
-;;; Copyright © 2017–2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017–2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017, 2018, 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1718,7 +1718,7 @@ and auto-mapping slices to MIDI note numbers.")
            rsync
            texinfo
            texi2html-1.82
-           (texlive-updmap.cfg
+           (texlive-local-tree
             (list texlive-cyrillic
                   texlive-epsf
                   texlive-fontinst

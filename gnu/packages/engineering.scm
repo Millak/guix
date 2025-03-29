@@ -693,11 +693,11 @@ featuring various improvements and bug fixes.")))
                                        "fastcap-mulGlobal.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     ;; FIXME: with (texlive-updmap.cfg) citation references are rendered as
+     ;; FIXME: with (texlive-local-tree) citation references are rendered as
      ;; question marks.  During the build warnings like these are printed:
      ;; LaTeX Warning: Citation `nabors91' on page 2 undefined on input line
      ;; 3.
-     `(("texlive" ,(texlive-updmap.cfg))
+     `(("texlive" ,(texlive-local-tree))
        ("ghostscript" ,ghostscript)))
     (arguments
      `(#:make-flags '("CC=gcc" "RM=rm" "SHELL=sh" "all")

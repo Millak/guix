@@ -10,7 +10,7 @@
 ;;; Copyright © 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019, 2021, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2021, 2023, 2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -156,7 +156,7 @@
            python-cython
            python-flit-core
            python-pytest
-           (texlive-updmap.cfg
+           (texlive-local-tree
             (list texlive-cm-super texlive-tex-gyre))))
     (home-page "https://www.sphinx-doc.org")
     (synopsis "Python documentation generator")
@@ -267,7 +267,7 @@ sources.")
            python-cython
            python-flit-core
            python-pytest
-           (texlive-updmap.cfg
+           (texlive-local-tree
             (list texlive-cm-super texlive-tex-gyre))))))
 
 (define-public python-sphinxcontrib-apidoc

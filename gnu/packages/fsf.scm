@@ -37,7 +37,7 @@
                 "0qf14d0n6k1dn9z0fdnx9qkhn4iq685xd443w7l7w54bm931p7dw"))))
     (build-system copy-build-system)
     (native-inputs
-     (list (texlive-updmap.cfg
+     (list (texlive-local-tree
             (list texlive-caption
                   texlive-endnotes
                   texlive-etoolbox

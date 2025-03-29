@@ -215,7 +215,7 @@ comparison modes: words, characters, and appearance.")
            gettext-minimal
            ghostscript
            pkg-config
-           (texlive-updmap.cfg)))
+           (texlive-local-tree)))
     (inputs
      (list poppler))
     (home-page "https://github.com/trueroad/extractpdfmark")

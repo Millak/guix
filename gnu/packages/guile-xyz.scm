@@ -4734,7 +4734,7 @@ code terse and reduce the need for ad hoc lambdas.")
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("texinfo" ,texinfo)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-epsf)))))
+       ("texlive" ,(texlive-local-tree (list texlive-epsf)))))
     (inputs
      (list bash-minimal
            dbus-glib
@@ -5107,7 +5107,7 @@ feature-set, fully programmable in Guile Scheme.")
     (inputs
      (list vigra vigra-c guile-3.0))
     (native-inputs
-     (list (texlive-updmap.cfg
+     (list (texlive-local-tree
             (list texlive-booktabs
                   texlive-iwona
                   texlive-lm

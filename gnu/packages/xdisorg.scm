@@ -4177,7 +4177,7 @@ the following features:
                            libtool
                            texinfo
                            texi2html
-                           (texlive-updmap.cfg (list texlive-epsf
+                           (texlive-local-tree (list texlive-epsf
                                                      texlive-texinfo))
                            imagemagick))
       (propagated-inputs (list libx11 libxpm libjpeg-turbo))

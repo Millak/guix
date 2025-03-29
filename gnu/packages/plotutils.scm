@@ -97,7 +97,7 @@
            pkg-config
            rapidjson
            texinfo                      ;for generating documentation
-           (texlive-updmap.cfg
+           (texlive-local-tree
             (list texlive-epsf
                   texlive-etoolbox
                   texlive-hypdoc

@@ -305,7 +305,7 @@ from Markdown files.")
            docbook-sgml-4.1
            docbook-xml-4.5
            perl-test-pod
-           (texlive-updmap.cfg)))
+           (texlive-local-tree)))
     (inputs
      (list bash-minimal
            opensp
@@ -332,7 +332,7 @@ areas where they were not expected like documentation.")
      ;; Remove test dependencies, primarily to reduce the size of the
      ;; dependency graph of the ‘guix’ package.
      (modify-inputs (package-native-inputs po4a)
-       (delete "docbook-xml" "perl-test-pod" "texlive-updmap.cfg")))
+       (delete "docbook-xml" "perl-test-pod" "texlive-local-tree")))
     (arguments
      (substitute-keyword-arguments (package-arguments po4a)
        ((#:tests? _ #t) #f)))

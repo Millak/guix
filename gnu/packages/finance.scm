@@ -9,7 +9,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
-;;; Copyright © 2018-2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2022, 2024, 2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019-2025 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -2214,7 +2214,7 @@ trading, and risk management in real-life.")
      (list gsl gtk+ ncurses))
     (native-inputs
      (list pkg-config texinfo
-           (texlive-updmap.cfg (list texlive-epsf texlive-texinfo))))
+           (texlive-local-tree (list texlive-epsf texlive-texinfo))))
     (home-page "https://anthonybradford.github.io/optionmatrix/")
     (synopsis "Financial derivative calculator")
     (description

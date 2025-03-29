@@ -920,7 +920,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
            python-pyzmq
            python-scipy
            python-sphinx
-           (texlive-updmap.cfg (list texlive-newunicodechar))
+           (texlive-local-tree (list texlive-newunicodechar))
            xorg-server-for-tests))
     (inputs
      (list alsa-lib
@@ -1134,7 +1134,7 @@ to access different radio hardware.")
        ("doxygen" ,doxygen)
        ("libtool" ,libtool)
        ("pkg-config" ,pkg-config)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-newunicodechar)))))
+       ("texlive" ,(texlive-local-tree (list texlive-newunicodechar)))))
     (inputs
      (list fftwf))
     (arguments

@@ -414,7 +414,7 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
            perl
            pkg-config
            texinfo                      ; for building HTML manuals
-           (texlive-updmap.cfg
+           (texlive-local-tree
             (list texlive-etoolbox
                   texlive-fancyvrb
                   texlive-inconsolata
@@ -2068,7 +2068,7 @@ character vector.")
      (list hevea
            perl
            swig
-           (texlive-updmap.cfg
+           (texlive-local-tree
             (list texlive-aeguill texlive-jknapltx))))
     (propagated-inputs
      (list r-lattice

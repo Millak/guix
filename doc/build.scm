@@ -912,7 +912,7 @@ makeinfo OPTIONS."
                      sed
                      tar
                      texinfo
-                     (texlive-updmap.cfg
+                     (texlive-local-tree
                       (list texlive-epsf texlive-texinfo)))))))
 
   (define build

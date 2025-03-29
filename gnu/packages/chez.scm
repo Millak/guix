@@ -312,7 +312,7 @@ will name the threaded machine type unless THREADS? is provided as #f."
                            (list this-package
                                  `(,this-package "doc"))
                            (list stex-bootstrap
-                                 (texlive-updmap.cfg
+                                 (texlive-local-tree
                                   (list texlive-enumitem
                                         texlive-etoolbox))))
                      ,chez-nanopass-bootstrap
@@ -728,7 +728,7 @@ package @code{cs-bootstrap} to bootstrap its initial version of Chez Scheme.")
        ;; though it would probably be easy to add.
        (propagated-inputs
         (list xorg-rgb
-              (texlive-updmap.cfg (list texlive-epsf))
+              (texlive-local-tree (list texlive-epsf))
               ghostscript
               netpbm))
        ;; Debian uses a versionless path for STEXLIB,
@@ -977,7 +977,7 @@ create compilers, making them easier to understand and maintain.")
       (native-inputs
        (list chez-scheme
              ghostscript
-             (texlive-updmap.cfg
+             (texlive-local-tree
               (list texlive-charter
                     texlive-context
                     texlive-cweb
@@ -1044,7 +1044,7 @@ programming in Scheme.")
       (native-inputs
        (list chez-scheme
              chez-web
-             (texlive-updmap.cfg)))
+             (texlive-local-tree)))
       (arguments
        (list
         #:tests? #f                     ; no tests

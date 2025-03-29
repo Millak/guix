@@ -406,7 +406,7 @@ overlapping images, as well as some command line tools.")
            m4
            perl-readonly
            texlive-texloganalyser
-           (texlive-updmap.cfg
+           (texlive-local-tree
             (list texlive-bold-extra
                   texlive-cm-mf-extra-bold
                   texlive-comment

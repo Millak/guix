@@ -27,7 +27,7 @@
 ;;; Copyright © 2019 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2019 Hartmt Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2021, 2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Jonathan Frederickson <jonathan@terracrypt.net>
@@ -1646,7 +1646,7 @@ generators of mostly elementary and occasionally exotic nature.")
            lv2))
     (native-inputs
      (list pkg-config
-           (texlive-updmap.cfg
+           (texlive-local-tree
             (list texlive-geometry
                   texlive-xetex
                   texlive-collection-pictures))))
