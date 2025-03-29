@@ -221,9 +221,9 @@ environment with the store shared with the host.  MAPPINGS is a list of
 with '-virtfs' options for the host file systems listed in SHARED-FS."
 
   (define (virtfs-option fs)
-    #~("-virtfs"
-       (format #f "local,path=~a,security_model=none,mount_tag=~a"
-               #$fs #$(file-system->mount-tag fs))))
+    (list "-virtfs"
+          #~(format #f "local,path=~a,security_model=none,mount_tag=~a"
+                    #$fs #$(file-system->mount-tag fs))))
 
   #~(;; Only enable kvm if we see /dev/kvm exists.
      ;; This allows users without hardware virtualization to still use these
