@@ -3957,34 +3957,6 @@ functionality of the system is provided via an assortment of ready to use
 tools, XML authoring components, and an extensible plug-in based API.")
     (license license:lgpl2.1+)))
 
-(define-public mlt-6
-  (package
-    (inherit mlt)
-    (name "mlt")
-    (version "6.26.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mltframework/mlt")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1gz79xvs5jrzqhwhfk0dqdd3xiavnjp4q957h7nb02rij32byb39"))))
-    (arguments
-     `(#:configure-flags
-       (list (string-append "-DGTK2_GDKCONFIG_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "gtk+")
-                             "/lib/gtk-2.0/include")
-             (string-append "-DGTK2_GLIBCONFIG_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "glib")
-                            "/lib/glib-2.0/include"))
-       ,@(package-arguments mlt)))
-    (inputs
-     (modify-inputs (package-inputs mlt)
-       (replace "ffmpeg" ffmpeg-4)
-       (replace "gtk+" gtk+-2)))))
-
 (define-public v4l-utils
   (package
     (name "v4l-utils")
