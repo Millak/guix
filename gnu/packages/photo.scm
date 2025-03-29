@@ -431,7 +431,7 @@ overlapping images, as well as some command line tools.")
            libjpeg-turbo
            libpng
            libtiff
-           openexr-2
+           openexr
            vigra
            zlib))
     (arguments
