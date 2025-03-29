@@ -1041,13 +1041,14 @@ desktop environment.")
                (base32
                 "0zrj9ka9sglxchmkcgzdbjgzzzcfrfnk4ydhwzbi91vrrq7c6sh3"))))
     (build-system cmake-build-system)
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config gettext-minimal))
     (inputs (list fontconfig
                   fribidi
                   glib                  ;for icewm-menu-fdo
                   imlib2
                   libice
                   libjpeg-turbo
+                  (librsvg-for-system)  ;for svg support
                   libsm
                   libxcomposite
                   libxdamage
@@ -1062,7 +1063,9 @@ desktop environment.")
                   lzip
                   perl))
     (arguments
-     (list #:phases
+     (list #:configure-flags
+           #~(list "-DCONFIG_LIBRSVG=ON")
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'skip-failing-test
                  ;; strtest.cc tests failing due to $HOME and /etc setup
