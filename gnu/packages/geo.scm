@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020–2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021, 2023-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2023, 2024, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Patrick Noll <patrick@patricknoll.com>
@@ -959,6 +959,51 @@ projections.")
                    (license:non-copyleft "http://www.epsg.org/TermsOfUse")
                    ;; cmake/*
                    license:boost1.0))))
+
+(define-public python-obspy
+  (package
+    (name "python-obspy")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "obspy" version))
+       (sha256
+        (base32 "0izpsfcgjzdj0ja0lip86agp1gfxpw3c00w77603vr1xw067pwww"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Rebuild shared libraries to run tests
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-packaging
+           python-pyproj
+           python-pytest
+           python-wheel))
+    (propagated-inputs
+     (list python-decorator
+           python-lxml
+           python-matplotlib
+           python-numpy
+           python-requests
+           python-scipy
+           python-setuptools
+           python-sqlalchemy))
+    (home-page "https://www.obspy.org")
+    (synopsis "Python framework for seismological observatories")
+    (description
+     "@code{ObsPy} is a project dedicated to provide a Python framework for
+processing seismological data.  It provides parsers for common file formats,
+clients to access data centers and seismological signal processing routines
+which allow the manipulation of seismological time series.
+
+The goal of the ObsPy project is to facilitate rapid application development
+for seismology.")
+    (license license:lgpl3)))
 
 (define-public python-pyogrio
   (package
