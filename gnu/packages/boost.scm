@@ -18,6 +18,7 @@
 ;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2025 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +51,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages mpi))
 
@@ -358,6 +360,14 @@ across a broad spectrum of applications.")
      (modify-inputs (package-inputs boost)
        (delete "python-minimal-wrapper")))
     (properties '((hidden? . #t)))))
+
+(define-public boost-numpy
+  (package
+    (inherit boost)
+    (name "boost-numpy")
+    (native-inputs
+     (modify-inputs (package-native-inputs boost)
+       (append python-numpy)))))
 
 (define-public boost-sync
   (let ((commit "e690de2d30e2f1649ff500c9a6f3539814994b1c")
