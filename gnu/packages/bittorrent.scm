@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Noisytoot <ron@noisytoot.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -628,6 +629,13 @@ the following features:
      `(#:tests? #f
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-deluge-console
+           (lambda _
+             ;; Backport patch for: https://dev.deluge-torrent.org/ticket/3582
+             ;; Should be removed for release 2.1.1.
+             (substitute* "deluge/ui/console/__init__.py"
+               (("    return Console\\(\\).start\\(\\)")
+                "    Console().start()"))))
          (add-after 'install 'wrap
            (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
