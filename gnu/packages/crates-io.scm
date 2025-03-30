@@ -94510,6 +94510,38 @@ mile, ...).")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-static-assertions" ,rust-static-assertions-1))))))
 
+(define-public rust-update-informer-1
+  (package
+    (name "rust-update-informer")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "update-informer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19w2s4wqpjrw70b8v5b6h0lrxk11jpllik7qjh3l7n7hspskp0ak"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Since this is an update checker, tests expect a network connection.
+     `(#:tests? #f
+       #:cargo-inputs (("rust-colored" ,rust-colored-2)
+                       ("rust-etcetera" ,rust-etcetera-0.8)
+                       ("rust-isahc" ,rust-isahc-1)
+                       ("rust-mockito" ,rust-mockito-0.32)
+                       ("rust-reqwest" ,rust-reqwest-0.12)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-ureq" ,rust-ureq-2))))
+    (native-inputs (list curl openssl pkg-config zlib))
+    (home-page "https://github.com/mgrachev/update-informer")
+    (synopsis "Easily implement update checks for your application")
+    (description
+     "This package provides a way to implement update checks for your
+application.")
+    (license license:expat)))
+
 (define-public rust-upon-0.8
   (package
     (name "rust-upon")
