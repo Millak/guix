@@ -262,7 +262,7 @@ systems and other constrained environments, but they work everywhere.")))
 (define-public s6-linux-init
   (package
    (name "s6-linux-init")
-   (version "1.1.1.0")
+   (version "1.1.2.1")
    (source
     (origin
      (method url-fetch)
@@ -270,7 +270,7 @@ systems and other constrained environments, but they work everywhere.")))
            "https://skarnet.org/software/s6-linux-init/s6-linux-init-"
            version ".tar.gz"))
      (sha256
-      (base32 "1vm8aqlh8jkqrm3irhf53vvylxqizpqvjg3yb9z00yb568skyj5d"))))
+      (base32 "0c35jr09d6jrnsbm2ijfcjnc94ylz0adf7bj52hlfzwv495027lp"))))
     (build-system gnu-build-system)
     (inputs
      (list execline s6 skalibs))
@@ -278,15 +278,6 @@ systems and other constrained environments, but they work everywhere.")))
      '(#:configure-flags
        (list
         "--disable-static"
-        (string-append "--with-lib="
-                       (assoc-ref %build-inputs "skalibs")
-                       "/lib/skalibs")
-        (string-append "--with-lib="
-                       (assoc-ref %build-inputs "execline")
-                       "/lib/execline")
-        (string-append "--with-lib="
-                       (assoc-ref %build-inputs "s6")
-                       "/lib/s6")
         (string-append "--with-sysdeps="
                        (assoc-ref %build-inputs "skalibs")
                        "/lib/skalibs/sysdeps"))
