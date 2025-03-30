@@ -66,21 +66,18 @@ and file system operations.  It is used by all skarnet.org software.")
 (define-public execline
   (package
     (name "execline")
-    (version "2.9.3.0")
+    (version "2.9.6.1")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://skarnet.org/software/execline/execline-"
                           version ".tar.gz"))
       (sha256
-       (base32 "1393xka069n3rvc3dlg6c3ckzl1qgqkhvhlcxv6igl9216kpy0n8"))))
+       (base32 "1jp5y3w2db9d7yp17pcsvny656z0w2rywn9s9fnb2kfyy9i9v4bn"))))
     (build-system gnu-build-system)
     (inputs (list bash-minimal skalibs))
     (arguments
      '(#:configure-flags (list
-                          (string-append "--with-lib="
-                                         (assoc-ref %build-inputs "skalibs")
-                                         "/lib/skalibs")
                           (string-append "--with-sysdeps="
                                          (assoc-ref %build-inputs "skalibs")
                                          "/lib/skalibs/sysdeps"))
