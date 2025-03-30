@@ -149,21 +149,18 @@ functionality with a very small amount of code.")))
 (define-public s6-dns
   (package
    (name "s6-dns")
-   (version "2.3.5.5")
+   (version "2.4.0.0")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://skarnet.org/software/s6-dns/s6-dns-"
                          version ".tar.gz"))
      (sha256
-      (base32 "1s0yzrzpjgbf1d0s4qxq5g2sgcm6skq3sphbm1qq1hr5a5frp5sn"))))
+      (base32 "1r6yw796lmdnz62wwqzjfmx7b5xyc292l7nwd2v2bb22k2fb8yjd"))))
     (build-system gnu-build-system)
     (inputs (list skalibs))
     (arguments
      '(#:configure-flags (list
-                          (string-append "--with-lib="
-                                         (assoc-ref %build-inputs "skalibs")
-                                         "/lib/skalibs")
                           (string-append "--with-sysdeps="
                                          (assoc-ref %build-inputs "skalibs")
                                          "/lib/skalibs/sysdeps"))
