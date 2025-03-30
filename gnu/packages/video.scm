@@ -6100,21 +6100,21 @@ transitions, and effects and then export your film to many common formats.")
     (arguments
      (list
       #:tests? #f                      ;there are no tests
-       #:phases
-       #~(modify-phases %standard-phases
-         (add-after 'unpack 'patch-executable-paths
-           (lambda _
-             ;; Shotcut expects ffmpeg and melt executables in the shotcut
-             ;; directory.  Use full store paths.
-             (let ((ffmpeg #$(this-package-input "ffmpeg"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-executable-paths
+            (lambda _
+              ;; Shotcut expects ffmpeg and melt executables in the shotcut
+              ;; directory.  Use full store paths.
+              (let ((ffmpeg #$(this-package-input "ffmpeg"))
                     (mlt #$(this-package-input "mlt")))
-               (substitute* "src/jobs/ffmpegjob.cpp"
-                 (("\"ffmpeg\"") (string-append "\"" ffmpeg "/bin/ffmpeg\"")))
-               (substitute* "src/jobs/meltjob.cpp"
-                 (("\"melt\"") (string-append "\"" mlt "/bin/melt\""))
-                 (("\"melt-7\"") (string-append "\"" mlt "/bin/melt-7\""))))))
-         (add-after 'install 'wrap-executable
-           (lambda _
+                (substitute* "src/jobs/ffmpegjob.cpp"
+                  (("\"ffmpeg\"") (string-append "\"" ffmpeg "/bin/ffmpeg\"")))
+                (substitute* "src/jobs/meltjob.cpp"
+                  (("\"melt\"") (string-append "\"" mlt "/bin/melt\""))
+                  (("\"melt-7\"") (string-append "\"" mlt "/bin/melt-7\""))))))
+          (add-after 'install 'wrap-executable
+            (lambda _
              (let ((frei0r #$(this-package-input "frei0r-plugins"))
                     (jack #$(this-package-input "jack"))
                     (ladspa #$(this-package-input "ladspa"))
