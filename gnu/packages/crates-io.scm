@@ -68243,6 +68243,27 @@ Should not be used directly.")
        (("rust-quick-error" ,rust-quick-error-1)
         ("rust-hostname" ,rust-hostname-0.3))))))
 
+(define-public rust-resolve-path-0.1
+  (package
+    (name "rust-resolve-path")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "resolve-path" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dbvi31ffhwgiskhd2g6qnwb9236rgm9snz7y6vdm4mind0mw7ij"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dirs" ,rust-dirs-4))))
+    (home-page "https://github.com/nicholastmosher/resolve-path")
+    (synopsis "Easily resolve tilde paths and relative paths")
+    (description
+     "This package provides a crate for working with relative and tilde
+paths in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-result-1
   (package
     (name "rust-result")
