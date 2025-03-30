@@ -26876,6 +26876,27 @@ lists (ACL) on @code{macOS}, Linux, and @code{FreeBSD}.")
 @code{rust-command-tokens} crate.")
     (license license:expat)))
 
+(define-public rust-execute-command-macro-0.1
+  (package
+    (name "rust-execute-command-macro")
+    (version "0.1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "execute-command-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g88vmsm3nf0xdq266m0dwdg8k564svyrwsgvh8yjr3mahywbplh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-execute-command-macro-impl" ,rust-execute-command-macro-impl-0.1))))
+    (home-page "https://magiclen.org/execute")
+    (synopsis "Create @code{Command} instances using a @code{command!} macro")
+    (description
+     "This package enabled the creation of @code{Command} instances
+by using a @code{command!} macro.")
+    (license license:expat)))
+
 (define-public rust-executors-0.9
   (package
     (name "rust-executors")
