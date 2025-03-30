@@ -94,6 +94,42 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-0xacab-org-leap-lb
+  (package
+    (name "go-0xacab-org-leap-lb")
+    (version "0.0.0-20210225193050-570f848edccf")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://0xacab.org/leap/lb.git")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "161bznz4srgvqr7q18z63chps52lvdfnldbf6cgm5sw1ly5vwjwi"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module name has not been changed upstream.
+            (substitute* (find-files "." "\\.go$")
+              (("git.autistici.org/ale/lb")
+               "0xacab.org/leap/lb"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.22
+      #:import-path "0xacab.org/leap/lb"))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf
+           go-google-golang-org-grpc))
+    (home-page "https://0xacab.org/leap/lb")
+    (synopsis "Smart load balancing Golang library")
+    (description
+     "This package provides an implementation of smart load balancing of simple,
+redirect-based (i.e.  not directly reverse proxied) services. It's an
+alternative fork of https://git.autistici.org/ale/lb.")
+    (license license:gpl3+)))
+
 (define-public go-0xacab-org-leap-obfsvpn
   (package
     (name "go-0xacab-org-leap-obfsvpn")
