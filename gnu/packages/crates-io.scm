@@ -92561,6 +92561,28 @@ and XXH3 algorithms.")
      "A typesafe store for many value types.")
     (license license:expat)))
 
+(define-public rust-typenum-1.17
+  (package
+    (name "rust-typenum")
+    (version "1.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typenum" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09dqxv69m9lj9zvv6xw5vxaqx15ps0vxyy5myg33i0kbqvq0pzs2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-scale-info" ,rust-scale-info-1))))
+    (home-page "https://github.com/paholg/typenum")
+    (synopsis "Type-level numbers evaluated at compile time")
+    (description
+     "This package provides a library for type-level numbers evaluated at
+compile time.  It supports bits, unsigned integers, and signed integers.
+It also provides a type-level array of type-level numbers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-typenum-1
   (package
     (name "rust-typenum")
