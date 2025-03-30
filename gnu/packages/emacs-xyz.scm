@@ -5780,7 +5780,7 @@ that the binary uses instead of the actual binary contents.")
 (define-public emacs-ellama
   (package
     (name "emacs-ellama")
-    (version "1.4.5")
+    (version "1.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5788,9 +5788,9 @@ that the binary uses instead of the actual binary contents.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256 (base32
-                       "1d2z7hc2h583g11rr1labmlvfs27336qxgp9q9nv2fh0f9l1qnv4"))))
+                       "1019vwrm95ck2gi29mvwd7sy753zgwa3addw2x0qbhvb3r53620v"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-compat emacs-dash emacs-llm emacs-spinner))
+    (propagated-inputs (list emacs-compat emacs-llm emacs-plz emacs-transient))
     (home-page "https://github.com/s-kostyaev/ellama")
     (synopsis "Tool for interacting with LLMs")
     (description
