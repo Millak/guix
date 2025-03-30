@@ -2430,6 +2430,48 @@ performance.  Similar to neofetch, this package prints out system information
 on the terminal in a visually appealing way.")
     (license license:expat)))
 
+(define-public matugen
+  (package
+    (name "matugen")
+    (version "2.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "matugen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rqljm689say9f1878x9x9v1ahaji52vqrnnm6nmkkilfsyfx550"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-color-eyre" ,rust-color-eyre-0.6)
+                       ("rust-colorsys" ,rust-colorsys-0.6)
+                       ("rust-directories" ,rust-directories-5)
+                       ("rust-enquote" ,rust-enquote-1)
+                       ("rust-execute" ,rust-execute-0.2)
+                       ("rust-image" ,rust-image-0.25)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-material-colors" ,rust-material-colors-0.4)
+                       ("rust-owo-colors" ,rust-owo-colors-4)
+                       ("rust-paris-log" ,rust-paris-log-1)
+                       ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
+                       ("rust-prettytable-rs" ,rust-prettytable-rs-0.10)
+                       ("rust-reqwest" ,rust-reqwest-0.12)
+                       ("rust-resolve-path" ,rust-resolve-path-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-toml" ,rust-toml-0.8)
+                       ("rust-update-informer" ,rust-update-informer-1)
+                       ("rust-upon" ,rust-upon-0.8))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://github.com/InioX/matugen")
+    (synopsis "Generate themes using the 'Material You' palette")
+    (description
+     "@command{matugen} generates a 'Material You' color palette based on a
+specified image or color, easing the process of theme creation.")
+    (license license:gpl2)))
+
 (define-public maturin
   (package
     (name "maturin")
