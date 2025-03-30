@@ -146,68 +146,66 @@ powerful plugin architecture.")
   (package
     (name "inchi")
     ;; Update the inchi-doc native input when updating inchi.
-    (version "1.06")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.inchi-trust.org/download/"
-                                  (string-join (string-split version #\.) "")
-                                  "/INCHI-1-SRC.zip"))
-              (sha256
-               (base32
-                "1zbygqn0443p0gxwr4kx3m1bkqaj8x9hrpch3s41py7jq08f6x28"))
-              (file-name (string-append name "-" version ".zip"))))
+    (version "1.07.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/IUPAC-InChI/InChI")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0r32f6i5d8ir96ic3nvqb5lywxrznwrkk6hnz1q0a4bgsw5pmk0n"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "INCHI-1-BIN"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; no configure script
-         (add-before 'build 'chdir-to-build-directory
-           (lambda _ (chdir "INCHI_EXE/inchi-1/gcc") #t))
-         (add-after 'build 'build-library
-           (lambda _
-             (chdir "../../../INCHI_API/libinchi/gcc")
-             (invoke "make")))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/inchi"))
-                    (include-dir (string-append out "/include/inchi"))
-                    (lib (string-append out "/lib/inchi"))
-                    (inchi-doc (assoc-ref inputs "inchi-doc"))
-                    (unzip (search-input-file inputs "/bin/unzip")))
-               (chdir "../../..")
-               ;; Install binary.
-               (with-directory-excursion "INCHI_EXE/bin/Linux"
-                 (rename-file "inchi-1" "inchi")
-                 (install-file "inchi" bin))
-               ;; Install libraries.
-               (with-directory-excursion "INCHI_API/bin/Linux"
-                 (for-each (lambda (file)
-                             (install-file file lib))
-                           (find-files "." "libinchi\\.so\\.1\\.*")))
-               ;; Install header files.
-               (with-directory-excursion "INCHI_BASE/src"
-                 (for-each (lambda (file)
-                             (install-file file include-dir))
-                           (find-files "." "\\.h$")))
-               ;; Install documentation.
-               (mkdir-p doc)
-               (invoke unzip "-j" "-d" doc inchi-doc)
-               #t))))))
-    (native-inputs
-     `(("unzip" ,unzip)
-       ("inchi-doc"
-        ,(origin
-           (method url-fetch)
-           (uri (string-append "http://www.inchi-trust.org/download/"
-                                  (string-join (string-split version #\.) "")
-                                  "/INCHI-1-DOC.zip"))
-           (sha256
-            (base32
-             "1kyda09i9p89xfq90ninwi7w13k1w3ljpl4gqdhpfhi5g8fgxx7f"))
-           (file-name (string-append name "-" version ".zip"))))))
+     (list
+      #:tests? #f ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ; no configure script
+          (add-after 'unpack 'chdir-to-build-directory
+            (lambda _ (chdir "INCHI-1-SRC/INCHI_EXE/inchi-1/gcc")))
+          (add-after 'build 'build-library
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (chdir "../../../INCHI_API/libinchi/gcc")
+              (invoke "make" "-j" (if parallel-build?
+                                      (number->string (parallel-job-count))
+                                      "1"))))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((bin (string-append #$output "/bin"))
+                     (doc (string-append #$output "/share/doc/inchi"))
+                     (include-dir (string-append #$output "/include/inchi"))
+                     (lib (string-append #$output "/lib/inchi")))
+                (chdir "../../..")
+                ;; Install binary.
+                (with-directory-excursion "INCHI_EXE/bin/Linux"
+                  (rename-file "inchi-1" "inchi")
+                  (install-file "inchi" bin))
+                ;; Install library.
+                (with-directory-excursion "INCHI_API/bin/Linux"
+                  (let ((libname (basename
+                                  (car
+                                   (find-files "." "libinchi\\.so\\.1\\.*")))))
+                    (install-file libname lib)
+                    (with-directory-excursion lib
+                      (symlink libname "libinchi.so.1")
+                      (symlink "libinchi.so.1" "libinchi.so"))))
+                ;; Install header files.
+                (with-directory-excursion "INCHI_BASE/src"
+                  (for-each (lambda (file)
+                              (install-file file include-dir))
+                            (find-files "." "\\.h$")))
+                ;; Install documentation.
+                (with-directory-excursion "../INCHI-1-DOC"
+                  (for-each
+                   (lambda (file)
+                     (install-file file doc))
+                   (find-files "." "\\.pdf$")))))))))
+    (native-inputs (list unzip))
     (home-page "https://www.inchi-trust.org")
     (synopsis "Utility for manipulating machine-readable chemical structures")
     (description
@@ -216,9 +214,7 @@ chemical structures into machine-readable strings of information.  InChIs are
 unique to the compound they describe and can encode absolute stereochemistry
 making chemicals and chemistry machine-readable and discoverable.  A simple
 analogy is that InChI is the bar-code for chemistry and chemical structures.")
-    (license (license:non-copyleft
-              "file://LICENCE"
-              "See LICENCE in the distribution."))))
+    (license license:expat)))
 
 (define-public libmsym
   (package
