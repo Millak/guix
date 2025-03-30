@@ -64,6 +64,7 @@
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2023 Santiago Payà Miralta <santiagopim@gmail.com>
+;;; Copyright © 2025 Kurome <hunt31999@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2554,7 +2555,7 @@ monospace, slab-serif fonts.")
 (define-public font-google-material-design-icons
   (package
     (name "font-google-material-design-icons")
-    (version "3.0.1")
+    (version "4.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2563,7 +2564,7 @@ monospace, slab-serif fonts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17q5brcqyyc8gbjdgpv38p89s60cwxjlwy2ljnrvas5cj0s62np0"))))
+                "0c8ah9rj82a1y0jgi5j0hszn7ndv4jb5kxmikv71alqq69xd8zn1"))))
     (build-system font-build-system)
     (home-page "https://google.github.io/material-design-icons")
     (synopsis "Icon font of Google Material Design icons")
