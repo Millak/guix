@@ -94510,6 +94510,28 @@ mile, ...).")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-static-assertions" ,rust-static-assertions-1))))))
 
+(define-public rust-upon-0.8
+  (package
+    (name "rust-upon")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "upon" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h0ky0lvilja2bw3337w3jyxhgajbwdafpm3m57i0kv2s40rdqlz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-unicode-ident" ,rust-unicode-ident-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/rossmacarthur/upon")
+    (synopsis "Simple template engine for Rust")
+    (description "This package provides a simple, template engine with minimal
+dependencies and configurable delimiters.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ureq-2
   (package
     (name "rust-ureq")
