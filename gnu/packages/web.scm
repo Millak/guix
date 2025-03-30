@@ -6774,7 +6774,7 @@ tools like SSH (Secure Shell) to reach the outside world.")
          netcat
          procps
          python))
-  (inputs (list openssl))
+  (inputs (list openssl perl))
   (home-page "https://www.stunnel.org")
   (synopsis "TLS proxy for clients or servers")
   (description "Stunnel is a proxy designed to add TLS encryption
