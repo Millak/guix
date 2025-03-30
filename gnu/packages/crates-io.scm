@@ -16420,6 +16420,35 @@ literals.")
 implements it for Rust primitives, prelude types and arrays.")
     (license license:expat)))
 
+(define-public rust-const-default-derive-0.2
+  (package
+    (name "rust-const-default-derive")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "const-default-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nh3iwba073s9vsyhr5ci0pgbnc6zavmfs7za4vj64mqrgc4v08g"))
+       (snippet #~(begin
+                    (use-modules (guix build utils))
+                    ;; README.md not included in the release tarball.
+                    (substitute* "Cargo.toml"
+                      (("\\.\\./README\\.md")
+                       "Cargo.toml"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;use of undeclared crate const_default
+       #:cargo-inputs (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/AerialX/const-default.rs")
+    (synopsis "Derive for @code{Default}")
+    (description "This package provides #[derive(@code{ConstDefault})].")
+    (license license:expat)))
+
 (define-public rust-const-fn-0.4
   (package
     (name "rust-const-fn")
