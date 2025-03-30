@@ -3,6 +3,7 @@
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2015, 2017-2020, 2022-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <contact@parouby.fr>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +21,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services messaging)
+  #:use-module ((gnu home services utils) #:select (object->camel-case-string))
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages irc)
@@ -38,7 +40,10 @@
   #:use-module (guix deprecation)
   #:use-module (guix least-authority)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (prosody-service-type
             prosody-configuration
@@ -57,6 +62,90 @@
             bitlbee-configuration
             bitlbee-configuration?
             bitlbee-service-type
+
+            ngircd-service-type
+            ngircd-configuration
+            ngircd-configuration?
+            ngircd-configuration-ngircd
+            ngircd-configuration-debug?
+            ngircd-configuration-global
+            ngircd-configuration-limits
+            ngircd-configuration-options
+            ngircd-configuration-ssl
+            ngircd-configuration-operators
+            ngircd-configuration-servers
+            ngircd-configuration-channels
+            ngircd-global
+            ngircd-global?
+            ngircd-global-name
+            ngircd-global-admin-info-1
+            ngircd-global-admin-info-2
+            ngircd-global-admin-email
+            ngircd-global-help-file
+            ngircd-global-info
+            ngircd-global-listen
+            ngircd-global-motd-file
+            ngircd-global-motd-phrase
+            ngircd-global-network
+            ngircd-global-password
+            ngircd-global-pid-file
+            ngircd-global-ports
+            ngircd-global-server-uid
+            ngircd-global-server-gid
+            ngircd-limits
+            ngircd-limits?
+            ngircd-limits-connect-retry
+            ngircd-limits-max-connections
+            ngircd-limits-max-connections-ip
+            ngircd-limits-max-joins
+            ngircd-limits-max-list-size
+            ngircd-limits-ping-timeout
+            ngircd-limits-pong-timeout
+            ngircd-options
+            ngircd-options?
+            ngircd-options-allowed-channel-types
+            ngircd-options-allow-remote-oper?
+            ngircd-options-connect-ipv4?
+            ngircd-options-connect-ipv6?
+            ngircd-options-dns?
+            ngircd-options-more-privacy?
+            ngircd-options-notice-before-registration?
+            ngircd-options-oper-can-use-mode?
+            ngircd-options-oper-chan-p-auto-op?
+            ngircd-options-oper-server-mode?
+            ngircd-options-pam?
+            ngircd-options-pam-is-optional?
+            ngircd-options-require-auth-ping?
+            ngircd-ssl
+            ngircd-ssl?
+            ngircd-ssl-cert-file
+            ngircd-ssl-key-file
+            ngircd-ssl-ca-file
+            ngircd-ssl-ports
+            ngircd-ssl-cipher-list
+            ngircd-ssl-dh-file
+            ngircd-operator
+            ngircd-operator?
+            ngircd-operator-name
+            ngircd-operator-password
+            ngircd-operator-mask
+            ngircd-server
+            ngircd-server?
+            ngircd-server-name
+            ngircd-server-host
+            ngircd-server-my-password
+            ngircd-server-peer-password
+            ngircd-server-bind
+            ngircd-server-port
+            ngircd-server-group
+            ngircd-server-passive?
+            ngircd-server-ssl-connect?
+            ngircd-channel
+            ngircd-channel?
+            ngircd-channel-name
+            ngircd-channel-topic
+            ngircd-channel-modes
+            ngircd-channel-key-file
 
             quassel-configuration
             quassel-service-type
@@ -920,6 +1009,631 @@ string, you could instantiate a prosody service like this:
                 (description
                  "Run @url{http://bitlbee.org,BitlBee}, a daemon that acts as
 a gateway between IRC and chat networks.")))
+
+
+;;;
+;;; ngIRCd.
+;;;
+
+(define-maybe string
+  (prefix ngircd-))
+
+(define-maybe file-like
+  (prefix ngircd-))
+
+(define-maybe list-of-strings
+  (prefix ngircd-))
+
+(define (port? x)
+  (and (number? x)
+       (and (>= x 0) (<= x 65535))))
+
+(define list-of-ports?
+  (list-of port?))
+
+(define-maybe port
+  (prefix ngircd-))
+
+(define-maybe list-of-ports
+  (prefix ngircd-))
+
+(define-maybe number
+  (prefix ngircd-))
+
+(define-maybe boolean
+  (prefix ngircd-))
+
+(define (pascal-case text)
+  (object->camel-case-string text 'upper))
+
+(define (ngircd-serialize-string field value)
+  (format #f "~a = ~a~%" (pascal-case field) value))
+
+(define (ngircd-serialize-boolean field value)
+  (let* ((field (symbol->string field))
+         (name (if (string-suffix? "?" field)
+                   (string-drop-right field 1)
+                   field)))
+    (format #f "~a = ~:[false~;true~]~%" (pascal-case name) value)))
+
+(define (ngircd-serialize-file-like field value)
+  #~(format #f "~a = ~a~%" #$(pascal-case field) #$value))
+
+(define (ngircd-serialize-list-of-strings field value)
+  (format #f "~a = ~{~a~^,~}~%" (pascal-case field) value))
+
+(define ngircd-serialize-list-of-ports
+  ngircd-serialize-list-of-strings)
+
+(define ngircd-serialize-number ngircd-serialize-string)
+
+(define ngircd-serialize-port ngircd-serialize-number)
+
+(define (string-or-number? x)
+  (or (string? x) (number? x)))
+
+(define ngircd-serialize-string-or-number ngircd-serialize-string)
+
+(define-configuration ngircd-global     ;[Global]
+  (name
+   maybe-string
+   "Server name in the IRC network.  This is an individual name of the IRC
+server, it is not related to the DNS host name.  It must be unique in the IRC
+network and must contain at least one dot (@samp{.}) character.  When not set,
+ngIRCd tries to deduce a valid IRC server name from the local host name.")
+  (admin-info-1
+   maybe-string
+   "First administrator information.")
+  (admin-info-2
+   maybe-string
+   "Second administrator information.")
+  (admin-email
+   maybe-string
+   "Email to reach administrators.")
+  (help-file
+   maybe-file-like
+   "File-like containing the ngIRCd help text.")
+  (info
+   maybe-string
+   "Info text of the server. This will be shown by WHOIS and LINKS requests
+for example.")
+  (listen
+   (list-of-strings (list "::" "0.0.0.0"))
+   "A list of IP address on which the server should listen.  By default it
+listens on all configured IP addresses and interfaces.")
+  (motd-file
+   ;; Provide an empty default file to avoid a warning when running
+   ;; --configtest to validate the configuration file.
+   (file-like (plain-file "ngircd.motd" ""))
+   "Text file with the @i{message of the day} (MOTD).  This message will be
+shown to all users connecting to the server.")
+  (motd-phrase
+   maybe-string
+   "A simple phrase (<127 chars) to use if you don't want to use a MOTD
+file.")
+  (network
+   maybe-string
+   "The name of the IRC network to which this server belongs.  This name is
+optional, should only contain ASCII characters, and can't contain spaces.  It
+is only used to inform clients.")
+  (password
+   maybe-string
+   "Global password or all users needed to connect to the server.  By default,
+no password is required.  PAM must be disabled for this option to have an
+effect.")
+  (pid-file
+   maybe-string
+   "The file name where the PID of ngIRCd should be written after it starts.
+By default, no PID file is created.")
+  (ports
+   (list-of-ports (list 6667))
+   "Port number(s) on which the server should listen for @emph{unencrypted}
+connections.")
+  (server-uid
+   (string-or-number "ngircd")
+   "The user that the @command{ngircd} command should run as.")
+  (server-gid
+   (string-or-number "ngircd")
+   "The group that the @command{ngircd} command should run as.")
+  (prefix ngircd-))
+
+(define (serialize-ngircd-global _ config)
+  #~(string-append
+     "[Global]\n"
+     #$(serialize-configuration config ngircd-global-fields)))
+
+(define-configuration ngircd-limits     ;[Limits]
+  (connect-retry
+   (maybe-number 60)
+   "The number of seconds the server should wait before re-attempting to
+establish a link to not yet (or no longer) connected servers.")
+  (max-connections
+   (maybe-number 0)
+   "Maximum number of simultaneous in- and outbound connections the server is
+allowed to accept.  There is no limit by default.")
+  (max-connections-ip
+   (maybe-number 5)
+   "Maximum number of simultaneous connections from a single IP address that
+the server will accept.  This configuration options lowers the risk of denial
+of service attacks (DoS).  Set to 0 to remove the limit.")
+  (max-joins
+   (maybe-number 10)
+   "Maximum number of channels a user can be member of.  Set to 0 to remove
+the limit.")
+  (max-list-size
+   (maybe-number 100)
+   "Maximum number of channels returned in response to a LIST command.")
+  (ping-timeout
+   (maybe-number 120)
+   "Number of seconds of inactivity after which the server will send a PING to
+the peer to test whether it is alive or not.")
+  (pong-timeout
+   (maybe-number 20)
+   "If a client fails to answer a PING with a PONG within this amount of
+seconds, it will be disconnected by the server.")
+  (prefix ngircd-))
+
+(define (serialize-ngircd-limits _ config)
+  #~(string-append
+     "\n[Limits]\n"
+     #$(serialize-configuration config ngircd-limits-fields)))
+
+(define-maybe ngircd-limits)
+
+(define-configuration ngircd-options    ;[Options]
+  (allowed-channel-types
+   (maybe-string "#&+")
+   "List of allowed channel types (channel prefixes) for newly created
+channels on the local server.  By default, all supported channel types are
+allowed.")
+  (allow-remote-oper?
+   (maybe-boolean #f)
+   "If this option is active, IRC operators connected to remote servers are
+allowed to control this local server using administrative commands, for
+example like CONNECT, DIE, SQUIT, etc.")
+  (connect-ipv4?
+   (maybe-boolean #t)
+   "Set to @code{#f} to prevent ngIRCd from connecting to other IRC servers
+using the IPv4 protocol, allowed by default.")
+  (connect-ipv6?
+   (maybe-boolean #t)
+   "Set to @code{#f} to prevent ngIRCd from connecting to other IRC servers
+using the IPv6 protocol, allowed by default.")
+  (dns?
+   (maybe-boolean #t)
+   "Set to @code{#f} to disable DNS lookups when clients connect.  If you
+configure the daemon to connect to other servers, ngIRCd may still perform a
+DNS lookup if required.")
+  (more-privacy?
+   (maybe-boolean #f)
+   "Set this to @code{#t} to have ngIRCd censor user idle time, logon time as
+well as the PART/QUIT messages (that sometimes used to inform everyone about
+which client software is being used).  WHOWAS requests are also silently
+ignored, and NAMES output doesn't list any clients for non-members.  This
+option is most useful when ngIRCd is being used together with anonymizing
+software such as TOR or I2P and one does not wish to make it too easy to
+collect statistics on the users.")
+  (notice-before-registration?
+   (maybe-boolean #f)
+   "Normally ngIRCd doesn't send any messages to a client until it is
+registered.  Enable this option to let the daemon send @samp{NOTICE *}
+messages to clients while connecting.")
+  (oper-can-use-mode?
+   (maybe-boolean #f)
+   "Should IRC Operators be allowed to use the MODE command even if they are
+not(!) channel-operators?")
+  (oper-chan-p-auto-op?
+   (maybe-boolean #t)
+   "Should IRC Operators get AutoOp (+o) in persistent (+P) channels?")
+  (oper-server-mode?
+   (maybe-boolean #f)
+   "If @code{open-can-use-mode?} is @code{#t}, this may lead the compatibility
+problems with servers that run the ircd-irc2 software.  This option masks mode
+requests by non-chanops as if they were coming from the server.  Only enable
+this if you have ircd-irc2 servers in your IRC network.")
+  (pam?
+   (boolean #f)
+   "Set to @code{#t} to enable calls to the PAM library at runtime; all users
+connecting without password are allowed to connect, all passwords given will
+fail.  Users identified without PAM are registered with a tilde (@samp{~})
+prepended to their user name.  This defaults to @code{#f} in Guix because the
+service runs as a unpriveleged user and thus cannot authenticate other users
+via the @code{pam_unix} PAM module.")
+  (pam-is-optional?
+   (maybe-boolean #f)
+   "Set to @code{#t} to make PAM authentication optional, causing clients not
+sending a password to still be able to connect, but won't become identified
+and keep the tilder (@samp{~}) character prepended to their supplied user
+name.")
+  (require-auth-ping?
+   (maybe-boolean #f)
+   "Set to @code{#t} to have ngIRCd send an authentication PING when a new
+client connects, and register this client only after receiving the
+corresponding PONG reply.")
+  (prefix ngircd-))
+
+(define (serialize-ngircd-options _ config)
+  #~(string-append
+     "\n[Options]\n"
+     #$(serialize-configuration config ngircd-options-fields)))
+
+(define-maybe ngircd-options)
+
+(define-configuration ngircd-ssl        ;[SSL]
+  (cert-file
+   maybe-string
+   "SSL certificate file of the private server key.")
+  (key-file
+   maybe-string
+   "File name of the SSL Server Key to be used for SSL connections, which is
+required for SSL/TLS support.")
+  (ca-file
+   (maybe-string "/etc/ssl/certs/ca-certificates.crt")
+   "A file listing all the certificates of the trusted Certificate
+Authorities.")
+  (ports
+   maybe-list-of-ports
+   "Like the global configuration's @code{port} option, except that ngIRCd
+will expect incoming connections to be SSL/TLS encrypted.  Common port numbers
+for SSL-encrypted IRC are 6669 and 6697.")
+  (cipher-list
+   maybe-string
+   "The GnuTLS cipher suites allowed for SSL/TLS connections, a value such as
+@code{\"SECURE128:-VERS-SSL3.0\"}.  Refer to @samp{man 3 gnutls_priority_init}
+for details.")
+  (dh-file
+   maybe-file-like
+   "A file-like containing the Diffie-Hellman parameters, which can be created
+with GnuTLS via @samp{certtool --generate-dh-params}.  If this file is not
+present, the Diffie-Hellman parameters will be computed on startup, which may
+take some time.")
+  (prefix ngircd-))
+
+(define (serialize-ngircd-ssl _ config)
+  #~(string-append
+     "\n[SSL]\n"
+     #$(serialize-configuration config ngircd-ssl-fields)))
+
+(define-maybe ngircd-ssl)
+
+(define-configuration ngircd-operator   ;[Operator]
+  (name
+   string
+   "ID of the operator (may be different of the nickname).")
+  (password
+   string
+   "Password of the IRC operator.")
+  (mask
+   maybe-string
+   "Mask that is to be checked before an /OPER for this account is accepted,
+for example: @code{\"nick!ident@@*.example.com\"}.")
+  (prefix ngircd-))
+
+(define list-of-ngircd-operators?
+  (list-of ngircd-operator?))
+
+(define (serialize-ngircd-operator _ operator)
+  #~(string-append
+     "\n[Operator]\n"
+     #$(serialize-configuration operator ngircd-operator-fields)))
+
+(define (serialize-list-of-ngircd-operators _ operators)
+  #~(string-append #$@(map (cut serialize-ngircd-operator #f <>) operators)))
+
+(define-maybe list-of-ngircd-operators)
+
+(define-configuration ngircd-server     ;[Server]
+  (name
+   string
+   "IRC name of the remote server.")
+  (host
+   string
+   "Internet host name (or IP address) of the peer.")
+  (my-password
+   string
+   "Own password for this connection.  This password has to be configured as
+@code{peer-password} on the other server and must not have @samp{:} as first
+character.")
+  (peer-password
+   string
+   "Foreign password for this connection.  This password has to be configured
+as @code{my-password} on the other server.")
+  (bind
+   maybe-string
+   "IP address to use as source IP for the outgoing connection.  The default
+is to let the operating system decide.")
+  (port
+   maybe-port
+   "Port of the remote server to which ngIRCd should connect (active).  If no
+port is assigned to a configured server, the daemon only waits for incoming
+connections (passive, which is the default).")
+  (group
+   maybe-number
+   "Group of this server.")
+  (passive?
+   (maybe-boolean #f)
+   "Set to @code{#t} to disable automatic connection even if the port value is
+specified.")
+  (ssl-connect?
+   (maybe-boolean #f)
+   "Connect to the remote server using TLS/SSL.")
+  (prefix ngircd-))
+
+(define list-of-ngircd-servers?
+  (list-of ngircd-server?))
+
+(define (serialize-ngircd-server _ server)
+  #~(string-append
+     "\n[Server]\n"
+     #$(serialize-configuration server ngircd-server-fields)))
+
+(define (serialize-list-of-ngircd-servers _ servers)
+  #~(string-append #$@(map (cut serialize-ngircd-server #f <>) servers)))
+
+(define-maybe list-of-ngircd-servers)
+
+(define-configuration ngircd-channel    ;[Channel]
+  (name
+   string
+   "Name of the channel, including channel prefix (\"#\" or \"&\").")
+  (topic
+   maybe-string
+   "Topic for this channel.")
+  (modes
+   maybe-list-of-strings
+   "Initial channel modes, as used in MODE commands.  Modifying lists (ban
+list, invite list, exception list) is supported.  If multiple MODE strings are
+specified, they are evaluated in the order listed (left to right)."
+   (serializer (lambda (_ value)
+                 ;; Special case: each mode string gets serialized to a
+                 ;; separate option.
+                 (format #f "~{Modes = ~a~%~}" value))))
+  (key-file
+   maybe-file-like
+   "Path and file name of a ngIRCd key file containing individual channel keys
+for different users.  Refer to @samp{man 5 ngircd.conf} for more details.")
+  (prefix ngircd-))
+
+(define list-of-ngircd-channels?
+  (list-of ngircd-channel?))
+
+(define (serialize-ngircd-channel _ channel)
+  #~(string-append
+     "\n[Channel]\n"
+     #$(serialize-configuration channel ngircd-channel-fields)))
+
+(define (serialize-list-of-ngircd-channels _ channels)
+  #~(string-append #$@(map (cut serialize-ngircd-channel #f <>) channels)))
+
+(define-maybe list-of-ngircd-channels)
+
+(define-configuration ngircd-configuration
+  (ngircd
+   (file-like ngircd)
+   "The @code{ngircd} package to use.")
+  (debug?
+   (boolean #f)
+   "Turn on debugging messages."
+   (serializer empty-serializer))
+  (global
+   ;; Always use a ngircd-global default to ensure the correct PidFile option
+   ;; is set, as it is required by the service.
+   (ngircd-global (ngircd-global))
+   "A ngircd-global record object used to specify global options.")
+  (limits
+   maybe-ngircd-limits
+   "The ngircd-limits record object used to specify limits options.")
+  (options
+   maybe-ngircd-options
+   "The ngircd-options record object used to specify optional features and
+configuration options.")
+  (ssl
+   maybe-ngircd-ssl
+   "The ngircd-ssl record object used to specify the SSL-related options.")
+  (operators
+   maybe-list-of-ngircd-operators
+   "A list of ngircd-operator record objects used to specify the operators.")
+  (servers
+   maybe-list-of-ngircd-servers
+   "A list of ngircd-server record objects used to specify other remote
+servers to connect to.")
+  (channels
+   maybe-list-of-ngircd-channels
+   "A list of ngircd-channels record objects specifying pre-defined channels
+to be created by the server when starting up."))
+
+(define (ngircd-generate-documentation)
+  (configuration->documentation 'ngircd-configuration)
+  (configuration->documentation 'ngircd-global)
+  (configuration->documentation 'ngircd-limits)
+  (configuration->documentation 'ngircd-options)
+  (configuration->documentation 'ngircd-ssl)
+  (configuration->documentation 'ngircd-operator)
+  (configuration->documentation 'ngircd-server)
+  (configuration->documentation 'ngircd-channel))
+
+(define (ngircd-user+group config)
+  "Return the Global->ServerUID and Global->ServerGID configuration options as
+values."
+  (let* ((global (ngircd-configuration-global config))
+         (user (ngircd-global-server-uid global))
+         (group (ngircd-global-server-gid global)))
+    (values user group)))
+
+(define (ngircd-account config)
+  (let* ((user group (ngircd-user+group config))
+         (group-name (if (string? group)
+                         group
+                         "ngircd"))
+         (user-name (if (string? user)
+                        user
+                        "ngircd"))
+         (gid (if (number? group)
+                  group
+                  #f))
+         (uid (if (number? user)
+                  user
+                  #f)))
+    (list (user-group
+           (name group-name)
+           (id gid)
+           (system? #t))
+          (user-account
+           (name user-name)
+           (uid uid)
+           (group group-name)
+           (system? #t)
+           (comment "Ngircd daemon user")
+           (home-directory "/var/empty")
+           (shell (file-append shadow "/sbin/nologin"))))))
+
+(define (serialize-ngircd-configuration config)
+  "Return a file-like object corresponding to the serialized
+<ngircd-configuration> record."
+  (let ((ngircd (file-append (ngircd-configuration-ngircd config)
+                             "/sbin/ngircd"))
+        (ngircd.conf (mixed-text-file "unvalidated-ngircd.conf"
+                                      (serialize-configuration
+                                       config ngircd-configuration-fields))))
+    (computed-file
+     "ngircd.conf"
+     (with-imported-modules '((guix build utils))
+       #~(begin
+           (use-modules (guix build utils))
+           ;; Ensure stdin is not connected to a TTY source to avoid ngircd
+           ;; configtest blocking with a confirmation prompt.
+           (parameterize ((current-input-port (%make-void-port "r")))
+             (invoke #+ngircd "--config" #$ngircd.conf "--configtest" ))
+           (copy-file #$ngircd.conf #$output))))))
+
+(define (ngircd-wrapper config)
+  "Take CONFIG, a <ngircd-configuration> object, and provide a least-authority
+wrapper for the 'ngircd' command."
+  (let* ((ngircd.conf (serialize-ngircd-configuration config))
+         (user group (ngircd-user+group config))
+         (global (ngircd-configuration-global config))
+         (help-file (ngircd-global-help-file global))
+         (motd-file (ngircd-global-motd-file global))
+         (ssl (ngircd-configuration-ssl config))
+         (ca-file (ngircd-ssl-ca-file ssl))
+         (cert-file (ngircd-ssl-cert-file ssl))
+         (key-file (ngircd-ssl-key-file ssl))
+         (dh-file (ngircd-ssl-dh-file ssl))
+         (channels (ngircd-configuration-channels config)))
+    (least-authority-wrapper
+     (file-append (ngircd-configuration-ngircd config) "/sbin/ngircd")
+     #:name "ngircd-pola-wrapper"
+     ;; Expose all needed files, such as all options corresponding to
+     ;; file-like objects and string file names.
+     #:mappings
+     (append
+      (list (file-system-mapping
+             (source "/var/log/ngircd.log")
+             (target source)
+             (writable? #t))
+            (file-system-mapping
+             (source ngircd.conf)
+             (target source)))
+      (if (maybe-value-set? help-file)
+          (list (file-system-mapping
+                 (source help-file)
+                 (target source)))
+          '())
+      (if (maybe-value-set? motd-file)
+          (list (file-system-mapping
+                 (source motd-file)
+                 (target source)))
+          '())
+      (if (maybe-value-set? ssl)
+          ;; When SSL is used, expose the specified keys and certificates.
+          (append
+           (if (maybe-value-set? ca-file)
+               (list (file-system-mapping
+                      (source ca-file)
+                      (target source)))
+               '())
+           (if (maybe-value-set? cert-file)
+               (list (file-system-mapping
+                      (source cert-file)
+                      (target source)))
+               '())
+           (if (maybe-value-set? key-file)
+               (list (file-system-mapping
+                      (source key-file)
+                      (target source)))
+               '())
+           (if (maybe-value-set? dh-file)
+               (list (file-system-mapping
+                      (source dh-file)
+                      (target source)))
+               '()))
+          '())
+      (if (maybe-value-set? channels)
+          (filter-map (lambda (channel)
+                        (let ((key-file (ngircd-channel-key-file channel)))
+                          (and (maybe-value-set? key-file)
+                               key-file)))
+                      channels)
+          '()))
+     #:user user
+     #:group group
+     ;; ngircd wants to look up users in /etc/passwd so run in the global user
+     ;; namespace.
+     #:namespaces (fold delq %namespaces '(net user)))))
+
+(define (ngircd-shepherd-service config)
+  (match-record config <ngircd-configuration>
+                (ngircd debug? global ssl)
+    (let* ((ngircd.conf (serialize-ngircd-configuration config))
+           (ngircd (file-append ngircd "/sbin/ngircd"))
+           (addresses (ngircd-global-listen global))
+           (ports* (ngircd-global-ports global))
+           (ports (if (and (maybe-value-set? ssl)
+                           (maybe-value-set? (ngircd-ssl-ports ssl)))
+                      (append ports* (ngircd-ssl-ports ssl))
+                      ports*)))
+      (list (shepherd-service
+             (provision '(ngircd))
+             (requirement '(user-processes networking syslogd))
+             (modules (cons '(srfi srfi-1) %default-modules))
+             (actions (list (shepherd-configuration-action ngircd.conf)))
+             (start #~(make-systemd-constructor
+                       (append (list #$(ngircd-wrapper config)
+                                     "--nodaemon"
+                                     "--config" #$ngircd.conf)
+                               (if #$debug?
+                                   '("--debug")
+                                   '()))
+                       ;; Compute endpoints for each listen addresses/ports
+                       ;; combinations.
+                       (append-map
+                        (lambda (port)
+                          (map (lambda (addr)
+                                 (endpoint
+                                  (addrinfo:addr
+                                   (car (getaddrinfo
+                                         addr
+                                         (number->string port)
+                                         (logior AI_NUMERICHOST
+                                                 AI_NUMERICSERV))))))
+                               (list #$@addresses)))
+                        (list #$@ports))
+                       #:log-file "/var/log/ngircd.log"))
+             (stop  #~(make-systemd-destructor)))))))
+
+(define ngircd-service-type
+  (service-type
+   (name 'ngircd)
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             ngircd-shepherd-service)
+          (service-extension profile-service-type
+                             (compose list ngircd-configuration-ngircd))
+          (service-extension account-service-type
+                             ngircd-account)))
+   (description
+    "Run @url{https://ngircd.barton.de/, ngIRCd}, a lightweight @acronym{IRC,
+Internet Relay Chat} daemon.")))
 
 
 ;;;

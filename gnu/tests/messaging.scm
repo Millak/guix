@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017-2018, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,14 +24,19 @@
   #:use-module (gnu system)
   #:use-module (gnu system vm)
   #:use-module (gnu services)
+  #:use-module (gnu services base)
   #:use-module (gnu services messaging)
   #:use-module (gnu services networking)
+  #:use-module (gnu services ssh)
+  #:use-module (gnu packages irc)
   #:use-module (gnu packages messaging)
+  #:use-module (gnu packages screen)
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix modules)
   #:export (%test-prosody
             %test-bitlbee
+            %test-ngircd
             %test-quassel))
 
 (define (run-xmpp-test name xmpp-service pid-file create-account)
@@ -216,6 +222,123 @@
    (name "bitlbee")
    (description "Connect to a BitlBee IRC server.")
    (value (run-bitlbee-test))))
+
+
+;;;
+;;; ngIRCd.
+;;;
+
+(define %ngircd-os
+  (operating-system
+    (inherit %simple-os)
+    (packages (cons* ii screen %base-packages))
+    (services
+     (cons*
+      (service dhcp-client-service-type)
+      ;; For ease of debugging.  Run the vm with:
+      ;; '-nic user,model=virtio-net-pci,hostfwd=tcp::10022-:22'
+      (service openssh-service-type
+               (openssh-configuration
+                (permit-root-login #t)
+                (allow-empty-passwords? #t)))
+      (service ngircd-service-type
+               (ngircd-configuration
+                (debug? #t)
+                (global
+                 (ngircd-global
+                  (server-uid 990)
+                  (server-gid 990)))
+                ;; There is no need to serialize the following sections, which
+                ;; are all optional, but include them anyway to test the
+                ;; serializers.
+                (limits (ngircd-limits))
+                (options (ngircd-options))
+                (ssl (ngircd-ssl))
+                (operators (list (ngircd-operator
+                                  (name "apteryx")
+                                  (password "1234"))))
+                (channels
+                 (list (ngircd-channel
+                        (name "#guix")
+                        (topic "GNU Guix | https://guix.gnu.org"))))))
+      %base-services))))
+
+(define (run-ngircd-test)
+  (define vm
+    (virtual-machine
+     (operating-system
+       (marionette-operating-system
+        %ngircd-os
+        #:imported-modules (source-module-closure
+                            '((gnu build dbus-service)
+                              (guix build utils)
+                              (gnu services herd)))))))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-64)
+                       (gnu build marionette))
+
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "ngircd")
+
+          (test-assert "ngircd service runs"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (wait-for-service 'ngircd))
+             marionette))
+
+          (test-assert "ngircd listens on TCP port 6667"
+            (wait-for-tcp-port 6667 marionette))
+
+          (test-assert "basic irc operations function as expected"
+            (marionette-eval
+             '(begin
+                (use-modules ((gnu build dbus-service) #:select (with-retries))
+                             (ice-9 textual-ports))
+
+                (define (write-command command)
+                  (call-with-output-file "in"
+                    (lambda (port)
+                      (display (string-append command "\n") port))))
+
+                (define (grep-output text)
+                  (with-retries 5 1     ;retry for 5 seconds
+                    (string-contains (call-with-input-file "out" get-string-all)
+                                     text)))
+
+                (unless (zero? (system "ii -s localhost -i /tmp &"))
+                  (error "error connecting to irc server"))
+
+                (with-retries 5 1
+                  (chdir "/tmp/localhost")) ;move to FIFO directory
+
+                (write-command "/join #guix")
+                (grep-output "GNU Guix | https://guix.gnu.org")
+
+                (write-command "/oper apteryx 1234")
+                (grep-output "+o"))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "ngircd-test" test))
+
+(define %test-ngircd
+  (system-test
+   (name "ngircd")
+   (description "Connect to a ngircd IRC server.")
+   (value (run-ngircd-test))))
+
+
+;;;
+;;; Quassel.
+;;;
 
 (define (run-quassel-test)
   (define os

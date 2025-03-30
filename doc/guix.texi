@@ -30348,6 +30348,419 @@ Configuration snippet added as-is to the BitlBee configuration file.
 @end table
 @end deftp
 
+@subsubheading ngIRCd service
+
+@cindex IRCd, Internet Relay Chat daemon
+@cindex IRC daemon service
+@cindex IRC server service
+@cindex IRC (Internet Relay Chat)
+
+@url{https://ngircd.barton.de/, ngIRCd}, is a lightweight @acronym{IRCd,
+Internet Relay Chat daemon}, which can be used to host your own IRC
+server.
+
+@defvar ngircd-service-type
+The service type for ngIRCd.  Its value is a @code{ngircd-configuration}
+object, documented below.
+
+A simple example configuration could look like:
+
+@lisp
+(service ngircd-service-type
+         (ngircd-configuration
+          (channels
+           (list (ngircd-channel
+                  (name "#fruits")
+                  (topic "All things fruits -- veggies are off-topic"))))
+          (operators
+           (list (ngircd-operator
+                  (name "mikan")
+                  (password "tomatoes-are-fruits/carrots-are-not"))))))
+@end lisp
+@end defvar
+
+@c To regenerate the rest of this section documentation, use the
+@c `ngircd-generate-documentation' procedure in
+@c (gnu services messaging).
+@c %start of fragment
+
+@deftp {Data Type} ngircd-configuration
+Available @code{ngircd-configuration} fields are:
+
+@table @asis
+@item @code{ngircd} (default: @code{ngircd}) (type: file-like)
+The @code{ngircd} package to use.
+
+@item @code{debug?} (default: @code{#f}) (type: boolean)
+Turn on debugging messages.
+
+@item @code{global} (type: ngircd-global)
+A ngircd-global record object used to specify global options.
+
+@item @code{limits} (type: maybe-ngircd-limits)
+The ngircd-limits record object used to specify limits options.
+
+@item @code{options} (type: maybe-ngircd-options)
+The ngircd-options record object used to specify optional features and
+configuration options.
+
+@item @code{ssl} (type: maybe-ngircd-ssl)
+The ngircd-ssl record object used to specify the SSL-related options.
+
+@item @code{operators} (type: maybe-list-of-ngircd-operators)
+A list of ngircd-operator record objects used to specify the operators.
+
+@item @code{servers} (type: maybe-list-of-ngircd-servers)
+A list of ngircd-server record objects used to specify other remote
+servers to connect to.
+
+@item @code{channels} (type: maybe-list-of-ngircd-channels)
+A list of ngircd-channels record objects specifying pre-defined channels
+to be created by the server when starting up.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} ngircd-global
+Available @code{ngircd-global} fields are:
+
+@table @asis
+@item @code{name} (type: maybe-string)
+Server name in the IRC network.  This is an individual name of the IRC
+server, it is not related to the DNS host name.  It must be unique in
+the IRC network and must contain at least one dot (@samp{.}) character.
+When not set, ngIRCd tries to deduce a valid IRC server name from the
+local host name.
+
+@item @code{admin-info-1} (type: maybe-string)
+First administrator information.
+
+@item @code{admin-info-2} (type: maybe-string)
+Second administrator information.
+
+@item @code{admin-email} (type: maybe-string)
+Email to reach administrators.
+
+@item @code{help-file} (type: maybe-file-like)
+File-like containing the ngIRCd help text.
+
+@item @code{info} (type: maybe-string)
+Info text of the server.  This will be shown by WHOIS and LINKS requests
+for example.
+
+@item @code{listen} (default: @code{("::" "0.0.0.0")}) (type: list-of-strings)
+A list of IP address on which the server should listen.  By default it
+listens on all configured IP addresses and interfaces.
+
+@item @code{motd-file} (type: file-like)
+Text file with the @i{message of the day} (MOTD).  This message will be
+shown to all users connecting to the server.
+
+@item @code{motd-phrase} (type: maybe-string)
+A simple phrase (<127 chars) to use if you don't want to use a MOTD
+file.
+
+@item @code{network} (type: maybe-string)
+The name of the IRC network to which this server belongs.  This name is
+optional, should only contain ASCII characters, and can't contain
+spaces.  It is only used to inform clients.
+
+@item @code{password} (type: maybe-string)
+Global password or all users needed to connect to the server.  By
+default, no password is required.  PAM must be disabled for this option
+to have an effect.
+
+@item @code{pid-file} (type: maybe-string)
+The file name where the PID of ngIRCd should be written after it starts.
+By default, no PID file is created.
+
+@item @code{ports} (default: @code{(6667)}) (type: list-of-ports)
+Port number(s) on which the server should listen for @emph{unencrypted}
+connections.
+
+@item @code{server-uid} (default: @code{"ngircd"}) (type: string-or-number)
+The user that the @command{ngircd} command should run as.
+
+@item @code{server-gid} (default: @code{"ngircd"}) (type: string-or-number)
+The group that the @command{ngircd} command should run as.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} ngircd-limits
+Available @code{ngircd-limits} fields are:
+
+@table @asis
+@item @code{connect-retry} (default: @code{60}) (type: maybe-number)
+The number of seconds the server should wait before re-attempting to
+establish a link to not yet (or no longer) connected servers.
+
+@item @code{max-connections} (default: @code{0}) (type: maybe-number)
+Maximum number of simultaneous in- and outbound connections the server
+is allowed to accept.  There is no limit by default.
+
+@item @code{max-connections-ip} (default: @code{5}) (type: maybe-number)
+Maximum number of simultaneous connections from a single IP address that
+the server will accept.  This configuration options lowers the risk of
+denial of service attacks (DoS).  Set to 0 to remove the limit.
+
+@item @code{max-joins} (default: @code{10}) (type: maybe-number)
+Maximum number of channels a user can be member of.  Set to 0 to remove
+the limit.
+
+@item @code{max-list-size} (default: @code{100}) (type: maybe-number)
+Maximum number of channels returned in response to a LIST command.
+
+@item @code{ping-timeout} (default: @code{120}) (type: maybe-number)
+Number of seconds of inactivity after which the server will send a PING
+to the peer to test whether it is alive or not.
+
+@item @code{pong-timeout} (default: @code{20}) (type: maybe-number)
+If a client fails to answer a PING with a PONG within this amount of
+seconds, it will be disconnected by the server.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} ngircd-options
+Available @code{ngircd-options} fields are:
+
+@table @asis
+@item @code{allowed-channel-types} (default: @code{"#&+"}) (type: maybe-string)
+List of allowed channel types (channel prefixes) for newly created
+channels on the local server.  By default, all supported channel types
+are allowed.
+
+@item @code{allow-remote-oper?} (default: @code{#f}) (type: maybe-boolean)
+If this option is active, IRC operators connected to remote servers are
+allowed to control this local server using administrative commands, for
+example like CONNECT, DIE, SQUIT, etc.
+
+@item @code{connect-ipv4?} (default: @code{#t}) (type: maybe-boolean)
+Set to @code{#f} to prevent ngIRCd from connecting to other IRC servers
+using the IPv4 protocol, allowed by default.
+
+@item @code{connect-ipv6?} (default: @code{#t}) (type: maybe-boolean)
+Set to @code{#f} to prevent ngIRCd from connecting to other IRC servers
+using the IPv6 protocol, allowed by default.
+
+@item @code{dns?} (default: @code{#t}) (type: maybe-boolean)
+Set to @code{#f} to disable DNS lookups when clients connect.  If you
+configure the daemon to connect to other servers, ngIRCd may still
+perform a DNS lookup if required.
+
+@item @code{more-privacy?} (default: @code{#f}) (type: maybe-boolean)
+Set this to @code{#t} to have ngIRCd censor user idle time, logon time
+as well as the PART/QUIT messages (that sometimes used to inform
+everyone about which client software is being used).  WHOWAS requests
+are also silently ignored, and NAMES output doesn't list any clients for
+non-members.  This option is most useful when ngIRCd is being used
+together with anonymizing software such as TOR or I2P and one does not
+wish to make it too easy to collect statistics on the users.
+
+@item @code{notice-before-registration?} (default: @code{#f}) (type: maybe-boolean)
+Normally ngIRCd doesn't send any messages to a client until it is
+registered.  Enable this option to let the daemon send @samp{NOTICE *}
+messages to clients while connecting.
+
+@item @code{oper-can-use-mode?} (default: @code{#f}) (type: maybe-boolean)
+Should IRC Operators be allowed to use the MODE command even if they are
+not(!) channel-operators?
+
+@item @code{oper-chan-p-auto-op?} (default: @code{#t}) (type: maybe-boolean)
+Should IRC Operators get AutoOp (+o) in persistent (+P) channels?
+
+@item @code{oper-server-mode?} (default: @code{#f}) (type: maybe-boolean)
+If @code{open-can-use-mode?} is @code{#t}, this may lead the
+compatibility problems with servers that run the ircd-irc2 software.
+This option masks mode requests by non-chanops as if they were coming
+from the server.  Only enable this if you have ircd-irc2 servers in your
+IRC network.
+
+@item @code{pam?} (default: @code{#f}) (type: boolean)
+Set to @code{#t} to enable calls to the PAM library at runtime; all
+users connecting without password are allowed to connect, all passwords
+given will fail.  Users identified without PAM are registered with a
+tilde (@samp{~}) prepended to their user name.  This defaults to
+@code{#f} in Guix because the service runs as a unpriveleged user and
+thus cannot authenticate other users via the @code{pam_unix} PAM module.
+
+@item @code{pam-is-optional?} (default: @code{#f}) (type: maybe-boolean)
+Set to @code{#t} to make PAM authentication optional, causing clients
+not sending a password to still be able to connect, but won't become
+identified and keep the tilder (@samp{~}) character prepended to their
+supplied user name.
+
+@item @code{require-auth-ping?} (default: @code{#f}) (type: maybe-boolean)
+Set to @code{#t} to have ngIRCd send an authentication PING when a new
+client connects, and register this client only after receiving the
+corresponding PONG reply.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} ngircd-ssl
+Available @code{ngircd-ssl} fields are:
+
+@table @asis
+@item @code{cert-file} (type: maybe-string)
+SSL certificate file of the private server key.
+
+@item @code{key-file} (type: maybe-string)
+File name of the SSL Server Key to be used for SSL connections, which is
+required for SSL/TLS support.
+
+@item @code{ca-file} (default: @code{"/etc/ssl/certs/ca-certificates.crt"}) (type: maybe-string)
+A file listing all the certificates of the trusted Certificate
+Authorities.
+
+@item @code{ports} (type: maybe-list-of-ports)
+Like the global configuration's @code{port} option, except that ngIRCd
+will expect incoming connections to be SSL/TLS encrypted.  Common port
+numbers for SSL-encrypted IRC are 6669 and 6697.
+
+@item @code{cipher-list} (type: maybe-string)
+The GnuTLS cipher suites allowed for SSL/TLS connections, a value such
+as @code{"SECURE128:-VERS-SSL3.0"}.  Refer to @samp{man 3
+gnutls_priority_init} for details.
+
+@item @code{dh-file} (type: maybe-file-like)
+A file-like containing the Diffie-Hellman parameters, which can be
+created with GnuTLS via @samp{certtool --generate-dh-params}.  If this
+file is not present, the Diffie-Hellman parameters will be computed on
+startup, which may take some time.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} ngircd-operator
+Available @code{ngircd-operator} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+ID of the operator (may be different of the nickname).
+
+@item @code{password} (type: string)
+Password of the IRC operator.
+
+@item @code{mask} (type: maybe-string)
+Mask that is to be checked before an /OPER for this account is accepted,
+for example: @code{"nick!ident@@*.example.com"}.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} ngircd-server
+Available @code{ngircd-server} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+IRC name of the remote server.
+
+@item @code{host} (type: string)
+Internet host name (or IP address) of the peer.
+
+@item @code{my-password} (type: string)
+Own password for this connection.  This password has to be configured as
+@code{peer-password} on the other server and must not have @samp{:} as
+first character.
+
+@item @code{peer-password} (type: string)
+Foreign password for this connection.  This password has to be
+configured as @code{my-password} on the other server.
+
+@item @code{bind} (type: maybe-string)
+IP address to use as source IP for the outgoing connection.  The default
+is to let the operating system decide.
+
+@item @code{port} (type: maybe-port)
+Port of the remote server to which ngIRCd should connect (active).  If
+no port is assigned to a configured server, the daemon only waits for
+incoming connections (passive, which is the default).
+
+@item @code{group} (type: maybe-number)
+Group of this server.
+
+@item @code{passive?} (default: @code{#f}) (type: maybe-boolean)
+Set to @code{#t} to disable automatic connection even if the port value
+is specified.
+
+@item @code{ssl-connect?} (default: @code{#f}) (type: maybe-boolean)
+Connect to the remote server using TLS/SSL.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} ngircd-channel
+Available @code{ngircd-channel} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+Name of the channel, including channel prefix ("#" or "&").
+
+@item @code{topic} (type: maybe-string)
+Topic for this channel.
+
+@item @code{modes} (type: maybe-list-of-strings)
+Initial channel modes, as used in MODE commands.  Modifying lists (ban
+list, invite list, exception list) is supported.  If multiple MODE
+strings are specified, they are evaluated in the order listed (left to
+right).
+
+@item @code{key-file} (type: maybe-file-like)
+Path and file name of a ngIRCd key file containing individual channel
+keys for different users.  Refer to @samp{man 5 ngircd.conf} for more
+details.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 @subsubheading Quassel Service
 
 @cindex IRC (Internet Relay Chat)
