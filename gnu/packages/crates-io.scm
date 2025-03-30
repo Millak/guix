@@ -76,6 +76,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages aidc)
@@ -26895,6 +26896,30 @@ lists (ACL) on @code{macOS}, Linux, and @code{FreeBSD}.")
     (description
      "This package enabled the creation of @code{Command} instances
 by using a @code{command!} macro.")
+    (license license:expat)))
+
+(define-public rust-execute-0.2
+  (package
+    (name "rust-execute")
+    (version "0.2.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "execute" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "046s3a33v4klqs4az69i4byvz1xpqb9visarnvm6mrvcx67610is"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-execute-command-macro" ,rust-execute-command-macro-0.1)
+                       ("rust-execute-command-tokens" ,rust-execute-command-tokens-0.1)
+                       ("rust-generic-array" ,rust-generic-array-1))))
+    (native-inputs (list bc)) ;Test picks this command as an example.
+    (home-page "https://magiclen.org/execute")
+    (synopsis "Library for extending @code{Command} to ease program execution")
+    (description
+     "This package provides a library that extends @code{Command},
+allowing for a more pratical experience when executing programs.")
     (license license:expat)))
 
 (define-public rust-executors-0.9
