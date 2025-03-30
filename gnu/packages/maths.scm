@@ -1813,7 +1813,6 @@ extremely large and complex data collections.")
     (license (license:x11-style
               "https://www.hdfgroup.org/ftp/HDF5/current/src/unpacked/COPYING"))))
 
-;; When updating this package, please also update hdf-java.
 (define-public hdf5-1.10
   (package
     (inherit hdf5-1.8)
@@ -1834,6 +1833,7 @@ extremely large and complex data collections.")
         (base32 "14gih7kmjx4h3lc7pg4fwcl28hf1qqkf2x7rljpxqvzkjrqbxi00"))
        (patches (search-patches "hdf5-config-date.patch"))))))
 
+;; When updating this package, please also update hdf-java.
 (define-public hdf5
   (package
     (inherit hdf5-1.8)
@@ -1876,7 +1876,7 @@ extremely large and complex data collections.")
 (define-public hdf-java
   (package
     (name "hdf-java")
-    (version "1.10.9")
+    (version "1.14.3")
     (source
      (origin
        (method git-fetch)
@@ -1888,7 +1888,7 @@ extremely large and complex data collections.")
                                      version)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sjdcnafvzsy99vqhybkps8rnwmxb6fsvmkw89wb2mrrp4vi5z9v"))
+        (base32 "0lw9f62zxyjiv7vx9nvnashjj39i44j8d626i7b788zkxw58csvs"))
        (modules '((guix build utils)))
        (snippet     ; Make sure we don't use the bundled sources and binaries.
         '(for-each delete-file
@@ -1917,9 +1917,9 @@ extremely large and complex data collections.")
                       inputs "/lib/m2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar")))
                 (substitute* (append (find-files "java" "Makefile.am")
                                      (find-files "java" "Makefile.in"))
-                  (("\\$\\(top_srcdir\\)/java/lib/ext/slf4j-simple-1.7.33.jar")
+                  (("\\$\\(top_srcdir\\)/java/lib/ext/slf4j-simple-2.0.6.jar")
                    simple)
-                  (("\\$\\(top_srcdir\\)/java/lib/slf4j-api-1.7.33.jar")
+                  (("\\$\\(top_srcdir\\)/java/lib/slf4j-api-2.0.6.jar")
                    api)
                   (("\\$\\(top_srcdir\\)/java/lib/junit.jar")
                    junit)
@@ -1940,9 +1940,9 @@ extremely large and complex data collections.")
                    junit)
                   (("\"\\$BLDLIBDIR\"/hamcrest-core.jar")
                    hamcrest)
-                  (("\"\\$BLDLIBDIR\"/slf4j-api-1.7.33.jar")
+                  (("\"\\$BLDLIBDIR\"/slf4j-api-2.0.6.jar")
                    api)
-                  (("\"\\$BLDLIBDIR\"/slf4j-simple-1.7.33.jar")
+                  (("\"\\$BLDLIBDIR\"/slf4j-simple-2.0.6.jar")
                    simple)
                   (("/usr/bin/test")
                    (search-input-file inputs "/bin/test"))
@@ -1963,7 +1963,7 @@ extremely large and complex data collections.")
            java-slf4j-api
            libjpeg-turbo
            zlib))
-    (home-page "https://support.hdfgroup.org/products/java")
+    (home-page "https://www.hdfgroup.org")
     (synopsis "Java interface for the HDF4 and HDF5 libraries")
     (description "Java HDF Interface (JHI) and Java HDF5 Interface (JHI5) use
 the Java Native Interface to wrap the HDF4 and HDF5 libraries, which are
@@ -1972,7 +1972,7 @@ implemented in C.")
     ;; BSD-style license:
     (license (license:x11-style
               "https://support.hdfgroup.org/ftp/HDF5/hdf-java\
-/current/src/unpacked/COPYING"))))
+/current/src/unpacked/COPYING.html"))))
 
 (define-public hdf-eos2
   (package
