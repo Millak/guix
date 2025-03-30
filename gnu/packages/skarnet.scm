@@ -175,30 +175,18 @@ as an alternative to the BIND, djbdns or other DNS clients.")))
 (define-public s6-networking
   (package
    (name "s6-networking")
-   (version "2.5.1.3")
+   (version "2.7.0.4")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://skarnet.org/software/s6-networking/"
                          "s6-networking-" version ".tar.gz"))
      (sha256
-      (base32 "0xz98pzgx6kc9v1dka04gzw5f3rwww42c07liym0r7pzb74l77m0"))))
+      (base32 "0r89b6pq50rzdipqk0la96pyw5a68ni6i9fh175zcn2gh86bgg9i"))))
     (build-system gnu-build-system)
     (inputs (list skalibs execline s6 s6-dns))
     (arguments
      '(#:configure-flags (list
-                          (string-append "--with-lib="
-                                         (assoc-ref %build-inputs "skalibs")
-                                         "/lib/skalibs")
-                          (string-append "--with-lib="
-                                         (assoc-ref %build-inputs "execline")
-                                         "/lib/execline")
-                          (string-append "--with-lib="
-                                         (assoc-ref %build-inputs "s6")
-                                         "/lib/s6")
-                          (string-append "--with-lib="
-                                         (assoc-ref %build-inputs "s6-dns")
-                                         "/lib/s6-dns")
                           (string-append "--with-sysdeps="
                                          (assoc-ref %build-inputs "skalibs")
                                          "/lib/skalibs/sysdeps"))
