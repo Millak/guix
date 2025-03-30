@@ -44729,6 +44729,36 @@ whether an expression matches a pattern.")
      "This package provides a high performance, zero-copy URL router.")
     (license (list license:expat license:bsd-3))))
 
+(define-public rust-material-colors-0.4
+  (package
+    (name "rust-material-colors")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "material-colors" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hbrwk94i2wxih894pg30pxys7l5l0vxcc7pp1mw4nrd6vdgy9p2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;Requires passing a multi-threaded feature to tokio
+       #:cargo-inputs (("rust-ahash" ,rust-ahash-0.8)
+                       ("rust-image" ,rust-image-0.25)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-libm" ,rust-libm-0.2)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-float-cmp" ,rust-float-cmp-0.9)
+                                   ("rust-reqwest" ,rust-reqwest-0.12))))
+    (native-inputs (list openssl pkg-config))
+    (home-page "https://github.com/Aiving/material-colors")
+    (synopsis "Up-to-date @code{material-color-utilities} port")
+    (description
+     "This package provides a Rust port of the
+@code{material-color-utilities}, which is available in other programming
+languages, such as C++, Dart and Java.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-matrixcompare-0.3
   (package
     (name "rust-matrixcompare")
