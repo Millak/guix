@@ -56,7 +56,7 @@
 # Copyright © 2022 Alex Griffin <a@ajgrf.com>
 # Copyright © 2022 ( <paren@disroot.org>
 # Copyright © 2022 jgart <jgart@dismail.de>
-# Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+# Copyright © 2023-2025 Zheng Junjie <z572@z572.online>
 # Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 # Copyright © 2023 Andy Tai <atai@atai.org>
 # Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
@@ -1817,6 +1817,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/lua-pkgconfig.patch                      \
   %D%/packages/patches/lua51-liblua-so.patch                    \
   %D%/packages/patches/lua51-pkgconfig.patch                    \
+  %D%/packages/patches/luajit-add-riscv64-support.patch         \
   %D%/packages/patches/lua-liblua-so.patch                      \
   %D%/packages/patches/lua-5.4-pkgconfig.patch			\
   %D%/packages/patches/lua-5.4-liblua-so.patch			\

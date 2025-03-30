@@ -23,6 +23,7 @@
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -191,19 +192,28 @@ for configuration, scripting, and rapid prototyping.")
                   "0srwk9nmiz8a93f70inq2597ff6xy203ckr4c0k7jcksdixymi9v"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                    ; luajit is distributed without tests
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)) ; no configure script
-         #:make-flags (list (string-append "PREFIX="
-                                           (assoc-ref %outputs "out")))))
+       (list #:tests? #f                    ; luajit is distributed without tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 #$@(if (target-riscv64?)
+                        #~((add-after 'unpack 'patch
+                             (lambda _
+                               (invoke
+                                "patch" "--force" "-p1" "-i"
+                                #$(local-file
+                                   (search-patch
+                                    "luajit-add-riscv64-support.patch"))))))
+                        #~())
+                 (delete 'configure)) ; no configure script
+             #:make-flags #~(list (string-append "PREFIX="
+                                                 (assoc-ref %outputs "out")))))
       (home-page "https://www.luajit.org/")
       (synopsis
        "Just in time compiler for Lua programming language version 5.1")
       ;; On powerpc64le-linux, the build fails with an error: "No support for
       ;; PowerPC 64 bit mode (yet)".  See: https://issues.guix.gnu.org/49220
       (supported-systems (fold delete %supported-systems
-                               (list "powerpc64le-linux" "riscv64-linux")))
+                               (list "powerpc64le-linux")))
       (description
        "LuaJIT is a Just-In-Time Compiler (JIT) for the Lua
 programming language.  Lua is a powerful, dynamic and light-weight programming
