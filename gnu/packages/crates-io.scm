@@ -50,6 +50,7 @@
 ;;; Copyright © 2025 Divya Ranjan Pattanaik <divya@subvertising.org>
 ;;; Copyright © 2025 Karl Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
+;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -14944,6 +14945,25 @@ based on color-backtrace.")
                        ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
                                    ("rust-rspec" ,rust-rspec-1.0.0-beta.3))))))
+
+(define-public rust-colorsys-0.6
+  (package
+    (name "rust-colorsys")
+    (version "0.6.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "colorsys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g8vwcv89n2dzi9bmbzqlj9cl9a89jz49668grbcncv4cjx1l9jl"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/emgyrz/colorsys.rs")
+    (synopsis "Module for color conversion and mutation")
+    (description
+     "This package provides a module for color conversion and mutation.
+Works with RGB(A), HSL(A), CMYK color models and with ANSI color codes.")
+    (license license:expat)))
 
 (define-public rust-colorz-1
   (package
