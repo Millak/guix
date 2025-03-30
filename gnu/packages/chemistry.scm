@@ -1070,6 +1070,52 @@ unique ring families, relevant cycles, the smallest set of smallest rings and
 other ring topology descriptions.")
     (license license:bsd-3)))
 
+(define-public pubchem-align3d
+  (let ((commit "daefab3dd0c90ca56da9d3d5e375fe4d651e6be3")
+        (revision "0"))
+    (package
+      (name "pubchem-align3d")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ncbi/pubchem-align3d")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1nj1zz5nvn5h3dyj66zi11mmvmzpq3b8y51fld9bkxnsmk17h05m"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ; circular dependency with rdkit
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (replace 'build
+              (lambda _
+                (invoke "g++"
+                        "-o" "libpubchem-align3d.so"
+                        "-O2" "-g" "-fPIC" "-shared"
+                        "shape_functions1.cpp" "shape_functions2.cpp"
+                        "shape_neighbor.cpp")))
+            (replace 'install
+              (lambda _
+                (for-each
+                 (lambda (file)
+                   (install-file
+                    file
+                    (string-append #$output "/include/pubchem-align3d")))
+                 (find-files "." "\\.hpp"))
+                (install-file "libpubchem-align3d.so"
+                              (string-append #$output "/lib")))))))
+      (home-page "https://github.com/ncbi/pubchem-align3d")
+      (synopsis "C++ library for aligning small molecules")
+      (description "This is a generic C++ library that can be used to rapidly
+align two small molecules in 3D space, with shape - and optionally color -
+Tanimoto scoring.")
+      (license license:public-domain))))
+
 (define-public rdkit
   (package
     (name "rdkit")
