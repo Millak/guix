@@ -204,27 +204,28 @@ glyphset has also been extended, supporting now a wider number of languages.")
 (define-public font-ibm-plex
   (package
     (name "font-ibm-plex")
-    (version "6.4.0")
+    (version "6.4.2")
     ;; We prefer git-fetch since it lets us get the opentype, truetype and web
     ;; fonts all in one download. The zip archive releases separate the
     ;; opentype, truetype and web fonts into three separate archives.
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/IBM/plex")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "00zbwwcwmq8bv9lvsy5r2an8jf4x0cqzw03i7fgjcmbh0h8a48kl"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/IBM/plex")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00lzbm1b7zbx5q3p0s8fh9q9zj6z4k01fn7n177iybh9xn4jgx0p"))))
     (build-system font-build-system)
     (outputs '("out" "ttf" "woff"))
     (home-page "https://github.com/IBM/plex")
     (synopsis "IBM Plex typeface")
-    (description "This package provides the Plex font family.  It comes in a
-Sans, Serif, Mono and Sans Condensed, all with roman and true italics.  The
-fonts have been designed to work well in user interface (UI) environments as
-well as other mediums.")
+    (description
+     "This package provides the Plex font family.  It comes in a Sans, Serif,
+Mono and Sans Condensed, all with roman and true italics.  The fonts have been
+designed to work well in user interface (UI) environments as well as other
+mediums.")
     (license license:silofl1.1)))
 
 (define-public font-lilex
