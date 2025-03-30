@@ -16399,6 +16399,27 @@ Tokio console telemetry.")
 literals.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-const-default-1
+  (package
+    (name "rust-const-default")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "const-default" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1apcnxfrz5xsfxaxbv1n9c5sdfqlmrk81v0q29z5amflfqgnsf8b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-const-default-derive" ,rust-const-default-derive-0.2))))
+    (home-page "https://github.com/AerialX/const-default.rs")
+    (synopsis "@code{Default}-like trait and macros for evaluation contexts")
+    (description "This package provides a @code{Default}-like trait and
+implements it for Rust primitives, prelude types and arrays.")
+    (license license:expat)))
+
 (define-public rust-const-fn-0.4
   (package
     (name "rust-const-fn")
