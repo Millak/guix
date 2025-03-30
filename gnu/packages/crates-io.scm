@@ -26854,6 +26854,28 @@ lists (ACL) on @code{macOS}, Linux, and @code{FreeBSD}.")
      "This package provides funtions for  parsing command strings.")
     (license license:expat)))
 
+(define-public rust-execute-command-macro-impl-0.1
+  (package
+    (name "rust-execute-command-macro-impl")
+    (version "0.1.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "execute-command-macro-impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jygv1jhfkqglascjk7yq3m2kdgm1yd3y9kikjmhbl0s0imd936f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-execute-command-tokens" ,rust-execute-command-tokens-0.1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://magiclen.org/execute")
+    (synopsis "Proc macros for the execute-command-tokens crate")
+    (description "This package provides proc macros for the
+@code{rust-command-tokens} crate.")
+    (license license:expat)))
+
 (define-public rust-executors-0.9
   (package
     (name "rust-executors")
