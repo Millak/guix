@@ -2527,7 +2527,7 @@ built-in @code{testing} package, but can be used in other contexts too.")
 (define-public go-gotest-tools-v3
   (package
     (name "go-gotest-tools-v3")
-    (version "3.5.1")
+    (version "3.5.2")
     (source
      (origin
        (method git-fetch)
@@ -2536,7 +2536,7 @@ built-in @code{testing} package, but can be used in other contexts too.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r5mc6slab6fj2si9nripl7fdq097s694gsn1gsxg2wj7605m5v4"))
+        (base32 "00kv9j55sgidyya8n0m11sp8ianqy7iknyqhi1qr0ck9mq9bnj1s"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -2554,23 +2554,24 @@ built-in @code{testing} package, but can be used in other contexts too.")
                        ;; Most of these failing tests can't read test file
                        ;; maybe due to the symlink can't be resolved properly
                        ;; or have assertion not equal.
-                       (list "TestAssert_WithBinaryExpression_Failures"
-                             "TestAssertWithBool.*"
-                             "TestCheckFailure"
-                             "TestCheckEqualFailure"
-                             "TestCheck_MultipleFunctionsOnTheSameLine"
-                             "TestEqualFailure"
-                             "TestEqualFailure.*"
-                             "TestAssertFailureWithOfflineComparison"
-                             "TestErrorTypeFailure"
-                             "TestErrorIs"
-                             "TestEqual_WithGoldenUpdate"
-                             "TestMigrateFile.*"
-                             "TestMigrate_AssertAlready.*"
-                             "TestFormattedCallExprArg.*"
+                       (list "TestEqual_WithGoldenUpdate"
+                             "TestMigrateFileReplacesTestingT"
+                             "TestMigrateFileWithNamedCmpPackage"
+                             "TestMigrateFileWithCommentsOnAssert"
+                             "TestMigrateFileConvertNilToNilError"
+                             "TestMigrateFileConvertAssertNew"
+                             "TestMigrateFileWithExtraArgs"
+                             "TestMigrate_AssertAlreadyImported"
+                             "TestMigrate_AssertAlreadyImportedWithAlias"
+                             "TestWaitOnSocketWithTimeout"
                              "TestWaitOnSocketWithTimeout/connection_to_"
-                             "TestIfCondition"
-                             "TestIfCondition.*")
+                             ;; poll_test.go:113: assertion failed: string
+                             ;; "timeout hit after 10ms: first check never
+                             ;; completed" does not contain "assertion failed:
+                             ;; 3 (int) != 4 (int)"
+                             #$@(if (target-arm?)
+                                    '("TestWaitOn_WithCompare")
+                                    '()))
                        "|"))))
     (propagated-inputs
      (list go-github-com-google-go-cmp
