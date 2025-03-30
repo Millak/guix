@@ -846,7 +846,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
 (define-public celluloid
   (package
     (name "celluloid")
-    (version "0.26")
+    (version "0.28")
     (source
      (origin
        (method url-fetch)
@@ -854,7 +854,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
                            "/releases/download/v" version
                            "/celluloid-" version ".tar.xz"))
        (sha256
-        (base32 "1pjxmvjjvw9k0kvhhqp4x73x6a0mslffsdil431q8m3iwasffwb1"))))
+        (base32 "0fjkgq80ryh2rjzjrp968b2jv1vhwd8461jmjqa3v1zzvzqgsdjv"))))
     (build-system meson-build-system)
     (arguments
      (list
