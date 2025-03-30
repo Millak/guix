@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2022, 2023, 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2022, 2023, 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1115,7 +1115,7 @@ Tanimoto scoring.")
 (define-public rdkit
   (package
     (name "rdkit")
-    (version "2023.09.4")
+    (version "2024.09.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1126,7 +1126,7 @@ Tanimoto scoring.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lgcgijlzzwpfxndsdlx13npdfk7hcii11zg25cvpmzhbpn6vyn8"))
+                "0nagqy5c9b86ip8qr1rnvby235am1zyc4sqm0z7wphbb70cqazxg"))
               (patches
                (search-patches "rdkit-unbundle-external-dependencies.patch"))
               (modules '((guix build utils)))
@@ -1224,10 +1224,16 @@ Tanimoto scoring.")
                             "graphmoltestPickler" "pyPartialCharges"
                             "substructLibraryTest" "pyFeatures"
                             "pythonTestDirML" "pythonTestDirChem"
+                            "pyRealValueVect" "pyDiscreteValueVect"
+                            "pickleTestsCatch"
                             ;; Catching Python exception fails
                             "pyRanker"
                             ;; Flaky test depending on floating point rounding
                             "testConrec"
+                            ;; Expensive test which may time out
+                            "pySynthonSpaceSearch"
+                            ;; Circular import
+                            "pythonSourceTests"
                             ) "|")
                          ")")))))))))
     (inputs
@@ -1238,18 +1244,20 @@ Tanimoto scoring.")
            freetype
            inchi
            maeparser
+           pubchem-align3d
            python
            ringdecomposerlib
            sqlite
            yaehmop))
     (native-inputs
      (list bison
-           boost
+           boost-numpy
            catch2-3
            eigen
            flex
            freesasa
            pkg-config
+           python-pytest
            rapidjson
            tar))
     (propagated-inputs

@@ -3,10 +3,10 @@ They are packaged separately as rapidjson, avalon-toolkit, freesasa,
 ringdecomposerlib and yaehmop.
 
 diff --git a/Code/GraphMol/MolInterchange/CMakeLists.txt b/Code/GraphMol/MolInterchange/CMakeLists.txt
-index 1673386a4..c3504e6f1 100644
+index 0c1e9a0de..c3504e6f1 100644
 --- a/Code/GraphMol/MolInterchange/CMakeLists.txt
 +++ b/Code/GraphMol/MolInterchange/CMakeLists.txt
-@@ -1,18 +1,3 @@
+@@ -1,26 +1,3 @@
 -
 -if(NOT EXISTS "${CMAKE_SOURCE_DIR}/External/rapidjson-1.1.0")
 -    downloadAndCheckMD5("https://github.com/Tencent/rapidjson/archive/v1.1.0.tar.gz"
@@ -15,8 +15,16 @@ index 1673386a4..c3504e6f1 100644
 -    execute_process(COMMAND ${CMAKE_COMMAND} -E tar zxf
 -      ${CMAKE_SOURCE_DIR}/External/rapidjson-1.1.0.tar.gz
 -      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/External)
+-    # comment out a line which causes a compilation error on some platforms
+-    # (based on the change which has already been applied to the RapidJSON master branch, see
+-    # https://github.com/Tencent/rapidjson/blob/ab1842a2dae061284c0a62dca1cc6d5e7e37e346/include/rapidjson/document.h#L414)
+-    file(READ ${CMAKE_SOURCE_DIR}/External/rapidjson-1.1.0/include/rapidjson/document.h RAPIDJSON_DOCUMENT_H)
+-    string(REGEX REPLACE
+-           "( *)(GenericStringRef& operator=\\(const GenericStringRef& rhs\\) { s = rhs\\.s. length = rhs\\.length. })" "\\1//\\2"
+-           RAPIDJSON_DOCUMENT_H "${RAPIDJSON_DOCUMENT_H}")
+-    file(WRITE ${CMAKE_SOURCE_DIR}/External/rapidjson-1.1.0/include/rapidjson/document.h "${RAPIDJSON_DOCUMENT_H}")
 -else()
--  message("-- Found RapidJSON source in ${CMAKE_SOURCE_DIR}/External")
+-    message("-- Found RapidJSON source in ${CMAKE_SOURCE_DIR}/External")
 -endif()
 -
 -include_directories(${CMAKE_SOURCE_DIR}/External/rapidjson-1.1.0/include)
@@ -26,7 +34,7 @@ index 1673386a4..c3504e6f1 100644
                Parser.cpp Writer.cpp
                LINK_LIBRARIES GraphMol)
 diff --git a/External/AvalonTools/AvalonTools.cpp b/External/AvalonTools/AvalonTools.cpp
-index e6c382123..d83d80668 100644
+index f4b37ba5c..e1b25aed1 100644
 --- a/External/AvalonTools/AvalonTools.cpp
 +++ b/External/AvalonTools/AvalonTools.cpp
 @@ -24,15 +24,15 @@
@@ -55,7 +63,7 @@ index e6c382123..d83d80668 100644
  extern int RunStruchk(struct reaccs_molecule_t **mpp,
                        struct data_line_t *data_list);
 diff --git a/External/AvalonTools/CMakeLists.txt b/External/AvalonTools/CMakeLists.txt
-index 3e31195fc..314ba35b5 100644
+index 30203ecdf..4e2661d7e 100644
 --- a/External/AvalonTools/CMakeLists.txt
 +++ b/External/AvalonTools/CMakeLists.txt
 @@ -2,90 +2,8 @@ if(NOT RDK_BUILD_AVALON_SUPPORT)
@@ -151,7 +159,7 @@ index 3e31195fc..314ba35b5 100644
  rdkit_headers(AvalonTools.h DEST GraphMol)
  rdkit_test(testAvalonLib1 test1.cpp
 diff --git a/External/AvalonTools/Wrap/pyAvalonTools.cpp b/External/AvalonTools/Wrap/pyAvalonTools.cpp
-index fb24c497e..31997bc0a 100644
+index 72c7a5ee2..e7ac609ae 100644
 --- a/External/AvalonTools/Wrap/pyAvalonTools.cpp
 +++ b/External/AvalonTools/Wrap/pyAvalonTools.cpp
 @@ -12,7 +12,7 @@
@@ -164,10 +172,10 @@ index fb24c497e..31997bc0a 100644
  
  namespace python = boost::python;
 diff --git a/External/FreeSASA/CMakeLists.txt b/External/FreeSASA/CMakeLists.txt
-index 43dfbdc40..81165a143 100644
+index 8baadb618..81165a143 100644
 --- a/External/FreeSASA/CMakeLists.txt
 +++ b/External/FreeSASA/CMakeLists.txt
-@@ -2,88 +2,8 @@ if(NOT RDK_BUILD_FREESASA_SUPPORT)
+@@ -2,174 +2,8 @@ if(NOT RDK_BUILD_FREESASA_SUPPORT)
    return()
  endif(NOT RDK_BUILD_FREESASA_SUPPORT)
  
@@ -223,6 +231,85 @@ index 43dfbdc40..81165a143 100644
 -  set(freesasa_additional_exports ${CMAKE_CURRENT_SOURCE_DIR}/additional_exports.def)
 -  file(WRITE ${freesasa_additional_exports}
 -    "EXPORTS\n"
+-    "freesasa_calc_structure\n"
+-    "freesasa_calc_coord\n"
+-    "freesasa_calc_tree\n"
+-    "freesasa_result_classes\n"
+-    "freesasa_result_free\n"
+-    "freesasa_classifier_from_file\n"
+-    "freesasa_classifier_free\n"
+-    "freesasa_classifier_radius\n"
+-    "freesasa_classifier_class\n"
+-    "freesasa_classifier_class2str\n"
+-    "freesasa_classifier_name\n"
+-    "freesasa_selection_new\n"
+-    "freesasa_selection_free\n"
+-    "freesasa_selection_name\n"
+-    "freesasa_selection_command\n"
+-    "freesasa_selection_area\n"
+-    "freesasa_set_verbosity\n"
+-    "freesasa_get_verbosity\n"
+-    "freesasa_set_err_out\n"
+-    "freesasa_get_err_out\n"
+-    "freesasa_structure_new\n"
+-    "freesasa_structure_free\n"
+-    "freesasa_structure_from_pdb\n"
+-    "freesasa_structure_array\n"
+-    "freesasa_structure_add_atom\n"
+-    "freesasa_structure_add_atom_wopt\n"
+-    "freesasa_structure_get_chains\n"
+-    "freesasa_structure_chain_labels\n"
+-    "freesasa_structure_n\n"
+-    "freesasa_structure_n_residues\n"
+-    "freesasa_structure_n_chains\n"
+-    "freesasa_structure_radius\n"
+-    "freesasa_structure_set_radius\n"
+-    "freesasa_structure_atom_name\n"
+-    "freesasa_structure_atom_res_name\n"
+-    "freesasa_structure_atom_res_number\n"
+-    "freesasa_structure_atom_chain\n"
+-    "freesasa_structure_atom_symbol\n"
+-    "freesasa_structure_atom_radius\n"
+-    "freesasa_structure_atom_set_radius\n"
+-    "freesasa_structure_residue_name\n"
+-    "freesasa_structure_residue_number\n"
+-    "freesasa_structure_residue_chain\n"
+-    "freesasa_structure_model\n"
+-    "freesasa_structure_coord_array\n"
+-    "freesasa_structure_residue_atoms\n"
+-    "freesasa_structure_chain_atoms\n"
+-    "freesasa_structure_chain_residues\n"
+-    "freesasa_structure_classifier_name\n"
+-    "freesasa_tree_new\n"
+-    "freesasa_tree_init\n"
+-    "freesasa_tree_add_result\n"
+-    "freesasa_tree_join\n"
+-    "freesasa_tree_export\n"
+-    "freesasa_node_free\n"
+-    "freesasa_node_area\n"
+-    "freesasa_node_children\n"
+-    "freesasa_node_next\n"
+-    "freesasa_node_parent\n"
+-    "freesasa_node_type\n"
+-    "freesasa_node_name\n"
+-    "freesasa_node_classified_by\n"
+-    "freesasa_node_atom_is_polar\n"
+-    "freesasa_node_atom_is_mainchain\n"
+-    "freesasa_node_atom_radius\n"
+-    "freesasa_node_atom_pdb_line\n"
+-    "freesasa_node_residue_number\n"
+-    "freesasa_node_residue_n_atoms\n"
+-    "freesasa_node_residue_reference\n"
+-    "freesasa_node_chain_n_residues\n"
+-    "freesasa_node_structure_n_chains\n"
+-    "freesasa_node_structure_n_atoms\n"
+-    "freesasa_node_structure_chain_labels\n"
+-    "freesasa_node_structure_model\n"
+-    "freesasa_node_structure_result\n"
+-    "freesasa_node_structure_selections\n"
+-    "freesasa_node_structure_add_selection\n"
+-    "freesasa_node_result_parameters\n"
+-    "freesasa_select_area\n"
 -    "freesasa_default_parameters DATA\n"
 -    "freesasa_protor_classifier DATA\n"
 -    "freesasa_naccess_classifier DATA\n"
@@ -236,8 +323,15 @@ index 43dfbdc40..81165a143 100644
 -
 -set (freesasa_h ${FREESASA_SRC_DIR}/src/freesasa.h)
 -file(READ ${freesasa_h} freesasa_h_data)
--string(REGEX REPLACE "(#include <stdio.h>)" "\\1\n#include <RDGeneral/export.h>" freesasa_h_data "${freesasa_h_data}")
--string(REGEX REPLACE "([^R][^D][^K][^I][^T][^_][^F][^R][^E][^E][^S][^A][^S][^A][^_][^C][^L][^I][^B][^_][^E][^X][^P][^O][^R][^T][^ ])(extern const)" "\\1RDKIT_FREESASA_CLIB_EXPORT \\2" freesasa_h_data "${freesasa_h_data}")
+-if (NOT freesasa_h_data MATCHES "RDGeneral/export")
+-  string(REGEX REPLACE "(#include <stdio.h>)" "\\1\n#include <RDGeneral/export.h>" freesasa_h_data "${freesasa_h_data}")
+-endif()
+-if (MSVC)
+-  set (RDKIT_FREESASA_CLIB_EXPORT "RDKIT_FREESASA_CLIB_EXPORT ")
+-else()
+-  set (RDKIT_FREESASA_CLIB_EXPORT "")
+-endif()
+-string(REGEX REPLACE "(RDKIT_FREESASA_CLIB_EXPORT )?(extern const)" "${RDKIT_FREESASA_CLIB_EXPORT}\\2" freesasa_h_data "${freesasa_h_data}")
 -file(WRITE ${freesasa_h} "${freesasa_h_data}")
 -
 -add_definitions(-DUSE_THREADS=0)
@@ -258,7 +352,7 @@ index 43dfbdc40..81165a143 100644
  
  rdkit_headers(RDFreeSASA.h DEST GraphMol)
 diff --git a/External/RingFamilies/CMakeLists.txt b/External/RingFamilies/CMakeLists.txt
-index 08dd1fe04..66ecd5834 100644
+index 08dd1fe04..068435506 100644
 --- a/External/RingFamilies/CMakeLists.txt
 +++ b/External/RingFamilies/CMakeLists.txt
 @@ -1,47 +1,7 @@
@@ -314,7 +408,7 @@ diff --git a/External/RingFamilies/dummy.cpp b/External/RingFamilies/dummy.cpp
 new file mode 100644
 index 000000000..e69de29bb
 diff --git a/External/YAeHMOP/CMakeLists.txt b/External/YAeHMOP/CMakeLists.txt
-index f1027b3bd..8bee2f910 100644
+index c8daef9a5..01eaddac6 100644
 --- a/External/YAeHMOP/CMakeLists.txt
 +++ b/External/YAeHMOP/CMakeLists.txt
 @@ -4,52 +4,7 @@ endif(NOT RDK_BUILD_YAEHMOP_SUPPORT)
@@ -326,8 +420,8 @@ index f1027b3bd..8bee2f910 100644
 -endif()
 -
 -if(NOT EXISTS "${YAEHMOP_DIR}/tightbind/bind.h")
--    set(RELEASE_NO "2023.03.1")
--    set(MD5 "e6450f13e02c54d024233b993c3c7ff6")
+-    set(RELEASE_NO "2024.03.1")
+-    set(MD5 "ebbddca4f79ab71544cb1fef9a7eca8a")
 -    downloadAndCheckMD5("https://github.com/greglandrum/yaehmop/archive/refs/tags/v${RELEASE_NO}.tar.gz"
 -          "${CMAKE_CURRENT_SOURCE_DIR}/yaehmop-${RELEASE_NO}.tar.gz" ${MD5})
 -    execute_process(COMMAND ${CMAKE_COMMAND} -E tar zxf
@@ -372,11 +466,11 @@ index f1027b3bd..8bee2f910 100644
  rdkit_headers(EHTTools.h DEST GraphMol)
  rdkit_catch_test(testEHTLib1 test1.cpp
 diff --git a/External/YAeHMOP/EHTTools.cpp b/External/YAeHMOP/EHTTools.cpp
-index 7a229f51f..71033dc5c 100644
+index 021c548f1..43afdca57 100644
 --- a/External/YAeHMOP/EHTTools.cpp
 +++ b/External/YAeHMOP/EHTTools.cpp
-@@ -10,7 +10,7 @@
- #include <fstream>
+@@ -13,7 +13,7 @@
+ #include <filesystem>
  
  extern "C" {
 -#include <yaehmop/tightbind/bind.h>
@@ -384,7 +478,7 @@ index 7a229f51f..71033dc5c 100644
  }
  
  namespace RDKit {
-@@ -160,4 +160,4 @@ bool runMol(const ROMol &mol, EHTResults &results, int confId,
+@@ -211,4 +211,4 @@ bool runMol(const ROMol &mol, EHTResults &results, int confId,
  }
  
  }  // end of namespace EHTTools
@@ -404,3 +498,56 @@ index 759a9f360..114d24532 100644
                         
  add_pytest(pyEHTTools
           ${CMAKE_CURRENT_SOURCE_DIR}/testEHTTools.py)
+diff --git a/External/pubchem_shape/CMakeLists.txt b/External/pubchem_shape/CMakeLists.txt
+index a0f16eadb..463a9e31e 100644
+--- a/External/pubchem_shape/CMakeLists.txt
++++ b/External/pubchem_shape/CMakeLists.txt
+@@ -2,47 +2,8 @@ if(NOT RDK_BUILD_PUBCHEMSHAPE_SUPPORT)
+   return()
+ endif()
+ 
+-if(NOT DEFINED PUBCHEMSHAPE_DIR)
+-  set(PUBCHEMSHAPE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/pubchem-align3d")
+-  set(fileToCheck "${PUBCHEMSHAPE_DIR}/shape_functions1.cpp")
+-  set(needDownload "TRUE")
+-  if(EXISTS "${fileToCheck}")
+-    set(needDownload "FALSE")
+-  endif()
+-else()
+-  set(needDownload "FALSE")
+-endif()
+-
+-if(needDownload)
+-  set(PUBCHEM_COMMIT_SHA daefab3)
+-  if(NOT DEFINED PUBCHEMSHAPE_URL)
+-    set(PUBCHEMSHAPE_URL "https://github.com/ncbi/pubchem-align3d/archive/${PUBCHEM_COMMIT_SHA}.tar.gz")
+-  endif()
+-  if(NOT DEFINED PUBCHEMSHAPE_MD5SUM)
+-    set(PUBCHEMSHAPE_MD5SUM "a78a6273851709083ac3803d62cb5ae6")
+-  endif()
+-  if(NOT DEFINED PUBCHEMSHAPE_BASE)
+-    string(REGEX REPLACE "^.*/" "" PUBCHEMSHAPE_BASE "${PUBCHEMSHAPE_URL}")
+-  endif()
+-  downloadAndCheckMD5(${PUBCHEMSHAPE_URL} "${CMAKE_CURRENT_SOURCE_DIR}/${PUBCHEMSHAPE_BASE}" ${PUBCHEMSHAPE_MD5SUM})
+-  execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf
+-    ${CMAKE_CURRENT_SOURCE_DIR}/${PUBCHEM_COMMIT_SHA}.tar.gz
+-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+-
+-  file(GLOB tar_dirname ${CMAKE_CURRENT_SOURCE_DIR}/pubchem-align3d-${PUBCHEM_COMMIT_SHA}*)
+-  execute_process(COMMAND ${CMAKE_COMMAND} -E rename ${tar_dirname}
+-       ${PUBCHEMSHAPE_DIR}
+-       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+-endif()
+-
+-rdkit_library(pubchem_align3d ./pubchem-align3d/shape_functions1.cpp
+-            ./pubchem-align3d/shape_functions2.cpp ./pubchem-align3d/shape_neighbor.cpp SHARED)
+-if((MSVC AND RDK_INSTALL_DLLS_MSVC) OR ((NOT MSVC) AND WIN32))
+-  set_target_properties(pubchem_align3d PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+-endif()
+-
+ rdkit_library(PubChemShape PubChemShape.cpp SHARED
+- LINK_LIBRARIES pubchem_align3d SmilesParse SubstructMatch)
++ LINK_LIBRARIES -lpubchem-align3d SmilesParse SubstructMatch)
+ target_compile_definitions(PubChemShape PRIVATE RDKIT_PUBCHEMSHAPE_BUILD)
+ 
+ rdkit_headers(PubChemShape.hpp DEST GraphMol)
