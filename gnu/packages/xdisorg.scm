@@ -3796,6 +3796,57 @@ This package is the fork of hsetroot by Hyriand.")
      "This package provides Hyprland cursor format, library and utilities.")
     (license license:bsd-3)))
 
+(define-public hyprlock
+  (package
+   (name "hyprlock")
+   (version "0.7.0")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/hyprwm/hyprlock")
+           (commit (string-append "v" version))))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32 "03ivr5nsjwiwvpdxpjnldwawy8sx8qgwhs57242xkb0zz0w0gvsk"))))
+   (build-system cmake-build-system)
+   (arguments
+    `(#:cmake ,cmake-3.30
+      #:phases
+      (modify-phases %standard-phases
+                     ;; remove when fixed
+                     (add-after 'unpack 'fixgldiscover
+                       (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                         (substitute* "CMakeLists.txt"
+                          (("  opengl")
+                           "  gl")
+                          (("OpenGL REQUIRED")
+                           "OpenGL REQUIRED COMPONENTS GLES2 EGL")))))
+      #:tests? #f)) ;; no test
+   (native-inputs (list gcc-14 pkg-config))
+   (inputs (list cairo
+                 file
+                 hyprgraphics
+                 hyprlang
+                 hyprutils
+                 hyprwayland-scanner
+                 libdrm
+                 libjpeg-turbo
+                 libwebp
+                 libxkbcommon
+                 linux-pam
+                 mesa
+                 pango
+                 sdbus-c++
+                 wayland
+                 wayland-protocols))
+   (home-page "https://hyprland.org/")
+   (synopsis "Hyprland's screen locking utility")
+   (description
+    "This package provides Hyprland's simple, yet multi-threaded and
+GPU-accelerated screen locking utility.")
+   (license license:bsd-3)))
+
 (define-public hyprpaper
   (package
    (name "hyprpaper")
