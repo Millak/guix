@@ -2415,7 +2415,7 @@ programming.  Iosevka is completely generated from its source code.")
 (define-public font-junicode
   (package
     (name "font-junicode")
-    (version "2.003")
+    (version "2.211")
     (source
      (origin
        (method git-fetch)
@@ -2424,11 +2424,12 @@ programming.  Iosevka is completely generated from its source code.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qg1qwk294p2hgq2gbyhfwwdas1xbkfz3csxf5jz4xqiskn4skgl"))))
+        (base32 "0nk6fgby5sp6035p542pfk2fgjir36vk315mj5z5xf7rafy13jhb"))))
     (build-system font-build-system)
     (home-page "https://github.com/psb1558/Junicode-font")
     (synopsis "Unicode font for medievalists, linguists, and others")
-    (description "The Junicode font was developed for students and scholars of
+    (description
+     "The Junicode font was developed for students and scholars of
 medieval Europe, but its large glyph repertoire also makes it useful as a
 general-purpose font.  Its visual design is based on the typography used by
 Oxford University Press in the late 17th and early 18th centuries.  The font
