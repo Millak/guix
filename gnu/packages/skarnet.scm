@@ -203,27 +203,18 @@ clock synchronization.")))
 (define-public s6-rc
   (package
    (name "s6-rc")
-   (version "0.5.4.1")
+   (version "0.5.5.0")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://skarnet.org/software/s6-rc/s6-rc-"
                          version ".tar.gz"))
      (sha256
-      (base32 "1xjqc6vqqny8g47whgibjlas7f6szka372jrz5f308slgjmqq9np"))))
+      (base32 "00fzn9vxmspds8hspz9spg0am9k91cl2bysr1ai61smcsfwg3df3"))))
     (build-system gnu-build-system)
     (inputs (list skalibs execline s6))
     (arguments
      '(#:configure-flags (list
-                          (string-append "--with-lib="
-                                         (assoc-ref %build-inputs "skalibs")
-                                         "/lib/skalibs")
-                          (string-append "--with-lib="
-                                         (assoc-ref %build-inputs "execline")
-                                         "/lib/execline")
-                          (string-append "--with-lib="
-                                         (assoc-ref %build-inputs "s6")
-                                         "/lib/s6")
                           (string-append "--with-sysdeps="
                                          (assoc-ref %build-inputs "skalibs")
                                          "/lib/skalibs/sysdeps"))
