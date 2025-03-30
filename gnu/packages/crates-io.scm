@@ -26836,6 +26836,24 @@ lists (ACL) on @code{macOS}, Linux, and @code{FreeBSD}.")
     (description "Get the path of a binary target's executable.")
     (license license:cc0)))
 
+(define-public rust-execute-command-tokens-0.1
+  (package
+    (name "rust-execute-command-tokens")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "execute-command-tokens" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bdwzw0q983xx4d0wmmyzwhcn0qpl8xcl826cx27z5xynqg35p39"))))
+    (build-system cargo-build-system)
+    (home-page "https://magiclen.org/execute")
+    (synopsis "Parse command strings")
+    (description
+     "This package provides funtions for  parsing command strings.")
+    (license license:expat)))
+
 (define-public rust-executors-0.9
   (package
     (name "rust-executors")
