@@ -3988,16 +3988,16 @@ Spleen also has support for Powerline symbols out of the box.")
 (define-public font-stix-two
   (package
     (name "font-stix-two")
-    (version "2.13b171")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/stipub/stixfonts")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "17d5a4fk4dz4kraprhxs9q46cbwakfwz06a0qy9zf5nwp4g6fq2d"))))
+    (version "2.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stipub/stixfonts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02wy9n49nzyvhc55jjmpxrv7hh6ncxv31liniqjgjn7vp68fj40n"))))
     (build-system font-build-system)
     (home-page "https://www.stixfonts.org/")
     (synopsis
