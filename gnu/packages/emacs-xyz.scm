@@ -1877,7 +1877,7 @@ syntax for short lambda.")
 (define-public emacs-llm
   (package
     (name "emacs-llm")
-    (version "0.23.0")
+    (version "0.24.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1886,8 +1886,12 @@ syntax for short lambda.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18dl1a6npx0vlqd4mdrqj7ja7cjdfw366qml1pspy92q4l65pyh6"))))
+                "0kza3jzabp5ilapi3a0ycrc26gvj6s2nf3x1ly4c8d3si6fdlx61"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      ;; there are no tests
+      #:tests? #f))
     (propagated-inputs (list emacs-plz
                              emacs-plz-event-source
                              emacs-plz-media-type))
