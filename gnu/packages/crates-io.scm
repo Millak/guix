@@ -60397,6 +60397,34 @@ replacements, adding colorful diffs.")
        #:cargo-development-inputs
        (("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-prettytable-rs-0.10
+  (package
+    (name "rust-prettytable-rs")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prettytable-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nnryfnahfwy0yxhv4nsp1id25k00cybx3ih8xjsp9haa43mx8pf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Requires an actual terminal.
+                            "--skip=tests::test_panic")
+       #:cargo-inputs (("rust-csv" ,rust-csv-1)
+                       ("rust-encode-unicode" ,rust-encode-unicode-1)
+                       ("rust-is-terminal" ,rust-is-terminal-0.4)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-term" ,rust-term-0.7)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/phsym/prettytable-rs")
+    (synopsis "Library for printing pretty formatted tables in terminal")
+    (description "This package provides a library for printing pretty
+formatted tables in terminal.")
+    (license license:bsd-3)))
+
 (define-public rust-prettytable-rs-0.8
   (package
     (name "rust-prettytable-rs")
