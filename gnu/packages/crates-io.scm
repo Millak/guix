@@ -54904,6 +54904,29 @@ sequence alignment tools.")
 want in the terminal.")
     (license license:mpl2.0)))
 
+(define-public rust-paris-log-1
+  (package
+    (name "rust-paris-log")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "paris-log" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1syp82r34s9kc7m3qm5iy1lhamwzkmw34sxf5x39dvpy01nbwkbp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-paris" ,rust-paris-1))
+       #:cargo-development-inputs (("rust-simplelog" ,rust-simplelog-0.12))))
+    (home-page "https://github.com/naturecodevoid/paris-log")
+    (synopsis "Use paris's formatting with the log crate.")
+    (description
+     "This package provides compatibility tools for the @code{rust-paris}
+and @code{rust-log} crates.")
+    (license license:expat)))
+
 (define-public rust-parity-scale-codec-2
   (package
     (name "rust-parity-scale-codec")
