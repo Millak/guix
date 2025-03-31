@@ -10846,13 +10846,16 @@ BAM and Wiggle files in both transcript-coordinate and genomic-coordinate.")
        (sha256
         (base32
          "0gbb9iyb7swiv5455fm5rg98r7l6qn27v564yllqjd574hncpx6m"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (inputs
-     (list python-cython
-           python-bx-python
-           python-pybigwig
-           python-pysam
+     (list python-bx-python
+           python-cython
            python-numpy
+           python-pybigwig
+           python-pyparsing
+           python-pysam
+           python-setuptools
+           python-wheel
            zlib))
     (native-inputs
      (list python-nose))
