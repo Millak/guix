@@ -10591,7 +10591,7 @@ semantic version parser for Node.js.")
 (define-public python-patch-ng
   (package
     (name "python-patch-ng")
-    (version "1.17.4")
+    (version "1.18.1")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -10601,7 +10601,7 @@ semantic version parser for Node.js.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0qxn4ss2s54qy87xrpcybz26kp2fwlaq41x4k9jcmp6d7p0w569m"))))
+         "1kr3h0bkcr02zyfsmwmxfv5b4b9vf3bhsvrlwp6cwrfy3q3qnyq8"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
