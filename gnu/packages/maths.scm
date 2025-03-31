@@ -108,6 +108,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages astronomy)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -3551,46 +3552,51 @@ ASCII text files using Gmsh's own scripting language.")
 (define-public veusz
   (package
     (name "veusz")
-    (version "3.3.1")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "veusz" version))
        (sha256
-        (base32 "1q7hi1qwwg4pgiz62isvv1pia85m13bspdpp1q3mrnwl11in0ag0"))))
-    (build-system python-build-system)
+        (base32 "1lcmcfr0dcam8g1fp5qip8jnxglxx7i62ln3ix6l4c2bbv21l5y2"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; Tests will fail because they depend on optional packages like
-       ;; python-astropy, which is not packaged.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; Veusz will append 'PyQt5' to sip_dir by default. That is not how
-         ;; the path is defined in Guix, therefore we have to change it.
-         (add-after 'unpack 'fix-sip-dir
-           (lambda _
-             (substitute* "pyqtdistutils.py"
-               (("os.path.join\\(sip_dir, 'PyQt5'\\)") "sip_dir"))))
-         ;; Now we have to pass the correct sip_dir to setup.py.
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; We need to tell setup.py where to locate QtCoremod.sip
-             ((@@ (guix build python-build-system) call-setuppy)
-              "build_ext"
-              (list (string-append "--sip-dir="
-                                   (search-input-directory inputs "share/sip"))))))
-         ;; Ensure that icons are found at runtime.
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/veusz")
-                 `("QT_PLUGIN_PATH" prefix
-                   ,(list (string-append (assoc-ref inputs "qtsvg")
-                                         "/lib/qt5/plugins/"))))))))))
+     (list
+      ;; Tests currently fail with exception TypeError:
+      ;; calling <function version ...> returned 3.6.2, not a test
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Veusz uses python's site-packages to look for pyqt5_include_dir.
+          (add-after 'unpack 'fix-pyqt5-include-dir
+            (lambda _
+              (substitute* "pyqt_setuptools.py"
+                (("get_path\\('platlib'\\)")
+                 (format #f "~s"
+                         (string-append
+                          #$(this-package-input "python-pyqt")
+                          "/lib/python"
+                          #$(version-major+minor
+                             (package-version python-wrapper))
+                          "/site-packages"))))))
+          ;; Ensure that icons are found at runtime.
+          (add-after 'wrap 'wrap-executable
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/veusz")
+                `("QT_PLUGIN_PATH" prefix
+                  ,(list (string-append
+                          (string-join
+                           (list #$(this-package-input "qtbase")
+                                 #$(this-package-input "qtsvg")
+                                 #$(this-package-input "qtwayland"))
+                           "/lib/qt5/plugins:")
+                          "/lib/qt5/plugins")))))))))
     (native-inputs
      (list pkg-config
-           ;;("python-astropy" ,python-astropy) ;; FIXME: Package this.
-           qttools-5 python-sip-4))
+           python-astropy
+           python-setuptools
+           python-wheel
+           qttools-5))
     (inputs
      (list bash-minimal
            ghostscript ;optional, for EPS/PS output
@@ -3598,7 +3604,8 @@ ASCII text files using Gmsh's own scripting language.")
            python-h5py ;optional, for HDF5 data
            python-pyqt
            qtbase-5
-           qtsvg-5))
+           qtsvg-5
+           qtwayland-5))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://veusz.github.io/")
