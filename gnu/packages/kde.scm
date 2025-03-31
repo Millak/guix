@@ -14,7 +14,7 @@
 ;;; Copyright © 2020-2025 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
-;;; Copyright © 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022, 2023, 2024, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
@@ -450,6 +450,30 @@ Non-linear video editing is much more powerful than beginner's (linear)
 editors, hence it requires a bit more organization before starting.  However,
 it is not reserved to specialists and can be used for small personal
 projects.")
+    (license license:gpl2+)))
+
+(define-public analitza
+  (package
+    (name "analitza")
+    (version "24.12.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://invent.kde.org/education/analitza")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "029n48pshcnyidnzv2ikyhamxg6j0ndbjavwrxdc29hrm00dmw8m"))))
+    (native-inputs (list extra-cmake-modules qttools))
+    (inputs (list eigen qtbase qtdeclarative qtsvg))
+    (build-system qt-build-system)
+    (home-page "https://invent.kde.org/education/analitza")
+    (synopsis "Library to add mathematical features to a program")
+    (description "Analitza is a library to work with mathematical objects.
+It adds mathematical features to your program, such as symbolic computations
+and some numerical methods; for instance the library can parse mathematical
+expressions and let you evaluate and draw them.")
     (license license:gpl2+)))
 
 (define-public kapptemplate
