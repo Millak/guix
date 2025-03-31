@@ -3321,6 +3321,7 @@ orienteering sport.")
              proj
              python
              python-dateutil
+             python-matplotlib
              python-numpy
              python-wxpython
              readline
