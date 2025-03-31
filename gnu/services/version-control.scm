@@ -350,78 +350,77 @@ access to exported repositories under @file{/srv/git}."
            (comment "Gitolite user")
            (home-directory home-directory)))))
 
-(define gitolite-activation
-  (match-lambda
-    (($ <gitolite-configuration> package user group home
-                                 rc-file admin-pubkey)
-     #~(begin
-         (use-modules (ice-9 match)
-                      (guix build utils))
+(define (gitolite-activation config)
+  (match-record config <gitolite-configuration>
+                (package user group home-directory rc-file admin-pubkey)
+    #~(begin
+        (use-modules (ice-9 match)
+                     (guix build utils))
 
-         (let* ((user-info (getpwnam #$user))
-                (admin-pubkey #$admin-pubkey)
-                (pubkey-file (string-append
-                              #$home "/"
-                              (basename
-                               (strip-store-file-name admin-pubkey))))
-                (rc-file #$(string-append home "/.gitolite.rc")))
+        (let* ((user-info (getpwnam #$user))
+               (admin-pubkey #$admin-pubkey)
+               (pubkey-file (string-append
+                             #$home-directory "/"
+                             (basename
+                              (strip-store-file-name admin-pubkey))))
+               (rc-file #$(string-append home-directory "/.gitolite.rc")))
 
-           ;; activate-users+groups in (gnu build activation) sets the
-           ;; permission flags of home directories to #o700 and mentions that
-           ;; services needing looser permissions should chmod it during
-           ;; service activation.  We also want the git group to be able to
-           ;; read from the gitolite home directory, so a chmod'ing we will
-           ;; go!
-           (chmod #$home #o750)
+          ;; activate-users+groups in (gnu build activation) sets the
+          ;; permission flags of home directories to #o700 and mentions that
+          ;; services needing looser permissions should chmod it during
+          ;; service activation.  We also want the git group to be able to
+          ;; read from the gitolite home directory, so a chmod'ing we will
+          ;; go!
+          (chmod #$home-directory #o750)
 
-           (simple-format #t "guix: gitolite: installing ~A\n" #$rc-file)
-           (copy-file #$rc-file rc-file)
-           ;; ensure gitolite's user can read the configuration
-           (chown rc-file
-                  (passwd:uid user-info)
-                  (passwd:gid user-info))
+          (simple-format #t "guix: gitolite: installing ~A\n" #$rc-file)
+          (copy-file #$rc-file rc-file)
+          ;; ensure gitolite's user can read the configuration
+          (chown rc-file
+                 (passwd:uid user-info)
+                 (passwd:gid user-info))
 
-           ;; The key must be writable, so copy it from the store
-           (copy-file admin-pubkey pubkey-file)
+          ;; The key must be writable, so copy it from the store
+          (copy-file admin-pubkey pubkey-file)
 
-           (chmod pubkey-file #o500)
-           (chown pubkey-file
-                  (passwd:uid user-info)
-                  (passwd:gid user-info))
+          (chmod pubkey-file #o500)
+          (chown pubkey-file
+                 (passwd:uid user-info)
+                 (passwd:gid user-info))
 
-           ;; Set the git configuration, to avoid gitolite trying to use
-           ;; the hostname command, as the network might not be up yet
-           (with-output-to-file #$(string-append home "/.gitconfig")
-             (lambda ()
-               (display "[user]
+          ;; Set the git configuration, to avoid gitolite trying to use
+          ;; the hostname command, as the network might not be up yet
+          (with-output-to-file #$(string-append home-directory "/.gitconfig")
+            (lambda ()
+              (display "[user]
         name = GNU Guix
         email = guix@localhost
 ")))
-           ;; Run Gitolite setup, as this updates the hooks and include the
-           ;; admin pubkey if specified. The admin pubkey is required for
-           ;; initial setup, and will replace the previous key if run after
-           ;; initial setup
-           (match (primitive-fork)
-             (0
-              ;; Exit with a non-zero status code if an exception is thrown.
-              (dynamic-wind
-                (const #t)
-                (lambda ()
-                  (setenv "HOME" (passwd:dir user-info))
-                  (setenv "USER" #$user)
-                  (setgid (passwd:gid user-info))
-                  (setuid (passwd:uid user-info))
-                  (primitive-exit
-                   (system* #$(file-append package "/bin/gitolite")
-                            "setup"
-                            "-m" "gitolite setup by GNU Guix"
-                            "-pk" pubkey-file)))
-                (lambda ()
-                  (primitive-exit 1))))
-             (pid (waitpid pid)))
+          ;; Run Gitolite setup, as this updates the hooks and include the
+          ;; admin pubkey if specified. The admin pubkey is required for
+          ;; initial setup, and will replace the previous key if run after
+          ;; initial setup
+          (match (primitive-fork)
+            (0
+             ;; Exit with a non-zero status code if an exception is thrown.
+             (dynamic-wind
+               (const #t)
+               (lambda ()
+                 (setenv "HOME" (passwd:dir user-info))
+                 (setenv "USER" #$user)
+                 (setgid (passwd:gid user-info))
+                 (setuid (passwd:uid user-info))
+                 (primitive-exit
+                  (system* #$(file-append package "/bin/gitolite")
+                           "setup"
+                           "-m" "gitolite setup by GNU Guix"
+                           "-pk" pubkey-file)))
+               (lambda ()
+                 (primitive-exit 1))))
+            (pid (waitpid pid)))
 
-           (when (file-exists? pubkey-file)
-             (delete-file pubkey-file)))))))
+          (when (file-exists? pubkey-file)
+            (delete-file pubkey-file))))))
 
 (define gitolite-service-type
   (service-type
