@@ -21440,34 +21440,6 @@ The API is as much as possible the similar to jQuery.  pyquery uses lxml for
 fast xml and html manipulation.")
     (license license:bsd-3)))
 
-(define-public python-anyjson
-  (package
-    (name "python-anyjson")
-    (version "0.3.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "anyjson" version))
-       (sha256
-        (base32
-         "1fjph4alvcscsl5d4b6qpv1yh31jy05jxi1l0xff7lws7j32v09p"))))
-    (build-system python-build-system)
-    (arguments
-     `(;; We could possibly get tests working, but on Python 3 it's not so easy.
-       ;; Very strangely, 2to3 is run *during setup.py install* (or bdist, or
-       ;; whatever) so this transformation needs to be done before the tests
-       ;; can be run.  Maybe we could add a build step to transform beforehand
-       ;; but it could be annoying/difficult.
-       #:tests? #f))
-    (native-inputs (list python-setuptools-57)) ;for use_2to3 support
-    (home-page "https://bitbucket.org/runeh/anyjson/")
-    (synopsis
-     "Wraps best available JSON implementation in a common interface")
-    (description
-     "Anyjson loads whichever is the fastest JSON module installed
-and provides a uniform API regardless of which JSON implementation is used.")
-    (license license:bsd-3)))
-
 (define-public python-amqp
   (package
     (name "python-amqp")
