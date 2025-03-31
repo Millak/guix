@@ -41096,6 +41096,10 @@ repository).
 @item @code{email} (default: @code{"guix@@localhost"})
 Email used for commits (e.g. during setting up the admin repository).
 
+@item @code{default-branch} (default: @code{#f})
+If true, set the @code{init.defaultBranch} option to that value.  Common
+values are @code{"master"} and @code{"main"}.
+
 @end table
 @end deftp
 

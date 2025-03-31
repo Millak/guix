@@ -72,6 +72,7 @@
             gitolite-git-configuration?
             gitolite-git-configuration-name
             gitolite-git-configuration-email
+            gitolite-git-configuration-default-branch
 
             gitolite-service-type
 
@@ -330,19 +331,25 @@ access to exported repositories under @file{/srv/git}."
 (define-record-type* <gitolite-git-configuration>
   gitolite-git-configuration make-gitolite-git-configuration
   gitolite-git-configuration?
-  (name gitolite-git-configuration-name
-        (default "GNU Guix"))
-  (email gitolite-git-configuration-email
-         (default "guix@localhost")))
+  (name           gitolite-git-configuration-name
+                  (default "GNU Guix"))
+  (email          gitolite-git-configuration-email
+                  (default "guix@localhost"))
+  (default-branch gitolite-git-configuration-default-branch
+                  (default #f)))
 
 (define-gexp-compiler (gitolite-git-configuration-compiler
                        (config <gitolite-git-configuration>) system target)
   (match-record config <gitolite-git-configuration>
-                (name email)
+                (name email default-branch)
     (apply text-file* "gitconfig"
            `("[user]\n"
              "name  = " ,name  "\n"
-             "email = " ,email "\n"))))
+             "email = " ,email "\n"
+             ,@(if default-branch
+                   `("[init]\n"
+                     "defaultBranch = " ,default-branch "\n")
+                   '())))))
 
 (define-record-type* <gitolite-configuration>
   gitolite-configuration make-gitolite-configuration
