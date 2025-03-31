@@ -67,6 +67,7 @@
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Luca Cirrottola <luca.cirrottola@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3658,7 +3659,10 @@ September 2004}")
       #:test-target "test"
       #:parallel-build? #f             ; build is parallel by default
       #:configure-flags
-      #~(list "--with-mpi=0"
+      #~(list "COPTFLAGS=-g -O3"
+              "CXXOPTFLAGS=-g -O3"
+              "FOPTFLAGS=-g -O3"
+              "--with-mpi=0"
               "--with-openmp=1"
               "--with-openblas=1"
               (string-append "--with-openblas-dir="
