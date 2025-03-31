@@ -41075,6 +41075,9 @@ Set the role names allowed to be used by users running the perms command.
 @item @code{enable} (default: @code{'("help" "desc" "info" "perms" "writable" "ssh-authkeys" "git-config" "daemon" "gitweb")})
 This setting controls the commands and features to enable within Gitolite.
 
+@item @code{extra-content} (default: @code{""})
+Extra content to add verbatim into the @code{%RC} hash.
+
 @end table
 @end deftp
 

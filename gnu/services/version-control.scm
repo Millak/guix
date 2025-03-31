@@ -64,6 +64,7 @@
             gitolite-rc-file-host-name
             gitolite-rc-file-roles
             gitolite-rc-file-enable
+            gitolite-rc-file-extra-content
 
             gitolite-service-type
 
@@ -270,13 +271,15 @@ access to exported repositories under @file{/srv/git}."
                               "ssh-authkeys"
                               "git-config"
                               "daemon"
-                              "gitweb"))))
+                              "gitweb")))
+  (extra-content   gitolite-rc-extra-content
+                   (default "")))
 
 (define-gexp-compiler (gitolite-rc-file-compiler
                        (file <gitolite-rc-file>) system target)
   (match-record file <gitolite-rc-file>
                 ( umask local-code unsafe-pattern git-config-keys log-extra
-                  host-name roles enable)
+                  host-name roles enable extra-content)
     (apply text-file* "gitolite.rc"
            `("%RC = (\n"
              "    UMASK => " ,(format #f "~4,'0o" umask) ",\n"
@@ -302,6 +305,7 @@ access to exported repositories under @file{/srv/git}."
                       (simple-format #f "        '~A',\n" value))
                     enable)
              "    ],\n"
+             ,extra-content "\n"
              ");\n"
              "\n"
              ,(if unsafe-pattern
