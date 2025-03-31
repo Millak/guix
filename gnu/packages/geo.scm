@@ -3227,41 +3227,6 @@ orienteering sport.")
          (sha256
           (base32 "0r08vdi1s0mpa033bqbc9kc3116qm53bmx2k7l8dgg69wxkwyzfi"))))
       (build-system gnu-build-system)
-      (inputs
-       (list bash-minimal
-             bzip2
-             cairo
-             fftw
-             freetype
-             gdal
-             geos
-             glu
-             libpng
-             libtiff
-             libxml2 ;marked as required by pdal
-             mesa
-             `(,mariadb "dev")
-             `(,mariadb "lib")
-             netcdf
-             openblas
-             pdal
-             perl
-             postgresql
-             proj
-             python
-             python-dateutil
-             python-numpy
-             python-wxpython
-             readline
-             sqlite
-             wxwidgets
-             zlib
-             `(,zstd "lib")))
-      (native-inputs
-       (list bash-minimal
-             bison
-             flex
-             pkg-config))
       (arguments
        (list
         #:tests? #f                    ; No tests
@@ -3328,6 +3293,41 @@ orienteering sport.")
               (lambda _
                   (wrap-program (string-append #$output "/bin/grass")
                     `("GRASS_PYTHON" = (,(which "python3")))))))))
+      (native-inputs
+       (list bash-minimal
+             bison
+             flex
+             pkg-config))
+      (inputs
+       (list bash-minimal
+             bzip2
+             cairo
+             fftw
+             freetype
+             gdal
+             geos
+             glu
+             libpng
+             libtiff
+             libxml2 ;marked as required by pdal
+             mesa
+             `(,mariadb "dev")
+             `(,mariadb "lib")
+             netcdf
+             openblas
+             pdal
+             perl
+             postgresql
+             proj
+             python
+             python-dateutil
+             python-numpy
+             python-wxpython
+             readline
+             sqlite
+             wxwidgets
+             zlib
+             `(,zstd "lib")))
       (synopsis "GRASS Geographic Information System")
       (description
        "GRASS (Geographic Resources Analysis Support System), is a Geographic
