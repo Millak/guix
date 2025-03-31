@@ -5524,40 +5524,26 @@ Python.")
 (define-public python-jsonargparse
   (package
     (name "python-jsonargparse")
-    (version "4.21.1")
+    (version "4.37.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jsonargparse" version))
               (sha256
                (base32
-                "1k3b60x0zf86fh50y2jyby30gksqriyvvpfnf5mqq0qn7jih01y7"))))
+                "1b9w9j27phj5j00pmhp11lzf53yc4dnwknhxacv2bfyiiaq0af2s"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:test-flags
-      '(list "-k" (string-append "not test_env_prefix"
-                                 " and not test_basemodel"
-                                 " and not test_field_default_factory"
-                                 " and not test_field_description"
-                                 " and not test_get_param_relative_import_from_init"
-                                 ;; Strangely, the arguments are interpreted
-                                 ;; as arguments to pytest.
-                                 " and not test_pydantic_types"))))
+     (list #:test-flags
+           '(list "-k" "not test_env_prefix")))
     (propagated-inputs
-     (list python-contextvars
-           python-docstring-parser
-           python-pyyaml
-           python-typeshed-client))
+     (list python-pyyaml))
     (native-inputs
      (list python-attrs
-           python-coverage
-           python-pycodestyle
+           python-pypa-build
            python-pydantic
            python-pytest
            python-pytest-subtests
            python-responses
-           python-tox
-           python-types-requests
            python-setuptools
            python-wheel))
     (home-page "https://github.com/omni-us/jsonargparse/")
