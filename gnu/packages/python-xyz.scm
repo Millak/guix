@@ -8943,15 +8943,31 @@ or for visual regression testing purposes.")
 (define-public python-rstr
   (package
    (name "python-rstr")
-   (version "2.2.6")
+   (version "3.2.2")
    (source
     (origin
-     (method url-fetch)
-     (uri (pypi-uri "rstr" version))
-     (sha256
-      (base32
-       "197dw8mbq0pjjz1l6h1ksi62vgn7x55d373ch74y06744qiq5sjx"))))
-   (build-system python-build-system)
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/leapfrogonline/rstr")
+            (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1z9d660jnv72jn8qzpa9hddpv5f953js8i75hfhkcw68vmdfndnr"))))
+   (build-system pyproject-build-system)
+   (arguments
+    (list
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-before 'build 'pretend-version
+           ;; The version string is usually derived via setuptools-scm, but
+           ;; without the git metadata available, the version string is set to
+           ;; '0.0.0'.
+           (lambda _
+             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+   (native-inputs (list python-pytest
+                        python-setuptools
+                        python-setuptools-scm
+                        python-wheel))
    (home-page "https://github.com/leapfrogonline/rstr")
    (synopsis "Generate random strings in Python")
    (description "This package provides a python module for generating
