@@ -5,6 +5,7 @@
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -267,33 +268,33 @@ access to exported repositories under @file{/srv/git}."
 
 (define-gexp-compiler (gitolite-rc-file-compiler
                        (file <gitolite-rc-file>) system target)
-  (match file
-    (($ <gitolite-rc-file> umask local-code unsafe-pattern git-config-keys roles enable)
-     (apply text-file* "gitolite.rc"
-      `("%RC = (\n"
-        "    UMASK => " ,(format #f "~4,'0o" umask) ",\n"
-        "    GIT_CONFIG_KEYS => '" ,git-config-keys "',\n"
-        ,(if local-code
-             (simple-format #f "    LOCAL_CODE => \"~A\",\n" local-code)
-             "")
-        "    ROLES => {\n"
-        ,@(map (match-lambda
-                 ((role . value)
-                  (simple-format #f "        ~A => ~A,\n" role value)))
-               roles)
-        "    },\n"
-        "\n"
-        "    ENABLE => [\n"
-        ,@(map (lambda (value)
-                 (simple-format #f "        '~A',\n" value))
-               enable)
-        "    ],\n"
-        ");\n"
-        "\n"
-        ,(if unsafe-pattern
-             (string-append "$UNSAFE_PATT = qr(" unsafe-pattern ");")
-             "")
-        "1;\n")))))
+  (match-record file <gitolite-rc-file>
+                (umask local-code unsafe-pattern git-config-keys roles enable)
+    (apply text-file* "gitolite.rc"
+           `("%RC = (\n"
+             "    UMASK => " ,(format #f "~4,'0o" umask) ",\n"
+             "    GIT_CONFIG_KEYS => '" ,git-config-keys "',\n"
+             ,(if local-code
+                  (simple-format #f "    LOCAL_CODE => \"~A\",\n" local-code)
+                  "")
+             "    ROLES => {\n"
+             ,@(map (match-lambda
+                      ((role . value)
+                       (simple-format #f "        ~A => ~A,\n" role value)))
+                    roles)
+             "    },\n"
+             "\n"
+             "    ENABLE => [\n"
+             ,@(map (lambda (value)
+                      (simple-format #f "        '~A',\n" value))
+                    enable)
+             "    ],\n"
+             ");\n"
+             "\n"
+             ,(if unsafe-pattern
+                  (string-append "$UNSAFE_PATT = qr(" unsafe-pattern ");")
+                  "")
+             "1;\n"))))
 
 (define-record-type* <gitolite-configuration>
   gitolite-configuration make-gitolite-configuration
