@@ -21420,19 +21420,28 @@ project template.")
 (define-public python-pyquery
   (package
     (name "python-pyquery")
-    (version "1.2.17")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyquery" version))
        (sha256
         (base32
-         "1xia20wm0vx5dk85kcwgh13bylz8qh47ffjxssd2586r60xi783a"))))
-    (build-system python-build-system)
+         "1brg6aawb9m5mdfmc6g7v5r6pczbx67r4l9cn5yh6bdi0qkvp501"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This test requires network access.
+     (list #:test-flags #~(list "-k" "not test_get")))
     (native-inputs
-     (list python-webob python-webtest))
+     (list python-pytest
+           python-pytest-cov
+           python-requests
+           python-setuptools
+           python-webob
+           python-webtest
+           python-wheel))
     (propagated-inputs
-     (list python-lxml python-cssselect))
+     (list python-cssselect python-lxml))
     (home-page "https://github.com/gawel/pyquery")
     (synopsis "Make jQuery-like queries on xml documents")
     (description "pyquery allows you to make jQuery queries on xml documents.
