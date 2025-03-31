@@ -60,6 +60,7 @@
             gitolite-rc-file-umask
             gitolite-rc-file-unsafe-pattern
             gitolite-rc-file-git-config-keys
+            gitolite-rc-file-log-extra
             gitolite-rc-file-roles
             gitolite-rc-file-enable
 
@@ -252,6 +253,8 @@ access to exported repositories under @file{/srv/git}."
                    (default #f))
   (git-config-keys gitolite-rc-file-git-config-keys
                    (default ""))
+  (log-extra       gitolite-rc-file-log-extra
+                   (default #f))
   (roles           gitolite-rc-file-roles
                    (default '(("READERS" . 1)
                               ("WRITERS" . 1))))
@@ -269,13 +272,17 @@ access to exported repositories under @file{/srv/git}."
 (define-gexp-compiler (gitolite-rc-file-compiler
                        (file <gitolite-rc-file>) system target)
   (match-record file <gitolite-rc-file>
-                (umask local-code unsafe-pattern git-config-keys roles enable)
+                ( umask local-code unsafe-pattern git-config-keys log-extra
+                  roles enable)
     (apply text-file* "gitolite.rc"
            `("%RC = (\n"
              "    UMASK => " ,(format #f "~4,'0o" umask) ",\n"
              "    GIT_CONFIG_KEYS => '" ,git-config-keys "',\n"
              ,(if local-code
                   (simple-format #f "    LOCAL_CODE => \"~A\",\n" local-code)
+                  "")
+             ,(if log-extra
+                  "    LOG_EXTRA => 1,\n"
                   "")
              "    ROLES => {\n"
              ,@(map (match-lambda

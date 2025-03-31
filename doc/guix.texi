@@ -41058,6 +41058,13 @@ access on the server.
 Gitolite allows you to set git config values using the @samp{config}
 keyword.  This setting allows control over the config keys to accept.
 
+@item @code{log-extra} (default: @code{#f})
+Whether gitolite should log extra details.
+
+For historical reasons, this field defaults to @code{#f}.  The default
+value from gitolite however is @code{1} (written as @code{#t} in this
+configuration).
+
 @item @code{roles} (default: @code{'(("READERS" . 1) ("WRITERS" . ))})
 Set the role names allowed to be used by users running the perms command.
 
