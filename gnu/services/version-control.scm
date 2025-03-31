@@ -67,6 +67,12 @@
             gitolite-rc-file-extra-content
             gitolite-rc-file-default-enable
 
+            <gitolite-git-configuration>
+            gitolite-git-configuration
+            gitolite-git-configuration?
+            gitolite-git-configuration-name
+            gitolite-git-configuration-email
+
             gitolite-service-type
 
             gitile-configuration
@@ -321,6 +327,23 @@ access to exported repositories under @file{/srv/git}."
              "# End:\n"
              "# vim: set syn=perl:\n"))))
 
+(define-record-type* <gitolite-git-configuration>
+  gitolite-git-configuration make-gitolite-git-configuration
+  gitolite-git-configuration?
+  (name gitolite-git-configuration-name
+        (default "GNU Guix"))
+  (email gitolite-git-configuration-email
+         (default "guix@localhost")))
+
+(define-gexp-compiler (gitolite-git-configuration-compiler
+                       (config <gitolite-git-configuration>) system target)
+  (match-record config <gitolite-git-configuration>
+                (name email)
+    (apply text-file* "gitconfig"
+           `("[user]\n"
+             "name  = " ,name  "\n"
+             "email = " ,email "\n"))))
+
 (define-record-type* <gitolite-configuration>
   gitolite-configuration make-gitolite-configuration
   gitolite-configuration?
@@ -334,6 +357,8 @@ access to exported repositories under @file{/srv/git}."
                   (default "/var/lib/gitolite"))
   (rc-file        gitolite-configuration-rc-file
                   (default (gitolite-rc-file)))
+  (git-config     gitolite-configuration-git-config
+                  (default (gitolite-git-configuration)))
   (admin-pubkey   gitolite-configuration-admin-pubkey))
 
 (define (gitolite-accounts config)
@@ -352,7 +377,8 @@ access to exported repositories under @file{/srv/git}."
 
 (define (gitolite-activation config)
   (match-record config <gitolite-configuration>
-                (package user group home-directory rc-file admin-pubkey)
+                ( package user group home-directory rc-file admin-pubkey
+                  git-config)
     #~(begin
         (use-modules (ice-9 match)
                      (guix build utils))
@@ -390,12 +416,9 @@ access to exported repositories under @file{/srv/git}."
 
           ;; Set the git configuration, to avoid gitolite trying to use
           ;; the hostname command, as the network might not be up yet
-          (with-output-to-file #$(string-append home-directory "/.gitconfig")
-            (lambda ()
-              (display "[user]
-        name = GNU Guix
-        email = guix@localhost
-")))
+          (copy-file #$git-config
+                     #$(string-append home-directory "/.gitconfig"))
+
           ;; Run Gitolite setup, as this updates the hooks and include the
           ;; admin pubkey if specified. The admin pubkey is required for
           ;; initial setup, and will replace the previous key if run after

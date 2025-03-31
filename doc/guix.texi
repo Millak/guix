@@ -41006,6 +41006,10 @@ Directory in which to store the Gitolite configuration and repositories.
 A ``file-like'' object (@pxref{G-Expressions, file-like objects}),
 representing the configuration for Gitolite.
 
+@item @code{git-config} (default: @code{(gitolite-git-configuration)})
+A ``file-like'' object (@pxref{G-Expressions, file-like objects}),
+representing the git configuration for Gitolite.
+
 @item @code{admin-pubkey} (default: @code{#f})
 A ``file-like'' object (@pxref{G-Expressions, file-like objects}) used to
 setup Gitolite.  This will be inserted in to the @file{keydir} directory
@@ -41081,6 +41085,19 @@ Extra content to add verbatim into the @code{%RC} hash.
 @end table
 @end deftp
 
+@deftp {Data Type} gitolite-git-configuration
+Data type representing the git configuration file for gitolite.
+
+@table @asis
+@item @code{name} (default: @code{"GNU GNU"})
+User name used for commits (e.g. during setting up the admin
+repository).
+
+@item @code{email} (default: @code{"guix@@localhost"})
+Email used for commits (e.g. during setting up the admin repository).
+
+@end table
+@end deftp
 
 @subsubheading Gitile Service
 
