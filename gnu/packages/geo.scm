@@ -3213,7 +3213,7 @@ orienteering sport.")
     (license license:gpl3+)))
 
 (define-public grass
-  (let* ((version "7.8.8")
+  (let* ((version "8.4.1")
          (majorminor (string-join (list-head (string-split version #\.) 2) ""))
          (grassxx (string-append "grass" majorminor)))
     (package
@@ -3225,7 +3225,7 @@ orienteering sport.")
          (uri (string-append "https://grass.osgeo.org/" grassxx
                              "/source/grass-" version ".tar.gz"))
          (sha256
-          (base32 "1gpfbppfajc8d6b9alw9fdzgaa83w26kl6fff1395bc9gal215ms"))))
+          (base32 "0r08vdi1s0mpa033bqbc9kc3116qm53bmx2k7l8dgg69wxkwyzfi"))))
       (build-system gnu-build-system)
       (inputs
        (list bash-minimal
@@ -3238,11 +3238,13 @@ orienteering sport.")
              glu
              libpng
              libtiff
+             libxml2 ;marked as required by pdal
              mesa
              `(,mariadb "dev")
              `(,mariadb "lib")
              netcdf
              openblas
+             pdal
              perl
              postgresql
              proj
@@ -3324,7 +3326,7 @@ orienteering sport.")
               (assoc-ref python:%standard-phases 'wrap))
             (add-after 'python:wrap 'wrap-with-python-interpreter
               (lambda _
-                  (wrap-program (string-append #$output "/bin/" #$grassxx)
+                  (wrap-program (string-append #$output "/bin/grass")
                     `("GRASS_PYTHON" = (,(which "python3")))))))))
       (synopsis "GRASS Geographic Information System")
       (description
