@@ -402,7 +402,7 @@ setup against another one.")
 (define-public python-locust
   (package
     (name "python-locust")
-    (version "2.32.5")
+    (version "2.33.2")
     ;; The archive on Pypi has no tests.
     (source (origin
               (method git-fetch)
@@ -412,7 +412,7 @@ setup against another one.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nmhk2k0mbza9slqgms42s6hsfwwmyr275l90an02qaypx066l1n"))))
+                "055is6plxjajzp7v5q108n90j5mvdaylpna98kw9zsqn7mvfq7ms"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -484,10 +484,21 @@ setup against another one.")
                      "not test_ramp_up_from_0_to_100_000_users_with_50_user_classes_and_1000_workers_and_5000_spawn_rate"
                      ;; This test fails with "AssertionError:
                      ;; 'stopped' != 'stopping'".
-                     "not test_distributed_shape") " and "))
+                     "not test_distributed_shape"
+                     ;; This test fails with AssertionError:
+                     ;; "locust [...] != .locust-real"
+                     "not test_invalid_stop_timeout_string"
+                     ) " and "))
       #:phases
       #~(modify-phases %standard-phases
           ;; The build system attempts to detect the version by spawning git.
+          (add-after 'unpack 'pretend-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^dynamic = \\[\"version\"\\].*$")
+                 (format #f "version = ~s~%" #$version))
+                (("^source = \"vcs\".*$")
+                 "source = \"static\"\n"))))
           (add-after 'unpack 'fix-version
             (lambda _
               (let ((tuple (list
@@ -518,9 +529,15 @@ version_tuple = __version_tuple__
 
 ")))))
               (substitute* "pyproject.toml"
-                (("setuptools = \">=70.0.0\"") "setuptools = \">=67.0.0\"")
-                (("^version =.*") (string-append "version = \"" #$version "\"\n"))
-                (("enable = true") "enable = false"))))
+                (("\"setuptools>=.*\",")
+                 (string-append "\"setuptools>="
+                                #$(package-version
+                                   (this-package-input "python-setuptools"))
+                                "\","))
+                (("^version =.*")
+                 (string-append "version = \"" #$version "\"\n"))
+                (("enable = true")
+                 "enable = false"))))
           (add-before 'check 'increase-resource-limits
             (lambda _
               ;; XXX: Copied from ungoogled-chromium.
@@ -552,8 +569,8 @@ version_tuple = __version_tuple__
            python-werkzeug))
     (native-inputs
      (list nss-certs-for-test
-           python-poetry-core
-           python-poetry-dynamic-versioning
+           python-hatchling
+           python-hatch-vcs
            python-pyquery
            python-pytest
            python-retry))
