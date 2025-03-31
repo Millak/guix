@@ -64,6 +64,7 @@
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
+;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2379,11 +2380,10 @@ wrappers, to be used for optional gitolite extensions."
                       (string-append
                        " " (search-input-file inputs "bin/grep") " ")))
 
-                   ;; Avoid references to the store in authorized_keys.
-                   ;; This works because gitolite-shell is in the PATH.
                    (substitute* "src/triggers/post-compile/ssh-authkeys"
                      (("\\$glshell \\$user")
-                      "gitolite-shell $user"))))
+                      (string-append
+                       #$output "/bin/gitolite-shell $user")))))
                (add-before 'install 'patch-source
                  (lambda* (#:key inputs #:allow-other-keys)
                    ;; Gitolite uses cat to test the readability of the

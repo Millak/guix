@@ -429,15 +429,7 @@ access to exported repositories under @file{/srv/git}."
     (list (service-extension activation-service-type
                              gitolite-activation)
           (service-extension account-service-type
-                             gitolite-accounts)
-          (service-extension profile-service-type
-                             ;; The Gitolite package in Guix uses
-                             ;; gitolite-shell in the authorized_keys file, so
-                             ;; gitolite-shell needs to be on the PATH for
-                             ;; gitolite to work.
-                             (lambda (config)
-                               (list
-                                (gitolite-configuration-package config))))))
+                             gitolite-accounts)))
    (description
     "Set up @command{gitolite}, a Git hosting tool providing access over SSH.
 By default, the @code{git} user is used, but this is configurable.
