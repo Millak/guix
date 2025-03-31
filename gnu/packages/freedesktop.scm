@@ -791,7 +791,7 @@ other applications that need to directly deal with input devices.")
 (define-public libei
   (package
     (name "libei")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -799,7 +799,7 @@ other applications that need to directly deal with input devices.")
                     (commit version)))
               (sha256
                (base32
-                "0idbl20ax060s7m435rszfv7c0bvpinjvq45qbqwvcvp0hg8r9y8"))
+                "04ll43616pyfm7c835azdggx9x3vfykpcg3pzmsfz4f2vl5whalm"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
@@ -821,17 +821,18 @@ other applications that need to directly deal with input devices.")
      ;; liboeffis-1.0.pc requires.private libelogind
      (list elogind))
     (native-inputs
-     (list doxygen
+     (list dbus
+           doxygen
            libxml2
            munit
            pkg-config
            python
            python-attrs
-           python-black
            python-dbusmock
            python-jinja2
            python-pytest
            python-structlog
+           python-pyaml
            valgrind/interactive))
     (home-page "https://libinput.pages.freedesktop.org/libei/")
     (synopsis "Emulated Input protocol implementation")
