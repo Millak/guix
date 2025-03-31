@@ -2995,25 +2995,6 @@ __version_tuple__ = version_tuple = (~a)~%" version version-tuple)))))))))
 in an opinionated way.")
     (license license:expat)))
 
-(define-public python-parameterizedtestcase
-  (package
-    (name "python-parameterizedtestcase")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "parameterizedtestcase" version))
-       (sha256
-        (base32 "0zhjmsd16xacg4vd7zb75kw8q9khn52wvad634v1bvz7swaivk2c"))))
-    (build-system python-build-system)
-    (native-inputs (list python-setuptools-57)) ;for use_2to3
-    (home-page
-     "https://github.com/msabramo/python_unittest_parameterized_test_case")
-    (synopsis "Parameterized tests for Python's unittest module")
-    (description "This package provides parameterized tests for Python's
-@code{unittest} module taking inspiration from pytest.")
-    (license license:expat)))
-
 (define-public python-pytest-rerunfailures
   (package
     (name "python-pytest-rerunfailures")
