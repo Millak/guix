@@ -311,7 +311,11 @@ access to exported repositories under @file{/srv/git}."
              ,(if unsafe-pattern
                   (string-append "$UNSAFE_PATT = qr(" unsafe-pattern ");")
                   "")
-             "1;\n"))))
+             "1;\n"
+             "# Local variables:\n"
+             "# mode: perl\n"
+             "# End:\n"
+             "# vim: set syn=perl:\n"))))
 
 (define-record-type* <gitolite-configuration>
   gitolite-configuration make-gitolite-configuration
