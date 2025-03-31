@@ -65,6 +65,7 @@
             gitolite-rc-file-roles
             gitolite-rc-file-enable
             gitolite-rc-file-extra-content
+            gitolite-rc-file-default-enable
 
             gitolite-service-type
 
@@ -244,6 +245,17 @@ access to exported repositories under @file{/srv/git}."
 ;;; Gitolite
 ;;;
 
+(define gitolite-rc-file-default-enable
+  '("help"
+    "desc"
+    "info"
+    "perms"
+    "writable"
+    "ssh-authkeys"
+    "git-config"
+    "daemon"
+    "gitweb"))
+
 (define-record-type* <gitolite-rc-file>
   gitolite-rc-file make-gitolite-rc-file
   gitolite-rc-file?
@@ -263,15 +275,7 @@ access to exported repositories under @file{/srv/git}."
                    (default '(("READERS" . 1)
                               ("WRITERS" . 1))))
   (enable          gitolite-rc-file-enable
-                   (default '("help"
-                              "desc"
-                              "info"
-                              "perms"
-                              "writable"
-                              "ssh-authkeys"
-                              "git-config"
-                              "daemon"
-                              "gitweb")))
+                   (default gitolite-rc-file-default-enable))
   (extra-content   gitolite-rc-extra-content
                    (default "")))
 
