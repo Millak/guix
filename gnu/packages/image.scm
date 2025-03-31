@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2017, 2019, 2021-2023 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2013, 2015, 2016 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2015, 2016, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2014, 2016, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -1365,31 +1365,26 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
     (home-page "https://freeimage.sourceforge.io/")))
 
 (define-public vigra
-    (let ((commit "9b514fa00a136f5fd81bb57ee9f6293c333ffc1f")
-          (revision "0"))
     (package
      (name "vigra")
-     (version (git-version "1.11.1" revision commit))
+     (version "1.11.2")
      (source
       (origin
-        ;; The last release is 1.11.1, from 2017. It's becoming more and more
-        ;; difficult to build this old release, and the upstream developers
-        ;; suggest on their home page to build from the Git repo, saying "It is
-        ;; generally safe to use the 'master' branch of the development snapshot,
-        ;; as we avoid uploading untested or incompatible changes to this branch."
         (method git-fetch)
         (uri (git-reference
                (url "https://github.com/ukoethe/vigra")
-               (commit commit)))
+               (commit (string-append
+                         "Version-"
+                         (string-join (string-split version #\.) "-")))))
         (file-name (git-file-name name version))
         (sha256 (base32
-                  "1vzlypviala109imwxkp46lqhhxszf79ypfb8wxg6z7g02j7mm73"))))
+                  "12ywzz8c6p1cmmr3b849yhvmbi1kmqz2ag82qpj41hy8lis6gaf4"))))
      (build-system cmake-build-system)
      (inputs
       `(("boost" ,boost)
         ("fftw" ,fftw)
         ("fftwf" ,fftwf)
-        ("hdf5" ,hdf5-1.10)
+        ("hdf5" ,hdf5)
         ("ilmbase" ,ilmbase) ; propagated by openexr, but needed explicitly
                              ; to create a configure-flag
         ("libjpeg" ,libjpeg-turbo)
@@ -1397,7 +1392,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
         ("libtiff" ,libtiff)
         ("openexr" ,openexr-2)
         ("python" ,python-wrapper)
-        ;("python-numpy" ,python-numpy)
+        ("python-numpy" ,python-numpy)
         ("zlib" ,zlib)))
      (native-inputs
       `(("doxygen" ,doxygen)
@@ -1405,18 +1400,6 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
         ("sphinx" ,python-sphinx)))
      (arguments
       `(#:test-target "check"
-        #:phases
-        (modify-phases %standard-phases
-          (add-after 'unpack 'disable-broken-tests
-            (lambda _
-              ;; See https://github.com/ukoethe/vigra/issues/432
-              (substitute* "test/fourier/CMakeLists.txt"
-                (("VIGRA_ADD_TEST.*") ""))
-              ;; This test fails with Numpy 1.15:
-              ;; <https://github.com/ukoethe/vigra/issues/436>.
-              (substitute* "vigranumpy/test/CMakeLists.txt"
-                (("test1\\.py") ""))
-              #t)))
         #:configure-flags
           (list "-Wno-dev" ; suppress developer mode with lots of warnings
                 (string-append "-DVIGRANUMPY_INSTALL_DIR="
@@ -1424,8 +1407,6 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
                                "/lib/python"
                                ,(version-major+minor (package-version python))
                                "/site-packages")
-                ;; Vigranumpy isn't compatible with numpy >= 1.20.
-                "-DWITH_VIGRANUMPY=0"
                 ;; OpenEXR is not enabled by default.
                 "-DWITH_OPENEXR=1"
                 ;; Fix rounding error on 32-bit machines
@@ -1445,7 +1426,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
   multi-dimensional image processing.")
      (license license:expat)
      (home-page "https://ukoethe.github.io/vigra/")
-     (properties '((max-silent-time . 7200)))))) ;2 hours, to avoid timing out
+     (properties '((max-silent-time . 7200))))) ;2 hours, to avoid timing out
 
 (define-public vigra-c
   (let* ((commit "49f53191a12fe91d4e2fd177d22af167571c71d8")
