@@ -7116,6 +7116,21 @@ performance library of basic building blocks for deep learning applications.")
     (description "A Python library for reading and writing GGUF & GGML format ML models.")
     (license license:expat)))
 
+(define-public python-gguf-llama-cpp
+  (package/inherit python-gguf
+    (version "0.16.0")
+    (source (package-source llama-cpp))
+    (propagated-inputs (list python-numpy python-pyyaml python-sentencepiece
+                             python-tqdm))
+    (native-inputs (list python-poetry-core))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-gguf)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "gguf-py")))))))))
+
 (define-public python-gymnasium
   (package
     (name "python-gymnasium")
