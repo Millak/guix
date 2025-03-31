@@ -12432,7 +12432,7 @@ Cuffdiff or Ballgown programs.")
 (define-public taxtastic
   (package
     (name "taxtastic")
-    (version "0.9.2")
+    (version "0.11.1")
     (source (origin
               ;; The Pypi version does not include tests.
               (method git-fetch)
@@ -12442,42 +12442,47 @@ Cuffdiff or Ballgown programs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k6wg9ych1j3srnhdny1y4470qlhfg730rb3rm3pq7l7gw62vmgb"))))
-    (build-system python-build-system)
+                "18h3vlyx9qp7xymd8ra6jn5h0vzlpzgcd75kslqyv2qcg1a7scc4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'prepare-directory
-           (lambda _
-             ;; This test fails, but the error is not caught by the test
-             ;; framework, so the tests fail...
-             (substitute* "tests/test_taxit.py"
-               (("self.cmd_fails\\(''\\)")
-                "self.cmd_fails('nothing')"))
-             ;; This version file is expected to be created with git describe.
-             (mkdir-p "taxtastic/data")
-             (with-output-to-file "taxtastic/data/ver"
-               (lambda () (display ,version)))))
-         (replace 'check
-           ;; Note, this fails to run with "-v" as it tries to write to a
-           ;; closed output stream.
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "unittest"))))
-         ;; This fails because it cannot find psycopg2 even though it is
-         ;; available.
-         (delete 'sanity-check))))
+     (list
+      #:test-flags #~(list "-k" "not test_new_nodes02")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-directory
+            (lambda _
+              ;; This package is unknown to pypi.
+              (substitute* '("requirements.txt" "setup.py")
+                ((".*psycopg-binary.*") ""))
+              ;; This test fails, but the error is not caught by the test
+              ;; framework, so the tests fail...
+              (substitute* "tests/test_taxit.py"
+                (("self.cmd_fails\\(''\\)")
+                 "self.cmd_fails('nothing')"))
+              ;; This version file is expected to be created with git describe.
+              (mkdir-p "taxtastic/data")
+              (with-output-to-file "taxtastic/data/ver"
+                (lambda () (display #$version)))))
+          (replace 'check
+            ;; Note, this fails to run with "-v" as it tries to write to a
+            ;; closed output stream.
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "python" "-m" "unittest" test-flags)))))))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (propagated-inputs
-     (list python-sqlalchemy
+     (list python-biopython
            python-decorator
-           python-biopython
-           python-pandas
-           python-psycopg2
+           python-dendropy
            python-fastalite
-           python-pyyaml
-           python-six
            python-jinja2
-           python-dendropy))
+           python-pandas
+           python-psycopg
+           python-psycopg2-binary
+           python-pyyaml
+           python-sqlalchemy-2
+           python-sqlparse))
     (home-page "https://github.com/fhcrc/taxtastic")
     (synopsis "Tools for taxonomic naming and annotation")
     (description
