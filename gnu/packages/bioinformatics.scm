@@ -21526,24 +21526,28 @@ throughput chromatin profiles.  Typical use cases include:
 (define-public umi-tools
   (package
     (name "umi-tools")
-    (version "1.0.0")
+    (version "1.1.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "umi_tools" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CGATOxford/UMI-tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "08y3vz1vcx09whmbsn722lcs6jl9wyrh9i4p3k8j4cb1i32bij4a"))))
-    (build-system python-build-system)
+        (base32 "1liykfj4msvcgk8an5qq802jcxwlijqxrvijipqj1pwpxqzl9qnh"))))
+    (build-system pyproject-build-system)
     (inputs
      (list python-pandas
            python-future
            python-scipy
            python-matplotlib
            python-regex
+           python-pybktree
+           python-scipy
            python-pysam))
     (native-inputs
-     (list python-cython))
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/CGATOxford/UMI-tools")
     (synopsis "Tools for analyzing unique modular identifiers")
     (description "This package provides tools for dealing with @dfn{Unique
