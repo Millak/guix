@@ -41103,6 +41103,9 @@ values are @code{"master"} and @code{"main"}.
 @item @code{receive-fsck-objects} (default: @code{#f})
 If it is set to true, git-receive-pack will check all received objects.
 
+@item @code{extra-content} (default: @code{""})
+Extra content to add verbatim into the git configuration file.
+
 @end table
 @end deftp
 
