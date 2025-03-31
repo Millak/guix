@@ -6728,7 +6728,10 @@ for URL parsing and changing.")
                 "1vbd3ndhmxi8scxgxs6sc7r0rdaliqd80384n06nyb3haqz25inm"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-arrow python-pytz python-requests))
-    (native-inputs (list python-requests-mock python-setuptools python-wheel))
+    (native-inputs (list python-requests-mock
+                         python-setuptools
+                         python-urllib3-next
+                         python-wheel))
     (home-page "https://github.com/ucfopen/canvasapi")
     (synopsis "API wrapper for the Canvas LMS")
     (description
