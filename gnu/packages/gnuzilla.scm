@@ -543,9 +543,9 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "115.21.0")
+(define %icecat-base-version "115.22.0")
 (define %icecat-version (string-append %icecat-base-version "-guix1"))
-(define %icecat-build-id "20250304000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20250401000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -565,12 +565,12 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0x5n2r0gsnc8vnmdpbr11l0kjyflw15agfq8xy7gxkhpdlfqn4gz"))))
+              "1cq561ypsnr0qsxd29jj325i1w6rh7yv3b9avy1j3d8xmc3nayzm"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
-         (upstream-icecat-base-version "115.21.0")
-         (gnuzilla-commit "f43fda586d9542f5b7d12b9d8099a6671bbeb7f2")
+         (upstream-icecat-base-version "115.22.0")
+         (gnuzilla-commit "541e7be30f8ccd36598ce46d815384eaccfe8c11")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -582,7 +582,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "1jam4sd6884smz1kxca75kvlwwhwm1s6gnkv9gd2qmav9xp5b3nb"))))
+              "08d8xv7hyn6s33kxpccbyxy0j3h4qk6bas6pmbn2pdn1281j8yw5"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
