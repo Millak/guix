@@ -1448,8 +1448,8 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
      (properties '((max-silent-time . 7200)))))) ;2 hours, to avoid timing out
 
 (define-public vigra-c
-  (let* ((commit "66ff4fa5a7d4a77415caa676a45c2c6ea16562e7")
-         (revision "1"))
+  (let* ((commit "49f53191a12fe91d4e2fd177d22af167571c71d8")
+         (revision "2"))
     (package
       (name "vigra-c")
       (version (git-version "0.0.0" revision commit))
@@ -1461,7 +1461,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1pnd92s284dvsg8zp6md7p8ck55bmcsryz58gzic7jh6m72hg689"))
+                  "04ch1jhk4zjf1fpsyp8ldzjp8l9bx025zq0vskjx1clb3ncn305x"))
                 (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
