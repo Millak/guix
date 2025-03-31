@@ -13218,8 +13218,9 @@ particularly @code{cl:typep} and @code{cl:subtypep}.")
 (define-public cl-ctype
   (sbcl-package->cl-source-package sbcl-ctype))
 
-(define-public ecl-ctype
-  (sbcl-package->ecl-package sbcl-ctype))
+;; FIXME: https://github.com/s-expressionists/ctype/issues/31
+;; (define-public ecl-ctype
+;;   (sbcl-package->ecl-package sbcl-ctype))
 
 (define-public sbcl-curry-compose-reader-macros
   (let ((commit "beaa92dedf392726c042184bfd6149fa8d9e6ac2")
