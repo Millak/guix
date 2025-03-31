@@ -6716,7 +6716,7 @@ for URL parsing and changing.")
 (define-public python-canvasapi
   (package
     (name "python-canvasapi")
-    (version "3.2.0")
+    (version "3.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6725,7 +6725,7 @@ for URL parsing and changing.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vbd3ndhmxi8scxgxs6sc7r0rdaliqd80384n06nyb3haqz25inm"))))
+                "1gg6h2w4bajsis35p7l5r6bx54h5j2nq16r90wq8fbb0d3gz3f6q"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-arrow python-pytz python-requests))
     (native-inputs (list python-requests-mock
