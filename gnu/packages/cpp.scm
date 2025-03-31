@@ -1606,7 +1606,7 @@ library.")
 (define-public cpplint
   (package
     (name "cpplint")
-    (version "1.5.5")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1616,7 +1616,7 @@ library.")
              (url "https://github.com/cpplint/cpplint")
              (commit version)))
        (sha256
-        (base32 "13l86aq0h1jga949k79k9x3hw2xqchjc162sclg2f99vz98zcz15"))
+        (base32 "06km4wh4944az1hk61g5w8pjhbvbccpgarz1dy7vhwkhfvmvggnk"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (arguments
@@ -1625,6 +1625,11 @@ library.")
                        ,@%pyproject-build-system-modules)
            #:phases
            #~(modify-phases (@ (guix build pyproject-build-system) %standard-phases)
+               (add-after 'unpack 'patch-build-system
+                 (lambda _
+                   (substitute* "pyproject.toml"
+                     (("setuptools\\.build_meta:__legacy__")
+                      "setuptools.build_meta"))))
                (add-before 'wrap 'reduce-GUIX_PYTHONPATH
                  (lambda _
                    ;; Hide the transitive native inputs from GUIX_PYTHONPATH
@@ -1651,9 +1656,11 @@ library.")
                            (getenv "TMP_PYTHONPATH")))))))
     (native-inputs
      (list python-coverage
+           python-parameterized
            python-pytest
            python-pytest-cov
            python-pytest-runner
+           python-pytest-timeout
            python-setuptools
            python-testfixtures
            python-wheel))
