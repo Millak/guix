@@ -19,6 +19,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages medical)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
@@ -29,6 +30,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages kde-frameworks) ; kirigami
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -93,18 +95,26 @@ Health Federation.")
              ".tar.gz"))
        (sha256
         (base32 "09vrfqn511vswnj2q9m7srlwdgz066qvqpmja6sg1yl1ibh3cbpr"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:use-setuptools? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-/usr
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (substitute* '("setup.py"
-                                     "src/openmolar/settings/localsettings.py")
-                        (("/usr")
-                         (assoc-ref outputs "out"))) #t)))))
-    (inputs (list python-pyqtwebengine python-pyqt+qscintilla
-                  python-mysqlclient qscintilla))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-/usr
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* '("setup.py"
+                             "src/openmolar/settings/localsettings.py")
+                (("/usr") #$output))))
+          (add-after 'unpack 'set-acceptable-version
+            (lambda _
+              (substitute* "src/openmolar/settings/version.py"
+                ((#$version) "1.1.6")))))))
+    (native-inputs
+     (list python-setuptools python-wheel))
+    (inputs (list python-pyqtwebengine
+                  python-pyqt+qscintilla
+                  python-mysqlclient
+                  qscintilla))
     (propagated-inputs (list qtwebengine-5))
     (home-page "https://openmolar.com/om1")
     (synopsis "Dental practice management software")
