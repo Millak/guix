@@ -29219,6 +29219,25 @@ working with iterables.")
 Python.")
     (license license:expat)))
 
+(define-public python-pybktree
+  (package
+    (name "python-pybktree")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pybktree" version))
+       (sha256
+        (base32 "0asd2lw9c5l5wi4z24k7gkhlprpdkcvs8d94szk56x9xvmy07h7f"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/Jetsetter/pybktree")
+    (synopsis "Pythonic BK-tree data structure")
+    (description
+     "This package provides a BK-tree data structure to allow fast querying of
+close matches in Python.")
+    (license license:expat)))
+
 (define-public python-pybtex
   (package
     (name "python-pybtex")
