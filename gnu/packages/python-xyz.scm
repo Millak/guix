@@ -17273,6 +17273,7 @@ number of lines in the contained files easily.")
     (license license:expat)))
 
 ;;; Tests are left out in the main package to avoid cycles.
+;; XXX: When updating, solve comment in python-cu2qu.
 (define-public python-fonttools-minimal
   (hidden-package
    (package
