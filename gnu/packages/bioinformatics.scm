@@ -24004,50 +24004,32 @@ for the analysis and visualization of raw nanopore signal.")
     ;; Some parts may be BSD-3-licensed.
     (license license:mpl2.0)))
 
-(define-public python-pyvcf
-  (let ((commit "476169cd457ba0caa6b998b301a4d91e975251d9")
+;; This is a fork of the original unmaintained python-pyvcf.
+(define-public python-pyvcf3
+  (let ((commit "1fb3789153d1d8e28e2cedf121399f276b5f312a")
         (revision "0"))
     (package
-      (name "python-pyvcf")
-      (version (git-version "0.6.8" revision commit))
-      ;; Use git, because the PyPI tarballs lack test data.
+      (name "python-pyvcf3")
+      (version (git-version "1.0.3" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/jamescasbon/PyVCF.git")
-               ;; Latest release is not tagged.
+               (url "https://github.com/dridk/PyVCF3")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "0qf9lwj7r2hjjp4bd4vc7nayrhblfm4qcqs4dbd43a6p4bj2jv5p"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-sample-script
-             (lambda _
-               ;; Add Python 3 compatibility to this sample script.
-               (substitute* "scripts/vcf_sample_filter.py"
-                 (("print (.*)\n" _ arg)
-                  (string-append "print(" arg ")\n")))))
-           (add-after 'install 'remove-installed-tests
-             ;; Do not install test files.
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (delete-file-recursively (string-append
-                                         (site-packages inputs outputs)
-                                         "/vcf/test")))))))
-      (native-inputs
-       ;; Older setuptools is needed for use_2to3.
-       (list python-cython python-setuptools-57))
-      (propagated-inputs
-       (list python-pysam python-rpy2))
-      (home-page "https://github.com/jamescasbon/PyVCF")
+          (base32 "0i4j5bq5q32q216ja7yvg0mpww5j0b9p8ky5bya4d31wqmygal8z"))))
+      (build-system pyproject-build-system)
+      (propagated-inputs (list python-setuptools))
+      (native-inputs (list python-setuptools python-wheel))
+      (home-page "https://github.com/dridk/PyVCF3")
       (synopsis "Variant Call Format parser for Python")
       (description "This package provides a @acronym{VCF,Variant Call Format}
 parser for Python.")
       (license license:expat))))
+
+(define-deprecated/public-alias python-pyvcf python-pyvcf3)
 
 (define-public nanosv
   (package
@@ -24061,7 +24043,7 @@ parser for Python.")
               "1wl2daj0bwrl8fx5xi8j8hfs3mp3vg3qycy66538n032v1qkc6xg"))))
    (build-system python-build-system)
    (inputs
-    (list python-configparser python-pysam python-pyvcf))
+    (list python-configparser python-pysam python-pyvcf3))
    (home-page "https://github.com/mroosmalen/nanosv")
    (synopsis "Structural variation detection tool for Oxford Nanopore data")
    (description "NanoSV is a software package that can be used to identify
