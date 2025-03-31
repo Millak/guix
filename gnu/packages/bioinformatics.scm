@@ -12079,30 +12079,34 @@ bioinformatics file formats, sequence alignment, and more.")
        ("bzip2" ,bzip2)))))
 
 (define-public seqmagick
-  (package
-    (name "seqmagick")
-    (version "0.8.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "seqmagick" version))
-       (sha256
-        (base32
-         "0c6skyig8fyylnbj4597pjj9h0dn36rkxrhwd34yrsc6k6f7r8a0"))))
-    (build-system pyproject-build-system)
-    (inputs
-     (list python-biopython python-pygtrie))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/fhcrc/seqmagick")
-    (synopsis "Tools for converting and modifying sequence files")
-    (description
-     "Bioinformaticians often have to convert sequence files between formats
+  (let ((commit "dee6ab9839cff317142e55678bb12c4c9ab2150f")
+        (revision "0"))
+    (package
+      (name "seqmagick")
+      (version (git-version "0.8.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fhcrc/seqmagick")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0syipb7m44s5bqrhs17bwr28svy2s83j8d93kbazav92jzszzsw4"))))
+      (build-system pyproject-build-system)
+      (inputs
+       (list python-biopython python-pygtrie))
+      (native-inputs
+       (list python-nose python-setuptools python-wheel))
+      (home-page "https://github.com/fhcrc/seqmagick")
+      (synopsis "Tools for converting and modifying sequence files")
+      (description
+       "Bioinformaticians often have to convert sequence files between formats
 and do little manipulations on them, and it's not worth writing scripts for
 that.  Seqmagick is a utility to expose the file format conversion in
 BioPython in a convenient way.  Instead of having a big mess of scripts, there
 is one that takes arguments.")
-    (license license:gpl3)))
+      (license license:gpl3))))
 
 (define-public seqtk
   (package
