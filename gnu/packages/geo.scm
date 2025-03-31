@@ -3395,14 +3395,14 @@ growing set of geoscientific methods.")
 (define-public qgis
   (package
     (name "qgis")
-    (version "3.42.0")
+    (version "3.42.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://qgis.org/downloads/qgis-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "1s04wy3iy7amm4jn5y5j9pw54isizhqq2mr10ld5ldz2gqwl7dq4"))))
+        (base32 "1sf18bfvx6ph7cd5sqhkpjl2sly7v46d0bw4b50hq50j8yr02slx"))))
     (build-system cmake-build-system)
     (arguments
      (list
