@@ -41010,7 +41010,7 @@ representing the configuration for Gitolite.
 A ``file-like'' object (@pxref{G-Expressions, file-like objects}),
 representing the git configuration for Gitolite.
 
-@item @code{admin-pubkey} (default: @code{#f})
+@item @code{admin-pubkey}
 A ``file-like'' object (@pxref{G-Expressions, file-like objects}) used to
 setup Gitolite.  This will be inserted in to the @file{keydir} directory
 within the gitolite-admin repository.
@@ -41020,6 +41020,13 @@ To specify the SSH key as a string, use the @code{plain-file} function.
 @lisp
 (plain-file "yourname.pub" "ssh-rsa AAAA... guix@@example.com")
 @end lisp
+
+The file has to have @file{.pub} extension.
+
+@item @code{admin-name} (default: @code{#f})
+Usually the key name is derived by taking a base name of the
+@code{admin-pubkey}.  The resulting file name is the name of the
+gitolite user.  You can use this field to override the automatic name.
 
 @end table
 @end deftp

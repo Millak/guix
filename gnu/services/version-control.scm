@@ -53,6 +53,7 @@
             gitolite-configuration-user
             gitolite-configuration-rc-file
             gitolite-configuration-admin-pubkey
+            gitolite-configuration-admin-name
 
             <gitolite-rc-file>
             gitolite-rc-file
@@ -377,7 +378,9 @@ access to exported repositories under @file{/srv/git}."
                   (default (gitolite-rc-file)))
   (git-config     gitolite-configuration-git-config
                   (default (gitolite-git-configuration)))
-  (admin-pubkey   gitolite-configuration-admin-pubkey))
+  (admin-pubkey   gitolite-configuration-admin-pubkey)
+  (admin-name     gitolite-configuration-admin-name
+                  (default #f)))
 
 (define (gitolite-accounts config)
   (match-record config <gitolite-configuration>
@@ -396,17 +399,19 @@ access to exported repositories under @file{/srv/git}."
 (define (gitolite-activation config)
   (match-record config <gitolite-configuration>
                 ( package user group home-directory rc-file admin-pubkey
-                  git-config)
+                  admin-name git-config)
     #~(begin
         (use-modules (ice-9 match)
                      (guix build utils))
 
         (let* ((user-info (getpwnam #$user))
                (admin-pubkey #$admin-pubkey)
-               (pubkey-file (string-append
-                             #$home-directory "/"
-                             (basename
-                              (strip-store-file-name admin-pubkey))))
+               (pubkey-file (if #$admin-name
+                                (string-append #$admin-name ".pub")
+                                (string-append
+                                 #$home-directory "/"
+                                 (basename
+                                  (strip-store-file-name admin-pubkey)))))
                (rc-file #$(string-append home-directory "/.gitolite.rc")))
 
           ;; activate-users+groups in (gnu build activation) sets the
