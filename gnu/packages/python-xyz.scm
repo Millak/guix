@@ -3214,7 +3214,9 @@ simple function calls.")
     (native-inputs
      (list python-pytest
            python-pytest-cov
+           python-setuptools
            python-setuptools-scm
+           python-wheel
            xorg-server-for-tests))
     (home-page "https://github.com/glue-viz/echo")
     (synopsis "Callback Properties in Python")

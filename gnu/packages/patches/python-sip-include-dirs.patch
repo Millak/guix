@@ -5,16 +5,15 @@ It seems that we cannot easily change the destination folder of these
 files though, so this variable must be set on a per-package basis (and
 non through search-path).
 
---- sip/sipbuild/builder.py	2023-03-22 09:06:37.588792878 +0100
-+++ sip/sipbuild/builder.py	2023-03-22 09:10:35.830181134 +0100
-@@ -254,6 +254,10 @@
+--- sip/sipbuild/builder.py
++++ sip/sipbuild/builder.py
+@@ -227,5 +227,9 @@
                      os.path.join(project.target_dir,
                              project.get_bindings_dir()))
  
-+            # Add extra bindings from environment for GNU Guix.
-+            if 'SIP_INCLUDE_DIRS' in os.environ:
-+                sip_include_dirs.extend(os.environ['SIP_INCLUDE_DIRS'].split(os.pathsep))
++        # Add extra bindings from environment for GNU Guix
++        if 'SIP_INCLUDE_DIRS' in os.environ:
++            sip_include_dirs.extend(os.environ['SIP_INCLUDE_DIRS'].split(os.pathsep))
 +
-             # Generate the sip.h file for the shared sip module.
-             copy_sip_h(abi_major_version, project.build_dir,
-                     project.sip_module, version_info=project.version_info)
+         # Generate the code for each set of bindings.
+         api_files = []
