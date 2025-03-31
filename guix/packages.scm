@@ -651,7 +651,7 @@ Texinfo.  Otherwise, return the string."
                (sanitize validate-texinfo))       ; one or two paragraphs
   (license package-license                        ; (list of) <license>
            (sanitize validate-license))
-  (home-page package-home-page)                   ; string
+  (home-page package-home-page)                   ; string | #f
   (supported-systems package-supported-systems    ; list of strings
                      (default %supported-systems))
 

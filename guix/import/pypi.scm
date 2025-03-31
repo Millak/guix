@@ -116,8 +116,8 @@
   (license      project-info-license)             ;string
   (download-url project-info-download-url         ;string | #f
                 "download_url" non-empty-string-or-false)
-  (home-page    project-info-home-page            ;string
-                "home_page")
+  (home-page    project-info-home-page            ;string | #f
+                "home_page" non-empty-string-or-false)
   (url          project-info-url "project_url")   ;string
   (release-url  project-info-release-url "release_url") ;string
   (version      project-info-version))            ;string
