@@ -29,6 +29,7 @@
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system shadow)
+  #:autoload   (gnu system accounts) (default-shell)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages databases)
@@ -51,13 +52,18 @@
 
             postgresql-configuration
             postgresql-configuration?
-            postgresql-configuration-postgresql
-            postgresql-configuration-port
-            postgresql-configuration-locale
-            postgresql-configuration-file
-            postgresql-configuration-log-directory
+            postgresql-configuration-allow-login?
+            postgresql-configuration-create-account?
             postgresql-configuration-data-directory
             postgresql-configuration-extension-packages
+            postgresql-configuration-file
+            postgresql-configuration-gid
+            postgresql-configuration-home-directory
+            postgresql-configuration-locale
+            postgresql-configuration-log-directory
+            postgresql-configuration-port
+            postgresql-configuration-postgresql
+            postgresql-configuration-uid
 
             postgresql-service
             postgresql-service-type
@@ -164,6 +170,8 @@ host	all	all	::1/128 	md5"))
              port)))
       #:local-build? #t))))
 
+(define %default-home-directory "/var/empty")
+
 (define-record-type* <postgresql-configuration>
   postgresql-configuration make-postgresql-configuration
   postgresql-configuration?
@@ -186,6 +194,10 @@ host	all	all	::1/128 	md5"))
                       (default '()))
   (create-account?    postgresql-configuration-create-account?
                       (default #t))
+  (home-directory     postgresql-configuration-home-directory
+                      (default %default-home-directory))
+  (allow-login?       postgresql-configuration-allow-login?
+                      (default #f))
   (uid                postgresql-configuration-uid
                       (default #f))
   (gid                postgresql-configuration-gid
@@ -193,7 +205,7 @@ host	all	all	::1/128 	md5"))
 
 (define (create-postgresql-account config)
   (match-record config <postgresql-configuration>
-    (create-account? uid gid)
+                (create-account? allow-login? home-directory uid gid)
     (if (not create-account?) '()
         (list (user-group
                (name "postgres")
@@ -205,8 +217,12 @@ host	all	all	::1/128 	md5"))
                (system? #t)
                (uid uid)
                (comment "PostgreSQL server user")
-               (home-directory "/var/empty")
-               (shell (file-append shadow "/sbin/nologin")))))))
+               (create-home-directory?
+                (not (string=? home-directory %default-home-directory)))
+               (home-directory home-directory)
+               (shell (if allow-login?
+                          (default-shell)
+                          (file-append shadow "/sbin/nologin"))))))))
 
 (define (final-postgresql postgresql extension-packages)
   (if (null? extension-packages)

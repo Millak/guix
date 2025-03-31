@@ -27527,11 +27527,11 @@ don't need the cluster anymore, delete @var{data-directory}), then
 restart the service.
 
 Peer authentication is used by default and the @code{postgres} user
-account has no shell, which prevents the direct execution of @code{psql}
-commands as this user.  To use @code{psql}, you can temporarily log in
-as @code{postgres} using a shell, create a PostgreSQL superuser with the
-same name as one of the system users and then create the associated
-database.
+account has no shell (unless @code{allow-login?} is @code{#t}), which
+prevents the direct execution of @code{psql} commands as this user.  To
+use @code{psql}, you can temporarily log in as @code{postgres} using a
+shell, create a PostgreSQL superuser with the same name as one of the
+system users and then create the associated database.
 
 @example
 sudo -u postgres -s /bin/sh
@@ -27609,6 +27609,13 @@ required to add extensions provided by other packages.
 
 @item @code{create-account?} (default: @code{#t})
 Whether or not the @code{postgres} user and group should be created.
+
+@item @code{allow-login?} (default: @code{#f})
+Whether or not to allow login into the created account.
+
+@item @code{home-directory} (default: @code{"/var/empty"})
+The home directory of the user.  It is strongly advised to change this
+if you set @code{allow-login?} to @code{#t}.
 
 @item @code{uid} (default: @code{#f})
 Explicitly specify the UID of the @code{postgres} daemon account.
