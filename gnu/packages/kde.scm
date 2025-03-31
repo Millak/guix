@@ -94,6 +94,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages onc-rpc)
@@ -106,6 +107,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages sdl)
@@ -474,6 +476,58 @@ projects.")
 It adds mathematical features to your program, such as symbolic computations
 and some numerical methods; for instance the library can parse mathematical
 expressions and let you evaluate and draw them.")
+    (license license:gpl2+)))
+
+(define-public kalgebra
+  (package
+    (name "kalgebra")
+    (version "24.12.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://invent.kde.org/education/kalgebra")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g4rrq3csp0w6xhc5cbbilz7xhhq9zdngc8bc9d16p02xz61qd4i"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-qt-process-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bin (string-append #$output "/bin/kalgebra"))
+                    (qt-process-path
+                     (search-input-file
+                      inputs "/lib/qt6/libexec/QtWebEngineProcess")))
+                (wrap-program bin
+                  `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
+    (native-inputs
+     (list extra-cmake-modules qttools))
+    (inputs
+     (list analitza
+           kconfigwidgets
+           kcoreaddons
+           kdoctools
+           ki18n
+           kio
+           kwidgetsaddons
+           kxmlgui
+           libplasma
+           ncurses
+           qtbase
+           qtdeclarative
+           qtsvg
+           qtwebengine
+           qtwebchannel
+           readline))
+    (home-page "https://invent.kde.org/education/kalgebra")
+    (synopsis "Calculator and plotting tool")
+    (description "KAlgebra is a calculator that lets you plot different types
+of 2D and 3D functions and to calculate easy (and not so easy) calculations,
+such as addition, trigonometric functions or derivatives.")
     (license license:gpl2+)))
 
 (define-public kapptemplate
