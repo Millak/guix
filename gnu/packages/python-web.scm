@@ -3363,7 +3363,7 @@ another XPath engine to find the matching elements in an XML or HTML document.")
 (define-public python-databricks-cli
   (package
     (name "python-databricks-cli")
-    (version "0.17.0")
+    (version "0.18.0")
     (home-page "https://github.com/databricks/databricks-cli")
     (source (origin
               (method git-fetch)
@@ -3371,19 +3371,21 @@ another XPath engine to find the matching elements in an XML or HTML document.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qwbxnx64kw7lrzlyx3hfbnjxpc19cqvvj0gcrkqpyjsgd08vja0"))))
-    (build-system python-build-system)
+                "1avag4kwqk2f24r5i0vcmhm6s1gsw6maykhlyj2ixz0qc05pjzvl"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "tests" "-vv"))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda _
+                            (invoke "pytest" "tests" "-vv"))))))
     (native-inputs
      ;; For tests.
      (list python-decorator
            python-mock
            python-pytest
-           python-requests-mock))
+           python-requests-mock
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-click
            python-oauthlib
