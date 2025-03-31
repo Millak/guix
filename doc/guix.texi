@@ -41100,6 +41100,9 @@ Email used for commits (e.g. during setting up the admin repository).
 If true, set the @code{init.defaultBranch} option to that value.  Common
 values are @code{"master"} and @code{"main"}.
 
+@item @code{receive-fsck-objects} (default: @code{#f})
+If it is set to true, git-receive-pack will check all received objects.
+
 @end table
 @end deftp
 

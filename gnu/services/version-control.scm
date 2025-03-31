@@ -73,6 +73,7 @@
             gitolite-git-configuration-name
             gitolite-git-configuration-email
             gitolite-git-configuration-default-branch
+            gitolite-git-configuration-receive-fsck-objects
 
             gitolite-service-type
 
@@ -331,17 +332,19 @@ access to exported repositories under @file{/srv/git}."
 (define-record-type* <gitolite-git-configuration>
   gitolite-git-configuration make-gitolite-git-configuration
   gitolite-git-configuration?
-  (name           gitolite-git-configuration-name
-                  (default "GNU Guix"))
-  (email          gitolite-git-configuration-email
-                  (default "guix@localhost"))
-  (default-branch gitolite-git-configuration-default-branch
-                  (default #f)))
+  (name                 gitolite-git-configuration-name
+                        (default "GNU Guix"))
+  (email                gitolite-git-configuration-email
+                        (default "guix@localhost"))
+  (default-branch       gitolite-git-configuration-default-branch
+                        (default #f))
+  (receive-fsck-objects gitolite-git-configuration-receive-fsck-objects
+                        (default #f)))
 
 (define-gexp-compiler (gitolite-git-configuration-compiler
                        (config <gitolite-git-configuration>) system target)
   (match-record config <gitolite-git-configuration>
-                (name email default-branch)
+                (name email default-branch receive-fsck-objects)
     (apply text-file* "gitconfig"
            `("[user]\n"
              "name  = " ,name  "\n"
@@ -349,6 +352,10 @@ access to exported repositories under @file{/srv/git}."
              ,@(if default-branch
                    `("[init]\n"
                      "defaultBranch = " ,default-branch "\n")
+                   '())
+             ,@(if receive-fsck-objects
+                   `("[receive]\n"
+                     "fsckObjects = true\n")
                    '())))))
 
 (define-record-type* <gitolite-configuration>
