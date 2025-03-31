@@ -61,6 +61,7 @@
             gitolite-rc-file-unsafe-pattern
             gitolite-rc-file-git-config-keys
             gitolite-rc-file-log-extra
+            gitolite-rc-file-host-name
             gitolite-rc-file-roles
             gitolite-rc-file-enable
 
@@ -255,6 +256,8 @@ access to exported repositories under @file{/srv/git}."
                    (default ""))
   (log-extra       gitolite-rc-file-log-extra
                    (default #f))
+  (host-name       gitolite-rc-file-host-name
+                   (default #f))
   (roles           gitolite-rc-file-roles
                    (default '(("READERS" . 1)
                               ("WRITERS" . 1))))
@@ -273,7 +276,7 @@ access to exported repositories under @file{/srv/git}."
                        (file <gitolite-rc-file>) system target)
   (match-record file <gitolite-rc-file>
                 ( umask local-code unsafe-pattern git-config-keys log-extra
-                  roles enable)
+                  host-name roles enable)
     (apply text-file* "gitolite.rc"
            `("%RC = (\n"
              "    UMASK => " ,(format #f "~4,'0o" umask) ",\n"
@@ -283,6 +286,9 @@ access to exported repositories under @file{/srv/git}."
                   "")
              ,(if log-extra
                   "    LOG_EXTRA => 1,\n"
+                  "")
+             ,(if host-name
+                  (simple-format #f "    HOSTNAME => \"~A\",\n" host-name)
                   "")
              "    ROLES => {\n"
              ,@(map (match-lambda

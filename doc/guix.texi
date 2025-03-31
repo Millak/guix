@@ -41065,6 +41065,10 @@ For historical reasons, this field defaults to @code{#f}.  The default
 value from gitolite however is @code{1} (written as @code{#t} in this
 configuration).
 
+@item @code{host-name} (default: @code{#f})
+The host name of this gitolite instance.  It is used by the mirroring
+feature.
+
 @item @code{roles} (default: @code{'(("READERS" . 1) ("WRITERS" . ))})
 Set the role names allowed to be used by users running the perms command.
 
