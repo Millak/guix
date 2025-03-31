@@ -40482,13 +40482,13 @@ read all zbar supported codes.")
 (define-public python-zeroc-ice
   (package
     (name "python-zeroc-ice")
-    (version "3.7.9")
+    (version "3.7.10.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "zeroc-ice" version))
               (sha256
                (base32
-                "0bqkrjxp2fbz34x3wxkxji39kxinypzg8q2994sibiay29mpipxb"))))
+                "0r46q4hd7xbpvnidbra1prkg4xhmajxjjmclfqgp3pv0lgyslqxh"))))
     (build-system pyproject-build-system)
     (inputs (list openssl))
     (native-inputs (list python-setuptools python-wheel))
