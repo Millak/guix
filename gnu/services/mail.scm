@@ -573,7 +573,6 @@ constructor.")
       (inbox? #t)
       (mailboxes
        (list
-        (mailbox-configuration (name "Drafts") (special-use '("\\Drafts")))
         (mailbox-configuration (name "Junk") (special-use '("\\Junk")))
         (mailbox-configuration (name "Trash") (special-use '("\\Trash")))
         (mailbox-configuration (name "Sent") (special-use '("\\Sent")))
