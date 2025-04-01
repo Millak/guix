@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -258,18 +259,47 @@ Graphviz and LaTeX.")
                "07mqx09jxh8cv9753y2d2jsv7wp8vjmrd7zcfpbrddz3wc9kx705"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
+     `(,@(if (%current-target-system)
+             `(#:configure-flags
+               (list (string-append
+                      "PKG_CONFIG="
+                      (search-input-file
+                       %build-inputs
+                       (string-append "/bin/" ,(pkg-config-for-target))))))
+             '())
+       #:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
            (lambda _
              (chmod "test/boolean/test.sh" #o777)
-             #t)))
+             #t))
+         ,@(if (%current-target-system)
+               `((add-after 'unpack 'update-config
+                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                     (for-each (lambda (file)
+                                 (install-file
+                                  (search-input-file
+                                   (or native-inputs inputs)
+                                   (string-append "/bin/" file)) "."))
+                               '("config.guess" "config.sub"))))
+                 (add-after 'unpack 'fix-predicates_init
+                   (lambda _
+                     (substitute* "src/Makefile.in"
+                       (("\\$[(]COMPILE[)] \\$[(]srcdir[)]/predicates_init\\.c\
+ -o \\$[(]srcdir[)]/predicates_init")
+                        "gcc $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) $(srcdir)/predicates_init.c \
+-o $(srcdir)/predicates_init")))))
+               '()))
 
        ;; Some data files used by the test suite are missing.
        ;; See <http://sourceforge.net/p/gts/bugs/41/>.
        #:tests? #f))
     (native-inputs
-     (list pkg-config))
+     (append (if  (%current-target-system)
+                  (list config)
+                  '())
+             (list pkg-config)))
     (propagated-inputs
      ;; The gts.pc file has glib-2.0 as required.
      (list glib))
