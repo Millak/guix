@@ -40108,26 +40108,39 @@ personal wiki.")
 (define-public emacs-org-node
   (package
     (name "emacs-org-node")
-    (version "2.1.2")
+    (version "2.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/meedstrom/org-node.git")
+                    (url "https://github.com/meedstrom/org-node/")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05f5ga66q2vyv48z95lky0hzbs2zq5bvppkx7bbyv252jzxbibw3"))))
+                "0yvc61ydz8c8wms5pwb14v67da7w4l3xvd5w4x83qf81d9f44w9v"))))
     (build-system emacs-build-system)
+    (arguments
+     '(#:tests? #f ; fails
+       #:test-command '("./makem.sh" "tests")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'dont-git
+           (lambda _
+             (substitute* "makem.sh"
+               (("^cd.*\"")
+                "")))))))
     (propagated-inputs
-     (list emacs-dash
-           emacs-el-job
+     (list emacs-el-job
            emacs-llama
-           emacs-magit
-           emacs-org
-           emacs-persist
-           emacs-transient))
-    (home-page "https://github.com/meedstrom/org-node")
+           emacs-magit))
+    ;; tests
+    (native-inputs
+     (list emacs-buttercup
+           emacs-dash
+           util-linux
+           grep
+           sed))
+    (home-page "https://github.com/meedstrom/org-node/")
     (synopsis "Non-hierarchical note-taking with Org-mode, faster than
 org-roam")
     (description "This package provides a notetaking system like Roam,
