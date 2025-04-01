@@ -1313,12 +1313,12 @@ libraries designed for computer vision research and implementation.")
                        "v3p/zlib/"))
            (substitute* "v3p/CMakeLists.txt"
              (("add_subdirectory\\((tiff|png|jpeg|zlib|bzlib|geotiff)\\)")
-              ""))
-           #t))))
+              ""))))))
     (arguments
      `(#:configure-flags
        ;; Needed for itk-snap
-       (list "-DVNL_CONFIG_LEGACY_METHODS=ON")))))
+       (list "-DVNL_CONFIG_LEGACY_METHODS=ON"
+             "-DCMAKE_CXX_STANDARD=14")))))
 
 (define-public insight-toolkit
   (package
