@@ -860,6 +860,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
 (define-member (person "Greg Hogan"
                        "code@greghogan.com")
   c++)
+
+(define-member (person "Hilton Chain"
+                       "hako@ultrarare.space")
+  emacs home localization mozilla rust zig)
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
