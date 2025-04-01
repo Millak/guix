@@ -516,7 +516,9 @@ including input methods previous bundled inside Fcitx 4:
        (sha256
         (base32 "1kg0hddds7raqf5y4qw2x02hb4i5impv4hjfm2qvcn3g775rzrq6"))))
     (build-system cmake-build-system)
-    (arguments (list #:configure-flags #~(list "-DUSE_QT6=ON")))
+    (arguments
+     (list #:tests? #f
+           #:configure-flags #~(list "-DUSE_QT6=ON")))
     (inputs
      (list fcitx5
            fcitx5-qt

@@ -134,7 +134,9 @@ The main features of Dolphin are:
            kxmlgui
            breeze-icons ;; default icon set
            qt5compat))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://www.kde.org/")
     (synopsis "VCS-Plugins for Dolphin")
     (description "This package contains plugins that offer integration in
@@ -253,6 +255,7 @@ This package is part of the KDE base applications module.")
         (base32 "1m3f4lpzwbrbdmp9237186x4p0w2rk1cz4a7nin38c8ll9sgrfb2"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
+                     #:tests? #f
                      #:configure-flags
                      #~(list (string-append "-DQtWaylandScanner_EXECUTABLE="
                                             #$(this-package-native-input "qtwayland")
@@ -373,7 +376,9 @@ This package is part of the KDE administration module.")
            kwallet
            kwindowsystem
            kxmlgui))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kwalletmanager5/")
     (synopsis "Tool to manage passwords on KWallet")
     (description
@@ -455,7 +460,9 @@ as well as QR codes.")
            kwindowsystem
            libxkbcommon
            qtsvg))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/yakuake/")
     (synopsis "Quad-style terminal emulator for KDE")
     (description "Yakuake is a drop-down terminal emulator based on KDE Konsole

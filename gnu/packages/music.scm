@@ -1009,7 +1009,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
         (base32 "1i5gz5zck8s0kskjgnx9c75gh7zx0kbjsqzl2765f99p9svprirq"))))
     (build-system qt-build-system)
     (arguments
-     `(#:test-target "tests"
+     `(#:tests? #f ; require audio subsystem
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-data-directory

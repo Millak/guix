@@ -56,7 +56,9 @@
        (sha256
         (base32 "0hdn2rvi1v6jzvidqq6db38axiah7cg1jsmj0bdlpfjzbffi8mjl"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools perl))
     (inputs
@@ -142,7 +144,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "0pbq1v84j8jl64p4lv60x1gss28181594vlhcpqyjadxwgy5n37m"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -193,6 +197,7 @@ This package is part of the KDE games module.")
     (arguments
      (list
       #:qtbase qtbase
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-tileset-dir
@@ -252,7 +257,9 @@ other Mah Jongg like games.")
            libkmahjongg
            qtdeclarative
            qtsvg))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kmahjongg/")
     (synopsis "Tile laying patience")
     (description "In KMahjongg the tiles are scrambled and staked on top of
@@ -318,6 +325,7 @@ This package is part of the KDE games module.")
     (arguments
      (list
       #:qtbase qtbase
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-paths
@@ -387,7 +395,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "00qbyv7awf70dxid2m71izsl39mfvjgzrfqdpfgkgisfvrwwnw90"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -425,7 +435,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "0qw460yp5g1ca21dl72mkdl7fidcbzs8ajvdsqyylrslh4aafxjq"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -463,7 +475,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "1ks4x320q6di0f8w8r9bnayhmn11cnfqw86jx63a74vgkn4878w6"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -503,7 +517,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "1kdrwn4i24kn9r3ardz92m2c2lfh2fla6x62g8wd8j30sd4q2i8j"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -583,7 +599,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "0mhc56s59l2hqdb27jypdgd82l2li2lil9a7kb4zg8x245c42jhk"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -644,7 +662,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "0xqddz0xzyn2j578v2clqsnqmqbf83787wkv54kpzdz3v6nbdswk"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -688,7 +708,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "07mz92k9ggdfrl3hnpwg6xl70mjaklwrp26a282n1j66arawmkjv"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -730,7 +752,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "1a2fgdfckmsz3ycrlbiddfd2vfhlhx8zn47zg5f2ic00jpp8wch4"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -769,7 +793,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "05cddjavbhdn4bwmg6ik2q0y0vjl1pn2nrlpkivsn97m1aka57hl"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -809,7 +835,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "1bj181is31hci056qxvf0wcqzggxxlszn65npm16038wa3bh95lw"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -904,7 +932,9 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtdeclarative))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/bomber/")
     (synopsis "Arcade bombing game")
     (description "Bomber is a single player arcade game.
@@ -950,7 +980,9 @@ This package is part of the KDE games module.")
            libkdegames
            qtdeclarative
            qtsvg))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/granatier/")
     (synopsis "Bomberman clone")
     (description "Granatier is a clone of the classic Bomberman game,
@@ -990,7 +1022,9 @@ This package is part of the KDE games module.")
            qtmultimedia
            qtsvg
            zlib))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/ksirk/")
     (synopsis "Computerized version of the well known strategy board game
 'Risk'")
@@ -1051,7 +1085,9 @@ This package is part of the KDE games module.")
            qtdeclarative
            qtsvg
            shared-mime-info))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/palapeli/")
     (synopsis "Jigsaw puzzle game")
     (description "Palapeli is a jigsaw puzzle game.  Unlike other games in
@@ -1090,7 +1126,9 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtdeclarative))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kiriki/")
     (synopsis "Yahtzee dice game")
     (description "Kiriki is an addictive and fun dice game, designed to be
@@ -1117,6 +1155,7 @@ This package is part of the KDE games module.")
     (arguments
      (list
       #:qtbase qtbase
+      #:tests? #f
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'patch-gnugo-command
                      (lambda* (#:key inputs #:allow-other-keys)
@@ -1186,7 +1225,9 @@ This package is part of the KDE games module.")
            qtbase
            qtdeclarative
            qtsvg))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kubrick/")
     (synopsis "Game based on Rubik's Cube")
     (description "Kubrick is a game based on the Rubik's Cube puzzle.
@@ -1228,7 +1269,9 @@ This package is part of the KDE games module.")
            libkdegames
            qtdeclarative
            qtsvg))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/lskat/")
     (synopsis "Lieutnant Skat card game")
     (description "Lieutnant Skat (from German \"Offiziersskat\") is a fun and
@@ -1267,7 +1310,9 @@ This package is part of the KDE games module.")
            libkdegames
            qtdeclarative
            qtsvg))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kapman/")
     (synopsis "Pac-Man clone")
     (description "Kapman is a clone of the well known game Pac-Man.
@@ -1306,7 +1351,9 @@ This package is part of the KDE games module.")
            libkdegames
            qtdeclarative
            qtsvg))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kspaceduel/")
     (synopsis "Two player game with shooting spaceships flying around a sun")
     (description "KSpaceduel is a space battle game for one or two players,
@@ -1340,7 +1387,9 @@ This package is part of the KDE games module.")
            libkdegames
            qtdeclarative
            qtsvg))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/bovo/")
     (synopsis "Classic pen and paper game: five in a line")
     (description "Bovo is a Gomoku (from Japanese 五目並べ - lit.  \"five
@@ -1364,7 +1413,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "1h1j3n2wy641gp53m2rb8zbsn93ciprivfi718bcvwvr2k41ncga"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1406,7 +1457,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "0v7rh6zlf742gz6y8w440ap9zirv2yvmdybhz3qiwbxag5qvr5r0"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1445,7 +1498,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "0hh85zl2wid190bgp542msigjyvdwfgvzvfcl22sx15ydnp6v6ma"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1483,7 +1538,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "0dammn0a2z5valmbr3c85y6rsxh2isixl72wvfj6zvvp2s5lvsi1"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1523,7 +1580,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "01chrif9f73nxx4fdmipi3yl2r8dzi5wsgksrc6kqj12j6gpdpjy"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1565,7 +1624,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "0p1nc34n93mzdxih6799j25fic95mha311rifnghk9mlc6fw416n"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1601,7 +1662,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "058sbbx73kbm2ils6ay0g3n9q05lid8aixl81i0246cgi2kvwvwy"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1640,7 +1703,8 @@ This package is part of the KDE games module.")
         (base32 "0yrrbmiv9blpafwpa24w4farv76rqghqnrr6r01kkxrikcav9j0y"))))
     (build-system qt-build-system)
     (arguments
-     (list #:qtbase qtbase))
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs

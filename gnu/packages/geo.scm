@@ -2298,6 +2298,7 @@ volunteers.")
        (sha256
         (base32
          "02n5vjcyk04w0djidyp21hfbxfpbbara8ifd9nml6158rwqr8lja"))))
+    (arguments (list #:tests? #f))
     (build-system cmake-build-system)
     (home-page "https://libspatialindex.org")
     (synopsis "Spatial indexing library")

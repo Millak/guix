@@ -1916,6 +1916,8 @@ misuse of libraries outside of the store.")))
     (build-system cmake-build-system)
     (arguments
      (list
+       ;; No access to a compiled llvm-lit since compiled separately from llvm.
+       #:tests? #f
        #:configure-flags #~(list "-DOPENMP_TEST_CXX_COMPILER=clang++")
        #:phases
        #~(modify-phases %standard-phases

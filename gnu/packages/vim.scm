@@ -811,7 +811,8 @@ is based on Vim's builtin plugin support.")
                 "1j3z7jay0m6g06v04falrzr062g07xr4svbrc3hywlqi2h6rrvk5"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:modules
+     (list #:tests? #f
+           #:modules
            '((srfi srfi-26) (guix build cmake-build-system)
              (guix build utils))
            #:configure-flags

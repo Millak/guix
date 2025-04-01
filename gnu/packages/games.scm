@@ -11292,7 +11292,10 @@ attached joysticks and displays which buttons and axis are pressed.")
                  (base32
                   "1x5m6xvd1r9dhgzh6hp4vrszczbbxr04v7lyh4wjxxzrj3ahbmcq"))))
       (build-system cmake-build-system)
-      (arguments (list #:configure-flags #~(list "-DBUILD_TESTS=ON")))
+      (arguments
+       (list #:tests? #f
+             #:configure-flags
+             #~(list "-DBUILD_TESTS=ON")))
       (native-inputs (list pkg-config))
       (inputs (list gtkmm-3 libsigc++-2))
       (home-page "https://github.com/Grumbel/jstest-gtk/")

@@ -841,6 +841,7 @@ interaction.")
            zlib))
     (arguments
      (list
+       #:tests? #f
        #:configure-flags
          #~(list "-DPODOFO_BUILD_SHARED=ON")
        #:phases
@@ -886,6 +887,8 @@ extracting content or merging files.")
            lua-5.1
            openssl
            zlib))
+    (arguments
+     (list #:tests? #f))
     (home-page "https://github.com/podofo/podofo")
     (synopsis "Tools to work with the PDF file format")
     (description

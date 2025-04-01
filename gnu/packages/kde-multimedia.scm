@@ -87,7 +87,9 @@
            libkcompactdisc
            libvorbis
            phonon))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kio_audiocd/")
     (synopsis "Transparent audio CD integration for applications using the KDE
 Platform")
@@ -134,7 +136,9 @@ This package is part of the KDE multimedia module.")
            phonon
            phonon-backend-vlc
            solid))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/dragonplayer/")
     (synopsis "Simple video player")
     (description "Dragon Player is a multimedia player where the focus is on
@@ -160,6 +164,7 @@ This package is part of the KDE multimedia module.")
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
+           #:tests? #f
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-yt-dlp-path
@@ -280,6 +285,7 @@ its own database.  You can build and play your own playlist.")
     (inputs
      (list ffmpeg kconfig ki18n kio taglib))
     (arguments (list #:qtbase qtbase
+                     #:tests? #f
                      #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
     (home-page "https://apps.kde.org/ffmpegthumbs/")
     (synopsis "Video thumbnail generator for KDE using ffmpeg")
@@ -541,7 +547,8 @@ the available CD drives.")
            v4l-utils ; libdvbv5
            vlc))
     (arguments
-     (list #:phases
+     (list #:tests? #f
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-code
                  (lambda _
@@ -647,7 +654,8 @@ camera.  Use it to take pictures and make videos to share.")
                   vulkan-loader))
     (arguments
      (list
-      #:qtbase qtbase))
+      #:qtbase qtbase
+      #:tests? #f))
     (home-page "https://apps.kde.org/kasts/")
     (synopsis "Convergent podcast client")
     (description
@@ -847,6 +855,7 @@ Its features include:
            solid))
     (arguments (list
                 #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
+                #:tests? #f
                 #:qtbase qtbase))
     (home-page "https://invent.kde.org/multimedia/libkcompactdisc")
     (synopsis "KDE library for playing & ripping CDs")

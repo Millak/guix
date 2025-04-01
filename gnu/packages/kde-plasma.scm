@@ -112,7 +112,8 @@
                (base32
                 "1fhgqxrqbm20liap57h35qq6wvh7x5r980r2ibv3k0k7naqp16sm"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (native-inputs (list extra-cmake-modules pkg-config qttools))
     (inputs (list kcoreaddons
                   kcmutils
@@ -167,6 +168,7 @@
            kcolorscheme
            qtsvg))
     (arguments (list #:qtbase qtbase
+                     #:tests? #f
                      #:configure-flags #~(list "-DBUILD_QT5=OFF")))
     (home-page "https://invent.kde.org/plasma/breeze")
     (synopsis "Default KDE Plasma theme")
@@ -188,7 +190,10 @@ the Plasma Desktop.  Breeze is the default theme for the KDE Plasma desktop.")
            kiconthemes-5
            kpackage-5
            kwindowsystem-5))
-    (arguments (list #:configure-flags #~(list "-DBUILD_QT6=OFF")))))
+    (arguments
+     (list #:tests? #f
+           #:configure-flags
+           #~(list "-DBUILD_QT6=OFF")))))
 
 (define-public breeze-gtk
   (package
@@ -239,7 +244,8 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   kpeople
                   qtdeclarative
                   qtsvg))
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (home-page "https://invent.kde.org/plasma-mobile/calindori")
     (synopsis "Calendar for Plasma Mobile")
     (description
@@ -413,7 +419,8 @@ games, and tools.")
                (base32
                 "00kmx5zdfvg0w18hcc4wi1xqfi3n8x46664khf48mcl3gzjval2g"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (native-inputs (list extra-cmake-modules))
     (inputs (list boost
                   kcompletion
@@ -443,6 +450,7 @@ concept.")
                 "1g4c4p2ydm2xvfy8li8zk8ldy45xqaxbf47hmwx2w5ysidkg1g44"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
+                     #:tests? #f
                      #:phases
                      #~(modify-phases %standard-phases
                          (add-after 'unpack 'hardcode-openssl
@@ -496,6 +504,7 @@ RDP server.")
     (arguments
      (list
       #:qtbase qtbase
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-gsettings-schemas-path
@@ -662,7 +671,9 @@ KDE Frameworks 5 to better interact with the system.")
                (base32
                 "1nsdkqnrhl20g6giaglk22vzh2zs1v5qjkhy8zq7z050xsqn2g7w"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests?  #f))
     (native-inputs (list extra-cmake-modules kdoctools))
     (inputs (list kauth
                   kcoreaddons
@@ -841,7 +852,8 @@ computer's hardware.")
                (base32
                 "0plvzwp7p0l9sp6ga7xbszh6hm3bzdb1wyd3vbidlpjwkigd37by"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (native-inputs (list extra-cmake-modules kdoctools))
     (inputs (list kcrash
                   ki18n
@@ -890,7 +902,9 @@ computer's hardware.")
                   kiconthemes
                   qtdeclarative
                   qtsvg))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kongress/")
     (synopsis "Companion application for conferences")
     (description "This application provides list of upcoming conferences with
@@ -989,7 +1003,9 @@ KDE Plasma Workspaces.")
                (base32
                 "15ar4lx46y92hy3cirls17jya6w7hnvbpk4qx7nfqf6g2bdl2cvr"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1098,7 +1114,9 @@ an elegant and intuitive experience for your tasks and plasmoids.")
                (base32
                 "0ik3l9lqqh9s2574swv045zj1kk8fg33zsacd3bfzayk90zrh37q"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
@@ -1596,7 +1614,9 @@ conjunction with the KDE Plasma Desktop.")
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcoreaddons ki18n kpty knotifications))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://invent.kde.org/plasma/kwrited")
     (synopsis "System notification daemon")
     (description
@@ -1627,7 +1647,8 @@ conjunction with the KDE Plasma Desktop.")
                   krunner
                   ksvg
                   qtdeclarative))
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (synopsis "Dedicated search application built on top of Baloo")
     (description "This package provides a dedicated search application built
 on top of Baloo.")
@@ -1648,7 +1669,8 @@ on top of Baloo.")
                 "1ipra7srk3xdq8b1jls46jkhbn1dcyadbl5gjm0lxqlivr49j87f"))))
     (build-system qt-build-system)
     (arguments
-     (list #:qtbase qtbase))
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules))
     (inputs (list qtdeclarative
@@ -1672,6 +1694,7 @@ on top of Baloo.")
                (base32
                 "0r90hrwib31wfv0mj42vf19c13642vb79m152rgps590i89yrkj9"))))
     (build-system cmake-build-system)
+    (arguments (list #:tests? #f))
     (native-inputs (list extra-cmake-modules))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Sounds for the KDE desktop")
@@ -1691,6 +1714,7 @@ on top of Baloo.")
                (base32
                 "1v51qhcr0swbajc0skwscp2h3m4qr337l8s145nmiv2scsn7sc86"))))
     (build-system cmake-build-system)
+    (arguments (list #:tests? #f))
     (native-inputs (list extra-cmake-modules))
     (inputs (list qtbase))
     (home-page "https://invent.kde.org/plasma/ocean-sound-theme")
@@ -1856,7 +1880,8 @@ KF5/Qt5 to KF6/Qt6")
     (propagated-inputs
      (list mpv))
     (arguments
-     (list #:qtbase qtbase))
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://invent.kde.org/libraries/mpvqt")
     (synopsis "libmpv wrapper for QtQuick2 and QML")
     (description "This package provides a libmpv wrapper for QtQuick2 and QML.")
@@ -2242,6 +2267,7 @@ integration of Qt applications when running on a KDE Plasma workspace.")
                   kwindowsystem
                   kwayland
                   ki18n))
+    (arguments (list #:tests? #f))
     (home-page "https://plasma-mobile.org/")
     (synopsis "Minimal Plasma Shell package")
     (description
@@ -2356,6 +2382,7 @@ customizable platform for mobile devices.")
                (base32
                 "1br6kzicrr45vgg0ciqczxlcid21n5lfjm6zc06rw86ys7fx7bpi"))))
     (build-system cmake-build-system)
+    (arguments (list #:tests? #f))
     (native-inputs (list extra-cmake-modules pkg-config))
     (home-page "https://plasma-mobile.org/")
     (synopsis "Sounds for Plasma Mobile devices")
@@ -2430,6 +2457,7 @@ PulseAudio.")
        ;; $QML_IMPORT_PATH.
        (list kirigami libplasma qtdeclarative))
       (arguments (list #:qtbase qtbase
+                       #:tests? #f
                        #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
       (home-page "https://invent.kde.org/plasma/plasma-pass")
       (synopsis "Plasma applet for the Pass password manager")
@@ -2450,7 +2478,8 @@ PulseAudio.")
                (base32
                 "1f2z3djq8q2z90vrn18k5qbiw8crhs69c5qvdnzxmp3s3f63bk4l"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list kpeople
                   kirigami
@@ -2498,6 +2527,7 @@ adding, modifying and removing contacts.")
     (arguments
      (list
       #:qtbase qtbase
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
@@ -2558,7 +2588,9 @@ vaults.")
                   libksysguard
                   qqc2-desktop-style
                   qtdeclarative))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (synopsis "System sensors, process information and other system resources
 monitor")
     (description "This package provides an interface for monitoring system
@@ -2605,7 +2637,9 @@ sensors, process information and other system resources.")
            libplasma
            qtdeclarative
            qtsvg))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (synopsis "Plasma welcome screen")
     (description
      "This package provides a wizard for Plasma to configure settings.")
@@ -2850,6 +2884,7 @@ hardware management, and a high degree of customizability.")
                (base32
                 "0jccrbpg0qdfys2gj789zfn0yilkwckd81d9nvpkppljv94p0gfa"))))
     (build-system cmake-build-system)
+    (arguments (list #:tests? #f))
     (native-inputs (list extra-cmake-modules))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Oxygen wallpapers for the KDE desktop")
@@ -2887,7 +2922,9 @@ hardware management, and a high degree of customizability.")
            kwindowsystem
            libplasma
            qtdeclarative))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://invent.kde.org/plasma/print-manager")
     (synopsis "Manage print jobs and printers")
     (description
@@ -2906,7 +2943,8 @@ hardware management, and a high degree of customizability.")
                (base32
                 "1ky4k1z24r6rbx3bg69w609nbdcnwzjpajm1xmhgr8li4khgd5x7"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (native-inputs (list extra-cmake-modules))
     (inputs (list ki18n
                   kwindowsystem

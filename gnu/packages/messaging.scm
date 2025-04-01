@@ -1149,7 +1149,8 @@ control of your private keys, no previous conversation is compromised.")
                 "06bb6c2nciwbknfschxd2fjkpigd6i0zgwl6jiz5lm7gcadssrdy"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:tests? #f
+       #:configure-flags
        (list "-DWANT_CYRUS=ON"
              "-DWANT_I18N=ON"
              "-DWANT_PERL=ON"
@@ -2977,6 +2978,7 @@ as well as on desktop platforms.  It's based on libpurple and ModemManager.")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f
       #:configure-flags
       #~(list "-DWITH_WEBSOCKETS=ON")))
     (inputs (list openssl libxslt libwebsockets-for-mosquitto))

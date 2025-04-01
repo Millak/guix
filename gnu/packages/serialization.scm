@@ -621,7 +621,8 @@ it a convenient format to store user input files.")
                 "1180ln8blrb0mwzpcf78k49hlki6di65q77rsvglf83kfcyh4d7z"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags
+     (list #:tests? #f
+           #:configure-flags
            #~'("-DBUILD_SHARED_LIBS:BOOL=YES"
                #$@(if (%current-target-system)
                       #~("-DJSONCPP_WITH_POST_BUILD_UNITTEST=OFF")

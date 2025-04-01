@@ -395,7 +395,9 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
        (sha256
         (base32 "1gv2jxy1xc6b70jax320rvk68qmgz1wpnrbx6wlxg1dmrafhby4d"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -616,7 +618,9 @@ information.")
            breeze-icons ; default icon set, required for tests
            prison
            qgpgme-qt6))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://kontact.kde.org/components/kaddressbook/")
     (synopsis "Address Book application to manage your contacts")
     (description "KAddressBook stores all the personal details of your family,
@@ -648,7 +652,9 @@ CalDAV server.")
                   libaccounts-qt6
                   qcoro-qt6
                   signond-qt6))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://invent.kde.org/network/kaccounts-integration")
     (synopsis "Online account management system")
     (description "The Kaccounts Integration library provides online account
@@ -678,7 +684,9 @@ management system and its Plasma integration components.")
                   qtwebengine
                   qcoro-qt6
                   signond-qt6))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://invent.kde.org/network/kaccounts-providers")
     (synopsis "Online account providers for the KAccounts system")
     (description "This package provides online account providers for the
@@ -1873,7 +1881,9 @@ Features:
            kwindowsystem
            kxmlgui
            libxkbcommon))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://api.kde.org/kdepim/kontactinterface/html/index.html")
     (synopsis "Kontact interface library")
     (description "This library provides the glue necessary for

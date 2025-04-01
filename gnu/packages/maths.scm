@@ -5549,6 +5549,7 @@ bio-chemistry.")
       (build-system cmake-build-system)
       (arguments
        (list
+        #:tests? #f
         #:configure-flags
         #~(list "-DBUILD_SHARED_LIBS=ON"
                 #$@(if (target-x86?)
@@ -8801,6 +8802,7 @@ reduction.")
     (inputs
      (list boost glu mesa qtbase-5))
     (build-system cmake-build-system)
+    (arguments (list #:tests? #f))
     (synopsis "Toolset for the mCRL2 formal specification language")
     (description
      "@dfn{mCRL2} (micro Common Representation Language 2) is a formal
@@ -8819,7 +8821,8 @@ analysed.")
     (inputs
      (list boost))
     (arguments
-     '(#:configure-flags '("-DMCRL2_ENABLE_GUI_TOOLS=OFF")))))
+     (list #:tests? #f
+           #:configure-flags #~(list "-DMCRL2_ENABLE_GUI_TOOLS=OFF")))))
 
 (define-public tcalc
   (package

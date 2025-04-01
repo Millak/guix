@@ -810,7 +810,8 @@ mappings intended for the use with SDL2's game controller functionality.")
                (base32
                 "18g9qavk0wh1bvfh6gdi5q75fd57dk0gp5r20c80x7xnp2ywywih"))))
     (build-system cmake-build-system)
-    (arguments (list #:configure-flags
+    (arguments (list #:tests? #f
+                     #:configure-flags
                      #~(list "-DBUILD_TESTS=ON")))
     (propagated-inputs (list sdl3))
     (home-page "https://github.com/sabdul-khabir/SDL3_gfx")

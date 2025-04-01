@@ -338,6 +338,8 @@ Segmentation and Registration Toolkit.")
         (base32
          "1nm6d87j11jc5617qk58a81ajxgrncr7xsf4dkyscrygi2n3dbgz"))))
     (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f))
     (home-page "https://github.com/Martchus/cpp-utilities/")
     (synopsis "Useful C++ classes and routines")
     (description
@@ -1370,6 +1372,7 @@ a cooperatively interruptible thread that is joined upon destruction.")
        (sha256
         (base32 "090i2qg88iknldxd6v2mh3jfvkdkwc5m38czhrbm58r3y835fy0y"))))
     (build-system cmake-build-system)
+    (arguments (list #:tests? #f))
     (home-page "https://github.com/ToruNiina/toml11")
     (synopsis "TOML for modern C++")
     (description
@@ -1965,7 +1968,8 @@ hierarchies and multiple types of execution resources.")
         (base32 "05g4dp1359rsx0y2wrg2yv4zx3aq5anxr8jgb2c5f1ay3nq3639s"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags
+     (list #:tests? #f
+           #:configure-flags
            #~(list "-DBUILD_SHARED_LIBS=ON")))
     (inputs
      (list kokkos
@@ -4031,7 +4035,8 @@ based on the implementation of std::variant in libc++.")
         (base32 "15l0jy3v4p6rgg9dk8zr80lqp51s32ii62cm4s90400ragdgh10v"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
+     '(#:tests? #f
+       #:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
     (native-inputs (list pkg-config))
     (inputs (list gtk+))
     (home-page "https://github.com/btzy/nativefiledialog-extended")

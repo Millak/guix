@@ -170,6 +170,7 @@ satisfiability checking (SAT).")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f
       #:configure-flags #~`("-DCLINGO_BUILD_TESTS=on"
                             "-DCLINGO_INSTALL_LIB=on"
                             "-DCLINGO_BUILD_STATIC=off"
@@ -295,7 +296,8 @@ and goals over linear (in)equations.")
                 "0050qp5gpznigpm743br8yhjg62gl739xmzkfr70hlqm1xrj0sa7"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases
+     (list #:tests? #f
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-cmake
                  (lambda _

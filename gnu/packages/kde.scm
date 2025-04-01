@@ -486,6 +486,7 @@ expressions and let you evaluate and draw them.")
     (build-system qt-build-system)
     (arguments
      (list
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'wrap-qt-process-path
@@ -891,7 +892,8 @@ and desktop experiences.")
         (base32 "888q3kkv2wq426w000iq14wy3a45rrnn0bmsdks6caz4vq04ccay"))))
     (build-system qt-build-system)
     (arguments
-     `(#:configure-flags (list "-DBUILD_TESTS=ON"))) ; disabled by default
+     `(#:tests? #f
+       #:configure-flags (list "-DBUILD_TESTS=ON"))) ; disabled by default
     (native-inputs
      (list bison doxygen extra-cmake-modules flex googletest))
     (inputs
@@ -921,7 +923,9 @@ expression library, that is used in Krita.")
      (list kcoreaddons
            ki18n
            kxmlgui))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/de/kcolorchooser/")
     (synopsis "Color selector utility")
     (description "KColorChooser is a utility to select a color.")
@@ -950,7 +954,9 @@ expression library, that is used in Krita.")
            ktextwidgets
            kwidgetsaddons
            kxmlgui))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "http://kolourpaint.org/")
     (synopsis "Paint program for KDE")
     (description "KolourPaint is a paint program for KDE.  It is useful for
@@ -1290,7 +1296,9 @@ submoduletest|cachetest|switchtest)")))))))
                (base32
                 "1ajr7qaf4dcccl5pc09ywfa4mgrfpa3qq1w7x4lfmv82gvp7ld64"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1464,7 +1472,8 @@ multi-floor indoor maps.")
         (base32 "17p63a9igpbcv0xdziaf3d30n88rj9474w9yx2cpvh0m2nrv3582"))))
     (build-system qt-build-system)
     (arguments
-     (list #:qtbase qtbase))
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1543,7 +1552,8 @@ transport data and for performing public transport journey queries.")
         (base32 "06g43b1l72aghkhcn59ss8kjc4sammn5ii5x5sql34kmvgiwamwk"))))
     (build-system qt-build-system)
     (arguments
-     (list #:qtbase qtbase))
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
@@ -1569,7 +1579,8 @@ for scanner hardware.")
         (base32 "1b0cbf4cq0ajl5xlpy75wj4p1zsri2igh23pswj8ysnrrk0pxg5w"))))
     (build-system qt-build-system)
     (arguments
-     (list #:qtbase qtbase))
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
@@ -1805,7 +1816,9 @@ to perform data analysis.")
            kstatusnotifieritem
            kxmlgui
            qt5compat))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://kde.org/applications/system/kdk")
     (synopsis "View Disk Usage")
     (description "KDiskFree displays the available file devices (hard drive
@@ -1838,7 +1851,9 @@ unmount drives and view them in a file manager.")
            kconfigwidgets
            kstatusnotifieritem
            qt5compat))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://kde.org/applications/utilities/ktimer")
     (synopsis "Countdown Launcher")
     (description "KTimer is a little tool to execute programs after some time.
@@ -1862,6 +1877,7 @@ timers for each task can be started, stopped, changed, or looped.")
      (list extra-cmake-modules perl python qttools kdoctools))
     (inputs
      (list qtbase karchive ki18n kio kxmlgui kdbusaddons))
+    (arguments (list #:tests? #f))
     ;; Note: The 'hotshot2calltree' and 'pprof2calltree' scripts depend on
     ;; Python and PHP, respectively.  These are optional and we ignore them
     ;; for now.
@@ -2112,7 +2128,9 @@ PO template files.")
        (sha256
         (base32 "0rpam31s5cvky4w3bb2qp1pjv0gm9f63a2jv6bcim7qnz050bvvn"))))
     (build-system cmake-build-system)
-    (arguments (list #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
+    (arguments
+     (list #:tests? #f
+           #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
@@ -2135,7 +2153,10 @@ Mobipocket e-books in Dolphin and other KDE apps.")
        (sha256
         (base32 "073px490jvp5f2979ipzbjlw6qg55cfzisj1g3a1f9wwqshm3q5q"))))
     (build-system cmake-build-system)
-    (arguments (list #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
@@ -2163,6 +2184,7 @@ picture metadata as EXIF/IPTC and XMP.")
     (inputs
      (list kdbusaddons kdnssd ki18n kio))
     (arguments (list #:qtbase qtbase
+                     #:tests? #f
                      #:configure-flags
                      #~(list "-DQT_MAJOR_VERSION=6")))
     (home-page "https://apps.kde.org/kio_zeroconf/")

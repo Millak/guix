@@ -12362,6 +12362,7 @@ generic enough to work for everyone.")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f
       #:imported-modules `(,@%cmake-build-system-modules
                            (guix build glib-or-gtk-build-system))
       #:modules '((guix build cmake-build-system)

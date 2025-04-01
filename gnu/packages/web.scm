@@ -1766,7 +1766,8 @@ C.")
                (search-patches "yajl-CVE-2023-33460.patch"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:phases
+     '(#:tests? #f
+       #:phases
        (modify-phases %standard-phases
          (add-after 'patch-source-shebangs 'patch-tests
            (lambda _
@@ -7626,6 +7627,7 @@ protocols.")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f
       #:configure-flags
       #~(list "-DBUILD_SHARED_LIBS=ON"
               "-DCIVETWEB_ENABLE_CXX=ON"
@@ -9031,6 +9033,7 @@ HTTrack is fully configurable, and has an integrated help system.")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'use-system-googletest

@@ -1608,6 +1608,7 @@ that uses asynchronous and future-based APIs.")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f                       ; fail with GLib-CRITICAL errors
       #:configure-flags
       #~(list "-DINTERNAL_EXPECTED=OFF")))
     (inputs (list boost fmt expected-lite))

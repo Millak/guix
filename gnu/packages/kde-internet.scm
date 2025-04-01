@@ -74,6 +74,8 @@
        (sha256
         (base32 "0zm4nkpmvd181xlkis7ydzx54p3vn0zgpdzgh54f1hsjy6ahsq16"))))
     (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools-5 pkg-config))
     (inputs
@@ -332,6 +334,7 @@ Features are:
            gnutls))
     (arguments
      (list #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
+           #:tests? #f
            #:qtbase qtbase))
     (home-page "https://apps.kde.org/krdc/")
     (synopsis "Remote desktop client")

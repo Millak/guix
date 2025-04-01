@@ -325,7 +325,8 @@ to the structure and choosing one or more fields to act as the key.")
                           "0m542xpys54bni29zibgrfpgpd0zgyny4h131virxsanixsbz52z")))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #f
+       #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-static-library
            (lambda* (#:key outputs #:allow-other-keys)

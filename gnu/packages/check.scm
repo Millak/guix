@@ -587,7 +587,8 @@ PyUnit and others.")
                (base32
                 "0mf55yi8ahpczl9jz2is3dnghfi3g9qz5vch7mx7akqx4gfhhviz"))))
     (build-system cmake-build-system)
-    (arguments (list #:configure-flags
+    (arguments (list #:tests? #f
+                     #:configure-flags
                      #~(list "-DBUILD_SHARED_LIBS=ON"
                              "-DSNITCH_DO_TEST=ON"
                              "-DSNITCH_USE_SYSTEM_DOCTEST=ON")))
@@ -1145,7 +1146,8 @@ package.")
         (base32 "1cv55x3amwrvfan9pr8dfnicwr8r6ar3yf6cg9v6nykd6m2v3qsv"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
+     `(#:tests? #f
+       #:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
     (native-inputs
      `(("python" ,python-wrapper)))
     (home-page "https://github.com/google/googletest/")

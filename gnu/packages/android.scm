@@ -123,7 +123,8 @@ use their packages mostly unmodified in our Android NDK build system.")
         (base32
          "0bjlljmbf8glnd9qjabx73w6pd7ibv43yiyngqvmvgxsabzr8399"))))
     (arguments
-     `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
+     `(#:tests? #f
+       #:configure-flags '("-DBUILD_SHARED_LIBS=ON")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-host-libraries

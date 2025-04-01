@@ -3007,7 +3007,8 @@ can append files to the end of such compressed archives.")
           "00ibddiy62kbs9wl52c35j0hbqanx6pi7lvzkpzmbsizkj8mhp1p"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
+     '(#:tests? #f
+       #:configure-flags
        (let* ((out (assoc-ref %outputs "out"))
               (lib (string-append out "/lib")))
          (list

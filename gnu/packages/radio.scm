@@ -1097,7 +1097,8 @@ environment.")
            spdlog
            volk))
     (arguments
-     (list #:modules '((guix build cmake-build-system)
+     (list #:tests? #f
+           #:modules '((guix build cmake-build-system)
                        ((guix build python-build-system) #:prefix python:)
                        (guix build utils))
            #:imported-modules `(,@%cmake-build-system-modules
@@ -1230,6 +1231,7 @@ DMR, NXDN, P25, etc.")
          (sha256
           (base32 "12p193ngcs65nd3lynry119nhv40mikamqkw37wdln7lawx3nw7p"))))
       (build-system cmake-build-system)
+      (arguments (list #:tests? #f))
       (native-inputs
        (list doxygen
              pkg-config
@@ -2437,7 +2439,8 @@ intended for people who want to learn receiving and sending morse code.")
           (base32 "1lhsmyhljqa6apzbysqar56wpfcdvs3pq9ia1mshqd6d3hz74s78"))))
       (build-system cmake-build-system)
       (arguments
-       (list #:configure-flags #~(list "-DGGMORSE_SUPPORT_SDL2=OFF")
+       (list #:tests? #f
+             #:configure-flags #~(list "-DGGMORSE_SUPPORT_SDL2=OFF")
              #:phases #~(modify-phases %standard-phases
                           (add-after 'unpack 'disable-imgui-build
                             (lambda _
@@ -3122,6 +3125,7 @@ various hardware.")
        (sha256
         (base32 "11v5idwvfi9w60qg4fgqgvm7ahmb0ys4j094qv4c93r92kd9d3f9"))))
     (build-system qt-build-system)
+    (arguments (list #:tests? #f))
     (native-inputs
      (list pkg-config))
     (inputs

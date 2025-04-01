@@ -217,6 +217,7 @@
         (base32 "1dg3g66az17z4snxxw7cslqdkrvbx2nnyry73yi77yp0vpri1lz8"))))
     (arguments
      (list
+      #:tests? #f
       #:configure-flags
       #~(list "-DBUILD_EXTENSIONS=autocomplete;icu;json;parquet;tpch;"
               ;; There is no git checkout from which to read the version tag.

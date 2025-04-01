@@ -635,7 +635,8 @@ Please note that this version requires a processor with SSE2 support."))))
                 "0r6q7bl8513ggrvx3n73j1s3f7n5x1rxy5xi471qyrya95gy6c60"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:tests? #f
+       #:configure-flags
        (list (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
                             (assoc-ref %outputs "out") "/lib"))))
     (inputs

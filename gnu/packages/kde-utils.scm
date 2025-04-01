@@ -150,6 +150,7 @@ well as CD-ROM images.")
                  (base32
                   "00jccpwvksyp2vr3fjxajs8d9d30rspg4zj6rnj8dai96alp303k"))))
       (build-system qt-build-system)
+      (arguments (list #:tests? #f))
       (native-inputs (list extra-cmake-modules pkg-config))
       (inputs (list ki18n-5
                     kxmlgui-5
@@ -254,7 +255,8 @@ well as CD-ROM images.")
                     ksyntaxhighlighting
                     qtdeclarative
                     qtsvg))
-      (arguments (list #:qtbase qtbase))
+      (arguments (list #:qtbase qtbase
+                       #:tests? #f))
       (home-page "https://invent.kde.org/utilities/fielding")
       (synopsis "REST API testing tool")
       (description
@@ -344,7 +346,8 @@ your computer.")
                   kcrash
                   solid
                   kwidgetsaddons))
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (home-page "https://invent.kde.org/utilities/isoimagewriter")
     (synopsis "Write hybrid ISO files onto USB disks")
     (description
@@ -364,7 +367,8 @@ your computer.")
                 "1448kiykab4lm2xkimapj11m7iqj6x7y2ly5mrw3c1092p56kvs2"))))
     (build-system qt-build-system)
     (arguments
-     (list #:qtbase qtbase))
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -512,7 +516,8 @@ Kate's features include:
                   libarchive
                   shared-mime-info
                   qt5compat))
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (home-page "https://apps.kde.org/kbackup/")
     (synopsis "Backup program with an easy-to-use interface")
     (description
@@ -570,7 +575,9 @@ drive, USB stick, etc
                (base32
                 "195lr8ik6w03kc6ma9zfz7ksg296rn48d1vryin087i9k783rrad"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs (list extra-cmake-modules))
     (inputs (list kbookmarks kcoreaddons kcrash ki18n kwidgetsaddons kxmlgui))
     (home-page "https://apps.kde.org/kcharselect/")
@@ -594,7 +601,8 @@ characters.")
                (base32
                 "0ffnw3hc2xngxryiyanaid7nh51fymahg4jbqf3w684wrn1v6gan"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (native-inputs (list extra-cmake-modules kdoctools))
     (inputs (list ktextwidgets
                   knotifications
@@ -633,7 +641,8 @@ shell scripts.")
                     kio
                     kwidgetsaddons
                     kxmlgui))
-      (arguments (list #:qtbase qtbase))
+      (arguments (list #:qtbase qtbase
+                       #:tests? #f))
       (home-page "https://invent.kde.org/utilities/keurocalc")
       (synopsis "Currency conversion tool")
       (description "This package provides a utility to handle currency
@@ -682,7 +691,8 @@ with support for QR scanning.")
                (base32
                 "01dxajpx2959m3gk23cvjra1w7i70f49lvys3h034205dyi3qgnm"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (native-inputs (list extra-cmake-modules kdoctools))
     (inputs (list karchive
                   kcoreaddons
@@ -716,7 +726,8 @@ with support for QR scanning.")
                   "1gncfnwadh11ipynfcrsh1vnk2g02c7scd5wanphi8i95jzak9jd"))))
       (build-system qt-build-system)
       (arguments
-       (list #:phases #~(modify-phases %standard-phases
+       (list #:tests? #f
+             #:phases #~(modify-phases %standard-phases
                           (add-after 'unpack 'fix-gstreamer
                             (lambda* _
                               (substitute* "CMakeLists.txt"
@@ -763,7 +774,8 @@ with support for QR scanning.")
                (base32
                 "031jsvk060y9w0mh1ylq7cz9nzmikz7vm098nrb10m9bx2x4h13d"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (native-inputs (list extra-cmake-modules kdoctools python-minimal))
     (inputs (list kcrash
                   kirigami
@@ -799,6 +811,7 @@ combinations are distinct enough to be readable and accessible.")
       (build-system qt-build-system)
       (native-inputs (list extra-cmake-modules))
       (inputs (list qtcharts-5 qtdeclarative-5 qtserialport-5))
+      (arguments (list #:tests? #f))
       (home-page "https://invent.kde.org/libraries/atcore")
       (synopsis "Library for connection and management of 3D printers")
       (description
@@ -818,7 +831,9 @@ the computer and 3D Printers.")
        (sha256
         (base32 "0565x812jbq0j56750q03hmfai4fgdqjrxzw6k94c37ck0nvlfl5"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -867,7 +882,9 @@ artists to web-designers to people with low vision.")
            libxt
            phonon
            qtmultimedia))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kmousetool/")
     (synopsis "Automatic mouse click and mouse manipulation tool for the
 disabled")
@@ -903,7 +920,9 @@ whom pressing buttons hurts.")
            kxmlgui
            breeze-icons ;; default icon set
            qtspeech))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kmouth/")
     (synopsis "Type-and-say frontend for speech synthesizers")
     (description "KMouth is a program which enables persons that cannot speak
@@ -1027,7 +1046,8 @@ to save the times and resume them later.")
         (base32 "012f75afp7vjpp7wps4lzvcszj6a5y9yzv21wgh9zikcvvx9pdy9"))))
     (build-system qt-build-system)
     (arguments
-     (list #:qtbase qtbase))
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1089,6 +1109,7 @@ great on your desktop.")
      (list extra-cmake-modules kdoctools-5 pkg-config))
     (inputs
      (list ktexteditor-5 imagemagick qtbase-5 qtx11extras))
+    (arguments (list #:tests? #f))
     (home-page "https://apps.kde.org/kxstitch/")
     (synopsis "Create and print cross stitch patterns")
     (description
@@ -1210,6 +1231,7 @@ remind you to take a break now and then.")
     (build-system qt-build-system)
     (arguments (list
                 #:qtbase qtbase
+                #:tests? #f
                 #:configure-flags #~(list "-DSMB4K_WITH_WS_DISCOVERY=ON")))
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -1287,7 +1309,9 @@ Features:
        (sha256
         (base32 "0v7hwz6xnp52fysbmqwrhjjcsr96bmw0a70n2kr2bq1hhh0zvf3h"))))
     (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs

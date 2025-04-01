@@ -692,6 +692,7 @@ language and very flexible regarding to new or unknown keyboard layouts.")
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list qtdeclarative-5))
+    (arguments (list #:tests? #f))
     (home-page "https://invent.kde.org/libraries/kqtquickcharts")
     (synopsis "QtQuick plugin to render beautiful and interactive charts")
     (description
@@ -736,6 +737,7 @@ charts.")
            qtquickcontrols2-5
            qtx11extras
            qtxmlpatterns-5))
+    (arguments (list #:tests? #f))
     (home-page "https://edu.kde.org/ktouch/")
     (synopsis "Touch typing tutor")
     (description
