@@ -1463,7 +1463,9 @@ combine the information contained in both.")
              "-DSNAP_VERSION_GIT_BRANCH=release"
              "-DSNAP_VERSION_GIT_TIMESTAMP=0"
              "-DSNAP_PACKAGE_QT_PLUGINS=OFF"
-             "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
+             "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
+             ;; ISO C++17 does not allow dynamic exception specifications.
+             "-DCMAKE_CXX_STANDARD=14")
        #:phases
        (modify-phases %standard-phases
          ;; During the installation phase all libraries provided by all
@@ -1515,7 +1517,7 @@ combine the information contained in both.")
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins"))
-                         '("qtbase" "qtdeclarative-5"))))))))))
+                         '("qtbase" "qtdeclarative"))))))))))
     (inputs
      (list bash-minimal
            curl
