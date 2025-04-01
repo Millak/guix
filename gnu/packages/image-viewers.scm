@@ -445,16 +445,16 @@ it and customize it for your needs.")
 (define-public nsxiv
   (package
     (name "nsxiv")
-    (version "27.1")
+    (version "33")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/nsxiv/nsxiv")
+             (url "https://codeberg.org/nsxiv/nsxiv")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1na7f0hpc9g04nm7991gzaqr5gkj08n2azx833hgxcm2w1pnn1bk"))))
+        (base32 "1y8rsg8q45b1dbm9zrsr0s7v86z95b87cvn7n81nlkj7paj3wnqz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;no check target
@@ -476,12 +476,12 @@ it and customize it for your needs.")
                   (string-append "-I" freetype))))))
          (add-after 'install 'install-desktop-file
            (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "nsxiv.desktop"
+             (install-file "etc/nsxiv.desktop"
                            (string-append (assoc-ref outputs "out")
                                           "/share/applications"))))
          (add-after 'install 'install-icons
            (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "-C" "icon" "install" make-flags))))))
+             (apply invoke "make" "install-icon" make-flags))))))
     (inputs
      (list freetype
            giflib
