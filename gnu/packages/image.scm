@@ -1365,68 +1365,63 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
     (home-page "https://freeimage.sourceforge.io/")))
 
 (define-public vigra
-    (package
-     (name "vigra")
-     (version "1.11.2")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/ukoethe/vigra")
-               (commit (string-append
-                         "Version-"
-                         (string-join (string-split version #\.) "-")))))
-        (file-name (git-file-name name version))
-        (sha256 (base32
-                  "12ywzz8c6p1cmmr3b849yhvmbi1kmqz2ag82qpj41hy8lis6gaf4"))))
-     (build-system cmake-build-system)
-     (inputs
-      `(("boost" ,boost)
-        ("fftw" ,fftw)
-        ("fftwf" ,fftwf)
-        ("hdf5" ,hdf5)
-        ("ilmbase" ,ilmbase) ; propagated by openexr, but needed explicitly
-                             ; to create a configure-flag
-        ("libjpeg" ,libjpeg-turbo)
-        ("libpng" ,libpng)
-        ("libtiff" ,libtiff)
-        ("openexr" ,openexr-2)
-        ("python" ,python-wrapper)
-        ("python-numpy" ,python-numpy)
-        ("zlib" ,zlib)))
-     (native-inputs
-      `(("doxygen" ,doxygen)
-        ("python-nose" ,python-nose)
-        ("sphinx" ,python-sphinx)))
-     (arguments
-      `(#:test-target "check"
-        #:configure-flags
-          (list "-Wno-dev" ; suppress developer mode with lots of warnings
-                (string-append "-DVIGRANUMPY_INSTALL_DIR="
-                               (assoc-ref %outputs "out")
-                               "/lib/python"
-                               ,(version-major+minor (package-version python))
-                               "/site-packages")
-                ;; OpenEXR is not enabled by default.
-                "-DWITH_OPENEXR=1"
-                ;; Fix rounding error on 32-bit machines
-                "-DCMAKE_C_FLAGS=-ffloat-store"
-                ;; The header files of ilmbase are not found when included
-                ;; by the header files of openexr, and an explicit flag
-                ;; needs to be set.
-                (string-append "-DCMAKE_CXX_FLAGS=-I"
-                               (assoc-ref %build-inputs "ilmbase")
-                               "/include/OpenEXR"
-                               " -ffloat-store"))))
-     (synopsis "Computer vision library")
-     (description
-      "VIGRA stands for Vision with Generic Algorithms.  It is an image
+  (package
+    (name "vigra")
+    (version "1.11.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ukoethe/vigra")
+             (commit (string-append "Version-"
+                                    (string-join (string-split version #\.)
+                                                 "-")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12ywzz8c6p1cmmr3b849yhvmbi1kmqz2ag82qpj41hy8lis6gaf4"))))
+    (build-system cmake-build-system)
+    (inputs (list boost
+                  fftw
+                  fftwf
+                  hdf5
+                  ilmbase ;propagated by openexr, but needed explicitly
+                          ;to create a configure-flag
+                  libjpeg-turbo
+                  libpng
+                  libtiff
+                  openexr-2
+                  python-wrapper
+                  python-numpy
+                  zlib))
+    (native-inputs (list doxygen python-nose python-sphinx))
+    (arguments
+     (list
+      #:test-target "check"
+      #:configure-flags
+      #~(list "-Wno-dev" ;suppress developer mode with lots of warnings
+              (string-append
+                "-DVIGRANUMPY_INSTALL_DIR=" #$output "/lib/python"
+                #$(version-major+minor (package-version python))
+                "/site-packages")
+              ;; OpenEXR is not enabled by default.
+              "-DWITH_OPENEXR=1"
+              ;; Fix rounding error on 32-bit machines
+              "-DCMAKE_C_FLAGS=-ffloat-store"
+              ;; The header files of ilmbase are not found when included
+              ;; by the header files of openexr, and an explicit flag
+              ;; needs to be set.
+              (string-append "-DCMAKE_CXX_FLAGS=-I"
+                             (assoc-ref %build-inputs "ilmbase")
+                             "/include/OpenEXR" " -ffloat-store"))))
+    (synopsis "Computer vision library")
+    (description
+     "VIGRA stands for Vision with Generic Algorithms.  It is an image
   processing and analysis library that puts its main emphasis on customizable
   algorithms and data structures.  It is particularly strong for
   multi-dimensional image processing.")
-     (license license:expat)
-     (home-page "https://ukoethe.github.io/vigra/")
-     (properties '((max-silent-time . 7200))))) ;2 hours, to avoid timing out
+    (license license:expat)
+    (home-page "https://ukoethe.github.io/vigra/")
+    (properties '((max-silent-time . 7200))))) ;2 hours, to avoid timing out
 
 (define-public vigra-c
   (let* ((commit "49f53191a12fe91d4e2fd177d22af167571c71d8")
