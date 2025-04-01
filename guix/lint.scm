@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -1573,7 +1573,15 @@ or HTTP errors.  This allows network-less operation and makes problems with
 the NIST server non-fatal."
   (with-networking-fail-safe (G_ "while retrieving CVE vulnerabilities")
                              '()
-                             (current-vulnerabilities #:timeout 4)))
+                             (guard (c ((http-get-error? c)
+                                        (warning (G_ "failed to get list of \
+CVE vulnerabilities from '~a': ~a (~a)~%")
+                                                 (uri->string
+                                                  (http-get-error-uri c))
+                                                 (http-get-error-code c)
+                                                 (http-get-error-reason c))
+                                        '()))
+                              (current-vulnerabilities #:timeout 4))))
 
 (define package-vulnerabilities
   (let ((lookup (delay (vulnerabilities->lookup-proc
