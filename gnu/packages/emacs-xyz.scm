@@ -20213,7 +20213,7 @@ been adapted to also work with mu4e.")
 (define-public emacs-tempel
   (package
     (name "emacs-tempel")
-    (version "1.3")
+    (version "1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -20222,8 +20222,11 @@ been adapted to also work with mu4e.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sh477bx437d3lz6v0m418bk1iwr3mjj8xf396qdi7kiiaic0drz"))))
+                "1dlrcdyj0l4hbk0xhb3yj88naq4m76n5hfd180qqwjpc83g9fqs3"))))
     (build-system emacs-build-system)
+    (arguments
+     ;; no tests
+     `(#:tests? #f))
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/minad/tempel")
