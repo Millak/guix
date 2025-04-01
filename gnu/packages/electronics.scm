@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
+;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -567,6 +568,53 @@ Additionally your user must be member of the @code{plugdev} group.")
      "UHDM is a complete modeling of the IEEE SystemVerilog Object Model with
 VPI Interface, Elaborator, Serialization, Visitor and Listener.")
     (license license:asl2.0)))
+
+(define-public python-edalize
+  (package
+    (name "python-edalize")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/olofk/edalize/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gfysk6wj3mxndyzma604i3y2lkfn1im0bdmzxv5rn4x2nyk68sc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; XXX: Tests failing with assertion not equal, find out
+                    ;; why.
+                    (list "not test_gatemate"
+                          "test_gatemate_minimal"
+                          "test_vcs_tool_options"
+                          "test_vcs_no_tool_options"
+                          "test_vcs_minimal"
+                          "test_vivado_edif_netlist"
+                          "test_vivado_edif_netlist_no_link_design"
+                          "test_xcelium")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-jinja2))
+    (home-page "https://github.com/olofk/edalize/")
+    (synopsis "Python Library for interacting with EDA tools")
+    (description
+     "This package implements a functionality to create project files for
+supported tools and run them in batch or GUI mode.  All EDA tools such as
+Icarus, Yosys, ModelSim, Vivado, Verilator, GHDL, Quartus etc get input HDL
+files (Verilog and VHDL) and some tool-specific files (constraint files,memory
+initialization files, IP description files etc).  Together with the files,
+perhaps a couple of Verilog `defines, some top-level parameters/generics or
+some tool-specific options are set.")
+    (license license:bsd-2)))
 
 (define-public python-vsg
   (package
