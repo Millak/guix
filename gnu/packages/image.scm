@@ -1367,7 +1367,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
 (define-public vigra
   (package
     (name "vigra")
-    (version "1.11.2")
+    (version "1.12.2")
     (source
      (origin
        (method git-fetch)
@@ -1378,7 +1378,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
                                                  "-")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12ywzz8c6p1cmmr3b849yhvmbi1kmqz2ag82qpj41hy8lis6gaf4"))))
+        (base32 "0x6qcsbjxp2alxqxsngs8a22fdi7pi2ylv9q4l1jgmypn0svkqqk"))))
     (build-system cmake-build-system)
     (inputs (list boost
                   fftw
@@ -1391,7 +1391,7 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
                   libtiff
                   openexr-2
                   python-wrapper
-                  python-numpy
+                  python-numpy-2
                   zlib))
     (native-inputs (list doxygen python-nose python-sphinx))
     (arguments
