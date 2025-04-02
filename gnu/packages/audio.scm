@@ -843,7 +843,8 @@ purposes developed at Queen Mary, University of London.")
                   "#include <QCodeEditor/QHighlightRule")
                  (("#include <QLanguage") "#include <QCodeEditor/QLanguage")
                  (("#include <QCodeEditor\\.hpp")
-                  "#include <QCodeEditor/QCodeEditor.hpp"))))))))
+                  "#include <QCodeEditor/QCodeEditor.hpp"))))))
+       (patches (search-patches "jamesdsp-fix-bulid-on-pipewire-1.4.0.patch"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
