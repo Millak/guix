@@ -44,6 +44,7 @@
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2268,7 +2269,7 @@ to be useful for building network-based applications.")
     ;; Update only when updating aws-sdk-cpp, and when updating also update
     ;; versions of library dependencies linked from from
     ;; https://github.com/awslabs/aws-crt-cpp/tree/{aws-crt-cpp commit}/crt
-    (version "0.28.2")
+    (version "0.32.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2277,7 +2278,7 @@ to be useful for building network-based applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jnj5q6jcw1nh74yzdbi99x338lc3v2wjlgvjnzclla4p66pi712"))))
+                "1xakyki8sxn6pxmmmf41n3wl0qsgsags0wvj74jmhfln4g2c4qy9"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
