@@ -137,7 +137,7 @@ TRIPLET."
   "Return the default ninja package."
   ;; Lazily resolve the binding to avoid a circular dependency.
   (let ((module (resolve-interface '(gnu packages ninja))))
-    (module-ref module 'ninja)))
+    (module-ref module 'ninja/pinned)))
 
 (define (default-meson)
   "Return the default meson package."

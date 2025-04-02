@@ -61,13 +61,6 @@
     (guix build qt-utils)
     ,@%cmake-build-system-modules))
 
-(define (default-cmake)
-  "Return the default CMake package."
-
-  ;; Do not use `@' to avoid introducing circular dependencies.
-  (let ((module (resolve-interface '(gnu packages cmake))))
-    (module-ref module 'cmake-minimal)))
-
 (define (default-qtbase)
   "Return the default qtbase package."
 
@@ -79,7 +72,8 @@
 ;; the variables defined here.
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
-                (cmake (default-cmake))
+                (cmake (default-cmake target))
+                (ninja (default-ninja))
                 (qtbase (default-qtbase))
                 #:allow-other-keys
                 #:rest arguments)
@@ -96,10 +90,7 @@
                           `(("source" ,source))
                           '())
                     ,@`(("cmake" ,cmake))
-                    ,@`(("ninja" ,(module-ref
-                                   (resolve-interface
-                                    '(gnu packages ninja))
-                                   'ninja)))
+                    ,@`(("ninja" ,ninja))
                     ,@`(("qtbase" ,qtbase))
                     ,@native-inputs
                     ,@(if target

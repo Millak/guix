@@ -31,7 +31,9 @@
   #:use-module (guix packages)
   #:export (%cmake-build-system-modules
             cmake-build
-            cmake-build-system))
+            cmake-build-system
+            default-cmake
+            default-ninja))
 
 ;; Commentary:
 ;;
@@ -64,10 +66,17 @@
                     'cmake-minimal-cross
                     'cmake-minimal))))
 
+(define (default-ninja)
+  "Return the default ninja package."
+  ;; Lazily resolve the binding to avoid a circular dependency.
+  (let ((module (resolve-interface '(gnu packages ninja))))
+    (module-ref module 'ninja/pinned)))
+
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
                 (implicit-inputs? #t) (implicit-cross-inputs? #t)
                 (cmake (default-cmake target))
+                (ninja (default-ninja))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
@@ -84,10 +93,7 @@
                           `(("source" ,source))
                           '())
                     ,@`(("cmake" ,cmake))
-                    ,@`(("ninja" ,(module-ref
-                                   (resolve-interface
-                                    '(gnu packages ninja))
-                                   'ninja)))
+                    ,@`(("ninja" ,ninja))
                     ,@native-inputs
                     ,@(if target '() inputs)
                     ,@(if (and target implicit-cross-inputs?)

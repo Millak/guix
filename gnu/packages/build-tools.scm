@@ -329,7 +329,7 @@ files and generates build instructions for the Ninja build system.")
 import sys
 sys.path.insert(0, '~a')
 # EASY-INSTALL-ENTRY-SCRIPT" (site-packages inputs outputs)))))))))
-    (inputs (list python ninja))
+    (inputs (list python ninja/pinned))
     (home-page "https://mesonbuild.com/")
     (synopsis "Build system designed to be fast and user-friendly")
     (description
@@ -359,7 +359,7 @@ resembles Python.")
                                 "-k" "not test_pep518")))
     (propagated-inputs
      (list meson
-           ninja
+           ninja/pinned
            python-colorama
            python-cython-3
            python-pyproject-metadata
