@@ -1086,7 +1086,7 @@ by Python's @code{argparse} module.")
   (package
     (name "aws-checksums")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.1.18")
+    (version "0.2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1095,7 +1095,7 @@ by Python's @code{argparse} module.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lwbs5b89z4z8pswlfhj4fn73flwmr060byy3apqfay8rxmia4hj"))))
+                "06mpn3g882gx1ds3962a86l2r1hq7wjkdq6lsb3ixmri7sfmi26r"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
