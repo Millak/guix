@@ -3764,8 +3764,8 @@ characters necessary to display Taiwanese and Hakka.")
               "https://www.freedesktop.org/wiki/Arphic_Public_License/"))))
 
 (define-public font-atui-feather
-  (let ((version "0")
-        (commit "c51fe7cedbcf2cbf4f1b993cef5d8def612dec1d")
+  (let ((version "1.1.0")               ;from package.json
+        (commit "2ac71612ee85b3d1e9e1248cec0a777234315253")
         (revision "1"))
     (package
       (name "font-atui-feather")
@@ -3778,7 +3778,7 @@ characters necessary to display Taiwanese and Hakka.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0hk12bjlsh0j6kd0sz3nwax259afdi6dxws4x88yz5ssxic1ng2j"))))
+                  "0fnj5rh6z3ymny4cywha04x15i52r3h8ds87nx0lhqhfw6y8g02v"))))
       (build-system font-build-system)
       (home-page "https://at-ui.github.io/feather-font/")
       (synopsis "Iconfont version of Feather")
