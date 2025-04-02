@@ -1251,7 +1251,7 @@ low level functionality for coroutines.")
   (package
     (name "aws-c-http")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.8.8")
+    (version "0.9.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1260,7 +1260,7 @@ low level functionality for coroutines.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kap7r9mj564k7ncl2p6kyqp88vxkj80r277xkd6fry8d3plviac"))))
+                "0anasabsgyyn56v3w1p6sq558n646ifxgqxyy0j0601wvxxmk641"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
