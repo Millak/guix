@@ -168,7 +168,7 @@ of parts of the Windows API.")
 (define-public xrdp
   (package
     (name "xrdp")
-    (version "0.10.1")
+    (version "0.10.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -176,10 +176,10 @@ of parts of the Windows API.")
                     version "/xrdp-" version ".tar.gz"))
               (sha256
                (base32
-                "10rgc9bfharwj7bq5k4qp4x00w214h6c6f861zi301h84125ylx2"))))
+                "15nhfh8lxwf0jlmq6knh3851sp6njps9nhl8n2867il7mcr9gmsj"))))
     (build-system gnu-build-system)
     (inputs (list check
-                  fuse-2
+                  fuse
                   imlib2
                   lame
                   libjpeg-turbo
@@ -214,7 +214,13 @@ of parts of the Windows API.")
                                      "--enable-pixman=yes"
                                      "--enable-imlib2=yes"
                                      "--enable-pam-config=unix"
-                                     "--enable-ipv6=yes")))
+                                     "--enable-ipv6=yes")
+     #:phases
+     #~(modify-phases %standard-phases
+       (add-after 'unpack 'set-cflags-file-offset-bit-64
+         (lambda _
+               (setenv "CFLAGS"
+                   "-D_FILE_OFFSET_BITS=64"))))))
     (home-page "https://www.xrdp.org")
     (synopsis "Remote Desktop Protocol (RDP) server")
     (description
