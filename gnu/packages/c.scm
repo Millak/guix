@@ -1115,7 +1115,7 @@ with fallback to efficient C99 software implementations.")
   (package
     (name "aws-c-event-stream")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.4.3")
+    (version "0.5.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1124,7 +1124,7 @@ with fallback to efficient C99 software implementations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pm6ggm2yv5rqfijvi0zd7xf4a0zq0m21c36vhgda5mh5wbhzf64"))))
+                "0bxbvmj59g51k2w8dny65j48z02z5n30c86qzhh88x2qv6hg52v3"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
