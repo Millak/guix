@@ -81,12 +81,13 @@ Python.  It is a C++ library.")
                (base32
                 "11q0kz8b3y5ysn58fr62yhib520f9l3grbn8gxr8x5s9k700vq11"))))
     (build-system cmake-build-system)
-    (arguments (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+    (arguments (list #:tests? (not (%current-target-system))
+                     #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
                                                ;; "-DRE2_USE_ICU=ON"
-                                               #$@(if (%current-target-system)
+                                               #$@(if (not (%current-target-system))
                                                       #~("-DRE2_BUILD_TESTING=ON")
                                                       #~()))))
-    (native-inputs (list googletest))
+    (native-inputs (list googlebenchmark googletest))
     (propagated-inputs (list abseil-cpp))))
 
 (define-public tre
