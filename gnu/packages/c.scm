@@ -23,6 +23,7 @@
 ;;; Copyright © 2023, 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright @ 2022, Kitzman <kitzman@disroot.org>
 ;;; Copyright @ 2025 Dariqq <dariqq@posteo.net>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1057,7 +1058,7 @@ by Python's @code{argparse} module.")
   (package
     (name "aws-c-common")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.9.27")
+    (version "0.12.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1066,7 +1067,7 @@ by Python's @code{argparse} module.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wzlxvcwr4s31c4q8nyj66x3za9s01xzq47ap2jwvr61c93pxcam"))))
+                "1drad31f3ynvjy2xmgnidzwxya2z47n9wa4s13cpnzf2aga0jb4v"))))
     (build-system cmake-build-system)
     (arguments
      '(#:parallel-tests? #f
