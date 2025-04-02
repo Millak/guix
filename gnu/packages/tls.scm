@@ -1155,7 +1155,7 @@ derived from Mozilla's collection.")
   (package
     (name "s2n")
     ;; Update only when updating aws-crt-cpp.
-    (version "1.5.1")
+    (version "1.5.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1164,7 +1164,7 @@ derived from Mozilla's collection.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cw8f846zvjgdwaqadnhdb0cxksx4jd9x4nan9x02xz2w5hcqw04"))))
+                "0b8ym4ns56fa5pkrvsm5kghh8mii0q0kc1mz2plg1ypm5zny02kw"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
