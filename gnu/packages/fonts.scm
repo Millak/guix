@@ -699,11 +699,11 @@ The unified Libertinus family consists of:
     (license license:silofl1.1)))
 
 (define-public font-libre-franklin
-  (let ((commit "bfc61d6e403771c2e90aa6e0bd54975633974fb2")
-        (revision "0"))
+  (let ((commit "0022627ebb2a582327569ee45af5d0d9ef31dfea")
+        (revision "1"))
     (package
       (name "font-libre-franklin")
-      (version (git-version "1.015" revision commit))
+      (version (git-version "1.502" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -712,9 +712,19 @@ The unified Libertinus family consists of:
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "07rm9fkhm8ckxpaj0zixl4vgzmj6bj4xzbaqm5hngdjds1bjv1ls"))))
+          (base32 "1kfipv9vfivgn1789b9yc6r0l31r6l02nz06icw99zvmfcjbpzf0"))))
       (build-system font-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; To avoid installing legacy fonts
+            (add-before 'install 'chdir
+              (lambda _
+                (chdir "fonts")))
+            (add-after 'install 'chdir-back
+              (lambda _
+                (chdir ".."))))))
       (home-page "https://fonts.google.com/specimen/Libre+Franklin")
       (synopsis "Font family based on Franklin Gothic")
       (description
