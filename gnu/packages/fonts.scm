@@ -1154,7 +1154,7 @@ utilities to ease adding new glyphs to the font.")
 (define-public font-google-noto
   (package
     (name "font-google-noto")
-    (version "2025.01.01")
+    (version "2025.04.01")
     (source
      (origin
        (method git-fetch)
@@ -1163,7 +1163,7 @@ utilities to ease adding new glyphs to the font.")
              (commit (string-append "noto-monthly-release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vplwq079dlymbbc4lvvydxpf8hxvjdihvrj2464gzii37n7b7nv"))))
+        (base32 "0mfxikyzk6d7av02bnzykliggasy23lnz6z07bfr3mlv2plwy7f5"))))
     (build-system font-build-system)
     (arguments
      (list
@@ -1210,7 +1210,7 @@ source, unhinted and hinted variants are always available."
               (with-directory-excursion "fonts"
                 (for-each install-font (scan-directory "."))))))))
     (outputs '("out" "ttf"))
-    (home-page "https://www.google.com/get/noto/")
+    (home-page "https://fonts.google.com/noto")
     (synopsis "Fonts to cover all languages")
     (description "Google Noto Fonts is a family of fonts designed to support
 all languages with a consistent look and aesthetic.  Its goal is to properly
