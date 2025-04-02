@@ -3900,6 +3900,21 @@ updated clone of kballards golang fnmatch
 gist (https://gist.github.com/kballard/272720).")
       (license license:bsd-2))))
 
+(define-public go-github-com-darccio-mergo
+  (hidden-package
+   (package/inherit go-dario-cat-mergo
+     (name "go-github-com-darccio-mergo")
+     (arguments
+      (list
+       #:import-path "github.com/darccio/mergo"
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-import-path
+             (lambda* (#:key tests? import-path #:allow-other-keys)
+               (with-directory-excursion (string-append "src/" import-path)
+                 (substitute* (find-files "." "\\.go$")
+                   (("dario.cat/mergo") import-path)))))))))))
+
 (define-public go-github-com-dave-jennifer
   (package
     (name "go-github-com-dave-jennifer")
@@ -7626,6 +7641,21 @@ keep the order that they're added.  It can be de/serialized from/to JSON.")
     (description
      "Package strcase converts strings to various cases.")
     (license license:expat)))
+
+(define-public go-github-com-imdario-mergo
+  (hidden-package
+   (package/inherit go-dario-cat-mergo
+     (name "go-github-com-imdario-mergo")
+     (arguments
+      (list
+       #:import-path "github.com/imdario/mergo"
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-import-path
+             (lambda* (#:key tests? import-path #:allow-other-keys)
+               (with-directory-excursion (string-append "src/" import-path)
+                 (substitute* (find-files "." "\\.go$")
+                   (("dario.cat/mergo") import-path)))))))))))
 
 (define-public go-github-com-invopop-yaml
   (package
