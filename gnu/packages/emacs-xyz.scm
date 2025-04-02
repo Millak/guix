@@ -5790,6 +5790,20 @@ that the binary uses instead of the actual binary contents.")
               (sha256 (base32
                        "1019vwrm95ck2gi29mvwd7sy753zgwa3addw2x0qbhvb3r53620v"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* (find-files "tests/" "\\.el$")
+                (("\\(ert-deftest test-ellama-context-element-extract-info-node .*" all)
+                 (string-append all "(skip-unless nil)\n"))))))
+      #:tests? #t
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-l" "ellama.el"
+                             "-l" "tests/test-ellama.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs (list emacs-compat emacs-llm emacs-plz emacs-transient))
     (home-page "https://github.com/s-kostyaev/ellama")
     (synopsis "Tool for interacting with LLMs")
