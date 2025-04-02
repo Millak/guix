@@ -1310,7 +1310,7 @@ currently limited to Huffman encoding and decoding.")
   (package
     (name "aws-c-auth")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.7.26")
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1319,10 +1319,7 @@ currently limited to Huffman encoding and decoding.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0im29xh80dpm4hlwq02dyv6il9whbcxhgwp1gw5nj68c33dp4ryk"))
-              (patches
-               (search-patches
-                "aws-c-auth-install-private-headers.patch"))))
+                "1pfnd65q72rg4y062ajd5imzl6v4n2cgn7nimjxkb0p6shhd8c0z"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
