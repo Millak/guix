@@ -240,7 +240,7 @@ variety of RDP clients:
 (define-public xorgxrdp
   (package
     (name "xorgxrdp")
-    (version "0.10.2")
+    (version "0.10.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -249,7 +249,7 @@ variety of RDP clients:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dcxn0v88426j4n7irhy6h3qb21202v5xs1vr7j8xvs3sxihc2f7"))))
+                "0y243h7mk9jy5yrdgngjkcr6rzq4116ip7pvc6vwz7yfnxxd9v2f"))))
     (build-system gnu-build-system)
     (inputs (list check
                   imlib2
