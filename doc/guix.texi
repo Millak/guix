@@ -5478,7 +5478,7 @@ operating system configuration, as in this example:
   (append
    (list (channel
           (name 'guix-science)
-          (url "https://github.com/guix-science/guix-science")
+          (url "https://codeberg.org/guix-science/guix-science")
           (branch "master")))
    %default-channels))
 
