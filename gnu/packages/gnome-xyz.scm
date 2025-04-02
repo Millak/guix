@@ -216,27 +216,28 @@ simple and consistent.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ; no test suite
-       #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'bootstrap)
-         (delete 'configure)
-         (delete 'build)
-         (add-before 'install 'halve-inode-consumption
-           ;; This package uses over 100K inodes, which is a lot.  We can easily
-           ;; halve that number by using (hard) links, to no ill effect.
-           ;; See <https://logs.guix.gnu.org/guix/2023-01-31.log#171227>.
-           ;; However, the source checkout will still use the full amount!
-           (lambda _
-             (let ((symlink? (lambda (_ stat)
-                               (eq? 'symlink (stat:type stat)))))
-               (for-each (lambda (file)
-                           (let ((target (canonicalize-path file)))
-                             (when (eq? 'regular (stat:type (stat target)))
-                               (delete-file file)
-                               (link target file))))
-                         (find-files "." symlink?))))))))
+     (list
+      #:tests? #f                       ; no test suite
+      #:make-flags #~(list (string-append "PREFIX=" (assoc-ref %outputs "out")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure)
+          (delete 'build)
+          (add-before 'install 'halve-inode-consumption
+            ;; This package uses over 100K inodes, which is a lot.  We can easily
+            ;; halve that number by using (hard) links, to no ill effect.
+            ;; See <https://logs.guix.gnu.org/guix/2023-01-31.log#171227>.
+            ;; However, the source checkout will still use the full amount!
+            (lambda _
+              (let ((symlink? (lambda (_ stat)
+                                (eq? 'symlink (stat:type stat)))))
+                (for-each (lambda (file)
+                            (let ((target (canonicalize-path file)))
+                              (when (eq? 'regular (stat:type (stat target)))
+                                (delete-file file)
+                                (link target file))))
+                          (find-files "." symlink?))))))))
     (native-inputs
      (list `(,gtk+ "bin")))
     (home-page "https://git.io/papirus-icon-theme")
