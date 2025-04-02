@@ -1340,7 +1340,7 @@ authentication.")
   (package
     (name "aws-c-s3")
     ;; Update only when updating aws-crt-cpp.
-    (version "0.6.4")
+    (version "0.7.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1349,7 +1349,7 @@ authentication.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08kzdpjn48bzg4hvvr92yv6igvppja6xcrqr6hsliai6088nw4kl"))))
+                "1zh6nf3cxglsdn00m697yl90w2rc012chd9zivd6jd4i4ck6wq7q"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
