@@ -206,17 +206,17 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20250327215540")
+(define %librewolf-build-id "20250401171639")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "136.0.4-1")
+    (version "137.0-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "0hn2ywyacgg8n47qz1q2l8bf32mszj3vnpkl6kag3wmqqbhvja2a"
-      #:librewolf-hash "045il4xrji2zh1scx3aiy6hx6jv098232aycda6bhsh27szbsrfa"
+      #:firefox-hash "07d9rdxmp48gbk41y1c6gggzziv9aqdhjwgi6c0hrf6chcppxi0y"
+      #:librewolf-hash "164bvissxzhzlwjafp9pdyhhg8hhdxh8w61ifkak497qm4yf8af7"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
@@ -236,8 +236,6 @@
                               "--with-system-ffi"
                               "--enable-system-pixman"
                               "--enable-jemalloc"
-
-                              ;; see https://bugs.gnu.org/32833
                               "--with-system-nspr"
                               "--with-system-nss"
 
@@ -312,7 +310,7 @@
                      (libavcodec (string-append ffmpeg
                                                 "/lib/libavcodec.so")))
                 ;; Arrange to load libavcodec.so by its absolute file name.
-                (substitute* 
+                (substitute*
                     "dom/media/platforms/ffmpeg/FFmpegRuntimeLinker.cpp"
                   (("libavcodec\\.so")
                    libavcodec)))))
@@ -405,7 +403,7 @@
                    (string-append all ", icu-uc >= 76.1")))
                 (if (string=? old-content
                               (pk (call-with-input-file file get-string-all)))
-                    (error 
+                    (error
                      "substitute did nothing, phase requires an update")))))
           (replace 'configure
             (lambda* (#:key inputs outputs configure-flags
@@ -478,7 +476,7 @@
               (invoke "./mach" "configure")))
           (add-before 'build 'fix-addons-placeholder
             (lambda _
-              (substitute* 
+              (substitute*
                   "toolkit/locales/en-US/toolkit/about/aboutAddons.ftl"
                 (("addons.mozilla.org")
                  "gnuzilla.gnu.org"))))
