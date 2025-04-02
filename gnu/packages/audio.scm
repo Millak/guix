@@ -6993,7 +6993,7 @@ verifies checksums.")
 (define-public easyeffects
   (package
     (name "easyeffects")
-    (version "7.1.7")
+    (version "7.2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7001,7 +7001,7 @@ verifies checksums.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "19r8pzlhdn7jp7lggxv3c74xbr48hwmz234rl600fnqhygpixg6b"))))
+               (base32 "0vr21d12vbyvw3l1h4dx44fk1vk7ns7l8ynclchw5flhsd58yg3d"))))
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin") ;for glib-compile-resources
