@@ -238,7 +238,13 @@ simple and consistent.")
                               (when (eq? 'regular (stat:type (stat target)))
                                 (delete-file file)
                                 (link target file))))
-                          (find-files "." symlink?))))))))
+                          (find-files "." symlink?)))))
+           (add-before 'install 'remove-executable-bit
+             (lambda _
+               (let ((file? (lambda (_ stat)
+                              (eq? 'regular (stat:type stat)))))
+                 (for-each (lambda (file) (chmod file #o644))
+                           (find-files "." file?))))))))
     (native-inputs
      (list `(,gtk+ "bin")))
     (home-page "https://git.io/papirus-icon-theme")
