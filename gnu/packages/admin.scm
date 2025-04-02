@@ -1587,25 +1587,24 @@ recursive runs on the generated subnets.  (also IPv6)
 (define-public prips
   (package
     (name "prips")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://devel.ringlet.net/files/sys/"
                            name "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1a33vbl4w603mk6mm5r3vhk87fy3dfk5wdpch0yd3ncbkg3fmvqn"))))
+        (base32 "1m29hfmrch4rmb408jz7yfbx2a9mkk0gjxla7h5hv8qrlsjxha6y"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target)))
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (install-file "prips"
-                                      (string-append out "/bin"))))))))
+     (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+           #:test-target "test"
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (replace 'install
+                          (lambda _
+                            (install-file "prips"
+                                          (string-append #$output "/bin")))))))
     (native-inputs (list perl-test-harness))
     (synopsis "Tool that prints the IP addresses in a given range")
     (description "Prips can be used to print all of the IP addresses in
