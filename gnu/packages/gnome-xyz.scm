@@ -218,7 +218,8 @@ simple and consistent.")
     (arguments
      (list
       #:tests? #f                       ; no test suite
-      #:make-flags #~(list (string-append "PREFIX=" (assoc-ref %outputs "out")))
+      #:make-flags #~(list "CP_OPTS=--preserve=links"
+                           (string-append "PREFIX=" (assoc-ref %outputs "out")))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'bootstrap)
