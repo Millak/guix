@@ -706,7 +706,7 @@ i3status.")
 (define-public papersway
   (package
     (name "papersway")
-    (version "1.004")
+    (version "2.000")
     (source
      (origin
        (method url-fetch)
@@ -714,7 +714,7 @@ i3status.")
              "mirror://cpan/authors/id/S/SP/SPWHITTON/App-papersway-" version
              ".tar.gz"))
        (sha256
-        (base32 "02p144cbzi3vk5jpk1pmcrf51mmli0q92hrkjyalj91drl0d44px"))))
+        (base32 "0mphgyi6gq98g4n0jq5qwf66qi76rbrwgipmqqfzsakc3rzbsivh"))))
     (build-system perl-build-system)
     (arguments
      (list #:phases
