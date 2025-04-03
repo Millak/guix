@@ -4946,8 +4946,9 @@ GLib and GObject, and integrates JSON with GLib data types.")
                                           "/share/doc"))))))))))
     (native-inputs
      (if (%current-target-system)
-         ;; No docs, no additional inputs.
-         (package-native-inputs json-glib-minimal)
+         ;; No docs, but rst2man is used for man pages.
+         (modify-inputs (package-native-inputs json-glib-minimal)
+           (prepend python-docutils))
          (modify-inputs (package-native-inputs json-glib-minimal)
            (prepend gi-docgen gobject-introspection
                     python-docutils))))))
