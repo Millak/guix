@@ -372,7 +372,21 @@ Features:
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--pyargs" "numdifftools")
+      #:test-flags
+      #~(list "--pyargs" "numdifftools"
+              "-k" (string-join
+                    ;; Tests failing with error: TypeError: a must be an array
+                    ;; of real numbers, see
+                    ;; <https://github.com/pbrod/numdifftools/issues/72>.
+                    (list "not test_high_order_derivative"
+                          "test_low_order_derivative_on_example_functions"
+                          "test_sinx_div_x"
+                          "test_complex_hessian_issue_35"
+
+                          "numdifftools.fornberg.Taylor"
+                          "numdifftools.fornberg.derivative"
+                          "numdifftools.fornberg.taylor")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
