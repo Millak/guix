@@ -2761,7 +2761,7 @@ organizing remote Go repository clones.")
 (define-public emacs-ghub
   (package
     (name "emacs-ghub")
-    (version "4.2.2")
+    (version "4.3.0")
     (source
      (origin
        (method git-fetch)
@@ -2770,33 +2770,26 @@ organizing remote Go repository clones.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bd8lnhv50brfxqwyk7jmgrig0cahkam7ggwaifaz8vb8m456yar"))))
+        (base32 "00xc8957j700zfjcazbp2mcwk6gj8jyrw017864sw47j50p83wy7"))))
     (build-system emacs-build-system)
     (arguments
      (list
+      #:tests? #f ; there are no tests
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'install 'make-info
+          (add-after 'unpack 'build-info-manual
             (lambda _
-              (invoke "make" "info")))
-          (add-after 'make-info 'enter-lisp-directory
+              (invoke "make" "info")
+              ;; Move the info file to lisp so that it gets installed by the
+              ;; emacs-build-system.
+              (rename-file "docs/ghub.info" "lisp/ghub.info")))
+          (add-after 'build-info-manual 'chdir-lisp
             (lambda _
-              (chdir "lisp")))
-          (add-after 'expand-load-path 'add-el-dir-to-emacs-load-path
-            (lambda _
-              (setenv "EMACSLOADPATH"
-                      (string-append (getcwd)
-                                     "/lisp:"
-                                     (getenv "EMACSLOADPATH")))))
-          (add-after 'install 'install-info
-            (lambda _
-              (let ((info (string-append #$output "/share/info")))
-                (install-file "../docs/ghub.info" info)))))))
+              (chdir "lisp"))))))
     (native-inputs
      (list texinfo))
     (propagated-inputs
      (list emacs-compat
-           emacs-dash
            emacs-llama
            emacs-let-alist
            emacs-treepy))
