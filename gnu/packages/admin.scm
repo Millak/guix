@@ -5784,7 +5784,7 @@ the XMODEM/YMODEM/ZMODEM file transfer protocols.")
 (define-public nq
   (package
     (name "nq")
-    (version "0.5")
+    (version "1.0")
     (source
      (origin
        (method git-fetch)
@@ -5793,7 +5793,7 @@ the XMODEM/YMODEM/ZMODEM file transfer protocols.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0szbndvwl6ghwjzb165s09977s0r1yq8h0ziknm0h6xndkcjspl3"))))
+        (base32 "0pl84vrjg7l0gyjar7v0qn4v63n30b93nbldxawbmqls9m443mc1"))))
     (build-system gnu-build-system)
     (native-inputs
      (list perl))
