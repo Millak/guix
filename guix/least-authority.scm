@@ -37,7 +37,8 @@
 
 (define %precious-variables
   ;; Environment variables preserved by the wrapper by default.
-  '("HOME" "USER" "LOGNAME" "DISPLAY" "XAUTHORITY" "TERM" "TZ" "PAGER"))
+  '("HOME" "USER" "LOGNAME" "DISPLAY" "XAUTHORITY" "TERM" "TZ" "PAGER"
+    "LISTEN_PID" "LISTEN_FDS" "LISTEN_FDNAMES")) ;for make-systemd-constructor
 
 (define* (least-authority-wrapper program
                                   #:key (name "pola-wrapper")
