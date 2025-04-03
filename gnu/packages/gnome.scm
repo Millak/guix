@@ -6154,7 +6154,9 @@ services for numerous locations.")
        (sha256
         (base32
          "0nka7zfl4hzzk4066kk5cc8pmk7v3izhi4wihsh5b3w85s35idqy"))
-       (patches (search-patches "gnome-settings-daemon-gc.patch"))))
+       (patches (search-patches "gnome-settings-daemon-gc.patch"
+                                ;; See https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/issues/792
+                                "gnome-settings-daemon-screensaver-error.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
