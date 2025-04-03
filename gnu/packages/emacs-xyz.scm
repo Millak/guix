@@ -145,7 +145,7 @@
 ;;; Copyright © 2024 Daniel Szmulewicz <daniel.szmulewicz@gmail.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2024 Spencer King <spencer.king@nursiapress.com>
+;;; Copyright © 2024, 2025 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024 emma thompson <bigbookofbug@proton.me>
 ;;; Copyright © 2024-2025 Liam Hupfer <liam@hpfr.net>
 ;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
@@ -6989,6 +6989,34 @@ cursor in a transient buffer.  It has a built-in collection of SVG images
 depicting stroke orders for all Kanji.  The collection is a slightly modified
 and limited version of the images provided by the KanjiVG project.")
       (license license:gpl3+))))
+
+(define-public emacs-migemo
+  (let ((commit "fbc16b57eace9bf25bcb325032c59c50b186b9d7")
+        (revision "0"))
+    (package
+      (name "emacs-migemo")
+      (version (git-version "1.9.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacs-jp/migemo")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "10d27jrmn7k4mqqd5cgqf8jwa0pq9yh2550b1r6lwmz6wx509552"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        ;; tests rely on cmigemo, which has not yet been packaged
+        #:tests? #f))
+      (home-page "https://github.com/emacs-jp/migemo")
+      (synopsis
+       "Japanese incremental search through dynamic pattern expansion")
+      (description
+       "This package provides incremental searching through Japanese text through
+romanization for Emacs.")
+      (license license:gpl2+))))
 
 (define-public emacs-kbd
   ;; Package has no release.  Version is extracted from "Version:" keyword in
