@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,12 +20,16 @@
 (define-module (gnu packages weather)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system python)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
-  #:use-module (gnu packages golang-xyz))
+  #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages xml))
 
 (define-public wego
   (package
@@ -55,3 +60,36 @@ forecast for one or seven days.  Displayed information includes temperature
 range---felt and measured---, wind speed and direction, viewing distance,
 precipitation amount and probability.")
     (license license:isc)))
+
+(define-public meteo-qt
+  (package
+    (name "meteo-qt")
+    (version "4.2")
+    (source
+     (origin (method git-fetch)
+             (uri (git-reference (url "https://github.com/dglent/meteo-qt")
+                                 (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32 "1cvmh5rq50dncd2fmp4amjb2hhl2mryb2ywg0zdzhz89dkjq0kdk"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pyqt-6))
+    (propagated-inputs (list python-lxml python-pyqt-6 python-sip))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'remove-translations
+                 (lambda _
+                   ;; Translation processing is broken because Guix thinks lprodump
+                   ;; is in qtbase, not qttools. So, we'll skip it and exclude
+                   ;; qttools from the native input list until it is fixed.
+                   (substitute* "setup.py"
+                     (("/usr") #$output)
+                     (("^.+lrelease-pro-qt6.+$") "")
+                     (("^.+meteo_qt/translations.+$") "")))))))
+    (home-page "https://github.com/dglent/meteo-qt")
+    (synopsis "Weather application for the system tray")
+    (description "meteo-qt is an application to display weather information in
+desktop panels, desktop notifictions and its own window.  Weather information is
+retrieved from OpenWeatherMap.")
+    (license license:gpl3)))
