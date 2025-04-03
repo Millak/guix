@@ -17,6 +17,7 @@
 ;;; Copyright © 2025 Julian Flake <flake@uni-koblenz.de>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2020-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 45mg <45mg.writes@gmail.com>
 ;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -454,6 +455,75 @@ Each file in the archive is protected by a checksum.  If part of the archive
 is corrupted you'll lose the affected file(s) but not the whole back-up.")
     (home-page "https://www.fsarchiver.org/")
     (license license:gpl2)))
+
+(define-public fscrypt
+  (package
+    (name "fscrypt")
+    (version "0.3.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/fscrypt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15b89g7imv4691aq16xn9q6nh6fcdldkxmvysc7igm6a8p1n6bai"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/fscrypt"
+      #:install-source? #f
+      #:test-flags
+      #~(list "-skip"
+              (string-join (list
+                            ;; These tests expect to be able to find /home,
+                            ;; /mnt and /tmp.
+                            "TestLoadReadOnlyMount"
+                            "TestReadWriteMountIsPreferredOverReadOnlyMount"
+                            "TestLoadAmbiguousMounts"
+                            "TestRootSubtreeIsPreferred") "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-version-detection
+            ;; We don't have .git in the build directory.
+            (lambda _
+              (substitute* "src/github.com/google/fscrypt/Makefile"
+                (("\\$\\(shell git describe --tags\\)")
+                 (string-append "v" #$version)))))
+          (replace 'build
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (with-directory-excursion "src/github.com/google/fscrypt"
+                (invoke "make"
+                        "-j" (if parallel-build?
+                                 (number->string (parallel-job-count))
+                                 "1")
+                        (string-append "CC=" #$(cc-for-target))))))
+          (replace 'install
+            (lambda _
+              (with-directory-excursion "src/github.com/google/fscrypt"
+                (invoke "make" "install"
+                        (string-append "PREFIX=" #$output))))))))
+    (native-inputs (list gnu-make
+                         go-github-com-client9-misspell
+                         go-github-com-pkg-errors
+                         go-github-com-urfave-cli
+                         go-github-com-wadey-gocovmerge
+                         go-golang-org-x-crypto
+                         go-golang-org-x-sys
+                         go-golang-org-x-term
+                         go-golang-org-x-tools
+                         go-google-golang-org-protobuf
+                         go-honnef-co-go-tools
+                         linux-pam
+                         m4))
+    (home-page "https://github.com/google/fscrypt")
+    (synopsis "Go tool for managing Linux filesystem encryption")
+    (description "@command{fscrypt} is a high-level tool for the management of
+Linux native filesystem encryption.  It manages metadata, key generation, key
+wrapping, PAM integration, and provides a uniform interface for creating and
+modifying encrypted directories.")
+    (license license:asl2.0)))
 
 (define-public fstransform
   (package
