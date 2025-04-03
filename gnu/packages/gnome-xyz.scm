@@ -256,7 +256,7 @@ and a few extra features.")
 (define-public qogir-icon-theme
   (package
     (name "qogir-icon-theme")
-    (version "2023.06.05")
+    (version "2025.02.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -268,7 +268,7 @@ and a few extra features.")
                           (("gtk-update-icon-cache") "true")))
               (sha256
                (base32
-                "1kn8b9zdamxbfbs7b9qpx53hmjw2l40sxpjw93axb1dqy81yc8da"))))
+                "08qcphdp49ciyr294fgk9i1s3h6svx5bdzfglikb20jzh5d167hj"))))
     (build-system copy-build-system)
     (arguments
      (list #:phases
