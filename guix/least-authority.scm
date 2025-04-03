@@ -26,7 +26,8 @@
                                           spec->file-system
                                           file-system->spec
                                           file-system-mapping->bind-mount)
-  #:export (least-authority-wrapper))
+  #:export (least-authority-wrapper
+            %default-preserved-environment-variables))
 
 ;;; Commentary:
 ;;;
@@ -35,7 +36,7 @@
 ;;;
 ;;; Code:
 
-(define %precious-variables
+(define %default-preserved-environment-variables
   ;; Environment variables preserved by the wrapper by default.
   '("HOME" "USER" "LOGNAME" "DISPLAY" "XAUTHORITY" "TERM" "TZ" "PAGER"
     "LISTEN_PID" "LISTEN_FDS" "LISTEN_FDNAMES")) ;for make-systemd-constructor
@@ -50,7 +51,7 @@
                                   (namespaces %namespaces)
                                   (directory "/")
                                   (preserved-environment-variables
-                                   %precious-variables))
+                                   %default-preserved-environment-variables))
   "Return a wrapper of PROGRAM that executes it with the least authority.
 
 PROGRAM is executed in separate namespaces according to NAMESPACES, a list of
