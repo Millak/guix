@@ -901,6 +901,8 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
     ("CONFIG_PROC_PID_CPUSET" . #t)
     ;; Allow disk encryption by default
     ("CONFIG_DM_CRYPT" . m)
+    ;; Allow fscrypt filesystem encryption by default
+    ("CONFIG_FS_ENCRYPTION" . #t)
     ;; Support zram on all kernel configs
     ("CONFIG_ZSWAP" . #t)
     ("CONFIG_ZSMALLOC" . #t)
