@@ -301,7 +301,7 @@ GiB).")
 (define-public meld
   (package
     (name "meld")
-    (version "3.22.3")
+    (version "3.23.0")
     (source
      (origin
        (method url-fetch)
@@ -309,10 +309,11 @@ GiB).")
                            (version-major+minor version)
                            "/meld-" version ".tar.xz"))
        (sha256
-        (base32 "114x97rcm4qr91nzw66hys4i1pjnqn1m9388id6yq3zzn6gg5xrp"))))
+        (base32 "19n273shqs8l5lrlic0hr5iv1mp9223ijf3pkh8a49g08112lg4q"))))
     (build-system meson-build-system)
     (native-inputs
      (list desktop-file-utils
+           (list gtk+ "bin") ;for gtk-update-icon-cache
            intltool
            itstool
            libxml2
@@ -339,11 +340,6 @@ GiB).")
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'skip-gtk-update-icon-cache
-            ;; Don't create 'icon-theme.cache'.
-            (lambda _
-              (substitute* "meson_post_install.py"
-                (("gtk-update-icon-cache") (which "true")))))
           (add-after 'install 'copy-styles
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let ((styles "/share/gtksourceview-4/styles"))
