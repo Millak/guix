@@ -6256,7 +6256,7 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "6.2.4")
+    (version "6.2.5")
     (source
      (origin
        (method git-fetch)
@@ -6265,7 +6265,7 @@ basic eye-candy effects.")
            (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nfvvlz6kjs2sgl71j79jn7wnvbv1q1iqb0dz5qp9yf8j810r00x"))
+        (base32 "0lzyhbhqqcp6z0dswprzp13wrnvyfclkh7ddhblvhi422mk0v3sx"))
        (patches (search-patches "xpra-6.0-systemd-run.patch"
                                 "xpra-6.1-install_libs.patch"))))
     (build-system python-build-system)
