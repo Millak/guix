@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 TomZ <tomz@freedommail.ch>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -937,6 +937,11 @@ tst_qt_cmake_create.cpp"
                        ;; The 'tst_qdialogbuttonbox' may fail non-deterministically
                        ;; (see: https://bugreports.qt.io/browse/QTBUG-123939).
                        "tst_qdialogbuttonbox"
+
+                       ;; This test may fail non-deterministically (timeout)
+                       ;; after running for more than 300s (see:
+                       ;; https://bugreports.qt.io/browse/QTBUG-135603).
+                       "tst_qguitimer"
 
                        ;; The 'test_standalone_test' fails with a
                        ;; "get_property could not find TARGET Qt6::Core" error
