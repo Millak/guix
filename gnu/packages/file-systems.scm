@@ -86,6 +86,7 @@
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libevent)
@@ -523,6 +524,38 @@ is corrupted you'll lose the affected file(s) but not the whole back-up.")
 Linux native filesystem encryption.  It manages metadata, key generation, key
 wrapping, PAM integration, and provides a uniform interface for creating and
 modifying encrypted directories.")
+    (license license:asl2.0)))
+
+(define-public fscryptctl
+  (package
+    (name "fscryptctl")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/fscryptctl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15zbmh9jlhqbai7lcaqyvymrjjcdi0l9zli9j51skwap59sq9jz6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output)
+                           (string-append "CC=" #$(cc-for-target)))
+      #:tests? #f  ;Test setup requires root
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; No ./configure script
+          (delete 'configure))))
+    (native-inputs (list pandoc))
+    (home-page "https://github.com/google/fscryptctl")
+    (synopsis "Small C tool for Linux filesystem encryption")
+    (description "@command{fscryptctl} is a low-level tool written in C that
+handles raw keys and manages policies for Linux filesystem encryption,
+specifically the @code{fscrypt} kernel interface which is supported by the
+ext4, f2fs, UBIFS, and CephFS filesystems.")
     (license license:asl2.0)))
 
 (define-public fstransform
