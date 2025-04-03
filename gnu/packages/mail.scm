@@ -850,7 +850,8 @@ It adds a large amount of new and improved features to mutt.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0493dngbasd2nngzsp4b8v4cnl4vb88hc1qga5y9w7l6c89hxn1w"))))
+        (base32 "0493dngbasd2nngzsp4b8v4cnl4vb88hc1qga5y9w7l6c89hxn1w"))
+       (patches (search-patches "gmime-disable-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags

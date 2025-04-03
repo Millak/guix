@@ -1,0 +1,20 @@
+The test-pgp and test-pgpmime fail sporadically.
+See: https://github.com/jstedfast/gmime/issues/177
+
+*** source/tests/Makefile.am	1970-01-01 09:00:01.000000000 +0900
+--- tests/Makefile.am.new	2025-04-03 23:11:19.220597686 +0900
+***************
+*** 22,33 ****
+  	test-autocrypt	\
+  	test-mime
+  
+- if ENABLE_CRYPTO
+- AUTOMATED_TESTS +=	\
+- 	test-pgp	\
+- 	test-pgpmime
+- endif
+- 
+  MANUAL_TESTS =		\
+  	test-best	\
+  	test-parser 	\
+--- 22,27 ----
