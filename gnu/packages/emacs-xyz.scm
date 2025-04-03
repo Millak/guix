@@ -5605,7 +5605,7 @@ of bibliographic references.")
 (define-public emacs-corfu
   (package
     (name "emacs-corfu")
-    (version "1.7")
+    (version "2.0")
     (source
      (origin
        (method git-fetch)
@@ -5614,10 +5614,11 @@ of bibliographic references.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yyc64bfqpsjs5iwgwxm171sg85al4mzj4pv3qd4cpmkgmamrrv3"))))
+        (base32 "15vmhbwpjgvc9ly8icrjf74jhbplhigfyfa762s45ipnrq6gyixq"))))
     (build-system emacs-build-system)
     (arguments
      (list
+      #:tests? #f ; there are no tests
       #:phases
       #~(modify-phases %standard-phases
           ;; Move the extensions source files to the top level, which is included
@@ -5628,15 +5629,12 @@ of bibliographic references.")
                 (for-each (lambda (f)
                             (rename-file f (basename f)))
                           el-files))))
-          (add-after 'install 'makeinfo
+          (add-after 'unpack 'makeinfo
             (lambda _
-              (invoke "emacs"
-                      "--batch"
+              (invoke "emacs" "--batch"
                       "--eval=(require 'ox-texinfo)"
                       "--eval=(find-file \"README.org\")"
-                      "--eval=(org-texinfo-export-to-info)")
-              (install-file "corfu.info"
-                            (string-append #$output "/share/info")))))))
+                      "--eval=(org-texinfo-export-to-info)"))))))
     (native-inputs (list texinfo))
     (propagated-inputs
      (list emacs-compat))
