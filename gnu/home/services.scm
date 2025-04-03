@@ -74,6 +74,7 @@
   #:re-export (service
                service-type
                service-extension
+               simple-service
                for-home
                for-home?))
 
