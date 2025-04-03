@@ -22367,7 +22367,7 @@ sequences to accelerate the alignment process.")
 (define-public vcflib
   (package
     (name "vcflib")
-    (version "1.0.9")
+    (version "1.0.12")
     (source
      (origin
        (method git-fetch)
@@ -22376,7 +22376,7 @@ sequences to accelerate the alignment process.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cmznzq7hl5vr504ww262rwz5lfdfrca5ksbcvwh3cgp44fiwykv"))
+        (base32 "1llqnbgx4ybb77cp5k3cs0y7n4p8ma6b3sj10iarpg5r6a5gps5a"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -22393,9 +22393,10 @@ sequences to accelerate the alignment process.")
                (string-append "${FASTAHACK_LIBRARIES} "
                               "${WFA2_LIBRARIES} "
                               "${SMITHWATERMAN_LIBRARIES} "
-                              text)))
+                              text))
+              (("install\\(TARGETS \\$\\{WFALIB\\}.*") ""))
             (substitute* (find-files "." "\\.(h|c)(pp)?$")
-              (("\"SmithWatermanGotoh.h\"") "<smithwaterman/SmithWatermanGotoh.h>")
+              (("SmithWatermanGotoh.h") "smithwaterman/SmithWatermanGotoh.h")
               (("\"convert.h\"") "<smithwaterman/convert.h>")
               (("\"disorder.h\"") "<smithwaterman/disorder.h>")
               (("\"wavefront/wfa.hpp\"") "<wavefront/wfa.hpp>")
@@ -22421,8 +22422,7 @@ sequences to accelerate the alignment process.")
        ;; This package builds against the .o files so we need to extract the source.
        ("filevercmp-src" ,(package-source filevercmp))
        ("fsom-src" ,(package-source fsom))
-       ("intervaltree-src" ,(package-source intervaltree))
-       ("multichoose-src" ,(package-source multichoose))))
+       ("intervaltree-src" ,(package-source intervaltree))))
     (arguments
      (list
       #:configure-flags
@@ -22463,8 +22463,7 @@ sequences to accelerate the alignment process.")
                 (and
                  (unpack "filevercmp-src" "contrib/filevercmp")
                  (unpack "fsom-src" "contrib/fsom")
-                 (unpack "intervaltree-src" "contrib/intervaltree")
-                 (unpack "multichoose-src" "contrib/multichoose"))
+                 (unpack "intervaltree-src" "contrib/intervaltree"))
 
                 ;; This is needed for downstream packages to allow building
                 ;; with GCC 11+.
