@@ -13052,24 +13052,26 @@ organizer.")
     (license license:gpl3+)))
 
 (define-public emacs-org-tanglesync
-  (let ((commit "d99181f173b4e55b4e835d99fcd415e62beb047f")
-        (revision "2"))
+  (let ((commit "af83a73ae542d5cb3c9d433cbf2ce1d4f4259117")
+        (revision "3"))
     (package
       (name "emacs-org-tanglesync")
-      (version (git-version "0.6" revision commit))
+      (version (git-version "1.1" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/mtekman/org-tanglesync.el")
+               (url "https://gitlab.com/mtekman/org-tanglesync.el/")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0x94gy1bgfd1f3p9w2bfrqj11bwy9ql0cpi1gw6srpj7kykx0lml"))))
+          (base32 "11rfn0byy0k0321w7fjgpa785ik1nrk1j6d0y4j0j4a8gys5hjr5"))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-org))
-      (home-page "https://github.com/mtekman/org-tanglesync.el")
+      (arguments
+       (list
+        ;; no tests
+        #:tests? #f))
+      (home-page "https://gitlab.com/mtekman/org-tanglesync.el/")
       (synopsis "Sync Org source blocks with tangled external files")
       (description "This package automatically pulls changes from source code
 to their corresponding tangled blocks.")
