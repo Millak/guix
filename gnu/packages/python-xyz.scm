@@ -11711,7 +11711,9 @@ the OleFileIO module from PIL, the Python Image Library.")
        (method url-fetch)
        (uri (pypi-uri "property-cached" version ".zip"))
        (sha256
-        (base32 "0wxv5sdx1p7ils36j6j6hfscz8v2vzbq212i8y8r0lrnxpqlx71y"))))
+        (base32 "0wxv5sdx1p7ils36j6j6hfscz8v2vzbq212i8y8r0lrnxpqlx71y"))
+       (patches
+        (search-patches "python-property-cached-asyncio-3_11.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
