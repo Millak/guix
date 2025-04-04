@@ -4379,16 +4379,16 @@ version identifier.")
 (define-public python-serpent
   (package
     (name "python-serpent")
-    (version "1.28")
+    (version "1.41")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "serpent" version))
        (sha256
-        (base32 "1arnckykpkvv2qrp49l1k7q5mr5pisswl0rvdx98x8wsl1n361pk"))))
-    (build-system python-build-system)
+        (base32 "15bhxpihxvbphsvp4wyh2kwfz7xasmki9zwcsj3l6r66wdgh61q4"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-attrs python-pytz))
+     (list python-attrs python-pytz python-setuptools python-wheel))
     (home-page "https://github.com/irmen/Serpent")
     (synopsis "Serializer for literal Python expressions")
     (description
