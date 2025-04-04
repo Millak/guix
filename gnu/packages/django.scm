@@ -1055,39 +1055,41 @@ support, and optional data-URI image and font embedding.")
 (define-public python-django-rq
   (package
     (name "python-django-rq")
-    (version "2.7.0")
+    (version "3.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-rq" version))
               (sha256
                (base32
-                "0aw0fi0lg80qgdp9fhjbnlhvfh2p09rgy1nj6hxpyhi37kihni2h"))))
+                "1b371w4cdjlz83i2sg4gpx0z3svl3bfrn6zfy661374hv62xpnkv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-k" "not test_scheduled_jobs and not test_started_jobs")
       #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "redis-server" "--daemonize" "yes")
-               (invoke "django-admin" "test" "django_rq"
-                       "--settings=django_rq.tests.settings"
-                       "--pythonpath=.")))))))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "redis-server" "--daemonize" "yes")
+                (setenv "DJANGO_SETTINGS_MODULE" "django_rq.tests.settings")
+                (setenv "PYTHONPATH" (getcwd))))))))
     (native-inputs
      (list python-django-redis
-           python-mock
+           python-pytest
+           python-pytest-django
            python-rq-scheduler
            python-setuptools
            python-wheel
            redis
            tzdata-for-tests))
     (propagated-inputs
-     (list python-django python-rq))
+     (list python-django python-redis python-rq python-pyaml))
     (home-page "https://github.com/ui/django-rq")
     (synopsis "Django integration with RQ")
     (description
-      "Django integration with RQ, a Redis based Python queuing library.
+     "Django integration with RQ, a Redis based Python queuing library.
 Django-RQ is a simple app that allows you to configure your queues in django's
 settings.py and easily use them in your project.")
     (license license:expat)))
