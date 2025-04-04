@@ -7736,26 +7736,18 @@ without requiring a page refresh.")
 (define-public python-port-for
   (package
     (name "python-port-for")
-    (version "0.4")
+    (version "0.7.4")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "port-for" version))
+       (uri (pypi-uri "port_for" version))
        (sha256
-        (base32
-         "1pncxlj25ggw99r0ijfbkq70gd7cbhqdx5ivsxy4jdp0z14cpda7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-urllib3
-           (lambda _
-             (substitute* "port_for/_download_ranges.py"
-               (("urllib2") "urllib3")))))))
+        (base32 "13826s2d4hzzmv69wws6a7ryhminclv2bqaw6cpl929gnbki6xzw"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-urllib3))
     (native-inputs
-     (list python-mock))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/kmike/port-for/")
     (synopsis "TCP localhost port finder and association manager")
     (description
