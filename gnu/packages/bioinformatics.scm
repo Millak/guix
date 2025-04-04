@@ -3733,6 +3733,49 @@ It emphasizes modularity and performance.  The API will be immediately
 familiar to anyone with experience of scikit-learn or scipy.")
     (license license:asl2.0)))
 
+(define bgen-sample-files
+  (let* ((name "bgen-sample-files")
+         (commit "7b1bc74f58b326ca19606fa5f3c6093d48367993")
+         (revision "0")
+         (version (git-version "0.0.0" revision commit)))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/fastlmm/bgen-sample-files")
+            (commit commit)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1b8jkscccyspfr3y1b66xvwnljcha08r2i24v9d6hcm5zii0l54w")))))
+
+(define pynsptools-examples-files
+  (let* ((name "pysnptools-examples-files")
+         ;; taken from pysnptools/util/pysnptools.hashdown.json
+         (commit "ed14e050b2b75e7f4ddb73d512fbe928bbdb2b85")
+         (revision "0")
+         (version (git-version "0.0.0" revision commit)))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/fastlmm/PySnpTools")
+            (commit commit)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "0hznpj15kx2sla16wlmcqz21n2vi2qb1493v30vz75hnm1m4iwm1"))
+      (modules '((guix build utils)
+                 (ice-9 ftw)))
+      (snippet
+       #~(begin
+           ;; Delete everything except for examples directory:
+           (define (delete-except exceptions)
+             (lambda (file)
+               (unless (member file `("." ".." ,@exceptions))
+                 (delete-file-recursively file))))
+           (for-each (delete-except '("pysnptools" "tests")) (scandir "."))
+           (with-directory-excursion "pysnptools"
+             (for-each (delete-except '("examples")) (scandir ".")))
+           (with-directory-excursion "tests"
+             (for-each (delete-except '("datasets")) (scandir "."))))))))
+
 (define-public python-pysnptools
   (package
     (name "python-pysnptools")
@@ -3742,12 +3785,39 @@ familiar to anyone with experience of scikit-learn or scipy.")
        (method url-fetch)
        (uri (pypi-uri "pysnptools" version))
        (sha256
-        (base32
-         "1babnyky5fk93as1ybdvpz9x3x5099gkgscxflngzfswin23mspk"))))
+        (base32 "1babnyky5fk93as1ybdvpz9x3x5099gkgscxflngzfswin23mspk"))))
     (build-system pyproject-build-system)
-    ;; Tests require test data from python-bed-reader, which fetches data with
-    ;; python-pooch.
-    (arguments (list #:tests? #f))
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; These tests require the bgen feature and an additional input.
+         "--ignore" "pysnptools/distreader/bgen.py"
+         "--ignore" "pysnptools/distreader/test_bgen2.py"
+         "--ignore" "pysnptools/distreader/distreader.py"
+         "-k" "not pysnptools.distreader.distdata.DistData.val \
+and not pysnptools.distreader.disthdf5.DistHdf5.write \
+and not pysnptools.distreader.distmemmap.DistMemMap.write"
+         ;; These tests require network connection.
+         "--ignore" "pysnptools/util/_example_file.py"
+         "--ignore" "pysnptools/util/filecache/hashdown.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-data-path
+            (lambda _
+              (substitute* "pysnptools/util/pysnptools.hashdown.json"
+                (("https://github\\.com/fastlmm/PySnpTools/\
+raw/ed14e050b2b75e7f4ddb73d512fbe928bbdb2b85")
+                 (string-append "file://" #+pynsptools-examples-files)))
+              (substitute* "pysnptools/util/bgen.hashdown.json"
+                (("https://raw\\.githubusercontent\\.com\
+/fastlmm/bgen-sample-files/7b1bc74f58b326ca19606fa5f3c6093d48367993")
+                 (string-append "file://" #+bgen-sample-files)))))
+          (add-after 'unpack 'loosen-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("(h5py|psutil|wheel)>=[0-9.]*" all target)
+                 target)))))))
     (propagated-inputs
      (list python-bed-reader
            python-cloudpickle
