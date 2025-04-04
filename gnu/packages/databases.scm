@@ -4612,7 +4612,7 @@ reasonable substitute.")
 (define-public python-rq
   (package
     (name "python-rq")
-    (version "1.11.1")
+    (version "2.3.1")
     (source
      (origin
        (method git-fetch)
@@ -4621,24 +4621,20 @@ reasonable substitute.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dnjm2s036l4j4ypq0h903vh132dp2wiwjrn8jicz1nw829dqpzf"))))
-    (build-system python-build-system)
+        (base32 "1w9aqvbvh1mfpgng0mdcskxl5y3ybcqqai5dnwgvg18am0xxhya6"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'start-redis
-                    (lambda _
-                      (invoke "redis-server" "--daemonize" "yes")))
-                  (replace 'check
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        ;; Drop test that needs the SDK for Sentry.io.
-                        (delete-file "tests/test_sentry.py")
-                        ;; Ensure 'rq' and 'rqworker' ends up on PATH.
-                        (setenv "PATH" (string-append out "/bin:"
-                                                      (getenv "PATH")))
-                        (invoke "pytest" "-vv")))))))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'start-redis
+                     (lambda _
+                       (invoke "redis-server" "--daemonize" "yes"))))))
     (native-inputs
-     (list python-mock python-psutil python-pytest redis))
+     (list python-hatchling
+           python-mock
+           python-psutil
+           python-pytest
+           redis))
     (propagated-inputs
      (list python-click python-redis))
     (home-page "https://python-rq.org/")
