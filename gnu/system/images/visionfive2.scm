@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024-2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +38,7 @@
   #:use-module (gnu system)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system image)
+  #:use-module (gnu system linux-initrd)
   #:use-module (guix platforms riscv)
   #:use-module (srfi srfi-26)
   #:export (visionfive2-barebones-os
@@ -70,6 +71,14 @@
                           (type "ext4"))
                         %base-file-systems))
     (kernel-arguments (list "earlycon" "clk_ignore_unused"))
+    (initrd-modules
+     (append (list "mmc_block"
+                   "clk-starfive-jh7110-aon"
+                   "clk-starfive-jh7110-stg"
+                   "phy-jh7110-dphy-tx"
+                   "pcie_starfive"
+                   "nvme")
+             %base-initrd-modules))
     (firmware '())
     (packages (append (list cloud-utils neofetch) %base-packages))
     (services
