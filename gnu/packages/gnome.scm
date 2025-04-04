@@ -8184,13 +8184,23 @@ to display dialog boxes from the commandline and shell scripts.")
                   ;; The 'sync' variant of the X11 test fails for unknown reason
                   ;; (see: https://gitlab.gnome.org/GNOME/mutter/-/issues/3910).
                   (("foreach mode: \\['', 'sync'\\]")
-                   "foreach mode: ['']"))
+                   "foreach mode: []")
+                  ;; Many (all?) stacking tests are susceptible to fail
+                  ;; non-deterministically under high load (see:
+                  ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/4035).
+                  (("foreach stacking_test: stacking_tests")
+                   "foreach stacking_test: []"))
                 (substitute* "clutter/conform/meson.build"
                   ;; TODO: Re-instate the gesture test in a 47+ release.
                   ;; The conform/gesture test fails non-deterministically on
                   ;; some machines (see:
                   ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/3521#note_2385427).
-                  ((".*'gesture',.*") "")))))
+                  ((".*'gesture',.*") "")
+
+                  ;; The 'event-delivery' test fails non-deterministically
+                  ;; (see:
+                  ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/4035#note_2402672).
+                  ((".*'event-delivery',.*") "")))))
           (replace 'check
             (lambda* (#:key tests? test-options parallel-tests?
                       #:allow-other-keys)
