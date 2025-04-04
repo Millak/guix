@@ -3796,6 +3796,26 @@ file name and location, as well as filters with friendly names (such as
 \"source files\" or \"image files\") where supported.")
     (license license:zlib)))
 
+(define-public string-view-lite
+  (package
+    (name "string-view-lite")
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/martinmoene/string-view-lite")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mfp3lmqx7ac0545akxd2v05rrapa3byz8q4gb9rqy94pcqbfyc5"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/martinmoene/string-view-lite")
+    (synopsis "C++17 string-view for older C++")
+    (description "This package provides a compatibility header-only library
+for C++17 string-view.")
+    (license license:boost1.0)))
+
 (define-public tsl-hopscotch-map
   (package
     (name "tsl-hopscotch-map")
