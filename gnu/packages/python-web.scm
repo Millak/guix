@@ -5531,28 +5531,6 @@ upload, and reCAPTCHA.")
 for overriding static files.")
     (license license:gpl3+)))
 
-(define-public python-cookies
-  (package
-    (name "python-cookies")
-    (version "2.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cookies" version))
-              (sha256
-               (base32
-                "13pfndz8vbk4p2a44cfbjsypjarkrall71pgc97glk5fiiw9idnn"))))
-    (build-system python-build-system)
-    (arguments
-     `(;; test are broken: https://gitlab.com/sashahart/cookies/issues/3
-       #:tests? #f))
-    (native-inputs
-     (list python-pytest))
-    (synopsis "HTTP cookie parser and renderer")
-    (description "A RFC 6265-compliant HTTP cookie parser and renderer in
-Python.")
-    (home-page "https://gitlab.com/sashahart/cookies")
-    (license license:expat)))
-
 (define-public python-responses
   (package
     (name "python-responses")
