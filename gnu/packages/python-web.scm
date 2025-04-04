@@ -5468,13 +5468,13 @@ headers required for a compressed response and compresses the response data.")
 (define-public python-flask-seasurf
   (package
     (name "python-flask-seasurf")
-    (version "1.1.1")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Flask-SeaSurf" version))
               (sha256
                (base32
-                "1aaib4n27q0f2alp87mhv3f79vg7qckp71rphbd0mb39qw470lsl"))))
+                "0g5dsm2ikv8q4qcrb2446pbs972l5wkxyfmxsriqdsl02nz06h4f"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #false)) ;there are none
