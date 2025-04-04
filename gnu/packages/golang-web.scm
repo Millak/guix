@@ -39,6 +39,7 @@
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2025 André Batista <nandre@riseup.net>
 ;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -10741,7 +10742,7 @@ protocol.")
 (define-public lyrebird
   (package
     (name "lyrebird")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -10750,10 +10751,11 @@ protocol.")
              (commit (string-append "lyrebird-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qk7npkj0a3a28rp38whl1jwjr0z0hdcsq5bgm8bl1fk9g6cqbnp"))))
+        (base32 "1hhilnk72s0h3cm7zw89n3kiqwa32c0r1a1y5ygp432hmrxvr2b0"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.22
       #:install-source? #f
       #:unpack-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
       #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird/cmd/lyrebird"))
