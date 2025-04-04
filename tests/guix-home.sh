@@ -1,7 +1,7 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2021-2023 Andrew Tropin <andrew@trop.in>
 # Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-# Copyright © 2022, 2023 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -132,6 +132,7 @@ EOF
 	     test -f '$HOME/sample/home.scm'
 	guix home container home.scm --expose="$PWD=$HOME/sample" -- \
 	     rm -v '$HOME/sample/home.scm' && false
+	guix home container home.scm -- touch /whatever && false
     else
 	echo "'guix home container' test SKIPPED" >&2
     fi

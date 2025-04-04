@@ -34,6 +34,10 @@
                                              home-shepherd-configuration-services
                                              shepherd-service-requirement)
   #:autoload   (guix modules) (source-module-closure)
+  #:autoload   (gnu build accounts) (password-entry
+                                     group-entry
+                                     write-passwd
+                                     write-group)
   #:autoload   (gnu build linux-container) (call-with-container %namespaces)
   #:use-module ((gnu system) #:select (operating-system?
                                        operating-system-user-services))
@@ -285,14 +289,13 @@ immediately.  Return the exit status of the process in the container."
    (with-extensions (list guile-gcrypt)
      (with-imported-modules `(((guix config) => ,(make-config.scm))
                               ,@(source-module-closure
-                                 '((gnu build accounts)
-                                   (guix profiles)
+                                 '((guix profiles)
                                    (guix build utils)
                                    (guix build syscalls))
                                  #:select? not-config?))
        #~(begin
            (use-modules (guix build utils)
-                        (gnu build accounts)
+                        ((guix profiles) #:select (load-profile))
                         ((guix build syscalls)
                          #:select (set-network-interface-up)))
 
@@ -302,46 +305,10 @@ immediately.  Return the exit status of the process in the container."
            (define term
              #$(getenv "TERM"))
 
-           (define passwd
-             (password-entry
-              (name #$user-name)
-              (real-name #$user-real-name)
-              (uid #$uid) (gid #$gid) (shell shell)
-              (directory #$home-directory)))
-
-           (define groups
-             (list (group-entry (name "users") (gid #$gid))
-                   (group-entry (gid 65534)       ;the overflow GID
-                                (name "overflow"))))
-
-           ;; (guix profiles) loads (guix utils), which calls 'getpw' from the
-           ;; top level.  Thus, arrange so that it's loaded after /etc/passwd
-           ;; has been created.
-           (module-autoload! (current-module)
-                             '(guix profiles) '(load-profile))
-
-           ;; Create /etc/passwd for applications that need it, such as mcron.
-           (mkdir-p "/etc")
-           (write-passwd (list passwd))
-           (write-group groups)
-
-           (unless #$network?
-             ;; When isolated from the network, provide a minimal /etc/hosts
-             ;; to resolve "localhost".
-             (call-with-output-file "/etc/hosts"
-               (lambda (port)
-                 (display "127.0.0.1 localhost\n" port)
-                 (chmod port #o444))))
-
-           ;; Create /tmp; bits of code expect it, such as
-           ;; 'least-authority-wrapper'.
-           (mkdir-p "/tmp")
-
            ;; Set PATH for things that the activation script might expect, such
            ;; as "env".
            (load-profile #$system-profile)
 
-           (mkdir-p #$home-directory)
            (setenv "HOME" #$home-directory)
            (setenv "GUIX_NEW_HOME" #$home)
            (primitive-load (string-append #$home "/activate"))
@@ -361,6 +328,39 @@ immediately.  Return the exit status of the process in the container."
                        ((_ ...)
                         #~("-c" #$(string-join command))))))))
 
+   #:populate-file-system
+   (lambda ()
+     ;; Create files before the root file system is made read-only.
+     (define passwd
+       (password-entry
+        (name user-name)
+        (real-name user-real-name)
+        (uid uid) (gid gid)
+        (shell "/bin/sh")          ;unused, doesn't have to match (user-shell)
+        (directory home-directory)))
+
+     (define groups
+       (list (group-entry (name "users") (gid gid))
+             (group-entry (gid 65534)             ;the overflow GID
+                          (name "overflow"))))
+
+     ;; Create /etc/passwd for applications that need it, such as mcron.
+     (mkdir-p "/etc")
+     (write-passwd (list passwd))
+     (write-group groups)
+
+     (unless network?
+       ;; When isolated from the network, provide a minimal /etc/hosts
+       ;; to resolve "localhost".
+       (call-with-output-file "/etc/hosts"
+         (lambda (port)
+           (display "127.0.0.1 localhost\n" port)
+           (chmod port #o444))))
+
+     ;; Create /tmp; bits of code expect it, such as
+     ;; 'least-authority-wrapper'.
+     (mkdir-p "/tmp"))
+
    #:namespaces (if network?
                     (delq 'net %namespaces)       ; share host network
                     %namespaces)
@@ -377,7 +377,6 @@ immediately.  Return the exit status of the process in the container."
                     (type "tmpfs")
                     (check? #f)))
    #:mappings (append network-mappings mappings)
-   #:writable-root? #t
    #:guest-uid uid
    #:guest-gid gid))
 
