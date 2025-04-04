@@ -25485,7 +25485,7 @@ object has been freed.")
 (define-public emacs-emacsql
   (package
     (name "emacs-emacsql")
-    (version "4.2.0")
+    (version "4.3.0")
     (source
      (origin
        (method git-fetch)
@@ -25494,34 +25494,31 @@ object has been freed.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08zc3x6cgbn2x67xajz8rnika3bhd86yb6h77q8wg1dxyh1ib2m9"))))
+        (base32 "0bjw4qbm254r51kgl0bg4scblk998p0y3m140k5lmrdb7k4pnxq2"))))
     (build-system emacs-build-system)
     (arguments
      (list
-      #:tests? #true
-      #:test-command #~(list "emacs" "-Q" "--batch"
-                             "-L" "tests"
-                             "-L" "."
-                             "-l" "tests/emacsql-compiler-tests.el"
-                             "-l" "tests/emacsql-external-tests.el"
-                             "-f" "ert-run-tests-batch-and-exit")
+      #:tests? #t
+      #:test-command #~(list "make" "test")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'install 'patch-elisp-shell-shebangs
-            (lambda _
-              (substitute* (find-files "." "\\.el")
-                (("/bin/sh") (which "sh"))))))))
-    (inputs
-     (list emacs-minimal `(,mariadb "dev") `(,mariadb "lib") postgresql))
-    (propagated-inputs
-     (list emacs-finalize emacs-pg emacs-sqlite3-api))
+          (add-after 'unpack 'fix-executable-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((mdb (assoc-ref inputs "mariadb"))
+                    (psql (assoc-ref inputs "postgresql")))
+                (emacs-substitute-variables "emacsql-psql.el"
+                  ("emacsql-psql-executable" (string-append psql "/bin/psql")))
+                (emacs-substitute-variables "emacsql-mysql.el"
+                  ("emacsql-mysql-executable" (string-append mdb "/bin/mysql")))))))))
+    (inputs (list mariadb postgresql))
+    (native-inputs (list emacs-sqlite3-api))
     (home-page "https://github.com/magit/emacsql")
     (synopsis "Emacs high-level SQL database front-end")
     (description "Any readable Lisp value can be stored as a value in EmacSQL,
 including numbers, strings, symbols, lists, vectors, and closures.  EmacSQL
 has no concept of @code{TEXT} values; it's all just Lisp objects.  The Lisp
 object @code{nil} corresponds 1:1 with @code{NULL} in the database.")
-    (license license:gpl3+)))
+    (license license:unlicense)))
 
 (define-public emacs-closql
   (package
