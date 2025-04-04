@@ -373,6 +373,7 @@ FILE-SYSTEMS."
     ,@(if (target-riscv64? system)
           '()
           '("hid-apple"))
+    "mmc_block"                                ;for MMC block device driver
     "dm-crypt" "xts" "serpent_generic" "wp512" ;for encrypted root partitions
     "nls_iso8859-1"                            ;for `mkfs.fat`, et.al
     ,@(if (string-match "^(x86_64|i[3-6]86)-" system)
