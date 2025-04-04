@@ -29898,26 +29898,6 @@ inferring type information using compile-time introspection.")
                 "0rbcfvl7y472sykzdq3vrkw83kar0lpzhk3wq9yj9cdydl8cpfcz"))
               (file-name (git-file-name name version))))))
 
-;; This is needed for python-vaex-core.
-(define-public pybind11-2.3
-  (package
-    (inherit pybind11)
-    (name "pybind11")
-    (version "2.3.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pybind/pybind11")
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "11b6dniri8m05spfd2a19irz82shf4sdca73566bniggrf3zclnf"))
-              (file-name (git-file-name name version))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments pybind11)
-       ((#:tests? tests? #false)
-        #false)))))
-
 (define-public python-pooch
   (package
     (name "python-pooch")
