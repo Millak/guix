@@ -1871,7 +1871,13 @@ toolchain.  Among other features it provides
         (search-patches
          "zig-0.14-use-baseline-cpu-by-default.patch"
          "zig-0.14-use-system-paths.patch"
-         "zig-0.14-fix-runpath.patch"))))
+         "zig-0.14-fix-runpath.patch"))
+       (snippet
+        #~(begin
+            #$(origin-snippet (package-source zig-0.13))
+            ;; TODO: Add this to zig-source.
+            (substitute* "build.zig"
+              (("\\.*.max_rss.*") ""))))))
     (inputs
      (modify-inputs (package-inputs zig-0.13)
        (replace "clang" clang-19)
