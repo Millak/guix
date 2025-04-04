@@ -6677,7 +6677,7 @@ linear algebra routines needed for structured matrices (or operators).")
 (define-public python-botorch
   (package
     (name "python-botorch")
-    (version "0.11.3")
+    (version "0.13.0")
     (source (origin
               (method git-fetch) ;no tests in PyPI
               (uri (git-reference
@@ -6686,7 +6686,7 @@ linear algebra routines needed for structured matrices (or operators).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nf9zrg1khvckb8kdpffqc3bnlhc0x03jd1560qmjamwl3j59m02"))))
+                "1sxgxdq892vg5xj30kb86003b9rwsipc95c7p1zdv865y4f38a8y"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags #~(list "-k" "not test_all_cases_covered")
@@ -6705,7 +6705,8 @@ linear algebra routines needed for structured matrices (or operators).")
                              python-pyro-ppl
                              python-pytorch
                              python-scipy))
-    (native-inputs (list python-pytest
+    (native-inputs (list python-pyre-extensions
+                         python-pytest
                          python-pytest-cov
                          python-setuptools
                          python-setuptools-scm
