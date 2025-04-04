@@ -6700,7 +6700,9 @@ linear algebra routines needed for structured matrices (or operators).")
                              python-scipy))
     (native-inputs (list python-pytest
                          python-pytest-cov
-                         python-setuptools-scm))
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
     (home-page "https://botorch.org")
     (synopsis "Bayesian Optimization in PyTorch")
     (description
