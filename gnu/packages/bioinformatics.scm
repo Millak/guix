@@ -9993,6 +9993,8 @@ sequences).")
                                (with-directory-excursion (string-append "demo/" dir)
                                  (invoke "bash" script))))
                             tests))))))))
+    (native-inputs
+     (list python-wheel))
     (inputs
      (list python-numpy
            python-scipy
