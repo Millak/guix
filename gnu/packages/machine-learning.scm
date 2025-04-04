@@ -6651,18 +6651,16 @@ linear algebra routines needed for structured matrices (or operators).")
     (arguments
      (list #:test-flags
            ;; test_deprecated_methods fails with an AssertionError.
-           #~(list "-k" (string-append "not test_deprecated_methods"))))
+           #~(list "-k" (string-append "not test_deprecated_methods")
+                   ;; Ignore lenghty tests of little relevance.
+                   "--ignore=test/examples/")))
     (propagated-inputs (list python-linear-operator
                              python-mpmath
                              python-scikit-learn
                              python-scipy))
-    (native-inputs (list python-coverage
-                         python-flake8
-                         python-flake8-print
-                         python-nbval
+    (native-inputs (list python-nbval
                          python-pytest
-                         python-setuptools
-                         python-twine))
+                         python-setuptools))
     (home-page "https://gpytorch.ai")
     (synopsis "Implementation of Gaussian Processes in PyTorch")
     (description
