@@ -6,7 +6,7 @@
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Abhishek Cherath <abhi@quic.us>
 ;;;
@@ -64,6 +64,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages speech)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
@@ -128,13 +129,13 @@ engine that uses Wayland for graphics output.")
 (define-public webkitgtk
   (package
     (name "webkitgtk")
-    (version "2.46.6")
+    (version "2.48.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "0ay3cq3hbm2l7h7sgc5jbi8v5yhbbgzdvrkcnyxaj2r2jgk1vczj"))
+               (base32 "13r5xfhvy7gpjdm026wv5njmlfq9ab5sid9snzh0zjndqhhxzvwq"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
@@ -250,6 +251,7 @@ engine that uses Wayland for graphics output.")
            bubblewrap
            elogind
            enchant
+           flite
            geoclue
            gst-plugins-base
            gst-plugins-bad-minimal
