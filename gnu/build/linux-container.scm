@@ -75,10 +75,16 @@ exists."
             (match (get-environment-variables)
               (((names . _) ...) names))))
 
+(define (remount-read-only mount-point)
+  (mount mount-point mount-point "none"
+         (logior MS_BIND MS_REMOUNT MS_RDONLY)))
+
 ;; The container setup procedure closely resembles that of the Docker
 ;; specification:
 ;; https://raw.githubusercontent.com/docker/libcontainer/master/SPEC.md
-(define* (mount-file-systems root mounts #:key mount-/sys? mount-/proc?)
+(define* (mount-file-systems root mounts #:key mount-/sys? mount-/proc?
+                             (populate-file-system (const #t))
+                             writable-root?)
   "Mount the essential file systems and the those in MOUNTS, a list of
 <file-system> objects, relative to ROOT; then make ROOT the new root directory
 for the process."
@@ -177,7 +183,10 @@ for the process."
     (chdir "/")
     (umount "real-root" MNT_DETACH)
     (rmdir "real-root")
-    (chmod "/" #o755)))
+    (populate-file-system)
+    (chmod "/" #o755)
+    (unless writable-root?
+      (remount-read-only "/"))))
 
 (define* (initialize-user-namespace pid host-uids
                                     #:key (guest-uid 0) (guest-gid 0))
@@ -226,12 +235,18 @@ corresponds to the symbols in NAMESPACES."
               namespaces)))
 
 (define* (run-container root mounts namespaces host-uids thunk
-                        #:key (guest-uid 0) (guest-gid 0))
+                        #:key (guest-uid 0) (guest-gid 0)
+                        (populate-file-system (const #t))
+                        writable-root?)
   "Run THUNK in a new container process and return its PID.  ROOT specifies
 the root directory for the container.  MOUNTS is a list of <file-system>
 objects that specify file systems to mount inside the container.  NAMESPACES
 is a list of symbols that correspond to the possible Linux namespaces: mnt,
 ipc, uts, user, and net.
+
+When WRITABLE-ROOT? is false, remount the container's root as read-only before
+calling THUNK.  Call POPULATE-FILE-SYSTEM before the root is (potentially)
+made read-only.
 
 HOST-UIDS specifies the number of host user identifiers to map into the user
 namespace.  GUEST-UID and GUEST-GID specify the first UID (respectively GID)
@@ -258,7 +273,12 @@ that host UIDs (respectively GIDs) map to in the namespace."
                       (mount-file-systems root mounts
                                           #:mount-/proc? (memq 'pid namespaces)
                                           #:mount-/sys?  (memq 'net
-                                                               namespaces)))
+                                                               namespaces)
+                                          #:populate-file-system
+                                          populate-file-system
+                                          #:writable-root?
+                                          (or writable-root?
+                                              (not (memq 'mnt namespaces)))))
                     (lambda args
                       ;; Forward the exception to the parent process.
                       ;; FIXME: SRFI-35 conditions and non-trivial objects
@@ -329,6 +349,8 @@ if there are no child processes left."
                               (host-uids 1) (guest-uid 0) (guest-gid 0)
                               (relayed-signals (list SIGINT SIGTERM))
                               (child-is-pid1? #t)
+                              (populate-file-system (const #t))
+                              writable-root?
                               (process-spawned-hook (const #t)))
   "Run THUNK in a new container process and return its exit status; call
 PROCESS-SPAWNED-HOOK with the PID of the new process that has been spawned.
@@ -348,6 +370,10 @@ UIDs (respectively GIDs) map to in the namespace.
 
 RELAYED-SIGNALS is the list of signals that are \"relayed\" to the container
 process when caught by its parent.
+
+When WRITABLE-ROOT? is false, remount the container's root as read-only before
+calling THUNK.  Call POPULATE-FILE-SYSTEM before the root is (potentially)
+made read-only.
 
 When CHILD-IS-PID1? is true, and if NAMESPACES contains 'pid', then the child
 process runs directly as PID 1.  As such, it is responsible for (1) installing
@@ -402,7 +428,9 @@ load path must be adjusted as needed."
    (lambda (root)
      (let ((pid (run-container root mounts namespaces host-uids thunk*
                                #:guest-uid guest-uid
-                               #:guest-gid guest-gid)))
+                               #:guest-gid guest-gid
+                               #:populate-file-system populate-file-system
+                               #:writable-root? writable-root?)))
        (install-signal-handlers pid)
        (process-spawned-hook pid)
        (match (waitpid pid)

@@ -961,6 +961,7 @@ WHILE-LIST."
                                  #:emulate-fhs? emulate-fhs?)))
           #:guest-uid uid
           #:guest-gid gid
+          #:writable-root? #t                     ;for backward compatibility
           #:namespaces (if network?
                            (delq 'net %namespaces) ; share host network
                            %namespaces)))))))

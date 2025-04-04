@@ -312,12 +312,15 @@ Run the container with the given options."))
                 #:namespaces (if #$shared-network?
                                  (delq 'net %namespaces)
                                  %namespaces)
+                #:writable-root? #t
                 #:process-spawned-hook explain)))))
 
     (gexp->script "run-container" script)))
 
 (define* (eval/container exp
                          #:key
+                         (populate-file-system (const #t))
+                         writable-root?
                          (mappings '())
                          (mounts '())
                          (namespaces %namespaces)
@@ -367,6 +370,8 @@ effects."
                                    (list "-c"
                                          (object->string
                                           (lowered-gexp-sexp lowered))))))
+                  #:writable-root? writable-root?
+                  #:populate-file-system populate-file-system
                   #:namespaces namespaces
                   #:guest-uid guest-uid
                   #:guest-gid guest-gid))))))

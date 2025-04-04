@@ -143,6 +143,32 @@
      #:namespaces '(user mnt))))
 
 (skip-if-unsupported)
+(test-assert "call-with-container, mnt namespace, read-only root"
+  (zero?
+   (call-with-container '()
+     (lambda ()
+       (assert-exit (and (file-is-directory? "/witness")
+                         (catch 'system-error
+                           (lambda ()
+                             (mkdir "/whatever")
+                             #f)
+                           (lambda args
+                             (= (system-error-errno args) EROFS))))))
+     #:populate-file-system (lambda ()
+                              (mkdir "/witness"))
+     #:namespaces '(user mnt))))
+
+(skip-if-unsupported)
+(test-assert "call-with-container, mnt namespace, writable root"
+  (zero?
+   (call-with-container '()
+     (lambda ()
+       (mkdir "whatever")
+       (assert-exit (file-is-directory? "/whatever")))
+     #:writable-root? #t
+     #:namespaces '(user mnt))))
+
+(skip-if-unsupported)
 (test-assert "container-excursion"
   (call-with-temporary-directory
    (lambda (root)

@@ -377,6 +377,7 @@ immediately.  Return the exit status of the process in the container."
                     (type "tmpfs")
                     (check? #f)))
    #:mappings (append network-mappings mappings)
+   #:writable-root? #t
    #:guest-uid uid
    #:guest-gid gid))
 
