@@ -31439,15 +31439,16 @@ in doctests.")
 (define-public python-attr
   (package
     (name "python-attr")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "attr" version))
        (sha256
-        (base32
-         "0pbpskvxp5hzdvcaf766ljwpckshir8sf7z6jqji6zyib20594ch"))))
-    (build-system python-build-system)
+        (base32 "1x2627x0n2rxx8wib4cksbjjnncff8finq97k37dq70qd2kvrvhw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/denis-ryzhkov/attr")
     (synopsis "Decorator for attributes of target function or class")
     (description "Simple decorator to set attributes of target function or
