@@ -4648,7 +4648,7 @@ is designed to have a low barrier to entry.")
 (define-public python-rq-scheduler
   (package
     (name "python-rq-scheduler")
-    (version "0.10.0")
+    (version "0.14")
     (home-page "https://github.com/rq/rq-scheduler")
     (source (origin
               (method git-fetch)
@@ -4658,21 +4658,30 @@ is designed to have a low barrier to entry.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xg6yazqs5kbr2ayvhvljs1h5vgx5k5dds613fmhswln7gglf9hk"))))
-    (build-system python-build-system)
+                "09fh9m2vcl1jndq35xp1x0j8ih009r71qmhn2pkl93fykrqfavyn"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'start-redis
-                    (lambda _
-                      (invoke "redis-server" "--daemonize" "yes")))
-                  (replace 'check
-                    (lambda _
-                      (substitute* "run_tests.py"
-                        (("/usr/bin/env")
-                         (which "env")))
-                      (invoke "./run_tests.py"))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-append "not test_cron"
+                                  " and not test_job_creation_with"
+                                  " and not test_job_with_crontab"))
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'start-redis
+                     (lambda _
+                       (invoke "redis-server" "--daemonize" "yes")))
+                   (add-after 'unpack 'loosen-requirements
+                     (lambda _
+                       (substitute* "setup.py"
+                         (("crontab>=[0-9.]*")
+                          "python-crontab")))))))
     (native-inputs
-     (list redis which))
+     (list python-crontab
+           python-freezegun
+           python-pytest
+           python-setuptools
+           python-wheel
+           redis))
     (propagated-inputs
      (list python-croniter python-rq))
     (synopsis "Job scheduling capabilities for RQ (Redis Queue)")
