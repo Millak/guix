@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2016-2017, 2019-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2019-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Google LLC
@@ -319,13 +319,14 @@ Run the container with the given options."))
 (define* (eval/container exp
                          #:key
                          (mappings '())
+                         (mounts '())
                          (namespaces %namespaces)
                          (guest-uid 0) (guest-gid 0))
   "Evaluate EXP, a gexp, in a new process executing in separate namespaces as
-listed in NAMESPACES.  Add MAPPINGS, a list of <file-system-mapping>, to the
-set of directories visible in the process's mount namespace.  Inside the
-namespaces, run code as GUEST-UID and GUEST-GID.  Return the process' exit
-status as a monadic value.
+listed in NAMESPACES.  Add MOUNTS, a list of <file-system>, and MAPPINGS, a
+list of <file-system-mapping>, to the set of directories visible in the
+process's mount namespace.  Inside the namespaces, run code as GUEST-UID and
+GUEST-GID.  Return the process' exit status as a monadic value.
 
 This is useful to implement processes that, unlike derivations, are not
 entirely pure and need to access the outside world or to perform side
@@ -342,13 +343,14 @@ effects."
     (mbegin %store-monad
       (built-derivations inputs)
       (mlet %store-monad ((closure ((store-lift requisites) items)))
-        (return (call-with-container (map file-system-mapping->bind-mount
-                                          (append (map (lambda (item)
-                                                         (file-system-mapping
-                                                          (source item)
-                                                          (target source)))
-                                                       closure)
-                                                  mappings))
+        (return (call-with-container (append mounts
+                                             (map file-system-mapping->bind-mount
+                                                  (append (map (lambda (item)
+                                                                 (file-system-mapping
+                                                                  (source item)
+                                                                  (target source)))
+                                                               closure)
+                                                          mappings)))
                   (lambda ()
                     (apply execl
                            (string-append (derivation-input-output-path
