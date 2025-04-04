@@ -718,6 +718,29 @@ interface similar to many user-friendly editors.  JOE has some of the key
 bindings and many of the powerful features of GNU Emacs.")
     (license license:gpl3+)))
 
+(define-public jupp
+  (package
+    (name "jupp")
+    (version "3.1jupp41")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.mirbsd.org/MirOS/dist/jupp/joe-"
+                           version ".tgz"))
+       (sha256
+        (base32
+         "0by8c640kxdf05xvrj8n6awg5mq847iwkhryz7zzxghryn5fmf3v"))))
+    (build-system gnu-build-system)
+    (inputs (list ncurses))
+    (home-page "http://mirbsd.de/jupp")
+    (synopsis "Portable version of JOE’s Own Editor")
+    (description
+    "Jupp is the portable version of JOE’s Own Editor.  It has been
+enhanced by functions intended for programmers or other professional
+users.  It comes with the editor flavors known from joe, specifically,
+jmacs, joe, jpico, jstar, and rjoe.")
+    (license license:gpl1)))
+
 (define-public jucipp
   (package
     (name "jucipp")
