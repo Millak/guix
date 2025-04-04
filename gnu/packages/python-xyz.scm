@@ -29820,38 +29820,21 @@ user-space file systems in Python.")
 (define-public python-stone
   (package
     (name "python-stone")
-    (version "3.2.1")
+    (version "3.3.9")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "stone" version))
-        (sha256
-         (base32
-          "0xby5mpsms7b2rv8j6mvxzmzz5i9ii01brb9ylxz6kiv2i08piwv"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'change-version-requirements
-           (lambda _
-             ;; Match the requirement in test/requirements.txt
-             (substitute* "setup.py"
-               (("pytest < 5") "pytest < 7"))
-             ;; We don't care about a coverage report.
-             (substitute* "test/requirements.txt"
-               (("coverage.*") "coverage\n"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; These tests don't import correctly.
-               (delete-file "test/test_js_client.py")
-               (delete-file "test/test_tsd_types.py")
-               (delete-file "test/test_python_gen.py")
-               (invoke "pytest")))))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dropbox/stone")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x0kj4jygssjn66lbkln95chhf85vzy1wnpziy9jvpf4kbc1bmfy"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-ply python-six))
+     (list python-jinja2 python-packaging python-ply python-six))
     (native-inputs
-     (list python-coverage python-mock python-pytest python-pytest-runner))
+     (list python-pytest python-pytest-runner python-setuptools python-wheel))
     (home-page "https://github.com/dropbox/stone")
     (synopsis "Official Api Spec Language for Dropbox")
     (description
