@@ -1634,17 +1634,14 @@ signatures.")
         (uri (pypi-uri "PGPy" version))
         (sha256
          (base32 "10w3h934fi1ijx72ppn67a50yhkf8n1db6xx02gk2fjc7wsjx717"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+     (list #:test-flags
+           ;; All broken tests are in this file.
+           ;; They fail with ValueError: key_size must be at least 1024-bits.
+           #~(list "--ignore" "tests/test_10_exceptions.py")))
     (native-inputs
-     (list python-pytest
-           python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-cryptography python-pyasn1))
     (home-page "https://github.com/SecurityInnovation/PGPy")
     (synopsis "Python implementation of OpenPGP")
