@@ -231,6 +231,7 @@
   #:use-module (gnu packages gsasl)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
@@ -31855,32 +31856,29 @@ format.")
 (define-public python-crontab
   (package
     (name "python-crontab")
-    (version "3.0.0")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri name version))
        (sha256
-        (base32 "0yd3vdhl7z8lxa30czsry65srha51ppdcwnhjgxx9pwx0djp9yvr"))))
-    (build-system python-build-system)
+        (base32 "0sy3qlki43n6qmhzzzyya4wcs50mcp3mg1ddn9h39plsscfps1j0"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'disable-failing-tests
-            (lambda _
-              (substitute* '("tests/test_compatibility.py"
-                             "tests/test_frequency.py")
-                (("test_07_non_posix_shell")
-                 "__off_test_07_non_posix_shell")
-                ;; Fails on leap years
-                (("test_19_frequency_at_month")
-                 "__off_test_19_frequency_at_month")
-                ;; AssertionError: 48 != 24
-                (("test_20_frequency_at_year")
-                 "__off_test_20_frequency_at_year")))))))
+     (list #:test-flags
+           ;; This test is made for Windows.
+           #~(list "-k" "not test_07_non_posix_shell")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'defaults-to-mcron
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "crontab.py"
+                     (("/usr/bin/crontab")
+                      (search-input-file inputs "bin/crontab"))))))))
     (inputs
-     (list python-dateutil))
+     (list mcron python-dateutil))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://gitlab.com/doctormo/python-crontab/")
     (synopsis "Module for reading and writing crontab files")
     (description "This Python module can read, write crontab files, and
