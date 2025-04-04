@@ -2432,7 +2432,8 @@ sharing of scientific data.")
                                               (search-input-file
                                                %build-inputs
                                                "/lib/libhdf5.so")))))
-    (inputs (list netcdf hdf5))
+    (inputs (list hdf5))
+    (propagated-inputs (list netcdf)) ;include/netcdf includes netcdf.h
     (home-page "https://github.com/Unidata/netcdf-cxx4")
     (synopsis "NetCDF C++ interface")
     (description
@@ -2447,7 +2448,8 @@ scientific data storage.")
     (synopsis "NetCDF C++ interface (with MPI support)")
     (inputs (modify-inputs (package-inputs netcdf-cxx4)
               (prepend openmpi)
-              (replace "hdf5" hdf5-parallel-openmpi)
+              (replace "hdf5" hdf5-parallel-openmpi)))
+    (propagated-inputs (modify-inputs (package-propagated-inputs netcdf-cxx4)
               (replace "netcdf" netcdf-parallel-openmpi)))))
 
 (define-public n2p2
