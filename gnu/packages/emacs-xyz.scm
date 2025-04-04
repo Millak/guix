@@ -6616,37 +6616,36 @@ restore the saved place.")
 
 (define-public emacs-org-pdftools
   (let ((revision "0")
-        (commit "4e420233a153a9c4ab3d1a7e1d7d3211c836f0ac"))
+        (commit "5613b7ae561e0af199f25aacc0a9c34c16638408"))
     (package
       (name "emacs-org-pdftools")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "1.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                       (url "https://github.com/fuxialexander/org-pdftools.git")
-                       (commit commit)))
+                      (url "https://github.com/fuxialexander/org-pdftools/")
+                      (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0n8apjqlm7rs66l635szvsvc4qn8m147g07rgkd30a4v4m24mj8x"))))
+                  "0p86943abk55bc2402w5lb7115l3b61wv0w07m84wxi4hbfqk8k6"))))
       (build-system emacs-build-system)
       (arguments
-       (list #:phases
+       (list #:tests? #f ; there are no tests
+             #:phases
              #~(modify-phases %standard-phases
-               (add-after 'unpack 'setenv
-                 (lambda _
-                   (substitute* "org-pdftools.el"
-                    ;; Fix a small typo.
-                    (("let [(]pdf-isearch-narrow-to-page t[)]")
-                     "let ((pdf-isearch-narrow-to-page t))"))
-                   (setenv "HOME" "/tmp"))))))
+                 (add-after 'unpack 'setenv
+                   (lambda _
+                     (substitute* "org-pdftools.el"
+                       ;; Fix a small typo.
+                       (("let [(]pdf-isearch-narrow-to-page t[)]")
+                        "let ((pdf-isearch-narrow-to-page t))"))
+                     (setenv "HOME" "/tmp"))))))
       (propagated-inputs (list emacs-org-noter emacs-pdf-tools))
-      ;(native-inputs (list emacs-log4e emacs-with-simulated-input))
-      (synopsis "Org mode PDF tools (for doc-view, nov.el and pdf-tools)")
-      (description "This package provides org-mode PDF tools (for builtin
-doc-view and for pdf-view), for example to be able to store links to a page
-in a PDF into an org file.")
-      (home-page "https://github.com/fuxialexander/org-pdftools")
+      (synopsis "Support for links to documents in pdfview mode")
+      (description "This package adds support for org links from pdftools buffers
+with more precise location control.")
+      (home-page "https://github.com/fuxialexander/org-pdftools/")
       (license license:gpl3+))))
 
 (define-public emacs-sage-shell-mode
