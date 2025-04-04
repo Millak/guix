@@ -1414,42 +1414,22 @@ Luhn and family of ISO/IEC 7064 check digit algorithms.")
 (define-public python-duniterpy
   (package
     (name "python-duniterpy")
-    (version "1.1.1")
+    (version "1.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "duniterpy" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.duniter.org/clients/python/duniterpy")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0h0fsawsrjd50lb1bkysb21ph39qlhmiymd3r5vs695qxvbwaqaa"))))
+        (base32 "1ysh9b5lzg053hv4iw3zbn7hid05qssiwmrl8sir8qlk958r8x60"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; FIXME: Tests fail with: "TypeError: block_uid() missing 1 required
-     ;; positional argument: 'value'".
-     `(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'loosen-requirements
-                    (lambda _
-                      (substitute* "pyproject.toml"
-                        (("mnemonic = \"\\^0\\.19")
-                         "mnemonic = \">=0.19")
-                        (("jsonschema = \"\\^3\\.2")
-                         "jsonschema = \">=3.2"))))
-                  (add-after 'unpack 'adjust-for-new-libnacl
-                    (lambda _
-                      ;; Mimic upstream commit ad8f6a26e9e7067; remove
-                      ;; for newer versions of duniterpy.
-                      (substitute* "pyproject.toml"
-                        (("libnacl = \"1\\.8")
-                         "libnacl = \">=1.9"))
-                      (substitute* "duniterpy/key/ascii_armor.py"
-                        (("from libnacl\\.version import version as libnacl_version")
-                         "import importlib.metadata
-libnacl_version = importlib.metadata.version('libnacl')")))))))
     (native-inputs
-     (list python-poetry-core))
+     (list python-poetry-core-next
+           python-pytest))
     (propagated-inputs
-     (list python-attrs
-           python-base58
+     (list python-base58
            python-graphql-core
            python-jsonschema
            python-libnacl
