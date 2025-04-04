@@ -7949,7 +7949,11 @@ structure for Python.")
               (setenv "LANG" "")
               ;; required for tests/test_configmanager.py
               (setenv "HOME" "/tmp"))))))
-    (native-inputs (list python-pytest python-pytest-cov python-pyhamcrest))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pyhamcrest
+           python-wheel))
     (inputs
      (list bash-minimal ; for wrap-program
            gtksourceview-3
