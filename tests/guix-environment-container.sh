@@ -1,7 +1,7 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2015 David Thompson <davet@gnu.org>
 # Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
-# Copyright © 2023 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2023, 2025 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -185,6 +185,15 @@ HOME="$tmpdir" guix environment --bootstrap --container --user=foognu \
             --ad-hoc guile-bootstrap --pure \
             -- /bin/sh -c 'test $(pwd) == "/home/foo" -a ! -d '"$tmpdir"
 )
+
+# Check that the root file system is read-only by default...
+guix environment --bootstrap --container --ad-hoc guile-bootstrap \
+     -- guile -c '(mkdir "/whatever")' && false
+
+# ... and can be made writable.
+guix environment --bootstrap --container --ad-hoc guile-bootstrap	\
+     --writable-root							\
+     -- guile -c '(mkdir "/whatever")'
 
 # Check the exit code.
 

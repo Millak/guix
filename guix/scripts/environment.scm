@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2018 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
@@ -120,6 +120,8 @@ shell'."
   (display (G_ "
       --no-cwd           do not share current working directory with an
                          isolated container"))
+  (display (G_ "
+      --writable-root    make the container's root file system writable"))
 
   (display (G_ "
       --share=SPEC       for containers, share writable host file system
@@ -261,6 +263,9 @@ use '--preserve' instead~%"))
          (option '("no-cwd") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'no-cwd? #t result)))
+         (option '("writable-root") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'writable-root? #t result)))
          (option '("share") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'file-system-mapping
@@ -483,7 +488,10 @@ providing a symlink for CC if GCC is in the container PROFILE, and writing
                   (newline port))
                 ;; /lib/nss is needed as Guix's nss puts libraries
                 ;; there rather than in the lib directory.
-                '("/lib" "/lib/nss")))))
+                '("/lib" "/lib/nss"))))
+
+  ;; Create /etc/ld.so.cache.
+  (invoke "/sbin/ldconfig" "-X"))
 
 (define (status->exit-code status)
   "Compute the exit code made from STATUS, a value as returned by 'waitpid',
@@ -527,8 +535,7 @@ cache."
            (setenv "PATH" (string-append "/bin:/usr/bin:/sbin:/usr/sbin"
                                          (if (getenv "PATH")
                                              (string-append ":" (getenv "PATH"))
-                                             "")))
-           (invoke "ldconfig" "-X"))
+                                             ""))))
          (apply execlp program program args))
        (lambda _
          ;; Report the error from here because the parent process cannot
@@ -735,6 +742,7 @@ regexps in WHITE-LIST."
 (define* (launch-environment/container #:key command bash user user-mappings
                                        profile manifest link-profile? network?
                                        map-cwd? emulate-fhs? nesting?
+                                       writable-root?
                                        (setup-hook #f)
                                        (symlinks '()) (white-list '()))
   "Run COMMAND within a container that features the software in PROFILE.
@@ -881,15 +889,9 @@ WHILE-LIST."
        (exit/status
         (call-with-container file-systems
           (lambda ()
-            ;; Setup global shell.
-            (mkdir-p "/bin")
-            (symlink bash "/bin/sh")
-
             ;; Set a reasonable default PS1.
             (setenv "PS1" "\\u@\\h \\w [env]\\$ ")
 
-            ;; Setup directory for temporary files.
-            (mkdir-p "/tmp")
             (for-each (lambda (var)
                         (setenv var "/tmp"))
                       ;; The same variables as in Nix's 'build.cc'.
@@ -899,42 +901,9 @@ WHILE-LIST."
             (setenv "LOGNAME" logname)
             (setenv "USER" logname)
 
-            ;; Create a dummy home directory.
-            (mkdir-p home-dir)
             (setenv "HOME" home-dir)
 
-            ;; Create symlinks.
-            (let ((symlink->directives
-                   (match-lambda
-                     ((source '-> target)
-                      `((directory ,(dirname source))
-                        (,source -> ,(string-append profile "/" target)))))))
-              (for-each (cut evaluate-populate-directive <> ".")
-                        (append-map symlink->directives symlinks)))
-
-            ;; Call an additional setup procedure, if provided.
-            (when setup-hook
-              (setup-hook profile))
-
-            ;; If requested, link $GUIX_ENVIRONMENT to $HOME/.guix-profile;
-            ;; this allows programs expecting that path to continue working as
-            ;; expected within a container.
-            (when link-profile? (link-environment profile home-dir))
-
-            ;; Create a dummy /etc/passwd to satisfy applications that demand
-            ;; to read it, such as 'git clone' over SSH, a valid use-case when
-            ;; sharing the host's network namespace.
-            (mkdir-p "/etc")
-            (write-passwd (list passwd))
-            (write-group groups)
-
             (unless network?
-              ;; When isolated from the network, provide a minimal /etc/hosts
-              ;; to resolve "localhost".
-              (call-with-output-file "/etc/hosts"
-                (lambda (port)
-                  (display "127.0.0.1 localhost\n" port)))
-
               ;; Allow local AF_INET communications.
               (set-network-interface-up "lo"))
 
@@ -959,9 +928,52 @@ WHILE-LIST."
                                      profile)
                                  manifest #:pure? #f
                                  #:emulate-fhs? emulate-fhs?)))
+          #:populate-file-system
+          (lambda ()
+            ;; Setup global shell.
+            (mkdir-p "/bin")
+            (symlink bash "/bin/sh")
+
+            ;; Setup directory for temporary files.
+            (mkdir-p "/tmp")
+
+            ;; Create a dummy home directory.
+            (mkdir-p home-dir)
+
+            ;; Create symlinks.
+            (let ((symlink->directives
+                   (match-lambda
+                     ((source '-> target)
+                      `((directory ,(dirname source))
+                        (,source -> ,(string-append profile "/" target)))))))
+              (for-each (cut evaluate-populate-directive <> ".")
+                        (append-map symlink->directives symlinks)))
+
+            ;; If requested, link $GUIX_ENVIRONMENT to $HOME/.guix-profile;
+            ;; this allows programs expecting that path to continue working as
+            ;; expected within a container.
+            (when link-profile? (link-environment profile home-dir))
+
+            ;; Create a dummy /etc/passwd to satisfy applications that demand
+            ;; to read it, such as 'git clone' over SSH, a valid use-case when
+            ;; sharing the host's network namespace.
+            (mkdir-p "/etc")
+            (write-passwd (list passwd))
+            (write-group groups)
+
+            (unless network?
+              ;; When isolated from the network, provide a minimal /etc/hosts
+              ;; to resolve "localhost".
+              (call-with-output-file "/etc/hosts"
+                (lambda (port)
+                  (display "127.0.0.1 localhost\n" port))))
+
+            ;; Call an additional setup procedure, if provided.
+            (when setup-hook
+              (setup-hook profile)))
           #:guest-uid uid
           #:guest-gid gid
-          #:writable-root? #t                     ;for backward compatibility
+          #:writable-root? writable-root?
           #:namespaces (if network?
                            (delq 'net %namespaces) ; share host network
                            %namespaces)))))))
@@ -1089,6 +1101,7 @@ command-line option processing with 'parse-command-line'."
          (symlinks     (assoc-ref opts 'symlinks))
          (network?     (assoc-ref opts 'network?))
          (no-cwd?      (assoc-ref opts 'no-cwd?))
+         (writable-root? (assoc-ref opts 'writable-root?))
          (emulate-fhs? (assoc-ref opts 'emulate-fhs?))
          (nesting?     (assoc-ref opts 'nesting?))
          (user         (assoc-ref opts 'user))
@@ -1136,6 +1149,8 @@ command-line option processing with 'parse-command-line'."
         (leave (G_ "'--user' cannot be used without '--container'~%")))
       (when no-cwd?
         (leave (G_ "--no-cwd cannot be used without '--container'~%")))
+      (when writable-root?
+        (leave (G_ "'--writable-root' cannot be used without '--container'~%")))
       (when emulate-fhs?
         (leave (G_ "'--emulate-fhs' cannot be used without '--container'~%")))
       (when nesting?
@@ -1221,6 +1236,7 @@ when using '--container'; doing nothing~%"))
                                                   #:link-profile? link-prof?
                                                   #:network? network?
                                                   #:map-cwd? (not no-cwd?)
+                                                  #:writable-root? writable-root?
                                                   #:emulate-fhs? emulate-fhs?
                                                   #:nesting? nesting?
                                                   #:symlinks symlinks

@@ -6481,6 +6481,10 @@ directory within the container.  If this is undesirable,
 be automatically shared and will change to the user's home directory
 within the container instead.  See also @option{--user}.
 
+@item --writable-root
+When using @option{--container}, this option makes the root file system
+writable (it is read-only by default).
+
 @item --expose=@var{source}[=@var{target}]
 @itemx --share=@var{source}[=@var{target}]
 For containers, @option{--expose} (resp. @option{--share}) exposes the
@@ -14125,7 +14129,8 @@ environment, with ungrafted packages (@pxref{Security Updates}, for more
 info on grafts).
 
 To get closer to a container like that used by the build daemon, we can
-remove @file{/bin/sh}:
+remove @file{/bin/sh} (you'll first need to pass the
+@option{--writable-root} option to @command{guix shell}):
 
 @example
 [env]# rm /bin/sh
