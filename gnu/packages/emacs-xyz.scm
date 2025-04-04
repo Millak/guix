@@ -43081,6 +43081,31 @@ user interface.  SEMI-EPG is a variant of SEMI, which features supports to
 EasyPG and latest Emacs.")
       (license license:gpl2+))))
 
+(define-public emacs-wallabag
+  (let ((commit "071cf68d3b150c4ae20eef79e301c3ba96d312ab")
+        (revision "0"))
+    (package
+      (name "emacs-wallabag")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/chenyanming/wallabag.el/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "17awlzmxw3l7l8882k89gj1wv3ssni9vfxhih6mrwcminns83drl"))))
+      (build-system emacs-build-system)
+      (arguments
+       '(#:tests? #f ;no tests
+         #:include (cons* "emojis.alist" %default-include)))
+      (propagated-inputs (list emacs-emacsql emacs-request emacs-s emacs-gptel))
+      (home-page "https://github.com/chenyanming/wallabag.el/")
+      (synopsis "Emacs interface to wallabag")
+      (description "This package manages articles from a wallabag instance.")
+      (license license:gpl3+))))
+
 (define-public emacs-wanderlust
   ;; No release since Jan 15, 2010.
   (let ((commit "891e223673c2c550efbe411885af860c909f0120")
