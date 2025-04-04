@@ -5588,7 +5588,10 @@ Note: currently this package does not provide GPU support.")
                    ;; These refuse to be run on CPU and really want a GPU
                    " and not test_add_random_walk_pe"
                    " and not test_asap"
-                   " and not test_two_hop"))
+                   " and not test_two_hop"
+                   ;; Failed when switched to python@3.11
+                   ;; typing module internals
+                   " and not test_type_repr"))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'delete-top-level-directories
