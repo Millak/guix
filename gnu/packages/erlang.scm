@@ -49,7 +49,7 @@
 (define-public erlang
   (package
     (name "erlang")
-    (version "27.3")
+    (version "27.3.2")
     (source (origin
               (method git-fetch)
               ;; The tarball from http://erlang.org/download contains many
@@ -61,7 +61,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07anydbg96y05n8mgh9b0gnw7zv5bw72zfl93hjhj5grdl27v99y"))
+                "10a692s0404q2cl0dpd9393br8cskvhgc4crb9469bndxrsxnkc2"))
               (patches (search-patches "erlang-man-path.patch"))))
     (build-system gnu-build-system)
     (native-inputs
@@ -74,7 +74,7 @@
                                "/OTP-" version "/otp_doc_man_" version ".tar.gz"))
            (sha256
             (base32
-             "1j0ln7hcsnabpb7m7vhn2k440n0vham9hlvwad5d4pp5f4wy08rj"))))))
+             "1m3j308zxnrpr8lijajwnnym34x3qwd587z767h4gd3c49gg219x"))))))
     (inputs
      (list ncurses openssl wxwidgets))
     (propagated-inputs
