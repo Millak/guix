@@ -1,0 +1,67 @@
+From 8cb8808b3ceccf4ab3ac542739ef490abe7e76b3 Mon Sep 17 00:00:00 2001
+Message-ID: <8cb8808b3ceccf4ab3ac542739ef490abe7e76b3.1743597010.git.ngraves@ngraves.fr>
+From: Nicolas Graves <ngraves@ngraves.fr>
+Date: Wed, 2 Apr 2025 14:29:40 +0200
+Subject: [PATCH] Fix tsl map use
+
+---
+ packages/vaex-core/src/hash_string.hpp | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/packages/vaex-core/src/hash_string.hpp b/packages/vaex-core/src/hash_string.hpp
+index d3b60199..0ed69d1c 100644
+--- a/packages/vaex-core/src/hash_string.hpp
++++ b/packages/vaex-core/src/hash_string.hpp
+@@ -39,13 +39,15 @@ class hash_base : public hash_common<Derived, T, hashmap<T, int64_t>> {
+         for (int i = 0; i < nmaps; i++) {
+             string_arrays.emplace_back(std::make_shared<StringList64>());
+             StringList64 *strings = string_arrays[i].get();
+-            // equal_to<string_ref>& eq = this->maps[i].key_eq();
+-            this->maps[i].m_ht.strings_equals = strings;
+-            this->maps[i].m_ht.strings_hash = strings;
++            equal_to<key_type> eq;
++            eq.strings_equals = strings;
++            hash<key_type> h;
++            h.strings_hash = strings;
++            this->maps[i] = hashmap_type(8, h, eq);
+         }
+     };
+ 
+-    virtual std::string _get(hashmap_type &map, typename hashmap_type::key_type key) override { return map.m_ht.strings_equals->get(key.index); };
++    virtual std::string _get(hashmap_type &map, typename hashmap_type::key_type key) override { return string_arrays[0]->get(key.index); };
+ 
+     size_t bytes_used() const {
+         int64_t buffer_size = 0; // collect buffer size
+@@ -391,9 +393,12 @@ class ordered_set : public hash_base<ordered_set<T>, T, T, V> {
+     template <class SL>
+     static ordered_set *create(std::shared_ptr<SL> keys, int64_t null_value, int64_t nan_count, int64_t null_count, std::string *fingerprint) {
+         ordered_set *set = new ordered_set(1);
+-        set->maps[0].m_ht.strings_equals = keys.get();
+-        set->maps[0].m_ht.strings_hash = keys.get();
+         set->string_arrays[0] = keys;
++        equal_to<key_type> eq;
++        eq.strings_equals = keys.get();
++        hash<key_type> h;
++        h.strings_hash = keys.get();
++        set->maps[0] = hashmap_type(keys->length, h, eq);
+         {
+             size_t size = keys->length;
+             set->maps[0].reserve(size);
+@@ -701,9 +706,11 @@ class index_hash : public hash_base<index_hash<T>, T, T, V> {
+             // string_arrays_overflow.emplace_back(std::make_shared<StringList64>());
+             // for each key in overflow, it should be present in the main string array
+             StringList64 *strings = this->string_arrays[i].get();
+-            // equal_to<string_ref>& eq = this->maps[i].key_eq();
+-            overflows[i].m_ht.strings_equals = strings;
+-            overflows[i].m_ht.strings_hash = strings;
++            equal_to<key_type> eq;
++            eq.strings_equals = strings;
++            hash<key_type> h;
++            h.strings_hash = strings;
++            overflows[i] = overflow_type(8, h, eq);
+         }
+     }
+ 
+-- 
+2.49.0
+

@@ -4123,24 +4123,44 @@ documentation for more information.")
 (define-public python-vaex-core
   (package
     (name "python-vaex-core")
-    (version "4.17.1")
+    (version "4.18.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "vaex-core" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://www.github.com/maartenbreddels/vaex")
+             (commit (string-append "core-v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1rzx5px3fwi5mh1z8y91brvffk7dkhj287lnmqp8zp6836kkqhya"))
-       (modules '((guix build utils)))
+        (base32 "1sp096msbzgjlwi8c1ink2bp4pjff9pvikqz1y1li8d3in4gpgdr"))
+       (patches
+        (search-patches "python-vaex-core-fix-tsl-use.patch"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)))
        (snippet
-        ;; Remove bundled libraries
-        '(for-each delete-file-recursively
-                   (list "vendor/boost"
-                         "vendor/pcre"
-                         "vendor/pybind11")))))
+        #~(begin
+            ;; Delete everything except for vaex-core itself:
+            (define (delete-except exception)
+              (lambda (file)
+                (unless (member file `("." ".." ,exception))
+                  (delete-file-recursively file))))
+            (for-each (delete-except "packages") (scandir "."))
+            (with-directory-excursion "packages"
+              (for-each (delete-except "vaex-core") (scandir ".")))
+            (for-each (lambda (file)
+                        (unless (member file '("." ".."))
+                          (rename-file
+                           (string-append "packages/vaex-core/" file)
+                           file)))
+                      (scandir "packages/vaex-core"))
+            (delete-file-recursively "packages")
+            (delete-file-recursively "vendor")))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #false)) ;require vaex.server and others, which require vaex-core.
+    (arguments
+     ;; require vaex.server and others, which require vaex-core.
+     (list #:tests? #false))
     (inputs
-     (list boost pcre pybind11-2.3))
+     (list boost pcre pybind11 string-view-lite tsl-hopscotch-map))
     (propagated-inputs
      (list python-aplus
            python-blake3
