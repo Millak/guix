@@ -45,6 +45,7 @@
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2620,6 +2621,40 @@ computation.")
 union, difference & exclusive-or, and line & polygon offsetting.
 The library is based on Vatti's clipping algorithm.")
     (license license:boost1.0)))
+
+(define-public clipper2
+  (package
+    (inherit clipper)
+    (name "clipper2")
+    (version "1.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AngusJohnson/Clipper2")
+             (commit (string-append "Clipper2_" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w8cmx712k45cb8gh9dakmbmybiwdx8c0b45mwpcldywx2lwxi2j"))
+       (modules '((guix build utils)))
+       (snippet #~(for-each
+                   delete-file-recursively
+                   '("CSharp" "DLL" "Delphi")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DUSE_EXTERNAL_GTEST=ON"
+              "-DCLIPPER2_EXAMPLES=OFF")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'chdir
+                     (lambda _
+                       (chdir "CPP"))))))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/AngusJohnson/Clipper2")
+    (description
+     (string-append (package-description clipper) "\
+Note: This package is a major update of the original clipper library."))))
 
 (define-public pcg-cpp
   (let ((commit "ffd522e7188bef30a00c74dc7eb9de5faff90092")
