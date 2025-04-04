@@ -21815,7 +21815,10 @@ applications.")
         (base32 "0j6ksfnq9qfjdfppbkdz7jh6w0gnslwnckhafmlgim29b25g0z51"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
+     (list #:test-flags
+           ;; XXX: Added with python@3.11, not fixed upstream.
+           #~(list "-k" "not test_regression_bug13")
+           #:phases
            #~(modify-phases %standard-phases
                (add-before 'check 'set-qpa
                  (lambda _
