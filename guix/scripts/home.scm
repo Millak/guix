@@ -3,7 +3,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2022-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
@@ -38,7 +38,8 @@
   #:use-module ((gnu system) #:select (operating-system?
                                        operating-system-user-services))
   #:autoload   (gnu system linux-container) (eval/container)
-  #:autoload   (gnu system file-systems) (file-system-mapping
+  #:autoload   (gnu system file-systems) (file-system
+                                          file-system-mapping
                                           file-system-mapping-source
                                           file-system-mapping->bind-mount
                                           specification->file-system-mapping
@@ -363,6 +364,18 @@ immediately.  Return the exit status of the process in the container."
    #:namespaces (if network?
                     (delq 'net %namespaces)       ; share host network
                     %namespaces)
+   #:mounts (list (file-system
+                    (device "none")
+                    (mount-point
+                     (in-vicinity "/run/user"     ;for shepherd & co.
+                                  (number->string uid)))
+                    (type "tmpfs")
+                    (check? #f))
+                  (file-system                    ;writable home
+                    (device "none")
+                    (mount-point home-directory)
+                    (type "tmpfs")
+                    (check? #f)))
    #:mappings (append network-mappings mappings)
    #:guest-uid uid
    #:guest-gid gid))
