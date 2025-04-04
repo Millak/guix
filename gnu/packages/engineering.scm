@@ -3138,7 +3138,9 @@ Microwave engineering.")
                              python-scipy
                              python-sympy
                              python-wheel))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/mph-/lcapy")
     (synopsis "Symbolic linear circuit analysis")
     (description "Lcapy is a Python package for linear circuit analysis.  It
