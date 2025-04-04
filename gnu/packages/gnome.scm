@@ -8243,14 +8243,10 @@ to display dialog boxes from the commandline and shell scripts.")
     (native-inputs
      (list desktop-file-utils           ;for update-desktop-database
            `(,glib "bin")               ;for glib-compile-schemas, etc.
+           gettext-minimal
            gobject-introspection
-           intltool
            pkg-config
            xvfb-run
-           ;; For git build
-           autoconf
-           automake
-           libtool
            wayland-protocols
            ;; For tests.
            ;; Warnings are configured to be fatal during the tests; add an icon
@@ -8307,8 +8303,7 @@ to display dialog boxes from the commandline and shell scripts.")
            sysprof
            upower
            xkeyboard-config
-           xorg-server-xwayland
-           zenity))
+           xorg-server-xwayland))
     (synopsis "Window and compositing manager")
     (home-page "https://www.gnome.org")
     (description
