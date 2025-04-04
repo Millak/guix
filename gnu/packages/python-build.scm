@@ -571,6 +571,16 @@ a light weight, fully compliant, self-contained package allowing PEP 517
 compatible build front-ends to build Poetry managed projects.")
     (license license:expat)))
 
+(define-public python-poetry-core-next
+  (package/inherit python-poetry-core
+    (version "2.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "poetry_core" version))
+       (sha256
+        (base32 "015a0802radb2x5wsbywm4fggv4s1srh8zyml5v58xgrxg8bpnzr"))))))
+
 ;;; This package exists to bootstrap python-tomli.
 (define-public python-flit-core-bootstrap
   (package
