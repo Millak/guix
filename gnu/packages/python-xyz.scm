@@ -28504,18 +28504,53 @@ Time} values as well as an event scheduler.")
 (define-public python-pyro4
   (package
     (name "python-pyro4")
-    (version "4.77")
+    (version "4.82")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Pyro4" version))
        (sha256
-        (base32 "0gsjg869y4gpy265s1gj1f2qy6jn5iz8r2bwwnq78r1r5yi15zib"))))
-    (build-system python-build-system)
+        (base32 "1yr1rv2afmq55wb14sx9qplzkqw7fya9rprsqdyxfbg90h45n7si"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f)) ;FIXME: Some tests require network access.
+     (list #:test-flags
+           #~(list "-k"
+                   (string-join
+                    ;; Those tests require network.
+                    (list "testBCstart"
+                          "testAutoClean"
+                          "testDaemonPyroObj"
+                          "testLookupAndRegister"
+                          "testLookupInvalidHmac"
+                          "testLookupUnixsockParsing"
+                          "testMulti"
+                          "testRefuseDottedNames"
+                          "testResolve"
+                          "testBCLookup0000"
+                          "testPyroname"
+                          "testResolveAsymmetricHmacUsage"
+                          "testResolveWrongHmac"
+                          "testStartNSfunc"
+                          "testCustomDictClass"
+                          "testDictClassFail"
+                          "testBroadcast"
+                          "testGetIP"
+                          ;; XXX: Unclear why this test fails.
+                          "testCustomClassFail")
+                    " and not "))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? test-flags #:allow-other-keys)
+                   (if tests?
+                       (apply invoke "python" "-m" "unittest" test-flags)
+                       (format #t "test suite not run.~%")))))))
     (native-inputs
-     (list python-cloudpickle python-dill python-msgpack))
+     (list python-cloudpickle
+           python-dill
+           python-msgpack
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-serpent))
     (home-page "https://pyro4.readthedocs.io")
