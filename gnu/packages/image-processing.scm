@@ -1845,7 +1845,8 @@ processing pipelines.")
     (native-inputs
      (list python-pytest
            python-pytest-qt
-           xorg-server-for-tests))
+           xorg-server-for-tests
+           python-wheel))
     (propagated-inputs
      (list python-imgviz
            python-matplotlib
