@@ -16798,6 +16798,43 @@ functionalities with some extras.")
 pseudo terminal (pty), and interact with both the process and its pty.")
     (license license:isc)))
 
+(define-public python-configshell-fb
+  (package
+    (name "python-configshell-fb")
+    (version "1.1.30")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "configshell-fb" version))
+       ;; XXX: Snippet below is required because on v1.1.30 the source code
+       ;; has configshell_fb as softlink to configshell and guix
+       ;; pyproject-build-system doesn't work with symlinks very well.
+       ;; 
+       ;; This package is only used in spdk for now and it's crucial to keep
+       ;; it locked on version and keep the snipped for spdk to build
+       ;; successfully.
+       (snippet #~(begin
+                    (use-modules (guix build utils))
+                    (delete-file "setup.py")
+                    (delete-file-recursively "configshell_fb")
+                    (rename-file "configshell" "configshell_fb")))
+       (sha256
+        (base32 "1zkhf62qsfcbxwzlc62r6qx37wwyscppc469rlm45zy9lzmbgxj1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;; this package has no tests
+    (native-inputs
+     (list python-setuptools
+           python-six
+           python-wheel))
+    (propagated-inputs
+     (list python-pyparsing))
+    (home-page "https://github.com/open-iscsi/configshell-fb")
+    (synopsis "Framework to implement simple but nice CLIs")
+    (description
+     "This package provides a framework to implement simple but nice CLIs.")
+    (license license:asl2.0)))
+
 (define-public python-crccheck
   (package
     (name "python-crccheck")
