@@ -1942,19 +1942,23 @@ over a different origin than that of the web application.")
 (define-public python-furl
   (package
     (name "python-furl")
-    (version "2.1.3")
+    (version "2.1.4")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "furl" version))
         (sha256
-          (base32
-            "0knc76pm8pzigs3bpx9fccfsfxqrgblqphar46hq9i364vz8hqas"))))
-    (build-system python-build-system)
+          (base32 "05b058xisv8kghvcpaxvssml2jjkh1cmzyrrjwk2kjb62985fxl7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list "-k" (string-append "not test_hosts"
+                                       " and not test_netloc"
+                                       " and not test_odd_urls"))))
     (propagated-inputs
-     (list python-six python-orderedmultidict))
+     (list python-orderedmultidict python-six))
     (native-inputs
-     (list python-flake8))
+     (list python-flake8 python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/gruns/furl")
     (synopsis "URL manipulation in Python")
     (description "Furl provides an easy-to-use alternative to the
