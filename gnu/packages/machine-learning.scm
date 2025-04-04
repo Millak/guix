@@ -6640,27 +6640,34 @@ linear algebra routines needed for structured matrices (or operators).")
 (define-public python-gpytorch
   (package
     (name "python-gpytorch")
-    (version "1.12")
+    (version "1.14")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gpytorch" version))
               (sha256
                (base32
-                "1pwsccll1hrgkifdmlxzcn6cvnwvyq2cimqzbfgihr13yw51cb6w"))))
+                "13cs6dx8qa5j4ygji9w5xbmaqc68ihqyzz33fyyf9qa6d8gc2b03"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
-           ;; test_deprecated_methods fails with an AssertionError.
-           #~(list "-k" (string-append "not test_deprecated_methods")
+           #~(list "-k" (string-append
+                         ;; test_deprecated_methods fails with an AssertionError.
+                         "not test_deprecated_methods"
+                         ;; This test is flaky: Expects gradients of 0 exactly,
+                         ;; can get negligible ones (e-10 to e-16).
+                         " and not test_optimization_optimal_error")
                    ;; Ignore lenghty tests of little relevance.
                    "--ignore=test/examples/")))
-    (propagated-inputs (list python-linear-operator
+    (propagated-inputs (list python-jaxtyping
+                             python-linear-operator
                              python-mpmath
                              python-scikit-learn
                              python-scipy))
     (native-inputs (list python-nbval
                          python-pytest
-                         python-setuptools))
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
     (home-page "https://gpytorch.ai")
     (synopsis "Implementation of Gaussian Processes in PyTorch")
     (description
