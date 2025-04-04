@@ -122,7 +122,8 @@ information.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools))
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-pandas))
     (home-page "https://github.com/IndEcol/country_converter")
