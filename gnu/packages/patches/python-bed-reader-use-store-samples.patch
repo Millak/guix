@@ -1,0 +1,147 @@
+From 7e6bcdfeed54500ca533d2f0eb12078248c43c77 Mon Sep 17 00:00:00 2001
+Message-ID: <7e6bcdfeed54500ca533d2f0eb12078248c43c77.1743682382.git.ngraves@ngraves.fr>
+From: Nicolas Graves <ngraves@ngraves.fr>
+Date: Thu, 3 Apr 2025 11:33:58 +0200
+Subject: [PATCH] samples: Use deterministic samples in Guix.
+
+---
+ bed_reader/_sample_data.py | 86 +++++++++-----------------------------
+ 1 file changed, 19 insertions(+), 67 deletions(-)
+
+diff --git a/bed_reader/_sample_data.py b/bed_reader/_sample_data.py
+index 6ca4cc0..6a1146e 100644
+--- a/bed_reader/_sample_data.py
++++ b/bed_reader/_sample_data.py
+@@ -1,33 +1,8 @@
++import os
+ import tempfile
+ from pathlib import Path, PurePath
+ from typing import Union
+ 
+-try:
+-    import pooch
+-
+-    """
+-    Load sample data.
+-    """
+-
+-    POOCH = pooch.create(
+-        # Use the default cache folder for the OS
+-        path=pooch.os_cache("bed_reader"),
+-        # The remote data is on Github
+-        base_url="https://raw.githubusercontent.com/"
+-        + "fastlmm/bed-sample-files/main/",
+-        # If this is a development version, get the data from the master branch
+-        version_dev="main",
+-        # The registry specifies the files that can be fetched
+-        env="BED_READER_DATA_DIR",
+-    )
+-
+-    # Get registry file from package_data
+-    registry_file = Path(__file__).parent / "tests/registry.txt"
+-    # Load this registry file
+-    POOCH.load_registry(registry_file)
+-except ImportError:
+-    pooch = None
+-
+ 
+ def sample_file(filepath: Union[str, Path]) -> str:
+     """Retrieve a sample .bed file. (Also retrieves associated .fam and .bim files).
+@@ -40,50 +15,41 @@ def sample_file(filepath: Union[str, Path]) -> str:
+     Returns
+     -------
+     str
+-        Local name of sample .bed file.
+-
+-
+-    .. note::
+-        This function requires the :mod:`pooch` package. Install `pooch` with:
+-
+-        .. code-block:: bash
+-
+-            pip install --upgrade bed-reader[samples]
+-
+-
+-    By default this function puts files under the user's cache directory.
+-    Override this by setting
+-    the `BED_READER_DATA_DIR` environment variable.
++        Local path of sample .bed file.
+ 
+     Example
+     --------
+ 
+     .. doctest::
+ 
+-        >>> # pip install bed-reader[samples]  # if needed
+         >>> from bed_reader import sample_file
+         >>>
+         >>> file_name = sample_file("small.bed")
+         >>> print(f"The local file name is '{file_name}'")
+         The local file name is '...small.bed'
+-
+     """
+-    if pooch is None:
+-        raise ImportError(
+-            "The function sample_file() requires pooch. "
+-            + "Install it with 'pip install --upgrade bed-reader[samples]'.",
++    filepath = Path(filepath)
++    sample_dir = os.environ.get("BED_READER_DATA_DIR")
++    if sample_dir is None:
++        raise EnvironmentError(
++            "BED_READER_DATA_DIR environment variable is not set. "
++            "This should point to the directory containing the sample files."
+         )
+ 
+-    filepath = Path(filepath)
+-    file_string = str(filepath)
+-    if file_string.lower().endswith(".bed"):
+-        POOCH.fetch(file_string[:-4] + ".fam")
+-        POOCH.fetch(file_string[:-4] + ".bim")
+-    return POOCH.fetch(file_string)
++    file_path = Path(sample_dir) / filepath
++
++    # Check if file exists
++    if not file_path.exists():
++        raise FileNotFoundError(
++            f"Sample file '{filepath}' not found in {sample_dir}. "
++            f"Make sure you're using the latest samples in BED_READER_DATA_DIR."
++        )
++
++    return str(file_path)
+ 
+ 
+ def sample_url(filepath: Union[str, Path]) -> str:
+-    """Retrieve a URL to a sample .bed file. (Also makes ready associated .fam and .bim files).
++    """Retrieve a URL to a sample .bed file.
+ 
+     Parameters
+     ----------
+@@ -95,25 +61,11 @@ def sample_url(filepath: Union[str, Path]) -> str:
+     str
+         URL to sample .bed file.
+ 
+-
+-    .. note::
+-        This function requires the :mod:`pooch` package. Install `pooch` with:
+-
+-        .. code-block:: bash
+-
+-            pip install --upgrade bed-reader[samples]
+-
+-
+-    By default this function puts files under the user's cache directory.
+-    Override this by setting
+-    the `BED_READER_DATA_DIR` environment variable.
+-
+     Example
+     --------
+ 
+     .. doctest::
+ 
+-        >>> # pip install bed-reader[samples]  # if needed
+         >>> from bed_reader import sample_url
+         >>>
+         >>> url = sample_url("small.bed")
+-- 
+2.49.0
+

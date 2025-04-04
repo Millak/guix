@@ -2185,6 +2185,20 @@ Format (GFF) with Biopython integration.")
       (modify-inputs (package-propagated-inputs python-bcbio-gff)
         (replace "python-biopython" python-biopython-1.73))))))
 
+(define bed-sample-files
+  (let* ((name "bed-sample-files")
+         (commit "a06dc0450e484090f15656ffd5d317813a5e1e01")
+         (revision "0")
+         (version (git-version "0.0.0" revision commit)))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/fastlmm/bed-sample-files")
+            (commit commit)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1ldr2lvgbcykxa9i2s2298mhfh0sz96aaxs5dx217aipa9vsrjwk")))))
+
 (define-public python-bed-reader
   (package
     (name "python-bed-reader")
@@ -2194,80 +2208,124 @@ Format (GFF) with Biopython integration.")
        (method url-fetch)
        (uri (pypi-uri "bed_reader" version))
        (sha256
-        (base32 "1c8ibwvz3b069w7ffh9aasz16lfkmx4z0249c2v909a21mrkkd6n"))))
+        (base32 "1c8ibwvz3b069w7ffh9aasz16lfkmx4z0249c2v909a21mrkkd6n"))
+       (modules '((guix build utils)))
+       ;; Bundled unused javascript & co.
+       (snippet #~(delete-file-recursively "_static"))
+       (patches
+        (search-patches "python-bed-reader-use-store-samples.patch"))))
     (build-system cargo-build-system)
     (arguments
      (list
-      ;; Many of the tests (both the Rust tests and the Python tests) require
-      ;; Internet access to fetch samples.
-      #:tests? #false
       #:install-source? #false
       #:features '(list "extension-module")
-      #:cargo-test-flags '(list "--features=extension-module")
+      #:cargo-test-flags
+      '(list "--features=extension-module"
+             ;; Skip doc tests.
+             "--lib" "--bins" "--tests" "--"
+             ;; This test is the only one not matched by our regexp.
+             "--skip=http_one"
+             ;; These test require a 84 GB file.
+             "--skip=http_two"
+             "--skip=http_cloud_urls_md_3")
       #:cargo-inputs
-      `(("rust-anyinput" ,rust-anyinput-0.1)
-        ("rust-bytecount" ,rust-bytecount-0.6)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-bytes" ,rust-bytes-1)
-        ("rust-cloud-file" ,rust-cloud-file-0.2)
-        ("rust-derive-builder" ,rust-derive-builder-0.20)
-        ("rust-dpc-pariter" ,rust-dpc-pariter-0.4)
-        ("rust-fetch-data" ,rust-fetch-data-0.2)
-        ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-itertools" ,rust-itertools-0.13)
-        ("rust-ndarray" ,rust-ndarray-0.16)
-        ("rust-ndarray-npy" ,rust-ndarray-npy-0.9)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-numpy" ,rust-numpy-0.22)
-        ("rust-pyo3" ,rust-pyo3-0.22)
-        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.22)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-statrs" ,rust-statrs-0.17)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tokio" ,rust-tokio-1))
+      (list rust-anyinput-0.1
+            rust-bytecount-0.6
+            rust-byteorder-1
+            rust-bytes-1
+            rust-cloud-file-0.2
+            rust-derive-builder-0.20
+            rust-dpc-pariter-0.4
+            rust-fetch-data-0.2
+            rust-futures-util-0.3
+            rust-itertools-0.13
+            rust-ndarray-0.16
+            rust-ndarray-npy-0.9
+            rust-num-traits-0.2
+            rust-numpy-0.22
+            rust-pyo3-0.22
+            rust-pyo3-build-config-0.22
+            rust-rayon-1
+            rust-statrs-0.17
+            rust-thiserror-1
+            rust-tokio-1)
       #:cargo-development-inputs
-      `(("rust-anyhow" ,rust-anyhow-1)
-        ("rust-ndarray-rand" ,rust-ndarray-rand-0.15)
-        ("rust-rusoto-credential" ,rust-rusoto-credential-0.48)
-        ("rust-temp-testdir" ,rust-temp-testdir-0.2)
-        ("rust-thousands" ,rust-thousands-0.2))
+      (list rust-anyhow-1
+            rust-ndarray-rand-0.15
+            rust-rusoto-credential-0.48
+            rust-temp-testdir-0.2
+            rust-thousands-0.2)
       #:imported-modules
       (append %cargo-build-system-modules
               %pyproject-build-system-modules)
       #:modules
       '((guix build cargo-build-system)
         ((guix build pyproject-build-system) #:prefix py:)
-        (guix build utils))
+        (guix build utils)
+        (ice-9 match)
+        (ice-9 rdelim))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'configure 'set-data-path
+            (lambda _
+              ;; This var is still necessary despite the patch-data-path phase.
+              ;; Otherwise more tests fail with a read-only filesystem error.
+              (setenv "BED_READER_DATA_DIR" #+bed-sample-files)))
+          (add-after 'unpack 'patch-data-path
+            (lambda _
+              ;; If BED_READER_DATA_DIR is unset, default to bed-sample-files.
+              (substitute* "bed_reader/_sample_data.py"
+                (("os\\.environ\\.get\\(\"BED_READER_DATA_DIR\"" all)
+                 (format #f "~a, ~s" all #+bed-sample-files)))
+              ;; XXX: More work is necessary to use another
+              ;; version of sample files with BED_READER_DATA_DIR
+              ;; Currently, only the hardcoded Guix version is working.
+              (substitute* '("bed_reader/tests/test_open_bed_cloud.py"
+                             "src/bed_cloud.rs"
+                             "src/lib.rs"
+                             "src/supplemental_documents/cloud_urls_etc.md"
+                             "tests/tests_api_cloud.rs")
+                (("\
+https://raw\\.githubusercontent\\.com/fastlmm/bed-sample-files/main")
+                 (string-append "file://" #+bed-sample-files)))
+              (substitute* "src/tests.rs"
+                (("bed_reader/tests/data")
+                 #+bed-sample-files))))
           (add-after 'install 'prepare-python-module
             (lambda _
-              ;; We don't use maturin.
-              (delete-file "pyproject.toml")
-              (call-with-output-file "pyproject.toml"
-                (lambda (port)
-                  (format port "\
+              ;; We don't use maturin. Conveniently, what we want to drop
+              ;; from pyproject.toml is at the end of the file.
+              (rename-file "pyproject.toml" "pyproject.toml.bak")
+              (call-with-input-file "pyproject.toml.bak"
+                (lambda (in)
+                  (call-with-output-file "pyproject.toml"
+                    (lambda (out)
+                      (let loop ()
+                        (match (read-line in)
+                          ((? eof-object? eof)
+                           eof)
+                          ("[build-system]"
+                           (and (format out "\
 [build-system]
 build-backend = 'setuptools.build_meta'
 requires = ['setuptools']
+
+[tool.setuptools.packages.find]
+where = [\".\"]
+exclude = [\"src\", \"docs\", \"tests\", \"Cargo.toml\"]
 ")))
-              (call-with-output-file "setup.cfg"
-                (lambda (port)
-                  (format port "\
-[metadata]
-name = bed-reader
-version = ~a
-
-[options]
-packages = find:
-
-[options.packages.find]
-exclude =
-  src
-  docs
-  tests
-  Cargo.toml
-" #$version)))))
+                          ("samples = [\"pooch>=1.5.0\"]"
+                           (and (format out "samples = []~%")
+                                (loop)))
+                          ("[project]"
+                           (and (format out "\
+[project]
+version = ~s
+" #$version)
+                                (loop)))
+                          (line
+                           (and (format out "~a~%" line)
+                                (loop)))))))))))
           (add-after 'prepare-python-module 'enable-bytecode-determinism
             (assoc-ref py:%standard-phases 'enable-bytecode-determinism))
           (add-after 'enable-bytecode-determinism 'build-python-module
@@ -2279,16 +2337,35 @@ exclude =
               (let ((site (string-append #$output "/lib/python"
                                          #$(version-major+minor
                                             (package-version python))
-                                         "/site-packages")))
-                (mkdir-p site)
+                                         "/site-packages/")))
+                (mkdir-p (string-append site "bed_reader"))
                 (copy-file "target/release/libbed_reader.so"
-                           (string-append site "/bed_reader/bed_reader.so")))))
+                           (string-append site "bed_reader/bed_reader.so")))))
           (add-after 'install-python-library 'add-install-to-pythonpath
             (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
           (add-after 'add-install-to-pythonpath 'check-python
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
+            (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (apply invoke "pytest" "-v" #$output test-flags)))))))
+                (let ((site (string-append #$output "/lib/python"
+                                           #$(version-major+minor
+                                              (package-version python))
+                                           "/site-packages/"))
+                      (data-dir "bed_reader/tests/data"))
+                  (symlink (canonicalize-path data-dir)
+                           (string-append site data-dir))
+                  (invoke "pytest" "-v" #$output
+                          ;; These test require a 84 GB file.
+                          "-k" (string-join
+                                (list "not test_http_two"
+                                      "test_http_cloud_urls_rst_3"
+                                      "test_http_cloud_urls_rst_4"
+                                      ;; XXX: python-pooch dependency removed
+                                      "test_optional_dependencies")
+                                " and not "))
+                  (delete-file-recursively
+                   (string-append site "bed_reader/tests"))
+                  (delete-file-recursively
+                   (string-append #$output "/.pytest_cache")))))))))
     (native-inputs (list python-pytest
                          python-pytest-cov
                          python-pytest-datadir
@@ -2296,7 +2373,7 @@ exclude =
                          python-recommonmark
                          python-sphinx))
     (inputs (list python-wrapper))
-    (propagated-inputs (list python-numpy python-pandas python-pooch))
+    (propagated-inputs (list python-numpy python-pandas python-scipy))
     (home-page "https://fastlmm.github.io/")
     (synopsis "Read and write the PLINK BED format, simply and efficiently")
     (description
