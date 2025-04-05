@@ -160,8 +160,8 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
       (license license:gpl2+))))
 
 (define-public libsigrok
-  (let ((commit "a7e919a3a6b7fd511acbe1a280536b76c70c28d2")
-        (revision "1"))
+  (let ((commit "f06f788118191d19fdbbb37046d3bd5cec91adb1")
+        (revision "2"))
     (package
       (name "libsigrok")
       (version (git-version "0.5.2" revision commit))
@@ -172,7 +172,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
                (url "git://sigrok.org/libsigrok")
                (commit commit)))
          (sha256
-          (base32 "0km3fyv5s2byrm4zpbss2527ynhw4nb67imnbawwic2a6zh9jiyc"))
+          (base32 "1ahgpa0gaa4fl8c6frpgamvgxg0fisfwlqddr5x25456vkk2i9zi"))
          (file-name (git-file-name name version))))
       (outputs '("out" "doc"))
       (arguments
