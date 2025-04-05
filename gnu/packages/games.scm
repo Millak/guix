@@ -10665,10 +10665,6 @@ and also provides the base for the FlightGear Flight Simulator.")
                  (lambda* args
                    ((assoc-ref %standard-phases 'build)
                     #:make-flags (list "fgfs_test_suite"))))
-               ;; Test suite needs access to FGData so run it after 'install.
-               (delete 'check)
-               (add-after 'install-data 'check
-                 (assoc-ref %standard-phases 'check))
                (add-after 'install 'install-data
                  (lambda _
                    (let ((share (string-append #$output "/share/flightgear")))
@@ -10676,7 +10672,11 @@ and also provides the base for the FlightGear Flight Simulator.")
                      (with-directory-excursion share
                        (invoke "tar" "xf"
                                #$(this-package-native-input "flightgear-data")
-                               "--strip-components=1"))))))))
+                               "--strip-components=1")))))
+               ;; Test suite needs access to FGData so run it after 'install.
+               (delete 'check)
+               (add-after 'install-data 'check
+                 (assoc-ref %standard-phases 'check)))))
     (inputs
      (list boost
            dbus
