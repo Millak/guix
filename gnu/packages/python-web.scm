@@ -392,6 +392,33 @@ Async mode for @url{https://domainconnect.org/, Domain Connect protocol}.")
 @url{https://www.domainconnect.org/, Domain Connect} protocol.")
     (license license:expat)))
 
+(define-public python-dropbox
+  (package
+    (name "python-dropbox")
+    (version "12.0.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "dropbox" version))
+        (sha256
+         (base32 "0qlrc2ykl7zmv808apqv5ycfzrwnm13ngz1daizh9kszmpapy1ah"))
+        (snippet
+         '(begin
+            (use-modules (guix build utils))
+            (substitute* "setup.py"
+              (("pytest-runner==5\\.2\\.0") "pytest-runner"))))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))  ; Tests not included in the release tarball.
+    (native-inputs
+     (list python-pytest python-pytest-runner))
+    (propagated-inputs
+     (list python-requests python-six python-stone))
+    (home-page "https://www.dropbox.com/developers")
+    (synopsis "Official Dropbox API Client")
+    (description "This package provides a Python SDK for integrating with the
+Dropbox API v2.")
+    (license license:expat)))
+
 (define-public python-eventlet
   (package
     (name "python-eventlet")
