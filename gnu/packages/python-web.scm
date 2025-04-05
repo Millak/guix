@@ -397,20 +397,64 @@ Async mode for @url{https://domainconnect.org/, Domain Connect protocol}.")
     (name "python-dropbox")
     (version "12.0.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "dropbox" version))
-        (sha256
-         (base32 "0qlrc2ykl7zmv808apqv5ycfzrwnm13ngz1daizh9kszmpapy1ah"))
-        (snippet
-         '(begin
-            (use-modules (guix build utils))
-            (substitute* "setup.py"
-              (("pytest-runner==5\\.2\\.0") "pytest-runner"))))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))  ; Tests not included in the release tarball.
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/dropbox/dropbox-sdk-python")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pyvi2mbibah42kq8804d98ghypm46wr8swqr34apnvnlp9j2nzl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Network access is required.
+                    (list "not test_bad_auth"
+                          "test_app_auth"
+                          "test_bad_pins"
+                          "test_bad_pins_session"
+                          "test_downscope"
+                          "test_multi_auth"
+                          "test_path_root"
+                          "test_path_root_err"
+                          "test_refresh"
+                          "test_rpc"
+                          "test_team"
+                          "test_upload_download"
+                          "test_versioned_route")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;; 'stone>=2,<3.3.3',
+                ((">=2,<3.3.3") ">=2,<3.4.0"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Otherwise tests setup erroring.
+              (setenv "LEGACY_USER_DROPBOX_TOKEN" "guix")
+              (setenv "LEGACY_USER_CLIENT_ID" "guix")
+              (setenv "LEGACY_USER_CLIENT_SECRET" "guix")
+              (setenv "LEGACY_USER_REFRESH_TOKEN" "guix")
+              (setenv "SCOPED_USER_DROPBOX_TOKEN" "guix")
+              (setenv "SCOPED_USER_CLIENT_ID" "guix")
+              (setenv "SCOPED_USER_CLIENT_SECRET" "guix")
+              (setenv "SCOPED_USER_REFRESH_TOKEN" "guix")
+              (setenv "SCOPED_TEAM_DROPBOX_TOKEN" "guix")
+              (setenv "SCOPED_TEAM_CLIENT_ID" "guix")
+              (setenv "SCOPED_TEAM_CLIENT_SECRET" "guix")
+              (setenv "SCOPED_TEAM_REFRESH_TOKEN" "guix")
+              (setenv "DROPBOX_SHARED_LINK" "guix"))))))
     (native-inputs
-     (list python-pytest python-pytest-runner))
+     (list nss-certs-for-test
+           python-mock
+           python-pytest
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-requests python-six python-stone))
     (home-page "https://www.dropbox.com/developers")
