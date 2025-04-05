@@ -4223,29 +4223,17 @@ the library crate of Cargo.")
         (sha256
          (base32 "1cxawccpssmpvv6a0sn8lkms5nd3gyh46g407bk2i8xyzyh87pvq"))))
     (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cargo" ,rust-cargo)
-        ("rust-cargo-util" ,rust-cargo-util-0.2)
-        ("rust-cbindgen" ,rust-cbindgen-0.28)
-        ("rust-cc" ,rust-cc-1)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-glob" ,rust-glob-0.3)
-        ("rust-implib" ,rust-implib-0.3)
-        ("rust-itertools" ,rust-itertools-0.14)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-object" ,rust-object-0.36)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-semver" ,rust-semver-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-toml" ,rust-toml-0.8))))
+    (arguments (list #:install-source? #f))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list curl libgit2-1.8 libssh2 openssl zlib))
+     (cons* curl
+            libgit2-1.8
+            libssh2
+            openssl
+            sqlite
+            zlib
+            (cargo-inputs 'rust-cargo-c)))
     (home-page "https://github.com/lu-zero/cargo-c")
     (synopsis "Build and install C-compatible libraries")
     (description
