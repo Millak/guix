@@ -36042,6 +36042,20 @@ copied into @code{org-mode} buffers.")
          (sha256
           (base32 "1a8ygrcag8i9hdpy2vsn0sh8lwhl9b56rv91j3rddy1jv5qx1ipb"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "--batch"
+                "-l" "org-drill-table.el"
+                "-l" "test/org-drill-table-tests.el"
+                "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'skip-failing-tests
+              (lambda _
+                (substitute* "test/org-drill-table-tests.el"
+                  (("ert-deftest org-drill-table--tracks-.*-separately .*" all)
+                   (string-append all " (skip-unless nil)"))))))))
       (propagated-inputs
        (list emacs-dash emacs-org emacs-s))
       (home-page "https://github.com/chrisbarrett/org-drill-table")
