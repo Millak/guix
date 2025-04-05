@@ -38152,7 +38152,8 @@ Emacs.")
           (base32
            "1xs9ixp2bgbn2whjpj7l1n15fklivfh7544sgai61225jprckyak"))))
       (build-system emacs-build-system)
-      (arguments '(#:include '("\\.el$" "\\.txt$")))
+      (arguments '(#:include '("\\.el$" "\\.txt$")
+                   #:tests? #f))        ; no actual tests
       (home-page
        "https://github.com/jhgorrell/ssh-config-mode-el")
       (synopsis
