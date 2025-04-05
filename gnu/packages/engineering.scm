@@ -1684,15 +1684,15 @@ replacement for the OpenDWG libraries.")
 (define-public minicom
   (package
     (name "minicom")
-    (version "2.9")
+    (version "2.10")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://salsa.debian.org/minicom-team/minicom.git")
-             (commit (string-append "v" version))))
+             (commit version)))
        (sha256
-        (base32 "18k0hiljsiq80x93c3qrd1cmcjjvsk1ymin03vncjp1v35xn8248"))
+        (base32 "0sxbyf1li3lsrvkjpn04xz6ywa42ggfc1fhdrmsibfkhqja9abn0"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -1715,7 +1715,7 @@ replacement for the OpenDWG libraries.")
     (native-inputs
      (list autoconf-2.71 automake gettext-minimal pkg-config))
     (inputs
-     (list ncurses))
+     (list ncurses/tinfo))
     (home-page "https://salsa.debian.org/minicom-team/minicom")
     (synopsis "Serial terminal emulator")
     (description "@code{minicom} is a serial terminal emulator.")
