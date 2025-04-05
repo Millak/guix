@@ -12039,6 +12039,7 @@ in HTML mode.")
                          %default-include)
       #:exclude #~(list "^slime-tests.el" "^contrib/test/"
                         "^contrib/Makefile$" "^contrib/README.md$")
+      #:tests? #f                       ; tests appear to require networking
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'install 'configure
