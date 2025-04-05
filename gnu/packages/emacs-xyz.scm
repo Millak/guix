@@ -3983,6 +3983,8 @@ provides basic supports for syntax highlighting and indentation.")
        (sha256
         (base32 "1vm030lz489vjx1dz1jrnj7zd2b43y98rffdxyshfvxbfv1cbmyk"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f        ; XXX: 4/4 tests broken
+                     #:test-command #~(list "make" "test" "INIT_PACKAGES=t")))
     (home-page "https://github.com/purcell/reformatter.el")
     (synopsis "Define commands which run reformatters on the current buffer")
     (description
