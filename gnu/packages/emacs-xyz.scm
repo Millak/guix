@@ -33426,6 +33426,17 @@ music.")
         (base32
          "00ajjb9iawva3g7i1y6bz4d4ny3cv5rby6vgkwiy2xkprzxi8900"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      ;; XXX: ‘check’ includes ‘lint-package-lint’, which raises errors.
+      #:test-command #~(list "make" "test" "lint-checkdoc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'inject-makel
+            (lambda* (#:key inputs #:allow-other-keys)
+              (symlink (search-input-file inputs "/include/makel.mk")
+                       "makel.mk"))))))
+    (inputs (list makel))
     (propagated-inputs
      (list emacs-libmpdel emacs-navigel))
     (home-page "https://gitea.petton.fr/mpdel/mpdel")
