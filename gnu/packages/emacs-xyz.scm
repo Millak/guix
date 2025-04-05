@@ -15719,6 +15719,16 @@ Clojure projects from templates.")
        (sha256
         (base32 "0mha1wqn5hd9g8y0fp35qkhlnxlrwli62x7mbifman279h16gaml"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "buttercup" "-L" "." "-L" "test")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'enable-lexical-binding
+                 (lambda _
+                   (emacs-batch-edit-file "tests/unit-test.el"
+                     '(progn
+                       (add-file-local-variable-prop-line 'lexical-binding t)
+                       (basic-save-buffer))))))))
     (propagated-inputs
      (list emacs-cider
            emacs-clojure-mode
@@ -15728,6 +15738,7 @@ Clojure projects from templates.")
            emacs-paredit
            emacs-parseedn
            emacs-yasnippet))
+    (native-inputs (list emacs-buttercup))
     (home-page "https://github.com/clojure-emacs/clj-refactor.el")
     (synopsis "Powerful refactoring functionality for Clojure projects")
     (description "This Emacs package complements the refactoring functionality
