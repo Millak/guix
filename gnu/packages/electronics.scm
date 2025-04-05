@@ -475,21 +475,19 @@ which allows one to install the M8 firmware on any Teensy.")
 
 (define-public minipro
   ;; Information needed to fix Makefile
-   (let* ((commit "c181c2cf1619d00a520627d475e3fadb1eea5dac")
-         (commit-short (substring commit 0 8))
-         (date "2022-09-10 21:44:06 -0700"))
+  (let* ((date "2024-09-20 20:55:06 -0700"))
     (package
       (name "minipro")
-      (version "0.6")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.com/DavidGriffith/minipro.git")
-                      (commit version)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "03xgmvvsxmqrz7blg7cqk0pb9ynhlq6v6jfl532zmjdzp5p3h10d"))))
+      (version "0.7.2")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/DavidGriffith/minipro.git")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1a7sbbs1byngkh3bh0dxwxk1iw1dx0kvp946y2lxb8rm6b7hwqym"))))
       (native-inputs (list pkg-config which))
       (inputs (list libusb))
       (build-system gnu-build-system)
@@ -506,9 +504,7 @@ which allows one to install the M8 firmware on any Teensy.")
                   (("GIT_BRANCH = .*")
                    (string-append "GIT_BRANCH = \"master\"\n"))
                   (("GIT_HASH = .*")
-                   (string-append "GIT_HASH = \"" #$commit "\"\n"))
-                  (("GIT_HASH_SHORT = .*")
-                   (string-append "GIT_HASH_SHORT = \"" #$commit-short "\"\n"))
+                   (string-append "GIT_HASH = \"" #$version "\"\n"))
                   (("GIT_DATE = .*")
                    (string-append "GIT_DATE = \"" #$date "\"\n"))))))
         #:make-flags
