@@ -17435,6 +17435,7 @@ keybindings in Emacs, and does not come with any predefined bindings.")
        (sha256
         (base32 "11ks6z532i7vxi6f9g32zhimvikhsqywa2bd5fnnj2ahfx3msa95"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; "no effect on non-graphical display"
     (home-page "https://github.com/casouri/valign")
     (synopsis "Pixel-perfect visual alignment for Org and Markdown tables")
     (description
