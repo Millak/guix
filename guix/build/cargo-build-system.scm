@@ -249,6 +249,7 @@ directory = '" vendor-dir "'") port)
     (setenv "CC" (string-append (assoc-ref inputs "gcc") "/bin/gcc")))
 
   (setenv "LIBGIT2_SYS_USE_PKG_CONFIG" "1")
+  (setenv "LIBSQLITE3_SYS_USE_PKG_CONFIG" "1")
   (setenv "LIBSSH2_SYS_USE_PKG_CONFIG" "1")
   (setenv "SODIUM_USE_PKG_CONFIG" "1")
   (setenv "ZSTD_SYS_USE_PKG_CONFIG" "1")
