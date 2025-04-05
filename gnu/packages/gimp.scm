@@ -454,7 +454,19 @@ that is extensible via a plugin system.")
                  (lambda _
                    (mkdir-p (string-append #$output:doc "/share"))
                    (rename-file (string-append #$output "/share/doc")
-                                (string-append #$output:doc "/share/doc")))))))
+                                (string-append #$output:doc "/share/doc"))))
+               (add-after 'install 'wrap
+                 (lambda* _
+                   (for-each
+                    (lambda (prog)
+                      (wrap-program prog
+                        `("GI_TYPELIB_PATH" suffix
+                          (,(getenv "GI_TYPELIB_PATH")))
+                        `("GUIX_PYTHONPATH" suffix
+                          (,(getenv "GUIX_PYTHONPATH")))))
+                    (find-files (string-append #$output "/bin")
+                                (lambda (_ stat)
+                                  (eq? 'regular (stat:type stat))))))))))
     (inputs (modify-inputs (package-inputs gimp-2)
               (replace "gtk+" gtk+)
               (prepend libxmu libxt)
