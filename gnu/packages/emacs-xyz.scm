@@ -35254,6 +35254,17 @@ buffers.")
           (base32
            "08b25y3raz0p98zxk9xdd8nj9shqd6mzrqhbq1gg4cwsmi7h7ly1"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'enable-lexical-binding
+              (lambda _
+                (emacs-batch-edit-file
+                    "test/js2r-local-name-node-at-point-test.el"
+                  '(progn
+                    (add-file-local-variable-prop-line 'lexical-binding t)
+                    (basic-save-buffer))))))))
       (propagated-inputs
        (list emacs-dash emacs-s emacs-js2-mode emacs-yasnippet
              emacs-multiple-cursors))
