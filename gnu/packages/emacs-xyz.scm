@@ -24153,6 +24153,8 @@ used in each project if desired.")
         (base32
          "18ap2liz5r5a8ja2zz9182fnfm47jnsbyblpq859zks356k37iwc"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "make" "test" "BATCHEMACS=emacs --batch")))
     (home-page
      "https://github.com/david-christiansen/prop-menu-el")
     (synopsis
