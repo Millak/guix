@@ -39617,6 +39617,7 @@ services inside Emacs.")
           (base32
            "15frl618393bc891d0yi3mdxzvbq790a86vfvp3dyd5riz4ddg95"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
       (propagated-inputs
        (list emacs-async))
       (synopsis "Persistent save of @code{elisp} objects")
