@@ -10077,8 +10077,9 @@ regular expressions.")
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
-           ;; Tests requiring a display.
-           #~(list "-k" (string-append
+           #~(list "--numprocesses" (number->string (parallel-job-count))
+                   ;; Tests requiring a display.
+                   "-k" (string-append
                          "not " (string-join
                                  (list "test_pformat"
                                        "test_pformat_old_windows"
@@ -10087,7 +10088,9 @@ regular expressions.")
                                        "test_persist")
                                  " and not "))
                    ;; Connection refused to some local FTP server.
-                   "--ignore=tests/test_feedexport.py")
+                   "--ignore=tests/test_feedexport.py"
+                   ;; Skip documentation testing.
+                   "--ignore=docs")
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'check 'prepare-test-environment
