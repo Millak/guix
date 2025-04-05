@@ -103,6 +103,34 @@
 creates, colors, and positions a bonsai tree, and is configurable.")
       (license license:gpl3+))))
 
+(define-public cxxmatrix
+  (let ((commit "c8d4ecfb8b6c22bb93f3e10a9d203209ba193591")
+        (revision "0"))
+    (package
+      (name "cxxmatrix")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/akinomyoga/cxxmatrix")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0shlh0kbx5169pk1i72ymyyfadywyzmw4f95hn0lm8irjynizzg5"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f                ;no tests
+             #:make-flags #~(list (string-append "PREFIX=" #$output))
+             #:phases #~(modify-phases %standard-phases (delete 'configure))))
+      (home-page "https://github.com/akinomyoga/cxxmatrix")
+      (synopsis "Configurable @emph{The Matrix} digital rain effect and more")
+      (description "This package displays the ``digital rain'' effect from the 1999
+film @emph{The Matrix} in the terminal with authentic hankaku kana characters and
+bloom as well as rotating and zooming Mandelbrot set and Conway's game of life
+effects.  The presented title text and color are configurable.")
+      (license license:expat))))
+
 (define-public daikichi
   (package
     (name "daikichi")
