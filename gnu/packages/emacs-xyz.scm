@@ -28180,6 +28180,7 @@ by the status of listed files.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1gnr61ibzcznfqy5f8capmbz75rcfikwy106rjdmp45qz2jwp4di"))))
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-dash emacs-f emacs-reformatter emacs-s))
     (build-system emacs-build-system)
