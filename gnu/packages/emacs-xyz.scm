@@ -38133,6 +38133,7 @@ passphrase until the first time you push to a remote.")
        (sha256
         (base32 "0fb88l3270d7l808q8x16zcvjgsjbyhgifgv17syfsj0ja63x28p"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")))
     (home-page "https://github.com/cjohansson/emacs-ssh-deploy")
     (synopsis "Deployment via Tramp, global or per directory")
     (description
