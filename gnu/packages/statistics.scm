@@ -916,7 +916,7 @@ comparison and diagnostics.")
 (define-public python-pymc
   (package
     (name "python-pymc")
-    (version "5.11.0")
+    (version "5.21.0")
     (source (origin
               (method git-fetch)        ; no tests in PyPI
               (uri (git-reference
@@ -925,28 +925,17 @@ comparison and diagnostics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x94qzq3z02fxlliz1xfdpb2pbn7nhp4skzcxz6qdavbj9xqcxys"))))
+                "0azkbl0mpanza35ibdqdm21bf45n3xi26wy01lnxzxqblcjcny9l"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ; tests are too computationally intensive
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'versioneer
                           (lambda _
-                            (with-output-to-file "setup.cfg"
-                (lambda ()
-                  (display "\
-[versioneer]
-VCS = git
-style = pep440
-versionfile_source = pymc/_version.py
-versionfile_build = pymc/_version.py
-tag_prefix =
-parentdir_prefix = pymc-
-")))
-              (invoke "versioneer" "install")
-              (substitute* "setup.py"
-                (("versioneer.get_version\\(\\)")
-                 (string-append "\"" #$version "\"")))))
+                            (invoke "versioneer" "install")
+                            (substitute* "setup.py"
+                              (("version=versioneer.get_version\\(),")
+                               (format #f "version=~s," #$version)))))
                         ;; To create the compiledir for tests.
                         (add-before 'check 'write-permissions
                           (lambda* (#:key tests? #:allow-other-keys)
