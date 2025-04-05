@@ -2796,16 +2796,18 @@ parsing of Variant Call Format (VCF) files.")
 (define-public python-decoupler-py
   (package
     (name "python-decoupler-py")
-    (version "1.6.0")
+    ;; Upstream places release on a new branch, see
+    ;; <https://github.com/saezlab/decoupler-py/issues/175>.
+    (version "1.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/saezlab/decoupler-py")
-                    (commit (string-append "v" version))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mqkp0i8k5hzhfnka4nc2f0phmrs0k404ynbl1lqfjzywx25y75h"))))
+                "0c3yg7jjb1nxb6hsh9wn7wr8w0ba55gixdbf5fp443nhv1cwlajj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2821,6 +2823,11 @@ parsing of Variant Call Format (VCF) files.")
                             " and not test_get_collectri"))
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; numba = "^0.60.0"; all tests passed.
+               (("0.60.0") "0.61.0"))))
          (add-before 'check 'set-home
            ;; Some tests require a home directory to be set.
            (lambda _ (setenv "HOME" "/tmp")))
@@ -2842,7 +2849,7 @@ parsing of Variant Call Format (VCF) files.")
                              python-skranger
                              python-tqdm
                              python-typing-extensions))
-    (native-inputs (list python-pytest python-wheel))
+    (native-inputs (list python-poetry-core python-pytest))
     (home-page "https://github.com/saezlab/decoupler-py")
     (synopsis
      "Framework for modeling, analyzing and interpreting single-cell RNA-seq data")
