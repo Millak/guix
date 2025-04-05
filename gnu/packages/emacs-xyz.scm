@@ -13909,6 +13909,7 @@ include installing, removing or visiting the homepage.")
        (sha256
         (base32 "0qz3xv38vazxqsl7lan7fshj3gmb0qagkrvl5xzwqhdg0rir981j"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")))
     (propagated-inputs
      (list emacs-company emacs-corfu emacs-ivy emacs-selectrum emacs-vertico))
     (home-page "https://github.com/raxod502/prescient.el/")
