@@ -298,6 +298,22 @@
                  (equal? (scandir (string-append dir "/tests"))
                          '("." ".." "gexp.scm"))))))
 
+(test-assert "local-file, capture file at the right time"
+  (call-with-temporary-directory
+   (lambda (directory)
+     (call-with-output-file (in-vicinity directory "the-unique-file.txt")
+       (lambda (port)
+         (display "Hi!" port)))
+
+     (let ((file (with-directory-excursion directory
+                   ;; If the argument to 'local-file' were resolved when
+                   ;; 'local-file-absolute-file-name' is called, we'd get the
+                   ;; wrong result.
+                   (local-file (in-vicinity (getcwd)
+                                            "the-unique-file.txt")))))
+       (string=? (local-file-absolute-file-name file)
+                 (in-vicinity directory "the-unique-file.txt"))))))
+
 (test-assert "one plain file"
   (let* ((file     (plain-file "hi" "Hello, world!"))
          (exp      (gexp (display (ungexp file))))

@@ -520,24 +520,27 @@ appears."
       ((_ (assume-source-relative-file-name file) rest ...)
        ;; FILE is not a literal, but the user requested we look it up
        ;; relative to the current source directory.
-       #'(%local-file file
-                      (delay (absolute-file-name file (current-source-directory)))
-                      rest ...))
+       #'(let ((f file))
+           (%local-file f
+                        (delay (absolute-file-name f (current-source-directory)))
+                        rest ...)))
       ((_ (assume-valid-file-name file) rest ...)
        ;; FILE is not a literal, so resolve it relative to the current
        ;; directory.  Since the user declared FILE is valid, do not pass
        ;; #:literal? #f so that we do not warn about it later on.
-       #'(%local-file file
-                      (delay (absolute-file-name file (getcwd)))
-                      rest ...))
+       #'(let ((f file))
+           (%local-file f
+                        (delay (absolute-file-name f (getcwd)))
+                        rest ...)))
       ((_ file rest ...)
        ;; Resolve FILE relative to the current directory.
        (with-syntax ((location (datum->syntax s (syntax-source s))))
-        #`(%local-file file
-                       (delay (absolute-file-name file (getcwd)))
-                       rest ...
-                       #:location 'location
-                       #:literal? #f)))           ;warn if FILE is relative
+         #`(let ((f file))
+             (%local-file f
+                          (delay (absolute-file-name f (getcwd)))
+                          rest ...
+                          #:location 'location
+                          #:literal? #f))))       ;warn if FILE is relative
       ((_)
        #'(syntax-error "missing file name"))
       (id
