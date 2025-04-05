@@ -35076,6 +35076,7 @@ comfort of Magit and the rest of Emacs.")
                  (base32
                   "1bljnv5z289hxn73y7krbd0wya6acnwphabxwfajilpc118qz3lp"))))
       (propagated-inputs (list emacs-hydra))
+      (native-inputs (list emacs-ert-runner))
       (build-system emacs-build-system)
       (home-page "https://github.com/jojojames/matcha/")
       (synopsis "Collection of hydras with a generic interface to launch them")
