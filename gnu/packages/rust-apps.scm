@@ -497,6 +497,27 @@ paging.")
 the terminal.")
     (license license:expat)))
 
+(define-public cargo-audit
+  (package
+    (name "cargo-audit")
+    (version "0.21.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-audit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a00yqpckkw86zh2hg7ra82c5fx0ird5766dyynimbvqiwg2ps0n"))))
+    (build-system cargo-build-system)
+    (arguments (list #:install-source? #f))
+    (inputs (cargo-inputs 'cargo-audit))
+    (home-page "https://rustsec.org/")
+    (synopsis "Audit Cargo.lock for crates with security vulnerabilities")
+    (description
+     "This package provides a Cargo subcommand, @command{cargo audit}, to
+audit @file{Cargo.lock} for crates with security vulnerabilities.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public cargo-bloat
   (package
     (name "cargo-bloat")
