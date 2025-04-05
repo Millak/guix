@@ -19231,6 +19231,7 @@ distribution, primarily targeting Clojure users")
        (sha256
         (base32 "1i07zv0z6r46jpg22x99a1izyfp6536xf951ibyr9kis5bql5jz9"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; tests require networking
     (home-page "https://github.com/Sasanidas/Rail")
     (synopsis "Generic nREPL client for Emacs")
     (description
