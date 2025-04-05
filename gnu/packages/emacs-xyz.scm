@@ -38603,6 +38603,7 @@ prompt.")
        (sha256
         (base32 "0pg64nza2mp4xyr69pjq51jsq1aaym0g38g4jzaxr0hh3w0ris1n"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "unit" "INIT_PACKAGES=t")))
     (synopsis "Inverse of Emacs' @code{fill-paragraph} and @code{fill-region}")
     (description
      "The functions in this package provide the inverse of Emacs'
