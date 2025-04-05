@@ -3060,7 +3060,7 @@ Java package that provides routines for various statistical distributions.")
                                    "ess--command-browser-unscoped-essr")))))
             (replace 'check
               (lambda* (#:key tests? #:allow-other-keys)
-                (when tests? (invoke "make" "test"))))))))
+                (when tests? (invoke "make" "-C" "test" "ess"))))))))
     (native-inputs (list perl r-roxygen2 texinfo))
     (inputs (list emacs-minimal r-minimal))
     (propagated-inputs (list emacs-julia-mode))
