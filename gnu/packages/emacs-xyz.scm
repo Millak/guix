@@ -41736,6 +41736,7 @@ displayed for sharing.")
        (sha256
         (base32 "0i6qm2vsz9csi7zxlwdfh26pvq86bdjznxiixydh11czkzdv3s3v"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/tarsius/orglink")
