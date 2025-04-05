@@ -30344,6 +30344,7 @@ server using XML-RPC.")
        (sha256
         (base32 "07vgwnk96i1vpsv2glg6kbkamjcs72xiznsa6xk7nl0nranzr3hd"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command #~(list "make" "test")))
     (home-page "https://github.com/hexmode/xml-rpc-el")
     (synopsis "XML-RPC client for Emacs")
     (description "This package provides an XML-RPC client for Emacs capable
