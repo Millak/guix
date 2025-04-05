@@ -43029,6 +43029,9 @@ project.el and xref.el.")
     (build-system emacs-build-system)
     (arguments
      (list
+      ;; Note: "check" also enforces a style that is broken by our
+      ;; ‘set-external-programs’ phase.
+      #:test-command #~(list "make" "test")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-external-programs
