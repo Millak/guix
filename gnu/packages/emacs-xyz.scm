@@ -25518,6 +25518,13 @@ highlighting and indentation support.")
        (sha256
         (base32 "10wndnlsv7f2yn83n1wamnhiwyhxkdlmwld9yk0m2kkxx4pwfgfj"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "emacs" "--batch"
+                                  "-l" "test/test-helper.el"
+                                  "-l" "test/test-highlighting.el"
+                                  "-l" "test/test-indentation.el"
+                                  "-l" "test/test-command.el"
+                                  "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-dash emacs-hcl-mode))
     (home-page "https://github.com/syohex/emacs-terraform-mode")
