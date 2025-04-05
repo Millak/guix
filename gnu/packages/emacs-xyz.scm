@@ -9399,7 +9399,8 @@ mode-line.")
         (base32 "14apmvbs89si3v5hsiz11dckp8fdfidm14lc090lswq7mgk7h79s"))))
     (build-system emacs-build-system)
     (arguments
-     '(#:include (cons "^lib\\/" %default-include)))
+     '(#:include (cons "^lib\\/" %default-include)
+       #:test-command (list "make" "ert")))
     (propagated-inputs
      (list emacs-inf-ruby))
     (home-page "https://github.com/dgutov/robe")
