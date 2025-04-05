@@ -77,7 +77,9 @@ the output filename.  Otherwise, use defaults for the host platform."
                                 ((string-prefix? "armhf" system)
                                  '("arm-efi" . "BOOTARM.EFI"))
                                 ((string-prefix? "aarch64" system)
-                                 '("arm64-efi" . "BOOTAA64.EFI"))))))
+                                 '("arm64-efi" . "BOOTAA64.EFI"))
+                                ((string-prefix? "riscv64" system)
+                                 '("riscv64-efi" . "BOOTRISCV64.EFI"))))))
     ;; grub-mkstandalone requires a TMPDIR to prepare the firmware image.
     (setenv "TMPDIR" esp)
 
