@@ -436,7 +436,7 @@ support for ESD sources.")
 (define-public m8c
   (package
     (name "m8c")
-    (version "1.7.0")
+    (version "1.7.10")
     (source
      (origin
        (method git-fetch)
@@ -445,7 +445,7 @@ support for ESD sources.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wsknqgya2vkalbjq6rvmknsdk4lrqkn0z5rpjf4pd5vxgr8qryb"))))
+        (base32 "18bx6jf0jbgnd6cfydh4iknh25rrpyc8awma4a1hkia57fyjy2gi"))))
     (build-system gnu-build-system)
     (arguments
      (list
