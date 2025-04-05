@@ -2988,6 +2988,7 @@ until time is up.")
                  (base32
                   "1s5ccw1a5ack01wd94ywfcrar9j98agchwdh30q7iyxr0d2z4sii"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
       (home-page "https://github.com/emacs-pe/scribble-mode")
       (synopsis "Emacs mode for editing the Scribble documentation syntax")
       (description
