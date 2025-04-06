@@ -3706,6 +3706,17 @@ bitmap image files.  Also, when dealing with compressed data which uses
 variable bit length encoding, you may find this module useful.")
     (license license:psfl)))
 
+(define-public python-bitarray-2
+  (package
+    (inherit python-bitarray)
+    (version "2.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "bitarray" version))
+              (sha256
+               (base32
+                "0ib35sxk46kw2adgikmy4vn9climr0dz99pqf2mia2idcyd232cc"))))))
+
 (define-public python-boolean.py
   (package
     (name "python-boolean.py")
