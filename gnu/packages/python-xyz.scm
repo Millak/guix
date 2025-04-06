@@ -24514,7 +24514,7 @@ client.")
 (define-public python-pymodbus
   (package
     (name "python-pymodbus")
-    (version "2.5.3")
+    (version "3.8.6")
     (source
      (origin
        (method git-fetch)
@@ -24523,46 +24523,41 @@ client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0kjjrx7xrlx0pf3y67hhr4xvqrly3xzmvf6ic5as61m6z19m7zd5"))))
-    (build-system python-build-system)
+        (base32 "1sncllh01c6vqq4fh9k3yg9fchmmw661rcp0066l7fis6sp4yw82"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'disable-problematic-tests
-                    (lambda _
-                      ;; The following test modules rely on Python's own
-                      ;; 'test' module, which is not distributed in the Python
-                      ;; package of Guix.
-                      (delete-file "test/test_client_async_asyncio.py")
-                      (delete-file "test/test_client_sync_diag.py")
-                      ;; The following test module requires the asynctest
-                      ;; library, abandoned without support for Python 3.9+
-                      ;; (see:
-                      ;; https://github.com/riptideio/pymodbus/issues/681).
-                      (delete-file "test/test_server_asyncio.py")))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "python" "-m" "pytest")))))))
-    (native-inputs
-     (list python-mock
-           python-pytest
-           python-redis
-           python-sqlalchemy
-           python-tornado
-           python-twisted))
-    (propagated-inputs
-     (list python-pyserial
-           python-six
-           ;; For the REPL.
-           python-aiohttp
-           python-click
-           python-prompt-toolkit
-           python-pygments
-           python-pyserial-asyncio))
+     (list
+      #:test-flags
+      #~(list "--ignore"
+              "test/server/test_simulator_api.py"
+              ;; These tests require the presence of a certificate.
+              "--ignore-glob"
+              "test/examples/*"
+              "--ignore"
+              "test/client/test_client.py")))
+    (native-inputs (list python-mock
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-cov
+                         python-pytest-xdist
+                         python-redis
+                         python-setuptools
+                         python-sqlalchemy
+                         python-tornado
+                         python-twisted
+                         python-wheel))
+    (propagated-inputs (list python-pyserial
+                             python-six
+                             ;; For the REPL.
+                             python-aiohttp
+                             python-click
+                             python-prompt-toolkit
+                             python-pygments
+                             python-pyserial-asyncio))
     (home-page "https://github.com/riptideio/pymodbus/")
     (synopsis "Modbus protocol stack in Python")
-    (description "Pymodbus is a full Modbus protocol implementation using
+    (description
+     "Pymodbus is a full Modbus protocol implementation using
      @code{asyncio}, @code{tornado} or @code{twisted} for its asynchronous
      communications core.  It includes the following @emph{client} features:
      @itemize
