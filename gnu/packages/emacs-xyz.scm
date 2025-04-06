@@ -34349,7 +34349,7 @@ as Emacs Lisp.")
 (define-public emacs-transient
   (package
     (name "emacs-transient")
-    (version "0.8.5")
+    (version "0.8.7")
     (source
      (origin
        (method git-fetch)
@@ -34358,7 +34358,7 @@ as Emacs Lisp.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f1gdxdj7mrmjmqswlj2lwagr6dpfhkm7732gh0jcgc4iy40vac9"))))
+        (base32 "1p3l2j1jrs39j1arzhczwi1ndcqmj5wvbq0y88brk3srzkwj69dr"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #f ;no test suite
