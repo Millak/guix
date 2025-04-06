@@ -1547,7 +1547,7 @@ the 'showing the effect of'-style of operation.")
 (define-public valeronoi
   (package
     (name "valeronoi")
-    (version "0.2.0")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -1556,7 +1556,7 @@ the 'showing the effect of'-style of operation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qkhrqkjsmm0h1bxf2ihkqfhdr18xx5x1i2ds1mla13zm0bw2570"))
+        (base32 "1f9sh3v66z3sam4cfnqiivimpcmmqlf81apglkkla3lni94db9g4"))
        (snippet #~(begin
                     (use-modules (guix build utils))
                     (delete-file-recursively "3rdparty")
