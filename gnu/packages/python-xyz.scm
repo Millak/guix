@@ -34774,15 +34774,38 @@ different tasks.")
 (define-public python-flufl-lock
   (package
     (name "python-flufl-lock")
-    (version "4.0")
+    (version "8.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "flufl.lock" version))
         (sha256
-         (base32
-          "055941zyma3wfx25jhm8wcsghpv3jc3iwi1gdrdjhzcnfhn62lxq"))))
-    (build-system python-build-system)
+         (base32 "1jz7vipjga4x803gfsb9mvnfb6q8my7ib000nsc3v9ljaq0050yq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list "--no-cov" "--ignore-glob=docs/*")
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; This phase add a symlink of dist-info dir for packages
+               ;; expecting flufl.lock rather than flufl_lock (mailman).
+               (add-after 'install 'add-custom-dist-info
+                 (lambda _
+                   (for-each
+                    (lambda (dir)
+                      (with-directory-excursion (dirname dir)
+                        (let ((base (basename dir)))
+                          (symlink base
+                                   (string-join (string-split base #\_) ".")))))
+                    (find-files #$output
+                                (lambda (file stat)
+                                  (string-suffix? ".dist-info" file))
+                                #:directories? #t)))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-cov
+           python-sybil))
     (propagated-inputs
      (list python-atpublic python-psutil))
     (home-page "https://flufllock.readthedocs.io")
