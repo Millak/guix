@@ -1094,7 +1094,7 @@ firmware blobs.  You can
            python-pyparsing
            python-pyinotify
            python-pycurl
-           python-bitarray
+           python-bitarray-2
            python-paramiko
            python-psutil))
     (home-page "https://www.ganeti.org/")

@@ -3715,7 +3715,7 @@ variable bit length encoding, you may find this module useful.")
               (uri (pypi-uri "bitarray" version))
               (sha256
                (base32
-                "0ib35sxk46kw2adgikmy4vn9climr0dz99pqf2mia2idcyd232cc"))))))
+                "1wy80bmhg33bpzn28g1n7s8r8f4drj7pcl4m2qb5sql8bbryx376"))))))
 
 (define-public python-boolean.py
   (package
