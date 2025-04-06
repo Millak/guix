@@ -1248,6 +1248,46 @@ for calling methods on remote servers by exchanging JSON objects.")
     (home-page "https://codeberg.org/rgherdt/scheme-json-rpc/")
     (license license:expat)))
 
+(define-public guile-lsp-server
+  (package
+    (name "guile-lsp-server")
+    (version "0.4.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/rgherdt/scheme-lsp-server")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ybd9gs8wbxv6hfph7cs3hv02qf5qyqkdb0nw6fp02ksb6gyip2w"))))
+    (build-system gnu-build-system)
+     (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+                        (add-after 'unpack 'move-to-guile-directory
+                                   (lambda _
+                                     (chdir "./guile"))))))
+     (native-inputs
+      (list autoconf
+            automake
+            pkg-config
+            texinfo
+            guile-3.0))
+    (propagated-inputs
+     (list guile-scheme-json-rpc
+           guile-srfi-145
+           guile-srfi-180
+           guile-irregex
+           guile-3.0))
+    (synopsis "LSP (Language Server Protocol) server for Guile")
+    (description "This package provides a library (lsp-server) and an
+executable @code{guile-lsp-server} that can be used by LSP clients in
+order to provide IDE functionality for Guile Scheme.")
+    (home-page "https://codeberg.org/rgherdt/scheme-lsp-server")
+    (license license:expat)))
+
 (define-public guile-ares-rs
   (package
     (name "guile-ares-rs")
