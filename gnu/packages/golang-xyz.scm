@@ -58,6 +58,7 @@
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
+;;; Copyright © 2025 45mg <45mg.writes@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -15460,6 +15461,31 @@ like the os package feature you're already familiar with)
     ;; This library is multiply-licensed under either of Apache 2.0 or MIT or
     ;; BSD-3-Clause terms.
     (license (list license:expat license:asl2.0 license:bsd-3))))
+
+(define-public go-github-com-wadey-gocovmerge
+  (package
+    (name "go-github-com-wadey-gocovmerge")
+    (version "0.0.0-20160331181800-b5bfa59ec0ad")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wadey/gocovmerge")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00m7kxcmmw0l9z0m7z6ii06n5j4bcrxqjbhxjbfzmsdgdsvkic31"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/wadey/gocovmerge"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/wadey/gocovmerge")
+    (synopsis "Merge coverprofile results from multiple go cover runs")
+    (description
+     "gocovmerge takes the results from multiple @command{go test -coverprofile} runs and
+merges them into one profile.")
+    (license license:bsd-2)))
 
 (define-public go-github-com-whyrusleeping-base32
   (package
