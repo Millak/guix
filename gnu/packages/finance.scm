@@ -11,7 +11,7 @@
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2018-2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2019-2024 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2025 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 Sebastian Schott <sschott@mailbox.org>
@@ -797,7 +797,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.18.3.4")
+    (version "0.18.4.0")
     (source
      (origin
        (method git-fetch)
@@ -813,7 +813,7 @@ the Monero command line client and daemon.")
            ;; See the 'extract-monero-sources' phase.
            (delete-file-recursively "monero")))
        (sha256
-        (base32 "09x8184kbpw74qlak2x9amz7j3qkacnk9l0c1cws1d0fghlm6n9m"))))
+        (base32 "0gzq3cq54mr85f86yibsska19lri2w2ak98pb4z237dffgjqkaj5"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
