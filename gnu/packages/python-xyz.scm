@@ -34748,17 +34748,41 @@ RFC 3464.")
 (define-public python-flufl-i18n
   (package
     (name "python-flufl-i18n")
-    (version "3.0")
+    (version "5.1.0")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "flufl.i18n" version))
+        (uri (pypi-uri "flufl_i18n" version))
         (sha256
          (base32
-          "1flwpn1xhgc957zj3zxw92dhdjh0lsy0hdvzq32dzqpsajfsvq1r"))))
-    (build-system python-build-system)
+          "0bm4kmi04gm164y5nmadmrg79y1l1cs9iwxcv9y7gq0dgyr20xms"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list "--no-cov" "--ignore-glob=docs/*")
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; This phase add a symlink of dist-info dir for packages
+               ;; expecting flufl.i18n rather than flufl_i18n (mailman).
+               (add-after 'install 'add-custom-dist-info
+                 (lambda _
+                   (for-each
+                    (lambda (dir)
+                      (with-directory-excursion (dirname dir)
+                        (let ((base (basename dir)))
+                          (symlink base
+                                   (string-join (string-split base #\_) ".")))))
+                    (find-files #$output
+                                (lambda (file stat)
+                                  (string-suffix? ".dist-info" file))
+                                #:directories? #t)))))))
     (propagated-inputs
      (list python-atpublic))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-cov
+           python-sybil))
     (home-page "https://flufli18n.readthedocs.io")
     (synopsis "API for Python internationalization")
     (description
