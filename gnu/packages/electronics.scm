@@ -69,16 +69,18 @@
 (define-public libserialport
   (package
     (name "libserialport")
-    (version "0.1.1")
+    (version "0.1.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://sigrok.org/download/source/libserialport/libserialport-"
-                    version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "git://sigrok.org/libserialport")
+                    (commit (string-append name "-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "17ajlwgvyyrap8z7f16zcs59pksvncwbmd3mzf98wj7zqgczjaja"))))
+                "0dn10gmm3rwdsiw1psaczb9m52x6cfkfrbywm4f5y8fsmghh7dsy"))))
     (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool))
     (home-page "https://sigrok.org/wiki/Libserialport")
     (synopsis "Library for using serial ports")
     (description "Libserialport is a minimal shared library written in C that is intended
