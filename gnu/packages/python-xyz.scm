@@ -32497,38 +32497,38 @@ register custom encoders and decoders.")
 (define-public python-ujson
   (package
     (name "python-ujson")
-    (version "5.7.0")
+    (version "5.10.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "ujson" version))
         (sha256
          (base32
-          "08vvyfyg4qvjy2vxrvc0qix5zmd0j6wd0icvmhc633xfvkayb277"))
+          "1habmn3bmmv2ym4ldiijcavdkdzp8h28h60hgwjkhxwcbly8zkdk"))
         (modules '((guix build utils)))
         (snippet
-         '(begin (delete-file-recursively "deps") #t))))
-    (build-system python-build-system)
+         #~(begin (delete-file-recursively "deps")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'link-to-system-double-conversion
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((d-c (assoc-ref inputs "double-conversion")))
-               (substitute* "setup.py"
-                 (("./deps/double-conversion/double-conversion\"")
-                  (string-append d-c "/include/double-conversion\""))
-                 (("-lstdc++" stdc)
-                  (string-append "-L" d-c "/lib\","
-                                 " \"-ldouble-conversion\","
-                                 " \"" stdc)))
-               #t)))
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'link-to-system-double-conversion
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((d-c (assoc-ref inputs "double-conversion")))
+                (substitute* "setup.py"
+                  (("./deps/double-conversion/double-conversion\"")
+                   (string-append d-c "/include/double-conversion\""))
+                  (("-lstdc++" stdc)
+                   (string-append "-L" d-c "/lib\","
+                                  " \"-ldouble-conversion\","
+                                  " \"" stdc)))))))))
     (native-inputs
-     (list double-conversion python-setuptools-scm python-pytest))
+     (list double-conversion
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/ultrajson/ultrajson")
     (synopsis "Ultra fast JSON encoder and decoder for Python")
     (description
