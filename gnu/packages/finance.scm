@@ -692,7 +692,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.18.3.4")
+    (version "0.18.4.0")
     (source
      (origin
        (method git-fetch)
@@ -710,7 +710,7 @@ blockchain.")
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "0rjyxcggg7pdp5026kbb49mk7vnvldvbr7qlkn76n4sq20cpk3v9"))))
+        (base32 "0dfb9yxpfijdjgl67dgmhgn4xd42rnwfn4nnp0dfakq34imv2cjh"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -776,7 +776,9 @@ blockchain.")
                                "DNSResolver.DNSSECSuccess"
                                "DNSResolver.DNSSECFailure"
                                "DNSResolver.GetTXTRecord"
-                               "is_hdd.linux_os_root")
+                               "is_hdd.linux_os_root"
+                               "http_server.response_soft_limit"
+                               "ban.subnet")
                              ":")))
                        (invoke "tests/unit_tests/unit_tests"
                                (string-append "--gtest_filter=-"
