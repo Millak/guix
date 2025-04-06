@@ -10,3 +10,13 @@ See:  https://github.com/smlnj/smlnj/issues/279
  #include <string>
  
  namespace llvm {
+--- llvm-13.0.1.src/include/llvm/Support/Base64.h	1970-01-01 00:00:01.000000000 +0000
++++ llvm-13.0.1.src/include/llvm/Support/Base64.h	2025-07-18 23:45:19.568475987 +0000
+@@ -14,6 +14,7 @@
+ #define LLVM_SUPPORT_BASE64_H
+ 
+ #include <string>
++#include <cstdint>
+ 
+ namespace llvm {
+ 

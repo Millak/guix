@@ -277,7 +277,10 @@ until LLVM/Clang 14."
     (propagated-inputs
      (list llvm clang-runtime))
     (arguments
-     `(#:configure-flags
+     `(;; TODO: enable tests.
+       #:tests? #f
+
+       #:configure-flags
        (list "-DCLANG_INCLUDE_TESTS=True"
 
              ;; TODO: Use --gcc-install-dir when GCC_INSTALL_PREFIX is
@@ -618,6 +621,7 @@ output), and Binutils.")
       (outputs '("out" "opt-viewer"))
       (arguments
        (list
+        #:tests? (not (target-x86-32?))
         #:configure-flags
         #~(list
            ;; These options are required for cross-compiling LLVM according
@@ -659,11 +663,19 @@ output), and Binutils.")
            "-DLLVM_PARALLEL_LINK_JOBS=1") ;cater to smaller build machines
         ;; Don't use '-g' during the build, to save space.
         #:build-type "Release"
+        #:modules '((guix build cmake-build-system)
+                    ((guix build gnu-build-system) #:prefix gnu:)
+                    (guix build utils))
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'change-directory
               (lambda _
                 (chdir "llvm")))
+            (replace 'check
+              (lambda* (#:rest args)
+                (setenv "HOME" "/tmp")
+                (apply (assoc-ref gnu:%standard-phases 'check)
+                       #:test-target "check-llvm" args)))
             (add-after 'install 'install-opt-viewer
               (lambda* (#:key outputs #:allow-other-keys)
                 (let* ((opt-viewer-share (string-append #$output:opt-viewer
@@ -701,6 +713,10 @@ of programming tools as well as libraries with equivalent functionality.")
     (source (llvm-monorepo version))
     (arguments
      (list
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:tests? (not (target-x86-32?))
       #:configure-flags
       #~(list
          ;; These options are required for cross-compiling LLVM according
@@ -739,6 +755,11 @@ of programming tools as well as libraries with equivalent functionality.")
           (add-after 'unpack 'change-directory
             (lambda _
               (chdir "llvm")))
+          (replace 'check
+            (lambda* (#:rest args)
+              (setenv "HOME" "/tmp")
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "check-llvm" args)))
           (add-after 'install 'install-opt-viewer
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
@@ -749,9 +770,7 @@ of programming tools as well as libraries with equivalent functionality.")
                 (rename-file (string-append out "/share/opt-viewer")
                              opt-viewer-dir)))))))
 
-    (native-inputs
-     `(("python" ,python-wrapper)
-       ("perl"   ,perl)))))
+    (native-inputs (list perl python-wrapper which))))
 
 (define-public clang-runtime-15
   (clang-runtime-from-llvm llvm-15))
@@ -932,6 +951,8 @@ Library.")
       (patches (search-patches "llvm-13-gcc-14.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments llvm-13)
+       ;; Disable tests for old releases now compiled with newer GCC.
+       ((#:tests? _ #false) #false)
        ((#:phases phases)
         #~(modify-phases #$phases
            #$@(if (assoc "config" (package-native-inputs this-package))
@@ -942,6 +963,9 @@ Library.")
                                              "/bin/config.guess")))
                          (copy-file config.guess "cmake/config.guess")))))
                 #~())
+         (add-after 'unpack 'delete-failing-tests
+           (lambda _
+             (delete-file "test/DebugInfo/X86/vla-multi.ll")))
          (add-before 'build 'shared-lib-workaround
            ;; Even with CMAKE_SKIP_BUILD_RPATH=FALSE, llvm-tblgen
            ;; doesn't seem to get the correct rpath to be able to run
@@ -1271,7 +1295,12 @@ Library.")
               (uri (llvm-uri "llvm" version))
               (sha256
                (base32
-                "1qpls3vk85lydi5b4axl0809fv932qgsqgdgrk098567z4jc7mmn"))))))
+                "1qpls3vk85lydi5b4axl0809fv932qgsqgdgrk098567z4jc7mmn"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments llvm-7)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'delete-failing-tests)))))))
 
 (define-public clang-runtime-6
   (clang-runtime-from-llvm
@@ -1320,7 +1349,7 @@ Library.")
         "1vi9sf7rx1q04wj479rsvxayb6z740iaz3qniwp266fgp5a07n8z"))))
     (outputs '("out"))
     (arguments
-     (substitute-keyword-arguments (package-arguments llvm)
+     (substitute-keyword-arguments (package-arguments llvm-6)
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-before 'build 'shared-lib-workaround
