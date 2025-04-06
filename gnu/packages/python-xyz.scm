@@ -34699,23 +34699,31 @@ and delegating behavior.")
 (define-public python-lazr-config
   (package
     (name "python-lazr-config")
-    (version "2.2.3")
+    (version "3.1")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "lazr.config" version))
+        (uri (pypi-uri "lazr_config" version))
         (sha256
-         (base32
-          "1qdbrzl61q7cjhbnxvw9y3frcr935y7diwy15xrwcv9ynvw76jmp"))))
-    (build-system python-build-system)
+         (base32 "02xb4fs9rm6bf3f00qkq8pihgqvrvn2wfnvydn2vg9p73ddhcmvw"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "python" "-s" "-m" "nose" "-P" "lazr"))))))
+     (list
+      #:test-flags #~(list "-v" #$output)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'check-cleanup
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each
+                 delete-file-recursively
+                 (find-files #$output
+                             (lambda (file stat)
+                               (or (member (basename file)
+                                           '("tests" ".pytest_cache"))))
+                             #:directories? #t))))))))
     (native-inputs
-     (list python-nose))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-lazr-delegates python-zope-interface))
     (home-page "https://launchpad.net/lazr.config")
