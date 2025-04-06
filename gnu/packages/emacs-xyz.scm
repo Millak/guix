@@ -2002,10 +2002,12 @@ rebasing, and other common Git operations.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z2dhc1m510iyrks5lxp3jlqg4n7qwwirbmxg4c4ll0xngfhnalc"))))
+        (base32 "10ql7gi586w65vds6wsh8bw5nr444xqhgh87khzcpfaglnw2lyaf"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-magit emacs-transient emacs-llama
-                             emacs-dash))
+    (arguments
+     (list
+      #:tests? #f)) ;no tests
+    (propagated-inputs (list emacs-magit emacs-transient emacs-llama))
     (home-page "https://github.com/stacked-git/magit-stgit")
     (synopsis "StGit extension for Magit")
     (description
