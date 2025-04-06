@@ -56,6 +56,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
@@ -718,7 +719,7 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
 (define-public greaseweazle-host-tools
   (package
     (name "greaseweazle-host-tools")
-    (version "1.12")
+    (version "1.22")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -727,7 +728,7 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lpvjlf2xg4ccwik8npiihi0lgw9dx5h12pp4ry343gkz4pwgk9x"))))
+                "1ji5sq9jf0p44982zkb5dj2d3mrpy675k0mkyg3r17q5syz0wbia"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -740,7 +741,11 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
             (lambda _
               (install-file "scripts/49-greaseweazle.rules"
                             (string-append #$output "/lib/udev/rules.d/")))))))
-    (native-inputs (list python-setuptools-scm))
+    (native-inputs
+     (list
+      python-setuptools
+      python-setuptools-scm
+      python-wheel))
     (propagated-inputs
      (list python-bitarray python-crcmod python-pyserial python-requests))
     (synopsis "Tools for accessing a floppy drive at the raw flux level")
