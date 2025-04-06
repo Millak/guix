@@ -4681,18 +4681,20 @@ the RFC 8617 Authenticated Received Chain (ARC) protocol.")
 (define-public python-authheaders
   (package
     (name "python-authheaders")
-    (version "0.13.0")
+    (version "0.16.3")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "authheaders" version))
         (sha256
          (base32
-          "14k6i72k5f8dyvps8vc0aq0cczc8lvqpgjfjzsy6qqychjvjcmwk"))))
-    (build-system python-build-system)
+          "12hl93336w64iyqalpv4rma2ijigav68qy1xmgziibdi7inxr3hi"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-authres python-dkimpy python-dnspython
            python-publicsuffix2))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/ValiMail/authentication-headers")
     (synopsis "Library wrapping email authentication header verification and generation")
     (description
