@@ -22835,8 +22835,8 @@ displays results pretty-printed in XML or JSON with @code{restclient-mode}")
     (license license:gpl3+)))
 
 (define-public emacs-whitespace-cleanup-mode
-  (let ((commit "72427144b054b0238a86e1348c45d986b8830d9d")
-        (revision "1"))
+  (let ((commit "0c9b795d78e2b230c426684af59c71794f2fc8b0")
+        (revision "2"))
     (package
       (name "emacs-whitespace-cleanup-mode")
       (version (git-version "0.10" revision commit))
@@ -22847,9 +22847,10 @@ displays results pretty-printed in XML or JSON with @code{restclient-mode}")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1zlk534jbwrsabcg3kqlzk4h4hwya60lh6q2n1v4yn4rpf5ghsag"))
+                  "0jarh37z5ahjm493c4n0f7fm0zjd2p0isaw331gv7ybc5adfm4pl"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f)) ; no actual tests
       (home-page "https://github.com/purcell/whitespace-cleanup-mode")
       (synopsis "Intelligently call @code{whitespace-cleanup} on save")
       (description
