@@ -3758,21 +3758,17 @@ interfaces interacting with Mailman.")
 (define-public python-mailman-hyperkitty
   (package
     (name "python-mailman-hyperkitty")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "mailman-hyperkitty" version))
-        (sha256
-         (base32
-          "1ni6vf1yi14c0l895fk278x4na7ymhpkl1q0vnpzbkzplpa7200i"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests python-zope-interface))
-    (inputs
-     (list mailman))
-    (native-inputs
-     (list python-mock python-nose python-nose2))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mailman-hyperkitty" version))
+       (sha256
+        (base32 "0f6c1fs28w3r9k9mbg7gsv6pa45aayaadaa0dn4q5dfcqvxrvmpq"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-requests python-zope-interface))
+    (inputs (list mailman))
+    (native-inputs (list python-nose2 python-setuptools python-wheel))
     (home-page "https://gitlab.com/mailman/mailman-hyperkitty/")
     (synopsis "Mailman archiver plugin for HyperKitty")
     (description
