@@ -6492,34 +6492,33 @@ of Hidden Markov Models.")
 (define-public python-lap
   (package
     (name "python-lap")
-    (version "0.4.0")
+    (version "0.5.12")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "lap" version))
               (sha256
                (base32
-                "0fqfxpq4jg9h4wxjw540gjmvfg1ccc1nssk7i9njg7qfdybxknn4"))))
-    (build-system python-build-system)
+                "1za4mf5nd7vzwd24sy2mfxrk8mnwq7d8rv6h96yh8v5flx7422sp"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "python" "setup.py" "build"
-                     "--cpu-baseline=sse2")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; The tests must be run from elsewhere.
-               (mkdir-p "/tmp/test")
-               (copy-recursively "lap/tests" "/tmp/test")
-               (with-directory-excursion "/tmp/test"
-                 (invoke "pytest" "-vv"))))))))
+     (list
+      #:test-flags #~(list "-v" #$output)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'check-cleanup
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each
+                 delete-file-recursively
+                 (find-files #$output
+                             (lambda (file stat)
+                               (or (member (basename file)
+                                           '("tests" ".pytest_cache"))))
+                             #:directories? #t))))))))
     (propagated-inputs
-     (list python-numpy
-           python-scipy))
+     (list python-numpy))
     (native-inputs
-     (list python-cython python-pytest))
+     (list python-cython python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/gatagat/lap")
     (synopsis "Linear Assignment Problem solver (LAPJV/LAPMOD)")
     (description "Lap is a linear assignment problem solver using Jonker-Volgenant
