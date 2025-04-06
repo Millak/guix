@@ -18,6 +18,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Miguel Ángel Moreno <mail@migalmoreno.com>
 ;;; Copyright © 2024 Leo Nikkilä <hello@lnikki.la>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,7 @@
   #:use-module (gnu packages php)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages logging)
@@ -282,6 +284,9 @@
             mumi-configuration
             mumi-configuration?
             mumi-configuration-mumi
+            mumi-configuration-data-directory
+            mumi-configuration-rsync-remote
+            mumi-configuration-rsync-flags
             mumi-configuration-mailer?
             mumi-configuration-sender
             mumi-configuration-smtp
@@ -1929,6 +1934,11 @@ WSGIPassAuthorization On
   mumi-configuration make-mumi-configuration
   mumi-configuration?
   (mumi    mumi-configuration-mumi (default mumi))
+  (data-directory mumi-configuration-data-directory
+                  (default "/var/mumi/data"))
+  (rsync-remote mumi-configuration-rsync-remote)
+  (rsync-flags mumi-configuration-rsync-flags
+               (default '()))
   (mailer? mumi-configuration-mailer? (default #t))
   (sender  mumi-configuration-sender (default #f))
   (smtp    mumi-configuration-smtp (default #f))
@@ -1976,7 +1986,7 @@ WSGIPassAuthorization On
 
 (define %mumi-mailer-log "/var/log/mumi.mailer.log")
 
-(define %mumi-worker-log "/var/log/mumi.worker.log")
+(define %mumi-rsync-and-index-log "/var/log/mumi.rsync-and-index.log")
 
 (define mumi-package-configuration->alist
   (match-record-lambda <mumi-package-configuration>
@@ -2014,6 +2024,23 @@ WSGIPassAuthorization On
                                           packages)))
                               <>))))))
 
+(define (mumi-rsync-and-index config)
+  (match-record config <mumi-configuration>
+    (data-directory rsync-remote rsync-flags)
+    (program-file "mumi-rsync-and-index"
+                  (with-imported-modules '((guix build utils))
+                    #~(begin
+                        (use-modules (guix build utils))
+
+                        (invoke #$(file-append rsync "/bin/rsync")
+                                "--delete" "--archive" "--verbose"
+                                #$@rsync-flags
+                                #$rsync-remote
+                                #$data-directory)
+                        (invoke #$(file-append mumi "/bin/mumi") "fetch"
+                                (string-append "--config="
+                                               #$(mumi-config-file config))))))))
+
 (define (mumi-shepherd-services config)
   (define environment
     #~(list "LC_ALL=en_US.utf8"
@@ -2021,9 +2048,9 @@ WSGIPassAuthorization On
                            #$(libc-utf8-locales-for-target)
                            "/lib/locale")))
 
-  (match config
-    (($ <mumi-configuration> mumi mailer? sender smtp)
-     (list (shepherd-service
+  (match-record config <mumi-configuration>
+    (mumi mailer? sender smtp)
+    (list (shepherd-service
             (provision '(mumi))
             (documentation "Mumi bug-tracking web interface.")
             (requirement '(user-processes networking))
@@ -2035,19 +2062,21 @@ WSGIPassAuthorization On
                       #:user "mumi" #:group "mumi"
                       #:log-file #$%mumi-log))
             (stop #~(make-kill-destructor)))
-           (shepherd-service
-            (provision '(mumi-worker))
-            (documentation "Mumi bug-tracking web interface database worker.")
-            (requirement '(user-processes networking))
-            (start #~(make-forkexec-constructor
-                      `(#$(file-append mumi "/bin/mumi") "worker"
-                        ,(string-append "--config="
-                                        #$(mumi-config-file config)))
-                      #:environment-variables #$environment
-                      #:user "mumi" #:group "mumi"
-                      #:log-file #$%mumi-worker-log))
-            (stop #~(make-kill-destructor)))
-           (shepherd-service
+          (shepherd-service
+            (provision '(mumi-rsync-and-index))
+            (modules '((shepherd service timer)))
+            (start #~(make-timer-constructor
+                      ;; Run every 5 minutes, unless an instance of
+                      ;; this job is already running.
+                      (calendar-event #:minutes '#$(iota 12 0 5))
+                      (command (list #$(mumi-rsync-and-index config)))
+                      #:log-file #$%mumi-rsync-and-index-log
+                      #:max-duration (* 60 60)
+                      #:wait-for-termination? #t))
+            (stop #~(make-timer-destructor))
+            (actions (list shepherd-trigger-action))
+            (documentation "Rsync and index the GNU Debbugs data"))
+          (shepherd-service
             (provision '(mumi-mailer))
             (documentation "Mumi bug-tracking web interface mailer.")
             (requirement '(user-processes networking))
@@ -2064,7 +2093,7 @@ WSGIPassAuthorization On
                       #:environment-variables #$environment
                       #:user "mumi" #:group "mumi"
                       #:log-file #$%mumi-mailer-log))
-            (stop #~(make-kill-destructor)))))))
+            (stop #~(make-kill-destructor))))))
 
 (define mumi-service-type
   (service-type
@@ -2077,9 +2106,7 @@ WSGIPassAuthorization On
           (service-extension shepherd-root-service-type
                              mumi-shepherd-services)))
    (description
-    "Run Mumi, a Web interface to the Debbugs bug-tracking server.")
-   (default-value
-     (mumi-configuration))))
+    "Run Mumi, a Web interface to the Debbugs bug-tracking server.")))
 
 (define %default-gmnisrv-config-file
   (plain-file "gmnisrv.ini" "

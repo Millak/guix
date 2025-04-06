@@ -35178,6 +35178,17 @@ following fields:
 @item @code{mumi} (default: @code{mumi})
 The Mumi package to use.
 
+@item @code{data-directory} (default: @file{"/var/mumi/data"})
+Data directory to store Debbugs data from upstream Debbugs instance.
+
+@item @code{rsync-remote}
+Remote rsync path from which to download Debbugs data.  The remote is
+polled every 5 minutes, unless a previous instance of rsync is already
+running.
+
+@item @code{rsync-flags} (default: @code{'()})
+Additional flags to pass to @command{rsync}.
+
 @item @code{mailer?} (default: @code{#true})
 Whether to enable or disable the mailer component.
 
