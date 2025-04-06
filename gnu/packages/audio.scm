@@ -5655,7 +5655,7 @@ representations.")
 (define-public cava
   (package
     (name "cava")
-    (version "0.10.1")
+    (version "0.10.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5664,10 +5664,11 @@ representations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r13pf8z02pf4wlapa9nyp1h114nnk1s47bdpq3wl8wvw896axw6"))))
+                "09wwzqynfmdzn77vxxmrw2z0yz95p4zg9cgfp9vnpv70visi98d0"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool pkg-config))
-    (inputs (list alsa-lib fftw ncurses pipewire pulseaudio iniparser))
+    (inputs (list alsa-lib fftw ncurses pipewire pulseaudio iniparser
+                  sdl2 autoconf-archive))
     (arguments
      (list #:configure-flags
            #~(list (string-append "PREFIX="
