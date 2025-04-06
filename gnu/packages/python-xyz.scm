@@ -24419,30 +24419,23 @@ etc.")
 (define-public python-stem
   (package
     (name "python-stem")
-    (version "1.8.0")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stem" version))
        (sha256
         (base32
-         "1hk8alc0r4m669ggngdfvryndd0fbx0w62sclcmg55af4ak8xd50"))))
-    (build-system python-build-system)
+         "10mm9qw4xv7d18086ivy38iaz04z72018186q03j5y69skzikyw3"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           ;; See https://github.com/torproject/stem/issues/56
-           (lambda _
-             (substitute* "run_tests.py"
-               (("test\\.task\\.MOCK_VERSION,")
-                ""))))
-         (replace 'check
-           (lambda _
-             (invoke "./run_tests.py" "--unit")
-             #t)))))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda _
+                       (invoke "./run_tests.py" "--unit"))))))
     (native-inputs
-     (list python-mock python-pycodestyle python-pyflakes))
+     (list python-setuptools python-wheel))
     (home-page "https://stem.torproject.org/")
     (synopsis
      "Python controller library that allows applications to interact with Tor")
