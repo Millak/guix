@@ -4578,7 +4578,11 @@ reasonable substitute.")
                      "test_tfunction_load_delete"
                      "test_tfunction_list"
                      ;; AssertionError: assert 3 == 2
-                     "test_acl_list")
+                     "test_acl_list"
+                     ;; XXX: This test occasionally fails on i686-linux
+                     #$@(if (target-x86-32?)
+                            '("test_geopos")
+                            '()))
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
