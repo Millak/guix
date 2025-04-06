@@ -34660,23 +34660,31 @@ reStructuredText, and plain text.")
 (define-public python-lazr-delegates
   (package
     (name "python-lazr-delegates")
-    (version "2.0.4")
+    (version "2.1.1")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "lazr.delegates" version))
+        (uri (pypi-uri "lazr_delegates" version))
         (sha256
-         (base32
-          "1rdnl85j9ayp8n85l0ciip621j9dcziz5qnmv2m7krgwgcn31vfx"))))
-    (build-system python-build-system)
+         (base32 "1p02diwzn58jhpvf9m8bhb5p0xkx5gnc84mzgwr3zdsidrhv5kmf"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "nosetests")))))))
+     (list
+      #:test-flags #~(list "-v" #$output)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'check-cleanup
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each
+                 delete-file-recursively
+                 (find-files #$output
+                             (lambda (file stat)
+                               (or (member (basename file)
+                                           '("tests" ".pytest_cache"))))
+                             #:directories? #t))))))))
     (native-inputs
-     (list python-nose))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-zope-interface))
     (home-page "https://launchpad.net/lazr.delegates")
