@@ -1228,9 +1228,11 @@ the KeepKey Hardware Wallet.")
        (sha256
         (base32
          "03zj602m2rln9yvr08dswy56vzkbldp8b074ixwzz525dafblr92"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (inputs
      (list python-ledgerblue python-trezor-agent))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "Ledger as hardware SSH/GPG agent")
     (description "This package allows using Ledger as hardware SSH/GPG agent.")
