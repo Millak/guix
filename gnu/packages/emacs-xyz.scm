@@ -4238,6 +4238,28 @@ light user interface.")
 within a specified width.  It is useful for displaying long track titles.")
     (license license:gpl3+)))
 
+(define-public emacs-mediainfo-mode
+  (package
+    (name "emacs-mediainfo-mode")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/xFA25E/mediainfo-mode.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jvbwisjb8927mmqavp9x1054lpm3wljja9k4jwqwbnkydf6vn3d"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list mediainfo ffmpeg imagemagick))
+    (synopsis "mediainfo mode")
+    (description "This package provides a major mode that shows metadata of
+media files.")
+    (home-page "https://github.com/xFA25E/mediainfo-mode")
+    (license license:gpl3+)))
+
 (define-public emacs-emprise
   (package
     (name "emacs-emprise")
