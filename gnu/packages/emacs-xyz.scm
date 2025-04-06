@@ -3199,13 +3199,13 @@ provides an optional IDE-like error list.")
       (version "0.1.1")
       (source
        (origin
-	 (method git-fetch)
-	 (uri (git-reference
-	       (url "https://github.com/jumper047/fb2-reader")
-	       (commit commit)))
-	 (file-name (git-file-name name version))
-	 (sha256
-	  (base32 "0vx4b9wnmx1bng8wak5r7yryyvgib4m46l6b877xzkdhsjr3rbsi"))))
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jumper047/fb2-reader")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0vx4b9wnmx1bng8wak5r7yryyvgib4m46l6b877xzkdhsjr3rbsi"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -26829,19 +26829,19 @@ orient yourself in the code, and tell which statements are at a given level.")
 
 (define-public emacs-smudge
   (let ((commit "4a9c5b34e9bc0a694d0faf8c2f83dc244b8b6a2f")
-	(revision "1"))
+        (revision "1"))
     (package
       (name "emacs-smudge")
       (version (git-version "1.0.0" revision commit))
       (source (origin
-	        (method git-fetch)
-	        (uri (git-reference
-		      (url "https://github.com/danielfm/smudge")
-		      (commit commit)))
-	        (file-name (git-file-name name version))
-	        (sha256
-	         (base32
-		  "1xiqxw87sdk9mgy7fdbmzqaf58dc1grhkigirg1bd0b2q5kbnbwx"))))
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/danielfm/smudge")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xiqxw87sdk9mgy7fdbmzqaf58dc1grhkigirg1bd0b2q5kbnbwx"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-oauth2 emacs-request emacs-simple-httpd))
       (home-page "https://github.com/danielfm/smudge")
@@ -37491,7 +37491,7 @@ passphrase until the first time you push to a remote.")
        (uri (string-append "https://elpa.gnu.org/packages/ssh-deploy-" version
                            ".tar"))
        (sha256
-	(base32 "0fb88l3270d7l808q8x16zcvjgsjbyhgifgv17syfsj0ja63x28p"))))
+        (base32 "0fb88l3270d7l808q8x16zcvjgsjbyhgifgv17syfsj0ja63x28p"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/cjohansson/emacs-ssh-deploy")
     (synopsis "Deployment via Tramp, global or per directory")
@@ -39282,10 +39282,10 @@ example code.")
     (name "emacs-boxy")
     (version "2.0.0")
     (source (origin
-	      (method url-fetch)
-	      (uri (string-append "https://elpa.gnu.org/packages/boxy-"
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/boxy-"
                                   version ".tar"))
-	      (sha256
+              (sha256
                (base32 "1vfgwgk3vzzp2cy7n0qwhn7hzjxbp9vzxp1al1pkynv9hfs503gb"))))
     (build-system emacs-build-system)
     (home-page "https://gitlab.com/grinn.amy/boxy")
@@ -43423,19 +43423,19 @@ or `header-line-format'.  For additional documentation, see info node
 
 (define-public emacs-tintin-mode
   (let ((commit "82e71e1db92ee3d94c7d0208bafc5de337193de8")
-	(revision "1"))
+        (revision "1"))
     (package
       (name "emacs-tintin-mode")
       (version (git-version "1.0.1" revision commit))
       (source
        (origin
-	 (method git-fetch)
-	 (uri (git-reference
-	       (url "https://github.com/sunwayforever/tintin-mode")
-	       (commit commit)))
-	 (file-name (git-file-name name version))
-	 (sha256
-	  (base32 "1p6ryqb8m30cp0zyawb6bs8wy3ga7gm60lcan0xx1fy3wx8qip33"))))
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sunwayforever/tintin-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1p6ryqb8m30cp0zyawb6bs8wy3ga7gm60lcan0xx1fy3wx8qip33"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/sunwayforever/tintin-mode")
       (synopsis "Emacs major mode for TinTin++ scripts")
