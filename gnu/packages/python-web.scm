@@ -9056,14 +9056,18 @@ applications.")
 (define-public python-sanic
   (package
     (name "python-sanic")
-    (version "23.12.1")
+    (version "25.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sanic" version))
        (sha256
-        (base32
-         "115vnir4qijv89139g5h0i4l0n4w3bgh1ickgnk8xidxsa0wla15"))))
+        (base32 "1fv9wgsj54scbr7qhmwdgc4zqnqpwacpakcfxhsg10gc04h54pbp"))
+       ;; Loosen requirements for both python-sanic and python-sanic-bootstrap.
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "setup.py"
+                    (("setuptools>=[0-9.]*")
+                     "setuptools")))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -9116,10 +9120,20 @@ applications.")
            python-websockets))
     (native-inputs
      (list python-beautifulsoup4
+           python-chardet
+           python-cryptography
+           python-docutils
+           python-mypy
+           python-pygments
            python-pytest
            python-pytest-asyncio
+           python-pytest-benchmark
+           python-pytest-sanic
            python-sanic-testing
            python-setuptools
+           python-slotscheck
+           python-towncrier
+           python-types-ujson
            python-uvicorn
            python-wheel))
     (home-page "https://github.com/sanic-org/sanic/")
