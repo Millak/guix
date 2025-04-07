@@ -322,6 +322,35 @@
               (substitute* "lw/librewolf.cfg"
                 (("defaultPref\\(\"browser\\.ml\\.")
                  "lockPref(\"browser.ml."))))
+          (add-after 'unpack 'use-mozzarella
+            (lambda _
+              (substitute*
+                  "toolkit/locales/en-US/toolkit/about/aboutAddons.ftl"
+                (("addons.mozilla.org")
+                 "gnuzilla.gnu.org"))
+              (call-with-port (open-file "lw/librewolf.cfg" "a")
+                (lambda (port)
+                  ;; Add-ons panel (see settings.js in Icecat source).
+                  (for-each
+                   (lambda (pref)
+                     (format port
+                             "defaultPref(~s, ~s);~%"
+                             (car pref)
+                             (cdr pref)))
+                   `(("extensions.getAddons.search.browseURL"
+                      ,(string-append
+                        "https://gnuzilla.gnu.org/mozzarella/"
+                        "search.php?q=%TERMS%"))
+                     ("extensions.getAddons.get.url" .
+                      "https://gnuzilla.gnu.org/mozzarella")
+                     ("extensions.getAddons.link.url" .
+                      "https://gnuzilla.gnu.org/mozzarella")
+                     ("extensions.getAddons.discovery.api_url" .
+                      "https://gnuzilla.gnu.org/mozzarella")
+                     ("extensions.getAddons.langpacks.url" .
+                      "https://gnuzilla.gnu.org/mozzarella")
+                     ("lightweightThemes.getMoreURL" .
+                      "https://gnuzilla.gnu.org/mozzarella")))))))
           (add-after 'patch-source-shebangs 'patch-cargo-checksums
             (lambda _
               (use-modules (guix build cargo-utils))
@@ -476,12 +505,6 @@
                      "mk_add_options MOZ_TELEMETRY_REPORTING=0")))
                 (setenv "MOZCONFIG" mozconfig))
               (invoke "./mach" "configure")))
-          (add-before 'build 'fix-addons-placeholder
-            (lambda _
-              (substitute* 
-                  "toolkit/locales/en-US/toolkit/about/aboutAddons.ftl"
-                (("addons.mozilla.org")
-                 "gnuzilla.gnu.org"))))
           (replace 'build
             (lambda* (#:key (make-flags '())
                       (parallel-build? #t) #:allow-other-keys)
@@ -543,34 +566,7 @@
                 ;; Default is 5.
                 (substitute* (in-vicinity lib config-file)
                   (("defaultPref\\(\"extensions.enabledScopes\", 5\\)")
-                   "defaultPref(\"extensions.enabledScopes\", 13)"))
-                ;; Use Mozzarella addons repo.
-                (call-with-port
-                    (open-file
-                     (in-vicinity lib config-file)
-                     "a")
-                  (lambda (port)
-                    ;; Add-ons panel (see settings.js in Icecat source).
-                    (for-each
-                     (lambda (pref)
-                       (format port
-                               "defaultPref(~s, ~s);~%"
-                               (car pref)
-                               (cdr pref)))
-                     `(("extensions.getAddons.search.browseURL"
-                        ,(string-append
-                          "https://gnuzilla.gnu.org/mozzarella/"
-                          "search.php?q=%TERMS%"))
-                       ("extensions.getAddons.get.url" .
-                        "https://gnuzilla.gnu.org/mozzarella")
-                       ("extensions.getAddons.link.url" .
-                        "https://gnuzilla.gnu.org/mozzarella")
-                       ("extensions.getAddons.discovery.api_url" .
-                        "https://gnuzilla.gnu.org/mozzarella")
-                       ("extensions.getAddons.langpacks.url" .
-                        "https://gnuzilla.gnu.org/mozzarella")
-                       ("lightweightThemes.getMoreURL" .
-                        "https://gnuzilla.gnu.org/mozzarella"))))))))
+                   "defaultPref(\"extensions.enabledScopes\", 13)")))))
           (add-after 'install 'wrap-program
             (lambda* (#:key inputs outputs #:allow-other-keys)
               ;; The following two functions are from Guix's icecat package in
