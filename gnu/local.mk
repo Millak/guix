@@ -1845,7 +1845,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libmhash-hmac-fix-uaf.patch		\
   %D%/packages/patches/libmodbus-disable-networking-test.patch \
   %D%/packages/patches/lib-tl-for-telegram-memcpy.patch	\
-  %D%/packages/patches/llama-cpp-vulkan-optional.patch	\
   %D%/packages/patches/llhttp-ponyfill-object-fromentries.patch	\
   %D%/packages/patches/lvm2-no-systemd.patch    		\
   %D%/packages/patches/maturin-no-cross-compile.patch		\
