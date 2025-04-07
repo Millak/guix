@@ -12058,6 +12058,61 @@ NIH, ImageJ, MicroManager, MD GEL, and FluoView files.  It also lets you write
 numpy arrays to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
     (license license:bsd-3)))
 
+(define-public python-tiktoken
+  (package
+    (name "python-tiktoken")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tiktoken" version))
+       (sha256
+        (base32 "0p9cg6n8mzdi4lbbwxrrp26chy5hr14bqmzr3w74kq1qm6k5qanh"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #false
+      #:cargo-inputs
+      (list rust-pyo3-0.22
+            rust-fancy-regex-0.13
+            rust-regex-1
+            rust-rustc-hash-1
+            rust-bstr-1)
+      #:imported-modules
+      (append %pyproject-build-system-modules
+              %cargo-build-system-modules)
+      #:modules
+      '((guix build cargo-build-system)
+        ((guix build pyproject-build-system) #:prefix py:)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'install 'wrap
+            (lambda _
+              ;; Collection of python- and pyproject-build-system phases
+              ;; between 'install and 'check.
+              (assoc-ref py:%standard-phases 'add-install-to-pythonpath)
+              (assoc-ref py:%standard-phases 'add-install-to-path)
+              (assoc-ref py:%standard-phases 'wrap)
+              (assoc-ref py:%standard-phases 'create-entrypoints)
+              (assoc-ref py:%standard-phases 'compile-bytecode)))
+          (replace 'install
+            (assoc-ref py:%standard-phases 'install)))))
+    (propagated-inputs (list python-regex python-requests))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-rust
+           python-wheel
+           python-wrapper))
+    (home-page "https://github.com/openai/tiktoken/")
+    (synopsis "Fast BPE tokeniser for use with OpenAI's models")
+    (description
+     "Tiktoken is a fast @dfn{byte pair encoding} (BPE) tokeniser for use with
+@code{OpenAI's} models.")
+    (license license:expat)))
+
 (define-public python-lfdfiles
   (package
     (name "python-lfdfiles")
