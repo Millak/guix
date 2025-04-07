@@ -5920,19 +5920,7 @@ it won't take longer to install 15 machines than it would to install just 2.")
                (base32 "1j3c7skby9scsq6p1f6nacbiy9b26y1sswchdsp8p3vv7fgdh2wf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-async-trait" ,rust-async-trait-0.1)
-        ("rust-enquote" ,rust-enquote-1)
-        ("rust-getopts" ,rust-getopts-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-nix" ,rust-nix-0.27)
-        ("rust-pam-sys" ,rust-pam-sys-0.5)
-        ("rust-rpassword" ,rust-rpassword-5)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tokio" ,rust-tokio-1))
-       #:install-source? #f
+     `(#:install-source? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-/bin/sh
@@ -5979,7 +5967,7 @@ it won't take longer to install 15 machines than it would to install just 2.")
                  (install-file "agreety.1" man1))))))))
     (inputs
      ;; Full bash, not bash-minimal.  See https://issues.guix.gnu.org/76105.
-     (list bash linux-pam))
+     (cons* bash linux-pam (cargo-inputs 'greetd)))
     (native-inputs
      (list scdoc))
     (synopsis "Minimal and flexible login manager daemon")

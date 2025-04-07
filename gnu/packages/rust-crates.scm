@@ -1109,6 +1109,10 @@
   (crate-source "endi" "1.1.0"
                 "1gxp388g2zzbncp3rdn60wxkr49xbhhx94nl9p4a6c41w4ma7n53"))
 
+(define rust-enquote-1.1.0
+  (crate-source "enquote" "1.1.0"
+                "0clrjghlfkkb7sndabs5wch0fz2nif6nj4b117s8kqxx3nqnrhq6"))
+
 (define rust-enumflags2-0.7.11
   (crate-source "enumflags2" "0.7.11"
                 "0iwi60d54lgby0f29b5isikxraf0wvnqdmlddx68a62kbx34nbxs"))
@@ -2947,6 +2951,10 @@
                 "1dnnp133mbpp72mfss3fhm8wx3yp3p3abdhlix27v92j19kz2hpy"
                 #:snippet '(delete-file-recursively "src/test_vectors")))
 
+(define rust-pam-sys-0.5.6
+  (crate-source "pam-sys" "0.5.6"
+                "0d14501d5vybjnzxfjf96321xa5wa36x1xvf02h02zq938qmhj6d"))
+
 (define rust-pango-0.19.8
   (crate-source "pango" "0.19.8"
                 "1kffxkk7730csly86fkgja50k1184zj9lz49sv7qb0059233439z"))
@@ -3601,6 +3609,10 @@
   (crate-source "ron" "0.9.0-alpha.1"
                 "0dh8fd4l54a36881b51275z3hbbjrmrj6rglr28sjzzz76js4i3n"
                 #:snippet '(delete-file-recursively "tests")))
+
+(define rust-rpassword-5.0.1
+  (crate-source "rpassword" "5.0.1"
+                "1yry1kmgjcb4qd5wak91203493x42ak3dz9hy1c0r9kyib7kdjgz"))
 
 (define rust-rpds-1.1.0
   (crate-source "rpds" "1.1.0"
@@ -5792,6 +5804,57 @@
                                  rust-windows-x86-64-gnullvm-0.52.6
                                  rust-windows-x86-64-msvc-0.52.6
                                  rust-wit-bindgen-rt-0.39.0))
+                     (greetd =>
+                             (list rust-addr2line-0.24.2
+                                   rust-adler2-2.0.0
+                                   rust-async-trait-0.1.88
+                                   rust-backtrace-0.3.74
+                                   rust-bitflags-2.9.0
+                                   rust-bytes-1.10.1
+                                   rust-cfg-if-1.0.0
+                                   rust-enquote-1.1.0
+                                   rust-getopts-0.2.21
+                                   rust-gimli-0.31.1
+                                   rust-itoa-1.0.15
+                                   rust-libc-0.2.171
+                                   rust-memchr-2.7.4
+                                   rust-miniz-oxide-0.8.7
+                                   rust-mio-1.0.3
+                                   rust-nix-0.27.1
+                                   rust-object-0.36.7
+                                   rust-pam-sys-0.5.6
+                                   rust-pin-project-lite-0.2.16
+                                   rust-proc-macro2-1.0.94
+                                   rust-quote-1.0.40
+                                   rust-rpassword-5.0.1
+                                   rust-rustc-demangle-0.1.24
+                                   rust-ryu-1.0.20
+                                   rust-serde-1.0.219
+                                   rust-serde-derive-1.0.219
+                                   rust-serde-json-1.0.140
+                                   rust-signal-hook-registry-1.4.2
+                                   rust-socket2-0.5.9
+                                   rust-syn-2.0.100
+                                   rust-thiserror-1.0.69
+                                   rust-thiserror-impl-1.0.69
+                                   rust-tokio-1.44.2
+                                   rust-tokio-macros-2.5.0
+                                   rust-unicode-ident-1.0.18
+                                   rust-unicode-width-0.1.14
+                                   rust-wasi-0.11.0+wasi-snapshot-preview1
+                                   rust-winapi-0.3.9
+                                   rust-winapi-i686-pc-windows-gnu-0.4.0
+                                   rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                   rust-windows-sys-0.52.0
+                                   rust-windows-targets-0.52.6
+                                   rust-windows-aarch64-gnullvm-0.52.6
+                                   rust-windows-aarch64-msvc-0.52.6
+                                   rust-windows-i686-gnu-0.52.6
+                                   rust-windows-i686-gnullvm-0.52.6
+                                   rust-windows-i686-msvc-0.52.6
+                                   rust-windows-x86-64-gnu-0.52.6
+                                   rust-windows-x86-64-gnullvm-0.52.6
+                                   rust-windows-x86-64-msvc-0.52.6))
                      (librsvg =>
                               (list rust-adler2-2.0.0
                                     rust-aho-corasick-1.1.3
