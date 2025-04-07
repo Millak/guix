@@ -292,7 +292,6 @@ guix/scripts/import/gem\.scm                       @guix/ruby
 tests/gem\.scm                                     @guix/ruby
 
 gnu/packages/(crates|rust)(-.+|)\.scm$             @guix/rust
-gnu/packages/c2rust\.scm                           @guix/rust
 gnu/packages/sequoia\.scm                          @guix/rust
 guix/build/cargo-build-system\.scm                 @guix/rust
 guix/build/cargo-utils\.scm                        @guix/rust

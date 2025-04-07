@@ -36,6 +36,7 @@
 ;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;; Copyright © 2025 Divya Ranjan Pattanaik <divya@subvertising.org>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
+;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -498,6 +499,56 @@ paging.")
      "This package provides a customizable graphical process/system monitor for
 the terminal.")
     (license license:expat)))
+
+;; Note: It has expat license.
+;; Note: That is supposedly the (unreleased) version 0.6.3.
+(define %tinycbor-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/intel/tinycbor")
+          (commit "d393c16f3eb30d0c47e6f9d92db62272f0ec4dc7")))
+    (file-name "tinycbor-src")
+    (sha256
+     (base32
+      "0w38lzj0rz36skc1cn3shllc82c7nn32h88frb8f164a8haq3hkw"))))
+
+(define-public c2rust
+  (package
+    (name "c2rust")
+    (version "0.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "c2rust" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05cm423m7v30b6gwgfzizhyqn3ncnfndin5zbkhyg9ah3pqccgps"))))
+    (build-system cargo-build-system)
+    (native-inputs (list clang cmake-minimal %tinycbor-source))
+    (inputs (cons llvm (cargo-inputs 'c2rust)))
+    (arguments
+     (list #:install-source? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'patch
+                 (lambda _
+                   ;; The build process will slightly patch the sources.
+                   (copy-recursively
+                    #+(this-package-native-input "tinycbor-src")
+                    "/tmp/tinycbor")
+                   (substitute*
+                       (string-append "guix-vendor/rust-c2rust-ast-exporter-"
+                                      #$(package-version this-package)
+                                      ".tar.gz/src/CMakeLists.txt")
+                     (("GIT_TAG .*") "")
+                     (("GIT_REPOSITORY .*")
+                      "SOURCE_DIR \"/tmp/tinycbor\"\n")))))))
+    (home-page "https://c2rust.com/")
+    (synopsis "C to Rust translation, refactoring, and cross-checking")
+    (description
+     "This package provides C to Rust translation, refactoring, and cross-checking.")
+    (license license:bsd-3)))
 
 (define-public cargo-audit
   (package
