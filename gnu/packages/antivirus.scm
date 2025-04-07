@@ -47,6 +47,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
@@ -76,71 +77,36 @@
                             '(".cargo"                 ; vendored rust inputs
                               "win32"                  ; unnecessary
                               "libclamunrar"))))))     ; non-free license
-    (build-system cargo-build-system)
+    (build-system cmake-build-system)
     (arguments
      (list
-      #:install-source? #f
-      #:cargo-inputs
-      `(("rust-flate2" ,rust-flate2-1)
-        ("rust-hex" ,rust-hex-0.4)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-sha2" ,rust-sha2-0.10)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-image" ,rust-image-0.24)
-        ("rust-rustdct" ,rust-rustdct-0.7)
-        ("rust-transpose" ,rust-transpose-0.2)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-base64" ,rust-base64-0.21)
-        ("rust-sha1" ,rust-sha1-0.10)
-        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-        ("rust-bindgen" ,rust-bindgen-0.65)
-        ("rust-onenote-parser-for-clamav" ,rust-onenote-parser-for-clamav)
-        ("rust-hex-literal" ,rust-hex-literal-0.4)
-        ("rust-inflate" ,rust-inflate-0.4)
-        ("rust-bzip2-rs" ,rust-bzip2-rs-0.1)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-delharc" ,rust-delharc-0.6)
-        ("rust-cbindgen" ,rust-cbindgen))
-      #:vendor-dir ".cargo/vendor"
+      #:configure-flags ''("-DENABLE_MILTER=OFF" "-DENABLE_UNRAR=OFF")
       #:imported-modules `(,@%cmake-build-system-modules
                            ,@%cargo-build-system-modules)
-      #:modules '((guix build cargo-build-system)
-                  ((guix build cmake-build-system) #:prefix cmake:)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build cmake-build-system)
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          ;; There is a test.exe file used in unit tests.
-          (delete 'check-for-pregenerated-files)
-          (add-after 'configure 'fix-cargo-inputs-vendoring
-            (lambda _
-              ;; Reproduce the original layout, fails with config.
-              (rename-file ".cargo/config" ".cargo/config.toml")))
-          (add-after 'patch-cargo-checksums 'cmake-configure
-            (lambda* (#:key outputs #:allow-other-keys)
-              ((assoc-ref cmake:%standard-phases 'configure)
-               #:configure-flags
-               (list "-DENABLE_MILTER=OFF" "-DENABLE_UNRAR=OFF")
-               #:outputs outputs)))
-          (replace 'build
-            (assoc-ref cmake:%standard-phases 'build))
-          (add-after 'patch-cargo-checksums 'patch-rust-requirements
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:vendor-dir ".cargo/vendor"
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-after 'prepare-cargo-build-system 'patch-rust-requirements
             (lambda _
               (substitute* "libclamav_rust/Cargo.toml"
                 ;; We make sure we use their fork.
                 (("onenote_parser = .*")
-                 "onenote_parser = \"*\"\n")
-                ;; As long as it builds later versions of (c)bindgen are fine
-                (("cbindgen = \\{ version =\".*\",")
-                 "cbindgen = { version = \"*\","))))
-          (replace 'install
-            (assoc-ref cmake:%standard-phases 'install))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              ((assoc-ref cmake:%standard-phases 'check)
-               #:tests? tests?
-               #:test-target "test")))
+                 "onenote_parser = \"*\"\n"))))
           (add-after 'unpack 'skip-clamd-tests
             ;; XXX: The check?_clamd tests fail inside the build
             ;; chroot, but pass outside.
@@ -151,20 +117,26 @@
                    (string-append
                     test " -k \"not test_clamd_08_VirusEvent\"")))))))))
     (native-inputs
-     (list check ; for tests
-           cmake-minimal
-           pkg-config
-           python-minimal
-           python-pytest))
+     (append
+      (list pkg-config
+            python-minimal
+            python-pytest
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
     (inputs
-      (list bzip2
+     (cons* bzip2
+            check                       ;For tests.
             curl
             json-c
             libressl
             libxml2
             ncurses
             pcre2
-            zlib))
+            zlib
+            (cargo-inputs 'clamav)))
     (home-page "https://www.clamav.net")
     (synopsis "Antivirus engine")
     (description
