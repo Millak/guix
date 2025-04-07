@@ -12024,41 +12024,51 @@ or against other people.")
       (license license:gpl2+))))
 
 (define-public azimuth
-  (package
-    (name "azimuth")
-    ;; Not marked as latest release, but it fixes a compiling issue
-    ;; and adds the install target.
-    (version "1.0.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mdsteele/azimuth")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1znfvpmqiixd977jv748glk5zc4cmhw5813zp81waj07r9b0828r"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         ;; Build release version instead of debug version.
-         (add-after 'unpack 'set-release
-           (lambda _
-             (setenv "BUILDTYPE" "release") #t))
-         (add-after 'unpack 'fix-install ; set install directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Makefile" (("/usr") (assoc-ref outputs "out"))) #t)))))
-    (inputs (list sdl))
-    (home-page "https://mdsteele.games/azimuth/")
-    (synopsis "Metroidvania game with vector graphics")
-    (description
-     "Pilot your ship inside a planet to find and rescue the colonists trapped
-inside the Zenith Colony.")
-    (license license:gpl3+)))
+  ;; 1.0.3 - May 29, 2019
+  ;; Has build errors so build from latest source
+  (let ((commit "050f838b35d19ffdc738f33178abaf9d69d834ec")
+        (revision "0"))
+    (package
+      (name "azimuth")
+      (version (git-version "1.0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mdsteele/azimuth")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1b5grp9ddhrj3n39j1j5vzm3052d4bd09fpz0b011h769vapwi0i"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:test-target "test"
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)            ; no configure script
+            ;; Build release version instead of debug version.
+            (add-after 'unpack 'set-release
+              (lambda _
+                (setenv "BUILDTYPE" "release")))
+            (add-after 'unpack 'fix-build
+              (lambda* (#:key outputs #:allow-other-keys)
+                (substitute* "Makefile"
+                  (("-Werror") ""))))
+            (add-after 'unpack 'fix-install ; set install directory
+              (lambda* (#:key outputs #:allow-other-keys)
+                (substitute* "Makefile"
+                  (("/usr")
+                   (assoc-ref outputs "out"))) #t)))))
+      (inputs (list sdl2))
+      (native-inputs (list pkg-config))
+      (home-page "https://mdsteele.games/azimuth/")
+      (synopsis "Metroidvania game with vector graphics")
+      (description
+       "Pilot your ship inside a planet to find and rescue the colonists
+trapped inside the Zenith Colony.")
+      (license license:gpl3+))))
 
 (define-public cgoban
   (package
