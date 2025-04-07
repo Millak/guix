@@ -398,6 +398,10 @@
   (crate-source "binfarce" "0.2.1"
                 "18hnqqir3gk5sx1mlndzgpxs0l4rviv7dk3h1piyspayp35lqihq"))
 
+(define rust-biquad-0.4.2
+  (crate-source "biquad" "0.4.2"
+                "0gpc13lag439nmq077wfwz055qbjaxbpk7znvnbddbg3wgsj81c2"))
+
 (define rust-bisection-0.1.0
   (crate-source "bisection" "0.1.0"
                 "1hx80j7lmj3mg093psrnf5llmyksqg078jsbrzkcq3mb3fd0f7h2"))
@@ -2418,6 +2422,10 @@
                 "0d2ccr88f8kv3x7va2ccjxalcjnhrci4j2kwxp7lfmbkpjs4wbzw"
                 #:snippet '(delete-file-recursively "tests")))
 
+(define rust-libm-0.1.4
+  (crate-source "libm" "0.1.4"
+                "16pc0gx4gkg0q2s1ssq8268brn14j8344623vwhadmivc4lsmivz"))
+
 (define rust-libm-0.2.11
   (crate-source "libm" "0.2.11"
                 "1yjgk18rk71rjbqcw9l1zaqna89p9s603k7n327nqs8dn88vwmc3"))
@@ -2555,6 +2563,38 @@
 (define rust-lscolors-0.13.0
   (crate-source "lscolors" "0.13.0"
                 "1wnxs5d004fx71apvh9124xqky0qjjmpibag24km7bvvss2xrpn2"))
+
+(define rust-lv2-0.6.0
+  (crate-source "lv2" "0.6.0"
+                "1xh4hjfh2w5rhzbk0g9845k25f6fxrv7xqpkr09p0x57b200qc41"))
+
+(define rust-lv2-atom-2.0.0
+  (crate-source "lv2-atom" "2.0.0"
+                "0wd9rgsn8sag8wyhjccmnn82gx4w1yyiav52nyvk579l21xlw6wm"))
+
+(define rust-lv2-core-3.0.0
+  (crate-source "lv2-core" "3.0.0"
+                "1pj9l15zwqwj2h83f3xfpwxsj70vvhkw52gyzkljafvrbx1h00fm"))
+
+(define rust-lv2-core-derive-2.1.1
+  (crate-source "lv2-core-derive" "2.1.1"
+                "12w3l41jzargrcywz13hbmaazfw4ix2sljl3601h6jfbdrw8zybv"))
+
+(define rust-lv2-midi-1.2.0
+  (crate-source "lv2-midi" "1.2.0"
+                "0x0glbrfri1glgcrmvc6i1jfv6azhpqvp4ibk5cihsq3s2yfc8xd"))
+
+(define rust-lv2-sys-2.0.0
+  (crate-source "lv2-sys" "2.0.0"
+                "0c4f59mrjyy0z0wf033wp648df0sc6zirrcd6kndqj9nvvkzkl4x"))
+
+(define rust-lv2-units-0.1.3
+  (crate-source "lv2-units" "0.1.3"
+                "0fdamp3hxdr36hqi1j6y01rz1x17if1ibzr7rr4nrabidw74gf82"))
+
+(define rust-lv2-urid-2.1.0
+  (crate-source "lv2-urid" "2.1.0"
+                "0s2fcb0nyn54ml6azkbhnnxghy898x1q5vs5qgdznrhy9m20624c"))
 
 (define rust-lz4-flex-0.10.0
   (crate-source "lz4_flex" "0.10.0"
@@ -4703,6 +4743,14 @@
   (crate-source "ureq" "2.12.1"
                 "07f0qdn6459k4rmdnkivkz0y7j28vxh5c8q8sr0gcxgdfxiadl82"))
 
+(define rust-urid-0.1.0
+  (crate-source "urid" "0.1.0"
+                "195672gs136vczn1r4hkjg5vfa7vdzr26bzv6lwhk0z7cvbvaa38"))
+
+(define rust-urid-derive-0.1.1
+  (crate-source "urid-derive" "0.1.1"
+                "0i1nf0sgq4ai051h17s9msaavl3jfzdmdlsy8455pr88y0pfx7l1"))
+
 (define rust-url-2.5.4
   (crate-source "url" "2.5.4"
                 "0q6sgznyy2n4l5lm16zahkisvc9nip9aa5q1pps7656xra3bdy1j"))
@@ -5299,6 +5347,10 @@
   (crate-source "wlcs" "0.1.0"
                 "17k0nwn3f2z71rncb8glb4x15m5zmcbklnk71hpv739nrq2w769d"))
 
+(define rust-wmidi-3.1.0
+  (crate-source "wmidi" "3.1.0"
+                "1kxnbs18nmpzm2hfwaaa5h2s77cmk5w53srzxqmrqlkdpdcrjafa"))
+
 (define rust-write16-1.0.0
   (crate-source "write16" "1.0.0"
                 "0dnryvrrbrnl7vvf5vb1zkmwldhjkf2n5znliviam7bm4900z2fi"))
@@ -5508,6 +5560,24 @@
 
 
 (define-cargo-inputs lookup-cargo-inputs
+                     (bankstown-lv2 =>
+                                    (list rust-biquad-0.4.2
+                                          rust-libm-0.1.4
+                                          rust-lv2-0.6.0
+                                          rust-lv2-atom-2.0.0
+                                          rust-lv2-core-3.0.0
+                                          rust-lv2-core-derive-2.1.1
+                                          rust-lv2-midi-1.2.0
+                                          rust-lv2-sys-2.0.0
+                                          rust-lv2-units-0.1.3
+                                          rust-lv2-urid-2.1.0
+                                          rust-proc-macro2-1.0.94
+                                          rust-quote-1.0.40
+                                          rust-syn-1.0.109
+                                          rust-unicode-ident-1.0.18
+                                          rust-urid-0.1.0
+                                          rust-urid-derive-0.1.1
+                                          rust-wmidi-3.1.0))
                      (cargo-audit =>
                                   (list rust-abscissa-core-0.8.2
                                    rust-abscissa-derive-0.8.2
