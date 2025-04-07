@@ -7084,24 +7084,35 @@ performance library of basic building blocks for deep learning applications.")
         (base32 "1zyw5rd8x346bb7gac9a7x3saviw3zvp6aqz2z1l9sv163vmjfz6"))))))
 
 (define-public python-gguf
-  (package
-    (name "python-gguf")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "gguf" version))
-       (sha256
-        (base32 "0rbyc2h3kpqnrvbyjvv8a69l577jv55a31l12jnw21m1lamjxqmj"))))
-    (build-system pyproject-build-system)
-    (arguments
-      (list #:tests? #false))
-    (inputs (list poetry python-pytest))
-    (propagated-inputs (list python-numpy))
-    (home-page "https://ggml.ai")
-    (synopsis "Read and write ML models in GGUF for GGML")
-    (description "A Python library for reading and writing GGUF & GGML format ML models.")
-    (license license:expat)))
+  ;; They didn't tag the commit
+  (let ((commit "69050a11be0ae3e01329f11371ecb6850bdaded5"))
+    (package
+      (name "python-gguf")
+      (version "0.16.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ggml-org/llama.cpp")
+               (commit commit)))
+         (file-name (git-file-name name commit))
+         (sha256
+          (base32 "1563mbrjykwpsbhghhzi4h1qv9qy74gq5vq4xhs58zk0jp20c7zz"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "gguf-py"))))))
+      (propagated-inputs (list python-numpy python-pyyaml python-sentencepiece
+                               python-tqdm))
+      (native-inputs (list python-poetry-core python-pytest))
+      (home-page "https://ggml.ai")
+      (synopsis "Read and write ML models in GGUF for GGML")
+      (description "A Python library for reading and writing GGUF & GGML format ML models.")
+      (license license:expat))))
 
 (define-public python-gymnasium
   (package
