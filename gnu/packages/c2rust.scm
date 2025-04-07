@@ -273,10 +273,7 @@ at build time.")
        (sha256
         (base32 "05cm423m7v30b6gwgfzizhyqn3ncnfndin5zbkhyg9ah3pqccgps"))))
     (build-system cargo-build-system)
-    (native-inputs
-     `(("tinycbor-src" ,%tinycbor-source)
-       ("cmake" ,cmake-minimal)
-       ("clang" ,clang)))
+    (native-inputs (list clang cmake-minimal %tinycbor-source))
     (inputs (cons llvm (cargo-inputs 'c2rust)))
     (arguments
      (list #:install-source? #f
