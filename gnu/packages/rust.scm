@@ -121,10 +121,14 @@
        (inherit (package-source base-rust))
        (uri (rust-uri version))
        (sha256 (base32 checksum))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments base-rust)
+       ((#:disallowed-references _ '())
+        (list base-rust))))
     (native-inputs
-     (alist-replace "cargo-bootstrap" (list base-rust "cargo")
-                    (alist-replace "rustc-bootstrap" (list base-rust)
-                                   (package-native-inputs base-rust))))))
+     (modify-inputs (package-native-inputs base-rust)
+       (replace "rustc-bootstrap" base-rust)
+       (replace "cargo-bootstrap" (list base-rust "cargo"))))))
 
 ;;; Note: mrustc's only purpose is to be able to bootstap Rust; it's designed
 ;;; to be used in source form.
