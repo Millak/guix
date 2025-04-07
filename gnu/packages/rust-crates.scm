@@ -1213,6 +1213,10 @@
   (crate-source "dtoa-short" "0.3.5"
                 "11rwnkgql5jilsmwxpx6hjzkgyrbdmx1d71s0jyrjqm5nski25fd"))
 
+(define rust-duct-0.13.7
+  (crate-source "duct" "0.13.7"
+                "174jk13rlvfgypha4f3l27mzzyc0ci7zginh5hjn6jr2s4c5gaz4"))
+
 (define rust-dunce-1.0.5
   (crate-source "dunce" "1.0.5"
                 "04y8wwv3vvcqaqmqzssi6k0ii9gs6fpz96j5w9nky2ccsl23axwj"))
@@ -4397,6 +4401,10 @@
   (crate-source "sharded-slab" "0.1.7"
                 "1xipjr4nqsgw34k7a2cgj9zaasl2ds6jwn89886kww93d32a637l"))
 
+(define rust-shared-child-1.0.1
+  (crate-source "shared_child" "1.0.1"
+                "035679h89ppqcfkjzgz9bb2hdlkw5wjv598l310xz8frmqw97yh9"))
+
 (define rust-shell-escape-0.1.5
   (crate-source "shell-escape" "0.1.5"
                 "0kqq83dk0r1fqj4cfzddpxrni2hpz5i1y607g366c4m9iyhngfs5"))
@@ -5886,6 +5894,67 @@
 
 
 (define-cargo-inputs lookup-cargo-inputs
+                     (b3sum =>
+                            (list rust-anstream-0.6.18
+                                  rust-anstyle-1.0.10
+                                  rust-anstyle-parse-0.2.6
+                                  rust-anstyle-query-1.1.2
+                                  rust-anstyle-wincon-3.0.7
+                                  rust-anyhow-1.0.97
+                                  rust-arrayref-0.3.9
+                                  rust-arrayvec-0.7.6
+                                  rust-bitflags-2.9.0
+                                  rust-blake3-1.8.1
+                                  rust-cc-1.2.18
+                                  rust-cfg-if-1.0.0
+                                  rust-clap-4.5.35
+                                  rust-clap-builder-4.5.35
+                                  rust-clap-derive-4.5.32
+                                  rust-clap-lex-0.7.4
+                                  rust-colorchoice-1.0.3
+                                  rust-constant-time-eq-0.3.1
+                                  rust-crossbeam-deque-0.8.6
+                                  rust-crossbeam-epoch-0.9.18
+                                  rust-crossbeam-utils-0.8.21
+                                  rust-duct-0.13.7
+                                  rust-errno-0.3.11
+                                  rust-fastrand-2.3.0
+                                  rust-getrandom-0.3.2
+                                  rust-glob-0.3.2
+                                  rust-heck-0.5.0
+                                  rust-hex-0.4.3
+                                  rust-is-terminal-polyfill-1.70.1
+                                  rust-libc-0.2.171
+                                  rust-linux-raw-sys-0.9.3
+                                  rust-memmap2-0.9.5
+                                  rust-once-cell-1.21.3
+                                  rust-os-pipe-1.2.1
+                                  rust-proc-macro2-1.0.94
+                                  rust-quote-1.0.40
+                                  rust-r-efi-5.2.0
+                                  rust-rayon-core-1.12.1
+                                  rust-rustix-1.0.5
+                                  rust-shared-child-1.0.1
+                                  rust-shlex-1.3.0
+                                  rust-strsim-0.11.1
+                                  rust-syn-2.0.100
+                                  rust-tempfile-3.19.1
+                                  rust-terminal-size-0.4.2
+                                  rust-unicode-ident-1.0.18
+                                  rust-utf8parse-0.2.2
+                                  rust-wasi-0.14.2+wasi-0.2.4
+                                  rust-wild-2.2.1
+                                  rust-windows-sys-0.59.0
+                                  rust-windows-targets-0.52.6
+                                  rust-windows-aarch64-gnullvm-0.52.6
+                                  rust-windows-aarch64-msvc-0.52.6
+                                  rust-windows-i686-gnu-0.52.6
+                                  rust-windows-i686-gnullvm-0.52.6
+                                  rust-windows-i686-msvc-0.52.6
+                                  rust-windows-x86-64-gnu-0.52.6
+                                  rust-windows-x86-64-gnullvm-0.52.6
+                                  rust-windows-x86-64-msvc-0.52.6
+                                  rust-wit-bindgen-rt-0.39.0))
                      (bankstown-lv2 =>
                                     (list rust-biquad-0.4.2
                                           rust-libm-0.1.4

@@ -1618,42 +1618,24 @@ SHA-3, and BLAKE2.")
 (define-public b3sum
   (package
     (name "b3sum")
-    (version "1.5.0")
+    (version "1.8.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "b3sum" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "05k0vn7gpbvjr925vjc5yzvhiyrmkw9pqmch5fr4ir7s8wiaq2fm"))))
+         (base32 "1zfyj3a8s1mg6w6l4j5hchrs8n5mfij92mg9m24pzxfi4da4543a"))))
     (build-system cargo-build-system)
     (arguments
-      `(;; Install the source so that Cargo.toml is installed, because that is
-        ;; the only reference to the license information.
-        #:install-source? #t
+      `(#:install-source? #f
         #:phases
         (modify-phases %standard-phases
           (add-before 'check 'patch-tests
             (lambda _
               (substitute* "tests/cli_tests.rs"
-                (("/bin/sh") (which "sh")))))
-          (add-after 'install 'install-doc
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (doc (string-append out "/share/doc/" ,name "-"
-                                         ,(package-version this-package))))
-                (install-file "README.md" doc)))))
-        #:cargo-inputs
-        (("rust-anyhow" ,rust-anyhow-1)
-         ("rust-blake3" ,rust-blake3-1)
-         ("rust-clap" ,rust-clap-4)
-         ("rust-hex" ,rust-hex-0.4)
-         ("rust-memmap2" ,rust-memmap2-0.7)
-         ("rust-rayon" ,rust-rayon-1)
-         ("rust-wild" ,rust-wild-2))
-        #:cargo-development-inputs
-        (("rust-duct" ,rust-duct-0.13)
-         ("rust-tempfile" ,rust-tempfile-3))))
+                (("/bin/sh") (which "sh"))))))))
+    (inputs (cargo-inputs 'b3sum))
     (home-page "https://github.com/BLAKE3-team/BLAKE3")
     (synopsis "Command line BLAKE3 checksum tool")
     (description "This package provides @code{b3sum}, a command line
