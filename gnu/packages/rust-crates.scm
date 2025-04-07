@@ -768,6 +768,10 @@
   (crate-source "ciborium-ll" "0.2.2"
                 "1n8g4j5rwkfs3rzfi6g1p7ngmz6m5yxsksryzf5k72ll7mjknrjp"))
 
+(define rust-cipher-0.4.4
+  (crate-source "cipher" "0.4.4"
+                "1b9x9agg67xq5nq879z66ni4l08m6m3hqcshk37d4is4ysd3ngvp"))
+
 (define rust-clang-sys-1.8.1
   (crate-source "clang-sys" "1.8.1"
                 "1x1r9yqss76z8xwpdanw313ss6fniwc1r7dzb5ycjn0ph53kj0hb"))
@@ -2334,6 +2338,10 @@
                 "1zxjdn8iwa0ssxrnjmywm3r1v284wryvzrf8vkc7nyf5ijbjknqw"
                 #:snippet '(delete-file-recursively "tests")))
 
+(define rust-inout-0.1.4
+  (crate-source "inout" "0.1.4"
+                "008xfl1jn9rxsq19phnhbimccf4p64880jmnpg59wqi07kk117w7"))
+
 (define rust-input-0.9.1
   (crate-source "input" "0.9.1"
                 "1abmv1djhynihipjppgsmw6nbp6pcgzk8rzi4v6wmyci9990kp7v"))
@@ -3380,6 +3388,10 @@
   (crate-source "pathdiff" "0.2.3"
                 "1lrqp4ip05df8dzldq6gb2c1sq2gs54gly8lcnv3rhav1qhwx56z"))
 
+(define rust-pbkdf2-0.12.2
+  (crate-source "pbkdf2" "0.12.2"
+                "1wms79jh4flpy1zi8xdp4h8ccxv4d85adc6zjagknvppc5vnmvgq"))
+
 (define rust-pcre2-0.2.9.85b7afb rust-pcre2-utf32-0.2)
 
 (define rust-pcre2-sys-0.2.9.85b7afb rust-pcre2-utf32-0.2)
@@ -4007,6 +4019,10 @@
   (crate-source "rpassword" "5.0.1"
                 "1yry1kmgjcb4qd5wak91203493x42ak3dz9hy1c0r9kyib7kdjgz"))
 
+(define rust-rpassword-7.3.1
+  (crate-source "rpassword" "7.3.1"
+                "0gvy3lcpph9vv1rl0cjfn72ylvmgbw2vklmj6w0iv4cpr3ijniw0"))
+
 (define rust-rpds-1.1.0
   (crate-source "rpds" "1.1.0"
                 "194hjbsicmgqi3dyllqrz09mmhh597m2j9l49lr16cyfscambqd0"))
@@ -4034,6 +4050,10 @@
 (define rust-rstest-reuse-0.7.0
   (crate-source "rstest_reuse" "0.7.0"
                 "057y4v1rh9br58n2m3xqvm8xyx8k96jpgibgls3sah78f93gpa5k"))
+
+(define rust-rtoolbox-0.0.2
+  (crate-source "rtoolbox" "0.0.2"
+                "03n9z8x353kylxhr9im8zawcisnmid3jiqrs8rbdn313cd7d4iy2"))
 
 (define rust-rusqlite-0.32.1
   (crate-source "rusqlite" "0.32.1"
@@ -4167,6 +4187,10 @@
   (crate-source "safe_arch" "0.7.4"
                 "08sk47n1kcm5w2di6bpgi2hsw8r2caz2230pwqvbdqfv5pl2vc4n"))
 
+(define rust-salsa20-0.10.2
+  (crate-source "salsa20" "0.10.2"
+                "04w211x17xzny53f83p8f7cj7k2hi8zck282q5aajwqzydd2z8lp"))
+
 (define rust-same-file-1.0.6
   (crate-source "same-file" "1.0.6"
                 "00h5j1w87dmhnvbv9l8bic3y7xxsnjmssvifw2ayvgx9mb1ivz4k"))
@@ -4211,6 +4235,10 @@
 (define rust-scroll-derive-0.12.1
   (crate-source "scroll_derive" "0.12.1"
                 "0gb89b1yr8a6jwp4rcm00xqry6ajvmfywsm7bf5f42a686yfm0qp"))
+
+(define rust-scrypt-0.11.0
+  (crate-source "scrypt" "0.11.0"
+                "07zxfaqpns9jn0mnxm7wj3ksqsinyfpirkav1f7kc2bchs2s65h5"))
 
 (define rust-sd-notify-0.4.5
   (crate-source "sd-notify" "0.4.5"
@@ -9017,6 +9045,51 @@
                                           rust-winnow-0.7.4
                                           rust-wit-bindgen-rt-0.39.0
                                           rust-yansi-1.0.1))
+                     (rust-minisign =>
+                                    (list rust-block-buffer-0.10.4
+                                     rust-bumpalo-3.17.0
+                                     rust-cfg-if-1.0.0
+                                     rust-cipher-0.4.4
+                                     rust-cpufeatures-0.2.17
+                                     rust-crypto-common-0.1.6
+                                     rust-ct-codecs-1.1.3
+                                     rust-digest-0.10.7
+                                     rust-generic-array-0.14.7
+                                     rust-getrandom-0.2.15
+                                     rust-hmac-0.12.1
+                                     rust-inout-0.1.4
+                                     rust-js-sys-0.3.77
+                                     rust-libc-0.2.171
+                                     rust-log-0.4.27
+                                     rust-once-cell-1.21.3
+                                     rust-pbkdf2-0.12.2
+                                     rust-proc-macro2-1.0.94
+                                     rust-quote-1.0.40
+                                     rust-rpassword-7.3.1
+                                     rust-rtoolbox-0.0.2
+                                     rust-salsa20-0.10.2
+                                     rust-scrypt-0.11.0
+                                     rust-sha2-0.10.8
+                                     rust-subtle-2.6.1
+                                     rust-syn-2.0.100
+                                     rust-typenum-1.18.0
+                                     rust-unicode-ident-1.0.18
+                                     rust-version-check-0.9.5
+                                     rust-wasi-0.11.0+wasi-snapshot-preview1
+                                     rust-wasm-bindgen-0.2.100
+                                     rust-wasm-bindgen-backend-0.2.100
+                                     rust-wasm-bindgen-macro-0.2.100
+                                     rust-wasm-bindgen-macro-support-0.2.100
+                                     rust-wasm-bindgen-shared-0.2.100
+                                     rust-windows-sys-0.48.0
+                                     rust-windows-targets-0.48.5
+                                     rust-windows-aarch64-gnullvm-0.48.5
+                                     rust-windows-aarch64-msvc-0.48.5
+                                     rust-windows-i686-gnu-0.48.5
+                                     rust-windows-i686-msvc-0.48.5
+                                     rust-windows-x86-64-gnu-0.48.5
+                                     rust-windows-x86-64-gnullvm-0.48.5
+                                     rust-windows-x86-64-msvc-0.48.5))
                      (rust-pcre2-utf32-0.2 =>
                                            (list rust-bitflags-2.9.0
                                                  rust-cc-1.2.18

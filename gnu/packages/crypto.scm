@@ -292,20 +292,18 @@ OpenBSD tool of the same name.")
 (define-public rust-minisign
   (package
     (name "rust-minisign")
-    (version "0.7.5")
+    (version "0.7.9")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "minisign" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1lmp83bxdg53c4n35fbwr3rkh6178y75fwsn25hf1kn62f2gbdnj"))))
+         (base32 "1rqdmnzzak7svsgcjnrb7rrbq4gv378alcnmynfq47js863i6m16"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-getrandom" ,rust-getrandom-0.2)
-        ("rust-rpassword" ,rust-rpassword-7)
-        ("rust-scrypt" ,rust-scrypt-0.11))))
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'rust-minisign))
     (home-page "https://github.com/jedisct1/rust-minisign")
     (synopsis "Crate to sign files and verify signatures")
     (description
