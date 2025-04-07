@@ -770,29 +770,6 @@ from a mounted file system.")
       ;; even in Rust crates, creating ludicrous and totally bogus dependencies
       ;; such as the Android SDK.  Put our crates elsewhere.
       #:vendor-dir "../guix-vendor"
-      #:cargo-inputs
-      `(("rust-aho-corasick" ,rust-aho-corasick-1)
-        ("rust-anstream" ,rust-anstream-0.6)
-        ("rust-anstyle" ,rust-anstyle-1)
-        ("rust-anstyle-parse" ,rust-anstyle-parse-0.2)
-        ("rust-anyhow" ,rust-anyhow-1)
-        ("rust-autocfg" ,rust-autocfg-1)
-        ("rust-bitfield" ,rust-bitfield-0.14)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-either" ,rust-either-1)
-        ("rust-errno" ,rust-errno-0.2)
-        ("rust-env-logger" ,rust-env-logger-0.10)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-memoffset" ,rust-memoffset-0.8)
-        ("rust-owo-colors" ,rust-owo-colors-4)
-        ("rust-rustix" ,rust-rustix-0.38)
-        ("rust-strum" ,rust-strum-0.26)
-        ("rust-strum-macros" ,rust-strum-macros-0.26)
-        ("rust-udev" ,rust-udev-0.7)
-        ("rust-uuid" ,rust-uuid-1)
-        ("rust-zeroize" ,rust-zeroize-1))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'build
@@ -818,17 +795,18 @@ from a mounted file system.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list clang
-           eudev
-           keyutils
-           libaio
-           libscrypt
-           libsodium
-           liburcu
-           `(,util-linux "lib")         ;libblkid
-           lz4
-           zlib
-           `(,zstd "lib")))
+     (cons* clang
+            eudev
+            keyutils
+            libaio
+            libscrypt
+            libsodium
+            liburcu
+            `(,util-linux "lib")        ;libblkid
+            lz4
+            zlib
+            `(,zstd "lib")
+            (cargo-inputs 'bcachefs-tools)))
     (home-page "https://bcachefs.org/")
     (synopsis "Tools to create and manage bcachefs file systems")
     (description
