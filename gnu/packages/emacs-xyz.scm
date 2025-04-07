@@ -5714,7 +5714,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
 (define-public emacs-cape
   (package
     (name "emacs-cape")
-    (version "1.9")
+    (version "2.0")
     (source
      (origin
        (method git-fetch)
@@ -5723,21 +5723,19 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pcgxv011z0gl0g38yh2dr09sx17pwpbvydz2dzvm730k9lbyikh"))))
+        (base32 "0wm0y982zrfzzbdizpvr39c55bhp9y7l7w1sp8ps1b4ijbmgd0r9"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'makeinfo
+          (add-after 'unpack 'makeinfo
             (lambda _
               (invoke "emacs"
                       "--batch"
                       "--eval=(require 'ox-texinfo)"
                       "--eval=(find-file \"README.org\")"
-                      "--eval=(org-texinfo-export-to-info)")
-              (install-file "cape.info"
-                            (string-append #$output "/share/info")))))))
+                      "--eval=(org-texinfo-export-to-info)"))))))
     (native-inputs (list texinfo))
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/minad/cape")
