@@ -3016,13 +3016,16 @@ service.")
 (define-public python-openai
   (package
     (name "python-openai")
-    (version "0.28.1")
+    (version "1.3.5")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "openai" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/openai/openai-python")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j6wsavgrxzh6ls8hp45nllz8f5l65a6vzk0lvhlqnx6579xmqab"))))
+                "0k1rwhj7v22x5bnv9xbk9nj9grxqmmclh9538qqjadgqxfn5x74q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3030,12 +3033,43 @@ service.")
       ;; These require internet access and an openai API key.
       '(list "--ignore=openai/tests/asyncio/test_endpoints.py"
              "--ignore=openai/tests/test_endpoints.py"
+             "--ignore-glob=tests/api_resources/*"
+             ;; Needs respx
+             "--ignore=tests/api_resources/audio/test_speech.py"
+             "--ignore=tests/api_resources/test_files.py"
+             "--ignore=tests/test_client.py"
              "-k" "not test_requestor_cycle_sessions\
  and not test_requestor_sets_request_id\
- and not test_file_cli")))
-    (propagated-inputs (list python-aiohttp python-requests python-tqdm
-                             python-typing-extensions))
-    (native-inputs (list python-black python-pytest python-pytest-asyncio
+ and not test_file_cli\
+ and not test_basic_async\
+ and not test_async\
+ and not test_datetime_with_alias\
+ and not test_pydantic")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("distro>=1.7.0") "distro>=1.6.0")
+               (("anyio>=3.5.0, <4") "anyio"))))
+         (add-after 'unpack 'httpx-compatibility
+           (lambda _
+             (substitute* "src/openai/_base_client.py"
+               (("proxies=proxies,") "")
+               (("self._proxies = proxies") "")
+               (("proxies: ProxiesTypes . None,") "")))))))
+    (propagated-inputs
+     (list python-aiohttp
+           python-distro
+           python-httpx
+           python-pydantic-2
+           python-requests
+           python-tqdm
+           python-typing-extensions))
+    (native-inputs (list nss-certs-for-test
+                         python-dirty-equals
+                         python-hatchling
+                         python-pytest python-pytest-asyncio
                          python-pytest-mock python-setuptools python-wheel))
     (home-page "https://github.com/openai/openai-python")
     (synopsis "Python client library for the OpenAI API")
