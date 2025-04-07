@@ -40188,8 +40188,8 @@ go directly to where they belong.")
       (license license:gpl3+))))
 
 (define-public emacs-org-roam
-  (let ((commit "0b9fcbc97b65b349826e63bad89ca121a08fd2be")
-        (revision "1"))
+  (let ((commit "046822b512ffecdee7d110f73dd3a511802ca590")
+        (revision "2"))
     (package
       (name "emacs-org-roam")
       (version (git-version "2.2.2" revision commit))
@@ -40201,7 +40201,7 @@ go directly to where they belong.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "04vqwrsb71jdb66fkahmxwvx8cssgqamrradbdgp3ygf8alwc7ml"))))
+          (base32 "0jbj48glh0r6fkb0lk1xb9067x2myp3krkw2byycijwdq1nlqzv2"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -40225,12 +40225,10 @@ go directly to where they belong.")
               (lambda* (#:key outputs #:allow-other-keys)
                 (install-file "doc/images/org-ref-citelink.png"
                               (string-append #$output "/share/info/images"))))
-            (add-after 'install-image 'make-info
-              (lambda* (#:key outputs #:allow-other-keys)
-                (with-directory-excursion "doc"
-                  (invoke "makeinfo" "-o" "org-roam.info" "org-roam.texi")
-                  (install-file "org-roam.info"
-                                (string-append #$output "/share/info"))))))))
+            (add-after 'unpack 'make-info
+              (lambda _
+                (invoke "make" "-C" "doc" "info")
+                (copy-file "doc/org-roam.info" "org-roam.info"))))))
       (inputs
        (list graphviz))
       (native-inputs
@@ -40238,10 +40236,7 @@ go directly to where they belong.")
       (propagated-inputs
        (list emacs-dash
              emacs-emacsql
-             emacs-f
-             emacs-magit
-             emacs-org
-             emacs-s))
+             emacs-magit))
       (home-page "https://github.com/org-roam/org-roam/")
       (synopsis "Non-hierarchical note-taking with Org mode")
       (description "Emacs Org Roam is a solution for taking non-hierarchical
