@@ -306,7 +306,7 @@
                 (write-setting "browser.shell.checkDefaultBrowser"
                                "false")
                 (close-port port))))
-          (add-after 'fix-preferences 'fix-ffmpeg-runtime-linker
+          (add-after 'unpack 'fix-ffmpeg-runtime-linker
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((ffmpeg (assoc-ref inputs "ffmpeg"))
                      (libavcodec (string-append ffmpeg
