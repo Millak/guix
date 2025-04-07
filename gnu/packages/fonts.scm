@@ -478,8 +478,8 @@ The Lato 2.010 family supports more than 100 Latin-based languages, over
     (license license:silofl1.1)))
 
 (define-public font-carlito
-  (let ((commit "64cab86c9b602088697294736b86f2831f3f44be")
-        (revision "0"))
+  (let ((commit "3a810cab78ebd6e2e4eed42af9e8453c4f9b850a")
+        (revision "1"))
     (package
       (name "font-carlito")
       (version (git-version "0.0.0" revision commit))
@@ -491,7 +491,7 @@ The Lato 2.010 family supports more than 100 Latin-based languages, over
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "02wy8vs5m4whm5apl3p6cpz0qa9jwjj9qi219zjspiszha2ivssz"))))
+          (base32 "1qf3zdpbmx3ylamka82nqxjpm3qjfm0nca2yzzsxmvg7krjyz12k"))))
       (build-system font-build-system)
       (home-page "https://github.com/googlefonts/carlito")
       (synopsis "Free alternative to Calibri")
