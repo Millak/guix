@@ -20,6 +20,7 @@
 (define-module (gnu packages c2rust)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
   #:use-module (guix utils)
@@ -198,6 +199,7 @@ at build time.")
     (uri (git-reference
           (url "https://github.com/intel/tinycbor.git")
           (commit "d393c16f3eb30d0c47e6f9d92db62272f0ec4dc7")))
+    (file-name "tinycbor-src")
     (sha256
      (base32
       "0w38lzj0rz36skc1cn3shllc82c7nn32h88frb8f164a8haq3hkw"))))
@@ -262,46 +264,37 @@ at build time.")
 (define-public c2rust
   (package
     (name "c2rust")
-    (version "0.18.0")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "c2rust" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rg9cvvmh9zw89mz2bpyvqlwbfhzl5dw2hab9z6d5rasr8mir7nh"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* "Cargo.toml"
-                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
-                   (string-append "\"^" version)))))))
+        (base32 "05cm423m7v30b6gwgfzizhyqn3ncnfndin5zbkhyg9ah3pqccgps"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("tinycbor-src" ,%tinycbor-source)
        ("cmake" ,cmake-minimal)
        ("clang" ,clang)))
-    (inputs (list llvm))
+    (inputs (cons llvm (cargo-inputs 'c2rust)))
     (arguments
-     `(#:install-source? #f
-       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-c2rust-build-paths" ,rust-c2rust-build-paths-0.18)
-                       ("rust-c2rust-transpile" ,rust-c2rust-transpile-0.18)
-                       ("rust-clap" ,rust-clap-3)
-                       ("rust-env-logger" ,rust-env-logger-0.10)
-                       ("rust-git-testament" ,rust-git-testament-0.2)
-                       ("rust-is-executable" ,rust-is-executable-1)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-shlex" ,rust-shlex-1)
-                       ("rust-time-macros" ,rust-time-macros-0.2))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; The build process will slightly patch the sources.
-             (copy-recursively (assoc-ref inputs "tinycbor-src")
-                               "/tmp/tinycbor")
-             (setenv "GUIX_TINYCBOR_SOURCE_DIR" "/tmp/tinycbor"))))))
+     (list #:install-source? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'patch
+                 (lambda _
+                   ;; The build process will slightly patch the sources.
+                   (copy-recursively
+                    #+(this-package-native-input "tinycbor-src")
+                    "/tmp/tinycbor")
+                   (substitute*
+                       (string-append "guix-vendor/rust-c2rust-ast-exporter-"
+                                      #$(package-version this-package)
+                                      ".tar.gz/src/CMakeLists.txt")
+                     (("GIT_TAG .*") "")
+                     (("GIT_REPOSITORY .*")
+                      "SOURCE_DIR \"/tmp/tinycbor\"\n")))))))
     (home-page "https://c2rust.com/")
     (synopsis "C to Rust translation, refactoring, and cross-checking")
     (description
