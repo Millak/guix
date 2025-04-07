@@ -1221,7 +1221,7 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
   (package
     (name "aws-lc")
     ;; Update only when updating aws-crt-cpp.
-    (version "1.49.1")
+    (version "1.48.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1230,7 +1230,7 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1403l9xdidym2gp6l9qhxcsv0bhg205p322rf45v8jysf76jsxl2"))))
+                "1hgfsl3plpiljasvxxdhz37n5lc6j819djq3nlf59pw4fivfy6mv"))))
     (build-system cmake-build-system)
     (native-inputs (list perl))
     (arguments
