@@ -2517,32 +2517,33 @@ and stylistic alternates.")
     (license license:silofl1.1)))
 
 (define-public font-go
-  (let ((commit "f03a046406d4d7fbfd4ed29f554da8f6114049fc")
-        (revision "1"))
+  (let ((commit "41969df76e82aeec85fa3821b1e24955ea993001")
+        (revision "2"))
     (package
       (name "font-go")
-      (version (string-append "20170330-" revision "." (string-take commit 7)))
-      (source (origin
-                (file-name (string-append "go-image-" version "-checkout"))
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://go.googlesource.com/image")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1aq6mnjayks55gd9ahavk6jfydlq5lm4xm0xk4pd5sqa74p5p74d"))))
+      (version (git-version "2.010" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://go.googlesource.com/image")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1z7lxkb84ca013ys0pr1bma2zdfzrvqip4yl6s941iyby0xfiyws"))))
       (build-system font-build-system)
       (arguments
-       `(#:license-file-regexp "^(LICENSE|PATENTS)$"
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'install 'chdir
-             (lambda _
-               (chdir "font/gofont/ttfs")
-               #t))
-           (add-before 'install-license-files 'enter-license-directory
-             (lambda _
-               (chdir "../../.."))))))
+       (list
+        #:license-file-regexp "^(LICENSE|PATENTS)$"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'chdir
+              (lambda _
+                (chdir "font/gofont/ttfs")
+                #t))
+            (add-before 'install-license-files 'enter-license-directory
+              (lambda _
+                (chdir "../../.."))))))
       (home-page "https://go.dev/blog/go-fonts")
       (synopsis "The Go font family")
       (description
