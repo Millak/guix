@@ -6026,21 +6026,7 @@ interfering with any pam-mount configuration.")))
                 "0d7lfx5jg2w7fp7llwrirnbsp27nv74f21mhrspd9ilk2cacf12d"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:cargo-inputs
-           `(("rust-chrono" ,rust-chrono-0.4)
-             ("rust-getopts" ,rust-getopts-0.2)
-             ("rust-greetd-ipc" ,rust-greetd-ipc-0.10)
-             ("rust-lazy-static" ,rust-lazy-static-1)
-             ("rust-memmap2" ,rust-memmap2-0.3)
-             ("rust-nix" ,rust-nix-0.25)
-             ("rust-os-pipe" ,rust-os-pipe-1)
-             ("rust-rusttype" ,rust-rusttype-0.9)
-             ("rust-serde" ,rust-serde-1)
-             ("rust-toml" ,rust-toml-0.5)
-             ("rust-wayland-client" ,rust-wayland-client-0.29)
-             ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.15)
-             ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'remove-bundled-fonts
                  (lambda _
@@ -6064,10 +6050,11 @@ interfering with any pam-mount configuration.")))
                        inputs
                        (string-append "lib/" so-file)))))))))
     (inputs
-     (list font-dejavu
-           font-google-roboto
-           libxkbcommon
-           wayland))
+     (cons* font-dejavu
+            font-google-roboto
+            libxkbcommon
+            wayland
+            (cargo-inputs 'wlgreet)))
     (home-page "https://git.sr.ht/~kennylevinsen/wlgreet")
     (synopsis "Bare-bones Wayland-based greeter for @command{greetd}")
     (description
