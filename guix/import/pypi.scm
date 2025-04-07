@@ -179,6 +179,8 @@ or #f if there isn't any."
 package."
   (cond
    ((string-prefix? "python-" name) (snake-case name))
+   ((string-suffix? "-python" name)
+    (string-append "python-" (string-drop-right name 7)))
    ((or (string=? "trytond" name)
         (string-prefix? "trytond-" name)) (snake-case name))
    (else (string-append "python-" (snake-case name)))))
