@@ -446,6 +446,10 @@
   (crate-source "bit-vec" "0.8.0"
                 "1xxa1s2cj291r7k1whbxq840jxvmdsq9xgh7bvrxl46m80fllxjy"))
 
+(define rust-bitfield-0.14.0
+  (crate-source "bitfield" "0.14.0"
+                "1b26k9acwss4qvrl60lf9n83l17d4hj47n5rmpd3iigf9j9n0zid"))
+
 (define rust-bitflags-1.3.2
   (crate-source "bitflags" "1.3.2"
                 "12ki6w8gn1ldq7yz9y680llwk5gmrhrzszaa17g1sbrw2r2qvwxy"))
@@ -1310,9 +1314,17 @@
   (crate-source "erased-serde" "0.4.6"
                 "1dx5hj16hsl143czwl2g7ymdi1y84lsjyyii2zprzjqzyn3xh170"))
 
+(define rust-errno-0.2.8
+  (crate-source "errno" "0.2.8"
+                "18cnqgk8r6lq1n5cfy3bryiyz9zkqr10dxj49sa3fkzfamih8fgn"))
+
 (define rust-errno-0.3.11
   (crate-source "errno" "0.3.11"
                 "0kjrrcaa5nvickysw7z3vm5p0l7l457idf1ff3z6ang8qwnx8vcp"))
+
+(define rust-errno-dragonfly-0.1.2
+  (crate-source "errno-dragonfly" "0.1.2"
+                "1grrmcm6q8512hkq5yzch3yv8wafflc2apbmsaabiyk44yqz2s5a"))
 
 (define rust-etcetera-0.10.0
   (crate-source "etcetera" "0.10.0"
@@ -2852,6 +2864,10 @@
 (define rust-memoffset-0.6.5
   (crate-source "memoffset" "0.6.5"
                 "1kkrzll58a3ayn5zdyy9i1f1v3mx0xgl29x0chq614zazba638ss"))
+
+(define rust-memoffset-0.8.0
+  (crate-source "memoffset" "0.8.0"
+                "1qcdic88dhgw76pafgndpz04pig8il4advq978mxdxdwrydp276n"))
 
 (define rust-memoffset-0.9.1
   (crate-source "memoffset" "0.9.1"
@@ -4578,6 +4594,10 @@
   (crate-source "strum" "0.24.1"
                 "0gz6cjhlps5idwasznklxdh2zsas6mxf99vr0n27j876q12n0gh6"))
 
+(define rust-strum-0.26.3
+  (crate-source "strum" "0.26.3"
+                "01lgl6jvrf4j28v5kmx9bp480ygf1nhvac8b4p7rcj9hxw50zv4g"))
+
 (define rust-strum-macros-0.20.1
   (crate-source "strum_macros" "0.20.1"
                 "0j9ikvxlqzr667ghc045qkpwprjgcfmzgagln7maw4jigawcd2zf"))
@@ -4990,6 +5010,10 @@
 (define rust-ucd-trie-0.1.7
   (crate-source "ucd-trie" "0.1.7"
                 "0wc9p07sqwz320848i52nvyjvpsxkx3kv5bfbmm6s35809fdk5i8"))
+
+(define rust-udev-0.7.0
+  (crate-source "udev" "0.7.0"
+                "06hr927z0fdn7ay0p817b9x19i5fagmpmvz95yhl4d1pf3bbpgaf"))
 
 (define rust-udev-0.9.3
   (crate-source "udev" "0.9.3"
@@ -5819,6 +5843,10 @@
   (crate-source "zeroize" "1.8.1"
                 "1pjdrmjwmszpxfd7r860jx54cyk94qk59x13sc307cvr5256glyf"))
 
+(define rust-zeroize-derive-1.4.2
+  (crate-source "zeroize_derive" "1.4.2"
+                "0sczjlqjdmrp3wn62g7mw6p438c9j4jgp2f9zamd56991mdycdnf"))
+
 (define rust-zerovec-0.10.4
   (crate-source "zerovec" "0.10.4"
                 "0yghix7n3fjfdppwghknzvx9v8cf826h2qal5nqvy8yzg4yqjaxa"))
@@ -5973,6 +6001,92 @@
                                           rust-urid-0.1.0
                                           rust-urid-derive-0.1.1
                                           rust-wmidi-3.1.0))
+                     (bcachefs-tools =>
+                                     (list rust-aho-corasick-1.1.3
+                                      rust-anstream-0.6.18
+                                      rust-anstyle-1.0.10
+                                      rust-anstyle-parse-0.2.6
+                                      rust-anstyle-query-1.1.2
+                                      rust-anstyle-wincon-3.0.7
+                                      rust-anyhow-1.0.97
+                                      rust-autocfg-1.4.0
+                                      rust-bindgen-0.69.5
+                                      rust-bitfield-0.14.0
+                                      rust-bitflags-1.3.2
+                                      rust-bitflags-2.9.0
+                                      rust-byteorder-1.5.0
+                                      rust-cc-1.2.18
+                                      rust-cexpr-0.6.0
+                                      rust-cfg-if-1.0.0
+                                      rust-clang-sys-1.8.1
+                                      rust-clap-4.5.35
+                                      rust-clap-builder-4.5.35
+                                      rust-clap-complete-4.5.47
+                                      rust-clap-derive-4.5.32
+                                      rust-clap-lex-0.7.4
+                                      rust-colorchoice-1.0.3
+                                      rust-either-1.15.0
+                                      rust-env-logger-0.10.2
+                                      rust-errno-0.2.8
+                                      rust-errno-0.3.11
+                                      rust-errno-dragonfly-0.1.2
+                                      rust-glob-0.3.2
+                                      rust-heck-0.5.0
+                                      rust-home-0.5.11
+                                      rust-is-terminal-polyfill-1.70.1
+                                      rust-itertools-0.12.1
+                                      rust-lazy-static-1.5.0
+                                      rust-lazycell-1.3.0
+                                      rust-libc-0.2.171
+                                      rust-libloading-0.8.6
+                                      rust-libudev-sys-0.1.4
+                                      rust-linux-raw-sys-0.4.15
+                                      rust-linux-raw-sys-0.9.3
+                                      rust-log-0.4.27
+                                      rust-memchr-2.7.4
+                                      rust-memoffset-0.8.0
+                                      rust-minimal-lexical-0.2.1
+                                      rust-nom-7.1.3
+                                      rust-once-cell-1.21.3
+                                      rust-owo-colors-4.2.0
+                                      rust-paste-1.0.15
+                                      rust-pkg-config-0.3.32
+                                      rust-prettyplease-0.2.32
+                                      rust-proc-macro2-1.0.94
+                                      rust-quote-1.0.40
+                                      rust-regex-1.11.1
+                                      rust-regex-automata-0.4.9
+                                      rust-regex-syntax-0.8.5
+                                      rust-rustc-hash-1.1.0
+                                      rust-rustix-0.38.44
+                                      rust-rustix-1.0.5
+                                      rust-rustversion-1.0.20
+                                      rust-shlex-1.3.0
+                                      rust-strsim-0.11.1
+                                      rust-strum-0.26.3
+                                      rust-strum-macros-0.26.4
+                                      rust-syn-2.0.100
+                                      rust-terminal-size-0.4.2
+                                      rust-udev-0.7.0
+                                      rust-unicode-ident-1.0.18
+                                      rust-utf8parse-0.2.2
+                                      rust-uuid-1.16.0
+                                      rust-which-4.4.2
+                                      rust-winapi-0.3.9
+                                      rust-winapi-i686-pc-windows-gnu-0.4.0
+                                      rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                      rust-windows-sys-0.59.0
+                                      rust-windows-targets-0.52.6
+                                      rust-windows-aarch64-gnullvm-0.52.6
+                                      rust-windows-aarch64-msvc-0.52.6
+                                      rust-windows-i686-gnu-0.52.6
+                                      rust-windows-i686-gnullvm-0.52.6
+                                      rust-windows-i686-msvc-0.52.6
+                                      rust-windows-x86-64-gnu-0.52.6
+                                      rust-windows-x86-64-gnullvm-0.52.6
+                                      rust-windows-x86-64-msvc-0.52.6
+                                      rust-zeroize-1.8.1
+                                      rust-zeroize-derive-1.4.2))
                      (c2rust =>
                              (list rust-addr2line-0.24.2
                                    rust-adler2-2.0.0
