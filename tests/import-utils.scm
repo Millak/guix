@@ -31,6 +31,16 @@
 
 (test-begin "import-utils")
 
+(test-equal "beautify-description: empty string"
+  "This package lacks a description.  Run \
+\"info '(guix) Synopses and Descriptions'\" for more information."
+  (beautify-description ""))
+
+(test-equal "beautify-description: not a string"
+  "This package lacks a description.  Run \
+\"info '(guix) Synopses and Descriptions'\" for more information."
+  (beautify-description '()))
+
 (test-equal "beautify-description: use double spacing"
   "\
 Trust me Mr. Hendrix, M. Night Shyamalan et al.  \

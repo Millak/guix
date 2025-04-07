@@ -331,9 +331,9 @@ are replaced with dashes."
   "Improve the package DESCRIPTION by turning a beginning sentence fragment into
 a proper sentence and by using two spaces between sentences, and wrap lines at
 LENGTH characters."
-  (unless (string? description)
-    (G_ "This package lacks a description.  Run \
-\"info '(guix) Synopses and Descriptions'\" for more information."))
+  (if (or (not (string? description)) (string=? (string-trim-both description) ""))
+      (G_ "This package lacks a description.  Run \
+\"info '(guix) Synopses and Descriptions'\" for more information.")
 
   (let* ((fix-word
           (lambda (word)
@@ -410,7 +410,7 @@ LENGTH characters."
                                                       ". "
                                                       ".  ")))
                                               'post)
-                    length)))
+                    length))))
 
 (define (beautify-synopsis synopsis)
   "Improve the package SYNOPSIS."
