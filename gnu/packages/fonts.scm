@@ -111,10 +111,11 @@
   #:use-module (gnu packages xorg))
 
 (define-public font-arapey
-  (let ((commit  "28fa45c7f31afe62f577b0b857570ab0326b9113"))
+  (let ((commit  "28fa45c7f31afe62f577b0b857570ab0326b9113")
+        (revision "1"))
     (package
       (name "font-arapey")
-      (version "0.0.1")
+      (version (git-version "0.0.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
