@@ -316,6 +316,8 @@ for PATH."
                  (values #f #f)
                  (values #t (string->narinfo value cache-uri))))
             (('narinfo ('version v) _ ...)
+             (values #f #f))
+            ((? eof-object?)                      ;corrupt file
              (values #f #f))))))
     (lambda _
       (values #f #f))))
