@@ -39,7 +39,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 Marco Baggio <guix@mawumag.com>
 ;;; Copyright © 2024, 2025 Spencer King <spencer.king@geneoscopy.com>
-;;; Copyright © 2024 Tor-björn Claesson <tclaesson@gmail.com>
+;;; Copyright © 2024-2025 Tor-björn Claesson <tclaesson@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -927,6 +927,35 @@ object.  What if you want to put a vector of them in a data frame?  The blob
 package provides the blob object, a list of raw vectors, suitable for use as
 a column in data frame.")
     (license license:gpl3+)))
+
+(define-public r-bigd
+  (package
+    (name "r-bigd")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bigD" version))
+       (sha256
+        (base32 "1lc8c3g22sb3mkmr0vjw6x92cs04gdfsny1iii0v3xj9337v1cc6"))))
+    (properties
+     '((upstream-name . "bigD")
+       (updater-extra-native-inputs . ("r-vctrs"))))
+    (build-system r-build-system)
+    (native-inputs (list r-testthat r-vctrs))
+    (home-page "https://cran.r-project.org/package=bigD")
+    (synopsis "Flexibly format dates and times to a given locale")
+    (description
+     "Format dates and times flexibly and to whichever locales make sense.
+This package parses dates, times, and date-times in various formats (including
+string-based ISO 8601 constructions).  The formatting syntax gives the user
+many options for formatting the date and time output in a precise manner.
+Time zones in the input can be expressed in multiple ways and there are many
+options for formatting time zones in the output as well.  Several of the
+provided helper functions allow for automatic generation of locale-aware
+formatting patterns based on date/time skeleton formats and standardized
+date/time formats with varying specificity.")
+    (license license:expat)))
 
 (define-public r-bma
   (package
