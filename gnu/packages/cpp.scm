@@ -1910,7 +1910,7 @@ Google's C++ code base.")
          ((#:configure-flags flags)
           #~(cons* "-DCMAKE_CXX_STANDARD=11" #$flags)))))))
 
-(define-public abseil-cpp-20220623.1
+(define-public abseil-cpp-20220623
   (let ((base abseil-cpp-20200923.3))
     (package
       (inherit base)
@@ -1934,7 +1934,7 @@ Google's C++ code base.")
                   (delete "-DABSL_RUN_TESTS=ON" ,flags))))))))
 
 (define-public abseil-cpp
-  (let ((base abseil-cpp-20220623.1))
+  (let ((base abseil-cpp-20220623))
     (package
       (inherit base)
       (name "abseil-cpp")
@@ -2057,7 +2057,7 @@ made up of a single source file and has no external dependencies.")
   (abseil-cpp-for-c++-standard abseil-cpp 17))  ;XXX: the default with GCC 11?
 
 (define-public abseil-cpp-cxxstd11
-  (abseil-cpp-for-c++-standard abseil-cpp-20220623.1 11)) ;last version on C++11
+  (abseil-cpp-for-c++-standard abseil-cpp-20220623 11)) ;last version on C++11
 
 (define-public static-abseil-cpp
   (make-static-abseil-cpp abseil-cpp))
