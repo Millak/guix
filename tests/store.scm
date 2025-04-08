@@ -498,32 +498,23 @@
 
 (unless (unprivileged-user-namespace-supported?)
   (test-skip 1))
-(test-assert "build root cannot be made world-readable"
+(test-assert "writing to build root leads to EACCES"
   (let ((drv
          (run-with-store %store
            (gexp->derivation
-            "attempt-to-make-root-world-readable"
-            (with-imported-modules (source-module-closure
-                                    '((guix build syscalls)))
-              #~(begin
-                  (use-modules (guix build syscalls))
+            "write-to-root"
+            #~(begin
+                (catch 'system-error
+                  (lambda ()
+                    (mkdir "/whatever"))
+                  (lambda args
+                    (format #t "mkdir failed, which is good: ~a~%"
+                            (strerror (system-error-errno args)))
+                    (when (= EACCES (system-error-errno args))
+                      (exit 1))))
 
-                  (catch 'system-error
-                    (lambda ()
-                      (chmod "/" #o777))
-                    (lambda args
-                      (format #t "failed to make root writable: ~a~%"
-                              (strerror (system-error-errno args)))
-                      (format #t "attempting read-write remount~%")
-                      (mount "none" "/" "/" (logior MS_BIND MS_REMOUNT))
-                      (chmod "/" #o777)))
-
-                  ;; At this point, the build process could create a
-                  ;; world-readable setuid binary under its root (so in the
-                  ;; store) that would remain visible until the build
-                  ;; completes.
-                  (mkdir #$output)))))))
-    (guard (c ((store-protocol-error? c) #t))
+                (mkdir #$output))))))
+    (guard (c ((store-protocol-error? c) c))
       (build-derivations %store (list drv))
       #f)))
 

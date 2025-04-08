@@ -657,7 +657,9 @@ private:
     /* Whether we're currently doing a chroot build. */
     bool useChroot;
 
-    Path chrootRootDir;
+    /* The directory containing the chroot root directory, and the chroot root
+       directory itself--the latter is a sub-directory of the former.  */
+    Path chrootRootTop, chrootRootDir;
 
     /* RAII object to delete the chroot directory. */
     std::shared_ptr<AutoDelete> autoDelChroot;
@@ -1810,19 +1812,21 @@ void DerivationGoal::startBuilder()
     if (useChroot) {
 #if CHROOT_ENABLED
         /* Create a temporary directory in which we set up the chroot
-           environment using bind-mounts.  We put it in the store
-           to ensure that we can create hard-links to non-directory
-           inputs in the fake store in the chroot (see below). */
-        chrootRootDir = drvPath + ".chroot";
-        if (pathExists(chrootRootDir)) deletePath(chrootRootDir);
+           environment using bind-mounts.  Put it in the store to ensure it
+           can be atomically moved to the store.  */
+        chrootRootTop = drvPath + ".chroot";
+        chrootRootDir = chrootRootTop + "/top";
+        if (pathExists(chrootRootTop)) deletePath(chrootRootTop);
 
         /* Clean up the chroot directory automatically. */
-        autoDelChroot = std::shared_ptr<AutoDelete>(new AutoDelete(chrootRootDir));
+        autoDelChroot = std::shared_ptr<AutoDelete>(new AutoDelete(chrootRootTop));
 
         printMsg(lvlChatty, format("setting up chroot environment in `%1%'") % chrootRootDir);
 
+	if (mkdir(chrootRootTop.c_str(), 0750) == -1)
+	    throw SysError(format("cannot create build root container '%1%'") % chrootRootTop);
         if (mkdir(chrootRootDir.c_str(), 0750) == -1)
-            throw SysError(format("cannot create ‘%1%’") % chrootRootDir);
+            throw SysError(format("cannot create build root '%1%'") % chrootRootDir);
 
         if (buildUser.enabled() && chown(chrootRootDir.c_str(), 0, buildUser.getGID()) == -1)
             throw SysError(format("cannot change ownership of ‘%1%’") % chrootRootDir);
@@ -2245,9 +2249,19 @@ void DerivationGoal::runChild()
             if (rmdir("real-root") == -1)
                 throw SysError("cannot remove real-root directory");
 
-	    /* Remount root as read-only.  */
-            if (mount("/", "/", 0, MS_BIND | MS_REMOUNT | MS_RDONLY, 0) == -1)
-                throw SysError(format("read-only remount of build root '%1%' failed") % chrootRootDir);
+	    /* Make the root read-only.
+
+	       When build users are disabled, the build process could make it
+	       world-accessible, but that's OK: since 'chrootRootTop' is *not*
+	       world-accessible, a world-accessible 'chrootRootDir' cannot be
+	       used to grant access to the build environment to external
+	       processes.
+
+	       Remounting the root as read-only was rejected because it makes
+	       write access fail with EROFS instead of EACCES, which goes
+	       against what some test suites expect (Go, Ruby, SCons,
+	       Shepherd, to name a few).  */
+	    chmod_("/", 0555);
 
 	    if (getuid() != 0) {
 		/* Create a new mount namespace to "lock" previous mounts.
