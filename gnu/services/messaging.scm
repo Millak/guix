@@ -1416,8 +1416,8 @@ for different users.  Refer to @samp{man 5 ngircd.conf} for more details.")
    "Turn on debugging messages."
    (serializer empty-serializer))
   (global
-   ;; Always use a ngircd-global default to ensure the correct PidFile option
-   ;; is set, as it is required by the service.
+   ;; Always use a ngircd-global default to ensure the default addresses
+   ;; listened to are known (used to compute the socket endpoints).
    (ngircd-global (ngircd-global))
    "A ngircd-global record object used to specify global options.")
   (limits
@@ -1515,10 +1515,6 @@ wrapper for the 'ngircd' command."
          (help-file (ngircd-global-help-file global))
          (motd-file (ngircd-global-motd-file global))
          (ssl (ngircd-configuration-ssl config))
-         (ca-file (ngircd-ssl-ca-file ssl))
-         (cert-file (ngircd-ssl-cert-file ssl))
-         (key-file (ngircd-ssl-key-file ssl))
-         (dh-file (ngircd-ssl-dh-file ssl))
          (channels (ngircd-configuration-channels config)))
     (least-authority-wrapper
      (file-append (ngircd-configuration-ngircd config) "/sbin/ngircd")
@@ -1545,28 +1541,32 @@ wrapper for the 'ngircd' command."
                  (target source)))
           '())
       (if (maybe-value-set? ssl)
-          ;; When SSL is used, expose the specified keys and certificates.
-          (append
-           (if (maybe-value-set? ca-file)
-               (list (file-system-mapping
-                      (source ca-file)
-                      (target source)))
-               '())
-           (if (maybe-value-set? cert-file)
-               (list (file-system-mapping
-                      (source cert-file)
-                      (target source)))
-               '())
-           (if (maybe-value-set? key-file)
-               (list (file-system-mapping
-                      (source key-file)
-                      (target source)))
-               '())
-           (if (maybe-value-set? dh-file)
-               (list (file-system-mapping
-                      (source dh-file)
-                      (target source)))
-               '()))
+          (let ((ca-file (ngircd-ssl-ca-file ssl))
+                (cert-file (ngircd-ssl-cert-file ssl))
+                (key-file (ngircd-ssl-key-file ssl))
+                (dh-file (ngircd-ssl-dh-file ssl)))
+            ;; When SSL is used, expose the specified keys and certificates.
+            (append
+             (if (maybe-value-set? ca-file)
+                 (list (file-system-mapping
+                        (source ca-file)
+                        (target source)))
+                 '())
+             (if (maybe-value-set? cert-file)
+                 (list (file-system-mapping
+                        (source cert-file)
+                        (target source)))
+                 '())
+             (if (maybe-value-set? key-file)
+                 (list (file-system-mapping
+                        (source key-file)
+                        (target source)))
+                 '())
+             (if (maybe-value-set? dh-file)
+                 (list (file-system-mapping
+                        (source dh-file)
+                        (target source)))
+                 '())))
           '())
       (if (maybe-value-set? channels)
           (filter-map (lambda (channel)
@@ -1631,6 +1631,7 @@ wrapper for the 'ngircd' command."
                              (compose list ngircd-configuration-ngircd))
           (service-extension account-service-type
                              ngircd-account)))
+   (default-value (ngircd-configuration))
    (description
     "Run @url{https://ngircd.barton.de/, ngIRCd}, a lightweight @acronym{IRC,
 Internet Relay Chat} daemon.")))

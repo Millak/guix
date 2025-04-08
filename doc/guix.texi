@@ -30363,7 +30363,14 @@ server.
 The service type for ngIRCd.  Its value is a @code{ngircd-configuration}
 object, documented below.
 
-A simple example configuration could look like:
+In its most simple form, the service can be used with its default
+configuration, like this:
+
+@lisp
+(service ngircd-service-type)
+@end lisp
+
+A slightly more complex example configuration could look like:
 
 @lisp
 (service ngircd-service-type
