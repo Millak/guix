@@ -4452,6 +4452,35 @@ bindings to almost all functions of PETSc.")
     ;; <https://github.com/dimpase/primecountpy/issues/16>.
     (license license:gpl2+)))
 
+(define-public python-pyglm
+  (package
+    (name "python-pyglm")
+    (version "2.8.1")
+    (source
+     (origin
+       ;; Test files are not included in the archive in pypi.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Zuzu-Typ/PyGLM")
+             (commit version)
+             ;; XXX: Attempt to use Guix's glm@1.0.1 failed, try to figure out
+             ;; how to fix it.
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1ra54m0pb5aca7q6ymappjsyxdzdy17yz8rrhlql04k0p9lnf1v8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/Zuzu-Typ/PyGLM")
+    (synopsis "OpenGL Mathematics library for Python")
+    (description "PyGLM is a Python extension library which brings the OpenGL
+Mathematics (GLM) library to Python.")
+    (license license:zlib)))
+
 (define-public python-quadpy
   (package
     (name "python-quadpy")
