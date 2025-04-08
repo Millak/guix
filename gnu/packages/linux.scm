@@ -2279,7 +2279,7 @@ supported under @file{/sys/class/backlight/}.")
 (define-public v4l2loopback-linux-module
   (package
     (name "v4l2loopback-linux-module")
-    (version "0.13.2")
+    (version "0.14.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2288,7 +2288,7 @@ supported under @file{/sys/class/backlight/}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09487b2jd4w178fdpc3s8q7s9ajsar9wcmckkk9m10ix6gbqb1g9"))))
+                "0vrf0mndzcpypz5a48kyjqwvvfh17wgganzml4vwiqhl4whq2a8v"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f))                ; no test suite
