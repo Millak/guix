@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
@@ -1057,16 +1057,22 @@ delete it when leaving the dynamic extent of this call."
       (lambda ()
         (false-if-exception (delete-file-recursively tmp-dir))))))
 
-(define (with-atomic-file-output file proc)
+(define* (with-atomic-file-output file proc #:key (sync? #t))
   "Call PROC with an output port for the file that is going to replace FILE.
 Upon success, FILE is atomically replaced by what has been written to the
-output port, and PROC's result is returned."
+output port, and PROC's result is returned.
+
+When SYNC? is true, call 'fdatasync' on the temporary file before renaming it
+to FILE; set it to #false for caches and temporary files to improve
+performance."
   (let* ((template (string-append file ".XXXXXX"))
          (out      (mkstemp! template)))
     (with-throw-handler #t
       (lambda ()
         (let ((result (proc out)))
-          (fdatasync out)
+          (when sync?
+            (force-output out)
+            (fdatasync out))
           (close-port out)
           (rename-file template file)
           result))
