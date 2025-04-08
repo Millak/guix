@@ -1599,18 +1599,18 @@ designed to work well in user interface environments.")
 (define-public font-adobe-source-sans-pro
   (package
     (name "font-adobe-source-sans-pro")
-    (version "3.046R")
+    (version "3.052")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/adobe-fonts/source-sans-pro")
-             (commit version)))
+             (url "https://github.com/adobe-fonts/source-sans")
+             (commit (string-append version "R"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01dnhyfffnlyjzyh40x2z728qpc4i0jvrcxdcjfm17zrwhmw84lw"))))
+        (base32 "06s0xn49x454c9zbrawcm4b672qpaqah3glmh2jn3m2jyv5xhdnb"))))
     (build-system font-build-system)
-    (home-page "https://github.com/adobe-fonts/source-sans-pro")
+    (home-page "https://github.com/adobe-fonts/source-sans")
     (synopsis
      "Sans serif font family for user interface environments")
     (description
