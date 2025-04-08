@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2016, 2017, 2019, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2019, 2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,6 +111,26 @@
      #:namespaces '(user mnt))))
 
 (skip-if-unsupported)
+(test-equal "call-with-container, mnt namespace, locked mounts"
+  EINVAL
+  ;; umount(2) fails with EINVAL when targeting a mount point that is
+  ;; "locked".
+  (status:exit-val
+   (call-with-container (list (file-system
+                                (device "none")
+                                (mount-point "/testing")
+                                (type "tmpfs")
+                                (check? #f)))
+     (lambda ()
+       (primitive-exit (catch 'system-error
+                         (lambda ()
+                           (umount "/testing")
+                           0)
+                         (lambda args
+                           (system-error-errno args)))))
+     #:namespaces '(user mnt))))
+
+(skip-if-unsupported)
 (test-equal "call-with-container, mnt namespace, wrong bind mount"
   `(system-error ,ENOENT)
   ;; An exception should be raised; see <http://bugs.gnu.org/23306>.
@@ -169,7 +189,8 @@
      #:namespaces '(user mnt))))
 
 (skip-if-unsupported)
-(test-assert "container-excursion"
+(test-equal "container-excursion"
+  0
   (call-with-temporary-directory
    (lambda (root)
      ;; Two pipes: One for the container to signal that the test can begin,
@@ -193,7 +214,11 @@
                    (readlink (string-append "/proc/" pid "/ns/" ns)))
                  '("user" "ipc" "uts" "net" "pid" "mnt"))))
 
-        (let* ((pid (run-container root '() %namespaces 1 container))
+        (let* ((pid (run-container root '() %namespaces 1 container
+                                   ;; Do not lock mounts so the user namespace
+                                   ;; appears to be the same seen from inside
+                                   ;; and from outside.
+                                   #:lock-mounts? #f))
                (container-namespaces (namespaces pid))
                (result
                 (begin
@@ -213,7 +238,7 @@
           (write 'done end-out)
           (close end-out)
           (waitpid pid)
-          (zero? result)))))))
+          result))))))
 
 (skip-if-unsupported)
 (test-equal "container-excursion, same namespaces"
