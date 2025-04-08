@@ -18,7 +18,6 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix cache)
-  #:use-module ((guix utils) #:select (with-atomic-file-output))
   #:autoload   (guix build syscalls) (lock-file unlock-file)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
