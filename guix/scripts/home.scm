@@ -290,14 +290,11 @@ immediately.  Return the exit status of the process in the container."
      (with-imported-modules `(((guix config) => ,(make-config.scm))
                               ,@(source-module-closure
                                  '((guix profiles)
-                                   (guix build utils)
-                                   (guix build syscalls))
+                                   (guix build utils))
                                  #:select? not-config?))
        #~(begin
            (use-modules (guix build utils)
-                        ((guix profiles) #:select (load-profile))
-                        ((guix build syscalls)
-                         #:select (set-network-interface-up)))
+                        ((guix profiles) #:select (load-profile)))
 
            (define shell
              #$(user-shell))
@@ -348,14 +345,6 @@ immediately.  Return the exit status of the process in the container."
      (mkdir-p "/etc")
      (write-passwd (list passwd))
      (write-group groups)
-
-     (unless network?
-       ;; When isolated from the network, provide a minimal /etc/hosts
-       ;; to resolve "localhost".
-       (call-with-output-file "/etc/hosts"
-         (lambda (port)
-           (display "127.0.0.1 localhost\n" port)
-           (chmod port #o444))))
 
      ;; Create /tmp; bits of code expect it, such as
      ;; 'least-authority-wrapper'.

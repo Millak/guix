@@ -237,12 +237,16 @@ corresponds to the symbols in NAMESPACES."
 (define* (run-container root mounts namespaces host-uids thunk
                         #:key (guest-uid 0) (guest-gid 0)
                         (populate-file-system (const #t))
+                        (loopback-network? #t)
                         writable-root?)
   "Run THUNK in a new container process and return its PID.  ROOT specifies
 the root directory for the container.  MOUNTS is a list of <file-system>
 objects that specify file systems to mount inside the container.  NAMESPACES
 is a list of symbols that correspond to the possible Linux namespaces: mnt,
 ipc, uts, user, and net.
+
+When LOOPBACK-NETWORK? is true and 'net is amount NAMESPACES, set up the
+loopback device (\"lo\") and a minimal /etc/hosts.
 
 When WRITABLE-ROOT? is false, remount the container's root as read-only before
 calling THUNK.  Call POPULATE-FILE-SYSTEM before the root is (potentially)
@@ -275,7 +279,21 @@ that host UIDs (respectively GIDs) map to in the namespace."
                                           #:mount-/sys?  (memq 'net
                                                                namespaces)
                                           #:populate-file-system
-                                          populate-file-system
+                                          (lambda ()
+                                            (populate-file-system)
+                                            (when (and (memq 'net namespaces)
+                                                       loopback-network?)
+                                              (set-network-interface-up "lo")
+
+                                              ;; When isolated from the
+                                              ;; network, provide a minimal
+                                              ;; /etc/hosts to resolve
+                                              ;; "localhost".
+                                              (mkdir-p "/etc")
+                                              (call-with-output-file "/etc/hosts"
+                                                (lambda (port)
+                                                  (display "127.0.0.1 localhost\n" port)
+                                                  (chmod port #o444)))))
                                           #:writable-root?
                                           (or writable-root?
                                               (not (memq 'mnt namespaces)))))
@@ -350,6 +368,7 @@ if there are no child processes left."
                               (relayed-signals (list SIGINT SIGTERM))
                               (child-is-pid1? #t)
                               (populate-file-system (const #t))
+                              (loopback-network? #t)
                               writable-root?
                               (process-spawned-hook (const #t)))
   "Run THUNK in a new container process and return its exit status; call
@@ -370,6 +389,9 @@ UIDs (respectively GIDs) map to in the namespace.
 
 RELAYED-SIGNALS is the list of signals that are \"relayed\" to the container
 process when caught by its parent.
+
+When LOOPBACK-NETWORK? is true and 'net is amount NAMESPACES, set up the
+loopback device (\"lo\") and a minimal /etc/hosts.
 
 When WRITABLE-ROOT? is false, remount the container's root as read-only before
 calling THUNK.  Call POPULATE-FILE-SYSTEM before the root is (potentially)
@@ -430,6 +452,7 @@ load path must be adjusted as needed."
                                #:guest-uid guest-uid
                                #:guest-gid guest-gid
                                #:populate-file-system populate-file-system
+                               #:loopback-network? loopback-network?
                                #:writable-root? writable-root?)))
        (install-signal-handlers pid)
        (process-spawned-hook pid)
