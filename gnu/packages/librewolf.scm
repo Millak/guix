@@ -222,24 +222,20 @@
     (arguments
      (list
       #:configure-flags #~(let ((clang #$(this-package-native-input "clang")))
-                            `("--enable-application=browser"
-
-                              ;; Configuration
-                              "--without-wasm-sandboxed-libraries"
-                              "--with-system-jpeg"
-                              "--with-system-zlib"
-                              "--with-system-png"
-                              "--with-system-webp"
-                              "--with-system-icu"
-                              "--with-system-libvpx"
-                              "--with-system-libevent"
-                              "--with-system-ffi"
+                            ;; Configuration.
+                            `("--enable-jemalloc"
                               "--enable-system-pixman"
-                              "--enable-jemalloc"
-
-                              ;; see https://bugs.gnu.org/32833
+                              "--with-system-ffi"
+                              "--with-system-icu"
+                              "--with-system-jpeg"
+                              "--with-system-libevent"
+                              "--with-system-libvpx"
                               "--with-system-nspr"
                               "--with-system-nss"
+                              "--with-system-png"
+                              "--with-system-webp"
+                              "--with-system-zlib"
+                              "--without-wasm-sandboxed-libraries"
 
                               ,(string-append "--with-clang-path=" clang
                                               "/bin/clang")
@@ -248,30 +244,22 @@
 
                               ;; Distribution
                               "--with-distribution-id=org.guix"
-                              "--with-app-name=librewolf"
-                              "--with-app-basename=LibreWolf"
-                              "--with-branding=browser/branding/librewolf"
 
                               ;; Features
-                              "--disable-tests"
-                              "--disable-updater"
                               "--enable-pulseaudio"
-                              "--disable-crashreporter"
-                              "--allow-addon-sideload"
-                              "--with-unsigned-addon-scopes=app,system"
 
                               ;; switch only available on x86, whereas EME
                               ;; is not supported on other targets
                               ,@(if #$(target-x86?) '("--disable-eme") '())
 
                               ;; Build details
-                              "--disable-debug"
-                              "--enable-rust-simd"
-                              "--enable-release"
-                              "--enable-optimize"
-                              "--enable-strip"
-                              "--enable-hardening"
-                              "--disable-elf-hack"))
+                              "--disable-elf-hack"
+                              ;; Don't attempt to download toolchains.
+                              ;; Upstream enables this, adding the flag
+                              ;; ensures we don't use network in the build
+                              ;; environment.
+                              "--disable-bootstrap"
+                              "--enable-strip"))
       #:imported-modules %cargo-utils-modules
       #:modules `((ice-9 regex)
                   (ice-9 string-fun)
@@ -287,25 +275,24 @@
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-preferences
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((port (open-file "browser/app/profile/firefox.js"
-                                     "a")))
-                (define (write-setting key value)
-                  (format port "~%pref(\"~a\", ~a);~%" key value)
-                  (format #t
-                          "fix-preferences: setting value of ~a to ~a~%" key
-                          value))
+              (call-with-port (open-file "browser/app/profile/firefox.js" "a")
+                (lambda (port)
+                  (define (write-setting key value)
+                    (format port "~%pref(\"~a\", ~a);~%" key value)
+                    (format #t
+                            "fix-preferences: setting value of ~a to ~a~%" key
+                            value))
 
-                ;; We should allow the sandbox to read the store directory,
-                ;; because the sandbox has access to /usr on FHS distros.
-                (write-setting
-                 "security.sandbox.content.read_path_whitelist"
-                 (string-append "\""
-                                (%store-directory) "/\""))
+                  ;; We should allow the sandbox to read the store directory,
+                  ;; because the sandbox has access to /usr on FHS distros.
+                  (write-setting
+                   "security.sandbox.content.read_path_whitelist"
+                   (string-append "\""
+                                  (%store-directory) "/\""))
 
-                ;; XDG settings should be managed by Guix.
-                (write-setting "browser.shell.checkDefaultBrowser"
-                               "false")
-                (close-port port))))
+                  ;; XDG settings should be managed by Guix.
+                  (write-setting "browser.shell.checkDefaultBrowser"
+                                 "false")))))
           (add-after 'unpack 'fix-ffmpeg-runtime-linker
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((ffmpeg (assoc-ref inputs "ffmpeg"))
@@ -484,33 +471,13 @@
                         (getcwd))
                 (format #t "configure flags: ~s~%" flags)
 
-                (define write-flags
-                  (lambda flags
-                    (display (string-join (map (cut string-append
-                                                    "ac_add_options " <>)
-                                               flags) "\n"))
-                    (display "\n")))
-                (with-output-to-file mozconfig
-                  (lambda ()
-                    (apply write-flags flags)
-                    ;; The following option unsets Telemetry
-                    ;; Reporting. With the Addons Fiasco,
-                    ;; Mozilla was found to be collecting
-                    ;; user's data, including saved passwords
-                    ;; and web form data, without users
-                    ;; consent. Mozilla was also found
-                    ;; shipping updates to systems without
-                    ;; the user's knowledge or permission.
-                    ;; As a result of this, use the following
-                    ;; command to permanently disable
-                    ;; telemetry reporting.
-                    (display "unset MOZ_TELEMETRY_REPORTING\n")
-                    (display "mk_add_options MOZ_CRASHREPORTER=0\n")
-                    (display "mk_add_options MOZ_DATA_REPORTING=0\n")
-                    (display
-                     "mk_add_options MOZ_SERVICES_HEALTHREPORT=0")
-                    (display
-                     "mk_add_options MOZ_TELEMETRY_REPORTING=0")))
+                (call-with-port (open-file mozconfig "a")
+                  (lambda (port)
+                    (format port "~%## Guix-specific options ##~%~%")
+                    (for-each
+                     (lambda (flag) (format port "ac_add_options ~a\n" flag))
+                     flags)
+                    (display "\n" port)))
                 (setenv "MOZCONFIG" mozconfig))
               (invoke "./mach" "configure")))
           (replace 'build
