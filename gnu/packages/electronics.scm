@@ -88,20 +88,20 @@ to take care of the OS-specific details when writing software that uses serial p
     (license license:lgpl3+)))
 
 (define-public libsigrokdecode
-  (let ((commit "e6962b3fe8260382bb9932a1cfdd7ee7090ce267")
-        (revision "0"))
+  (let ((commit "71f451443029322d57376214c330b518efd84f88")
+        (revision "1"))
     (package
       (name "libsigrokdecode")
       (version (git-version "0.5.3" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://github.com/sigrokproject/libsigrokdecode")
+                      (url "git://sigrok.org/libsigrokdecode")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0ik93p6k8hpv8ahchjnmir8paz2w718y1j8pnmrmagjx8vvqd9y6"))))
+                  "11l8vnf2khqbaqas7cfnq3f8q5w7am6nbkkd5mqj5kpb3ya2avb9"))))
       (outputs '("out" "doc"))
       (arguments
        `(#:phases
