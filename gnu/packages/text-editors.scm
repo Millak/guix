@@ -1002,6 +1002,13 @@ OpenBSD team.")
       (sha256
        (base32 "13b2iqmbx5vcyd0rnvvc9l8l79q6665r4xx6gvc28mnmpci95ljs"))))
     (build-system gnu-build-system)
+    (arguments
+     (if (%current-target-system)
+         ;; fix for crosscompiling; on GNU system strcasecmp always works
+         (list #:configure-flags
+               #~(list "ac_cv_func_strcasecmp=yes"
+                       "gl_cv_func_strcasecmp_works=yes"))
+         '()))
     (inputs
      (list gettext-minimal ncurses))
     (home-page "https://www.nano-editor.org/")
