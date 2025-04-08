@@ -2,6 +2,7 @@
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 Ian Eure <ian@retrospec.tv>
+;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -459,15 +460,17 @@ performance, balance_performance, default, balance_power and power."))
 (define (tlp-shepherd-service config)
   (let* ((tlp-bin (file-append
                    (tlp-configuration-tlp config) "/sbin/tlp"))
-         (tlp-action (lambda args
+         (tlp-action (lambda (return-value-on-success . args)
                        #~(lambda _
-                           (zero? (system* #$tlp-bin #$@args))))))
+                           (if (zero? (system* #$tlp-bin #$@args))
+                               #$return-value-on-success
+                               (not #$return-value-on-success))))))
     (list (shepherd-service
            (documentation "Run TLP script.")
            (provision '(tlp))
            (requirement '(user-processes))
-           (start (tlp-action "init" "start"))
-           (stop  (tlp-action "init" "stop"))))))
+           (start (tlp-action #t "init" "start"))
+           (stop  (tlp-action #f "init" "stop"))))))
 
 (define (tlp-activation config)
   (let* ((config-str (with-output-to-string
