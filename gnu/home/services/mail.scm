@@ -49,9 +49,14 @@
             msmtp-account-name
             msmtp-account-configuration))
 
+(define (string-or-gexp? obj)
+  (or (string? obj)
+      (gexp? obj)))
+
 (define-maybe string (prefix msmtp-configuration-))
 (define-maybe boolean (prefix msmtp-configuration-))
 (define-maybe integer (prefix msmtp-configuration-))
+(define-maybe string-or-gexp (prefix msmtp-configuration-))
 
 ;; Serialization of 'msmtp'.
 (define (uglify-symbol field-name)
@@ -67,6 +72,9 @@
 
 (define (msmtp-configuration-serialize-string field-name value)
   #~(string-append #$(uglify-symbol field-name) " " #$value "\n"))
+
+(define msmtp-configuration-serialize-string-or-gexp
+  msmtp-configuration-serialize-string)
 
 (define (msmtp-configuration-serialize-maybe-string-no-underscore field-name value)
   #~(if #$(maybe-value-set? value)
@@ -148,7 +156,7 @@ unless TLS without STARTTLS is used, in which case it is 465 (\"smtps\").")
     "Set the envelope-from address.")
 
   (password-eval
-    maybe-string
+    maybe-string-or-gexp
     "Set the password for authentication to the output (stdout) of the command cmd."
     (serializer msmtp-configuration-serialize-maybe-string-no-underscore))
 
