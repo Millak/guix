@@ -1915,7 +1915,7 @@ Google's C++ code base.")
     (package
       (inherit base)
       (name "abseil-cpp")
-      (version "20220623.1")
+      (version "20220623.2")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1924,7 +1924,7 @@ Google's C++ code base.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0vxh2a74g4s45yr8kdjqnzl64k10qdlc0hbnn987a4cnwdj4bp9r"))
+                  "1cmchfcqp85yp5hc3i47xv3i14v0f2wd5h2jblvcjjmjyhji1bwr"))
                 (patches
                  (search-patches "abseil-cpp-20220623.1-no-kepsilon-i686.patch"))))
       (arguments
