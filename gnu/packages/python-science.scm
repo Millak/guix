@@ -2911,7 +2911,7 @@ and more
 (define-public python-pyglm
   (package
     (name "python-pyglm")
-    (version "2.5.7")
+    (version "2.8.1")
     (source
      (origin
        ;; Test files are not included in the archive in pypi.
@@ -2919,15 +2919,18 @@ and more
        (uri (git-reference
              (url "https://github.com/Zuzu-Typ/PyGLM")
              (commit version)
-             ;; Checkout the bundled `glm` submodule.  PyGLM uses the
-             ;; currently unreleased GLM_EXT_matrix_integer feature.  Can
-             ;; maybe unbundle once glm@0.9.9.9 is released.
+             ;; XXX: Attempt to use Guix's glm@1.0.1 failed, try to figure out
+             ;; how to fix it.
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "08v0cgkwsf8rxscx5g9c5p1dy38rvak2fy3q6hg985if1nj6d9ks"))))
-    (build-system python-build-system)
+         "1ra54m0pb5aca7q6ymappjsyxdzdy17yz8rrhlql04k0p9lnf1v8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/Zuzu-Typ/PyGLM")
     (synopsis "OpenGL Mathematics library for Python")
     (description "PyGLM is a Python extension library which brings the OpenGL
