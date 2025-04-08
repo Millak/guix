@@ -8,6 +8,7 @@
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -999,7 +1000,8 @@ given QEMU package."
      (list (shepherd-service
             (provision '(qemu-binfmt))
             (documentation "Install binfmt_misc handlers for QEMU.")
-            (requirement '(file-system-/proc/sys/fs/binfmt_misc))
+            (requirement '(file-system-/proc/sys/fs/binfmt_misc
+                           file-system-/gnu/store))
             (start #~(lambda ()
                        ;; Register the handlers for all of PLATFORMS.
                        (for-each (lambda (str)
