@@ -37151,8 +37151,8 @@ federated microblogging social network.")
     (license license:gpl3+)))
 
 (define-public emacs-fedi
-  (let ((commit "8f0afbb5cd264033f10ba58158a5e1f3737b16d4")
-        (revision "0"))
+  (let ((commit "e53f4d61cab19a4037f8594daaa247db4ca6c116")
+        (revision "1"))
     (package
       (name "emacs-fedi")
       (version (git-version "0.2" revision commit))
@@ -37164,8 +37164,9 @@ federated microblogging social network.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0lmjqwq0nrimcqs3j9cadl2yz0nvg250vy2l6czg2648x6fdvcc6"))))
+          (base32 "02z5nhv1hr9713b2blfymrb8hckss5ghhr07mjz572a8xdy3rqq8"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f)) ; no tests
       (propagated-inputs (list emacs-markdown-mode))
       (home-page "https://codeberg.org/martianh/fedi.el")
       (synopsis "Library to make writing clients for APIs easier")
