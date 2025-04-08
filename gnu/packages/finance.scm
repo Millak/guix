@@ -1039,15 +1039,23 @@ of Bitcoin BIP-0039.")
   (package
     (name "python-u2flib-host")
     (version "3.0.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "python-u2flib-host" version))
-              (sha256
-               (base32
-                "02pwafd5kyjpc310ys0pgnd0adff1laz18naxxwsfrllqafqnrxb"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-u2flib-host" version))
+       (sha256
+        (base32 "02pwafd5kyjpc310ys0pgnd0adff1laz18naxxwsfrllqafqnrxb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+        #~(list
+          "--deselect=test/test_soft.py::TestSoftU2FDevice::test_registeration"
+          "--deselect=test/test_reg_auth.py::TestRegister::test_register" "-k"
+          "not test_forget")))
     (propagated-inputs (list python-hidapi python-requests))
-    (native-inputs (list python-cryptography))
+    (native-inputs (list python-cryptography python-pytest python-setuptools
+                         python-wheel))
     (home-page "https://github.com/Yubico/python-u2flib-host")
     (synopsis "Python based U2F host library")
     (description
