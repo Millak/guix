@@ -4307,7 +4307,7 @@ configure input, and customize Wayfire plugins.")
 (define-public scenefx
   (package
     (name "scenefx")
-    (version "0.1")
+    (version "0.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4316,7 +4316,7 @@ configure input, and customize Wayfire plugins.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r7f8bprsn0mwlkmc8d14nr3iibljfyxypb4i06v66ghlngaw6dw"))))
+                "1jvbskpmhq0vs4rx9723n709h77zg4c0cid8jwnrag1hqh601ch4"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config
                          ;; for wayland-scanner.
@@ -4325,7 +4325,7 @@ configure input, and customize Wayfire plugins.")
                   mesa
                   libxkbcommon
                   libdrm
-                  wlroots-0.17))
+                  wlroots))
     (home-page "https://github.com/wlrfx/scenefx")
     (synopsis "Drop-in replacement for the wlroots scene API")
     (description
