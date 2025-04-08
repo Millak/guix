@@ -3161,12 +3161,7 @@ module.")
                                (chmod file #o666))
                              archives)))))
            ,@(if (system-hurd?)
-                 '((add-after 'unpack 'set-PATH_MAX
-                     (lambda _
-                       ;; Shamelessly introduce an arbitrary limit.
-                       (substitute* "misc/tune2fs.c"
-                         (("PATH_MAX") "4096"))))
-                   (add-after 'unpack 'skip-tests
+                 '((add-after 'unpack 'skip-tests
                      (lambda _
                        (with-directory-excursion "tests"
                          (for-each
