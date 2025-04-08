@@ -2117,6 +2117,12 @@ cp -r /tmp/locale/*/en_US.*")))
               (let ((flatpak (string-append #$output "/bin/flatpak"))
                     (glib-networking (assoc-ref inputs "glib-networking")))
                 (wrap-program flatpak
+                  ;; Prevent error:
+                  ;; "No GSettings schemas are installed on the system"
+                  `("GSETTINGS_SCHEMA_DIR" =
+                    (,(string-append
+                       #$(this-package-input "gsettings-desktop-schemas")
+                       "/share/glib-2.0/schemas")))
                   ;; Allow GIO to find TLS backend.
                   `("GIO_EXTRA_MODULES" prefix
                     (,(string-append glib-networking "/lib/gio/modules"))))))))))
@@ -2141,6 +2147,7 @@ cp -r /tmp/locale/*/en_US.*")))
            bubblewrap
            curl
            fuse
+           gsettings-desktop-schemas
            gdk-pixbuf
            libcap
            libostree
