@@ -29219,6 +29219,10 @@ it listens on the loopback network interface, and allows for mail from
 users and daemons on the local machine, as well as permitting email to
 remote servers.  Run @command{man smtpd.conf} for more information.
 
+@item @code{log-file} (default: @code{"/var/log/mail.log"})
+The file location for the OpenSMTPD log file.  Logging occurs in the
+foreground via the Shepherd, i.e. OpenSMTPD does not detach.
+
 @item @code{setgid-commands?} (default: @code{#t})
 Make the following commands setgid to @code{smtpq} so they can be
 executed: @command{smtpctl}, @command{sendmail}, @command{send-mail},

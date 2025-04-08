@@ -8,6 +8,7 @@
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
+;;; Copyright © 2025 Felix Lechner <felix.lechner@lease-up.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1719,6 +1720,8 @@ by @code{dovecot-configuration}.  @var{config} may also be created by
                         (default '())) ; list of symbols
   (config-file opensmtpd-configuration-config-file
                (default %default-opensmtpd-config-file))
+  (log-file opensmtpd-configuration-log-file
+            (default "/var/log/mail.log"))
   (setgid-commands? opensmtpd-setgid-commands? (default #t)))
 
 (define %default-opensmtpd-config-file
@@ -1734,15 +1737,15 @@ match from local for any action outbound
 
 (define (opensmtpd-shepherd-service config)
   (match-record config <opensmtpd-configuration>
-                       (package config-file shepherd-requirement)
+                       (package config-file log-file shepherd-requirement)
     (list (shepherd-service
            (provision '(smtpd))
            (requirement `(pam loopback ,@shepherd-requirement))
            (documentation "Run the OpenSMTPD daemon.")
            (start (let ((smtpd (file-append package "/sbin/smtpd")))
                     #~(make-forkexec-constructor
-                       (list #$smtpd "-f" #$config-file)
-                       #:pid-file "/var/run/smtpd.pid")))
+                       (list #$smtpd "-d" "-f" #$config-file)
+                       #:log-file #$log-file)))
            (stop #~(make-kill-destructor))))))
 
 (define %opensmtpd-accounts
