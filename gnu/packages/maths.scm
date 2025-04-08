@@ -63,7 +63,7 @@
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023, 2025 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2023, 2025 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2024-2026 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
@@ -197,8 +197,8 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages regex)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages tbb)
@@ -11031,22 +11031,23 @@ internals of the solver.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #f                       ;TODO: requires protobuf-matchers
-      #:configure-flags
-      #~(list "-DBUILD_CXX=ON"
-              "-DBUILD_DEPS=OFF"
-              "-DBUILD_DOTNET=OFF"
-              "-DBUILD_EXAMPLES=OFF"
-              "-DBUILD_JAVA=OFF"
-              "-DBUILD_PYTHON=OFF"
-              "-DBUILD_SAMPLES=OFF"
-              "-DBUILD_SHARED_LIBS=ON"
-              "-DUSE_COINOR=OFF"
-              "-DUSE_CPLEX=OFF"
-              "-DUSE_GLPK=ON"
-              "-DUSE_HIGHS=OFF"
-              "-DUSE_SCIP=ON"
-              (string-append "-DSCIP_DIR=" #$(this-package-input "scip")))))
+       #:tests? #f                     ;TODO: requires protobuf-matchers
+       #:configure-flags
+       #~(list "-DBUILD_CXX=ON"
+               "-DBUILD_DEPS=OFF"
+               "-DBUILD_DOTNET=OFF"
+               "-DBUILD_EXAMPLES=OFF"
+               "-DBUILD_JAVA=OFF"
+               "-DBUILD_PYTHON=OFF"
+               "-DBUILD_SAMPLES=OFF"
+               "-DBUILD_SHARED_LIBS=ON"
+               (string-append "-DSCIP_DIR="
+                              #$(this-package-input "scip"))
+               "-DUSE_COINOR=OFF"
+               "-DUSE_CPLEX=OFF"
+               "-DUSE_GLPK=ON"
+               "-DUSE_HIGHS=OFF"
+               "-DUSE_SCIP=ON")))
     (native-inputs
      (list benchmark
            googletest
@@ -11065,9 +11066,10 @@ internals of the solver.")
     (home-page "https://developers.google.com/optimization")
     (synopsis "Software suite for combinatorial optimization")
     (description
-     "OR-Tools is a C++ portable software suite, tuned for solving
-combinatorial optimization problems in vehicle routing, flows, integer, linear
-and constraint programming.")
+     "OR-Tools is a C++ software collection for solving combinatorial
+optimization problems such as vehicle routing, expressed in constraint
+programming terms.  It includes mixed-integer and linear programming
+solvers, and network flow algorithms.")
     (license license:asl2.0)))
 
 (define-public scilab
