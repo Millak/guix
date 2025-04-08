@@ -1919,10 +1919,7 @@ before interacting with non-free LLMs.")
     (arguments
      (list
       #:tests? #t
-      #:test-command #~(list "make" "test")
-      #:exclude #~(cons* "magit-libgit.el"
-                         "magit-libgit-pkg.el"
-                         %default-exclude)
+      #:test-command #~(list "make" "-C" ".." "test")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'build-info-manual
@@ -1930,48 +1927,20 @@ before interacting with non-free LLMs.")
               (invoke "make" "info")
               ;; Copy info files to the lisp directory, which acts as
               ;; the root of the project for the emacs-build-system.
-              (for-each (lambda (f)
-                          (install-file f "lisp"))
-                        (find-files "docs" "\\.info$"))))
-          (add-after 'build-info-manual 'set-magit-version
+              (rename-file "docs/magit.info" "lisp/magit.info")))
+          (add-after 'build-info-manual 'chdir-lisp
             (lambda _
-              (make-file-writable "lisp/magit.el")
-              (emacs-substitute-variables "lisp/magit.el"
-                ("magit-version" #$version))))
-          (add-after 'set-magit-version 'patch-exec-paths
+              (chdir "lisp")))
+          (add-after 'chdir-lisp 'patch-version-executables
             (lambda* (#:key inputs #:allow-other-keys)
-              (for-each make-file-writable
-                        (list "lisp/magit-git.el" "lisp/magit-sequence.el"))
-              (emacs-substitute-variables "lisp/magit-git.el"
+              (emacs-substitute-variables "magit.el"
+                ("magit-version" #$version))
+              (emacs-substitute-variables "magit-git.el"
                 ("magit-git-executable"
                  (search-input-file inputs "/bin/git")))
-              (emacs-substitute-variables "lisp/magit-sequence.el"
+              (emacs-substitute-variables "magit-sequence.el"
                 ("magit-perl-executable"
-                 (search-input-file inputs "/bin/perl")))))
-          (add-before 'check 'configure-git
-            (lambda _
-              ;; Otherwise some tests fail with error "unable to auto-detect
-              ;; email address".
-              (setenv "HOME" (getcwd))
-              (invoke "git" "config" "--global" "user.name" "toto")
-              (invoke "git" "config" "--global" "user.email"
-                      "toto@toto.com")))
-          (replace 'expand-load-path
-            (lambda args
-              (with-directory-excursion "lisp"
-                (apply (assoc-ref %standard-phases 'expand-load-path) args))))
-          (replace 'make-autoloads
-            (lambda args
-              (with-directory-excursion "lisp"
-                (apply (assoc-ref %standard-phases 'make-autoloads) args))))
-          (replace 'install
-            (lambda args
-              (with-directory-excursion "lisp"
-                (apply (assoc-ref %standard-phases 'install) args))))
-          (replace 'build
-            (lambda args
-              (with-directory-excursion "lisp"
-                (apply (assoc-ref %standard-phases 'build) args)))))))
+                 (search-input-file inputs "/bin/perl"))))))))
     (native-inputs
      (list texinfo))
     (inputs
