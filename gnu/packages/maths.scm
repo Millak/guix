@@ -7192,50 +7192,39 @@ with C89.")
 (define-public glm
   (package
     (name "glm")
-    (version "0.9.9.8")
+    (version "1.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/g-truc/glm/releases/download/"
-                           version  "/glm-" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/g-truc/glm")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0k6yk9v46h690rshdx49x98y5qspkzibld1wb51jwcm35vba7qip"))))
+        (base32 "0890rvv3czi3nqj11dc2m3wcdfv0dm0nr63wfcpfikk9sk6b4w8s"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'configure 'set-environment
-                    (lambda _
-                      ;; Pass "-fno-ipa-modref" flag to the compiler to work
-                      ;; around a test failure with GCC 11.  This is a
-                      ;; header-only library so these flags only affect tests.
-                      ;; See <https://github.com/g-truc/glm/pull/1087>.
-                      (setenv "CXXFLAGS" "-O2 -g -fno-ipa-modref")))
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Since version 0.9.9.6, 'make install' is not supported
-                      ;; and we have to do it "manually".  Upstream discussion:
-                      ;; <https://github.com/g-truc/glm/pull/968>.
-                      (let* ((source (string-append "../glm"))
-                             (out (assoc-ref outputs "out"))
-                             (inc (string-append out "/include"))
-                             (lib (string-append out "/lib"))
-                             (pkgconfig (string-append lib "/pkgconfig")))
-                        (with-directory-excursion source
-                          (mkdir-p inc)
-                          (mkdir-p pkgconfig)
-                          (copy-recursively "glm" (string-append inc "/glm"))
-                          (copy-recursively "cmake" (string-append lib "/cmake"))
-                          (call-with-output-file (string-append pkgconfig "/glm.pc")
-                            (lambda (port)
-                              (format port
-                                      "prefix=~a
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'post-install
+            (lambda _
+              (let* ((doc (string-append #$output "/share/doc/glm"))
+                     (pkgconfig (string-append #$output "/lib/pkgconfig")))
+                (mkdir-p doc)
+                (mkdir-p pkgconfig)
+                (copy-recursively "../source/doc/api" (string-append doc "/html"))
+                (install-file "../source/doc/manual.pdf" doc)
+                (call-with-output-file (string-append pkgconfig "/glm.pc")
+                  (lambda (port)
+                    (format port
+                            "prefix=~a
 includedir=${prefix}/include
 
 Name: GLM
 Description: OpenGL Mathematics
 Version: ~a
-Cflags: -I${includedir}~%" out ,(version-prefix version 3)))))
-                        #t))))))
+Cflags: -I${includedir}~%" #$output #$version)))))))))
     (native-inputs
      (list unzip))
     (home-page "https://glm.g-truc.net/")
