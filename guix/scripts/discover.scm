@@ -87,7 +87,8 @@ lock on FILE to synchronize with any potential readers."
          (format port "http://~a:~a~%"
                  (avahi-service-address service)
                  (avahi-service-port service)))
-       %publish-services)))
+       %publish-services))
+    #:sync? #f)
   (chmod file #o644))
 
 (define* (read-substitute-urls #:key (file (%publish-file)))

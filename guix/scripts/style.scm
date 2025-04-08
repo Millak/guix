@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -554,7 +554,8 @@ are put in alphabetical order."
           (apply pretty-print-with-comments/splice port lst
                  #:format-comment canonicalize-comment
                  #:format-vertical-space canonicalize-vertical-space
-                 rest))))))
+                 rest))
+        #:sync? #f))))
 
 
 ;;;

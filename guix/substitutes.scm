@@ -127,7 +127,8 @@ indicates that PATH is unavailable at CACHE-URL."
     (mkdir-p (dirname file))
     (with-atomic-file-output file
       (lambda (out)
-        (write (cache-entry cache-url narinfo) out))))
+        (write (cache-entry cache-url narinfo) out))
+      #:sync? #f))
 
   narinfo)
 

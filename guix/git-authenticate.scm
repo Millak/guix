@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2022, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -344,7 +344,8 @@ authenticated (only COMMIT-ID is written to cache, though)."
           (chmod port #o600)
           (display ";; List of previously-authenticated commits.\n\n"
                    port)
-          (pretty-print lst port))))))
+          (pretty-print lst port)))
+      #:sync? #f)))
 
 
 ;;;

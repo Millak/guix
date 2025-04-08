@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2018, 2020-2022, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2012, 2015 Free Software Foundation, Inc.
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -346,7 +346,8 @@ Write information about redirects to LOG-PORT."
           (when cache-port
             (close-port cache-port))
           (with-atomic-file-output file
-            (cut write-cache port <>))
+            (cut write-cache port <>)
+            #:sync? #f)
           (close-port port)
           (open-input-file file))))
 
