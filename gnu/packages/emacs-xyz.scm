@@ -30478,21 +30478,21 @@ organized into a dashboard, by simply writing an org file.")
       (license license:gpl3+))))
 
 (define-public emacs-pinentry
-  (let ((commit "dcc9ba03252ee5d39e03bba31b420e0708c3ba0c")
-        (revision "1"))
+  (let ((commit "0079964a1dde954ccb2ce8a28613d8020c549a36")
+        (revision "2"))
     (package
       (name "emacs-pinentry")
       (version (git-version "0.1" revision commit))
       (source
        (origin
-         (method url-fetch)
-         (uri (string-append
-               "http://git.savannah.gnu.org/cgit/emacs/elpa.git/plain"
-               "/packages/pinentry/pinentry.el?id=" commit))
-         (file-name (string-append "pinentry.el"))
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.savannah.gnu.org/git/emacs/elpa.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32
-           "1lf30q6r8nz5cjzclbb9bbymsk2y75nskvb55hnjdv93gr3j0sik"))))
+           "1i8wgy7i7095008hk9pa600c8871j9v1fzj2fzb2khy6szchvjyy"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list gnupg))
