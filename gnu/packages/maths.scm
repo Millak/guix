@@ -11027,11 +11027,16 @@ internals of the solver.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hb608s6c7aiyr8vaj0gi0jf45z39wvwvrgfq8x5dzgyzy06zszp"))))
+        (base32 "0hb608s6c7aiyr8vaj0gi0jf45z39wvwvrgfq8x5dzgyzy06zszp"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(substitute* "CMakeLists.txt"
+            (("set\\(BUILD_protobuf_matchers")
+             "CMAKE_DEPENDENT_OPTION(BUILD_protobuf_matchers
+  \"Build protobuf-matchers\" OFF \"NOT BUILD_DEPS\"")))))
     (build-system cmake-build-system)
     (arguments
      (list
-       #:tests? #f                     ;TODO: requires protobuf-matchers
        #:configure-flags
        #~(list "-DBUILD_CXX=ON"
                "-DBUILD_DEPS=OFF"
@@ -11047,11 +11052,27 @@ internals of the solver.")
                "-DUSE_CPLEX=OFF"
                "-DUSE_GLPK=ON"
                "-DUSE_HIGHS=OFF"
-               "-DUSE_SCIP=ON")))
+               "-DUSE_SCIP=ON")
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'disable-failing-tests
+             (lambda _
+               ;; error: no matching function for call to ‘MakeDeathTestMatcher(const absl::lts_20250814::string_view&)
+               (substitute*
+                 "ortools/math_opt/cpp/variable_and_expressions_test.cc"
+                 ((".*(EXPECT_DEATH|kObjectsFromOtherModelStorage).*") ""))))
+           (add-before 'configure 'patch-install-paths
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (substitute* "ortools/flatzinc/cp-sat.msc.in"
+                   (("\\.\\.") (string-append out "/share/minizinc"))
+                   (("@FZ_REL_INSTALL_BINARY@")
+                    (string-append out "/bin/fzn-ortools")))))))))
     (native-inputs
      (list benchmark
            googletest
            pkg-config
+           protobuf-matchers
            python-minimal-wrapper))
     (inputs
      (list abseil-cpp
