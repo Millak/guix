@@ -147,6 +147,7 @@
             clone
             unshare
             setns
+            get-user-ns
 
             kexec-load-file
             KEXEC_FILE_UNLOAD
@@ -1246,6 +1247,19 @@ there is no such limitation."
            (throw 'system-error "setns" "~d ~d: ~A"
                   (list fdes nstype (strerror err))
                   (list err))))))))
+
+(define NS_GET_USERNS #xb701)
+
+(define (get-user-ns fdes)
+  "Return an open file descriptor to the user namespace that owns the
+namespace pointed to by FDES, a file descriptor obtained by opening
+/proc/PID/ns/*."
+  (let-values (((ret err) (%ioctl fdes NS_GET_USERNS %null-pointer)))
+    (when (< ret 0)
+      (throw 'system-error "get-user-ns" "~d: ~A"
+             (list fdes (strerror err))
+             (list err)))
+    ret))
 
 (define pivot-root
   (let ((proc (syscall->procedure int "pivot_root" (list '* '*))))
