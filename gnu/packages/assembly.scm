@@ -166,11 +166,9 @@ development.
 @item Support for @code{a:} prefix to force absolute addressing for
 zero-page addresses.
 @end itemize")
-    ;; The "license" reads: "This is free software.  You may use, modify, and
-    ;; / or redistribute any part of this software in any fashion."  A more
-    ;; explicit license clarification has been requested (see:
-    ;; https://github.com/freem/asm6f/issues/59).
-    (license (license:non-copyleft "file://readme-original.txt"))))
+    ;; The license text reads: "This is free software.  You may use, modify,
+    ;; and / or redistribute any part of this software in any fashion."
+    (license (license:non-copyleft "LICENSE.txt"))))
 
 (define-public nasm
   (package
