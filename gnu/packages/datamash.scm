@@ -35,7 +35,7 @@
 (define-public datamash
   (package
     (name "datamash")
-    (version "1.8")
+    (version "1.9")
     (source
      (origin
       (method url-fetch)
@@ -43,11 +43,18 @@
                           version ".tar.gz"))
       (sha256
        (base32
-        "1zgn55gvf60w2rs5f7vx7vdp50j89ki7mmjvm81xs5pngs67xnbs"))))
+        "1ll7rfm2b8zdm1vlm3a32cr2kjbc1af8yx8z2rwxc3b50gdfp0pk"))))
     (native-inputs
      (list which ;for tests
            perl))                 ;for help2man
     (build-system gnu-build-system)
+    (arguments
+     (if (%current-target-system)
+         ;; fix for crosscompiling; on GNU system strcasecmp always works
+         (list #:configure-flags
+               #~(list "ac_cv_func_strcasecmp=yes"
+                       "gl_cv_func_strcasecmp_works=yes"))
+         '()))
     (home-page "https://www.gnu.org/software/datamash/")
     (synopsis "Scriptable statistics and data calculation")
     (description
