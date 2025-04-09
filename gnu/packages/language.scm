@@ -351,6 +351,12 @@ method, one of the most popular choices for Traditional Chinese users.")
       #:configure-flags #~(list "--disable-static" "--enable-ucs4")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-lib-path
+            (lambda _
+              (with-directory-excursion "python"
+                (substitute* "louis/__init__.py.in"
+                  (("###LIBLOUIS_SONAME###")
+                   (string-append #$output "/lib/###LIBLOUIS_SONAME###"))))))
           (add-after 'install 'install-python-extension
             (lambda _
               (with-directory-excursion "python"
