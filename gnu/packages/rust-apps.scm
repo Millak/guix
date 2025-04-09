@@ -3211,14 +3211,14 @@ of the project is to be runnable on untrusted networks without crashing.")
 (define-public speakersafetyd
   (package
     (name "speakersafetyd")
-    (version "1.0.2")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "speakersafetyd" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "104xgyqhsg2rxa3ndkizrpndibmcbr25h63phcjswadbm8i790bz"))))
+        (base32 "1c4yk8mq8nazshdcasimlgnyhx27wzkad4wzicy5x43grq26b966"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -3243,15 +3243,13 @@ of the project is to be runnable on untrusted networks without crashing.")
             (lambda _
               (substitute* "95-speakersafetyd.rules"
                 ((".*SYSTEMD_WANTS.*") ""))))
-          (add-after 'install 'install-data
+          (add-before 'install 'prepare-to-install
             (lambda _
-              (setenv "BINDIR" (string-append #$output "/bin"))
-              (setenv "UNITDIR" (string-append #$output "/lib/systemd/system"))
-              (setenv "UDEVDIR" (string-append #$output "/lib/udev/rules.d"))
-              (setenv "TMPFILESDIR" (string-append #$output "/usr/lib/tmpfiles.d"))
-              (setenv "SHAREDIR" (string-append #$output "/share"))
-              (setenv "VARDIR" (string-append #$output "/var"))
-              (invoke "make" "install-data"))))))
+              (setenv "DESTDIR" #$output)
+              (setenv "SHAREDIR" "/share")
+              (setenv "SPEAKERSAFETYD_GROUP" "nixbld")
+              (setenv "SPEAKERSAFETYD_USER" "nixbld")
+              (invoke "make" "install"))))))
     (inputs (list alsa-lib))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/AsahiLinux/speakersafetyd/")
