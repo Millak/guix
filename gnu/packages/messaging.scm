@@ -3462,13 +3462,20 @@ notifications.")
                            version ".tar.gz"))
        (sha256
         (base32 "0kk0jrfiwfaybr0i5xih3b0yd4i6v3bz866a7xal1j8wddalbwlp"))))
+    (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;there are no tests
-       #:make-flags
-       (list
-        (string-append "CC=" ,(cc-for-target))
-        (string-append "PREFIX=" %output))))
+     (list
+      #:tests? #f                       ;there are no tests
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'configure 'pre-configure
+                     (lambda _
+                       ;; The build system is peculiar and sets environment
+                       ;; variables such as CFLAGS itself, which must not be
+                       ;; overridden via Make flags.
+                       (setenv "CC" #$(cc-for-target))
+                       (setenv "CFLAGS" "-g") ;for debug symbols
+                       (setenv "PREFIX" #$output))))))
     (native-inputs
      (list pkg-config universal-ctags))
     (inputs
