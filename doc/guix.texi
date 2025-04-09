@@ -27270,6 +27270,9 @@ contains the configuration files of the speaker models.
 @item @code{group} (default: @code{"speakersafetyd"}) (type: string)
 The group to run the Speaker Safety Daemon as.
 
+@item @code{log-file} (default: @code{"/var/log/speakersafetyd.log"}) (type: string)
+The file name to the Speaker Safety Daemon log file.
+
 @item @code{maximum-gain-reduction} (default: @code{7}) (type: integer)
 Maximum gain reduction before panicking, useful for debugging.
 
