@@ -93,6 +93,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system copy)
   #:use-module (gnu packages)
   #:use-module (gnu packages c)
   #:use-module (gnu packages base)
@@ -796,46 +797,47 @@ for long periods of working with computers (8 or more hours per day).")
 (define-public font-adobe-source-han-sans
   (package
     (name "font-adobe-source-han-sans")
-    (version "1.004")
+    (version "2.004")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/adobe-fonts/source-han-sans")
-                     (commit (string-append version "R"))))
+                    (url "https://github.com/adobe-fonts/source-han-sans")
+                    (commit (string-append version "R"))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zm884d8fp5gvirq324050kqv7am9khyqhs9kk4r4rr3jzn61jpk"))))
-    (outputs '("out"                 ; OpenType/CFF Collection (OTC), 121 MiB.
-               "cn" "jp" "kr" "tw")) ; Region-specific Subset OpenType/CFF.
-    (build-system trivial-build-system)
+                "0sgfvdigq9vdmf8wizapy8wcyzqrqj8il9sx1xzfm20qy376qvbf"))))
+    (outputs '("out"                   ; OpenType/CFF Collection (OTC), 112 MiB.
+               "cn" "hk" "jp" "kr" "tw")) ; Region-specific Subset OpenType/CFF.
+    (build-system copy-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((install-opentype-fonts
-                (lambda (fonts-dir out)
-                  (copy-recursively fonts-dir
-                                    (string-append (assoc-ref %outputs out)
-                                                   "/share/fonts/opentype")))))
-           (chdir (assoc-ref %build-inputs "source"))
-           (install-opentype-fonts "OTC" "out")
-           (install-opentype-fonts "SubsetOTF/CN" "cn")
-           (install-opentype-fonts "SubsetOTF/JP" "jp")
-           (install-opentype-fonts "SubsetOTF/KR" "kr")
-           (install-opentype-fonts "SubsetOTF/TW" "tw")
-           (for-each delete-file (find-files %output "\\.zip$"))
-           #t))))
+     (list
+      #:install-plan
+      #~'(("SubsetOTF/CN" "share/fonts/opentype" #:output "cn")
+          ("SubsetOTF/HK" "share/fonts/opentype" #:output "hk")
+          ("SubsetOTF/JP" "share/fonts/opentype" #:output "jp")
+          ("SubsetOTF/KR" "share/fonts/opentype" #:output "kr")
+          ("SubsetOTF/TW" "share/fonts/opentype" #:output "tw"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-otc
+            (lambda _
+              (let ((destination-directory
+                     (string-append #$output "/share/fonts/opentype")))
+                (mkdir-p destination-directory)
+                (invoke "unzip" "SuperOTC/SourceHanSans.ttc.zip"
+                        "-d" destination-directory)))))))
+    (native-inputs (list unzip))
     (home-page "https://github.com/adobe-fonts/source-han-sans")
     (synopsis "Pan-CJK fonts")
     (description
      "Source Han Sans is a sans serif Pan-CJK font family that is offered in
-seven weights: ExtraLight, Light, Normal, Regular, Medium, Bold, and Heavy.
-And in several OpenType/CFF-based deployment configurations to accommodate
-various system requirements or limitations.  As the name suggests, Pan-CJK
-fonts are intended to support the characters necessary to render or display
-text in Simplified Chinese, Traditional Chinese, Japanese, and Korean.")
+seven weights: ExtraLight, Light, Normal, Regular, Medium, Bold, and Heavy.  And
+in several OpenType/CFF-based deployment configurations to accommodate various
+system requirements or limitations.  As the name suggests, Pan-CJK fonts are
+intended to support the characters necessary to render or display text in
+Simplified Chinese, Traditional Chinese (Taiwan, Hong Kong), Japanese, and
+Korean.")
     (license license:silofl1.1)))
 
 (define-public font-cns11643
