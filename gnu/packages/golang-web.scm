@@ -8226,7 +8226,7 @@ information or even the peer of a VETH interface.")
 (define-public go-github-com-sherclockholmes-webpush-go
   (package
     (name "go-github-com-sherclockholmes-webpush-go")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -8235,13 +8235,13 @@ information or even the peer of a VETH interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qv16zvkd1c7q81v2ai8pfz590fxdrk4lfbgyymln0q7jn5wlvki"))))
+        (base32 "0dzc2nlxd1lfwr97cqmr4fc792zbsb6yssr7yqxxamqck1y8gnqm"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/SherClockHolmes/webpush-go"))
     (propagated-inputs
-     (list go-github-com-golang-jwt-jwt go-golang-org-x-crypto))
+     (list go-github-com-golang-jwt-jwt-v5 go-golang-org-x-crypto))
     (home-page "https://github.com/SherClockHolmes/webpush-go")
     (synopsis "Web Push API Encryption with VAPID support")
     (description
