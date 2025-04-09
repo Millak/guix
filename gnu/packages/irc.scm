@@ -1224,7 +1224,7 @@ seen, tell, and what.")
 (define-public soju
   (package
     (name "soju")
-    (version "0.8.2")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -1233,7 +1233,7 @@ seen, tell, and what.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dk9w87ksjvbhnchyyl4yhdlhjnc9s9hpzhykfiyh935g75zv66c"))))
+        (base32 "09d4h2rchhccrh6qhgqwbv0s1vsfzkmbv3j9f3ayaf9a9ml97d59"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1266,6 +1266,7 @@ seen, tell, and what.")
      (list go-codeberg-org-emersion-go-scfg
            go-git-sr-ht-emersion-go-sqlite3-fts5
            go-git-sr-ht-sircmpwn-go-bare
+           go-github-com-sherclockholmes-webpush-go
            go-github-com-coder-websocket
            go-github-com-emersion-go-sasl
            go-github-com-lib-pq
@@ -1273,10 +1274,8 @@ seen, tell, and what.")
            go-github-com-msteinert-pam-v2
            go-github-com-pires-go-proxyproto
            go-github-com-prometheus-client-golang
-           go-github-com-sherclockholmes-webpush-go
            go-golang-org-x-crypto
            go-golang-org-x-time
-           go-google-golang-org-protobuf
            go-gopkg-in-irc-v4
            scdoc))
     (home-page "https://soju.im/")
