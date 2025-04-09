@@ -227,10 +227,13 @@ for it."
                   ;; man 7 groff groff_mdoc groff_man
                   ;; look for metadata in macro invocations (lines starting with .)
                   (match (and (string-prefix? "." line) (man-macro-tokenize line))
-                    ((".TH" name (= string->number section) _ ...)
+                    ;; "Title Header" or "Document title"
+                    (((or ".TH" ".Dt") name (= string->number section) _ ...)
                      (loop name section synopsis kind))
+                    ;; "Section Header"
                     ((".SH" (or "NAME" "\"NAME\""))
                      (loop name section (read-synopsis port) kind))
+                    ;; include source
                     ((".so" link)
                      (match (and=> (resolve link)
                                    (cut man-page->entry <> resolve))
