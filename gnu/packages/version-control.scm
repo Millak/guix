@@ -4743,7 +4743,16 @@ developer workflow, and project and release management.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14cia976i2jdzyzw4wk9fhkh6zqgmb09ryf31ys24smmfcdfxyf1"))))
+        (base32 "14cia976i2jdzyzw4wk9fhkh6zqgmb09ryf31ys24smmfcdfxyf1"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; XXX: Module name has been changed upstream, it's already
+            ;; adjusted on master, consider to remove in the next refresh
+            ;; cycle.
+            (substitute* (find-files "." "\\.go$")
+              (("git.sr.ht/~emersion/go-scfg")
+               "codeberg.org/emersion/go-scfg"))))))
     (build-system go-build-system)
     (arguments
      (list
@@ -4764,7 +4773,7 @@ developer workflow, and project and release management.")
     (native-inputs
      (list scdoc))
     (inputs
-     (list go-git-sr-ht-emersion-go-scfg
+     (list go-codeberg-org-emersion-go-scfg
            go-git-sr-ht-emersion-gqlclient
            go-github-com-dustin-go-humanize
            go-github-com-google-shlex

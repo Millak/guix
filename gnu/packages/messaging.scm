@@ -3747,7 +3747,7 @@ a text snippet), using @code{libphonenumber}.")
                       (string-append "src/" unpack-path "/doc/senpai.5")
                       man5)))))))
     (native-inputs
-     (list go-git-sr-ht-emersion-go-scfg
+     (list go-codeberg-org-emersion-go-scfg
            go-github-com-delthas-go-libnp
            go-github-com-delthas-go-localeinfo
            go-github-com-delthas-tcell-v2 ; remove in the next release

@@ -1263,7 +1263,7 @@ seen, tell, and what.")
                 (setenv "PREFIX" #$output)
                 (invoke "make" "install")))))))
     (native-inputs
-     (list go-git-sr-ht-emersion-go-scfg
+     (list go-codeberg-org-emersion-go-scfg
            go-git-sr-ht-emersion-go-sqlite3-fts5
            go-git-sr-ht-sircmpwn-go-bare
            go-github-com-coder-websocket
@@ -1288,4 +1288,3 @@ such as multiple users, numerous @@url{https://ircv3.net/,IRCv3} extensions,
 chat history playback and detached channels.  It is well-suited for both small
 and large deployments.")
     (license license:agpl3)))
-
