@@ -5993,27 +5993,6 @@ also favors portability, and includes support for all POSIX systems.")
      (modify-inputs (package-inputs go-github-com-gdamore-tcell)
        (prepend go-golang-org-x-term go-golang-org-x-sys)))))
 
-(define-public go-github-com-delthas-tcell-v2
-  ;; TODO This variant allows upgrading senpai, and looks to be unnecessary in
-  ;; the next release of senpai
-  (hidden-package
-   (package
-     (inherit go-github-com-gdamore-tcell)
-     (name "go-github-com-delthas-tcell")
-     (version "2.4.1")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/delthas/tcell")
-              (commit "837a7d7")))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "05zr73q38dawl7hr6g7v4pkyv6mqr0zp2l9qsgn7xmf1p9q4bn7j"))))
-     (propagated-inputs
-      (modify-inputs (package-inputs go-github-com-gdamore-tcell)
-        (prepend go-golang-org-x-term go-golang-org-x-sys))))))
-
 (define-public go-github-com-gdey-errors
   (package
     (name "go-github-com-gdey-errors")

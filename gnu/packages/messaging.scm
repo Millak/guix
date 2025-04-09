@@ -3710,7 +3710,7 @@ a text snippet), using @code{libphonenumber}.")
 (define-public senpai
   (package
     (name "senpai")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -3720,24 +3720,25 @@ a text snippet), using @code{libphonenumber}.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l43qfjr0ggpv1hkyyfxp3j6acrbbrl8n6qxlh91gyb2jan03683"))))
+        (base32 "0hzrkzsi7c3nrarrd09b8cs31r6vdnmjcw3clj7mjm4cp7xp4dfw"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "git.sr.ht/~taiite/senpai/cmd/senpai"
-           #:unpack-path "git.sr.ht/~taiite/senpai"
+     (list #:import-path "git.sr.ht/~delthas/senpai/cmd/senpai"
+           #:unpack-path "git.sr.ht/~delthas/senpai"
            #:install-source? #f
            ;; Step away from cmd/senpai to test the whole project.
            #:test-subdirs #~(list "../../...")
            #:phases
-           #~(modify-phases %standard-phases
+           #~(modify-phases
+                 %standard-phases
                (add-after 'build 'build-doc
                  (lambda* (#:key unpack-path #:allow-other-keys)
                    (invoke "make" "doc"
                            "-C" (string-append "src/" unpack-path))))
                (add-after 'install 'install-doc
                  (lambda* (#:key unpack-path #:allow-other-keys)
-                   (let ((man1 (string-append #$output "/share/man/man1"))
-                         (man5 (string-append #$output "/share/man/man5")))
+                   (let ((man1 (string-append #$output "/share/man1"))
+                         (man5 (string-append #$output "/share/man5")))
                      (mkdir-p man1)
                      (mkdir-p man5)
                      (install-file
@@ -3748,13 +3749,17 @@ a text snippet), using @code{libphonenumber}.")
                       man5)))))))
     (native-inputs
      (list go-codeberg-org-emersion-go-scfg
+           go-git-sr-ht-rockorager-vaxis
+           go-github-com-containerd-console
            go-github-com-delthas-go-libnp
            go-github-com-delthas-go-localeinfo
-           go-github-com-delthas-tcell-v2 ; remove in the next release
-           go-github-com-mattn-go-runewidth
+           go-github-com-disintegration-imaging
+           go-github-com-godbus-dbus-v5
+           go-github-com-rivo-uniseg
            go-golang-org-x-net
            go-golang-org-x-time
            go-mvdan-cc-xurls-v2
+           go-github-com-mattn-go-runewidth
            scdoc
            which))
     (home-page "https://sr.ht/~delthas/senpai")
