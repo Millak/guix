@@ -489,6 +489,51 @@ There are many more ways to organize and display your bookmarks.  I recommend
 reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
     (license license:gpl3+)))
 
+(define-public emacs-bqn-mode
+  (package
+    (name "emacs-bqn-mode")
+    ;; upstream releases are tagged by date
+    (version "2024-09-10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/museoa/bqn-mode/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a4whlx8065c15nfyqy8176mwysnc13z4q7mmdfnf6skdnvi2pk6"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No tests found in source
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; `bqn-comint-bring' in `bqn-mode.el' uses the macro
+          ;; `thread-last', defined in `subr-x.el' but not autoloaded.
+          ;; `emacs-build-system' will happily byte-compile `bqn-mode.el'
+          ;; but interactively calling `bqn-comint-bring' will cause an
+          ;; error.  An explicit call to `(require 'subr-x)' remedies the
+          ;; issue until it is fixed upstream.
+          (add-after 'unpack 'require-subr-x
+            (lambda _
+              (emacs-batch-edit-file "bqn-mode.el"
+                                     '(progn (goto-char (point-min))
+                                             (re-search-forward
+                                              "(require 'pulse)")
+                                             (forward-line)
+                                             (insert "(require 'subr-x)\n")
+                                             (basic-save-buffer))))))))
+    (propagated-inputs (list emacs-compat))
+    (synopsis "Emacs major mode for the BQN programming language")
+    (description
+     "This package provides a major mode for editing and executing BQN code.
+It can be used to interactively evaluate BQN code in buffer or can be used to
+launch BQN REPL sessions.  For evaluating BQN code or spawning interpreters an
+executable implementation is required such as @code{cbqn} or @code{dbqn}.")
+    (home-page "https://github.com/museoa/bqn-mode/")
+    (license license:gpl3)))
+
 (define-public emacs-cfrs
   (package
     (name "emacs-cfrs")
