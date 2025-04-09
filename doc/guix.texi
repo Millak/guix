@@ -27267,11 +27267,17 @@ reporting bugs.
 The base directory as a G-expression (@pxref{G-Expressions}) that
 contains the configuration files of the speaker models.
 
+@item @code{group} (default: @code{"speakersafetyd"}) (type: string)
+The group to run the Speaker Safety Daemon as.
+
 @item @code{maximum-gain-reduction} (default: @code{7}) (type: integer)
 Maximum gain reduction before panicking, useful for debugging.
 
 @item @code{speakersafetyd} (default: @code{speakersafetyd}) (type: file-like)
 The Speaker Safety Daemon package to use.
+
+@item @code{user} (default: @code{"speakersafetyd"}) (type: string)
+The user to run the Speaker Safety Daemon as.
 
 @end table
 @end deftp

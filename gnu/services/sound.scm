@@ -29,10 +29,12 @@
   #:use-module (gnu system shadow)
   #:use-module (guix diagnostics)
   #:use-module (guix gexp)
+  #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (guix store)
   #:use-module (guix ui)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pulseaudio)
@@ -288,16 +290,50 @@ the developers of @code{speakersafetyd} might ask for when reporting bugs.")
    (file-like (file-append speakersafetyd "/share/speakersafetyd"))
    "The base directory as a G-expression (@pxref{G-Expressions}) that contains
 the configuration files of the speaker models.")
+  (group
+   (string "speakersafetyd")
+   "The group to run the Speaker Safety Daemon as.")
   (maximum-gain-reduction
    (integer 7)
    "Maximum gain reduction before panicking, useful for debugging.")
   (speakersafetyd
    (file-like speakersafetyd)
-   "The Speaker Safety Daemon package to use."))
+   "The Speaker Safety Daemon package to use.")
+  (user
+   (string "speakersafetyd")
+   "The user to run the Speaker Safety Daemon as."))
+
+(define speakersafetyd-accounts
+  (match-record-lambda <speakersafetyd-configuration>
+      (group user)
+    (list (user-group
+           (name group)
+           (system? #t))
+          (user-account
+           (name user)
+           (group group)
+           (system? #t)
+           (home-directory "/var/empty")
+           (shell (file-append shadow "/sbin/nologin"))
+           (supplementary-groups '("audio"))))))
+
+(define speakersafetyd-activation
+  (match-record-lambda <speakersafetyd-configuration>
+      (blackbox-directory group user)
+    (with-imported-modules (source-module-closure '((gnu build activation)))
+      #~(begin
+          (use-modules (gnu build activation))
+          (let ((user (getpwnam #$user)))
+            (mkdir-p/perms "/run/speakersafetyd" user #o755)
+            (mkdir-p/perms "/var/lib/speakersafetyd" user #o755)
+            ;; Blackbox files contain audio recordings and might be sensitive
+            ;; information
+            (mkdir-p/perms #$blackbox-directory user #o700))))))
 
 (define speakersafetyd-shepherd-service
   (match-record-lambda <speakersafetyd-configuration>
-      (blackbox-directory configuration-directory maximum-gain-reduction speakersafetyd)
+      ( blackbox-directory configuration-directory group
+        maximum-gain-reduction speakersafetyd user)
     (shepherd-service
      (documentation "Run the speaker safety daemon")
      (provision '(speakersafetyd))
@@ -306,7 +342,10 @@ the configuration files of the speaker models.")
                (list #$(file-append speakersafetyd "/bin/speakersafetyd")
                      "--config-path" #$configuration-directory
                      "--blackbox-path" #$blackbox-directory
-                     "--max-reduction" (number->string #$maximum-gain-reduction))))
+                     "--max-reduction" (number->string #$maximum-gain-reduction))
+               #:group #$group
+               #:supplementary-groups '("audio")
+               #:user #$user))
      (stop #~(make-kill-destructor)))))
 
 (define speakersafetyd-service-type
@@ -324,7 +363,11 @@ model.  It can be used to protect the speakers on Apple Silicon devices.")
            (compose list speakersafetyd-configuration-speakersafetyd))
           (service-extension
            profile-service-type
-           (compose list speakersafetyd-configuration-speakersafetyd))))
+           (compose list speakersafetyd-configuration-speakersafetyd))
+          (service-extension account-service-type
+                             speakersafetyd-accounts)
+          (service-extension activation-service-type
+                             speakersafetyd-activation)))
    (default-value (speakersafetyd-configuration))))
 
 ;;; sound.scm ends here
