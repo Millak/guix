@@ -26357,7 +26357,7 @@ files to be expanded upon opening them.")
 (define-public emacs-parsebib
   (package
     (name "emacs-parsebib")
-    (version "6.6")
+    (version "6.7")
     (source
      (origin
        (method git-fetch)
@@ -26366,7 +26366,7 @@ files to be expanded upon opening them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gh8bv6q9041q0b9spw7glj3lfvkj8yl743b4xc1y5mjj8alb466"))))
+        (base32 "180lvlq6xfri1lag85s6478x8cv4iccj6qk2rag9nm19yrhxfh7a"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/joostkremers/parsebib")
     (synopsis "Library for parsing @file{.bib} files")
