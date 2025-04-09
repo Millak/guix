@@ -2200,6 +2200,7 @@ Features include:
     (build-system emacs-build-system)
     (arguments
      (list
+      #:tests? #f    ; no tests
       #:lisp-directory "contrib"
       #:phases
       #~(modify-phases %standard-phases
