@@ -98,6 +98,42 @@
       (srfi srfi-1)
       (ice-9 ftw))))
 
+(define* (emacs-ert-selector excluded-tests #:key run-nativecomp run-expensive run-unstable)
+  "Create an ERT selector that excludes tests."
+  (string-append
+   "(not (or "
+   (if run-nativecomp
+       ""
+       "(tag :nativecomp) ")
+   (if run-expensive
+       ""
+       "(tag :expensive-test) ")
+   (if run-unstable
+       ""
+       "(tag :unstable) ")
+   (string-join
+    (map
+     (lambda (test)
+       (string-append "\\\"" test "\\\""))
+     excluded-tests))
+   "))"))
+
+(define %selector
+  (emacs-ert-selector
+   '("bytecomp--fun-value-as-head"
+     "esh-util-test/path/get-remote"
+     "esh-var-test/path-var/preserve-across-hosts"
+     "ffap-tests--c-path"
+     "find-func-tests--locate-macro-generated-symbols"
+     "grep-tests--rgrep-abbreviate-properties-darwin"
+     "grep-tests--rgrep-abbreviate-properties-gnu-linux"
+     "grep-tests--rgrep-abbreviate-properties-windows-nt-dos-semantics"
+     "grep-tests--rgrep-abbreviate-properties-windows-nt-sh-semantics"
+     "info-xref-test-makeinfo"
+     "man-tests-find-header-file"
+     "tab-bar-tests-quit-restore-window"
+     "tramp-test48-remote-load-path")))
+
 (define-public emacs-minimal
   (package
     (name "emacs-minimal")
@@ -153,9 +189,9 @@
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f                       ; no check target
       #:modules (%emacs-modules build-system)
       #:configure-flags #~(list "--with-gnutls=no" "--disable-build-details")
+      #:make-flags #~(list (string-append "SELECTOR=" #$%selector))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'enable-elogind
@@ -240,6 +276,13 @@
               (substitute* (find-files "." "^Makefile\\.in$")
                 (("/bin/pwd")
                  "pwd"))))
+          (add-after 'unpack 'fix-tests
+            (lambda* (#:key tests? inputs #:allow-other-keys)
+              (when tests?
+                (substitute* "test/src/process-tests.el"
+                  (("/bin//sh") (search-input-file inputs "bin/sh")))
+                (substitute* "test/lisp/eshell/em-script-tests.el"
+                  (("/usr/bin/env") (search-input-file inputs "bin/env"))))))
           (add-after 'install 'install-site-start
             ;; Use 'guix-emacs' in "site-start.el", which is used autoload the
             ;; Elisp packages found in EMACSLOADPATH.
