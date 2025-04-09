@@ -657,47 +657,6 @@ and mmsh protocols.")
     (home-page "https://sourceforge.net/projects/libmms/")
     (license license:lgpl2.1+)))
 
-(define-public libvideogfx
-  (package
-    (name "libvideogfx")
-    (version "1.0.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/farindk/libvideogfx")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "154b0j8cfg879pg08xcbwvbz8z9nrfnyj31i48vxir1psas70ynq"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build-errors
-           (lambda _
-             (substitute* "libvideogfx/graphics/fileio/ffmpeg.cc"
-               (("av_close_input_file\\(")
-                "avformat_close_input(&"))
-             (substitute* "libvideogfx/graphics/fileio/png.cc"
-               (("is != NULL") "is.good()"))
-             #t)))))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (inputs
-     `(("ffmpeg" ,ffmpeg-2.8)
-       ("jpeg" ,libjpeg-turbo)
-       ("png" ,libpng)
-       ("x11" ,libx11)
-       ("xext" ,libxext)))
-    (synopsis "Video processing library")
-    (description "LibVideoGfx is a C++ library for low-level video processing.
-It aims at speeding up the development process for image and video processing
-applications by providing high-level classes for commonly required tasks.")
-    (home-page "https://dirk-farin.net/software/libvideogfx/index.html")
-    (license license:lgpl2.1+)))
-
 (define-public libde265
   (package
     (name "libde265")
