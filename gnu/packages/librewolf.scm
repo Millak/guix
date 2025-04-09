@@ -221,45 +221,45 @@
     (build-system gnu-build-system)
     (arguments
      (list
-      #:configure-flags #~(let ((clang #$(this-package-native-input "clang")))
-                            ;; Configuration.
-                            `("--enable-jemalloc"
-                              "--enable-system-pixman"
-                              "--with-system-ffi"
-                              "--with-system-icu"
-                              "--with-system-jpeg"
-                              "--with-system-libevent"
-                              "--with-system-libvpx"
-                              "--with-system-nspr"
-                              "--with-system-nss"
-                              "--with-system-png"
-                              "--with-system-webp"
-                              "--with-system-zlib"
-                              "--without-wasm-sandboxed-libraries"
+      #:configure-flags
+      #~(let ((clang #$(this-package-native-input "clang")))
+          ;; Configuration.
+          `("--enable-jemalloc"
+            "--enable-system-pixman"
+            "--with-system-ffi"
+            "--with-system-icu"
+            "--with-system-jpeg"
+            "--with-system-libevent"
+            "--with-system-libvpx"
+            "--with-system-nspr"
+            "--with-system-nss"
+            "--with-system-png"
+            "--with-system-webp"
+            "--with-system-zlib"
+            "--without-wasm-sandboxed-libraries"
 
-                              ,(string-append "--with-clang-path=" clang
-                                              "/bin/clang")
-                              ,(string-append "--with-libclang-path=" clang
-                                              "/lib")
+            ,(string-append "--with-clang-path=" clang
+                            "/bin/clang")
+            ,(string-append "--with-libclang-path=" clang
+                            "/lib")
 
-                              ;; Distribution
-                              "--with-distribution-id=org.guix"
+            ;; Distribution
+            "--with-distribution-id=org.guix"
 
-                              ;; Features
-                              "--enable-pulseaudio"
+            ;; Features
+            "--enable-pulseaudio"
 
-                              ;; switch only available on x86, whereas EME
-                              ;; is not supported on other targets
-                              ,@(if #$(target-x86?) '("--disable-eme") '())
+            ;; switch only available on x86, whereas EME is not supported on
+            ;; other targets
+            ,@(if #$(target-x86?) '("--disable-eme") '())
 
-                              ;; Build details
-                              "--disable-elf-hack"
-                              ;; Don't attempt to download toolchains.
-                              ;; Upstream enables this, adding the flag
-                              ;; ensures we don't use network in the build
-                              ;; environment.
-                              "--disable-bootstrap"
-                              "--enable-strip"))
+            ;; Build details
+            "--disable-elf-hack"
+            ;; Don't attempt to download toolchains.  Upstream enables this,
+            ;; adding the flag ensures we don't use network in the build
+            ;; environment.
+            "--disable-bootstrap"
+            "--enable-strip"))
       #:imported-modules %cargo-utils-modules
       #:modules `((ice-9 regex)
                   (ice-9 string-fun)
