@@ -7056,6 +7056,7 @@ type, for example: packages, buffers, files, etc.")
         #:imported-modules `(,@%default-gnu-imported-modules
                              (guix build emacs-build-system)
                              (guix build emacs-utils))
+        #:tests? #f    ; no tests
         #:configure-flags
         #~(list (string-append "--with-lispdir="
                                (emacs:elpa-directory #$output)))
