@@ -11677,7 +11677,7 @@ accessibility infrastructure.")
                              (assoc-ref inputs "xkbcomp") "/bin/xkbcomp"))
                    (pgrep (string-append
                            (assoc-ref inputs "procps") "/bin/pgrep")))
-               (substitute* "src/orca/orca.py"
+               (substitute* "src/orca/orca_modifier_manager.py"
                  (("'xkbcomp'") (format #f "'~a'" xkbcomp)))
                (substitute* "src/orca/debug.py"
                  (("'pgrep %s'")
