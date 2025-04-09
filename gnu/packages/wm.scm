@@ -2053,26 +2053,9 @@ modules for building a Wayland compositor.")
        (sha256
         (base32 "0niigjpy8xxrnw3v9b3bsksw2q3yy3qsa2xx0aazwpycw5zrff83"))))))
 
-(define-public wlroots-0.16
-  (package
-    (inherit wlroots-0.17)
-    (name "wlroots-0.16")
-    (version "0.16.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.freedesktop.org/wlroots/wlroots")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1m12nv6avgnz626h3giqp6gcx44w1wq6z0jy780mx8z255ic7q15"))))
-    (propagated-inputs (modify-inputs (package-propagated-inputs wlroots-0.17)
-                         (delete libdisplay-info)))))
-
 (define-public wlroots-0.15
   (package
-    (inherit wlroots-0.16)
+    (inherit wlroots)
     (name "wlroots-0.15")
     (version "0.15.1")
     (source
@@ -2083,7 +2066,10 @@ modules for building a Wayland compositor.")
              (commit version)))
        (file-name (git-file-name "wlroots" version))
        (sha256
-        (base32 "00s73nhi3sc48l426jdlqwpclg41kx1hv0yk4yxhbzw19gqpfm1h"))))))
+        (base32 "00s73nhi3sc48l426jdlqwpclg41kx1hv0yk4yxhbzw19gqpfm1h"))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs wlroots)
+                         (delete libdisplay-info)))))
+
 
 (define-public wl-mirror
   (package
