@@ -523,7 +523,7 @@ Go library.")
 (define-public go-git-sr-ht-rockorager-vaxis
   (package
     (name "go-git-sr-ht-rockorager-vaxis")
-    (version "0.9.2")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -532,7 +532,7 @@ Go library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pmi4bigqgrfdlk9d6ia3jxgcr4iadiyynf6bny9fdc3yyppcxic"))))
+        (base32 "0lv2ry55a19vym5km6d1rpyhafx2kh0ikcnishkjhyg93i884k52"))))
     (build-system go-build-system)
     (arguments
      (list
