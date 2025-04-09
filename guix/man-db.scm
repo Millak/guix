@@ -161,16 +161,51 @@
       (line
        (loop (cons line lines))))))
 
+(define (man-macro-tokenize input)
+  "Split INPUT string, a man macro invocation, into a list containing the macro's
+name followed by its arguments."
+  (let loop ((pos 0)
+             (tokens '())
+             (characters '())
+             (in-string? #f))
+    (if (>= pos (string-length input))
+        ;; End of input
+        (reverse (if (null? characters)
+                     tokens
+                     (cons (list->string (reverse characters)) tokens)))
+        (let ((c (string-ref input pos)))
+          (cond
+           ;; Inside a string
+           (in-string?
+            (if (char=? c #\")
+                (if (and (< (+ pos 1) (string-length input))
+                         (char=? (string-ref input (+ pos 1)) #\"))
+                    ;; Double quote inside string
+                    (loop (+ pos 2) tokens (cons #\" characters) #t)
+                    ;; End of string
+                    (loop (+ pos 1) (cons (list->string (reverse characters)) tokens) '() #f))
+                ;; Regular character in string
+                (loop (+ pos 1) tokens (cons c characters) #t)))
+
+           ;; Whitespace outside string
+           ((char-whitespace? c)
+            (if (null? characters)
+                (loop (+ pos 1) tokens '() #f)
+                (loop (+ pos 1) (cons (list->string (reverse characters)) tokens) '() #f)))
+
+           ;; Start of string
+           ((char=? c #\")
+            (if (null? characters)
+                (loop (+ pos 1) tokens '() #t)
+                (loop pos (cons (list->string (reverse characters)) tokens) '() #f)))
+
+           ;; Symbol character
+           (else
+            (loop (+ pos 1) tokens (cons c characters) #f)))))))
+
 (define* (man-page->entry file #:optional (resolve identity))
   "Parse FILE, a gzip or zstd compressed man page, and return a <mandb-entry>
 for it."
-  (define (string->number* str)
-    (if (and (string-prefix? "\"" str)
-             (> (string-length str) 1)
-             (string-suffix? "\"" str))
-        (string->number (string-drop (string-drop-right str 1) 1))
-        (string->number str)))
-
   (define call-with-input-port*
     (cond
      ((gzip-compressed? file) call-with-gzip-input-port)
@@ -189,8 +224,10 @@ for it."
               (if (eof-object? line)
                   (mandb-entry file name (or section 0) (or synopsis "")
                                kind)
-                  (match (string-tokenize line)
-                    ((".TH" name (= string->number* section) _ ...)
+                  ;; man 7 groff groff_mdoc groff_man
+                  ;; look for metadata in macro invocations (lines starting with .)
+                  (match (and (string-prefix? "." line) (man-macro-tokenize line))
+                    ((".TH" name (= string->number section) _ ...)
                      (loop name section synopsis kind))
                     ((".SH" (or "NAME" "\"NAME\""))
                      (loop name section (read-synopsis port) kind))
