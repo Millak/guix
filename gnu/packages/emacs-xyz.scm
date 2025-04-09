@@ -2200,7 +2200,8 @@ support for Git-SVN.")
         (base32 "0znp6gx6vpcsybg774ab06mdgxb7sfk3gki1yp2qhkanav13i6q1"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #f    ; no tests
+       #:phases
        (modify-phases %standard-phases
          (add-before 'install 'make-info
            (lambda _
