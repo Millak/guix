@@ -42850,21 +42850,32 @@ projects.")
 (define-public emacs-vundo
   (package
     (name "emacs-vundo")
-    (version "2.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://elpa.gnu.org/packages/vundo-"
-                                  version ".tar"))
-              (sha256
-               (base32
-                "165y277fi0vp9301hy3pqgfnf160k29n8vri0zyq8a3vz3f8lqrl"))))
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/casouri/vundo/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "034ynwfk374i27vvfpr13n3qw02ihm0189m8frxfqdbd3hismjkb"))))
     (build-system emacs-build-system)
-    (home-page "https://github.com/casouri/vundo")
+    (arguments
+     (list
+      #:tests? #true
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-l" "vundo.el"
+                             "-l" "test/vundo-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
+    (home-page "https://github.com/casouri/vundo/")
     (synopsis "Visualize the undo tree")
     (description
-     "Vundo (visual undo) displays the undo history as a tree and lets you move in the
-tree to go back to previous buffer states.  To use vundo, type @kbd{M-x vundo RET} in
-the buffer you want to undo.  An undo tree buffer should pop up.")
+     "Vundo (visual undo) displays the undo history as a tree and lets you
+move in the tree to go back to previous buffer states.  To use vundo, type
+@kbd{M-x vundo RET} in the buffer you want to undo.  An undo tree buffer
+should pop up.")
     (license license:gpl3+)))
 
 (define-public emacs-hare-mode
