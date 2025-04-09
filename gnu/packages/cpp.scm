@@ -947,7 +947,7 @@ language used in Hyprland.")
 (define-public hyprutils
   (package
     (name "hyprutils")
-    (version "0.5.2")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -956,7 +956,7 @@ language used in Hyprland.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pj3xvsfnl7d91kwijj5rw7zs7svdh44dijn8npf1357jkizsp8i"))))
+                "11lvyd1inannmc6mdb8f4nx2h68ahwc9fi566jzh1wlvdh8h18pz"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -969,7 +969,7 @@ language used in Hyprland.")
                  (string-append
                   "set(PKG_CONFIG_EXECUTABLE " #$(pkg-config-for-target) ")\n"
                   all))))))))
-    (native-inputs (list gcc-13 pkg-config))
+    (native-inputs (list gcc-14 pkg-config))
     (inputs (list pixman))
     (home-page "https://github.com/hyprwm/hyprutils")
     (synopsis "C++ library for utilities used across Hyprland ecosystem")
