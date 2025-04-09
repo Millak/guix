@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2017, 2025 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018 ng0 <gillmann@infotropique.org>
 ;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -625,7 +625,12 @@
                                                       "/default" size ".png")
                                        (string-append dest
                                                       "/librewolf.png"))))
-                          '("16" "32" "48" "64" "128"))))))
+                          '("16" "32" "48" "64" "128")))))
+          ;; Make sure ICECAT_SYSTEM_DIR is set to avoid issues with Native
+          ;; Messaging and non-guix add-ons.
+          (add-after 'install-icons 'mkdir-lib-icecat
+            (lambda _
+              (mkdir-p (string-append #$output "/lib/icecat")))))
 
       ;; Test will significantly increase build time but with little rewards.
       #:tests? #f
