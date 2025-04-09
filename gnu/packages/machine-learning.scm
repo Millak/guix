@@ -136,6 +136,7 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
@@ -738,17 +739,16 @@ independently to be able to run a LLaMA model.")
 (define-public whisper-cpp
   (package
     (name "whisper-cpp")
-    (version "1.7.3")
+    (version "1.7.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/ggerganov/whisper.cpp")
+                    (url "https://github.com/ggml-org/whisper.cpp")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rrkgrx8akw91b77kl36i03i39a79r0p69glhhidm28qfw02icjx"))
-              (patches (search-patches "whisper-cpp-enable-tests.patch"))))
+                "0fs15rizz4psd3flfjpdivzvc9w19i3706flisn136ax0k8r7w5n"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -788,7 +788,7 @@ independently to be able to run a LLaMA model.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list openblas sdl2))
+     (list openblas sdl2 git))
     (synopsis "OpenAI's Whisper model in C/C++")
     (description
      "This package is a high-performance inference of OpenAI's
