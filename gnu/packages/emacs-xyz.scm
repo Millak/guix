@@ -12548,7 +12548,7 @@ sgml/html integration, and indentation (working with sgml).")
 (define-public emacs-jinx
   (package
     (name "emacs-jinx")
-    (version "1.12")
+    (version "2.1")
     (source
      (origin
        (method git-fetch)
@@ -12558,10 +12558,11 @@ sgml/html integration, and indentation (working with sgml).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cxnxwbxfq29793r6f8pvvw2mb9mj7pa7g7z5k46abplkq65ds3g"))))
+        (base32 "1kfxx9657zn4sy463gxwsqqh4bcdxxaf3x7jkgasl4v18mrvid1i"))))
     (build-system emacs-build-system)
     (arguments
      (list
+      #:tests? #f ; no tests
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'expand-load-path 'build-jinx-mod
@@ -12579,7 +12580,6 @@ sgml/html integration, and indentation (working with sgml).")
           (add-after 'build-jinx-mod 'patch-path-to-jinx-mod
             (lambda _
               (let ((file "jinx.el"))
-                (make-file-writable file)
                 (emacs-substitute-sexps file
                   ("\"Compile and load dynamic module.\""
                    `(module-load
@@ -12588,14 +12588,10 @@ sgml/html integration, and indentation (working with sgml).")
           (add-after 'install 'install-jinx-mod
             (lambda _
               (install-file "jinx-mod.so"
-                            (string-append #$output "/lib/emacs"))))
-          (add-after 'install 'install-info
-            (lambda _
-              (install-file "jinx.info"
-                            (string-append #$output "/share/info")))))))
+                            (string-append #$output "/lib/emacs")))))))
     (inputs (list enchant))
     (propagated-inputs (list emacs-compat))
-    (native-inputs (list emacs-compat enchant pkg-config texinfo))
+    (native-inputs (list pkg-config texinfo))
     (home-page "https://github.com/minad/jinx")
     (synopsis "Emacs spell checker based on Enchant library")
     (description "Jinx is a just-in-time spell-checker for Emacs
