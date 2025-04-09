@@ -1922,57 +1922,6 @@ audio/video codec library.")
     (inputs (modify-inputs (package-inputs ffmpeg-4)
               (delete "dav1d" "libaom" "rav1e" "srt")))))
 
-(define-public ffmpeg-2.8
-  (package
-    (inherit ffmpeg-3.4)
-    (version "2.8.22")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "0c8m4hhv2k5fybha908wzrpnf3wqkq52hayl658jq4bah0igdfqz"))
-              (patches (search-patches "ffmpeg-4-binutils-2.41.patch"))))
-    (arguments
-     `(#:tests? #f               ; XXX: Enable them later, if required
-       #:configure-flags
-       (list
-        "--disable-static"
-        "--enable-shared"
-        "--extra-cflags=-DFF_API_OLD_ENCODE_VIDEO -DFF_API_OLD_ENCODE_AUDIO")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs configure-flags #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "configure"
-                 (("#! /bin/sh") (string-append "#!" (which "sh"))))
-                ;; configure does not work followed by "SHELL=..." and
-                ;; "CONFIG_SHELL=..."; set environment variables instead.
-               (setenv "SHELL" (which "bash"))
-               (setenv "CONFIG_SHELL" (which "bash"))
-               (apply invoke
-                      "./configure"
-                      (string-append "--prefix=" out)
-                      ;; Add $libdir to the RUNPATH of all the binaries.
-                      (string-append "--extra-ldflags=-Wl,-rpath="
-                                     out "/lib")
-                      configure-flags))))
-         (add-before
-             'check 'set-ld-library-path
-           (lambda _
-             ;; Allow $(top_builddir)/ffmpeg to find its dependencies when
-             ;; running tests.
-             (let* ((dso  (find-files "." "\\.so$"))
-                    (path (string-join (map dirname dso) ":")))
-               (format #t "setting LD_LIBRARY_PATH to ~s~%" path)
-               (setenv "LD_LIBRARY_PATH" path)))))))
-    ;; FFmpeg 2.8 does support libwebp, but we don't enable it while configuring
-    ;; the build, and we'd rather not add features to this old package anymore.
-    (inputs (modify-inputs (package-inputs ffmpeg-3.4)
-              (delete "libwebp")))))
-
 (define-public ffmpeg-for-stepmania
   (hidden-package
    (package
