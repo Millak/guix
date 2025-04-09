@@ -21322,6 +21322,47 @@ on marker set compatibility, similarity in genomic characteristics, and
 proximity within a reference genome.")
     (license license:gpl3+)))
 
+(define-public chromap
+  (package
+    (name "chromap")
+    (version "0.2.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/haowenz/chromap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "099y3kac6npiqyx5prc9ggigw6248j7kchjznqvd9hxkq24rrsqs"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "chromap" (string-append #$output "/bin")))))))
+    (inputs (list zlib))
+    (home-page "https://github.com/haowenz/chromap")
+    (synopsis "Fast alignment and preprocessing of chromatin profiles")
+    (description "Chromap is a fast method for aligning and preprocessing high
+throughput chromatin profiles.  Typical use cases include:
+
+@itemize
+@item trimming sequencing adapters, mapping bulk ATAC-seq or ChIP-seq genomic
+  reads to the human genome and removing duplicates;
+@item trimming sequencing adapters, mapping single cell ATAC-seq genomic reads
+  to the human genome, correcting barcodes, removing duplicates and performing
+  Tn5 shift;
+@item split alignment of Hi-C reads against a reference genome.
+@end itemize")
+    (supported-systems '("x86_64-linux")) ;requires CPU with SSE4.1
+    (license license:expat)))
+
 (define-public umi-tools
   (package
     (name "umi-tools")
