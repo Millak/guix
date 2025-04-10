@@ -15062,19 +15062,6 @@ interfaces in an easy and portable manner.")
 of the structure, dynamics, and functions of complex networks.")
     (license license:bsd-3)))
 
-(define-public python-networkx-next
-  (package
-    (inherit python-networkx)
-    (name "python-networkx")
-    (version "3.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "networkx" version))
-       (sha256
-        (base32 "1qaks3c3h5qlw25z949q3plw8iwgm9h152kwnam64lwc89lkcz1h"))))
-    (build-system pyproject-build-system)))
-
 (define-public python-datrie
   (package
     (name "python-datrie")
