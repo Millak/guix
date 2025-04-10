@@ -740,7 +740,7 @@ file system.")
     (build-system pyproject-build-system)
     (inputs (list python-requests
                   python-argcomplete
-                  python-urllib3-next
+                  python-urllib3-1.26
                   gnupg))
     (native-inputs (list python-setuptools python-wheel))
     (arguments

@@ -5126,7 +5126,22 @@ supports url redirection and retries, and also gzip and deflate decoding.")
 
 (define-public python-urllib3-next
   (package
-    (name "python-urllib3")
+    (inherit python-urllib3)
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "urllib3" version))
+       (sha256
+        (base32
+         "0k90y2bbmw87b9wx7lf0ps0wjpjbnk3h61byrrwid1ph7jdl9igq"))))
+    (native-inputs
+     (list python-hatchling
+           python-hatch-vcs))))
+
+(define-public python-urllib3-1.26
+  (package
+    (inherit python-urllib3)
     (version "1.26.17")
     (source
       (origin
@@ -5135,29 +5150,9 @@ supports url redirection and retries, and also gzip and deflate decoding.")
         (sha256
          (base32
           "08fzhaf77kbjj5abpl9xag6fpfxkdp1k5s7sqd3ayacdq91a5mi4"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f))
-    (propagated-inputs
-     (append
-       ;; These 5 inputs are used to build urrlib3[secure]
-       (list python-certifi)
-       (if (member (%current-system)
-                   (package-transitive-supported-systems python-cryptography))
-         (list python-cryptography)
-         '())
-       (list python-idna)
-       (if (member (%current-system)
-                   (package-transitive-supported-systems python-pyopenssl))
-         (list python-pyopenssl)
-         '())
-       (list python-pysocks)))
-    (home-page "https://urllib3.readthedocs.io/")
-    (synopsis "HTTP library with thread-safe connection pooling")
-    (description
-     "Urllib3 supports features left out of urllib and urllib2 libraries.  It
-can reuse the same socket connection for multiple requests, it can POST files,
-supports url redirection and retries, and also gzip and deflate decoding.")
-    (license license:expat)))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))))
 
 (define-public python-awscrt
   (package
@@ -6330,7 +6325,7 @@ CSS tidy.  Also supports URL rewriting in CSS files.")
            python-wheel))
     (propagated-inputs
      (list python-certifi
-           python-urllib3-next))
+           python-urllib3-1.26))
     (home-page "https://github.com/elastic/elasticsearch-py")
     (synopsis "Low-level client for Elasticsearch")
     (description "Official low-level client for Elasticsearch.  Its goal is to
@@ -6858,7 +6853,7 @@ for URL parsing and changing.")
     (propagated-inputs (list python-arrow python-pytz python-requests))
     (native-inputs (list python-requests-mock
                          python-setuptools
-                         python-urllib3-next
+                         python-urllib3-1.26
                          python-wheel))
     (home-page "https://github.com/ucfopen/canvasapi")
     (synopsis "API wrapper for the Canvas LMS")

@@ -3221,7 +3221,7 @@ YouTube.com and many more sites.")
                   python-mutagen
                   python-pycryptodomex
                   python-requests-next ; TODO Remove this special package
-                  python-urllib3-next  ; TODO Remove this one too
+                  python-urllib3-1.26  ; TODO Remove this one too
                   python-websockets))
     (native-inputs
      (append

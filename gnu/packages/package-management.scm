@@ -1463,7 +1463,7 @@ tools_locations = {
            python-requests
            python-six
            python-tqdm
-           python-urllib3-next))
+           python-urllib3-1.26))
     (inputs
      (list coreutils))                  ;for printenv
     (native-inputs
