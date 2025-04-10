@@ -5730,6 +5730,39 @@ for the basic TCP/IP protocols.")
 concurrent HTTP client library for python using @code{gevent}.")
     (license license:expat)))
 
+(define-public python-gevent-websocket
+  (package
+    (name "python-gevent-websocket")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gevent-websocket" version))
+       (sha256
+        (base32 "1c2zv2rahp1gil3cj66hfsqgy0n35hz9fny3ywhr2319d0lz7bky"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in PyPI or git
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-gevent))
+    (home-page "https://gitlab.com/noppo/gevent-websocket")
+    (synopsis "Websocket handler for the gevent pywsgi server")
+    (description
+     "Websocket handler for the gevent pywsgi server, a Python network
+library.
+
+Features include:
+@itemize
+@item integration on both socket level or using an abstract interface
+@item RPC and PubSub framework using @acronym{WebSocket Application Messaging
+Protocol, WAMP}
+@item easily extendible using a simple WebSocket protocol plugin API
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public python-requests-oauthlib
   (package
     (name "python-requests-oauthlib")
