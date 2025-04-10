@@ -31296,15 +31296,18 @@ Features:
 (define-public python-precis-i18n
   (package
     (name "python-precis-i18n")
-    (version "1.0.3")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "precis_i18n" version))
        (sha256
-        (base32
-         "1qfb78zpx565vqkg0xhx75pna9sc35m370vpcz82982c8ix3ypyz"))))
-    (build-system python-build-system)
+        (base32 "0cdv2vbn0kwfq0pxj4l52s2xiaqablb2cgk0nph6r9cyqayf77rn"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/byllyfish/precis_i18n")
     (synopsis "Implementation of the PRECIS framework")
     (description
