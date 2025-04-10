@@ -75,7 +75,9 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages toolkits)
   #:use-module (gnu packages version-control))
 
@@ -269,49 +271,68 @@ For synthesis, the compiler generates netlists in the desired format.")
     (synopsis "FPGA Verilog RTL synthesizer (Clang variant)")))
 
 (define-public icestorm
-  (let ((commit "2bc541743ada3542c6da36a50e66303b9cbd2059")
-        (revision "4"))
-   (package
-    (name "icestorm")
-    (version (git-version "0.0" revision commit))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/cliffordwolf/icestorm")
-                     (commit commit)))
-              (file-name (git-file-name name version))
-              (sha256
-                (base32
-                 "0d0ibdq3rzmjcbv97h4b9wgq8ikvgwlfw60spi2w81mis317lis8"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f ; no unit tests that don't need an FPGA exist.
-       #:make-flags (list "CC=gcc" "CXX=g++"
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-        (modify-phases %standard-phases
-          (add-after 'unpack 'remove-usr-local
-            (lambda _
-              (substitute* "iceprog/Makefile"
-                (("-I/usr/local/include") "")
-                (("-L/usr/local/lib") ""))
-              #t))
-          (add-after 'remove-usr-local 'fix-usr-local
-            (lambda* (#:key outputs #:allow-other-keys)
-              (substitute* "icebox/icebox_vlog.py"
-                (("/usr/local/share") (string-append (assoc-ref outputs "out") "/share")))
-              #t))
-          (delete 'configure))))
-    (inputs
-     (list libftdi))
-    (native-inputs
-     `(("python-3" ,python)
-       ("pkg-config" ,pkg-config)))
-    (home-page "https://www.clifford.at/icestorm/")
-    (synopsis "Project IceStorm - Lattice iCE40 FPGAs bitstream tools")
-    (description "Project IceStorm - Lattice iCE40 FPGAs Bitstream Tools.
-Includes the actual FTDI connector.")
-    (license license:isc))))
+  (let ((commit "3cdcf4b009bb8681ab7e2e09d65043f04334b60e")
+        (revision "5"))
+    (package
+      (name "icestorm")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/YosysHQ/icestorm/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ygp6cj7grlnyji572kx215p2mw4crllskif9g795f390bp38g68"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f               ;avoid a cyclic dependency with nextpr-ice40
+        #:make-flags
+        #~(list (string-append "CC="
+                               #$(cc-for-target))
+                (string-append "CXX="
+                               #$(cxx-for-target))
+                (string-append "PREFIX="
+                               #$output)
+                "ICEPROG=1")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-usr-local
+              (lambda* (#:key outputs #:allow-other-keys)
+                (substitute* "icepack/Makefile"
+                  (("/usr/local")
+                   #$output))
+                (substitute* "icebox/Makefile"
+                  (("/usr/local")
+                   #$output))
+                (substitute* "icebox/icebox_vlog.py"
+                  (("/usr/local")
+                   #$output))))
+            (add-after 'build 'make-info
+              (lambda* (#:key outputs #:allow-other-keys)
+                (with-directory-excursion "docs"
+                  (invoke "make" "info")
+                  (install-file "build/texinfo/projecticestorm.info"
+                                (string-append #$output "/share/info"))
+                  (copy-recursively "build/texinfo/projecticestorm-figures"
+                                    (string-append #$output
+                                     "/share/info/projecticestorm-figures")))))
+            (delete 'configure))))
+      (inputs (list libftdi))
+      (native-inputs (list pkg-config
+                           python
+                           python-sphinx
+                           python-sphinx-rtd-theme
+                           texinfo))
+      (home-page "https://prjicestorm.readthedocs.io/")
+      (synopsis "Bitstream tools for Lattice iCE40 FPGAs")
+      (description
+       "Project IceStorm aims at documenting the bitstream format of
+Lattice iCE40 FPGAs and providing simple tools for analyzing and creating bitstream
+files.")
+      (license license:isc))))
 
 (define-public nextpnr-ice40
   (let* ((version "0.7")
