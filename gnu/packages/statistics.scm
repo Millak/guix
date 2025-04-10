@@ -2957,7 +2957,8 @@ Java package that provides routines for various statistical distributions.")
                "$(MAKE) -C etc install"))))))
     (build-system gnu-build-system)
     (arguments
-     (let ((base-directory "/share/emacs/site-lisp"))
+     (let ((base-directory (string-append "/share/emacs/site-lisp/"
+                                          "ess-" version)))
        (list
         #:modules '((guix build gnu-build-system)
                     (guix build utils)
