@@ -29,6 +29,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix svn-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -203,28 +204,36 @@ as required.")
     (license gpl2+)))
 
 (define-public libfilezilla
-  (package
-    (name "libfilezilla")
-    (version "0.39.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://download.filezilla-project.org/"
-                           "libfilezilla/libfilezilla-" version ".tar.bz2"))
-       (sha256
-        (base32 "1x2rixppmvdpn9m01hmh3yqzpczxbkw301hx27n5bfq0dbnx9aar"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       (list "--disable-static")))
-    (native-inputs
-     (list cppunit gettext-minimal libxcrypt pkg-config))
-    (inputs
-     (list gnutls nettle))
-    (home-page "https://lib.filezilla-project.org")
-    (synopsis "Cross-platform C++ library used by Filezilla client")
-    (description
-     "This package provides some basic functionality to build high-performing,
+  (let ((revision 10763))
+    (package
+      (name "libfilezilla")
+      (version "0.39.2")
+      (source
+       (origin
+         (method svn-fetch)
+         (uri (svn-reference
+               (url "https://svn.filezilla-project.org/svn/libfilezilla/trunk")
+               (revision revision)))
+         (file-name (string-append name "-" version "-" (number->string revision)))
+         (sha256
+          (base32 "0x7lx8474xcqgp181kg8bw5c10nxd19hw8lhxa5fkry50mfqyzmj"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:configure-flags (list "--disable-static")))
+      (native-inputs
+       (list cppunit
+             gettext-minimal
+             libxcrypt
+             pkg-config
+             autoconf
+             automake
+             libtool))
+      (inputs
+       (list gnutls nettle))
+      (home-page "https://lib.filezilla-project.org")
+      (synopsis "Cross-platform C++ library used by Filezilla client")
+      (description
+       "This package provides some basic functionality to build high-performing,
 platform-independent programs.
 
 Some of the highlights include:
@@ -240,7 +249,7 @@ which simplifies dealing with timestamps originating from different sources.
 Simple process handling for spawning child processes with redirected input and
 output.
 @end itemize\n")
-    (license gpl2+)))
+      (license gpl2+))))
 
 (define-public filezilla
   (package
