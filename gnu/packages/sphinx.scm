@@ -1234,13 +1234,6 @@ enabled web server.")
 documenting acceptable argument types and return value types of functions.")
     (license license:expat)))
 
-(define-public python-sphinx-autodoc-typehints-5
-  (package/inherit python-sphinx-autodoc-typehints
-    (propagated-inputs
-     (modify-inputs
-         (package-propagated-inputs python-sphinx-autodoc-typehints)
-       (replace "python-sphinx" python-sphinx-5)))))
-
 (define-public python-sphinx-pytest
   (package
     (name "python-sphinx-pytest")
