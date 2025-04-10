@@ -7476,6 +7476,58 @@ and @code{astropy}.")
 to the SolarSoft data analysis environment.")
     (license license:bsd-2)))
 
+(define-public python-sunraster
+  (package
+    (name "python-sunraster")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sunraster" version))
+       (sha256
+        (base32 "1kp0bhih4fcx4g60li4s574m493f3z4dq2r30nifq0m7f50w0r87"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=docs/data_types/raster.rst"
+              "--ignore=docs/data_types/spectrogram.rst"
+              "-k" (string-join
+                    ;; XXX: Reported upstream:
+                    ;; <https://github.com/sunpy/sunraster/issues/281>
+                    (list "not test_apply_exposure_time_correction"
+                          "test_ndcube_components_after_slicing"
+                          "test_read_spice_l2_fits_multiple_files_dumbbells"
+                          "test_read_spice_l2_fits_multiple_rasters_multiple_windows"
+                          "test_read_spice_l2_fits_multiple_rasters_single_window"
+                          "test_read_spice_l2_fits_multiple_sns_multiple_windows"
+                          "test_read_spice_l2_fits_single_file_dumbbells")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; PermissionError: [Errno 13] Permission denied:
+              ;; '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-extension-helpers
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm
+           python-sunpy
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-ndcube
+           python-numpy))
+    (home-page "https://docs.sunpy.org/projects/sunraster/en/stable/")
+    (synopsis "Solar mission spectral data tool")
+    (description
+     "sunraster is an Python library that provides the tools to read in and
+analyze spectrogram data.")
+    (license license:bsd-2)))
+
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
