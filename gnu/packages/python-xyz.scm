@@ -25927,29 +25927,29 @@ creating a tag.")
 (define-public python-qrcode
   (package
     (name "python-qrcode")
-    (version "7.3.1")
+    (version "8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qrcode" version))
        (sha256
-        (base32 "0y35jlwfvkgn9341lzshyaqgpp61vysjh107vhdd96ya83r6ynip"))))
-    (build-system python-build-system)
-    (arguments
-     ;; FIXME: Tests require packaging 'pymaging'.
-     '(#:tests? #f))
+        (base32 "0iz3pj67b90k2racwzbf9yml6rjs8nnrpvhns6b45zppa2qy4p02"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
     (propagated-inputs
-     (list python-lxml ; for SVG output
-           python-pillow)) ; for PNG output
+     (list python-pillow
+           python-pypng))
     (home-page "https://github.com/lincolnloop/python-qrcode")
     (synopsis "QR Code image generator")
-    (description "This package provides a pure Python QR Code generator
-     module.  It uses the Python Imaging Library (PIL) to allow for the generation
-     of QR Codes.
+    (description
+     "This package provides a pure Python QR Code generator module.  It uses
+the Python Imaging Library (PIL) to allow for the generation of QR Codes.
 
-     In addition this package provides a command line tool to generate QR codes and
-     either write these QR codes to a file or do the output as ascii art at the
-     console.")
+In addition this package provides a command line tool to generate QR codes and
+either write these QR codes to a file or do the output as ascii art at the
+console.")
     (license license:bsd-3)))
 
 (define-public python-rst2ansi
