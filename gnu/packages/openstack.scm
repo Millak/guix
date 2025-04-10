@@ -55,23 +55,22 @@
 (define-public python-bandit
   (package
     (name "python-bandit")
-    (version "1.7.4")
+    (version "1.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bandit" version))
        (sha256
-        (base32
-         "1lkvf5ffdqa9504mm5fd9vvq0q5wdyqbkm32i4rswys1fg2shqrd"))))
-    (build-system python-build-system)
+        (base32 "0fhr0rsvh44ix31dwxjw8aj0wklj95368djwk0i98c2dcpmpp17m"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; The tests are disabled to avoid a circular dependency with
      ;; python-stestr.
      `(#:tests? #f))
-    (propagated-inputs
-     (list python-gitpython python-pyyaml python-six python-stevedore))
-    (native-inputs
-     (list python-pbr))
+    (propagated-inputs (list python-pyyaml python-rich python-stevedore))
+    (native-inputs (list python-beautifulsoup4
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/PyCQA/bandit")
     (synopsis "Security oriented static analyser for python code")
     (description "Bandit is a tool designed to find common security issues in
