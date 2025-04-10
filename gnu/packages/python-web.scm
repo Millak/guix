@@ -9831,38 +9831,6 @@ Only the RGB colorspace is supported.  Conversion to/from the HSL colorspace
 can be handled by the @code{colorsys} module in the Python standard library.")
     (license license:bsd-3)))
 
-(define-public python-webcolors-24
-  (package
-    (inherit python-webcolors)
-    (name "python-webcolors")
-    (version "24.11.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "webcolors" version))
-       (sha256
-        (base32 "1xl0vn4xa03vjwx6fj19q9kgb94g65gvdf3p0ivsy0i2ydldgczc"))))
-    (build-system pyproject-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build-error
-           (lambda _
-             ;; pdm wants optional-dependencies instead of dependency-groups.
-             ;; See <https://pdm-project.org/en/latest/usage/dependency/>.
-             (substitute* "pyproject.toml"
-              (("\\[dependency-groups\\]")
-               "[project.optional-dependencies]"))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ;; Our python-nox version is incompatible,
-               ;; so use pytest instead.
-               (invoke "pytest")))))))
-    (native-inputs (list python-pdm-backend python-pytest))
-    (license license:bsd-3)))
-
 (define-public python-woob
   (package
     (name "python-woob")

@@ -6841,7 +6841,7 @@ and convert DDL to BigQuery JSON schema.")
            python-referencing-bootstrap
            python-rpds-py
            python-uri-template
-           python-webcolors-24))
+           python-webcolors))
     (home-page "https://github.com/Julian/jsonschema")
     (synopsis "Implementation of JSON Schema for Python")
     (description
