@@ -80,39 +80,39 @@
   #:use-module (gnu packages version-control))
 
 (define-public abc
- (let ((commit "d5e1a5d445f68bdb4895bb735b9568e5f4738c13")
-       (revision "4"))
-  (package
-    (name "abc")
-    (version (git-version "0.0" revision commit))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/berkeley-abc/abc")
-                    (commit commit)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0b3qdljcr7dznqr3zxihx9vp6ng6a6pnaqhasblc03rnpp83y1w4"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list readline))
-    (arguments
-     (list #:license-file-regexp "copyright.txt"
-           #:tests? #f ; no tests
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure)
-               (replace 'install
-                 (lambda _
-                   (install-file "abc" (string-append #$output "/bin")))))))
-    (home-page "https://people.eecs.berkeley.edu/~alanmi/abc/")
-    (synopsis "Sequential logic synthesis and formal verification")
-    (description "ABC is a program for sequential logic synthesis and
+  (let ((commit "d2714035145bd237097c509c23fc9e24b0fa933b")
+        (revision "5"))
+    (package
+      (name "abc")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/berkeley-abc/abc")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "10qjw6mbzwg2lgsscw759xrghqq2mvv0xcalpymngnjhpg9qznqk"))))
+      (build-system gnu-build-system)
+      (inputs
+       (list readline))
+      (arguments
+       (list #:license-file-regexp "copyright.txt"
+             #:tests? #f ; no tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)
+                 (replace 'install
+                   (lambda _
+                     (install-file "abc" (string-append #$output "/bin")))))))
+      (home-page "https://people.eecs.berkeley.edu/~alanmi/abc/")
+      (synopsis "Sequential logic synthesis and formal verification")
+      (description "ABC is a program for sequential logic synthesis and
 formal verification.")
-    (license
-     (license:non-copyleft
-      "https://people.eecs.berkeley.edu/~alanmi/abc/copyright.htm")))))
+      (license
+       (license:non-copyleft
+        "https://people.eecs.berkeley.edu/~alanmi/abc/copyright.htm")))))
 
 (define-public iverilog
   (package
