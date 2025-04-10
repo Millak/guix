@@ -1,0 +1,72 @@
+Starting with GLib 2.84, GModule.gir uses a hitherto unsupported
+  <doc:format name="gi-docgen"/>
+tag to indicate that gi-docgen is/ought to be used for formatting the
+documentation.  We lazily "support" this tag by skipping it.
+
+This patch applies to both the original Vala source and generated C sources,
+making sure that the change is present in both, but notably also that it is
+slightly prettier in the C code.  For a proper Vala-only patch, we would need
+to bootstrap Vala first.
+
+Index: vala-0.52.0/vala/valagirparser.c
+===================================================================
+--- vala-0.52.0.orig/vala/valagirparser.c
++++ vala-0.52.0/vala/valagirparser.c
+@@ -3641,6 +3641,8 @@ vala_gir_parser_parse_repository (ValaGi
+ 					_tmp31_ = _tmp30_;
+ 					if (g_strcmp0 (_tmp31_, "c:include") == 0) {
+ 						vala_gir_parser_parse_c_include (self);
++					} else if (g_strcmp0 (_tmp31_, "doc:format") == 0) {
++						vala_gir_parser_skip_element (self);
+ 					} else {
+ 						ValaSourceReference* _tmp32_;
+ 						ValaSourceReference* _tmp33_;
+Index: vala-0.52.0/vala/valagirparser.vala
+===================================================================
+--- vala-0.52.0.orig/vala/valagirparser.vala
++++ vala-0.52.0/vala/valagirparser.vala
+@@ -2034,6 +2034,8 @@ public class Vala.GirParser : CodeVisito
+ 				}
+ 			} else if (reader.name == "c:include") {
+ 				parse_c_include ();
++			} else if (reader.name == "doc:format") {
++				skip_element ();
+ 			} else {
+ 				// error
+ 				Report.error (get_current_src (), "unknown child element `%s' in `repository'", reader.name);
+Index: vala-0.52.0/libvaladoc/importer/girdocumentationimporter.c
+===================================================================
+--- vala-0.52.0.orig/libvaladoc/importer/girdocumentationimporter.c
++++ vala-0.52.0/libvaladoc/importer/girdocumentationimporter.c
+@@ -794,6 +794,8 @@ valadoc_importer_gir_documentation_impor
+ 					_tmp21_ = _tmp20_;
+ 					if (g_strcmp0 (_tmp21_, "c:include") == 0) {
+ 						valadoc_importer_gir_documentation_importer_parse_c_include (self);
++					} else if (g_strcmp0 (_tmp21_, "doc:format") == 0) {
++						valadoc_importer_gir_documentation_importer_skip_element (self);
+ 					} else {
+ 						ValaMarkupReader* _tmp22_;
+ 						const gchar* _tmp23_;
+@@ -2977,4 +2979,3 @@ _vala_array_free (gpointer array,
+ 	_vala_array_destroy (array, array_length, destroy_func);
+ 	g_free (array);
+ }
+-
+Index: vala-0.52.0/libvaladoc/importer/girdocumentationimporter.vala
+===================================================================
+--- vala-0.52.0.orig/libvaladoc/importer/girdocumentationimporter.vala
++++ vala-0.52.0/libvaladoc/importer/girdocumentationimporter.vala
+@@ -213,6 +213,8 @@ public class Valadoc.Importer.GirDocumen
+ 				parse_package ();
+ 			} else if (reader.name == "c:include") {
+ 				parse_c_include ();
++			} else if (reader.name == "doc:format") {
++				skip_element ();
+ 			} else {
+ 				// error
+ 				error ("unknown child element `%s' in `repository'".printf (reader.name));
+@@ -856,4 +858,3 @@ public class Valadoc.Importer.GirDocumen
+ 		end_element ("constant");
+ 	}
+ }
+-
