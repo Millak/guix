@@ -70,6 +70,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2024 Attila Lendvai <attila@lendvai.name>
+;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9943,6 +9944,43 @@ library for accessing the Twitter API.")
     (description
      "This package provides a Python ASGI web microframework with the same API
 as Flask.")
+    (license license:expat)))
+
+(define-public python-quart-trio
+  (package
+    (name "python-quart-trio")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "quart_trio" version))
+       (sha256
+        (base32 "130r8hdk7xxjp380z1r3m28lw86q2a6g9rf0mgp9gs6hk04q9v02"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-coverage-pytest-options
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("--no-cov-on-fail") "")))))))
+    (native-inputs
+     (list python-pdm-backend
+           python-pytest
+           python-pytest-sugar
+           python-pytest-trio))
+    (propagated-inputs
+     (list python-exceptiongroup
+           python-hypercorn
+           python-quart
+           python-trio))
+    (home-page "https://github.com/pgjones/quart-trio")
+    (synopsis "Extension for Quart to support the Trio event loop")
+    (description
+     "This package provides a Quart extension to provide Trio support.  This
+is an alternative to using the asyncio event loop present in the Python
+standard library and supported by default in Quart.")
     (license license:expat)))
 
 (define-public python-ajsonrpc
