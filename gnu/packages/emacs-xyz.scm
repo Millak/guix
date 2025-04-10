@@ -4129,8 +4129,23 @@ light user interface.")
     (name "emacs-emms")
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #t
+       #:test-command
+       (list "emacs" "-Q" "--batch"
+             "--eval=(cd \"test/\")"
+             "-l" "emms-tests.el"
+             "-l" "emms-info-native-tests.el"
+             "-l" "emms-info-native-ogg-tests.el"
+             "-l" "emms-info-native-mp3-tests.el"
+             "-l" "emms-info-native-flac-tests.el"
+             "-l" "emms-info-native-vorbis-tests.el"
+             "-f" "ert-run-tests-batch-and-exit")
+       #:phases
        (modify-phases %standard-phases
+         (add-before 'install 'make-info
+           (lambda _
+             (invoke "make" "-C" "doc" "all")
+             (rename-file "doc/emms.info" "emms.info")))
          (add-after 'unpack 'set-external-programs
            ;; Specify the absolute file names of the various programs
            ;; so that everything works out-of-the-box. (tinytag missing)
@@ -4174,6 +4189,7 @@ light user interface.")
                   (string-append "\"" vorbiscomment "\"")))
                (substitute* "emms-info-exiftool.el"
                  (("\"exiftool\"") (string-append "\"" exiftool "\"")))))))))
+    (native-inputs (list texinfo))
     (inputs
      (list emacs-emms-print-metadata
            alsa-utils
