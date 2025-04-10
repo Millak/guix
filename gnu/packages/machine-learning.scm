@@ -6348,7 +6348,7 @@ tokenizers, @code{rust-tokenizers}.")
            python-tokenizers
            python-tqdm))
     (native-inputs
-     (list python-parameterized-next
+     (list python-parameterized
            python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/huggingface/transformers")
     (synopsis "Machine Learning for PyTorch and TensorFlow")
