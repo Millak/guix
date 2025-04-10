@@ -349,6 +349,30 @@ file along with an index.html file.")
      "Package tcell provides a gruid Driver for making terminal apps.")
     (license license:isc)))
 
+(define-public go-codeberg-org-emersion-go-scfg
+  (package
+    (name "go-codeberg-org-emersion-go-scfg")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/emersion/go-scfg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yw35rf6cxk5cwzf9y4qd0rlcryq1pxr9n34q6620i9djhgskwq2"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "codeberg.org/emersion/go-scfg"))
+    (propagated-inputs
+     (list go-github-com-davecgh-go-spew))
+    (home-page "https://codeberg.org/emersion/go-scfg")
+    (synopsis "Go library for simple configuration file format")
+    (description
+     "Package go-scfg parses scfg files.")
+    (license license:expat)))
+
 (define-public go-dario-cat-mergo
   (package
     (name "go-dario-cat-mergo")
@@ -379,30 +403,6 @@ zero-value fields.  Mergo won't merge unexported (private) fields.  It will do
 recursively any exported one.  It also won't merge structs inside
 maps (because they are not addressable using Go reflection).")
     (license license:bsd-3)))
-
-(define-public go-codeberg-org-emersion-go-scfg
-  (package
-    (name "go-codeberg-org-emersion-go-scfg")
-    (version "0.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://codeberg.org/emersion/go-scfg")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0yw35rf6cxk5cwzf9y4qd0rlcryq1pxr9n34q6620i9djhgskwq2"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "codeberg.org/emersion/go-scfg"))
-    (propagated-inputs
-     (list go-github-com-davecgh-go-spew))
-    (home-page "https://codeberg.org/emersion/go-scfg")
-    (synopsis "Go library for simple configuration file format")
-    (description
-     "Package go-scfg parses scfg files.")
-    (license license:expat)))
 
 (define-public go-git-sr-ht-emersion-go-sqlite3-fts5
   (package
@@ -1294,6 +1294,41 @@ commands.")
 dumps of Go values.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-apparentlymart-go-textseg-autoversion
+  (package
+    (name "go-github-com-apparentlymart-go-textseg-autoversion")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apparentlymart/go-textseg")
+             (commit (go-version->git-ref version #:subdir "autoversion"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j7vm09cd36wm4z986qz5am3rk242v52amcapwbdbkbgzx2kqfkm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/apparentlymart/go-textseg/autoversion"
+      #:unpack-path "github.com/apparentlymart/go-textseg"))
+    (propagated-inputs
+     (list go-github-com-apparentlymart-go-textseg-v9
+           go-github-com-apparentlymart-go-textseg-v10
+           go-github-com-apparentlymart-go-textseg-v11
+           go-github-com-apparentlymart-go-textseg-v12
+           go-github-com-apparentlymart-go-textseg-v13
+           go-github-com-apparentlymart-go-textseg-v15))
+    (home-page "https://github.com/apparentlymart/go-textseg")
+    (synopsis "Wrap go-textesg based on the Unicode Golang version")
+    (description
+     "This package is a wrapper around each of the the
+Unicode-version-specific textseg implementations that selects an
+implementation automatically based on the Unicode version of the Go standard
+library that it's being built against.")
+    (license (list license:expat license:unicode license:asl2.0))))
+
 (define-public go-github-com-apparentlymart-go-textseg-v9
   (package
     (name "go-github-com-apparentlymart-go-textseg-v9")
@@ -1443,41 +1478,6 @@ cluster segmentation algorithm.")
      (substitute-keyword-arguments
          (package-arguments go-github-com-apparentlymart-go-textseg-v15)
        ((#:import-path _) "github.com/apparentlymart/go-textseg/v16")))))
-
-(define-public go-github-com-apparentlymart-go-textseg-autoversion
-  (package
-    (name "go-github-com-apparentlymart-go-textseg-autoversion")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/apparentlymart/go-textseg")
-             (commit (go-version->git-ref version #:subdir "autoversion"))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1j7vm09cd36wm4z986qz5am3rk242v52amcapwbdbkbgzx2kqfkm"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/apparentlymart/go-textseg/autoversion"
-      #:unpack-path "github.com/apparentlymart/go-textseg"))
-    (propagated-inputs
-     (list go-github-com-apparentlymart-go-textseg-v9
-           go-github-com-apparentlymart-go-textseg-v10
-           go-github-com-apparentlymart-go-textseg-v11
-           go-github-com-apparentlymart-go-textseg-v12
-           go-github-com-apparentlymart-go-textseg-v13
-           go-github-com-apparentlymart-go-textseg-v15))
-    (home-page "https://github.com/apparentlymart/go-textseg")
-    (synopsis "Wrap go-textesg based on the Unicode Golang version")
-    (description
-     "This package is a wrapper around each of the the
-Unicode-version-specific textseg implementations that selects an
-implementation automatically based on the Unicode version of the Go standard
-library that it's being built against.")
-    (license (list license:expat license:unicode license:asl2.0))))
 
 (define-public go-github-com-arbovm-levenshtein
   (package
@@ -3819,246 +3819,6 @@ against various paths.  This is particularly useful when trying to filter
 files based on a .gitignore document.")
     (license license:expat)))
 
-(define-public go-github-com-delthas-go-libnp
-  (let ((commit "96674b98150ed492b535d61dde5767dfa2dd14ce")
-        (revision "1"))
-    (package
-      (name "go-github-com-delthas-go-libnp")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/delthas/go-libnp")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1l2p2mpspjaffninxvghjsfywr39cravfbzpxyiq62lfpw43zwaq"))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:import-path "github.com/delthas/go-libnp"))
-      (propagated-inputs
-       (list go-github-com-godbus-dbus-v5))
-      (home-page "https://github.com/delthas/go-libnp")
-      (synopsis "Tiny library providing information about now-playing media")
-      (description
-       "@code{go-libnp} is a tiny cross-platform library for extracting
-information about the music/image/video that is Now Playing on the system.")
-      (license license:expat))))
-
-(define-public go-github-com-envoyproxy-protoc-gen-validate
-  (package
-    (name "go-github-com-envoyproxy-protoc-gen-validate")
-    (version "1.2.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/bufbuild/protoc-gen-validate")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0yd77gnsn9bbiihbkdyn9klwbv314l6ar83z4kivpn9mr93xysch"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/envoyproxy/protoc-gen-validate/tests
-            (delete-file-recursively "tests")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/envoyproxy/protoc-gen-validate"))
-    (propagated-inputs
-     (list go-github-com-iancoleman-strcase
-           go-github-com-lyft-protoc-gen-star-v2-next
-           go-golang-org-x-net
-           go-google-golang-org-protobuf))
-    (home-page "https://github.com/envoyproxy/protoc-gen-validate")
-    (synopsis "Protocol Buffer Validation for Go, Java, Python, and C++")
-    (description
-     "PGV is a protoc plugin to generate polyglot message validators.  While
-protocol buffers effectively guarantee the types of structured data, they
-cannot enforce semantic rules for values.  This plugin adds support to
-protoc-generated code to validate such constraints.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-flopp-go-findfont
-  (package
-    (name "go-github-com-flopp-go-findfont")
-    (version "0.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/flopp/go-findfont")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "05jvs5sw6yid0qr2ld7aw0n1mjp47jxhvbg9lsdig86668i2fj2q"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/flopp/go-findfont"))
-    (home-page "https://github.com/flopp/go-findfont")
-    (synopsis "Go font finder library")
-    (description
-     "This package provides a platform-agnostic Go library to locate TrueType
-font files in your system's user and system font directories.")
-    (license license:expat)))
-
-;; XXX: This project isn't maintained upstream, consider to find alternative
-;; fork, see <https://github.com/fogleman/gg/issues/185> and remove the
-;; package when it has no users.
-(define-public go-github-com-fogleman-gg
-  (package
-    (name "go-github-com-fogleman-gg")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/fogleman/gg")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1nkldjghbqnzj2djfaxhiv35kk341xhcrj9m2dwq65v684iqkk8n"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:tests? #f      ; Issue with test flags.
-      #:import-path "github.com/fogleman/gg"))
-    (propagated-inputs
-     (list go-github-com-golang-freetype))
-    (home-page "https://github.com/fogleman/gg")
-    (synopsis "2D rendering in Go")
-    (description
-     "@code{gg} is a library for rendering 2D graphics in pure Go.")
-    (license license:expat)))
-
-(define-public go-github-com-gammazero-chanqueue
-  (package
-    (name "go-github-com-gammazero-chanqueue")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gammazero/chanqueue")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0kji9blaqbphzrdr9b09c1lfm4vzj94m2ygwganw62byqg4hwy26"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/gammazero/chanqueue"))
-    (native-inputs
-     (list go-go-uber-org-goleak))
-    (propagated-inputs
-     (list go-github-com-gammazero-deque))
-    (home-page "https://github.com/gammazero/chanqueue")
-    (synopsis "Buffered channel with unlimited capacity queue")
-    (description
-     "Package chanqueue implements a queue that uses channels for input and
-output to provide concurrent access to a re-sizable queue.  This allows the
-queue to be used like a channel.  Closing the input channel closes the output
-channel when all queued items are read, consistent with channel behavior.  In
-other words chanqueue is a dynamically buffered channel with up to infinite
-capacity.")
-    (license license:expat)))
-
-(define-public go-github-com-gammazero-deque
-  (package
-    (name "go-github-com-gammazero-deque")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gammazero/deque")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "017xy7cw5yzmfjixwx5bglcxhg9gyyrqjilqzvq3mrh2760idp1a"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/gammazero/deque"))
-    (home-page "https://github.com/gammazero/deque")
-    (synopsis "Fast ring-buffer double-ended queue")
-    (description
-     "Package deque provides a fast ring-buffer deque (double-ended queue)
-implementation for Golang.
-
-It generalizes a queue and a stack, to efficiently add and remove items at
-either end with O(1) performance.  Queue (FIFO) operations are supported using
-@code{PushBack} and @code{PopFront}.  Stack (LIFO) operations are supported
-using @code{PushBack} and @code{PopBack}.")
-    (license license:expat)))
-
-(define-public go-github-com-ghodss-yaml
-  (package
-    (name "go-github-com-ghodss-yaml")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ghodss/yaml")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0skwmimpy7hlh7pva2slpcplnm912rp3igs98xnqmn859kwa5v8g"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/ghodss/yaml"))
-    (propagated-inputs
-     (list go-gopkg-in-yaml-v2))
-    (home-page "https://github.com/ghodss/yaml")
-    (synopsis "YAML marshaling and unmarshaling support for Go")
-    (description
-     "This package provides a wrapper around
-@url{https://github.com/go-yaml/yaml, go-yaml} designed to enable a better way
-of handling YAML when marshaling to and from structs.
-
-It first converts YAML to JSON using go-yaml and then uses @code{json.Marshal}
-and @code{json.Unmarshal} to convert to or from the struct.  This means that
-it effectively reuses the JSON struct tags as well as the custom JSON methods
-@code{MarshalJSON} and @code{UnmarshalJSON} unlike go-yaml.")
-    (license license:expat)))
-
-(define-public go-github-com-go-md2man
-  (package
-    (name "go-github-com-go-md2man")
-    (version "2.0.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cpuguy83/go-md2man")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0gqlkv1pv8cpvcj8g77d1hzy5bnp5a3k3xs02iahlr3a65m4azsi"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/cpuguy83/go-md2man"))
-    (propagated-inputs
-     (list go-github-com-russross-blackfriday-v2))
-    (home-page "https://github.com/cpuguy83/go-md2man")
-    (synopsis "Convert markdown into roff")
-    (description
-     "Go-md2man is a Go program that converts markdown to roff for the purpose
-of building man pages.")
-    (license license:expat)))
-
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")
@@ -4502,6 +4262,34 @@ German and Dutch stemmers as sub-packages.")
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-elliotchance-orderedmap-v2))))
+
+(define-public go-github-com-delthas-go-libnp
+  (let ((commit "96674b98150ed492b535d61dde5767dfa2dd14ce")
+        (revision "1"))
+    (package
+      (name "go-github-com-delthas-go-libnp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/delthas/go-libnp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1l2p2mpspjaffninxvghjsfywr39cravfbzpxyiq62lfpw43zwaq"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/delthas/go-libnp"))
+      (propagated-inputs
+       (list go-github-com-godbus-dbus-v5))
+      (home-page "https://github.com/delthas/go-libnp")
+      (synopsis "Tiny library providing information about now-playing media")
+      (description
+       "@code{go-libnp} is a tiny cross-platform library for extracting
+information about the music/image/video that is Now Playing on the system.")
+      (license license:expat))))
 
 (define-public go-github-com-delthas-go-localeinfo
   (package
@@ -5461,6 +5249,45 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc6350, RFC 6350}.")
 algorithms in Go.")
     (license license:bsd-2)))
 
+(define-public go-github-com-envoyproxy-protoc-gen-validate
+  (package
+    (name "go-github-com-envoyproxy-protoc-gen-validate")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bufbuild/protoc-gen-validate")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yd77gnsn9bbiihbkdyn9klwbv314l6ar83z4kivpn9mr93xysch"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/envoyproxy/protoc-gen-validate/tests
+            (delete-file-recursively "tests")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/envoyproxy/protoc-gen-validate"))
+    (propagated-inputs
+     (list go-github-com-iancoleman-strcase
+           go-github-com-lyft-protoc-gen-star-v2-next
+           go-golang-org-x-net
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/envoyproxy/protoc-gen-validate")
+    (synopsis "Protocol Buffer Validation for Go, Java, Python, and C++")
+    (description
+     "PGV is a protoc plugin to generate polyglot message validators.  While
+protocol buffers effectively guarantee the types of structured data, they
+cannot enforce semantic rules for values.  This plugin adds support to
+protoc-generated code to validate such constraints.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-erikgeiser-coninput
   (package
     (name "go-github-com-erikgeiser-coninput")
@@ -5775,6 +5602,30 @@ with Go structs.")
 Please vendor the library as it might change in future versions.")
     (license license:bsd-3)))
 
+(define-public go-github-com-flopp-go-findfont
+  (package
+    (name "go-github-com-flopp-go-findfont")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/flopp/go-findfont")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05jvs5sw6yid0qr2ld7aw0n1mjp47jxhvbg9lsdig86668i2fj2q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/flopp/go-findfont"))
+    (home-page "https://github.com/flopp/go-findfont")
+    (synopsis "Go font finder library")
+    (description
+     "This package provides a platform-agnostic Go library to locate TrueType
+font files in your system's user and system font directories.")
+    (license license:expat)))
+
 ;; XXX: This repository has been archived by the owner on Nov 9, 2017. It is
 ;; now read-only.
 (define-public go-github-com-flynn-archive-go-shlex
@@ -5802,6 +5653,35 @@ Please vendor the library as it might change in future versions.")
 quoting, commenting, and escaping.")
       (home-page "https://github.com/flynn-archive/go-shlex")
       (license license:asl2.0))))
+
+;; XXX: This project isn't maintained upstream, consider to find alternative
+;; fork, see <https://github.com/fogleman/gg/issues/185> and remove the
+;; package when it has no users.
+(define-public go-github-com-fogleman-gg
+  (package
+    (name "go-github-com-fogleman-gg")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fogleman/gg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nkldjghbqnzj2djfaxhiv35kk341xhcrj9m2dwq65v684iqkk8n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f      ; Issue with test flags.
+      #:import-path "github.com/fogleman/gg"))
+    (propagated-inputs
+     (list go-github-com-golang-freetype))
+    (home-page "https://github.com/fogleman/gg")
+    (synopsis "2D rendering in Go")
+    (description
+     "@code{gg} is a library for rendering 2D graphics in pure Go.")
+    (license license:expat)))
 
 (define-public go-github-com-fsnotify-fsnotify
   (package
@@ -5912,6 +5792,67 @@ extend} with other file formats.
 Differentiation between text and binary files}.
 @item Safe for concurrent usage.
 @end itemize")
+    (license license:expat)))
+
+(define-public go-github-com-gammazero-chanqueue
+  (package
+    (name "go-github-com-gammazero-chanqueue")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gammazero/chanqueue")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kji9blaqbphzrdr9b09c1lfm4vzj94m2ygwganw62byqg4hwy26"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gammazero/chanqueue"))
+    (native-inputs
+     (list go-go-uber-org-goleak))
+    (propagated-inputs
+     (list go-github-com-gammazero-deque))
+    (home-page "https://github.com/gammazero/chanqueue")
+    (synopsis "Buffered channel with unlimited capacity queue")
+    (description
+     "Package chanqueue implements a queue that uses channels for input and
+output to provide concurrent access to a re-sizable queue.  This allows the
+queue to be used like a channel.  Closing the input channel closes the output
+channel when all queued items are read, consistent with channel behavior.  In
+other words chanqueue is a dynamically buffered channel with up to infinite
+capacity.")
+    (license license:expat)))
+
+(define-public go-github-com-gammazero-deque
+  (package
+    (name "go-github-com-gammazero-deque")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gammazero/deque")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "017xy7cw5yzmfjixwx5bglcxhg9gyyrqjilqzvq3mrh2760idp1a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gammazero/deque"))
+    (home-page "https://github.com/gammazero/deque")
+    (synopsis "Fast ring-buffer double-ended queue")
+    (description
+     "Package deque provides a fast ring-buffer deque (double-ended queue)
+implementation for Golang.
+
+It generalizes a queue and a stack, to efficiently add and remove items at
+either end with O(1) performance.  Queue (FIFO) operations are supported using
+@code{PushBack} and @code{PopFront}.  Stack (LIFO) operations are supported
+using @code{PushBack} and @code{PopBack}.")
     (license license:expat)))
 
 (define-public go-github-com-gdamore-encoding
@@ -6039,6 +5980,38 @@ library in go standard library.")
     (description
      "Go library that pluralizes and singularizes English nouns.")
     (license license:bsd-2)))
+
+(define-public go-github-com-ghodss-yaml
+  (package
+    (name "go-github-com-ghodss-yaml")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ghodss/yaml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0skwmimpy7hlh7pva2slpcplnm912rp3igs98xnqmn859kwa5v8g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ghodss/yaml"))
+    (propagated-inputs
+     (list go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/ghodss/yaml")
+    (synopsis "YAML marshaling and unmarshaling support for Go")
+    (description
+     "This package provides a wrapper around
+@url{https://github.com/go-yaml/yaml, go-yaml} designed to enable a better way
+of handling YAML when marshaling to and from structs.
+
+It first converts YAML to JSON using go-yaml and then uses @code{json.Marshal}
+and @code{json.Unmarshal} to convert to or from the struct.  This means that
+it effectively reuses the JSON struct tags as well as the custom JSON methods
+@code{MarshalJSON} and @code{UnmarshalJSON} unlike go-yaml.")
+    (license license:expat)))
 
 (define-public go-github-com-git-lfs-go-netrc
   (package
@@ -6381,6 +6354,33 @@ while callers can implement logging with whatever backend is appropriate.")
      "Package stdr implements github.com/go-logr/logr.Logger in terms of Go's
 standard log package.")
     (license license:asl2.0)))
+
+(define-public go-github-com-go-md2man
+  (package
+    (name "go-github-com-go-md2man")
+    (version "2.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cpuguy83/go-md2man")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gqlkv1pv8cpvcj8g77d1hzy5bnp5a3k3xs02iahlr3a65m4azsi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/cpuguy83/go-md2man"))
+    (propagated-inputs
+     (list go-github-com-russross-blackfriday-v2))
+    (home-page "https://github.com/cpuguy83/go-md2man")
+    (synopsis "Convert markdown into roff")
+    (description
+     "Go-md2man is a Go program that converts markdown to roff for the purpose
+of building man pages.")
+    (license license:expat)))
 
 (define-public go-github-com-go-playground-locales
   (package
@@ -7767,34 +7767,6 @@ increment versions.")
 Groupcache.")
     (license license:mpl2.0)))
 
-(define-public go-github-com-hashicorp-golang-lru-v2
-  (package
-    (inherit go-github-com-hashicorp-golang-lru)
-    (name "go-github-com-hashicorp-golang-lru-v2")
-    (version "2.0.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/hashicorp/golang-lru")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0lb2ylv2bz6lsqhn6c2hsafjjcx0hsdbah6arhb778g3xbkpgvf3"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Submodule(s) with their own go.mod files and packed as
-            ;; separated packages:
-            ;;
-            ;; - github.com/hashicorp/golang-lru/arc/v2
-            (for-each delete-file-recursively
-                      (list "arc"))))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/hashicorp/golang-lru/v2"))))
-
 (define-public go-github-com-hashicorp-golang-lru-arc-v2
   (package
     (name "go-github-com-hashicorp-golang-lru-arc-v2")
@@ -7834,6 +7806,34 @@ older entries.  It adds some additional tracking overhead to a standard LRU
 cache, computationally it is roughly 2x the cost, and the extra memory
 overhead is linear with the size of the cache.")
     (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-golang-lru-v2
+  (package
+    (inherit go-github-com-hashicorp-golang-lru)
+    (name "go-github-com-hashicorp-golang-lru-v2")
+    (version "2.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/golang-lru")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lb2ylv2bz6lsqhn6c2hsafjjcx0hsdbah6arhb778g3xbkpgvf3"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodule(s) with their own go.mod files and packed as
+            ;; separated packages:
+            ;;
+            ;; - github.com/hashicorp/golang-lru/arc/v2
+            (for-each delete-file-recursively
+                      (list "arc"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/golang-lru/v2"))))
 
 (define-public go-github-com-hashicorp-hcl
   (package
@@ -8131,34 +8131,6 @@ subsystem in Linux.")
 used in other languages but absent in Go package strings.")
     (license license:expat)))
 
-(define-public go-github-com-ianlancetaylor-demangle
-  ;; No release, see <https://github.com/ianlancetaylor/demangle/issues/21>.
-  (package
-    (name "go-github-com-ianlancetaylor-demangle")
-    (version "0.0.0-20230524184225-eabc099b10ab")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ianlancetaylor/demangle")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1pvlg1adp50hnw8dz7il473xb197ixirg26cy5hj3ngb4qlajwvc"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/ianlancetaylor/demangle"))
-    (home-page "https://github.com/ianlancetaylor/demangle")
-    (synopsis "Symbol name demangler written in Go")
-    (description
-     "This package defines functions that demangle GCC/LLVM C++ and Rust
-symbol names.  This package recognizes names that were mangled according to
-the C++ ABI defined at https://codesourcery.com/cxx-abi/ and the
-@url{https://rust-lang.github.io/rfcs/2603-rust-symbol-name-mangling-v0.html,Rust
-ABI}.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-iancoleman-orderedmap
   (package
     (name "go-github-com-iancoleman-orderedmap")
@@ -8205,6 +8177,34 @@ keep the order that they're added.  It can be de/serialized from/to JSON.")
     (description
      "Package strcase converts strings to various cases.")
     (license license:expat)))
+
+(define-public go-github-com-ianlancetaylor-demangle
+  ;; No release, see <https://github.com/ianlancetaylor/demangle/issues/21>.
+  (package
+    (name "go-github-com-ianlancetaylor-demangle")
+    (version "0.0.0-20230524184225-eabc099b10ab")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ianlancetaylor/demangle")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pvlg1adp50hnw8dz7il473xb197ixirg26cy5hj3ngb4qlajwvc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ianlancetaylor/demangle"))
+    (home-page "https://github.com/ianlancetaylor/demangle")
+    (synopsis "Symbol name demangler written in Go")
+    (description
+     "This package defines functions that demangle GCC/LLVM C++ and Rust
+symbol names.  This package recognizes names that were mangled according to
+the C++ ABI defined at https://codesourcery.com/cxx-abi/ and the
+@url{https://rust-lang.github.io/rfcs/2603-rust-symbol-name-mangling-v0.html,Rust
+ABI}.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-imdario-mergo
   (hidden-package
@@ -10190,6 +10190,30 @@ processing.")
 aid data snapshotting.")
     (license license:isc)))
 
+(define-public go-github-com-kpango-fastime
+  (package
+    (name "go-github-com-kpango-fastime")
+    (version "1.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kpango/fastime")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18f1p5wf0zf73ky0h2hqfa6b6zryf7pq7k2r02if673x7bjlbp9h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kpango/fastime"))
+    (home-page "https://github.com/kpango/fastime")
+    (synopsis "Fast time function library for Go")
+    (description
+     "@code{fastime} is a time function library for Go with zero memory
+allocation.  @code{fastime} is returning the approximate time.")
+    (license license:expat)))
+
 (define-public go-github-com-kpango-glg
   (package
     (name "go-github-com-kpango-glg")
@@ -10216,30 +10240,6 @@ aid data snapshotting.")
     (synopsis "Lock-free logging library for Go")
     (description
      "@code{glg} is simple lock-free logging library for Go.")
-    (license license:expat)))
-
-(define-public go-github-com-kpango-fastime
-  (package
-    (name "go-github-com-kpango-fastime")
-    (version "1.1.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/kpango/fastime")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "18f1p5wf0zf73ky0h2hqfa6b6zryf7pq7k2r02if673x7bjlbp9h"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/kpango/fastime"))
-    (home-page "https://github.com/kpango/fastime")
-    (synopsis "Fast time function library for Go")
-    (description
-     "@code{fastime} is a time function library for Go with zero memory
-allocation.  @code{fastime} is returning the approximate time.")
     (license license:expat)))
 
 (define-public go-github-com-kr-fs
@@ -16670,6 +16670,31 @@ programming language.")
      "This package is a simple Golang implementation of tag parser.")
     (license license:bsd-2)))
 
+(define-public go-github-com-wadey-gocovmerge
+  (package
+    (name "go-github-com-wadey-gocovmerge")
+    (version "0.0.0-20160331181800-b5bfa59ec0ad")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wadey/gocovmerge")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00m7kxcmmw0l9z0m7z6ii06n5j4bcrxqjbhxjbfzmsdgdsvkic31"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/wadey/gocovmerge"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/wadey/gocovmerge")
+    (synopsis "Merge coverprofile results from multiple go cover runs")
+    (description
+     "gocovmerge takes the results from multiple @command{go test -coverprofile} runs and
+merges them into one profile.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-warpfork-go-fsx
   (package
     (name "go-github-com-warpfork-go-fsx")
@@ -16702,31 +16727,6 @@ like the os package feature you're already familiar with)
     ;; This library is multiply-licensed under either of Apache 2.0 or MIT or
     ;; BSD-3-Clause terms.
     (license (list license:expat license:asl2.0 license:bsd-3))))
-
-(define-public go-github-com-wadey-gocovmerge
-  (package
-    (name "go-github-com-wadey-gocovmerge")
-    (version "0.0.0-20160331181800-b5bfa59ec0ad")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/wadey/gocovmerge")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "00m7kxcmmw0l9z0m7z6ii06n5j4bcrxqjbhxjbfzmsdgdsvkic31"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/wadey/gocovmerge"))
-    (propagated-inputs (list go-golang-org-x-tools))
-    (home-page "https://github.com/wadey/gocovmerge")
-    (synopsis "Merge coverprofile results from multiple go cover runs")
-    (description
-     "gocovmerge takes the results from multiple @command{go test -coverprofile} runs and
-merges them into one profile.")
-    (license license:bsd-2)))
 
 (define-public go-github-com-whyrusleeping-base32
   (package
@@ -16913,6 +16913,31 @@ edges and self-loops are not permitted.
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-xaionaro-go-bytesextra
+  (package
+    (name "go-github-com-xaionaro-go-bytesextra")
+    (version "0.0.0-20220103144954-846e454ddea9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xaionaro-go/bytesextra")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zggis1mdrfnashngg5hc6a6r6glcxzgj87ali7qdi02bnrl8s9i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xaionaro-go/bytesextra"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/xaionaro-go/bytesextra")
+    (synopsis "Golang library for bytes I/O")
+    (description
+     "This package provides @code{io.ReadWriteSeeker} implementation for
+@code{[]byte}.")
+    (license license:cc0)))
+
 (define-public go-github-com-xaionaro-go-unsafetools
   (package
     (name "go-github-com-xaionaro-go-unsafetools")
@@ -16937,31 +16962,6 @@ edges and self-loops are not permitted.
     (description
      "This package provides function @code{FieldByName} to access to any field
 (including private/unexported) of a structure.")
-    (license license:cc0)))
-
-(define-public go-github-com-xaionaro-go-bytesextra
-  (package
-    (name "go-github-com-xaionaro-go-bytesextra")
-    (version "0.0.0-20220103144954-846e454ddea9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/xaionaro-go/bytesextra")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1zggis1mdrfnashngg5hc6a6r6glcxzgj87ali7qdi02bnrl8s9i"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/xaionaro-go/bytesextra"))
-    (native-inputs (list go-github-com-stretchr-testify))
-    (home-page "https://github.com/xaionaro-go/bytesextra")
-    (synopsis "Golang library for bytes I/O")
-    (description
-     "This package provides @code{io.ReadWriteSeeker} implementation for
-@code{[]byte}.")
     (license license:cc0)))
 
 (define-public go-github-com-xaionaro-gosrc
