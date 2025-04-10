@@ -7123,18 +7123,17 @@ accurately delineate genomic rearrangements throughout the genome.")
 (define-public transanno
   (package
     (name "transanno")
-    (version "0.3.0")
+    (version "0.4.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/informationsea/transanno")
-             ;; Corresponds to tag v0.3.0
-             (commit "df49050c92644ea12d9d5c6fae2186ca436dbca3")))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1jpn7s3cnd9ybk4lmfbhj2arhf6cmrv7jp74n7n87m3a3irkaif1"))
+         "0x62v8qhnpw8579kcqpr9k5ldv2y3awjp7a32f1j8qky0i1jgxp1"))
        (snippet
         '(with-output-to-file "liftover-rs/build.rs"
            (lambda _
@@ -7157,28 +7156,9 @@ accurately delineate genomic rearrangements throughout the genome.")
                                 "/bin/bash")))
               (invoke "bash" "prepare-test-files.sh")))
           (add-before 'install 'chdir
-            (lambda _ (chdir "transanno"))))
-      #:cargo-inputs
-      `(("rust-anyhow" ,rust-anyhow-1)
-        ("rust-autocompress" ,rust-autocompress-0.2)
-        ("rust-bio" ,rust-bio-0.41)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-csv" ,rust-csv-1)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-nom" ,rust-nom-5)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.3)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))
-      #:cargo-development-inputs
-      `(("rust-clap" ,rust-clap-2)
-        ("rust-lazy-static" ,rust-lazy-static-1))))
+            (lambda _ (chdir "transanno"))))))
     (native-inputs (list bash pkg-config))
-    (inputs (list xz))
+    (inputs (cons* xz `(,zstd "lib") (cargo-inputs 'transanno)))
     (home-page "https://github.com/informationsea/transanno")
     (synopsis "LiftOver tool for new genome assemblies")
     (description "This package provides an accurate VCF/GFF3/GTF LiftOver tool
