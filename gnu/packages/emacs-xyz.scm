@@ -15949,12 +15949,11 @@ E-Prime forbids the use of the \"to be\" form to strengthen your writing.")
       (license license:gpl3+))))
 
 (define-public emacs-julia-mode
-  ;; Last release was in March 2020.
-  (let ((commit "7a8c868e0d3e51ba4a2c621ee22ca9599e0e4bbb")
+  (let ((commit "7fc071eb2c383d44be6d61ea6cef73b0cc8ef9b7")
         (revision "0"))
     (package
       (name "emacs-julia-mode")
-      (version (git-version "0.4" revision commit))
+      (version (git-version "1.0.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -15964,24 +15963,16 @@ E-Prime forbids the use of the \"to be\" form to strengthen your writing.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0xwd4kq69ray6bk8hwjxnqf7myc3mn36chc2l9jn7a0x1f8x6k10"))))
+           "1dfls9ggn192xblfyjrbxi007hg4yd25s2cl8zh0v40akpqclhqc"))))
       (build-system emacs-build-system)
       (arguments
        (list
+        #:include
+        #~(cons* "^make-julia-latexsubs\\.jl" %default-include)
         #:tests? #t
         #:test-command #~(list "emacs" "--batch"
                                "-l" "julia-mode-tests.el"
-                               "-f" "ert-run-tests-batch-and-exit")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'check 'fix-test
-              (lambda _
-                (substitute* "julia-mode-tests.el"
-                  ;; The test started failing with Emacs 29; see
-                  ;; <https://github.com/JuliaEditorSupport/julia-emacs/issues/199>
-                  ;; and discrepancy reported <https://issues.guix.gnu.org/66763>.
-                  (("julia--test-end-of-defun-nested-2.*" all)
-                   (string-append all "  :expected-result :failed\n"))))))))
+                               "-f" "ert-run-tests-batch-and-exit")))
       (home-page "https://github.com/JuliaEditorSupport/julia-emacs")
       (synopsis "Major mode for Julia")
       (description "This Emacs package provides a mode for the Julia
