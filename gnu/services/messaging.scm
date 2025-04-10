@@ -68,6 +68,7 @@
             ngircd-configuration?
             ngircd-configuration-ngircd
             ngircd-configuration-debug?
+            ngircd-configuration-shepherd-requirement
             ngircd-configuration-global
             ngircd-configuration-limits
             ngircd-configuration-options
@@ -1415,6 +1416,10 @@ for different users.  Refer to @samp{man 5 ngircd.conf} for more details.")
    (boolean #f)
    "Turn on debugging messages."
    (serializer empty-serializer))
+  (shepherd-requirement
+   (list-of-symbols '(user-processes))
+   "Shepherd requirements the service should depend on."
+   (serializer empty-serializer))
   (global
    ;; Always use a ngircd-global default to ensure the default addresses
    ;; listened to are known (used to compute the socket endpoints).
@@ -1583,7 +1588,7 @@ wrapper for the 'ngircd' command."
 
 (define (ngircd-shepherd-service config)
   (match-record config <ngircd-configuration>
-                (ngircd debug? global ssl)
+                (ngircd debug? global shepherd-requirement ssl)
     (let* ((ngircd.conf (serialize-ngircd-configuration config))
            (ngircd (file-append ngircd "/sbin/ngircd"))
            (addresses (ngircd-global-listen global))
@@ -1594,7 +1599,7 @@ wrapper for the 'ngircd' command."
                       ports*)))
       (list (shepherd-service
              (provision '(ngircd))
-             (requirement '(user-processes networking syslogd))
+             (requirement shepherd-requirement)
              (modules (cons '(srfi srfi-1) %default-modules))
              (actions (list (shepherd-configuration-action ngircd.conf)))
              (start #~(make-systemd-constructor
