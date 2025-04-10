@@ -4543,43 +4543,55 @@ helpers.")
 language.  It aims to be fast.")
     (license license:expat)))
 
+;; XXX: The project might be abandoned and this package has no users in Guix,
+;; consider to remove if it keeps failing.
+;; See: <https://github.com/ethanfurman/aenum/issues/45>,
+;;      <https://github.com/ethanfurman/aenum/issues/44>,
+;;      <https://github.com/ethanfurman/aenum/issues/27>.
 (define-public python-aenum
   (package
     (name "python-aenum")
-    (version "3.1.12")
+    (version "3.1.15")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aenum" version))
        (sha256
-        (base32 "1w1ffkcxgnimi5w8802qk6w2qxz9k8hpvsg6yy2zi08ahs8iqlry"))
+        (base32 "0ncmbdblqhqyb2mg73d5663vx3q2xb9q8hmj77zp1y64336pdgcc"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete the Python 2 specific files which won't compile
         ;; in Python 3.
         '(for-each delete-file (find-files "." "_py2.py$")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      ;; We must run the test suite module directly, as it
-                      ;; fails to define the 'tempdir' variable in scope for
-                      ;; the tests otherwise
-                      ;; (see:https://bitbucket.org/stoneleaf/aenum/\
-                      ;; issues/32/running-tests-with-python-setuppy-test).
-                      (invoke "python3" "aenum/test.py")
-                      ;; This one fails with "NameError: name
-                      ;; 'test_pickle_dump_load' is not defined" (see:
-                      ;; https://bitbucket.org/stoneleaf/aenum/issues/33
-                      ;; /error-running-the-test_v3py-test-suite).
-                      ;; (invoke "python3" "aenum/test_v3.py")
-                      #t)))))
-    (home-page "https://bitbucket.org/stoneleaf/aenum")
+     (list
+      #:test-flags
+      ;; These tests are defined in "aenum/test_v3.py" and require a function
+      ;; "test_pickle_dump_load" from "aenum/test.py" which is not imported
+      ;; into the module's scope.
+      #~(list "-k" (string-join
+                    (list "not test_pickle_enum_function_with_qualname"
+                          "test_class_nested_enum_and_pickle_protocol_four"
+                          "test_subclasses_with_getnewargs_ex")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "aenum/test_v3.py"
+                ;; tempdir variable is not defined in the module.
+                (("import tempfile.*")
+                 (format #f "import tempfile~%tempdir = tempfile.mkdtemp()~%"))))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/ethanfurman/aenum")
     (synopsis "Advanced enumerations, namedtuples and constants for Python")
-    (description "The aenum library includes an @code{Enum} base class, a
-metaclass-based @code{NamedTuple} implementation and a @code{NamedConstant}
-class.")
+    (description
+     "The aenum library includes an @code{Enum} base class, a metaclass-based
+@code{NamedTuple} implementation and a @code{NamedConstant} class.")
     (license license:bsd-3)))
 
 (define-public python-calver
