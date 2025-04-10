@@ -4727,43 +4727,6 @@ Pythonic interface.  It is mainly targeted for testing and automation
 tasks rather than a standard compliant master implementation.")
     (license license:expat)))
 
-(define-public python-caniusepython3
-  (package
-    (name "python-caniusepython3")
-    (version "7.2.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "caniusepython3" version))
-        (sha256
-          (base32
-            "0a755444ln38j8d7xb3yw0wzpd0mjrzfn6zqvsh06nw1vdaq4l28"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-requirements
-                    (lambda _
-                      (substitute* "setup.py"
-                        ;; These are for compatibility with Python 2.
-                        ((".*'argparse', 'backports.functools_lru_cache',.*")
-                         ""))
-                      (substitute* "dev_requirements.txt"
-                        ((".*pylint.*") "")) ;not actually required
-                      #t))
-                  (replace 'check
-                    (lambda _
-                      (invoke "py.test" "-k" "not NetworkTests"))))))
-    (propagated-inputs
-      (list python-distlib python-packaging python-requests))
-    (native-inputs
-     (list python-mock python-pytest))
-    (home-page "https://github.com/brettcannon/caniusepython3")
-    (synopsis "Check for Python 3-incompatible Python libraries")
-    (description "The @command{caniusepython3} command scans your project and
-reports the Python 3-incompatible libraries it found.  It can also be used as
-a library.")
-    (license license:asl2.0)))
-
 (define-public python-diskcache
   (package
     (name "python-diskcache")
