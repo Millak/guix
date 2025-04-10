@@ -24097,15 +24097,16 @@ want to use it.")
 (define-public emacs-track-changes
   (package
     (name "emacs-track-changes")
-    (version "1.2")
+    (version "1.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/track-changes-"
                            version ".tar"))
        (sha256
-        (base32 "0al6a1xjs6p2pn6z976pnmfqz2x5xcz99b5gkdzz90ywbn7018m4"))))
+        (base32 "0ygc53dm144ld4f7ig1fh1z345gnkrin7q108kj9d4dhgp8f2381"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f)) ; no tests
     (home-page "https://elpa.gnu.org/packages/track-changes.html")
     (synopsis "Abstraction library which handles accumulating file changes")
     (description
