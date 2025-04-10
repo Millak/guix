@@ -466,14 +466,14 @@ Dropbox API v2.")
 (define-public python-eventlet
   (package
     (name "python-eventlet")
-    (version "0.38.2")
+    (version "0.39.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "eventlet" version))
        (sha256
         (base32
-         "1b7dhy3pyp3nfv0zzjrs7i3kam40cl1nh3acy2fd59ywy4x84ika"))))
+         "04051hmlq49kvdymf56hp08vjc6251937fh6vvnj2h1d51sn92ja"))))
     (build-system pyproject-build-system)
     (arguments
      (list
