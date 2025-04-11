@@ -521,37 +521,18 @@ replacing them with data URIs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "082xh0zmmy9abz7y3zjybbwffq7d0j1jl78ggzbwwanvam65v0dp"))))
+        (base32 "082xh0zmmy9abz7y3zjybbwffq7d0j1jl78ggzbwwanvam65v0dp"))
+       (modules '((guix build utils)))
+       ;; Don't default to vendored openssl.
+       (snippet '(substitute* "Cargo.toml"
+                   ((".*\"vendored-openssl\".*") "")))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-atty" ,rust-atty-0.2)
-        ("rust-base64" ,rust-base64-0.22)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-clap" ,rust-clap-3)
-        ("rust-cssparser" ,rust-cssparser-0.34)
-        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
-        ("rust-html5ever" ,rust-html5ever-0.27)
-        ("rust-markup5ever-rcdom" ,rust-markup5ever-rcdom-0.3)
-        ("rust-openssl" ,rust-openssl-0.10)
-        ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-reqwest" ,rust-reqwest-0.12)
-        ("rust-sha2" ,rust-sha2-0.10)
-        ("rust-url" ,rust-url-2))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-2))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'dont-default-to-vendored-openssl
-           (lambda _
-             (substitute* "Cargo.toml"
-               ((".*\"vendored-openssl\".*") "")))))))
+     `(#:install-source? #f))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list openssl))
+     (cons openssl (cargo-inputs 'monolith)))
     (home-page "https://github.com/Y2Z/monolith")
     (synopsis "Command line tool for saving web pages as a single HTML file")
     (description
