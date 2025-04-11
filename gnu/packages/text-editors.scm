@@ -562,7 +562,7 @@ plugin, though a standalone binary is built also.")
 (define-public helix
   (package
     (name "helix")
-    (version "23.10")
+    (version "25.01.1")
     (source
      (origin
        (method git-fetch)
@@ -571,7 +571,7 @@ plugin, though a standalone binary is built also.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gl5iplj9x58pgqvb296d70xgq8fslqk8chai2arn65bcbgaw014"))))
+        (base32 "1i9g1xk4vs11ccsrvdjz33yprcsim9ag045vifm7rx03hzcxfry0"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -593,71 +593,8 @@ plugin, though a standalone binary is built also.")
                  (copy-recursively "runtime" runtime)
                  (wrap-program hx
                    `("HELIX_RUNTIME" prefix
-                     (,runtime)))))))
-       #:cargo-inputs
-       (list rust-ahash-0.8
-             rust-anyhow-1
-             rust-arc-swap-1
-             rust-bitflags-2
-             rust-cassowary-0.3
-             rust-cc-1
-             rust-chardetng-0.1
-             rust-chrono-0.4
-             rust-clipboard-win-4
-             rust-content-inspector-0.2
-             rust-crossterm-0.27
-             rust-dunce-1
-             rust-encoding-rs-0.8
-             rust-etcetera-0.8
-             rust-fern-0.6
-             rust-futures-executor-0.3
-             rust-futures-util-0.3
-             rust-gix-0.55
-             rust-globset-0.4
-             rust-grep-regex-0.1
-             rust-grep-searcher-0.1
-             rust-hashbrown-0.14
-             rust-ignore-0.4
-             rust-imara-diff-0.1
-             rust-libc-0.2
-             rust-libloading-0.8
-             rust-log-0.4
-             rust-lsp-types-0.94
-             rust-nucleo-0.2
-             rust-once-cell-1
-             rust-parking-lot-0.12
-             rust-pulldown-cmark-0.9
-             rust-regex-1
-             rust-ropey-1
-             rust-rustix-0.38
-             rust-serde-1
-             rust-serde-json-1
-             rust-signal-hook-0.3
-             rust-signal-hook-tokio-0.3
-             rust-slotmap-1
-             rust-smallvec-1
-             rust-smartstring-1
-             rust-tempfile-3
-             rust-termini-1
-             rust-textwrap-0.16
-             rust-thiserror-1
-             rust-threadpool-1
-             rust-tokio-1
-             rust-tokio-stream-0.1
-             rust-toml-0.7
-             rust-tree-sitter-0.20
-             rust-unicode-general-category-0.6
-             rust-unicode-segmentation-1
-             rust-unicode-width-0.1
-             rust-url-2
-             rust-which-4)
-       #:cargo-development-inputs
-       (list rust-fern-0.6
-             rust-indoc-2
-             rust-quickcheck-1
-             rust-smallvec-1
-             rust-tempfile-3)))
-    (inputs (list bash-minimal))
+                     (,runtime)))))))))
+    (inputs (cons bash-minimal (cargo-inputs 'helix)))
     (home-page "https://helix-editor.com/")
     (synopsis "Post-modern modal text editor")
     (description "A Kakoune / Neovim inspired editor, written in Rust.")
