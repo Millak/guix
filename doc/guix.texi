@@ -30738,7 +30738,15 @@ Set to @code{#t} to disable automatic connection even if the port value
 is specified.
 
 @item @code{ssl-connect?} (default: @code{#f}) (type: maybe-boolean)
-Connect to the remote server using TLS/SSL.
+Set to @code{#t} to enforce the use of TLS to connect to the remote
+server.
+
+@item @code{ssl-verify?} (default: @code{#t}) (type: maybe-boolean)
+Set to @code{#f} to disable the verification of the TLS certificate
+presented by the remote server.  This can be useful if the remote server
+uses a self-signed certificate.  Beware that this degrades security by
+enabling man-in-the-middle attacks, as the @emph{remote site is not
+verified at all}.
 
 @end table
 

@@ -141,6 +141,7 @@
             ngircd-server-group
             ngircd-server-passive?
             ngircd-server-ssl-connect?
+            ngircd-server-ssl-verify?
             ngircd-channel
             ngircd-channel?
             ngircd-channel-name
@@ -1357,7 +1358,14 @@ connections (passive, which is the default).")
 specified.")
   (ssl-connect?
    (maybe-boolean #f)
-   "Connect to the remote server using TLS/SSL.")
+   "Set to @code{#t} to enforce the use of TLS to connect to the remote
+server.")
+  (ssl-verify?
+   (maybe-boolean #t)
+   "Set to @code{#f} to disable the verification of the TLS certificate
+presented by the remote server.  This can be useful if the remote server uses
+a self-signed certificate.  Beware that this degrades security by enabling
+man-in-the-middle attacks, as the @emph{remote site is not verified at all}.")
   (prefix ngircd-))
 
 (define list-of-ngircd-servers?
