@@ -24489,41 +24489,52 @@ assembly (small or mammalian size) and single-cell assembly.")
     (license license:gpl3)))
 
 (define-public mudskipper
-  (package
-    (name "mudskipper")
-    (version "0.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "mudskipper" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1y7fnlz6irmxdmv6bxzm95w4ws4vzldlrh8npvgxmdnrz9pgb1dv"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #false    ;fail because the "mudskipper" crate cannot be found
-       #:cargo-inputs
-       (("rust-bio" ,rust-bio-0.39)
-        ("rust-bio-types" ,rust-bio-types-0.12)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-coitrees" ,rust-coitrees-0.2)
-        ("rust-env-logger" ,rust-env-logger-0.9)
-        ("rust-fnv" ,rust-fnv-1)
-        ("rust-indicatif" ,rust-indicatif-0.16)
-        ("rust-libradicl" ,rust-libradicl-0.4)
-        ("rust-linecount" ,rust-linecount-0.1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-rust-htslib" ,rust-rust-htslib-0.38))))
-    (native-inputs
-     (list cmake-minimal pkg-config))
-    (inputs
-     (list zlib xz))
-    (home-page "https://github.com/OceanGenomics/mudskipper")
-    (synopsis "Convert genomic alignments to transcriptomic BAM/RAD files")
-    (description "Mudskipper is a tool for projecting genomic alignments to
+  (let ((commit "effd3fac03bc09d313e84fa680f18fdc6f3a16a0")
+        (revision "1"))
+    (package
+      (name "mudskipper")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/OceanGenomics/mudskipper")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "17jm39sbrwgjlynxsn4g7lvq5hx6rwyjg86p10v4mc74fmdn5xd5"))))
+      (build-system cargo-build-system)
+      (arguments
+       (list #:install-source? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'skip-doctesting-code-blocks
+                   ;; See also https://github.com/rust-lang/rust/issues/63193.
+                   (lambda _
+                     (substitute* "src/query_bam_records.rs"
+                       (((string-append
+                          "(pub )?fn ("
+                          (string-join
+                           '("get_next_query_records"
+                             "get_next_query_records_skip"
+                             "get_primary_record_of_sa_tag"
+                             "get_records_from_sa_tag"
+                             "group_records"
+                             "group_records_skip"
+                             "new")
+                           "|")
+                          ")")
+                         all)
+                        (string-append "#[cfg(not(doctest))]\n" all))))))))
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (cons* zlib xz (cargo-inputs 'mudskipper)))
+      (home-page "https://github.com/OceanGenomics/mudskipper")
+      (synopsis "Convert genomic alignments to transcriptomic BAM/RAD files")
+      (description "Mudskipper is a tool for projecting genomic alignments to
 transcriptomic coordinates.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public r-ascat
   (package
