@@ -322,6 +322,14 @@
               (substitute* "lw/librewolf.cfg"
                 (("defaultPref\\(\"browser\\.ml\\.")
                  "lockPref(\"browser.ml."))))
+          (add-after 'unpack 'expand-extension-scope
+            (lambda* _
+                ;; Required for Guix packaged extensions
+                ;; SCOPE_PROFILE=1, SCOPE_APPLICATION=4, SCOPE_SYSTEM=8
+                ;; Default is 5.
+                (substitute* "lw/librewolf.cfg"
+                  (("defaultPref\\(\"extensions.enabledScopes\", 5\\)")
+                   "defaultPref(\"extensions.enabledScopes\", 13)"))))
           (add-after 'unpack 'use-mozzarella
             (lambda _
               (substitute*
@@ -556,17 +564,6 @@
                             '("mesa" "pciutils"))))
                 (wrap-program (car (find-files lib "^glxtest$"))
                   `("LD_LIBRARY_PATH" prefix ,libs)))))
-          (add-after 'install 'patch-config
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((lib (string-append #$output "/lib/librewolf"))
-                    (config-file "librewolf.cfg"))
-
-                ;; Required for Guix packaged extensions
-                ;; SCOPE_PROFILE=1, SCOPE_APPLICATION=4, SCOPE_SYSTEM=8
-                ;; Default is 5.
-                (substitute* (in-vicinity lib config-file)
-                  (("defaultPref\\(\"extensions.enabledScopes\", 5\\)")
-                   "defaultPref(\"extensions.enabledScopes\", 13)")))))
           (add-after 'install 'wrap-program
             (lambda* (#:key inputs outputs #:allow-other-keys)
               ;; The following two functions are from Guix's icecat package in
