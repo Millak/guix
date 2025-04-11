@@ -549,8 +549,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-prisma
   (tree-sitter-grammar
    "prisma" "Prisma"
-   "19zb3dkwp2kpyivygqxk8yph0jpl7hn9zzcry15mshn2n0rs9sih"
-   "1.4.0"
+   "144l2w7ky5imd7yvp1n6lgbyy5kq6kx4c2ja43yk15k3258pf52v"
+   "1.5.1"
    #:repository-url "https://github.com/victorhqc/tree-sitter-prisma"
    #:license license:expat))
 
