@@ -101,19 +101,18 @@ of commands called a ``pipeline''.")
 (define-public nu-plugin-inc
   (package
     (name "nu-plugin-inc")
-    (version "0.101.0")
+    (version "0.103.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu_plugin_inc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12kr3lnjhq6grdnhxrmlxgmvvgv7kc6fg18z6gfk2qim1sckikyd"))))
+        (base32 "1s7s1h1ffz72mv703a9gsi77hl7rsqkfxq7vhxqrz5p0cwh7fviw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-nu-plugin" ,rust-nu-plugin-0.101)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
-                       ("rust-semver" ,rust-semver-1))))
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'nu-plugin-inc))
     (home-page
      "https://github.com/nushell/nushell/tree/main/crates/nu_plugin_inc")
     (synopsis "Version incrementer plugin for Nushell")
