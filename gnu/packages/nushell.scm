@@ -123,21 +123,20 @@ of commands called a ``pipeline''.")
 (define-public nu-plugin-gstat
   (package
     (name "nu-plugin-gstat")
-    (version "0.101.0")
+    (version "0.103.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu_plugin_gstat" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jpxbgkffwxh02ccjxd9mkb0z1j0c58mh75vw1c62g74775mdkpc"))))
+        (base32 "0ys9n9hw1sh3m7j9nd7cr4whr0s3piiz5jpzghcpbi9frslgzbhf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-git2" ,rust-git2-0.19)
-                       ("rust-nu-plugin" ,rust-nu-plugin-0.101)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.101))))
+     `(#:install-source? #f))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2-1.8 libssh2 openssl zlib))
+    (inputs
+     (cons* libgit2-1.9 libssh2 openssl zlib (cargo-inputs 'nu-plugin-gstat)))
     (home-page
      "https://github.com/nushell/nushell/tree/main/crates/nu_plugin_gstat")
     (synopsis "Git status plugin for Nushell")
