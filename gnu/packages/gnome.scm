@@ -4522,7 +4522,7 @@ targeting the GNOME stack simple.")
 ;;; An older variant kept to build libsoup-minimal-2.
 (define-public vala-0.52
   (package/inherit vala
-    (version "0.52.0")
+    (version "0.52.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/vala/"
@@ -4530,7 +4530,7 @@ targeting the GNOME stack simple.")
                                   "vala-" version ".tar.xz"))
               (sha256
                (base32
-                "12y6p8wdjp01vmfhxg2cgh32xnyqq6ivblvrar9clnj6vc867qhx"))
+                "0xvhg32sxnfyvxn86hh9mn65mh1g189vhsjcahccj0zbwnrkqz3w"))
               (patches (search-patches "vala-0.52-fix-valagirparser.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments vala)

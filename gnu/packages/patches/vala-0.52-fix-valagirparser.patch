@@ -16,7 +16,7 @@ Index: vala-0.52.0/vala/valagirparser.c
  					_tmp31_ = _tmp30_;
  					if (g_strcmp0 (_tmp31_, "c:include") == 0) {
  						vala_gir_parser_parse_c_include (self);
-+					} else if (g_strcmp0 (_tmp31_, "doc:format") == 0) {
++					} else if (g_strcmp0 (_tmp30_, "doc:format") == 0) {
 +						vala_gir_parser_skip_element (self);
  					} else {
  						ValaSourceReference* _tmp32_;
@@ -42,7 +42,7 @@ Index: vala-0.52.0/libvaladoc/importer/girdocumentationimporter.c
  					_tmp21_ = _tmp20_;
  					if (g_strcmp0 (_tmp21_, "c:include") == 0) {
  						valadoc_importer_gir_documentation_importer_parse_c_include (self);
-+					} else if (g_strcmp0 (_tmp21_, "doc:format") == 0) {
++					} else if (g_strcmp0 (_tmp20_, "doc:format") == 0) {
 +						valadoc_importer_gir_documentation_importer_skip_element (self);
  					} else {
  						ValaMarkupReader* _tmp22_;
