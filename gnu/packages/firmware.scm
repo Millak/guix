@@ -65,6 +65,7 @@
   #:use-module (gnu packages embedded)
   #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -289,6 +290,7 @@ driver.")
                          gettext-minimal))
     (inputs (append
              (list bash-completion
+                   elogind
                    libgudev
                    libxmlb
                    sqlite
