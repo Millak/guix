@@ -683,19 +683,19 @@ kilobytes of RAM.")
                 "1r518q11qwx9zr1niqjh4ci63x1s51gx6g8f3p3xzhxcy1aik12d"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list
-        ;; Do as if 'getentropy' were missing: Linux kernels before 3.17 lack its
-        ;; underlying 'getrandom' system call and ENOSYS isn't properly handled.
-        ;; See <https://lists.gnu.org/archive/html/guix-devel/2017-04/msg00235.html>.
-        "ac_cv_func_getentropy=no"
-        ;; FIXME It's using it's own bundled certificate, instead it should
-        ;; behave like OpenSSL by using environment variables.
-        (string-append "--with-openssldir=" (assoc-ref %outputs "out")
-                       "/share/libressl-"
-                       ,(package-version this-package))
-        ;; Provide a TLS-enabled netcat.
-        "--enable-nc")))
+     (list
+      #:configure-flags
+      #~(list
+         ;; Do as if 'getentropy' were missing: Linux kernels before 3.17 lack its
+         ;; underlying 'getrandom' system call and ENOSYS isn't properly handled.
+         ;; See <https://lists.gnu.org/archive/html/guix-devel/2017-04/msg00235.html>.
+         "ac_cv_func_getentropy=no"
+         ;; FIXME It's using it's own bundled certificate, instead it should
+         ;; behave like OpenSSL by using environment variables.
+         (string-append "--with-openssldir=" #$output
+                        "/share/libressl-"  #$(package-version this-package))
+         ;; Provide a TLS-enabled netcat.
+         "--enable-nc")))
     (properties
      `((release-monitoring-url . "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/")))
     (home-page "https://www.libressl.org/")
@@ -708,8 +708,8 @@ netcat implementation that supports TLS.")
     ;; non-copyleft licenses.
     (license (list license:openssl
                    (license:non-copyleft
-                     "file://COPYING"
-                     "See COPYING in the distribution.")))))
+                    "file://COPYING"
+                    "See COPYING in the distribution.")))))
 
 (define-public python-acme
   (package
