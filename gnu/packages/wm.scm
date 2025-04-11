@@ -80,6 +80,7 @@
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2870,6 +2871,29 @@ control module for StumpWM.")
     (description "This package provides a keyboard-driven divide-and-conquer
 mouse control mode for StumpWM.")
     (license (list license:gpl2+ license:gpl3+ license:bsd-2))))
+
+(define-public sbcl-stumpwm-stump-nm
+  (package
+    (inherit stumpwm-contrib)
+    (name "sbcl-stumpwm-stump-nm")
+    (arguments
+     '(#:asd-systems '("stump-nm")
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "util/stump-nm"))))))
+    (home-page "https://github.com/stumpwm/stumpwm-contrib")
+    (inputs (list stumpwm
+                  sbcl-babel
+                  sbcl-alexandria
+                  sbcl-dbus))
+    (synopsis "StumpWM NetworkManager integration")
+    (description "This module allows you to manage your Wi-Fi networks and VPN
+connections from within StumpWM itself.  It is intentionally pretty bare-bones in
+features, in that it allows you to enable/disable connections, and no more.  It is
+not a replacement for nmtui and/or nmcli.")
+    (license license:gpl3+)))
 
 (define-public sbcl-stumpwm-ttf-fonts
   (package
