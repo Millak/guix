@@ -9166,6 +9166,32 @@
                                       rust-windows-x86-64-msvc-0.52.6
                                       rust-zeroize-1.8.1
                                       rust-zeroize-derive-1.4.2))
+                     (breezy =>
+                             (list rust-aho-corasick-1.1.3
+                                   rust-autocfg-1.4.0
+                                   rust-cfg-if-1.0.0
+                                   rust-heck-0.5.0
+                                   rust-indoc-2.0.6
+                                   rust-lazy-static-1.5.0
+                                   rust-libc-0.2.171
+                                   rust-memchr-2.7.4
+                                   rust-memoffset-0.9.1
+                                   rust-once-cell-1.21.3
+                                   rust-portable-atomic-1.11.0
+                                   rust-proc-macro2-1.0.94
+                                   rust-pyo3-0.23.5
+                                   rust-pyo3-build-config-0.23.5
+                                   rust-pyo3-ffi-0.23.5
+                                   rust-pyo3-macros-0.23.5
+                                   rust-pyo3-macros-backend-0.23.5
+                                   rust-quote-1.0.40
+                                   rust-regex-1.11.1
+                                   rust-regex-automata-0.4.9
+                                   rust-regex-syntax-0.8.5
+                                   rust-syn-2.0.100
+                                   rust-target-lexicon-0.12.16
+                                   rust-unicode-ident-1.0.18
+                                   rust-unindent-0.2.4))
                      (c2rust =>
                              (list rust-addr2line-0.24.2
                                    rust-adler2-2.0.0

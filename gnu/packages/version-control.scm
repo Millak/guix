@@ -172,6 +172,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages sync)
@@ -187,7 +188,7 @@
 (define-public breezy
   (package
     (name "breezy")
-    (version "3.3.9")
+    (version "3.3.11")
     (source
      (origin
        (method url-fetch)
@@ -199,29 +200,31 @@
        (snippet '(for-each delete-file (find-files "." "\\pyx.c$")))
        (sha256
         (base32
-         "1n6mqd1iy50537kb4lsr52289yyr1agmkxpchxlhb9682zr8nn62"))))
-    (build-system cargo-build-system)
+         "0fxv7ca6qbrj6bvrbfgjrd9ldppa8zq8hc461rikh85c5xg9rjqi"))))
+    (build-system python-build-system)
     (arguments
      (list
-      #:cargo-inputs (list rust-lazy-static-1
-                           rust-pyo3-0.22
-                           rust-regex-1)
-      #:install-source? #f
       #:modules
-      '((guix build cargo-build-system)
-        ((guix build python-build-system) #:prefix py:)
+      '(((guix build cargo-build-system) #:prefix cargo:)
+        (guix build python-build-system)
         (guix build utils))
       #:imported-modules
       `(,@%cargo-build-system-modules
         ,@%python-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'ensure-no-mtimes-pre-1980
-            (assoc-ref py:%standard-phases 'ensure-no-mtimes-pre-1980))
-          (add-after 'ensure-no-mtimes-pre-1980 'enable-bytecode-determinism
-            (assoc-ref py:%standard-phases 'enable-bytecode-determinism))
-          (add-after 'enable-bytecode-determinism 'ensure-no-cythonized-files
-            (assoc-ref py:%standard-phases 'ensure-no-cythonized-files))
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
           (add-after 'unpack 'patch-test-shebangs
             (lambda _
               (substitute* (append (find-files "breezy/bzr/tests")
@@ -235,24 +238,7 @@
                 ;; AttributeError: module 'datetime' has no attribute 'UTC'
                 ;; This only works for python >= 3.11
                 (("datetime.UTC") "datetime.timezone.utc"))))
-          (replace 'build
-            (assoc-ref py:%standard-phases 'build))
-          (delete 'check)             ;moved after the install phase
-          (replace 'install
-            (assoc-ref py:%standard-phases 'install))
-          (add-after 'install 'add-install-to-pythonpath
-            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
-          (add-after 'add-install-to-pythonpath 'add-install-to-path
-            (assoc-ref py:%standard-phases 'add-install-to-path))
-          (add-after 'add-install-to-path 'install-completion
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out  (assoc-ref outputs "out"))
-                     (bash (string-append out "/share/bash-completion"
-                                          "/completions")))
-                (install-file "contrib/bash/brz" bash))))
-          (add-after 'add-install-to-path 'wrap
-            (assoc-ref py:%standard-phases 'wrap))
-          (add-after 'wrap 'check
+          (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (setenv "BZR_EDITOR" "nano")
@@ -270,35 +256,40 @@
                         ;; Unknown Failure
                         "-x" "breezy.tests.test_plugins.TestLoadPluginAt.test_compiled_loaded"
                         "-x" "breezy.tests.test_plugins.TestPlugins.test_plugin_get_path_pyc_only"
-                        "-x" "breezy.tests.test_selftest.TestActuallyStartBzrSubprocess.test_start_and_stop_bzr_subprocess_send_signal"))))
-          (add-before 'strip 'rename-pth-file
-            (assoc-ref py:%standard-phases 'rename-pth-file)))))
-    (native-inputs (list gettext-minimal
-                         python-wrapper
-                         python-cython
-                         python-setuptools
-                         python-setuptools-gettext
-                         python-setuptools-rust
-                         python-tomli
-                         python-wheel
-                         ;; tests
-                         nano
-                         python-testtools
-                         python-packaging
-                         python-subunit))
-    (inputs (list python-configobj
-                  python-dulwich
-                  python-fastbencode
-                  python-fastimport
-                  python-launchpadlib
-                  python-merge3
-                  python-paramiko
-                  python-gpg
-                  python-patiencediff
-                  python-pygithub
-                  python-pyyaml
-                  python-tzlocal
-                  python-urllib3))
+                        "-x" "breezy.tests.test_selftest.TestActuallyStartBzrSubprocess.test_start_and_stop_bzr_subprocess_send_signal")))))))
+    (native-inputs
+     (append
+      (list gettext-minimal
+            python-cython
+            python-setuptools
+            python-setuptools-gettext
+            python-setuptools-rust
+            python-tomli
+            python-wheel
+            rust
+            `(,rust "cargo")
+            ;; tests
+            nano
+            python-testtools
+            python-packaging
+            python-subunit)
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs (cons* python-configobj
+                   python-dulwich
+                   python-fastbencode
+                   python-fastimport
+                   python-launchpadlib
+                   python-merge3
+                   python-paramiko
+                   python-gpg
+                   python-patiencediff
+                   python-pygithub
+                   python-pyyaml
+                   python-tzlocal
+                   python-urllib3
+                   (cargo-inputs 'breezy)))
     (home-page "https://www.breezy-vcs.org/")
     (synopsis "Decentralized revision control system")
     (description
