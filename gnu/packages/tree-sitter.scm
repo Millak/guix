@@ -432,8 +432,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-dockerfile
   (tree-sitter-grammar
    "dockerfile" "Dockerfile"
-   "0kf4c4xs5naj8lpcmr3pbdvwj526wl9p6zphxxpimbll7qv6qfnd"
-   "0.1.2"
+   "09iw9mqlpgsi6ak4mxrv16anvmbyap6vf61r2pi2lqdp9h1mp7g0"
+   "0.2.0"
    #:repository-url "https://github.com/camdencheek/tree-sitter-dockerfile"))
 
 (define-public tree-sitter-erlang
