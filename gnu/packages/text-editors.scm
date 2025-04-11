@@ -467,45 +467,13 @@ competitive (as in keystroke count) with Vim.")
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-clap" ,rust-clap-4)
-        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
-        ("rust-daemonize" ,rust-daemonize-0.5)
-        ("rust-diffs" ,rust-diffs-0.5)
-        ("rust-dirs" ,rust-dirs-5)
-        ("rust-enum-primitive" ,rust-enum-primitive-0.1)
-        ("rust-fs4" ,rust-fs4-0.8)
-        ("rust-glob" ,rust-glob-0.3)
-        ("rust-indoc" ,rust-indoc-2)
-        ("rust-itertools" ,rust-itertools-0.13)
-        ("rust-jsonrpc-core" ,rust-jsonrpc-core-18)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-lsp-types" ,rust-lsp-types-0.95)
-        ("rust-mio" ,rust-mio-1)
-        ("rust-notify-debouncer-full" ,rust-notify-debouncer-full-0.3)
-        ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.9)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-ropey" ,rust-ropey-1)
-        ;("rust-sentry" ,rust-sentry-0.35)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-repr" ,rust-serde-repr-0.1)
-        ("rust-slog" ,rust-slog-2)
-        ("rust-slog-scope" ,rust-slog-scope-4)
-        ("rust-sloggers" ,rust-sloggers-2)
-        ("rust-toml" ,rust-toml-0.8)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-url" ,rust-url-2)
-        ("rust-whoami" ,rust-whoami-1))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-optional-crash-reporting
            (lambda _
              (substitute* "Cargo.toml"
                ((".*sentry.*") "")))))))
+    (inputs (cargo-inputs 'kak-lsp))
     (home-page "https://github.com/kak-lsp/kak-lsp")
     (synopsis "Language Server Protocol (LSP) client for Kakoune")
     (description
