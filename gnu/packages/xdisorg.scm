@@ -3574,7 +3574,12 @@ using @command{dmenu}.")
            #:configure-flags #~(list "-Denable-cairo=enabled"
                                      "-Dpng-backend=libpng"
                                      "-Dsvg-backend=librsvg")))
-    (native-inputs (list pkg-config scdoc tllist))
+    (native-inputs (append (list pkg-config scdoc tllist)
+                           (if (%current-target-system)
+                               ;; for wayland-scanner
+                               (list pkg-config-for-build
+                                     wayland)
+                               (list))))
     (inputs (list cairo
                   fcft
                   fontconfig
