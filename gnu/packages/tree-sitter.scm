@@ -557,8 +557,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-python
   (tree-sitter-grammar
    "python" "Python"
-   "1sxz3npk3mq86abcnghfjs38nzahx7nrn3wdh8f8940hy71d0pvi"
-   "0.20.4"))
+   "0a108sfqcsxrp54lapk7k3kq6fmz8745z5q99wpn3i1cqpi9slzg"
+   "0.23.6"))
 
 (define-public tree-sitter-r
   ;; No tags
