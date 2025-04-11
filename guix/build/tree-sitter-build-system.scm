@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,6 +53,8 @@ and replace development dependencies with tree-sitter grammar node modules."
      (map (match-lambda
             (("dependencies" dependencies ...)
              '("dependencies"))
+            (("peerDependencies" peer-dependencies ...)
+             '("peerDependencies"))
             (("devDependencies" dev-dependencies ...)
              `("devDependencies"
                ,@(filter-map (match-lambda
@@ -75,14 +78,15 @@ and replace development dependencies with tree-sitter grammar node modules."
 (define* (build #:key grammar-directories #:allow-other-keys)
   (for-each (lambda (dir)
               (with-directory-excursion dir
-                ;; Avoid generating binding code for other languages, we do
-                ;; not support this use-case yet and it relies on running
-                ;; `node-gyp' to build native addons.
-                (invoke "tree-sitter" "generate" "--no-bindings")))
+                (invoke "tree-sitter" "generate")))
             grammar-directories))
 
-(define* (check #:key grammar-directories tests? #:allow-other-keys)
+(define* (check #:key grammar-directories tests? target #:allow-other-keys)
   (when tests?
+    (setenv "CC"
+            (if target
+                (string-append target "-gcc")
+                "gcc"))
     (for-each (lambda (dir)
                 (with-directory-excursion dir
                   (invoke "tree-sitter" "test")))
@@ -111,6 +115,7 @@ and replace development dependencies with tree-sitter grammar node modules."
                    "-O2"
                    "-g"
                    "-o" ,(string-append lib "/libtree-sitter-" lang ".so")
+                   "-Isrc"
                    ;; An additional `scanner.{c,cc}' file is sometimes
                    ;; provided.
                    ,@(cond
