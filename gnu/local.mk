@@ -1335,7 +1335,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/fulcrum-1.9.1-unbundled-libraries.patch	\
   %D%/packages/patches/fuse-glibc-2.34.patch			\
   %D%/packages/patches/fuse-overlapping-headers.patch		\
-  %D%/packages/patches/fuzzel-fix-gcc-error.patch		\
   %D%/packages/patches/fuzzylite-relative-path-in-tests.patch	\
   %D%/packages/patches/fuzzylite-use-catch2.patch		\
   %D%/packages/patches/fuzzylite-soften-float-equality.patch	\

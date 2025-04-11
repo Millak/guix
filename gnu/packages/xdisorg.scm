@@ -64,7 +64,7 @@
 ;;; Copyright © 2022 Mehmet Tekman <mtekman89@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
-;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Spencer Peters <spencerpeters@protonmail.com>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
@@ -3559,7 +3559,7 @@ using @command{dmenu}.")
 (define-public fuzzel
   (package
     (name "fuzzel")
-    (version "1.11.1")
+    (version "1.12.0")
     (home-page "https://codeberg.org/dnkl/fuzzel")
     (source (origin
               (method git-fetch)
@@ -3567,9 +3567,7 @@ using @command{dmenu}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dz451sjzglznkq9jmmcqm2m5y9kj1nx5zrdln56nmnbyyy4gkhl"))
-              (patches
-                (search-patches "fuzzel-fix-gcc-error.patch"))))
+                "0hsw98v499bz2nxvlw3ykq5qyyad3ci5a7x723r3cl84brabqrp3"))))
     (build-system meson-build-system)
     (arguments
      (list #:build-type "release"
