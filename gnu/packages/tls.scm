@@ -681,6 +681,7 @@ kilobytes of RAM.")
               (sha256
                (base32
                 "1r518q11qwx9zr1niqjh4ci63x1s51gx6g8f3p3xzhxcy1aik12d"))))
+    (outputs (list "out" "debug"))
     (build-system gnu-build-system)
     (arguments
      (list
