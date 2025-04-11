@@ -238,14 +238,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.38")
+    (version "2.39")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "11fv2klyc16sfma0zy8phmp4x61w0hswxfwdds10gwa8i7qgdznn"))))
+        (base32 "00z57dk0cjsv4v1andkir8h98kayg78dpyc7gapv6zsdaxyilmb2"))))
     (build-system cargo-build-system)
     (native-inputs
      (append
@@ -257,42 +257,19 @@ cards.")
            (list ruby-asciidoctor/minimal)
            '())))
     (inputs
-     (list curl
-           json-c
-           libxml2
-           ncurses
-           stfl
-           sqlite))
+     (cons* curl
+            json-c
+            libxml2
+            ncurses
+            stfl
+            sqlite
+            (cargo-inputs 'newsboat)))
     (arguments
      (list
        #:modules '((guix build cargo-build-system)
                    (guix build utils)
                    ((guix build gnu-build-system) #:prefix gnu:))
        #:install-source? #f
-       #:cargo-inputs
-       (list rust-backtrace-0.3
-             rust-bitflags-2
-             rust-chrono-0.4
-             rust-curl-sys-0.4
-             rust-cxx-1
-             rust-cxx-build-1
-             rust-fastrand-2
-             rust-gettext-rs-0.7
-             rust-httpmock-0.7
-             rust-lexopt-0.3
-             rust-libc-0.2
-             rust-md5-0.7
-             rust-natord-1
-             rust-nom-7
-             rust-percent-encoding-2
-             rust-url-2
-             rust-unicode-width-0.1
-             rust-unicode-segmentation-1
-             rust-xdg-2)
-       #:cargo-development-inputs
-       (list rust-tempfile-3
-             rust-proptest-1
-             rust-section-testing-0.0.5)
        #:phases
        #~(modify-phases %standard-phases
            #$@(if (not (this-package-native-input "ruby-asciidoctor"))
