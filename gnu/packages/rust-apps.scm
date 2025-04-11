@@ -1083,129 +1083,25 @@ highlighting tool to ease code review from your terminal.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-          "0md332fch4b87akdvljzxp4m2k5yri7cpkz3n54jc762j7j9qmrz"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (substitute* "Cargo.toml"
-             ;; to make it less brittle matching on the specific versions,
-             ;; at some point matches will clash, may be better to match
-             ;; the lib name in Cargo.toml.orig
-             ;; assert-cmd: 0.61 wants >=2, < 2.0.9
-             (("(version.{,4})(>= 2, < 2.0.9)(.{,1})" all front ver)
-                    (string-append front "^2\""))
-             ;; cc: 0.61 wants =1.1.30
-             (("(version.{,4})(1.1.30)(.{,1})" all start ver end)
-                    (string-append start "^1" end))
-             ;; home
-             (("(version.{,4})(>= 0.5, < 0.5.9)(.{,1})" all start ver end)
-                    (string-append start "^0.5" end))
-             ;; ignore
-             (("(version.{,4})(>= 0.4, < 0.4.22)(.{,1})" all start ver end)
-                    (string-append start "^0.4" end))
-             ;; libmimalloc-sys
-             (("0.1.24") "0.1.*")
-             ; mimalloc
-             (("(version.{,4})(0.1.28)(.{,1})" all start ver end)
-                    (string-append start "^0.1" end))
-             ;; predicates
-             (("(version.{,4})(2.1.0)(.{,1})" all start ver end)
-                    (string-append start "^2" end))
-             ;; regex (0.56.1)
-             (("(version.{,4})(1.10.4)(.{,1})" all start ver end)
-                    (string-append start "^1" end))
-             ;; smallvec
-             (("(version.{,4})(1.13.2)(.{,1})" all start ver end)
-                    (string-append start "^1" end))
-             ;; tree_magic_mini: wants =3.1.5
-             (("(version.{,4})(3.1.5)(.{,1})" all start ver end)
-                    (string-append start "^3" end))
-             ;; typed-arena
-             (("2.0.2") "^2"))))))
+         "0md332fch4b87akdvljzxp4m2k5yri7cpkz3n54jc762j7j9qmrz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-         `("--release" "--"
-           "--skip=display::side_by_side::tests::test_display_hunks"
-           "--skip=display::style::tests::split_string_cjk"
-           "--skip=display::style::tests::split_string_cjk2"
-           "--skip=display::style::tests::split_string_simple"
-           "--skip=display::style::tests::split_string_unicode"
-           "--skip=display::style::tests::test_combining_char"
-           "--skip=display::style::tests::test_split_and_apply"
-           ,(string-append "--skip=display::style::tests::"
-               "test_split_and_apply_gap_between_styles_on_wrap_boundary")
-           "--skip=display::style::tests::test_split_and_apply_trailing_text"
-           "--skip=display::style::tests::test_split_and_apply_trailing_text_newline")
-       #:cargo-inputs
-         (("rust-bumpalo" ,rust-bumpalo-3)
-          ("rust-cc" ,rust-cc-1)  ;build req
-          ("rust-clap" ,rust-clap-4)
-          ("rust-crossterm" ,rust-crossterm-0.28)
-          ("rust-encoding-rs" ,rust-encoding-rs-0.8)
-          ("rust-glob" ,rust-glob-0.3)
-          ("rust-hashbrown" ,rust-hashbrown-0.14)
-          ("rust-humansize" ,rust-humansize-2)
-          ("rust-ignore" ,rust-ignore-0.4)
-          ("rust-itertools" ,rust-itertools-0.11)
-          ("rust-lazy-static" ,rust-lazy-static-1)
-          ("rust-libc" ,rust-libc-0.2)
-          ("rust-libmimalloc-sys" ,rust-libmimalloc-sys-0.1)
-          ("rust-line-numbers" ,rust-line-numbers-0.3)
-          ("rust-log" ,rust-log-0.4)
-          ("rust-mimalloc" ,rust-mimalloc-0.1)
-          ("rust-owo-colors" ,rust-owo-colors-3)
-          ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
-          ("rust-radix-heap" ,rust-radix-heap-0.4)
-          ("rust-rayon" ,rust-rayon-1)  ;also a build req
-          ("rust-regex" ,rust-regex-1)
-          ("rust-rustc-hash" ,rust-rustc-hash-2)
-          ("rust-serde" ,rust-serde-1)
-          ("rust-serde-json" ,rust-serde-json-1)
-          ("rust-smallvec" ,rust-smallvec-1)
-          ("rust-streaming-iterator" ,rust-streaming-iterator-0.1)
-          ("rust-strsim" ,rust-strsim-0.10)
-          ("rust-strum" ,rust-strum-0.26)
-          ("rust-tree-sitter" ,rust-tree-sitter-0.24)
-          ("rust-tree-sitter-bash", rust-tree-sitter-bash-0.23)
-          ("rust-tree-sitter-c" ,rust-tree-sitter-c-0.23)
-          ("rust-tree-sitter-c-sharp" ,rust-tree-sitter-c-sharp-0.23)
-          ("rust-tree-sitter-cpp" ,rust-tree-sitter-cpp-0.23)
-          ("rust-tree-sitter-css" ,rust-tree-sitter-css-0.23)
-          ("rust-tree-sitter-elixir" ,rust-tree-sitter-elixir-0.3)
-          ("rust-tree-sitter-go" ,rust-tree-sitter-go-0.23)
-          ("rust-tree-sitter-haskell" ,rust-tree-sitter-haskell-0.23)
-          ("rust-tree-sitter-html" ,rust-tree-sitter-html-0.23)
-          ("rust-tree-sitter-java" ,rust-tree-sitter-java-0.23)
-          ("rust-tree-sitter-javascript" ,rust-tree-sitter-javascript-0.23)
-          ("rust-tree-sitter-json" ,rust-tree-sitter-json-0.24)
-          ("rust-tree-sitter-julia" ,rust-tree-sitter-julia-0.23)
-          ("rust-tree-sitter-language" ,rust-tree-sitter-language-0.1)
-          ("rust-tree-sitter-lua" ,rust-tree-sitter-lua-0.2)
-          ("rust-tree-sitter-make" ,rust-tree-sitter-make-1)
-          ("rust-tree-sitter-nix" ,rust-tree-sitter-nix-0.0.2)
-          ("rust-tree-sitter-objc" ,rust-tree-sitter-objc-3)
-          ("rust-tree-sitter-ocaml" ,rust-tree-sitter-ocaml-0.23)
-          ("rust-tree-sitter-php" ,rust-tree-sitter-php-0.23)
-          ("rust-tree-sitter-python" ,rust-tree-sitter-python-0.23)
-          ("rust-tree-sitter-ruby" ,rust-tree-sitter-ruby-0.23)
-          ("rust-tree-sitter-rust" ,rust-tree-sitter-rust-0.23)
-          ("rust-tree-sitter-scala" ,rust-tree-sitter-scala-0.23)
-          ("rust-tree-sitter-toml-ng" ,rust-tree-sitter-toml-ng-0.7)
-          ("rust-tree-sitter-typescript" ,rust-tree-sitter-typescript-0.23)
-          ("rust-tree-sitter-xml" ,rust-tree-sitter-xml-0.7)
-          ("rust-tree-sitter-yaml" ,rust-tree-sitter-yaml-0.7)
-          ("rust-tree-magic-mini" ,rust-tree-magic-mini-3)
-          ("rust-typed-arena" ,rust-typed-arena-2)
-          ("rust-unicode-width" ,rust-unicode-width-0.1)
-          ("rust-version-check" ,rust-version-check-0.9)  ;build req
-          ("rust-wu-diff" ,rust-wu-diff-0.1))
-       #:cargo-development-inputs
-         (("rust-assert-cmd" ,rust-assert-cmd-2)
-          ("rust-predicates" ,rust-predicates-2)
-          ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+     `(#:install-source? #f
+       #:cargo-test-flags
+       `("--release" "--"
+         "--skip=display::side_by_side::tests::test_display_hunks"
+         "--skip=display::style::tests::split_string_cjk"
+         "--skip=display::style::tests::split_string_cjk2"
+         "--skip=display::style::tests::split_string_simple"
+         "--skip=display::style::tests::split_string_unicode"
+         "--skip=display::style::tests::test_combining_char"
+         "--skip=display::style::tests::test_split_and_apply"
+         ,(string-append "--skip=display::style::tests::"
+                         "test_split_and_apply_gap_between_styles_on_wrap_boundary")
+         "--skip=display::style::tests::test_split_and_apply_trailing_text"
+         "--skip=display::style::tests::test_split_and_apply_trailing_text_newline")))
     (inputs
-      (list mimalloc))
+     (cons mimalloc (cargo-inputs 'difftastic)))
     (home-page "https://difftastic.wilfred.me.uk/")
     (synopsis "Structural diff command that understands syntax")
     (description
