@@ -30416,7 +30416,7 @@ A ngircd-global record object used to specify global options.
 @item @code{limits} (type: maybe-ngircd-limits)
 The ngircd-limits record object used to specify limits options.
 
-@item @code{options} (type: maybe-ngircd-options)
+@item @code{options} (type: ngircd-options)
 The ngircd-options record object used to specify optional features and
 configuration options.
 

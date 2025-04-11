@@ -1436,8 +1436,9 @@ for different users.  Refer to @samp{man 5 ngircd.conf} for more details.")
   (limits
    maybe-ngircd-limits
    "The ngircd-limits record object used to specify limits options.")
+  ;; Always use a ngircd-options default to ensure PAM is disabled by default.
   (options
-   maybe-ngircd-options
+   (ngircd-options (ngircd-options))
    "The ngircd-options record object used to specify optional features and
 configuration options.")
   (ssl
