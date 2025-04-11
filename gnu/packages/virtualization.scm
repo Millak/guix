@@ -2924,33 +2924,12 @@ which is a hypervisor.")
                (base32 "1ab6mgrvnd49m0ay9fbfyd02xaf3qvkwhyyavra4a7wpz0brg54h"))))
     (build-system cargo-build-system)
     (arguments
-     (list
-       #:install-source? #f
-       #:cargo-inputs
-       (list rust-futures-0.3
-             rust-libc-0.2
-             rust-tokio-1
-             rust-netlink-packet-core-0.7
-             rust-netlink-packet-route-0.18
-             rust-netlink-proto-0.11
-             rust-rtnetlink-0.14
-             rust-async-stream-0.3
-             rust-os-info-3
-             rust-pnet-datalink-0.35    ; any version
-             rust-pnet-base-0.35        ; any version
-             rust-ipnetwork-0.20        ; any version
-             rust-log-0.4
-             rust-env-logger-0.10
-             rust-clap-4
-             rust-xenstore-rs-0.6
-             ;; Unix-specific dependencies
-             rust-uname-0.1
-             rust-syslog-6
-             rust-sysctl-0.5)))
+     (list #:install-source? #f))
     (native-inputs
      (list pkg-config
            xen ; Pull in Xen for libxenstore
            clang))
+    (inputs (cargo-inputs 'xen-guest-agent))
     (home-page "https://gitlab.com/xen-project/xen-guest-agent")
     (synopsis "Provides guest VM information to hosting Xen hypervisor")
     (description "The agent gathers some guest information, and writes them to
