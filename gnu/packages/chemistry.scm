@@ -477,7 +477,7 @@ materials, biochemistry, or related areas.")
 (define-public spglib
   (package
     (name "spglib")
-    (version "1.16.0")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
@@ -485,26 +485,41 @@ materials, biochemistry, or related areas.")
              (url "https://github.com/spglib/spglib")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1kzc956m1pnazhz52vspqridlw72wd8x5l3dsilpdxl491aa2nws"))
+        (base32 "0x5igrqwx7r2shysmi9sqcjg4hpb7hba3ddlwg05z6c57a3ifbqc"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(#:test-target "check"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-header-install-dir
-           (lambda _
-             ;; As of the writing of this package, CMake and GNU build systems
-             ;; install the header to two different location.  This patch makes
-             ;; the CMake build system's choice of header directory compatible
-             ;; with the GNU build system's choice and with what avogadrolibs
-             ;; expects.
-             ;; See https://github.com/spglib/spglib/issues/75 and the relevant
-             ;; part of https://github.com/OpenChemistry/avogadroapp/issues/97.
-             (substitute* "CMakeLists.txt"
-               (("\\$\\{CMAKE_INSTALL_INCLUDEDIR\\}" include-dir)
-                (string-append include-dir "/spglib")))
-             #t)))))
+     '(#:tests? #f ; tests want to clone a git repository, which won't work
+       #:configure-flags '("-DSPGLIB_WITH_TESTS=OFF")
+       #:phases (modify-phases %standard-phases
+                  (add-before 'configure 'patch-files (lambda _ (substitute* "CMakeLists.txt"
+                      (("include\\(cmake/DynamicVersion.cmake\\)")
+                       "")
+                      (("dynamic_version.*")
+                       "")
+                      (("PROJECT_PREFIX.*")
+                       "")
+                      (("FALLBACK_VERSION.*")
+                       "set (PROJECT_VERSION 2.5.0")
+                      (("\\$\\{PROJECT_VERSION_FULL\\}")
+                       "2.5.0")
+                      (("\\$\\{GIT_COMMIT\\}")
+                       "\"\""))
+                    (substitute* "src/CMakeLists.txt"
+                      ((".*Spglib_GitHash.*")
+                       ""))))
+                  (add-after 'unpack 'patch-header-install-dir
+                    (lambda _
+                      ;; As of the writing of this package, CMake and GNU build systems
+                      ;; install the header to two different location.  This patch makes
+                      ;; the CMake build system's choice of header directory compatible
+                      ;; with the GNU build system's choice and with what avogadrolibs
+                      ;; expects.
+                      ;; See https://github.com/spglib/spglib/issues/75 and the relevant
+                      ;; part of https://github.com/OpenChemistry/avogadroapp/issues/97.
+                      (substitute* "CMakeLists.txt"
+                        (("\\$\\{CMAKE_INSTALL_INCLUDEDIR\\}" include-dir)
+                         (string-append include-dir "/spglib"))))))))
     (home-page "https://spglib.github.io/spglib/index.html")
     (synopsis "Library for crystal symmetry search")
     (description "Spglib is a library for finding and handling crystal
