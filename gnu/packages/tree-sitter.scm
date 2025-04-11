@@ -320,29 +320,10 @@ which will be used as a snippet in origin."
    "0.23.2"))
 
 (define-public tree-sitter-javascript
-  ;; Commit required by tree-sitter-typescript 0.20.3.
-  (let ((commit "f772967f7b7bc7c28f845be2420a38472b16a8ee")
-        (revision "22"))
-    (tree-sitter-grammar
-     "javascript" "JavaScript(JSX)"
-     "0vp7z57scpbcvyxpya06lnpz9f5kjdb66wjlkrp684xwjjgq1wxd"
-     (git-version "0.20.0" revision commit)
-     #:commit commit
-     #:get-cleanup-snippet
-     (lambda (grammar-directories)
-       #~(begin
-           (use-modules (guix build utils))
-           (delete-file "tree-sitter-javascript.wasm")
-           (delete-file "binding.gyp")
-           (delete-file-recursively "bindings")
-           (for-each
-            (lambda (lang)
-              (with-directory-excursion lang
-                (delete-file "src/grammar.json")
-                (delete-file "src/node-types.json")
-                (delete-file "src/parser.c")
-                (delete-file-recursively "src/tree_sitter")))
-            '#$grammar-directories))))))
+  (tree-sitter-grammar
+   "javascript" "JavaScript(JSX)"
+   "03v1gpr5lnifrk4lns690fviid8p02wn7hfdwp3ynp7lh1cid63a"
+   "0.23.1"))
 
 (define-public tree-sitter-typescript
   (tree-sitter-grammar
