@@ -366,8 +366,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-cmake
   (tree-sitter-grammar
    "cmake" "CMake"
-   "1z49jdachwxwbzrrapskpi2kxq3ydihfj45ab9892gbamfij2zp5"
-   "0.4.1"
+   "0b30ci696iabk3hm03rm4c3qi72d7xsbipc6g0ixxxj2qihdl2fy"
+   "0.7.0"
    #:repository-url "https://github.com/uyha/tree-sitter-cmake"))
 
 (define-public tree-sitter-devicetree
