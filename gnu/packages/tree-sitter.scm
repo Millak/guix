@@ -481,8 +481,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-go
   (tree-sitter-grammar
    "go" "Go"
-   "0wlhwcdlaj74japyn8wjza0fbwckqwbqv8iyyqdk0a5jf047rdqv"
-   "0.20.0"))
+   "0yi8if9mqzzcs4qflflz90hhaxkzlq54wia3s0iiqzfqxk24a61g"
+   "0.23.4"))
 
 (define-public tree-sitter-haskell
   ;; There are a lot of additions, the last tag was placed more than 4 years ago
