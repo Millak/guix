@@ -587,6 +587,12 @@ interface.")
                 (string-append "os.path.join(\""
                                (assoc-ref outputs "out")
                                "\", \"share\", \"qutebrowser\"")))))
+         (add-after 'build 'build-docs
+           (lambda _
+               (substitute* "scripts/asciidoc2html.py"
+                 (("sys.executable, \"-m\", \"asciidoc\"")
+                  "\"asciidoc\""))
+               (invoke "python" "scripts/asciidoc2html.py")))
          (add-before 'check 'set-env-offscreen
            (lambda _
              (setenv "QT_QPA_PLATFORM" "offscreen")))
