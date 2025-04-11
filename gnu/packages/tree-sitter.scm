@@ -454,12 +454,22 @@ which will be used as a snippet in origin."
          #$(tree-sitter-delete-generated-files grammar-directories))))))
 
 (define-public tree-sitter-elm
-  (tree-sitter-grammar
-   "elm" "Elm"
-   "0b5jpj8bnil1ylisyc4w48j8a30dyf3zylhidj73mlrb8rf7xm2s"
-   "5.6.3"
-   #:article "an"
-   #:repository-url "https://github.com/elm-tooling/tree-sitter-elm"))
+  (let ((commit "3b373a3ccb48f31aa4b7ddc9092e2f5e24ab7aed")
+        (revision "0"))
+    (tree-sitter-grammar
+     "elm" "Elm"
+     "1cfkqi1vgxg7bkdda1vy9wqz6ap61fwjcdv9qzkcfzxaqr5z8dbw"
+     (git-version "5.7.0" revision commit)
+     #:article "an"
+     #:repository-url "https://github.com/elm-tooling/tree-sitter-elm"
+     #:commit commit
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (for-each
+            delete-file
+            '("docs/js/tree-sitter-elm.wasm" "docs/js/tree-sitter.wasm"))
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
 
 (define-public tree-sitter-gomod
   (tree-sitter-grammar
