@@ -373,9 +373,14 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-devicetree
   (tree-sitter-grammar
    "devicetree" "Devicetree"
-   "0igkwrlgbwphn8dwj91fy2film2mxz4kjdjnc141kmwi4czglwbq"
-   "0.8.0"
+   "13rm15p9mrdklys0d720xy386pnvirxxjswg0wi1m87hs8i49qns"
+   "0.11.1"
    #:repository-url "https://github.com/joelspadin/tree-sitter-devicetree"
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (for-each delete-file '("parser.exp" "parser.lib"))
+         #$(tree-sitter-delete-generated-files grammar-directories)))
    #:license license:expat))
 
 (define-public tree-sitter-elixir
