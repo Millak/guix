@@ -29367,6 +29367,26 @@ When @code{gac-automatically-push-p} is non-nil, it also tries to push to the
 current upstream.")
     (license license:gpl3+)))
 
+(define-public emacs-smooth-scroll
+  (package
+    (name "emacs-smooth-scroll")
+    (version "1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/k-talo/smooth-scroll.el")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d2qzpgh486cp0aa12ky1np1i49d0gskvldfw627v55qsm6ql9ll"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/k-talo/smooth-scroll.el")
+    (synopsis "Minor mode for smooth and in-place scrolling in Emacs")
+    (description "This package provides the @code{smooth-scroll-mode} minor mode
+ for Emacs, enabling smooth and in-place scrolling functionality.")
+    (license license:gpl3+)))
+
 (define-public emacs-scroll-on-drag
   (let ((commit "179c2acecc48d3ceca4b449b2a225d684002bb32")
         (revision "2"))
