@@ -467,23 +467,8 @@ taken from the NSS package and thus ultimately from the Mozilla project.")
          "--skip=handlers::test::test_handle_getservbyport_port"
          "--skip=handlers::test::test_handle_getservbyport_port_proto"
          "--skip=handlers::test::test_handle_getservbyport_port_proto_aliases")
-      #:install-source? #f
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-atoi" ,rust-atoi-2)
-        ("rust-slog" ,rust-slog-2)
-        ("rust-slog-async" ,rust-slog-async-2)
-        ("rust-slog-term" ,rust-slog-term-2)
-        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
-        ("rust-nix" ,rust-nix-0.28)
-        ("rust-num-derive" ,rust-num-derive-0.3)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-sd-notify" ,rust-sd-notify-0.4)
-        ("rust-static-assertions" ,rust-static-assertions-1)
-        ("rust-dns-lookup" ,rust-dns-lookup-2))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.5)
-        ("rust-temp-env" ,rust-temp-env-0.3))))
+       #:install-source? #f))
+    (inputs (cargo-inputs 'nsncd))
     (home-page "https://github.com/twosigma/nsncd")
     (synopsis "The name service non-caching daemon")
     (description
