@@ -44,6 +44,15 @@ case "$(guix refresh -t test idutils 2>&1)" in
     *"$idutils_version"*"already the latest version"*) true;;
     *) false;;
 esac
+
+# No-op when updating to same version.
+case "$(guix refresh -t test -u idutils \
+--target-version=$idutils_version 2>&1)" in
+    *downgrading*) false;;
+    *updating*) false;;
+    *) true;;
+esac
+
 guix refresh -t test libreoffice # XXX: should return non-zero?
 case "$(guix refresh -t test libreoffice 2>&1)" in
     *"greater than the latest known version"*"1.0"*) true;;

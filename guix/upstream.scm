@@ -525,39 +525,44 @@ downgrade.  When PARTIAL-VERSION? is true, treat VERSION as having been only
 partially specified, in which case the package will be updated to the newest
 compatible version if there are no exact match for VERSION.  For example,
 providing \"46\" as the version may update the package to version \"46.6.4\"."
+  (define (update* source)
+    (let ((method (match (package-source package)
+                    ((? origin? origin)
+                     (origin-method origin))
+                    (_
+                     #f))))
+      (match (assq method %method-updates)
+        (#f
+         (raise (make-compound-condition
+                 (formatted-message (G_ "cannot download for \
+this method: ~s")
+                                    method)
+                 (condition
+                  (&error-location
+                   (location (package-location package)))))))
+        ((_ . update)
+         (update store package source
+                 #:key-server key-server
+                 #:key-download key-download)))))
+
   (match (package-latest-release package updaters
                                  #:version version
                                  #:partial-version? partial-version?)
     ((? upstream-source? source)
-     (if (or (version>? (upstream-source-version source)
-                        (package-version package))
-             (and version
-                  (begin
-                    (warning (package-location package)
-                             (G_ "downgrading '~a' from ~a to ~a~%")
-                             (package-name package)
-                             (package-version package)
-                             (upstream-source-version source))
-                    #t)))
-         (let ((method (match (package-source package)
-                         ((? origin? origin)
-                          (origin-method origin))
-                         (_
-                          #f))))
-           (match (assq method %method-updates)
-             (#f
-              (raise (make-compound-condition
-                      (formatted-message (G_ "cannot download for \
-this method: ~s")
-                                         method)
-                      (condition
-                       (&error-location
-                        (location (package-location package)))))))
-             ((_ . update)
-              (update store package source
-                      #:key-server key-server
-                      #:key-download key-download))))
-         (values #f #f #f)))
+     (case (version-compare (upstream-source-version source)
+                            (package-version package))
+       ((>)
+        (update* source))
+       ((<)
+        (and version
+             (warning (package-location package)
+                      (G_ "downgrading '~a' from ~a to ~a~%")
+                      (package-name package)
+                      (package-version package)
+                      (upstream-source-version source)))
+        (update* source))
+       (else
+        (values #f #f #f))))
     (#f
      ;; Warn rather than abort so that other updates can still take place.
      (if version
