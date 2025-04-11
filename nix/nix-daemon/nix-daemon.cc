@@ -165,6 +165,24 @@ static void setSigPollAction(bool enable)
 #endif
 }
 
+static void handleSignal(int signum)
+{
+    string name = program_invocation_short_name;
+    auto message = name + ": PID " + std::to_string(getpid())
+	+ " caught signal " + std::to_string(signum) + "\n";
+    writeFull(STDERR_FILENO, (unsigned char *) message.c_str(), message.length());
+    _isInterrupted = 1;
+    blockInt = 1;
+}
+
+static void setTerminationSignalHandler()
+{
+    auto signals = { SIGINT, SIGTERM, SIGHUP };
+    for (int signum: signals) {
+	signal(signum, handleSignal);
+    }
+}
+
 
 /* startWork() means that we're starting an operation for which we
    want to send out stderr to the client. */
@@ -802,6 +820,10 @@ static void processConnection(bool trusted, uid_t userId)
             querySetting("build-users-group", "") == "")
             throw Error("if you run `nix-daemon' as root, then you MUST set `build-users-group'!");
 #endif
+
+	/* Catch SIGTERM & co. to ensure proper termination: closing the store
+	   and its database, thereby deleting its WAL file.  */
+	setTerminationSignalHandler();
 
         /* Open the store. */
         store = std::shared_ptr<StoreAPI>(new LocalStore(reserveSpace));
