@@ -472,6 +472,10 @@
   (crate-source "base16ct" "0.2.0"
                 "1kylrjhdzk7qpknrvlphw8ywdnvvg39dizw9622w3wk5xba04zsc"))
 
+(define rust-base32-0.4.0
+  (crate-source "base32" "0.4.0"
+                "1ykwx8jhksqxghfgyw2pzikzjf4n9wqm1x2ww5wqyn68ssf6dki3"))
+
 (define rust-base64-0.21.7
   (crate-source "base64" "0.21.7"
                 "0rw52yvsk75kar9wgqfwgb414kvil1gn7mqkrhn9zf1537mpsacx"))
@@ -1435,6 +1439,10 @@
   (crate-source "digest" "0.10.7"
                 "14p2n6ih29x81akj097lvz7wi9b6b9hvls0lwrv7b6xwyy0s5ncy"))
 
+(define rust-directories-3.0.2
+  (crate-source "directories" "3.0.2"
+                "1mz1khca62zd48kphdy5hn4f8r55ywkyn23pjdbkj4h32zzh15p6"))
+
 (define rust-directories-4.0.1
   (crate-source "directories" "4.0.1"
                 "045jbj5y2f1fmjs9rfcw95y0vjydb2rqqhz1sdnqhdmxv96ms77m"))
@@ -1692,6 +1700,10 @@
 (define rust-env-logger-0.9.3
   (crate-source "env_logger" "0.9.3"
                 "1rq0kqpa8my6i1qcyhfqrn1g9xr5fbkwwbd42nqvlzn9qibncbm1"))
+
+(define rust-envy-0.4.2
+  (crate-source "envy" "0.4.2"
+                "0rar459p7pl19v6pbx98q3hi2hxfl8q1ndxxw5d4zd9cgway0irz"))
 
 (define rust-equivalent-1.0.2
   (crate-source "equivalent" "1.0.2"
@@ -3747,6 +3759,14 @@
   (crate-source "memoffset" "0.9.1"
                 "12i17wh9a9plx869g7j4whf62xw68k5zd4k0k5nh6ys5mszid028"))
 
+(define rust-merge-0.1.0
+  (crate-source "merge" "0.1.0"
+                "1sck0vhi9lk8a6mgky0rgn842fj7yspywidwbd963nmimf9yzfqh"))
+
+(define rust-merge-derive-0.1.0
+  (crate-source "merge_derive" "0.1.0"
+                "01wxhi7mqmp34l540wcfb24hb13vcbps4wlynas66bnsfra0g790"))
+
 (define rust-miette-5.10.0
   (crate-source "miette" "5.10.0"
                 "0vl5qvl3bgha6nnkdl7kiha6v4ypd6d51wyc4q1bvdpamr75ifsr"))
@@ -3929,6 +3949,23 @@
 (define rust-nibble-vec-0.1.0
   (crate-source "nibble_vec" "0.1.0"
                 "0hsdp3s724s30hkqz74ky6sqnadhp2xwcj1n1hzy4vzkz4yxi9bp"))
+
+(define rust-nitrokey-0.9.0
+  (crate-source "nitrokey" "0.9.0"
+                "0c8mj52ckvy1311vwxs6jpw16b2bihp5cc811isb96j9slcjvsyx"))
+
+(define rust-nitrokey-sys-3.7.0
+  (crate-source "nitrokey-sys" "3.7.0"
+                "0hcns32sclzf8xbdjg5iqndbn1b66l3j61zbgbl8ds8n6nind16q"
+                #:snippet '(delete-file-recursively "libnitrokey-v3.7")))
+
+(define rust-nitrokey-test-0.5.0
+  (crate-source "nitrokey-test" "0.5.0"
+                "197j9r2s4ydzbqfydza6v31mgcsgd29jpidz4psqawjdm49f8lg6"))
+
+(define rust-nitrokey-test-state-0.1.0
+  (crate-source "nitrokey-test-state" "0.1.0"
+                "00w817kl8q3sna924pzl72ybqljny14rdv1ixlj288fmsqp776x5"))
 
 (define rust-nix-0.22.3
   (crate-source "nix" "0.22.3"
@@ -4217,6 +4254,10 @@
 (define rust-number-prefix-0.4.0
   (crate-source "number_prefix" "0.4.0"
                 "1wvh13wvlajqxkb1filsfzbrnq0vrmrw298v2j3sy82z1rm282w3"))
+
+(define rust-numtoa-0.1.0
+  (crate-source "numtoa" "0.1.0"
+                "1vs9rhggqbql1p26x8nkha1j06wawwgb2jp5fs88b5gi7prvvy5q"))
 
 (define rust-nuon-0.103.0
   (crate-source "nuon" "0.103.0"
@@ -4925,6 +4966,10 @@
   (crate-source "profiling-procmacros" "1.0.16"
                 "0c7y2k4mz5dp2ksj1h4zbxsxq4plmjzccscdaml3h1pizdh2wpx6"))
 
+(define rust-progressing-3.0.2
+  (crate-source "progressing" "3.0.2"
+                "06sb1cxpkc8lx56s76c95cfljs0513nsnn35wd6w79sblwcxpdwp"))
+
 (define rust-proptest-1.6.0
   (crate-source "proptest" "1.6.0"
                 "0l4y4bb8hffv7cys7d59qwqdmvmqjfzz0x9vblc08209clqfkjhl"))
@@ -5219,6 +5264,10 @@
 (define rust-redox-syscall-0.5.11
   (crate-source "redox_syscall" "0.5.11"
                 "18qijn18r10haiglv4261wb0yh1agqqlvs0nxfy8yjbpsb307wfj"))
+
+(define rust-redox-termios-0.1.3
+  (crate-source "redox_termios" "0.1.3"
+                "1jzifsj7fqyksz4325l3azfzpyv027kjabf93zcmass3p9q5c510"))
 
 (define rust-redox-users-0.4.6
   (crate-source "redox_users" "0.4.6"
@@ -6057,6 +6106,14 @@
   (crate-source "strsim" "0.8.0"
                 "0sjsm7hrvjdifz661pjxq5w4hf190hx53fra8dfvamacvff139cf"))
 
+(define rust-structopt-0.3.26
+  (crate-source "structopt" "0.3.26"
+                "043sg3qxllann6q9i71d05qp3q13scmcvhxhd950ka2v8ij5qsqc"))
+
+(define rust-structopt-derive-0.4.18
+  (crate-source "structopt-derive" "0.4.18"
+                "1q5gcigmvw0cinjxzpyrkflliq5r1ivljmrvfrl3phcwgwraxdfw"))
+
 (define rust-strum-0.20.0
   (crate-source "strum" "0.20.0"
                 "0p5cslmdnz261kiwmm4h7qsmv9bh83r0f9lq6f2z2mxsnl4wa63k"))
@@ -6277,6 +6334,10 @@
   (crate-source "terminfo" "0.9.0"
                 "0qp6rrzkxcg08vjzsim2bw7mid3vi29mizrg70dzbycj0q7q3snl"
                 #:snippet '(delete-file-recursively "tests")))
+
+(define rust-termion-1.5.6
+  (crate-source "termion" "1.5.6"
+                "0zk023f0zkws358ll399cawvwdnd0wg8wad4g61kz766xbi8aw87"))
 
 (define rust-termtree-0.5.1
   (crate-source "termtree" "0.5.1"
@@ -11060,6 +11121,88 @@
                                  rust-zvariant-5.4.0
                                  rust-zvariant-derive-5.4.0
                                  rust-zvariant-utils-3.2.0))
+                     (nitrocli =>
+                               (list rust-aho-corasick-1.1.3
+                                     rust-anyhow-1.0.97
+                                     rust-autocfg-1.4.0
+                                     rust-base32-0.4.0
+                                     rust-bitflags-1.3.2
+                                     rust-bitflags-2.9.0
+                                     rust-cc-1.2.18
+                                     rust-cfg-if-1.0.0
+                                     rust-clap-2.34.0
+                                     rust-directories-3.0.2
+                                     rust-dirs-sys-0.3.7
+                                     rust-envy-0.4.2
+                                     rust-errno-0.3.11
+                                     rust-fastrand-2.3.0
+                                     rust-getrandom-0.1.16
+                                     rust-getrandom-0.2.15
+                                     rust-getrandom-0.3.2
+                                     rust-heck-0.3.3
+                                     rust-lazy-static-1.5.0
+                                     rust-libc-0.2.171
+                                     rust-libredox-0.1.3
+                                     rust-linux-raw-sys-0.9.4
+                                     rust-log-0.4.27
+                                     rust-memchr-2.7.4
+                                     rust-merge-0.1.0
+                                     rust-merge-derive-0.1.0
+                                     rust-nitrokey-0.9.0
+                                     rust-nitrokey-sys-3.7.0
+                                     rust-nitrokey-test-0.5.0
+                                     rust-nitrokey-test-state-0.1.0
+                                     rust-num-traits-0.2.19
+                                     rust-numtoa-0.1.0
+                                     rust-once-cell-1.21.3
+                                     rust-proc-macro-error-1.0.4
+                                     rust-proc-macro-error-attr-1.0.4
+                                     rust-proc-macro2-1.0.94
+                                     rust-progressing-3.0.2
+                                     rust-quote-1.0.40
+                                     rust-r-efi-5.2.0
+                                     rust-rand-core-0.5.1
+                                     rust-redox-syscall-0.2.16
+                                     rust-redox-termios-0.1.3
+                                     rust-redox-users-0.4.6
+                                     rust-regex-1.11.1
+                                     rust-regex-automata-0.4.9
+                                     rust-regex-syntax-0.8.5
+                                     rust-rustix-1.0.5
+                                     rust-serde-1.0.219
+                                     rust-serde-derive-1.0.219
+                                     rust-shlex-1.3.0
+                                     rust-structopt-0.3.26
+                                     rust-structopt-derive-0.4.18
+                                     rust-syn-1.0.109
+                                     rust-syn-2.0.100
+                                     rust-tempfile-3.19.1
+                                     rust-termion-1.5.6
+                                     rust-textwrap-0.11.0
+                                     rust-thiserror-1.0.69
+                                     rust-thiserror-impl-1.0.69
+                                     rust-toml-0.5.11
+                                     rust-unicode-ident-1.0.18
+                                     rust-unicode-segmentation-1.12.0
+                                     rust-unicode-width-0.1.14
+                                     rust-version-check-0.9.5
+                                     rust-wasi-0.9.0+wasi-snapshot-preview1
+                                     rust-wasi-0.11.0+wasi-snapshot-preview1
+                                     rust-wasi-0.14.2+wasi-0.2.4
+                                     rust-winapi-0.3.9
+                                     rust-winapi-i686-pc-windows-gnu-0.4.0
+                                     rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                     rust-windows-sys-0.59.0
+                                     rust-windows-targets-0.52.6
+                                     rust-windows-aarch64-gnullvm-0.52.6
+                                     rust-windows-aarch64-msvc-0.52.6
+                                     rust-windows-i686-gnu-0.52.6
+                                     rust-windows-i686-gnullvm-0.52.6
+                                     rust-windows-i686-msvc-0.52.6
+                                     rust-windows-x86-64-gnu-0.52.6
+                                     rust-windows-x86-64-gnullvm-0.52.6
+                                     rust-windows-x86-64-msvc-0.52.6
+                                     rust-wit-bindgen-rt-0.39.0))
                      (nsncd =>
                             (list rust-aho-corasick-1.1.3
                                   rust-anes-0.1.6
