@@ -79,26 +79,18 @@ of commands called a ``pipeline''.")
 (define-public nu-plugin-formats
   (package
     (name "nu-plugin-formats")
-    (version "0.101.0")
+    (version "0.103.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nu_plugin_formats" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0bpsqchhv3q9x38i5kn7gpfrxv875k0vgb7k3r732d7f59nxzd93"))))
+        (base32 "1v05w0kc77q431lbr2vnm8za4p3psj9zykkz2r5bydkzbk8frvkz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-eml-parser" ,rust-eml-parser-0.1)
-                       ("rust-ical" ,rust-ical-0.11)
-                       ("rust-indexmap" ,rust-indexmap-2)
-                       ("rust-nu-plugin" ,rust-nu-plugin-0.101)
-                       ("rust-nu-protocol" ,rust-nu-protocol-0.101)
-                       ("rust-plist" ,rust-plist-1)
-                       ("rust-rust-ini" ,rust-rust-ini-0.21))
-       #:cargo-development-inputs
-       (("rust-nu-plugin-test-support" ,rust-nu-plugin-test-support-0.101))))
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'nu-plugin-formats))
     (home-page
      "https://github.com/nushell/nushell/tree/main/crates/nu_plugin_formats")
     (synopsis "An I/O plugin for a set of file formats for Nushell")
