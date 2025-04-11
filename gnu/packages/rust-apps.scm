@@ -2187,39 +2187,9 @@ bar.  It is also compatible with sway.")
             "1mij8c0lp62mnfvcbzrhmf1g70fq29lj2s9l05qx7njsqs64xqkf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-         (("rust-clap" ,rust-clap-4)
-          ("rust-clipboard" ,rust-clipboard-0.5)
-          ("rust-atty" ,rust-atty-0.2) ;; replace isatty
-          ("rust-lazy-static" ,rust-lazy-static-1)
-          ("rust-libc" ,rust-libc-0.2)
-          ("rust-libc-stdhandle" ,rust-libc-stdhandle-0.1)
-          ("rust-logos" ,rust-logos-0.12)
-          ("rust-regex" ,rust-regex-1)
-          ("rust-rustyline" ,rust-rustyline-9)
-          ("rust-signal-hook" ,rust-signal-hook-0.3)
-          ("rust-termion" ,rust-termion-1)
-          ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-          ("rust-unicode-width" ,rust-unicode-width-0.1)
-          ("rust-yaml-rust" ,rust-yaml-rust-0.4))
-       #:cargo-development-inputs (("rust-indoc" ,rust-indoc-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version-requirements
-           (lambda _
-             ;; isatty crate is deprecated use atty instead
-             (substitute* "src/main.rs"
-               (("isatty::stdout_isatty\\(") "atty::is(atty::Stream::Stdout")
-               (("isatty::stdin_isatty\\(") "atty::is(atty::Stream::Stdin"))
-             ;; fix requirement versions
-             (substitute* "Cargo.toml"
-               (("isatty") "atty")
-               (("1.5.6") ,(package-version rust-termion-1))
-               (("\"0.1\"") (string-append "\""
-                                           ,(package-version rust-atty-0.2)
-                                           "\""))))))))
+     `(#:install-source? #f))
     (native-inputs (list python pkg-config)) ;needed by rust-xcb
-    (inputs (list libx11 libxcb))
+    (inputs (cons* libx11 libxcb (cargo-inputs 'jless)))
     (home-page "https://github.com/PaulJuliusMartinez/jless")
     (synopsis "Command-line JSON viewer")
     (description "This package provides a command-line JSON viewer.")
