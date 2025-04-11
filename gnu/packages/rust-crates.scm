@@ -913,6 +913,10 @@
   (crate-source "cc" "1.2.18"
                 "0p6d2pfyrjgqpf2w399wzj4hmyffj6g0gyzg3pdy6xl3gmhlcl2j"))
 
+(define rust-cc-1.2.19
+  (crate-source "cc" "1.2.19"
+                "0qpk2cnbfpp5r3sb5c9clb49n39x0y64b6xk2cf6hn69g9q16flf"))
+
 (define rust-cesu8-1.1.0
   (crate-source "cesu8" "1.1.0"
                 "0g6q58wa7khxrxcxgnqyi9s1z2cjywwwd3hzr5c55wskhx6s0hvd"))
@@ -14507,6 +14511,39 @@
                                              rust-zune-core-0.4.12
                                              rust-zune-inflate-0.2.54
                                              rust-zune-jpeg-0.4.14))
+                     (snafu =>
+                            (list rust-android-tzdata-0.1.1
+                                  rust-android-system-properties-0.1.5
+                                  rust-autocfg-1.4.0
+                                  rust-bumpalo-3.17.0
+                                  rust-cc-1.2.19
+                                  rust-cfg-if-1.0.0
+                                  rust-chrono-0.4.40
+                                  rust-core-foundation-sys-0.8.7
+                                  rust-iana-time-zone-0.1.63
+                                  rust-iana-time-zone-haiku-0.1.2
+                                  rust-js-sys-0.3.77
+                                  rust-libc-0.2.171
+                                  rust-log-0.4.27
+                                  rust-num-traits-0.2.19
+                                  rust-once-cell-1.21.3
+                                  rust-proc-macro2-1.0.94
+                                  rust-quote-1.0.40
+                                  rust-rustversion-1.0.20
+                                  rust-shlex-1.3.0
+                                  rust-syn-2.0.100
+                                  rust-unicode-ident-1.0.18
+                                  rust-wasm-bindgen-0.2.100
+                                  rust-wasm-bindgen-backend-0.2.100
+                                  rust-wasm-bindgen-macro-0.2.100
+                                  rust-wasm-bindgen-macro-support-0.2.100
+                                  rust-wasm-bindgen-shared-0.2.100
+                                  rust-windows-core-0.61.0
+                                  rust-windows-implement-0.60.0
+                                  rust-windows-interface-0.59.1
+                                  rust-windows-link-0.1.1
+                                  rust-windows-result-0.3.2
+                                  rust-windows-strings-0.4.0))
                      (starship =>
                                (list rust-adler2-2.0.0
                                      rust-ahash-0.8.11
