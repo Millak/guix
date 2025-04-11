@@ -3779,72 +3779,11 @@ a built-in wiki, built-in file browsing, built-in tickets system, etc.")
        (uri (crate-uri "pijul" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lk261rrk4xy60d4akfn8mrrqxls28kf9mzrjcrxdzbdysml66n5"))
-        (snippet
-         #~(begin (use-modules (guix build utils))
-                  (substitute* "Cargo.toml"
-                    (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
-                     (string-append "\"^" version)))))))
+        (base32 "1lk261rrk4xy60d4akfn8mrrqxls28kf9mzrjcrxdzbdysml66n5"))))
     (build-system cargo-build-system)
     (arguments
      (list
        #:install-source? #f
-       #:cargo-inputs
-       (list rust-anyhow-1
-             rust-async-trait-0.1
-             rust-atty-0.2
-             rust-byteorder-1
-             rust-bytes-1
-             rust-canonical-path-2
-             rust-chrono-0.4
-             rust-clap-4
-             rust-clap-complete-4
-             rust-ctrlc-3
-             rust-data-encoding-2
-             rust-dateparser-0.1
-             rust-dirs-next-2
-             rust-edit-0.1
-             rust-env-logger-0.8
-             rust-futures-0.3
-             rust-futures-util-0.3
-             rust-git2-0.13
-             rust-human-panic-1
-             rust-hyper-0.14
-             rust-ignore-0.4
-             rust-keyring-2
-             rust-lazy-static-1
-             rust-libpijul-1
-             rust-log-0.4
-             rust-open-3
-             rust-pager-0.16
-             rust-path-slash-0.1
-             rust-pijul-config-0.0.1
-             rust-pijul-identity-0.0.1
-             rust-pijul-interaction-0.0.1
-             rust-pijul-remote-1
-             rust-pijul-repository-0.0.1
-             rust-ptree-0.4
-             rust-rand-0.8
-             rust-regex-1
-             rust-reqwest-0.11
-             rust-sanakirja-1
-             rust-serde-1
-             rust-serde-derive-1
-             rust-serde-json-1
-             rust-tempfile-3
-             rust-termcolor-1
-             rust-thiserror-1
-             rust-thrussh-0.33
-             rust-thrussh-config-0.5
-             rust-thrussh-keys-0.21
-             rust-tokio-1
-             rust-toml-0.5
-             rust-url-2
-             rust-validator-0.15
-             rust-whoami-1)
-       #:cargo-development-inputs
-       (list rust-exitcode-1
-             rust-expectrl-0.7)
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'install 'install-extras
@@ -3883,7 +3822,7 @@ a built-in wiki, built-in file browsing, built-in tickets system, etc.")
                  (list this-package)
                  '())
              (list pkg-config)))
-    (inputs (list libsodium openssl))
+    (inputs (cons* libsodium openssl (cargo-inputs 'pijul)))
     (home-page "https://nest.pijul.com/pijul/pijul")
     (synopsis "Distributed version control system")
     (description "This package provides pijul, a sound and fast distributed
