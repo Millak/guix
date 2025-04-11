@@ -59,6 +59,7 @@
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
 ;;; Copyright © 2025 45mg <45mg.writes@gmail.com>
+;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10132,7 +10133,7 @@ Printf/Sprintf etc.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/logrusorgru/aurora/v3"))
+      #:import-path "github.com/logrusorgru/aurora/v4"))
     (native-inputs
      (list go-github-com-stretchr-testify))))
 
