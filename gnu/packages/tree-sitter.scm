@@ -353,8 +353,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-c
   (tree-sitter-grammar
    "c" "C"
-   "00mhz2rz98pxssgyhm0iymgcb8cbv8slsf3nmfgyjhfchpmb9n6z"
-   "0.20.6"))
+   "1vw7jd3wrb4vnigfllfmqxa8fwcpvgp1invswizz0grxv249piza"
+   "0.23.5"))
 
 (define-public tree-sitter-cpp
   (tree-sitter-grammar
