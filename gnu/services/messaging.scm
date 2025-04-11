@@ -1239,7 +1239,7 @@ this if you have ircd-irc2 servers in your IRC network.")
 connecting without password are allowed to connect, all passwords given will
 fail.  Users identified without PAM are registered with a tilde (@samp{~})
 prepended to their user name.  This defaults to @code{#f} in Guix because the
-service runs as a unpriveleged user and thus cannot authenticate other users
+service runs as an unprivileged user and thus cannot authenticate other users
 via the @code{pam_unix} PAM module.")
   (pam-is-optional?
    (maybe-boolean #f)

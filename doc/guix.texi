@@ -30616,7 +30616,7 @@ Set to @code{#t} to enable calls to the PAM library at runtime; all
 users connecting without password are allowed to connect, all passwords
 given will fail.  Users identified without PAM are registered with a
 tilde (@samp{~}) prepended to their user name.  This defaults to
-@code{#f} in Guix because the service runs as a unpriveleged user and
+@code{#f} in Guix because the service runs as an unprivileged user and
 thus cannot authenticate other users via the @code{pam_unix} PAM module.
 
 @item @code{pam-is-optional?} (default: @code{#f}) (type: maybe-boolean)
