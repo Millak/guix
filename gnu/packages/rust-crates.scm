@@ -1309,6 +1309,10 @@
   (crate-source "directories" "4.0.1"
                 "045jbj5y2f1fmjs9rfcw95y0vjydb2rqqhz1sdnqhdmxv96ms77m"))
 
+(define rust-directories-5.0.1
+  (crate-source "directories" "5.0.1"
+                "0dba6xzk79s1clqzxh2qlgzk3lmvvks1lzzjhhi3hd70hhxifjcs"))
+
 (define rust-directories-6.0.0
   (crate-source "directories" "6.0.0"
                 "0zgy2w088v8w865c11dmc3dih899fgrhvrfp7g83h6v6ai60kx8n"))
@@ -2579,6 +2583,10 @@
 (define rust-hashbrown-0.15.2
   (crate-source "hashbrown" "0.15.2"
                 "12dj0yfn59p3kh3679ac0w1fagvzf4z2zp87a13gbbqbzw0185dz"))
+
+(define rust-hashlink-0.10.0
+  (crate-source "hashlink" "0.10.0"
+                "1h8lzvnl9qxi3zyagivzz2p1hp6shgddfmccyf6jv7s1cdicz0kk"))
 
 (define rust-hashlink-0.9.1
   (crate-source "hashlink" "0.9.1"
@@ -4895,6 +4903,10 @@
 (define rust-rusqlite-0.32.1
   (crate-source "rusqlite" "0.32.1"
                 "0vlx040bppl414pbjgbp7qr4jdxwszi9krx0m63zzf2f2whvflvp"))
+
+(define rust-rusqlite-0.34.0
+  (crate-source "rusqlite" "0.34.0"
+                "0hy15qj9fzi4xhpslq32ajl6x07x2lzkrqn0qx8y1n48va349qrp"))
 
 (define rust-rust-argon2-2.1.0
   (crate-source "rust-argon2" "2.1.0"
@@ -8916,6 +8928,84 @@
                                    rust-wyz-0.5.1
                                    rust-x11rb-0.13.1
                                    rust-x11rb-protocol-0.13.1))
+                     (libchewing =>
+                                 (list rust-anstream-0.6.18
+                                  rust-anstyle-1.0.10
+                                  rust-anstyle-parse-0.2.6
+                                  rust-anstyle-query-1.1.2
+                                  rust-anstyle-wincon-3.0.7
+                                  rust-anyhow-1.0.97
+                                  rust-bitflags-2.9.0
+                                  rust-cfg-if-1.0.0
+                                  rust-clap-4.5.35
+                                  rust-clap-builder-4.5.35
+                                  rust-clap-derive-4.5.32
+                                  rust-clap-lex-0.7.4
+                                  rust-clap-mangen-0.2.26
+                                  rust-colorchoice-1.0.3
+                                  rust-der-0.7.9
+                                  rust-directories-5.0.1
+                                  rust-dirs-sys-0.4.1
+                                  rust-env-filter-0.1.3
+                                  rust-env-logger-0.11.8
+                                  rust-errno-0.3.11
+                                  rust-fallible-iterator-0.3.0
+                                  rust-fallible-streaming-iterator-0.1.9
+                                  rust-fastrand-2.3.0
+                                  rust-foldhash-0.1.5
+                                  rust-getrandom-0.2.15
+                                  rust-getrandom-0.3.2
+                                  rust-hashbrown-0.15.2
+                                  rust-hashlink-0.10.0
+                                  rust-heck-0.5.0
+                                  rust-is-terminal-polyfill-1.70.1
+                                  rust-libc-0.2.171
+                                  rust-libredox-0.1.3
+                                  rust-libsqlite3-sys-0.32.0
+                                  rust-linux-raw-sys-0.9.4
+                                  rust-log-0.4.27
+                                  rust-once-cell-1.21.3
+                                  rust-option-ext-0.2.0
+                                  rust-pkg-config-0.3.32
+                                  rust-proc-macro2-1.0.94
+                                  rust-quote-1.0.40
+                                  rust-r-efi-5.2.0
+                                  rust-redox-users-0.4.6
+                                  rust-roff-0.2.2
+                                  rust-rusqlite-0.34.0
+                                  rust-rustix-1.0.5
+                                  rust-smallvec-1.15.0
+                                  rust-strsim-0.11.1
+                                  rust-syn-2.0.100
+                                  rust-tempfile-3.19.1
+                                  rust-thiserror-1.0.69
+                                  rust-thiserror-impl-1.0.69
+                                  rust-unicode-ident-1.0.18
+                                  rust-utf8parse-0.2.2
+                                  rust-vcpkg-0.2.15
+                                  rust-wasi-0.11.0+wasi-snapshot-preview1
+                                  rust-wasi-0.14.2+wasi-0.2.4
+                                  rust-windows-sys-0.48.0
+                                  rust-windows-sys-0.59.0
+                                  rust-windows-targets-0.48.5
+                                  rust-windows-targets-0.52.6
+                                  rust-windows-aarch64-gnullvm-0.48.5
+                                  rust-windows-aarch64-gnullvm-0.52.6
+                                  rust-windows-aarch64-msvc-0.48.5
+                                  rust-windows-aarch64-msvc-0.52.6
+                                  rust-windows-i686-gnu-0.48.5
+                                  rust-windows-i686-gnu-0.52.6
+                                  rust-windows-i686-gnullvm-0.52.6
+                                  rust-windows-i686-msvc-0.48.5
+                                  rust-windows-i686-msvc-0.52.6
+                                  rust-windows-x86-64-gnu-0.48.5
+                                  rust-windows-x86-64-gnu-0.52.6
+                                  rust-windows-x86-64-gnullvm-0.48.5
+                                  rust-windows-x86-64-gnullvm-0.52.6
+                                  rust-windows-x86-64-msvc-0.48.5
+                                  rust-windows-x86-64-msvc-0.52.6
+                                  rust-wit-bindgen-rt-0.39.0
+                                  rust-zeroize-1.8.1))
                      (librsvg =>
                               (list rust-adler2-2.0.0
                                     rust-aho-corasick-1.1.3

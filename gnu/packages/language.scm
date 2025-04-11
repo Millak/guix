@@ -63,6 +63,7 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages scheme)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages serialization)
@@ -289,51 +290,43 @@ Random Cage Fighting Birds, Cool Music etc.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0gh64wvrk5pn0fhmpvj1j99d5g7f7697rk96zbkc8l72yjr819z5"))))
-    (build-system cargo-build-system)
+    (build-system cmake-build-system)
     (arguments
-     `(#:modules ((guix build cargo-build-system)
+     `(#:modules (((guix build cargo-build-system) #:prefix cargo:)
                   (guix build utils)
-                  ((guix build cmake-build-system) #:prefix cmake:))
+                  (guix build cmake-build-system))
        #:imported-modules ((guix build cmake-build-system)
                            ,@%cargo-build-system-modules)
-       #:install-source? #f
-       ;; Keep the vendor-dir outside of cmake's directories.
-       #:vendor-dir "../guix-vendor"
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
-        ("rust-der" ,rust-der-0.7)
-        ("rust-directories" ,rust-directories-5)
-        ("rust-env-logger" ,rust-env-logger-0.10)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-rusqlite" ,rust-rusqlite-0.29))
-       #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))
+       #:out-of-source? #f              ;For the tests.
        #:phases
        (modify-phases %standard-phases
-         (add-after 'configure 'cmake-configure
+         (add-after 'unpack 'prepare-cargo-build-system
            (lambda args
-             (apply (assoc-ref cmake:%standard-phases 'configure)
-                    ;; For the tests.
-                    (append args (list #:out-of-source? #f)))))
+             (for-each
+              (lambda (phase)
+                (format #t "Running cargo phase: ~a~%" phase)
+                (apply (assoc-ref cargo:%standard-phases phase)
+                       ;; Keep the vendor-dir outside of cmake's directories.
+                       #:vendor-dir "../guix-vendor"
+                       #:cargo-target ,(cargo-triplet)
+                       args))
+              '(unpack-rust-crates
+                configure
+                check-for-pregenerated-files
+                patch-cargo-checksums))))
          (add-after 'unpack 'work-around-genkeystroke
            (lambda _
              ;; Remove this phase when we can find ncurses with cmake.
              (substitute* "tests/CMakeLists.txt"
-               (("CURSES_FOUND") "FALSE"))))
-         (replace 'build
-           (assoc-ref cmake:%standard-phases 'build))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys #:rest args)
-             (when tests?
-               ((assoc-ref cmake:%standard-phases 'check)))))
-         (replace 'install
-           (assoc-ref cmake:%standard-phases 'install)))))
+               (("CURSES_FOUND") "FALSE")))))))
     (native-inputs
-     (list corrosion cmake-minimal))
+     (append
+      (list rust `(,rust "cargo") )
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
     (inputs
-     (list ncurses sqlite))
+     (cons* corrosion ncurses sqlite (cargo-inputs 'libchewing)))
     (synopsis "Chinese phonetic input method")
     (description "Chewing is an intelligent phonetic (Zhuyin/Bopomofo) input
 method, one of the most popular choices for Traditional Chinese users.")
