@@ -24,6 +24,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages dav)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
@@ -33,6 +34,7 @@
   #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -41,7 +43,36 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml))
+
+(define-public cadaver
+  (package
+    (name "cadaver")
+    (version "0.26")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://notroj.github.io/cadaver/cadaver-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0mbv6mkdhxqhdq5kgn821if10h184m1xlpqq0vpxj19mvwyf8dlj"))))
+    (build-system gnu-build-system)
+    (inputs (list neon
+                  openssl
+                  libxml2))
+    (native-inputs (list pkg-config))
+    (arguments '(#:configure-flags (list "--with-ssl=openssl")
+                 #:tests? #f)) ; no check target
+    (home-page "https://notroj.github.io/cadaver/")
+    (synopsis "Command-line WebDAV client")
+    (description
+     "Cadaver is a command-line client for WebDAV server operations.  It
+supports a variety of WebDAV features and provides an interactive
+command-line environment with support for file manipulation on remote WebDAV
+servers.")
+    (license license:gpl2+)))
 
 (define-public radicale
   (package
