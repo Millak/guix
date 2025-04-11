@@ -347,8 +347,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-css
   (tree-sitter-grammar
    "css" "CSS"
-   "014jrlgi7zfza9g38hsr4vlbi8964i5p7iglaih6qmzaiml7bja2"
-   "0.19.0"))
+   "0c5j9zyjcykmraix1agbc0gdk85zs2v379q0aykr10fi9w2r9z9c"
+   "0.23.2"))
 
 (define-public tree-sitter-c
   (tree-sitter-grammar
