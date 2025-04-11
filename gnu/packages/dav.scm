@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022, 2024 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,7 +28,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module (guix gexp)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
@@ -79,7 +80,7 @@ Radicale intentionally does not fully comply with the CalDAV and CardDAV RFCs.
 Instead, it supports the CalDAV and CardDAV implementations of popular
 clients.")
     (home-page "https://radicale.org/")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public xandikos
   (package
@@ -117,7 +118,7 @@ efficient syncing
 @item Automatically keep history and back up
 @item Works with all tested CalDAV and CardDAV clients
 @end itemize")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public vdirsyncer
   (package
@@ -169,4 +170,4 @@ synchronize a CalDAV or CardDAV server with a local folder or file.  The
 local data can then be accessed via a variety of programs, none of which
 have to know or worry about syncing to a server.")
     (home-page "https://github.com/pimutils/vdirsyncer")
-    (license bsd-3)))
+    (license license:bsd-3)))
