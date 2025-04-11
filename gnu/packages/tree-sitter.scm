@@ -402,8 +402,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-heex
   (tree-sitter-grammar
    "heex" "Heex"
-   "00330rgg67fq0d9gk1yswj78d9mn1jvvjmmy1k7cxpvm5993p3sw"
-   "0.6.0"
+   "0d0ljmxrvmr8k1wc0hd3qrjzwb31f1jaw6f1glamw1r948dxh9xf"
+   "0.8.0"
    #:repository-url "https://github.com/phoenixframework/tree-sitter-heex"))
 
 (define-public tree-sitter-bash
