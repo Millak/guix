@@ -157,7 +157,7 @@ bioinformatics, materials science, and related areas.")
 (define-public avogadro2
   (package
     (name "avogadro2")
-    (version "1.93.0")
+    (version "1.100.0")
     (source
      (origin
        (method git-fetch)
@@ -165,17 +165,47 @@ bioinformatics, materials science, and related areas.")
              (url "https://github.com/OpenChemistry/avogadroapp")
              (commit version)))
        (sha256
-        (base32
-         "1z3pjlwja778a1dmvx9aqz2hlw5q9g3kqxhm9slz08452600jsv7"))
+        (base32 "19cd5aqvcw6xj0x1kmzmxl0vrnbhk5ymnl9p2p4d9504ma5k6aim"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
-     (list eigen pkg-config))
-    (inputs
-     (list avogadrolibs hdf5 molequeue qtbase-5))
+      `(("eigen" ,eigen)
+        ("pkg-config" ,pkg-config)
+        ("avogadro-i18n"
+         ,(origin
+           (method git-fetch)
+           (uri
+             (git-reference
+               (url "https://github.com/openchemistry/avogadro-i18n")
+               (commit "07bee85")))
+           (file-name (git-file-name name
+                                     version))
+           (sha256
+             (base32
+               "1vhjh0gilmm90269isrkvyzwwh1cj3bwcxls394psadw1a89mk14"))))))
+    (inputs (list avogadrolibs hdf5 molequeue openbabel qtbase-5 qtsvg-5))
     ;; TODO: Enable tests with "-DENABLE_TESTING" configure flag.
     (arguments
-     '(#:tests? #f))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'symlink
+            (lambda _
+              (begin
+                (symlink (assoc-ref %build-inputs "avogadro-i18n")
+                         "../avogadro-i18n"))))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/avogadro2")
+                (list
+                  "PATH"
+                  'suffix
+                  (list (string-append #$openbabel "/bin")))
+                (list
+                  "QT_PLUGIN_PATH"
+                  'suffix
+                  (list (string-append #$qtsvg-5 "/lib/qt5/plugins")))))))))
     (home-page "https://www.openchemistry.org/projects/avogadro2/")
     (synopsis "Advanced molecule editor")
     (description
