@@ -7583,27 +7583,17 @@ file links.")
               (invoke "make" (string-append "PREFIX=" #$output)
                       "copy-data"))))
       #:parallel-tests? #f  ; As per the Makefile
-      #:install-source? #f
-      #:cargo-inputs
-      `(("rust-ansi-parser" ,rust-ansi-parser-0.6)
-        ("rust-dirs" ,rust-dirs-3)
-        ("rust-gdk" ,rust-gdk-0.13)
-        ("rust-gtk" ,rust-gtk-0.8)
-        ("rust-linkify" ,rust-linkify-0.7)
-        ("rust-native-tls" ,rust-native-tls-0.2)
-        ("rust-open" ,rust-open-2)
-        ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-textwrap" ,rust-textwrap-0.14)
-        ("rust-url" ,rust-url-2))))
+      #:install-source? #f))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list at-spi2-core
-           cairo
-           gdk-pixbuf
-           gtk+
-           openssl-3.0
-           pango))
+     (cons* at-spi2-core
+            cairo
+            gdk-pixbuf
+            gtk+
+            openssl-3.0
+            pango
+            (cargo-inputs 'castor)))
     (home-page "https://git.sr.ht/~julienxx/castor")
     (synopsis "Graphical client for plain-text protocols")
     (description
