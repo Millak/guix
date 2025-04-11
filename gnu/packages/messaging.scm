@@ -900,6 +900,7 @@ dictionaries.  HexChat can be extended with multiple addons.")
               (sha256
                (base32
                 "1f27qa2xg8xwdyij2n5aimdyp24za09rc0f9q5rjwpnx341qi5v8"))))
+    (outputs '("out" "debug"))
     (build-system gnu-build-system)
     ;; Needed for the test suite.
     (native-inputs (list procps expect inetutils openssl))
