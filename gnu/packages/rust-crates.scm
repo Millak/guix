@@ -3165,6 +3165,10 @@
   (crate-source "gl_generator" "0.14.0"
                 "0k8j1hmfnff312gy7x1aqjzcm8zxid7ij7dlb8prljib7b1dz58s"))
 
+(define rust-glam-0.22.0
+  (crate-source "glam" "0.22.0"
+                "0x57gyrxyfs409b3f5i64yy2pbcgkr2qkq8v3a0mmm8vdkargx8j"))
+
 (define rust-glam-0.30.1
   (crate-source "glam" "0.30.1"
                 "1yfm49g6xqwfdg9dw0q6px12a5wgc87qakzz4r0j6awdj46sffmz"))
@@ -4495,6 +4499,10 @@
 (define rust-lz4-flex-0.10.0
   (crate-source "lz4_flex" "0.10.0"
                 "10sgbj93sagbl0ngzqvnlkldzbfz5vnzr7fry8sgssy299cp534b"))
+
+(define rust-lz4-flex-0.11.3
+  (crate-source "lz4_flex" "0.11.3"
+                "1xg3h3y0ghnq3widdssd36s02pvy29c0afbwgq6mh3ibmri12xkm"))
 
 (define rust-lzma-sys-0.1.20
   (crate-source "lzma-sys" "0.1.20"
@@ -16758,6 +16766,46 @@
                                         rust-windows-x86-64-gnu-0.52.6
                                         rust-windows-x86-64-gnullvm-0.52.6
                                         rust-windows-x86-64-msvc-0.52.6))
+                     (rust-bitcode-for-swww =>
+                                            (list rust-adler2-2.0.0
+                                             rust-arrayvec-0.7.6
+                                             rust-bincode-1.3.3
+                                             rust-bitflags-2.9.0
+                                             rust-bytemuck-1.22.0
+                                             rust-cc-1.2.19
+                                             rust-cfg-if-1.0.0
+                                             rust-crc32fast-1.4.2
+                                             rust-flate2-1.1.1
+                                             rust-getrandom-0.2.15
+                                             rust-getrandom-0.3.2
+                                             rust-glam-0.22.0
+                                             rust-glam-0.30.1
+                                             rust-jobserver-0.1.33
+                                             rust-libc-0.2.171
+                                             rust-lz4-flex-0.11.3
+                                             rust-miniz-oxide-0.8.8
+                                             rust-paste-1.0.15
+                                             rust-pkg-config-0.3.32
+                                             rust-ppv-lite86-0.2.21
+                                             rust-proc-macro2-1.0.94
+                                             rust-quote-1.0.40
+                                             rust-r-efi-5.2.0
+                                             rust-rand-0.8.5
+                                             rust-rand-chacha-0.3.1
+                                             rust-rand-core-0.6.4
+                                             rust-serde-1.0.219
+                                             rust-serde-derive-1.0.219
+                                             rust-shlex-1.3.0
+                                             rust-syn-2.0.100
+                                             rust-unicode-ident-1.0.18
+                                             rust-wasi-0.11.0+wasi-snapshot-preview1
+                                             rust-wasi-0.14.2+wasi-0.2.4
+                                             rust-wit-bindgen-rt-0.39.0
+                                             rust-zerocopy-0.8.24
+                                             rust-zerocopy-derive-0.8.24
+                                             rust-zstd-0.13.3
+                                             rust-zstd-safe-7.2.4
+                                             rust-zstd-sys-2.0.15+zstd.1.5.7))
                      (rust-cargo-c =>
                                    (list rust-adler2-2.0.0
                                     rust-ahash-0.8.11

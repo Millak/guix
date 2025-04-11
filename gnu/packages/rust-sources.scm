@@ -39,6 +39,33 @@
 ;;; These packages are hidden, as they are not interesting to users.
 ;;;
 
+(define-public rust-bitcode-for-swww
+  (let ((commit "5f25a59be3e66deef721e7eb2369deb1aa32d263")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "rust-bitcode")
+       (version (git-version "0.6.0" revision commit))
+       (source (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                       (url "https://github.com/SoftbearStudios/bitcode")
+                       (commit commit)))
+                 (file-name (git-file-name name version))
+                 (sha256
+                  (base32
+                   "07fa6l9jmjrbylqv4dwlagsbgh0h1j3b6g1mbvfnxsk69zv6ylhg"))))
+       (build-system cargo-build-system)
+       (arguments
+        (list #:skip-build? #t
+              #:cargo-package-crates ''("bitcode_derive" "bitcode")))
+       (inputs (cargo-inputs 'rust-bitcode-for-swww))
+       (home-page "https://github.com/SoftbearStudios/bitcode")
+       (synopsis "Binary encoder and decoder for Rust")
+       (description
+        "This package provides a binary encoder and decoder for Rust.")
+       (license (list license:expat license:asl2.0))))))
+
 (define-public rust-pcre2-utf32-0.2
   (hidden-package
    (package
