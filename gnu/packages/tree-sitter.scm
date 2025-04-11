@@ -409,8 +409,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-bash
   (tree-sitter-grammar
    "bash" "Bash"
-   "01sjympivwhr037c0gdx5fqw8fvzchq4fd4m8wlr8mdw50di0ag2"
-   "0.20.4"))
+   "1smlcfkxxknhya1b1h72zj3ccg35szbg9mii2xwh7iq9acnlzpgc"
+   "0.23.3"))
 
 (define-public tree-sitter-blueprint
   (let ((commit "329699d55f3e3955091e13756563c3f320a561fc")
