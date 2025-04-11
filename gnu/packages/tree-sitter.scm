@@ -485,14 +485,15 @@ which will be used as a snippet in origin."
    "0.23.4"))
 
 (define-public tree-sitter-haskell
-  ;; There are a lot of additions, the last tag was placed more than 4 years ago
-  (let ((commit "3bdba07c7a8eec23f87fa59ce9eb2ea4823348b3")
-        (revision "0"))
-    (tree-sitter-grammar
-     "haskell" "Haskell"
-     "1hg19af1n510bndf5k5iri7dzb48xb527vispv1aapki4mvr98gx"
-     (git-version "0.14.0" revision commit)
-     #:commit commit)))
+  (tree-sitter-grammar
+   "haskell" "Haskell"
+   "08qzkvyc830k56j5lglfzmlp03ygixf9vlrpazbndqvqk20n56xa"
+   "0.15.0"
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (delete-file "test/highlight/Basic.hs") ;FIXME: Language not found.
+         #$(tree-sitter-delete-generated-files grammar-directories)))))
 
 (define-public tree-sitter-hcl
   (tree-sitter-grammar
