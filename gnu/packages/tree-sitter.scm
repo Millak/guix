@@ -328,8 +328,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-typescript
   (tree-sitter-grammar
    "typescript" "TypeScript and TSX"
-   "08k785q3cy8byrb3zrg93mfidnj1pcx1ggm1xhd8rgmfs2v6jns5"
-   "0.20.3"
+   "0rlhhqp9dv6y0iljb4bf90d89f07zkfnsrxjb6rvw985ibwpjkh9"
+   "0.23.2"
    #:inputs (list tree-sitter-javascript)
    #:grammar-directories '("typescript" "tsx")))
 
