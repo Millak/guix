@@ -535,9 +535,9 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-ocaml
   (tree-sitter-grammar
    "ocaml" "OCaml (.ml and .mli)"
-   "021vnbpzzb4cca3ncd4qhzy583vynhndn3qhwayxrpgdl61m44i6"
-   "0.20.1"
-   #:grammar-directories '("ocaml" "interface")))
+   "17g2ynqhjf1nyhdidz9j9s0s12iys3b2vbywxkygwyccj7rb8zdi"
+   "0.24.0"
+   #:grammar-directories '("grammars/interface" "grammars/ocaml" "grammars/type")))
 
 (define-public tree-sitter-php
   ;; There are a lot of additions, the last tag was placed more than 1 year ago
