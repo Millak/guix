@@ -1455,6 +1455,10 @@
   (crate-source "daemonize" "0.5.0"
                 "0vhikx85f85r46xghsb4avsv6ww8mz9lipqvsia7m21wrfmgv2xb"))
 
+(define rust-darling-0.10.2
+  (crate-source "darling" "0.10.2"
+                "0n7qsp6854wm3y1q1lvylhv15zvc87ibbac1nyfmcdbyv1snww0d"))
+
 (define rust-darling-0.20.11
   (crate-source "darling" "0.20.11"
                 "1vmlphlrlw4f50z16p4bc9p5qwdni1ba95qmxfrrmzs6dh8lczzw"))
@@ -1463,6 +1467,10 @@
   (crate-source "darling" "0.9.0"
                 "1mnksf0i47pb7sxvi1iqfwmqy9iny0x8w56ilybpb431b46cpyzw"))
 
+(define rust-darling-core-0.10.2
+  (crate-source "darling_core" "0.10.2"
+                "16sija1jv0l754x4aa6b6fy01d1kf8m0r4id3flqipm45np61jgh"))
+
 (define rust-darling-core-0.20.11
   (crate-source "darling_core" "0.20.11"
                 "0bj1af6xl4ablnqbgn827m43b8fiicgv180749f5cphqdmcvj00d"))
@@ -1470,6 +1478,10 @@
 (define rust-darling-core-0.9.0
   (crate-source "darling_core" "0.9.0"
                 "0b201dx4m58l5ac7gmbjvbf4z2xipnk5d4pqa7mz7gy3f21h3z3a"))
+
+(define rust-darling-macro-0.10.2
+  (crate-source "darling_macro" "0.10.2"
+                "0wlv31cxkrjijz5gv13hvk55c9lmd781aj12c8n84sa9mksa5dfr"))
 
 (define rust-darling-macro-0.20.11
   (crate-source "darling_macro" "0.20.11"
@@ -1778,13 +1790,25 @@
   (crate-source "emacs" "0.11.0"
                 "1xn6nr8m3p24irlmv3i7c9n95yb10qc6aikwqv99qlmhbky5x0z7"))
 
+(define rust-emacs-0.19.0
+  (crate-source "emacs" "0.19.0"
+                "133ip19m1nq8krf04klh1jpm833wpw6kdy2jksgylbw4xcp3yxws"))
+
 (define rust-emacs-macros-0.11.0
   (crate-source "emacs-macros" "0.11.0"
                 "0390y8vafxdi334hhgrzvcqjq3n5ckcmvilqcfp8vajjq8irrly6"))
 
+(define rust-emacs-macros-0.17.0
+  (crate-source "emacs-macros" "0.17.0"
+                "0qg1dcn5acbirq617qq2fgg9adswif2dnr292s3qnq62wzgnyrb9"))
+
 (define rust-emacs-module-0.10.0
   (crate-source "emacs_module" "0.10.0"
                 "1gf9lz735xbkyir53dyv362drfx3nin5an5cx39kd8q8kjjwix5g"))
+
+(define rust-emacs-module-0.18.0
+  (crate-source "emacs_module" "0.18.0"
+                "1ypjyyv2ca3vza4sia91ckxamgfk63yd8frkvg3d4ph4fk4pn1mk"))
 
 (define rust-embed-resource-2.5.1
   (crate-source "embed-resource" "2.5.1"
@@ -6759,6 +6783,10 @@
 (define rust-strsim-0.8.0
   (crate-source "strsim" "0.8.0"
                 "0sjsm7hrvjdifz661pjxq5w4hf190hx53fra8dfvamacvff139cf"))
+
+(define rust-strsim-0.9.3
+  (crate-source "strsim" "0.9.3"
+                "0k497pv882qn3q977ckznm13vxx927g8s1swvcv68j3c1pccwik4"))
 
 (define rust-structopt-0.3.26
   (crate-source "structopt" "0.3.26"
@@ -14354,6 +14382,59 @@
                                      rust-windows-x86-64-gnu-0.52.6
                                      rust-windows-x86-64-gnullvm-0.52.6
                                      rust-windows-x86-64-msvc-0.52.6))
+                     (parinfer-rust-emacs =>
+                                          (list rust-anyhow-1.0.97
+                                           rust-base-x-0.2.11
+                                           rust-bumpalo-3.17.0
+                                           rust-cfg-if-1.0.0
+                                           rust-ctor-0.1.26
+                                           rust-darling-0.10.2
+                                           rust-darling-core-0.10.2
+                                           rust-darling-macro-0.10.2
+                                           rust-discard-1.0.4
+                                           rust-emacs-0.19.0
+                                           rust-emacs-macros-0.17.0
+                                           rust-emacs-module-0.18.0
+                                           rust-fnv-1.0.7
+                                           rust-getopts-0.2.21
+                                           rust-ident-case-1.0.1
+                                           rust-itoa-1.0.15
+                                           rust-libc-0.2.171
+                                           rust-log-0.4.27
+                                           rust-memchr-2.7.4
+                                           rust-once-cell-1.21.3
+                                           rust-proc-macro2-1.0.94
+                                           rust-quote-1.0.40
+                                           rust-rustc-version-0.2.3
+                                           rust-rustversion-1.0.20
+                                           rust-ryu-1.0.20
+                                           rust-semver-0.9.0
+                                           rust-semver-parser-0.7.0
+                                           rust-serde-1.0.219
+                                           rust-serde-derive-1.0.219
+                                           rust-serde-json-1.0.140
+                                           rust-sha1-0.6.1
+                                           rust-sha1-smol-1.0.1
+                                           rust-stdweb-0.4.20
+                                           rust-stdweb-derive-0.5.3
+                                           rust-stdweb-internal-macros-0.2.9
+                                           rust-stdweb-internal-runtime-0.1.5
+                                           rust-strsim-0.9.3
+                                           rust-syn-1.0.109
+                                           rust-syn-2.0.100
+                                           rust-thiserror-1.0.69
+                                           rust-thiserror-impl-1.0.69
+                                           rust-unicode-ident-1.0.18
+                                           rust-unicode-segmentation-1.12.0
+                                           rust-unicode-width-0.1.14
+                                           rust-wasm-bindgen-0.2.100
+                                           rust-wasm-bindgen-backend-0.2.100
+                                           rust-wasm-bindgen-macro-0.2.100
+                                           rust-wasm-bindgen-macro-support-0.2.100
+                                           rust-wasm-bindgen-shared-0.2.100
+                                           rust-winapi-0.3.9
+                                           rust-winapi-i686-pc-windows-gnu-0.4.0
+                                           rust-winapi-x86-64-pc-windows-gnu-0.4.0))
                      (python-cryptography =>
                                           (list rust-asn1-0.20.0
                                            rust-asn1-derive-0.20.0

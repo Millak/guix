@@ -543,23 +543,13 @@ can load dynamic libraries.")
     (arguments
      (list
       #:install-source? #f
-      #:cargo-inputs (list rust-getopts-0.2
-                           rust-libc-0.2
-                           rust-emacs-0.19
-                           rust-serde-1
-                           rust-serde-json-1
-                           rust-serde-derive-1
-                           rust-stdweb-0.4
-                           rust-unicode-segmentation-1
-                           rust-unicode-width-0.1
-                           rust-winapi-0.3)
       #:phases #~(modify-phases %standard-phases
                    (add-after 'install 'install-library
                      (lambda _
                        (let ((lib (string-append #$output "/lib")))
                          (with-directory-excursion "target/release"
                            (install-file "libparinfer_rust.so" lib))))))))
-    (inputs (list clang))
+    (inputs (cons clang (cargo-inputs 'parinfer-rust-emacs)))
     (home-page "https://github.com/justinbarclay/parinfer-rust-emacs")
     (synopsis "Emacs-centric fork of parinfer-rust")
     (description
