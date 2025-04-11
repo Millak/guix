@@ -497,15 +497,6 @@ Rust.")
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-getopts" ,rust-getopts-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-emacs" ,rust-emacs-0.11)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-plugins-and-libs
@@ -526,7 +517,7 @@ Rust.")
                (install-file "rc/parinfer.kak"
                              (string-append out "/share/kak/autoload"))))))))
     (inputs
-     (list clang))
+     (cons clang (cargo-inputs 'parinfer-rust)))
     (home-page "https://github.com/justinbarclay/parinfer-rust")
     (synopsis "Infer parentheses for Clojure, Lisp and Scheme")
     (description
