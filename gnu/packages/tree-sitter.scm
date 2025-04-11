@@ -474,9 +474,9 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-gomod
   (tree-sitter-grammar
    "gomod" "Go .mod"
-   "1hblbi2bs4hlil703myqhvvq2y1x41rc3w903hg2bhbazh7x8yyf"
-   "1.0.0"
-   #:repository-url "https://github.com/camdencheek/tree-sitter-go-mod.git"))
+   "1vbg4fn54a7lbwcrvjdx3nrwgw5y925chbbb7sd6kwms1434yyhb"
+   "1.1.0"
+   #:repository-url "https://github.com/camdencheek/tree-sitter-go-mod"))
 
 (define-public tree-sitter-go
   (tree-sitter-grammar
