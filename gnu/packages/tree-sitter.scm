@@ -522,8 +522,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-julia
   (tree-sitter-grammar
    "julia" "Julia"
-   "1pbnmvhy2gq4vg1b0sjzmjm4s2gsgdjh7h01yj8qrrqbcl29c463"
-   "0.19.0"))
+   "0xi04a48ly438gar25bkkvvr8by4dd013cnafbjdysqjfs04q2wg"
+   "0.23.1"))
 
 (define-public tree-sitter-kdl
   (tree-sitter-grammar
