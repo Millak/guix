@@ -8313,6 +8313,53 @@ a large map and offers more advanced functions: local time of cities, Sun and
 Moon position, etc.")
       (license license:gpl2+))))
 
+(define-public sunwait
+  (package
+    (name "sunwait")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/risacher/sunwait")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mzc8bb7zzl1ch3v7w08vw2v50yjxvr7phyb78njpq89wy6hsrxz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests provided
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ; no configure script is provided
+          (replace 'install
+            (lambda _
+              (install-file "sunwait"
+                            (string-append #$output "/bin")))))))
+    (home-page "https://github.com/risacher/sunwait")
+    (synopsis "Sunrise and sunset times calculation")
+    (description
+     "Sunwait calculates sunrise or sunset times with civil, nautical,
+astronomical and custom twilights.  The sun's position is calculated using
+time, and position - latitude and longitude should be specified on the command
+line.
+
+Features:
+
+@itemize
+@item calculates sunrise and sunset for given coordinates
+@item can wait for sunrise/sunset, or return DAY or NIGHT codes
+@item works with Windows Task Scheduler (or cron)
+@item supports custom twilight angles
+@item used to automate domestic lighting with Arduino transmitter and radio
+controlled sockets
+@end itemize")
+    (license license:gpl3)))
+
 (define-public swarp
   (package
     (name "swarp")
