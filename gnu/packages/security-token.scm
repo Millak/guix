@@ -1030,26 +1030,14 @@ v0.7/v0.8 and Nitrokey Storage devices.")
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ;; 2/164 tests fail, nitrocli-ext tests failing
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-base32" ,rust-base32-0.4)
-        ("rust-directories" ,rust-directories-3)
-        ("rust-envy" ,rust-envy-0.4)
-        ("rust-libc-0.2" ,rust-libc-0.2)
-        ("rust-merge" ,rust-merge-0.1)
-        ("rust-nitrokey" ,rust-nitrokey-0.9)
-        ("rust-progressing" ,rust-progressing-3)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-structopt" ,rust-structopt-0.3)
-        ("rust-termion" ,rust-termion-1)
-        ("rust-toml" ,rust-toml-0.5))
-       #:cargo-development-inputs
-       (("rust-nitrokey-test" ,rust-nitrokey-test-0.5)
-        ("rust-nitrokey-test-state" ,rust-nitrokey-test-state-0.1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'use-system-deps
+           (lambda _
+             (setenv "USE_SYSTEM_LIBNITROKEY" "1"))))))
     (inputs
-     (list hidapi gnupg))
+     (cons* hidapi libnitrokey gnupg (cargo-inputs 'nitrocli)))
     (home-page "https://github.com/d-e-s-o/nitrocli")
     (synopsis "Command line tool for Nitrokey devices")
     (description
