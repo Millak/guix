@@ -496,13 +496,16 @@ which will be used as a snippet in origin."
          #$(tree-sitter-delete-generated-files grammar-directories)))))
 
 (define-public tree-sitter-hcl
-  (tree-sitter-grammar
-   "hcl" "HCL"
-   "1yydi61jki7xpabi0aq6ykz4w4cya15g8rp34apb6qq9hm4lm9di"
-   "1.1.0"
-   #:article "an"
-   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-hcl"
-   #:license license:asl2.0))
+  (let ((commit "de10d494dbd6b71cdf07a678fecbf404dbfe4398")
+        (revision "0"))
+    (tree-sitter-grammar
+     "hcl" "HCL"
+     "0dpxrr7m1k4kjasgz6v8kj7ldp0k6jcxlzcrr09qv7209v24s4x1"
+     (git-version "1.1.0" revision commit)
+     #:article "an"
+     #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-hcl"
+     #:commit commit
+     #:license license:asl2.0)))
 
 (define-public tree-sitter-java
   (tree-sitter-grammar
