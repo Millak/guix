@@ -2931,6 +2931,37 @@ rendering.")
 password-store into StumpWM.")
     (license (list license:gpl2+ license:gpl3+ license:bsd-2))))
 
+(define-public sbcl-stumpwm-rofi
+  (package
+    (name "sbcl-stumpwm-rofi")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Junker/stumpwm-rofi")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s0sri19rv6dshwm49djgbfc0zajl63gr1rg8xl762chlj28h1ir"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs (list stumpwm rofi))
+    (arguments
+     '(#:asd-systems '("rofi")
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-rofi-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "rofi.lisp"
+               (("rofi -dmenu")
+                (string-append (search-input-file inputs "/bin/rofi")
+                               " -dmenu"))))))))
+    (home-page "https://github.com/Junker/stumpwm-rofi")
+    (synopsis "Rofi module for StumpWM")
+    (description "This package provides Rofi integration for StumpWM.")
+    (license license:gpl3+)))
+
 (define-public sbcl-stumpwm-globalwindows
   (package
     (inherit stumpwm-contrib)
