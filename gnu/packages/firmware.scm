@@ -250,7 +250,19 @@ driver.")
                         (find-files "."))
               (substitute* "src/fu-self-test.c"
                 (("/bin/sh")
-                 (which "sh")))))
+                 (which "sh")))
+              ;; fwupdmgr checks for missing polkit actions, prints
+              ;; error message and exits if the polkit actions are
+              ;; not found.
+              ;; The path points to gnu store path of polkit and
+              ;; there are no actions there. Point this to the actual
+              ;; location used on Guix System. This will still fail on
+              ;; foreign distros as /usr/share/polkit-1 is used mostly.
+              (substitute* "src/fu-util.c"
+                (("g_autofree gchar \\*directory = NULL;")
+                 "")
+                (("directory = fu_path_from_kind\\(FU_PATH_KIND_POLKIT_ACTIONS\\)")
+                 "const gchar* directory = \"/etc/polkit-1/actions\""))))
           ;; These two files are zipped by Python, so need a newer timestamp.
           (add-after 'unpack 'newer-timestamps-for-python-zip
             (lambda _
