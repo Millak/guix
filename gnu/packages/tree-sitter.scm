@@ -437,16 +437,21 @@ which will be used as a snippet in origin."
    #:repository-url "https://github.com/camdencheek/tree-sitter-dockerfile"))
 
 (define-public tree-sitter-erlang
-  ;; Versions newer than 0.4.0 use tree-sitter 0.22.1
-  (let ((version "0.4.0") ; In Cargo.toml, but untagged
-        (commit "57e69513efd831f9cc8207d65d96bad917ca4aa4")
+  (let ((commit "364e323b32d098ad0e7b29e7adb4005c2bb5cf34")
         (revision "0"))
   (tree-sitter-grammar
    "erlang" "Erlang"
-   "1h0c9qc6i0kz5a0yq68xp623f84g4mc8hcp00khdbf7y7z7b9izc"
-   (git-version version revision commit)
+   "17dkvygqrx4v3y568jg72q6rdli5bp55l3zfqxvq6b5ibw48kilq"
+   (git-version "0.14.0" revision commit)
    #:repository-url "https://github.com/WhatsApp/tree-sitter-erlang"
-   #:commit commit)))
+   #:commit commit
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (use-modules (guix build utils))
+         ;; FIXME: Language not found.
+         (delete-file-recursively "test/highlight")
+         #$(tree-sitter-delete-generated-files grammar-directories))))))
 
 (define-public tree-sitter-elm
   (tree-sitter-grammar
