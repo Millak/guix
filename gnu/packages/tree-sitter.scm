@@ -7,6 +7,7 @@
 ;;; Copyright © 2023, 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023, 2024 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,16 +103,16 @@ Tree-sitter parsing library.")
 (define-public tree-sitter
   (package
     (name "tree-sitter")
-    (version "0.20.10")                 ;untagged
+    (version "0.25.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/tree-sitter/tree-sitter")
-                    (commit "0e4ff0bb27edf37b76fc7d35aa768b02cf4392ad")))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bai4gdhf8w5p1i9np2kl2ms0jq6rgq98qpiipipzayb9jjjlxcy"))
+                "0cck2wa17figxww7lb508sgwy9sbyqj89vxci07hiscr5sgdx9y5"))
               (modules '((guix build utils)))
               (snippet #~(begin
                            ;; Remove bundled ICU parts
@@ -121,7 +122,16 @@ Tree-sitter parsing library.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (delete 'configure))
+               (delete 'configure)
+               ;; The library uses -fvisibility=hidden to compile, but this
+               ;; symbol is needed by the Rust bindings.
+               (add-after 'unpack 'patch-_ts_dup-visibility
+                 (lambda _
+                   (substitute* "lib/src/tree.c"
+                     (("int _ts_dup")
+                      (string-append
+                       "int __attribute__ ((visibility (\"default\"))) "
+                       "_ts_dup"))))))
            #:tests? #f ; there are no tests for the runtime library
            #:make-flags
            #~(list (string-append "PREFIX=" #$output)
@@ -150,22 +160,35 @@ This package includes the @code{libtree-sitter} runtime library.")
   (package
     (inherit tree-sitter)
     (name "tree-sitter-cli")
-    (source (origin
-              (inherit (package-source tree-sitter))
-              (snippet
-               #~(begin
-                   ;; Remove the runtime library code and dynamically link to
-                   ;; it instead.
-                   (delete-file-recursively "lib/src")
-                   (delete-file "lib/binding_rust/build.rs")
-                   (with-output-to-file "lib/binding_rust/build.rs"
-                     (lambda _
-                       (format #t "fn main() {~@
-                              println!(\"cargo:rustc-link-lib=tree-sitter\");~@
-                              }~%")))))))
+    (source
+     (origin
+       (inherit (package-source tree-sitter))
+       (snippet
+        #~(begin
+            ;; Remove the runtime library code and dynamically link to it
+            ;; instead.
+            (for-each delete-file-recursively
+                      (find-files
+                       "lib/src"
+                       (lambda (file stat)
+                         ;; These files are required for building the binding.
+                         (not
+                          (or (string-contains file "parser.h")
+                              (string-contains file "stdlib-symbols.txt"))))))
+            (delete-file "lib/binding_rust/build.rs")
+            (with-output-to-file "lib/binding_rust/build.rs"
+              (lambda _
+                (format #t "~
+use std::{env, fs, path::{Path, PathBuf}};
+fn main() {
+    let out_dir = PathBuf::from(env::var(\"OUT_DIR\").unwrap());
+    fs::copy(\"src/wasm/stdlib-symbols.txt\",
+    out_dir.join(\"stdlib-symbols.txt\")).unwrap();
+    println!(\"cargo:rustc-link-lib=tree-sitter\");
+}~%")))))))
     (build-system cargo-build-system)
     (inputs
-     (list tree-sitter graphviz node-lts))
+     (cons* tree-sitter graphviz node-lts (cargo-inputs 'tree-sitter-cli)))
     (arguments
      (list
       #:cargo-test-flags
@@ -179,7 +202,6 @@ This package includes the @code{libtree-sitter} runtime library.")
          ;; good compromise compared to maintaining two different sets of
          ;; grammars (Guix packages vs test fixtures).
          "--skip=tests::corpus_test"
-         "--skip=tests::github_issue_test"
          "--skip=tests::highlight_test"
          "--skip=tests::node_test"
          "--skip=tests::parser_test"
@@ -188,55 +210,32 @@ This package includes the @code{libtree-sitter} runtime library.")
          "--skip=tests::tags_test"
          "--skip=tests::test_highlight_test"
          "--skip=tests::test_tags_test"
-         "--skip=tests::tree_test")
+         "--skip=tests::tree_test"
+         "--skip=tests::async_context_test"
+         "--skip=tests::text_provider_test"
+         "--skip=tests::detect_language"
+         "--skip=tests::language_test"
+         "--skip=tests::parser_hang_test")
       ;; We're only packaging the CLI program so we do not need to install
       ;; sources.
       #:install-source? #f
-      #:cargo-inputs
-      `(("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-anyhow" ,rust-anyhow-1)
-        ("rust-atty" ,rust-atty-0.2)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-difference" ,rust-difference-2)
-        ("rust-dirs" ,rust-dirs-3)
-        ("rust-html-escape" ,rust-html-escape-0.2)
-        ("rust-libloading" ,rust-libloading-0.7)
-        ("rust-path-slash" ,rust-path-slash-0.2)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-rustc-hash" ,rust-rustc-hash-1)
-        ("rust-semver" ,rust-semver-1)
-        ("rust-smallbitvec" ,rust-smallbitvec-2)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tiny-http" ,rust-tiny-http-0.12)
-        ("rust-toml" ,rust-toml-0.5)
-        ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-webbrowser" ,rust-webbrowser-0.8)
-        ("rust-which" ,rust-which-4))
-      #:cargo-development-inputs
-      `(("rust-ctor" ,rust-ctor-0.1)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-unindent" ,rust-unindent-0.2))
+      #:cargo-install-paths ''("cli")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-node
-            (lambda _
-              (substitute* "cli/src/generate/mod.rs"
-                (("Command::new\\(\"node\"\\)")
+          (add-after 'unpack 'patch-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "cli/generate/src/lib.rs"
+                (("(js_runtime\\.unwrap_or\\(\")node(\"\\))" _ prefix suffix)
                  (string-append
-                  "Command::new(\"" #$node-lts "/bin/node\")")))))
-          (add-after 'unpack 'patch-dot
-            (lambda _
+                  prefix
+                  (search-input-file inputs "bin/node")
+                  suffix)))
               (substitute* "cli/src/util.rs"
                 (("Command::new\\(\"dot\"\\)")
                  (string-append
-                  "Command::new(\"" #$graphviz "/bin/dot\")")))))
-          (replace 'install
-            (lambda _
-              (let ((bin (string-append #$output "/bin")))
-                (mkdir-p bin)
-                (install-file "target/release/tree-sitter" bin)))))))
+                  "Command::new(\""
+                  (search-input-file inputs "bin/dot")
+                  "\")"))))))))
     (description "Tree-sitter is a parser generator tool and an incremental
 parsing library.  It can build a concrete syntax tree for a source file and
 efficiently update the syntax tree as the source file is edited.
