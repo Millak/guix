@@ -316,8 +316,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-html
   (tree-sitter-grammar
    "html" "HTML"
-   "1hg7vbcy7bir6b8x11v0a4x0glvqnsqc3i2ixiarbxmycbgl3axy"
-   "0.19.0"))
+   "0slhrmwcw2xax4ylyaykx4libkzlaz2lis8x8jmn6b3hbdxlrpix"
+   "0.23.2"))
 
 (define-public tree-sitter-javascript
   ;; Commit required by tree-sitter-typescript 0.20.3.
