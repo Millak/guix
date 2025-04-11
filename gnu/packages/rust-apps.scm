@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2020-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
@@ -37,6 +37,7 @@
 ;;; Copyright © 2025 Divya Ranjan Pattanaik <divya@subvertising.org>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
+;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2343,6 +2344,30 @@ bar.  It is also compatible with sway.")
     (description "This package provides @code{just}, a command runner.
 @code{just} is a handy way to save and run project-specific commands.")
     (license license:cc0)))
+
+(define-public kanata
+  (package
+    (name "kanata")
+    (version "1.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "kanata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1632iaclw9qy6sswm2wqapa28px7rdxqchk8b1wwp6k2scysr2bs"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    (inputs (cargo-inputs 'kanata))
+    (home-page "https://github.com/jtroo/kanata")
+    (synopsis "Multi-layer keyboard customization")
+    (description
+     "Kanata is a keyboard re-mapper.  It supports multiple layers of key,
+and advanced key behavior customization, such as tap-hold, macros and
+Unicode.")
+    (license license:lgpl3)))
 
 (define-public kibi
   (package
