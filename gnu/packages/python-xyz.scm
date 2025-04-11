@@ -33371,17 +33371,27 @@ your process.")
 (define-public python-gcovr
   (package
     (name "python-gcovr")
-    (version "4.2")
+    (version "8.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gcovr" version))
        (sha256
         (base32
-          "0gyady7x3v3l9fm1zan0idaggqqcm31y7g5vxk7h05p5h7f39bjs"))))
-    (build-system python-build-system)
+          "0ych0kqbxp5giksdkh6i32vh97zrsh3m2rfs02c8rxx7qkwp38zs"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-pytest
+           python-pytest-timeout))
     (propagated-inputs
-     (list python-lxml python-jinja2))
+     (list python-lxml
+           python-jinja2
+           python-colorlog
+           python-pygments
+           python-tomli))
     (home-page "https://gcovr.com/")
     (synopsis "Utility for generating code coverage results")
     (description
