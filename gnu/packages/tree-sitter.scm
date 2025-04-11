@@ -359,8 +359,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-cpp
   (tree-sitter-grammar
    "cpp" "C++"
-   "0fsb6la0da3azh7m9p1w3w079bpg6074dy8jisjw1yq1w1r9grxy"
-   "0.20.3"
+   "0sbvvfa718qrjmfr53p8x3q2c19i4vhw0n20106c8mrvpsxm7zml"
+   "0.23.4"
    #:inputs (list tree-sitter-c)))
 
 (define-public tree-sitter-cmake
