@@ -1,0 +1,36 @@
+Fix the test "TestFileLister" by giving precisely the source directory instead of guessing it.
+Author: Florent Pruvost <florent.pruvost@inria.fr>
+
+diff --git a/test/CMakeLists.txt b/test/CMakeLists.txt
+index 467e6e95e..d68d83e3d 100644
+--- a/test/CMakeLists.txt
++++ b/test/CMakeLists.txt
+@@ -85,6 +85,7 @@ if (BUILD_TESTS)
+             elseif(TEST ${NAME})
+             else()
+                 add_test(NAME ${NAME} COMMAND $<TARGET_FILE:testrunner> ${NAME} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
++                set_tests_properties(${NAME} PROPERTIES ENVIRONMENT "PROJECT_SOURCE_DIR=${PROJECT_SOURCE_DIR}")
+             endif()
+         endfunction()
+ 
+diff --git a/test/testfilelister.cpp b/test/testfilelister.cpp
+index 3e2f56dfc..ecf0f9c6e 100644
+--- a/test/testfilelister.cpp
++++ b/test/testfilelister.cpp
+@@ -45,15 +45,7 @@ private:
+ 
+     // TODO: generate file list instead
+     static std::string findBaseDir() {
+-        std::string basedir;
+-        while (!Path::isDirectory(Path::join(basedir, ".github"))) {
+-            const std::string abspath = Path::getAbsoluteFilePath(basedir);
+-            basedir += "../";
+-            // no more going up
+-            if (Path::getAbsoluteFilePath(basedir) == abspath)
+-                throw std::runtime_error("could not find repository root directory");
+-        }
+-        return basedir;
++        return Path::getAbsoluteFilePath(std::getenv("PROJECT_SOURCE_DIR")) + "/";
+     }
+ 
+     void recursiveAddFiles() const {

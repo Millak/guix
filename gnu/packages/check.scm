@@ -791,7 +791,7 @@ format.")
 (define-public cppcheck
   (package
     (name "cppcheck")
-    (version "2.10.3")
+    (version "2.17.1")
     (source (origin
       (method git-fetch)
       (uri (git-reference
@@ -799,8 +799,8 @@ format.")
              (commit version)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1xfxcg00rxjrb9m2k78yd3jjlldkciv67fsbmjb6n3l43hgfxb9k"))
-      (patches (search-patches "cppcheck-disable-char-signedness-test.patch"))))
+       (base32 "19ap9ai9s4vsygyqfa215mrmpz4vki63d5b4qdb89zvbldaf3hlf"))
+       (patches (search-patches "cppcheck-fix-basedir-test.patch"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_TESTS=ON")))
