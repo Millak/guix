@@ -540,14 +540,11 @@ which will be used as a snippet in origin."
    #:grammar-directories '("grammars/interface" "grammars/ocaml" "grammars/type")))
 
 (define-public tree-sitter-php
-  ;; There are a lot of additions, the last tag was placed more than 1 year ago
-  (let ((commit "f860e598194f4a71747f91789bf536b393ad4a56")
-        (revision "0"))
-    (tree-sitter-grammar
-     "php" "PHP"
-     "02yc5b3qps8ghsmy4b5m5kldyr5pnqz9yw663v13pnz92r84k14g"
-     (git-version "0.19.0" revision commit)
-     #:commit commit)))
+  (tree-sitter-grammar
+   "php" "PHP"
+   "05qhz14vvqgwpxgdfr1skwgrv041zwc3wxjyx6y679965nn0lrji"
+   "0.23.12"
+   #:grammar-directories '("php" "php_only")))
 
 (define-public tree-sitter-prisma
   (tree-sitter-grammar
