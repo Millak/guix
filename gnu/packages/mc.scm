@@ -28,6 +28,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages)
@@ -40,14 +41,14 @@
 (define-public mc
   (package
     (name "mc")
-    (version "4.8.32")
+    (version "4.8.33")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://ftp.osuosl.org/pub/midnightcommander/mc-"
                           version ".tar.xz"))
       (sha256
-       (base32 "1zjr2d6r8w0f78nww42168cndkw79gsqgfgandij7bz9xp8q7p2d"))))
+       (base32 "0k0nmxlb95nqm40251azqqaa53rsj6rps7f8v22m2kl45za4kqfa"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -88,13 +89,6 @@
                  (which "sh")))))
           (add-before 'check 'fix-tests
             (lambda _
-              ;; Don't expect a UID or GID of ‘0’ in the build environment.
-              (with-directory-excursion "tests/src/vfs/extfs/helpers-list/data"
-                (substitute* (list "rpm.custom.output"
-                                   "rpm.glib.output")
-                  (("      0        0") "<<uid>>  <<gid>>")))
-              ;; XXX ERROR:mc_realpath.c:99:realpath_test: assertion failed
-              ;; (resolved_path == data->expected_string): ("" == "/usr/bin")
               (substitute* "tests/lib/mc_realpath.c"
                 (("/usr/bin") "/")
                 (("usr/bin") "/")))))))
@@ -107,6 +101,7 @@
                   libssh2
                   ncurses
                   perl
+                  python
                   unzip))
     (home-page "https://www.midnight-commander.org")
     (properties
