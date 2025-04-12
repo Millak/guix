@@ -11565,6 +11565,7 @@ simultaneous cursors.")
          (sha256
           (base32 "065l04ylplng1vgykkbn2vnkcs3sn1k2cikx1ha2q8wmgx6bkvai"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))      ; no tests
       (propagated-inputs
        (list emacs-dash))
       (home-page "https://github.com/magnars/multifiles.el")
