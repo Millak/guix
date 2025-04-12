@@ -399,6 +399,13 @@ which will be used as a snippet in origin."
          #$(tree-sitter-delete-generated-files grammar-directories)))
    #:license (list license:asl2.0 license:expat)))
 
+(define-public tree-sitter-embedded-template
+  (tree-sitter-grammar
+   "embedded-template" "embedded template (like ERB and EJS)"
+   "1vq9dywd9vcy59f6i5mk5n7vwk67g8j5x77czg7avpznskgfhqhb"
+   "0.23.2"
+   #:article "an"))
+
 (define-public tree-sitter-heex
   (tree-sitter-grammar
    "heex" "Heex"
