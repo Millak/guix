@@ -2,10 +2,10 @@ Pretend that stat's mtime is broken, so that the fontconfig cache does not
 depend upon modification time to determine if a cache is stale.
 
 diff --git a/src/fcstat.c b/src/fcstat.c
-index 5a2bd7c..d603a96 100644
+index 9b54e2b4..76d7780e 100644
 --- a/src/fcstat.c
 +++ b/src/fcstat.c
-@@ -431,6 +431,7 @@ FcIsFsMmapSafe (int fd)
+@@ -415,6 +415,7 @@ FcIsFsMmapSafe (int fd)
  FcBool
  FcIsFsMtimeBroken (const FcChar8 *dir)
  {

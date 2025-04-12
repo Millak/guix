@@ -1376,59 +1376,64 @@ Font Format (WOFF).")
     (home-page "https://w3c.github.io/woff/woff2/")
     (license license:expat)))
 
+;;; Update with: guix refresh -u '(@ (gnu packages fontutils) fontconfig)'
 (define-public fontconfig
   (hidden-package
    (package
      (name "fontconfig-minimal")
-     (version "2.14.0")
+     (version "2.16.0")
      (source (origin
                (method url-fetch)
                (uri (string-append
                      "https://www.freedesktop.org/software/"
                      "fontconfig/release/fontconfig-" version ".tar.xz"))
                (sha256 (base32
-                        "1b4v1r94ri44p4a3kbwd38ig5jgdgcfgwdfm6fqzvfvlki6bignw"))
+                        "086jdsdxmc9ryr0n0dmgs0vfnkhkxxw5hsgpr888pfn9biaxqcva"))
                (patches (search-patches "fontconfig-cache-ignore-mtime.patch"))))
      (build-system gnu-build-system)
      ;; In Requires or Requires.private of fontconfig.pc.
-     (propagated-inputs `(("expat" ,expat)
-                          ("freetype" ,freetype)
-                          ("libuuid" ,util-linux "lib")))
+     (propagated-inputs (list expat freetype
+                              `(,util-linux "lib")))
      (inputs
       ;; We use to use 'font-ghostscript' but they are not recognized by newer
       ;; versions of Pango, causing many applications to fail to find fonts
       ;; otherwise.
       (list font-dejavu))
      (native-inputs
-      `(("gperf" ,gperf)
-        ("pkg-config" ,pkg-config)
-        ("python" ,python-minimal)))    ;to avoid a cycle through tk
+      (list autoconf-2.71
+            automake
+            gettext-minimal
+            gperf
+            libtool
+            pkg-config
+            python-minimal)) ;to avoid a cycle through tk
      (arguments
-      `(#:configure-flags
-        (list "--disable-docs"
-              "--with-cache-dir=/var/cache/fontconfig"
-              ;; register the default fonts
-              (string-append "--with-default-fonts="
-                             (assoc-ref %build-inputs "font-dejavu")
-                             "/share/fonts"))
-        #:phases
-        (modify-phases %standard-phases
-          (add-before 'check 'skip-problematic-tests
-            (lambda _
-              ;; SOURCE_DATE_EPOCH doesn't make sense when ignoring mtime
-              (unsetenv "SOURCE_DATE_EPOCH")
+      (list
+       #:configure-flags
+       #~(list "--disable-docs"
+               "--with-cache-dir=/var/cache/fontconfig"
+               ;; register the default fonts
+               (string-append "--with-default-fonts="
+                              #$(this-package-input "font-dejavu")
+                              "/share/fonts"))
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'check 'skip-problematic-tests
+             (lambda _
+               ;; SOURCE_DATE_EPOCH doesn't make sense when ignoring mtime
+               (unsetenv "SOURCE_DATE_EPOCH")
 
-              (substitute* "test/run-test.sh"
-                ;; The crbug1004254 test attempts to fetch fonts from the
-                ;; network.
-                (("\\[ -x \"\\$BUILDTESTDIR\"/test-crbug1004254 \\]")
-                 "false"))))
-          (replace 'install
-            (lambda _
-              ;; Don't try to create /var/cache/fontconfig.
-              (invoke "make" "install"
-                      "fc_cachedir=$(TMPDIR)"
-                      "RUN_FC_CACHE_TEST=false"))))))
+               (substitute* "test/run-test.sh"
+                 ;; The crbug1004254 test attempts to fetch fonts from the
+                 ;; network.
+                 (("\\[ -x \"\\$BUILDTESTDIR\"/test-crbug1004254 \\]")
+                  "false"))))
+           (replace 'install
+             (lambda _
+               ;; Don't try to create /var/cache/fontconfig.
+               (invoke "make" "install"
+                       "fc_cachedir=$(TMPDIR)"
+                       "RUN_FC_CACHE_TEST=false"))))))
      (synopsis "Library for configuring and customizing font access")
      (description
       "Fontconfig can discover new fonts when installed automatically;
@@ -1448,12 +1453,10 @@ high quality, anti-aliased and subpixel rendered text on a display.")
       (list (search-path-specification
              (variable "XDG_DATA_DIRS")
              (files '("share")))))
-     (home-page "https://www.freedesktop.org/wiki/Software/fontconfig"))))
+     (home-page "https://www.freedesktop.org/wiki/Software/fontconfig/"))))
 
 ;;; The documentation of fontconfig is built in a separate package, as it
-;;; causes a dramatic increase in the size of the closure of fontconfig.  This
-;;; is intentionally named 'fontconfig', as it's intended as the user-facing
-;;; fontconfig package.
+;;; causes a dramatic increase in the size of the closure of fontconfig.
 (define-public fontconfig-with-documentation
   (package
     (inherit fontconfig)
@@ -1462,32 +1465,31 @@ high quality, anti-aliased and subpixel rendered text on a display.")
     (arguments
      (substitute-keyword-arguments (package-arguments fontconfig)
        ((#:configure-flags configure-flags)
-        `(delete "--disable-docs" ,configure-flags))
+        #~(delete "--disable-docs" #$configure-flags))
        ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'no-pdf-doc
-             (lambda _
-               ;; Don't build documentation as PDF.
-               (substitute* "doc/Makefile.in"
-                 (("^PDF_FILES = .*")
-                  "PDF_FILES =\n"))))
-           (add-after 'install 'move-man-sections
-             (lambda* (#:key outputs #:allow-other-keys)
-               ;; Move share/man/man{3,5} to the "doc" output.  Leave "man1" in
-               ;; "out" for convenience.
-               (let ((out (assoc-ref outputs "out"))
-                     (doc (assoc-ref outputs "doc")))
-                 (for-each (lambda (section)
-                             (let ((source (string-append out "/share/man/"
-                                                          section))
-                                   (target (string-append doc "/share/man/"
-                                                          section)))
-                               (copy-recursively source target)
-                               (delete-file-recursively source)))
-                           '("man3" "man5")))))))))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'no-pdf-doc
+              (lambda _
+                ;; Don't build documentation as PDF.
+                (substitute* "doc/Makefile.in"
+                  (("^PDF_FILES = .*")
+                   "PDF_FILES =\n"))))
+            (add-after 'install 'move-man-sections
+              (lambda* (#:key outputs #:allow-other-keys)
+                ;; Move share/man/man{3,5} to the "doc" output.  Leave "man1" in
+                ;; "out" for convenience.
+                (for-each
+                 (lambda (section)
+                   (let ((source (string-append #$output "/share/man/"
+                                                section))
+                         (target (string-append #$output:doc "/share/man/"
+                                                section)))
+                     (copy-recursively source target)
+                     (delete-file-recursively source)))
+                 '("man3" "man5"))))))))
     (native-inputs
-     (append (package-native-inputs fontconfig)
-             `(("docbook-utils" ,docbook-utils))))
+     (modify-inputs (package-native-inputs fontconfig)
+       (append docbook-utils)))
     (properties (alist-delete 'hidden? (package-properties fontconfig)))))
 
 (define-public t1lib
