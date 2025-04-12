@@ -4993,14 +4993,14 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
 (define-public wallust
   (package
     (name "wallust")
-    (version "3.2.0")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wallust" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r7wvqs8gi9p48nrxfwz1znkp0wm87x3bsl3yaxsqxhl10m5pk8m"))))
+        (base32 "08k593k7ixddf5z98drhzg2a858gal15dc8ih3gpsszz5q73y2ly"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -5031,41 +5031,9 @@ advanced keybindings, word-level diff highlighting, syntax highlighting for
                               (string-append share "/zsh/site-functions/"))
                 (with-directory-excursion "man"
                   (for-each install-man
-                            (find-files ".")))))))
-      #:cargo-inputs `(("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-clap" ,rust-clap-4)
-                       ("rust-dirs" ,rust-dirs-6)
-                       ("rust-documented" ,rust-documented-0.9)
-                       ("rust-dunce" ,rust-dunce-1)
-                       ("rust-fast-image-resize" ,rust-fast-image-resize-5)
-                       ("rust-fastrand" ,rust-fastrand-2)
-                       ("rust-glob" ,rust-glob-0.3)
-                       ("rust-image" ,rust-image-0.25)
-                       ("rust-itertools" ,rust-itertools-0.14)
-                       ("rust-kmeans-colors" ,rust-kmeans-colors-0.6)
-                       ("rust-minijinja" ,rust-minijinja-2)
-                       ("rust-new-string-template" ,rust-new-string-template-1)
-                       ("rust-num-traits" ,rust-num-traits-0.2)
-                       ("rust-owo-colors" ,rust-owo-colors-4)
-                       ("rust-palette" ,rust-palette-0.7)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-shellexpand" ,rust-shellexpand-3)
-                       ("rust-spinners" ,rust-spinners-4)
-                       ("rust-strum" ,rust-strum-0.27)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-toml" ,rust-toml-0.8)
-                       ("rust-toml-edit" ,rust-toml-edit-0.22)
-                       ("rust-vergen-git2" ,rust-vergen-git2-1)
-                       ("wallust-themes" ,wallust-themes))
-      #:cargo-development-inputs `(("rust-clap-complete" ,rust-clap-complete-4)
-                                   ("rust-clap-mangen" ,rust-clap-mangen-0.2)
-                                   ("rust-criterion" ,rust-criterion-0.5)
-                                   ("rust-dirs" ,rust-dirs-5)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
+                            (find-files ".")))))))))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2-1.8 zlib))
+    (inputs (cons* libgit2-1.9 zlib (cargo-inputs 'wallust)))
     (home-page "https://explosion-mental.codeberg.page/wallust")
     (synopsis "Generate themes from images with advanced templating")
     (description
