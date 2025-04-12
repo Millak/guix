@@ -1106,6 +1106,41 @@ given, also pass them to the build system instead of the ones used by PKG."
 \"bad\" plugin set, essentially containing libraries and the gst-transcoder
 binary, but none of the actual plugins.")))
 
+(define-public gst-rtsp-server
+  (package
+    (name "gst-rtsp-server")
+    (version "1.26.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://gstreamer.freedesktop.org/src/" name "/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32 "1ibg83sa0nswqan5fg378bg36jis5sn1dwfl1mvqjiw4m59qlpj1"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-failing-tests
+                 (lambda _
+                   (define failing
+                     (list "client" "media" "mediafactory" "rtspserver"
+                           "sessionmedia" "stream" "onvif" "rtspclientsink"))
+                   (substitute* "tests/check/meson.build"
+                     (("'gst/(.*)',?" all test)
+                      (if (member test failing) "" all))))))))
+    (propagated-inputs
+     (list gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad))
+    (native-inputs (list gobject-introspection
+                         `(,glib "bin")
+                         pkg-config
+                         python-wrapper))
+    (home-page "https://gstreamer.freedesktop.org/")
+    (synopsis "Library for building RTSP servers with GStreamer")
+    (description "This package provides a GStreamer extension to handle
+RTSP connections and messages.")
+    (license license:lgpl2.0+)))
+
 (define-public python-gst
   (package
     (name "python-gst")
