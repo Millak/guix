@@ -133,35 +133,18 @@
 (define-public aardvark-dns
   (package
     (name "aardvark-dns")
-    (version "1.13.0")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aardvark-dns" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0765p0jscj9c061rvb3dv922lnysvsk2xw88scjf41gr20hly3g6"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* (find-files "." "^Cargo\\.toml$")
-                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
-                   (string-append "\"^" version)))))))
+        (base32 "1d2bs5lmijv6s3n71gqc986n1wy7ny9w74741njjix7932a7yd5f"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:cargo-inputs (("rust-arc-swap" ,rust-arc-swap-1)
-                       ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-clap" ,rust-clap-4)
-                       ("rust-flume" ,rust-flume-0.11)
-                       ("rust-futures-util" ,rust-futures-util-0.3)
-                       ("rust-hickory-client" ,rust-hickory-client-0.24)
-                       ("rust-hickory-proto" ,rust-hickory-proto-0.24)
-                       ("rust-hickory-server" ,rust-hickory-server-0.24)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-nix" ,rust-nix-0.29)
-                       ("rust-syslog" ,rust-syslog-7)
-                       ("rust-tokio" ,rust-tokio-1))))
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'aardvark-dns))
     (home-page "https://github.com/containers/aardvark-dns")
     (synopsis "Container-focused DNS A/AAAA record server")
     (description
