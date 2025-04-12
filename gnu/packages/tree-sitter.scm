@@ -785,9 +785,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-awk
   (tree-sitter-grammar
    "awk" "AWK"
-   "1far60pxkqfrxi85hhn811g2r7vhnzdvfp5piy89fmpxk33s4vmi"
-   ;; Version 0.7.1 would be most recent, but would require tree-sitter >= 0.21.0.
-   "0.6.2"
+   "1bglimp46cggq9kx92h943wnq2r6ymp7anwynjnl42wrdssc0drh"
+   "0.7.2"
    #:repository-url "https://github.com/Beaglefoot/tree-sitter-awk"))
 
 (define-public tree-sitter-verilog
