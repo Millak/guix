@@ -594,8 +594,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-rust
   (tree-sitter-grammar
    "rust" "Rust"
-   "1pk4mb3gh62xk0qlhxa8ihhxvnf7grrcchwg2xv99yy6yb3yh26b"
-   "0.20.4"))
+   "0x7xqxspdfnbgn9nvrsl2rsnrjbs01i5hy8k8p5wwk2j358hjyyb"
+   "0.24.0"))
 
 (define-public tree-sitter-ungrammar
   ;; No releases yet.
