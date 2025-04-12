@@ -2644,7 +2644,7 @@ It is used to control the pointer with a joystick device.")
             "0mvwxrnkq0lzhjr894p420zxffdn34nc2scinmp7qd1hikr51kkp"))))
     (build-system gnu-build-system)
     ;; Linux is no longer supported since 2.0.0, use libinput or evdev instead.
-    (supported-systems '("i586-gnu" "x86_64-gnu"))
+    (supported-systems %hurd-systems)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")
