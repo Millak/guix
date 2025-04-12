@@ -155,33 +155,19 @@ records.  It can forward other requests to configured resolvers.")
 (define-public agate
   (package
     (name "agate")
-    (version "3.3.11")
+    (version "3.3.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "agate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0m18vsbrs4crg618vckywn5qsy36gd1vb10h4k92q15zaarrv24a"))))
+        (base32 "1g1zrk3zmyckafcy8rjqjpk9hmas8wgxydhgm70cirsxhz661as6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-configparser" ,rust-configparser-3)
-        ("rust-env-logger" ,rust-env-logger-0.11)
-        ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-getopts" ,rust-getopts-0.2)
-        ("rust-glob" ,rust-glob-0.3)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-mime-guess" ,rust-mime-guess-2)
-        ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-rcgen" ,rust-rcgen-0.13)
-        ("rust-tokio" ,rust-tokio-1)
-        ("rust-tokio-rustls" ,rust-tokio-rustls-0.26)
-        ("rust-url" ,rust-url-2))
-       #:cargo-development-inputs (("rust-trotter" ,rust-trotter-1))))
+     `(#:install-source? #f))
     (native-inputs (list pkg-config))
-    (inputs (list openssl))
+    (inputs (cons openssl (cargo-inputs 'agate)))
     (home-page "https://github.com/mbrubeck/agate")
     (synopsis "Very simple server for the Gemini hypertext protocol")
     (description
