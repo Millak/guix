@@ -10068,6 +10068,18 @@
   (crate-source "xcb" "0.8.2"
                 "1ph27r9nxyfy3hh1c7x85g6dciwxcinf6514pvw9ybhl4hzpm4ay"))
 
+(define rust-xcb-1.5.0
+  (crate-source "xcb" "1.5.0"
+                "1gjj1481pf08b5fhpdncaphyv0k5ka11n1f8ma6cv4hspc9g5qpi"))
+
+(define rust-xcb-util-cursor-0.3.3
+  (crate-source "xcb-util-cursor" "0.3.3"
+                "1b746cbp9g7lnakq0yk4m9909aq6vb38kbl4srq1bwdchinmdi5d"))
+
+(define rust-xcb-util-cursor-sys-0.1.4
+  (crate-source "xcb-util-cursor-sys" "0.1.4"
+                "00d67fxdzvym65ln988a8x3aakg8bb0drki2bv4ac8s7avrmyrz2"))
+
 (define rust-xcursor-0.3.8
   (crate-source "xcursor" "0.3.8"
                 "0qazsl7h8nrbbzx84qrv39w8m2qc27g0mvrszgdls2v6n6k3vwqf"))
@@ -23166,6 +23178,103 @@
                                        rust-windows-x86-64-msvc-0.52.6
                                        rust-xenstore-rs-0.6.0
                                        rust-xenstore-sys-0.2.0))
+                     (xwayland-satellite =>
+                                         (list rust-aho-corasick-1.1.3
+                                          rust-anstream-0.6.18
+                                          rust-anstyle-1.0.10
+                                          rust-anstyle-parse-0.2.6
+                                          rust-anstyle-query-1.1.2
+                                          rust-anstyle-wincon-3.0.7
+                                          rust-bindgen-0.69.5
+                                          rust-bitflags-1.3.2
+                                          rust-bitflags-2.9.0
+                                          rust-cc-1.2.19
+                                          rust-cexpr-0.6.0
+                                          rust-cfg-if-1.0.0
+                                          rust-clang-sys-1.8.1
+                                          rust-colorchoice-1.0.3
+                                          rust-cursor-icon-1.1.0
+                                          rust-downcast-rs-1.2.1
+                                          rust-either-1.15.0
+                                          rust-env-filter-0.1.3
+                                          rust-env-logger-0.10.2
+                                          rust-env-logger-0.11.8
+                                          rust-errno-0.3.11
+                                          rust-glob-0.3.2
+                                          rust-hermit-abi-0.5.0
+                                          rust-home-0.5.11
+                                          rust-humantime-2.2.0
+                                          rust-is-terminal-0.4.16
+                                          rust-is-terminal-polyfill-1.70.1
+                                          rust-itertools-0.12.1
+                                          rust-jiff-0.2.6
+                                          rust-jiff-static-0.2.6
+                                          rust-lazy-static-1.5.0
+                                          rust-lazycell-1.3.0
+                                          rust-libc-0.2.171
+                                          rust-libloading-0.8.6
+                                          rust-linux-raw-sys-0.4.15
+                                          rust-log-0.4.27
+                                          rust-memchr-2.7.4
+                                          rust-memmap2-0.9.5
+                                          rust-minimal-lexical-0.2.1
+                                          rust-nom-7.1.3
+                                          rust-once-cell-1.21.3
+                                          rust-paste-1.0.15
+                                          rust-pkg-config-0.3.32
+                                          rust-portable-atomic-1.11.0
+                                          rust-portable-atomic-util-0.2.4
+                                          rust-pretty-env-logger-0.5.0
+                                          rust-prettyplease-0.2.32
+                                          rust-proc-macro2-1.0.94
+                                          rust-quick-xml-0.30.0
+                                          rust-quick-xml-0.37.4
+                                          rust-quote-1.0.40
+                                          rust-regex-1.11.1
+                                          rust-regex-automata-0.4.9
+                                          rust-regex-syntax-0.8.5
+                                          rust-rustc-hash-1.1.0
+                                          rust-rustix-0.38.44
+                                          rust-sd-notify-0.4.5
+                                          rust-serde-1.0.219
+                                          rust-serde-derive-1.0.219
+                                          rust-shlex-1.3.0
+                                          rust-slotmap-1.0.7
+                                          rust-smallvec-1.15.0
+                                          rust-smithay-client-toolkit-0.19.2
+                                          rust-syn-2.0.100
+                                          rust-termcolor-1.4.1
+                                          rust-thiserror-1.0.69
+                                          rust-thiserror-impl-1.0.69
+                                          rust-unicode-ident-1.0.18
+                                          rust-utf8parse-0.2.2
+                                          rust-version-check-0.9.5
+                                          rust-wayland-backend-0.3.8
+                                          rust-wayland-client-0.31.8
+                                          rust-wayland-csd-frame-0.3.0
+                                          rust-wayland-cursor-0.31.8
+                                          rust-wayland-protocols-0.32.6
+                                          rust-wayland-protocols-wlr-0.3.6
+                                          rust-wayland-scanner-0.31.6
+                                          rust-wayland-server-0.31.7
+                                          rust-wayland-sys-0.31.6
+                                          rust-which-4.4.2
+                                          rust-winapi-util-0.1.9
+                                          rust-windows-sys-0.59.0
+                                          rust-windows-targets-0.52.6
+                                          rust-windows-aarch64-gnullvm-0.52.6
+                                          rust-windows-aarch64-msvc-0.52.6
+                                          rust-windows-i686-gnu-0.52.6
+                                          rust-windows-i686-gnullvm-0.52.6
+                                          rust-windows-i686-msvc-0.52.6
+                                          rust-windows-x86-64-gnu-0.52.6
+                                          rust-windows-x86-64-gnullvm-0.52.6
+                                          rust-windows-x86-64-msvc-0.52.6
+                                          rust-xcb-1.5.0
+                                          rust-xcb-util-cursor-0.3.3
+                                          rust-xcb-util-cursor-sys-0.1.4
+                                          rust-xcursor-0.3.8
+                                          rust-xkeysym-0.2.1))
                      (zoxide =>
                              (list rust-aho-corasick-1.1.3
                                    rust-aliasable-0.1.3
