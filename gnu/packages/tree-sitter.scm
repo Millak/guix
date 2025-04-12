@@ -575,12 +575,15 @@ which will be used as a snippet in origin."
          #$(tree-sitter-delete-generated-files grammar-directories)))))
 
 (define-public tree-sitter-ron
-  (tree-sitter-grammar
-   "ron" "RON"
-   "1la5v0nig3xp1z2v3sj36hb7wkkjch46dmxf457px7ly43x4cb83"
-   "0.2.0"
-   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-ron"
-   #:license (list license:asl2.0 license:expat)))
+  (let ((commit "78938553b93075e638035f624973083451b29055")
+        (revision "0"))
+    (tree-sitter-grammar
+     "ron" "RON"
+     "13f8a5sfvyrizkl0szh2yaslmvjk91s97yb2abrdh74a0pl217aa"
+     (git-version "0.2.0" revision commit)
+     #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-ron"
+     #:commit commit
+     #:license (list license:asl2.0 license:expat))))
 
 (define-public tree-sitter-ruby
   ;; There are a lot of additions, the last tag was placed more than 1 year ago
