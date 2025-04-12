@@ -668,11 +668,16 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-nix
   (tree-sitter-grammar
    "nix" "Nix"
-   "0nn3ij8k6wkbf3kcvkyyp0vhfjcksi31wyyfwmsbx66maf2xgaii"
-   "0.0.0"
-   ;; The most recent commit at time of packaging, no tags.
-   #:commit "763168fa916a333a459434f1424b5d30645f015d"
-   #:repository-url "https://github.com/nix-community/tree-sitter-nix"))
+   "0rkvr64fvawblpg39rr0mrigf1rhsk30vng2vxviwb7fk50iww0i"
+   "0.0.2"
+   #:repository-url "https://github.com/nix-community/tree-sitter-nix"
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (use-modules (guix build utils))
+         ;; FIXME: Language not found.
+         (delete-file-recursively "test/highlight")
+         #$(tree-sitter-delete-generated-files grammar-directories)))))
 
 (define-public tree-sitter-org
   ;; There are a lot of additions, the last tag was placed a while ago
