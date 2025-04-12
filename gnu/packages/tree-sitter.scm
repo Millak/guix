@@ -691,15 +691,11 @@ which will be used as a snippet in origin."
      #:commit commit)))
 
 (define-public tree-sitter-scheme
-  ;; There are a lot of additions, the last tag was placed a while ago
-  (let ((commit "67b90a365bebf4406af4e5a546d6336de787e135")
-        (revision "0"))
-    (tree-sitter-grammar
-     "scheme" "Scheme (R5RS, R6RS)"
-     "1pvxckza1kdfwqs78ka3lbwldrwkgymb31f5x1fq5vyawg60wxk8"
-     (git-version "0.2.0" revision commit)
-     #:repository-url "https://github.com/6cdh/tree-sitter-scheme"
-     #:commit commit)))
+  (tree-sitter-grammar
+   "scheme" "Scheme (R5RS, R6RS, R7RS)"
+   "12p8g2mnd73lanibk16llhbx7xarlcl2ihngcibhpa4bzppcbb8l"
+   "0.23.0-1"
+   #:repository-url "https://github.com/6cdh/tree-sitter-scheme"))
 
 (define-public tree-sitter-sway
   (tree-sitter-grammar
