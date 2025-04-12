@@ -6200,6 +6200,11 @@ the Font Lock keywords.")
          (sha256
           (base32 "0hx3k2zx2kdavivr1b957jq7kcwk301yzw77aprxzbs7jz73a35x"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f ; require pcache
+        #:test-command #~(list "make" "test")))
+      (native-inputs (list which))
       (home-page "https://github.com/rolandwalker/font-utils/")
       (synopsis "Utility functions for working with fonts in Emacs")
       (description
