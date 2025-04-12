@@ -1599,9 +1599,9 @@ Powerline support.")
 designed to work well in user interface environments.")
     (license license:silofl1.1)))
 
-(define-public font-adobe-source-sans-pro
+(define-public font-adobe-source-sans
   (package
-    (name "font-adobe-source-sans-pro")
+    (name "font-adobe-source-sans")
     (version "3.052")
     (source
      (origin
@@ -1617,9 +1617,13 @@ designed to work well in user interface environments.")
     (synopsis
      "Sans serif font family for user interface environments")
     (description
-     "Source Sans Pro is a set of OpenType fonts that have been designed to
-work well in user interface (UI) environments.")
+     "Source Sans is a set of OpenType fonts that have been designed to work
+well in user interface (UI) environments.")
     (license license:silofl1.1)))
+
+;; https://github.com/adobe-fonts/source-sans/issues/192
+(define-public font-adobe-source-sans-pro
+  (deprecated-package "font-adobe-source-sans-pro"  font-adobe-source-sans))
 
 (define-public font-adobe-source-serif-pro
   (package
