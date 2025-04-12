@@ -629,17 +629,22 @@ which will be used as a snippet in origin."
           '#$grammar-directories)))))
 
 (define-public tree-sitter-markdown
-  ;; No tags
-  (let ((commit "ef3caf83663ea97ad9e88d891424fff6a20d878d")
-        (revision "0"))
-    (tree-sitter-grammar
-     "markdown" "Markdown (CommonMark Spec v0.30)"
-     "0p9mxpvkhzsxbndda36zx5ycd6g2r2qs60gpx4y56p10lhgzlyqj"
-     "0.1.1"
-     #:repository-url "https://github.com/MDeiml/tree-sitter-markdown"
-     #:grammar-directories '("tree-sitter-markdown"
-                             "tree-sitter-markdown-inline")
-     #:commit commit)))
+  (tree-sitter-grammar
+   "markdown" "Markdown (CommonMark Spec v0.30)"
+   "0r8jlmyr1bnyqqipmpmxxw4qw81c9n0l29xdfkz2n2zmjqps5v9r"
+   "0.4.1"
+   #:repository-url "https://github.com/MDeiml/tree-sitter-markdown"
+   #:grammar-directories '("tree-sitter-markdown"
+                           "tree-sitter-markdown-inline")
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (use-modules (guix build utils))
+         ;; FIXME
+         (with-directory-excursion "tree-sitter-markdown-inline/test/corpus"
+           (for-each delete-file
+                     '("extension_wikilink.txt" "spec.txt" "tags.txt")))
+         #$(tree-sitter-delete-generated-files grammar-directories)))))
 
 (define-public tree-sitter-markdown-gfm
   ;; Not updated for more than 1 year, can be deprecated when gfm will be
