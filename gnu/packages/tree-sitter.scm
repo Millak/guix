@@ -777,10 +777,10 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-kotlin
   (tree-sitter-grammar
    "kotlin" "Kotlin"
-   "0lqwjg778xy561hhf90c9m8zdjmv58z5kxgy0cjgys4xqsfbfri6"
-   "0.3.6"
+   "0bv21rcypi9dx87kgfr89mg8qfc7ik1g1fcb8am7ss17by8badwk"
+   "0.3.8"
    #:repository-url "https://github.com/fwcd/tree-sitter-kotlin"
-   #:commit "0.3.6"))
+   #:commit "0.3.8"))
 
 (define-public tree-sitter-awk
   (tree-sitter-grammar
