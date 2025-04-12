@@ -743,14 +743,14 @@ model to base your own plug-in on, here it is.")
 (define-public gst-plugins-bad
   (package
     (name "gst-plugins-bad")
-    (version "1.24.9")
+    (version "1.26.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/src/"
                                   name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1aswb97v1ird3rmfcsa32bvp4kgp8r987f83pd1knx8amylzgz1n"))
+                "0qbmblksgl2nmbi6brw54b1bzziw9flvqk2zb576y9qlmyn8vi4m"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -814,7 +814,13 @@ model to base your own plug-in on, here it is.")
                   ((".*elements/dtls\\.c.*") "")
 
                   ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3921
-                  ((".*elements/mxfdemux\\.c.*") ""))
+                  ((".*elements/mxfdemux\\.c.*") "")
+
+                  ;; Unable to create pipeline 'bin.
+                  ;; ( vulkanupload ! vulkancolorconvert ! vulkandownload )':
+                  ;; no element "vulkanupload"
+                  ((".*elements/vkcolorconvert\\.c.*") "")
+                  ((".*elements/vkupload\\.c.*") ""))
                 (substitute* "tests/check/elements/zxing.c"
                   ;; zxing 1.2.0 seemingly changed the type representation of
                   ;; the EAN_13 structure; disable it.
