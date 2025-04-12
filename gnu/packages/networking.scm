@@ -3733,14 +3733,14 @@ and check if the WLAN key or the master key was transmitted unencrypted.")
 (define-public dante
   (package
     (name "dante")
-    (version "1.4.3")
+    (version "1.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.inet.no/dante/files/dante-"
                            version ".tar.gz"))
        (sha256
-         (base32 "0pbahkj43rx7rmv2x40mf5p3g3x9d6i2sz7pzglarf54w5ghd2j1"))
+        (base32 "1v7s2fl573xrz68flhsnn9h51hn7cbj1qb6g1i60m7qz5xrwfwqr"))
        (patches (search-patches "dante-non-darwin.patch"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--with-libc=libc.so.6")))
