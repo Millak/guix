@@ -763,8 +763,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-scala
   (tree-sitter-grammar
    "scala" "Scala"
-   "0hs6gmkq5cx9qrmgfz1mh0c34flwffc0k2mhwf13laawswnywfkz"
-   "0.20.2"))
+   "02awiraj5mmgyi31yzxyxarkkl41qksm3lm41pq9c6bmyqpir2y6"
+   "0.23.4"))
 
 (define-public tree-sitter-tlaplus
   (tree-sitter-grammar
