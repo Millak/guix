@@ -5071,7 +5071,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
 (define-public libsoup-minimal
   (package
     (name "libsoup-minimal")
-    (version "3.6.4")
+    (version "3.6.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libsoup/"
@@ -5079,7 +5079,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
                                   "libsoup-" version ".tar.xz"))
               (sha256
                (base32
-                "12jwcsk17b4x4pd4wqnhn5xzr25186hw5dpjrbmmpc3na9pwfm4v"))))
+                "0d52mnvvsvwpc3scjva5fbvns8f8ijyswgjwjhbr151ymid7d4b8"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -5120,10 +5120,11 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
            nghttp2 ;for pkg-config
            `(,nghttp2 "lib")
            libxml2
+           mit-krb5
            sqlite
            zlib))
     (inputs
-     (list mit-krb5 samba/pinned))     ; For ntlm_auth support
+     (list samba/pinned))               ; For ntlm_auth support
     (home-page "https://wiki.gnome.org/Projects/libsoup")
     (synopsis "GLib-based HTTP Library")
     (description
