@@ -681,11 +681,11 @@ which will be used as a snippet in origin."
 
 (define-public tree-sitter-org
   ;; There are a lot of additions, the last tag was placed a while ago
-  (let ((commit "081179c52b3e8175af62b9b91dc099d010c38770")
-        (revision "0"))
+  (let ((commit "64cfbc213f5a83da17632c95382a5a0a2f3357c1")
+        (revision "1"))
     (tree-sitter-grammar
      "org" "Org"
-     "0h9krbaq9j6ijf86sg0w221s0zbpbx5f7m1l0whzjahbrqpnqgxl"
+     "1l62p4a3b22pa7b5mzmy497pk5b8w01hx6zinfwpbnzg2rjdwkgz"
      (git-version "1.3.1" revision commit)
      #:repository-url "https://github.com/milisims/tree-sitter-org"
      #:commit commit)))
