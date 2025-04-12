@@ -586,6 +586,31 @@ messaging environments.  It can be used with messaging software to provide
 end-to-end encryption.")
    (license license:gpl3+)))
 
+(define-public libomemo-c
+  (package
+    (inherit libsignal-protocol-c)
+    (name "libomemo-c")
+    (version "0.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dino/libomemo-c")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1xszd4cjrlwwsy19ri2ymqr676qpqqhxv3cw5zwch3lms68p51hy"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Delete generated sources.
+               #~(for-each delete-file
+                           (find-files "." "\\.pb-c\\.[ch]$")))))
+    (build-system meson-build-system)
+    (arguments (list #:configure-flags #~(list "-Dtests=true")))
+    (propagated-inputs (list protobuf-c))
+    (home-page "https://github.com/dino/libomemo-c")
+    (description "This package provides a fork of libsignal-protocol-c, used
+by Dino to provide OMEMO support.")))
+
 (define-public axc
   (package
     (name "axc")
