@@ -38,6 +38,7 @@
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2025 Gabriel Santos <gabriel.santos.smtp@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2429,28 +2430,8 @@ on the terminal in a visually appealing way.")
         (base32 "0rqljm689say9f1878x9x9v1ahaji52vqrnnm6nmkkilfsyfx550"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:cargo-inputs (("rust-clap" ,rust-clap-4)
-                       ("rust-color-eyre" ,rust-color-eyre-0.6)
-                       ("rust-colorsys" ,rust-colorsys-0.6)
-                       ("rust-directories" ,rust-directories-5)
-                       ("rust-enquote" ,rust-enquote-1)
-                       ("rust-execute" ,rust-execute-0.2)
-                       ("rust-image" ,rust-image-0.25)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-material-colors" ,rust-material-colors-0.4)
-                       ("rust-owo-colors" ,rust-owo-colors-4)
-                       ("rust-paris-log" ,rust-paris-log-1)
-                       ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
-                       ("rust-prettytable-rs" ,rust-prettytable-rs-0.10)
-                       ("rust-reqwest" ,rust-reqwest-0.12)
-                       ("rust-resolve-path" ,rust-resolve-path-0.1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-toml" ,rust-toml-0.8)
-                       ("rust-update-informer" ,rust-update-informer-1)
-                       ("rust-upon" ,rust-upon-0.8))
-       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'matugen))
     (home-page "https://github.com/InioX/matugen")
     (synopsis "Generate themes using the 'Material You' palette")
     (description
