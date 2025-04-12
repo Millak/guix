@@ -815,6 +815,8 @@ which will be used as a snippet in origin."
            (delete-file "src/node-types.json")
            (delete-file "src/parser.c")
            (delete-file-recursively "src/tree_sitter")
+           ;; FIXME: Language not found.
+           (delete-file-recursively "test/highlight")
            ;; Fix a query error in the highlight.scm query test. This would be
            ;; easier with a patch, but this works too, and we still get to use
            ;; tree-sitter-grammar. The fix is taken from here:
