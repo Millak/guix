@@ -9,6 +9,7 @@
 ;;; Copyright © 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -672,7 +673,7 @@ provisioning etc.")
 (define-public cqfd
   (package
     (name "cqfd")
-    (version "5.5.0")
+    (version "5.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -681,7 +682,7 @@ provisioning etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wmrl1vv75af2pllm988xcw51j7bhb0p1xny91bcq9rkc3yxh5yz"))))
+                "1p0093hx2ryxng2l53cqaca8g7gw888ydq2i328raip62pcdrccp"))))
     (build-system gnu-build-system)
     (arguments
      ;; The test suite requires a docker daemon and connectivity.
