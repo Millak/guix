@@ -194,69 +194,26 @@ low-end hardware and serving many concurrent requests.")
         #~(begin (use-modules (guix build utils))
                  ;; Use a packaged version of web-view.
                  (substitute* "Cargo.toml"
-                   (("git = .*web-view\",") "version = \"0.7.3\",")
+                   (("git = .*web-view\",") "version = \"*\",")
                    ((", git = .*ureq\"") "")
                    (("git = .*ecies-ed25519-ng.*version") "version"))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
+     `(#:install-source? #f
+       #:cargo-test-flags
        '("--release" "--"
          "--skip=dns::client::tests::test_tcp_client"
-         "--skip=dns::client::tests::test_udp_client")
-       #:cargo-inputs
-       (("rust-getopts" ,rust-getopts-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-simplelog" ,rust-simplelog-0.12)
-        ("rust-toml" ,rust-toml-0.8)
-        ("rust-digest" ,rust-digest-0.10)
-        ("rust-sha2" ,rust-sha2-0.10)
-        ("rust-ed25519-dalek" ,rust-ed25519-dalek-2)
-        ("rust-x25519-dalek" ,rust-x25519-dalek-2)
-        ("rust-ecies-ed25519-ng" ,rust-ecies-ed25519-ng-0.5)
-        ("rust-chacha20poly1305" ,rust-chacha20poly1305-0.10)
-        ("rust-signature" ,rust-signature-2)
-        ("rust-blakeout" ,rust-blakeout-0.3)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-bincode" ,rust-bincode-1)
-        ("rust-serde-cbor" ,rust-serde-cbor-0.11)
-        ("rust-base64" ,rust-base64-0.22)
-        ("rust-num-bigint" ,rust-num-bigint-0.4)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-sqlite" ,rust-sqlite-0.36)
-        ("rust-uuid" ,rust-uuid-1)
-        ("rust-mio" ,rust-mio-1)
-        ("rust-ureq" ,rust-ureq-2)
-        ("rust-lru" ,rust-lru-0.12)
-        ("rust-derive-more" ,rust-derive-more-0.99)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-spmc" ,rust-spmc-0.3)
-        ("rust-tinyfiledialogs" ,rust-tinyfiledialogs-3)
-        ("rust-web-view" ,rust-web-view-0.7)
-        ("rust-open" ,rust-open-5)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-windows-service" ,rust-windows-service-0.7)
-        ("rust-thread-priority" ,rust-thread-priority-1)
-        ("rust-winres" ,rust-winres-0.1))
-       #:cargo-development-inputs
-       (("rust-serde-bytes" ,rust-serde-bytes-0.11)
-        ("rust-serde-derive" ,rust-serde-derive-1))))
+         "--skip=dns::client::tests::test_udp_client")))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list at-spi2-core
-           gtk
-           glib
-           pango
-           sqlite
-           webkitgtk-with-libsoup2
-           ;; Packaged from a git checkout, so add it here so we can grab the
-           ;; sources from the cargo tarball we create while building it.
-           rust-ecies-ed25519-ng-0.5))
+     (cons* at-spi2-core
+            gtk
+            glib
+            pango
+            sqlite
+            webkitgtk-with-libsoup2
+            (cargo-inputs 'alfis)))
     (home-page "https://github.com/Revertron/Alfis")
     (synopsis "Alternative Free Identity System")
     (description
