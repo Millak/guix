@@ -1624,18 +1624,19 @@ work well in user interface (UI) environments.")
 (define-public font-adobe-source-serif-pro
   (package
     (name "font-adobe-source-serif-pro")
-    (version "3.001R")
+    (version "4.005")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/adobe-fonts/source-serif-pro")
-             (commit version)))
+             (url "https://github.com/adobe-fonts/source-serif")
+             (commit (string-append version "R"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z0pjvx0jpjwb8vzvc6l5gzlg0mqax4v9pizqcxx82l0ydlfh5bj"))))
+        (base32 "0khb24wcpwa3lqbpaklcph3xx5b4ksadhfgb3vj2mahacwjr2dvn"))))
     (build-system font-build-system)
-    (home-page "https://github.com/adobe-fonts/source-serif-pro")
+    (outputs '("out" "ttf" "woff"))
+    (home-page "https://github.com/adobe-fonts/source-serif")
     (synopsis
      "Serif typeface to complement Source Sans Pro for setting text")
     (description
