@@ -1613,6 +1613,7 @@ designed to work well in user interface environments.")
        (sha256
         (base32 "06s0xn49x454c9zbrawcm4b672qpaqah3glmh2jn3m2jyv5xhdnb"))))
     (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
     (home-page "https://github.com/adobe-fonts/source-sans")
     (synopsis
      "Sans serif font family for user interface environments")
