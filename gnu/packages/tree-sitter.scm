@@ -561,14 +561,18 @@ which will be used as a snippet in origin."
    "0.23.6"))
 
 (define-public tree-sitter-r
-  ;; No tags
-  (let ((commit "80efda55672d1293aa738f956c7ae384ecdc31b4")
-        (revision "0"))
-    (tree-sitter-grammar
-     "r" "R"
-     "1n7yxi2wf9xj8snw0b85a5w40vhf7x1pwirnwfk78ilr6hhz4ix9"
-     (git-version "0.0.1" revision commit)
-     #:commit commit)))
+  (tree-sitter-grammar
+   "r" "R"
+   "1jf14nvrfcznsnmxmlkbnn59bdykpsawxm5grph65p8vghi4fik7"
+   "1.1.0"
+   #:repository-url "https://github.com/r-lib/tree-sitter-r"
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (use-modules (guix build utils))
+         ;; FIXME: Language not found.
+         (for-each delete-file-recursively '("test/highlight" "test/tags"))
+         #$(tree-sitter-delete-generated-files grammar-directories)))))
 
 (define-public tree-sitter-ron
   (tree-sitter-grammar
