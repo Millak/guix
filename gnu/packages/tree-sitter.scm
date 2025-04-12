@@ -716,11 +716,11 @@ which will be used as a snippet in origin."
 
 (define-public tree-sitter-plantuml
   ;; No tags
-  (let ((commit "bea443ef909484938cb0a9176ebda7b8a3d108f7")
-        (revision "0"))
+  (let ((commit "c7361a1d481dc1ff6700b14ea1d5efc549b72713")
+        (revision "1"))
     (tree-sitter-grammar
      "plantuml" "PlantUML"
-     "0swqq4blhlvvgrvsb0h4cjl3pnfmmdpfd5r5kg9rpdwk0sn98x3a"
+     "0apmv0dad58ixhxhzxkwlm9wgbphj7lxilbh427rpxy1y5hrml0f"
      (git-version "1.0.0" revision commit)
      #:repository-url "https://github.com/Decodetalkers/tree_sitter_plantuml"
      #:commit commit
@@ -728,6 +728,9 @@ which will be used as a snippet in origin."
      (lambda _
        #~(begin
            (use-modules (guix build utils))
+           (substitute* "grammar.js"
+             (("u\\{\\[0-9a-fA-F\\]\\+\\}")
+              "u\\{[0-9a-fA-F]+\\}"))
            (delete-file "binding.gyp")
            (delete-file-recursively "bindings"))))))
 
