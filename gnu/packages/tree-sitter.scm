@@ -586,14 +586,10 @@ which will be used as a snippet in origin."
      #:license (list license:asl2.0 license:expat))))
 
 (define-public tree-sitter-ruby
-  ;; There are a lot of additions, the last tag was placed more than 1 year ago
-  (let ((commit "206c7077164372c596ffa8eaadb9435c28941364")
-        (revision "0"))
-    (tree-sitter-grammar
-     "ruby" "Ruby"
-     "1pqr24bj68lgi1w2cblr8asfby681l3032jrppq4n9x5zm23fi6n"
-     (git-version "0.19.0" revision commit)
-     #:commit commit)))
+  (tree-sitter-grammar
+   "ruby" "Ruby"
+   "0c1vs63ydcb3q2wnif18l5irbj6chkcvd3p6dg0vyhklk5acrvca"
+   "0.23.1"))
 
 (define-public tree-sitter-rust
   (tree-sitter-grammar
