@@ -1,0 +1,48 @@
+Print a warning when a configuration file cannot not be opened due to read
+access.
+
+Upstream-status: Forwarded to the author of Pounce via email.
+
+diff --git a/local.c b/local.c
+index fcd670a..d4603c4 100644
+--- a/local.c
++++ b/local.c
+@@ -43,6 +43,15 @@
+ 
+ static struct tls *server;
+ 
++void checkReadable(const char* file) {
++	FILE* f = fopen(file, "r");
++	if (f == NULL) {
++		if (errno == EACCES) warnx("failed to read file '%s'", file);
++	} else {
++		fclose(f);
++	}
++}
++
+ int localConfig(
+ 	const char *cert, const char *priv, const char *ca, bool require
+ ) {
+@@ -55,12 +64,14 @@ int localConfig(
+ 	int error;
+ 	char buf[PATH_MAX];
+ 	for (int i = 0; configPath(buf, sizeof(buf), cert, i); ++i) {
++		checkReadable(buf);
+ 		error = tls_config_set_cert_file(config, buf);
+ 		if (!error) break;
+ 	}
+ 	if (error) goto fail;
+ 
+ 	for (int i = 0; configPath(buf, sizeof(buf), priv, i); ++i) {
++		checkReadable(buf);
+ 		error = tls_config_set_key_file(config, buf);
+ 		if (!error) break;
+ 	}
+@@ -68,6 +79,7 @@ int localConfig(
+ 
+ 	if (ca) {
+ 		for (int i = 0; configPath(buf, sizeof(buf), ca, i); ++i) {
++			checkReadable(buf);
+ 			error = tls_config_set_ca_file(config, buf);
+ 			if (!error) break;
+ 		}

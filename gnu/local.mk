@@ -1998,6 +1998,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/plasp-include-iostream.patch \
   %D%/packages/patches/pocketfft-cpp-prefer-preprocessor-if.patch			\
   %D%/packages/patches/pokerth-boost.patch			\
+  %D%/packages/patches/pounce-readable-checks.patch             \
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
   %D%/packages/patches/procps-strtod-test.patch                 \
   %D%/packages/patches/prusa-slicer-fix-tests.patch		\

@@ -3461,7 +3461,8 @@ notifications.")
        (uri (string-append "https://git.causal.agency/pounce/snapshot/pounce-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0kk0jrfiwfaybr0i5xih3b0yd4i6v3bz866a7xal1j8wddalbwlp"))))
+        (base32 "0kk0jrfiwfaybr0i5xih3b0yd4i6v3bz866a7xal1j8wddalbwlp"))
+       (patches (search-patches "pounce-readable-checks.patch"))))
     (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (arguments
