@@ -1408,7 +1408,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.4.5")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
@@ -1416,24 +1416,19 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "129v048k3fp0xwwm6fr5h9nn82zg8bp66z3dy0jsqqd3wdxsxqw1"))))
-    (build-system cmake-build-system)
+        (base32 "1hghyldh95i6sx778nkbmfn5qbi2h7qpv59vzi7zz9anmxgjckli"))))
+    (build-system meson-build-system)
     (outputs '("out" "debug"))
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_TESTS=true" "-DUSE_SOUP3=true")
-           #:parallel-build? #f         ; not supported
-           #:modules '((guix build cmake-build-system)
-                       ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                       (guix build utils))
-           #:imported-modules `(,@%default-gnu-imported-modules
-                                (guix build cmake-build-system)
-                                (guix build glib-or-gtk-build-system))
+     (list #:glib-or-gtk? #t
            #:phases
            #~(modify-phases %standard-phases
-               ;; For A/V support.
-               (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
-                 (assoc-ref glib-or-gtk:%standard-phases
-                            'generate-gdk-pixbuf-loaders-cache-file))
+               (add-after 'unpack 'hardcode-version
+                 (lambda _
+                   ;; XXX: the meson.build code to locate the version script
+                   ;; is wrong and raises an error.
+                   (substitute* "libdino/src/version.vala.in"
+                     (("%VERSION%") #$version))))
                (add-after 'install 'wrap
                  (lambda* (#:key outputs #:allow-other-keys)
                    (let* ((out (assoc-ref outputs "out"))
@@ -1442,21 +1437,14 @@ Encryption to Gajim.")
                      (wrap-program dino
                        `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
                        `("GDK_PIXBUF_MODULE_FILE" =
-                         (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))
-               (add-after 'install 'glib-or-gtk-wrap
-                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "./libdino-test")
-                     (invoke "./signal-protocol-vala-test")
-                     (invoke "./xmpp-vala-test")))))))
+                         (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
            gobject-introspection
            `(,gtk "bin")
            pkg-config
+           ;; python                       ; for version.py
            vala))
     (inputs
      (list adwaita-icon-theme
@@ -1479,7 +1467,7 @@ Encryption to Gajim.")
            libgcrypt
            libgee
            libnice
-           libsignal-protocol-c
+           libomemo-c
            libsoup
            libsrtp                      ;for calls support
            pango                        ;gtk4 wants pango 1.50+
