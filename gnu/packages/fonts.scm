@@ -1626,9 +1626,9 @@ well in user interface (UI) environments.")
 (define-public font-adobe-source-sans-pro
   (deprecated-package "font-adobe-source-sans-pro"  font-adobe-source-sans))
 
-(define-public font-adobe-source-serif-pro
+(define-public font-adobe-source-serif
   (package
-    (name "font-adobe-source-serif-pro")
+    (name "font-adobe-source-serif")
     (version "4.005")
     (source
      (origin
@@ -1643,11 +1643,15 @@ well in user interface (UI) environments.")
     (outputs '("out" "ttf" "woff"))
     (home-page "https://github.com/adobe-fonts/source-serif")
     (synopsis
-     "Serif typeface to complement Source Sans Pro for setting text")
+     "Serif typeface to complement Source Sans for setting text")
     (description
-     "Source Serif Pro is a set of OpenType fonts to complement the Source
-Sans Pro family.")
+     "Source Serif is a set of OpenType fonts to complement the Source Sans
+family.")
     (license license:silofl1.1)))
+
+;; https://github.com/adobe-fonts/source-serif/issues/77
+(define-public font-adobe-source-serif-pro
+  (deprecated-package "font-adobe-source-serif-pro" font-adobe-source-serif))
 
 (define-public font-microsoft-cascadia
   (package
