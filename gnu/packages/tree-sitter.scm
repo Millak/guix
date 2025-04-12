@@ -650,15 +650,12 @@ which will be used as a snippet in origin."
   (deprecated-package "tree-sitter-markdown-gfm" tree-sitter-markdown))
 
 (define-public tree-sitter-matlab
-  (let ((commit "79d8b25f57b48f83ae1333aff6723b83c9532e37")
-        (revision "0"))
-    (tree-sitter-grammar
-     "matlab" "Matlab"
-     "04ffhfnznskkcp91fbnv8jy3wkb9cd8ifwrkrdwcw74n1b2hq80c"
-     (git-version "1.0.2" revision commit)
-     #:repository-url "https://github.com/acristoffers/tree-sitter-matlab"
-     #:commit commit
-     #:license license:expat)))
+  (tree-sitter-grammar
+   "matlab" "Matlab"
+   "1kcg16aa9swk4a73klp72rib15ljz7zjlr97rr134laym4x0fnvl"
+   "1.0.4"
+   #:repository-url "https://github.com/acristoffers/tree-sitter-matlab"
+   #:license license:expat))
 
 (define-public tree-sitter-meson
   ;; tag 1.2 is Aug 24,2022  this commit is Feb 28,2023
