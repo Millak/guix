@@ -750,9 +750,15 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-lua
   (tree-sitter-grammar
    "lua" "Lua"
-   "05irhg6gg11r9cnzh0h3691pnxjhd396sa1x8xrgqjz2fd09brf3"
-   "0.0.19"
-   #:repository-url "https://github.com/MunifTanjim/tree-sitter-lua"))
+   "041anx0qirvd4il87whpic8nfdc1nk3kimxdb99m25bfdzm9rn0r"
+   "0.3.0"
+   #:repository-url "https://github.com/MunifTanjim/tree-sitter-lua"
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (use-modules (guix build utils))
+         (delete-file-recursively "test/highlight") ;FIXME
+         #$(tree-sitter-delete-generated-files grammar-directories)))))
 
 (define-public tree-sitter-scala
   (tree-sitter-grammar
