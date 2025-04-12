@@ -47,7 +47,7 @@
 (define-public python-tree-sitter
   (package
     (name "python-tree-sitter")
-    (version "0.20.1")
+    (version "0.21.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -56,7 +56,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rc8zqiry4n52xlf7pwx4s56ka9vwjzwgn7blwbkiscqdwvsai92"))))
+                "1cdxl0zyldml3x5wi2nmlmhwfahwxalcr5lxyb6j6762irmm4b2c"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -66,34 +66,47 @@
             (lambda _
               (let ((tree-sitter #$(this-package-input "tree-sitter")))
                 (substitute* "setup.py"
-                  (((string-append
-                     "( *)\\[\"tree_sitter\\/core\\/lib\\/src\\/lib\\.c\", "
-                     "\"tree_sitter\\/binding\\.c\"\\],") all tabs)
+                  ((".*\"tree_sitter/core.*") "")
+                  (("( *)sources=" all tabs)
                    (string-append
-                    tabs "[\"tree_sitter/binding.c\"],\n"
                     tabs "library_dirs=[\"" tree-sitter "/lib\"],\n"
-                    tabs "libraries=[\"tree-sitter\"],"))
-                  (("include_dirs=.*")
-                   (string-append
-                    "include_dirs=[\"" tree-sitter "/include\"],\n"))))))
+                    tabs "libraries=[\"tree-sitter\"],\n"
+                    all))
+                  (("include_dirs=\\[" all)
+                   (string-append all "\"" tree-sitter "/include\""))))))
           (add-before 'check 'set-test-lib-paths
-            (lambda _
-              (let ((py #$(this-package-native-input "tree-sitter-python"))
-                    (js #$(this-package-native-input "tree-sitter-javascript")))
-                (substitute* "tests/test_tree_sitter.py"
-                  (("Language\\.build_library")
-                   "_ =")
-                  (("LIB_PATH(, \"python\")" all name)
-                   (string-append
-                    "\"" py "/lib/tree-sitter/libtree-sitter-python.so\"" name))
-                  (("LIB_PATH(, \"javascript\")" all name)
-                   (string-append
-                    "\"" js "/lib/tree-sitter/libtree-sitter-javascript.so\""
-                    name)))))))))
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (substitute* "tests/test_tree_sitter.py"
+                (("Language\\.build_library")
+                 "_ =")
+                (((string-append "LIB_PATH, \"("
+                                 (string-join
+                                  '("embedded_template"
+                                    "html"
+                                    "javascript"
+                                    "json"
+                                    "python"
+                                    "rust")
+                                  "|")
+                                 ")\"")
+                  all name)
+                 (string-append
+                  (format #f "~s, ~s"
+                          (search-input-file
+                           (or native-inputs inputs)
+                           (string-append
+                            "lib/tree-sitter/libtree-sitter-" name ".so"))
+                          name)))))))))
     (inputs (list tree-sitter))
     (native-inputs
-     (list tree-sitter-python tree-sitter-javascript
-           python-setuptools python-wheel))
+     (list tree-sitter-embedded-template
+           tree-sitter-html
+           tree-sitter-javascript
+           tree-sitter-json
+           tree-sitter-python
+           tree-sitter-rust
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/tree-sitter/py-tree-sitter")
     (synopsis "Python bindings to the Tree-sitter parsing library")
     (description "This package provides Python bindings to the
