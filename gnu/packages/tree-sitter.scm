@@ -647,13 +647,7 @@ which will be used as a snippet in origin."
          #$(tree-sitter-delete-generated-files grammar-directories)))))
 
 (define-public tree-sitter-markdown-gfm
-  ;; Not updated for more than 1 year, can be deprecated when gfm will be
-  ;; implemented in tree-sitter-markdown
-  (tree-sitter-grammar
-   "markdown-gfm" "Markdown (CommonMark Spec v0.29-gfm)"
-   "1a2899x7i6dgbsrf13qzmh133hgfrlvmjsr3bbpffi1ixw1h7azk"
-   "0.7.1"
-   #:repository-url "https://github.com/ikatyang/tree-sitter-markdown"))
+  (deprecated-package "tree-sitter-markdown-gfm" tree-sitter-markdown))
 
 (define-public tree-sitter-matlab
   (let ((commit "79d8b25f57b48f83ae1333aff6723b83c9532e37")
