@@ -769,10 +769,10 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-tlaplus
   (tree-sitter-grammar
    "tlaplus" "TLA+"
-   "1k60dnzafj6m9c2d4xnwiz3d7yw3bg3iwx7c1anhwr76iyxdci3w"
-   "1.0.8"
-   ;; Version 1.2.1 is most recent, but requires tree-sitter >0.21.0
-   #:repository-url "https://github.com/tlaplus-community/tree-sitter-tlaplus"))
+   "11073rjg9n9hnr88193mmb8ff5xlcv6isgqc0g2fbfbl0y820zlk"
+   "1.5.0"
+   #:repository-url "https://github.com/tlaplus-community/tree-sitter-tlaplus"
+   #:commit "1.5.0"))
 
 (define-public tree-sitter-kotlin
   (tree-sitter-grammar
