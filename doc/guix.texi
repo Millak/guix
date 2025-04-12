@@ -30492,9 +30492,8 @@ Global password or all users needed to connect to the server.  By
 default, no password is required.  PAM must be disabled for this option
 to have an effect.
 
-@item @code{pid-file} (type: maybe-string)
+@item @code{pid-file} (default: @code{"/run/ngircd/ngircd.pid"}) (type: string)
 The file name where the PID of ngIRCd should be written after it starts.
-By default, no PID file is created.
 
 @item @code{ports} (default: @code{(6667)}) (type: list-of-ports)
 Port number(s) on which the server should listen for @emph{unencrypted}
