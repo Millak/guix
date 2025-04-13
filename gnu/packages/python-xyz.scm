@@ -33368,39 +33368,6 @@ prevent debuggers and other applications from inspecting the memory within
 your process.")
     (license license:expat)))
 
-(define-public python-gcovr
-  (package
-    (name "python-gcovr")
-    (version "8.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "gcovr" version))
-       (sha256
-        (base32
-          "0ych0kqbxp5giksdkh6i32vh97zrsh3m2rfs02c8rxx7qkwp38zs"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-hatchling
-           python-hatch-fancy-pypi-readme
-           python-hatch-vcs
-           python-pytest
-           python-pytest-timeout))
-    (propagated-inputs
-     (list python-lxml
-           python-jinja2
-           python-colorlog
-           python-pygments
-           python-tomli))
-    (home-page "https://gcovr.com/")
-    (synopsis "Utility for generating code coverage results")
-    (description
-      "Gcovr provides a utility for managing the use of the GNU gcov
-utility and generating summarized code coverage results.  It is inspired
-by the Python coverage.py package, which provides a similar utility for
-Python.")
-    (license license:bsd-3)))
-
 (define-public python-owslib
   (package
     (name "python-owslib")
