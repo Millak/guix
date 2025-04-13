@@ -186,6 +186,10 @@
                             (("mips64") "mips64|riscv64")))
                        #~())
 
+                ;; FIXME: An one-hour difference is produced after DST
+                ;; starting in the timezone the test suite uses.
+                (delete-file "non262/Date/15.9.5.7.js")
+
                 ;; The test suite expects a lightly patched ICU.  Disable tests
                 ;; that do not work with the system version.  See
                 ;; "intl/icu-patches" for clues.
