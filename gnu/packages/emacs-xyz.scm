@@ -9645,6 +9645,7 @@ and edit VHDL files.")
                (base32
                 "13n3di05lgqfm4f8krn3p36yika5znhymp5vr2d747x54hqmgh7y"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f)) ; no tests
     (home-page "https://github.com/purcell/mode-line-bell")
     (synopsis "Flash the mode-line instead of ringing the bell")
     (description
