@@ -91,7 +91,7 @@ each retry."
               ((sleep*) delay)            ;else wait and retry
               (loop (+ 1 attempts)))
             (error "maximum number of retry attempts reached"
-                   body ... args))))))
+                   (quote body ...) args))))))
 
 
 ;;;
