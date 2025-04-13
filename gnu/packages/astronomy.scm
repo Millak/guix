@@ -16,6 +16,7 @@
 ;;; Copyright © 2024 Andy Tai <lichengtai@gmail.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Vasilii Smirnov <vasilii.smirnov@mailbox.org>
+;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
