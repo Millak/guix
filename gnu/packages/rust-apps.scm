@@ -1391,36 +1391,18 @@ defaults for 80% of the use cases.")
 (define-public gitoxide
   (package
     (name "gitoxide")
-    (version "0.38.0")
+    (version "0.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gitoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lqjbd55074qkh8il2m28fpgac0dmd0vcdrhiqrdp87c6hxkjadm"))))
+        (base32 "19nrari83270csawjiyc88dm6s0h7lk0x9p8clbg7y8wj08g6rag"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '("gix-features/zlib-stock")
        #:install-source? #f
-       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-clap" ,rust-clap-4)
-                       ("rust-clap-complete" ,rust-clap-complete-4)
-                       ("rust-crosstermion" ,rust-crosstermion-0.14)
-                       ("rust-document-features" ,rust-document-features-0.2)
-                       ("rust-env-logger" ,rust-env-logger-0.10)
-                       ("rust-futures-lite" ,rust-futures-lite-2)
-                       ("rust-gitoxide-core" ,gitoxide-core)
-                       ("rust-gix" ,rust-gix-0.67)
-                       ("rust-gix-features" ,rust-gix-features-0.39)
-                       ("rust-is-terminal" ,rust-is-terminal-0.4)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-prodash" ,rust-prodash-29)
-                       ("rust-serde-derive" ,rust-serde-derive-1)
-                       ("rust-terminal-size" ,rust-terminal-size-0.3)
-                       ("rust-tracing" ,rust-tracing-0.1)
-                       ("rust-tracing-forest" ,rust-tracing-forest-0.1)
-                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-extras
@@ -1477,7 +1459,7 @@ defaults for 80% of the use cases.")
            (list this-package)
            '())
        (list cmake-minimal pkg-config)))
-    (inputs (list curl openssl zlib))
+    (inputs (cons* curl openssl sqlite zlib (cargo-inputs 'gitoxide)))
     (home-page "https://github.com/GitoxideLabs/gitoxide")
     (synopsis "command-line application for interacting with git repositories")
     (description
