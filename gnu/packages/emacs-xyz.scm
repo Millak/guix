@@ -44296,6 +44296,7 @@ a vertical completion UI.")
                  (base32
                   "1aq1vbkww55xplyaa3xagz9z4kdlsxk13x054asnk0dqps4bcgbf"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f)) ; there are no tests
       (propagated-inputs (list emacs-posframe emacs-transient))
       (home-page "https://github.com/yanghaoxie/transient-posframe")
       (synopsis "Pop up a posframe (a child frame) to show Transients")
