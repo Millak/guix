@@ -44250,6 +44250,7 @@ across sessions.")
                  (base32
                   "0w44ax9dxkj8mh4np9mg3yp2yakjwrgy13izq53p0vimrhywza0w"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f)) ; there are no tests
       (synopsis "Emacs major mode to edit vCard files")
       (description "This package provides a major mode for editing vCard files
 in Emacs.")
