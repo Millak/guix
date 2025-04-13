@@ -44226,6 +44226,7 @@ across sessions.")
        (sha256
         (base32 "1lirhws5d8l16qs5ddrvvz0f9xfl004q9yp333pdgsmcpk3ww7sr"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f)) ; there are no tests
     (home-page "https://elpa.gnu.org/packages/poke-mode.html")
     (synopsis "Major mode for editing GNU poke programs")
     (description
