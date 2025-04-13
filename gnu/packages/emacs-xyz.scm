@@ -44269,6 +44269,7 @@ in Emacs.")
                 "0iqy8m1cf819x7ln5sp8b3sh4dk291k9sril35hxsxkiyjal1rqk"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-posframe emacs-vertico))
+    (arguments (list #:tests? #f)) ; there are no tests
     (home-page "https://github.com/tumashu/vertico-posframe")
     (synopsis "Pop up a frame at point to show vertical completion UI")
     (description
