@@ -904,6 +904,31 @@ Simplified Chinese, Traditional Chinese (Taiwan, Hong Kong), Japanese, and
 Korean.")
     (license license:silofl1.1)))
 
+(define-public font-adobe-source-han-mono
+  (package
+    (name "font-adobe-source-han-mono")
+    (version "1.002")
+    (source
+     (origin
+       ;; SuperOTC (all variations in one file) is not in the repository.
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/adobe-fonts/source-han-mono/releases/download/"
+             version "/SourceHanMono.ttc"))
+       (sha256
+        (base32 "1haqffkcgz0cc24y8rc9bg36v8x9hdl8fdl3xc8qz14hvr42868c"))))
+    (build-system font-build-system)
+    (home-page
+     "https://ccjktype.fonts.adobe.com/2019/05/source-han-mono-v1001.html")
+    (synopsis "Pan-CJK monospaced font family based on Source Han Sans and
+Source Code Pro")
+    (description
+     "This package provides Source Han Mono, a Pan-CJK monospaced
+font family derived from Source Han Sans and Source Code Pro.  Distributed as an
+OpenType/CFF Collection (OTC), it includes 70 font instances covering seven
+weights, five languages, and two styles.")
+    (license license:silofl1.1)))
+
 (define-public font-cns11643
   ;; Since upstream doesn't provide any version numbers, the date of the last
   ;; edit is used, taken from https://data.gov.tw/dataset/5961
