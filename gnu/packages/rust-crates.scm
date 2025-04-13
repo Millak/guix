@@ -13973,6 +13973,25 @@
                                  rust-windows-x86-64-msvc-0.52.6
                                  rust-zerocopy-0.8.24
                                  rust-zerocopy-derive-0.8.24))
+                     (diffr =>
+                            (list rust-atty-0.2.14
+                                  rust-hermit-abi-0.1.19
+                                  rust-libc-0.2.171
+                                  rust-termcolor-1.4.1
+                                  rust-winapi-0.3.9
+                                  rust-winapi-i686-pc-windows-gnu-0.4.0
+                                  rust-winapi-util-0.1.9
+                                  rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                  rust-windows-sys-0.59.0
+                                  rust-windows-targets-0.52.6
+                                  rust-windows-aarch64-gnullvm-0.52.6
+                                  rust-windows-aarch64-msvc-0.52.6
+                                  rust-windows-i686-gnu-0.52.6
+                                  rust-windows-i686-gnullvm-0.52.6
+                                  rust-windows-i686-msvc-0.52.6
+                                  rust-windows-x86-64-gnu-0.52.6
+                                  rust-windows-x86-64-gnullvm-0.52.6
+                                  rust-windows-x86-64-msvc-0.52.6))
                      (difftastic =>
                                  (list rust-ahash-0.8.11
                                   rust-aho-corasick-1.1.3

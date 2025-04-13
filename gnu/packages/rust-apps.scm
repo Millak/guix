@@ -829,10 +829,8 @@ similar to lsusb.")
          "--skip=tests_cli::color_only_face_name"
          "--skip=tests_cli::debug_flag"
          "--skip=tests_cli::line_numbers_style"
-         "--skip=tests_cli::test_bad_argument")
-       #:cargo-inputs
-       (("rust-atty" ,rust-atty-0.2)
-        ("rust-termcolor" ,rust-termcolor-1))))
+         "--skip=tests_cli::test_bad_argument")))
+    (inputs (cargo-inputs 'diffr))
     (home-page "https://github.com/mookid/diffr")
     (synopsis "Longest Common Sequence based diff highlighting tool")
     (description
