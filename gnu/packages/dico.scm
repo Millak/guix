@@ -4,6 +4,7 @@
 ;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,14 +42,14 @@
 (define-public dico
   (package
     (name "dico")
-    (version "2.11")
+    (version "2.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/dico/dico-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0nic4mggc0yhms130k7x4qp5k9c42fwg6n8hmk5cmynh6gi9h7xc"))))
+                "1xvahrav8aml90qcj4cj3a33y0n7nm1k0ywgks1zy2q91v2qk2vj"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list (string-append "--with-guile-site-dir=" %output
@@ -63,9 +64,10 @@
                       (setenv "GUILE_AUTO_COMPILE" "0")
                       (setenv "GUILE_WARN_DEPRECATED" "no")))
                   (replace 'check
-                    (lambda _
-                      ;; Test '71: append + dooffs + env' fails if $V is not 2.
-                      (invoke "make" "check" "V=2"))))))
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        ;; Test '71: append + dooffs + env' fails if $V is not 2.
+                        (invoke "make" "check" "V=2")))))))
     (native-inputs (list groff))
     (inputs
      (list m4                           ;used at run time
@@ -78,7 +80,7 @@
            wordnet
            libxcrypt                              ;for 'crypt'
            libltdl))
-    (home-page "https://www.gnu.org/software/dico/")
+    (home-page "https://www.gnu.org.ua/software/dico/")
     (synopsis "Implementation of DICT server (RFC 2229)")
     (description
      "GNU Dico implements a flexible dictionary server and client according to
