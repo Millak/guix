@@ -44317,6 +44317,7 @@ a vertical completion UI.")
        (sha256
         (base32 "00kggfpfi1nj05mzy5zig0fs4as7qh99wqgvya3xj2kw8141cvd6"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f)) ;there are no tests
     (propagated-inputs (list emacs-compat))
     (home-page "http://github.com/chaosemer/window-tool-bar")
     (synopsis "Add tool bars inside Emacs windows")
