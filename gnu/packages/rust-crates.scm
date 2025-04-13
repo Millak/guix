@@ -295,6 +295,18 @@
   (crate-source "arg_enum_proc_macro" "0.3.4"
                 "1sjdfd5a8j6r99cf0bpqrd6b160x9vz97y5rysycsjda358jms8a"))
 
+(define rust-argh-0.1.13
+  (crate-source "argh" "0.1.13"
+                "0h6jzj4aqswk9x6w3lbb8kdskyf93v73wlrfk4pvhdlabhr1izrl"))
+
+(define rust-argh-derive-0.1.13
+  (crate-source "argh_derive" "0.1.13"
+                "00vqfqgxqq6dd9jgbg9qhn12hh06qzsj1incv3ajklsh7awb5dxd"))
+
+(define rust-argh-shared-0.1.13
+  (crate-source "argh_shared" "0.1.13"
+                "1xplhinnv139x2w2wknvnms7css6c99l8dw7jb1wvv9dr0y18r54"))
+
 (define rust-array-macro-1.0.5
   (crate-source "array-macro" "1.0.5"
                 "19mdx2xlppnqwl6rhsbzylx61a0kkp2ql8q16195b7iga977ps86"))
@@ -1102,6 +1114,10 @@
 (define rust-cargo-platform-0.1.9
   (crate-source "cargo-platform" "0.1.9"
                 "1sinpmqjdk3q9llbmxr0h0nyvqrif1r5qs34l000z73b024z2np3"))
+
+(define rust-cargo-toml-0.21.0
+  (crate-source "cargo_toml" "0.21.0"
+                "0wp4qa1f6iwm149i61ng4njddhh40mxszbb0j2w73gryvglizgaz"))
 
 (define rust-cargo-util-0.2.19
   (crate-source "cargo-util" "0.2.19"
@@ -3886,6 +3902,10 @@
   (crate-source "grep" "0.2.13"
                 "1i864d726laskszdpm3fdjdcmfipf9d5y4rjhaby6bzg348g0ydx"))
 
+(define rust-grep-0.3.2
+  (crate-source "grep" "0.3.2"
+                "1rij3x9xi70xmiqgjcp3iib4hrvmgcn22cvgm14xfa2ffd4yg2ih"))
+
 (define rust-grep-cli-0.1.11
   (crate-source "grep-cli" "0.1.11"
                 "1h6fwhkbxxvp4wpsh9vr6lms5lpwwcblryi697w7kwh61s7jiwa7"))
@@ -3897,6 +3917,10 @@
 (define rust-grep-printer-0.1.7
   (crate-source "grep-printer" "0.1.7"
                 "0sjsv4v7a88arckc880ns3mbn2y2p38mpnkh9dviznj9ixbm2ig1"))
+
+(define rust-grep-printer-0.2.2
+  (crate-source "grep-printer" "0.2.2"
+                "1zhkw3agp0sy2y37chvg0rylj1xk6kvyr0mbhd6sm4d8wh5124n1"))
 
 (define rust-grep-regex-0.1.13
   (crate-source "grep-regex" "0.1.13"
@@ -7489,6 +7513,11 @@
 (define rust-rust-embed-utils-8.7.0
   (crate-source "rust-embed-utils" "8.7.0"
                 "08cfp8x1nw1p272128hfwr9fvnlbg7dmafbbs1ji5q3z2jampm88"))
+
+(define rust-rust-fuzzy-search-0.1.1
+  (crate-source "rust-fuzzy-search" "0.1.1"
+                "1chvl47hq42r219yxs6r1dp4l19acy5ay145hpc5drgzaiq6amx1"
+                #:snippet '(delete-file-recursively "target")))
 
 (define rust-rust-htslib-0.39.5
   (crate-source "rust-htslib" "0.39.5"
@@ -12712,6 +12741,81 @@
                                      rust-windows-x86-64-gnullvm-0.52.6
                                      rust-windows-x86-64-msvc-0.52.6
                                      rust-winnow-0.7.4))
+                     (cargo-machete =>
+                                    (list rust-aho-corasick-1.1.3
+                                          rust-anyhow-1.0.97
+                                          rust-argh-0.1.13
+                                          rust-argh-derive-0.1.13
+                                          rust-argh-shared-0.1.13
+                                          rust-bstr-1.12.0
+                                          rust-camino-1.1.9
+                                          rust-cargo-platform-0.1.9
+                                          rust-cargo-metadata-0.19.2
+                                          rust-cargo-toml-0.21.0
+                                          rust-cfg-if-1.0.0
+                                          rust-crossbeam-deque-0.8.6
+                                          rust-crossbeam-epoch-0.9.18
+                                          rust-crossbeam-utils-0.8.21
+                                          rust-either-1.15.0
+                                          rust-encoding-rs-0.8.35
+                                          rust-encoding-rs-io-0.1.7
+                                          rust-env-logger-0.10.2
+                                          rust-equivalent-1.0.2
+                                          rust-globset-0.4.16
+                                          rust-grep-0.3.2
+                                          rust-grep-cli-0.1.11
+                                          rust-grep-matcher-0.1.7
+                                          rust-grep-printer-0.2.2
+                                          rust-grep-regex-0.1.13
+                                          rust-grep-searcher-0.1.14
+                                          rust-hashbrown-0.15.2
+                                          rust-hermit-abi-0.5.0
+                                          rust-humantime-2.2.0
+                                          rust-ignore-0.4.23
+                                          rust-indexmap-2.9.0
+                                          rust-is-terminal-0.4.16
+                                          rust-itoa-1.0.15
+                                          rust-libc-0.2.171
+                                          rust-log-0.4.27
+                                          rust-memchr-2.7.4
+                                          rust-memmap2-0.9.5
+                                          rust-pretty-env-logger-0.5.0
+                                          rust-proc-macro2-1.0.94
+                                          rust-quote-1.0.40
+                                          rust-rayon-1.10.0
+                                          rust-rayon-core-1.12.1
+                                          rust-regex-1.11.1
+                                          rust-regex-automata-0.4.9
+                                          rust-regex-syntax-0.8.5
+                                          rust-rust-fuzzy-search-0.1.1
+                                          rust-ryu-1.0.20
+                                          rust-same-file-1.0.6
+                                          rust-semver-1.0.26
+                                          rust-serde-1.0.219
+                                          rust-serde-derive-1.0.219
+                                          rust-serde-json-1.0.140
+                                          rust-serde-spanned-0.6.8
+                                          rust-syn-2.0.100
+                                          rust-termcolor-1.4.1
+                                          rust-thiserror-2.0.12
+                                          rust-thiserror-impl-2.0.12
+                                          rust-toml-0.8.20
+                                          rust-toml-datetime-0.6.8
+                                          rust-toml-edit-0.22.24
+                                          rust-unicode-ident-1.0.18
+                                          rust-walkdir-2.5.0
+                                          rust-winapi-util-0.1.9
+                                          rust-windows-sys-0.59.0
+                                          rust-windows-targets-0.52.6
+                                          rust-windows-aarch64-gnullvm-0.52.6
+                                          rust-windows-aarch64-msvc-0.52.6
+                                          rust-windows-i686-gnu-0.52.6
+                                          rust-windows-i686-gnullvm-0.52.6
+                                          rust-windows-i686-msvc-0.52.6
+                                          rust-windows-x86-64-gnu-0.52.6
+                                          rust-windows-x86-64-gnullvm-0.52.6
+                                          rust-windows-x86-64-msvc-0.52.6
+                                          rust-winnow-0.7.6))
                      (castor =>
                              (list rust-aho-corasick-0.7.20
                                    rust-ansi-parser-0.6.5

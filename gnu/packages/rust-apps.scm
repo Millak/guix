@@ -470,14 +470,14 @@ license of dependencies.")
 (define-public cargo-machete
   (package
     (name "cargo-machete")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri name version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ha5z1xr26mjprk4vbiy2v9wcwr7ww2jxiamlc8fqwi3d5hvhk1n"))))
+        (base32 "1f9dlc2db5kak85fpq4m31ca0jcb66v3vdjfkwj96h9q3q2hphn1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -494,20 +494,10 @@ license of dependencies.")
          "--skip=search_unused::test_unused_renamed_in_spec"
          "--skip=search_unused::test_unused_transitive"
          "--skip=search_unused::test_with_bench"
+         "--skip=search_unused::test_workspace_from_relative_path"
          "--skip=test_ignore_target")
-       #:install-source? #f
-       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-argh" ,rust-argh-0.1)
-                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.18)
-                       ("rust-cargo-toml" ,rust-cargo-toml-0.20)
-                       ("rust-grep" ,rust-grep-0.3)
-                       ("rust-ignore" ,rust-ignore-0.4)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.5)
-                       ("rust-rayon" ,rust-rayon-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-toml-edit" ,rust-toml-edit-0.22)
-                       ("rust-walkdir" ,rust-walkdir-2))))
+       #:install-source? #f))
+    (inputs (cargo-inputs 'cargo-machete))
     (home-page "https://github.com/bnjbvr/cargo-machete")
     (synopsis "Find unused dependencies in Cargo.toml")
     (description "@code{cargo-machete} finds unused dependencies in Cargo.toml.")
