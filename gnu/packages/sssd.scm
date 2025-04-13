@@ -139,7 +139,7 @@ fundamental object types for C.")
 (define-public sssd
   (package
     (name "sssd")
-    (version "2.9.4")
+    (version "2.9.6")
     (source
      (origin
        (method git-fetch)
@@ -148,7 +148,7 @@ fundamental object types for C.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11qchs59f8y8w5ns9mqg16nrv1kglfavzvqway0aj2z6ssfxk5al"))
+        (base32 "056l6b067bc5yi3dvlv41kg1a5hl3j3fq2xll3yfwwz4phcx8qd9"))
        (patches (search-patches "sssd-system-directories.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -180,9 +180,15 @@ fundamental object types for C.")
                              #$output "/etc/init.d")
               (string-append "--with-ldb-lib-dir="
                              #$output "/lib/ldb/modules/ldb")
+              ;; Upstream defaults to /etc/xml/catalog, and despite the "path"
+              ;; name, only expects one file -- so we can't use
+              ;; $XML_CATALOG_FILES, which has docbook-xml and docbook-xsl
+              ;; entries.
               (string-append "--with-xml-catalog-path="
                              #$(this-package-native-input "docbook-xml")
-                             "/xml/dtd/docbook/catalog.xml"))
+                             "/xml/docbook/"
+                             #$(package-version (this-package-native-input "docbook-xml"))
+                             "/catalog.xml"))
       #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   ((guix build python-build-system)
@@ -193,6 +199,13 @@ fundamental object types for C.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'ensure-no-mtimes-pre-1980
                      ensure-no-mtimes-pre-1980)
+          ;; sssd looks in lib/samba, but the Guix package puts things in lib/
+          ;; Patch the path before we autoreconf.
+          (add-before 'bootstrap 'patch-samba-pkgconfig
+            (lambda _
+              (substitute* '("src/external/samba.m4")
+                (("(sambalibdir=.*/)samba" _ prefix)
+                 prefix))))
           (add-after 'patch-source-shebangs 'patch-more-shebangs
             (lambda _
               (substitute* '("src/tools/analyzer/sss_analyze"
@@ -218,6 +231,12 @@ fundamental object types for C.")
               ;; This test fails for unknown reason.
               (substitute* "src/tests/responder_socket_access-tests.c"
                 (("tcase_add_test\\(tc_utils, resp_str_to_array_test\\);") ""))))
+          (add-before 'configure 'disable-active-directory-tests
+            ;; These tests require Active Directory running in a VM.
+            (lambda _
+              (substitute* "Makefile.am"
+                (("ad_gpo_tests") "")
+                (("ad_common_tests") ""))))
           (add-before 'check 'set-libpython-path
             (lambda _
               (setenv "LD_LIBRARY_PATH"
@@ -286,7 +305,7 @@ fundamental object types for C.")
            bc ; for tests
            check ; for tests
            cmocka ; for tests
-           docbook-xml-4.4
+           docbook-xml-4.5
            docbook-xsl
            doxygen
            gettext-minimal
