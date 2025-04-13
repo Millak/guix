@@ -9505,9 +9505,10 @@ next, or locate errors.")
     (arguments
      (list
       #:include #~(cons* "^roguel-ike/" "^roguel-ike-lib/" %default-include)
+      #:tests? #t ; no tests
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-test-environment
+          (add-before 'build 'set-build-environment
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (home-page "https://github.com/stevenremot/roguel-ike.git")
