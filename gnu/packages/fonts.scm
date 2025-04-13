@@ -111,6 +111,44 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages xorg))
 
+(define-public font-adwaita
+  (package
+    (name "font-adwaita")
+    (version "48.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/GNOME/adwaita-fonts/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sk6kb6v4ims3jzyfh71mx2kmwv55idr2yd1xgxlqc9lk59zhymd"))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Install font licenses instead of the buildsystem license.
+          (replace 'install-license-files
+            (lambda _
+              (let ((doc-dir (string-append #$output "/share/doc/"
+                                            #$name "-" #$version)))
+                (define (install-license form)
+                  (install-file (string-append form "/LICENSE.md")
+                                (string-append doc-dir "/" form)))
+                (install-license "sans")
+                (install-license "mono")))))))
+    (home-page "https://gitlab.gnome.org/GNOME/adwaita-fonts/")
+    (synopsis "GNOME Adwaita Fonts")
+    (description
+     "This package provides Adwaita Fonts, a variation of Inter, and Adwaita
+ Mono, Iosevka customized to match Inter.")
+    ;; Buildsystem and shell scripts are under the GPL, but fonts themselves are
+    ;; under OFL-1.1.
+    ;; https://gitlab.gnome.org/GNOME/adwaita-fonts/-/issues/14
+    (license license:silofl1.1)))
+
 (define-public font-arapey
   (let ((commit  "28fa45c7f31afe62f577b0b857570ab0326b9113")
         (revision "1"))
