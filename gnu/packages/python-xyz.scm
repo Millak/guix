@@ -7276,14 +7276,14 @@ e.g. filters, callbacks and errbacks can all be promises.")
 (define-public python-crossenv
   (package
     (name "python-crossenv")
-    (version "1.3.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crossenv" version))
        (sha256
         (base32
-         "07rv4650n19740ixmnsf4qbxyqlgi7f5m1cy8cq0gl01q3r6hps4"))))
+         "0f9x3f506pl45ip1nm3fx8gzwm1hr7w1b0bib4kg74zph7jmz72x"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f)) ; tests not distributed on pypi
