@@ -256,22 +256,6 @@ fractional-second-digits-append-item.js")
 in C/C++.")
     (license license:mpl2.0))) ; and others for some files
 
-(define-public mozjs-102
-  (package
-    (inherit mozjs)
-    (name "mozjs")
-    (version "102.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ftp.mozilla.org/pub/firefox"
-                                  "/releases/" version "esr/source/firefox-"
-                                  version "esr.source.tar.xz"))
-              (sha256
-               (base32
-                "1zwpgis7py1bf8p88pz3mpai6a02qrdb8ww2fa9kxxdl9b8r2k81"))))
-    (inputs (modify-inputs (package-inputs mozjs)
-              (replace "icu4c" icu4c-71)))))
-
 (define-public mozjs-78
   (package
     (inherit mozjs)
