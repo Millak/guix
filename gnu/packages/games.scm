@@ -6825,6 +6825,7 @@ colors, pictures, and sounds.")
                   qtquickcontrols2-5
                   qtsvg-5
                   qtwayland-5
+                  wayland
                   sdl2
                   sdl2-ttf
                   sdl2-gamecontrollerdb))
