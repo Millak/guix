@@ -65,7 +65,8 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
-  #:use-module (gnu packages toolkits))
+  #:use-module (gnu packages toolkits)
+  #:use-module (gnu packages version-control))
 
 (define-public libserialport
   (package
@@ -645,3 +646,40 @@ some tool-specific options are set.")
      "VSG lets you define a VHDL coding style and provides a command-line tool
 to enforce it.")
     (license license:gpl3+)))
+
+(define-public python-surf
+  (package
+    (name "python-surf")
+    (version "2.57.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/slaclab/surf/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ncb34mdxaw0m6cnk7kvl7mkhwa6hpcxkc2lgarwcmmnfydr8kg3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-deps
+            (lambda _
+              (invoke "git" "init") ;expects a git repo
+              ;; fix version
+              (substitute* "setup.py"
+                (("rawVer .*")
+                 (string-append "rawVer = \"v"
+                                #$version "\""))))))))
+    (native-inputs (list python-setuptools python-wheel python-gitpython
+                         git-minimal/pinned))
+    (home-page "https://slaclab.github.io/surf/")
+    (synopsis "SLAC Ultimate RTL Framework")
+    (description
+     "Surf is a python library with support functions for VHDL gateware
+digital design.  It provides implementation modules compatible with FPGA and ASIC
+design.")
+    (license (license:non-copyleft "file://LICENSE.txt"
+                                   "See LICENSE.txt in the distribution."))))
