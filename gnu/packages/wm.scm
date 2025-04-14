@@ -2895,6 +2895,30 @@ features, in that it allows you to enable/disable connections, and no more.  It 
 not a replacement for nmtui and/or nmcli.")
     (license license:gpl3+)))
 
+(define-public sbcl-stumpwm-tomato
+  (package
+    (name "sbcl-stumpwm-tomato")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Junker/stumpwm-tomato")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qq11spvhrcq74gh0dw0p4859ai2mqzbxa45gjbf599kmcybp1pa"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs (list stumpwm))
+    (arguments
+     '(#:asd-systems '("tomato")
+       #:tests? #f))
+    (home-page "https://github.com/Junker/stumpwm-tomato")
+    (synopsis "Advanced Pomodoro timer module for StumpWM")
+    (description
+     "This package provides an advanced Pomodoro timer module for StumpWM.")
+    (license license:gpl3+)))
+
 (define-public sbcl-stumpwm-ttf-fonts
   (package
     (inherit stumpwm-contrib)
