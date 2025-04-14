@@ -42240,7 +42240,7 @@ Emacs.")
 (define-public emacs-nord-theme
   (package
     (name "emacs-nord-theme")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -42249,8 +42249,9 @@ Emacs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "096f8cik4jz89bvkifwp3gm9iraqrd75ljy2q9js724v7yj88711"))))
+        (base32 "0gsfjb07mgmch3vw7wx4q1xhmagrkiqjx7k3529nsii5xd2rwmbn"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f)) ; no tests
     (home-page "https://www.nordtheme.com/")
     (synopsis "Low contrast arctic color theme for Emacs")
     (description
