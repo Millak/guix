@@ -28456,6 +28456,7 @@ notes.")
                  (base32
                   "1ck8v9qwk434w4ib9bmlmpqmiv8k1is5bcr5h7pnswgmgma68dka"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f)) ; no tests
       (home-page "https://github.com/yjwen/org-reveal")
       (synopsis "Org and Reveal.js powered HTML presentation tool")
       (description "Org-Reveal is a @command{org-mode} extension that allows
