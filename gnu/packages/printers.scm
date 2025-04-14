@@ -23,13 +23,17 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages avahi)
+  #:use-module (gnu packages gd)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages qt))
 
 ;; This is a module for packages related to printer-like devices, but not
@@ -87,6 +91,54 @@
 connection to the device. This is because IPP-over-USB implementations which
 simply relay a TCP connection to USB do not work.")
     (license license:bsd-2)))
+
+(define-public ptouch-print
+  (package
+    (name "ptouch-print")
+    (version "1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.familie-radermacher.ch/linux/ptouch-print.git")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1pxi30a74azhzsl1wni2va4rkhlfn97qxmz4kryrj9xkvf55jv88"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f ;no test target
+       #:phases (modify-phases %standard-phases
+                  (add-before 'configure 'patch-cmakefile
+                    (lambda _
+                      (substitute* "CMakeLists.txt"
+                        ;; Remove the internal override of CMAKE_INSTALL_PREFIX
+                        (("set\\(CMAKE_INSTALL_PREFIX /usr\\)")
+                         "")
+                        ;; Remove hard coded udev install steps, installing it in the
+                        ;; install-udev-rules phase
+                        (("if\\(EXISTS /etc/udev/rules.d\\)
+[[:blank:]]+install\\(FILES udev/.*?\\.rules DESTINATION /etc/udev/rules.d\\)
+[[:blank:]]+install\\(CODE \".*?\"\\)
+endif\\(\\)
+")
+                         ""))))
+                  (add-after 'install 'install-udev-rules
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (rules (string-append out "/lib/udev/rules.d/")))
+                        (install-file
+                         "../source/udev/90-usb-ptouch-permissions.rules"
+                         rules)))))))
+    (native-inputs (list gd git gettext-minimal libusb pkg-config))
+    (synopsis "CLI tool to print labels on Brother P-Touch printers")
+    (description
+     "This package provides the command line tool @command{ptouch-print} to
+print labels on Brother P-Touch printers.  It also contains udev rules for
+non-root access for the known P-Touch printers.  This does not require CUPS
+to work as the printer is accessed directly via libusb.")
+    (home-page "https://dominic.familie-radermacher.ch/projekte/ptouch-print/")
+    (license license:gpl3)))
 
 (define-public robocut
   (package
