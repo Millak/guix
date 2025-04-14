@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2018-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
@@ -236,10 +236,18 @@ make sure no empty directory is left behind."
     (lambda ()
       (mkdir-p directory)
 
-      (clone url directory
-             (make-clone-options
-              #:fetch-options (make-default-fetch-options
-                               #:verify-certificate? verify-certificate?))))
+      (let* ((repository
+              (clone url directory
+                     (make-clone-options
+                      #:fetch-options (make-default-fetch-options
+                                       #:verify-certificate?
+                                       verify-certificate?))))
+             (config (repository-config repository)))
+        ;; Override 'core.autocrlf' as set in ~/.gitconfig to ensure files are
+        ;; left unchanged when cloning and pulling.
+        (set-config-string config "core.autocrlf" "input")
+
+        repository))
     (lambda _
       (false-if-exception (rmdir directory)))))
 
