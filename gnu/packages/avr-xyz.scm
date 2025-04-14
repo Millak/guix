@@ -205,10 +205,14 @@ documentation.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))
+
+       ;; The 'check' target runs 'cppcheck' and 'clang-format', but it fails
+       ;; unless given an old version of the former, such as 2.10.3.  Since
+       ;; the 'all' target depends on 'check', explicitly ask for 'build'.
        #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))))
-    (native-inputs
-     (list clang cppcheck unzip xxd))
+       (list "build"
+             (string-append "PREFIX=" (assoc-ref %outputs "out")))))
+    (native-inputs (list unzip xxd))
     (home-page "https://github.com/ryansuchocki/microscheme/")
     (synopsis "Scheme subset for Atmel microcontrollers")
     (description
