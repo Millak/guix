@@ -1558,32 +1558,17 @@ wrapper for the 'ngircd' command."
                  (target source)))
           '())
       (if (maybe-value-set? ssl)
-          (let ((ca-file (ngircd-ssl-ca-file ssl))
-                (cert-file (ngircd-ssl-cert-file ssl))
-                (key-file (ngircd-ssl-key-file ssl))
-                (dh-file (ngircd-ssl-dh-file ssl)))
-            ;; When SSL is used, expose the specified keys and certificates.
-            (append
-             (if (maybe-value-set? ca-file)
-                 (list (file-system-mapping
-                        (source ca-file)
-                        (target source)))
-                 '())
-             (if (maybe-value-set? cert-file)
-                 (list (file-system-mapping
-                        (source cert-file)
-                        (target source)))
-                 '())
-             (if (maybe-value-set? key-file)
-                 (list (file-system-mapping
-                        (source key-file)
-                        (target source)))
-                 '())
-             (if (maybe-value-set? dh-file)
-                 (list (file-system-mapping
-                        (source dh-file)
-                        (target source)))
-                 '())))
+          ;; When SSL is used, expose the specified keys and certificates.
+          (filter-map (lambda (value)
+                        (if (maybe-value-set? value)
+                            (file-system-mapping
+                             (source value)
+                             (target source))
+                            #f))
+                      (list (ngircd-ssl-ca-file ssl)
+                            (ngircd-ssl-cert-file ssl)
+                            (ngircd-ssl-key-file ssl)
+                            (ngircd-ssl-dh-file ssl)))
           '())
       (if (maybe-value-set? channels)
           (filter-map (lambda (channel)
