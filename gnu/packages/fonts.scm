@@ -794,6 +794,31 @@ expansion of Franklin Gothic, a classic font.  It covers 105 Latin Languages.")
 for long periods of working with computers (8 or more hours per day).")
     (license license:silofl1.1)))
 
+(define-public font-adobe-source-han-serif
+  (package
+    (name "font-adobe-source-han-serif")
+    (version "2.003")
+    (source
+     (origin
+       ;; SuperOTC (all variations in one file) is not in the repository.
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/adobe-fonts/source-han-serif/releases/download/"
+             version "R/01_SourceHanSerif.ttc.zip"))
+       (sha256
+        (base32 "0pvrgba8r3khliws3zqhcqqa1gbjqfakx9q4yrdf6jl9aymqkrkf"))))
+    (build-system font-build-system)
+    (home-page "https://source.typekit.com/source-han-serif/")
+    (synopsis "Pan-CJK typeface in OpenType/CFF format")
+    (description
+     "This package provides Source Han Serif, a Pan-CJK typeface available
+in OpenType/CFF format.  It supports four different East Asian languages
+— Simplified Chinese, Traditional Chinese, Japanese, and Korean — and the
+65,535 glyphs in each of its seven weights are designed to work together.
+Also included is a set of Western glyphs supporting the Latin, Greek, and
+Cyrillic scripts.")
+    (license license:silofl1.1)))
+
 (define-public font-adobe-source-han-sans
   (package
     (name "font-adobe-source-han-sans")
