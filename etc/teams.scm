@@ -864,6 +864,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
 (define-member (person "Hilton Chain"
                        "hako@ultrarare.space")
   emacs home localization mozilla rust zig)
+
+(define-member (person "Noé Lopez"
+                       "noelopez@free.fr")
+  gnome)
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
