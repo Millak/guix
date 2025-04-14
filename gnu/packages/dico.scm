@@ -55,19 +55,13 @@
      '(#:configure-flags (list (string-append "--with-guile-site-dir=" %output
                                               "/share/guile/site/2.0")
                                "--disable-static")
-       #:make-flags '("V=1")
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'silence-guile
                     (lambda _
                       ;; Guile is too talkative, which disturbs the test
                       ;; infrastructure.  Gag it.
                       (setenv "GUILE_AUTO_COMPILE" "0")
-                      (setenv "GUILE_WARN_DEPRECATED" "no")))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        ;; Test '71: append + dooffs + env' fails if $V is not 2.
-                        (invoke "make" "check" "V=2")))))))
+                      (setenv "GUILE_WARN_DEPRECATED" "no"))))))
     (native-inputs (list groff))
     (inputs
      (list m4                           ;used at run time
