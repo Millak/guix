@@ -19347,6 +19347,8 @@ federated blogging platform WriteFreely.")
                 "1rwm8j48ks9fa5q3g8crpfzbikxfjj5m13w9ylimg34xniycrlq2"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "make" "test-batch")))
     (synopsis "Folder tree view for Emacs")
     (description "This Emacs package provides a folder tree view.")
     (license license:gpl3+)))
