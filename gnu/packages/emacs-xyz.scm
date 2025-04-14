@@ -12341,6 +12341,31 @@ generates it as a string.  Please see the homepage for usage examples.")
 the locations of docstrings, arguments, and functions.")
     (license license:gpl3+)))
 
+(define-public emacs-jira
+  (package
+    (name "emacs-jira")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/unmonoqueteclea/jira.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zg7qx05i92xpsa43y9gsxbn08gmzng88dvkva7y70zvrzx58zz2"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (propagated-inputs (list emacs-magit
+                             emacs-request
+                             emacs-tablist
+                             emacs-transient))
+    (home-page "https://github.com/unmonoqueteclea/jira.el")
+    (synopsis "Emacs Interface to Jira")
+    (description "This package allows you to visualuze and manipulate Jira
+issues from Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-company-jedi
   (package
     (name "emacs-company-jedi")
