@@ -13436,29 +13436,29 @@ variants.")
     (license license:gpl3+)))
 
 (define-public emacs-color-theme-sanityinc-tomorrow
-  ;; Use the latest commit as there are no recent release/tag.
-  (let ((commit "7690d8e97c992f538d9b1abbd26099f426c8ab7c")
-        (revision "0"))
-    (package
-      (name "emacs-color-theme-sanityinc-tomorrow")
-      (version (git-version "1.17" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url
-                "https://github.com/purcell/color-theme-sanityinc-tomorrow")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "11mgwq5dlx0ffkxmyyhfzg0ilg8ih8rf2km4js5gypi8mvmczjih"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/purcell/color-theme-sanityinc-tomorrow")
-      (synopsis "Emacs color themes based on Chris Kempson's 'tomorrow' themes")
-      (description
-       "An Emacs version of Chris Kempson's \"Tomorrow\" themes, with much more
+  (package
+    (name "emacs-color-theme-sanityinc-tomorrow")
+    (version "1.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://github.com/purcell/color-theme-sanityinc-tomorrow")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r8q6ld2zma1bqq5pv61gpy99a4vx6bwx4v820ijzbymmi62vv3z"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command #~(list "./run-tests.sh")))
+    (home-page "https://github.com/purcell/color-theme-sanityinc-tomorrow")
+    (synopsis "Emacs color themes based on Chris Kempson's 'tomorrow' themes")
+    (description
+     "An Emacs version of Chris Kempson's \"Tomorrow\" themes, with much more
 extensive face definitions than the \"official\" Emacs variant.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-solarized-theme
   (package
