@@ -22819,7 +22819,8 @@ format.")
               (when tests?
                 (with-directory-excursion #$output
                   (setenv "HOME" (getcwd))
-                  (invoke "python3" "-m" "twisted.trial" "twisted"))))))))
+                  (invoke "python3" "-m" "twisted.trial" "twisted")
+                  (delete-file-recursively "_trial_temp"))))))))
     (propagated-inputs
      (list python-attrs
            python-automat
