@@ -235,12 +235,6 @@
     (services
      (cons*
       (service dhcp-client-service-type)
-      ;; For ease of debugging.  Run the vm with:
-      ;; '-nic user,model=virtio-net-pci,hostfwd=tcp::10022-:22'
-      (service openssh-service-type
-               (openssh-configuration
-                (permit-root-login #t)
-                (allow-empty-passwords? #t)))
       (service ngircd-service-type
                (ngircd-configuration
                 (debug? #t)
