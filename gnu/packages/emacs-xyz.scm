@@ -3227,6 +3227,33 @@ prover, version 4.")
     (home-page "https://lean-lang.org/")
     (license license:asl2.0)))
 
+(define-public emacs-lem
+  (package
+    (name "emacs-lem")
+    (version "0.22")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/martianh/lem.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "12g16gq9qawhlj92jgxr2l7xcc0ikvmwsygjcr3qyxy0bawynzr8"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:lisp-directory "lisp"))
+    (propagated-inputs
+     (list emacs-fedi emacs-markdown-mode emacs-fedi))
+    (home-page "https://codeberg.org/martianh/lem.el")
+    (synopsis "Emacs client for Lemmy")
+    (description "@code{lem.el} is an Emacs client for Lemmy, the federated link
+aggregator.")
+    (license license:gpl3+)))
+
 (define-public emacs-dante
   (package
     (name "emacs-dante")
