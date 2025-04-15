@@ -3379,11 +3379,10 @@ script files.")
               "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON"
               "-DCMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY=ON"
               "-UCMAKE_INSTALL_LIBDIR")))
-    (native-inputs (list fontconfig))
+    (native-inputs (list doxygen fontconfig))
     (inputs
-     (list doxygen
+     (list freetype
            ;("freeimage" ,freeimage)
-           freetype
            glu
            libxext
            libxi
