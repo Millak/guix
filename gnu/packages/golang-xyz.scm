@@ -9545,6 +9545,31 @@ ansi.")
 customized globally.")
     (license license:expat)))
 
+(define-public go-github-com-kamstrup-intmap
+  (package
+    (name "go-github-com-kamstrup-intmap")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kamstrup/intmap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w9masbm9x2p4njxngr5sgqbjnwdwxv3f68yd3wgrrrjbfw5lh44"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "github.com/kamstrup/intmap"))
+    (home-page "https://github.com/kamstrup/intmap")
+    (synopsis "Fast hashmap with integer keys for Golang")
+    (description
+     "@code{intmap} is a fast hashmap implementation for Golang, specialized for maps with
+integer type keys.")
+    (license license:bsd-2)))
+
 ;; Some packages (Yggdrasil) need it to compile it's a tiny package and it's
 ;; easier to bundle it than to patch it out.
 (define-public go-github-com-kardianos-minwinsvc
