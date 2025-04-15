@@ -127,7 +127,8 @@
          ;; Use '-O1' to have partial evaluation and primitive inlining so we
          ;; can honor the "macro writer's bill of rights".
          (optimizations-for-level 1))
-        ((string-contains file "gnu/services/")
+        ((or (string-contains file "gnu/services/")
+             (string-contains file "gnu/home/services/"))
          ;; '-O2 -Ono-letrectify' compiles about ~20% faster than '-O2' for
          ;; large files like gnu/services/mail.scm.
          (override-option #:letrectify? #f
