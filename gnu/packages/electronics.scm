@@ -268,6 +268,60 @@ which allows one to install the M8 firmware on any Teensy.")
                    license:public-domain
                    license:zlib))))
 
+(define-public minipro
+  ;; Information needed to fix Makefile
+  (let* ((date "2024-09-20 20:55:06 -0700"))
+    (package
+      (name "minipro")
+      (version "0.7.2")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/DavidGriffith/minipro.git")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1a7sbbs1byngkh3bh0dxwxk1iw1dx0kvp946y2lxb8rm6b7hwqym"))))
+      (native-inputs (list pkg-config which))
+      (inputs (list libusb))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ; no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure) ; No ./configure script
+            (add-before 'build 'fix-makefile
+              (lambda _
+                ;; Fix some git related variables that minipro expects
+                (substitute* "Makefile"
+                  (("GIT_BRANCH = .*")
+                   (string-append "GIT_BRANCH = \"master\"\n"))
+                  (("GIT_HASH = .*")
+                   (string-append "GIT_HASH = \"" #$version "\"\n"))
+                  (("GIT_DATE = .*")
+                   (string-append "GIT_DATE = \"" #$date "\"\n"))))))
+        #:make-flags
+        #~(list (string-append "VERSION=" #$version)
+                (string-append "PREFIX=" #$output)
+                (string-append "UDEV_DIR=" #$output "/lib/udev")
+                (string-append "COMPLETIONS_DIR=" #$output
+                               "/share/bash-completion/completions"))))
+      (synopsis "Controls the TL866xx series of chip programmers")
+      (description
+       "minipro is designed to program or read the contents of
+chips supported by the TL866xx series of programmers.  This includes many
+microcontrollers, ROMs, EEPROMs and PLDs.
+
+To use this program without root privileges you must install the necessary udev
+rules.  This can be done by extending @code{udev-service-type} in your
+@code{operating-system} configuration with this package.  E.g.:
+@code{(udev-rules-service 'minipro minipro #:groups '(\"plugdev\")}.
+Additionally your user must be member of the @code{plugdev} group.")
+      (home-page "https://gitlab.com/DavidGriffith/minipro")
+      (license license:gpl3+))))
+
 (define-public openboardview
   (package
     (name "openboardview")
@@ -361,99 +415,6 @@ such as:
 @end itemize")
     (license license:expat)))
 
-(define-public minipro
-  ;; Information needed to fix Makefile
-  (let* ((date "2024-09-20 20:55:06 -0700"))
-    (package
-      (name "minipro")
-      (version "0.7.2")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://gitlab.com/DavidGriffith/minipro.git")
-               (commit version)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1a7sbbs1byngkh3bh0dxwxk1iw1dx0kvp946y2lxb8rm6b7hwqym"))))
-      (native-inputs (list pkg-config which))
-      (inputs (list libusb))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:tests? #f ; no test suite
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure) ; No ./configure script
-            (add-before 'build 'fix-makefile
-              (lambda _
-                ;; Fix some git related variables that minipro expects
-                (substitute* "Makefile"
-                  (("GIT_BRANCH = .*")
-                   (string-append "GIT_BRANCH = \"master\"\n"))
-                  (("GIT_HASH = .*")
-                   (string-append "GIT_HASH = \"" #$version "\"\n"))
-                  (("GIT_DATE = .*")
-                   (string-append "GIT_DATE = \"" #$date "\"\n"))))))
-        #:make-flags
-        #~(list (string-append "VERSION=" #$version)
-                (string-append "PREFIX=" #$output)
-                (string-append "UDEV_DIR=" #$output "/lib/udev")
-                (string-append "COMPLETIONS_DIR=" #$output
-                               "/share/bash-completion/completions"))))
-      (synopsis "Controls the TL866xx series of chip programmers")
-      (description
-       "minipro is designed to program or read the contents of
-chips supported by the TL866xx series of programmers.  This includes many
-microcontrollers, ROMs, EEPROMs and PLDs.
-
-To use this program without root privileges you must install the necessary udev
-rules.  This can be done by extending @code{udev-service-type} in your
-@code{operating-system} configuration with this package.  E.g.:
-@code{(udev-rules-service 'minipro minipro #:groups '(\"plugdev\")}.
-Additionally your user must be member of the @code{plugdev} group.")
-      (home-page "https://gitlab.com/DavidGriffith/minipro")
-      (license license:gpl3+))))
-
-(define-public uhdm
-  (package
-    (name "uhdm")
-    (version "1.84")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/chipsalliance/UHDM/")
-             (commit (string-append "v" version))
-             ;; avoid submodules, and use guix packages capnproto and
-             ;; googletest instead
-             (recursive? #f)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "06i06wfyymhvmpnw79lgb84l9w9cyydvnr7n3bgmgf8a77jbxk2y"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; there is no configure stage, as for INSTALL.md
-          (delete 'configure))
-      #:test-target "test"
-      #:make-flags
-      #~(list
-         "ADDITIONAL_CMAKE_OPTIONS=-DUHDM_USE_HOST_CAPNP=On -DUHDM_USE_HOST_GTEST=On"
-         (string-append "PREFIX="
-                        #$output))))
-    (native-inputs (list cmake-minimal googletest pkg-config python-wrapper
-                         swig))
-    (inputs (list capnproto openssl python-orderedmultidict zlib))
-    (home-page "https://github.com/chipsalliance/UHDM/")
-    (synopsis "Universal Hardware Data Model")
-    (description
-     "UHDM is a complete modeling of the IEEE SystemVerilog Object Model with
-VPI Interface, Elaborator, Serialization, Visitor and Listener.")
-    (license license:asl2.0)))
-
 (define-public pulseview
   (package
     (name "pulseview")
@@ -543,6 +504,43 @@ perhaps a couple of Verilog `defines, some top-level parameters/generics or
 some tool-specific options are set.")
     (license license:bsd-2)))
 
+(define-public python-surf
+  (package
+    (name "python-surf")
+    (version "2.57.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/slaclab/surf/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ncb34mdxaw0m6cnk7kvl7mkhwa6hpcxkc2lgarwcmmnfydr8kg3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-deps
+            (lambda _
+              (invoke "git" "init") ;expects a git repo
+              ;; fix version
+              (substitute* "setup.py"
+                (("rawVer .*")
+                 (string-append "rawVer = \"v"
+                                #$version "\""))))))))
+    (native-inputs (list python-setuptools python-wheel python-gitpython
+                         git-minimal/pinned))
+    (home-page "https://slaclab.github.io/surf/")
+    (synopsis "SLAC Ultimate RTL Framework")
+    (description
+     "Surf is a python library with support functions for VHDL gateware
+digital design.  It provides implementation modules compatible with FPGA and ASIC
+design.")
+    (license (license:non-copyleft "file://LICENSE.txt"
+                                   "See LICENSE.txt in the distribution."))))
+
 (define-public python-vsg
   (package
     (name "python-vsg")
@@ -584,43 +582,6 @@ some tool-specific options are set.")
      "VSG lets you define a VHDL coding style and provides a command-line tool
 to enforce it.")
     (license license:gpl3+)))
-
-(define-public python-surf
-  (package
-    (name "python-surf")
-    (version "2.57.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/slaclab/surf/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ncb34mdxaw0m6cnk7kvl7mkhwa6hpcxkc2lgarwcmmnfydr8kg3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-deps
-            (lambda _
-              (invoke "git" "init") ;expects a git repo
-              ;; fix version
-              (substitute* "setup.py"
-                (("rawVer .*")
-                 (string-append "rawVer = \"v"
-                                #$version "\""))))))))
-    (native-inputs (list python-setuptools python-wheel python-gitpython
-                         git-minimal/pinned))
-    (home-page "https://slaclab.github.io/surf/")
-    (synopsis "SLAC Ultimate RTL Framework")
-    (description
-     "Surf is a python library with support functions for VHDL gateware
-digital design.  It provides implementation modules compatible with FPGA and ASIC
-design.")
-    (license (license:non-copyleft "file://LICENSE.txt"
-                                   "See LICENSE.txt in the distribution."))))
 
 (define-public sigrok-cli
   (package
@@ -673,6 +634,45 @@ design.")
       (description "Fx2lafw is free firmware for Cypress FX2 chips which makes
 them usable as simple logic analyzer and/or oscilloscope hardware.")
       (license license:gpl2+))))
+
+(define-public uhdm
+  (package
+    (name "uhdm")
+    (version "1.84")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chipsalliance/UHDM/")
+             (commit (string-append "v" version))
+             ;; avoid submodules, and use guix packages capnproto and
+             ;; googletest instead
+             (recursive? #f)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06i06wfyymhvmpnw79lgb84l9w9cyydvnr7n3bgmgf8a77jbxk2y"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; there is no configure stage, as for INSTALL.md
+          (delete 'configure))
+      #:test-target "test"
+      #:make-flags
+      #~(list
+         "ADDITIONAL_CMAKE_OPTIONS=-DUHDM_USE_HOST_CAPNP=On -DUHDM_USE_HOST_GTEST=On"
+         (string-append "PREFIX="
+                        #$output))))
+    (native-inputs (list cmake-minimal googletest pkg-config python-wrapper
+                         swig))
+    (inputs (list capnproto openssl python-orderedmultidict zlib))
+    (home-page "https://github.com/chipsalliance/UHDM/")
+    (synopsis "Universal Hardware Data Model")
+    (description
+     "UHDM is a complete modeling of the IEEE SystemVerilog Object Model with
+VPI Interface, Elaborator, Serialization, Visitor and Listener.")
+    (license license:asl2.0)))
 
 (define-public xoscope
   (package
