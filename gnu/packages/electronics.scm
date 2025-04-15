@@ -7,6 +7,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -631,15 +632,27 @@ some tool-specific options are set.")
        (sha256
         (base32 "08na5iwn6f1gkvklbslhrvdsk9kcqf7hdcn7g27fy0dr6xw9kd82"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools
-                         python-wheel
-                         ;; tests
-                         python-coverage
-                         python-pytest
-                         python-pytest-cov
-                         python-pytest-html
-                         python-pytest-xdist))
-    (propagated-inputs (list python-pyyaml))
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests are expensive and may introduce race condition on systems with
+      ;; high (more than 16) threads count; limit parallel jobs to 8x.
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'pathch-pytest-options
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*--cov=.*") "")
+                ((".*--self-contained-html.*") "")
+                ((".*-n.*auto.*") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-pyyaml))
     (home-page "https://github.com/jeremiah-c-leary/vhdl-style-guide/")
     (synopsis "Coding style enforcement for VHDL")
     (description
