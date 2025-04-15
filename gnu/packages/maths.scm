@@ -3328,6 +3328,9 @@ script files.")
   (package
     (name "opencascade-occt")
     (version "7.6.2")
+    (properties
+      '((release-tag-prefix . "^V")
+        (release-tag-version-delimiter . "_")))
     (source
       (origin
         (method git-fetch)
