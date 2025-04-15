@@ -3851,6 +3851,34 @@ against various paths.  This is particularly useful when trying to filter
 files based on a .gitignore document.")
     (license license:expat)))
 
+(define-public go-github-com-dicedb-dicedb-go
+  (package
+    (name "go-github-com-dicedb-dicedb-go")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DiceDB/dicedb-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18hfymwvp0mdnw1ssxnh58wvg4ifbjq4yhxvzfnw1f70rnhv01y3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; dicedb-go depends on dicedb for running tests
+      ;; but dicedb depends on dice-db, creating a cyclic depedency
+      #:tests? #f
+      #:import-path "github.com/dicedb/dicedb-go"))
+    (propagated-inputs (list go-github-com-google-uuid
+                             go-google-golang-org-protobuf))
+    (home-page "https://github.com/dicedb/dicedb-go")
+    (synopsis "SDK for @code{DiceDB}")
+    (description
+     "Go SDK for @url{https://github.com/dicedb/dice,@code{dicedb}}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")
