@@ -22807,42 +22807,38 @@ with Eglot.")
       (license license:gpl3+))))
 
 (define-public emacs-jabber
-  ;; No releases available.
-  (let ((commit "e766d84b81d5df6abc30fcbbb94f7c8640ea54e2")
-        (revision "1"))
-    (package
-      (name "emacs-jabber")
-      (version (git-version "0.8.92" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://codeberg.org/emacs-jabber/emacs-jabber")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0b6msdyvhjr4v4j8hl6kmcjks88iq001w1fhjgfvg8ii9n77n6xn"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:emacs emacs                   ;requires gnutls
-        #:test-command #~(list "ert-runner" "tests")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'build 'make-info
-              (lambda _
-                (invoke "makeinfo" "jabber.texi")
-                (install-file "jabber.info"
-                              (string-append #$output "/share/info")))))))
-      (native-inputs (list emacs-ert-runner texinfo))
-      (propagated-inputs (list emacs-fsm emacs-hexrgb emacs-srv gnutls))
-      (home-page "https://codeberg.org/emacs-jabber/emacs-jabber")
-      (synopsis "XMPP (Jabber) client for Emacs")
-      (description
-       "@code{jabber.el} is an XMPP client for Emacs.  XMPP (also known as
+  (package
+    (name "emacs-jabber")
+    (version "0.9.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/emacs-jabber/emacs-jabber")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ain52p79sxll0bnsb4llfp1h4pqcqx3l6im4ibia06lg2aiqhpv"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:lisp-directory "lisp"
+      #:emacs emacs                   ;requires gnutls
+      #:test-command #~(list "ert-runner" "../tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-info
+            (lambda _
+              (invoke "makeinfo" "../jabber.texi"))))))
+    (native-inputs (list emacs-ert-runner texinfo))
+    (propagated-inputs (list emacs-fsm emacs-srv gnutls))
+    (home-page "https://codeberg.org/emacs-jabber/emacs-jabber")
+    (synopsis "XMPP (Jabber) client for Emacs")
+    (description
+     "@code{jabber.el} is an XMPP client for Emacs.  XMPP (also known as
 \"Jabber\") is an instant messaging system; see @url{https://xmpp.org} for
 more information.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public emacs-jarchive
   (package
