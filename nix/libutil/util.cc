@@ -473,7 +473,8 @@ static void copyFileRecursively(int sourceroot, const Path &source,
 	if (sourceFd == -1) throw SysError(format("opening `%1%'") % source);
 
 	AutoCloseFD destinationFd = openat(destinationroot, destination.c_str(),
-					   O_CLOEXEC | O_CREAT | O_WRONLY | O_TRUNC,
+					   O_CLOEXEC | O_CREAT | O_WRONLY | O_TRUNC
+					   | O_NOFOLLOW | O_EXCL,
 					   st.st_mode);
 	if (destinationFd == -1) throw SysError(format("opening `%1%'") % source);
 
@@ -495,7 +496,8 @@ static void copyFileRecursively(int sourceroot, const Path &source,
 	    throw SysError(format("creating directory `%1%'") % destination);
 
 	AutoCloseFD destinationFd = openat(destinationroot, destination.c_str(),
-					   O_CLOEXEC | O_RDONLY | O_DIRECTORY);
+					   O_CLOEXEC | O_RDONLY | O_DIRECTORY
+					   | O_NOFOLLOW);
 	if (err != 0)
 	    throw SysError(format("opening directory `%1%'") % destination);
 
@@ -505,7 +507,7 @@ static void copyFileRecursively(int sourceroot, const Path &source,
 	    throw SysError(format("opening `%1%'") % source);
 
         if (deleteSource && !(st.st_mode & S_IWUSR)) {
-	    /* Ensure the directory writable so files within it can be
+	    /* Ensure the directory is writable so files within it can be
 	       deleted.  */
             if (fchmod(sourceFd, st.st_mode | S_IWUSR) == -1)
                 throw SysError(format("making `%1%' directory writable") % source);
