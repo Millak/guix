@@ -558,7 +558,8 @@
                               "libva"
                               "mesa"
                               "pipewire" ; For sharing on Wayland
-                              "pulseaudio")))
+                              "pulseaudio"
+                              "libpciaccess")))
 
                      ;; VA-API is run in the RDD (Remote Data Decoder) sandbox
                      ;; and must be explicitly given access to files it needs.
@@ -574,7 +575,8 @@
                            (delete-duplicates
                             (append-map runpaths-of-input
                                         '("mesa"
-                                          "ffmpeg")))))
+                                          "ffmpeg"
+                                          "libpciaccess")))))
                      (gtk-share (string-append (assoc-ref inputs
                                                           "gtk+")
                                                "/share")))
@@ -661,6 +663,7 @@
                   libgnome
                   libjpeg-turbo
                   libnotify
+                  libpciaccess
                   libpng-apng-for-librewolf
                   libva
                   libvpx
