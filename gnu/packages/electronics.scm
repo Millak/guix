@@ -69,6 +69,27 @@
   #:use-module (gnu packages toolkits)
   #:use-module (gnu packages version-control))
 
+(define-public comedilib
+  (package
+    (name "comedilib")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.comedi.org/download/comedilib-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0wzh23iyix4xj211fsd8hwrdcjhg2w5jswk9kywb1gpd3h8afajj"))))
+    (build-system gnu-build-system)
+    (synopsis "Library for Comedi")
+    (description "Comedilib is a user-space library that provides a
+developer-friendly interface to Comedi devices.  Comedi is a collection of
+drivers for a variety of common data acquisition plug-in boards.  The drivers
+are implemented as a core Linux kernel module providing common functionality and
+individual low-level driver modules.")
+    (home-page "https://www.comedi.org/")
+    (license license:lgpl2.1)))
+
 (define-public libserialport
   (package
     (name "libserialport")
@@ -89,80 +110,6 @@
     (description "Libserialport is a minimal shared library written in C that is intended
 to take care of the OS-specific details when writing software that uses serial ports.")
     (license license:lgpl3+)))
-
-(define-public libsigrokdecode
-  (let ((commit "71f451443029322d57376214c330b518efd84f88")
-        (revision "1"))
-    (package
-      (name "libsigrokdecode")
-      (version (git-version "0.5.3" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "git://sigrok.org/libsigrokdecode")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "11l8vnf2khqbaqas7cfnq3f8q5w7am6nbkkd5mqj5kpb3ya2avb9"))))
-      (outputs '("out" "doc"))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'build 'build-doc
-             (lambda _
-               (invoke "doxygen")
-               #t))
-           (add-after 'install 'install-doc
-             (lambda* (#:key outputs #:allow-other-keys)
-               (copy-recursively "doxy/html-api"
-                                 (string-append (assoc-ref outputs "doc")
-                                                "/share/doc/libsigrokdecode"))
-               #t)))))
-      (native-inputs
-       (list check doxygen graphviz pkg-config automake autoconf libtool))
-      ;; libsigrokdecode.pc lists "python" in Requires.private, and "glib" in
-      ;; Requires.
-      (propagated-inputs
-       (list glib python))
-      (build-system gnu-build-system)
-      (home-page "https://www.sigrok.org/wiki/Libsigrokdecode")
-      (synopsis
-       "Library providing (streaming) protocol decoding functionality")
-      (description
-       "Libsigrokdecode is a shared library written in C, which provides
-(streaming) protocol decoding functionality.")
-      (license license:gpl3+))))
-
-(define-public sigrok-firmware-fx2lafw
-  ;; The project's last formal release was in 2019.
-  ;;
-  ;; The changes since then allow it to build with the latest version of SDCC,
-  ;; 4.3.0.
-  (let ((commit "96b0b476522c3f93a47ff8f479ec08105ba6a2a5")
-        (revision "1"))
-    (package
-      (name "sigrok-firmware-fx2lafw")
-      (version (git-version "0.1.7" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "git://sigrok.org/sigrok-firmware-fx2lafw")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1n5nj2g2m5ih59591ny2drrv25zviqcwyx1cfdhy8ijl82yxjkmb"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list #:tests? #f))              ; no test suite
-      (native-inputs
-       (list autoconf automake sdcc))
-      (home-page "https://www.sigrok.org/wiki/Fx2lafw")
-      (synopsis "Firmware for Cypress FX2 chips")
-      (description "Fx2lafw is free firmware for Cypress FX2 chips which makes
-them usable as simple logic analyzer and/or oscilloscope hardware.")
-      (license license:gpl2+))))
 
 (define-public libsigrok
   (let ((commit "f06f788118191d19fdbbb37046d3bd5cec91adb1")
@@ -236,6 +183,120 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
 provides the basic hardware access drivers for logic analyzers and other
 supported devices, as well as input/output file format support.")
       (license license:gpl3+))))
+
+(define-public libsigrokdecode
+  (let ((commit "71f451443029322d57376214c330b518efd84f88")
+        (revision "1"))
+    (package
+      (name "libsigrokdecode")
+      (version (git-version "0.5.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://sigrok.org/libsigrokdecode")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "11l8vnf2khqbaqas7cfnq3f8q5w7am6nbkkd5mqj5kpb3ya2avb9"))))
+      (outputs '("out" "doc"))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'build 'build-doc
+             (lambda _
+               (invoke "doxygen")
+               #t))
+           (add-after 'install 'install-doc
+             (lambda* (#:key outputs #:allow-other-keys)
+               (copy-recursively "doxy/html-api"
+                                 (string-append (assoc-ref outputs "doc")
+                                                "/share/doc/libsigrokdecode"))
+               #t)))))
+      (native-inputs
+       (list check doxygen graphviz pkg-config automake autoconf libtool))
+      ;; libsigrokdecode.pc lists "python" in Requires.private, and "glib" in
+      ;; Requires.
+      (propagated-inputs
+       (list glib python))
+      (build-system gnu-build-system)
+      (home-page "https://www.sigrok.org/wiki/Libsigrokdecode")
+      (synopsis
+       "Library providing (streaming) protocol decoding functionality")
+      (description
+       "Libsigrokdecode is a shared library written in C, which provides
+(streaming) protocol decoding functionality.")
+      (license license:gpl3+))))
+
+(define-public m8c
+  (package
+    (name "m8c")
+    (version "1.7.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/laamaa/m8c")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18bx6jf0jbgnd6cfydh4iknh25rrpyc8awma4a1hkia57fyjy2gi"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))
+      #:tests? #f)) ;no tests
+    (native-inputs (list pkg-config))
+    (inputs (list libserialport
+                  sdl2))
+    (home-page "https://github.com/laamaa/m8c")
+    (synopsis "Cross-platform M8 tracker headless client")
+    (description
+     "The @url{https://dirtywave.com/products/m8-tracker,Dirtywave M8 Tracker}
+is a portable sequencer and synthesizer, featuring 8 tracks of assignable
+instruments such as FM, waveform synthesis, virtual analog, sample playback, and
+MIDI output.  It is powered by a @url{https://www.pjrc.com/teensy/,Teensy}
+micro-controller and inspired by the Gameboy tracker
+@url{https://www.littlesounddj.com/lsd/index.php,Little Sound DJ}.  m8c is a
+client for @url{https://github.com/Dirtywave/M8HeadlessFirmware,M8 Headless}
+which allows one to install the M8 firmware on any Teensy.")
+    (license (list license:cc-by-sa3.0
+                   license:expat
+                   license:public-domain
+                   license:zlib))))
+
+(define-public sigrok-firmware-fx2lafw
+  ;; The project's last formal release was in 2019.
+  ;;
+  ;; The changes since then allow it to build with the latest version of SDCC,
+  ;; 4.3.0.
+  (let ((commit "96b0b476522c3f93a47ff8f479ec08105ba6a2a5")
+        (revision "1"))
+    (package
+      (name "sigrok-firmware-fx2lafw")
+      (version (git-version "0.1.7" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://sigrok.org/sigrok-firmware-fx2lafw")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1n5nj2g2m5ih59591ny2drrv25zviqcwyx1cfdhy8ijl82yxjkmb"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f))              ; no test suite
+      (native-inputs
+       (list autoconf automake sdcc))
+      (home-page "https://www.sigrok.org/wiki/Fx2lafw")
+      (synopsis "Firmware for Cypress FX2 chips")
+      (description "Fx2lafw is free firmware for Cypress FX2 chips which makes
+them usable as simple logic analyzer and/or oscilloscope hardware.")
+      (license license:gpl2+))))
 
 (define-public sigrok-cli
   (package
@@ -393,90 +454,6 @@ such as:
     (description "PulseView is a Qt based logic analyzer, oscilloscope and MSO GUI
 for sigrok.")
     (license license:gpl3+)))
-
-(define-public comedilib
-  (package
-    (name "comedilib")
-    (version "0.12.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.comedi.org/download/comedilib-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0wzh23iyix4xj211fsd8hwrdcjhg2w5jswk9kywb1gpd3h8afajj"))))
-    (build-system gnu-build-system)
-    (synopsis "Library for Comedi")
-    (description "Comedilib is a user-space library that provides a
-developer-friendly interface to Comedi devices.  Comedi is a collection of
-drivers for a variety of common data acquisition plug-in boards.  The drivers
-are implemented as a core Linux kernel module providing common functionality and
-individual low-level driver modules.")
-    (home-page "https://www.comedi.org/")
-    (license license:lgpl2.1)))
-
-(define-public xoscope
-  (package
-    (name "xoscope")
-    (version "2.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/xoscope/xoscope/"
-                                  version "/xoscope-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0a5ycfc1qdmibvagc82r2mhv2i99m6pndy5i6ixas3j2297g6pgq"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list m4 pkg-config))
-    (inputs
-     (list alsa-lib comedilib fftw gtk+ gtkdatabox))
-    (synopsis "Digital oscilloscope")
-    (description "Xoscope is a digital oscilloscope that can acquire signals
-from ALSA, ESD, and COMEDI sources.  This package currently does not include
-support for ESD sources.")
-    (home-page "https://xoscope.sourceforge.net/")
-    (license license:gpl2+)))
-
-(define-public m8c
-  (package
-    (name "m8c")
-    (version "1.7.10")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/laamaa/m8c")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "18bx6jf0jbgnd6cfydh4iknh25rrpyc8awma4a1hkia57fyjy2gi"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:make-flags #~(list (string-append "PREFIX=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure))
-      #:tests? #f)) ;no tests
-    (native-inputs (list pkg-config))
-    (inputs (list libserialport
-                  sdl2))
-    (home-page "https://github.com/laamaa/m8c")
-    (synopsis "Cross-platform M8 tracker headless client")
-    (description
-     "The @url{https://dirtywave.com/products/m8-tracker,Dirtywave M8 Tracker}
-is a portable sequencer and synthesizer, featuring 8 tracks of assignable
-instruments such as FM, waveform synthesis, virtual analog, sample playback, and
-MIDI output.  It is powered by a @url{https://www.pjrc.com/teensy/,Teensy}
-micro-controller and inspired by the Gameboy tracker
-@url{https://www.littlesounddj.com/lsd/index.php,Little Sound DJ}.  m8c is a
-client for @url{https://github.com/Dirtywave/M8HeadlessFirmware,M8 Headless}
-which allows one to install the M8 firmware on any Teensy.")
-    (license (list license:cc-by-sa3.0
-                   license:expat
-                   license:public-domain
-                   license:zlib))))
 
 (define-public minipro
   ;; Information needed to fix Makefile
@@ -696,3 +673,26 @@ digital design.  It provides implementation modules compatible with FPGA and ASI
 design.")
     (license (license:non-copyleft "file://LICENSE.txt"
                                    "See LICENSE.txt in the distribution."))))
+
+(define-public xoscope
+  (package
+    (name "xoscope")
+    (version "2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/xoscope/xoscope/"
+                                  version "/xoscope-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0a5ycfc1qdmibvagc82r2mhv2i99m6pndy5i6ixas3j2297g6pgq"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list m4 pkg-config))
+    (inputs
+     (list alsa-lib comedilib fftw gtk+ gtkdatabox))
+    (synopsis "Digital oscilloscope")
+    (description "Xoscope is a digital oscilloscope that can acquire signals
+from ALSA, ESD, and COMEDI sources.  This package currently does not include
+support for ESD sources.")
+    (home-page "https://xoscope.sourceforge.net/")
+    (license license:gpl2+)))
