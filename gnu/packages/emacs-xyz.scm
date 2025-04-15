@@ -40686,7 +40686,7 @@ All entries in a specified TODO state will be carried over to the next day.")
 (define-public emacs-org-static-blog
   (package
     (name "emacs-org-static-blog")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -40695,8 +40695,9 @@ All entries in a specified TODO state will be carried over to the next day.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p3bhnp91x65xr5d40kdmyj7vgyq62bvq3b1gfwv7881sh8p6hr9"))))
+        (base32 "1b07q89j153i7al78cg9pxaz93yk0qbdf4mwaalrwiqfkdbm5msn"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/bastibe/org-static-blog")
     (synopsis
      "Simple Org mode based static blog generator")
