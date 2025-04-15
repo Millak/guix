@@ -11844,6 +11844,29 @@ Decoder,tailored for developers who need fine-grained control over XML
 parsing.")
     (license license:expat)))
 
+(define-public go-github-com-mmcloughlin-geohash
+  (package
+    (name "go-github-com-mmcloughlin-geohash")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mmcloughlin/geohash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q97mq70jp5336gmfyv2nj9xm3qgz48lkfy4cyfdsd2rpb7zms50"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mmcloughlin/geohash"))
+    (home-page "https://github.com/mmcloughlin/geohash")
+    (synopsis "Geohash library for Golang")
+    (description
+     "@code{geohash} provides encoding and decoding of string and integer geohashes.")
+    (license license:expat)))
+
 (define-public go-github-com-moby-sys-mountinfo
   (package
     (name "go-github-com-moby-sys-mountinfo")
