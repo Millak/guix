@@ -3602,6 +3602,33 @@ in texts containing mixed alphanumeric characters and in user interfaces of
 computer software.")
     (license license:asl2.0)))
 
+(define-public font-hachimarupop
+  (let ((commit "67d96c274032f5a2e1d33c1ec53498fde9110079")
+        (revision "0"))
+    (package
+      (name "font-hachimarupop")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (commit commit)
+               (url "https://github.com/noriokanisawa/HachiMaruPop")))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xkd2nvcxh9xmfp1hjqknvy1v2z8ch7svjyzpg313lkj6p4shnbg"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/noriokanisawa/HachiMaruPop")
+      (synopsis "Cute Japanese font")
+      (description
+       "This package provides a charming Japanese font that combines the
+circular letter style popular among young Japanese girls in the 1970s and 1980s
+with contemporary round-character aesthetics.  The font reflects the energetic
+trend of the era, when the circular script was so widespread that some schools
+banned its use.  This font pushes the roundness to its limit while capturing the
+spirit of both past and present styles.")
+      (license license:silofl1.1))))
+
 (define-public font-catamaran
   (let ((commit "7559b4906f9c9148fb22c6f89508c3053a78a296")
         (revision "1"))
