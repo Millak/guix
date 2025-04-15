@@ -28,6 +28,7 @@
 ;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;; Copyright © 2024 Sebastian Dümcke <code@sam-d.com>
 ;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
+;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 
 ;;
 ;; Copying and distribution of this file, with or without modification, are
@@ -36,7 +37,37 @@
 
 (channel-news
  (version 0)
+ (entry (commit "3e9e164154af6245389af5a1781473b36263ad20")
+        (title
+         (en "Incompatible changes in the @code{node-build-system}")
+	 (de "Inkompatible Änderungen im @code{node-build-system}"))
+        (body
+         (en "The @code{node-build-system} has been modified to work with the
+new @code{modify-json} API.
 
+If you used @code{delete-dependencies} or
+@code{with-atomic-json-file-replacement} in your own packages previously, you
+now have to wrap these in @code{modify-json}.  For example:
+
+@lisp
+(modify-json (delete-dependencies '(\"tslint\")))
+@end lisp
+
+The @code{npm-binary} importer generates package expressions using the new
+@code{modify-json} API.")
+         (de "Das Erstellungssystem @code{node-build-system} wurde verändert und
+benutzt jetzt die neue @code{modify-json}-API.
+
+Wenn Sie bisher @code{delete-dependencies} oder
+@code{with-atomic-json-file-replacement} in Ihren eigenen Paketen benutzt haben,
+müssen Sie diese jetzt mit @code{modify-json} umhüllen.  Zum Beispiel:
+
+@lisp
+(modify-json (delete-dependencies '(\"tslint\")))
+@end lisp
+
+Der @code{npm-binary}-Importer verwendet die neue @code{modify-json}-API und
+erzeugt damit Paketausdrücke.")))
  (entry (commit "0e51c6547ffdaf91777f7383da4a52a1a07b7286")
         (title
          (en "Incompatible upgrade of the Syncthing service"))
