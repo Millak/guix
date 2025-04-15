@@ -41,6 +41,7 @@
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2025 André Batista <nandre@riseup.net>
 ;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
+;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6558,6 +6559,31 @@ which produce colorized output using github.com/fatih/color.")
      "This is a tiny Go package which wraps HTTP handlers to transparently
 gzip the response body, for clients which support it.")
     (license license:asl2.0)))
+
+(define-public go-github-com-ohler55-ojg
+  (package
+    (name "go-github-com-ohler55-ojg")
+    (version "1.26.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ohler55/ojg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zg2m6kxm4lw75if8w4grp57bky55746j8m7qysqjcwm4y65hcdb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ohler55/ojg"))
+    (home-page "https://github.com/ohler55/ojg")
+    (synopsis "Optimized JSON for Go")
+    (description
+     "OjG is a high performance parser with a variety of additional
+JSON tools. @code{OjG} is optimized to processing huge data sets where data
+does not necessarily conform to a fixed structure.")
+    (license license:expat)))
 
 (define-public go-github-com-opentracing-contrib-go-stdlib
   (package
