@@ -5701,7 +5701,7 @@ Common Lisp.")
 (define-public sbcl-cl-fast-ecs
   (package
     (name "sbcl-cl-fast-ecs")
-    (version "0.2.2")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
@@ -5710,12 +5710,17 @@ Common Lisp.")
              (commit version)))
        (file-name (git-file-name "cl-fast-ecs" version))
        (sha256
-        (base32 "00nw5nwzcz8x1x1lycmjik8pcqzxrl896j0xjjl33rjljsmj45sx"))))
+        (base32 "068xc4ncxc9crg8b9x4abv1l8biq89d2fxm1i4m3jrbfx4adiqr5"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
-     (list sbcl-chlorophyll sbcl-cl-mock sbcl-parachute))
+     (list graphviz-minimal
+           sbcl-cl-mock
+           sbcl-parachute))
     (inputs
-     (list sbcl-alexandria sbcl-trivial-garbage))
+     (list sbcl-alexandria
+           sbcl-closer-mop
+           sbcl-global-vars
+           sbcl-trivial-adjust-simple-array))
     (home-page "https://lockie.gitlab.io/cl-fast-ecs/")
     (synopsis "Blazingly fast Entity-Component-System microframework")
     (description
@@ -5733,7 +5738,11 @@ built at runtime.")
   (sbcl-package->cl-source-package sbcl-cl-fast-ecs))
 
 (define-public ecl-cl-fast-ecs
-  (sbcl-package->ecl-package sbcl-cl-fast-ecs))
+  (package
+    (inherit (sbcl-package->ecl-package sbcl-cl-fast-ecs))
+    (arguments
+     ;; FIXME: Calling some subprocesses during tests fails.
+     (list #:tests? #f))))
 
 (define-public sbcl-cl-fastcgi
   (let ((commit "de8b49b26de9863996ec18db28af8ab7e8ac4e20")
