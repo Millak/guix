@@ -228,12 +228,7 @@ make sure no empty directory is left behind."
                      (make-clone-options
                       #:fetch-options (make-default-fetch-options
                                        #:verify-certificate?
-                                       verify-certificate?))))
-             (config (repository-config repository)))
-        ;; Override 'core.autocrlf' as set in ~/.gitconfig to ensure files are
-        ;; left unchanged when cloning and pulling.
-        (set-config-string config "core.autocrlf" "input")
-
+                                       verify-certificate?)))))
         repository))
     (lambda _
       (false-if-exception (rmdir directory)))))
@@ -592,7 +587,12 @@ current settings unchanged."
                              (repository-open cache-directory)
                              (clone/swh-fallback url ref cache-directory
                                                  #:verify-certificate?
-                                                 verify-certificate?))))
+                                                 verify-certificate?)))
+          (config (repository-config repository)))
+     ;; Override 'core.autocrlf' as set in ~/.gitconfig to ensure files are
+     ;; left unchanged when cloning and pulling.
+     (set-config-string config "core.autocrlf" "input")
+
      ;; Only fetch remote if it has not been cloned just before.
      (when (and cache-exists?
                 (not (reference-available? repository ref)))
