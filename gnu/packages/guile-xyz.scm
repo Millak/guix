@@ -4634,6 +4634,44 @@ procedures, and procedures created with it have predictable behavior when
 applied to surplus arguments.")
     (license license:expat)))
 
+(define-public guile-srfi-234
+  (let ((version "1.0.0")
+        (revision "1")
+        (commit "2c7c3df13035ef12890fc532abf61dce8f497fcd"))
+    (package
+      (name "guile-srfi-234")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/scheme-requests-for-implementation/srfi-234")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "16p31s2q8da4gs44l8af8libvd3g9dy96hs1skajh35907ysnhsn"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'move-create-and-delete-files
+                       (lambda _
+                         (substitute* "srfi/234.sld"
+                           (("srfi 234") "srfi srfi-234"))
+                         (rename-file "srfi/234.sld" "srfi/srfi-234.scm"))))))
+      (native-inputs (list guile-3.0))
+      (home-page "https://github.com/scheme-requests-for-implementation/srfi-234")
+      (synopsis "Topological sorting module for Guile Scheme")
+      (description
+       "Topological sorting is an algorithm that takes a graph consisting of
+nodes and other nodes that depend on them, forming a partial order, and
+returns a list representing a total ordering of the graph.  If the graph is
+cyclic, the topological sort will fail.  The procedure topological-sort returns
+three values.  If sorting succeeds, the first value contains the result and the
+second and third are #false.  If sorting fails, the result is #false and the
+second and third value may provide additional information about the error.")
+      (license license:expat))))
+
 (define-public guile-srfi-235
   (let ((version "1.0.0")
         (revision "1")
