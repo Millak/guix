@@ -268,58 +268,6 @@ which allows one to install the M8 firmware on any Teensy.")
                    license:public-domain
                    license:zlib))))
 
-(define-public sigrok-firmware-fx2lafw
-  ;; The project's last formal release was in 2019.
-  ;;
-  ;; The changes since then allow it to build with the latest version of SDCC,
-  ;; 4.3.0.
-  (let ((commit "96b0b476522c3f93a47ff8f479ec08105ba6a2a5")
-        (revision "1"))
-    (package
-      (name "sigrok-firmware-fx2lafw")
-      (version (git-version "0.1.7" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "git://sigrok.org/sigrok-firmware-fx2lafw")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1n5nj2g2m5ih59591ny2drrv25zviqcwyx1cfdhy8ijl82yxjkmb"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list #:tests? #f))              ; no test suite
-      (native-inputs
-       (list autoconf automake sdcc))
-      (home-page "https://www.sigrok.org/wiki/Fx2lafw")
-      (synopsis "Firmware for Cypress FX2 chips")
-      (description "Fx2lafw is free firmware for Cypress FX2 chips which makes
-them usable as simple logic analyzer and/or oscilloscope hardware.")
-      (license license:gpl2+))))
-
-(define-public sigrok-cli
-  (package
-    (name "sigrok-cli")
-    (version "0.7.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://sigrok.org/download/source/sigrok-cli/sigrok-cli-"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "1f0a2k8qdcin0pqiqq5ni4khzsnv61l21v1dfdjzayw96qzl9l3i"))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list glib libsigrok libsigrokdecode))
-    (build-system gnu-build-system)
-    (home-page "https://sigrok.org/wiki/Sigrok-cli")
-    (synopsis "Command-line frontend for sigrok")
-    (description "Sigrok-cli is a command-line frontend for sigrok.")
-    (license license:gpl3+)))
-
 (define-public openboardview
   (package
     (name "openboardview")
@@ -413,48 +361,6 @@ such as:
 @end itemize")
     (license license:expat)))
 
-(define-public pulseview
-  (package
-    (name "pulseview")
-    (version "0.4.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://sigrok.org/download/source/pulseview/pulseview-"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "1jxbpz1h3m1mgrxw74rnihj8vawgqdpf6c33cqqbyd8v7rxgfhph"))
-              (patches (search-patches "pulseview-qt515-compat.patch"
-                                       "pulseview-glib-2.68.patch"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f ;format_time_minutes_test is failing
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'remove-empty-doc-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (with-directory-excursion (string-append out "/share")
-                 ;; Use RMDIR to never risk silently deleting files.
-                 (rmdir "doc/pulseview")
-                 (rmdir "doc"))))))))
-    (native-inputs
-     (list pkg-config qttools-5))
-    (inputs
-     (list boost
-           glib
-           glibmm
-           libsigrok
-           libsigrokdecode
-           qtbase-5
-           qtsvg-5))
-    (home-page "https://www.sigrok.org/wiki/PulseView")
-    (synopsis "Qt based logic analyzer, oscilloscope and MSO GUI for sigrok")
-    (description "PulseView is a Qt based logic analyzer, oscilloscope and MSO GUI
-for sigrok.")
-    (license license:gpl3+)))
-
 (define-public minipro
   ;; Information needed to fix Makefile
   (let* ((date "2024-09-20 20:55:06 -0700"))
@@ -547,6 +453,48 @@ Additionally your user must be member of the @code{plugdev} group.")
      "UHDM is a complete modeling of the IEEE SystemVerilog Object Model with
 VPI Interface, Elaborator, Serialization, Visitor and Listener.")
     (license license:asl2.0)))
+
+(define-public pulseview
+  (package
+    (name "pulseview")
+    (version "0.4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://sigrok.org/download/source/pulseview/pulseview-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1jxbpz1h3m1mgrxw74rnihj8vawgqdpf6c33cqqbyd8v7rxgfhph"))
+              (patches (search-patches "pulseview-qt515-compat.patch"
+                                       "pulseview-glib-2.68.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f ;format_time_minutes_test is failing
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'remove-empty-doc-directory
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (with-directory-excursion (string-append out "/share")
+                 ;; Use RMDIR to never risk silently deleting files.
+                 (rmdir "doc/pulseview")
+                 (rmdir "doc"))))))))
+    (native-inputs
+     (list pkg-config qttools-5))
+    (inputs
+     (list boost
+           glib
+           glibmm
+           libsigrok
+           libsigrokdecode
+           qtbase-5
+           qtsvg-5))
+    (home-page "https://www.sigrok.org/wiki/PulseView")
+    (synopsis "Qt based logic analyzer, oscilloscope and MSO GUI for sigrok")
+    (description "PulseView is a Qt based logic analyzer, oscilloscope and MSO GUI
+for sigrok.")
+    (license license:gpl3+)))
 
 (define-public python-edalize
   (package
@@ -673,6 +621,58 @@ digital design.  It provides implementation modules compatible with FPGA and ASI
 design.")
     (license (license:non-copyleft "file://LICENSE.txt"
                                    "See LICENSE.txt in the distribution."))))
+
+(define-public sigrok-cli
+  (package
+    (name "sigrok-cli")
+    (version "0.7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://sigrok.org/download/source/sigrok-cli/sigrok-cli-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1f0a2k8qdcin0pqiqq5ni4khzsnv61l21v1dfdjzayw96qzl9l3i"))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glib libsigrok libsigrokdecode))
+    (build-system gnu-build-system)
+    (home-page "https://sigrok.org/wiki/Sigrok-cli")
+    (synopsis "Command-line frontend for sigrok")
+    (description "Sigrok-cli is a command-line frontend for sigrok.")
+    (license license:gpl3+)))
+
+(define-public sigrok-firmware-fx2lafw
+  ;; The project's last formal release was in 2019.
+  ;;
+  ;; The changes since then allow it to build with the latest version of SDCC,
+  ;; 4.3.0.
+  (let ((commit "96b0b476522c3f93a47ff8f479ec08105ba6a2a5")
+        (revision "1"))
+    (package
+      (name "sigrok-firmware-fx2lafw")
+      (version (git-version "0.1.7" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://sigrok.org/sigrok-firmware-fx2lafw")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1n5nj2g2m5ih59591ny2drrv25zviqcwyx1cfdhy8ijl82yxjkmb"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f))              ; no test suite
+      (native-inputs
+       (list autoconf automake sdcc))
+      (home-page "https://www.sigrok.org/wiki/Fx2lafw")
+      (synopsis "Firmware for Cypress FX2 chips")
+      (description "Fx2lafw is free firmware for Cypress FX2 chips which makes
+them usable as simple logic analyzer and/or oscilloscope hardware.")
+      (license license:gpl2+))))
 
 (define-public xoscope
   (package
