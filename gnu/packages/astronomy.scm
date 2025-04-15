@@ -3332,6 +3332,36 @@ across many files.")
     (description "Multidimensional data visualization across files.")
     (license license:bsd-3)))
 
+(define-public python-gw-sky
+  (package
+    (name "python-gw-sky")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gw_sky" version))
+       (sha256
+        (base32 "0k2qgy6d443lgxb140w70q078hclaf2c1jl85czkzkmz77yiiblc"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list jupyter
+           python-pytest
+           python-healpy
+           python-nbconvert
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/Hazboun6/gw_sky")
+    (synopsis "Gravitational wave signals visualization tool")
+    (description
+     "Python package for making visuals of gravitational wave signals,
+specifically pulsar timing array signals.")
+    (license license:expat)))
+
 (define-public python-gwcs
   (package
     (name "python-gwcs")
