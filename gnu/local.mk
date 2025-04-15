@@ -1182,6 +1182,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dee-vapi.patch			\
   %D%/packages/patches/dfu-programmer-fix-libusb.patch		\
   %D%/packages/patches/dhclient-script-resolvconf-support.patch \
+  %D%/packages/patches/dicedb-remove-init-from-config-subpkg.patch	\
   %D%/packages/patches/directfb-davinci-glibc-228-compat.patch	\
   %D%/packages/patches/dkimproxy-add-ipv6-support.patch		\
   %D%/packages/patches/docbook-utils-documentation-edits.patch	\

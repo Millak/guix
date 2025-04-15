@@ -64,6 +64,7 @@
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -110,8 +111,10 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
@@ -483,6 +486,96 @@ database later.")
            license:lgpl2.1           ; exception for OSI-compatible licences
            license:mpl1.1            ; examples/interfaces/0{6,8}*.cpp
            license:public-domain)))) ; including files without explicit licence
+
+(define-public dicedb
+  (package
+    (name "dicedb")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DiceDB/dice")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19hkr2sqb5vcyrxb17y8586aa9amw2nny2fia7yf2lshigg03va5"))
+       (patches (search-patches "dicedb-remove-init-from-config-subpkg.patch"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:install-source? #f
+      #:import-path "github.com/dicedb/dice"
+      #:build-flags
+      #~(list (format #f "-ldflags=-X config.DiceDBVersion=v~a"
+                      #$version))
+      #:test-subdirs
+      #~(list "internal/auth/..."
+              ;; "internal/clientio/..." ; matched no packages
+              "internal/cmd/..."
+              "internal/comm/..."
+              "internal/common/..."
+              "internal/dencoding/..."
+              "internal/errors/..."
+              ;; "internal/eval/..." ; build failed
+              "internal/id/..."
+              "internal/iomultiplexer/..."
+              "internal/logger/..."
+              "internal/object/..."
+              "internal/observability/..."
+              "internal/ops/..."
+              "internal/querymanager/..."
+              "internal/regex/..."
+              "internal/server/..."
+              "internal/shard/..."
+              ;; "internal/sql/..." ; matched no packages
+              ;; "internal/store/..." ; build failed
+              "internal/wal/..."
+              "internal/watchmanager/..."
+              ;; "internal/worker/..." ; matched no packages
+              )
+      #:test-flags
+      #~(list "-skip"
+              (string-join (list "TestSessionIsActive" "TestSessionActivate"
+                                 "TestSessionValidate" "TestDEL") "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-example
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (propagated-inputs (list go-google-golang-org-protobuf
+                             go-golang-org-x-crypto
+                             go-github-com-twmb-murmur3
+                             go-github-com-stretchr-testify
+                             go-github-com-spf13-viper
+                             go-github-com-spf13-pflag
+                             go-github-com-spf13-cobra
+                             go-github-com-rs-zerolog
+                             go-github-com-rs-xid
+                             go-github-com-ohler55-ojg
+                             go-github-com-mmcloughlin-geohash
+                             go-github-com-google-uuid
+                             go-github-com-google-go-cmp
+                             go-github-com-google-btree
+                             go-github-com-gobwas-glob
+                             go-github-com-dicedb-dicedb-go
+                             go-github-com-dgryski-go-farm
+                             go-github-com-cespare-xxhash-v2
+                             go-github-com-bytedance-sonic
+                             go-github-com-axiomhq-hyperloglog
+                             go-gotest-tools-v3))
+    (home-page "https://github.com/dicedb/dice")
+    (synopsis
+     "Fast, reactive, in-memory database optimized for modern hardware")
+    (description
+     "@code{dicedb} is a fast, reactive, in-memory database optimized
+for modern hardware.  Commonly used as a cache, it offers a familiar interface
+while enabling real-time data updates through query subscriptions.  It delivers
+higher throughput and lower median latencies, making it ideal for modern
+workloads.")
+    (license license:bsd-3)))
 
 (define-public leveldb
   (package
