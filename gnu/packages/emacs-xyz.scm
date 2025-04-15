@@ -44415,12 +44415,12 @@ entities.")
       (license license:expat))))
 
 (define-public emacs-totp
-  (let ((commit "a5e059b8475b32bc7f5ddadda248cf84449ed722") ;no releases
-        (revision "0"))
+  (let ((commit "fe05ce6130ff1e9a76fc2aca289083475f70fd52") ;no releases
+        (revision "1"))
     (package
       (name "emacs-totp")
       (home-page "https://github.com/juergenhoetzel/emacs-totp")
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "0.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -44429,14 +44429,17 @@ entities.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0b76fxk9r3n9zii75q1957ivb6ap5px5h87kagxz083nl77jky7a"))))
+                  "04hazm8viy6dqakdj2dl849aj435jgsv3rqwq7sl7lgflrn8r45b"))))
+      ;; tests requires gnutls
+      (arguments (list #:emacs emacs))
       (build-system emacs-build-system)
+      (native-inputs (list emacs-buttercup))
       (synopsis "Generate Time-based One-time Passwords (TOTP) in Emacs")
       (description
        "emacs-TOTP implements @acronym{TOTP, Time-based One-time Passwords} as
 specified in RFC 6238.  It supports reading secrets in HEX and multiple base32
 variations, including non-standard base32 encodings.")
-       (license license:gpl3+))))
+      (license license:gpl3+))))
 
 (define-public emacs-back-button
   (package
