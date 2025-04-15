@@ -3601,6 +3601,49 @@ semi-analytic models, to cosmological hydrodynamic simulations, and even
 observationally-derived galaxy merger catalogs.")
     (license license:expat)))
 
+(define-public python-libstempo
+  (package
+    (name "python-libstempo")
+    (version "2.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "libstempo" version))
+       (sha256
+        (base32 "0408g761w9i0kg69b72y4lnpz5sa8bzd0zayi73q6wkry8lh7ymq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-tempo2-search-paths
+            (lambda _
+              (let* ((tempo2 #$(this-package-input "tempo2"))
+                     (tempo2-runtime (string-append tempo2 "/share/runtime")))
+                (setenv "TEMPO2_PREFIX" tempo2)
+                (setenv "TEMPO2" tempo2-runtime)))))))
+    (native-inputs
+     (list python-cython-3
+           python-numpy
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (inputs
+     (list tempo2))
+    (propagated-inputs
+     (list python-astropy
+           python-ephem
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/vallis/libstempo")
+    (synopsis "Python wrapper for tempo2")
+    (description
+     "This package provides a Python wrapper for tempo2 - a high precision
+pulsar timing tool.")
+    (license license:expat)))
+
 (define-public python-lofar-h5plot
   (package
     (name "python-lofar-h5plot")
