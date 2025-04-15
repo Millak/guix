@@ -109,6 +109,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
+  #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -1095,6 +1096,35 @@ more.")
 (define-public indi
   ;; Default version of INDI..
   indi-1.9)
+
+(define-public java-cds-healpix
+  ;; XXX: Upstream bundles java-commons-math3 available in Guix, find out how
+  ;; to use the system package instead of it.
+  (package
+    (name "java-cds-healpix")
+    (version "0.30.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cds-astro/cds-healpix-java")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wi5ni6j0rvjyhz80g1gglxdimf7gnfa1kx8a3c2przzbwya0j8d"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:jar-name "cdshealpix.jar"
+      #:source-dir "src/main/java/cds/healpix"
+      #:test-dir "src/test"))
+    (home-page "https://github.com/cds-astro/cds-healpix-java")
+    (synopsis "CDS HEALPix library in Java")
+    (description
+     "This package provides a @acronym{Centre de Données astronomiques de
+Strasbourg, CDS} implementation in Java of the @acronym{Hierarchical Equal
+Area isoLatitude Pixelization of a sphere , HEALPix} tesselation.")
+    (license license:bsd-3)))
 
 (define-public iraf-community
   (package
