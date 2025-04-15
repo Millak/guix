@@ -3578,6 +3578,30 @@ operating systems and embedded software where timely updates and quality
 assurance are essential.")
     (license license:ipa)))
 
+(define-public font-koruri
+  ;; Source: https://github.com/Koruri/Scripts
+  (package
+    (name "font-koruri")
+    (version "20210720")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Koruri/Koruri")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yadd6rcyf940c441zr1m90srhz9xjsak281bvn6p6br7nsm9gyc"))))
+    (build-system font-build-system)
+    (home-page "https://koruri.github.io/")
+    (synopsis "Japanese TrueType font obtained by mixing M+ FONTS and Open Sans")
+    (description
+     "This package provides the Koruri font, a Japanese TrueType font composed
+of Open Sans and OSDN’s M+ 1p.  It is designed with an emphasis on readability
+in texts containing mixed alphanumeric characters and in user interfaces of
+computer software.")
+    (license license:asl2.0)))
+
 (define-public font-catamaran
   (let ((commit "7559b4906f9c9148fb22c6f89508c3053a78a296")
         (revision "1"))
