@@ -8436,7 +8436,14 @@ expansions) are calculated from input timing models.")
             (lambda _
               (substitute* (list "bootstrap" "plugin/make_build_settings.sh")
                 (("/bin/bash") (which "bash"))
-                (("/bin/echo") "echo")))))))
+                (("/bin/echo") "echo"))))
+          (add-before 'configure 'set-t2runtime-path
+            (lambda _
+              (setenv "TEMPO2" (string-append #$output "/share/runtime"))))
+          (add-after 'install 'install-t2runtime-files
+            (lambda _
+              (copy-recursively "T2runtime"
+                                (string-append #$output "/share/runtime")))))))
     (native-inputs
      (list autoconf
            automake
