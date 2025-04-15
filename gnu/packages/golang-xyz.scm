@@ -1822,6 +1822,38 @@ strategies, such as fixed delay, backoff delay, and random delay.")
               (delete-file-recursively
                (string-append "src/" import-path "/examples")))))))))
 
+(define-public go-github-com-axiomhq-hyperloglog
+  (package
+    (name "go-github-com-axiomhq-hyperloglog")
+    (version "0.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/axiomhq/hyperloglog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a37q1prgpp80a93yx7zxhcam8fznzxvfvz6likfixz0ans2lbav"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.23
+      #:import-path "github.com/axiomhq/hyperloglog"))
+    (propagated-inputs (list go-github-com-stretchr-testify
+                             go-github-com-kamstrup-intmap
+                             go-github-com-dgryski-go-metro
+                             go-github-com-davecgh-go-spew))
+    (home-page "https://github.com/axiomhq/hyperloglog")
+    (synopsis "Algorithm for approximating the number of distinct elements")
+    (description
+     "HyperLogLog is an improved version of
+@url{https://en.wikipedia.org/wiki/HyperLogLog,HyperLogLog} for the
+count-distinct problem, approximating the number of distinct elements in a
+multiset.  This implementation offers enhanced performance, flexibility, and
+simplicity while maintaining accuracy.")
+    (license license:expat)))
+
 (define-public go-github-com-aymanbagabas-go-osc52-v2
   (package
     (name "go-github-com-aymanbagabas-go-osc52-v2")
