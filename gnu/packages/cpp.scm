@@ -1158,7 +1158,7 @@ data transfer object.")
 (define-public nlohmann-json
   (package
     (name "nlohmann-json")
-    (version "3.11.2")
+    (version "3.12.0")
     (home-page "https://github.com/nlohmann/json")
     (source
      (origin
@@ -1166,7 +1166,7 @@ data transfer object.")
        (uri (git-reference (url home-page)
                            (commit (string-append "v" version))))
        (sha256
-        (base32 "0g6rfsbkvrxmacchz4kbr741yybj7mls3r4hgyfdd3pdbqhn2is9"))
+        (base32 "09nqq56ighr3lghhn3fs399lkllghz717j0xyp87x0giw86ayh3h"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
