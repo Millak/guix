@@ -682,7 +682,7 @@ easily implement VNC server or client functionality in your program.")
 (define-public neatvnc
   (package
     (name "neatvnc")
-    (version "0.8.0")
+    (version "0.9.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -691,7 +691,7 @@ easily implement VNC server or client functionality in your program.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07vjagx14yiqgaiba24xvb3qbiznlfab23c14arx225y0rlw82h4"))))
+                "09vafk99zmrbrb5mxr1sqb21rvggbr69kx7rwqf2g6dxk07p1mqg"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs
