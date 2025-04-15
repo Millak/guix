@@ -502,6 +502,69 @@
                 #:hash #vu8(1 2 3))
     #f))
 
+(test-assert "fixed-output derivation, network access, localhost"
+  ;; Test a fixed-output derivation connecting to "localhost".
+  (let ((text (random-text)))
+    (with-http-server `((200 ,text))
+      (let* ((drv (build-expression->derivation
+                   %store
+                   "fixed-output-download"
+                   `(begin
+                      (use-modules (web client)
+                                   (srfi srfi-11)
+                                   (rnrs io ports))
+
+                      ;; Neutralize 'set-port-encoding!' because
+                      ;; guile-bootstrap cannot open iconv descriptors
+                      ;; contrary to what 'read-response' expects.
+                      (set! (@ (guile) set-port-encoding!) (const #t))
+
+                      (let-values (((response body)
+                                    (http-get ,(%local-url)
+                                              #:decode-body? #f)))
+                        (format #t "response: ~s~%body: ~s~%"
+                                response body)
+                        (call-with-output-file %output
+                          (lambda (port)
+                            (put-bytevector port body)))))
+                   #:hash-algo 'sha256
+                   #:hash (gcrypt:sha256 (string->utf8 text)))))
+        (and (build-derivations %store (list drv))
+             (string=? (call-with-input-file (derivation->output-path drv)
+                         get-string-all)
+                       text))))))
+
+(unless (network-reachable?) (test-skip 1))
+(test-assert "fixed-output derivation, network access, external host"
+  ;; Test a fixed-output derivation connecting to an external server.
+  (let* ((drv (build-expression->derivation
+               %store
+               (string-append (number->string (random (expt 2 64) (%seed))
+                                              16)
+                              "-gplv3.txt")
+               '(begin
+                  (use-modules (web client)
+                               (srfi srfi-11)
+                               (rnrs io ports))
+
+                  ;; DNS working?
+                  (pk 'addr (getaddrinfo "www.gnu.org" "https"))
+
+                  ;; Neutralize 'set-port-encoding!' because
+                  ;; guile-bootstrap cannot open iconv descriptors
+                  ;; contrary to what 'read-response' expects.
+                  (set! (@ (guile) set-port-encoding!) (const #t))
+
+                  (let-values (((response body)
+                                (http-get "http://www.gnu.org/licenses/gpl-3.0.txt"
+                                          #:decode-body? #f)))
+                    (call-with-output-file %output
+                      (lambda (port)
+                        (put-bytevector port body)))))
+               #:hash-algo 'sha256
+               #:hash (base32 "11k9nggwk1mgsrkdwgdjz65avrradxlpdgrdkc7ryjgn8jbxqwir"))))
+    (build-derivations %store (list drv))))
+
 (test-assert "derivation with a fixed-output input"
   ;; A derivation D using a fixed-output derivation F doesn't has the same
   ;; output path when passed F or F', as long as F and F' have the same output
