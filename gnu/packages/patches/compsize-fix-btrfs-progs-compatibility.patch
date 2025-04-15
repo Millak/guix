@@ -1,0 +1,1614 @@
+From upstream from https://github.com/kilobyte/compsize/pull/53
+
+From c4f18f6af6a0e0872f0ae9de5b90b799cbdd0f12 Mon Sep 17 00:00:00 2001
+From: Justin Brewer <jbrewer90@proton.me>
+Date: Sun, 24 Nov 2024 23:10:54 -0600
+Subject: [PATCH] Replace radix_tree with a bitmap
+
+New versions of btrfs-progs dropped radix_tree and made incompatible
+changes to kerncompat.h. radix_tree was overkill, since it was only
+used to track if a page had been seen before.
+
+Replace radix_tree with a simple bitmap, and drop the broken imported
+source files.
+
+Signed-off-by: Justin Brewer <jbrewer90@proton.me>
+---
+ Makefile     |   2 +-
+ bitmap.c     |  70 +++++
+ bitmap.h     |  28 ++
+ compsize.c   |  34 ++-
+ kerncompat.h | 399 ------------------------
+ radix-tree.c | 849 ---------------------------------------------------
+ radix-tree.h |  97 ------
+ 7 files changed, 125 insertions(+), 1354 deletions(-)
+ create mode 100644 bitmap.c
+ create mode 100644 bitmap.h
+ delete mode 100644 kerncompat.h
+ delete mode 100644 radix-tree.c
+ delete mode 100644 radix-tree.h
+
+diff --git a/Makefile b/Makefile
+index af6cf8b..6429fb4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,6 +1,6 @@
+ PREFIX ?= /usr
+ CC ?= gcc
+-CFLAGS ?= -Wall -std=gnu90
++CFLAGS ?= -Wall -std=gnu90 -D_GNU_SOURCE
+ SRC_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+ 
+ 
+diff --git a/bitmap.c b/bitmap.c
+new file mode 100644
+index 0000000..e044fab
+--- /dev/null
++++ b/bitmap.c
+@@ -0,0 +1,70 @@
++#include "bitmap.h"
++
++#include <errno.h>
++#include <stddef.h>
++#include <stdint.h>
++#include <stdlib.h>
++#include <sys/mman.h>
++
++#define CHUNK_SHIFT 21 /* 2MiB */
++#define WORD_SHIFT 5
++#define WORD_MASK ((1 << WORD_SHIFT) - 1)
++#define BIT_TO_CHUNK(_b) ((_b) >> CHUNK_SHIFT)
++#define BIT_TO_WORD(_b) ((_b) >> WORD_SHIFT)
++#define BIT_TO_MASK(_b) (1 << ((_b) & WORD_MASK))
++#define MAP_SIZE(_s) ((_s) * (1 << CHUNK_SHIFT))
++
++static int resize(struct bitmap *b, size_t new_size)
++{
++	if(new_size <= b->size)
++		return 0;
++
++	void *new_map = mremap(b->map, MAP_SIZE(b->size), MAP_SIZE(new_size),
++			MREMAP_MAYMOVE);
++
++	if(new_map == MAP_FAILED)
++		return -ENOMEM;
++
++	b->map = new_map;
++	b->size = new_size;
++	return 0;
++}
++
++int bitmap_init(struct bitmap *b)
++{
++	b->size = 1;
++	b->map = mmap(NULL, MAP_SIZE(b->size), PROT_READ | PROT_WRITE,
++			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	return b->map == MAP_FAILED;
++}
++
++void bitmap_destroy(struct bitmap *b)
++{
++	munmap(b->map, MAP_SIZE(b->size));
++}
++
++/**
++ * Mark and return previous value of a bit
++ *
++ * Resizes map if necessary. Returns -ENOMEM if resize fails.
++ */
++int bitmap_mark(struct bitmap *b, size_t bit)
++{
++	int rv;
++	size_t chunk, word, mask;
++
++	chunk = BIT_TO_CHUNK(bit);
++	word = BIT_TO_WORD(bit);
++	mask = BIT_TO_MASK(bit);
++
++	rv = resize(b, chunk + 1);
++
++	if(rv)
++		return rv;
++
++	if(b->map[word] & mask)
++		return 1;
++
++	b->map[word] |= mask;
++	return 0;
++}
+diff --git a/bitmap.h b/bitmap.h
+new file mode 100644
+index 0000000..f2f05d4
+--- /dev/null
++++ b/bitmap.h
+@@ -0,0 +1,28 @@
++#ifndef COMPSIZE__BITMAP_H__
++#define COMPSIZE__BITMAP_H__
++
++#include <stddef.h>
++#include <stdint.h>
++
++/**
++ * Simple pseudo-sparse bitmap
++ *
++ * Storage is mmaped to take advantage of lazy page allocation. Automatically
++ * resizes when accessing bits past the end of the current storage.
++ *
++ * Worst case memory usage 32MiB per TiB of 4K filesystem extents.
++ *
++ * @map: Word storage of bitmap
++ * @size: Size of map, as number of 2MiB chunks
++ */
++struct bitmap
++{
++    uint32_t *map;
++    size_t size;
++};
++
++int bitmap_init(struct bitmap *b);
++void bitmap_destroy(struct bitmap *b);
++int bitmap_mark(struct bitmap *b, size_t bit);
++
++#endif
+diff --git a/compsize.c b/compsize.c
+index 42ec304..dcb099f 100644
+--- a/compsize.c
++++ b/compsize.c
+@@ -14,7 +14,9 @@
+ #include <linux/limits.h>
+ #include <getopt.h>
+ #include <signal.h>
+-#include "radix-tree.h"
++#include <errno.h>
++#include <string.h>
++#include "bitmap.h"
+ #include "endianness.h"
+ 
+ #if defined(DEBUG)
+@@ -50,7 +52,7 @@ struct workspace
+         uint64_t nfiles;
+         uint64_t nextents, nrefs, ninline, nfrag;
+         uint64_t fragend;
+-        struct radix_tree_root seen_extents;
++        struct bitmap seen_extents;
+ };
+ 
+ static const char *comp_types[MAX_ENTRIES] = { "none", "zlib", "lzo", "zstd" };
+@@ -93,6 +95,11 @@ static void init_sv2_args(ino_t st_ino, struct btrfs_sv2_args *sv2_args)
+         sv2_args->buf_size = sizeof(sv2_args->buf);
+ }
+ 
++static inline int IS_ALIGNED(uintptr_t ptr, size_t align)
++{
++	return (ptr & (align - 1)) == 0;
++}
++
+ static inline int is_hole(uint64_t disk_bytenr)
+ {
+     return disk_bytenr == 0;
+@@ -105,6 +112,7 @@ static void parse_file_extent_item(uint8_t *bp, uint32_t hlen,
+     uint64_t disk_num_bytes, ram_bytes, disk_bytenr, num_bytes;
+     uint32_t inline_header_sz;
+     unsigned  comp_type;
++    int rv;
+ 
+     DPRINTF("len=%u\n", hlen);
+ 
+@@ -152,15 +160,20 @@ static void parse_file_extent_item(uint8_t *bp, uint32_t hlen,
+     if (!IS_ALIGNED(disk_bytenr, 1 << 12))
+         die("%s: Extent not 4K-aligned at %"PRIu64"?!?\n", filename, disk_bytenr);
+ 
+-    unsigned long pageno = disk_bytenr >> 12;
+-    radix_tree_preload(GFP_KERNEL);
+-    if (radix_tree_insert(&ws->seen_extents, pageno, (void *)pageno) == 0)
++    switch((rv = bitmap_mark(&ws->seen_extents, disk_bytenr >> 12)))
+     {
++    case 0:
+          ws->disk[comp_type] += disk_num_bytes;
+          ws->uncomp[comp_type] += ram_bytes;
+          ws->nextents++;
++         break;
++    case 1:
++         break;
++    default:
++         errno = -rv;
++         die("bitmak_mark: %m\n");
+     }
+-    radix_tree_preload_end();
++
+     ws->refd[comp_type] += num_bytes;
+     ws->nrefs++;
+ 
+@@ -439,6 +452,7 @@ static int print_stats(struct workspace *ws)
+ 
+ int main(int argc, char **argv)
+ {
++    int rv;
+     struct workspace *ws;
+ 
+     ws = (struct workspace *) calloc(sizeof(*ws), 1);
+@@ -451,8 +465,11 @@ int main(int argc, char **argv)
+         return 1;
+     }
+ 
+-    radix_tree_init();
+-    INIT_RADIX_TREE(&ws->seen_extents, 0);
++    if((rv = bitmap_init(&ws->seen_extents))) {
++        errno = -rv;
++        die("bitmap_init: %m\n");
++    }
++
+     signal(SIGUSR1, sigusr1);
+ 
+     for (; argv[optind]; optind++)
+@@ -460,6 +477,7 @@ int main(int argc, char **argv)
+ 
+     int ret = print_stats(ws);
+ 
++    bitmap_destroy(&ws->seen_extents);
+     free(ws);
+ 
+     return ret;
+diff --git a/kerncompat.h b/kerncompat.h
+deleted file mode 100644
+index 6ad35ea..0000000
+--- a/kerncompat.h
++++ /dev/null
+@@ -1,399 +0,0 @@
+-/*
+- * Copyright (C) 2007 Oracle.  All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public
+- * License v2 as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public
+- * License along with this program; if not, write to the
+- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+- * Boston, MA 021110-1307, USA.
+- */
+-
+-#ifndef __KERNCOMPAT_H__
+-#define __KERNCOMPAT_H__
+-
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <endian.h>
+-#include <byteswap.h>
+-#include <assert.h>
+-#include <stddef.h>
+-#include <linux/types.h>
+-#include <stdint.h>
+-
+-#include <features.h>
+-
+-#ifndef __GLIBC__
+-#ifndef BTRFS_DISABLE_BACKTRACE
+-#define BTRFS_DISABLE_BACKTRACE
+-#endif
+-#define __always_inline __inline __attribute__ ((__always_inline__))
+-#endif
+-
+-#ifndef BTRFS_DISABLE_BACKTRACE
+-#include <execinfo.h>
+-#endif
+-
+-#define ptr_to_u64(x)	((u64)(uintptr_t)x)
+-#define u64_to_ptr(x)	((void *)(uintptr_t)x)
+-
+-#ifndef READ
+-#define READ 0
+-#define WRITE 1
+-#define READA 2
+-#endif
+-
+-#define gfp_t int
+-#define get_cpu_var(p) (p)
+-#define __get_cpu_var(p) (p)
+-#define BITS_PER_BYTE 8
+-#define BITS_PER_LONG (__SIZEOF_LONG__ * BITS_PER_BYTE)
+-#define __GFP_BITS_SHIFT 20
+-#define __GFP_BITS_MASK ((int)((1 << __GFP_BITS_SHIFT) - 1))
+-#define GFP_KERNEL 0
+-#define GFP_NOFS 0
+-#define __read_mostly
+-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+-
+-#ifndef ULONG_MAX
+-#define ULONG_MAX       (~0UL)
+-#endif
+-
+-#define __token_glue(a,b,c)	___token_glue(a,b,c)
+-#define ___token_glue(a,b,c)	a ## b ## c
+-#ifdef DEBUG_BUILD_CHECKS
+-#define BUILD_ASSERT(x)		extern int __token_glue(compile_time_assert_,__LINE__,__COUNTER__)[1-2*!(x)] __attribute__((unused))
+-#else
+-#define BUILD_ASSERT(x)
+-#endif
+-
+-#ifndef BTRFS_DISABLE_BACKTRACE
+-#define MAX_BACKTRACE	16
+-static inline void print_trace(void)
+-{
+-	void *array[MAX_BACKTRACE];
+-	int size;
+-
+-	size = backtrace(array, MAX_BACKTRACE);
+-	backtrace_symbols_fd(array, size, 2);
+-}
+-#endif
+-
+-static inline void warning_trace(const char *assertion, const char *filename,
+-			      const char *func, unsigned line, long val)
+-{
+-	if (!val)
+-		return;
+-	fprintf(stderr,
+-		"%s:%d: %s: Warning: assertion `%s` failed, value %ld\n",
+-		filename, line, func, assertion, val);
+-#ifndef BTRFS_DISABLE_BACKTRACE
+-	print_trace();
+-#endif
+-}
+-
+-static inline void bugon_trace(const char *assertion, const char *filename,
+-			      const char *func, unsigned line, long val)
+-{
+-	if (!val)
+-		return;
+-	fprintf(stderr,
+-		"%s:%d: %s: BUG_ON `%s` triggered, value %ld\n",
+-		filename, line, func, assertion, val);
+-#ifndef BTRFS_DISABLE_BACKTRACE
+-	print_trace();
+-#endif
+-	abort();
+-	exit(1);
+-}
+-
+-#ifdef __CHECKER__
+-#define __force    __attribute__((force))
+-#define __bitwise__ __attribute__((bitwise))
+-#else
+-#define __force
+-#ifndef __bitwise__
+-#define __bitwise__
+-#endif
+-#endif
+-
+-#ifndef __CHECKER__
+-/*
+- * Since we're using primitive definitions from kernel-space, we need to
+- * define __KERNEL__ so that system header files know which definitions
+- * to use.
+- */
+-#define __KERNEL__
+-#include <asm/types.h>
+-typedef __u32 u32;
+-typedef __u64 u64;
+-typedef __u16 u16;
+-typedef __u8 u8;
+-typedef __s64 s64;
+-typedef __s32 s32;
+-
+-/*
+- * Continuing to define __KERNEL__ breaks others parts of the code, so
+- * we can just undefine it now that we have the correct headers...
+- */
+-#undef __KERNEL__
+-#else
+-typedef unsigned int u32;
+-typedef unsigned int __u32;
+-typedef unsigned long long u64;
+-typedef unsigned char u8;
+-typedef unsigned short u16;
+-typedef long long s64;
+-typedef int s32;
+-#endif
+-
+-
+-struct vma_shared { int prio_tree_node; };
+-struct vm_area_struct {
+-	unsigned long vm_pgoff;
+-	unsigned long vm_start;
+-	unsigned long vm_end;
+-	struct vma_shared shared;
+-};
+-
+-struct page {
+-	unsigned long index;
+-};
+-
+-struct mutex {
+-	unsigned long lock;
+-};
+-
+-#define mutex_init(m)						\
+-do {								\
+-	(m)->lock = 1;						\
+-} while (0)
+-
+-static inline void mutex_lock(struct mutex *m)
+-{
+-	m->lock--;
+-}
+-
+-static inline void mutex_unlock(struct mutex *m)
+-{
+-	m->lock++;
+-}
+-
+-static inline int mutex_is_locked(struct mutex *m)
+-{
+-	return (m->lock != 1);
+-}
+-
+-#define cond_resched()		do { } while (0)
+-#define preempt_enable()	do { } while (0)
+-#define preempt_disable()	do { } while (0)
+-
+-#define BITOP_MASK(nr)		(1UL << ((nr) % BITS_PER_LONG))
+-#define BITOP_WORD(nr)		((nr) / BITS_PER_LONG)
+-
+-#ifndef __attribute_const__
+-#define __attribute_const__	__attribute__((__const__))
+-#endif
+-
+-/**
+- * __set_bit - Set a bit in memory
+- * @nr: the bit to set
+- * @addr: the address to start counting from
+- *
+- * Unlike set_bit(), this function is non-atomic and may be reordered.
+- * If it's called on the same region of memory simultaneously, the effect
+- * may be that only one operation succeeds.
+- */
+-static inline void __set_bit(int nr, volatile unsigned long *addr)
+-{
+-	unsigned long mask = BITOP_MASK(nr);
+-	unsigned long *p = ((unsigned long *)addr) + BITOP_WORD(nr);
+-
+-	*p  |= mask;
+-}
+-
+-static inline void __clear_bit(int nr, volatile unsigned long *addr)
+-{
+-	unsigned long mask = BITOP_MASK(nr);
+-	unsigned long *p = ((unsigned long *)addr) + BITOP_WORD(nr);
+-
+-	*p &= ~mask;
+-}
+-
+-/**
+- * test_bit - Determine whether a bit is set
+- * @nr: bit number to test
+- * @addr: Address to start counting from
+- */
+-static inline int test_bit(int nr, const volatile unsigned long *addr)
+-{
+-	return 1UL & (addr[BITOP_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+-}
+-
+-/*
+- * error pointer
+- */
+-#define MAX_ERRNO	4095
+-#define IS_ERR_VALUE(x) ((x) >= (unsigned long)-MAX_ERRNO)
+-
+-static inline void *ERR_PTR(long error)
+-{
+-	return (void *) error;
+-}
+-
+-static inline long PTR_ERR(const void *ptr)
+-{
+-	return (long) ptr;
+-}
+-
+-static inline int IS_ERR(const void *ptr)
+-{
+-	return IS_ERR_VALUE((unsigned long)ptr);
+-}
+-
+-static inline int IS_ERR_OR_NULL(const void *ptr)
+-{
+-	return !ptr || IS_ERR(ptr);
+-}
+-
+-/*
+- * This looks more complex than it should be. But we need to
+- * get the type for the ~ right in round_down (it needs to be
+- * as wide as the result!), and we want to evaluate the macro
+- * arguments just once each.
+- */
+-#define __round_mask(x, y) ((__typeof__(x))((y)-1))
+-#define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
+-#define round_down(x, y) ((x) & ~__round_mask(x, y))
+-
+-/*
+- * printk
+- */
+-#define printk(fmt, args...) fprintf(stderr, fmt, ##args)
+-#define	KERN_CRIT	""
+-#define KERN_ERR	""
+-
+-/*
+- * kmalloc/kfree
+- */
+-#define kmalloc(x, y) malloc(x)
+-#define kzalloc(x, y) calloc(1, x)
+-#define kstrdup(x, y) strdup(x)
+-#define kfree(x) free(x)
+-#define vmalloc(x) malloc(x)
+-#define vfree(x) free(x)
+-
+-#ifndef BTRFS_DISABLE_BACKTRACE
+-static inline void assert_trace(const char *assertion, const char *filename,
+-			      const char *func, unsigned line, long val)
+-{
+-	if (val)
+-		return;
+-	fprintf(stderr,
+-		"%s:%d: %s: Assertion `%s` failed, value %ld\n",
+-		filename, line, func, assertion, val);
+-#ifndef BTRFS_DISABLE_BACKTRACE
+-	print_trace();
+-#endif
+-	abort();
+-	exit(1);
+-}
+-#define	ASSERT(c) assert_trace(#c, __FILE__, __func__, __LINE__, (long)(c))
+-#else
+-#define ASSERT(c) assert(c)
+-#endif
+-
+-#define BUG_ON(c) bugon_trace(#c, __FILE__, __func__, __LINE__, (long)(c))
+-#define BUG() BUG_ON(1)
+-#define WARN_ON(c) warning_trace(#c, __FILE__, __func__, __LINE__, (long)(c))
+-
+-#define container_of(ptr, type, member) ({                      \
+-        const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+-	        (type *)( (char *)__mptr - offsetof(type,member) );})
+-#ifndef __bitwise
+-#ifdef __CHECKER__
+-#define __bitwise __bitwise__
+-#else
+-#define __bitwise
+-#endif /* __CHECKER__ */
+-#endif	/* __bitwise */
+-
+-/* Alignment check */
+-#define IS_ALIGNED(x, a)                (((x) & ((typeof(x))(a) - 1)) == 0)
+-
+-static inline int is_power_of_2(unsigned long n)
+-{
+-	return (n != 0 && ((n & (n - 1)) == 0));
+-}
+-
+-typedef u16 __bitwise __le16;
+-typedef u16 __bitwise __be16;
+-typedef u32 __bitwise __le32;
+-typedef u32 __bitwise __be32;
+-typedef u64 __bitwise __le64;
+-typedef u64 __bitwise __be64;
+-
+-/* Macros to generate set/get funcs for the struct fields
+- * assume there is a lefoo_to_cpu for every type, so lets make a simple
+- * one for u8:
+- */
+-#define le8_to_cpu(v) (v)
+-#define cpu_to_le8(v) (v)
+-#define __le8 u8
+-
+-#if __BYTE_ORDER == __BIG_ENDIAN
+-#define cpu_to_le64(x) ((__force __le64)(u64)(bswap_64(x)))
+-#define le64_to_cpu(x) ((__force u64)(__le64)(bswap_64(x)))
+-#define cpu_to_le32(x) ((__force __le32)(u32)(bswap_32(x)))
+-#define le32_to_cpu(x) ((__force u32)(__le32)(bswap_32(x)))
+-#define cpu_to_le16(x) ((__force __le16)(u16)(bswap_16(x)))
+-#define le16_to_cpu(x) ((__force u16)(__le16)(bswap_16(x)))
+-#else
+-#define cpu_to_le64(x) ((__force __le64)(u64)(x))
+-#define le64_to_cpu(x) ((__force u64)(__le64)(x))
+-#define cpu_to_le32(x) ((__force __le32)(u32)(x))
+-#define le32_to_cpu(x) ((__force u32)(__le32)(x))
+-#define cpu_to_le16(x) ((__force __le16)(u16)(x))
+-#define le16_to_cpu(x) ((__force u16)(__le16)(x))
+-#endif
+-
+-struct __una_u16 { __le16 x; } __attribute__((__packed__));
+-struct __una_u32 { __le32 x; } __attribute__((__packed__));
+-struct __una_u64 { __le64 x; } __attribute__((__packed__));
+-
+-#define get_unaligned_le8(p) (*((u8 *)(p)))
+-#define get_unaligned_8(p) (*((u8 *)(p)))
+-#define put_unaligned_le8(val,p) ((*((u8 *)(p))) = (val))
+-#define put_unaligned_8(val,p) ((*((u8 *)(p))) = (val))
+-#define get_unaligned_le16(p) le16_to_cpu(((const struct __una_u16 *)(p))->x)
+-#define get_unaligned_16(p) (((const struct __una_u16 *)(p))->x)
+-#define put_unaligned_le16(val,p) (((struct __una_u16 *)(p))->x = cpu_to_le16(val))
+-#define put_unaligned_16(val,p) (((struct __una_u16 *)(p))->x = (val))
+-#define get_unaligned_le32(p) le32_to_cpu(((const struct __una_u32 *)(p))->x)
+-#define get_unaligned_32(p) (((const struct __una_u32 *)(p))->x)
+-#define put_unaligned_le32(val,p) (((struct __una_u32 *)(p))->x = cpu_to_le32(val))
+-#define put_unaligned_32(val,p) (((struct __una_u32 *)(p))->x = (val))
+-#define get_unaligned_le64(p) le64_to_cpu(((const struct __una_u64 *)(p))->x)
+-#define get_unaligned_64(p) (((const struct __una_u64 *)(p))->x)
+-#define put_unaligned_le64(val,p) (((struct __una_u64 *)(p))->x = cpu_to_le64(val))
+-#define put_unaligned_64(val,p) (((struct __una_u64 *)(p))->x = (val))
+-
+-#ifndef true
+-#define true 1
+-#define false 0
+-#endif
+-
+-#ifndef noinline
+-#define noinline
+-#endif
+-
+-#endif
+diff --git a/radix-tree.c b/radix-tree.c
+deleted file mode 100644
+index f259ab5..0000000
+--- a/radix-tree.c
++++ /dev/null
+@@ -1,849 +0,0 @@
+-/*
+- * Copyright (C) 2007 Oracle.  All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public
+- * License v2 as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public
+- * License along with this program; if not, write to the
+- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+- * Boston, MA 021110-1307, USA.
+- */
+-
+-/*
+- * Copyright (C) 2001 Momchil Velikov
+- * Portions Copyright (C) 2001 Christoph Hellwig
+- * Copyright (C) 2005 SGI, Christoph Lameter <clameter@sgi.com>
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2, or (at
+- * your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+- */
+-
+-#include "kerncompat.h"
+-#include "radix-tree.h"
+-#ifdef __KERNEL__
+-#define RADIX_TREE_MAP_SHIFT	(CONFIG_BASE_SMALL ? 4 : 6)
+-#else
+-#define RADIX_TREE_MAP_SHIFT	3	/* For more stressful testing */
+-#endif
+-
+-#define RADIX_TREE_MAP_SIZE	(1UL << RADIX_TREE_MAP_SHIFT)
+-#define RADIX_TREE_MAP_MASK	(RADIX_TREE_MAP_SIZE-1)
+-
+-#define RADIX_TREE_TAG_LONGS	\
+-	((RADIX_TREE_MAP_SIZE + BITS_PER_LONG - 1) / BITS_PER_LONG)
+-
+-struct radix_tree_node {
+-	unsigned int	count;
+-	void		*slots[RADIX_TREE_MAP_SIZE];
+-	unsigned long	tags[RADIX_TREE_MAX_TAGS][RADIX_TREE_TAG_LONGS];
+-};
+-
+-struct radix_tree_path {
+-	struct radix_tree_node *node;
+-	int offset;
+-};
+-
+-#define RADIX_TREE_INDEX_BITS  (8 /* CHAR_BIT */ * sizeof(unsigned long))
+-#define RADIX_TREE_MAX_PATH (RADIX_TREE_INDEX_BITS/RADIX_TREE_MAP_SHIFT + 2)
+-
+-static unsigned long height_to_maxindex[RADIX_TREE_MAX_PATH] __read_mostly;
+-
+-/*
+- * Per-cpu pool of preloaded nodes
+- */
+-struct radix_tree_preload {
+-	int nr;
+-	struct radix_tree_node *nodes[RADIX_TREE_MAX_PATH];
+-};
+-static struct radix_tree_preload radix_tree_preloads = { 0, };
+-
+-static int internal_nodes = 0;
+-/*
+- * This assumes that the caller has performed appropriate preallocation, and
+- * that the caller has pinned this thread of control to the current CPU.
+- */
+-static struct radix_tree_node *
+-radix_tree_node_alloc(struct radix_tree_root *root)
+-{
+-	struct radix_tree_node *ret;
+-	ret = malloc(sizeof(struct radix_tree_node));
+-	if (ret) {
+-		memset(ret, 0, sizeof(struct radix_tree_node));
+-		internal_nodes++;
+-	}
+-	return ret;
+-}
+-
+-static inline void
+-radix_tree_node_free(struct radix_tree_node *node)
+-{
+-	internal_nodes--;
+-	free(node);
+-}
+-
+-/*
+- * Load up this CPU's radix_tree_node buffer with sufficient objects to
+- * ensure that the addition of a single element in the tree cannot fail.  On
+- * success, return zero, with preemption disabled.  On error, return -ENOMEM
+- * with preemption not disabled.
+- */
+-int radix_tree_preload(gfp_t gfp_mask)
+-{
+-	struct radix_tree_preload *rtp;
+-	struct radix_tree_node *node;
+-	int ret = -ENOMEM;
+-
+-	preempt_disable();
+-	rtp = &__get_cpu_var(radix_tree_preloads);
+-	while (rtp->nr < ARRAY_SIZE(rtp->nodes)) {
+-		preempt_enable();
+-		node = radix_tree_node_alloc(NULL);
+-		if (node == NULL)
+-			goto out;
+-		preempt_disable();
+-		rtp = &__get_cpu_var(radix_tree_preloads);
+-		if (rtp->nr < ARRAY_SIZE(rtp->nodes))
+-			rtp->nodes[rtp->nr++] = node;
+-		else
+-			radix_tree_node_free(node);
+-	}
+-	ret = 0;
+-out:
+-	return ret;
+-}
+-
+-static inline void tag_set(struct radix_tree_node *node, unsigned int tag,
+-		int offset)
+-{
+-	__set_bit(offset, node->tags[tag]);
+-}
+-
+-static inline void tag_clear(struct radix_tree_node *node, unsigned int tag,
+-		int offset)
+-{
+-	__clear_bit(offset, node->tags[tag]);
+-}
+-
+-static inline int tag_get(struct radix_tree_node *node, unsigned int tag,
+-		int offset)
+-{
+-	return test_bit(offset, node->tags[tag]);
+-}
+-
+-static inline void root_tag_set(struct radix_tree_root *root, unsigned int tag)
+-{
+-	root->gfp_mask |= (__force gfp_t)(1 << (tag + __GFP_BITS_SHIFT));
+-}
+-
+-
+-static inline void root_tag_clear(struct radix_tree_root *root, unsigned int tag)
+-{
+-	root->gfp_mask &= (__force gfp_t)~(1 << (tag + __GFP_BITS_SHIFT));
+-}
+-
+-static inline void root_tag_clear_all(struct radix_tree_root *root)
+-{
+-	root->gfp_mask &= __GFP_BITS_MASK;
+-}
+-
+-static inline int root_tag_get(struct radix_tree_root *root, unsigned int tag)
+-{
+-	return (__force unsigned)root->gfp_mask & (1 << (tag + __GFP_BITS_SHIFT));
+-}
+-
+-/*
+- * Returns 1 if any slot in the node has this tag set.
+- * Otherwise returns 0.
+- */
+-static inline int any_tag_set(struct radix_tree_node *node, unsigned int tag)
+-{
+-	int idx;
+-	for (idx = 0; idx < RADIX_TREE_TAG_LONGS; idx++) {
+-		if (node->tags[tag][idx])
+-			return 1;
+-	}
+-	return 0;
+-}
+-
+-/*
+- *	Return the maximum key which can be store into a
+- *	radix tree with height HEIGHT.
+- */
+-static inline unsigned long radix_tree_maxindex(unsigned int height)
+-{
+-	return height_to_maxindex[height];
+-}
+-
+-/*
+- *	Extend a radix tree so it can store key @index.
+- */
+-static int radix_tree_extend(struct radix_tree_root *root, unsigned long index)
+-{
+-	struct radix_tree_node *node;
+-	unsigned int height;
+-	int tag;
+-
+-	/* Figure out what the height should be.  */
+-	height = root->height + 1;
+-	while (index > radix_tree_maxindex(height))
+-		height++;
+-
+-	if (root->rnode == NULL) {
+-		root->height = height;
+-		goto out;
+-	}
+-
+-	do {
+-		if (!(node = radix_tree_node_alloc(root)))
+-			return -ENOMEM;
+-
+-		/* Increase the height.  */
+-		node->slots[0] = root->rnode;
+-
+-		/* Propagate the aggregated tag info into the new root */
+-		for (tag = 0; tag < RADIX_TREE_MAX_TAGS; tag++) {
+-			if (root_tag_get(root, tag))
+-				tag_set(node, tag, 0);
+-		}
+-
+-		node->count = 1;
+-		root->rnode = node;
+-		root->height++;
+-	} while (height > root->height);
+-out:
+-	return 0;
+-}
+-
+-/**
+- *	radix_tree_insert    -    insert into a radix tree
+- *	@root:		radix tree root
+- *	@index:		index key
+- *	@item:		item to insert
+- *
+- *	Insert an item into the radix tree at position @index.
+- */
+-int radix_tree_insert(struct radix_tree_root *root,
+-			unsigned long index, void *item)
+-{
+-	struct radix_tree_node *node = NULL, *slot;
+-	unsigned int height, shift;
+-	int offset;
+-	int error;
+-
+-	/* Make sure the tree is high enough.  */
+-	if (index > radix_tree_maxindex(root->height)) {
+-		error = radix_tree_extend(root, index);
+-		if (error)
+-			return error;
+-	}
+-
+-	slot = root->rnode;
+-	height = root->height;
+-	shift = (height-1) * RADIX_TREE_MAP_SHIFT;
+-
+-	offset = 0;			/* uninitialised var warning */
+-	while (height > 0) {
+-		if (slot == NULL) {
+-			/* Have to add a child node.  */
+-			if (!(slot = radix_tree_node_alloc(root)))
+-				return -ENOMEM;
+-			if (node) {
+-				node->slots[offset] = slot;
+-				node->count++;
+-			} else
+-				root->rnode = slot;
+-		}
+-
+-		/* Go a level down */
+-		offset = (index >> shift) & RADIX_TREE_MAP_MASK;
+-		node = slot;
+-		slot = node->slots[offset];
+-		shift -= RADIX_TREE_MAP_SHIFT;
+-		height--;
+-	}
+-
+-	if (slot != NULL)
+-		return -EEXIST;
+-
+-	if (node) {
+-		node->count++;
+-		node->slots[offset] = item;
+-		BUG_ON(tag_get(node, 0, offset));
+-		BUG_ON(tag_get(node, 1, offset));
+-	} else {
+-		root->rnode = item;
+-		BUG_ON(root_tag_get(root, 0));
+-		BUG_ON(root_tag_get(root, 1));
+-	}
+-
+-	return 0;
+-}
+-
+-static inline void **__lookup_slot(struct radix_tree_root *root,
+-				   unsigned long index)
+-{
+-	unsigned int height, shift;
+-	struct radix_tree_node **slot;
+-
+-	height = root->height;
+-
+-	if (index > radix_tree_maxindex(height))
+-		return NULL;
+-
+-	if (height == 0 && root->rnode)
+-		return (void *)&root->rnode;
+-
+-	shift = (height-1) * RADIX_TREE_MAP_SHIFT;
+-	slot = &root->rnode;
+-
+-	while (height > 0) {
+-		if (*slot == NULL)
+-			return NULL;
+-
+-		slot = (struct radix_tree_node **)
+-			((*slot)->slots +
+-				((index >> shift) & RADIX_TREE_MAP_MASK));
+-		shift -= RADIX_TREE_MAP_SHIFT;
+-		height--;
+-	}
+-
+-	return (void **)slot;
+-}
+-
+-/**
+- *	radix_tree_lookup_slot    -    lookup a slot in a radix tree
+- *	@root:		radix tree root
+- *	@index:		index key
+- *
+- *	Lookup the slot corresponding to the position @index in the radix tree
+- *	@root. This is useful for update-if-exists operations.
+- */
+-void **radix_tree_lookup_slot(struct radix_tree_root *root, unsigned long index)
+-{
+-	return __lookup_slot(root, index);
+-}
+-
+-/**
+- *	radix_tree_lookup    -    perform lookup operation on a radix tree
+- *	@root:		radix tree root
+- *	@index:		index key
+- *
+- *	Lookup the item at the position @index in the radix tree @root.
+- */
+-void *radix_tree_lookup(struct radix_tree_root *root, unsigned long index)
+-{
+-	void **slot;
+-
+-	slot = __lookup_slot(root, index);
+-	return slot != NULL ? *slot : NULL;
+-}
+-
+-/**
+- *	radix_tree_tag_set - set a tag on a radix tree node
+- *	@root:		radix tree root
+- *	@index:		index key
+- *	@tag: 		tag index
+- *
+- *	Set the search tag (which must be < RADIX_TREE_MAX_TAGS)
+- *	corresponding to @index in the radix tree.  From
+- *	the root all the way down to the leaf node.
+- *
+- *	Returns the address of the tagged item.   Setting a tag on a not-present
+- *	item is a bug.
+- */
+-void *radix_tree_tag_set(struct radix_tree_root *root,
+-			unsigned long index, unsigned int tag)
+-{
+-	unsigned int height, shift;
+-	struct radix_tree_node *slot;
+-
+-	height = root->height;
+-	BUG_ON(index > radix_tree_maxindex(height));
+-
+-	slot = root->rnode;
+-	shift = (height - 1) * RADIX_TREE_MAP_SHIFT;
+-
+-	while (height > 0) {
+-		int offset;
+-
+-		offset = (index >> shift) & RADIX_TREE_MAP_MASK;
+-		if (!tag_get(slot, tag, offset))
+-			tag_set(slot, tag, offset);
+-		slot = slot->slots[offset];
+-		BUG_ON(slot == NULL);
+-		shift -= RADIX_TREE_MAP_SHIFT;
+-		height--;
+-	}
+-
+-	/* set the root's tag bit */
+-	if (slot && !root_tag_get(root, tag))
+-		root_tag_set(root, tag);
+-
+-	return slot;
+-}
+-
+-/**
+- *	radix_tree_tag_clear - clear a tag on a radix tree node
+- *	@root:		radix tree root
+- *	@index:		index key
+- *	@tag: 		tag index
+- *
+- *	Clear the search tag (which must be < RADIX_TREE_MAX_TAGS)
+- *	corresponding to @index in the radix tree.  If
+- *	this causes the leaf node to have no tags set then clear the tag in the
+- *	next-to-leaf node, etc.
+- *
+- *	Returns the address of the tagged item on success, else NULL.  ie:
+- *	has the same return value and semantics as radix_tree_lookup().
+- */
+-void *radix_tree_tag_clear(struct radix_tree_root *root,
+-			unsigned long index, unsigned int tag)
+-{
+-	struct radix_tree_path path[RADIX_TREE_MAX_PATH], *pathp = path;
+-	struct radix_tree_node *slot = NULL;
+-	unsigned int height, shift;
+-
+-	height = root->height;
+-	if (index > radix_tree_maxindex(height))
+-		goto out;
+-
+-	shift = (height - 1) * RADIX_TREE_MAP_SHIFT;
+-	pathp->node = NULL;
+-	slot = root->rnode;
+-
+-	while (height > 0) {
+-		int offset;
+-
+-		if (slot == NULL)
+-			goto out;
+-
+-		offset = (index >> shift) & RADIX_TREE_MAP_MASK;
+-		pathp[1].offset = offset;
+-		pathp[1].node = slot;
+-		slot = slot->slots[offset];
+-		pathp++;
+-		shift -= RADIX_TREE_MAP_SHIFT;
+-		height--;
+-	}
+-
+-	if (slot == NULL)
+-		goto out;
+-
+-	while (pathp->node) {
+-		if (!tag_get(pathp->node, tag, pathp->offset))
+-			goto out;
+-		tag_clear(pathp->node, tag, pathp->offset);
+-		if (any_tag_set(pathp->node, tag))
+-			goto out;
+-		pathp--;
+-	}
+-
+-	/* clear the root's tag bit */
+-	if (root_tag_get(root, tag))
+-		root_tag_clear(root, tag);
+-
+-out:
+-	return slot;
+-}
+-
+-#ifndef __KERNEL__	/* Only the test harness uses this at present */
+-/**
+- * radix_tree_tag_get - get a tag on a radix tree node
+- * @root:		radix tree root
+- * @index:		index key
+- * @tag: 		tag index (< RADIX_TREE_MAX_TAGS)
+- *
+- * Return values:
+- *
+- *  0: tag not present or not set
+- *  1: tag set
+- */
+-int radix_tree_tag_get(struct radix_tree_root *root,
+-			unsigned long index, unsigned int tag)
+-{
+-	unsigned int height, shift;
+-	struct radix_tree_node *slot;
+-	int saw_unset_tag = 0;
+-
+-	height = root->height;
+-	if (index > radix_tree_maxindex(height))
+-		return 0;
+-
+-	/* check the root's tag bit */
+-	if (!root_tag_get(root, tag))
+-		return 0;
+-
+-	if (height == 0)
+-		return 1;
+-
+-	shift = (height - 1) * RADIX_TREE_MAP_SHIFT;
+-	slot = root->rnode;
+-
+-	for ( ; ; ) {
+-		int offset;
+-
+-		if (slot == NULL)
+-			return 0;
+-
+-		offset = (index >> shift) & RADIX_TREE_MAP_MASK;
+-
+-		/*
+-		 * This is just a debug check.  Later, we can bale as soon as
+-		 * we see an unset tag.
+-		 */
+-		if (!tag_get(slot, tag, offset))
+-			saw_unset_tag = 1;
+-		if (height == 1) {
+-			int ret = tag_get(slot, tag, offset);
+-
+-			BUG_ON(ret && saw_unset_tag);
+-			return !!ret;
+-		}
+-		slot = slot->slots[offset];
+-		shift -= RADIX_TREE_MAP_SHIFT;
+-		height--;
+-	}
+-}
+-#endif
+-
+-static unsigned int
+-__lookup(struct radix_tree_root *root, void **results, unsigned long index,
+-	unsigned int max_items, unsigned long *next_index)
+-{
+-	unsigned int nr_found = 0;
+-	unsigned int shift, height;
+-	struct radix_tree_node *slot;
+-	unsigned long i;
+-
+-	height = root->height;
+-	if (height == 0) {
+-		if (root->rnode && index == 0)
+-			results[nr_found++] = root->rnode;
+-		goto out;
+-	}
+-
+-	shift = (height-1) * RADIX_TREE_MAP_SHIFT;
+-	slot = root->rnode;
+-
+-	for ( ; height > 1; height--) {
+-
+-		for (i = (index >> shift) & RADIX_TREE_MAP_MASK ;
+-				i < RADIX_TREE_MAP_SIZE; i++) {
+-			if (slot->slots[i] != NULL)
+-				break;
+-			index &= ~((1UL << shift) - 1);
+-			index += 1UL << shift;
+-			if (index == 0)
+-				goto out;	/* 32-bit wraparound */
+-		}
+-		if (i == RADIX_TREE_MAP_SIZE)
+-			goto out;
+-
+-		shift -= RADIX_TREE_MAP_SHIFT;
+-		slot = slot->slots[i];
+-	}
+-
+-	/* Bottom level: grab some items */
+-	for (i = index & RADIX_TREE_MAP_MASK; i < RADIX_TREE_MAP_SIZE; i++) {
+-		index++;
+-		if (slot->slots[i]) {
+-			results[nr_found++] = slot->slots[i];
+-			if (nr_found == max_items)
+-				goto out;
+-		}
+-	}
+-out:
+-	*next_index = index;
+-	return nr_found;
+-}
+-
+-/**
+- *	radix_tree_gang_lookup - perform multiple lookup on a radix tree
+- *	@root:		radix tree root
+- *	@results:	where the results of the lookup are placed
+- *	@first_index:	start the lookup from this key
+- *	@max_items:	place up to this many items at *results
+- *
+- *	Performs an index-ascending scan of the tree for present items.  Places
+- *	them at *@results and returns the number of items which were placed at
+- *	*@results.
+- *
+- *	The implementation is naive.
+- */
+-unsigned int
+-radix_tree_gang_lookup(struct radix_tree_root *root, void **results,
+-			unsigned long first_index, unsigned int max_items)
+-{
+-	const unsigned long max_index = radix_tree_maxindex(root->height);
+-	unsigned long cur_index = first_index;
+-	unsigned int ret = 0;
+-
+-	while (ret < max_items) {
+-		unsigned int nr_found;
+-		unsigned long next_index;	/* Index of next search */
+-
+-		if (cur_index > max_index)
+-			break;
+-		nr_found = __lookup(root, results + ret, cur_index,
+-					max_items - ret, &next_index);
+-		ret += nr_found;
+-		if (next_index == 0)
+-			break;
+-		cur_index = next_index;
+-	}
+-	return ret;
+-}
+-
+-/*
+- * FIXME: the two tag_get()s here should use find_next_bit() instead of
+- * open-coding the search.
+- */
+-static unsigned int
+-__lookup_tag(struct radix_tree_root *root, void **results, unsigned long index,
+-	unsigned int max_items, unsigned long *next_index, unsigned int tag)
+-{
+-	unsigned int nr_found = 0;
+-	unsigned int shift;
+-	unsigned int height = root->height;
+-	struct radix_tree_node *slot;
+-
+-	if (height == 0) {
+-		if (root->rnode && index == 0)
+-			results[nr_found++] = root->rnode;
+-		goto out;
+-	}
+-
+-	shift = (height - 1) * RADIX_TREE_MAP_SHIFT;
+-	slot = root->rnode;
+-
+-	do {
+-		unsigned long i = (index >> shift) & RADIX_TREE_MAP_MASK;
+-
+-		for ( ; i < RADIX_TREE_MAP_SIZE; i++) {
+-			if (tag_get(slot, tag, i)) {
+-				BUG_ON(slot->slots[i] == NULL);
+-				break;
+-			}
+-			index &= ~((1UL << shift) - 1);
+-			index += 1UL << shift;
+-			if (index == 0)
+-				goto out;	/* 32-bit wraparound */
+-		}
+-		if (i == RADIX_TREE_MAP_SIZE)
+-			goto out;
+-		height--;
+-		if (height == 0) {	/* Bottom level: grab some items */
+-			unsigned long j = index & RADIX_TREE_MAP_MASK;
+-
+-			for ( ; j < RADIX_TREE_MAP_SIZE; j++) {
+-				index++;
+-				if (tag_get(slot, tag, j)) {
+-					BUG_ON(slot->slots[j] == NULL);
+-					results[nr_found++] = slot->slots[j];
+-					if (nr_found == max_items)
+-						goto out;
+-				}
+-			}
+-		}
+-		shift -= RADIX_TREE_MAP_SHIFT;
+-		slot = slot->slots[i];
+-	} while (height > 0);
+-out:
+-	*next_index = index;
+-	return nr_found;
+-}
+-
+-/**
+- *	radix_tree_gang_lookup_tag - perform multiple lookup on a radix tree
+- *	                             based on a tag
+- *	@root:		radix tree root
+- *	@results:	where the results of the lookup are placed
+- *	@first_index:	start the lookup from this key
+- *	@max_items:	place up to this many items at *results
+- *	@tag:		the tag index (< RADIX_TREE_MAX_TAGS)
+- *
+- *	Performs an index-ascending scan of the tree for present items which
+- *	have the tag indexed by @tag set.  Places the items at *@results and
+- *	returns the number of items which were placed at *@results.
+- */
+-unsigned int
+-radix_tree_gang_lookup_tag(struct radix_tree_root *root, void **results,
+-		unsigned long first_index, unsigned int max_items,
+-		unsigned int tag)
+-{
+-	const unsigned long max_index = radix_tree_maxindex(root->height);
+-	unsigned long cur_index = first_index;
+-	unsigned int ret = 0;
+-
+-	/* check the root's tag bit */
+-	if (!root_tag_get(root, tag))
+-		return 0;
+-
+-	while (ret < max_items) {
+-		unsigned int nr_found;
+-		unsigned long next_index;	/* Index of next search */
+-
+-		if (cur_index > max_index)
+-			break;
+-		nr_found = __lookup_tag(root, results + ret, cur_index,
+-					max_items - ret, &next_index, tag);
+-		ret += nr_found;
+-		if (next_index == 0)
+-			break;
+-		cur_index = next_index;
+-	}
+-	return ret;
+-}
+-
+-/**
+- *	radix_tree_shrink    -    shrink height of a radix tree to minimal
+- *	@root		radix tree root
+- */
+-static inline void radix_tree_shrink(struct radix_tree_root *root)
+-{
+-	/* try to shrink tree height */
+-	while (root->height > 0 &&
+-			root->rnode->count == 1 &&
+-			root->rnode->slots[0]) {
+-		struct radix_tree_node *to_free = root->rnode;
+-
+-		root->rnode = to_free->slots[0];
+-		root->height--;
+-		/* must only free zeroed nodes into the slab */
+-		tag_clear(to_free, 0, 0);
+-		tag_clear(to_free, 1, 0);
+-		to_free->slots[0] = NULL;
+-		to_free->count = 0;
+-		radix_tree_node_free(to_free);
+-	}
+-}
+-
+-/**
+- *	radix_tree_delete    -    delete an item from a radix tree
+- *	@root:		radix tree root
+- *	@index:		index key
+- *
+- *	Remove the item at @index from the radix tree rooted at @root.
+- *
+- *	Returns the address of the deleted item, or NULL if it was not present.
+- */
+-void *radix_tree_delete(struct radix_tree_root *root, unsigned long index)
+-{
+-	struct radix_tree_path path[RADIX_TREE_MAX_PATH], *pathp = path;
+-	struct radix_tree_node *slot = NULL;
+-	unsigned int height, shift;
+-	int tag;
+-	int offset;
+-
+-	height = root->height;
+-	if (index > radix_tree_maxindex(height))
+-		goto out;
+-
+-	slot = root->rnode;
+-	if (height == 0 && root->rnode) {
+-		root_tag_clear_all(root);
+-		root->rnode = NULL;
+-		goto out;
+-	}
+-
+-	shift = (height - 1) * RADIX_TREE_MAP_SHIFT;
+-	pathp->node = NULL;
+-
+-	do {
+-		if (slot == NULL)
+-			goto out;
+-
+-		pathp++;
+-		offset = (index >> shift) & RADIX_TREE_MAP_MASK;
+-		pathp->offset = offset;
+-		pathp->node = slot;
+-		slot = slot->slots[offset];
+-		shift -= RADIX_TREE_MAP_SHIFT;
+-		height--;
+-	} while (height > 0);
+-
+-	if (slot == NULL)
+-		goto out;
+-
+-	/*
+-	 * Clear all tags associated with the just-deleted item
+-	 */
+-	for (tag = 0; tag < RADIX_TREE_MAX_TAGS; tag++) {
+-		if (tag_get(pathp->node, tag, pathp->offset))
+-			radix_tree_tag_clear(root, index, tag);
+-	}
+-
+-	/* Now free the nodes we do not need anymore */
+-	while (pathp->node) {
+-		pathp->node->slots[pathp->offset] = NULL;
+-		pathp->node->count--;
+-
+-		if (pathp->node->count) {
+-			if (pathp->node == root->rnode)
+-				radix_tree_shrink(root);
+-			goto out;
+-		}
+-
+-		/* Node with zero slots in use so free it */
+-		radix_tree_node_free(pathp->node);
+-
+-		pathp--;
+-	}
+-	root_tag_clear_all(root);
+-	root->height = 0;
+-	root->rnode = NULL;
+-
+-out:
+-	return slot;
+-}
+-
+-/**
+- *	radix_tree_tagged - test whether any items in the tree are tagged
+- *	@root:		radix tree root
+- *	@tag:		tag to test
+- */
+-int radix_tree_tagged(struct radix_tree_root *root, unsigned int tag)
+-{
+-	return root_tag_get(root, tag);
+-}
+-
+-static unsigned long __maxindex(unsigned int height)
+-{
+-	unsigned int tmp = height * RADIX_TREE_MAP_SHIFT;
+-	unsigned long index = ~0UL;
+-
+-	if (tmp < RADIX_TREE_INDEX_BITS)
+-		index = (index >> (RADIX_TREE_INDEX_BITS - tmp - 1)) >> 1;
+-	return index;
+-}
+-
+-static void radix_tree_init_maxindex(void)
+-{
+-	unsigned int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(height_to_maxindex); i++)
+-		height_to_maxindex[i] = __maxindex(i);
+-}
+-
+-void radix_tree_init(void)
+-{
+-	radix_tree_init_maxindex();
+-}
+diff --git a/radix-tree.h b/radix-tree.h
+deleted file mode 100644
+index bf96d83..0000000
+--- a/radix-tree.h
++++ /dev/null
+@@ -1,97 +0,0 @@
+-/*
+- * Copyright (C) 2007 Oracle.  All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public
+- * License v2 as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public
+- * License along with this program; if not, write to the
+- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+- * Boston, MA 021110-1307, USA.
+- */
+-
+-/*
+- * Copyright (C) 2001 Momchil Velikov
+- * Portions Copyright (C) 2001 Christoph Hellwig
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License as
+- * published by the Free Software Foundation; either version 2, or (at
+- * your option) any later version.
+- * 
+- * This program is distributed in the hope that it will be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * General Public License for more details.
+- * 
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+- */
+-#ifndef _LINUX_RADIX_TREE_H
+-#define _LINUX_RADIX_TREE_H
+-
+-#if BTRFS_FLAT_INCLUDES
+-#include "kerncompat.h"
+-#else
+-#include <btrfs/kerncompat.h>
+-#endif /* BTRFS_FLAT_INCLUDES */
+-
+-#define RADIX_TREE_MAX_TAGS 2
+-
+-/* root tags are stored in gfp_mask, shifted by __GFP_BITS_SHIFT */
+-struct radix_tree_root {
+-	unsigned int		height;
+-	gfp_t			gfp_mask;
+-	struct radix_tree_node	*rnode;
+-};
+-
+-#define RADIX_TREE_INIT(mask)	{					\
+-	.height = 0,							\
+-	.gfp_mask = (mask),						\
+-	.rnode = NULL,							\
+-}
+-
+-#define RADIX_TREE(name, mask) \
+-	struct radix_tree_root name = RADIX_TREE_INIT(mask)
+-
+-#define INIT_RADIX_TREE(root, mask)					\
+-do {									\
+-	(root)->height = 0;						\
+-	(root)->gfp_mask = (mask);					\
+-	(root)->rnode = NULL;						\
+-} while (0)
+-
+-int radix_tree_insert(struct radix_tree_root *, unsigned long, void *);
+-void *radix_tree_lookup(struct radix_tree_root *, unsigned long);
+-void **radix_tree_lookup_slot(struct radix_tree_root *, unsigned long);
+-void *radix_tree_delete(struct radix_tree_root *, unsigned long);
+-unsigned int
+-radix_tree_gang_lookup(struct radix_tree_root *root, void **results,
+-			unsigned long first_index, unsigned int max_items);
+-int radix_tree_preload(gfp_t gfp_mask);
+-void radix_tree_init(void);
+-void *radix_tree_tag_set(struct radix_tree_root *root,
+-			unsigned long index, unsigned int tag);
+-void *radix_tree_tag_clear(struct radix_tree_root *root,
+-			unsigned long index, unsigned int tag);
+-int radix_tree_tag_get(struct radix_tree_root *root,
+-			unsigned long index, unsigned int tag);
+-unsigned int
+-radix_tree_gang_lookup_tag(struct radix_tree_root *root, void **results,
+-		unsigned long first_index, unsigned int max_items,
+-		unsigned int tag);
+-int radix_tree_tagged(struct radix_tree_root *root, unsigned int tag);
+-
+-static inline void radix_tree_preload_end(void)
+-{
+-	preempt_enable();
+-}
+-
+-#endif /* _LINUX_RADIX_TREE_H */
