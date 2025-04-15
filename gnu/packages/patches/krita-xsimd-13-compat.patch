@@ -1,0 +1,29 @@
+Adjust from https://invent.kde.org/graphics/krita/-/merge_requests/2302.patch
+
+From de9233722280cd11bcbd0f0cfb9544e476690fc0 Mon Sep 17 00:00:00 2001
+From: Dov Grobgeld <dov.grobgeld@gmail.com>
+Date: Sat, 28 Dec 2024 20:05:46 +0200
+Subject: [PATCH] Remove reference to unknown member best of the
+ xsimd::available_architectures()
+
+- Neither xsimd version 13.0 nor 13.1 has a best member
+---
+ benchmarks/kis_composition_benchmark.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/benchmarks/kis_composition_benchmark.cpp b/benchmarks/kis_composition_benchmark.cpp
+index 1ae398fa74d..12baa7be5b2 100644
+--- a/benchmarks/kis_composition_benchmark.cpp
++++ b/benchmarks/kis_composition_benchmark.cpp
+@@ -640,7 +640,7 @@ void KisCompositionBenchmark::detectBuildArchitecture()
+     qDebug() << ppVar(supported_architectures().contains<avx512bw>());
+     qDebug() << ppVar(supported_architectures().contains<avx512dq>());
+     qDebug() << ppVar(supported_architectures().contains<avx512cd>());
+-    qDebug().nospace() << "running on " << hex << "0x" << xsimd::available_architectures().best;
++    //    qDebug().nospace() << "running on " << hex << "0x" << xsimd::available_architectures().best;
+ #endif
+ }
+ 
+-- 
+GitLab
+

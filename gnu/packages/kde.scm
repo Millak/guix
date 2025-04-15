@@ -955,7 +955,8 @@ painting, image manipulating and icon editing.")
              ".tar.gz"))
        (sha256
         (base32 "19nb98rh8j9jdd8hz8m56hrpljqv74p7j1k5plqnkwpbdmaszj88"))
-       (patches (search-patches "krita-bump-sip-abi-version-to-12.8.patch"))))
+       (patches (search-patches "krita-bump-sip-abi-version-to-12.8.patch"
+                                "krita-xsimd-13-compat.patch"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f
