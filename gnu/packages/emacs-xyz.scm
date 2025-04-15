@@ -19752,7 +19752,7 @@ you to deal with multiple log levels.")
 (define-public emacs-denote
   (package
     (name "emacs-denote")
-    (version "3.1.0")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -19761,7 +19761,7 @@ you to deal with multiple log levels.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g9ciqgkipm6ag5nvyvaz0wc51hpk0wh2wwiqaybdfhzja8bbqx6"))))
+        (base32 "1np3hyqcw6p5ajx102ng5nyc5gp1is88vk6803gf5alfbw0fzvj4"))))
     (build-system emacs-build-system)
     (arguments
      (list
