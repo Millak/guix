@@ -3552,6 +3552,32 @@ than 5,300 Kanji glyphs, as well major international phonetic symbols,
 operators and special symbols.")
     (license (license:non-copyleft "file:///LICENSE_E"))))
 
+(define-public font-takao
+  (package
+    (name "font-takao")
+    (version "00303.01")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://launchpad.net/takao-fonts/trunk/15.03/+download/TakaoFonts_"
+             version
+             ".tar.xz"))
+       (sha256
+        (base32 "0bsmqczi6inwmygy4cq7h1abzghzl1yfxfxffzib7b39mir1z1z9"))))
+    (build-system font-build-system)
+    (home-page "https://launchpad.net/takao-fonts")
+    (synopsis "Community-maintained derivatives of IPA Fonts")
+    (description
+     "This package provides the Takao Fonts, which are community-developed
+derivatives of the IPA Fonts.  The project aims to ensure the continued
+maintenance of high-quality Japanese outline fonts by the community.  Based on
+the original fonts developed by the Information-technology Promotion Agency,
+Japan (IPA).  These fonts are particularly suitable for use in community-driven
+operating systems and embedded software where timely updates and quality
+assurance are essential.")
+    (license license:ipa)))
+
 (define-public font-catamaran
   (let ((commit "7559b4906f9c9148fb22c6f89508c3053a78a296")
         (revision "1"))
