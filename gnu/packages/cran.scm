@@ -13755,14 +13755,14 @@ applications.  That is, compute distances and related measures for angular
 (define-public r-jpeg
   (package
     (name "r-jpeg")
-    (version "0.1-10")
+    (version "0.1-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "jpeg" version))
        (sha256
         (base32
-         "1jkqj58hj33ar9wyl7c1cnj3h42icq7crmjk93n933q8qc4zdnf8"))))
+         "0a9pn0rshqx1r9kqkg1n4m1i98plfdaj2h0y8055kk7v92yyyf91"))))
     (build-system r-build-system)
     (inputs (list libjpeg-turbo))
     (home-page "https://www.rforge.net/jpeg/")
