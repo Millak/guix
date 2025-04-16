@@ -15290,7 +15290,7 @@ approach.")
      "This is a Python package for easy throttling with asyncio support.")
     (license license:expat)))
 
-(define-public snakemake
+(define-public snakemake-5
   (package
     (name "snakemake")
     (version "5.32.2")
@@ -15378,7 +15378,7 @@ Python style, together with a fast and comfortable execution environment.")
 
 (define-public snakemake-6
   (package
-    (inherit snakemake)
+    (inherit snakemake-5)
     (name "snakemake")
     (version "6.15.5")
     (source
