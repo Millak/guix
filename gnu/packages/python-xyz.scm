@@ -13997,7 +13997,7 @@ without using the configuration machinery.")
            python-setuptools
            python-wheel
            cmake-minimal
-           pybind11-2.13))
+           pybind11))
     (home-page "https://github.com/metaopt/optree")
     (synopsis "Optimized PyTree Utilities")
     (description "This package contains operations on PyTrees (a tree made of
@@ -29850,22 +29850,6 @@ C++ code.  Its goals and syntax are similar to the @code{Boost.Python}
 library: to minimize boilerplate code in traditional extension modules by
 inferring type information using compile-time introspection.")
     (license license:bsd-3)))
-
-;; Needed for python-optree
-(define-public pybind11-2.13
-  (package
-    (inherit pybind11)
-    (name "pybind11")
-    (version "2.13.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pybind/pybind11")
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "1dbnki0pnky39kr04afd9ks597bzjc530zbk33jjss53nfvdvlj8"))
-              (file-name (git-file-name name version))))))
 
 ;; Needed for scipy
 (define-public pybind11-2.10
