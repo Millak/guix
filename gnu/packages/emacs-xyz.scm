@@ -34000,6 +34000,7 @@ opposed to character-based).")
           (base32
            "0vl79knb2snp2gzmcdasncgcc44rq99kmfnvwhfpm0wk21nxhc1m"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f)) ; no tests
       (home-page "https://gitlab.com/Ambrevar/emacs-disk-usage")
       (synopsis "Sort and browse disk usage listings with Emacs")
       (description "Disk Usage is a file system analyzer: it offers a tabulated
