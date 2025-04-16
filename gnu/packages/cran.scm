@@ -23118,14 +23118,14 @@ always locate the files relative to your project root.")
 (define-public r-reticulate
   (package
     (name "r-reticulate")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "reticulate" version))
        (sha256
         (base32
-         "1n1858s5091hi8b3xnvsgl8hcngj4sl73hj1f44qw040cjb7pzfd"))))
+         "0d3xd8gk7zkcbfypmd5d1kcavcada0asvgccb27a1pghgqxw18kr"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -23147,7 +23147,12 @@ always locate the files relative to your project root.")
            r-rlang
            r-withr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-callr
+           r-glue
+           r-knitr
+           r-ps
+           r-rmarkdown
+           r-testthat))
     (home-page "https://github.com/rstudio/reticulate")
     (synopsis "R interface to Python")
     (description
