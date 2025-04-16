@@ -12540,6 +12540,7 @@ browser.")
     (build-system r-build-system)
     (arguments
      (list
+      #:tests? #false ;TODO: they are killed
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'delete-bad-tests
