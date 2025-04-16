@@ -7771,46 +7771,59 @@ with GitLab instances through their API.")
 interfaces, inferring which argument is the path, and which is the address.")
     (license license:expat)))
 
+;; XXX: This project missed maintainer upstream, see
+;; <https://github.com/joeyespo/grip/issues/387>.
+;; Consider to remove if it keeps failing to build.
 (define-public grip
   (package
     (name "grip")
     (version "4.6.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/joeyespo/grip")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0vhimd99zw7s1fihwr6yfij6ywahv9gdrfcf5qljvzh75mvzcwh8"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-docopt
-                             python-flask
-                             python-markdown
-                             python-path-and-address
-                             python-pygments
-                             python-requests))
-    (native-inputs (list python-pytest python-responses))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/joeyespo/grip")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vhimd99zw7s1fihwr6yfij6ywahv9gdrfcf5qljvzh75mvzcwh8"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-                   (when tests?
-                     (add-installed-pythonpath inputs outputs)
-                     (setenv "PATH"
-                             (string-append (getenv "PATH") ":"
-                                            #$output "/bin"))
-                     (invoke "py.test" "-m" "not assumption")))))))
+     (list
+      #:test-flags
+      ;; All tests fail requiring network access, ignore the whole file.
+      #~(list "--ignore=tests/test_github.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This fixes the removal of `charset` attribute of requests from
+          ;; Werkzeug 2.3.0.
+          ;; Fixed in grip's commit <2784eb2c1515f1cdb1554d049d48b3bff0f42085>.
+         (add-after 'unpack 'fix-response-encoding
+           (lambda _
+             (substitute* "grip/app.py"
+               (("response.charset")
+                "getattr(response, 'charset', 'utf-8')")))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-responses
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-docopt
+           python-flask
+           python-markdown
+           python-path-and-address
+           python-pygments
+           python-requests))
     (home-page "https://github.com/joeyespo/grip")
     (synopsis "Preview Markdown files using the GitHub API")
     (description
-     "Grip is a command-line server application written in Python
-that uses the GitHub Markdown API to render a local Markdown file.  The styles
-and rendering come directly from GitHub, so you'll know exactly how it will
-appear.  Changes you make to the file will be instantly reflected in the browser
-without requiring a page refresh.")
+     "Grip is a command-line server application written in Python that uses
+the GitHub Markdown API to render a local Markdown file.  The styles and
+rendering come directly from GitHub, so you'll know exactly how it will
+appear.  Changes you make to the file will be instantly reflected in the
+browser without requiring a page refresh.")
     (license license:expat)))
 
 (define-public python-port-for
