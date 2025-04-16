@@ -10093,6 +10093,8 @@ Munsell colour system.")
                (base32
                 "0wa1zal0q8zawqrjllx70kakn3ynpsm0imb3mmc956y89d9py3p2"))))
     (build-system r-build-system)
+    ;; Do not build vignettes because there are weave errors in lmvnorm_src.R.
+    (arguments (list #:test-types '(list "tests")))
     (native-inputs
      (list gfortran r-numderiv))
     (home-page "https://mvtnorm.R-forge.R-project.org")
