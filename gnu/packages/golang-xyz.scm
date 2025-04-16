@@ -10111,7 +10111,6 @@ Printf/Sprintf etc.")
        (sha256
         (base32 "0z7cgj8gl69271d0ag4f4yjbsvbrnfibc96cs01spqf5krv2rzjc"))
        (file-name (git-file-name name version))))
-    (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/logrusorgru/aurora/v3"))))
@@ -10130,7 +10129,6 @@ Printf/Sprintf etc.")
        (sha256
         (base32 "0a4w4p0sl5hwa9fridk7s023sjcis8qf1k8fm3g5qar58vxzlh9w"))
        (file-name (git-file-name name version))))
-    (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/logrusorgru/aurora/v4"))
