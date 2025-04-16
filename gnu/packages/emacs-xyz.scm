@@ -40329,6 +40329,7 @@ cases where it breaks.")
          (sha256
           (base32 "0qy1xf11j357lsnbb829hnbg7fq1cii4cx54fwf0wgjh1bv2abvj"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f)) ; no tests
       (home-page "https://www.emacswiki.org/emacs/message-x.el")
       (synopsis "Customizable completion in message headers")
       (description "@code{message-x} assigns a context-sensitive function to
