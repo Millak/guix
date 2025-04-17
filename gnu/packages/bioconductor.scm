@@ -1420,19 +1420,20 @@ on mapping using Entrez Gene identifiers.")
 (define-public r-org-mm-eg-db
   (package
     (name "r-org-mm-eg-db")
-    (version "3.20.0")
+    (version "3.21.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Mm.eg.db" version 'annotation))
               (sha256
                (base32
-                "1wlc34qq0hv9fmdw810jc26gyf7ibicy8rsbll4is7bp2i1hxk47"))))
+                "01rfqack61rnqq1i6w9bkj4a42gyig17af2fdrc89yrpbw87b3hb"))))
     (properties
-     `((upstream-name . "org.Mm.eg.db")))
+     '((upstream-name . "org.Mm.eg.db")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-annotate r-go-db r-runit))
     (home-page "https://www.bioconductor.org/packages/org.Mm.eg.db/")
     (synopsis "Genome wide annotation for Mouse")
     (description
