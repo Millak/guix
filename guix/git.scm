@@ -206,13 +206,6 @@ to verify X.509 host certificates."
                                                  warn-for-invalid-certificate)))
     options))
 
-(define GITERR_HTTP
-  ;; Guile-Git <= 0.5.2 lacks this constant.
-  (let ((errors (resolve-interface '(git errors))))
-    (if (module-defined? errors 'GITERR_HTTP)
-        (module-ref errors 'GITERR_HTTP)
-        34)))
-
 (define (set-git-timeouts connection-timeout read-timeout)
   "Instruct Guile-Git to honor the given CONNECTION-TIMEOUT and READ-TIMEOUT
 when talking to remote Git servers.
