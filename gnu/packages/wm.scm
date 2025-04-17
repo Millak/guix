@@ -142,6 +142,7 @@
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
@@ -2011,6 +2012,7 @@ XDG-Output for wlclock to work.")
            libxkbcommon
            mesa
            pixman
+           lcms
            libseat
            wayland
            wayland-protocols
