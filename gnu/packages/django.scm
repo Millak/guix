@@ -1448,31 +1448,31 @@ forms using your favorite CSS framework, without writing template code.")
     (name "python-django-compressor")
     (version "4.5.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "django_compressor" version))
-        (sha256
-         (base32 "08m8cs1mnpwd2zlck8cbl4cdp21dgv4vj7j17krbgn745s5a9n61"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django_compressor" version))
+       (sha256
+        (base32 "08m8cs1mnpwd2zlck8cbl4cdp21dgv4vj7j17krbgn745s5a9n61"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("==") ">="))))
-         ;; This needs calmjs.
-         (add-after 'unpack 'skip-bad-test
-           (lambda _
-             (substitute* "compressor/tests/test_filters.py"
-               (("test_calmjs_filter") "_test_calmjs_filter"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "DJANGO_SETTINGS_MODULE" "compressor.test_settings")
-               (invoke "django-admin" "test"
-                       "--pythonpath=.")))))))
+        (add-after 'unpack 'relax-requirements
+          (lambda _
+            (substitute* "setup.py"
+              (("==") ">="))))
+        ;; This needs calmjs.
+        (add-after 'unpack 'skip-bad-test
+          (lambda _
+            (substitute* "compressor/tests/test_filters.py"
+              (("test_calmjs_filter") "_test_calmjs_filter"))))
+        (replace 'check
+          (lambda* (#:key tests? #:allow-other-keys)
+            (when tests?
+              (setenv "DJANGO_SETTINGS_MODULE" "compressor.test_settings")
+              (invoke "django-admin" "test"
+                      "--pythonpath=.")))))))
     (propagated-inputs
      (list python-django
            python-django-appconf
