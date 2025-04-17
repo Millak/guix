@@ -615,18 +615,20 @@ based on mapping using Entrez Gene identifiers.")
 (define-public r-org-sc-sgd-db
   (package
     (name "r-org-sc-sgd-db")
-    (version "3.20.0")
+    (version "3.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "org.Sc.sgd.db" version
                               'annotation))
        (sha256
-        (base32 "0p7mvra93l21pb14qbvqjg7pwl6n572d8a3k15v9fsafikd07v8a"))))
-    (properties `((upstream-name . "org.Sc.sgd.db")))
+        (base32 "190v4l6dar3a2vdycmb9dvlp3w9rjg3h425i74lqb8y5y4w4sdl9"))))
+    (properties
+     '((upstream-name . "org.Sc.sgd.db")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationdbi))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-annotate r-go-db r-runit))
     (home-page "https://bioconductor.org/packages/org.Sc.sgd.db")
     (synopsis "Genome wide annotation for Yeast")
     (description
