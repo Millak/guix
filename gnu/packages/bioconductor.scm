@@ -590,22 +590,21 @@ analysis.")
 (define-public r-org-bt-eg-db
   (package
     (name "r-org-bt-eg-db")
-    (version "3.20.0")
+    (version "3.21.0")
     (source
      (origin
        (method url-fetch)
-       (uri (bioconductor-uri
-             "org.Bt.eg.db"
-             version
-             'annotation))
+       (uri (bioconductor-uri "org.Bt.eg.db" version 'annotation))
        (sha256
         (base32
-         "0ryfpblhpqzkww1xb63k2c5ki8xh73as8fwl8f8kvsy4x7axfr5g"))))
-    (properties `((upstream-name . "org.Bt.eg.db")))
+         "1k7cv7jc16v9px6cz59ssllnjd52z3p5hhk99jaznzmfjb4nv9rs"))))
+    (properties
+     '((upstream-name . "org.Bt.eg.db")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-annotate r-go-db r-runit))
     (home-page "https://bioconductor.org/packages/org.Bt.eg.db")
     (synopsis "Genome wide annotation for Bovine")
     (description
