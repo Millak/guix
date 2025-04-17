@@ -1026,13 +1026,79 @@ When using this option, you only need to create one user account, and
 In this configuration, @file{/gnu/store} is owned by the
 @code{guix-daemon} user.
 
+@anchor{unprivileged-daemon-migration}
+@unnumberedsubsubsec Migrating to the Unprivileged Daemon
+
+@cindex unprivileged daemon, migration
+@cindex rootless daemon, migration
+To switch an existing installation to the unprivileged execution mode, a
+number of steps must be taken: creating a new dedicated
+@code{guix-daemon} user account, changing ownership of the relevant
+files to @code{guix-daemon}, and ensuring that the @command{guix-daemon}
+program runs as @code{guix-daemon}.
+
+@quotation Warning
+Follow the instructions below only after making sure you have a recent
+version of @command{guix-daemon} with support for unprivileged
+execution.
+@end quotation
+
+File ownership can be changed, after stopping the daemon, by running the
+following commands as root (the @command{chown} can take a while if
+there are many files in @file{/gnu/store}):
+
+@example
+groupadd --system guix-daemon
+useradd -g guix-daemon -G guix-daemon,kvm               \
+        -d /var/empty -s $(which nologin)               \
+        -c "Guix daemon privilege separation user"      \
+        --system guix-daemon
+
+# Make the store writable, in case the systemd 'gnu-store.mount'
+# unit made it read-only.
+mount -o remount,rw /gnu/store
+
+chown -R guix-daemon:guix-daemon                        \
+  /gnu                                                  \
+  /var/guix/@{gc.lock,daemon-socket,db,discover@}         \
+  /var/guix/@{gcroots,offload,substitute,temproots@}      \
+  /var/log/guix                                         \
+  /etc/guix
+@end example
+
+If your system uses the systemd service manager, running the daemon as
+@code{guix-daemon} will be a matter of copying the relevant
+configuration files---make sure to review any changes you might have
+made in your own @file{.service} files before overwriting them:
+
+@example
+cp /var/guix/profiles/per-user/root/current-guix/lib/systemd/system/*.service \
+   /etc/systemd/system
+systemctl daemon-reload
+systemctl start guix-daemon
+@end example
+
+@quotation Warning
+The commands above assume that @command{guix pull} was run for the root
+user.  You can check whether this is the case by running this command:
+
+@example
+grep User=guix-daemon \
+  /var/guix/profiles/per-user/root/current-guix/lib/systemd/system/guix-daemon.service
+@end example
+
+If that command does not show the @code{User=guix-daemon} line, then run
+@command{guix pull} as the root user.
+@end quotation
+
 @unnumberedsubsubsec The Isolated Build Environment
 
 @cindex chroot
 @cindex build environment isolation
 @cindex isolated build environment
 @cindex hermetic build environment
-In both cases, the daemon starts build processes without privileges in
+In both cases, privileged and unprivileged,
+the daemon starts build processes without privileges in
 an @emph{isolated} or @emph{hermetic} build environment---a ``chroot''.
 On GNU/Linux, by default, the build environment contains nothing but:
 
@@ -2034,6 +2100,10 @@ systemctl restart guix-daemon.service
 
 On Guix System, upgrading the daemon is achieved by reconfiguring the
 system (@pxref{Invoking guix system, @code{guix system reconfigure}}).
+
+To migrate an existing installation to the @emph{unprivileged daemon}
+where @command{guix-daemon} does not run as root,
+@pxref{unprivileged-daemon-migration}.
 
 @c TODO What else?
 
