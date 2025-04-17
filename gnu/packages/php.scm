@@ -133,7 +133,11 @@
                "--enable-mbstring"
                "--enable-pcntl"
                "--enable-sockets"
-               "--enable-sysvsem"))     ; Required for, e.g. Nextcloud
+               "--enable-sysvsem"     ; Required for, e.g. Nextcloud
+               "--enable-embed"       ; Required for embed SAPI
+               "--enable-zts"
+               "--disable-zend-signals"
+               "--enable-zend-max-execution-timers"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'do-not-record-build-flags
