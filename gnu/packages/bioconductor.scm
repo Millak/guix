@@ -24672,14 +24672,14 @@ block processing.")
 (define-public r-rhdf5lib
   (package
     (name "r-rhdf5lib")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rhdf5lib" version))
        (sha256
         (base32
-         "0l9hq7444azc72h3185qch053a9rvm89aagisrsn01k5c32jwk9r"))
+         "0il7gj2msd25c4xmg5aw4z4y4gm1bzrdr9n0pn4h9k0nm7m0c1hp"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -24687,7 +24687,12 @@ block processing.")
            (delete-file-recursively "src/wininclude/")
            (delete-file-recursively "src/winlib/")
            (delete-file "src/hdf5small_cxx_hl_1.10.7.tar.gz")))))
-    (properties `((upstream-name . "Rhdf5lib")))
+    (properties
+     '((upstream-name . "Rhdf5lib")
+       (updater-extra-propagated-inputs
+        . ("zlib"))
+       (updater-extra-native-inputs
+        . ("r-mockery"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -24738,12 +24743,18 @@ block processing.")
 
                  ;; szip is non-free software
                  (("cp \"\\$\\{SZIP_LIB\\}.*") "")
-                 (("PKG_LIBS =.*") "PKG_LIBS = -lz -lhdf5\n"))))))))
+                 (("PKG_LIBS =.*") "PKG_LIBS = -lz -lhdf5\n")))))
+         (add-after 'unpack 'disable-bad-test
+           (lambda _
+             ;; This tests for a specific minor version of HDF5.
+             (delete-file "inst/tinytest/test_library_version.R"))))))
     (propagated-inputs
      (list hdf5-1.10 zlib))
     (native-inputs
      `(("hdf5-source" ,(package-source hdf5-1.10))
-       ("r-knitr" ,r-knitr)))
+       ("r-knitr" ,r-knitr)
+       ("r-mockery" ,r-mockery)
+       ("r-tinytest" ,r-tinytest)))
     (home-page "https://bioconductor.org/packages/Rhdf5lib")
     (synopsis "HDF5 library as an R package")
     (description "This package provides C and C++ HDF5 libraries for use in R
