@@ -732,7 +732,7 @@ Log progress and checkout info to LOG-PORT."
 ;;; Commit difference.
 ;;;
 
-(define* (commit-closure commit #:optional (visited (setq)))
+(define* (commit-closure commit #:optional (visited (setq))) ;to remove
   "Return the closure of COMMIT as a set.  Skip commits contained in VISITED,
 a set, and adjoin VISITED to the result."
   (let loop ((commits (list commit))
@@ -768,39 +768,60 @@ that of OLD."
                  (cons head result)
                  (set-insert head visited)))))))
 
-(define (commit-relation old new)
-  "Return a symbol denoting the relation between OLD and NEW, two commit
+(define commit-relation
+  (if (resolve-module '(git graph) #:ensure #f)   ;Guile-Git >= 0.10.0
+      (lambda (old new)
+        "Return a symbol denoting the relation between OLD and NEW, two commit
 objects: 'ancestor (meaning that OLD is an ancestor of NEW), 'descendant, or
 'unrelated, or 'self (OLD and NEW are the same commit)."
-  (if (eq? old new)
-      'self
-      (let ((newest (commit-closure new)))
-        (if (set-contains? newest old)
-            'ancestor
-            (let* ((seen   (list->setq (commit-parents new)))
-                   (oldest (commit-closure old seen)))
-              (if (set-contains? oldest new)
-                  'descendant
-                  'unrelated))))))
+        (let ((repository (commit-owner old))
+              (old (commit-id old))
+              (new (commit-id new)))
+          (cond ((graph-descendant? repository new old)
+                 'ancestor)
+                ((oid=? old new)
+                 'self)
+                ((graph-descendant? repository old new)
+                 'descendant)
+                (else 'unrelated))))
+      (lambda (old new)            ;remove when Guile-Git 0.10.0 is widespread
+        (if (eq? old new)
+            'self
+            (let ((newest (commit-closure new)))
+              (if (set-contains? newest old)
+                  'ancestor
+                  (let* ((seen   (list->setq (commit-parents new)))
+                         (oldest (commit-closure old seen)))
+                    (if (set-contains? oldest new)
+                        'descendant
+                        'unrelated))))))))
 
-(define (commit-descendant? new old)
-  "Return true if NEW is the descendant of one of OLD, a list of commits.
-
-When the expected result is likely #t, this is faster than using
-'commit-relation' since fewer commits need to be traversed."
-  (let ((old (list->setq old)))
-    (let loop ((commits (list new))
-               (visited (setq)))
-      (match commits
-        (()
-         #f)
-        (_
-         ;; Perform a breadth-first search as this is likely going to
-         ;; terminate more quickly than a depth-first search.
-         (let ((commits (remove (cut set-contains? visited <>) commits)))
-           (or (any (cut set-contains? old <>) commits)
-               (loop (append-map commit-parents commits)
-                     (fold set-insert visited commits)))))))))
+(define commit-descendant?
+  (if (resolve-module '(git graph) #:ensure #f)   ;Guile-Git >= 0.10.0
+      (lambda (new old)
+        "Return true if NEW is the descendant of one of OLD, a list of
+commits."
+        (let ((repository (commit-owner new))
+              (new (commit-id new)))
+          (any (lambda (old)
+                 (let ((old (commit-id old)))
+                   (or (graph-descendant? repository new old)
+                       (oid=? old new))))
+               old)))
+      (lambda (new old)            ;remove when Guile-Git 0.10.0 is widespread
+        (let ((old (list->setq old)))
+          (let loop ((commits (list new))
+                     (visited (setq)))
+            (match commits
+              (()
+               #f)
+              (_
+               ;; Perform a breadth-first search as this is likely going to
+               ;; terminate more quickly than a depth-first search.
+               (let ((commits (remove (cut set-contains? visited <>) commits)))
+                 (or (any (cut set-contains? old <>) commits)
+                     (loop (append-map commit-parents commits)
+                           (fold set-insert visited commits)))))))))))
 
 
 ;;
