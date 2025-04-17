@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
@@ -666,24 +666,40 @@ load path."
                 ;; Use a 'guile' variant that doesn't complain about locales.
                 #:guile (quiet-guile guile)))
 
-(define (selinux-policy source daemon)
-  "Return the SELinux policy file taken from SOURCE and adjusted to refer to
-DAEMON and to the current configuration variables."
+(define (parameterized-file source daemon file name)
+  "Return FILE taken from SOURCE (typically a '.in' file) and adjusted to
+refer to DAEMON and to the current configuration variables."
   (define build
     (with-imported-modules '((guix build utils))
       #~(begin
           (use-modules (guix build utils))
 
-          (copy-file #+(file-append* source "/etc/guix-daemon.cil.in")
-                     "guix-daemon.cil")
-          (substitute* "guix-daemon.cil"
+          (fluid-set! %default-port-encoding "UTF-8")
+          (copy-file #+(file-append* source file) #$name)
+          (substitute* #$name
             (("@guix_sysconfdir@") #$%sysconfdir)
             (("@guix_localstatedir@") #$%localstatedir)
+            (("@localstatedir@") #$%localstatedir)
             (("@storedir@") #$%storedir)
-            (("@prefix@") #$daemon))
-          (copy-file "guix-daemon.cil" #$output))))
+            (("@prefix@") #$daemon)
+            (("@GUIX_SUBSTITUTE_URLS@")
+             #$(string-join %default-substitute-urls)))
+          (copy-file #$name #$output))))
 
-  (computed-file "guix-daemon.cil" build))
+  (computed-file name build))
+
+(define (selinux-policy source daemon)
+  "Return the SELinux policy file taken from SOURCE and adjusted to refer to
+DAEMON and to the current configuration variables."
+  (parameterized-file source daemon
+                      "etc/guix-daemon.cil.in"
+                      "guix-daemon.cil"))
+
+(define (systemd-file source daemon file)
+  "Return the given systemd file from SOURCE parameterized for DAEMON."
+  (parameterized-file source daemon
+                      (string-append "etc/" file ".in")
+                      file))
 
 (define (miscellaneous-files source daemon)
   "Return data files taken from SOURCE."
@@ -698,6 +714,12 @@ DAEMON and to the current configuration variables."
                    ,(file-append* source "/etc/completion/fish/guix.fish"))
                   ("share/selinux/guix-daemon.cil"
                    ,(selinux-policy source daemon))
+                  ,@(map (lambda (file)
+                           `(,(string-append "lib/systemd/system/" file)
+                             ,(systemd-file source daemon file)))
+                         '("guix-gc.service"
+                           "guix-publish.service"
+                           "guix-daemon.service"))
                   ("share/guix/berlin.guix.gnu.org.pub"
                    ,(file-append* source
                                   "/etc/substitutes/berlin.guix.gnu.org.pub"))
