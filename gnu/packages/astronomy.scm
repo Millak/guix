@@ -4599,9 +4599,7 @@ specifically in the C code.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;; python3.11 test fails due to read-only file system
-                (invoke "python" "-m" "unittest" "discover" "-s" "test" 
-                        "-k not test_forget" )))))))
+                (invoke "python" "-m" "unittest" "discover" "-s" "test")))))))
     (native-inputs
      (list python-setuptools
            python-wheel))
