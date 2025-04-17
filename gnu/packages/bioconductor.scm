@@ -1348,19 +1348,20 @@ annotations for the genome of the model worm Caenorhabditis elegans.")
 (define-public r-org-dm-eg-db
   (package
     (name "r-org-dm-eg-db")
-    (version "3.20.0")
+    (version "3.21.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Dm.eg.db" version 'annotation))
               (sha256
                (base32
-                "1v21rx7kpdi30898jbnvg1cd3xgghvqhkiipkasn5wjz22z1lqna"))))
+                "1wavkwq73isi6clj26m6j4rhshllkbvxdm95iv7kxca1xrdhd4f3"))))
     (properties
-     `((upstream-name . "org.Dm.eg.db")))
+     `((upstream-name . "org.Dm.eg.db")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-annotate r-go-db r-runit))
     (home-page "https://www.bioconductor.org/packages/org.Dm.eg.db/")
     (synopsis "Genome wide annotation for Fly")
     (description
