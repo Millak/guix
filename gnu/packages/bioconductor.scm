@@ -14513,15 +14513,20 @@ R, enabling interactive analysis and visualization of genome-scale data.")
 (define-public r-variantannotation
   (package
     (name "r-variantannotation")
-    (version "1.52.0")
+    (version "1.54.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "VariantAnnotation" version))
               (sha256
                (base32
-                "0agkfdzs4nr2js94g1cnwxykc4f1678cfjx70r69gmy41s1ghybm"))))
+                "1g8jmfgwdia6hpq9pbhm34f6z94b6ics2miv636r5nlxhmi4ac5a"))))
     (properties
-     `((upstream-name . "VariantAnnotation")))
+     `((upstream-name . "VariantAnnotation")
+       (updater-ignored-native-inputs
+        . ("r-sift-hsapiens-dbsnp132"
+           "r-polyphen-hsapiens-dbsnp131"))
+       (updater-extra-native-inputs
+        . ("r-runit"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -14549,8 +14554,7 @@ R, enabling interactive analysis and visualization of genome-scale data.")
            r-rtracklayer
            r-s4vectors
            r-summarizedexperiment
-           r-xvector
-           r-zlibbioc))
+           r-xvector))
     (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19
                          r-knitr r-runit r-snpstats
                          r-txdb-hsapiens-ucsc-hg19-knowngene))
