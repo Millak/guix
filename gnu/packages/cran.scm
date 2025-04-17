@@ -1152,10 +1152,11 @@ Companion to Applied Regression, Third Edition, Sage.")
     (propagated-inputs (list r-cli
                              r-dplyr
                              r-glue
+                             r-lifecycle
                              r-rlang
                              r-tidyr
                              r-tidyselect))
-    (native-inputs (list r-spelling r-testthat r-withr))
+    (native-inputs (list r-testthat r-withr))
     (home-page "https://github.com/insightsengineering/cards")
     (synopsis "Analysis Results Data")
     (description
