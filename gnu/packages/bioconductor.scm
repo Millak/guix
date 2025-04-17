@@ -24596,6 +24596,52 @@ intra-chromosomal contact maps produced by genome-wide genome architecture
 assays such as Hi-C.")
     (license license:gpl2+)))
 
+(define-public r-h5mread
+  (package
+    (name "r-h5mread")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "h5mread" version))
+       (sha256
+        (base32 "14cqk68qb3wsdyr40cdc4rg3g413m5zxccfkgc7s0x53klf9z2sn"))))
+    (properties
+     '((upstream-name . "h5mread")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-hdf5array"))))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; These require r-hdf5array.
+             (for-each delete-file
+                       '("tests/testthat/test-h5writeDimnames.R"
+                         "tests/testthat/test-h5dimscales.R"
+                         "tests/testthat/test-h5mread.R"
+                         "tests/testthat/test-h5mread_from_reshaped.R")))))))
+    (propagated-inputs (list r-biocgenerics
+                             r-iranges
+                             r-rhdf5
+                             r-rhdf5filters
+                             r-rhdf5lib
+                             r-s4arrays
+                             r-s4vectors
+                             r-sparsearray))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://bioconductor.org/packages/h5mread")
+    (synopsis "Fast HDF5 reader")
+    (description
+     "The main function in the h5mread package is @code{h5mread()}, which
+allows reading arbitrary data from an HDF5 dataset into R, similarly to what
+the @code{h5read()} function from the rhdf5 package does.  In the case of
+@code{h5mread()}, the implementation has been optimized to make it as fast and
+memory-efficient as possible.")
+    (license license:artistic2.0)))
+
 (define-public r-hitc
   (package
     (name "r-hitc")
