@@ -2657,8 +2657,8 @@ The library is based on Vatti's clipping algorithm.")
 Note: This package is a major update of the original clipper library."))))
 
 (define-public pcg-cpp
-  (let ((commit "ffd522e7188bef30a00c74dc7eb9de5faff90092")
-        (revision "2"))
+  (let ((commit "428802d1a5634f96bcd0705fab379ff0113bcf13")
+        (revision "3"))
     (package
       (name "pcg-cpp")
       (version (git-version "0.98.1" revision commit))
@@ -2670,7 +2670,7 @@ Note: This package is a major update of the original clipper library."))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0yxyqaphcc38zilpwpmssrl8ly1v6dimscqk2f4rcv1h22dinnqx"))))
+                  "0w4xb52b6glldkz1wnjc4r4m750m59yxp8jky71j3l4pvfbbj2m5"))))
       (build-system gnu-build-system)
       (arguments
        `(#:test-target "test"
