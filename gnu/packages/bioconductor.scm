@@ -561,19 +561,20 @@ Exon, SNP; @code{NimbleGen}: Expression, Tiling) to be used with the
 (define-public r-org-eck12-eg-db
   (package
     (name "r-org-eck12-eg-db")
-    (version "3.20.0")
+    (version "3.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "org.EcK12.eg.db" version 'annotation))
        (sha256
-        (base32 "0qd6ppvcpsprbw8c9rp3fx5i8cs6gv0n4mqwxwjs1421p19m1bqd"))))
+        (base32 "0ng6nf3gfwiajbjsb3q19livi9drlx6flacv97igfwylhq0w2nin"))))
     (properties
-     `((upstream-name . "org.EcK12.eg.db")))
+     `((upstream-name . "org.EcK12.eg.db")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-annotate r-go-db r-runit))
     (home-page "https://bioconductor.org/packages/org.EcK12.eg.db")
     (synopsis "Genome wide annotation for E coli strain K12")
     (description
