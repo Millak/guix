@@ -1396,19 +1396,20 @@ based on mapping using Entrez Gene identifiers.")
 (define-public r-org-hs-eg-db
   (package
     (name "r-org-hs-eg-db")
-    (version "3.20.0")
+    (version "3.21.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Hs.eg.db" version 'annotation))
               (sha256
                (base32
-                "1gykdrfkzvx83bkpbggsnk8gd0w9xh5g071r3ngykjh5x36w6dlc"))))
+                "1i9ipx4anzj795y2y4rihqhpdcr5i3awabd3lxipzxcw0zndv51l"))))
     (properties
-     `((upstream-name . "org.Hs.eg.db")))
+     `((upstream-name . "org.Hs.eg.db")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-annotate r-go-db r-runit))
     (home-page "https://www.bioconductor.org/packages/org.Hs.eg.db/")
     (synopsis "Genome wide annotation for Human")
     (description
