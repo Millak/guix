@@ -1324,19 +1324,20 @@ methylation array).")
 (define-public r-org-ce-eg-db
   (package
     (name "r-org-ce-eg-db")
-    (version "3.20.0")
+    (version "3.21.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Ce.eg.db" version 'annotation))
               (sha256
                (base32
-                "1r7fzzrqcas23bxcd55ppflx0ls1biifis3qj36iv5gwhhwimq3i"))))
+                "0lqsna178pyy8fslkx4n9z5mmxd95m50w1b2gm96ikjsldgng75k"))))
     (properties
-     `((upstream-name . "org.Ce.eg.db")))
+     `((upstream-name . "org.Ce.eg.db")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-annotate r-go-db r-runit))
     (home-page "https://www.bioconductor.org/packages/org.Ce.eg.db/")
     (synopsis "Genome wide annotation for Worm")
     (description
