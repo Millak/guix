@@ -321,44 +321,41 @@
 (define-public python-apprise
   (package
     (name "python-apprise")
-    (version "1.9.2")
+    (version "1.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "apprise" version))
        (sha256
-        (base32 "1a3kzpjdp29l4ryafd36gs8apg61f16ljw93h1051p98f0hv23i9"))))
+        (base32 "19k51ici58134m61f6di0m36mbqgdyr6r31i8v6rk22vldz6d0zm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
               "--ignore=test/test_plugin_macosx.py"
-              "-k" (string-append "not test_plugin_mqtt_tls_connect_success"
-                                  " and not test_plugin_mqtt_tls_no_verify_success"
-                                  ;; AssertionError: assert False
-                                  " and not test_plugin_wxpusher_edge_cases"))))
-    (propagated-inputs (list python-certifi
-                             python-click
-                             python-markdown
-                             python-pyyaml
-                             python-requests
-                             python-requests-oauthlib))
+              ;; AssertionError
+              "--deselect=test/test_plugin_wxpusher.py::test_plugin_wxpusher_urls")))
     (native-inputs
      (list python-babel
            python-pytest
-           python-pytest-cov
            python-pytest-mock
            python-pytest-xdist
            python-setuptools
            python-wheel))
+    (propagated-inputs
+     (list python-certifi
+           python-click
+           python-markdown
+           python-pyyaml
+           python-requests
+           python-requests-oauthlib))
     (home-page "https://github.com/caronc/apprise")
-    (synopsis
-     "Push notification Python library that works with many platforms")
+    (synopsis "Push notification library")
     (description
-     "Apprise is a Python library that allows sending push notifications to a broad
-range of notification services, such as Telegram, Discord, Slack, Amazon SNS,
-Gotify, etc.")
+     "Apprise is a Python library that allows sending push notifications to a
+broad range of notification services, such as Telegram, Discord, Slack, Amazon
+SNS, Gotify, etc.")
     (license license:bsd-2)))
 
 (define-public python-archspec
