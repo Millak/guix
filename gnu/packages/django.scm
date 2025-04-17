@@ -1467,6 +1467,13 @@ forms using your favorite CSS framework, without writing template code.")
           (lambda _
             (substitute* "compressor/tests/test_filters.py"
               (("test_calmjs_filter") "_test_calmjs_filter"))))
+        ;; TODO: Report upstream.
+        (add-after 'unpack 'add-missing-init-files
+          (lambda _
+            (call-with-output-file "compressor/templates/__init__.py"
+              (const #t))
+            (call-with-output-file "compressor/templates/compressor/__init__.py"
+              (const #t))))
         (replace 'check
           (lambda* (#:key tests? #:allow-other-keys)
             (when tests?
