@@ -185,6 +185,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
@@ -2014,6 +2015,8 @@ XDG-Output for wlclock to work.")
            pixman
            lcms
            libseat
+           vulkan-headers
+           vulkan-loader
            wayland
            wayland-protocols
            xcb-util-errors
@@ -2021,6 +2024,7 @@ XDG-Output for wlclock to work.")
            xorg-server-xwayland))
     (native-inputs
      (cons*
+       glslang
        hwdata
        pkg-config
        wayland
