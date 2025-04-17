@@ -1372,19 +1372,20 @@ annotations for the genome of the model fruit fly Drosophila melanogaster.")
 (define-public r-org-dr-eg-db
   (package
     (name "r-org-dr-eg-db")
-    (version "3.20.0")
+    (version "3.21.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Dr.eg.db" version 'annotation))
               (sha256
                (base32
-                "0ayva6p2qav16s4nvngxqi8zwl4ylrl5riww3lwc2dql0kkgbvrs"))))
+                "18vznfmlmygwpwkm7kzavripjg7vppcs4p6b771nmwx62i73s0sc"))))
     (properties
-     `((upstream-name . "org.Dr.eg.db")))
+     '((upstream-name . "org.Dr.eg.db")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-annotate r-go-db r-runit))
     (home-page "https://www.bioconductor.org/packages/org.Dr.eg.db/")
     (synopsis "Annotation for Zebrafish")
     (description
