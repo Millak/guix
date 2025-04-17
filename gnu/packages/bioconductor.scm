@@ -5975,18 +5975,19 @@ of Bioconductor.")
 (define-public r-biocgenerics
   (package
     (name "r-biocgenerics")
-    (version "0.52.0")
+    (version "0.54.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocGenerics" version))
               (sha256
                (base32
-                "1nbzbrb07v7wx19qhm65py9bl7ij4bpiqw87ixd00b6w6j6nmx8l"))))
+                "1fa11kh0d4sxjac22p2kjxj5v0dg32vldz7fcdzi8wf6rds6yga1"))))
     (properties
      `((upstream-name . "BiocGenerics")))
     (build-system r-build-system)
     ;; Tests require r-iranges, which needs this package.
     (arguments (list #:tests? #false))
+    (propagated-inputs (list r-generics))
     (home-page "https://bioconductor.org/packages/BiocGenerics")
     (synopsis "S4 generic functions for Bioconductor")
     (description
