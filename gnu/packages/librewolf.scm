@@ -206,17 +206,17 @@
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
-(define %librewolf-build-id "20250405165830")
+(define %librewolf-build-id "20250416062358")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "137.0.1-1")
+    (version "137.0.2-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "1r0b5vfhqkw5vgf7bb0ylcw4vlg9mpfj96n8whfppj8r5rhah788"
-      #:librewolf-hash "0yry4k44wifi9h25h49krm05jbrs6bg9pa4vszv8af8dv5qm2bz0"
+      #:firefox-hash "01yd5cq6qgww6w2kq1bchy9j81blim15kdz7bvx8n512m2x3mz06"
+      #:librewolf-hash "0vy1xvjwgc4vd9q3laakx6lrsy4ghpdr98vm9lmx86amg9gak5ix"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
@@ -299,7 +299,7 @@
                      (libavcodec (string-append ffmpeg
                                                 "/lib/libavcodec.so")))
                 ;; Arrange to load libavcodec.so by its absolute file name.
-                (substitute* 
+                (substitute*
                     "dom/media/platforms/ffmpeg/FFmpegRuntimeLinker.cpp"
                   (("libavcodec\\.so")
                    libavcodec)))))
@@ -429,7 +429,7 @@
                    (string-append all ", icu-uc >= 76.1")))
                 (if (string=? old-content
                               (pk (call-with-input-file file get-string-all)))
-                    (error 
+                    (error
                      "substitute did nothing, phase requires an update")))))
           (replace 'configure
             (lambda* (#:key inputs outputs configure-flags
