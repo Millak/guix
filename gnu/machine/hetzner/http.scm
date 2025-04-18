@@ -52,6 +52,7 @@
             hetzner-api-actions
             hetzner-api-create-ssh-key
             hetzner-api-locations
+            hetzner-api-primary-ips
             hetzner-api-request-body
             hetzner-api-request-headers
             hetzner-api-request-method
@@ -100,6 +101,13 @@
             hetzner-location-name
             hetzner-location-network-zone
             hetzner-location?
+            hetzner-primary-ip
+            hetzner-primary-ip-created
+            hetzner-primary-ip-id
+            hetzner-primary-ip-ip
+            hetzner-primary-ip-labels
+            hetzner-primary-ip-name
+            hetzner-primary-ip-type
             hetzner-public-net
             hetzner-public-net-ipv4
             hetzner-public-net-ipv6
@@ -144,6 +152,7 @@
             make-hetzner-ipv6
             make-hetzner-location
             make-hetzner-public-net
+            make-hetzner-primary-ip
             make-hetzner-resource
             make-hetzner-server
             make-hetzner-server-type
@@ -295,6 +304,16 @@
   (memory hetzner-server-type-memory) ; integer
   (name hetzner-server-type-name) ; string
   (storage-type hetzner-server-type-storage-type "storage_type")) ; string
+
+;; Reserved IP address. https://docs.hetzner.cloud/#primary-ips
+(define-json-mapping <hetzner-primary-ip>
+  make-hetzner-primary-ip hetzner-primary-ip? json->hetzner-primary-ip
+  (created hetzner-primary-ip-created "created" string->time) ; time
+  (id hetzner-primary-ip-id) ; integer
+  (ip hetzner-primary-ip-ip) ; string
+  (labels hetzner-primary-ip-labels) ; alist of string/string
+  (name hetzner-primary-ip-name) ; string
+  (type hetzner-primary-ip-type))  ; string
 
 (define-json-mapping <hetzner-ssh-key>
   make-hetzner-ssh-key hetzner-ssh-key? json->hetzner-ssh-key
@@ -581,12 +600,11 @@
 (define* (hetzner-api-server-create
           api name ssh-keys
           #:key
-          (enable-ipv4? #t)
-          (enable-ipv6? #t)
+          (ipv4 #f)
+          (ipv6 #f)
           (image %hetzner-default-server-image)
           (labels '())
           (location %hetzner-default-server-location)
-          (public-net #f)
           (server-type %hetzner-default-server-type)
           (start-after-create? #f))
   "Create a server with the Hetzner API."
@@ -595,9 +613,11 @@
                #:body `(("image" . ,image)
                         ("labels" . ,labels)
                         ("name" . ,name)
-                        ("public_net"
-                         . (("enable_ipv4" . ,enable-ipv4?)
-                            ("enable_ipv6" . ,enable-ipv6?)))
+                        ("public_net" .
+                         (("enable_ipv4" . ,(and ipv4 #t))
+                          ("enable_ipv6" . ,(and ipv6 #t))
+                          ,@(if (integer? ipv4) `(("ipv4" . ,ipv4)) '())
+                          ,@(if (integer? ipv6) `(("ipv6" . ,ipv6)) '())))
                         ("location" . ,location)
                         ("server_type" . ,server-type)
                         ("ssh_keys" . ,(apply vector (map hetzner-ssh-key-id ssh-keys)))
@@ -657,6 +677,11 @@
   "Get SSH keys from the Hetzner API."
   (apply hetzner-api-list api "/ssh_keys" "ssh_keys"
          json->hetzner-ssh-key options))
+
+(define* (hetzner-api-primary-ips api . options)
+  "Get Primary IPs from the Hetzner API."
+  (apply hetzner-api-list api "/primary_ips" "primary_ips"
+         json->hetzner-primary-ip options))
 
 (define* (hetzner-api-server-types api . options)
   "Get server types from the Hetzner API."

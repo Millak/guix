@@ -46544,6 +46544,12 @@ If true, the server will be deleted when an error happens in the
 provisioning phase. If false, the server will be kept in order to debug
 any issues.
 
+@item @code{ipv4} (default: @code{#t})
+@itemx @code{ipv6} (default: @code{#t})
+When false, no public IP address is attached.  Specify the name of an
+existing primary ip to attach it to the machine.  Other values would
+create a new address automatically.
+
 @item @code{labels} (default: @code{'()})
 A user defined alist of key/value pairs attached to the SSH key and the
 server on the Hetzner API.  Keys and values must be strings,

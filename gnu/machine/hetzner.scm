@@ -73,6 +73,8 @@
             hetzner-configuration-authorize?
             hetzner-configuration-build-locally?
             hetzner-configuration-delete?
+            hetzner-configuration-ipv4
+            hetzner-configuration-ipv6
             hetzner-configuration-labels
             hetzner-configuration-location
             hetzner-configuration-server-type
@@ -205,6 +207,10 @@ Have you run 'guix archive --generate-key'?")
             (default "fsn1"))
   (server-type hetzner-configuration-server-type ; string
                (default "cx42"))
+  (ipv4 hetzner-configuration-ipv4      ; boolean | string
+        (default #t))
+  (ipv6 hetzner-configuration-ipv6      ; boolean | string
+        (default #t))
   (ssh-public-key hetzner-configuration-ssh-public-key ; public-key | string
                   (thunked)
                   (default (public-key-from-file (hetzner-configuration-ssh-key this-hetzner-configuration)))
@@ -445,6 +451,17 @@ values: list of output lines returned by CMD and its exit code."
            (hetzner-configuration-api config)
            #:params `(("name" . ,(machine-display-name machine)))))))
 
+(define (hetzner-resolve-ip api name)
+  "Find the NAME IP address on the Hetzner API."
+  (or
+   (find (lambda (primary-ip)
+           (equal? name (hetzner-primary-ip-name primary-ip)))
+         (hetzner-api-primary-ips api #:params `(("name" . ,name))))
+
+   (raise-exception
+    (formatted-message (G_ "primary ip '~a' does not exist.")
+                       name))))
+
 (define (hetzner-machine-create-server machine)
   "Create the Hetzner server for MACHINE."
   (let* ((config (machine-configuration machine))
@@ -452,11 +469,19 @@ values: list of output lines returned by CMD and its exit code."
          (server-type (hetzner-configuration-server-type config)))
     (format #t "creating '~a' server for '~a'...\n" server-type name)
     (let* ((ssh-key (hetzner-machine-ssh-key machine))
+           (ipv4 (hetzner-configuration-ipv4 config))
+           (ipv6 (hetzner-configuration-ipv6 config))
            (api (hetzner-configuration-api config))
            (server (hetzner-api-server-create
                     api
                     (machine-display-name machine)
                     (list ssh-key)
+                    #:ipv4 (if (string? ipv4)
+                               (hetzner-primary-ip-id (hetzner-resolve-ip api ipv4))
+                               ipv4)
+                    #:ipv6 (if (string? ipv6)
+                               (hetzner-primary-ip-id (hetzner-resolve-ip api ipv6))
+                               ipv6)
                     #:labels (hetzner-configuration-labels config)
                     #:location (hetzner-configuration-location config)
                     #:server-type (hetzner-configuration-server-type config)))

@@ -239,6 +239,30 @@
     ("status" . "running")
     ("volumes" . #())))
 
+(define primary-ip
+  (make-hetzner-primary-ip
+   #(55 2 19 28 9 123 6 300 -1 0 #f)
+   42
+   "131.232.99.1"
+   '()
+   "static-ip"
+   "ipv4"))
+
+(define primary-ip-alist
+  `(("created" . "2023-10-28T19:02:55+00:00")
+    ("id" . 42)
+    ("labels")
+    ("name" . "static-ip")
+    ("blocked" . #f)
+    ("ip" . "131.232.99.1")
+    ("datacenter")
+    ("dns_ptr")
+    ("protection" . (("delete" . #f)))
+    ("type" . "ipv4")
+    ("auto_delete" . #t)
+    ("assignee_type" . "server")
+    ("assignee_id" . 17)))
+
 (define ssh-key-root
   (make-hetzner-ssh-key
    #(55 2 19 28 9 123 6 300 -1 0 #f)
@@ -511,6 +535,20 @@
             (body `(("meta" . ,meta-page-alist)
                     ("ssh_keys" . #(,ssh-key-root-alist)))))))
         (hetzner-api-ssh-keys (hetzner-api))))
+
+(test-equal "hetzner-api-primary-ips-unit"
+  (list primary-ip)
+  (mock ((gnu machine hetzner http) hetzner-api-request-send
+         (lambda* (request #:key expected)
+           (assert (equal? 'GET (hetzner-api-request-method request)))
+           (assert (equal? "https://api.hetzner.cloud/v1/primary_ips"
+                           (hetzner-api-request-url request)))
+           (assert (unspecified? (hetzner-api-request-body request)))
+           (assert (equal? '(("page" . 1)) (hetzner-api-request-params request)))
+           (hetzner-api-response
+            (body `(("meta" . ,meta-page-alist)
+                    ("primary_ips" . #(,primary-ip-alist)))))))
+        (hetzner-api-primary-ips (hetzner-api))))
 
 ;; Integration tests
 
