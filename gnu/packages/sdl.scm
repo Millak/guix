@@ -151,7 +151,7 @@ hardware.")
   (package
     (inherit sdl2)
     (name "sdl3")
-    (version "3.2.8")
+    (version "3.2.10")
     (source
      (origin
        (method url-fetch)
@@ -160,7 +160,7 @@ hardware.")
                            version "/SDL3-" version ".tar.gz"))
        (sha256
         (base32
-         "00yv0273fvljp916kjvcmr60bl97pd95xdpjrn77dpk1nfmqyf0k"))))
+         "1q0ksmg1h0xfjpgbshslxc5a2b2flcm7n5lwiq4v8vf6vssffyzq"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -188,6 +188,7 @@ hardware.")
            libxcursor                   ;enables X11 cursor support
            libxkbcommon
            libxrandr
+           mesa                         ;required by wayland
            pipewire
            pulseaudio
            wayland))
