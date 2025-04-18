@@ -173,6 +173,8 @@ MakeError(EndOfFile, Error)
 /* Read a file descriptor until EOF occurs. */
 string drainFD(int fd);
 
+void waitForMessage(int fd, const char *message);
+
 
 
 /* Automatic cleanup of resources. */
@@ -299,6 +301,9 @@ void closeMostFDs(const set<int> & exceptions);
 
 /* Set the close-on-exec flag for the given file descriptor. */
 void closeOnExec(int fd);
+
+/* Clear the close-on-exec flag for the given file descriptor.  */
+void keepOnExec(int fd);
 
 /* Common initialisation performed in child processes. */
 void commonChildInit(Pipe & logPipe);

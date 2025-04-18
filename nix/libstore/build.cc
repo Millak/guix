@@ -9,6 +9,7 @@
 #include "archive.hh"
 #include "affinity.hh"
 #include "builtins.hh"
+#include "spawn.hh"
 
 #include <map>
 #include <sstream>
@@ -402,22 +403,6 @@ void Goal::trace(const format & f)
 }
 
 
-
-//////////////////////////////////////////////////////////////////////
-
-
-/* Restore default handling of SIGPIPE, otherwise some programs will
-   randomly say "Broken pipe". */
-static void restoreSIGPIPE()
-{
-    struct sigaction act, oact;
-    act.sa_handler = SIG_DFL;
-    act.sa_flags = 0;
-    sigemptyset(&act.sa_mask);
-    if (sigaction(SIGPIPE, &act, &oact)) throw SysError("resetting SIGPIPE");
-}
-
-
 //////////////////////////////////////////////////////////////////////
 
 
@@ -679,12 +664,6 @@ private:
     typedef void (DerivationGoal::*GoalState)();
     GoalState state;
 
-    /* Stuff we need to pass to runChild(). */
-    typedef map<Path, Path> DirsInChroot; // maps target path to source path
-    DirsInChroot dirsInChroot;
-    typedef map<string, string> Environment;
-    Environment env;
-
     /* Hash rewriting. */
     HashRewrites rewritesToTmp, rewritesFromTmp;
     typedef map<Path, Path> RedirectedOutputs;
@@ -753,14 +732,9 @@ private:
     /* Start building a derivation. */
     void startBuilder();
 
-    /* Run the builder's process. */
-    void runChild();
+    void execBuilderOrBuiltin(SpawnContext &);
 
-    friend int childEntry(void *);
-
-    /* Pipe to notify readiness to the child process when using unprivileged
-       user namespaces.  */
-    Pipe readiness;
+    friend void execBuilderOrBuiltinAction(SpawnContext &);
 
     /* Check that the derivation outputs all exist and register them
        as valid. */
@@ -1630,13 +1604,6 @@ void chmod_(const Path & path, mode_t mode)
 }
 
 
-int childEntry(void * arg)
-{
-    ((DerivationGoal *) arg)->runChild();
-    return 1;
-}
-
-
 /* UID and GID of the build user inside its own user namespace.  */
 static const uid_t guestUID = 30001;
 static const gid_t guestGID = 30000;
@@ -1655,6 +1622,105 @@ static void initializeUserNamespace(pid_t child,
 	      (format("%d %d 1") % guestGID % hostGID).str());
 }
 
+#if CHROOT_ENABLED
+
+void clearRootWritePermsAction(SpawnContext & sctx)
+{
+    if(chmod("/", 0555) == -1)
+        throw SysError("changing mode of chroot root directory");
+}
+
+#endif /* CHROOT_ENABLED */
+
+/* Return true if the operating system kernel part of SYSTEM1 and SYSTEM2 (the
+   bit that comes after the hyphen in system types such as "i686-linux") is
+   the same.  */
+static bool sameOperatingSystemKernel(const std::string& system1, const std::string& system2)
+{
+    auto os1 = system1.substr(system1.find("-"));
+    auto os2 = system2.substr(system2.find("-"));
+    return os1 == os2;
+}
+
+
+void DerivationGoal::execBuilderOrBuiltin(SpawnContext & ctx)
+{
+    if(isBuiltin(drv)) {
+        /* Note: must not return from this block */
+        try {
+            logType = ltFlat;
+
+            auto buildDrv = lookupBuiltinBuilder(drv.builder);
+            if (buildDrv != NULL) {
+                /* Check what the output file name is.  When doing a 'bmCheck'
+                   build, the output file name is different from that
+                   specified in DRV due to hash rewriting.  */
+                Path output = drv.outputs["out"].path;
+                auto redirected = redirectedOutputs.find(output);
+                if (redirected != redirectedOutputs.end())
+                    output = redirected->second;
+
+                buildDrv(drv, drvPath, output);
+            }
+            else
+                throw Error(format("unsupported builtin function '%1%'") % string(drv.builder, 8));
+            _exit(0);
+        } catch (std::exception & e) {
+            writeFull(STDERR_FILENO, "error: " + string(e.what()) + "\n");
+            _exit(1);
+        }
+    }
+    /* Ensure that the builder is within the store.  This prevents users from
+       using /proc/self/exe (or a symlink to it) as their builder, which could
+       allow them to overwrite the guix-daemon binary (CVE-2019-5736).
+
+       This attack is possible even if the target of /proc/self/exe is outside
+       the chroot (it's as if it were a hard link), though it requires that
+       its ELF interpreter and dependencies be in the chroot.
+
+       Note: 'canonPath' throws if 'ctx.program' cannot be resolved within the
+       chroot.  */
+    ctx.program = canonPath(ctx.program, true);
+    if(!isInStore(ctx.program))
+        throw Error(format("derivation builder `%1' is outside the store") % ctx.program);
+    /* If DRV targets the same operating system kernel, try to execute it:
+       there might be binfmt_misc set up for user-land emulation of other
+       architectures.  However, if it targets a different operating
+       system--e.g., "i586-gnu" vs. "x86_64-linux"--do not try executing it:
+       the ELF file for that OS is likely indistinguishable from a native ELF
+       binary and it would just crash at run time.  */
+    int error;
+    if (sameOperatingSystemKernel(drv.platform, settings.thisSystem)) {
+        try {
+            execAction(ctx);
+            error = errno;
+        } catch(SysError & e) {
+            error = e.errNo;
+        }
+    } else {
+        error = ENOEXEC;
+    }
+    /* Right platform?  Check this after we've tried 'execve' to allow for
+       transparent emulation of different platforms with binfmt_misc handlers
+       that invoke QEMU.  */
+    if (error == ENOEXEC && !canBuildLocally(drv.platform)) {
+        if (settings.printBuildTrace)
+            printMsg(lvlError, format("@ unsupported-platform %1% %2%") % drvPath % drv.platform);
+        throw Error(format("a `%1%' is required to build `%3%', but I am a `%2%'")
+                    % drv.platform % settings.thisSystem % drvPath);
+    }
+
+    errno = error;
+    throw SysError(format("executing `%1%'") % drv.builder);
+}
+
+
+void execBuilderOrBuiltinAction(SpawnContext & ctx)
+{
+    ((DerivationGoal *)ctx.extraData)->execBuilderOrBuiltin(ctx);
+}
+
+
 void DerivationGoal::startBuilder()
 {
     auto f = format(
@@ -1665,6 +1731,57 @@ void DerivationGoal::startBuilder()
     f.exceptions(boost::io::all_error_bits ^ boost::io::too_many_args_bit);
     startNest(nest, lvlInfo, f % showPaths(missingPaths) % curRound % nrRounds);
 
+    /* A CloneSpawnContext reference can be passed to procedures expecting a
+       SpawnContext reference */
+#if CHROOT_ENABLED
+    CloneSpawnContext ctx;
+#else
+    SpawnContext ctx;
+#endif
+
+    ctx.extraData = (void *) this;
+    ctx.setsid = true;
+    ctx.oomSacrifice = true;
+    ctx.signalSetupSuccess = true;
+    ctx.setStdin = true;
+    ctx.stdinFile = "/dev/null";
+    ctx.closeMostFDs = true;
+    ctx.program = drv.builder;
+    ctx.args = drv.args;
+    if(!isBuiltin(drv))
+        ctx.args.insert(ctx.args.begin(), baseNameOf(drv.builder));
+
+#if __linux__
+    ctx.dropAmbientCapabilities = true;
+    ctx.persona = PER_LINUX; /* default */
+    ctx.setPersona = true;
+    /* Change the personality to 32-bit if we're doing an
+       i686-linux build on an x86_64-linux machine. */
+    struct utsname utsbuf;
+    uname(&utsbuf);
+    if (drv.platform == "i686-linux" &&
+        (settings.thisSystem == "x86_64-linux" ||
+         (!strcmp(utsbuf.sysname, "Linux") && !strcmp(utsbuf.machine, "x86_64")))) {
+        ctx.persona = PER_LINUX32;
+    }
+
+    if (drv.platform == "armhf-linux" &&
+        (settings.thisSystem == "aarch64-linux" ||
+         (!strcmp(utsbuf.sysname, "Linux") && !strcmp(utsbuf.machine, "aarch64")))) {
+        ctx.persona = PER_LINUX32;
+    }
+
+    /* Impersonate a Linux 2.6 machine to get some determinism in
+       builds that depend on the kernel version. */
+    if ((drv.platform == "i686-linux" || drv.platform == "x86_64-linux") && settings.impersonateLinux26) {
+        ctx.persona |= 0x0020000; /* == UNAME26 */
+    }
+
+    /* Disable address space randomization for improved determinism. */
+    ctx.persona |= ADDR_NO_RANDOMIZE;
+
+#endif
+
     /* Note: built-in builders are *not* running in a chroot environment so
        that we can easily implement them in Guile without having it as a
        derivation input (they are running under a separate build user,
@@ -1672,12 +1789,13 @@ void DerivationGoal::startBuilder()
     useChroot = settings.useChroot && !isBuiltin(drv);
 
     /* Construct the environment passed to the builder. */
-    env.clear();
+    ctx.env.clear();
+    ctx.inheritEnv = false;
 
     /* Most shells initialise PATH to some default (/bin:/usr/bin:...) when
        PATH is not set.  We don't want this, so we fill it in with some dummy
        value. */
-    env["PATH"] = "/path-not-set";
+    ctx.env["PATH"] = "/path-not-set";
 
     /* Set HOME to a non-existing path to prevent certain programs from using
        /etc/passwd (or NIS, or whatever) to locate the home directory (for
@@ -1686,20 +1804,20 @@ void DerivationGoal::startBuilder()
        they are looking for does not exist if HOME is set but points to some
        non-existing path. */
     Path homeDir = "/homeless-shelter";
-    env["HOME"] = homeDir;
+    ctx.env["HOME"] = homeDir;
 
     /* Tell the builder where the store is.  Usually they
        shouldn't care, but this is useful for purity checking (e.g.,
        the compiler or linker might only want to accept paths to files
        in the store or in the build directory). */
-    env["NIX_STORE"] = settings.nixStore;
+    ctx.env["NIX_STORE"] = settings.nixStore;
 
     /* The maximum number of cores to utilize for parallel building. */
-    env["NIX_BUILD_CORES"] = (format("%d") % settings.buildCores).str();
+    ctx.env["NIX_BUILD_CORES"] = (format("%d") % settings.buildCores).str();
 
     /* Add all bindings specified in the derivation. */
     for (auto& i : drv.env)
-        env[i.first] = i.second;
+        ctx.env[i.first] = i.second;
 
     /* Create a temporary directory where the build will take
        place. */
@@ -1728,18 +1846,20 @@ void DerivationGoal::startBuilder()
        directory. */
     tmpDirInSandbox = useChroot ? canonPath("/tmp", true) + "/guix-build-" + drvName + "-0" : tmpDir;
 
+    ctx.setcwd = true;
+    ctx.cwd = tmpDirInSandbox;
     /* For convenience, set an environment pointing to the top build
        directory. */
-    env["NIX_BUILD_TOP"] = tmpDirInSandbox;
+    ctx.env["NIX_BUILD_TOP"] = tmpDirInSandbox;
 
     /* Also set TMPDIR and variants to point to this directory. */
-    env["TMPDIR"] = env["TEMPDIR"] = env["TMP"] = env["TEMP"] = tmpDirInSandbox;
+    ctx.env["TMPDIR"] = ctx.env["TEMPDIR"] = ctx.env["TMP"] = ctx.env["TEMP"] = tmpDirInSandbox;
 
     /* Explicitly set PWD to prevent problems with chroot builds.  In
        particular, dietlibc cannot figure out the cwd because the
        inode of the current directory doesn't appear in .. (because
        getdents returns the inode of the mount point). */
-    env["PWD"] = tmpDirInSandbox;
+    ctx.env["PWD"] = tmpDirInSandbox;
 
     /* *Only* if this is a fixed-output derivation, propagate the
        values of the environment variables specified in the
@@ -1752,7 +1872,7 @@ void DerivationGoal::startBuilder()
        already know the cryptographic hash of the output). */
     if (fixedOutput) {
         Strings varNames = tokenizeString<Strings>(get(drv.env, "impureEnvVars"));
-        for (auto& i : varNames) env[i] = getEnv(i);
+        for (auto& i : varNames) ctx.env[i] = getEnv(i);
     }
 
     /* The `exportReferencesGraph' feature allows the references graph
@@ -1816,10 +1936,20 @@ void DerivationGoal::startBuilder()
         /* Change ownership of the temporary build directory. */
         if (chown(tmpDir.c_str(), buildUser.getUID(), buildUser.getGID()) == -1)
             throw SysError(format("cannot change ownership of '%1%'") % tmpDir);
+
+        ctx.setuid = true;
+        ctx.user = buildUser.getUID();
+        ctx.setgid = true;
+        ctx.group = buildUser.getGID();
+        ctx.setSupplementaryGroups = true;
+        ctx.supplementaryGroups = buildUser.getSupplementaryGIDs();
     }
 
     if (useChroot) {
 #if CHROOT_ENABLED
+        ctx.phases = getCloneSpawnPhases();
+        addPhaseAfter(ctx.phases, "chroot", "clearRootWritePerms",
+                      clearRootWritePermsAction);
         /* Create a temporary directory in which we set up the chroot
            environment using bind-mounts.  Put it in the store to ensure it
            can be atomically moved to the store.  */
@@ -1829,6 +1959,22 @@ void DerivationGoal::startBuilder()
 
         /* Clean up the chroot directory automatically. */
         autoDelChroot = std::shared_ptr<AutoDelete>(new AutoDelete(chrootRootTop));
+
+        ctx.doChroot = true;
+        ctx.chrootRootDir = chrootRootDir;
+        ctx.cloneFlags = CLONE_NEWNS | CLONE_NEWPID | CLONE_NEWIPC | CLONE_NEWUTS | SIGCHLD;
+
+        if(!fixedOutput) {
+            ctx.initLoopback = true;
+            ctx.cloneFlags |= CLONE_NEWNET;
+        }
+
+        if(!buildUser.enabled())
+            ctx.cloneFlags |= CLONE_NEWUSER;
+
+        /* Set the hostname etc. to fixed values. */
+        ctx.hostname = "localhost";
+        ctx.domainname = "(none)";  /* kernel default */
 
         printMsg(lvlChatty, format("setting up chroot environment in `%1%'") % chrootRootDir);
 
@@ -1865,9 +2011,21 @@ void DerivationGoal::startBuilder()
             (format("nixbld:!:%1%:\n")
                 % (buildUser.enabled() ? buildUser.getGID() : guestGID)).str());
 
-        /* Create /etc/hosts with localhost entry. */
-        if (!fixedOutput)
+        if (fixedOutput) {
+            /* Fixed-output derivations typically need to access the network,
+               so give them access to /etc/resolv.conf and so on. */
+            auto files = { "/etc/resolv.conf", "/etc/nsswitch.conf",
+                           "/etc/services", "/etc/hosts" };
+            for (auto & file: files) {
+                if (pathExists(file)) {
+                    ctx.filesInChroot[file] = file;
+                    ctx.readOnlyFilesInChroot.insert(file);
+                }
+            }
+        } else {
+            /* Create /etc/hosts with localhost entry. */
             writeFile(chrootRootDir + "/etc/hosts", "127.0.0.1 localhost\n");
+        }
 
         /* Bind-mount a user-configurable set of directories from the
            host file system. */
@@ -1877,11 +2035,11 @@ void DerivationGoal::startBuilder()
         for (auto & i : dirs) {
             size_t p = i.find('=');
             if (p == string::npos)
-                dirsInChroot[i] = i;
+                ctx.filesInChroot[i] = i;
             else
-                dirsInChroot[string(i, 0, p)] = string(i, p + 1);
+                ctx.filesInChroot[string(i, 0, p)] = string(i, p + 1);
         }
-        dirsInChroot[tmpDirInSandbox] = tmpDir;
+        ctx.filesInChroot[tmpDirInSandbox] = tmpDir;
 
 	/* Create the fake store.  */
         Path chrootStoreDir = chrootRootDir + settings.nixStore;
@@ -1897,22 +2055,8 @@ void DerivationGoal::startBuilder()
            the whole store.  This prevents any access to undeclared
            dependencies. */
         for (auto& i : inputPaths) {
-	    struct stat st;
-            if (lstat(i.c_str(), &st))
-                throw SysError(format("getting attributes of path `%1%'") % i);
-
-	    if (S_ISLNK(st.st_mode)) {
-		/* Since bind-mounts follow symlinks, thus representing their
-		   target and not the symlink itself, special-case
-		   symlinks. XXX: When running unprivileged, TARGET can be
-		   deleted by the build process.  Use 'open_tree' & co. when
-		   it's more widely available.  */
-                Path target = chrootRootDir + i;
-		if (symlink(readLink(i).c_str(), target.c_str()) == -1)
-		    throw SysError(format("failed to create symlink '%1%' to '%2%'") % target % readLink(i));
-	    }
-	    else
-		dirsInChroot[i] = i;
+            ctx.filesInChroot[i] = i;
+            ctx.readOnlyFilesInChroot.insert(i);
         }
 
         /* If we're repairing, checking or rebuilding part of a
@@ -1921,14 +2065,56 @@ void DerivationGoal::startBuilder()
            (typically the dependencies of /bin/sh).  Throw them
            out. */
         for (auto & i : drv.outputs)
-            dirsInChroot.erase(i.second.path);
+            ctx.filesInChroot.erase(i.second.path);
 
+        /* Set up a nearly empty /dev, unless the user asked to bind-mount the
+           host /dev. */
+        Strings ss;
+        if(ctx.filesInChroot.find("/dev") == ctx.filesInChroot.end()) {
+            createDirs(chrootRootDir + "/dev/shm");
+            createDirs(chrootRootDir + "/dev/pts");
+            ss.push_back("/dev/full");
+#ifdef __linux__
+            if (pathExists("/dev/kvm"))
+                ss.push_back("/dev/kvm");
+#endif
+            ss.push_back("/dev/null");
+            ss.push_back("/dev/random");
+            ss.push_back("/dev/tty");
+            ss.push_back("/dev/urandom");
+            ss.push_back("/dev/zero");
+            createSymlink("/proc/self/fd", chrootRootDir + "/dev/fd");
+            createSymlink("/proc/self/fd/0", chrootRootDir + "/dev/stdin");
+            createSymlink("/proc/self/fd/1", chrootRootDir + "/dev/stdout");
+            createSymlink("/proc/self/fd/2", chrootRootDir + "/dev/stderr");
+        }
+
+        for (auto & i : ss) ctx.filesInChroot[i] = i;
+
+        ctx.mountProc = true;
+        ctx.mountDevshm = true;
+        /* Mount a new devpts on /dev/pts.  Note that this requires the kernel
+           to be compiled with CONFIG_DEVPTS_MULTIPLE_INSTANCES=y (which is
+           the case if /dev/ptx/ptmx exists). */
+        ctx.maybeMountDevpts =
+            pathExists("/dev/pts/ptmx") &&
+            ctx.filesInChroot.find("/dev/pts") == ctx.filesInChroot.end();
+        ctx.lockMounts = !buildUser.enabled();
+
+        for (auto & i : ctx.filesInChroot) {
+            /* Failsafe: If the source is in the store, it should be
+               read-only */
+            if(i.second.compare(0, settings.nixStore.length(), settings.nixStore) == 0) {
+                ctx.readOnlyFilesInChroot.insert(i.first);
+            }
+        }
 #else
         throw Error("chroot builds are not supported on this platform");
 #endif
     }
 
     else {
+        ctx.phases = getBasicSpawnPhases();
 
         if (pathExists(homeDir))
             throw Error(format("directory `%1%' exists; please remove it") % homeDir);
@@ -1956,6 +2142,7 @@ void DerivationGoal::startBuilder()
                 }
     }
 
+    replacePhase(ctx.phases, "exec", execBuilderOrBuiltinAction);
 
     /* Run the builder. */
     printMsg(lvlChatty, format("executing builder `%1%'") % drv.builder);
@@ -1965,6 +2152,9 @@ void DerivationGoal::startBuilder()
 
     /* Create a pipe to get the output of the builder. */
     builderOut.create();
+
+    ctx.logFD = builderOut.writeSide;
+    ctx.earlyCloseFDs.insert(builderOut.readSide);
 
     /* Fork a child to build the package.  Note that while we
        currently use forks to run and wait for the children, it
@@ -1997,43 +2187,35 @@ void DerivationGoal::startBuilder()
     */
 #if __linux__
     if (useChroot) {
-	char stack[32 * 1024];
-	int flags = CLONE_NEWPID | CLONE_NEWNS | CLONE_NEWIPC | CLONE_NEWUTS | SIGCHLD;
-	if (!fixedOutput) {
-	    flags |= CLONE_NEWNET;
-	}
-	if (!buildUser.enabled() || getuid() != 0) {
-	    flags |= CLONE_NEWUSER;
-	    readiness.create();
-	}
+        int fds[2];
+        AutoCloseFD parentSetupSocket;
+        AutoCloseFD childSetupSocket;
 
-	/* Ensure proper alignment on the stack.  On aarch64, it has to be 16
-	   bytes.  */
- 	pid = clone(childEntry,
-		    (char *)(((uintptr_t)stack + sizeof(stack) - 8) & ~(uintptr_t)0xf),
-		    flags, this);
-	if (pid == -1) {
-	    if ((flags & CLONE_NEWUSER) != 0 && getuid() != 0)
-		/* 'clone' fails with EPERM on distros where unprivileged user
-		   namespaces are disabled.  Error out instead of giving up on
-		   isolation.  */
-		throw SysError("cannot create process in unprivileged user namespace");
-	    else
-		throw SysError("cloning builder process");
-	}
+        if(((ctx.cloneFlags & CLONE_NEWUSER) != 0)) {
+            if (socketpair(AF_LOCAL, SOCK_STREAM, 0, fds))
+                throw SysError("creating setup socket");
+            parentSetupSocket = fds[0];
+            closeOnExec(parentSetupSocket);
+            ctx.earlyCloseFDs.insert(parentSetupSocket);
+            childSetupSocket = fds[1];
+            closeOnExec(childSetupSocket);
+            ctx.setupFD = childSetupSocket;
+        }
 
-	readiness.readSide.close();
-	if ((flags & CLONE_NEWUSER) != 0) {
-	     /* Initialize the UID/GID mapping of the child process.  */
-	     initializeUserNamespace(pid);
-	     writeFull(readiness.writeSide, (unsigned char*)"go\n", 3);
-	}
-	readiness.writeSide.close();
+        pid = cloneChild(ctx);
+
+        if(childSetupSocket >= 0) childSetupSocket.close();
+
+        if ((ctx.cloneFlags & CLONE_NEWUSER) != 0) {
+            /* Initialize the UID/GID mapping of the builder.  */
+            initializeUserNamespace(pid);
+            writeFull(parentSetupSocket, (unsigned char*)"go\n", 3);
+        }
     } else
 #endif
     {
         pid = fork();
-        if (pid == 0) runChild();
+        if (pid == 0) runChildSetup(ctx);
     }
 
     if (pid == -1) throw SysError("unable to fork");
@@ -2049,415 +2231,9 @@ void DerivationGoal::startBuilder()
 
     if (settings.printBuildTrace) {
         printMsg(lvlError, format("@ build-started %1% - %2% %3% %4%")
-            % drvPath % drv.platform % logFile % pid);
+                 % drvPath % drv.platform % logFile % pid);
     }
 
-}
-
-/* Return true if the operating system kernel part of SYSTEM1 and SYSTEM2 (the
-   bit that comes after the hyphen in system types such as "i686-linux") is
-   the same.  */
-static bool sameOperatingSystemKernel(const std::string& system1, const std::string& system2)
-{
-    auto os1 = system1.substr(system1.find("-"));
-    auto os2 = system2.substr(system2.find("-"));
-    return os1 == os2;
-}
-
-void DerivationGoal::runChild()
-{
-    /* Warning: in the child we should absolutely not make any SQLite
-       calls! */
-
-    try { /* child */
-
-        _writeToStderr = 0;
-
-	if (readiness.writeSide >= 0) readiness.writeSide.close();
-
-	if (readiness.readSide >= 0) {
-	     /* Wait for the parent process to initialize the UID/GID mapping
-		of our user namespace.  */
-	     char str[20] = { '\0' };
-	     readFull(readiness.readSide, (unsigned char*)str, 3);
-	     readiness.readSide.close();
-	     if (strcmp(str, "go\n") != 0)
-		  throw Error("failed to initialize process in unprivileged user namespace");
-	}
-
-        restoreAffinity();
-
-        commonChildInit(builderOut);
-
-#if CHROOT_ENABLED
-        if (useChroot) {
-# if HAVE_SYS_PRCTL_H
-	    /* Drop ambient capabilities such as CAP_CHOWN that might have
-	       been granted when starting guix-daemon.  */
-	    prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_CLEAR_ALL, 0, 0, 0);
-# endif
-
-	    if (!fixedOutput) {
-		/* Initialise the loopback interface. */
-		AutoCloseFD fd(socket(PF_INET, SOCK_DGRAM, IPPROTO_IP));
-		if (fd == -1) throw SysError("cannot open IP socket");
-
-		struct ifreq ifr;
-		strcpy(ifr.ifr_name, "lo");
-		ifr.ifr_flags = IFF_UP | IFF_LOOPBACK | IFF_RUNNING;
-		if (ioctl(fd, SIOCSIFFLAGS, &ifr) == -1)
-		    throw SysError("cannot set loopback interface flags");
-
-		fd.close();
-	    }
-
-            /* Set the hostname etc. to fixed values. */
-            char hostname[] = "localhost";
-            if (sethostname(hostname, sizeof(hostname)) == -1)
-                throw SysError("cannot set host name");
-            char domainname[] = "(none)"; // kernel default
-            if (setdomainname(domainname, sizeof(domainname)) == -1)
-                throw SysError("cannot set domain name");
-
-            /* Make all filesystems private.  This is necessary
-               because subtrees may have been mounted as "shared"
-               (MS_SHARED).  (Systemd does this, for instance.)  Even
-               though we have a private mount namespace, mounting
-               filesystems on top of a shared subtree still propagates
-               outside of the namespace.  Making a subtree private is
-               local to the namespace, though, so setting MS_PRIVATE
-               does not affect the outside world. */
-            if (mount(0, "/", 0, MS_REC|MS_PRIVATE, 0) == -1) {
-                throw SysError("unable to make ‘/’ private mount");
-            }
-
-            /* Bind-mount chroot directory to itself, to treat it as a
-               different filesystem from /, as needed for pivot_root. */
-            if (mount(chrootRootDir.c_str(), chrootRootDir.c_str(), 0, MS_BIND, 0) == -1)
-                throw SysError(format("unable to bind mount ‘%1%’") % chrootRootDir);
-
-            /* Set up a nearly empty /dev, unless the user asked to
-               bind-mount the host /dev. */
-            Strings ss;
-            if (dirsInChroot.find("/dev") == dirsInChroot.end()) {
-                createDirs(chrootRootDir + "/dev/shm");
-                createDirs(chrootRootDir + "/dev/pts");
-                ss.push_back("/dev/full");
-#ifdef __linux__
-                if (pathExists("/dev/kvm"))
-                    ss.push_back("/dev/kvm");
-#endif
-                ss.push_back("/dev/null");
-                ss.push_back("/dev/random");
-                ss.push_back("/dev/tty");
-                ss.push_back("/dev/urandom");
-                ss.push_back("/dev/zero");
-                createSymlink("/proc/self/fd", chrootRootDir + "/dev/fd");
-                createSymlink("/proc/self/fd/0", chrootRootDir + "/dev/stdin");
-                createSymlink("/proc/self/fd/1", chrootRootDir + "/dev/stdout");
-                createSymlink("/proc/self/fd/2", chrootRootDir + "/dev/stderr");
-            }
-
-            /* Fixed-output derivations typically need to access the
-               network, so give them access to /etc/resolv.conf and so
-               on. */
-            if (fixedOutput) {
-		auto files = { "/etc/resolv.conf", "/etc/nsswitch.conf",
-			       "/etc/services", "/etc/hosts" };
-		for (auto & file: files) {
-		    if (pathExists(file)) ss.push_back(file);
-		}
-            }
-
-            for (auto & i : ss) dirsInChroot[i] = i;
-
-	    /* Make new mounts for the store and for /tmp.  That way, when
-	       'chrootRootDir' is made read-only below, these two mounts will
-	       remain writable (the store needs to be writable so derivation
-	       outputs can be written to it, and /tmp is writable by
-	       convention).  */
-	    auto chrootStoreDir = chrootRootDir + settings.nixStore;
-	    if (mount(chrootStoreDir.c_str(), chrootStoreDir.c_str(), 0, MS_BIND, 0) == -1)
-                throw SysError(format("read-write mount of store '%1%' failed") % chrootStoreDir);
-	    auto chrootTmpDir = chrootRootDir + "/tmp";
-	    if (mount(chrootTmpDir.c_str(), chrootTmpDir.c_str(), 0, MS_BIND, 0) == -1)
-                throw SysError(format("read-write mount of temporary directory '%1%' failed") % chrootTmpDir);
-
-            /* Bind-mount all the directories from the "host"
-               filesystem that we want in the chroot
-               environment. */
-            for (auto& i : dirsInChroot) {
-                struct stat st;
-                Path source = i.second;
-                Path target = chrootRootDir + i.first;
-                if (source == "/proc") continue; // backwards compatibility
-                if (stat(source.c_str(), &st) == -1)
-                    throw SysError(format("getting attributes of path `%1%'") % source);
-                if (S_ISDIR(st.st_mode))
-                    createDirs(target);
-                else {
-                    createDirs(dirOf(target));
-                    writeFile(target, "");
-                }
-
-		/* Extra flags passed with MS_BIND are ignored, hence the
-		   extra MS_REMOUNT.  */
-                if (mount(source.c_str(), target.c_str(), "", MS_BIND, 0) == -1)
-                    throw SysError(format("bind mount from `%1%' to `%2%' failed") % source % target);
-		if (source.compare(0, settings.nixStore.length(), settings.nixStore) == 0) {
-		     if (mount(source.c_str(), target.c_str(), "", MS_BIND | MS_REMOUNT | MS_RDONLY, 0) == -1)
-			  throw SysError(format("read-only remount of `%1%' failed") % target);
-		}
-            }
-
-            /* Bind a new instance of procfs on /proc to reflect our
-               private PID namespace. */
-            createDirs(chrootRootDir + "/proc");
-            if (mount("none", (chrootRootDir + "/proc").c_str(), "proc", 0, 0) == -1)
-                throw SysError("mounting /proc");
-
-            /* Mount a new tmpfs on /dev/shm to ensure that whatever
-               the builder puts in /dev/shm is cleaned up automatically. */
-            if (pathExists("/dev/shm") && mount("none", (chrootRootDir + "/dev/shm").c_str(), "tmpfs", 0, 0) == -1)
-                throw SysError("mounting /dev/shm");
-
-            /* Mount a new devpts on /dev/pts.  Note that this
-               requires the kernel to be compiled with
-               CONFIG_DEVPTS_MULTIPLE_INSTANCES=y (which is the case
-               if /dev/ptx/ptmx exists). */
-            if (pathExists("/dev/pts/ptmx") &&
-                !pathExists(chrootRootDir + "/dev/ptmx")
-                && dirsInChroot.find("/dev/pts") == dirsInChroot.end())
-            {
-                if (mount("none", (chrootRootDir + "/dev/pts").c_str(), "devpts", 0, "newinstance,mode=0620") == -1)
-                    throw SysError("mounting /dev/pts");
-                createSymlink("/dev/pts/ptmx", chrootRootDir + "/dev/ptmx");
-
-                /* Make sure /dev/pts/ptmx is world-writable.  With some
-                   Linux versions, it is created with permissions 0.  */
-                chmod_(chrootRootDir + "/dev/pts/ptmx", 0666);
-            }
-
-            /* Do the chroot(). */
-            if (chdir(chrootRootDir.c_str()) == -1)
-                throw SysError(format("cannot change directory to '%1%'") % chrootRootDir);
-
-            if (mkdir("real-root", 0) == -1)
-                throw SysError("cannot create real-root directory");
-
-            if (pivot_root(".", "real-root") == -1)
-                throw SysError(format("cannot pivot old root directory onto '%1%'") % (chrootRootDir + "/real-root"));
-
-            if (chroot(".") == -1)
-                throw SysError(format("cannot change root directory to '%1%'") % chrootRootDir);
-
-            if (umount2("real-root", MNT_DETACH) == -1)
-                throw SysError("cannot unmount real root filesystem");
-
-            if (rmdir("real-root") == -1)
-                throw SysError("cannot remove real-root directory");
-
-	    /* Make the root read-only.
-
-	       When build users are disabled, the build process could make it
-	       world-accessible, but that's OK: since 'chrootRootTop' is *not*
-	       world-accessible, a world-accessible 'chrootRootDir' cannot be
-	       used to grant access to the build environment to external
-	       processes.
-
-	       Remounting the root as read-only was rejected because it makes
-	       write access fail with EROFS instead of EACCES, which goes
-	       against what some test suites expect (Go, Ruby, SCons,
-	       Shepherd, to name a few).  */
-	    chmod_("/", 0555);
-
-	    if (getuid() != 0) {
-		/* Create a new mount namespace to "lock" previous mounts.
-		   See mount_namespaces(7).  */
-		auto uid = getuid();
-		auto gid = getgid();
-
-		if (unshare(CLONE_NEWNS | CLONE_NEWUSER) == -1)
-		    throw SysError(format("creating new user and mount namespaces"));
-
-		initializeUserNamespace(getpid(), uid, gid);
-
-		/* Check that mounts within the build environment are "locked"
-		   together and cannot be separated from within the build
-		   environment namespace.  Since
-		   umount(2) is documented to fail with EINVAL when attempting
-		   to unmount one of the mounts that are locked together,
-		   check that this is what we get.  */
-		int ret = umount(tmpDirInSandbox.c_str());
-		assert(ret == -1 && errno == EINVAL);
-	    }
-        }
-#endif
-
-        if (chdir(tmpDirInSandbox.c_str()) == -1)
-            throw SysError(format("changing into `%1%'") % tmpDir);
-
-        /* Close all other file descriptors. */
-        closeMostFDs(set<int>());
-
-#if __linux__
-        /* Change the personality to 32-bit if we're doing an
-           i686-linux build on an x86_64-linux machine. */
-        struct utsname utsbuf;
-        uname(&utsbuf);
-        if (drv.platform == "i686-linux" &&
-            (settings.thisSystem == "x86_64-linux" ||
-             (!strcmp(utsbuf.sysname, "Linux") && !strcmp(utsbuf.machine, "x86_64")))) {
-            if (personality(PER_LINUX32) == -1)
-                throw SysError("cannot set i686-linux personality");
-        }
-
-        if (drv.platform == "armhf-linux" &&
-            (settings.thisSystem == "aarch64-linux" ||
-             (!strcmp(utsbuf.sysname, "Linux") && !strcmp(utsbuf.machine, "aarch64")))) {
-            if (personality(PER_LINUX32) == -1)
-                throw SysError("cannot set armhf-linux personality");
-        }
-
-        /* Impersonate a Linux 2.6 machine to get some determinism in
-           builds that depend on the kernel version. */
-        if ((drv.platform == "i686-linux" || drv.platform == "x86_64-linux") && settings.impersonateLinux26) {
-            int cur = personality(0xffffffff);
-            if (cur != -1) personality(cur | 0x0020000 /* == UNAME26 */);
-        }
-
-        /* Disable address space randomization for improved
-           determinism. */
-        int cur = personality(0xffffffff);
-        if (cur != -1) personality(cur | ADDR_NO_RANDOMIZE);
-
-        /* Ask the kernel to eagerly kill us & our children if it runs out of
-           memory, regardless of blame, to preserve ‘real’ user data & state. */
-        try {
-            writeFile("/proc/self/oom_score_adj", "1000"); // 100%
-        } catch (...) { ignoreException(); }
-#endif
-
-        /* Fill in the environment. */
-        Strings envStrs;
-        for (const auto& i : env)
-            envStrs.push_back(rewriteHashes(i.first + "=" + i.second, rewritesToTmp));
-
-        /* If we are running in `build-users' mode, then switch to the
-           user we allocated above.  Make sure that we drop all root
-           privileges.  Note that above we have closed all file
-           descriptors except std*, so that's safe.  Also note that
-           setuid() when run as root sets the real, effective and
-           saved UIDs. */
-        if (buildUser.enabled()) {
-            /* Preserve supplementary groups of the build user, to allow
-               admins to specify groups such as "kvm".  */
-            if (setgroups(buildUser.getSupplementaryGIDs().size(),
-                          buildUser.getSupplementaryGIDs().data()) == -1)
-                throw SysError("cannot set supplementary groups of build user");
-
-            if (setgid(buildUser.getGID()) == -1 ||
-                getgid() != buildUser.getGID() ||
-                getegid() != buildUser.getGID())
-                throw SysError("setgid failed");
-
-            if (setuid(buildUser.getUID()) == -1 ||
-                getuid() != buildUser.getUID() ||
-                geteuid() != buildUser.getUID())
-                throw SysError("setuid failed");
-        }
-
-        restoreSIGPIPE();
-
-        /* Indicate that we managed to set up the build environment. */
-        writeFull(STDERR_FILENO, "\n");
-
-        /* Execute the program.  This should not return. */
-	string builderBasename;
-        if (isBuiltin(drv)) {
-            try {
-                logType = ltFlat;
-
-		auto buildDrv = lookupBuiltinBuilder(drv.builder);
-                if (buildDrv != NULL) {
-		    /* Check what the output file name is.  When doing a
-		       'bmCheck' build, the output file name is different from
-		       that specified in DRV due to hash rewriting.  */
-		    Path output = drv.outputs["out"].path;
-		    auto redirected = redirectedOutputs.find(output);
-		    if (redirected != redirectedOutputs.end())
-			output = redirected->second;
-
-                    buildDrv(drv, drvPath, output);
-		}
-                else
-                    throw Error(format("unsupported builtin function '%1%'") % string(drv.builder, 8));
-                _exit(0);
-            } catch (std::exception & e) {
-                writeFull(STDERR_FILENO, "error: " + string(e.what()) + "\n");
-                _exit(1);
-            }
-        } else {
-	    /* Ensure that the builder is within the store.  This prevents
-	       users from using /proc/self/exe (or a symlink to it) as their
-	       builder, which could allow them to overwrite the guix-daemon
-	       binary (CVE-2019-5736).
-
-	       This attack is possible even if the target of /proc/self/exe is
-	       outside the chroot (it's as if it were a hard link), though it
-	       requires that its ELF interpreter and dependencies be in the
-	       chroot.
-
-	       Note: 'canonPath' throws if 'drv.builder' cannot be resolved
-	       within the chroot.  */
-	    builderBasename = baseNameOf(drv.builder);
-	    drv.builder = canonPath(drv.builder, true);
-
-	    if (!isInStore(drv.builder))
-		throw Error(format("derivation builder '%1%' is outside the store") % drv.builder);
-	}
-
-        /* Fill in the arguments. */
-        Strings args;
-        args.push_back(builderBasename);
-        for (auto& i : drv.args)
-            args.push_back(rewriteHashes(i, rewritesToTmp));
-
-	/* If DRV targets the same operating system kernel, try to execute it:
-	   there might be binfmt_misc set up for user-land emulation of other
-	   architectures.  However, if it targets a different operating
-	   system--e.g., "i586-gnu" vs. "x86_64-linux"--do not try executing
-	   it: the ELF file for that OS is likely indistinguishable from a
-	   native ELF binary and it would just crash at run time.  */
-	int error;
-	if (sameOperatingSystemKernel(drv.platform, settings.thisSystem)) {
-	    execve(drv.builder.c_str(), stringsToCharPtrs(args).data(),
-		   stringsToCharPtrs(envStrs).data());
-	    error = errno;
-	} else {
-	    error = ENOEXEC;
-	}
-
-	/* Right platform?  Check this after we've tried 'execve' to allow for
-	   transparent emulation of different platforms with binfmt_misc
-	   handlers that invoke QEMU.  */
-	if (error == ENOEXEC && !canBuildLocally(drv.platform)) {
-	    if (settings.printBuildTrace)
-		printMsg(lvlError, format("@ unsupported-platform %1% %2%") % drvPath % drv.platform);
-	    throw Error(
-		format("a `%1%' is required to build `%3%', but I am a `%2%'")
-		% drv.platform % settings.thisSystem % drvPath);
-	}
-
-	errno = error;
-        throw SysError(format("executing `%1%'") % drv.builder);
-
-    } catch (std::exception & e) {
-        writeFull(STDERR_FILENO, "while setting up the build environment: " + string(e.what()) + "\n");
-        _exit(1);
-    }
-
-    abort(); /* never reached */
 }
 
 

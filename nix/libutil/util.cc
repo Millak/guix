@@ -724,6 +724,18 @@ string drainFD(int fd)
 }
 
 
+/* Wait on FD until MESSAGE has been read.  */
+void waitForMessage(int fd, const char *message)
+{
+    size_t size = strlen(message);
+    char str[size] = { '\0' };
+    readFull(fd, (unsigned char*)str, size);
+    if (strncmp(str, message, size) != 0)
+	throw Error(format("did not receive message '%1%' on file descriptor %2%")
+	    % message % fd);
+}
+
+
 
 //////////////////////////////////////////////////////////////////////
 
@@ -1140,6 +1152,13 @@ void closeOnExec(int fd)
         throw SysError("setting close-on-exec flag");
 }
 
+void keepOnExec(int fd)
+{
+    int prev;
+    if ((prev = fcntl(fd, F_GETFD, 0)) == -1 ||
+        fcntl(fd, F_SETFD, prev & ~FD_CLOEXEC) == -1)
+        throw SysError("clearing close-on-exec flag");
+}
 
 //////////////////////////////////////////////////////////////////////
 
