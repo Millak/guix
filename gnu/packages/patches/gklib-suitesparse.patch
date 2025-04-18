@@ -1,5 +1,5 @@
 This patch contains the relevant changes to GKlib made in SuiteSparse
-(CHOLMOD) for the version 7.2.0
+(CHOLMOD) for the version 7.10.2
 (https://github.com/DrTimothyAldenDavis/SuiteSparse/commit/8a7641cdb4809533c681417e94f98058c07c5da2).
 The disabling of signal handling when MATLAB_MEX_FILE is defined is omitted.
 
@@ -10,7 +10,7 @@ diff -ur a/CMakeLists.txt b/CMakeLists.txt
  
  option(BUILD_SHARED_LIBS "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)" OFF)
  
-+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
++find_package ( SuiteSparse_config 7.10.2 REQUIRED )
 +
  get_filename_component(abs "." ABSOLUTE)
  set(GKLIB_PATH ${abs})
