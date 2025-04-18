@@ -158,7 +158,7 @@ Health Federation.")
                          glibc-utf8-locales ;for one test
                          googletest
                          python))
-    (inputs (list boost
+    (inputs (list boost-1.83
                   civetweb
                   curl
                   dcmtk
@@ -244,7 +244,7 @@ mechanism for extending its functionality.")
        (list googletest
              python))
       (inputs
-       (list boost
+       (list boost-1.83
              jsoncpp
              openssl
              orthanc
@@ -334,7 +334,7 @@ Medicine} server instead of SQLite.")
        (list googletest
              python))
       (inputs
-       (list boost
+       (list boost-1.83
              curl
              jsoncpp
              mysql

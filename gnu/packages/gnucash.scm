@@ -188,7 +188,7 @@
     (inputs
      (list aqbanking
            bash-minimal
-           boost
+           boost-1.83
            glib
            gtk+
            guile-3.0

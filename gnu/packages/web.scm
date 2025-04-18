@@ -2104,7 +2104,7 @@ features.")
         (base32 "1ww4fhl8qf12hkv6jaild8zzsygdspxm1gqpk2f63gv1xfi31wpm"))
        (patches (search-patches "websocketpp-fix-for-cmake-3.15.patch"))))
     (build-system cmake-build-system)
-    (inputs (list boost openssl))
+    (inputs (list boost-1.83 openssl))
     (arguments '(#:parallel-tests? #f
                  #:configure-flags '("-DBUILD_TESTS=ON")
                  #:phases

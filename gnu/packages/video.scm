@@ -1090,7 +1090,7 @@ H.264 (MPEG-4 AVC) video streams.")
     (build-system gnu-build-system)
     (outputs '("out" "gui")) ; "mkvtoolnix-gui" brings the closure size from ~300 MB to 1.5+ GB.
     (inputs
-     (list boost
+     (list boost-1.83
            gmp
            bzip2
            cmark
@@ -5606,7 +5606,7 @@ programmers to access a standard API to open and decompress media files.")
                     "#include <boost/gil.hpp>"))
                  #t)))))
     (inputs
-     (list boost
+     (list boost-1.83
            ffms2
            fftw
            hunspell

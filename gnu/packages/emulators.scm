@@ -1558,7 +1558,7 @@ Glide64 video plugin.")
     (native-inputs
      (list pkg-config which))
     (inputs
-     (list boost
+     (list boost-1.83
            libpng
            mesa
            mupen64plus-core

@@ -1570,7 +1570,7 @@ non-encrypted files.")
     (native-inputs
      (list pkg-config python-wrapper))
     (inputs
-     (list boost curl fuse-2 range-v3 spdlog))
+     (list boost-1.83 curl fuse-2 range-v3 spdlog))
     (home-page "https://www.cryfs.org/")
     (synopsis "Encrypted FUSE filesystem for the cloud")
     (description "CryFS encrypts your files, so you can safely store them anywhere.

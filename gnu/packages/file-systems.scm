@@ -1553,7 +1553,7 @@ APFS.")
            libxml2
            json-c
            acl
-           boost
+           boost-1.83
            ncurses/tinfo
            libxslt
            docbook-xsl

@@ -100,7 +100,7 @@
                      (("^FetchContent_MakeAvailable\\(fmt\\)")
                       "find_package(fmt REQUIRED)")))))))
     (inputs
-     (list boost fmt snappy))
+     (list boost-1.83 fmt snappy))
     (home-page "https://avro.apache.org/")
     (synopsis "Data serialization system")
     (description "Apache Avro is a data serialization system.  Avro provides:
@@ -196,7 +196,7 @@ serialization.")
   (package
     (inherit msgpack-c)
     (name "msgpack-cxx")
-    (version "6.1.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
@@ -205,7 +205,7 @@ serialization.")
          "https://github.com/msgpack/msgpack-c/releases/download/"
          "cpp-" version "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rrrf3nskcv994z3pbq6a5z2021piz118rccmm1y7zlf7klygv93"))))
+        (base32 "0vqmpdwsrfjavbkhqy38ax1zpcbz3cg98kwxab70543vgspvf13m"))))
     (build-system cmake-build-system)
     (propagated-inputs (list boost zlib)) ;included in headers
     (description "Msgpack is a library for C++ that implements binary

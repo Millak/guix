@@ -433,7 +433,7 @@ and dynamically with report tools based on filtering and graphical charts.")
                      (search-input-directory inputs
                                              "share/zoneinfo")))))))
     (inputs
-     (list boost
+     (list boost-1.83
            gmp
            libedit
            mpfr

@@ -2215,7 +2215,7 @@ custom formats for representing color values..")
               (substitute* "SConscript"
                 (("lua5.2")
                  "lua-5.2")))))))
-    (native-inputs (list boost gettext-minimal pkg-config ragel))
+    (native-inputs (list boost-1.83 gettext-minimal pkg-config ragel))
     (inputs (list expat gtk+-2 lua-5.2))
     (home-page "http://www.gpick.org/")
     (synopsis "Color picker")

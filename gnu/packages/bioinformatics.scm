@@ -5472,7 +5472,7 @@ confidence to have in an alignment.")
     (native-inputs
      (list perl))
     (inputs
-     (list openmpi boost sparsehash pigz zlib))
+     (list openmpi boost-1.83 sparsehash pigz zlib))
     (supported-systems '("x86_64-linux"))
     (home-page "https://sourceforge.net/p/bless-ec/wiki/Home/")
     (synopsis "Bloom-filter-based error correction tool for NGS reads")
@@ -8267,7 +8267,7 @@ dynamic programming or a variety of heuristics.")
                 (("#include \"update_check.h\"") "")
                 (("check_version\\(PACKAGE_VERSION\\);") "")))))))
     (inputs
-     (list boost bamtools protobuf zlib))
+     (list boost-1.83 bamtools protobuf zlib))
     (home-page "http://bio.math.berkeley.edu/eXpress")
     (synopsis "Streaming quantification for high-throughput genomic sequencing")
     (description
@@ -9677,7 +9677,7 @@ experiments and provide highly stable thresholds based on reproducibility.")
                  (("isnan") "std::isnan")
                  (("isinf") "std::isinf")))))))
       (inputs
-       (list boost hdf5 zlib))
+       (list boost-1.83 hdf5 zlib))
       (home-page "https://github.com/dcjones/isolator")
       (synopsis "Tools for the analysis of RNA-Seq experiments")
       (description "Isolator analyzes RNA-Seq experiments.  Isolator has a
@@ -10291,7 +10291,7 @@ form of assemblies or reads.")
                (("set\\(Boost.*") "")
                (("add_dependencies.*") "")))))))
     (inputs
-     (list zlib perl samtools htslib boost))
+     (list zlib perl samtools htslib boost-1.83))
     (home-page "https://bitbucket.org/berkeleylab/metabat")
     (synopsis
      "Reconstruction of single genomes from complex microbial communities")
@@ -10912,7 +10912,7 @@ phylogenies.")
                            "rsem-run-ebseq"
                            "rsem-run-prsem-testing-procedure"))))))))
     (inputs
-     (list bash-minimal boost r-minimal perl htslib-1.3 zlib))
+     (list bash-minimal boost-1.83 r-minimal perl htslib-1.3 zlib))
     (home-page "https://deweylab.biostat.wisc.edu/rsem/")
     (synopsis "Estimate gene expression levels from RNA-Seq data")
     (description
@@ -16860,7 +16860,7 @@ dependency like SeqAn.")
                                     ":"
                                     (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))
     (inputs
-     `(("boost" ,boost)
+     `(("boost" ,boost-1.83)
        ("eigen" ,eigen)
        ("jemalloc" ,jemalloc)
        ("jellyfish" ,jellyfish)
@@ -17041,7 +17041,7 @@ The following file formats are supported:
                 (("SALMON_QUASI_INDEX_COMMAND")
                  "SALMON_QUASI_INDEX_CMD")))))))
     (inputs
-     (list boost
+     (list boost-1.83
            bzip2
            cereal
            curl
@@ -21476,7 +21476,7 @@ on the needs of the user.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (inputs
-     (list boost htslib ncurses zlib))
+     (list boost-1.83 htslib ncurses zlib))
     (native-inputs
      (list lcov))
     (home-page "https://github.com/ParkerLab/ataqv")
@@ -22690,7 +22690,7 @@ frames with arbitrary sets of columns.")
            "16wqf70j7rd7pay2q513iyz12i8n9vrpg1bisah4lddbcpx5dz1n"))))
       (build-system r-build-system)
       (inputs
-       (list boost))
+       (list boost-1.83))
       (propagated-inputs
        (list r-hdf5r
              r-mass

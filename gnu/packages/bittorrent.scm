@@ -524,7 +524,7 @@ and will take advantage of multiple processor cores where possible.")
                           "-E" exclude-regex
                           "-j" jobs
                           "--output-on-failure"))))))))
-    (inputs (list boost openssl))
+    (inputs (list boost-1.83 openssl))
     (native-inputs
      (list libfaketime
            python-wrapper

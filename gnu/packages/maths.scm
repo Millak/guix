@@ -2386,7 +2386,7 @@ Blosc-compressed datasets.")
               "-DHIGHFIVE_UNIT_TESTS=ON"
               "-GNinja")))
     (native-inputs
-     (list boost
+     (list boost-1.83
            catch2-3
            ninja))
     (inputs

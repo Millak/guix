@@ -2868,7 +2868,7 @@ partial release of the General MIDI sound set.")
                     (("'rU'") "'r'")))))))
     (inputs
      (list libsndfile
-           boost
+           boost-1.83
            curl
            avahi
            eigen
@@ -4438,7 +4438,7 @@ link REQUIRED)"))))))
                   eudev                 ;for user interactions with devices
                   avahi                 ;zeroconf service discovery support
                   icu4c
-                  boost
+                  boost-1.83
                   boost-sync
                   yaml-cpp
                   python-wrapper        ;there were warnings in the build process

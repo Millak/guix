@@ -1179,7 +1179,7 @@ understand and improve testbench coverage.")
              yosys))
       (inputs
        (list apycula
-             boost
+             boost-1.83
              corrosion
              eigen
              pybind11
@@ -1481,7 +1481,7 @@ chip database for NG-Ultra architecture from NanoXplore.")
                 (copy-recursively "tools"
                                   (string-append datadir "/tools"))))))))
     (inputs
-     (list boost))
+     (list boost-1.83))
     (synopsis "GateMate FPGAs bitstream tools")
     (description
      "@code{Prjpeppercorn} includes programming tools for GateMate
@@ -1529,7 +1529,7 @@ architecture from Cologne Chip.  It also provides data needed to produce a
               (lambda _
                 (chdir "libtrellis"))))))
       (native-inputs (list python))
-      (inputs (list openocd boost pybind11))
+      (inputs (list openocd boost-1.83 pybind11))
       (synopsis "Placement and routing for ECP5 FPGAs")
       (description
        "Project Trellis is a Nextpnr backend compatible with ECP5 FPGAs.
@@ -1624,7 +1624,7 @@ formats.")
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
-     (list boost
+     (list boost-1.83
            glib
            glibmm
            libsigrok

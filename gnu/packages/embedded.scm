@@ -2170,7 +2170,7 @@ TS-4900 family.  The included commands are:
     (build-system gnu-build-system)
     (inputs (list libusb))
     (native-inputs (list pkg-config
-                         boost
+                         boost-1.83
                          automake
                          autoconf
                          libtool))

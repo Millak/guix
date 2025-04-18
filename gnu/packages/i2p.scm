@@ -48,7 +48,7 @@
     (build-system cmake-build-system)
     (native-inputs (list check pkg-config))
     (inputs
-     (list boost miniupnpc openssl zlib))
+     (list boost-1.83 miniupnpc openssl zlib))
     (arguments
      (list
       #:configure-flags

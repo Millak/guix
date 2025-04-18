@@ -2667,7 +2667,7 @@ asynchronicity.")
    (native-inputs
     (list googletest pkg-config))
    (inputs
-    (list boost protobuf icu4c))
+    (list boost-1.83 protobuf icu4c))
    (synopsis "Library for parsing and using phone numbers")
    (description
     "This package provides a C++ library for parsing, formatting, and

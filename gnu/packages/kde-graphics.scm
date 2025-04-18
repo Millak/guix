@@ -561,7 +561,7 @@ painting, image manipulating and icon editing.")
            qwt))
     (inputs
      (list bash-minimal
-           boost
+           boost-1.83
            exiv2
            fontconfig
            fftw-cmake

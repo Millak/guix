@@ -939,7 +939,7 @@ baking tools to produce normal maps.")
            pybind11
            python-wrapper))
     (inputs
-     (list boost
+     (list boost-1.83
            imath
            openexr
            openimageio

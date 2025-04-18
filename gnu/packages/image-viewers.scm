@@ -682,7 +682,7 @@ and WebP.")
      (list qtbase-5
            qtdeclarative-5
            qtsvg-5
-           boost
+           boost-1.83
            eigen
            ;; gtest
            libraw

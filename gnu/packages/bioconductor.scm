@@ -11862,7 +11862,7 @@ specific parser.")
                                "\nBOOST_LIBS=-lboost_system -lboost_regex \
 -lboost_iostreams -lboost_thread -lboost_filesystem -lboost_chrono\n"))))))))
     (inputs
-     (list boost ; use this instead of the bundled boost sources
+     (list boost-1.83 ; use this instead of the bundled boost sources
            zlib))
     (propagated-inputs
      (list r-biobase

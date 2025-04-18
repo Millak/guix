@@ -770,7 +770,7 @@ FFC is part of the FEniCS Project.")
                       (string-append front "$ENV{CATCH_DIR}/include" back "\n")))))))
     (build-system cmake-build-system)
     (inputs (list openblas
-                  boost
+                  boost-1.83
                   eigen
                   hdf5-parallel-openmpi
                   libxml2

@@ -2334,7 +2334,7 @@ well as Simple Simon boards.")
          (delete 'configure))
        #:tests? #f)) ;; No check target.
     (inputs
-     `(("boost" ,boost)
+     `(("boost" ,boost-1.83)
        ("sdl-union" ,(sdl-union (list sdl sdl-image sdl-mixer)))
        ("freetype" ,freetype)
        ("fontconfig" ,fontconfig)
@@ -4612,7 +4612,7 @@ Widgets, and allows users to create more.")
            libogg
            glew
            libvorbis
-           boost
+           boost-1.83
            fifechan
            swig
            python))
@@ -5188,7 +5188,7 @@ falling, themeable graphics and sounds, and replays.")
                      (("#include \"(lua|lualib|lauxlib)\\.h\"")
                       "#include \"lua.hpp\"")))))))
     (inputs
-     (list boost
+     (list boost-1.83
            curl
            dbus
            libvorbis
@@ -5220,7 +5220,7 @@ next campaign.")
     (inherit wesnoth)
     (name "wesnoth-server")
     (inputs
-     (list boost icu4c lua-5.4 openssl))
+     (list boost-1.83 icu4c lua-5.4 openssl))
     (native-inputs
      (list pkg-config))
     (arguments
@@ -6881,7 +6881,7 @@ with the \"Stamp\" tool within Tux Paint.")
               (("sq_getinstanceup\\(vm, 1, &data, nullptr" all)
                (string-append all ", 0"))))))))
    (build-system cmake-build-system)
-   (inputs (list boost
+   (inputs (list boost-1.83
                  curl
                  freetype
                  glew
@@ -8160,7 +8160,7 @@ fight against their plot and save his fellow rabbits from slavery.")
            wxwidgets
            zlib))
     (native-inputs
-     (list boost
+     (list boost-1.83
            cmake-minimal
            cxxtest
            mesa
@@ -9102,7 +9102,7 @@ Github or Gitlab.")
            po4a
            python-wrapper))
     (inputs
-     (list boost
+     (list boost-1.83
            glew
            libogg
            libpng
@@ -11422,7 +11422,7 @@ often the contract is set (for team play).")
     (native-inputs
      (list googletest))
     (inputs
-     (list boost
+     (list boost-1.83
            opencl-icd-loader
            openblas
            opencl-headers
@@ -12173,7 +12173,7 @@ game.")  ;thanks to Debian for description
        (patches (search-patches "pokerth-boost.patch"))))
     (build-system qt-build-system)
     (inputs
-     (list boost
+     (list boost-1.83
            curl
            gsasl
            libgcrypt
@@ -12752,7 +12752,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
            ;; Pass -DENABLE_TEST to configure to enable.
            #:tests? #f))
     (native-inputs
-     (list boost
+     (list boost-1.83
            ffmpeg
            fuzzylite
            ;; googletest ; needed for tests, but tests are disabled

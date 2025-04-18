@@ -842,7 +842,7 @@ SCTP-aware kernel (most are).")
                      (("-o \\$\\(INSTUSR\\) -g \\$\\(INSTGRP\\)") "")))))))
     (home-page "https://www.kismetwireless.net/")
     (native-inputs (list perl pkg-config python python-2))
-    (inputs (list boost
+    (inputs (list boost-1.83
                   libusb
                   libpcap
                   libwebsockets

@@ -282,7 +282,7 @@ is used in some video games and movies.")
       (native-inputs
        (list gawk procps))
       (inputs
-       (list boost))
+       (list boost-1.83))
       (home-page "https://privat.bahnhof.se/wb758135/")
       (synopsis "Double dummy solver for the bridge card game")
       (description "DDS is a double-dummy solver of bridge hands.  It supports

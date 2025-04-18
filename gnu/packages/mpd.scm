@@ -311,7 +311,7 @@ terminal using ncurses.")
                (base32
                 "1chs7xpbsd1kmrdi4z41s0qcl7b661548jj6va1najgm5r5mwxy3"))))
     (build-system gnu-build-system)
-    (inputs (list boost
+    (inputs (list boost-1.83
                   curl
                   fftw
                   icu4c

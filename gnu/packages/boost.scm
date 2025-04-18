@@ -69,22 +69,15 @@
 (define-public boost
   (package
     (name "boost")
-    (version "1.83.0")
+    (version "1.89.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archives.boost.io/release/"
                                   version "/source/boost_"
                                   (version-with-underscores version) ".tar.bz2"))
-              (patches
-                (append
-                 (search-patches "boost-fix-duplicate-definitions-bug.patch")
-                 (list (boost-patch
-                        "0001-unordered-fix-copy-assign.patch" version
-                        "09j61m5xh7099k5na9i43x5rra51znf7vm2nyh89yqpizcll9q66"))))
-              (patch-flags '("-p2"))
               (sha256
                (base32
-                "13iviiwk1srpw9dmiwabkxv56v0pl0zggjp8zxy1419k5zzfsy34"))))
+                "0yhcb8dn7g5k9dfr54j99wpd4qwk59g1lpp8z0ag7d114si3z8w5"))))
     (build-system gnu-build-system)
     (inputs
      (append
@@ -208,7 +201,7 @@ across a broad spectrum of applications.")
     (license (license:x11-style "https://www.boost.org/LICENSE_1_0.txt"
                                 "Some components have other similar licences."))))
 
-(define-public boost-for-source-highlight
+(define-public boost-1.83
   (hidden-package (package (inherit boost)
     (name "boost")
     (version "1.83.0")
@@ -292,7 +285,7 @@ across a broad spectrum of applications.")
 
 (define-public boost-numpy
   (package
-    (inherit boost)
+    (inherit boost-1.83)
     (name "boost-numpy")
     (native-inputs
      (modify-inputs (package-native-inputs boost)
@@ -399,7 +392,7 @@ signals and slots system.")
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake))
     (propagated-inputs
-      (list boost)) ; inclusion of header files
+      (list boost-1.83)) ; inclusion of header files
     (home-page "https://gitlab.com/mdds/mdds")
     (synopsis "Multi-dimensional C++ data structures and indexing algorithms")
     (description "Mdds (multi-dimensional data structure) provides a

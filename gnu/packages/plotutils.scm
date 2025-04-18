@@ -89,7 +89,7 @@
      (list autoconf-2.71
            automake
            bison
-           boost
+           boost-1.83
            cmake-minimal
            emacs-minimal
            flex

@@ -171,7 +171,7 @@ Java Lucene text search engine API to C++.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list boost zlib))
+     (list boost-1.83 zlib))
     (home-page "https://github.com/luceneplusplus/LucenePlusPlus")
     (synopsis "Text search engine")
     (description "Lucene++ is an up to date C++ port of the popular Java

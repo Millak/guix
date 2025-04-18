@@ -217,14 +217,14 @@ All required fonts must be installed on the converting system.")
 (define-public librevenge
   (package
     (name "librevenge")
-    (version "0.0.4")
+    (version "0.0.5")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/libwpd/librevenge/librevenge-"
                           version "/librevenge-" version ".tar.xz"))
       (sha256 (base32
-               "1cj76cz4mqcy2mgv9l5xlc95bypyk8zbq0ls9cswqrs2y0lhfgwk"))))
+               "0d7bmqd6r23y076j4nk6fxhq2fx8dxk6a14yicsb2234pd20qv8h"))))
     (build-system gnu-build-system)
     (native-inputs
      (list cppunit doxygen pkg-config))
@@ -234,9 +234,7 @@ All required fonts must be installed on the converting system.")
      (list boost))
     (arguments
      ;; avoid triggering configure errors by simple inclusion of boost headers
-     `(#:configure-flags '("--disable-werror"
-                           ;; Avoid undefined library references
-                           "LDFLAGS=-lboost_system")))
+     `(#:configure-flags '("--disable-werror")))
     (home-page "https://sourceforge.net/p/libwpd/wiki/librevenge/")
     (synopsis "Document importer for office suites")
     (description "Librevenge is a base library for writing document import
@@ -363,50 +361,53 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
     (license (list license:mpl2.0 license:lgpl2.1+)))) ; dual-licensed
 
 (define-public libcmis
-  (package
-    (name "libcmis")
-    ;; Note: Use an unreleased version because libreoffice requires it and
-    ;; is the only user (see <https://github.com/tdf/libcmis/pull/43>).
-    (version "0.6.2")
-    (home-page "https://github.com/tdf/libcmis")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference (url home-page)
-                           (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0g0wr31gfhxcdfvr0l36zallz349rrxd2d8n03b0b5ffm10b4y0x"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool cppunit pkg-config))
-    (propagated-inputs                  ;in Requires field of .pkg
-     (list curl libxml2))
-    (inputs
-     (list boost cyrus-sasl openssl))
-    (arguments
-     (list
-      #:configure-flags
-      #~(list
-         ;; FIXME: Man pages generation requires docbook-to-man; reenable
-         ;; it once this is available.
-         "--without-man"
-         ;; XXX: A configure test fails with GCC7 when including Boost headers.
-         "--disable-werror")
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'bootstrap
-            (lambda _
-              ;; Override the bootstrap phase as the ancient autogen.sh
-              ;; script exits with a non-zero code when NOCONFIGURE=1.
-              (invoke "autoreconf" "-vif"))))))
-    (synopsis "CMIS client library")
-    (description "LibCMIS is a C++ client library for the CMIS interface.  It
+  ;; Use an unreleased version supporting newer versions of Boost.
+  (let ((commit "00a85bf6574270f47740df8cbb5363ce8d1b1ea6")
+        (revision "0"))
+    (package
+      (name "libcmis")
+      ;; Note: Use an unreleased version because libreoffice requires it and
+      ;; is the only user (see <https://github.com/tdf/libcmis/pull/43>).
+      (version (git-version "0.6.2" revision commit))
+      (home-page "https://github.com/tdf/libcmis")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference (url home-page)
+                             (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "10ckwqhvdjk5vp774cr7v6k6jwf1kdwigkn0b7npnk4vhlz5b94x"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf automake libtool cppunit pkg-config))
+      (propagated-inputs                  ;in Requires field of .pkg
+       (list curl libxml2))
+      (inputs
+       (list boost cyrus-sasl openssl))
+      (arguments
+       (list
+        #:configure-flags
+        #~(list
+           ;; FIXME: Man pages generation requires docbook-to-man; reenable
+           ;; it once this is available.
+           "--without-man"
+           ;; XXX: A configure test fails with GCC7 when including Boost headers.
+           "--disable-werror")
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'bootstrap
+              (lambda _
+                ;; Override the bootstrap phase as the ancient autogen.sh
+                ;; script exits with a non-zero code when NOCONFIGURE=1.
+                (invoke "autoreconf" "-vif"))))))
+      (synopsis "CMIS client library")
+      (description "LibCMIS is a C++ client library for the CMIS interface.  It
 allows C++ applications to connect to any ECM behaving as a CMIS server such
 as Alfresco or Nuxeo.")
-    (license
-     (list license:mpl1.1 license:gpl2+ license:lgpl2.1+)))) ; triple license
+      (license
+       (list license:mpl1.1 license:gpl2+ license:lgpl2.1+))))) ; triple license
 
 (define-public libabw
   (package

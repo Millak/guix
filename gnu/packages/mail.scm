@@ -1066,7 +1066,7 @@ mailpack.  What can alterMIME do?
            xorg-server-for-tests))
     (inputs
      (list bash-minimal
-           boost
+           boost-1.83
            gmime
            gobject-introspection        ; it is referenced
            gtkmm-3

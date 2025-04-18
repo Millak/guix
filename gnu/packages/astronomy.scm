@@ -257,7 +257,7 @@ reused in several astronomical applications, such as @code{wsclean},
                          (string-append (getcwd) "/external/aocommon")))))))
       (native-inputs
        (list aocommon
-             boost
+             boost-1.83
              pkg-config
              python
              pybind11))

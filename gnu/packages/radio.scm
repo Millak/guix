@@ -947,7 +947,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
     (inputs
      (list alsa-lib
            bash-minimal
-           boost
+           boost-1.83
            cairo
            codec2
            cppzmq

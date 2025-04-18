@@ -2938,7 +2938,7 @@ ontinuous-time and discret-time expressions.")
               (lambda _
                 ;; Required for fontconfig
                 (setenv "HOME" "/tmp"))))))
-      (inputs (list boost
+      (inputs (list boost-1.83
                     cairomm
                     cgal
                     clipper2
@@ -3204,7 +3204,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            swig))
     (inputs
      (list bash-minimal
-           boost
+           boost-1.83
            coin3d
            double-conversion
            eigen
@@ -4145,7 +4145,7 @@ perform various useful functions such as:
     ;;      We would need to patch the CMake recipe to build a shared library
     ;;      with all of these.
     (inputs
-     `(("boost" ,boost)
+     `(("boost" ,boost-1.83)
        ("cgal" ,cgal)
        ("eigen" ,eigen)
        ("embree" ,embree-3)
@@ -4380,7 +4380,7 @@ G-codes to binary and vice versa.")
     (native-inputs
      (list pkg-config catch2-3.8))
     (inputs
-     (list boost
+     (list boost-1.83
            cereal
            cgal
            curl
@@ -5240,7 +5240,7 @@ and mogan.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list glibmm-2.66 gmp python boost gtkmm-3 sqlite python-gmpy2 python-sympy
+     (list glibmm-2.66 gmp python boost-1.83 gtkmm-3 sqlite python-gmpy2 python-sympy
            python-mpmath python-matplotlib texlive-dvipng
            `(,util-linux "lib")))
     (synopsis "Computer algebra system geared towards field theory")

@@ -922,7 +922,7 @@ off' shooting directly from the controlling computer.")
     (native-inputs
      (list gettext-minimal pkg-config))
     (inputs
-     (list boost
+     (list boost-1.83
            enblend-enfuse
            exiv2
            fftw

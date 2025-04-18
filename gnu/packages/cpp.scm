@@ -2665,7 +2665,7 @@ composable sequential transformations.")
                           (lambda _
                             (delete-file-recursively "test/event_loop")))
                         (replace 'check (assoc-ref gnu:%standard-phases 'check)))))
-   (inputs (list boost immer zug))
+   (inputs (list boost-1.83 immer zug))
    (native-inputs (list catch2 cereal))
    (home-page "https://sinusoid.es/lager")
    (synopsis "Library for value-oriented design")

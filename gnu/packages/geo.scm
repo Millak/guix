@@ -4166,7 +4166,7 @@ latitude and longitude.")
     (arguments
      (list #:tests? #f))                    ;no test target
     (inputs
-     (list boost
+     (list boost-1.83
            cgal
            curl
            gdal

@@ -71,7 +71,7 @@
 
     (native-inputs (list autoconf automake pkg-config))
     (inputs (list bash-minimal
-                  boost
+                  boost-1.83
                   enchant
                   gettext-minimal
                   gtk+

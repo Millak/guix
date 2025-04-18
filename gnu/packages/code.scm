@@ -1032,7 +1032,7 @@ extensions over the standard utility.")
                                           "/share/sourcetrail/user/projects")))
                                 (copy-recursively src dst)
                                 (delete-file-recursively src))))))))
-    (inputs (list boost
+    (inputs (list boost-1.83
                   clang-19
                   expected-lite
                   qt5compat
