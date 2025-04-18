@@ -42640,6 +42640,11 @@ of the home environment of those users and can be used to deploy
 everything consistently at once, saving users the need to run
 @command{guix home reconfigure} independently.
 
+@command{guix home} can operate on the home environment configured for
+current user via this service, but its effect won't last beyond the next
+system activation.  This can be used for quick testing and may avoid the
+need of keeping a separate home configuration.
+
 @defvar guix-home-service-type
 Service type for the Guix Home service.  Its value must be a list of
 lists containing user and home environment pairs.  The key of each pair

@@ -35,6 +35,8 @@
                                              shepherd-service-requirement)
   #:autoload   (guix modules) (source-module-closure)
   #:autoload   (gnu build linux-container) (call-with-container %namespaces)
+  #:use-module ((gnu system) #:select (operating-system?
+                                       operating-system-user-services))
   #:autoload   (gnu system linux-container) (eval/container)
   #:autoload   (gnu system file-systems) (file-system-mapping
                                           file-system-mapping-source
@@ -478,10 +480,31 @@ ACTION must be one of the sub-commands that takes a home environment
 declaration as an argument (a file name.)  OPTS is the raw alist of options
 resulting from command-line parsing."
   (define (ensure-home-environment file-or-exp obj)
-    (unless (home-environment? obj)
-      (leave (G_ "'~a' does not return a home environment~%")
-             file-or-exp))
-    obj)
+    (let* ((username
+            (or (getenv "USER")
+                (passwd:name (getpwnam (getuid)))))
+           (os-home-env-config
+            (and (operating-system? obj)
+                 (and=> (find (lambda (%service)
+                                (eq? (service-type-name (service-kind %service))
+                                     'guix-home))
+                              (operating-system-user-services obj))
+                        service-value)))
+           (os-home-env
+            (and os-home-env-config
+                 (and=> (find (lambda (home-env-config)
+                                (string=? (first home-env-config) username))
+                              os-home-env-config)
+                        second)))
+           (home-env
+            (or os-home-env obj)))
+      (unless (home-environment? home-env)
+        (if (operating-system? obj)
+            (leave (G_ "'~a' does not contain a home environment for user '~a'~%")
+                   file-or-exp username)
+            (leave (G_ "'~a' does not return a home environment~%")
+                   file-or-exp)))
+      home-env))
 
   (let* ((file   (match args
                    (() #f)
