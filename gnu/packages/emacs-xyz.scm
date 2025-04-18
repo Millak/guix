@@ -22657,18 +22657,19 @@ a point.  The plugin provides visual feedback for marked regions.")
 (define-public emacs-key-chord
   (package
     (name "emacs-key-chord")
-    (version "0.7.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/emacsorphanage/key-chord")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ikg1kfyb8rgms5yvvg4117kmzw2jlq8h1wyq2l93my99c5qwm2g"))))
+         "1lr5vgkcn13vq0lhyxl4lvwqnmvyf3kk5fs705qrv56l2hl4k2rm"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f)) ; no tests.
     (home-page "https://www.emacswiki.org/emacs/key-chord.el")
     (synopsis "Map pairs of simultaneously pressed keys to Emacs commands")
     (description "@code{emacs-key-chord} provides @code{key-chord-mode}, a
