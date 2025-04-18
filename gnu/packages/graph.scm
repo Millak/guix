@@ -106,7 +106,7 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
 (define-public igraph
   (package
     (name "igraph")
-    (version "0.10.7")
+    (version "0.10.15")
     (source
      (origin
        (method git-fetch)
@@ -114,7 +114,6 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
              (url "https://github.com/igraph/igraph")
              (commit version)))
        (file-name (git-file-name name version))
-       (patches (search-patches "igraph-fix-varargs-integer-size.patch"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
@@ -136,7 +135,7 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
                      (("add_sub.*vendor.*") ""))))
        (sha256
         (base32
-         "025f9c2jsawniqkig4l5z3v9aw3ipazmnlsf80b653mns5bvj1yn"))))
+         "0z9jqvl65j4z6brrjlfyykba2bs10az6dx6m8g41snlfnx21a82d"))))
     (build-system cmake-build-system)
     (arguments
      (list
