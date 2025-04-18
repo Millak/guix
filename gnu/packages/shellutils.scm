@@ -660,6 +660,9 @@ between various shells or commands.")
     (build-system python-build-system)
     (arguments
      (list
+      #:modules `((guix build python-build-system)
+                  (guix build utils)
+                  (ice-9 match))
       #:phases #~(modify-phases %standard-phases
                    (add-before 'build 'fix-setup.py
                      (lambda* (#:key outputs #:allow-other-keys)
@@ -674,7 +677,36 @@ between various shells or commands.")
                    (replace 'check
                      (lambda* (#:key tests? #:allow-other-keys)
                        (when tests?
-                         (invoke "pytest")))))))
+                         (invoke "pytest"))))
+                   (add-before 'wrap 'install-completions
+                     (lambda _
+                       (for-each
+                        (lambda (binary)
+                          (for-each
+                           (match-lambda
+                             ((shell . path)
+                              (mkdir-p (dirname path))
+                              (with-output-to-file path
+                                (lambda _
+                                  (invoke
+                                   (string-append #$output "/bin/" binary)
+                                   "--print-completion" shell)))))
+                           `(("bash" .
+                              ,(format ;format string must be literal
+                                #f "~a/share/bash-completion/completions/~a"
+                                #$output binary))
+                             ("zsh" .
+                              ,(format #f "~a/share/zsh/site-functions/_~a"
+                                       #$output binary))
+                             ("tcsh" .
+                              ,(format #f "~a/etc/profile.d/~a.completion.csh"
+                                       #$output binary)))))
+                        (list "trash"
+                              "trash-empty"
+                              "trash-list"
+                              "trash-put"
+                              "trash-restore"
+                              "trash-rm")))))))
     (native-inputs (list python-flexmock
                          python-mock
                          python-parameterized
