@@ -20262,7 +20262,7 @@ structure, or any other pattern.")
 (define-public emacs-tmr
   (package
     (name "emacs-tmr")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -20271,11 +20271,11 @@ structure, or any other pattern.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xhnr3hiw6h1qbcazd4b76q7299wd50z8v5wfzdakmdc1bfl9vmv"))))
+        (base32 "0dpv88g9phh84pzq5443xiq3d3pz4hl178gcim858isz44fq6319"))))
     (build-system emacs-build-system)
     (arguments
      (list
-      #:tests? #f                       ; spurious lint errors
+      #:tests? #f                       ; no tests
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
@@ -20288,18 +20288,15 @@ structure, or any other pattern.")
                  (search-input-file
                   inputs
                   "share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga")))))
-          (add-after 'install 'makeinfo
+          (add-after 'unpack 'makeinfo
             (lambda _
               (invoke "emacs"
                       "--batch"
                       "--eval=(require 'ox-texinfo)"
                       "--eval=(find-file \"README.org\")"
-                      "--eval=(org-texinfo-export-to-info)")
-              (install-file "tmr.info"
-                            (string-append #$output "/share/info")))))))
+                      "--eval=(org-texinfo-export-to-info)"))))))
     (native-inputs (list texinfo))
     (inputs (list ffmpeg sound-theme-freedesktop))
-    (propagated-inputs (list emacs-compat))
     (home-page "https://protesilaos.com/emacs/tmr/")
     (synopsis "Set timers using a convenient notation")
     (description
