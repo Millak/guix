@@ -25,12 +25,15 @@
   #:use-module ((gcrypt hash) #:prefix gcrypt:)
   #:use-module (guix base32)
   #:use-module ((guix git) #:select (with-repository))
+  #:use-module (guix config)
   #:use-module (guix tests)
   #:use-module (guix tests git)
   #:use-module (guix tests http)
   #:use-module ((guix packages) #:select (package-derivation base32))
   #:use-module ((guix build utils)
-                #:select (executable-file? strip-store-file-name))
+                #:select (executable-file? strip-store-file-name which))
+  #:use-module ((gnu build linux-container)
+                #:select (unprivileged-user-namespace-supported?))
   #:use-module ((guix hash) #:select (file-hash*))
   #:use-module ((git oid) #:select (oid->string))
   #:use-module ((git reference) #:select (reference-name->oid))
@@ -54,6 +57,14 @@
 
 ;; Globally disable grafts because they can trigger early builds.
 (%graft? #f)
+
+;; This can happen when someone is running tests without --disable-chroot and
+;; with either slirp4netns or /dev/net/tun unavailable.
+(define builder-network-isolated?
+  (and (target-linux? %system)
+       (unprivileged-user-namespace-supported?)
+       (or (not (which "slirp4netns"))
+           (not (file-exists? "/dev/net/tun")))))
 
 (define (bootstrap-binary name)
   (let ((bin (search-bootstrap-binary name (%current-system))))
@@ -502,6 +513,7 @@
                 #:hash #vu8(1 2 3))
     #f))
 
+(unless (not builder-network-isolated?) (test-skip 1))
 (test-assert "fixed-output derivation, network access, localhost"
   ;; Test a fixed-output derivation connecting to "localhost".
   (let ((text (random-text)))
@@ -534,7 +546,8 @@
                          get-string-all)
                        text))))))
 
-(unless (network-reachable?) (test-skip 1))
+(unless (and (network-reachable?) (not builder-network-isolated?))
+  (test-skip 1))
 (test-assert "fixed-output derivation, network access, external host"
   ;; Test a fixed-output derivation connecting to an external server.
   (let* ((drv (build-expression->derivation

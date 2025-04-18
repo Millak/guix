@@ -90,6 +90,7 @@ builds derivations on behalf of its clients.");
 #define GUIX_OPT_MAX_SILENT_TIME 19
 #define GUIX_OPT_LOG_COMPRESSION 20
 #define GUIX_OPT_DISCOVER 21
+#define GUIX_OPT_ISOLATE_HOST_LOOPBACK 22
 
 static const struct argp_option options[] =
   {
@@ -160,6 +161,8 @@ to live outputs") },
       n_("listen for connections on SOCKET") },
     { "debug", GUIX_OPT_DEBUG, 0, 0,
       n_("produce debugging output") },
+    { "isolate-host-loopback", GUIX_OPT_ISOLATE_HOST_LOOPBACK, 0, 0,
+      n_("do not allow fixed-output chroot builds to access the host loopback") },
     { 0, 0, 0, 0, 0 }
   };
 
@@ -293,6 +296,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
       break;
     case GUIX_OPT_SYSTEM:
       settings.thisSystem = arg;
+      break;
+    case GUIX_OPT_ISOLATE_HOST_LOOPBACK:
+      settings.useHostLoopback = false;
       break;
     default:
       return (error_t) ARGP_ERR_UNKNOWN;

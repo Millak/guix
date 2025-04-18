@@ -56,6 +56,8 @@ Settings::Settings()
     envKeepDerivations = false;
     lockCPU = getEnv("NIX_AFFINITY_HACK", "1") == "1";
     showTrace = false;
+    useHostLoopback = true;
+    slirp4netns = SLIRP4NETNS;
 }
 
 

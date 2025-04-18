@@ -1702,6 +1702,12 @@ user namespaces is missing (@pxref{Build Environment Setup}).  Use at
 your own risk!
 @end quotation
 
+@item --isolate-host-loopback
+Prevent fixed-output chroot builds from accessing the host loopback.
+When this is used, fixed-output builds will have their own loopback
+interface, and attempts to connect to 127.0.0.1 or ::1 will instead
+attempt to connect to its local loopback interface.
+
 @item --log-compression=@var{type}
 Compress build logs according to @var{type}, one of @code{gzip},
 @code{bzip2}, or @code{none}.

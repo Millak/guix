@@ -14,6 +14,7 @@
 #include <map>
 #include <sstream>
 #include <algorithm>
+#include <regex>
 
 #include <limits.h>
 #include <time.h>
@@ -73,10 +74,18 @@
 #endif
 
 #if CHROOT_ENABLED
-#include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
-#include <netinet/ip.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <net/route.h>
+#include <arpa/inet.h>
+#if __linux__
+#include <linux/if_tun.h>
+/* This header isn't documented in 'man netdevice', but there doesn't seem to
+   be any other way to get 'struct in6_ifreq'... */
+#include <linux/ipv6.h>
+#endif
 #endif
 
 #if __linux__
@@ -661,6 +670,10 @@ private:
     /* Whether this is a fixed-output derivation. */
     bool fixedOutput;
 
+    /* PID of the 'slirp4netns' process in case of a fixed-output
+       derivation.  */
+    Pid slirp;
+
     typedef void (DerivationGoal::*GoalState)();
     GoalState state;
 
@@ -831,6 +844,10 @@ void DerivationGoal::killChild()
 	worker.childTerminated(hook->pid);
     }
     hook.reset();
+
+    if (slirp != -1)
+	/* Terminate the 'slirp4netns' process.  */
+	slirp.kill();
 }
 
 
@@ -1611,7 +1628,9 @@ static const gid_t guestGID = 30000;
 /* Initialize the user namespace of CHILD.  */
 static void initializeUserNamespace(pid_t child,
 				    uid_t hostUID = getuid(),
-				    gid_t hostGID = getgid())
+				    gid_t hostGID = getgid(),
+                                    uid_t guestUID = guestUID,
+                                    gid_t guestGID = guestGID)
 {
     writeFile("/proc/" + std::to_string(child) + "/uid_map",
 	      (format("%d %d 1") % guestUID % hostUID).str());
@@ -1624,10 +1643,425 @@ static void initializeUserNamespace(pid_t child,
 
 #if CHROOT_ENABLED
 
-void clearRootWritePermsAction(SpawnContext & sctx)
+/* Creating TAP device for the fixed-output derivation build environment,
+   based on how slirp4netns does it.  send_fd_socket is a unix-domain socket
+   that a file descriptor for the TAP device will be sent on along with a
+   single null byte of regular data. */
+static void setupTap(int send_fd_socket, bool ipv6Enabled)
+{
+    AutoCloseFD tapfd;
+    struct ifreq ifr;
+    struct in6_ifreq ifr6;
+    char tapname[] = "tap0";
+    int ifindex;
+
+    tapfd = open("/dev/net/tun", O_RDWR);
+    if(tapfd < 0)
+        throw SysError("opening `/dev/net/tun'");
+
+    memset(&ifr, 0, sizeof(ifr));
+    ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
+    strncpy(ifr.ifr_name, tapname, sizeof(ifr.ifr_name) - 1);
+    if(ioctl(tapfd, TUNSETIFF, (void*)&ifr) < 0)
+        throw SysError("TUNSETIFF");
+
+    /* DAD is "duplicate address detection".  By default the kernel will put
+       any ipv6 addresses that we add into the "tentative" state, and only
+       after several seconds have been spent trying to chat with network
+       neighbors about whether anyone is already using the address will it
+       allow it to be bound to, whether for listening or for connecting.
+
+       This causes tcp connections initiated before then to bind to ::1, which
+       obviously is not a valid address for communication between hosts.  Even
+       after the real addresses leave the "tentative" state, the source address
+       used for the already-started connection attempt does not change.
+
+       In our situation we know for a fact nobody else is using the addresses
+       we give, so there's no point in waiting the extra several seconds to
+       perform DAD; disable it entirely instead.
+
+       Note: this needs to use conf/tap0/ instead of conf/all/ */
+    writeFile("/proc/sys/net/ipv6/conf/tap0/accept_dad", "0");
+
+    /* By default tap0 will solicit and receive router advertisements, and
+     * thereby obtain an ipv6 address from slirp4netns.  But if the host
+     * doesn't have a working ipv6 connection, this could mess things up for
+     * guest programs (and really the guest network stack itself), as they
+     * have no way of knowing that, and will therefore likely try connecting
+     * to addresses found in AAAA records, which will fail.  To prevent this,
+     * ignore router advertisements. */
+    writeFile("/proc/sys/net/ipv6/conf/tap0/accept_ra", "0");
+
+    /* Now set up:
+       1. tap0's active flags (so it's running, up, etc)
+       2. tap0's MTU
+       3. tap0's ip address
+       4. tap0's network mask
+       5. A default route to tap0 */
+    AutoCloseFD sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+
+    if(sockfd < 0)
+        throw SysError("creating socket");
+
+    AutoCloseFD sockfd6 = socket(AF_INET6, SOCK_DGRAM, 0);
+
+    if(sockfd6 < 0)
+        throw SysError("creating ipv6 socket");
+
+    if(ioctl(sockfd, SIOCGIFINDEX, &ifr) < 0)
+        throw SysError("getting tap0 ifindex");
+
+    ifindex = ifr.ifr_ifindex;
+
+    ifr.ifr_flags = IFF_UP | IFF_RUNNING;
+    if(ioctl(sockfd, SIOCSIFFLAGS, &ifr) < 0)
+        throw SysError("setting flags for tap0");
+
+    /* slirp4netns default */
+    ifr.ifr_mtu = 1500;
+    if(ioctl(sockfd, SIOCSIFMTU, &ifr) < 0)
+        throw SysError("setting MTU for tap0");
+
+    /* default network CIDR: 10.0.2.0/24, fd00::/64 */
+    /* default recommended_vguest: 10.0.2.100, fd00::??? (we choose to use
+       fd00::80 and fe80::80) */
+    /* default gateway: 10.0.2.2, fd00::2 */
+    struct sockaddr_in *sai = (struct sockaddr_in *) &ifr.ifr_addr;
+    sai->sin_family = AF_INET;
+    sai->sin_port = htonl(0);
+    if(inet_pton(AF_INET, "10.0.2.100", &sai->sin_addr) != 1)
+        throw Error("inet_pton failed");
+
+    if(ioctl(sockfd, SIOCSIFADDR, &ifr) < 0)
+        throw SysError("setting tap0 address");
+
+    if(ipv6Enabled) {
+        if(inet_pton(AF_INET6, "fd00::80", &ifr6.ifr6_addr) != 1)
+            throw Error("inet_pton failed");
+        ifr6.ifr6_prefixlen = 64;
+        ifr6.ifr6_ifindex = ifindex;
+
+        if(ioctl(sockfd6, SIOCSIFADDR, &ifr6) < 0)
+            throw SysError("setting tap0 ipv6 address");
+    }
+
+    /* Always set up the link-local address so that communication with the
+     * host loopback over ipv6 can be possible. */
+    if(inet_pton(AF_INET6, "fe80::80", &ifr6.ifr6_addr) != 1)
+        throw Error("inet_pton failed");
+    ifr6.ifr6_prefixlen = 64;
+    ifr6.ifr6_ifindex = ifindex;
+
+    if(ioctl(sockfd6, SIOCSIFADDR, &ifr6) < 0)
+        throw SysError("setting tap0 link-local ipv6 address");
+
+    if(inet_pton(AF_INET, "255.255.255.0", &sai->sin_addr) != 1)
+        throw Error("inet_pton failed");
+
+    if(ioctl(sockfd, SIOCSIFNETMASK, &ifr) < 0)
+        throw SysError("setting tap0 network mask");
+
+    /* To my knowledge there is no official documentation of SIOCADDRT and
+       struct rtentry for Linux aside from the Linux kernel source code as of
+       the year 2025.  This is therefore fully cargo-culted from
+       slirp4netns. */
+
+    struct rtentry route;
+    memset(&route, 0, sizeof(route));
+    sai = (struct sockaddr_in *)&route.rt_gateway;
+    sai->sin_family = AF_INET;
+    if(inet_pton(AF_INET, "10.0.2.2", &sai->sin_addr) != 1)
+        throw Error("inet_pton failed");
+    sai = (struct sockaddr_in *)&route.rt_dst;
+    sai->sin_family = AF_INET;
+    sai->sin_addr.s_addr = htonl(INADDR_ANY);
+    sai = (struct sockaddr_in *)&route.rt_genmask;
+    sai->sin_family = AF_INET;
+    sai->sin_addr.s_addr = htonl(INADDR_ANY);
+
+    route.rt_flags = RTF_UP | RTF_GATEWAY;
+    route.rt_metric = 0;
+    route.rt_dev = tapname;
+
+    if(ioctl(sockfd, SIOCADDRT, &route) < 0)
+        throw SysError("setting tap0 as default route");
+
+    struct in6_rtmsg route6;
+    memset(&route6, 0, sizeof(route6));
+    if(inet_pton(AF_INET6, "fd00::2", &route6.rtmsg_gateway) != 1)
+        throw Error("inet_pton failed");
+
+    if(ipv6Enabled) {
+        /* Set up a default gateway via slirp4netns */
+        route6.rtmsg_dst = IN6ADDR_ANY_INIT;
+        route6.rtmsg_dst_len = 0;
+        route6.rtmsg_flags = RTF_UP | RTF_GATEWAY;
+    } else {
+        /* Set up a route to slirp4netns, but only for talking to the host
+         * loopback */
+        if(inet_pton(AF_INET6, "fd00::2", &route6.rtmsg_dst) != 1)
+            throw Error("inet_pton failed");
+        route6.rtmsg_dst_len = 128;
+        route6.rtmsg_flags = RTF_UP;
+    }
+    route6.rtmsg_src = IN6ADDR_ANY_INIT;
+    route6.rtmsg_src_len = 0;
+    route6.rtmsg_ifindex = ifindex;
+    route6.rtmsg_metric = 1;
+
+    if(ioctl(sockfd6, SIOCADDRT, &route6) < 0)
+        throw SysError("setting tap0 as default ipv6 route");
+
+    sendFD(send_fd_socket, tapfd);
+}
+
+struct ChrootBuildSpawnContext : CloneSpawnContext {
+    bool ipv6Enabled = false;
+};
+
+static void setupTapAction(SpawnContext & sctx)
+{
+    ChrootBuildSpawnContext & ctx = (ChrootBuildSpawnContext &) sctx;
+    setupTap(ctx.setupFD, ctx.ipv6Enabled);
+}
+
+
+static void waitForSlirpReadyAction(SpawnContext & sctx)
+{
+    CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
+    /* Wait for the parent process to get slirp4netns running */
+    waitForMessage(ctx.setupFD, "1");
+}
+
+
+static void enableRouteLocalnetAction(SpawnContext & sctx)
+{
+    /* Don't treat as invalid packets received with loopback source addresses.
+       This allows for packets to be received from the host loopback using its
+       real address, so for example proxy settings referencing 127.0.0.1 will
+       work both for builtin and regular fixed-output derivations. */
+
+    /* Note: this file is treated relative to the network namespace of the
+       process that opens it.  We aren't modifying any host settings here,
+       provided we are in a new network namespace. */
+    Path route_localnet4 = "/proc/sys/net/ipv4/conf/all/route_localnet";
+    /* XXX: no such toggle exists for ipv6 */
+    if(pathExists(route_localnet4))
+        writeFile(route_localnet4, "1");
+}
+
+
+static void prepareSlirpChrootAction(SpawnContext & sctx)
+{
+    CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
+    auto mounts = tokenizeString<Strings>(readFile("/proc/self/mountinfo", true), "\n");
+    set<string> seen;
+    for(auto & i : mounts) {
+        auto fields = tokenizeString<vector<string> >(i, " ");
+        auto fs = decodeOctalEscaped(fields.at(4));
+        if(seen.find(fs) == seen.end()) {
+            /* slirp4netns only does a single umount of the old root ("/old")
+               after pivot_root.  Because of this, if there are multiple
+               mounts stacked on top of each other, only the topmost one (the
+               read-only bind mount) will be unmounted, leaving the real root
+               in place and causing the subsequent rmdir to fail.  The best we
+               can do is to make everything immediately underneath "/" be
+               read-only, which we do after mounting every non-/ filesystem
+               read-only. */
+            if(fs == "/") continue;
+            /* Don't mount /etc or any of its subdirectories, we're only interested
+               in mounting network stuff from it */
+            if(fs.compare(0, 4, "/etc") == 0) continue;
+            /* We want /run to be empty */
+            if(fs.compare(0, 4, "/run") == 0) continue;
+            /* Don't mount anything from under our chroot directory */
+            if(fs.compare(0, ctx.chrootRootDir.length(), ctx.chrootRootDir) == 0) continue;
+            struct stat st;
+            if(stat(fs.c_str(), &st) != 0) {
+                if(errno == EACCES) continue; /* Not accessible anyway */
+                else throw SysError(format("stat of `%1%'") % fs);
+            }
+
+            ctx.readOnlyFilesInChroot.insert(fs);
+            ctx.filesInChroot[fs] = fs;
+            seen.insert(fs);
+        }
+    }
+
+    /* Limit /etc to containing just /etc/resolv.conf and /etc/hosts, and
+       read-only at that */
+    Strings etcFiles = { "/etc/resolv.conf", "/etc/hosts" };
+    for(auto & i : etcFiles) {
+        if(pathExists(i)) {
+            ctx.filesInChroot[i] = i;
+            ctx.readOnlyFilesInChroot.insert(i);
+        }
+    }
+
+    /* Make everything immediately under "/" read-only, since we can't make /
+       itself read-only. */
+    DirEntries dirs = readDirectory("/");
+    for (auto & i : dirs) {
+        string fs = "/" + i.name;
+        if(fs == "/etc") continue;
+        if(fs == "/run") continue;
+        ctx.filesInChroot[fs] = fs;
+        ctx.readOnlyFilesInChroot.insert(fs);
+    }
+
+    if(mkdir((ctx.chrootRootDir + "/run").c_str(), 0700) == -1)
+        throw SysError("mkdir /run in chroot");
+}
+
+
+static void remapIdsTo0Action(SpawnContext & sctx)
+{
+    CloneSpawnContext & ctx = (CloneSpawnContext &) sctx;
+    string uid = std::to_string(ctx.setuid ? ctx.user : getuid());
+    string gid = std::to_string(ctx.setgid ? ctx.group : getgid());
+
+    /* If uid != getuid(), then the process that writes to uid_map needs
+     * capabilities in the parent user namespace.  Fork a child to stay in
+     * the parent namespace and do the write for us. */
+    unshareAndInitUserns(CLONE_NEWUSER,
+                         "0 " + uid + " 1",
+                         "0 " + gid + " 1",
+                         ctx.lockMountsAllowSetgroups);
+
+    ctx.user = 0;
+    ctx.group = 0;
+}
+
+
+/* Spawn 'slirp4netns' in separate namespaces as the given user and group;
+   'tapfd' must correspond to a /dev/net/tun connection.  Configure it to
+   write to 'notifyReadyFD' once it's up and running.  */
+static pid_t spawnSlirp4netns(int tapfd, int notifyReadyFD,
+			      uid_t slirpUser, gid_t slirpGroup)
+{
+    Pipe slirpSetupPipe;
+    CloneSpawnContext slirpCtx;
+    AutoCloseFD devNullFd;
+    bool amRoot = geteuid() == 0;
+    bool newUserNS = !amRoot;
+    slirpCtx.phases = getCloneSpawnPhases();
+    slirpCtx.cloneFlags =
+        /* slirp4netns will handle the chroot and pivot_root on its own, but
+           we should ensure that whatever filesystem holds the slirp4netns
+           executable is read-only, since otherwise it might be possible for a
+           compromised slirp4netns to overwrite itself using /proc/self/exe,
+           depending on who owns what. */
+        CLONE_NEWNS |
+        /* ptrace disregards user namespaces when the would-be tracing process
+           and the would-be traced process have the same real, effective, and
+           saved user ids.  The only way to protect them is to make it
+           impossible to reference them. */
+        CLONE_NEWPID |
+        /* need this when we're not running as root so that we have the
+         * capabilities to create the other namespaces. */
+        (newUserNS ? CLONE_NEWUSER : 0) |
+        /* For good measure */
+        CLONE_NEWIPC |
+        CLONE_NEWUTS |
+        /* Of course, a new network namespace would defeat the
+           purpose. */
+        SIGCHLD;
+    slirpCtx.program = settings.slirp4netns;
+    slirpCtx.args =
+        { "slirp4netns", "--netns-type=tapfd",
+          "--enable-sandbox",
+          "--enable-ipv6",
+          "--ready-fd=" + std::to_string(notifyReadyFD) };
+    if(!settings.useHostLoopback)
+        slirpCtx.args.push_back("--disable-host-loopback");
+    slirpCtx.args.push_back(std::to_string(tapfd));
+    slirpCtx.inheritEnv = true;
+    if(newUserNS) {
+        slirpSetupPipe.create();
+        slirpCtx.setupFD = slirpSetupPipe.readSide;
+        slirpCtx.earlyCloseFDs.insert(slirpSetupPipe.writeSide);
+    }
+    slirpCtx.closeMostFDs = true;
+    slirpCtx.preserveFDs.insert(notifyReadyFD);
+    slirpCtx.preserveFDs.insert(tapfd);
+    slirpCtx.setStdin = true;
+    slirpCtx.stdinFile = "/dev/null";
+    slirpCtx.setsid = true;
+    slirpCtx.dropAmbientCapabilities = true;
+    slirpCtx.doChroot = true;
+    slirpCtx.mountTmpfsOnChroot = true;
+    slirpCtx.chrootRootDir = getEnv("TMPDIR", "/tmp");
+    slirpCtx.lockMounts = true;
+    slirpCtx.lockMountsMapAll = true; /* So that later setuid will work */
+    slirpCtx.lockMountsAllowSetgroups = amRoot;
+    slirpCtx.mountProc = true;
+    slirpCtx.setuid = true;
+    slirpCtx.user = slirpUser;
+    slirpCtx.setgid = true;
+    slirpCtx.group = slirpGroup;
+    /* Dropping supplementary groups requires capabilities in current user
+     * namespace */
+    if(amRoot) {
+        slirpCtx.supplementaryGroups = {};
+        slirpCtx.setSupplementaryGroups = true;
+    }
+    slirpCtx.seccompFilter = slirpSeccompFilter();
+    slirpCtx.addSeccompFilter = true;
+
+    /* Silence slirp4netns output unless requested */
+    if(verbosity <= lvlInfo) {
+        devNullFd = open("/dev/null", O_WRONLY);
+        if(devNullFd == -1)
+            throw SysError("cannot open `/dev/null'");
+        slirpCtx.logFD = devNullFd;
+    }
+
+    addPhaseAfter(slirpCtx.phases,
+                  "makeChrootSeparateFilesystem",
+                  "prepareSlirpChroot",
+                  prepareSlirpChrootAction);
+
+    /* slirp behaves differently when uid != 0 */
+    addPhaseAfter(slirpCtx.phases,
+                  "lockMounts",
+                  "remapIdsTo0",
+                  remapIdsTo0Action);
+
+#if 0 /* For debugging networking issues */
+    slirpCtx.env["SLIRP_DEBUG"] = "call,misc,error,tftp,verbose_call";
+    slirpCtx.env["G_MESSAGES_DEBUG"] = "all";
+#endif
+
+    pid_t slirpPid = cloneChild(slirpCtx);
+
+    if(newUserNS) {
+        slirpSetupPipe.readSide.close();
+        initializeUserNamespace(slirpPid, getuid(), getgid(), getuid(), getgid());
+        writeFull(slirpSetupPipe.writeSide, (unsigned char*)"go\n", 3);
+    }
+    return slirpPid;
+}
+
+static void clearRootWritePermsAction(SpawnContext & sctx)
 {
     if(chmod("/", 0555) == -1)
         throw SysError("changing mode of chroot root directory");
+}
+
+
+/* Note: linux-only */
+bool haveGlobalIPv6Address()
+{
+    if(!pathExists("/proc/net/if_inet6")) return false;
+
+    auto addresses = tokenizeString<Strings>(readFile("/proc/net/if_inet6", true), "\n");
+    for(auto & i : addresses) {
+        auto fields = tokenizeString<vector<string> >(i, " ");
+        auto scopeHex = fields.at(3);
+        /* 0x0 means "Global scope" */
+        if(scopeHex == "00" || scopeHex == "40") return true;
+    }
+    return false;
 }
 
 #endif /* CHROOT_ENABLED */
@@ -1731,10 +2165,10 @@ void DerivationGoal::startBuilder()
     f.exceptions(boost::io::all_error_bits ^ boost::io::too_many_args_bit);
     startNest(nest, lvlInfo, f % showPaths(missingPaths) % curRound % nrRounds);
 
-    /* A CloneSpawnContext reference can be passed to procedures expecting a
-       SpawnContext reference */
+    /* A ChrootBuildSpawnContext reference can be passed to procedures
+       expecting a SpawnContext reference */
 #if CHROOT_ENABLED
-    CloneSpawnContext ctx;
+    ChrootBuildSpawnContext ctx;
 #else
     SpawnContext ctx;
 #endif
@@ -1945,6 +2379,10 @@ void DerivationGoal::startBuilder()
         ctx.supplementaryGroups = buildUser.getSupplementaryGIDs();
     }
 
+#if CHROOT_ENABLED
+    bool useSlirp4netns = false;
+#endif
+
     if (useChroot) {
 #if CHROOT_ENABLED
         ctx.phases = getCloneSpawnPhases();
@@ -1960,14 +2398,26 @@ void DerivationGoal::startBuilder()
         /* Clean up the chroot directory automatically. */
         autoDelChroot = std::shared_ptr<AutoDelete>(new AutoDelete(chrootRootTop));
 
+        if(fixedOutput) {
+            if(findProgram(settings.slirp4netns) == "")
+                printMsg(lvlError, format("`%1%' can't be found in PATH, network access disabled") % settings.slirp4netns);
+            else {
+                if(!pathExists("/dev/net/tun"))
+                    printMsg(lvlError, "`/dev/net/tun' is missing, network access disabled");
+                else {
+                    useSlirp4netns = true;
+                    ctx.ipv6Enabled = haveGlobalIPv6Address();
+                }
+            }
+        }
+
         ctx.doChroot = true;
         ctx.chrootRootDir = chrootRootDir;
-        ctx.cloneFlags = CLONE_NEWNS | CLONE_NEWPID | CLONE_NEWIPC | CLONE_NEWUTS | SIGCHLD;
+        ctx.cloneFlags = CLONE_NEWNS | CLONE_NEWNET | CLONE_NEWPID | CLONE_NEWIPC | CLONE_NEWUTS | SIGCHLD;
 
-        if(!fixedOutput) {
+        if(!fixedOutput || /* redundant but shows the cases clearly */
+           (fixedOutput && !settings.useHostLoopback))
             ctx.initLoopback = true;
-            ctx.cloneFlags |= CLONE_NEWNET;
-        }
 
         if(!buildUser.enabled())
             ctx.cloneFlags |= CLONE_NEWUSER;
@@ -2014,18 +2464,42 @@ void DerivationGoal::startBuilder()
         if (fixedOutput) {
             /* Fixed-output derivations typically need to access the network,
                so give them access to /etc/resolv.conf and so on. */
-            auto files = { "/etc/resolv.conf", "/etc/nsswitch.conf",
-                           "/etc/services", "/etc/hosts" };
-            for (auto & file: files) {
+            std::vector<Path> files = { "/etc/services", "/etc/nsswitch.conf" };
+            if (useSlirp4netns) {
+                if (settings.useHostLoopback) {
+                    string hosts;
+                    if(pathExists("/etc/hosts")) {
+                        hosts = readFile("/etc/hosts");
+                        hosts = std::regex_replace(hosts, std::regex("127\\.0\\.0\\.1"), "10.0.2.2");
+                        hosts = std::regex_replace(hosts, std::regex("::1"), "fd00::2");
+                    } else {
+                        hosts =
+                            "10.0.2.2 localhost\n"
+                            "fd00::2 localhost\n";
+                    }
+                    writeFile(chrootRootDir + "/etc/hosts", hosts);
+                }
+                else {
+                    files.push_back("/etc/hosts");
+                }
+                writeFile(chrootRootDir + "/etc/resolv.conf", "nameserver 10.0.2.3");
+            }
+            else {
+                files.push_back("/etc/hosts");
+                files.push_back("/etc/resolv.conf");
+            }
+            for (auto & file : files) {
                 if (pathExists(file)) {
                     ctx.filesInChroot[file] = file;
                     ctx.readOnlyFilesInChroot.insert(file);
                 }
             }
-        } else {
-            /* Create /etc/hosts with localhost entry. */
-            writeFile(chrootRootDir + "/etc/hosts", "127.0.0.1 localhost\n");
         }
+        else
+            /* Create /etc/hosts with localhost entry. */
+            writeFile(chrootRootDir + "/etc/hosts",
+                      "127.0.0.1 localhost\n"
+                      "::1 localhost\n");
 
         /* Bind-mount a user-configurable set of directories from the
            host file system. */
@@ -2175,7 +2649,9 @@ void DerivationGoal::startBuilder()
 
        - The private network namespace ensures that the builder cannot
          talk to the outside world (or vice versa).  It only has a
-         private loopback interface.
+         private loopback interface.  As an exception, fixed-output
+         derivations may talk to the outside world through slirp4netns, but
+         still in a separate network namespace.
 
        - The IPC namespace prevents the builder from communicating
          with outside processes using SysV IPC mechanisms (shared
@@ -2191,7 +2667,7 @@ void DerivationGoal::startBuilder()
         AutoCloseFD parentSetupSocket;
         AutoCloseFD childSetupSocket;
 
-        if(((ctx.cloneFlags & CLONE_NEWUSER) != 0)) {
+        if(((ctx.cloneFlags & CLONE_NEWUSER) != 0) || useSlirp4netns) {
             if (socketpair(AF_LOCAL, SOCK_STREAM, 0, fds))
                 throw SysError("creating setup socket");
             parentSetupSocket = fds[0];
@@ -2200,6 +2676,15 @@ void DerivationGoal::startBuilder()
             childSetupSocket = fds[1];
             closeOnExec(childSetupSocket);
             ctx.setupFD = childSetupSocket;
+        }
+
+        if(useSlirp4netns) {
+            addPhaseAfter(ctx.phases, "initLoopback", "setupTap", setupTapAction);
+            addPhaseAfter(ctx.phases, "setupTap", "waitForSlirpReady",
+                          waitForSlirpReadyAction);
+            if(settings.useHostLoopback)
+                addPhaseAfter(ctx.phases, "waitForSlirpReady", "enableRouteLocalnet",
+                              enableRouteLocalnetAction);
         }
 
         pid = cloneChild(ctx);
@@ -2211,6 +2696,34 @@ void DerivationGoal::startBuilder()
             initializeUserNamespace(pid);
             writeFull(parentSetupSocket, (unsigned char*)"go\n", 3);
         }
+
+        try {
+            if(useSlirp4netns) {
+                AutoCloseFD tapfd = receiveFD(parentSetupSocket);
+                /* Start 'slirp4netns' to provide networking in the child process;
+                   running the builder in the global network namespace would give
+                   it access to the global namespace of abstract sockets, which
+                   could be used to grant write access to the store to an external
+                   process. */
+                slirp = spawnSlirp4netns(
+                    tapfd,
+                    parentSetupSocket,
+                    /* Do whatever we can to run slirp4netns as some user
+                       other than root - run it as the build user if
+                       necessary */
+                    buildUser.enabled() ? buildUser.getUID() : getuid(),
+                    buildUser.enabled() ? buildUser.getGID() : getgid());
+            }
+        } catch(std::exception & e) {
+            if(slirp != -1) {
+                slirp.kill(true);
+            }
+            if(pid != -1) {
+                pid.kill(true);
+            }
+            throw e;
+        }
+
     } else
 #endif
     {

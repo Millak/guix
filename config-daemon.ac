@@ -139,6 +139,19 @@ if test "x$guix_build_daemon" = "xyes"; then
   AC_SUBST([GUIX_TEST_ROOT])
 
   GUIX_CHECK_LOCALSTATEDIR
+
+  case "x$host_os" in
+    x*linux*)
+      AC_CHECK_PROG([have_slirp4netns], [slirp4netns], [yes])
+      if test "x$have_slirp4netns" != "xyes"
+      then
+        AC_MSG_WARN([Slirp4netns not found; fixed-output chroot builds won't work without it.])
+      fi
+      ;;
+  esac
+  AC_PATH_PROG([SLIRP4NETNS], [slirp4netns], [slirp4netns])
+  AC_DEFINE_UNQUOTED([SLIRP4NETNS], ["$SLIRP4NETNS"],
+    [Path to the slirp4netns program, if any.])
 fi
 
 AM_CONDITIONAL([HAVE_LIBBZ2], [test "x$HAVE_LIBBZ2" = "xyes"])

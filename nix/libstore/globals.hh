@@ -206,6 +206,15 @@ struct Settings {
     /* Whether to show a stack trace if Nix evaluation fails. */
     bool showTrace;
 
+    /* Whether fixed-output chroot builds should be able to use the host
+       loopback, for example to access a socks proxy.  Note that while using
+       "localhost" and 127.0.0.1 to access the host loopback will work, using
+       ::1 will not, due to a limitation in Linux. */
+    bool useHostLoopback;
+
+    /* The filename to use for executing slirp4netns when it is needed. */
+    Path slirp4netns;
+
 private:
     SettingsMap settings, overrides;
 

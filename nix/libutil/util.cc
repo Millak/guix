@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <sys/socket.h>
 
 #ifdef __APPLE__
 #include <sys/syscall.h>
@@ -59,6 +60,27 @@ string getEnv(const string & key, const string & def)
 {
     char * value = getenv(key.c_str());
     return value ? string(value) : def;
+}
+
+
+string findProgram(const string & program)
+{
+    if(program.empty()) return "";
+
+    if(program[0] == '/') return pathExists(program) ? program : "";
+
+    char *path_ = getenv("PATH");
+    if(path_ == NULL) return "";
+    string path = path_;
+
+    Strings dirs = tokenizeString<Strings>(path, ":");
+    for (const auto& i : dirs) {
+        if(i == "") continue;
+        string f = i + "/" + program;
+        if(pathExists(f)) return f;
+    }
+
+    return "";
 }
 
 
@@ -857,6 +879,67 @@ void Pipe::create()
 }
 
 
+void sendFD(int sock, int fd)
+{
+    ssize_t rc;
+    struct msghdr msg;
+    struct cmsghdr *cmsg;
+    char cmsgbuf[CMSG_SPACE(sizeof(fd))];
+    struct iovec iov;
+    char dummy = '\0';
+    memset(&msg, 0, sizeof(msg));
+    iov.iov_base = &dummy;
+    iov.iov_len = 1;
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
+    msg.msg_control = cmsgbuf;
+    msg.msg_controllen = sizeof(cmsgbuf);
+    cmsg = CMSG_FIRSTHDR(&msg);
+    cmsg->cmsg_level = SOL_SOCKET;
+    cmsg->cmsg_type = SCM_RIGHTS;
+    cmsg->cmsg_len = CMSG_LEN(sizeof(fd));
+    memcpy(CMSG_DATA(cmsg), &fd, sizeof(fd));
+    msg.msg_controllen = cmsg->cmsg_len;
+    do
+    {
+        rc = sendmsg(sock, &msg, 0);
+    } while(rc < 0 && errno == EINTR);
+    if(rc < 0)
+        throw SysError("sending fd");
+}
+
+
+int receiveFD(int sock)
+{
+    int fd;
+    ssize_t rc;
+    struct msghdr msg;
+    struct cmsghdr *cmsg;
+    char cmsgbuf[CMSG_SPACE(sizeof(fd))];
+    struct iovec iov;
+    char dummy = '\0';
+    memset(&msg, 0, sizeof(msg));
+    iov.iov_base = &dummy;
+    iov.iov_len = 1;
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
+    msg.msg_control = cmsgbuf;
+    msg.msg_controllen = sizeof(cmsgbuf);
+    do
+    {
+        rc = recvmsg(sock, &msg, 0);
+    } while(rc < 0 && errno == EINTR);
+    if (rc < 0)
+        throw SysError("receiving fd");
+    if (rc == 0)
+        throw Error("received EOF (empty message) while receiving fd");
+
+    cmsg = CMSG_FIRSTHDR(&msg);
+    if (cmsg == NULL || cmsg->cmsg_type != SCM_RIGHTS)
+        throw Error("received message without an fd");
+    memcpy(&fd, CMSG_DATA(cmsg), sizeof(fd));
+    return fd;
+}
 
 //////////////////////////////////////////////////////////////////////
 
@@ -1299,6 +1382,24 @@ bool endOfList(std::istream & str)
         return true;
     }
     return false;
+}
+
+string decodeOctalEscaped(const string & s)
+{
+    string r;
+    for (string::const_iterator i = s.begin(); i != s.end(); ) {
+        if (*i != '\\') { r += *(i++); continue; }
+        unsigned char c = 0;
+        ++i;
+        for(int j = 0; j < 3; j++) {
+          if(i == s.end() || *i < '0' || *i >= '8')
+            throw Error("malformed octal escape");
+          c = c * 8 + (*i - '0');
+          ++i;
+        }
+        r += c;
+    }
+    return r;
 }
 
 

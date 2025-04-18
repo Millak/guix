@@ -59,6 +59,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages containers)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages cpp)
@@ -513,6 +514,9 @@ $(prefix)/etc/openrc\n")))
 
          ;; Some of the tests use "unshare" when it is available.
          ("util-linux" ,util-linux)
+         ,@(if (target-linux?)
+               `(("slirp4netns" ,slirp4netns))
+               '())
 
          ;; Many tests rely on the 'guile-bootstrap' package, which is why we
          ;; have it here.

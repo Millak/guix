@@ -19,6 +19,12 @@ namespace nix {
 /* Return an environment variable. */
 string getEnv(const string & key, const string & def = "");
 
+/* Find the absolute filename corresponding to PROGRAM, searching PATH if
+   PROGRAM is a relative filename.  If PROGRAM is an absolute filename for a
+   file that doesn't exist, or it can't be found in PATH, then return the
+   empty string. */
+string findProgram(const string & program);
+
 /* Return an absolutized path, resolving paths relative to the
    specified directory, or the current directory otherwise.  The path
    is also canonicalised. */
@@ -207,6 +213,10 @@ public:
     int borrow();
 };
 
+/* Send and receive an FD on a unix-domain socket, along with a single null
+   byte of regular data. */
+void sendFD(int sock, int fd);
+int receiveFD(int sock);
 
 class Pipe
 {
@@ -368,6 +378,12 @@ string parseString(std::istream & str);
 
 /* Utility function used to parse legacy ATerms. */
 bool endOfList(std::istream & str);
+
+
+/* Escape a string that contains octal-encoded escape codes such as
+   used in /etc/fstab and /proc/mounts (e.g. "foo\040bar" decodes to
+   "foo bar"). */
+string decodeOctalEscaped(const string & s);
 
 
 /* Exception handling in destructors: print an error message, then
