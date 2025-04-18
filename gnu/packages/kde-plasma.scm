@@ -313,7 +313,6 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   qt5compat
                   qtdeclarative
                   qtsvg
-                  qtwebview
                   qcoro-qt6))
     ;; -- The following features have been disabled:
     ;; * Ostree, Library to manage ostree repository. Required to build the rpm-ostree backend
