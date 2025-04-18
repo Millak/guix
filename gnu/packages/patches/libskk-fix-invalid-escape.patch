@@ -1,0 +1,16 @@
+fix parse error:
+https://github.com/ueno/libskk/pull/90
+
+diff --git a/rules/default/rom-kana/default.json b/rules/default/rom-kana/default.json
+index 6ddfce6..68dcff9 100644
+--- a/rules/default/rom-kana/default.json
++++ b/rules/default/rom-kana/default.json
+@@ -108,7 +108,7 @@
+             "myi": ["", "みぃ" ],
+             "myo": ["", "みょ" ],
+             "myu": ["", "みゅ" ],
+-            "n\'": ["", "ん" ],
++            "n'": ["", "ん" ],
+             "na": ["", "な" ],
+             "ne": ["", "ね" ],
+             "ni": ["", "に" ],

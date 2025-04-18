@@ -40,6 +40,7 @@
   #:use-module (gnu packages crates-database)
   #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages dictionaries)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages freedesktop)
@@ -924,8 +925,20 @@ and manipulation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y279pcgs3jrsi9vzx086xhz9jbz23dqqijp4agygc9ackp9sxy5"))))
+                "0y279pcgs3jrsi9vzx086xhz9jbz23dqqijp4agygc9ackp9sxy5"))
+              (patches
+               (search-patches
+                "libskk-fix-invalid-escape.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:parallel-tests? #f        ;Concurrency issues in tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'symlink-skk-jisyo
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((dict-dir "share/skk"))
+                     (symlink (search-input-directory inputs dict-dir)
+                              (in-vicinity #$output dict-dir))))))))
     (native-inputs (list autoconf
                          automake
                          gettext-minimal
@@ -933,7 +946,7 @@ and manipulation.")
                          libtool
                          pkg-config
                          vala))
-    (inputs (list libgee json-glib libxkbcommon))
+    (inputs (list libgee json-glib libxkbcommon skk-jisyo))
     (home-page "https://github.com/ueno/libskk")
     (synopsis "Dealing with Japanese kana-to-kanji conversion")
     (description
