@@ -10882,8 +10882,8 @@ Calc by fetching exchange rates backends.")
       (license license:gpl3+))))
 
 (define-public emacs-literate-calc-mode
-  (let ((commit "ba7d22140a165b0fdd900a8d04916115ca6ab8ff")
-        (revision "2"))
+  (let ((commit "bdfdb6e526cdcf987ecded3bd9032990e5be1236")
+        (revision "3"))
     (package
       (name "emacs-literate-calc-mode")
       (version (git-version "0.1" revision commit))
@@ -10895,10 +10895,15 @@ Calc by fetching exchange rates backends.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1bdybw44pmhfpikdv1kg2sx88546xyncks5a4b2s0ak4p66r82k3"))))
+          (base32 "16wdgin2jzpr5p1q5v54ppigxia6z7v5kncg3yabzf86x1ljw6wk"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command #~'("emacs" "--batch"
+                           "--load" "test/literate-calc-mode-test.el"
+                           "-f" "ert-run-tests-batch-and-exit")))
       (propagated-inputs
-       (list emacs-s))
+       (list emacs-dash emacs-s))
       (home-page "https://github.com/sulami/literate-calc-mode.el")
       (synopsis "Literate programming for Emacs Calc")
       (description
