@@ -3839,28 +3839,22 @@ limma packages.")
 (define-public r-affyplm
   (package
     (name "r-affyplm")
-    (version "1.82.0")
+    (version "1.84.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affyPLM" version))
        (sha256
-        (base32 "182zym9g8rzyrmj78yzpdh44av616x6228xzxwa45wz2spg9bj47"))))
+        (base32 "0lhin8wn2jh7p5rfgbnz84xjr7xhvks1qlnfj078aypk2b8di1hl"))))
     (properties
      `((upstream-name . "affyPLM")
-       (updater-extra-native-inputs . ("r-hgu95av2cdf"))))
+       (updater-extra-native-inputs . ("r-hgu95av2cdf" "r-kernsmooth"))))
     (build-system r-build-system)
-    ;; Tests fail with: return code from pthread_create() is 22
-    (arguments (list #:tests? #false))
     (inputs (list zlib))
     (propagated-inputs
-     (list r-affy
-           r-biobase
-           r-biocgenerics
-           r-gcrma
-           r-preprocesscore
-           r-zlibbioc))
-    (native-inputs (list r-affydata r-hgu95av2cdf))
+     (list r-affy r-biobase r-biocgenerics r-gcrma r-preprocesscore))
+    (native-inputs
+     (list pkg-config r-affydata r-hgu95av2cdf r-kernsmooth r-mass))
     (home-page "https://github.com/bmbolstad/affyPLM")
     (synopsis "Methods for fitting probe-level models")
     (description
