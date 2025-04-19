@@ -4604,7 +4604,7 @@ neuronal models")
             (lambda* (#:key tests?  #:allow-other-keys)
               (when tests?
                 (setenv "HOME" "/tmp")))))))
-    (inputs
+    (propagated-inputs
      (list python-appdirs
            python-conda-inject
            python-configargparse
