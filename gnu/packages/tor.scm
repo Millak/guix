@@ -44,6 +44,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -261,7 +262,7 @@ networks.")
 (define-public onionshare-cli
   (package
     (name "onionshare-cli")
-    (version "2.6")
+    (version "2.6.3")
     (source
      (origin
        (method git-fetch)
@@ -270,32 +271,53 @@ networks.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bhrp019a0923h7dnfxhgvgvdp81blvnsbnvzy34hp827abxf3ic"))
-       (patches (search-patches "onionshare-cli-async-mode.patch"))))
-    (build-system python-build-system)
+        (base32 "16yr25llnbgl2iwk458ca0rhrxsmpfx72q4gdg4a52i6g546p3hd"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-cython-3
+           python-poetry-core
+           python-pytest
+           python-wheel))
     (inputs
-     ;; TODO: obfs4proxy
      (list python-click
+           python-cffi
            python-colorama
            python-eventlet
            python-flask
-           python-flask-httpauth
+           python-flask-compress
            python-flask-socketio
-           python-pynacl
+           python-gevent
+           python-gevent-websocket
+           python-packaging
            python-psutil
-           python-pycryptodome
+           python-pynacl
            python-pysocks
+           python-qrcode
            python-requests
+           python-setuptools
            python-stem
            python-unidecode
-           python-urllib3
+           python-urllib3-next
+           python-waitress
+           python-werkzeug
            tor))
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              ;; All tests passed, and the CLI is working in runtime, relax
+              ;; Poetry way too strict requirements.
+              (substitute* "cli/pyproject.toml"
+                (("2.3.2") "^3.0.0")     ; flask = "2.3.2"
+                (("5.3.4") "5.5.1")      ; flask-socketio = "5.3.4"
+                (("23.9.1") "24.11.1")   ; gevent = "^23.9.1"
+                (("7.4.2") "8.0.0")      ; qrcode = "^7.4.2"
+                (("70.0.0") "67.6.1")    ; setuptools = ">=70.0.0"
+                (("1.8.1") "^1.8.1")     ; stem = "1.8.1"
+                (("3.0.6") "^3.0.6")     ; werkzeug = "3.0.6"
+                (("0.41.2") "0.40.0")))) ; wheel = "^0.41.2"
           (add-after 'unpack 'bake-tor
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* (list "cli/onionshare_cli/common.py"
@@ -307,16 +329,15 @@ networks.")
                  (search-input-directory inputs "share/tor")))))
           (add-before 'build 'change-directory
             (lambda _ (chdir "cli")))
-          (replace 'check
+          (add-before 'check 'pre-check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (setenv "HOME" "/tmp")
-                ;; Greendns is not needed for testing, and if eventlet tries to
-                ;; load it, an OSError is thrown when getprotobyname is called.
-                ;; Thankfully there is an environment variable to disable the
-                ;; greendns import, so use it:
-                (setenv "EVENTLET_NO_GREENDNS" "yes")
-                (invoke "pytest" "-v" "./tests")))))))
+                ;; Greendns is not needed for testing, and if eventlet tries
+                ;; to load it, an OSError is thrown when getprotobyname is
+                ;; called.  Thankfully there is an environment variable to
+                ;; disable the greendns import, so use it:
+                (setenv "EVENTLET_NO_GREENDNS" "yes")))))))
     (home-page "https://onionshare.org/")
     (synopsis "Securely and anonymously share files")
     (description "OnionShare lets you securely and anonymously share files,

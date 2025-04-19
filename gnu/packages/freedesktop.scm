@@ -68,6 +68,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system qt)
@@ -128,6 +129,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -789,7 +791,7 @@ other applications that need to directly deal with input devices.")
 (define-public libei
   (package
     (name "libei")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -797,7 +799,7 @@ other applications that need to directly deal with input devices.")
                     (commit version)))
               (sha256
                (base32
-                "0idbl20ax060s7m435rszfv7c0bvpinjvq45qbqwvcvp0hg8r9y8"))
+                "04ll43616pyfm7c835azdggx9x3vfykpcg3pzmsfz4f2vl5whalm"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
@@ -819,17 +821,18 @@ other applications that need to directly deal with input devices.")
      ;; liboeffis-1.0.pc requires.private libelogind
      (list elogind))
     (native-inputs
-     (list doxygen
+     (list dbus
+           doxygen
            libxml2
            munit
            pkg-config
            python
            python-attrs
-           python-black
            python-dbusmock
            python-jinja2
            python-pytest
            python-structlog
+           python-pyaml
            valgrind/interactive))
     (home-page "https://libinput.pages.freedesktop.org/libei/")
     (synopsis "Emulated Input protocol implementation")
@@ -2872,17 +2875,19 @@ encoding names are iconv-compatible.")
 (define-public python-cchardet
   (package
   (name "python-cchardet")
-  (version "2.1.7")
+  (version "2.2.0a2")
   (source
     (origin
       (method url-fetch)
       (uri (pypi-uri "cchardet" version))
       (sha256
         (base32
-          "1bqfz85cd51sw0bvhvdq9ikccxi2ld7g5jpni4jkq1a5clrvca64"))))
-  (build-system python-build-system)
+          "08wq5yfaafbjipabfc6kpyvivkk2394w7isv0mwx5agcf8cbnwnx"))))
+  (build-system pyproject-build-system)
   (inputs
    (list uchardet))
+  (native-inputs
+   (list python-setuptools python-wheel))
   (home-page "https://github.com/PyYoshi/cChardet")
   (synopsis "High-performance character encoding detection for Python")
   (description "cChardet is a character encoding detector, written in

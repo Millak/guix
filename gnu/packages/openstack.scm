@@ -115,20 +115,30 @@ formatters, and other extensions.")
 (define-public python-debtcollector
   (package
     (name "python-debtcollector")
-    (version "1.19.0")
+    (version "3.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "debtcollector" version))
         (sha256
-          (base32
-           "06c7vyn184y9f0lsrwaz13aq63hdz5fjrd191b8nifx6acsni42f"))))
-    (build-system python-build-system)
+         (base32 "0vzarkvjclci98d8lvkix6qj59f7rxp1qg2x6q6is7qfbg91g29a"))
+        (modules '((guix build utils)))
+        (snippet #~(begin
+                     (substitute* "test-requirements.txt"
+                       (("^(coverage|hacking|pre-commit).*")
+                        ""))))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-pbr python-six python-wrapt))
+     (list python-pbr python-wrapt))
     (native-inputs
-     (list ;; Tests.
-           python-subunit python-testrepository python-testtools))
+     (list python-doc8
+           python-fixtures
+           python-openstackdocstheme
+           python-reno
+           python-setuptools
+           python-stestr
+           python-testtools
+           python-wheel))
     (home-page "https://www.openstack.org/")
     (synopsis
      "Find deprecated patterns and strategies in Python code")
@@ -386,11 +396,11 @@ extensions.")
                              python-fixtures
                              python-jsonschema
                              python-netaddr
-                             python-oslo.concurrency
-                             python-oslo.config
-                             python-oslo.log
-                             python-oslo.serialization
-                             python-oslo.utils
+                             python-oslo-concurrency
+                             python-oslo-config
+                             python-oslo-log
+                             python-oslo-serialization
+                             python-oslo-utils
                              python-paramiko
                              python-prettytable
                              python-pyyaml
@@ -437,7 +447,7 @@ OpenStack deployment.")
             python-httplib2
             python-iso8601
             python-jsonschema
-            python-oslo.log
+            python-oslo-log
             python-paramiko
             python-six))
     (native-inputs
@@ -455,9 +465,9 @@ common features used in Tempest.")
 ;;; Packages from the Oslo library
 ;;;
 
-(define-public python-oslo.concurrency
+(define-public python-oslo-concurrency
   (package
-    (name "python-oslo.concurrency")
+    (name "python-oslo-concurrency")
     (version "5.0.0")
     (source (origin
               (method url-fetch)
@@ -490,8 +500,8 @@ common features used in Tempest.")
                          python-fixtures
                          python-stestr
                          python-eventlet))
-    (propagated-inputs (list python-fasteners python-oslo.config
-                             python-oslo.i18n python-oslo.utils))
+    (propagated-inputs (list python-fasteners python-oslo-config
+                             python-oslo-i18n python-oslo-utils))
     (home-page "https://docs.openstack.org/oslo.concurrency/latest/")
     (synopsis "Oslo Concurrency library")
     (description "The Oslo Concurrency Library provides utilities for safely
@@ -499,9 +509,9 @@ running multi-thread, multi-process applications using locking mechanisms and
 for running external processes.")
     (license asl2.0)))
 
-(define-public python-oslo.config
+(define-public python-oslo-config
   (package
-    (name "python-oslo.config")
+    (name "python-oslo-config")
     (version "8.7.1")
     (source
      (origin
@@ -515,7 +525,7 @@ for running external processes.")
     (propagated-inputs
      (list python-debtcollector
            python-netaddr
-           python-oslo.i18n
+           python-oslo-i18n
            python-rfc3986
            python-requests
            python-stevedore
@@ -527,9 +537,9 @@ for running external processes.")
 .ini style configuration files.")
     (license asl2.0)))
 
-(define-public python-oslo.context
+(define-public python-oslo-context
   (package
-    (name "python-oslo.context")
+    (name "python-oslo-context")
     (version "5.0.0")
     (source
      (origin
@@ -566,9 +576,9 @@ about a request context.  The request context is usually populated in the WSGI
 pipeline and used by various modules such as logging.")
     (license asl2.0)))
 
-(define-public python-oslo.i18n
+(define-public python-oslo-i18n
   (package
-    (name "python-oslo.i18n")
+    (name "python-oslo-i18n")
     (version "3.20.0")
     (source
      (origin
@@ -592,9 +602,9 @@ internationalization (i18n) features, especially translation for text strings
 in an application or library.")
     (license asl2.0)))
 
-(define-public python-oslo.log
+(define-public python-oslo-log
   (package
-  (name "python-oslo.log")
+  (name "python-oslo-log")
   (version "5.0.0")
   (source
     (origin
@@ -612,11 +622,11 @@ in an application or library.")
   (propagated-inputs
    (list python-dateutil
          python-debtcollector
-         python-oslo.config
-         python-oslo.context
-         python-oslo.i18n
-         python-oslo.utils
-         python-oslo.serialization
+         python-oslo-config
+         python-oslo-context
+         python-oslo-i18n
+         python-oslo-utils
+         python-oslo-serialization
          python-pyinotify))
   (native-inputs
    (list python-fixtures python-oslotest python-stestr python-testtools
@@ -629,9 +639,9 @@ configuration for all OpenStack projects.  It also provides custom formatters,
 handlers and support for context specific logging (like resource id’s etc).")
   (license asl2.0)))
 
-(define-public python-oslo.serialization
+(define-public python-oslo-serialization
   (package
-    (name "python-oslo.serialization")
+    (name "python-oslo-serialization")
     (version "4.2.0")
     (source
      (origin
@@ -647,10 +657,10 @@ handlers and support for context specific logging (like resource id’s etc).")
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests? (invoke "stestr" "run")))))))
     (propagated-inputs
-      (list python-msgpack python-oslo.utils python-pbr python-pytz))
+      (list python-msgpack python-oslo-utils python-pbr python-pytz))
     (native-inputs
      ;; For tests.
-      (list python-netaddr python-oslo.i18n python-oslotest python-stestr))
+      (list python-netaddr python-oslo-i18n python-oslotest python-stestr))
     (home-page "https://launchpad.net/oslo")
     (synopsis "Oslo serialization library")
     (description
@@ -757,9 +767,9 @@ documentation from the OpenStack project.")
 for debugging, and better support for mocking results.")
     (license asl2.0)))
 
-(define-public python-oslo.utils
+(define-public python-oslo-utils
   (package
-    (name "python-oslo.utils")
+    (name "python-oslo-utils")
     (version "4.12.0")
     (source
       (origin
@@ -776,7 +786,7 @@ for debugging, and better support for mocking results.")
                       (when tests? (invoke "stestr" "run")))))))
     (propagated-inputs
       (list python-debtcollector
-            python-oslo.i18n
+            python-oslo-i18n
             python-iso8601
             python-netaddr
             python-netifaces
@@ -843,8 +853,8 @@ handling.")
                          python-hacking
                          python-lxml
                          python-oauthlib
-                         python-oslo.config
-                         python-oslo.utils
+                         python-oslo-config
+                         python-oslo-utils
                          python-oslotest
                          python-pbr
                          python-pyyaml
@@ -907,10 +917,10 @@ process of writing new clients.")
            python-iso8601
            python-keystoneauth1
            python-netaddr
-           python-oslo.config
-           python-oslo.i18n
-           python-oslo.serialization
-           python-oslo.utils
+           python-oslo-config
+           python-oslo-i18n
+           python-oslo-serialization
+           python-oslo-utils
            python-prettytable
            python-requests
            python-six
@@ -1071,7 +1081,7 @@ regardless of whether they are bundled or not.")
                          python-statsd
                          python-stestr
                          python-testscenarios
-                         python-oslo.config
+                         python-oslo-config
                          python-oslotest))
     (propagated-inputs (list python-appdirs
                              python-cryptography

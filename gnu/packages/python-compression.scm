@@ -11,6 +11,7 @@
 ;;; Copyright © 2024 TakeV <takev@disroot.org>
 ;;; Copyright © 2023 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -763,6 +764,33 @@ install: libbitshuffle.so
                #t))))))
     (inputs '())
     (native-inputs '())))
+
+(define-public python-unix-ar
+  (package
+    (name "python-unix-ar")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "unix_ar" version))
+       (sha256
+        (base32 "0kicwxsh28x8r34a7cgzv2i65gsd4qjw2vf29pwq4fpsf3n2i4xz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; These tests have timestamp-related issues.
+     (list #:test-flags
+           #~(list "-m" "unittest" "-k" "not test_add and not test_addfile")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? test-flags #:allow-other-keys)
+                   (apply invoke "python" test-flags))))))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/getninjas/unix_ar")
+    (synopsis "AR file handling in Python")
+    (description "This package provides utilities to handle AR files in
+Python.")
+    (license license:bsd-3)))
 
 (define-public python-zipp
   (package

@@ -916,7 +916,7 @@ comparison and diagnostics.")
 (define-public python-pymc
   (package
     (name "python-pymc")
-    (version "5.11.0")
+    (version "5.21.0")
     (source (origin
               (method git-fetch)        ; no tests in PyPI
               (uri (git-reference
@@ -925,28 +925,17 @@ comparison and diagnostics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x94qzq3z02fxlliz1xfdpb2pbn7nhp4skzcxz6qdavbj9xqcxys"))))
+                "0azkbl0mpanza35ibdqdm21bf45n3xi26wy01lnxzxqblcjcny9l"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ; tests are too computationally intensive
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'versioneer
                           (lambda _
-                            (with-output-to-file "setup.cfg"
-                (lambda ()
-                  (display "\
-[versioneer]
-VCS = git
-style = pep440
-versionfile_source = pymc/_version.py
-versionfile_build = pymc/_version.py
-tag_prefix =
-parentdir_prefix = pymc-
-")))
-              (invoke "versioneer" "install")
-              (substitute* "setup.py"
-                (("versioneer.get_version\\(\\)")
-                 (string-append "\"" #$version "\"")))))
+                            (invoke "versioneer" "install")
+                            (substitute* "setup.py"
+                              (("version=versioneer.get_version\\(),")
+                               (format #f "version=~s," #$version)))))
                         ;; To create the compiledir for tests.
                         (add-before 'check 'write-permissions
                           (lambda* (#:key tests? #:allow-other-keys)
@@ -1009,24 +998,18 @@ and a lot more.")
 (define-public python-patsy
   (package
     (name "python-patsy")
-    (version "0.5.2")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "patsy" version))
               (sha256
                (base32
-                "17dn72519gvwifw3i8mzwlslxmxkl8ihzfrxg1iblsk70iwdwlsh"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "pytest" "-vv")))))))
+                "1i60b6s8zj0w2ks63ip4mr8z14p6pixp76rm9q2qr0gc3qwsk1p7"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-numpy python-scipy python-six))
+     (list python-numpy python-scipy))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-pytest-cov python-setuptools python-wheel))
     (home-page "https://github.com/pydata/patsy")
     (synopsis "Describe statistical models and build design matrices")
     (description
@@ -3333,7 +3316,7 @@ statistical summary in arrays and enumerables.")
 (define-public python-pgmpy
   (package
     (name "python-pgmpy")
-    (version "0.1.24")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)  ;pypi package does not include test data
@@ -3343,8 +3326,14 @@ statistical summary in arrays and enumerables.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0fvzh6v0yhgdryczamvzhfy2ymywkh0ssx4rl47xnfvi43hnij90"))))
+         "1hg6wrg3jcac71zn4gknni1wrn38wa86ka3sgp2bndz59mx6sr2s"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list "-k" (string-append
+                         "not test_pillai"
+                         " and not test_estimate_with_cache_no_llm_calls"
+                         " and not test_estimate_with_orientations"))))
     (propagated-inputs (list python-daft
                              python-joblib
                              python-networkx
@@ -3358,7 +3347,11 @@ statistical summary in arrays and enumerables.")
                              python-statsmodels
                              python-tqdm))
     (native-inputs (list python-mock
-                         python-pytest))
+                         python-pyro-ppl
+                         python-pytest
+                         python-setuptools
+                         python-wheel
+                         python-xgboost))
     (home-page "https://github.com/pgmpy/pgmpy")
     (synopsis "Probabilistic Graphical Models library")
     (description "This package provides a library for Probabilistic

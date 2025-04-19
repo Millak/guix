@@ -81,10 +81,15 @@
     (arguments
      (list
       #:test-flags
-      ;; These require Internet access.
-      #~(list "-k" (string-append "not test_latex_images"
-                                  " and not test_build_latex_doc[lualatex-manual]"
-                                  " and not est_build_latex_doc[lualatex-howto]"))
+      #~(list "-k" (string-join
+                    (list
+                     ;; These require Internet access.
+                     "not test_latex_images"
+                     "test_build_latex_doc[lualatex-manual]"
+                     "est_build_latex_doc[lualatex-howto]"
+                     ;; AssertionError: assert...list of weak references to the object...
+                     "test_autodoc_default_options")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -192,7 +197,10 @@ sources.")
               " and not test_viewcode"
               ;; These fail with pygments 2.10+.  They are harmless.
               " and not test_additional_targets_should_not_be_translated"
-              " and not test_additional_targets_should_be_translated"))
+              " and not test_additional_targets_should_be_translated"
+              ;; As in Sphinx@6:
+              ;; AssertionError: assert...list of weak references to the object...
+              " and not test_autodoc_default_options"))
       #:phases
       '(modify-phases %standard-phases
          (add-before 'check 'pre-check
@@ -261,25 +269,6 @@ sources.")
            python-pytest
            (texlive-updmap.cfg
             (list texlive-cm-super texlive-tex-gyre))))))
-
-;; Some packages do not support Sphinx 5 yet.  Remove when unused.
-(define-public python-sphinx-4
-  (package
-    (inherit python-sphinx-5)
-    (version "4.5.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Sphinx" version))
-              (sha256
-               (base32
-                "1rp28jryxwy24y8vpacclqihbizyi6b1s6id86pibvm46ybcmy3v"))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-sphinx)
-       (replace "python-docutils" python-docutils-0.15)))
-    (native-inputs
-     (modify-inputs (package-native-inputs python-sphinx)
-       (delete python-flit-core)
-       (append python-setuptools python-wheel)))))
 
 (define-public python-sphinxcontrib-apidoc
   (package
@@ -603,7 +592,15 @@ supported with @code{sphinx-issues}.")
         (sha256
          (base32 "1ivqz6yv96a2jp59kylg1gbkrmzq6zwilppz3ij0zrkjn25zb97k"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-docutils-0.15 python-sphinx-4))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'loosen-requirements
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("sphinx>=2,<5")
+                      "sphinx>=2,<6")))))))
+    (propagated-inputs (list python-docutils-0.16 python-sphinx-5))
     (native-inputs
      (list python-pytest
            python-pytest-regressions
@@ -1228,13 +1225,6 @@ enabled web server.")
     (description "This extension allows you to use Python 3 annotations for
 documenting acceptable argument types and return value types of functions.")
     (license license:expat)))
-
-(define-public python-sphinx-autodoc-typehints-5
-  (package/inherit python-sphinx-autodoc-typehints
-    (propagated-inputs
-     (modify-inputs
-         (package-propagated-inputs python-sphinx-autodoc-typehints)
-       (replace "python-sphinx" python-sphinx-5)))))
 
 (define-public python-sphinx-pytest
   (package

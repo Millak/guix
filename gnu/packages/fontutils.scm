@@ -505,14 +505,19 @@ subroutinizer for fontTools.")
        (uri (pypi-uri "cu2qu" version ".zip"))
        (sha256
         (base32 "1x762r7bf39g6aivfvrmq00h6f07abvs9x1xm0fz8l81vq8jz64c"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: Try to remove it when updating python-fonttools.
+     (list #:test-flags #~(list "-k" "not test_ignore_single_points")))
     (propagated-inputs (list python-fonttools))
     (native-inputs
      (list python-cython
            python-defcon
            python-pytest
            python-pytest-runner
+           python-setuptools
            python-setuptools-scm
+           python-wheel
            unzip))
     (home-page "https://github.com/googlefonts/cu2qu")
     (synopsis "Cubic-to-quadratic bezier curve conversion")

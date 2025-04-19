@@ -309,7 +309,7 @@ single executable called @code{bam}.")
 (define-public bcftools
   (package
     (name "bcftools")
-    (version "1.14")
+    (version "1.21")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/samtools/bcftools/"
@@ -317,11 +317,11 @@ single executable called @code{bam}.")
                                   version "/bcftools-" version ".tar.bz2"))
               (sha256
                (base32
-                "1jqrma16fx8kpvb3c0462dg0asvmiv5yi8myqmc5ddgwi6p8ivxp"))
+                "10p2ligd9pqn8wq6szw2s4zqknlm7hmb4057fpdnhlsmsg0lr2jj"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Delete bundled htslib.
-                          (delete-file-recursively "htslib-1.14")))))
+                          (delete-file-recursively "htslib-1.21")))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -453,7 +453,7 @@ computational cluster.")
 (define-public bedtools
   (package
     (name "bedtools")
-    (version "2.30.0")
+    (version "2.31.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/arq5x/bedtools2/releases/"
@@ -461,7 +461,7 @@ computational cluster.")
                                   "bedtools-" version ".tar.gz"))
               (sha256
                (base32
-                "1f2hh79l7dn147c2xyfgf5wfjvlqfw32kjfnnh2n1qy6rpzx2fik"))))
+                "15rbfg776pcjxqrsa22dk7sdlmx1lijh3jhap04f1cbr4866czpw"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2185,6 +2185,20 @@ Format (GFF) with Biopython integration.")
       (modify-inputs (package-propagated-inputs python-bcbio-gff)
         (replace "python-biopython" python-biopython-1.73))))))
 
+(define bed-sample-files
+  (let* ((name "bed-sample-files")
+         (commit "a06dc0450e484090f15656ffd5d317813a5e1e01")
+         (revision "0")
+         (version (git-version "0.0.0" revision commit)))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/fastlmm/bed-sample-files")
+            (commit commit)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1ldr2lvgbcykxa9i2s2298mhfh0sz96aaxs5dx217aipa9vsrjwk")))))
+
 (define-public python-bed-reader
   (package
     (name "python-bed-reader")
@@ -2194,80 +2208,124 @@ Format (GFF) with Biopython integration.")
        (method url-fetch)
        (uri (pypi-uri "bed_reader" version))
        (sha256
-        (base32 "1c8ibwvz3b069w7ffh9aasz16lfkmx4z0249c2v909a21mrkkd6n"))))
+        (base32 "1c8ibwvz3b069w7ffh9aasz16lfkmx4z0249c2v909a21mrkkd6n"))
+       (modules '((guix build utils)))
+       ;; Bundled unused javascript & co.
+       (snippet #~(delete-file-recursively "_static"))
+       (patches
+        (search-patches "python-bed-reader-use-store-samples.patch"))))
     (build-system cargo-build-system)
     (arguments
      (list
-      ;; Many of the tests (both the Rust tests and the Python tests) require
-      ;; Internet access to fetch samples.
-      #:tests? #false
       #:install-source? #false
       #:features '(list "extension-module")
-      #:cargo-test-flags '(list "--features=extension-module")
+      #:cargo-test-flags
+      '(list "--features=extension-module"
+             ;; Skip doc tests.
+             "--lib" "--bins" "--tests" "--"
+             ;; This test is the only one not matched by our regexp.
+             "--skip=http_one"
+             ;; These test require a 84 GB file.
+             "--skip=http_two"
+             "--skip=http_cloud_urls_md_3")
       #:cargo-inputs
-      `(("rust-anyinput" ,rust-anyinput-0.1)
-        ("rust-bytecount" ,rust-bytecount-0.6)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-bytes" ,rust-bytes-1)
-        ("rust-cloud-file" ,rust-cloud-file-0.2)
-        ("rust-derive-builder" ,rust-derive-builder-0.20)
-        ("rust-dpc-pariter" ,rust-dpc-pariter-0.4)
-        ("rust-fetch-data" ,rust-fetch-data-0.2)
-        ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-itertools" ,rust-itertools-0.13)
-        ("rust-ndarray" ,rust-ndarray-0.16)
-        ("rust-ndarray-npy" ,rust-ndarray-npy-0.9)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-numpy" ,rust-numpy-0.22)
-        ("rust-pyo3" ,rust-pyo3-0.22)
-        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.22)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-statrs" ,rust-statrs-0.17)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tokio" ,rust-tokio-1))
+      (list rust-anyinput-0.1
+            rust-bytecount-0.6
+            rust-byteorder-1
+            rust-bytes-1
+            rust-cloud-file-0.2
+            rust-derive-builder-0.20
+            rust-dpc-pariter-0.4
+            rust-fetch-data-0.2
+            rust-futures-util-0.3
+            rust-itertools-0.13
+            rust-ndarray-0.16
+            rust-ndarray-npy-0.9
+            rust-num-traits-0.2
+            rust-numpy-0.22
+            rust-pyo3-0.22
+            rust-pyo3-build-config-0.22
+            rust-rayon-1
+            rust-statrs-0.17
+            rust-thiserror-1
+            rust-tokio-1)
       #:cargo-development-inputs
-      `(("rust-anyhow" ,rust-anyhow-1)
-        ("rust-ndarray-rand" ,rust-ndarray-rand-0.15)
-        ("rust-rusoto-credential" ,rust-rusoto-credential-0.48)
-        ("rust-temp-testdir" ,rust-temp-testdir-0.2)
-        ("rust-thousands" ,rust-thousands-0.2))
+      (list rust-anyhow-1
+            rust-ndarray-rand-0.15
+            rust-rusoto-credential-0.48
+            rust-temp-testdir-0.2
+            rust-thousands-0.2)
       #:imported-modules
       (append %cargo-build-system-modules
               %pyproject-build-system-modules)
       #:modules
       '((guix build cargo-build-system)
         ((guix build pyproject-build-system) #:prefix py:)
-        (guix build utils))
+        (guix build utils)
+        (ice-9 match)
+        (ice-9 rdelim))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'configure 'set-data-path
+            (lambda _
+              ;; This var is still necessary despite the patch-data-path phase.
+              ;; Otherwise more tests fail with a read-only filesystem error.
+              (setenv "BED_READER_DATA_DIR" #+bed-sample-files)))
+          (add-after 'unpack 'patch-data-path
+            (lambda _
+              ;; If BED_READER_DATA_DIR is unset, default to bed-sample-files.
+              (substitute* "bed_reader/_sample_data.py"
+                (("os\\.environ\\.get\\(\"BED_READER_DATA_DIR\"" all)
+                 (format #f "~a, ~s" all #+bed-sample-files)))
+              ;; XXX: More work is necessary to use another
+              ;; version of sample files with BED_READER_DATA_DIR
+              ;; Currently, only the hardcoded Guix version is working.
+              (substitute* '("bed_reader/tests/test_open_bed_cloud.py"
+                             "src/bed_cloud.rs"
+                             "src/lib.rs"
+                             "src/supplemental_documents/cloud_urls_etc.md"
+                             "tests/tests_api_cloud.rs")
+                (("\
+https://raw\\.githubusercontent\\.com/fastlmm/bed-sample-files/main")
+                 (string-append "file://" #+bed-sample-files)))
+              (substitute* "src/tests.rs"
+                (("bed_reader/tests/data")
+                 #+bed-sample-files))))
           (add-after 'install 'prepare-python-module
             (lambda _
-              ;; We don't use maturin.
-              (delete-file "pyproject.toml")
-              (call-with-output-file "pyproject.toml"
-                (lambda (port)
-                  (format port "\
+              ;; We don't use maturin. Conveniently, what we want to drop
+              ;; from pyproject.toml is at the end of the file.
+              (rename-file "pyproject.toml" "pyproject.toml.bak")
+              (call-with-input-file "pyproject.toml.bak"
+                (lambda (in)
+                  (call-with-output-file "pyproject.toml"
+                    (lambda (out)
+                      (let loop ()
+                        (match (read-line in)
+                          ((? eof-object? eof)
+                           eof)
+                          ("[build-system]"
+                           (and (format out "\
 [build-system]
 build-backend = 'setuptools.build_meta'
 requires = ['setuptools']
+
+[tool.setuptools.packages.find]
+where = [\".\"]
+exclude = [\"src\", \"docs\", \"tests\", \"Cargo.toml\"]
 ")))
-              (call-with-output-file "setup.cfg"
-                (lambda (port)
-                  (format port "\
-[metadata]
-name = bed-reader
-version = ~a
-
-[options]
-packages = find:
-
-[options.packages.find]
-exclude =
-  src
-  docs
-  tests
-  Cargo.toml
-" #$version)))))
+                          ("samples = [\"pooch>=1.5.0\"]"
+                           (and (format out "samples = []~%")
+                                (loop)))
+                          ("[project]"
+                           (and (format out "\
+[project]
+version = ~s
+" #$version)
+                                (loop)))
+                          (line
+                           (and (format out "~a~%" line)
+                                (loop)))))))))))
           (add-after 'prepare-python-module 'enable-bytecode-determinism
             (assoc-ref py:%standard-phases 'enable-bytecode-determinism))
           (add-after 'enable-bytecode-determinism 'build-python-module
@@ -2279,16 +2337,35 @@ exclude =
               (let ((site (string-append #$output "/lib/python"
                                          #$(version-major+minor
                                             (package-version python))
-                                         "/site-packages")))
-                (mkdir-p site)
+                                         "/site-packages/")))
+                (mkdir-p (string-append site "bed_reader"))
                 (copy-file "target/release/libbed_reader.so"
-                           (string-append site "/bed_reader/bed_reader.so")))))
+                           (string-append site "bed_reader/bed_reader.so")))))
           (add-after 'install-python-library 'add-install-to-pythonpath
             (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
           (add-after 'add-install-to-pythonpath 'check-python
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
+            (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (apply invoke "pytest" "-v" #$output test-flags)))))))
+                (let ((site (string-append #$output "/lib/python"
+                                           #$(version-major+minor
+                                              (package-version python))
+                                           "/site-packages/"))
+                      (data-dir "bed_reader/tests/data"))
+                  (symlink (canonicalize-path data-dir)
+                           (string-append site data-dir))
+                  (invoke "pytest" "-v" #$output
+                          ;; These test require a 84 GB file.
+                          "-k" (string-join
+                                (list "not test_http_two"
+                                      "test_http_cloud_urls_rst_3"
+                                      "test_http_cloud_urls_rst_4"
+                                      ;; XXX: python-pooch dependency removed
+                                      "test_optional_dependencies")
+                                " and not "))
+                  (delete-file-recursively
+                   (string-append site "bed_reader/tests"))
+                  (delete-file-recursively
+                   (string-append #$output "/.pytest_cache")))))))))
     (native-inputs (list python-pytest
                          python-pytest-cov
                          python-pytest-datadir
@@ -2296,7 +2373,7 @@ exclude =
                          python-recommonmark
                          python-sphinx))
     (inputs (list python-wrapper))
-    (propagated-inputs (list python-numpy python-pandas python-pooch))
+    (propagated-inputs (list python-numpy python-pandas python-scipy))
     (home-page "https://fastlmm.github.io/")
     (synopsis "Read and write the PLINK BED format, simply and efficiently")
     (description
@@ -2424,7 +2501,7 @@ to explore and analyze bulk RNA-seq data.")
 (define-public python-cell2cell
   (package
     (name "python-cell2cell")
-    (version "0.6.8")
+    (version "0.7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2433,7 +2510,7 @@ to explore and analyze bulk RNA-seq data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hwww0rcv8sc4k312n4d0jhbyix1jjqgv5djg25bw8127q5iym3s"))
+                "02cqc5rm0qkm0np1k7bim1w7f5qjnwf1jcm5albd9cpvfs4bwgdr"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2449,6 +2526,8 @@ to explore and analyze bulk RNA-seq data.")
                     (("'statannotations',") "")
                     ;; We provide version 1.0.4, which should be fine.
                     (("'gseapy == 1.0.3'") "'gseapy'")
+                    ;; We provide version 0.9.0, which should be fine.
+                    (("'tensorly == 0.8.1'") "'tensorly'")
                     ;; Using matplotlib 3.5.2 leads to this bug:
                     ;; https://github.com/earmingol/cell2cell/issues/19 but we
                     ;; can't package a different minor version of matplotlib
@@ -2717,16 +2796,18 @@ parsing of Variant Call Format (VCF) files.")
 (define-public python-decoupler-py
   (package
     (name "python-decoupler-py")
-    (version "1.6.0")
+    ;; Upstream places release on a new branch, see
+    ;; <https://github.com/saezlab/decoupler-py/issues/175>.
+    (version "1.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/saezlab/decoupler-py")
-                    (commit (string-append "v" version))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mqkp0i8k5hzhfnka4nc2f0phmrs0k404ynbl1lqfjzywx25y75h"))))
+                "0c3yg7jjb1nxb6hsh9wn7wr8w0ba55gixdbf5fp443nhv1cwlajj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2742,6 +2823,11 @@ parsing of Variant Call Format (VCF) files.")
                             " and not test_get_collectri"))
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; numba = "^0.60.0"; all tests passed.
+               (("0.60.0") "0.61.0"))))
          (add-before 'check 'set-home
            ;; Some tests require a home directory to be set.
            (lambda _ (setenv "HOME" "/tmp")))
@@ -2763,7 +2849,7 @@ parsing of Variant Call Format (VCF) files.")
                              python-skranger
                              python-tqdm
                              python-typing-extensions))
-    (native-inputs (list python-pytest python-wheel))
+    (native-inputs (list python-poetry-core python-pytest))
     (home-page "https://github.com/saezlab/decoupler-py")
     (synopsis
      "Framework for modeling, analyzing and interpreting single-cell RNA-seq data")
@@ -3243,6 +3329,8 @@ phylogenetic trees also goes by the name simulationmethods for phylogenetic
 trees, synthetic data generation, or just phylogenetic tree simulation.")
     (license license:expat)))
 
+;; XXX: Probably unmaintained, build fails with Python 3.11, see
+;; <https://github.com/cancerit/parabam/issues/10>.
 (define-public python-parabam
   (package
     (name "python-parabam")
@@ -3302,19 +3390,29 @@ encountered in PDB files prior to simulation tasks.")
 (define-public python-peaks2utr
   (package
     (name "python-peaks2utr")
-    (version "1.2.0")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "peaks2utr" version))
               (sha256
                (base32
-                "1idp9cgwqxvryf4qqrc1xjsamfqn3jmr56kmjp2h1ysmckwmhw4v"))))
+                "104il0kk61q07b58g9xrss7xflwlbx4kzsmw9iih99lhfsii0wzg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; These two tests fail because file names are not URLs.
-      '(list "-k" "not test_annotation.py")))
+      ;; These tests fail because file names are not URLs.
+      '(list "-k" (string-join
+                   (list "not test_forward_strand_annotations"
+                         "test_matching_chr"
+                         "test_reverse_strand_annotations")
+                   " and not "))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.cfg"
+               (("==") ">=")))))))
     (propagated-inputs
      (list python-asgiref
            python-gffutils
@@ -3339,30 +3437,31 @@ three prime UTR.")
 (define-public python-pegasusio
   (package
     (name "python-pegasusio")
-    (version "0.7.1")
+    (version "0.9.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pegasusio" version))
               (sha256
                (base32
-                "0gqygspdy398vjymdy6756jmk99s7fhwav9rivdx59kpqjcdxaz9"))))
+                "1vxi6z7jlznp7sgzlbjsl1dzf1h7ypinllnls0lb2773a8vavg5x"))))
     (build-system pyproject-build-system)
     ;; There are no tests.
     (arguments (list #:tests? #false))
     (propagated-inputs
      (list python-anndata
+           python-cython
            python-docopt
            python-h5py
-           python-importlib-metadata
            python-loompy
            python-natsort
            python-numpy
            python-pandas
            python-pillow
            python-scipy
+           python-setuptools
            python-zarr))
-    (native-inputs (list python-cython python-setuptools-scm
-                         python-setuptools python-wheel))
+    (native-inputs (list python-cython python-setuptools python-setuptools-scm
+                         python-wheel))
     (home-page "https://github.com/lilab-bcb/pegasusio")
     (synopsis "Read or write single-cell genomics data")
     (description
@@ -3641,6 +3740,49 @@ It emphasizes modularity and performance.  The API will be immediately
 familiar to anyone with experience of scikit-learn or scipy.")
     (license license:asl2.0)))
 
+(define bgen-sample-files
+  (let* ((name "bgen-sample-files")
+         (commit "7b1bc74f58b326ca19606fa5f3c6093d48367993")
+         (revision "0")
+         (version (git-version "0.0.0" revision commit)))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/fastlmm/bgen-sample-files")
+            (commit commit)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1b8jkscccyspfr3y1b66xvwnljcha08r2i24v9d6hcm5zii0l54w")))))
+
+(define pynsptools-examples-files
+  (let* ((name "pysnptools-examples-files")
+         ;; taken from pysnptools/util/pysnptools.hashdown.json
+         (commit "ed14e050b2b75e7f4ddb73d512fbe928bbdb2b85")
+         (revision "0")
+         (version (git-version "0.0.0" revision commit)))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/fastlmm/PySnpTools")
+            (commit commit)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "0hznpj15kx2sla16wlmcqz21n2vi2qb1493v30vz75hnm1m4iwm1"))
+      (modules '((guix build utils)
+                 (ice-9 ftw)))
+      (snippet
+       #~(begin
+           ;; Delete everything except for examples directory:
+           (define (delete-except exceptions)
+             (lambda (file)
+               (unless (member file `("." ".." ,@exceptions))
+                 (delete-file-recursively file))))
+           (for-each (delete-except '("pysnptools" "tests")) (scandir "."))
+           (with-directory-excursion "pysnptools"
+             (for-each (delete-except '("examples")) (scandir ".")))
+           (with-directory-excursion "tests"
+             (for-each (delete-except '("datasets")) (scandir "."))))))))
+
 (define-public python-pysnptools
   (package
     (name "python-pysnptools")
@@ -3650,12 +3792,39 @@ familiar to anyone with experience of scikit-learn or scipy.")
        (method url-fetch)
        (uri (pypi-uri "pysnptools" version))
        (sha256
-        (base32
-         "1babnyky5fk93as1ybdvpz9x3x5099gkgscxflngzfswin23mspk"))))
+        (base32 "1babnyky5fk93as1ybdvpz9x3x5099gkgscxflngzfswin23mspk"))))
     (build-system pyproject-build-system)
-    ;; Tests require test data from python-bed-reader, which fetches data with
-    ;; python-pooch.
-    (arguments (list #:tests? #f))
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; These tests require the bgen feature and an additional input.
+         "--ignore" "pysnptools/distreader/bgen.py"
+         "--ignore" "pysnptools/distreader/test_bgen2.py"
+         "--ignore" "pysnptools/distreader/distreader.py"
+         "-k" "not pysnptools.distreader.distdata.DistData.val \
+and not pysnptools.distreader.disthdf5.DistHdf5.write \
+and not pysnptools.distreader.distmemmap.DistMemMap.write"
+         ;; These tests require network connection.
+         "--ignore" "pysnptools/util/_example_file.py"
+         "--ignore" "pysnptools/util/filecache/hashdown.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-data-path
+            (lambda _
+              (substitute* "pysnptools/util/pysnptools.hashdown.json"
+                (("https://github\\.com/fastlmm/PySnpTools/\
+raw/ed14e050b2b75e7f4ddb73d512fbe928bbdb2b85")
+                 (string-append "file://" #+pynsptools-examples-files)))
+              (substitute* "pysnptools/util/bgen.hashdown.json"
+                (("https://raw\\.githubusercontent\\.com\
+/fastlmm/bgen-sample-files/7b1bc74f58b326ca19606fa5f3c6093d48367993")
+                 (string-append "file://" #+bgen-sample-files)))))
+          (add-after 'unpack 'loosen-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("(h5py|psutil|wheel)>=[0-9.]*" all target)
+                 target)))))))
     (propagated-inputs
      (list python-bed-reader
            python-cloudpickle
@@ -3903,7 +4072,7 @@ use-case, we encourage users to compose functions to achieve their goals.")
 (define-public python-biom-format
   (package
     (name "python-biom-format")
-    (version "2.1.12")
+    (version "2.1.16")
     (source
      (origin
        (method git-fetch)
@@ -3915,7 +4084,7 @@ use-case, we encourage users to compose functions to achieve their goals.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "06x2d8fv80jp86kd66fm3ragmxrpa2j0lzsbm337ziqjnpsdwc0f"))
+         "1npxjsi7r0w8diq6s37q21cqgrqifl7f483lfn72bn7qrvkvbpyz"))
        (modules '((guix build utils)))
        ;; Delete generated C files.
        (snippet
@@ -4214,21 +4383,30 @@ sequencing.")
 (define-public python-biopython
   (package
     (name "python-biopython")
-    (version "1.80")
+    (version "1.85")
     (source (origin
               (method url-fetch)
               ;; use PyPi rather than biopython.org to ease updating
               (uri (pypi-uri "biopython" version))
               (sha256
                (base32
-                "0hqf3jsxn2sphcx81fx7x3i69sarpjsi70fzw98f8rw7z2d5x02j"))))
+                "19m03s5rwcyiq5cs1kq9dzj7qvmfvm76idgn967ygr4x0msapbsx"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-home
            ;; Some tests require a home directory to be set.
-           (lambda _ (setenv "HOME" "/tmp"))))))
+           (lambda _ (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'numpy-compatibility
+           (lambda _
+             (substitute* "Bio/Cluster/__init__.py"
+               (("np.True_") "True"))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "Tests"
+                 (invoke "python3" "run_tests.py" "--offline"))))))))
     (propagated-inputs
      (list python-numpy))
     (native-inputs (list python-setuptools python-wheel))
@@ -4253,7 +4431,87 @@ into separate processes; and more.")
               (uri (pypi-uri "biopython" version))
               (sha256
                (base32
-                "1q55jhf76z3k6is3psis0ckbki7df26x7dikpcc3vhk1vhkwribh"))))))
+                "1q55jhf76z3k6is3psis0ckbki7df26x7dikpcc3vhk1vhkwribh"))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'python3.11-compatibility
+            (lambda _
+              ;; Py_TYPE was changed to an inline static function in Python
+              ;; 3.11, so it cannot be used on the left-hand side.
+              (substitute* "Bio/triemodule.c"
+                (("Py_TYPE\\(&Trie_Type\\) = &PyType_Type;")
+                 "Py_SET_TYPE(&Trie_Type, &PyType_Type);"))
+
+              ;; PY_SSIZE_T_CLEAN must be defined if s# notation is used.
+              ;; Note that this is no longer needed in Python 3.13.
+              (substitute* '("Bio/triemodule.c" "Bio/motifs/_pwm.c")
+                (("#include <Python.h>")
+                 "#define PY_SSIZE_T_CLEAN\n#include <Python.h>")
+                (("int s;") "Py_ssize_t s;"))
+
+              ;; The U mode is implicit in Python 3.11.
+              (substitute* '("Tests/test_KGML_nographics.py"
+                             "Tests/test_PDB.py")
+                (("'rU'") "'r'"))
+              (substitute* "Bio/SCOP/Cla.py"
+                (("\"rU\"") "\"r\""))
+
+              ;; ExactPosition class needs to define __str__.
+              (substitute* "Bio/SeqFeature.py"
+                (("class UncertainPosition" m)
+                 (string-append "\
+    # Must define this on Python 3.8 onwards because we redefine __repr__
+    def __str__(self):
+        return str(int(self))
+
+    def __add__(self, offset):
+        # By default preserve any subclass
+        return self.__class__(int(self) + offset)
+" m)))
+              ;; This was removed in Python 3.9 already
+              (substitute* "Bio/KEGG/KGML/KGML_parser.py"
+                (("self.entry.getchildren\\(\\)")
+                 "list(self.entry)")
+                (("element.getchildren\\(\\)")
+                 "list(element)"))
+              (substitute* "Bio/Phylo/NeXMLIO.py"
+                (("node.getchildren\\(\\)")
+                 "list(node)")
+                (("edge.getchildren\\(\\)")
+                 "list(edge)"))
+              (substitute* "Bio/Entrez/Parser.py"
+                (("child.getiterator\\(\\)")
+                 "list(child.iter())"))
+              (substitute* "Bio/SeqIO/UniprotIO.py"
+                (("alt_element.getiterator\\(NS \\+ ('.*')\\)" m something)
+                 (string-append "list(alt_element.iter(NS + " something "))"))
+                (("link_element.getiterator\\(NS \\+ ('.*')\\)" m something)
+                 (string-append "list(link_element.iter(NS + " something "))"))
+                (("loc_element.getiterator\\(NS \\+ ('.*')\\)" m something)
+                 (string-append "list(loc_element.iter(NS + " something "))"))
+                (("element.getiterator\\(NS \\+ ('.*')\\)" m something)
+                 (string-append "list(element.iter(NS + " something "))")))))
+          (add-after 'unpack 'numpy-compatibility
+            (lambda _
+              (substitute* '("Bio/Statistics/lowess.py"
+                             "Tests/test_Cluster.py")
+                (("numpy.float32") "float")
+                (("numpy.float") "float"))))
+          (add-before 'check 'set-home
+            ;; Some tests require a home directory to be set.
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python3" "setup.py" "build_ext" "--inplace")))
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* "Tests/run_tests.py"
+                ;; Do not run doctests.
+                (("self.tests.append\\(\"doctest\"\\)") "")
+                (("opt == \"--offline\"") "True")))))))))
 
 (define-public python-fastalite
   (package
@@ -5266,16 +5524,16 @@ off-target reads for a capture method that targets CpG-rich region.")
 (define-public python-bx-python
   (package
     (name "python-bx-python")
-    (version "0.9.0")
+    (version "0.13.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/bxlab/bx-python")
-                    (commit "4f4a48d3f227ae390c1b22072867ba86e347bdef")))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c914rw8phiw7zwzngz9i9hdciz5lq53drwdbpl2bd2sf5bj2biy"))))
+                "13318a3lydyg8fxawdb7anrny9a1j1sc1q4nd6pjg8ki5zr9r713"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5473,7 +5731,7 @@ subgroups.")
 (define-public python-pysam
   (package
     (name "python-pysam")
-    (version "0.20.0")
+    (version "0.23.0")
     (source (origin
               (method git-fetch)
               ;; Test data is missing on PyPi.
@@ -5483,34 +5741,39 @@ subgroups.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dq6jwwm98lm30ijdgqc5xz5ppda4nj999y6qs78mhw8x0kij8gg"))
+                "0hk0ks6kqsm8252d0v1lw2d22x1awmxcr165nnhyacwbqh246skl"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; FIXME: Unbundle samtools and bcftools.
                           (delete-file-recursively "htslib")))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-flags
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "HTSLIB_MODE" "external")
-             (setenv "HTSLIB_LIBRARY_DIR"
-                     (string-append (assoc-ref inputs "htslib") "/lib"))
-             (setenv "HTSLIB_INCLUDE_DIR"
-                     (string-append (assoc-ref inputs "htslib") "/include"))
-             (setenv "LDFLAGS" "-lncurses")
-             (setenv "CFLAGS" "-D_CURSES_LIB=1")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Step out of source dir so python does not import from CWD.
-               (with-directory-excursion "tests"
-                 (setenv "HOME" "/tmp")
-                 (invoke "make" "-C" "pysam_data")
-                 (invoke "make" "-C" "cbcf_data")
-                 ;; The FileHTTP test requires network access.
-                 (invoke "pytest" "-k" "not FileHTTP"))))))))
+     (list
+      #:test-flags
+      ;; This test requires network access.
+      '(list "-k" "not FileHTTP" "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((":__legacy__") ""))))
+          (add-before 'build 'set-flags
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "HTSLIB_MODE" "external")
+              (setenv "HTSLIB_LIBRARY_DIR"
+                      (string-append (assoc-ref inputs "htslib") "/lib"))
+              (setenv "HTSLIB_INCLUDE_DIR"
+                      (string-append (assoc-ref inputs "htslib") "/include"))
+              (setenv "LDFLAGS" "-lncurses")
+              (setenv "CFLAGS" "-D_CURSES_LIB=1")))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests"
+                  (setenv "HOME" "/tmp")
+                  (invoke "make" "-C" "pysam_data")
+                  (invoke "make" "-C" "cbcf_data"))))))))
     (propagated-inputs
      (list htslib))                    ; Included from installed header files.
     (inputs
@@ -5918,7 +6181,7 @@ time.")
      (list python-bx-python python-numpy python-pybigwig python-pysam
            zlib))
     (native-inputs
-     (list python-cython python-nose))
+     (list python-cython python-nose python-pyparsing))
     (home-page "https://crossmap.sourceforge.net/")
     (synopsis "Convert genome coordinates between assemblies")
     (description
@@ -6304,78 +6567,6 @@ gkm-SVM.")
      "This package provides Python bindings to the libBigWig library for
 accessing bigWig files.")
     (license license:expat)))
-
-(define-public python-pyfasta
-  ;; The release on pypi does not contain the test data files.
-  (let ((commit "c2f0611c5311f1b1466f2d56560447898b4a8b03")
-        (revision "1"))
-    (package
-      (name "python-pyfasta")
-      (version (git-version "0.5.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/brentp/pyfasta")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0a189id3fbv88gssyk6adbmz2ll1mqpmyw8vxmx3fi955gvaq9j7"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        '(modify-phases %standard-phases
-           (add-after 'unpack 'python3.10-compat
-             (lambda _
-               (substitute* "pyfasta/__init__.py"
-                 (("from fasta import")
-                  "from pyfasta.fasta import")
-                 (("from records import")
-                  "from pyfasta.records import")
-                 (("from split_fasta import")
-                  "from pyfasta.split_fasta import")
-                 (("in f.iteritems")
-                  "in f.items"))
-               (substitute* "pyfasta/fasta.py"
-                 (("from collections import Mapping")
-                  "from collections.abc import Mapping")
-                 (("from records import")
-                  "from pyfasta.records import"))
-               (substitute* "pyfasta/records.py"
-                 (("cPickle") "pickle")
-                 (("\\(int, long\\)")
-                  "(int, int)")
-                 ;; XXX: it's not clear if this is really correct.
-                 (("buffer\\(self\\)")
-                  "memoryview(bytes(str(self), encoding='utf-8'))")
-                 (("sys.maxint") "sys.maxsize"))
-               (substitute* "pyfasta/split_fasta.py"
-                 (("from cStringIO import")
-                  "from io import")
-                 (("in lens.iteritems") "in lens.items"))
-               (substitute* "tests/test_all.py"
-                 (("f.keys\\(\\)\\) == \\['a-extra'")
-                  "list(f.keys())) == ['a-extra'")
-                 (("f.iterkeys\\(\\)") "iter(f.keys())")
-                 (("tests/data/" m)
-                  (string-append (getcwd) "/" m))))))))
-      (propagated-inputs (list python-numpy))
-      (native-inputs (list python-nose python-setuptools python-wheel))
-      (home-page "https://github.com/brentp/pyfasta/")
-      (synopsis "Pythonic access to fasta sequence files")
-      (description
-       "This library provides fast, memory-efficient, pythonic (and
-command-line) access to fasta sequence files.  It stores a flattened version
-of a fasta sequence file without spaces or headers and uses either a
-@code{mmap} in numpy binary format or @code{fseek}/@code{fread} so the
-sequence data is never read into memory.  It saves a pickle (@code{.gdx}) of
-the start and stop (for @code{fseek}/@code{mmap}) locations of each header in
-the fasta file for internal use.
-
-Note that this package has been deprecated in favor of @code{pyfaidx}.")
-      (license license:expat))))
 
 (define-public python-schema-salad
   (package
@@ -9202,7 +9393,7 @@ performance.")
 (define-public htscodecs
   (package
     (name "htscodecs")
-    (version "1.6.0")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/samtools/htscodecs/"
@@ -9210,7 +9401,7 @@ performance.")
                                   version "/htscodecs-" version ".tar.gz"))
               (sha256
                (base32
-                "1h0827g9svil9jnjbpdlxjbl44rai5b95m61hs9ifbqrz9nvnjjb"))))
+                "0n962938clim15d5mmggsm7ki2ycyjwqvjgddihjlpdsr5qv28aq"))))
     (build-system gnu-build-system)
     (inputs (list bzip2 zlib))
     (home-page "https://github.com/samtools/htscodecs")
@@ -9228,6 +9419,48 @@ name/ID compression and quality score compression derived from fqzcomp.")
 (define-public htslib
   (package
     (name "htslib")
+    (version "1.21")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/samtools/htslib/releases/download/"
+                    version "/htslib-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "08qq1yn6lqqnww532s11nr6gz0gfpn58rn3gy90kd5pl6pki1dc4"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "htscodecs")))))
+    (build-system gnu-build-system)
+    ;; Let htslib translate "gs://" and "s3://" to regular https links with
+    ;; "--enable-gcs" and "--enable-s3". For these options to work, we also
+    ;; need to set "--enable-libcurl".
+    (arguments
+     `(#:configure-flags '("--enable-gcs"
+                           "--enable-libcurl"
+                           "--enable-s3"
+                           "--with-external-htscodecs")))
+    (inputs
+     (list bzip2 curl openssl xz))
+    ;; This is referred to in the pkg-config file as a required library.
+    (propagated-inputs
+     (list htscodecs zlib))
+    (native-inputs
+     (list perl))
+    (home-page "https://www.htslib.org")
+    (synopsis "C library for reading/writing high-throughput sequencing data")
+    (description
+     "HTSlib is a C library for reading/writing high-throughput sequencing
+data.  It also provides the @command{bgzip}, @command{htsfile}, and
+@command{tabix} utilities.")
+    ;; Files under cram/ are released under the modified BSD license;
+    ;; the rest is released under the Expat license
+    (license (list license:expat license:bsd-3))))
+
+(define-public htslib-1.19
+  (package
+    (inherit htslib)
     (version "1.19")
     (source (origin
               (method url-fetch)
@@ -9914,6 +10147,8 @@ sequences).")
                                (with-directory-excursion (string-append "demo/" dir)
                                  (invoke "bash" script))))
                             tests))))))))
+    (native-inputs
+     (list python-wheel))
     (inputs
      (list python-numpy
            python-scipy
@@ -10695,13 +10930,16 @@ BAM and Wiggle files in both transcript-coordinate and genomic-coordinate.")
        (sha256
         (base32
          "0gbb9iyb7swiv5455fm5rg98r7l6qn27v564yllqjd574hncpx6m"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (inputs
-     (list python-cython
-           python-bx-python
-           python-pybigwig
-           python-pysam
+     (list python-bx-python
+           python-cython
            python-numpy
+           python-pybigwig
+           python-pyparsing
+           python-pysam
+           python-setuptools
+           python-wheel
            zlib))
     (native-inputs
      (list python-nose))
@@ -11925,30 +12163,34 @@ bioinformatics file formats, sequence alignment, and more.")
        ("bzip2" ,bzip2)))))
 
 (define-public seqmagick
-  (package
-    (name "seqmagick")
-    (version "0.8.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "seqmagick" version))
-       (sha256
-        (base32
-         "0c6skyig8fyylnbj4597pjj9h0dn36rkxrhwd34yrsc6k6f7r8a0"))))
-    (build-system pyproject-build-system)
-    (inputs
-     (list python-biopython python-pygtrie))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/fhcrc/seqmagick")
-    (synopsis "Tools for converting and modifying sequence files")
-    (description
-     "Bioinformaticians often have to convert sequence files between formats
+  (let ((commit "dee6ab9839cff317142e55678bb12c4c9ab2150f")
+        (revision "0"))
+    (package
+      (name "seqmagick")
+      (version (git-version "0.8.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fhcrc/seqmagick")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0syipb7m44s5bqrhs17bwr28svy2s83j8d93kbazav92jzszzsw4"))))
+      (build-system pyproject-build-system)
+      (inputs
+       (list python-biopython python-pygtrie))
+      (native-inputs
+       (list python-nose python-setuptools python-wheel))
+      (home-page "https://github.com/fhcrc/seqmagick")
+      (synopsis "Tools for converting and modifying sequence files")
+      (description
+       "Bioinformaticians often have to convert sequence files between formats
 and do little manipulations on them, and it's not worth writing scripts for
 that.  Seqmagick is a utility to expose the file format conversion in
 BioPython in a convenient way.  Instead of having a big mess of scripts, there
 is one that takes arguments.")
-    (license license:gpl3)))
+      (license license:gpl3))))
 
 (define-public seqtk
   (package
@@ -12346,7 +12588,7 @@ Cuffdiff or Ballgown programs.")
 (define-public taxtastic
   (package
     (name "taxtastic")
-    (version "0.9.2")
+    (version "0.11.1")
     (source (origin
               ;; The Pypi version does not include tests.
               (method git-fetch)
@@ -12356,42 +12598,47 @@ Cuffdiff or Ballgown programs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k6wg9ych1j3srnhdny1y4470qlhfg730rb3rm3pq7l7gw62vmgb"))))
-    (build-system python-build-system)
+                "18h3vlyx9qp7xymd8ra6jn5h0vzlpzgcd75kslqyv2qcg1a7scc4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'prepare-directory
-           (lambda _
-             ;; This test fails, but the error is not caught by the test
-             ;; framework, so the tests fail...
-             (substitute* "tests/test_taxit.py"
-               (("self.cmd_fails\\(''\\)")
-                "self.cmd_fails('nothing')"))
-             ;; This version file is expected to be created with git describe.
-             (mkdir-p "taxtastic/data")
-             (with-output-to-file "taxtastic/data/ver"
-               (lambda () (display ,version)))))
-         (replace 'check
-           ;; Note, this fails to run with "-v" as it tries to write to a
-           ;; closed output stream.
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "unittest"))))
-         ;; This fails because it cannot find psycopg2 even though it is
-         ;; available.
-         (delete 'sanity-check))))
+     (list
+      #:test-flags #~(list "-k" "not test_new_nodes02")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-directory
+            (lambda _
+              ;; This package is unknown to pypi.
+              (substitute* '("requirements.txt" "setup.py")
+                ((".*psycopg-binary.*") ""))
+              ;; This test fails, but the error is not caught by the test
+              ;; framework, so the tests fail...
+              (substitute* "tests/test_taxit.py"
+                (("self.cmd_fails\\(''\\)")
+                 "self.cmd_fails('nothing')"))
+              ;; This version file is expected to be created with git describe.
+              (mkdir-p "taxtastic/data")
+              (with-output-to-file "taxtastic/data/ver"
+                (lambda () (display #$version)))))
+          (replace 'check
+            ;; Note, this fails to run with "-v" as it tries to write to a
+            ;; closed output stream.
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "python" "-m" "unittest" test-flags)))))))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (propagated-inputs
-     (list python-sqlalchemy
+     (list python-biopython
            python-decorator
-           python-biopython
-           python-pandas
-           python-psycopg2
+           python-dendropy
            python-fastalite
-           python-pyyaml
-           python-six
            python-jinja2
-           python-dendropy))
+           python-pandas
+           python-psycopg
+           python-psycopg2-binary
+           python-pyyaml
+           python-sqlalchemy-2
+           python-sqlparse))
     (home-page "https://github.com/fhcrc/taxtastic")
     (synopsis "Tools for taxonomic naming and annotation")
     (description
@@ -14308,6 +14555,7 @@ Needleman-Wunsch).")
            (lambda _ (chdir "pairadise")))
          (add-before 'build '2to3
            (lambda _ (invoke "2to3" "--write" "--nobackups" "."))))))
+    (native-inputs (list python-setuptools python-wheel))
     (inputs (list star))
     (propagated-inputs (list python-pysam))
     (home-page "https://github.com/Xinglab/PAIRADISE")
@@ -17156,31 +17404,21 @@ API services.")
 (define-public python-mgatk
   (package
     (name "python-mgatk")
-    (version "0.6.7")
+    (version "0.7.0")
     (source
      (origin
-       (method git-fetch)
+       (method git-fetch) ; no tests in PyPI archive
        (uri (git-reference
              (url "https://github.com/caleblareau/mgatk")
-             ;; There is no tag for 0.6.7, but this is the commit
-             ;; corresponding to the version bump.
-             (commit "2633903acb1fb406bb58c787f320c3641f446ee7")))
+             ;; There is no tag for 0.7.0, but this is the commit
+             ;; corresponding to the version bump, see
+             ;; <https://github.com/caleblareau/mgatk/issues/101>.
+             (commit "8ffeac8476564049ef51b4d4d40eed452ae2fc38")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "19iklfv1brwsfg1l5lrs3z8m343nskkn1998c1fs7fdn0lgrki2p"))))
+         "1qspzglj487bpyg8wpc29fjr8mj993q8w3jrdhylggiqpjx4l607"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; The md5 module has been removed in Python 3
-          (add-after 'unpack 'python3-compatibility
-            (lambda _
-              (substitute* "tests/test_cli.py"
-                (("import md5") "from hashlib import md5")
-                (("md5.new") "md5")
-                (("\\.digest") ".hexdigest")))))))
     (propagated-inputs
      (list python-biopython
            python-click
@@ -19548,6 +19786,8 @@ implementation differs in these ways:
            (add-after 'unpack 'patch-version-check
              (lambda _
                (substitute* "src/scanpy/_utils/__init__.py"
+                 (("Version\\(anndata_version\\) < Version\\(\"0.6.10\"\\):")
+                  "False:")
                  (("Version\\(anndata_version\\) >= Version\\(\"0.10.0\"\\):")
                   "True:"))))
            (add-after 'unpack 'pretend-version
@@ -20317,18 +20557,24 @@ pyGenomeTracks can make plots with or without Hi-C data.")
 (define-public python-iced
   (package
     (name "python-iced")
-    (version "0.5.8")
+    (version "0.5.13")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "iced" version))
        (sha256
         (base32
-         "1avcjmpyyvhgbj5qca4l70ipiz7j3xmcw9p6rd9c06j99faa0r71"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #false)) ; there are none
+         "1fg6fxg6qhymr5d8drlvaclxgsfay2qcfsvpxkyy0r6cchscnpj5"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-numpy python-pandas python-scipy python-scikit-learn))
+     (list python-numpy
+           python-pandas
+           python-scipy
+           python-scikit-learn))
     (home-page "https://github.com/hiclib/iced")
     (synopsis "ICE normalization")
     (description "This is a package for normalizing Hi-C contact counts
@@ -20961,7 +21207,7 @@ polymorphisms) and indels with respect to a reference genome and more.")
 (define-public cnvkit
   (package
     (name "cnvkit")
-    (version "0.9.10")
+    (version "0.9.12")
     (source
      (origin
        (method git-fetch)
@@ -20970,7 +21216,7 @@ polymorphisms) and indels with respect to a reference genome and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r303pqjg70zpxa564bavbfj99c6di0dafgqqwx2vh4vfsiif94q"))))
+        (base32 "090yh17symcahddx399kcx0mcw4gdrcc2jil3p8lb92r8c8kglb5"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-biopython
@@ -20987,7 +21233,7 @@ polymorphisms) and indels with respect to a reference genome and more.")
            ;; R packages
            r-dnacopy))
     (inputs (list r-minimal)) ;for tests
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://cnvkit.readthedocs.org/")
     (synopsis "Copy number variant detection from targeted DNA sequencing")
     (description
@@ -21426,24 +21672,28 @@ throughput chromatin profiles.  Typical use cases include:
 (define-public umi-tools
   (package
     (name "umi-tools")
-    (version "1.0.0")
+    (version "1.1.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "umi_tools" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CGATOxford/UMI-tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "08y3vz1vcx09whmbsn722lcs6jl9wyrh9i4p3k8j4cb1i32bij4a"))))
-    (build-system python-build-system)
+        (base32 "1liykfj4msvcgk8an5qq802jcxwlijqxrvijipqj1pwpxqzl9qnh"))))
+    (build-system pyproject-build-system)
     (inputs
      (list python-pandas
            python-future
            python-scipy
            python-matplotlib
            python-regex
+           python-pybktree
+           python-scipy
            python-pysam))
     (native-inputs
-     (list python-cython))
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/CGATOxford/UMI-tools")
     (synopsis "Tools for analyzing unique modular identifiers")
     (description "This package provides tools for dealing with @dfn{Unique
@@ -22021,7 +22271,7 @@ effective when applied to the signal dataset.")
 (define-public python-ont-fast5-api
   (package
     (name "python-ont-fast5-api")
-    (version "4.0.0")
+    (version "4.1.3")
     (source
      (origin
        (method git-fetch)
@@ -22031,7 +22281,7 @@ effective when applied to the signal dataset.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01hj4751j424lzic2sc4bz1f8w7i7fpkjpy3rgghdyl5lyfyb4s4"))
+         "05zwjgdnzdrqfifhgw9rp4s22g8ysvjfhlaq9nb6p68q6mijy098"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "ont_fast5_api/vbz_plugin"))))
@@ -23107,7 +23357,7 @@ alignments, trees and genomic annotations.")
 (define-public python-gffutils
   (package
     (name "python-gffutils")
-    (version "0.10.1")
+    (version "0.13")
     (source
      (origin
        (method git-fetch)
@@ -23117,27 +23367,28 @@ alignments, trees and genomic annotations.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1gkzk7ps6w3ai2r81js9s9bzpba0jmxychnd2da6n9ggdnf2xzqz"))))
-    (build-system python-build-system)
+         "148i7bk5bawrz19jp3nl0z859wdlldgrw8f0aw9wsprj8s3d713a"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Tests need to access the HOME directory
-               (setenv "HOME" "/tmp")
-               (invoke "nosetests" "-a" "!slow")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-HOME
+            (lambda _
+              ;; FileNotFoundError: [Errno 2] No such file or directory:
+              ;; '/homeless-shelter/.gffutils.test'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-argcomplete
            python-argh
            python-biopython
            python-pybedtools
            python-pyfaidx
-           python-simplejson
-           python-six))
-    (native-inputs
-     (list python-nose))
+           python-simplejson))
     (home-page "https://github.com/daler/gffutils")
     (synopsis "Tool for manipulation of GFF and GTF files")
     (description
@@ -23843,50 +24094,32 @@ for the analysis and visualization of raw nanopore signal.")
     ;; Some parts may be BSD-3-licensed.
     (license license:mpl2.0)))
 
-(define-public python-pyvcf
-  (let ((commit "476169cd457ba0caa6b998b301a4d91e975251d9")
+;; This is a fork of the original unmaintained python-pyvcf.
+(define-public python-pyvcf3
+  (let ((commit "1fb3789153d1d8e28e2cedf121399f276b5f312a")
         (revision "0"))
     (package
-      (name "python-pyvcf")
-      (version (git-version "0.6.8" revision commit))
-      ;; Use git, because the PyPI tarballs lack test data.
+      (name "python-pyvcf3")
+      (version (git-version "1.0.3" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/jamescasbon/PyVCF.git")
-               ;; Latest release is not tagged.
+               (url "https://github.com/dridk/PyVCF3")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "0qf9lwj7r2hjjp4bd4vc7nayrhblfm4qcqs4dbd43a6p4bj2jv5p"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-sample-script
-             (lambda _
-               ;; Add Python 3 compatibility to this sample script.
-               (substitute* "scripts/vcf_sample_filter.py"
-                 (("print (.*)\n" _ arg)
-                  (string-append "print(" arg ")\n")))))
-           (add-after 'install 'remove-installed-tests
-             ;; Do not install test files.
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (delete-file-recursively (string-append
-                                         (site-packages inputs outputs)
-                                         "/vcf/test")))))))
-      (native-inputs
-       ;; Older setuptools is needed for use_2to3.
-       (list python-cython python-setuptools-57))
-      (propagated-inputs
-       (list python-pysam python-rpy2))
-      (home-page "https://github.com/jamescasbon/PyVCF")
+          (base32 "0i4j5bq5q32q216ja7yvg0mpww5j0b9p8ky5bya4d31wqmygal8z"))))
+      (build-system pyproject-build-system)
+      (propagated-inputs (list python-setuptools))
+      (native-inputs (list python-setuptools python-wheel))
+      (home-page "https://github.com/dridk/PyVCF3")
       (synopsis "Variant Call Format parser for Python")
       (description "This package provides a @acronym{VCF,Variant Call Format}
 parser for Python.")
       (license license:expat))))
+
+(define-deprecated/public-alias python-pyvcf python-pyvcf3)
 
 (define-public nanosv
   (package
@@ -23900,7 +24133,7 @@ parser for Python.")
               "1wl2daj0bwrl8fx5xi8j8hfs3mp3vg3qycy66538n032v1qkc6xg"))))
    (build-system python-build-system)
    (inputs
-    (list python-configparser python-pysam python-pyvcf))
+    (list python-configparser python-pysam python-pyvcf3))
    (home-page "https://github.com/mroosmalen/nanosv")
    (synopsis "Structural variation detection tool for Oxford Nanopore data")
    (description "NanoSV is a software package that can be used to identify
@@ -24153,8 +24386,10 @@ aligner.")
     (arguments
      (list
        #:test-flags
-       ;; XXX: these two tests fail for unknown reasons
-       '(list "-k" "not test_perfect_fit and not test_perfect_fit_2d")
+       '(list "--pyargs" "scvelo/core"
+              ;; XXX: these two tests fail for unknown reasons
+              "-k"
+              "not test_perfect_fit and not test_perfect_fit_2d")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'matplotlib-compatibility
@@ -24165,17 +24400,7 @@ aligner.")
            ;; Numba needs a writable dir to cache functions.
            (add-before 'check 'set-numba-cache-dir
              (lambda _
-               (setenv "NUMBA_CACHE_DIR" "/tmp")))
-           (replace 'check
-             (lambda* (#:key tests? test-flags #:allow-other-keys)
-               (when tests?
-                 ;; The discovered test file names must match the names of the
-                 ;; compiled files, so we cannot run the tests from
-                 ;; /tmp/guix-build-*.
-                 (with-directory-excursion
-                     (string-append #$output
-                                    "/lib/python3.10/site-packages/scvelo/core/tests/")
-                   (apply invoke "pytest" "-v" test-flags))))))))
+               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs
      (list python-anndata
            python-hnswlib
@@ -24249,7 +24474,8 @@ populations.")
              (substitute* "setup.py"
                (("'sklearn',") "")))))))
     (native-inputs
-     (list python-cython))
+     (list python-cython
+           python-wheel))
     (propagated-inputs
      (list python-scikit-learn
            python-scipy

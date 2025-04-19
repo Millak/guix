@@ -1812,63 +1812,55 @@ processing pipelines.")
 (define-public labelme
   (package
     (name "labelme")
-    (version "4.5.13")
+    ;; It's the latest available version which does not require not packaged
+    ;; <https://github.com/wkentaro/osam>.
+    (version "5.2.1")
     (source
      (origin
        ;; PyPi tarball lacks tests.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/wkentaro/labelme.git")
+             (url "https://github.com/wkentaro/labelme")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cmi2xb4dgh7738l259rgwhn9l134f0vnaaqc2gflc5yr3lqhrv2"))))
-    (build-system python-build-system)
+        (base32 "1xpyad6rlkxyx51jaai4xhdy15k1gvm62xnkjn152hc1vj1c77sr"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'loosen-requirements
-           (lambda _
-             ;; Don't require an outdated version of matplotlib.
-             (substitute* "setup.py"
-               (("matplotlib<3\\.3")
-                "matplotlib"))))
-         (add-before 'check 'start-xserver
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xorg-server (assoc-ref inputs "xorg-server")))
-               ;; Options taken from CI workflow.
-               (system (string-append xorg-server "/bin/Xvfb :99 -screen 0 "
-                                      "1920x1200x24 -ac +extension GLX +render "
-                                      "-noreset &"))
-               (setenv "DISPLAY" ":99.0"))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ;; Fails when invoking help2man for unknown reason.
-               (delete-file "tests/docs_tests/man_tests/test_labelme_1.py")
-               ;; One test hangs.
-               (delete-file "tests/labelme_tests/widgets_tests/test_label_dialog.py")
-               ;; Calls incompatible function signatures.
-               (delete-file "tests/labelme_tests/widgets_tests/test_label_list_widget.py")
-               (setenv "MPLBACKEND" "agg")
-               (invoke "pytest" "-v" "tests" "-m" "not gpu")))))))
-    (propagated-inputs
-      (list python-imgviz
-            python-matplotlib
-            python-numpy
-            python-pillow
-            python-pyyaml
-            python-qtpy
-            python-termcolor))
+     (list
+      #:test-flags
+      #~(list "-m" "not gpu"
+              ;; Fails when invoking help2man for unknown reason.
+              "--ignore=tests/docs_tests/man_tests/test_labelme_1.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xserver
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((xorg-server #$(this-package-native-input "xorg-server")))
+                ;; Options taken from CI workflow.
+                (system (string-append xorg-server "/bin/Xvfb :99 -screen 0 "
+                                       "1920x1200x24 -ac +extension GLX +render "
+                                       "-noreset &"))
+                (setenv "DISPLAY" ":99.0")))))))
     (native-inputs
-      (list python-pytest python-pytest-qt xorg-server-for-tests))
+     (list python-pytest
+           python-pytest-qt
+           xorg-server-for-tests
+           python-wheel))
+    (propagated-inputs
+     (list python-imgviz
+           python-matplotlib
+           python-natsort
+           python-numpy
+           python-pillow
+           python-pyyaml
+           python-qtpy
+           python-termcolor))
     (home-page "https://github.com/wkentaro/labelme")
-    (synopsis
-      "Image Polygonal Annotation")
+    (synopsis "Image Polygonal Annotation")
     (description
-      "Image and video labeling tool supporting different shapes like
-polygons, rectangles, circles, lines, points and VOC/COCO export.")
+     "Image and video labeling tool supporting different shapes like polygons,
+rectangles, circles, lines, points and VOC/COCO export.")
     (license license:gpl3+)))
 
 (define-public charls

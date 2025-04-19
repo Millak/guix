@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015-2021, 2024 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2015, 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2019, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Christopher Baines <mail@cbaines.net>
@@ -585,10 +585,17 @@ interface (FFI) of Guile.")
                 "1ji3ynhp36m1ccx7bmaq75dhij9frpn19v9mpi4aajn8csl194il"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-before 'build 'set-environment
            (lambda _
+             ;; GPGME is built with large file support, so we need to set
+             ;; _FILE_OFFSET_BITS to 64 in all users of the GPGME library.
+             ,@(if (or (target-x86-32?) (target-arm32?))
+                   `((substitute* "setup.py"
+                       (("extra_macros = dict\\(\\)")
+                        "extra_macros = { \"_FILE_OFFSET_BITS\": 64 }")))
+                   '())
              (substitute* "setup.py"
                (("cc") (which "gcc")))
              #t)))

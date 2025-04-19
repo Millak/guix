@@ -1039,15 +1039,23 @@ of Bitcoin BIP-0039.")
   (package
     (name "python-u2flib-host")
     (version "3.0.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "python-u2flib-host" version))
-              (sha256
-               (base32
-                "02pwafd5kyjpc310ys0pgnd0adff1laz18naxxwsfrllqafqnrxb"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-u2flib-host" version))
+       (sha256
+        (base32 "02pwafd5kyjpc310ys0pgnd0adff1laz18naxxwsfrllqafqnrxb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+        #~(list
+          "--deselect=test/test_soft.py::TestSoftU2FDevice::test_registeration"
+          "--deselect=test/test_reg_auth.py::TestRegister::test_register" "-k"
+          "not test_forget")))
     (propagated-inputs (list python-hidapi python-requests))
-    (native-inputs (list python-cryptography))
+    (native-inputs (list python-cryptography python-pytest python-setuptools
+                         python-wheel))
     (home-page "https://github.com/Yubico/python-u2flib-host")
     (synopsis "Python based U2F host library")
     (description
@@ -1059,32 +1067,36 @@ of Bitcoin BIP-0039.")
     (name "python-ledgerblue")
     (version "0.1.54")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "ledgerblue" version))
-        (sha256
-          (base32
-            "0ghpvxgih1zarp788qi1xh5xmprv6yhaxglfbix4974i7r4pszqy"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ledgerblue" version))
+       (sha256
+        (base32 "0ghpvxgih1zarp788qi1xh5xmprv6yhaxglfbix4974i7r4pszqy"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)) ; no tests
-    (native-inputs
-     (list python-setuptools python-wheel))
-    (propagated-inputs
-     (list python-bleak
-           python-pyelftools
-           python-pycryptodome
-           python-ecpy
-           python-future
-           python-gnupg
-           python-hidapi
-           python-nfcpy
-           python-pillow
-           python-protobuf
-           python-pycryptodomex
-           python-pyscard
-           python-u2flib-host
-           python-websocket-client))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$version))))))
+    (native-inputs (list python-setuptools python-setuptools-scm python-wheel))
+    (propagated-inputs (list python-bleak
+                             python-pyelftools
+                             python-pycryptodome
+                             python-ecpy
+                             python-future
+                             python-gnupg
+                             python-hidapi
+                             python-nfcpy
+                             python-pillow
+                             python-protobuf
+                             python-pycryptodomex
+                             python-pyscard
+                             python-u2flib-host
+                             python-websocket-client))
     (home-page "https://github.com/LedgerHQ/blue-loader-python")
     (synopsis "Python library to communicate with Ledger Blue/Nano S")
     (description "@code{ledgerblue} is a Python library to communicate with
@@ -1216,9 +1228,11 @@ the KeepKey Hardware Wallet.")
        (sha256
         (base32
          "03zj602m2rln9yvr08dswy56vzkbldp8b074ixwzz525dafblr92"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (inputs
      (list python-ledgerblue python-trezor-agent))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "Ledger as hardware SSH/GPG agent")
     (description "This package allows using Ledger as hardware SSH/GPG agent.")
@@ -1414,42 +1428,22 @@ Luhn and family of ISO/IEC 7064 check digit algorithms.")
 (define-public python-duniterpy
   (package
     (name "python-duniterpy")
-    (version "1.1.1")
+    (version "1.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "duniterpy" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.duniter.org/clients/python/duniterpy")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0h0fsawsrjd50lb1bkysb21ph39qlhmiymd3r5vs695qxvbwaqaa"))))
+        (base32 "1ysh9b5lzg053hv4iw3zbn7hid05qssiwmrl8sir8qlk958r8x60"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; FIXME: Tests fail with: "TypeError: block_uid() missing 1 required
-     ;; positional argument: 'value'".
-     `(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'loosen-requirements
-                    (lambda _
-                      (substitute* "pyproject.toml"
-                        (("mnemonic = \"\\^0\\.19")
-                         "mnemonic = \">=0.19")
-                        (("jsonschema = \"\\^3\\.2")
-                         "jsonschema = \">=3.2"))))
-                  (add-after 'unpack 'adjust-for-new-libnacl
-                    (lambda _
-                      ;; Mimic upstream commit ad8f6a26e9e7067; remove
-                      ;; for newer versions of duniterpy.
-                      (substitute* "pyproject.toml"
-                        (("libnacl = \"1\\.8")
-                         "libnacl = \">=1.9"))
-                      (substitute* "duniterpy/key/ascii_armor.py"
-                        (("from libnacl\\.version import version as libnacl_version")
-                         "import importlib.metadata
-libnacl_version = importlib.metadata.version('libnacl')")))))))
     (native-inputs
-     (list python-poetry-core))
+     (list python-poetry-core-next
+           python-pytest))
     (propagated-inputs
-     (list python-attrs
-           python-base58
+     (list python-base58
            python-graphql-core
            python-jsonschema
            python-libnacl

@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Daniel Pimentel <d4n1@d4n1.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017-2019, 2022-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
@@ -175,7 +175,7 @@ internal RPC protocols and file formats.")
   (package
     (inherit protobuf)
     (name "protobuf")
-    (version "3.20.2")
+    (version "3.20.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -186,7 +186,7 @@ internal RPC protocols and file formats.")
               (snippet '(delete-file-recursively "third_party"))
               (sha256
                (base32
-                "1hsscx9jm8qv3afgwc764rx9sx1ylkrr54xw1wc0mfjbl8mpw5m0"))))
+                "0ggyfrfal7wms4n8pba224jwpjxn19rigd5y90m3x2bg97ych775"))))
     (build-system gnu-build-system)
     (arguments (substitute-keyword-arguments (package-arguments protobuf)
                  ;; XXX: insists on using bundled googletest
@@ -467,21 +467,18 @@ mechanism for serializing structured data.")
 (define-public python-protobuf
   (package
     (name "python-protobuf")
-    (version "3.20.2")
+    (version "3.20.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "protobuf" version))
        (sha256
         (base32
-         "0l0p2lczs5iahgkhzm3298pjl49bk9iiwngkglg7ll7fkqqwlbbi"))))
+         "1wh5f4rnzbv46xy1rx62cprhg5hqf2py06s9b7rfpzwwki12fd1f"))))
     (build-system python-build-system)
-    (inputs (list protobuf))
-    (arguments
-     `(;; Favor C++ implementation from protobuf over the native Python
-       ;; implementation. The additional dependency yields significant
-       ;; performance improvements for some workloads.
-       #:configure-flags '("--cpp_implementation")))
+    ;; The C++ implementation is not compatible with Python 3.11, so we cannot
+    ;; pass --cpp_implementation any more.
+    (inputs (list protobuf-3.20))
     (home-page "https://github.com/google/protobuf")
     (synopsis "Protocol buffers is a data interchange format")
     (description

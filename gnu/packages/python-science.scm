@@ -27,6 +27,7 @@
 ;;; Copyright © 2024 Marco Baggio <marco.baggio@mdc-berlin.de>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Rick Huijzer <ikbenrickhuyzer@gmail.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +68,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -82,6 +84,7 @@
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -372,7 +375,21 @@ Features:
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--pyargs" "numdifftools")
+      #:test-flags
+      #~(list "--pyargs" "numdifftools"
+              "-k" (string-join
+                    ;; Tests failing with error: TypeError: a must be an array
+                    ;; of real numbers, see
+                    ;; <https://github.com/pbrod/numdifftools/issues/72>.
+                    (list "not test_high_order_derivative"
+                          "test_low_order_derivative_on_example_functions"
+                          "test_sinx_div_x"
+                          "test_complex_hessian_issue_35"
+
+                          "numdifftools.fornberg.Taylor"
+                          "numdifftools.fornberg.derivative"
+                          "numdifftools.fornberg.taylor")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
@@ -1052,6 +1069,172 @@ utilizing the power of scikit-learn, e.g., for pre-processing or doing
 cross-validation.")
       (license license:gpl3+))))
 
+(define-public python-snakemake-interface-common
+  (package
+    (name "python-snakemake-interface-common")
+    (version "1.17.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/snakemake/snakemake-interface-common")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19fyqs048zdvrmq5sdayzch850kwsyv2x6xn57cjjzcm4zpjrh9w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python3" "tests/tests.py")))))))
+    (native-inputs (list python-poetry-core python-pytest))
+    (propagated-inputs (list python-argparse-dataclass python-configargparse))
+    (home-page "https://github.com/snakemake/snakemake-interface-common")
+    (synopsis "Common functions and classes for Snakemake and its plugins")
+    (description "This package provides common functions and classes
+for Snakemake and its plugins.")
+    (license license:expat)))
+
+(define-public python-snakemake-interface-executor-plugins
+  (package
+    (name "python-snakemake-interface-executor-plugins")
+    (version "9.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://github.com/snakemake/"
+                                 "snakemake-interface-executor-plugins"))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kjjcgkk1rbavb687x5ayw35ayhsnhpg9262k317x911wqpsj2fm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python3" "tests/tests.py")))))))
+    (propagated-inputs (list python-argparse-dataclass
+                             python-snakemake-interface-common
+                             python-throttler))
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page (string-append "https://github.com/snakemake/"
+                              "python-snakemake-interface-executor-plugins"))
+    (synopsis "Interface for Snakemake executor plugins")
+    (description
+     "This package provides a stable interface for interactions between Snakemake and
+its executor plugins.")
+    (license license:expat)))
+
+(define-public python-snakemake-interface-report-plugins
+  (package
+    (name "python-snakemake-interface-report-plugins")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://github.com/snakemake/"
+                                 "snakemake-interface-report-plugins"))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i6z9vk6nv2m3jsym0glrb7h9isdlfza2yq14vbqcslybdi9ykfa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;circular dependency on snakemake
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python3" "tests/tests.py")))))))
+    (propagated-inputs (list python-snakemake-interface-common python-pytest))
+    (native-inputs (list python-poetry-core))
+    (home-page (string-append "https://github.com/snakemake/"
+                              "python-snakemake-interface-report-plugins"))
+    (synopsis "Interface for Snakemake report plugins")
+    (description "This package provides a stable interface for interactions
+between Snakemake and its report plugins.")
+    (license license:expat)))
+
+(define-public python-snakemake-interface-software-deployment-plugins
+  (package
+    (name "python-snakemake-interface-software-deployment-plugins")
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://github.com/snakemake/"
+                   "snakemake-interface-software-deployment-plugins"))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b4kkznfyfck9f92pkimhyl13ljisfn67rsilm1a5inq2ywpmxba"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python3" "tests/tests.py")))))))
+    (propagated-inputs (list python-argparse-dataclass
+                             python-snakemake-interface-common))
+    (native-inputs (list python-poetry-core))
+    (home-page (string-append "https://github.com/snakemake/"
+                "snakemake-interface-software-deployment-plugins"))
+    (synopsis "Interface for Snakemake software deployment plugins")
+    (description
+     "This package provides a stable interface for interactions between Snakemake and
+its software deployment plugins.")
+    (license license:expat)))
+
+(define-public python-snakemake-interface-storage-plugins
+  (package
+    (name "python-snakemake-interface-storage-plugins")
+    (version "3.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://github.com/snakemake/"
+                                 "snakemake-interface-storage-plugins"))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05n5xgwagb01nyzi8xfvp0nvdfl24lxidgksm7k86p68n1rijd5a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;circular dependency on snakemake
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python3" "tests/tests.py")))))))
+    (propagated-inputs (list python-reretry python-snakemake-interface-common
+                             python-throttler python-wrapt))
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page (string-append "https://github.com/snakemake/"
+                              "snakemake-interface-storage-plugins"))
+    (synopsis "Interface for Snakemake storage plugins")
+    (description
+     "This package provides a stable interface for interactions between
+Snakemake and its storage plugins.")
+    (license license:expat)))
+
 (define-public python-tdda
   (package
     (name "python-tdda")
@@ -1643,7 +1826,7 @@ doing practical, real world data analysis in Python.")
             (lambda _
               (copy-recursively
                (string-append #$output
-                              "/lib/python3.10/site-packages/pandas/_libs")
+                              "/lib/python3.11/site-packages/pandas/_libs")
                "pandas/_libs"))))))
     (propagated-inputs
      (list python-dateutil
@@ -2465,7 +2648,7 @@ objects.")
 (define-public python-pytensor
   (package
     (name "python-pytensor")
-    (version "2.18.1")
+    (version "2.28.3") ; the minimal version supporting SciPy 1.12.0
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2474,52 +2657,65 @@ objects.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qa0y13xfm6w7ry7gp0lv84c8blyg34a9ns7ynwqyhf9majq08s5"))))
+                "1yz1yslms6kdmy4sgnvbnghhclcpkc80z3vaw9c2y3b3j1fs9b4v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; XXX: Full test suite takes about 20-30min to complete in single
+      ;; thread, attempt to run tests in parallel with pytest-xdist fails even
+      ;; so upstream provides a support for that, try to figure out how to
+      ;; improve it.
+      ;;
+      ;; Upstream implements a script, showing slow tests which may be used to
+      ;; exclude even more hanging/slow ones, see
+      ;; <scripts/slowest_tests/extract-slow-tests.py>.
+      ;;
+      ;; Skip computationally intensive tests.
+      #~(list "--ignore" "tests/scan/"
+              "--ignore" "tests/tensor/"
+              "--ignore" "tests/sandbox/"
+              "--ignore" "tests/sparse/sandbox/"
+              ;; Tests hang while running from these files.
+              "--ignore" "tests/compile/test_compilelock.py"
+              "--ignore" "tests/link/jax/test_tensor_basic.py"
+              ;; XXX: Tests finish with error in these files, check why.
+              "--ignore" "tests/compile/function/test_types.py"
+              "--ignore" "tests/link/numba/test_basic.py"
+              "--ignore" "tests/link/numba/test_blockwise.py"
+              "--ignore" "tests/link/numba/test_elemwise.py"
+              "-k" (string-join
+                    ;; Skip benchmark tests.
+                    (list "not test_elemwise_speed"
+                          "test_logsumexp_benchmark"
+                          "test_fused_elemwise_benchmark"
+                          "test_scan_multiple_output"
+                          "test_vector_taps_benchmark"
+                          "test_cython_performance"
+                          ;; Assertion fails in tests.
+                          "test_choose_signature"
+                          "test_fgraph_to_python_names")
+                    " and not ")
+              ;; Tests collection selects pytensor, which does not contain
+              ;; tests and fails to pass; manually provide a test directory
+              ;; instead.
+              "tests")
       #:phases
       #~(modify-phases %standard-phases
           ;; Replace version manually because pytensor uses
           ;; versioneer, which requires git metadata.
           (add-after 'unpack 'versioneer
             (lambda _
-              (with-output-to-file "setup.cfg"
-                (lambda ()
-                  (display "\
-[versioneer]
-VCS = git
-style = pep440
-versionfile_source = pytensor/_version.py
-versionfile_build = pytensor/_version.py
-tag_prefix =
-parentdir_prefix = pytensor-
-")))
               (invoke "versioneer" "install")
               (substitute* "setup.py"
-                (("versioneer.get_version\\(\\)")
-                 (string-append "\"" #$version "\"")))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp") ; required for most tests
-                ;; Test discovery fails, have to call pytest by hand.
-                ;; test_tensor_basic.py file requires JAX.
-                (invoke "python" "-m" "pytest" "-vv"
-                        "--ignore" "tests/link/jax/test_tensor_basic.py"
-                        ;; Skip benchmark tests.
-                        "-k" (string-append
-                              "not test_elemwise_speed"
-                              " and not test_logsumexp_benchmark"
-                              " and not test_fused_elemwise_benchmark"
-                              " and not test_scan_multiple_output"
-                              " and not test_vector_taps_benchmark"
-                              " and not test_cython_performance")
-                        ;; Skip computationally intensive tests.
-                        "--ignore" "tests/scan/"
-                        "--ignore" "tests/tensor/"
-                        "--ignore" "tests/sandbox/"
-                        "--ignore" "tests/sparse/sandbox/")))))))
+                (("version=versioneer.get_version\\(),")
+                 (format #f "version=~s," #$version)))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; It is required for most tests.
+              (setenv "HOME" "/tmp")
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs (list python-cython
                          python-pytest
                          python-pytest-mock
@@ -2663,6 +2859,9 @@ annotations on an existing boxplots and barplots generated by seaborn.")
        (sha256
         (base32 "0jrq2vhan2h280h6cw1sm5hys2nzmf19w4py64k3nrkc320z9mni"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; This is a Numpy DeprecationWarning, remove it on next update.
+     (list #:test-flags ''("-k" "not test_h5_io")))
     ;; Pint is optional, but we do not propagate it due to its size.
     (native-inputs
      (list python-pint
@@ -2877,32 +3076,6 @@ correlation coefficient
 and more
 @end itemize")
     (license license:gpl3)))
-
-(define-public python-pyglm
-  (package
-    (name "python-pyglm")
-    (version "2.5.7")
-    (source
-     (origin
-       ;; Test files are not included in the archive in pypi.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Zuzu-Typ/PyGLM")
-             (commit version)
-             ;; Checkout the bundled `glm` submodule.  PyGLM uses the
-             ;; currently unreleased GLM_EXT_matrix_integer feature.  Can
-             ;; maybe unbundle once glm@0.9.9.9 is released.
-             (recursive? #t)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "08v0cgkwsf8rxscx5g9c5p1dy38rvak2fy3q6hg985if1nj6d9ks"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/Zuzu-Typ/PyGLM")
-    (synopsis "OpenGL Mathematics library for Python")
-    (description "PyGLM is a Python extension library which brings the OpenGL
-Mathematics (GLM) library to Python.")
-    (license license:zlib)))
 
 (define-public python-dask-expr
   (package
@@ -3794,18 +3967,37 @@ it can be used for displaying many qualitatively different samples.")
   (package
     (name "python-paramz")
     (version "0.9.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/sods/paramz")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1ywc2jzj40m6wmq227j3snxvp4434s0m1xk1abg6v6mr87pv2sa9"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sods/paramz")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ywc2jzj40m6wmq227j3snxvp4434s0m1xk1abg6v6mr87pv2sa9"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              ;; Two tests fail with error: TypeError: arrays to stack must be
+              ;; passed as a "sequence" type such as list or tuple.
+              (string-append "not test_raveled_index"
+                             " and not test_regular_expression_misc")
+              "paramz/tests/array_core_tests.py"
+              "paramz/tests/cacher_tests.py"
+              "paramz/tests/examples_tests.py"
+              "paramz/tests/index_operations_tests.py"
+              "paramz/tests/init_tests.py"
+              "paramz/tests/lists_and_dicts_tests.py"
+              "paramz/tests/model_tests.py"
+              "paramz/tests/observable_tests.py"
+              "paramz/tests/parameterized_tests.py"
+              "paramz/tests/pickle_tests.py"
+              "paramz/tests/verbose_optimize_tests.py")))
     (native-inputs
-     (list python-nose
+     (list python-pytest
            python-setuptools
            python-wheel))
     (propagated-inputs
@@ -4055,16 +4247,10 @@ numerical computation.")
               (sha256
                (base32
                 "0jb5lia0q742d1713jk33vlj41y61sf52j6pgk7pvhxvfxglgxjr"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy))
-    (native-inputs (list python-pytest python-pytest-cov python-pytest-pep8))
+    (native-inputs
+     (list python-pytest python-pytest-cov python-setuptools python-wheel))
     (home-page "https://github.com/dgasmith/opt_einsum")
     (synopsis "Optimizing numpys einsum function")
     (description
@@ -4080,24 +4266,44 @@ documentation for more information.")
 (define-public python-vaex-core
   (package
     (name "python-vaex-core")
-    (version "4.17.1")
+    (version "4.18.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "vaex-core" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://www.github.com/maartenbreddels/vaex")
+             (commit (string-append "core-v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1rzx5px3fwi5mh1z8y91brvffk7dkhj287lnmqp8zp6836kkqhya"))
-       (modules '((guix build utils)))
+        (base32 "1sp096msbzgjlwi8c1ink2bp4pjff9pvikqz1y1li8d3in4gpgdr"))
+       (patches
+        (search-patches "python-vaex-core-fix-tsl-use.patch"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)))
        (snippet
-        ;; Remove bundled libraries
-        '(for-each delete-file-recursively
-                   (list "vendor/boost"
-                         "vendor/pcre"
-                         "vendor/pybind11")))))
+        #~(begin
+            ;; Delete everything except for vaex-core itself:
+            (define (delete-except exception)
+              (lambda (file)
+                (unless (member file `("." ".." ,exception))
+                  (delete-file-recursively file))))
+            (for-each (delete-except "packages") (scandir "."))
+            (with-directory-excursion "packages"
+              (for-each (delete-except "vaex-core") (scandir ".")))
+            (for-each (lambda (file)
+                        (unless (member file '("." ".."))
+                          (rename-file
+                           (string-append "packages/vaex-core/" file)
+                           file)))
+                      (scandir "packages/vaex-core"))
+            (delete-file-recursively "packages")
+            (delete-file-recursively "vendor")))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #false)) ;require vaex.server and others, which require vaex-core.
+    (arguments
+     ;; require vaex.server and others, which require vaex-core.
+     (list #:tests? #false))
     (inputs
-     (list boost pcre pybind11-2.3))
+     (list boost pcre pybind11 string-view-lite tsl-hopscotch-map))
     (propagated-inputs
      (list python-aplus
            python-blake3
@@ -4320,6 +4526,125 @@ compagnies.")
      "This package provides a Python library for working with NeuroML descriptions of
 neuronal models")
     (license license:bsd-3)))
+
+(define-public snakemake
+  (package
+    (name "snakemake")
+    (version "8.29.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "snakemake" version))
+       (sha256
+        (base32 "1ilpmrjmnc529p4gw2x23ik1d8b5pm6k1dhq08dknvfjsf3vgyjr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Unclear why these tests fail.
+         "--ignore=tests/test_report_href/test_script.py"
+         "--ignore=tests/test_script_py/scripts/test_explicit_import.py"
+         "--ignore=tests/test_output_index.py"
+         ;; We don't care about testing old python@3.7 on Guix.
+         "--ignore=tests/test_conda_python_3_7_script/test_script.py"
+         ;; Those require additional snakemake plugins.
+         "--ignore=tests/test_api.py"
+         "--ignore=tests/test_executor_test_suite.py"
+         ;; We don't care about lints.
+         "--ignore=tests/test_linting.py"
+         ;; These tests attempt to change S3 buckets on AWS and fail
+         ;; because there are no AWS credentials.
+         "--ignore=tests/test_tibanna"
+         ;; It's a similar story with this test, which requires access
+         ;; to the Google Storage service.
+         "--ignore=tests/test_google_lifesciences")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-assets-download
+            (lambda _
+              (substitute* "setup.py"
+                (("^from assets import Assets") "")
+                (("^Assets\\.deploy\\(\\)") ""))))
+          ;; For cluster execution Snakemake will call Python.  Since there is
+          ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
+          ;; fix this by calling the snakemake wrapper instead.
+          (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
+            (lambda _
+              (substitute* "snakemake/executors/__init__.py"
+                (("self\\.get_python_executable\\(\\),")
+                 "")
+                (("\"-m snakemake\"")
+                 (string-append "\"" #$output
+                                "/bin/snakemake" "\""))
+                ;; The snakemake command produced by format_job_exec contains
+                ;; references to /gnu/store.  Prior to patching above that's
+                ;; just a reference to Python; after patching it's a reference
+                ;; to the snakemake executable.
+                ;;
+                ;; In Tibanna execution mode Snakemake arranges for a certain
+                ;; Docker image to be deployed to AWS.  It then passes its own
+                ;; command line to Tibanna.  This is misguided because it only
+                ;; ever works if the local Snakemake command was run inside
+                ;; the same Docker image.  In the case of using Guix this is
+                ;; never correct, so we need to replace the store reference.
+                (("tibanna_args.command = command")
+                 (string-append
+                  "tibanna_args.command = command.replace('"
+                  #$output "/bin/snakemake', 'python3 -m snakemake')")))))
+          (add-after 'unpack 'patch-version
+            (lambda _
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(\\)")
+                 (format #f "version=~s" #$version)))
+              (substitute* '("snakemake/_version.py"
+                             "versioneer.py")
+                (("0\\+unknown") #$version))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests?  #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")))))))
+    (propagated-inputs
+     (list python-appdirs
+           python-conda-inject
+           python-configargparse
+           python-connection-pool
+           python-dpath
+           python-gitpython
+           python-humanfriendly
+           python-immutables
+           python-jinja2
+           python-jsonschema
+           python-nbformat
+           python-packaging
+           python-psutil
+           python-pulp
+           python-pyyaml
+           python-requests
+           python-reretry
+           python-smart-open
+           python-snakemake-interface-common
+           python-snakemake-interface-executor-plugins
+           python-snakemake-interface-report-plugins
+           python-snakemake-interface-storage-plugins
+           python-tabulate
+           python-throttler
+           python-wrapt
+           python-yte))
+    (native-inputs
+     (list python-docutils
+           python-numpy
+           python-pandas
+           python-setuptools
+           python-tomli
+           python-wheel))
+    (home-page "https://snakemake.readthedocs.io")
+    (synopsis "Python-based execution environment for make-like workflows")
+    (description
+     "Snakemake aims to reduce the complexity of creating workflows by
+providing a clean and modern domain specific specification language (DSL) in
+Python style, together with a fast and comfortable execution environment.")
+    (license license:expat)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

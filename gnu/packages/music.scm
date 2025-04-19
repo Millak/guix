@@ -1858,7 +1858,11 @@ typographic detail of symbols on the page.")
         (base32 "1y8s55b4mlsigm0xkk6qjpp08c75rv0swvjp0lj3cs6lgqdjxdjl"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list lilypond python-pytest python-setuptools python-wheel))
+     (list lilypond
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list abjad))
     (home-page "https://abjad.github.io")
@@ -3809,8 +3813,14 @@ follows a traditional multi-track tape recorder control paradigm.")
         (base32 "1lz2mvk4gqsyf92yxd3aaldx0d0qi28h4rnnvsaz4ls0ccqm80nk"))))
     (build-system waf-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'python3.11-compatibility
+           (lambda _
+             (substitute* '("waflib/Context.py"
+                            "waflib/ConfigSet.py")
+               (("'rU'") "'r'"))))
          (add-after 'unpack 'remove-sse-flags
            (lambda* (#:key system #:allow-other-keys)
              (unless (or (string-prefix? "x86_64" system)
@@ -4617,8 +4627,8 @@ standard MIDI file with the csvmidi program.")
     (license license:public-domain)))
 
 (define-public mididings
-  (let ((commit "d98265be8afe7da20a5c7cfd0515f0d5fae5c53a")
-        (revision "1"))
+  (let ((commit "bc71ea9c86bdc0b02364b11ab7331e8b3a86bb4f")
+        (revision "2"))
     (package
       (name "mididings")
       (version (git-version "0" revision commit))
@@ -4630,8 +4640,8 @@ standard MIDI file with the csvmidi program.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1a8i4yac5jjkq0vh73nwkv0j7vnvfwbzzagam4xdl1gpnc26n5xi"))))
-      (build-system pyproject-build-system)
+                  "1f0f8bpqbc1av0ggv6wjicymc2klliwdl1m5blmjcvy39q3cwd59"))))
+      (build-system meson-build-system)
       (arguments
        (list
         #:phases
@@ -4647,6 +4657,7 @@ standard MIDI file with the csvmidi program.")
        (list alsa-lib
              boost
              jack-2
+             python
              `(,python "tk")
              python-dbus
              python-decorator

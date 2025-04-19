@@ -13,6 +13,7 @@
 ;;; Copyright © 2023 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +38,7 @@
   #:use-module ((guix licenses) #:prefix l:)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -57,7 +59,9 @@
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
@@ -318,26 +322,38 @@ and many other languages.")
 (define-public python-wxpython
   (package
     (name "python-wxpython")
-    (version "4.2.0")
+    (version "4.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "wxPython" version))
        (sha256
-        (base32
-         "1iw6xp76b3fmdqwbqmsx9i1razzpfki5z1hq6l8mszlxa32fng36"))
+        (base32 "1fp2717a96hd5pdai6hlzc4pngdazxas55apjv2w5zb71xjv1g2x"))
        (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove bundled wxwidgets
-           (delete-file-recursively "ext/wxWidgets")))
-       (patches (search-patches "python-wxwidgets-type-errors.patch"))))
-    (build-system python-build-system)
+       (snippet #~(begin
+                    ;; Remove bundled wxWidgets
+                    (delete-file-recursively "ext/wxWidgets")))))
+    (build-system pyproject-build-system)
     (outputs '("out" "debug"))
     (arguments
      (list
+      #:modules '((guix build pyproject-build-system)
+                  (guix build utils)
+                  (ice-9 ftw)
+                  (ice-9 match)
+                  (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-avoid-circular-import
+            (lambda _
+              (substitute* "wx/__init__.py"
+                (("^import wx\\.__version__.*$") "\
+try:
+    import wx.__version__
+except ImportError:
+    pass\n")
+                (("^__version__ = .*")
+                 (format #f "__version__ = ~s~%" #$version)))))
           (add-before 'build 'configure
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Configure the build options provided to the 'build.py' build
@@ -357,11 +373,24 @@ and many other languages.")
                  (string-append "#" all)))
               ;; The build script tries to write to demo/version.py. So, we set
               ;; correct write permissions.
-              (chmod "demo/version.py" #o644))))))
+              (chmod "demo/version.py" #o644)))
+          (add-before 'check 'add-missing-.so
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((site (site-packages inputs outputs)))
+                (with-directory-excursion (string-append site "/wx")
+                  (for-each
+                   (match-lambda
+                     ("siplib"
+                      (rename-file "siplib" "siplib.so"))
+                     ((? (cut string-prefix? "_" <>) file)
+                      (unless (string-prefix? "__" file)
+                        (rename-file file (string-append file ".so"))))
+                     (_ #t))
+                   (scandir ".")))))))))
     (inputs
      (list gtk+ wxwidgets))
     (native-inputs
-     (list pkg-config python-waf))
+     (list pkg-config python-setuptools python-waf python-wheel))
     (propagated-inputs
      (list python-attrdict3 python-numpy python-pillow python-six))
     (home-page "https://wxpython.org/")

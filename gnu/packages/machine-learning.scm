@@ -234,8 +234,16 @@ family of functions.")
        (sha256
         (base32 "0cgysij0dix0fikyz2x4f8jvaskm5s5a04s07chzaz2dw1fpxdq8"))))
     (build-system pyproject-build-system)
-    (arguments  ; disable flaky test
-     (list #:test-flags '(list "-k" "not test_integrate_variable[x23-i]")))
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; Disable flaky test
+              "not test_integrate_variable[x23-i]"
+              ;; XXX This test fails because the length of arguments
+              ;; is longer than the length of inputs.
+              " and not test_function_of_numeric_array"))))
     (propagated-inputs (list python-makefun python-multipledispatch
                              python-numpy python-opt-einsum
                              python-typing-extensions))
@@ -423,33 +431,25 @@ machine learning algorithms based on GPs.")
 (define-public python-ml-collections
   (package
     (name "python-ml-collections")
-    (version "0.1.1")
+    (version "1.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ml_collections" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/ml_collections")
+             (commit (string-append "v" version))))
        (sha256
-        (base32 "1k38psfzqsqnl99fl578bd07zdmvfkja61r3sgjs2fj3xircrvrz"))))
+        (base32 "1f3rwbgnnvgh2jgnkwxfjdw18yly41hlx9fy56h0x36zyy8p0j21"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; TODO: we can't seem to run the config_flags tests, because
-                ;; the installed Python files conflict with those from the
-                ;; source directory, resulting in constants to be defined more
-                ;; than once.
-                (invoke "pytest" "ml_collections/config_dict/tests"
-                        ;; This one fails because we're testing the __main__
-                        ;; class, not config_dict_test.
-                        "-k" "not testJSONConversionBestEffort")))))))
+      #:test-flags '(list "--pyargs" "ml_collections/config_dict/tests")))
     (propagated-inputs
-     (list python-absl-py python-contextlib2 python-pyyaml python-six))
-    (native-inputs (list python-mock python-pytest python-setuptools
-                         python-wheel))
+     (list python-absl-py python-pyyaml))
+    (native-inputs (list python-pylint
+                         python-pytest
+                         python-pytest-xdist
+                         python-flit-core))
     (home-page "https://github.com/google/ml_collections")
     (synopsis "Python collections designed for Machine Learning usecases")
     (description
@@ -1843,7 +1843,7 @@ in terms of new algorithms.")
             pybind11
             python-coverage
             python-fb-re2
-            python-parameterized-next
+            python-parameterized
             python-pytest
             python-pytest-runner
             python-setuptools
@@ -2553,7 +2553,7 @@ standard feature selection algorithms.")
 (define-public python-cleanlab
   (package
     (name "python-cleanlab")
-    (version "2.7.0")
+    (version "2.7.1")
     ;; The version on pypi does not come with tests.
     (source (origin
               (method git-fetch)
@@ -2563,7 +2563,7 @@ standard feature selection algorithms.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f8v5246nzy22r7zswv9vbpxc7wxaqjwry9iq0fqjp2ffch88h6j"))))
+                "073w45azq496x4bhrh8mdywcrg3gk33n13w1pqh1kiykw826ld9b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2681,37 +2681,37 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
     (license license:expat)))
 
 (define-public python-autograd
-  (let* ((commit "c6d81ce7eede6db801d4e9a92b27ec5d409d0eab")
-         (revision "0")
-         (version (git-version "1.5" revision commit)))
-    (package
-      (name "python-autograd")
-      (home-page "https://github.com/HIPS/autograd")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url home-page)
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "04kljgydng42xlg044h6nbzxpban1ivd6jzb8ydkngfq88ppipfk"))
-                (file-name (git-file-name name version))))
-      (version version)
-      (build-system pyproject-build-system)
-      (native-inputs
-       (list python-nose python-pytest python-setuptools python-wheel))
-      (propagated-inputs
-       (list python-future python-numpy))
-      (synopsis "Efficiently computes derivatives of NumPy code")
-      (description "Autograd can automatically differentiate native Python and
-NumPy code.  It can handle a large subset of Python's features, including loops,
-ifs, recursion and closures, and it can even take derivatives of derivatives
-of derivatives.  It supports reverse-mode differentiation
+  (package
+    (name "python-autograd")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/HIPS/autograd")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1fpnmm3mzw355iq7w751j4mjfcr0yh324cxidba1l22652gg8r8m"))
+       (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-future
+           python-numpy))
+    (home-page "https://github.com/HIPS/autograd")
+    (synopsis "Efficiently computes derivatives of NumPy code")
+    (description
+     "Autograd can automatically differentiate native Python and NumPy code.
+It can handle a large subset of Python's features, including loops, ifs,
+recursion and closures, and it can even take derivatives of derivatives of
+derivatives.  It supports reverse-mode differentiation
 (a.k.a. backpropagation), which means it can efficiently take gradients of
 scalar-valued functions with respect to array-valued arguments, as well as
 forward-mode differentiation, and the two can be composed arbitrarily.  The
 main intended application of Autograd is gradient-based optimization.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public lightgbm
   (package
@@ -3370,8 +3370,14 @@ Python.")
            ;; SOURCE_DATE_EPOCH is respected, which we set to some time in
            ;; 1980.
            (lambda _ (setenv "SOURCE_DATE_EPOCH" "315532800")))
-         (add-after 'unpack 'python3.10-compatibility
+         (add-after 'unpack 'python3.11-compatibility
            (lambda _
+             ;; Py_TYPE was changed to an inline static function in Python
+             ;; 3.11, so it cannot be used on the left-hand side.
+             (substitute* "tensorflow/python/lib/core/bfloat16.cc"
+               (("Py_TYPE\\(&NPyBfloat16_Descr\\) = &PyArrayDescr_Type;")
+                "Py_SET_TYPE(&NPyBfloat16_Descr, &PyArrayDescr_Type);"))
+
              ;; See https://github.com/tensorflow/tensorflow/issues/20517#issuecomment-406373913
              (substitute* '("tensorflow/python/eager/pywrap_tfe_src.cc"
                             "tensorflow/python/lib/core/ndarray_tensor.cc"
@@ -3421,6 +3427,16 @@ Python.")
                 (string-append m
                                " and not isinstance(existing, type(object.__or__))")))
 
+             ;; ArgSpec has been replaced with FullArgSpec.
+             (substitute* "tensorflow/python/util/tf_inspect.py"
+               (("ArgSpec = _inspect.ArgSpec") "\
+ArgSpec = namedtuple('ArgSpec', [ 'args', 'varargs', 'keywords', 'defaults' ])
+def makeargspec(s):
+  return ArgSpec(args=s.args, varargs=s.varargs, keywords=s.varkw, defaults=s.defaults)
+")
+               (("_inspect.getargspec\\((.*)\\)" m target)
+                (string-append "makeargspec(_inspect.getfullargspec(" target "))")))
+
              ;; Fix the build with numpy >= 1.19.
              ;; Suggested in https://github.com/tensorflow/tensorflow/issues/41086#issuecomment-656833081
              (substitute* "tensorflow/python/lib/core/bfloat16.cc"
@@ -3441,7 +3457,22 @@ Python.")
              (substitute* '("tensorflow/python/framework/fast_tensor_util.pyx"
                             "tensorflow/python/estimator/canned/linear_testing_utils.py")
                (("np.asscalar") "np.ndarray.item"))))
-         (add-after 'python3.10-compatibility 'chdir
+         (add-after 'python3.11-compatibility 'numpy-compatibility
+           (lambda _
+             (substitute* (cons* "tensorflow/compiler/xla/python/xla_client.py"
+                                 "tensorflow/contrib/layers/python/ops/sparse_ops_test.py"
+                                 (find-files "tensorflow/python/" "\\.py$"))
+               (("np.object") "object"))
+             (substitute* (append
+                           '("tensorflow/compiler/tests/unary_ops_test.py"
+                             "tensorflow/compiler/xla/python/xla_client.py"
+                             "tensorflow/compiler/xla/python/xla_client_test.py")
+                           (find-files "tensorflow/python/" "\\.py$")
+                           (find-files "tensorflow/contrib/" "\\.py$"))
+               (("np.bool,") "bool,")
+               (("np.bool\\)") "bool)")
+               (("np.bool:") "bool:"))))
+         (add-after 'numpy-compatibility 'chdir
            (lambda _ (chdir "tensorflow/contrib/cmake")))
          (add-after 'chdir 'disable-downloads
            (lambda* (#:key inputs #:allow-other-keys)
@@ -4169,7 +4200,7 @@ project, and it will potentially also do the same for the Lime project.")
     (propagated-inputs
      (list python-h5py python-numpy))
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-pep8
+     (list python-pytest python-pytest-cov
            python-pytest-xdist))
     (home-page "https://github.com/keras-team/keras-applications")
     (synopsis "Reference implementations of popular deep learning models")
@@ -4339,7 +4370,6 @@ with image data, text data, and sequence data.")
            python-pandas
            python-pytest
            python-pytest-cov
-           python-pytest-pep8
            python-pytest-timeout
            python-pytest-xdist
            python-pyux
@@ -5558,7 +5588,10 @@ Note: currently this package does not provide GPU support.")
                    ;; These refuse to be run on CPU and really want a GPU
                    " and not test_add_random_walk_pe"
                    " and not test_asap"
-                   " and not test_two_hop"))
+                   " and not test_two_hop"
+                   ;; Failed when switched to python@3.11
+                   ;; typing module internals
+                   " and not test_type_repr"))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'delete-top-level-directories
@@ -6315,7 +6348,7 @@ tokenizers, @code{rust-tokenizers}.")
            python-tokenizers
            python-tqdm))
     (native-inputs
-     (list python-parameterized-next
+     (list python-parameterized
            python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/huggingface/transformers")
     (synopsis "Machine Learning for PyTorch and TensorFlow")
@@ -6459,34 +6492,33 @@ of Hidden Markov Models.")
 (define-public python-lap
   (package
     (name "python-lap")
-    (version "0.4.0")
+    (version "0.5.12")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "lap" version))
               (sha256
                (base32
-                "0fqfxpq4jg9h4wxjw540gjmvfg1ccc1nssk7i9njg7qfdybxknn4"))))
-    (build-system python-build-system)
+                "1za4mf5nd7vzwd24sy2mfxrk8mnwq7d8rv6h96yh8v5flx7422sp"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "python" "setup.py" "build"
-                     "--cpu-baseline=sse2")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; The tests must be run from elsewhere.
-               (mkdir-p "/tmp/test")
-               (copy-recursively "lap/tests" "/tmp/test")
-               (with-directory-excursion "/tmp/test"
-                 (invoke "pytest" "-vv"))))))))
+     (list
+      #:test-flags #~(list "-v" #$output)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'check-cleanup
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each
+                 delete-file-recursively
+                 (find-files #$output
+                             (lambda (file stat)
+                               (or (member (basename file)
+                                           '("tests" ".pytest_cache"))))
+                             #:directories? #t))))))))
     (propagated-inputs
-     (list python-numpy
-           python-scipy))
+     (list python-numpy))
     (native-inputs
-     (list python-cython python-pytest))
+     (list python-cython python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/gatagat/lap")
     (synopsis "Linear Assignment Problem solver (LAPJV/LAPMOD)")
     (description "Lap is a linear assignment problem solver using Jonker-Volgenant
@@ -6581,24 +6613,23 @@ inference.")
 (define-public python-linear-operator
   (package
     (name "python-linear-operator")
-    (version "0.5.2")
+    (version "0.6")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "linear_operator" version))
               (sha256
                (base32
-                "03drb4hn9nn8jrqd9vbalihhahgpdm956hbs05bix7svradhknaw"))))
+                "0m56f3zrm8xh1bpwh4g7jfc79rf4j94g6zmz663b58pig4w6dqm9"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-jaxtyping
+                             python-mpmath
                              python-pytorch
-                             python-scipy
-                             python-typeguard))
-    (native-inputs (list python-flake8
-                         python-flake8-print
-                         python-pytest
+                             python-scipy))
+    (native-inputs (list python-pytest
                          python-setuptools
                          python-setuptools-scm
-                         python-twine))
+                         python-typeguard
+                         python-wheel))
     (home-page "https://github.com/cornellius-gp/linear_operator/")
     (synopsis "Linear operator implementation")
     (description "LinearOperator is a PyTorch package for abstracting away the
@@ -6608,29 +6639,34 @@ linear algebra routines needed for structured matrices (or operators).")
 (define-public python-gpytorch
   (package
     (name "python-gpytorch")
-    (version "1.12")
+    (version "1.14")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gpytorch" version))
               (sha256
                (base32
-                "1pwsccll1hrgkifdmlxzcn6cvnwvyq2cimqzbfgihr13yw51cb6w"))))
+                "13cs6dx8qa5j4ygji9w5xbmaqc68ihqyzz33fyyf9qa6d8gc2b03"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
-           ;; test_deprecated_methods fails with an AssertionError.
-           #~(list "-k" (string-append "not test_deprecated_methods"))))
-    (propagated-inputs (list python-linear-operator
+           #~(list "-k" (string-append
+                         ;; test_deprecated_methods fails with an AssertionError.
+                         "not test_deprecated_methods"
+                         ;; This test is flaky: Expects gradients of 0 exactly,
+                         ;; can get negligible ones (e-10 to e-16).
+                         " and not test_optimization_optimal_error")
+                   ;; Ignore lenghty tests of little relevance.
+                   "--ignore=test/examples/")))
+    (propagated-inputs (list python-jaxtyping
+                             python-linear-operator
                              python-mpmath
                              python-scikit-learn
                              python-scipy))
-    (native-inputs (list python-coverage
-                         python-flake8
-                         python-flake8-print
-                         python-nbval
+    (native-inputs (list python-nbval
                          python-pytest
                          python-setuptools
-                         python-twine))
+                         python-setuptools-scm
+                         python-wheel))
     (home-page "https://gpytorch.ai")
     (synopsis "Implementation of Gaussian Processes in PyTorch")
     (description
@@ -6640,7 +6676,7 @@ linear algebra routines needed for structured matrices (or operators).")
 (define-public python-botorch
   (package
     (name "python-botorch")
-    (version "0.11.3")
+    (version "0.13.0")
     (source (origin
               (method git-fetch) ;no tests in PyPI
               (uri (git-reference
@@ -6649,7 +6685,7 @@ linear algebra routines needed for structured matrices (or operators).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nf9zrg1khvckb8kdpffqc3bnlhc0x03jd1560qmjamwl3j59m02"))))
+                "1sxgxdq892vg5xj30kb86003b9rwsipc95c7p1zdv865y4f38a8y"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags #~(list "-k" "not test_all_cases_covered")
@@ -6668,9 +6704,12 @@ linear algebra routines needed for structured matrices (or operators).")
                              python-pyro-ppl
                              python-pytorch
                              python-scipy))
-    (native-inputs (list python-pytest
+    (native-inputs (list python-pyre-extensions
+                         python-pytest
                          python-pytest-cov
-                         python-setuptools-scm))
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
     (home-page "https://botorch.org")
     (synopsis "Bayesian Optimization in PyTorch")
     (description
@@ -6779,7 +6818,7 @@ simple speech recognition.")
                   "library_dirs=["
                   "'" #$vosk-api "/lib'"
                   "],\n\t"
-                  "libraries=['vosk', 'python3.10'],\n\t"
+                  "libraries=['vosk', 'python3.11'],\n\t"
                   "include_dirs=["
                   "'" #$vosk-api "/src'" "])")))
               (substitute* "vosk/__init__.py"

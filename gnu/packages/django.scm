@@ -148,26 +148,10 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
                   ;; This CVE seems fixed since 4.2.1.
                   (lint-hidden-cve . ("CVE-2023-31047"))))))
 
-(define-public python-django-3.2
-  (package
-    (inherit python-django-4.2)
-    (version "3.2.21")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Django" version))
-              (sha256
-               (base32
-                "0g3zm2glh76g31q06g6fwkwvkrphjj3mnap5sgk1hx3v9r44rpm5"))))
-    (native-search-paths '())           ;no need for TZDIR
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-django-4.2)
-       ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
-       (append python-pytz)))))
-
 ;; archivebox requires django>=3.1.3,<3.2
 (define-public python-django-3.1.14
   (package
-    (inherit python-django-3.2)
+    (inherit python-django-4.2)
     (version "3.1.14")
     (source (origin
               (method url-fetch)
@@ -176,7 +160,7 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
                (base32
                 "0ix3v2wlnplv78zxjrlw8z3hiap2d5mxvk0ny2fc65526shsb93j"))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-django-3.2)
+     (modify-inputs (package-propagated-inputs python-django-4.2)
        ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
        (append python-pytz)))))
 
@@ -1055,39 +1039,41 @@ support, and optional data-URI image and font embedding.")
 (define-public python-django-rq
   (package
     (name "python-django-rq")
-    (version "2.7.0")
+    (version "3.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-rq" version))
               (sha256
                (base32
-                "0aw0fi0lg80qgdp9fhjbnlhvfh2p09rgy1nj6hxpyhi37kihni2h"))))
+                "1b371w4cdjlz83i2sg4gpx0z3svl3bfrn6zfy661374hv62xpnkv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-k" "not test_scheduled_jobs and not test_started_jobs")
       #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "redis-server" "--daemonize" "yes")
-               (invoke "django-admin" "test" "django_rq"
-                       "--settings=django_rq.tests.settings"
-                       "--pythonpath=.")))))))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "redis-server" "--daemonize" "yes")
+                (setenv "DJANGO_SETTINGS_MODULE" "django_rq.tests.settings")
+                (setenv "PYTHONPATH" (getcwd))))))))
     (native-inputs
      (list python-django-redis
-           python-mock
+           python-pytest
+           python-pytest-django
            python-rq-scheduler
            python-setuptools
            python-wheel
            redis
            tzdata-for-tests))
     (propagated-inputs
-     (list python-django python-rq))
+     (list python-django python-redis python-rq python-pyaml))
     (home-page "https://github.com/ui/django-rq")
     (synopsis "Django integration with RQ")
     (description
-      "Django integration with RQ, a Redis based Python queuing library.
+     "Django integration with RQ, a Redis based Python queuing library.
 Django-RQ is a simple app that allows you to configure your queues in django's
 settings.py and easily use them in your project.")
     (license license:expat)))

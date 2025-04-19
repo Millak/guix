@@ -2059,7 +2059,10 @@ simulated Astronomical data in Python.")
         "--ignore=astroML/density_estimation/tests/test_bayesian_blocks.py"
         "--ignore=astroML/density_estimation/tests/test_bayesian_blocks.py"
         "--ignore=astroML/density_estimation/tests/test_hist_binwidth.py"
-        "--ignore=astroML/density_estimation/tests/test_hist_binwidth.py")
+        "--ignore=astroML/density_estimation/tests/test_hist_binwidth.py"
+        ;; Disalbe tests with NumPy, see
+        ;; <https://github.com/astroML/astroML/issues/281>.
+        "--ignore=astroML/tests/test_resample.py")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'patch-build-system
@@ -2085,11 +2088,18 @@ simulated Astronomical data in Python.")
            ;; Some tests need this
            (lambda _
              (setenv "HOME" "/tmp"))))))
-    (propagated-inputs (list python-astropy python-matplotlib python-numpy
-                             python-scikit-learn python-scipy))
-    (native-inputs (list python-pytest-astropy-header python-pytest-cov
-                         python-pytest-doctestplus python-pytest-remotedata
-                         python-wheel))
+    (native-inputs
+     (list python-pytest-astropy-header
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-remotedata
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scikit-learn
+           python-scipy))
     (home-page "https://astroml.org")
     (synopsis "Tools for machine learning and data mining in astronomy")
     (description "This package provides tools for machine learning and data
@@ -2136,7 +2146,9 @@ mining in astronomy.")
                           "test_table_comp[t16-t26]"
                           ;; UnboundLocalError: local variable 'ihd'
                           ;; referenced before assignment
-                          "test_delay_doc_updates")
+                          "test_delay_doc_updates"
+                          ;; assert 13 == 1
+                          "test_skip_meta")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -2486,6 +2498,46 @@ attempting to maintain ISTP compliance
     (synopsis "Helper functions for STScI software")
     (description
      "This package contains a helper functionality to test ROMAN and JWST.")
+    (license license:bsd-3)))
+
+(define-public python-cesium
+  (package
+    (name "python-cesium")
+    (version "0.12.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cesium" version))
+              (sha256
+               (base32
+                "0jr0ycqz9ns6mcskm4sxx92k40fj3v0x9knjaw5ac9f3mpqxsfbv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The installed test files contain the /gnu/store location, not the
+          ;; location of the discovered test files from the build directory.
+          ;; The test framework doesn't like this.  The easiest way around
+          ;; this mismatch is to jump to the output directory.
+          (add-before 'check 'check-chdir
+            (lambda _ (chdir #$output))))))
+    (propagated-inputs
+     (list python-click ;XXX required by python-dask
+           python-cloudpickle
+           python-dask
+           python-gatspy
+           python-joblib
+           python-numpy
+           python-pandas
+           python-scikit-learn
+           python-scipy
+           python-toolz))
+    (native-inputs (list python-cython python-pytest python-setuptools-scm
+                         python-setuptools python-wheel))
+    (home-page "https://pypi.org/project/cesium/")
+    (synopsis "Library for time-series feature extraction and processing")
+    (description
+     "Cesium is a library for time-series feature extraction and processing.")
     (license license:bsd-3)))
 
 (define-public python-cmyt
@@ -3132,7 +3184,9 @@ zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
               "--ignore=glue_astronomy/io/spectral_cube/tests/test_spectral_cube.py"
               "--ignore=glue_astronomy/io/spectral_cube/tests/test_spectral_cube.py"
               "--ignore=glue_astronomy/translators/tests/test_trace.py"
-              "--ignore=glue_astronomy/translators/tests/test_trace.py")))
+              "--ignore=glue_astronomy/translators/tests/test_trace.py"
+              ;; This is a Numpy DeprecationWarning, remove it on next update.
+              "-k" "not test_spectral_cube_io")))
     (propagated-inputs
      (list python-astropy
            python-glue-core

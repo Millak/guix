@@ -3221,7 +3221,7 @@ YouTube.com and many more sites.")
                   python-mutagen
                   python-pycryptodomex
                   python-requests-next ; TODO Remove this special package
-                  python-urllib3-next  ; TODO Remove this one too
+                  python-urllib3-1.26  ; TODO Remove this one too
                   python-websockets))
     (native-inputs
      (append
@@ -3799,34 +3799,28 @@ and custom quantization matrices.")
 (define-public streamlink
   (package
     (name "streamlink")
-    (version "6.3.1")
+    (version "7.1.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "streamlink" version))
         (sha256
          (base32
-          "0i2qym2plm4gpcq50vl67j69m8a4zz9mb8gi2xryx28pbnpdzh4k"))
-        (snippet
-         #~(begin (use-modules (guix build utils))
-                  (substitute* "pyproject.toml"
-                    (("trio >=0\\.22") "trio >=0.21"))))))
-    (build-system python-build-system)
+          "1mvg8lw3rkng6ciryziqh9r4ffj0ls7k0sv3byk3439s5d2qxh31"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-          (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                  (invoke "python" "-m" "pytest")))))))
+     (list
+      #:test-flags #~(list "-k" "not test_no_cache")))
     (native-inputs
      (list python-freezegun
-           python-requests-mock
            python-pytest
-           python-pytest-asyncio
-           python-pytest-trio))
+           python-pytest-trio
+           python-requests-mock
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-certifi
+           python-exceptiongroup
            python-isodate
            python-lxml
            python-pycountry
@@ -3835,7 +3829,6 @@ and custom quantization matrices.")
            python-requests
            python-trio
            python-trio-websocket
-           python-typing-extensions
            python-urllib3
            python-websocket-client))
     (home-page "https://github.com/streamlink/streamlink")

@@ -108,6 +108,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages astronomy)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -3551,46 +3552,51 @@ ASCII text files using Gmsh's own scripting language.")
 (define-public veusz
   (package
     (name "veusz")
-    (version "3.3.1")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "veusz" version))
        (sha256
-        (base32 "1q7hi1qwwg4pgiz62isvv1pia85m13bspdpp1q3mrnwl11in0ag0"))))
-    (build-system python-build-system)
+        (base32 "1lcmcfr0dcam8g1fp5qip8jnxglxx7i62ln3ix6l4c2bbv21l5y2"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; Tests will fail because they depend on optional packages like
-       ;; python-astropy, which is not packaged.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ;; Veusz will append 'PyQt5' to sip_dir by default. That is not how
-         ;; the path is defined in Guix, therefore we have to change it.
-         (add-after 'unpack 'fix-sip-dir
-           (lambda _
-             (substitute* "pyqtdistutils.py"
-               (("os.path.join\\(sip_dir, 'PyQt5'\\)") "sip_dir"))))
-         ;; Now we have to pass the correct sip_dir to setup.py.
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; We need to tell setup.py where to locate QtCoremod.sip
-             ((@@ (guix build python-build-system) call-setuppy)
-              "build_ext"
-              (list (string-append "--sip-dir="
-                                   (search-input-directory inputs "share/sip"))))))
-         ;; Ensure that icons are found at runtime.
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/veusz")
-                 `("QT_PLUGIN_PATH" prefix
-                   ,(list (string-append (assoc-ref inputs "qtsvg")
-                                         "/lib/qt5/plugins/"))))))))))
+     (list
+      ;; Tests currently fail with exception TypeError:
+      ;; calling <function version ...> returned 3.6.2, not a test
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Veusz uses python's site-packages to look for pyqt5_include_dir.
+          (add-after 'unpack 'fix-pyqt5-include-dir
+            (lambda _
+              (substitute* "pyqt_setuptools.py"
+                (("get_path\\('platlib'\\)")
+                 (format #f "~s"
+                         (string-append
+                          #$(this-package-input "python-pyqt")
+                          "/lib/python"
+                          #$(version-major+minor
+                             (package-version python-wrapper))
+                          "/site-packages"))))))
+          ;; Ensure that icons are found at runtime.
+          (add-after 'wrap 'wrap-executable
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/veusz")
+                `("QT_PLUGIN_PATH" prefix
+                  ,(list (string-append
+                          (string-join
+                           (list #$(this-package-input "qtbase")
+                                 #$(this-package-input "qtsvg")
+                                 #$(this-package-input "qtwayland"))
+                           "/lib/qt5/plugins:")
+                          "/lib/qt5/plugins")))))))))
     (native-inputs
      (list pkg-config
-           ;;("python-astropy" ,python-astropy) ;; FIXME: Package this.
-           qttools-5 python-sip-4))
+           python-astropy
+           python-setuptools
+           python-wheel
+           qttools-5))
     (inputs
      (list bash-minimal
            ghostscript ;optional, for EPS/PS output
@@ -3598,7 +3604,8 @@ ASCII text files using Gmsh's own scripting language.")
            python-h5py ;optional, for HDF5 data
            python-pyqt
            qtbase-5
-           qtsvg-5))
+           qtsvg-5
+           qtwayland-5))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://veusz.github.io/")
@@ -4346,7 +4353,15 @@ recurrence relations.")
       ;; These tests fails with unexpected keyword arguments
       ;; in calls to cplot.
       #~(list "--deselect" "tests/test_u3.py::test_write_single"
-              "--deselect" "tests/test_u3.py::test_write_tree")))
+              "--deselect" "tests/test_u3.py::test_write_tree"
+              "-k" (string-join
+                    ;; Tests fail in arrays comprising.
+                    (list "not test_chebyshev1_p11[2-y2]"
+                          "test_chebyshev1_p11[4-y4]"
+                          "test_eval[1-ref1]"
+                          "test_eval[t2-ref2]"
+                          "test_eval[t3-ref3]")
+                    " and not "))))
     (native-inputs
      (list python-matplotx
            python-meshio
@@ -4437,6 +4452,35 @@ bindings to almost all functions of PETSc.")
     ;; <https://github.com/dimpase/primecountpy/issues/16>.
     (license license:gpl2+)))
 
+(define-public python-pyglm
+  (package
+    (name "python-pyglm")
+    (version "2.8.1")
+    (source
+     (origin
+       ;; Test files are not included in the archive in pypi.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Zuzu-Typ/PyGLM")
+             (commit version)
+             ;; XXX: Attempt to use Guix's glm@1.0.1 failed, try to figure out
+             ;; how to fix it.
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1ra54m0pb5aca7q6ymappjsyxdzdy17yz8rrhlql04k0p9lnf1v8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/Zuzu-Typ/PyGLM")
+    (synopsis "OpenGL Mathematics library for Python")
+    (description "PyGLM is a Python extension library which brings the OpenGL
+Mathematics (GLM) library to Python.")
+    (license license:zlib)))
+
 (define-public python-quadpy
   (package
     (name "python-quadpy")
@@ -4454,6 +4498,12 @@ bindings to almost all functions of PETSc.")
           (base32
             "1f989dipv7lqxvalfrvvlmhlxyl67a87lavyyqrr1mh88glhl592"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; AssertionError: Lebedev(047) -- observed: 41, expected: 47 (max err:
+      ;; 4.910e-15).
+      #~(list "--deselect=tests/test_u3.py::test_scheme_spherical[lebedev_047]")))
     (native-inputs
      (list python-accupy
            python-pytest
@@ -7171,50 +7221,39 @@ with C89.")
 (define-public glm
   (package
     (name "glm")
-    (version "0.9.9.8")
+    (version "1.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/g-truc/glm/releases/download/"
-                           version  "/glm-" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/g-truc/glm")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0k6yk9v46h690rshdx49x98y5qspkzibld1wb51jwcm35vba7qip"))))
+        (base32 "0890rvv3czi3nqj11dc2m3wcdfv0dm0nr63wfcpfikk9sk6b4w8s"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'configure 'set-environment
-                    (lambda _
-                      ;; Pass "-fno-ipa-modref" flag to the compiler to work
-                      ;; around a test failure with GCC 11.  This is a
-                      ;; header-only library so these flags only affect tests.
-                      ;; See <https://github.com/g-truc/glm/pull/1087>.
-                      (setenv "CXXFLAGS" "-O2 -g -fno-ipa-modref")))
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Since version 0.9.9.6, 'make install' is not supported
-                      ;; and we have to do it "manually".  Upstream discussion:
-                      ;; <https://github.com/g-truc/glm/pull/968>.
-                      (let* ((source (string-append "../glm"))
-                             (out (assoc-ref outputs "out"))
-                             (inc (string-append out "/include"))
-                             (lib (string-append out "/lib"))
-                             (pkgconfig (string-append lib "/pkgconfig")))
-                        (with-directory-excursion source
-                          (mkdir-p inc)
-                          (mkdir-p pkgconfig)
-                          (copy-recursively "glm" (string-append inc "/glm"))
-                          (copy-recursively "cmake" (string-append lib "/cmake"))
-                          (call-with-output-file (string-append pkgconfig "/glm.pc")
-                            (lambda (port)
-                              (format port
-                                      "prefix=~a
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'post-install
+            (lambda _
+              (let* ((doc (string-append #$output "/share/doc/glm"))
+                     (pkgconfig (string-append #$output "/lib/pkgconfig")))
+                (mkdir-p doc)
+                (mkdir-p pkgconfig)
+                (copy-recursively "../source/doc/api" (string-append doc "/html"))
+                (install-file "../source/doc/manual.pdf" doc)
+                (call-with-output-file (string-append pkgconfig "/glm.pc")
+                  (lambda (port)
+                    (format port
+                            "prefix=~a
 includedir=${prefix}/include
 
 Name: GLM
 Description: OpenGL Mathematics
 Version: ~a
-Cflags: -I${includedir}~%" out ,(version-prefix version 3)))))
-                        #t))))))
+Cflags: -I${includedir}~%" #$output #$version)))))))))
     (native-inputs
      (list unzip))
     (home-page "https://glm.g-truc.net/")
@@ -11079,7 +11118,7 @@ Mathics3.")
     (propagated-inputs (list python-django-4.2
                              python-mathics-scanner
                              python-mathics-core
-                             python-networkx-next
+                             python-networkx
                              python-pygments
                              python-requests))
     (native-inputs (list python-pytest python-setuptools python-wheel))

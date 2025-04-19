@@ -647,17 +647,25 @@ Filter) modules follow the convention of 1V / Octave.")
                "1npks71ljc48w6858l9bq30kaf5nph8z0v61jkfb70xb9np850nl"))))
     (build-system waf-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:configure-flags
-       (list
-        (string-append "LDFLAGS=-Wl,-rpath=" (assoc-ref %outputs "out") "/lib")
-        "--enable-fftw3f"
-        "--enable-jack"
-        "--enable-sndfile"
-        "--enable-samplerate"
-        "--enable-avcodec")))
+     (list
+      #:tests? #f                      ; no check target
+      #:configure-flags
+      #~(list
+         (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+         "--enable-fftw3f"
+         "--enable-jack"
+         "--enable-sndfile"
+         "--enable-samplerate"
+         "--enable-avcodec")
+       #:phases
+       '(modify-phases %standard-phases
+          (add-after 'unpack 'python3.11-compatibility
+            (lambda _
+              (substitute* '("waflib/Context.py"
+                             "waflib/ConfigSet.py")
+                (("'rU'") "'r'")))))))
     (inputs
-     (list jack-1
+     (list jack-2
            libsndfile
            libsamplerate
            ffmpeg-4                     ;for libavcodec
@@ -2664,7 +2672,13 @@ partial release of the General MIDI sound set.")
            #:configure-flags
            #~(list
               ;; Add the output lib directory to the RUNPATH.
-              (string-append "--ldflags=-Wl,-rpath=" #$output "/lib"))))
+              (string-append "--ldflags=-Wl,-rpath=" #$output "/lib"))
+           #:phases
+           '(modify-phases %standard-phases
+              (add-after 'unpack 'python3.11-compatibility
+                (lambda _
+                  (substitute* "wscript"
+                    (("'rU'") "'r'")))))))
     (inputs
      (list libsndfile
            boost
@@ -2872,6 +2886,14 @@ synchronous execution of all clients, and low latency operation.")
        #:configure-flags '("--dbus" "--alsa")
        #:phases
        (modify-phases %standard-phases
+         ;; Python 3.11 has removed the 'U' (universal newline) mode.  It has
+         ;; been the default since Python 3.3.
+         (add-after 'unpack 'python-compatibility
+           (lambda _
+             (substitute* '("waflib/Context.py"
+                            "waflib/ConfigSet.py")
+               (("m='rU'") "m='r'")
+               (("read\\('rU'") "read('r'"))))
          (add-before 'configure 'set-linkflags
            (lambda _
              ;; Ensure -lstdc++ is the tail of LDFLAGS or the simdtests.cpp

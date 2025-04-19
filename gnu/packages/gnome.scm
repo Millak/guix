@@ -7479,60 +7479,6 @@ almost all of them.")
 principles are simplicity and standards compliance.")
     (license license:gpl2+)))
 
-(define-public d-feet
-  (package
-    (name "d-feet")
-    (version "0.3.16")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1jqw5ndpgyb0zxh0g21ai1911lfrm56vz18xbccfqm4sk95wwcw7"))
-              (patches
-               (search-patches "d-feet-drop-unused-meson-argument.patch"))))
-    (build-system meson-build-system)
-    (arguments
-     (list
-      #:glib-or-gtk? #t
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              ;; The test suite requires a running X server.
-              (system "Xvfb :1 &")
-              (setenv "DISPLAY" ":1")))
-          (add-before 'install 'disable-gtk-update-icon-cache
-            (lambda _
-              (setenv "DESTDIR" "/")))
-          (add-after 'install 'wrap-program
-            (lambda* (#:key outputs #:allow-other-keys)
-              (wrap-program (search-input-file outputs "bin/d-feet")
-                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
-    (native-inputs
-     (list `(,glib "bin")
-           intltool
-           itstool
-           libxml2
-           pkg-config
-           python-pep8
-           xorg-server-for-tests))
-    (inputs
-     (list bash-minimal
-           gobject-introspection
-           gtk+
-           python-wrapper
-           python-pygobject))
-    (home-page "https://wiki.gnome.org/Apps/DFeet")
-    (synopsis "D-Bus debugger")
-    (description
-     "D-Feet is a D-Bus debugger, which can be used to inspect D-Bus interfaces
-of running programs and invoke methods on those interfaces.")
-    (license license:gpl2+)))
-
 (define-public d-spy
   (package
     (name "d-spy")
@@ -7573,6 +7519,9 @@ of running programs and invoke methods on those interfaces.")
 programs via D-Bus.  It also ships a library for integration into development
 environments.")
     (license license:gpl2+)))
+
+(define-public d-feet
+  (deprecated-package "d-feet" d-spy))
 
 (define-public yelp-xsl
   (package

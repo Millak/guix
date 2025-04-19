@@ -1,0 +1,201 @@
+From d89186b47dc25c5ef5907c146edf3f792d50774b Mon Sep 17 00:00:00 2001
+Message-ID: <d89186b47dc25c5ef5907c146edf3f792d50774b.1743608515.git.ngraves@ngraves.fr>
+From: Nicolas Graves <ngraves@ngraves.fr>
+Date: Wed, 2 Apr 2025 17:29:45 +0200
+Subject: [PATCH] Update to python 3.11
+
+---
+ property_cached/__init__.py             | 21 +++-------
+ tests/test_async_cached_property.py     |  3 +-
+ tests/test_coroutine_cached_property.py | 51 ++++++++++---------------
+ 3 files changed, 27 insertions(+), 48 deletions(-)
+
+diff --git a/property_cached/__init__.py b/property_cached/__init__.py
+index 3353048..c033542 100644
+--- a/property_cached/__init__.py
++++ b/property_cached/__init__.py
+@@ -3,6 +3,7 @@ import functools
+ import pkg_resources
+ import threading
+ import weakref
++from inspect import iscoroutinefunction
+ from time import time
+ 
+ 
+@@ -31,12 +32,12 @@ class cached_property(property):
+         if obj is None:
+             return self
+ 
+-        if asyncio and asyncio.iscoroutinefunction(self.func):
+-            return self._wrap_in_coroutine(obj)
+-
+         value = self.cache.get(obj, self._sentinel)
+         if value is self._sentinel:
+-            value = self.cache[obj] = self.func(obj)
++            if iscoroutinefunction(self.func):
++                self.cache[obj] = value = asyncio.ensure_future(self.func(obj))
++            else:
++                self.cache[obj] = value = self.func(obj)
+ 
+         return value
+ 
+@@ -49,18 +50,6 @@ class cached_property(property):
+     def __delete__(self, obj):
+         del self.cache[obj]
+ 
+-    def _wrap_in_coroutine(self, obj):
+-
+-        @functools.wraps(obj)
+-        @asyncio.coroutine
+-        def wrapper():
+-            value = self.cache.get(obj, self._sentinel)
+-            if value is self._sentinel:
+-                self.cache[obj] = value = asyncio.ensure_future(self.func(obj))
+-            return value
+-
+-        return wrapper()
+-
+ 
+ class threaded_cached_property(cached_property):
+     """
+diff --git a/tests/test_async_cached_property.py b/tests/test_async_cached_property.py
+index 1af139d..32b3410 100644
+--- a/tests/test_async_cached_property.py
++++ b/tests/test_async_cached_property.py
+@@ -9,8 +9,7 @@ import property_cached as cached_property
+ 
+ def unittest_run_loop(f):
+     def wrapper(*args, **kwargs):
+-        coro = asyncio.coroutine(f)
+-        future = coro(*args, **kwargs)
++        future = f(*args, **kwargs)
+         loop = asyncio.get_event_loop()
+         loop.run_until_complete(future)
+ 
+diff --git a/tests/test_coroutine_cached_property.py b/tests/test_coroutine_cached_property.py
+index 40e443b..5864301 100644
+--- a/tests/test_coroutine_cached_property.py
++++ b/tests/test_coroutine_cached_property.py
+@@ -14,8 +14,7 @@ import property_cached as cached_property
+ 
+ def unittest_run_loop(f):
+     def wrapper(*args, **kwargs):
+-        coro = asyncio.coroutine(f)
+-        future = coro(*args, **kwargs)
++        future = f(*args, **kwargs)
+         loop = asyncio.get_event_loop()
+         loop.run_until_complete(future)
+ 
+@@ -33,14 +32,12 @@ def CheckFactory(cached_property_decorator):
+             self.control_total = 0
+             self.cached_total = 0
+ 
+-        @asyncio.coroutine
+-        def add_control(self):
++        async def add_control(self):
+             self.control_total += 1
+             return self.control_total
+ 
+         @cached_property_decorator
+-        @asyncio.coroutine
+-        def add_cached(self):
++        async def add_cached(self):
+             self.cached_total += 1
+             return self.cached_total
+ 
+@@ -52,74 +49,68 @@ class TestCachedProperty(unittest.TestCase):
+ 
+     cached_property_factory = cached_property.cached_property
+ 
+-    @asyncio.coroutine
+-    def assert_control(self, check, expected):
++    async def assert_control(self, check, expected):
+         """
+         Assert that both `add_control` and 'control_total` equal `expected`
+         """
+-        value = yield from check.add_control()
++        value = await check.add_control()
+         self.assertEqual(value, expected)
+         self.assertEqual(check.control_total, expected)
+ 
+-    @asyncio.coroutine
+-    def assert_cached(self, check, expected):
++    async def assert_cached(self, check, expected):
+         """
+         Assert that both `add_cached` and 'cached_total` equal `expected`
+         """
+         print("assert_cached", check.add_cached)
+-        value = yield from check.add_cached
++        value = await check.add_cached
+         self.assertEqual(value, expected)
+         self.assertEqual(check.cached_total, expected)
+ 
+     @unittest_run_loop
+-    @asyncio.coroutine
+-    def test_cached_property(self):
++    async def test_cached_property(self):
+         Check = CheckFactory(self.cached_property_factory)
+         check = Check()
+ 
+         # The control shows that we can continue to add 1
+-        yield from self.assert_control(check, 1)
+-        yield from self.assert_control(check, 2)
++        await self.assert_control(check, 1)
++        await self.assert_control(check, 2)
+ 
+         # The cached version demonstrates how nothing is added after the first
+-        yield from self.assert_cached(check, 1)
+-        yield from self.assert_cached(check, 1)
++        await self.assert_cached(check, 1)
++        await self.assert_cached(check, 1)
+ 
+         # The cache does not expire
+         with freeze_time("9999-01-01"):
+-            yield from self.assert_cached(check, 1)
++            await self.assert_cached(check, 1)
+ 
+         # Typically descriptors return themselves if accessed though the class
+         # rather than through an instance.
+         self.assertTrue(isinstance(Check.add_cached, self.cached_property_factory))
+ 
+     @unittest_run_loop
+-    @asyncio.coroutine
+-    def test_reset_cached_property(self):
++    async def test_reset_cached_property(self):
+         Check = CheckFactory(self.cached_property_factory)
+         check = Check()
+ 
+         # Run standard cache assertion
+-        yield from self.assert_cached(check, 1)
+-        yield from self.assert_cached(check, 1)
++        await self.assert_cached(check, 1)
++        await self.assert_cached(check, 1)
+ 
+         # Clear the cache
+         del check.add_cached
+ 
+         # Value is cached again after the next access
+-        yield from self.assert_cached(check, 2)
+-        yield from self.assert_cached(check, 2)
++        await self.assert_cached(check, 2)
++        await self.assert_cached(check, 2)
+ 
+     @unittest_run_loop
+-    @asyncio.coroutine
+-    def test_none_cached_property(self):
++    async def test_none_cached_property(self):
+         class Check(object):
+             def __init__(self):
+                 self.cached_total = None
+ 
+             @self.cached_property_factory
+-            @asyncio.coroutine
+-            def add_cached(self):
++            async def add_cached(self):
+                 return self.cached_total
+ 
+-        yield from self.assert_cached(Check(), None)
++        await self.assert_cached(Check(), None)
+-- 
+2.49.0
+

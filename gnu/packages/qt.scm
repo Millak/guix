@@ -4033,7 +4033,7 @@ Python.")
 (define-public python-sip
   (package
     (name "python-sip")
-    (version "6.8.6")
+    (version "6.10.0")
     (source
      (origin
        (method url-fetch)
@@ -4043,18 +4043,20 @@ Python.")
                                  "/sip-" version ".tar.gz")))
        (sha256
         (base32
-         "0ykxq0607f2sdwbl5cxbp0y8pl14bsgzc9nhifpxbibfivj5kjbz"))
+         "176jylhzs2ci2r9f3l75k9dpwhp1dn0qv2cy9phdp62cgmlia1gs"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Relax setuptools dependency
+        #~(substitute* "pyproject.toml"
+            (("\"setuptools>=.*\",") "\"setuptools\",")))
        (patches (search-patches "python-sip-include-dirs.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))        ; No test system found.
     (native-inputs
-     (list python-wrapper python-setuptools python-setuptools-scm-next))
+     (list python-setuptools python-setuptools-scm-next python-wheel))
     (propagated-inputs
-     (list python-tomli
-           python-packaging
-           python-setuptools
-           python-wheel))
+     (list python-packaging python-setuptools))
     (home-page "https://www.riverbankcomputing.com/software/sip/intro")
     (synopsis "Python binding creator for C and C++ libraries")
     (description
@@ -5137,7 +5139,7 @@ color-related widgets.")
 (define-public python-shiboken-2
   (package
     (name "python-shiboken-2")
-    (version "5.15.10")
+    (version "5.15.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://qt/QtForPython/pyside2/PySide2-"
@@ -5145,7 +5147,7 @@ color-related widgets.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0fnkx8ax2lkin3bpqbz4zbdrdin2ixb4d6s3c0xghh9sc79r3xia"))))
+                "0q3ky0fai3wr8kr1q82vdg5byhbn5sfdymmb554afpi72zyxcgkd"))))
     (build-system cmake-build-system)
     (inputs
      (list clang-toolchain

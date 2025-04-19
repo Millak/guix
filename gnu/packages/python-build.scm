@@ -344,18 +344,6 @@ facilitate packaging Python projects, where packaging includes:
                    license:asl2.0       ;packaging is dual ASL2/BSD-2
                    license:bsd-2))))
 
-;; This is the last version with use_2to3 support.
-(define-public python-setuptools-57
-  (package
-    (inherit python-setuptools)
-    (version "57.5.0")
-    (source (origin
-              (inherit (package-source python-setuptools))
-              (uri (pypi-uri "setuptools" version))
-              (sha256
-               (base32
-                "091sp8lrin7qllrhhx7y0iiv5gdb1d3l8a1ip5knk77ma1njdlyr"))))))
-
 (define-public python-wheel
   (package
     (name "python-wheel")
@@ -412,14 +400,14 @@ installed with a newer @code{pip} or with wheel's own command line utility.")
 (define-public python-pyparsing
   (package
     (name "python-pyparsing")
-    (version "3.0.6")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyparsing" version))
        (sha256
-        (base32 "109b9r802wb472hgmxclljprh5cid0w3p6mk9alba7pg2c0frgfr"))))
-    (build-system python-build-system)
+        (base32 "02jz5rv3vx46xvjszda467l269jz9narlrwd0a83mpk6zma0i631"))))
+    (build-system pyproject-build-system)
     (outputs '("out" "doc"))
     (arguments
      `(#:tests? #f                      ;no test target
@@ -440,6 +428,7 @@ installed with a newer @code{pip} or with wheel's own command line utility.")
                        (find-files dir ".*")))
                 (list "docs" "htmldoc" "examples")
                 (list doc html-doc examples))))))))
+    (native-inputs (list python-flit-core))
     (home-page "https://github.com/pyparsing/pyparsing")
     (synopsis "Python parsing class library")
     (description
@@ -459,7 +448,8 @@ that client code uses to construct the grammar directly in Python code.")
        (method url-fetch)
        (uri (pypi-uri "pyparsing" version))
        (sha256
-        (base32 "1hgc8qrbq1ymxbwfbjghv01fm3fbpjwpjwi0bcailxxzhf3yq0y2"))))))
+        (base32 "1hgc8qrbq1ymxbwfbjghv01fm3fbpjwpjwi0bcailxxzhf3yq0y2"))))
+    (native-inputs (list python-setuptools python-wheel))))
 
 (define-public python-packaging-bootstrap
   (package
@@ -568,6 +558,16 @@ implementation developed for Poetry.  This project is intended to be
 a light weight, fully compliant, self-contained package allowing PEP 517
 compatible build front-ends to build Poetry managed projects.")
     (license license:expat)))
+
+(define-public python-poetry-core-next
+  (package/inherit python-poetry-core
+    (version "2.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "poetry_core" version))
+       (sha256
+        (base32 "015a0802radb2x5wsbywm4fggv4s1srh8zyml5v58xgrxg8bpnzr"))))))
 
 ;;; This package exists to bootstrap python-tomli.
 (define-public python-flit-core-bootstrap

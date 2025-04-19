@@ -70,6 +70,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -79,6 +80,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages unicode)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages xml)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python))
@@ -436,7 +438,7 @@ other lower-level build files.")))
 (define-public scons
   (package
     (name "scons")
-    (version "4.4.0")
+    (version "4.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -446,7 +448,7 @@ other lower-level build files.")))
               (patches (search-patches "scons-test-environment.patch"))
               (sha256
                (base32
-                "1czswx1fj2j48rspkrvarkr43k0vii9rsmz054c9yby1dq362fgr"))))
+                "1skz1kzhwsp54i71jrsg46rkxwicfici7pq6qmfhlqd5zhrg21zb"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -467,7 +469,9 @@ other lower-level build files.")))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (invoke "python" "runtest.py" "--all" "--unit-only"))))
+                ;; remove these tests as they require a read/write filesystem
+                (delete-file "SCons/Variables/PathVariableTests.py")
+                (invoke "python" "runtest.py" "--all" "--unit-only" ))))
           (add-after 'install 'move-manuals
             (lambda _
               ;; XXX: For some reason manuals get installed to the top-level
@@ -483,7 +487,7 @@ other lower-level build files.")))
                             stray-manuals))))))))
     (native-inputs
      ;; TODO: Add 'fop' when available in Guix to generate manuals.
-     (list python-wheel
+     (list python-setuptools python-lxml python-wheel
            ;;For tests.
            python-psutil))
     (home-page "https://scons.org/")

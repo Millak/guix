@@ -185,7 +185,6 @@
   #:use-module (gnu packages adns)
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages algebra)
-  #:use-module (gnu packages astronomy)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
@@ -232,6 +231,7 @@
   #:use-module (gnu packages gsasl)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
@@ -309,6 +309,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix hg-download)
   #:use-module (guix git-download)
@@ -320,44 +321,41 @@
 (define-public python-apprise
   (package
     (name "python-apprise")
-    (version "1.9.2")
+    (version "1.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "apprise" version))
        (sha256
-        (base32 "1a3kzpjdp29l4ryafd36gs8apg61f16ljw93h1051p98f0hv23i9"))))
+        (base32 "19k51ici58134m61f6di0m36mbqgdyr6r31i8v6rk22vldz6d0zm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
               "--ignore=test/test_plugin_macosx.py"
-              "-k" (string-append "not test_plugin_mqtt_tls_connect_success"
-                                  " and not test_plugin_mqtt_tls_no_verify_success"
-                                  ;; AssertionError: assert False
-                                  " and not test_plugin_wxpusher_edge_cases"))))
-    (propagated-inputs (list python-certifi
-                             python-click
-                             python-markdown
-                             python-pyyaml
-                             python-requests
-                             python-requests-oauthlib))
+              ;; AssertionError
+              "--deselect=test/test_plugin_wxpusher.py::test_plugin_wxpusher_urls")))
     (native-inputs
      (list python-babel
            python-pytest
-           python-pytest-cov
            python-pytest-mock
            python-pytest-xdist
            python-setuptools
            python-wheel))
+    (propagated-inputs
+     (list python-certifi
+           python-click
+           python-markdown
+           python-pyyaml
+           python-requests
+           python-requests-oauthlib))
     (home-page "https://github.com/caronc/apprise")
-    (synopsis
-     "Push notification Python library that works with many platforms")
+    (synopsis "Push notification library")
     (description
-     "Apprise is a Python library that allows sending push notifications to a broad
-range of notification services, such as Telegram, Discord, Slack, Amazon SNS,
-Gotify, etc.")
+     "Apprise is a Python library that allows sending push notifications to a
+broad range of notification services, such as Telegram, Discord, Slack, Amazon
+SNS, Gotify, etc.")
     (license license:bsd-2)))
 
 (define-public python-archspec
@@ -1863,6 +1861,34 @@ formatting in the terminal.  It comes with a collection of color codes and
 names for 256 color terminal setups.")
     (license license:expat)))
 
+(define-public python-colored-traceback
+  ;; No tags in upstream repository.
+  (let ((commit "98e6dea7111f7681db823c518f18026374a832b9")
+        (revision "0"))
+    (package
+      (name "python-colored-traceback")
+      (version (git-version "0.4.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/staticshock/colored-traceback.py")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19d5mpwk7398b8fjh6abnr96wz70vf5vb4p207r8sny748rwx451"))))
+      (build-system pyproject-build-system)
+      (arguments
+       ;; Tests are incompatible with current python version.
+       (list #:tests? #f))
+      (propagated-inputs (list python-colorama python-pygments))
+      (native-inputs (list python-setuptools python-wheel))
+      (home-page "https://github.com/staticshock/colored-traceback.py")
+      (synopsis "Automatically color uncaught exception tracebacks")
+      (description "This package provides python utilities to automatically
+color uncaught exception tracebacks.")
+      (license license:isc))))
+
 (define-public python-colorful
   (package
     (name "python-colorful")
@@ -3186,7 +3212,9 @@ simple function calls.")
     (native-inputs
      (list python-pytest
            python-pytest-cov
+           python-setuptools
            python-setuptools-scm
+           python-wheel
            xorg-server-for-tests))
     (home-page "https://github.com/glue-viz/echo")
     (synopsis "Callback Properties in Python")
@@ -3509,17 +3537,17 @@ planar geometric objects.  It is based on the @code{GEOS} library.")
 (define-public python-shortuuid
   (package
     (name "python-shortuuid")
-    (version "0.5.0")
+    (version "1.0.13")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "shortuuid" version))
        (sha256
         (base32
-         "1f8i4zwj5vmpzbz6b17bljy4399gx5aq7vsyw63sz2qgyjcd73yh"))))
-    (build-system python-build-system)
+         "0wjygiwk07irgqmr29bv7rvq9pc71ff3jinzn620a9h6yq3wzf9v"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pep8))
+     (list python-poetry-core python-pytest))
     (home-page "https://github.com/skorokithakis/shortuuid")
     (synopsis "Generator library for concise, unambiguous and URL-safe UUIDs")
     (description
@@ -4013,23 +4041,30 @@ Unicode-to-LaTeX conversion.")
 (define-public python-cftime
   (package
     (name "python-cftime")
-    (version "1.6.2")
+    (version "1.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cftime" version))
        (sha256
-        (base32 "1lp6jrjjgl18csn4bcnphn0l16ag4aynvn7x0kins155p07w0546"))))
+        (base32 "1p5fw25hjqpzwxw3662f72ga30kpf8pbbph8fgb7x2kmjdhl09g3"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-unwanted-pytest-options
+                 (lambda _
+                   (substitute* "setup.cfg"
+                     (("doctest_optionflags.*")
+                      "")
+                     (("--cov.*")
+                      "")))))))
     (propagated-inputs
      (list python-numpy))
     (native-inputs
-     (list python-check-manifest
-           python-coverage
-           python-coveralls
-           python-cython
-           python-pytest-cov
-           python-sphinx
+     (list python-cython
+           python-pytest
+           python-setuptools
            python-twine
            python-wheel))
     (home-page "https://unidata.github.io/cftime/")
@@ -4112,14 +4147,24 @@ protocol.")
 (define-public python-ncls
   (package
     (name "python-ncls")
-    (version "0.0.65")
+    (version "0.0.68")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "ncls" version))
               (sha256
                (base32
-                "1wx06xqknd2r98w8z93f47g5dpxzn92kamhj8vkq0nj569hf7cg1"))))
-    (build-system python-build-system)
+                "14xsnzr34xa4rwfcdjry9aqjs8i03s9fzy6jgrwj3fr3n6msbal1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Those tests fail with warnings (not errors) for the Numpy update.
+     ;; Remove it at next python-team iteration.
+     (list #:test-flags ''("--ignore=examples/test_all_overlaps_both.py"
+                           "--ignore=examples/test_find_overlap_list.py")))
+    (native-inputs (list python-cython
+                         python-pandas
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
     (propagated-inputs (list python-numpy))
     (home-page "https://github.com/endrebak/ncls")
     (synopsis "Nested containment list data structure")
@@ -4332,16 +4377,16 @@ version identifier.")
 (define-public python-serpent
   (package
     (name "python-serpent")
-    (version "1.28")
+    (version "1.41")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "serpent" version))
        (sha256
-        (base32 "1arnckykpkvv2qrp49l1k7q5mr5pisswl0rvdx98x8wsl1n361pk"))))
-    (build-system python-build-system)
+        (base32 "15bhxpihxvbphsvp4wyh2kwfz7xasmki9zwcsj3l6r66wdgh61q4"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-attrs python-pytz))
+     (list python-attrs python-pytz python-setuptools python-wheel))
     (home-page "https://github.com/irmen/Serpent")
     (synopsis "Serializer for literal Python expressions")
     (description
@@ -4495,43 +4540,55 @@ helpers.")
 language.  It aims to be fast.")
     (license license:expat)))
 
+;; XXX: The project might be abandoned and this package has no users in Guix,
+;; consider to remove if it keeps failing.
+;; See: <https://github.com/ethanfurman/aenum/issues/45>,
+;;      <https://github.com/ethanfurman/aenum/issues/44>,
+;;      <https://github.com/ethanfurman/aenum/issues/27>.
 (define-public python-aenum
   (package
     (name "python-aenum")
-    (version "3.1.12")
+    (version "3.1.15")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aenum" version))
        (sha256
-        (base32 "1w1ffkcxgnimi5w8802qk6w2qxz9k8hpvsg6yy2zi08ahs8iqlry"))
+        (base32 "0ncmbdblqhqyb2mg73d5663vx3q2xb9q8hmj77zp1y64336pdgcc"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete the Python 2 specific files which won't compile
         ;; in Python 3.
         '(for-each delete-file (find-files "." "_py2.py$")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      ;; We must run the test suite module directly, as it
-                      ;; fails to define the 'tempdir' variable in scope for
-                      ;; the tests otherwise
-                      ;; (see:https://bitbucket.org/stoneleaf/aenum/\
-                      ;; issues/32/running-tests-with-python-setuppy-test).
-                      (invoke "python3" "aenum/test.py")
-                      ;; This one fails with "NameError: name
-                      ;; 'test_pickle_dump_load' is not defined" (see:
-                      ;; https://bitbucket.org/stoneleaf/aenum/issues/33
-                      ;; /error-running-the-test_v3py-test-suite).
-                      ;; (invoke "python3" "aenum/test_v3.py")
-                      #t)))))
-    (home-page "https://bitbucket.org/stoneleaf/aenum")
+     (list
+      #:test-flags
+      ;; These tests are defined in "aenum/test_v3.py" and require a function
+      ;; "test_pickle_dump_load" from "aenum/test.py" which is not imported
+      ;; into the module's scope.
+      #~(list "-k" (string-join
+                    (list "not test_pickle_enum_function_with_qualname"
+                          "test_class_nested_enum_and_pickle_protocol_four"
+                          "test_subclasses_with_getnewargs_ex")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "aenum/test_v3.py"
+                ;; tempdir variable is not defined in the module.
+                (("import tempfile.*")
+                 (format #f "import tempfile~%tempdir = tempfile.mkdtemp()~%"))))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/ethanfurman/aenum")
     (synopsis "Advanced enumerations, namedtuples and constants for Python")
-    (description "The aenum library includes an @code{Enum} base class, a
-metaclass-based @code{NamedTuple} implementation and a @code{NamedConstant}
-class.")
+    (description
+     "The aenum library includes an @code{Enum} base class, a metaclass-based
+@code{NamedTuple} implementation and a @code{NamedConstant} class.")
     (license license:bsd-3)))
 
 (define-public python-calver
@@ -4666,43 +4723,6 @@ support the most common parts of the CiA 301 standard in a simple
 Pythonic interface.  It is mainly targeted for testing and automation
 tasks rather than a standard compliant master implementation.")
     (license license:expat)))
-
-(define-public python-caniusepython3
-  (package
-    (name "python-caniusepython3")
-    (version "7.2.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "caniusepython3" version))
-        (sha256
-          (base32
-            "0a755444ln38j8d7xb3yw0wzpd0mjrzfn6zqvsh06nw1vdaq4l28"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-requirements
-                    (lambda _
-                      (substitute* "setup.py"
-                        ;; These are for compatibility with Python 2.
-                        ((".*'argparse', 'backports.functools_lru_cache',.*")
-                         ""))
-                      (substitute* "dev_requirements.txt"
-                        ((".*pylint.*") "")) ;not actually required
-                      #t))
-                  (replace 'check
-                    (lambda _
-                      (invoke "py.test" "-k" "not NetworkTests"))))))
-    (propagated-inputs
-      (list python-distlib python-packaging python-requests))
-    (native-inputs
-     (list python-mock python-pytest))
-    (home-page "https://github.com/brettcannon/caniusepython3")
-    (synopsis "Check for Python 3-incompatible Python libraries")
-    (description "The @command{caniusepython3} command scans your project and
-reports the Python 3-incompatible libraries it found.  It can also be used as
-a library.")
-    (license license:asl2.0)))
 
 (define-public python-diskcache
   (package
@@ -5344,15 +5364,33 @@ lossless but can be tweaked for more aggressive cleaning.")
 (define-public python-mechanize
   (package
     (name "python-mechanize")
-    (version "0.4.7")
+    (version "0.4.10")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "mechanize" version))
       (sha256
-       (base32
-        "02b845y85ka5sl2cj93lll3v326d8bww07bq1q0y1643h7sshwqp"))))
-    (build-system python-build-system)
+       (base32 "1pvxjnhqi6iq7nnjksnfvyzxcibbwfjc9fzp22v0msp7kdzr9shx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: Unclear why tests are failing.
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'configure-tests
+                 (lambda _
+                   (setenv "GUIX_PYTHONPATH"
+                           (string-append (getcwd) "/test-tools:"
+                                          (getenv "GUIX_PYTHONPATH"))))))))
+    (native-inputs
+     (list python-html5-parser
+           python-html5lib
+           python-lxml
+           python-service-identity
+           python-setuptools
+           python-six
+           python-twisted
+           python-wheel))
     (propagated-inputs
      (list python-html5lib))
     (home-page "https://github.com/python-mechanize/mechanize")
@@ -5479,40 +5517,26 @@ Python.")
 (define-public python-jsonargparse
   (package
     (name "python-jsonargparse")
-    (version "4.21.1")
+    (version "4.37.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jsonargparse" version))
               (sha256
                (base32
-                "1k3b60x0zf86fh50y2jyby30gksqriyvvpfnf5mqq0qn7jih01y7"))))
+                "1b9w9j27phj5j00pmhp11lzf53yc4dnwknhxacv2bfyiiaq0af2s"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:test-flags
-      '(list "-k" (string-append "not test_env_prefix"
-                                 " and not test_basemodel"
-                                 " and not test_field_default_factory"
-                                 " and not test_field_description"
-                                 " and not test_get_param_relative_import_from_init"
-                                 ;; Strangely, the arguments are interpreted
-                                 ;; as arguments to pytest.
-                                 " and not test_pydantic_types"))))
+     (list #:test-flags
+           '(list "-k" "not test_env_prefix")))
     (propagated-inputs
-     (list python-contextvars
-           python-docstring-parser
-           python-pyyaml
-           python-typeshed-client))
+     (list python-pyyaml))
     (native-inputs
      (list python-attrs
-           python-coverage
-           python-pycodestyle
+           python-pypa-build
            python-pydantic
            python-pytest
            python-pytest-subtests
            python-responses
-           python-tox
-           python-types-requests
            python-setuptools
            python-wheel))
     (home-page "https://github.com/omni-us/jsonargparse/")
@@ -5884,15 +5908,12 @@ a certain expected condition.")
               ;; Delete generated Cython C files.
               (snippet
                '(for-each delete-file (find-files "." "\\.c$")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "setup.py" "test")))))))
+      ;; XXX: Update to python@3.11 broke some python-nose functionality.
+      ;; Tests are broken but the package itself is most likely fine.
+      #:tests? #f))
     (propagated-inputs
      (list python-joblib
            python-networkx
@@ -5901,8 +5922,9 @@ a certain expected condition.")
            python-scipy))
     (native-inputs
      (list python-cython
-           python-nose
-           python-pandas))
+           python-pandas
+           python-setuptools
+           python-wheel))
     (home-page "https://pypi.python.org/pypi/pomegranate/")
     (synopsis "Graphical models library for Python")
     (description
@@ -6719,24 +6741,38 @@ between Julian dates and Gregorian dates.")
 
 (define-public python-jsondiff
   (package
-   (name "python-jsondiff")
-   (version "1.2.0")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (pypi-uri "jsondiff" version))
-     (sha256
-      (base32
-       "00v3689175aqzdscrxpffm712ylp8jvcpqdg51ca22ni6721p51l"))))
-   (build-system python-build-system)
-   (native-inputs
-    (list python-nose python-nose-random))
-   (home-page
-    "https://github.com/fzumstein/jsondiff")
-   (synopsis "Compare JSON and JSON-like structures in Python")
-   (description "@code{jsondiff} is a Python library which lets you
-compare, diff, and patch JSON and JSON-like structures in Python.")
-   (license license:expat)))
+    (name "python-jsondiff")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jsondiff" version))
+       (sha256
+        (base32
+         "1zpp8l2ii9ic1sk6kdcqxk0v5q9pgdmdhg1h4vg8dfl6i8n1d3b5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^version_file.*") "")
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\""))))))))
+    (propagated-inputs (list python-pyyaml))
+    (native-inputs
+     (list python-hypothesis
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/fzumstein/jsondiff")
+    (synopsis "Compare JSON and JSON-like structures in Python")
+    (description "@code{jsondiff} is a Python library which lets you compare,
+diff, and patch JSON and JSON-like structures in Python.")
+    (license license:expat)))
 
 (define-public python-ddlparse
   (package
@@ -6802,7 +6838,7 @@ and convert DDL to BigQuery JSON schema.")
            python-referencing-bootstrap
            python-rpds-py
            python-uri-template
-           python-webcolors-24))
+           python-webcolors))
     (home-page "https://github.com/Julian/jsonschema")
     (synopsis "Implementation of JSON Schema for Python")
     (description
@@ -7111,27 +7147,25 @@ JavaScript-like message boxes.  Types of dialog boxes include:
 (define-public python-pympler
   (package
     (name "python-pympler")
-    (home-page "https://pythonhosted.org/Pympler/")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Pympler" version))
-              (sha256
-               (base32
-                "1ynkqpv2akldmvkll5vh5zhwj433s1d59iv0f76lygyak4silgwr"))))
-    (build-system python-build-system)
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pympler" version))
+       (sha256
+        (base32 "090403k1wvqyddjwbla4843dylysrkd8yw7i62222b4rp1y8dahy"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'skip-broken-test
-            (lambda _
-              ;; FIXME: This test fails for no good reason:
-              ;; https://github.com/pympler/pympler/issues/153
-              (substitute* "test/muppy/test_tracker.py"
-                (("^([[:blank:]]+)def test_stracker_create_summary" all indent)
-                 (string-append indent "@unittest.skipIf(True, \
-'Fails on Guix too for unknown reasons')\n" all))))))))
+      ;; One test fails with error: 'function (test.muppy.test_summary.func)'
+      ;; != 'function (muppy.test_summary.func)'.
+      ;; See <https://github.com/pympler/pympler/issues/134>.
+      #:test-flags #~(list "-k" "not test_repr_function")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://pythonhosted.org/Pympler/")
     (synopsis "Measure, monitor and analyze memory behavior")
     (description
      "Pympler is a development tool to measure, monitor and analyze
@@ -7239,33 +7273,44 @@ e.g. filters, callbacks and errbacks can all be promises.")
 (define-public python-virtualenv
   (package
     (name "python-virtualenv")
-    (version "20.28.0")
+    (version "20.29.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "virtualenv" version))
        (sha256
         (base32
-         "1aj980vffl4mpq4j67f7a0j07rlm8jp5yw8xh3m8fywfpdi3571c"))))
+         "0dfwnn8i1y33kgxhi4xyhsj4yr5vsin7zf9c343bcbyk700rgf5q"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; These tests require Internet access.
-     (list #:test-flags '(list "-k" "not test_seed_link_via_app_data")))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list
+                     ;; These tests require Internet access.
+                     "not test_seed_link_via_app_data"
+                     ;; AssertionError: assert 'python' in ['python3',
+                     ;; 'python3.11'].
+                     ;; 
+                     ;; PythonInfo() returns: 'system_executable':
+                     ;; '/gnu/store/...-python-wrapper-3.11.11/bin/python'
+                     "test_fallback_existent_system_executable")
+                    " and not "))))
     (native-inputs
-     (list python-covdefaults
-           python-coverage
-           python-flaky
+     (list python-flaky
            python-hatch-vcs
            python-hatchling
            python-packaging
            python-pytest
            python-pytest-env
+           python-pytest-freezer
            python-pytest-mock
            python-pytest-timeout
            python-setuptools
            python-time-machine))
     (propagated-inputs
-     (list python-distlib python-filelock python-importlib-metadata
+     (list python-distlib
+           python-filelock
            python-platformdirs))
     (home-page "https://virtualenv.pypa.io/")
     (synopsis "Virtual Python environment builder")
@@ -7875,7 +7920,11 @@ structure for Python.")
               (setenv "LANG" "")
               ;; required for tests/test_configmanager.py
               (setenv "HOME" "/tmp"))))))
-    (native-inputs (list python-pytest python-pytest-cov python-pyhamcrest))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pyhamcrest
+           python-wheel))
     (inputs
      (list bash-minimal ; for wrap-program
            gtksourceview-3
@@ -8081,21 +8130,21 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
     ;; licensed under the PFSL, BSD 2-clause, and GPLv3+ licenses.
     (license (list license:public-domain license:psfl license:bsd-2 license:gpl3+))))
 
-;; awscli refuses to be built with docutils < 0.16.
-(define-public python-docutils-0.15
+;; awscli refuses to be built with docutils < 0.17.
+(define-public python-docutils-0.16
   (package
     (inherit python-docutils)
-    (version "0.15")
+    (version "0.16")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "docutils" version))
               (sha256
                (base32
-                "0ja8q6mdj6xv62jjw3phv8j5nfqi5x8hnfy4pqfcjcgz4b34k8sl"))))
+                "1z3qliszqca9m719q3qhdkh0ghh90g500avzdgi7pl77x5h3mpn2"))))
     ;; tests contain Python 2 syntax.
     (arguments '(#:tests? #false))
     (native-inputs
-     (list python-setuptools-57))))
+     (list python-setuptools))))
 
 (define-public python-docx
   (package
@@ -8140,6 +8189,26 @@ Microsoft Word (.docx) documents.")
     (description
      "This package provides a tiny LRU cache implementation and decorator.")
     (license license:bsd-4)))
+
+(define-public python-reretry
+  (package
+    (name "python-reretry")
+    (version "0.11.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "reretry" version))
+       (sha256
+        (base32 "1qrjsjzah8gw1bciqn8bhrj80fjjg13qg8jks7qs4bjipv71yygj"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/leshchenko1979/reretry")
+    (synopsis "Functional decorator for retrying on exceptions")
+    (description
+     "This package is a fork from the retry package, but with some of added
+community-sourced features.  It provides an easy to use, but functional
+decorator for retrying on exceptions.")
+    (license license:asl2.0)))
 
 (define-public python-restructuredtext-lint
   (package
@@ -8869,15 +8938,31 @@ or for visual regression testing purposes.")
 (define-public python-rstr
   (package
    (name "python-rstr")
-   (version "2.2.6")
+   (version "3.2.2")
    (source
     (origin
-     (method url-fetch)
-     (uri (pypi-uri "rstr" version))
-     (sha256
-      (base32
-       "197dw8mbq0pjjz1l6h1ksi62vgn7x55d373ch74y06744qiq5sjx"))))
-   (build-system python-build-system)
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/leapfrogonline/rstr")
+            (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1z9d660jnv72jn8qzpa9hddpv5f953js8i75hfhkcw68vmdfndnr"))))
+   (build-system pyproject-build-system)
+   (arguments
+    (list
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-before 'build 'pretend-version
+           ;; The version string is usually derived via setuptools-scm, but
+           ;; without the git metadata available, the version string is set to
+           ;; '0.0.0'.
+           (lambda _
+             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+   (native-inputs (list python-pytest
+                        python-setuptools
+                        python-setuptools-scm
+                        python-wheel))
    (home-page "https://github.com/leapfrogonline/rstr")
    (synopsis "Generate random strings in Python")
    (description "This package provides a python module for generating
@@ -9713,11 +9798,15 @@ writing C extensions for Python as easy as Python itself.")
 (define-public python-numpy
   (package
     (name "python-numpy")
-    ;; XXX: Any other versions up to 1.26.4 failed to build with error similar
-    ;; to: 'fenv_t' has not been declared in '::' 58 | using ::fenv_t;
-    ;; See <https://github.com/numpy/numpy/issues/21075#issuecomment-1047976197>,
-    ;; <https://github.com/numpy/numpy/issues/24318>.
-    (version "1.24.4")
+    ;; XXX: Starting from v1.26.0 the project includes a vendored-meson which
+    ;; is needed for SIMD and BLAS/LAPACK features that are not yet available
+    ;; in upstream Meson.
+    ;;
+    ;; See:
+    ;; - URL <https://raw.githubusercontent.com/numpy/numpy>
+    ;; - commit :: 2f3549c9d7c5048621568e431c86bc7530742723
+    ;; - file <doc/source/building/understanding_meson.rst>
+    (version "1.26.2")
     (source
      (origin
        (method url-fetch)
@@ -9726,7 +9815,7 @@ writing C extensions for Python as easy as Python itself.")
              version "/numpy-" version ".tar.gz"))
        (sha256
         (base32
-         "0qwldmkq5bns561ppkz7psphc4jqfj5j1x4dhq0i8r4qwjjf7xc0"))))
+         "1snknqb4hmv6b720nsaz21g7h6z1ikdvnsqyy5vmgavnfr23hmzn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -9735,6 +9824,18 @@ writing C extensions for Python as easy as Python itself.")
                   (ice-9 format))
       #:phases
       #~(modify-phases %standard-phases
+          ;; XXX: It fails with an issue "'fenv_t' has not been declared..."
+          ;; when the gfortran header is used.  Remove gfortran from
+          ;; CPLUS_INCLUDE_PATH as a workaround.  Taken from
+          ;; <https://issues.guix.gnu.org/73439#45>.
+          (add-after 'set-paths 'hide-gfortran
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gfortran (assoc-ref inputs "gfortran")))
+                (setenv "CPLUS_INCLUDE_PATH"
+                        (string-join
+                         (delete (string-append gfortran "/include/c++")
+                                 (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                         ":")))))
           (add-before 'build 'parallelize-build
             (lambda _
               (setenv "NPY_NUM_BUILD_JOBS"
@@ -9802,6 +9903,12 @@ include_dirs = ~:*~a/include~%"
                                      `(" and not test_identityless_reduction_huge_array"
                                        " and not (TestKind and test_all)")
                                    '())
+                              ;; This test fails with a Fortran failure (16
+                              ;; expected but got -1), due to the fact that it
+                              ;; requires a 64-bit system.
+                              #$@(if (or (target-x86-32?) (target-arm32?))
+                                     `(" and not test_int")
+                                     '())
                               ;; These tests fail when building from aarch64-linux.
                               #$@(if (target-arm32?)
                                    `(" and not test_features"
@@ -9818,7 +9925,6 @@ include_dirs = ~:*~a/include~%"
      (list gfortran
            meson-python
            pkg-config
-           python-cython ;; overwrite Cython from meson-python
            python-hypothesis
            python-mypy
            python-pytest
@@ -9916,6 +10022,16 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas")))))))))
       #:tests? #f                     ;we're only generating the documentation
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-external-deps
+            (lambda _
+              ;; XXX: Avoid theme-switcher to avoid sphinx error
+              ;; TemplateNotFound('theme-switcher.html')
+              ;; XXX: Avoid version-switcher because it depends on the value
+              ;; of external https://numpy.org/doc/_static/versions.json
+              (substitute* "doc/source/conf.py"
+                (("\
+\"navbar_end\": \\[\"theme-switcher\", \"version-switcher\", ")
+                 "\"navbar_end\": ["))))
           (add-before 'build 'add-gnu-freefont-to-texmf
             (lambda _
               ;; XXX: The Sphinx-generated tex output specifies the GNU
@@ -9961,6 +10077,7 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas")))))))))
                     (("\"contents\"") "'index'")
                     ;; Disable Sphinx extensions that produce broken Texinfo.
                     ((".*'numpydoc'.*") "")
+                    ((".*'sphinx.ext.autodoc'.*") "")
                     ((".*'sphinx.ext.autosummary'.*") ""))
                   (invoke "make" "info" sphinxopts)
                   ;; Install the HTML documentation.
@@ -9984,13 +10101,15 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas")))))))))
            python-pandas
            python-pydata-sphinx-theme
            python-scipy                 ;used by matplotlib
-           python-sphinx-4
+           python-sphinx
+           python-sphinx-design
            python-sphinx-panels
            texinfo
            (texlive-updmap.cfg
             (list texlive-cbfonts
                   texlive-cm-super
                   texlive-expdlist
+                  texlive-fandol
                   texlive-greek-fontenc
                   texlive-latexmk
                   texlive-polyglossia
@@ -10478,7 +10597,7 @@ semantic version parser for Node.js.")
 (define-public python-patch-ng
   (package
     (name "python-patch-ng")
-    (version "1.17.4")
+    (version "1.18.1")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -10488,7 +10607,7 @@ semantic version parser for Node.js.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0qxn4ss2s54qy87xrpcybz26kp2fwlaq41x4k9jcmp6d7p0w569m"))))
+         "1kr3h0bkcr02zyfsmwmxfv5b4b9vf3bhsvrlwp6cwrfy3q3qnyq8"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -11108,16 +11227,16 @@ the results.")
 (define-public python-pykdtree
   (package
     (name "python-pykdtree")
-    (version "1.3.4")
+    (version "1.3.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pykdtree" version))
        (sha256
-        (base32 "0p8n2ljdacfixkiw092974dmhy4s1c0h032ii1z9kwi9h5h5rgmy"))))
+        (base32 "0q4zrqdn8ad6f710yggkhvx4avf2h1hsbg9qa7ghly54v4vhpgd7"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-nose))
+     (list python-cython python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/storpipfugl/pykdtree")
@@ -11576,7 +11695,9 @@ the OleFileIO module from PIL, the Python Image Library.")
        (method url-fetch)
        (uri (pypi-uri "property-cached" version ".zip"))
        (sha256
-        (base32 "0wxv5sdx1p7ils36j6j6hfscz8v2vzbq212i8y8r0lrnxpqlx71y"))))
+        (base32 "0wxv5sdx1p7ils36j6j6hfscz8v2vzbq212i8y8r0lrnxpqlx71y"))
+       (patches
+        (search-patches "python-property-cached-asyncio-3_11.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -11755,17 +11876,10 @@ a general image processing tool.")
     (arguments
      (list
       #:test-flags
-      #~(list "-k"                      ; XXX: 10/12 bit tests fail
+      #~(list "-k"
               (string-append
-               "not test_save_bgr_16bit_to_10_12_bit"
-               " and not test_save_bgra_16bit_to_10_12_bit"
-               " and not test_open_heif_compare_non_standard_modes_data"
-               " and not test_open_save_disable_16bit"
-               " and not test_heif_read_images[image_path16]"
-               " and not test_heif_read_images[image_path43]"
-               " and not test_premultiplied_alpha"
-               " and not test_hdr_save"
-               " and not test_I_color_modes_to_10_12_bit"))))
+               "not test_heif_read_images[image_path25]"
+               " and not test_heif_read_images[image_path49]"))))
     (inputs (list libheif))
     (propagated-inputs (list python-pillow))
     (native-inputs (list opencv         ; for opencv-python
@@ -11774,7 +11888,6 @@ a general image processing tool.")
                          python-numpy
                          python-packaging
                          python-pre-commit
-                         python-pylint
                          python-pympler
                          python-setuptools
                          python-pytest
@@ -12516,46 +12629,36 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
 (define-public python-pywavelets
   (package
     (name "python-pywavelets")
-    (version "1.2.0")
+    (version "1.8.0")
     (home-page "https://github.com/PyWavelets/pywt")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "PyWavelets" version))
+              (uri (pypi-uri "pywavelets" version))
               (sha256
                (base32
-                "13csbr6ls9q9ww53z2xwwsj0hpsz88rj2iwp623h0kmv8yq6kgbc"))
-              (snippet
-               #~(begin
-                   (use-modules ((guix build utils)))
-                   (for-each delete-file
-                             (list
-                               "pywt/_extensions/_cwt.c"
-                               "pywt/_extensions/_dwt.c"
-                               "pywt/_extensions/_pywt.c"
-                               "pywt/_extensions/_pywt.h"
-                               "pywt/_extensions/_swt.c"))))))
-    (build-system python-build-system)
+                "1aimbjxvflmx4qrl17bfzy64pz5ql4s9bhnb8g0ssh28fm2h507k"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:modules ((ice-9 ftw)
-                  (srfi srfi-1)
-                  (srfi srfi-26)
-                  (guix build utils)
-                  (guix build python-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (let ((cwd (getcwd))
-                   (libdir (find (cut string-prefix? "lib." <>)
-                                 (scandir "build"))))
-               (with-directory-excursion (string-append cwd "/build/" libdir)
-                 (invoke "pytest" "-vv"))))))))
+     (list
+      #:test-flags '(list "--pyargs" "pywt")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The compiled libraries are only in the output at this point,
+          ;; but they are needed to run tests.
+          ;; FIXME: This should be handled by the pyargs pytest argument,
+          ;; but is not for some reason.
+          (add-before 'check 'pre-check
+            (lambda _ (chdir #$output))))))
     (native-inputs
-     (list python-cython
-           python-matplotlib ;for tests
+     (list meson
+           ninja
+           pkg-config
+           python-cython-3
+           python-meson-python
+           python-numpy
            python-pytest))
     (propagated-inputs
-     (list python-numpy))
+     (list python-numpy python-scipy))
     (synopsis "Wavelet transforms in Python")
     (description
      "PyWavelets is a library for wavelet transforms in Python.  Wavelets are
@@ -13206,7 +13309,7 @@ def get_requires_for_build_sdist(config_settings=None):
            python-pytest-enabler
            python-pytest-flake8
            python-pytest-mypy
-           python-setuptools-57
+           python-setuptools
            python-setuptools-scm))
     (propagated-inputs
      (list python-zipp))
@@ -13891,7 +13994,7 @@ without using the configuration machinery.")
            python-setuptools
            python-wheel
            cmake-minimal
-           pybind11-2.13))
+           pybind11))
     (home-page "https://github.com/metaopt/optree")
     (synopsis "Optimized PyTree Utilities")
     (description "This package contains operations on PyTrees (a tree made of
@@ -14969,19 +15072,6 @@ interfaces in an easy and portable manner.")
 of the structure, dynamics, and functions of complex networks.")
     (license license:bsd-3)))
 
-(define-public python-networkx-next
-  (package
-    (inherit python-networkx)
-    (name "python-networkx")
-    (version "3.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "networkx" version))
-       (sha256
-        (base32 "1qaks3c3h5qlw25z949q3plw8iwgm9h152kwnam64lwc89lkcz1h"))))
-    (build-system pyproject-build-system)))
-
 (define-public python-datrie
   (package
     (name "python-datrie")
@@ -15095,15 +15185,23 @@ GA4GH Task Execution API.")
 (define-public python-toposort
   (package
     (name "python-toposort")
-    (version "1.6")
+    (version "1.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "toposort" version))
        (sha256
         (base32
-         "1b2hppzjg3p006qya3yfdnp76dwq8frl97lypdam0kw4xxb8yhm7"))))
-    (build-system python-build-system)
+         "1gd66z5dy6j7qs5qkj1pg0vb15rwd571yq02fkm9d9nhaff4gfxz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (invoke "python3" "-m" "test.test_toposort"))))))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://gitlab.com/ericvsmith/toposort")
     (synopsis "Topological sort algorithm")
     (description
@@ -15162,7 +15260,34 @@ character level, as opposed to most VCS systems, which opt for a line-based
 approach.")
     (license license:expat)))
 
-(define-public snakemake
+(define-public python-throttler
+  (package
+    (name "python-throttler")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uburuntu/throttler")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1gn21x0zkm7rr7qijlz7nvw7z0mm1j2r0r2lslg7wln1z36gjkbw"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-aiohttp
+                         python-codecov
+                         python-flake8
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-cov
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/uburuntu/throttler")
+    (synopsis "Throttling with asyncio support")
+    (description
+     "This is a Python package for easy throttling with asyncio support.")
+    (license license:expat)))
+
+(define-public snakemake-5
   (package
     (name "snakemake")
     (version "5.32.2")
@@ -15187,7 +15312,9 @@ approach.")
         "--ignore=tests/test_tibanna.py"
         ;; It's a similar story with this test, which requires access
         ;; to the Google Storage service.
-        "--ignore=tests/test_google_lifesciences.py")
+        "--ignore=tests/test_google_lifesciences.py"
+        ;; Unclear failure.
+        "-k" "not test_lint[long_run-positive]")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'tabulate-compatibility
@@ -15248,7 +15375,7 @@ Python style, together with a fast and comfortable execution environment.")
 
 (define-public snakemake-6
   (package
-    (inherit snakemake)
+    (inherit snakemake-5)
     (name "snakemake")
     (version "6.15.5")
     (source
@@ -15263,6 +15390,13 @@ Python style, together with a fast and comfortable execution environment.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      '(list
+        ;; This test attempts to change S3 buckets on AWS and fails
+        ;; because there are no AWS credentials.
+        "--ignore=tests/test_tibanna.py"
+        ;; Unclear failure.
+        "-k" "not test_lint[long_run-positive]")
       #:phases
       #~(modify-phases %standard-phases
           ;; For cluster execution Snakemake will call Python.  Since there is
@@ -15289,14 +15423,8 @@ Python style, together with a fast and comfortable execution environment.")
               (substitute* '("snakemake/_version.py"
                              "versioneer.py")
                 (("0\\+unknown") #$version))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                ;; This test attempts to change S3 buckets on AWS and fails
-                ;; because there are no AWS credentials.
-                (delete-file "tests/test_tibanna.py")
-                (invoke "pytest")))))))
+          (add-before 'check 'pre-check
+            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-appdirs
            python-configargparse
@@ -15333,7 +15461,7 @@ Python style, together with a fast and comfortable execution environment.")
   (package
     (inherit snakemake-6)
     (name "snakemake")
-    (version "7.7.0")
+    (version "7.32.4")
     (source
      (origin
        (method git-fetch)
@@ -15342,10 +15470,20 @@ Python style, together with a fast and comfortable execution environment.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qrqbmx4cbis0wxr6dl2rdjv9v627sbirsz6v5c31vlbqwkvs04q"))))
+        (base32 "1d5hizai89k1glfqfkvf1ghj0l7wm8il6gl5pfwk2gkza87yka6d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; This test attempts to change S3 buckets on AWS and fails
+      ;; because there are no AWS credentials.
+      '(list "--ignore=tests/test_tibanna.py"
+             ;; It's a similar story with this test, which requires access to
+             ;; the Google Storage service.
+             "--ignore=tests/test_google_lifesciences.py"
+             "--ignore-glob=tests/test_conda_python_3_7_script/*"
+             ;; We don't have a slurm installation in the build environment
+             "--ignore=tests/test_slurm.py")
       #:phases
       #~(modify-phases %standard-phases
           ;; For cluster execution Snakemake will call Python.  Since there is
@@ -15374,12 +15512,6 @@ Python style, together with a fast and comfortable execution environment.")
                  (string-append
                   "tibanna_args.command = command.replace('"
                   #$output "/bin/snakemake', 'python3 -m snakemake')")))))
-          ;; No longer needed with 7.15.2+
-          (add-after 'unpack 'tabulate-compatibility
-            (lambda _
-              (substitute* "snakemake/dag.py"
-                (("\"job\": rule,")
-                 "\"job\": rule.name,"))))
           (add-after 'unpack 'patch-version
             (lambda _
               (substitute* "setup.py"
@@ -15388,17 +15520,8 @@ Python style, together with a fast and comfortable execution environment.")
               (substitute* '("snakemake/_version.py"
                              "versioneer.py")
                 (("0\\+unknown") #$version))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                ;; This test attempts to change S3 buckets on AWS and fails
-                ;; because there are no AWS credentials.
-                (delete-file "tests/test_tibanna.py")
-                ;; It's a similar story with this test, which requires access
-                ;; to the Google Storage service.
-                (delete-file "tests/test_google_lifesciences.py")
-                (invoke "pytest")))))))
+          (add-before 'check 'pre-check
+            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-appdirs
            python-configargparse
@@ -15407,6 +15530,7 @@ Python style, together with a fast and comfortable execution environment.")
            python-docutils
            python-filelock
            python-gitpython
+           python-humanfriendly
            python-jinja2
            python-jsonschema
            python-nbformat
@@ -15415,12 +15539,13 @@ Python style, together with a fast and comfortable execution environment.")
            python-pulp
            python-pyyaml
            python-py-tes
-           python-ratelimiter
            python-requests
            python-retry
+           python-reretry
            python-smart-open
            python-stopit
            python-tabulate
+           python-throttler
            python-toposort
            python-wrapt
            python-yte))
@@ -15612,20 +15737,29 @@ function signatures.")
 (define-public python-yte
   (package
     (name "python-yte")
-    (version "1.2.0")
+    (version "1.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "yte" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/koesterlab/yte")
+             (commit (string-append "v" version))))
        (sha256
-        (base32 "07hm1warpqi4ifqgkaz5sg887x4a44yhxafmpf835ywnpchg4s03"))))
-    (build-system python-build-system)
+        (base32 "01hxl47bfb0jp2rh6qb6wrm6m8p5rfk21gksqb8qxxv9a037dnsv"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
-    (propagated-inputs (list python-plac python-pyyaml))
+           (lambda _ (setenv "HOME" "/tmp")))
+         (replace 'check
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
+             (when tests?
+               (apply invoke "pytest"
+                      (append test-flags (list "tests.py")))))))))
+    (propagated-inputs (list python-dpath python-plac python-pyyaml))
+    (native-inputs (list python-numpy python-poetry-core python-pytest))
     (home-page "https://github.com/koesterlab/yte")
     (synopsis "YAML template engine with Python expressions")
     (description
@@ -16144,29 +16278,6 @@ you do not want to store entirely on disk or on memory.")
 application monitoring and error tracking software.")
     (license license:bsd-2)))
 
-(define-public python-pep8
-  ;; This package has been renamed to ‘pycodestyle’ and is no longer updated.
-  ;; Its last release (1.7.1) adds only a scary warning to this effect, breaking
-  ;; some dependents' test suites, and nothing more.
-  (package
-    (name "python-pep8")
-    (version "1.7.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pep8" version))
-        (sha256
-          (base32
-           "002rkl4lsn6x2mxmf8ar00l0m8i3mzrc6pnzz77blyksmpsxa4x1"))
-        (patches (search-patches "python-pep8-stdlib-tokenize-compat.patch"))))
-    (build-system python-build-system)
-    (home-page "https://pep8.readthedocs.org/")
-    (synopsis "Python style guide checker")
-    (description
-     "This tools checks Python code against some of the style conventions in
-PEP 8.")
-    (license license:expat)))
-
 (define-public python-pep8-naming
   (package
     (name "python-pep8-naming")
@@ -16585,41 +16696,6 @@ modifies PyFlakes runs for @file{.pyi} files to defer checking type annotation
 expressions after the entire file has been read.  This enables support for
 first-class forward references that stub files use.")
     (license license:expat)))
-
-;; XXX: Deprecated in upstream: This repository has been archived by the owner
-;; on Nov 30, 2024. It is now read-only.
-;; Consider to remove when nothing is depend on it.
-(define-public python-flake8-pie
-  (package
-    (name "python-flake8-pie")
-    (version "0.16.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "flake8-pie" version))
-       (sha256
-        (base32 "1fhmwm8blimnfmi1cj8q0kqd77vskgjb794jbp837yh64ywvgp5q"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" "not test_examples and not test_prefer_simple_any_all")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-poetry-core
-            (lambda _
-              ;; Patch to use the core poetry API.
-              (substitute* "pyproject.toml"
-                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
-    (native-inputs
-     (list python-poetry-core
-           python-pytest))
-    (home-page "https://github.com/sbdchd/flake8-pie")
-    (synopsis "Flake8 extension that implements lints")
-    (description
-     "This package provides a flake8 extension that implements miscellaneous
-lints.")
-    (license license:bsd-2)))
 
 (define-public python-flake8-quotes
   (package
@@ -17192,6 +17268,7 @@ number of lines in the contained files easily.")
     (license license:expat)))
 
 ;;; Tests are left out in the main package to avoid cycles.
+;; XXX: When updating, solve comment in python-cu2qu.
 (define-public python-fonttools-minimal
   (hidden-package
    (package
@@ -17423,26 +17500,6 @@ reading and writing MessagePack data.")
                (substitute* '("test/test_buffer.py" "test/test_extension.py")
                  ((".fromstring\\(") ".frombytes("))
                #t))))))))
-
-(define-public python-netaddr
-  (package
-    (name "python-netaddr")
-    (version "0.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "netaddr" version))
-       (sha256
-         (base32
-          "0hx2npi0wnhwlcybilgwlddw6qffx1mb7a3sj4p9s7bvl33mgk6n"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f)) ;; No tests.
-    (home-page "https://github.com/drkjam/netaddr/")
-    (synopsis "Pythonic manipulation of  network addresses")
-    (description
-      "A Python library for representing and manipulating IPv4, IPv6, CIDR, EUI
-and MAC network addresses.")
-    (license license:bsd-3)))
 
 (define-public python-openstep-plist
  (package
@@ -17892,29 +17949,6 @@ asyncio.")
     (description "Snuggs are S-expressions for Numpy.")
     (license license:expat)))
 
-(define-public python-pytest-black
-  (package
-    (name "python-pytest-black")
-    (version "0.3.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-black" version))
-       (sha256
-        (base32
-         "19bmbcnaq02md8nnj6pywri3vps8sxnhysbfy386qkbn9w09ncqx"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pytest python-black python-toml))
-    (native-inputs
-     (list python-setuptools-scm))
-    (home-page "https://github.com/shopkeep/pytest-black")
-    (synopsis "Pytest plugin to enable format checking with black")
-    (description
-     "This package provides a pytest plugin to enable format checking with the
-Python code formatter \"black\".")
-    (license license:expat)))
-
 (define-public python-geojson
   (package
     (name "python-geojson")
@@ -18238,16 +18272,37 @@ implementations of ASN.1-based codecs and protocols.")
 (define-public python-asn1tools
   (package
     (name "python-asn1tools")
-    (version "0.166.0")
+    (version "0.167.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asn1tools" version))
        (sha256
-        (base32 "1hragm8dsm10rlyz67xslj01bycprlnimdmq1i2acns6kl6difpn"))))
-    (build-system python-build-system)
+        (base32 "1cpm6m3znagc553bc5l0rhwg2fccrl0k8m1pbvn6x2kqdmpkzmfa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Tests fail with error: IndexError: string index out of
+                    ;; range.  It may be some incompatability wit pyparsing,
+                    ;; see <https://github.com/eerimoq/asn1tools/issues/167>.
+                    (list "not test_c_source"
+                          "test_command_line_generate_c_source_oer"
+                          "test_command_line_generate_c_source_uper"
+                          "test_command_line_generate_rust_source_uper"
+                          "test_missing_parameterized_value"
+                          "test_c_source"
+                          "test_parse_parameterization")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-bitstruct python-diskcache python-prompt-toolkit
+     (list python-bitstruct
+           python-diskcache
+           python-prompt-toolkit
            python-pyparsing))
     (home-page "https://github.com/eerimoq/asn1tools")
     (synopsis  "ASN.1 parsing, encoding and decoding")
@@ -18748,20 +18803,26 @@ libmagic.")))
       #~(list "-n" (number->string (parallel-job-count))
               "-m" "not flaky"
               "-k"
-              (string-append
-               ;; The two "break_01" tests have been failing on
-               ;; Python 3.10:
-               ;; <https://github.com/fabioz/PyDev.Debugger/issues/222>.
-               "not test_set_pydevd_break_01 "
-               ;; the GUI event loop requires an X server.
-               "and not test_gui_event_loop_custom "
-               ;; This test validates that 'pydevd' is not in the
-               ;; exception message, but it is due to being part
-               ;; of the build file name present in the message.
-               "and not test_evaluate_exception_trace "
-               ;; This test fail with TimeoutError, no message on stderr.
-               "and not test_soft_terminate "
-               "and not test_debugger_case_deadlock_interrupt_thread"))
+              (string-join
+               (list
+                ;; The two "break_01" tests have been failing on
+                ;; Python 3.10:
+                ;; <https://github.com/fabioz/PyDev.Debugger/issues/222>.
+                "not test_set_pydevd_break_01 "
+                ;; the GUI event loop requires an X server.
+                "test_gui_event_loop_custom"
+                ;; This test validates that 'pydevd' is not in the
+                ;; exception message, but it is due to being part
+                ;; of the build file name present in the message.
+                "test_evaluate_exception_trace"
+                ;; This test fail with TimeoutError, no message on stderr.
+                "test_soft_terminate"
+                "test_debugger_case_deadlock_interrupt_thread"
+                ;; subprocess.CalledProcessError
+                ;; Python 3.11/3.12 specific issue:
+                ;; <https://github.com/fabioz/PyDev.Debugger/issues/284>.
+                "test_find_main_thread_id")
+               " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-tests
@@ -19469,7 +19530,7 @@ convert an @code{.ipynb} notebook file into various static formats including:
            python-pytest
            python-pytest-cov
            python-requests
-           python-requests-unixsocket
+           python-requests-unixsocket2
            python-setuptools
            python-wheel))
     (home-page "https://jupyter.org/")
@@ -20021,6 +20082,25 @@ be set via config files and/or environment variables.")
 connection pool.")
     (license license:expat)))
 
+(define-public python-argparse-dataclass
+  (package
+    (name "python-argparse-dataclass")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "argparse_dataclass" version))
+       (sha256
+        (base32 "0zr9r4n00x2wi5kyzw3bxvrdp5k113jw7f9p4f414bsaj4f69aq9"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/mivade/argparse_dataclass")
+    (synopsis "Declarative command-line interfaces using argparse and dataclasses")
+    (description
+     "This package provides declarative command-line interfaces using argparse
+and dataclasses.")
+    (license license:expat)))
+
 (define-public python-argparse-manpage
   (package
     (name "python-argparse-manpage")
@@ -20042,27 +20122,6 @@ connection pool.")
      "This package provides tools to build manual pages from Python's
 @code{ArgumentParser} object.")
     (license license:asl2.0)))
-
-(define-public python-contextlib2
-  (package
-    (name "python-contextlib2")
-    (version "0.6.0.post1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "contextlib2" version))
-       (sha256
-        (base32
-         "0bhnr2ac7wy5l85ji909gyljyk85n92w8pdvslmrvc8qih4r1x01"))))
-    (build-system python-build-system)
-    (home-page "https://contextlib2.readthedocs.org/")
-    (synopsis "Tools for decorators and context managers")
-    (description "This module is primarily a backport of the Python
-3.2 contextlib to earlier Python versions.  Like contextlib, it
-provides utilities for common tasks involving decorators and context
-managers.  It also contains additional features that are not part of
-the standard library.")
-    (license license:psfl)))
 
 (define-public python-contexttimer
   (package
@@ -21394,52 +21453,33 @@ project template.")
 (define-public python-pyquery
   (package
     (name "python-pyquery")
-    (version "1.2.17")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyquery" version))
        (sha256
         (base32
-         "1xia20wm0vx5dk85kcwgh13bylz8qh47ffjxssd2586r60xi783a"))))
-    (build-system python-build-system)
+         "1brg6aawb9m5mdfmc6g7v5r6pczbx67r4l9cn5yh6bdi0qkvp501"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This test requires network access.
+     (list #:test-flags #~(list "-k" "not test_get")))
     (native-inputs
-     (list python-webob python-webtest))
+     (list python-pytest
+           python-pytest-cov
+           python-requests
+           python-setuptools
+           python-webob
+           python-webtest
+           python-wheel))
     (propagated-inputs
-     (list python-lxml python-cssselect))
+     (list python-cssselect python-lxml))
     (home-page "https://github.com/gawel/pyquery")
     (synopsis "Make jQuery-like queries on xml documents")
     (description "pyquery allows you to make jQuery queries on xml documents.
 The API is as much as possible the similar to jQuery.  pyquery uses lxml for
 fast xml and html manipulation.")
-    (license license:bsd-3)))
-
-(define-public python-anyjson
-  (package
-    (name "python-anyjson")
-    (version "0.3.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "anyjson" version))
-       (sha256
-        (base32
-         "1fjph4alvcscsl5d4b6qpv1yh31jy05jxi1l0xff7lws7j32v09p"))))
-    (build-system python-build-system)
-    (arguments
-     `(;; We could possibly get tests working, but on Python 3 it's not so easy.
-       ;; Very strangely, 2to3 is run *during setup.py install* (or bdist, or
-       ;; whatever) so this transformation needs to be done before the tests
-       ;; can be run.  Maybe we could add a build step to transform beforehand
-       ;; but it could be annoying/difficult.
-       #:tests? #f))
-    (native-inputs (list python-setuptools-57)) ;for use_2to3 support
-    (home-page "https://bitbucket.org/runeh/anyjson/")
-    (synopsis
-     "Wraps best available JSON implementation in a common interface")
-    (description
-     "Anyjson loads whichever is the fastest JSON module installed
-and provides a uniform API regardless of which JSON implementation is used.")
     (license license:bsd-3)))
 
 (define-public python-amqp
@@ -21664,46 +21704,6 @@ Eventlet, or gevent.  Tasks can execute asynchronously (in the background) or
 synchronously (wait until ready).")
     (license license:bsd-3)))
 
-(define-public python-cesium
-  (package
-    (name "python-cesium")
-    (version "0.12.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cesium" version))
-              (sha256
-               (base32
-                "0jr0ycqz9ns6mcskm4sxx92k40fj3v0x9knjaw5ac9f3mpqxsfbv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; The installed test files contain the /gnu/store location, not the
-          ;; location of the discovered test files from the build directory.
-          ;; The test framework doesn't like this.  The easiest way around
-          ;; this mismatch is to jump to the output directory.
-          (add-before 'check 'check-chdir
-            (lambda _ (chdir #$output))))))
-    (propagated-inputs
-     (list python-click ;XXX required by python-dask
-           python-cloudpickle
-           python-dask
-           python-gatspy
-           python-joblib
-           python-numpy
-           python-pandas
-           python-scikit-learn
-           python-scipy
-           python-toolz))
-    (native-inputs (list python-cython python-pytest python-setuptools-scm
-                         python-setuptools python-wheel))
-    (home-page "https://pypi.org/project/cesium/")
-    (synopsis "Library for time-series feature extraction and processing")
-    (description
-     "Cesium is a library for time-series feature extraction and processing.")
-    (license license:bsd-3)))
-
 (define-public python-translitcodec
   (package
     (name "python-translitcodec")
@@ -21805,7 +21805,10 @@ applications.")
         (base32 "0j6ksfnq9qfjdfppbkdz7jh6w0gnslwnckhafmlgim29b25g0z51"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
+     (list #:test-flags
+           ;; XXX: Added with python@3.11, not fixed upstream.
+           #~(list "-k" "not test_regression_bug13")
+           #:phases
            #~(modify-phases %standard-phases
                (add-before 'check 'set-qpa
                  (lambda _
@@ -22535,22 +22538,18 @@ own code, responding to click events and updating clock every second.")
 (define-public python-tblib
   (package
     (name "python-tblib")
-    (version "1.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "tblib" version))
-              (sha256
-               (base32
-                "0i136n5pydmd202254wzrdbspkw0br0c9mbxhfs9hpfbahvyx6r2"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "py.test" "-vv" "tests" "README.rst"))))))
+    (version "2.0.0") ; XXX: higher versions fail on 'check phase
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tblib" version))
+       (sha256
+        (base32 "1mzcf0fp7267yya9ni5qlr8dj190hsnmyxz0cszgi2y0fbr31px6"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-six))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/ionelmc/python-tblib")
     (synopsis "Traceback serialization library")
     (description
@@ -22651,19 +22650,28 @@ are synchronized with data exchanges on \"channels\".")
 (define-public python-objgraph
   (package
     (name "python-objgraph")
-    (version "3.4.1")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "objgraph" version))
        (sha256
-        (base32
-         "19qmqsh984zq1rzzjy4vqnmviaqnymcyl8h7z99pnicbgwnm2adz"))))
-    (build-system python-build-system)
+        (base32 "1n0swlq11w36r2p6x7b4y0zz10dgzpdc8qasyk3y68kl1zsg5f80"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "tests.py"
+              ;; AssertionError: [0, 1, 2] not found in [[], [], [], [], [],
+              ;; [], [], [], [], [], [], [], ...
+              "-k" "not test_at_addrs")))
+    (native-inputs
+     (list graphviz
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-graphviz))
-    (native-inputs
-     (list python-mock graphviz))
     (home-page "https://mg.pov.lt/objgraph/")
     (synopsis "Draw Python object reference graphs with graphviz")
     (description
@@ -23039,14 +23047,18 @@ are optionally backed by a C extension built on librdkafka.")
 (define-public python-wcwidth
   (package
     (name "python-wcwidth")
-    (version "0.1.8")
+    (version "0.2.13")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "wcwidth" version))
               (sha256
                (base32
-                "1a1pzds3xzfylm5mnc5f6c1p8kiig0daqjc9gygd9rc3cj53x2zj"))))
-    (build-system python-build-system)
+                "1dbj74q1iz349sdkxrkc90f7xd4y7a9bdvgxg3cqdcly7430rskj"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest
+                         python-pytest-cov
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/jquast/wcwidth")
     (synopsis "Measure number of terminal column cells of wide-character codes")
     (description "Wcwidth measures the number of terminal column cells of
@@ -23404,6 +23416,9 @@ strings require only one extra byte in addition to the strings themselves.")
                      "test_omit_default_roundtrip"
                      "test_optional_field_roundtrip"
                      "test_renaming"
+                     ;; 'utf-8' codec can't encode character '\ud800' in
+                     ;; position 0: surrogates not allowed
+                     "test_simple_classes"
                      ;; This test fails with an assertion error on the build
                      ;; farm, but not on my laptop.
                      "test_nodefs_generated_unstructuring_cl"
@@ -24393,30 +24408,23 @@ etc.")
 (define-public python-stem
   (package
     (name "python-stem")
-    (version "1.8.0")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stem" version))
        (sha256
         (base32
-         "1hk8alc0r4m669ggngdfvryndd0fbx0w62sclcmg55af4ak8xd50"))))
-    (build-system python-build-system)
+         "10mm9qw4xv7d18086ivy38iaz04z72018186q03j5y69skzikyw3"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           ;; See https://github.com/torproject/stem/issues/56
-           (lambda _
-             (substitute* "run_tests.py"
-               (("test\\.task\\.MOCK_VERSION,")
-                ""))))
-         (replace 'check
-           (lambda _
-             (invoke "./run_tests.py" "--unit")
-             #t)))))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda _
+                       (invoke "./run_tests.py" "--unit"))))))
     (native-inputs
-     (list python-mock python-pycodestyle python-pyflakes))
+     (list python-setuptools python-wheel))
     (home-page "https://stem.torproject.org/")
     (synopsis
      "Python controller library that allows applications to interact with Tor")
@@ -24497,7 +24505,7 @@ client.")
 (define-public python-pymodbus
   (package
     (name "python-pymodbus")
-    (version "2.5.3")
+    (version "3.8.6")
     (source
      (origin
        (method git-fetch)
@@ -24506,46 +24514,41 @@ client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0kjjrx7xrlx0pf3y67hhr4xvqrly3xzmvf6ic5as61m6z19m7zd5"))))
-    (build-system python-build-system)
+        (base32 "1sncllh01c6vqq4fh9k3yg9fchmmw661rcp0066l7fis6sp4yw82"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'disable-problematic-tests
-                    (lambda _
-                      ;; The following test modules rely on Python's own
-                      ;; 'test' module, which is not distributed in the Python
-                      ;; package of Guix.
-                      (delete-file "test/test_client_async_asyncio.py")
-                      (delete-file "test/test_client_sync_diag.py")
-                      ;; The following test module requires the asynctest
-                      ;; library, abandoned without support for Python 3.9+
-                      ;; (see:
-                      ;; https://github.com/riptideio/pymodbus/issues/681).
-                      (delete-file "test/test_server_asyncio.py")))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "python" "-m" "pytest")))))))
-    (native-inputs
-     (list python-mock
-           python-pytest
-           python-redis
-           python-sqlalchemy
-           python-tornado
-           python-twisted))
-    (propagated-inputs
-     (list python-pyserial
-           python-six
-           ;; For the REPL.
-           python-aiohttp
-           python-click
-           python-prompt-toolkit
-           python-pygments
-           python-pyserial-asyncio))
+     (list
+      #:test-flags
+      #~(list "--ignore"
+              "test/server/test_simulator_api.py"
+              ;; These tests require the presence of a certificate.
+              "--ignore-glob"
+              "test/examples/*"
+              "--ignore"
+              "test/client/test_client.py")))
+    (native-inputs (list python-mock
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-cov
+                         python-pytest-xdist
+                         python-redis
+                         python-setuptools
+                         python-sqlalchemy
+                         python-tornado
+                         python-twisted
+                         python-wheel))
+    (propagated-inputs (list python-pyserial
+                             python-six
+                             ;; For the REPL.
+                             python-aiohttp
+                             python-click
+                             python-prompt-toolkit
+                             python-pygments
+                             python-pyserial-asyncio))
     (home-page "https://github.com/riptideio/pymodbus/")
     (synopsis "Modbus protocol stack in Python")
-    (description "Pymodbus is a full Modbus protocol implementation using
+    (description
+     "Pymodbus is a full Modbus protocol implementation using
      @code{asyncio}, @code{tornado} or @code{twisted} for its asynchronous
      communications core.  It includes the following @emph{client} features:
      @itemize
@@ -24842,35 +24845,6 @@ callback-heavy mode of interaction typical in some Kivy applications.")
     (description "This package provides support for async/await applications
 without requiring an event loop, useful for creative responsive GUIs.")
     (license license:expat)))
-
-(define-public python-asynctest
-  (package
-    (name "python-asynctest")
-    (version "0.13.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "asynctest" version))
-              (sha256
-               (base32
-                "1b3zsy7p84gag6q8ai2ylyrhx213qdk2h2zb6im3xn0m5n264y62"))))
-    (build-system python-build-system)
-    (arguments
-     ;; The test suite appears to be incompatible with Python 3.9+, completes
-     ;; with 25 failures and 41 errors out of 220 tests (see:
-     ;; https://github.com/Martiusweb/asynctest/issues/149).
-     (list #:tests? #f
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "unittest" "test")))))))
-    (home-page "https://github.com/Martiusweb/asynctest/")
-    (synopsis "Unittest extensions for testing asyncio libraries")
-    (description
-     "The @code{asynctest} Python package is built on top of the standard
-@code{unittest} module and cuts down boilerplate code when testing libraries
-for @code{asyncio}.")
-    (license license:asl2.0)))
 
 (define-public python-binaryornot
   (package
@@ -25453,6 +25427,32 @@ working with Portable Executable (PE) files.  It makes to most information
 from the header, as well as section details and data available.")
     (license license:expat)))
 
+(define-public python-pyemd
+  (package
+    (name "python-pyemd")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyemd" version))
+              (sha256
+               (base32
+                "1zh0v47lxa33xg04jyvblzl1g4m3k2khx0b3xr6isnyinbkmlaxl"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs
+     (list python-cython-3
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/wmayner/pyemd")
+    (synopsis
+     "Wrapper for Pele and Werman's implementation of the Earth Mover's Distance")
+    (description
+     "This package provides a Python wrapper for Ofir Pele and Michael
+Werman's implementation of the Earth Mover's Distance.")
+    (license license:expat)))
+
 (define-public python-imagesize
   (package
     (name "python-imagesize")
@@ -25499,14 +25499,14 @@ JPEG2000 and GIF files in pure Python.")
 (define-public python-argcomplete
   (package
     (name "python-argcomplete")
-    (version "3.2.2")
+    (version "3.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "argcomplete" version))
        (sha256
         (base32
-         "18h023ma2m2gw8w8dm2pvv4k0vpli94293jl57p2ch4vln79xr7k"))))
+         "14jkqmc4nhp1vxkiha7mv7zlvqiyzyjsfzbvihlvpbnqvq7gaay1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -25521,11 +25521,8 @@ JPEG2000 and GIF files in pure Python.")
                   "def __disable_test_console_script"))
                (invoke "python3" "./test/test.py" "-v")))))))
     (native-inputs
-     (list python-coverage
-           python-mypy
-           python-pexpect
-           python-setuptools
-           python-setuptools-scm
+     (list python-pexpect
+           python-hatchling
            python-wheel
            tcsh
            fish
@@ -25738,6 +25735,8 @@ Mustache templating language renderer.")
               "-k" (string-append
                     ;; Don't install anything, thank you.
                     "not test_install_non_existent_extension"
+                    ;; _pybind11_conduit_v1_ not found.
+                    " and not test_wrap_coverage"
                     ;; See <https://github.com/duckdb/duckdb/issues/11961>.
                     " and not test_fetchmany"
                     ;; See <https://github.com/duckdb/duckdb/issues/10702>.
@@ -25907,29 +25906,29 @@ creating a tag.")
 (define-public python-qrcode
   (package
     (name "python-qrcode")
-    (version "7.3.1")
+    (version "8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qrcode" version))
        (sha256
-        (base32 "0y35jlwfvkgn9341lzshyaqgpp61vysjh107vhdd96ya83r6ynip"))))
-    (build-system python-build-system)
-    (arguments
-     ;; FIXME: Tests require packaging 'pymaging'.
-     '(#:tests? #f))
+        (base32 "0iz3pj67b90k2racwzbf9yml6rjs8nnrpvhns6b45zppa2qy4p02"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
     (propagated-inputs
-     (list python-lxml ; for SVG output
-           python-pillow)) ; for PNG output
+     (list python-pillow
+           python-pypng))
     (home-page "https://github.com/lincolnloop/python-qrcode")
     (synopsis "QR Code image generator")
-    (description "This package provides a pure Python QR Code generator
-     module.  It uses the Python Imaging Library (PIL) to allow for the generation
-     of QR Codes.
+    (description
+     "This package provides a pure Python QR Code generator module.  It uses
+the Python Imaging Library (PIL) to allow for the generation of QR Codes.
 
-     In addition this package provides a command line tool to generate QR codes and
-     either write these QR codes to a file or do the output as ascii art at the
-     console.")
+In addition this package provides a command line tool to generate QR codes and
+either write these QR codes to a file or do the output as ascii art at the
+console.")
     (license license:bsd-3)))
 
 (define-public python-rst2ansi
@@ -26349,7 +26348,7 @@ both as keys and as attributes.")
        ;; fails due to deprecation warnings, etc.
        #:tests? #f))
     (native-inputs
-     (list python-coverage-test-runner python-pep8))
+     (list python-coverage-test-runner))
     (propagated-inputs
      (list python-pyaml))
     (home-page "https://liw.fi/cliapp/")
@@ -26375,7 +26374,7 @@ both as keys and as attributes.")
        (file-name (git-file-name name version))))
     (build-system python-build-system)
     (native-inputs
-     (list python-coverage-test-runner python-pep8))
+     (list python-coverage-test-runner))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -27022,16 +27021,15 @@ functionality removed from @code{packaging}.")
        (sha256
         (base32
          "09nhrz80dfm60nssbvjgz4czzy4yzfa8gxczcdlzbgcnnvm914vb"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-lxml python-genshi))
-    (native-inputs
-     (list python-magic))
+     (list python-lxml python-magic python-genshi))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://relatorio.tryton.org/")
     (synopsis "Templating library able to output ODT and PDF files")
     (description "Relatorio is a templating library which provides a way to
-     easily output ODT, ODS, PNG, SVG and several other kinds of files.  Support
-     for more filetypes can be easily added by creating plugins for them.")
+easily output ODT, ODS, PNG, SVG and several other kinds of files.  Support
+for more filetypes can be easily added by creating plugins for them.")
     (license license:gpl3+)))
 
 (define-public python-radon
@@ -27107,10 +27105,20 @@ conversion: Gamut A, B, and C.")
         (base32
          "1jmrskj399idw1czx6dvy2zfaijnwi02b55vx979ixp7q2mnzz68"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'remove-rednose-dependency
+           (lambda _
+             (substitute* "setup.py"
+               (("'rednose'") ""))
+             (substitute* '("requirements.txt" "setup.cfg")
+               (("rednose.*") "")))))))
     (propagated-inputs
      (list python-mock python-six))
     (native-inputs
-     (list python-nose python-rednose))
+     (list python-nose))
     (home-page "https://github.com/gabrielfalcao/sure")
     (synopsis "Automated testing library in python for python")
     (description
@@ -27955,25 +27963,6 @@ pure Python module.")
 version of @code{SocksiPy} with bug fixes and extra features.")
     (license license:bsd-3)))
 
-(define-public python-pydiff
-  (package
-    (name "python-pydiff")
-    (version "0.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pydiff" version))
-        (sha256
-          (base32
-            "1als83h9w0gab24ipyna6khm390qmpnpkc5jksmdbs2xc8hp2z44"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/myint/pydiff")
-    (synopsis "Library to diff two Python files at the bytecode level")
-    (description
-      "@code{pydiff} makes it easy to look for actual code changes while
-ignoring formatting changes.")
-    (license license:expat)))
-
 (define-public python-pydub
   (package
     (name "python-pydub")
@@ -28193,17 +28182,30 @@ in human-readable HTML format.")
 (define-public python-ratelimiter
   (package
     (name "python-ratelimiter")
-    (version "1.2.0")
+    (version "1.2.0.post1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ratelimiter" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/RazerM/ratelimiter")
+             ;; From https://github.com/RazerM/ratelimiter/pull/11
+             (commit "59a0827c434706d62b89e16a220e4ae12e618858")))
        (sha256
         (base32
-         "1dhz85mj5bqd2mij84ncs6pz32hgidr79hay4aqfmzaa4rbb497p"))))
-    (build-system python-build-system)
+         "1v34w12f41j0l2gy9ji9ip01kj4idjfjx7a97wrlr1ibxi7hg3bs"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f))          ; There are no tests in the pypi archive.
+     (list #:phases
+           '(modify-phases %standard-phases
+              (add-after 'unpack 'pytest-compatibility
+                (lambda _
+                  (substitute* "tests/conftest.py"
+                    (("pytest.collect.File") "pytest.File")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/RazerM/ratelimiter")
     (synopsis "Simple rate limiting object")
     (description
@@ -28464,18 +28466,53 @@ Time} values as well as an event scheduler.")
 (define-public python-pyro4
   (package
     (name "python-pyro4")
-    (version "4.77")
+    (version "4.82")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Pyro4" version))
        (sha256
-        (base32 "0gsjg869y4gpy265s1gj1f2qy6jn5iz8r2bwwnq78r1r5yi15zib"))))
-    (build-system python-build-system)
+        (base32 "1yr1rv2afmq55wb14sx9qplzkqw7fya9rprsqdyxfbg90h45n7si"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f)) ;FIXME: Some tests require network access.
+     (list #:test-flags
+           #~(list "-k"
+                   (string-join
+                    ;; Those tests require network.
+                    (list "testBCstart"
+                          "testAutoClean"
+                          "testDaemonPyroObj"
+                          "testLookupAndRegister"
+                          "testLookupInvalidHmac"
+                          "testLookupUnixsockParsing"
+                          "testMulti"
+                          "testRefuseDottedNames"
+                          "testResolve"
+                          "testBCLookup0000"
+                          "testPyroname"
+                          "testResolveAsymmetricHmacUsage"
+                          "testResolveWrongHmac"
+                          "testStartNSfunc"
+                          "testCustomDictClass"
+                          "testDictClassFail"
+                          "testBroadcast"
+                          "testGetIP"
+                          ;; XXX: Unclear why this test fails.
+                          "testCustomClassFail")
+                    " and not "))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? test-flags #:allow-other-keys)
+                   (if tests?
+                       (apply invoke "python" "-m" "unittest" test-flags)
+                       (format #t "test suite not run.~%")))))))
     (native-inputs
-     (list python-cloudpickle python-dill python-msgpack))
+     (list python-cloudpickle
+           python-dill
+           python-msgpack
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-serpent))
     (home-page "https://pyro4.readthedocs.io")
@@ -29204,6 +29241,25 @@ working with iterables.")
 Python.")
     (license license:expat)))
 
+(define-public python-pybktree
+  (package
+    (name "python-pybktree")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pybktree" version))
+       (sha256
+        (base32 "0asd2lw9c5l5wi4z24k7gkhlprpdkcvs8d94szk56x9xvmy07h7f"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/Jetsetter/pybktree")
+    (synopsis "Pythonic BK-tree data structure")
+    (description
+     "This package provides a BK-tree data structure to allow fast querying of
+close matches in Python.")
+    (license license:expat)))
+
 (define-public python-pybtex
   (package
     (name "python-pybtex")
@@ -29722,38 +29778,21 @@ user-space file systems in Python.")
 (define-public python-stone
   (package
     (name "python-stone")
-    (version "3.2.1")
+    (version "3.3.9")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "stone" version))
-        (sha256
-         (base32
-          "0xby5mpsms7b2rv8j6mvxzmzz5i9ii01brb9ylxz6kiv2i08piwv"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'change-version-requirements
-           (lambda _
-             ;; Match the requirement in test/requirements.txt
-             (substitute* "setup.py"
-               (("pytest < 5") "pytest < 7"))
-             ;; We don't care about a coverage report.
-             (substitute* "test/requirements.txt"
-               (("coverage.*") "coverage\n"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; These tests don't import correctly.
-               (delete-file "test/test_js_client.py")
-               (delete-file "test/test_tsd_types.py")
-               (delete-file "test/test_python_gen.py")
-               (invoke "pytest")))))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dropbox/stone")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x0kj4jygssjn66lbkln95chhf85vzy1wnpziy9jvpf4kbc1bmfy"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-ply python-six))
+     (list python-jinja2 python-packaging python-ply python-six))
     (native-inputs
-     (list python-coverage python-mock python-pytest python-pytest-runner))
+     (list python-pytest python-pytest-runner python-setuptools python-wheel))
     (home-page "https://github.com/dropbox/stone")
     (synopsis "Official Api Spec Language for Dropbox")
     (description
@@ -29763,7 +29802,7 @@ user-space file systems in Python.")
 (define-public pybind11
   (package
     (name "pybind11")
-    (version "2.8.1")
+    (version "2.13.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -29771,7 +29810,7 @@ user-space file systems in Python.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "10hrkrh78sk7k0ydw1ghmp7gvpwmkby0l2s0kf2iaj9sz0vijkhs"))
+                "1dbnki0pnky39kr04afd9ks597bzjc530zbk33jjss53nfvdvlj8"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
@@ -29809,22 +29848,6 @@ library: to minimize boilerplate code in traditional extension modules by
 inferring type information using compile-time introspection.")
     (license license:bsd-3)))
 
-;; Needed for python-optree
-(define-public pybind11-2.13
-  (package
-    (inherit pybind11)
-    (name "pybind11")
-    (version "2.13.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pybind/pybind11")
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "1dbnki0pnky39kr04afd9ks597bzjc530zbk33jjss53nfvdvlj8"))
-              (file-name (git-file-name name version))))))
-
 ;; Needed for scipy
 (define-public pybind11-2.10
   (package
@@ -29840,26 +29863,6 @@ inferring type information using compile-time introspection.")
                (base32
                 "0rbcfvl7y472sykzdq3vrkw83kar0lpzhk3wq9yj9cdydl8cpfcz"))
               (file-name (git-file-name name version))))))
-
-;; This is needed for python-vaex-core.
-(define-public pybind11-2.3
-  (package
-    (inherit pybind11)
-    (name "pybind11")
-    (version "2.3.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pybind/pybind11")
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "11b6dniri8m05spfd2a19irz82shf4sdca73566bniggrf3zclnf"))
-              (file-name (git-file-name name version))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments pybind11)
-       ((#:tests? tests? #false)
-        #false)))))
 
 (define-public python-pooch
   (package
@@ -30485,9 +30488,8 @@ codecs for use in data storage and communication applications.")
               ;; but occasionally fail.  They fail pretty reliably on the
               ;; build farm.
               "-k" (string-append "not test_lazy_loader and not open_array"
-                                  ;; TODO: remove this on python-team branch.
-                                  ;; This only fails on the master branch.
-                                  " and not test_encode_decode_array_dtype_shape_v3"))
+                                  ;; File not found.
+                                  " and not test_filesystem_path"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-version
@@ -30546,8 +30548,12 @@ N-dimensional arrays for Python.")
     (arguments
      (list
       #:test-flags
-      ;; This one test seemingly freezes
-      '(list "-k" "not test_read_lazy_h5_cluster")
+      #~(list "-k" #$(string-append
+                      ;; This one test seemingly freezes
+                      "not test_read_lazy_h5_cluster"
+                      ;; Fails with a numpy deprecation warning
+                      ;; but not an actual failure
+                      " and not test_read_write_X"))
       #:phases
       #~(modify-phases %standard-phases
           ;; Doctests require scanpy from (gnu packages bioinformatics)
@@ -30606,24 +30612,25 @@ object-oriented library such as @code{scikit-learn}.")
 (define-public python-dill
   (package
     (name "python-dill")
-    (version "0.3.6")
+    (version "0.3.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dill" version))
        (sha256
-        (base32 "0wr37zwyiprrv29jcc1hl5cla72faiwfs0mhvbxxhmkqd3rmbnz5"))))
+        (base32 "0b2inivjahjlph54a70x6wi3pax4qsgclhlw0blbz37nvmyjdal1"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "/tmp"
-                 (invoke "nosetests" "-v"))))))))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (if tests?
+                           ;; Extracted from tox.ini
+                           (invoke "python" "dill/tests/__main__.py")
+                           (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-nose python-setuptools python-wheel))
+     (list python-setuptools python-wheel))
     (home-page "https://pypi.org/project/dill/")
     (synopsis "Serialize all of Python")
     (description "Dill extends Python's @code{pickle} module for serializing
@@ -30640,39 +30647,43 @@ the saved state of the original interpreter session.")
 (define-public python-multiprocess
   (package
     (name "python-multiprocess")
-    (version "0.70.14")
+    (version "0.70.17")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "multiprocess" version))
        (sha256
         (base32
-         "0splzd9w9yi42vl7b6mm99vb82jp2adhdrizw1xd4q125z0szp9y"))))
+         "0ypm9yj1ng1s96hk2iwll190dkpc2j5zras8kay9x00n6hdg3qja"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             ;; The "wait_result" and "shared_memory..." tests are broken as
-             ;; there is no keyboard interrupt.
-             ;;
-             ;; The "preload_resources" test fails as it cannot find
-             ;; mp_preload.py.
-             (substitute* "py3.10/multiprocess/tests/__init__.py"
-               (("^(.*)def test_(\
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-broken-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; The "wait_result" and "shared_memory..." tests are broken as
+              ;; there is no keyboard interrupt.
+              ;;
+              ;; The "preload_resources" test fails as it cannot find
+              ;; mp_preload.py.
+              (substitute*
+                  (string-append "py" (python-version
+                                       (assoc-ref inputs "python"))
+                                 "/multiprocess/tests/__init__.py")
+                (("^(.*)def test_(\
 wait_result|\
 shared_memory_SharedMemoryServer_ignores_sigint|\
 preload_resources\
 )" line indent)
-                (string-append indent
-                               "@unittest.skip(\"Disabled by Guix\")\n"
-                               line)))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "multiprocess.tests")))))))
+                 (string-append indent
+                                "@unittest.skip(\"Disabled by Guix\")\n"
+                                line)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "python" "-m" "multiprocess.tests")
+                  (format #t "test suite not run~%")))))))
     (propagated-inputs
      (list python-dill))
     (native-inputs (list python-setuptools python-wheel))
@@ -30694,17 +30705,9 @@ library's @code{threading} module.")
               (sha256
                (base32
                 "1rs5a3hx1fcpfsxxkl5kx6g06c82wqjqgdqyny5l1ggl1wq0rmfn"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-dill))
-    (native-inputs (list python-check-manifest python-pytest python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/sixty-north/multiprocessing_on_dill")
     (synopsis "Multiprocessing using dill instead of pickle")
     (description
@@ -30750,26 +30753,19 @@ functions and classes.")
 (define-public python-toolz
   (package
     (name "python-toolz")
-    (version "0.11.2")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "toolz" version))
        (sha256
         (base32
-         "0cxwlh8dz8gq0l0bzchjnqqwhdp261nfd958ppqm518k2mg2scbb"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--doctest-modules"
-                       "--pyargs" "toolz")))))))
+         "00ks0jhl1jwm9576c5sh10pnla8ni21yvg4kcxasr627l3cy71ic"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/pytoolz/toolz/")
     (synopsis "List processing tools and functional utilities")
     (description
@@ -31097,13 +31093,13 @@ run on top of the dynamic task schedulers.")
 (define-public python-dask-image
   (package
     (name "python-dask-image")
-    (version "2023.8.1")
+    (version "2024.5.3")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "dask-image" version))
+       (uri (pypi-uri "dask_image" version))
        (sha256
-        (base32 "1dh49lvirf5fbgq5hw1c4972czg5w12fg9y689cinyjjn22qk6jy"))))
+        (base32 "0g4293n1vjlpyxbvd1xz3pz9an9z4rnsw1m7lynhm00m0bgiz7qc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -31119,7 +31115,15 @@ run on top of the dynamic task schedulers.")
              "--ignore=tests/test_dask_image/test_ndfourier/test_core.py"
              "--ignore=tests/test_dask_image/test_ndinterp/test_spline_filter.py"
              "--ignore=tests/test_dask_image/test_ndmeasure/test_core.py"
-             "--ignore=tests/test_dask_image/test_ndmeasure/test_find_objects.py")))
+             "--ignore=tests/test_dask_image/test_ndmeasure/test_find_objects.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^version_file.*") "")
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\""))))))))
     (propagated-inputs (list python-dask
                              python-numpy
                              python-pandas-2
@@ -31127,7 +31131,16 @@ run on top of the dynamic task schedulers.")
                              python-scipy
                              python-tifffile))
     (native-inputs
-     (list python-pytest-flake8 python-pytest))
+     (list python-coverage
+           python-flake8
+           python-pytest
+           python-pytest-cov
+           python-pytest-flake8
+           python-pytest-timeout
+           python-setuptools
+           python-setuptools-scm
+           python-twine
+           python-wheel))
     (home-page "https://github.com/dask/dask-image")
     (synopsis "Distributed image processing")
     (description "This is a package for image processing with Dask arrays.
@@ -31246,15 +31259,18 @@ Features:
 (define-public python-precis-i18n
   (package
     (name "python-precis-i18n")
-    (version "1.0.3")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "precis_i18n" version))
        (sha256
-        (base32
-         "1qfb78zpx565vqkg0xhx75pna9sc35m370vpcz82982c8ix3ypyz"))))
-    (build-system python-build-system)
+        (base32 "0cdv2vbn0kwfq0pxj4l52s2xiaqablb2cgk0nph6r9cyqayf77rn"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/byllyfish/precis_i18n")
     (synopsis "Implementation of the PRECIS framework")
     (description
@@ -31390,15 +31406,16 @@ in doctests.")
 (define-public python-attr
   (package
     (name "python-attr")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "attr" version))
        (sha256
-        (base32
-         "0pbpskvxp5hzdvcaf766ljwpckshir8sf7z6jqji6zyib20594ch"))))
-    (build-system python-build-system)
+        (base32 "1x2627x0n2rxx8wib4cksbjjnncff8finq97k37dq70qd2kvrvhw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools python-wheel))
     (home-page "https://github.com/denis-ryzhkov/attr")
     (synopsis "Decorator for attributes of target function or class")
     (description "Simple decorator to set attributes of target function or
@@ -31767,32 +31784,29 @@ format.")
 (define-public python-crontab
   (package
     (name "python-crontab")
-    (version "3.0.0")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri name version))
        (sha256
-        (base32 "0yd3vdhl7z8lxa30czsry65srha51ppdcwnhjgxx9pwx0djp9yvr"))))
-    (build-system python-build-system)
+        (base32 "0sy3qlki43n6qmhzzzyya4wcs50mcp3mg1ddn9h39plsscfps1j0"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'disable-failing-tests
-            (lambda _
-              (substitute* '("tests/test_compatibility.py"
-                             "tests/test_frequency.py")
-                (("test_07_non_posix_shell")
-                 "__off_test_07_non_posix_shell")
-                ;; Fails on leap years
-                (("test_19_frequency_at_month")
-                 "__off_test_19_frequency_at_month")
-                ;; AssertionError: 48 != 24
-                (("test_20_frequency_at_year")
-                 "__off_test_20_frequency_at_year")))))))
+     (list #:test-flags
+           ;; This test is made for Windows.
+           #~(list "-k" "not test_07_non_posix_shell")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'defaults-to-mcron
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "crontab.py"
+                     (("/usr/bin/crontab")
+                      (search-input-file inputs "bin/crontab"))))))))
     (inputs
-     (list python-dateutil))
+     (list mcron python-dateutil))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://gitlab.com/doctormo/python-crontab/")
     (synopsis "Module for reading and writing crontab files")
     (description "This Python module can read, write crontab files, and
@@ -31973,37 +31987,25 @@ one-off scripts.")
 (define-public python-cached-property
   (package
     (name "python-cached-property")
-    (version "1.5.2")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "cached-property" version))
+       (uri (pypi-uri "cached_property" version))
        (sha256
-        (base32
-         "0c51i6yzg6dlq6zhk4c6nv33mg8gv05kkan36k9b5jzf71c7b9cz"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; https://github.com/pydanny/cached-property/issues/131
-         ;; recent versions of freezegun break one test
-         (add-after 'unpack 'disable-broken-test
-           (lambda _
-             (substitute* "tests/test_cached_property.py"
-               (("def test_threads_ttl_expiry\\(self\\)" m)
-                (string-append "@unittest.skip(\"Disabled by Guix\")\n"
-                               "    " m)))
-             #t)))))
+        (base32 "0hbni4q15n8wspdj48j6xvg977pgm1r5wwjq3x7hxvp30mqn2ka8"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-freezegun))
-    (home-page
-     "https://github.com/pydanny/cached-property")
-    (synopsis
-     "Decorator for caching properties in classes")
+     (list python-freezegun
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/pydanny/cached-property")
+    (synopsis "Decorator for caching properties in classes")
     (description
      "This package provides a decorator which makes caching
-time-or-computationally-expensive properties quick and easy and works in Python
-2 or 3.")
+time-or-computationally-expensive properties quick and easy and works in
+Python 2 or 3.")
     (license license:bsd-3)))
 
 (define-public python-folium
@@ -32473,38 +32475,38 @@ register custom encoders and decoders.")
 (define-public python-ujson
   (package
     (name "python-ujson")
-    (version "5.7.0")
+    (version "5.10.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "ujson" version))
         (sha256
          (base32
-          "08vvyfyg4qvjy2vxrvc0qix5zmd0j6wd0icvmhc633xfvkayb277"))
+          "1habmn3bmmv2ym4ldiijcavdkdzp8h28h60hgwjkhxwcbly8zkdk"))
         (modules '((guix build utils)))
         (snippet
-         '(begin (delete-file-recursively "deps") #t))))
-    (build-system python-build-system)
+         #~(begin (delete-file-recursively "deps")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'link-to-system-double-conversion
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((d-c (assoc-ref inputs "double-conversion")))
-               (substitute* "setup.py"
-                 (("./deps/double-conversion/double-conversion\"")
-                  (string-append d-c "/include/double-conversion\""))
-                 (("-lstdc++" stdc)
-                  (string-append "-L" d-c "/lib\","
-                                 " \"-ldouble-conversion\","
-                                 " \"" stdc)))
-               #t)))
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'link-to-system-double-conversion
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((d-c (assoc-ref inputs "double-conversion")))
+                (substitute* "setup.py"
+                  (("./deps/double-conversion/double-conversion\"")
+                   (string-append d-c "/include/double-conversion\""))
+                  (("-lstdc++" stdc)
+                   (string-append "-L" d-c "/lib\","
+                                  " \"-ldouble-conversion\","
+                                  " \"" stdc)))))))))
     (native-inputs
-     (list double-conversion python-setuptools-scm python-pytest))
+     (list double-conversion
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/ultrajson/ultrajson")
     (synopsis "Ultra fast JSON encoder and decoder for Python")
     (description
@@ -32614,10 +32616,7 @@ standard error channel (stderr) in your program.")
            python-sniffio
            python-typing-extensions))
     (native-inputs
-     (list python-contextlib2
-           python-hypothesis
-           python-mock
-           python-psutil
+     (list python-psutil
            python-pytest
            python-pytest-mock
            python-setuptools
@@ -32634,17 +32633,6 @@ on top of either asyncio or trio.  It implements trio-like structured
 concurrency on top of asyncio, and works in harmony with the native SC of trio
 itself.")
     (license license:expat)))
-
-;; TODO: This will become the default on the python-team branch.  Dataclasses
-;; is part of Python.
-(define-public python-anyio/without-dataclasses
-  (package
-    (inherit python-anyio)
-    (propagated-inputs
-     (list python-contextvars
-           python-idna
-           python-sniffio
-           python-typing-extensions))))
 
 (define-public python-argh
   ;; There are 21 commits since the latest release containing important
@@ -33162,45 +33150,67 @@ such as a file modification and trigger an action.  This is similar to inotify,
 but portable.")
     (license license:asl2.0)))
 
-(define-public python-watchgod
+(define-public python-watchfiles
   (package
-    (name "python-watchgod")
-    (version "0.8.1")
+    (name "python-watchfiles")
+    (version "1.0.4")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/samuelcolvin/watchgod")
+             (url "https://github.com/samuelcolvin/watchfiles")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zm9xd2qf3d74l67yv8j3zhhhvi0vp25vhkg46l9d7flh9m04qrp"))))
-    (build-system pyproject-build-system)
+        (base32 "1kaxq0drjwlvcsg4in25w1bhjjgm1zlz06rr2macyi6s5x96g46h"))))
+    (build-system cargo-build-system)
     (arguments
-     (list #:test-flags '(list "-o" "asyncio_mode=auto"
-                               ;; PytestUnraisableExceptionWarning
-                               "-k" "not test_watch_log and not test_awatch")
-       #:phases #~(modify-phases %standard-phases
-                  (delete 'sanity-check))))
+     (list
+      #:install-source? #f
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build 'install-rust-library
+            (lambda _
+              (copy-file "target/release/lib_rust_notify.so"
+                         "watchfiles/_rust_notify.so")))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (if tests?
+                  ;; Missing file in source.
+                  (invoke "pytest" "-vv" "-k" "not test_docs_examples")
+                  (format #t "test suite not run~%"))))
+          (replace 'install
+            (assoc-ref py:%standard-phases 'install)))
+      #:cargo-inputs
+      (list rust-crossbeam-channel-0.5 rust-notify-7 rust-pyo3-0.23)))
     (native-inputs
-     (list python-anyio
+     (list maturin
+           python-anyio
            python-coverage
-           python-pygments
+           python-dirty-equals
            python-pytest
-           python-pytest-asyncio
            python-pytest-cov
            python-pytest-mock
-           python-pytest-sugar
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/samuelcolvin/watchgod")
+           python-pytest-timeout
+           python-wrapper))
+    (home-page "https://github.com/samuelcolvin/watchfiles")
     (synopsis "Simple, modern file watching and code reload in Python")
     (description
      "Simple, modern file watching and code reload in Python inspired by
 @code{watchdog}.  Among the differences are a unified approach for each
 operating systems and an elegant approach to concurrency using threading.")
     (license license:expat)))
+
+(define-deprecated/alias python-watchgod python-watchfiles)
+(export python-watchgod)
 
 (define-public python-wget
   (package
@@ -33718,14 +33728,18 @@ library.  Only the high-level API is bound.")
 (define-public python-frozendict
   (package
     (name "python-frozendict")
-    (version "2.3.4")
+    (version "2.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "frozendict" version))
        (sha256
-        (base32 "0y3zn57i1q5192f7l4w2z2zsy3rrx50g563msaq954r58s1v3d0m"))))
-    (build-system python-build-system)
+        (base32 "13ib358v66c9ykfz3plpxcs96ca6vkx8w84sjv26zlpvf1jd2z6z"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/Marco-Sulla/python-frozendict")
     (synopsis "Simple immutable mapping for Python")
     (description
@@ -34234,25 +34248,6 @@ cryptographically signed ones).")
 dictionaries.")
     (license license:expat)))
 
-(define-public python-dictpath
-  (package
-    (name "python-dictpath")
-    (version "0.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "dictpath" version))
-       (sha256
-        (base32 "1n4hq4wbgaw59bbb16nhkgg5wk8sl4iw940vjrgx4xmifqxxw73m"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest python-pytest-cov python-pytest-flake8))
-    (home-page "https://github.com/p1c2u/pathable")
-    (synopsis "Object-oriented path library for Python")
-    (description "This object-oriented dictionary path Python library enables
-traversing resources like paths or accessing resources on demand with separate
-accessor layer.")
-    (license license:asl2.0)))
-
 (define-public pyzo
   (package
     (name "pyzo")
@@ -34342,24 +34337,22 @@ intended for validating data coming into Python as JSON, YAML, etc.")
 (define-public python-cmd2
   (package
     (name "python-cmd2")
-    (version "2.3.3")
+    (version "2.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cmd2" version))
        (sha256
         (base32
-         "0h1naik558qh48gx2iyy0a0khvw5fz0in69y84mbrhsm9nq7w3bm"))))
+         "0abl9aalyfbncw39d41gd3mmdgjvd7jlaa372r0lmghz0a2x781h"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags '(list "-k" "not test_find_editor_not_specified \
 and not test_transcript")))
     (propagated-inputs
-     (list python-attrs python-colorama python-pyperclip python-wcwidth))
+     (list python-pyperclip python-wcwidth))
     (native-inputs
-     (list python-invoke
-           python-mock
-           python-pytest
+     (list python-pytest
            python-pytest-cov
            python-pytest-mock
            python-setuptools
@@ -34619,23 +34612,31 @@ reStructuredText, and plain text.")
 (define-public python-lazr-delegates
   (package
     (name "python-lazr-delegates")
-    (version "2.0.4")
+    (version "2.1.1")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "lazr.delegates" version))
+        (uri (pypi-uri "lazr_delegates" version))
         (sha256
-         (base32
-          "1rdnl85j9ayp8n85l0ciip621j9dcziz5qnmv2m7krgwgcn31vfx"))))
-    (build-system python-build-system)
+         (base32 "1p02diwzn58jhpvf9m8bhb5p0xkx5gnc84mzgwr3zdsidrhv5kmf"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "nosetests")))))))
+     (list
+      #:test-flags #~(list "-v" #$output)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'check-cleanup
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each
+                 delete-file-recursively
+                 (find-files #$output
+                             (lambda (file stat)
+                               (or (member (basename file)
+                                           '("tests" ".pytest_cache"))))
+                             #:directories? #t))))))))
     (native-inputs
-     (list python-nose))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-zope-interface))
     (home-page "https://launchpad.net/lazr.delegates")
@@ -34650,23 +34651,31 @@ and delegating behavior.")
 (define-public python-lazr-config
   (package
     (name "python-lazr-config")
-    (version "2.2.3")
+    (version "3.1")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "lazr.config" version))
+        (uri (pypi-uri "lazr_config" version))
         (sha256
-         (base32
-          "1qdbrzl61q7cjhbnxvw9y3frcr935y7diwy15xrwcv9ynvw76jmp"))))
-    (build-system python-build-system)
+         (base32 "02xb4fs9rm6bf3f00qkq8pihgqvrvn2wfnvydn2vg9p73ddhcmvw"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "python" "-s" "-m" "nose" "-P" "lazr"))))))
+     (list
+      #:test-flags #~(list "-v" #$output)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'check-cleanup
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each
+                 delete-file-recursively
+                 (find-files #$output
+                             (lambda (file stat)
+                               (or (member (basename file)
+                                           '("tests" ".pytest_cache"))))
+                             #:directories? #t))))))))
     (native-inputs
-     (list python-nose))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-lazr-delegates python-zope-interface))
     (home-page "https://launchpad.net/lazr.config")
@@ -34717,17 +34726,41 @@ RFC 3464.")
 (define-public python-flufl-i18n
   (package
     (name "python-flufl-i18n")
-    (version "3.0")
+    (version "5.1.0")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "flufl.i18n" version))
+        (uri (pypi-uri "flufl_i18n" version))
         (sha256
          (base32
-          "1flwpn1xhgc957zj3zxw92dhdjh0lsy0hdvzq32dzqpsajfsvq1r"))))
-    (build-system python-build-system)
+          "0bm4kmi04gm164y5nmadmrg79y1l1cs9iwxcv9y7gq0dgyr20xms"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list "--no-cov" "--ignore-glob=docs/*")
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; This phase add a symlink of dist-info dir for packages
+               ;; expecting flufl.i18n rather than flufl_i18n (mailman).
+               (add-after 'install 'add-custom-dist-info
+                 (lambda _
+                   (for-each
+                    (lambda (dir)
+                      (with-directory-excursion (dirname dir)
+                        (let ((base (basename dir)))
+                          (symlink base
+                                   (string-join (string-split base #\_) ".")))))
+                    (find-files #$output
+                                (lambda (file stat)
+                                  (string-suffix? ".dist-info" file))
+                                #:directories? #t)))))))
     (propagated-inputs
      (list python-atpublic))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-cov
+           python-sybil))
     (home-page "https://flufli18n.readthedocs.io")
     (synopsis "API for Python internationalization")
     (description
@@ -34743,15 +34776,38 @@ different tasks.")
 (define-public python-flufl-lock
   (package
     (name "python-flufl-lock")
-    (version "4.0")
+    (version "8.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "flufl.lock" version))
         (sha256
-         (base32
-          "055941zyma3wfx25jhm8wcsghpv3jc3iwi1gdrdjhzcnfhn62lxq"))))
-    (build-system python-build-system)
+         (base32 "1jz7vipjga4x803gfsb9mvnfb6q8my7ib000nsc3v9ljaq0050yq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list "--no-cov" "--ignore-glob=docs/*")
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; This phase add a symlink of dist-info dir for packages
+               ;; expecting flufl.lock rather than flufl_lock (mailman).
+               (add-after 'install 'add-custom-dist-info
+                 (lambda _
+                   (for-each
+                    (lambda (dir)
+                      (with-directory-excursion (dirname dir)
+                        (let ((base (basename dir)))
+                          (symlink base
+                                   (string-join (string-split base #\_) ".")))))
+                    (find-files #$output
+                                (lambda (file stat)
+                                  (string-suffix? ".dist-info" file))
+                                #:directories? #t)))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-cov
+           python-sybil))
     (propagated-inputs
      (list python-atpublic python-psutil))
     (home-page "https://flufllock.readthedocs.io")
@@ -34882,25 +34938,17 @@ dates in almost any string formats commonly found on web pages.")
 (define-public python-dpath
   (package
     (name "python-dpath")
-    (version "2.0.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dpath" version))
        (sha256
         (base32
-         "1ymi9ssk7i0mx3mviplf4csfvzibdd6wyj4qzj6s487n9xgnp85y"))))
-    (build-system python-build-system)
+         "0gkavmc44f9cj3kch68343r2ajsbvbsjcmsmkqhkzsjmvhqfdxrl"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-hypothesis python-mock python-nose))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             ;; This invocation is taken from tox.ini.
-             (invoke "nosetests" "-d" "-v" "tests/"))))))
+     (list python-hypothesis python-nose2 python-setuptools python-wheel))
     (home-page "https://github.com/akesterson/dpath-python")
     (synopsis "File-system-like pathing and searching for dictionaries")
     (description
@@ -37067,9 +37115,9 @@ generation, and software testing purposes.")
 
 (define-public python-peachpy
   ;; There is no tag in this repo.
-  (let ((commit "913d74c35a6b1d330e90bfc055208ce5b06b35a0")
+  (let ((commit "349e8f836142b2ed0efeb6bb99b1b715d87202e9")
         (version "0.2.0")                         ;from 'peachpy/__init__.py'
-        (revision "2"))
+        (revision "3"))
     (package
       (name "python-peachpy")
       (version (git-version version revision commit))
@@ -37080,17 +37128,15 @@ generation, and software testing purposes.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1wnqxspxsacw4556q0b9fbw11nhrkgn6gs8g43jdnpa35f3z9kb6"))
+                  "16pnkghmqjc7pbws0yhyrwlz43d5pffb5c6v2bb4jk0j537gwzbi"))
                 (patches (search-patches "python-peachpy-determinism.patch"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
-       '(#:phases (modify-phases %standard-phases
-                    (replace 'check
-                      (lambda* (#:key tests? #:allow-other-keys)
-                        (when tests?
-                          (invoke "nosetests")))))))
+       ;; The issue is known and the test will probably never be fixed.
+       ;; https://github.com/Maratyszcza/PeachPy/issues/131
+       (list #:test-flags ''("--ignore=tests/arm/test_arm.py")))
       (native-inputs
-       (list python-nose python-rednose python-setuptools))
+       (list python-pytest python-setuptools python-wheel))
       (propagated-inputs
        (list python-six python-opcodes))
       (synopsis "Efficient assembly code generation in Python")
@@ -37677,7 +37723,12 @@ statements in OFX files.")
                         ;; The timestamp to local offset tests fail due to
                         ;; missing timezone data (see:
                         ;; https://github.com/danielrichman/strict-rfc3339/issues/9).
-                        "-k" "not LocalOffset")))))))
+                        "-k"
+                        #$@(if (or (target-x86-32?) (target-arm32?))
+                               ;; On 32-bit platforms the size of time_t is
+                               ;; too small for these tests.
+                               '("not LocalOffset and not TestTimestampToRFC3339UTCOffset")
+                               '("not LocalOffset")))))))))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/danielrichman/strict-rfc3339")
     (synopsis "RFC3339 procedures library")
@@ -38296,7 +38347,9 @@ these linters: @code{pycodestlye}, @code{pyflakes}")
     (arguments
      (list
       #:test-flags #~(list "--durations=10"
-                           "--ignore=tests/integration/test_dev_server.py")
+                           "--ignore=tests/integration/test_dev_server.py"
+                           ;; Assertion fails in diff of HTML template.
+                           "-k" "not test_compiling_markdown")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
@@ -39156,17 +39209,21 @@ implementing a pre-defined interface.")
 (define-public python-itemloaders
   (package
     (name "python-itemloaders")
-    (version "1.1.0")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "itemloaders" version))
        (sha256
-        (base32 "0j2aw4ipalj208594x80blpgkh1i63gqqa4nb67b823av9hirn11"))))
+        (base32 "0w37g31n06x6v6b4w7cz3nbq4wl6cv7rrzg3fr203gw3pqx5pbsg"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs
+     (list python-packaging
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-itemadapter python-jmespath python-parsel python-w3lib))
+     (list python-itemadapter python-jmespath python-parsel))
     (home-page "https://github.com/scrapy/itemloaders")
     (synopsis "Base library for scrapy's ItemLoader")
     (description "Itemloaders is a library that helps you collect data
@@ -40466,13 +40523,13 @@ read all zbar supported codes.")
 (define-public python-zeroc-ice
   (package
     (name "python-zeroc-ice")
-    (version "3.7.9")
+    (version "3.7.10.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "zeroc-ice" version))
               (sha256
                (base32
-                "0bqkrjxp2fbz34x3wxkxji39kxinypzg8q2994sibiay29mpipxb"))))
+                "0r46q4hd7xbpvnidbra1prkg4xhmajxjjmclfqgp3pv0lgyslqxh"))))
     (build-system pyproject-build-system)
     (inputs (list openssl))
     (native-inputs (list python-setuptools python-wheel))

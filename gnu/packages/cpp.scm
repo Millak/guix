@@ -8,7 +8,7 @@
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2020, 2021, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021, 2023, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020, 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -45,6 +45,7 @@
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1549,7 +1550,7 @@ tools:
   ;; header
   (package
     (name "cpp-httplib")
-    (version "0.18.5")
+    (version "0.20.0")
     (source
      (origin
        (method git-fetch)
@@ -1557,7 +1558,7 @@ tools:
              (url "https://github.com/yhirose/cpp-httplib")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1jc31n4xdrknal4i1dvf8j6j9kafpczi0w5gbbi89xlir9dgm5kp"))
+        (base32 "0w5klyfsaws793xb0cbkjxg7lwrdm6f3m4z4v7pzkwl957f9q70m"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1606,7 +1607,7 @@ library.")
 (define-public cpplint
   (package
     (name "cpplint")
-    (version "1.5.5")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1616,7 +1617,7 @@ library.")
              (url "https://github.com/cpplint/cpplint")
              (commit version)))
        (sha256
-        (base32 "13l86aq0h1jga949k79k9x3hw2xqchjc162sclg2f99vz98zcz15"))
+        (base32 "06km4wh4944az1hk61g5w8pjhbvbccpgarz1dy7vhwkhfvmvggnk"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (arguments
@@ -1625,6 +1626,11 @@ library.")
                        ,@%pyproject-build-system-modules)
            #:phases
            #~(modify-phases (@ (guix build pyproject-build-system) %standard-phases)
+               (add-after 'unpack 'patch-build-system
+                 (lambda _
+                   (substitute* "pyproject.toml"
+                     (("setuptools\\.build_meta:__legacy__")
+                      "setuptools.build_meta"))))
                (add-before 'wrap 'reduce-GUIX_PYTHONPATH
                  (lambda _
                    ;; Hide the transitive native inputs from GUIX_PYTHONPATH
@@ -1651,9 +1657,11 @@ library.")
                            (getenv "TMP_PYTHONPATH")))))))
     (native-inputs
      (list python-coverage
+           python-parameterized
            python-pytest
            python-pytest-cov
            python-pytest-runner
+           python-pytest-timeout
            python-setuptools
            python-testfixtures
            python-wheel))
@@ -2613,6 +2621,40 @@ computation.")
 union, difference & exclusive-or, and line & polygon offsetting.
 The library is based on Vatti's clipping algorithm.")
     (license license:boost1.0)))
+
+(define-public clipper2
+  (package
+    (inherit clipper)
+    (name "clipper2")
+    (version "1.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AngusJohnson/Clipper2")
+             (commit (string-append "Clipper2_" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w8cmx712k45cb8gh9dakmbmybiwdx8c0b45mwpcldywx2lwxi2j"))
+       (modules '((guix build utils)))
+       (snippet #~(for-each
+                   delete-file-recursively
+                   '("CSharp" "DLL" "Delphi")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DUSE_EXTERNAL_GTEST=ON"
+              "-DCLIPPER2_EXAMPLES=OFF")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'chdir
+                     (lambda _
+                       (chdir "CPP"))))))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/AngusJohnson/Clipper2")
+    (description
+     (string-append (package-description clipper) "\
+Note: This package is a major update of the original clipper library."))))
 
 (define-public pcg-cpp
   (let ((commit "ffd522e7188bef30a00c74dc7eb9de5faff90092")
@@ -3753,6 +3795,26 @@ folder select and file save dialogs.  It allows the specification of a default
 file name and location, as well as filters with friendly names (such as
 \"source files\" or \"image files\") where supported.")
     (license license:zlib)))
+
+(define-public string-view-lite
+  (package
+    (name "string-view-lite")
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/martinmoene/string-view-lite")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mfp3lmqx7ac0545akxd2v05rrapa3byz8q4gb9rqy94pcqbfyc5"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/martinmoene/string-view-lite")
+    (synopsis "C++17 string-view for older C++")
+    (description "This package provides a compatibility header-only library
+for C++17 string-view.")
+    (license license:boost1.0)))
 
 (define-public tsl-hopscotch-map
   (package

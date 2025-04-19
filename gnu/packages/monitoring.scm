@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -68,6 +69,7 @@
   #:use-module (gnu packages prometheus)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rrdtool)
@@ -433,23 +435,24 @@ historical data.")
 (define-public python-carbon
   (package
     (name "python-carbon")
-    (version "1.1.8")
+    (version "1.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "carbon" version))
        (sha256
         (base32
-         "1wb91fipk1niciffq5xwqbh8g7rl7ghdam4m97cjbig12i5qr4cm"))))
-    (build-system python-build-system)
+         "0p6yjxif5ly5wkllnaw41w2zy9y0nffgfk91v861fn6c26lmnfy1"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          ;; Don't install to /opt
          (add-after 'unpack 'do-not-install-to-/opt
            (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1") #t)))))
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs
-     (list python-cachetools python-txamqp python-urllib3 python-whisper))
+     (list python-cachetools python-twisted python-txamqp python-urllib3))
     (home-page "https://graphiteapp.org/")
     (synopsis "Backend data caching and persistence daemon for Graphite")
     (description "Carbon is a backend data caching and persistence daemon for
@@ -459,45 +462,69 @@ and persisting them to disk using the Whisper time-series library.")
     (license license:asl2.0)))
 
 (define-public graphite-web
-  (package
-    (name "graphite-web")
-    (version "1.1.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "graphite-web" version))
-       (sha256
-        (base32
-         "0nnk3kwn0b6bq9xnmv9bac6hpcbdgpgwf283c1ck5nm80panh61z"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f               ;XXX: not in PyPI release & requires database
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               ;; Allow newer versions of django-tagging.
-               (("django-tagging==") "django-tagging>=")
-               ;; And Django.
-               (("Django>=1\\.8,<3\\.1") "Django>=1.8,<4"))))
-         ;; Don't install to /opt
-         (add-after 'unpack 'do-not-install-to-/opt
-           (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1") #t)))))
-    (propagated-inputs
-     (list python-cairocffi
-           python-django-3.2
-           python-django-tagging
-           python-pyparsing
-           python-pytz
-           python-six
-           python-urllib3))
-    (home-page "https://graphiteapp.org/")
-    (synopsis "Scalable realtime graphing system")
-    (description "Graphite is a scalable real-time graphing system that does
+  (let ((commit "49c28e2015d605ad9ec93524f7076dd924a4731a")
+        (revision "2"))
+    (package
+      (name "graphite-web")
+      (version (git-version "1.1.10" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/graphite-project/graphite-web")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bcc6jh7gyp8f54dzy4zza1z46gk3530r952pi86irf834z106sg"))))
+      (build-system pyproject-build-system)
+      (arguments
+       `(#:tests? #f               ;XXX: Requires database, unable to run now
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'relax-requirements
+             (lambda _
+               (substitute* "setup.py"
+                 ;; Allow newer versions of django-tagging.
+                 (("django-tagging==") "django-tagging>=")
+                 ;; And Django.
+                 (("Django>=3\\.2,<4") "Django>=4,<5"))))
+           ;; Don't install to /opt
+           (add-after 'unpack 'do-not-install-to-/opt
+             (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1")))
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (mkdir-p "storage/log/webapp")
+                 (with-directory-excursion "webapp"
+                   (invoke "./manage.py" "test" "--pythonpath=." "tests"
+                           "-k" (string-join
+                                 (list
+                                  "not test_dashboard_save_temporary_xss_key"
+                                  "test_dashboard_save_temporary_xss_name")
+                                 " and not ")))))))))
+      (native-inputs
+       (list python-carbon
+             python-mock
+             python-pytest
+             python-rrdtool
+             python-setuptools
+             python-tzdata
+             python-wheel
+             python-whisper))
+      (propagated-inputs
+       (list python-cairocffi
+             python-django-4.2
+             python-django-tagging
+             python-pyparsing
+             python-pytz
+             python-six
+             python-urllib3))
+      (home-page "https://graphiteapp.org/")
+      (synopsis "Scalable realtime graphing system")
+      (description "Graphite is a scalable real-time graphing system that does
 two things: store numeric time-series data, and render graphs of this data on
 demand.")
-    (license license:asl2.0)))
+      (license license:asl2.0))))
 
 (define-public python-prometheus-client
   (package
@@ -837,6 +864,25 @@ snapshots, without displaying anything.  When put into the foreground again,
 display resumes.
 @end itemize")
     (license license:bsd-2)))
+
+(define-public python-rrdtool
+  (package
+    (name "python-rrdtool")
+    (version "0.1.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rrdtool" version))
+       (sha256
+        (base32 "0l8lbarzfwbwnq9jm9gv4mmrxgjlb9hbz27sa8b703qa7s5zy2jz"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests in pypi archive
+    (inputs (list rrdtool))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/commx/python-rrdtool")
+    (synopsis "Python bindings for rrdtool")
+    (description "This package provides Python bindings for rrdtool.")
+    (license license:lgpl2.1)))
 
 (define-public python-statsd
   (package

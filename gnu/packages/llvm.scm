@@ -663,7 +663,7 @@ output), and Binutils.")
                   (rename-file (string-append #$output "/share/opt-viewer")
                                opt-viewer-share))))
             ;; The build daemon goes OOM on i686-linux on this phase.
-            #$@(if (and (version>=? version "16.0")
+            #$@(if (and (version>=? version "15.0")
                         (target-x86-32?))
                    #~((delete 'make-dynamic-linker-cache))
                    #~()))))

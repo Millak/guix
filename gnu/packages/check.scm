@@ -1027,40 +1027,43 @@ definition language, a safe runtime engine for test suites and a powerful
 report generation engine.")
     (license license:bsd-3)))
 
-(define-public python-gixy
-  ;; The 0.1.20 release is missing some important fixes.
-  ;; XXX: Commit 'e9008dcbd11f43ccac109b0cf2bf98a94e76b449' breaks tests
-  ;; since it improperly removes an import.
-  (let ((commit "303eb6887ddecab18138b6e427b04ae77c41d2f1")
-        (revision "0")
-        (base-version "0.1.20"))
-    (package
-      (name "python-gixy")
-      (version (git-version base-version revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/yandex/gixy")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0gymjcnvjx9snyrzdbmjnk93ibb161q72xam29vnl3yyac4r1330"))))
-      (build-system pyproject-build-system)
-      (native-inputs (list python-nose python-setuptools python-wheel))
-      (propagated-inputs
-       (list python-cached-property python-configargparse
-             python-jinja2 python-six
-             ;; XXX: gixy is incompatible with pyparsing >= 3.x.
-             ;; See <https://github.com/yandex/gixy/pull/132> and
-             ;; <https://github.com/yandex/gixy/pull/122>.
-             python-pyparsing-2.4.7))
-      (home-page "https://github.com/yandex/gixy")
-      (synopsis "Static NGINX configuration analyzer")
-      (description "Gixy is a static analyzer whose main goal is to help
+(define-public python-gixy-ng
+  (package
+    (name "python-gixy-ng")
+    (version "0.2.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dvershinin/gixy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dipvy8y1nlhpka0cdk6hyv1j2388y7isbajpwskjrgqc5vayqx8"))))
+    (build-system pyproject-build-system)
+    ;; This package currently doesn't test properly, but we can't add
+    ;; pytest because it propagates another version of python-pyparsing
+    ;; that takes precedence over the right one.
+    (propagated-inputs (list python-configargparse
+                             python-jinja2
+                             python-pyparsing-2.4.7
+                             python-six))
+    (native-inputs (list python-cached-property
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/dvershinin/gixy")
+    (synopsis "Static NGINX configuration analyzer")
+    (description "Gixy is a static analyzer whose main goal is to help
 prevent common NGINX misconfigurations.  It provides the @command{gixy}
-command.")
-      (license license:mpl2.0))))
+command.
+
+Note: This is an actively maintained fork of the original @code{python-gixy}
+package.")
+    (license license:mpl2.0)))
+
+(define-deprecated/public python-gixy python-gixy-ng
+  (package/inherit python-gixy-ng
+    (name "python-gixy")))
 
 (define-public googletest
   (package
@@ -1413,34 +1416,6 @@ syntax validation, ...
 (define-public python-parameterized
   (package
     (name "python-parameterized")
-    (version "0.8.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "parameterized" version))
-       (sha256
-        (base32 "0p1vhfw552rgd7gb2vy4l4l4k8mnbdz7f3chgzvk0r0qsqvzzfs1"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "nosetests" "-v")
-                          (format #t "test suite not run~%"))
-                      #t)))))
-    (native-inputs
-     (list python-mock python-nose))
-    (home-page "https://github.com/wolever/parameterized")
-    (synopsis "Parameterized testing with any Python test framework")
-    (description
-     "Parameterized is a Python library that aims to fix parameterized testing
-for every Python test framework.  It supports nose, py.test, and unittest.")
-    (license license:bsd-2)))
-
-(define-public python-parameterized-next
-  (package
-    (inherit python-parameterized)
     (version "0.9.0")
     (source
      (origin
@@ -1450,18 +1425,29 @@ for every Python test framework.  It supports nose, py.test, and unittest.")
         (base32 "1c89vc40zj5aj2zvbvw875wqpyf0x6xrqhm3q5jg797g5hkhbjbz"))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (substitute* "parameterized/test.py"
-                 (("import mock") "from unittest import mock"))
-               (invoke "python3" "-m" "unittest")))))))
+     (list
+      #:test-flags #~(list "parameterized/test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "parameterized/test.py"
+                ;; It's taken from NixOS package definition.
+                ;; <https://github.com/wolever/parameterized/issues/167>,
+                ;; <https://github.com/wolever/parameterized/pull/162>.
+                (("assert_equal\\(missing, \\[\\])") "")
+                (("assertRaisesRegexp") "assertRaisesRegex")))))))
     (native-inputs
-     (list python-jinja2
+     (list python-pytest
+           python-mock
            python-setuptools
-           python-wheel))))
+           python-wheel))
+    (home-page "https://github.com/wolever/parameterized")
+    (synopsis "Parameterized testing with any Python test framework")
+    (description
+     "Parameterized is a Python library that aims to fix parameterized testing
+for every Python test framework.  It supports nose, py.test, and unittest.")
+    (license license:bsd-2)))
 
 (define-public python-minimock
   (package
@@ -2004,35 +1990,29 @@ Python's @code{random.seed}.")
 (define-public python-pytest-runner
   (package
     (name "python-pytest-runner")
-    (version "6.0.0")
+    (version "6.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-runner" version))
        (sha256
         (base32
-         "11dnhxnjmh4nf1j8rnvx944ha3wg8ggrgrwdcx4c7d19xmi57n5l"))))
+         "16zly218ij0n6fxzqsasia3vh9xkzl9w0cs9pwvqy057hnap7m3h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; FIXME: The test suite requires 'python-pytest-virtualenv',
       ;; but that introduces a circular dependency.
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda _
-              (let ((circa-1980 (* 10 366 24 60 60)))
-                (setenv "SOURCE_DATE_EPOCH" (number->string circa-1980))
-                (invoke "python" "-m" "build" "--wheel" "--no-isolation" "."))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+      #:tests? #f))
     (native-inputs
-     (list python-pip python-pypa-build python-pytest
-           python-setuptools python-setuptools-scm python-wheel))
+     (list python-pytest
+           python-pytest-checkdocs
+           python-pytest-enabler
+           ;; python-pytest-virtualenv
+           python-setuptools
+           python-setuptools-scm
+           python-types-setuptools
+           python-wheel))
     (home-page "https://github.com/pytest-dev/pytest-runner")
     (synopsis "Invoke py.test as a distutils command")
     (description
@@ -2825,13 +2805,13 @@ instantly.")
 (define-public python-crosshair
   (package
     (name "python-crosshair")
-    (version "0.0.76")
+    (version "0.0.84")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crosshair-tool" version))
        (sha256
-        (base32 "1yvbhzs7r85gn4d7drl7p7vi1f5cga1xyy3mzxy3fglyf8kxyakh"))))
+        (base32 "1j6icn5f206yld9871p7a3v45jg8d8v4bhxh09lq3kzi09gr7maz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2853,7 +2833,7 @@ instantly.")
                 (("typing-inspect>=0.7.1") "typing-inspect>=0.6.0")
                 ;; 'sanity-check fails for z3-solver, although it is
                 ;; included in 'propagated-inputs.
-                (("z3-solver==4.13.0.0") ""))))
+                (("z3-solver>=4.13.0.0") ""))))
           (add-before 'check 'set-test-env
             (lambda _
               (setenv "PYTHONHASHSEED" "0")))))) ;tests rely on this value
@@ -2863,10 +2843,16 @@ instantly.")
            python-mypy
            python-numpy
            python-pytest
-           python-pytest-xdist))
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-typeshed-client
+     (list python-importlib-metadata
+           python-packaging
+           ;; python-pygls
+           python-typeshed-client
            python-typing-inspect
+           python-typing-extensions
            z3))
     (home-page "https://crosshair.readthedocs.io")
     (synopsis "Analysis tool for Python using symbolic execution")
@@ -3132,39 +3118,6 @@ produces a given output.  As mypy can be told to display the type of an
 expression this allows you to check mypys type interference.")
     (license (list license:expat license:asl2.0))))
 
-(define-public python-pytest-pep8
-  (package
-    (name "python-pytest-pep8")
-    (version "1.0.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-pep8" version))
-              (sha256
-               (base32
-                "06032agzhw1i9d9qlhfblnl3dw5hcyxhagn7b120zhrszbjzfbh3"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; Fails with recent pytest and pep8. See upstream issues #8 and #12.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-dependencies
-           (lambda _
-             (substitute* "setup.py"
-               (("'pytest-cache', ") ""))))  ; Included in recent pytest
-         (replace 'check
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-              (when tests?
-                (add-installed-pythonpath inputs outputs)
-                (invoke "pytest" "-v")))))))
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-pep8))
-    (home-page "https://bitbucket.org/pytest-dev/pytest-pep8")
-    (synopsis "Py.test plugin to check PEP8 requirements")
-    (description "Pytest plugin for checking PEP8 compliance.")
-    (license license:expat)))
-
 (define-public python-pytest-perf
   (package
     (name "python-pytest-perf")
@@ -3231,19 +3184,13 @@ each of the environments.")
               (sha256
                (base32
                 "0959qfxb4ayvfxvmpargvh4zfhwdq5l77gczhzv33bhmfblk8ccm"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             ;; It's easier to run tests after install.
-             ;; Make installed package available for running the tests
-             (add-installed-pythonpath inputs outputs)
-             (invoke "py.test" "-vv" "-k" "not test_syntax_error"))))))
+     (list
+      #:test-flags
+      '(list "-k" "not test_syntax_error")))
     (native-inputs
-     (list python-coverage python-pytest python-pytest-pep8))
+     (list python-coverage python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-pyflakes))
     (home-page "https://github.com/fschulze/pytest-flakes")
@@ -3485,7 +3432,6 @@ backported from Python 2.7 for Python 2.4+.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-mock
-           python-nose
            python-assertpy
            python-pathpy
            python-pyhamcrest
@@ -3540,37 +3486,6 @@ tests written in a natural language style, backed up by Python code.")
     (description "This package provides testing utility modules for testing
 JSON APIs with Behave.")
     (license license:expat)))
-
-(define-public python-rednose
-  (package
-    (name "python-rednose")
-    (version "1.2.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "rednose" version))
-        (sha256
-          (base32
-            "11x5nx5b4wdq04s7vj1gcdl07jvvkfb37p0r5lg773gr5rr8mj6h"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-setup.py
-                    (lambda _
-                      ;; Six is only required for tests and later versions
-                      ;; work fine.
-                      (substitute* "setup.py"
-                        (("six==1.10.0") "six"))
-                      #t)))))
-    (propagated-inputs
-     (list python-colorama python-termstyle))
-    (native-inputs
-     (list python-six python-nose))
-    (home-page "https://github.com/JBKahn/rednose")
-    (synopsis "Colored output for Python nosetests")
-    (description "This package provides colored output for the
-@command{nosetests} command of the Python Nose unit test framework.")
-    (license license:bsd-3)))
 
 (define-public python-nose-exclude
   (package
@@ -3631,30 +3546,6 @@ Monte-Carlo style unit testing.  The idea is to improve testing by
 running your code against a large number of randomly generated input
 scenarios.")
     (license license:expat)))
-
-(define-public python-nose-randomly
-  (package
-    (name "python-nose-randomly")
-    (version "1.2.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "nose-randomly" version))
-       (sha256
-        (base32 "0z662rqhfk4bjmg806mn4frb8nz4gbh7mrddsrhfffp1g4yklj3y"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-nose python-numpy))
-    (home-page "https://github.com/adamchainz/nose-randomly")
-    (synopsis
-     "Nose plugin to randomly order tests and control random.seed")
-    (description
-     "This is a @code{Nose} plugin to randomly order tests which can be quite
-powerful in discovering hidden flaws in the tests themselves, while helping to
-reduce inter-test dependencies.  It also helps in controlling @code{random.seed},
-by resetting it to a repeatable number for each test, enabling the tests to
-create data based on random numbers and yet remain repeatable.")
-    (license license:bsd-3)))
 
 (define-public python-nose-timer
   (package
@@ -4398,23 +4289,25 @@ directories and files.")
 (define-public python-pytest-regressions
   (package
     (name "python-pytest-regressions")
-    (version "2.5.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-regressions" version))
+       (uri (pypi-uri "pytest_regressions" version))
        (sha256
-        (base32 "1nbg20m83jsj9p12fm4qn5b7hc3vqb5h5fzfi6zvmwygq627i341"))))
+        (base32 "0pph1935rq180ax0szwwf3c6zq2v40snypagr49914i31570cc2c"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Do not fail on warning.
+      ;; DeprecationWarning: module 'sre_constants' is deprecated
+      #:test-flags #~(list "-W" "ignore::DeprecationWarning")))
     (native-inputs
-     (list python-matplotlib
-           python-numpy
+     (list python-numpy
            python-pandas
-           python-pillow
-           python-restructuredtext-lint
+           python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-pytest))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-pytest-datadir
            python-pyyaml))

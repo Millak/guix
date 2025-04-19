@@ -31,6 +31,7 @@
   #:use-module (gnu packages graph)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -59,24 +60,42 @@
                      "test_copy_cut_paste"
                      ;; AttributeError: 'NoneType' object has no attribute
                      ;; 'isEnabled'
-                     "test_item_context_menu")
+                     "test_item_context_menu"
+                     ;; Tests fail with error: Failed: CALL ERROR: Exceptions
+                     ;; caught in Qt event loop.
+                     "test_create_new_window"
+                     "test_new_window"
+                     "test_dont_load_swp_on_new_window"
+                     "test_toolbox"
+                     "test_widgettoolgrid"
+                     "test_editlinksnode"
+                     "test_links_edit"
+                     "test_links_edit_widget"
+                     "test_flattened"
+                     "test_tooltree_registry")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               ;; Relax hard requirment of PIP.
-               ((".*pip>=18.0.*") ""))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;; Relax hard requirment of PIP.
+                ((".*pip>=18.0.*") ""))))
           (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp")
+              (setenv "QT_PLUGIN_PATH"
+                      (string-append #$(this-package-input "qtbase") "/lib/qt6/plugins:"
+                                     (getenv "QT_PLUGIN_PATH")))
               (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
      (list python-pytest
+           python-pytest-qt
            python-setuptools
            python-trubar
            python-wheel))
+    (inputs
+     (list qtbase))
     (propagated-inputs
      (list python-anyqt
            python-cachecontrol

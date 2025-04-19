@@ -1065,25 +1065,29 @@ memory, disks, network and processes.")
        (uri (pypi-uri "bpytop" version))
        (sha256
         (base32 "1clvajbv7pzlya9s1xs6dvjic8rv3kx7aqiwnjxapiypx246gdjk"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; No tests in Pypi archive.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api")
+                 "poetry.core.masonry.api"))))
+          (add-after 'install 'install-themes
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((themes (string-append (site-packages inputs outputs)
+                                           "/bpytop-themes")))
+                (mkdir-p themes)
+                (copy-recursively "themes" themes)))))))
     (inputs
      (list python-psutil))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; sanity-check phase fail, but the application seems to be working
-         (delete 'sanity-check)
-         (add-after 'install 'install-themes
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((themes (string-append (assoc-ref outputs "out")
-                                          "/lib/python"
-                                          ,(version-major+minor
-                                            (package-version python))
-                                          "/site-packages/bpytop-themes")))
-               (mkdir-p themes)
-               (copy-recursively "themes" themes)))))))
-    (home-page
-     "https://github.com/aristocratos/bpytop")
+    (native-inputs
+     (list python-poetry-core))
+    (home-page "https://github.com/aristocratos/bpytop")
     (synopsis "Resource monitor")
     (description "Resource monitor that shows usage and stats for processor,
 memory, disks, network and processes.  It's a Python port and continuation of
@@ -3280,7 +3284,7 @@ provides the following commands:
      ;; variable in the tests/cpan.scm test.
      (list (search-path-specification
             (variable "GUIX_PYTHONPATH")
-            (files (list "lib/python3.10/site-packages")))))
+            (files (list "lib/python3.11/site-packages")))))
     (home-page "https://www.ansible.com/")
     (synopsis "Radically simple IT automation")
     (description "Ansible aims to be a radically simple IT automation system.

@@ -2702,7 +2702,7 @@ execution of any hook written in any language before every commit.")
     (native-search-paths
      (list (search-path-specification
             (variable "HGEXTENSIONPATH")
-            (files '("lib/python3.10/site-packages/hgext3rd")))))
+            (files '("lib/python3.11/site-packages/hgext3rd")))))
     (home-page "https://www.mercurial-scm.org/")
     (synopsis "Decentralized version control system")
     (description
@@ -4312,53 +4312,50 @@ defects faster.")
     (license license:expat)))
 
 (define-public gita
-  (let ((commit "e41b504dca90a25e9be27f296da7ce22e5782893")
-        (revision "1"))
-    (package
-      (name "gita")
-      (version (git-version "0.12.9" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/nosarthur/gita")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1k03zgcbhl91cgyh4k7ywyjp00y63q4bqbimncqh5b3lni8l8j5l"))))
-      (build-system python-build-system)
-      (native-inputs
-       (list git ;for tests
-             python-pytest))
-      (propagated-inputs
-       (list python-pyyaml))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (substitute* "tests/test_main.py"
-                 (("'gita\\\\n'") "'source\\n'")
-                 (("'gita'") "'source'"))
-               (invoke (search-input-file inputs "/bin/git")
-                       "init")
-               (add-installed-pythonpath inputs outputs)
-               (invoke (search-input-file inputs "/bin/pytest")
-                       "-vv" "tests")))
-           (add-after 'install 'install-shell-completions
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bash-completion (string-append out "/etc/bash_completion.d"))
-                      (zsh-completion (string-append out "/etc/zsh/site-functions")))
-                 (mkdir-p bash-completion)
-                 (copy-file ".gita-completion.bash"
-                            (string-append bash-completion "/gita"))
-                 (mkdir-p zsh-completion)
-                 (copy-file ".gita-completion.zsh"
-                            (string-append zsh-completion "/_gita"))))))))
-      (home-page "https://github.com/nosarthur/gita")
-      (synopsis "Command-line tool to manage multiple Git repos")
-      (description "This package provides a command-line tool to manage
+  (package
+    (name "gita")
+    (version "0.16.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nosarthur/gita")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "118dzmjgml0c32yllr2178ash2hvgn201i463bv4y0qbywajm9ax"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--ignore" "tests/test_main.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (invoke (string-append
+                       #$(this-package-native-input "git-minimal") "/bin/git")
+                      "init")))
+          (add-after 'install 'install-shell-completions
+            (lambda _
+              (let* ((out #$output)
+                     (bash-completion (string-append out "/etc/bash_completion.d"))
+                     (zsh-completion (string-append out "/etc/zsh/site-functions")))
+                (mkdir-p bash-completion)
+                (copy-file "auto-completion/bash/.gita-completion.bash"
+                           (string-append bash-completion "/gita"))
+                (mkdir-p zsh-completion)
+                (copy-file "auto-completion/zsh/.gita-completion.zsh"
+                           (string-append zsh-completion "/_gita"))))))))
+    (native-inputs
+     (list git-minimal/pinned ;for tests
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-argcomplete))
+    (home-page "https://github.com/nosarthur/gita")
+    (synopsis "Command-line tool to manage multiple Git repos")
+    (description "This package provides a command-line tool to manage
 multiple Git repos.
 
 This tool does two things:
@@ -4369,7 +4366,7 @@ commit message side by side
 @end itemize
 
 If several repos are related, it helps to see their status together.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public ghq
   (package

@@ -11,7 +11,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2019, 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2019, 2022, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016, 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -57,6 +57,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-tls)
@@ -141,17 +142,19 @@ Password Scheme\"} by Niels Provos and David Mazieres.")
        (uri (pypi-uri "passlib" version))
        (sha256
         (base32 "015y5qaw9qnxr29lg60dml1g5rbqd4586wy5n8m41ib55gvm1zfy"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-nose))
-    (propagated-inputs
-     (list python-bcrypt))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-PYTHON_EGG_CACHE
-           ;; Some tests require access to "$HOME/.cython".
-           (lambda _ (setenv "PYTHON_EGG_CACHE" "/tmp"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-PYTHON_EGG_CACHE
+            ;; Some tests require access to "$HOME/.cython".
+            (lambda _
+              (setenv "PYTHON_EGG_CACHE" "/tmp"))))))
+    (native-inputs
+     (list python-nose python-setuptools python-wheel))
+    (propagated-inputs
+     (list python-argon2-cffi python-bcrypt python-cryptography))
     (home-page "https://bitbucket.org/ecollins/passlib")
     (synopsis "Comprehensive password hashing framework")
     (description
@@ -161,32 +164,6 @@ as a framework for managing existing password hashes.  It's designed to be
 useful for a wide range of tasks, from verifying a hash found in /etc/shadow,
 to providing full-strength password hashing for multi-user application.")
     (license license:bsd-3)))
-
-(define-public python-pyblake2
-  (package
-    (name "python-pyblake2")
-    (version "1.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyblake2" version))
-       (sha256
-        (base32
-         "0gz9hgznv5zw4qjq43xa56y0yikimx30gffvibxzm0nv5sq7xk2w"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/dchest/pyblake2")
-    (synopsis "BLAKE2 hash function for Python")
-    (description "BLAKE2 is a cryptographic hash function, which offers
-stronger security while being as fast as MD5 or SHA-1, and comes in two
-flavors: @code{BLAKE2b}, optimized for 64-bit platforms and produces digests
-of any size between 1 and 64 bytes, and @code{BLAKE2s}, optimized for 8- to
-32-bit platforms and produces digests of any size between 1 and 32 bytes.
-
-This package provides a Python interface for BLAKE2.")
-    ;; The COPYING file declares it as public domain, with the option to
-    ;; alternatively use and redistribute it under a variety of permissive
-    ;; licenses. cc0 is explicitly mentioned in setup.py and pyblake2module.c.
-    (license (list license:public-domain license:cc0))))
 
 (define-public python-paramiko
   (package
@@ -455,13 +432,7 @@ blake3, a cryptographic hash function.")
                      ;; Those tests uses PKCS12, which has been removed in
                      ;; pyopenssl 23.3.0:
                      "not test_custom_not_before_not_after"
-                     "test_ca_cert_in_mem"
-                     ;; Those tests try to download certificates:
-                     "test_file_wildcard"
-                     "test_file_wildcard_subdomains"
-                     "test_in_mem_parent_wildcard_cert"
-                     "test_in_mem_parent_wildcard_cert_at_tld"
-                     "test_in_mem_parent_wildcard_cert_2")
+                     "test_ca_cert_in_mem")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -474,7 +445,7 @@ blake3, a cryptographic hash function.")
     (propagated-inputs
      (list python-pyopenssl python-tldextract))
     (native-inputs
-     (list python-pytest-cov python-setuptools python-wheel))
+     (list nss-certs-for-test python-pytest-cov python-setuptools python-wheel))
     (home-page "https://github.com/ikreymer/certauth")
     (synopsis "Certificate authority creation tool")
     (description "This package provides a small library, built on top of
@@ -658,7 +629,13 @@ ciphers, message digests and key derivation functions.")
                 ;; PyOpenSSL runs tests against a certificate with a fixed
                 ;; expiry time.  To ensure successful builds in the future,
                 ;; set the time to roughly the release date.
-                (invoke "faketime" "2024-07-20" "pytest" "-vv" "-k"
+                (invoke "faketime" "2024-07-20" "pytest" "-vv"
+                        "--deselect"
+                        ;; This test seems to fail when using faketime, at
+                        ;; least on aarch64-linux with OSError: [Errno 22]
+                        ;; Invalid argument
+                        "tests/test_ssl.py::TestDTLS::test_timeout"
+                        "-k"
                         ;; This test tries to look up certificates from
                         ;; the compiled-in default path in OpenSSL, which
                         ;; does not exist in the build environment.
@@ -1657,17 +1634,14 @@ signatures.")
         (uri (pypi-uri "PGPy" version))
         (sha256
          (base32 "10w3h934fi1ijx72ppn67a50yhkf8n1db6xx02gk2fjc7wsjx717"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+     (list #:test-flags
+           ;; All broken tests are in this file.
+           ;; They fail with ValueError: key_size must be at least 1024-bits.
+           #~(list "--ignore" "tests/test_10_exceptions.py")))
     (native-inputs
-     (list python-pytest
-           python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-cryptography python-pyasn1))
     (home-page "https://github.com/SecurityInnovation/PGPy")
     (synopsis "Python implementation of OpenPGP")

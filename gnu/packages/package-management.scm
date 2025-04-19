@@ -1123,6 +1123,34 @@ Anaconda Cloud.  Anaconda Cloud is useful for sharing packages, notebooks and
 environments.")
     (license license:bsd-3)))
 
+(define-public python-conda-inject
+  (package
+    (name "python-conda-inject")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/koesterlab/conda-inject")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aig9l676wc2sjb20y7rdqf0hfcfjhh92yfiy82mf7kfnv7rp3rk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; tests require setting up Conda
+    (native-inputs
+     (list python-poetry-core))
+    (propagated-inputs
+     (list python-pyyaml))
+    (home-page "https://github.com/koesterlab/conda-inject")
+    (synopsis "Inject a conda environment into the current python environment")
+    (description
+     "This package provides helper functions for injecting a conda
+environment into the current python environment (by modifying @code{sys.path},
+without actually changing the current python environment).")
+    (license license:expat)))
+
 (define-public python-conda-package-handling
   (package
     (name "python-conda-package-handling")
@@ -1315,7 +1343,7 @@ written entirely in Python.")
 (define-public conan
   (package
     (name "conan")
-    (version "2.0.9")
+    (version "2.7.1")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI archive
@@ -1324,13 +1352,74 @@ written entirely in Python.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ykfj7c3i0b57s7ql3p2lawxdzd2cn36f3k8p64lyzla8rwv4xdx"))))
-    (build-system python-build-system)
+        (base32 "00mrx1ighvf6r6fy2iqxr286w3jfd0gwlzcqsw15cm9axblx5av9"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:modules '((guix build python-build-system)
+      #:modules '((guix build pyproject-build-system)
                   (guix build utils)
                   (ice-9 format))
+      #:test-flags
+      (let ((system (or (%current-target-system)
+                        (%current-system))))
+        #~(list "-n" (number->string (parallel-job-count))
+                "-m" "not slow"
+                "--ignore=test/performance/"
+                ;; E   ModuleNotFoundError: No module named 'docker'
+                "--ignore=test/functional/command/runner_test.py"
+                ;; Disable problematic tests.
+                "-k"
+                (string-append
+                 ;; These tests rely on networking.
+                 "not download_retries_errors "
+                 "and not ftp "
+                 ;; These tests are for old versions of cmake.
+                 "and not test_custom_cmake_3_16 "
+                 "and not test_custom_cmake_3_17 "
+                 "and not test_custom_cmake_3_19 "
+                 ;; Guix sets PKG_CONFIG_PATH itself, which is not
+                 ;; expected by the following test.
+                 "and not pkg_config_path "
+                 "and not compare " ;caused by newer node-semver?
+                 ;; This test hard-codes a compiler version.
+                 "and not test_toolchain "
+                 ;; The 'test_list' tests may fail
+                 ;; non-deterministically (see:
+                 ;; https://github.com/conan-io/conan/issues/13583).
+                 "and not test_list "
+                 ;; These tests fail when Autoconf attempt to load a
+                 ;; shared library in the same directory (see:
+                 ;; https://github.com/conan-io/conan/issues/13577).
+                 "and not test_other_client_can_link_autotools "
+                 "and not test_autotools_lib_template "
+                 ;; Sometimes fail: https://github.com/conan-io/conan/issues/15936
+                 "and not test_basic_parallel_install "
+                 ;; These tests require additional build tools
+                 "and not test_premake "
+                 "and not test_sconsdeps "
+                 ;; Unclear why libc is not found properly
+                 "and not test_profile_detect_libc "
+                 #$(if (not (string-prefix? "x86_64" system))
+                       ;; These tests either assume the machine is
+                       ;; x86_64, or require a cross-compiler to target
+                       ;; it.
+                       (string-append
+                        "and not cpp_package "
+                        "and not exclude_code_analysis "
+                        "and not cmakedeps_multi "
+                        "and not locally_build_linux "
+                        "and not custom_configuration "
+                        "and not package_from_system "
+                        "and not cross_build_command "
+                        "and not test_package "
+                        "and not test_same ")
+                       "")
+                 #$(if (not (or (string-prefix? "x86_64" system)
+                                (string-prefix? "i686" system)))
+                       ;; This test only works with default arch "x86",
+                       ;; "x86_64", "sparc" or "sparcv9".
+                       "and not settings_as_a_dict_conanfile "
+                       ""))))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
@@ -1345,21 +1434,22 @@ written entirely in Python.")
               ;; The test suite expects GCC 9 to be used (see:
               ;; https://github.com/conan-io/conan/issues/13575).  Render the
               ;; check version agnostic.
-              (substitute* "conans/test/functional/toolchains/meson/_base.py"
+              (substitute* "test/functional/toolchains/meson/_base.py"
                 (("__GNUC__9")
                  "__GNUC__"))))
           (add-after 'unpack 'use-current-cmake-for-tests
             (lambda _
-              (substitute* (find-files "conans/test" "\\.py$")
-                (("@pytest.mark.tool\\(\"cmake\", \"3.23\")")
+              (substitute* (find-files "test" "\\.py$")
+                (("@pytest.mark.tool\\(\"cmake\", \".*\")")
                  "@pytest.mark.tool(\"cmake\")"))))
           (add-before 'check 'configure-tests
             (lambda _
               (let* ((cmake-version #$(version-major+minor
-                                       (package-version cmake)))
+                                       (package-version
+                                        (this-package-native-input "cmake"))))
                      (pkg-config-version #$(version-major+minor
                                             (package-version pkg-config))))
-                (call-with-output-file "conans/test/conftest_user.py"
+                (call-with-output-file "test/conftest_user.py"
                   (lambda (port)
                     (format port "\
 tools_locations = {
@@ -1378,61 +1468,12 @@ tools_locations = {
           (add-before 'check 'set-home
             (lambda _
               (setenv "HOME" "/tmp")))
-          (replace 'check
-            (lambda* (#:key tests? outputs #:allow-other-keys)
-              (define system #$(or (%current-target-system)
-                                   (%current-system)))
+          (add-before 'check 'configure-tests
+            (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (setenv "CONFIG_SHELL" (which "sh"))
                 (setenv "PATH" (string-append (getenv "PATH") ":"
-                                              #$output "/bin"))
-                (invoke "python" "-m" "pytest" "-vv"
-                        "-n" (number->string (parallel-job-count))
-                        "-m" "not slow"
-                        ;; Disable problematic tests.
-                        "-k"
-                        (string-append
-                         ;; These tests rely on networking.
-                         "not download_retries_errors "
-                         "and not ftp "
-                         ;; Guix sets PKG_CONFIG_PATH itself, which is not
-                         ;; expected by the following test.
-                         "and not pkg_config_path "
-                         "and not compare " ;caused by newer node-semver?
-                         ;; This test hard-codes a compiler version.
-                         "and not test_toolchain "
-                         ;; The 'test_list' tests may fail
-                         ;; non-deterministically (see:
-                         ;; https://github.com/conan-io/conan/issues/13583).
-                         "and not test_list "
-                         ;; These tests fail when Autoconf attempt to load a
-                         ;; shared library in the same directory (see:
-                         ;; https://github.com/conan-io/conan/issues/13577).
-                         "and not test_other_client_can_link_autotools "
-                         "and not test_autotools_lib_template "
-                         ;; Sometimes fail: https://github.com/conan-io/conan/issues/15936
-                         "and not test_basic_parallel_install "
-                         (if (not (string-prefix? "x86_64" system))
-                             ;; These tests either assume the machine is
-                             ;; x86_64, or require a cross-compiler to target
-                             ;; it.
-                             (string-append
-                              "and not cpp_package "
-                              "and not exclude_code_analysis "
-                              "and not cmakedeps_multi "
-                              "and not locally_build_linux "
-                              "and not custom_configuration "
-                              "and not package_from_system "
-                              "and not cross_build_command "
-                              "and not test_package "
-                              "and not test_same ")
-                             "")
-                         (if (not (or (string-prefix? "x86_64" system)
-                                      (string-prefix? "i686" system)))
-                             ;; This test only works with default arch "x86",
-                             ;; "x86_64", "sparc" or "sparcv9".
-                             "and not settings_as_a_dict_conanfile "
-                             "")))))))))
+                                              #$output "/bin"))))))))
     (propagated-inputs
      (list python-bottle
            python-colorama
@@ -1450,7 +1491,7 @@ tools_locations = {
            python-requests
            python-six
            python-tqdm
-           python-urllib3))
+           python-urllib3-1.26))
     (inputs
      (list coreutils))                  ;for printenv
     (native-inputs
@@ -1467,7 +1508,9 @@ tools_locations = {
            python-parameterized
            python-pytest
            python-pytest-xdist
+           python-setuptools
            python-webtest
+           python-wheel
            which))
     (home-page "https://conan.io")
     (synopsis "Decentralized C/C++ package manager")
