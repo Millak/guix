@@ -1424,7 +1424,7 @@ for different users.  Refer to @samp{man 5 ngircd.conf} for more details.")
    "Turn on debugging messages."
    (serializer empty-serializer))
   (shepherd-requirement
-   (list-of-symbols '(user-processes))
+   (list-of-symbols '(user-processes networking))
    "Shepherd requirements the service should depend on."
    (serializer empty-serializer))
   (global

@@ -30416,7 +30416,7 @@ The @code{ngircd} package to use.
 @item @code{debug?} (default: @code{#f}) (type: boolean)
 Turn on debugging messages.
 
-@item @code{shepherd-requirement} (default: @code{(user-processes)}) (type: list-of-symbols)
+@item @code{shepherd-requirement} (default: @code{(user-processes networking)}) (type: list-of-symbols)
 Shepherd requirements the service should depend on.
 
 @item @code{global} (type: ngircd-global)
