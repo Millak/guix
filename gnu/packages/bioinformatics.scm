@@ -17404,31 +17404,21 @@ API services.")
 (define-public python-mgatk
   (package
     (name "python-mgatk")
-    (version "0.6.7")
+    (version "0.7.0")
     (source
      (origin
-       (method git-fetch)
+       (method git-fetch) ; no tests in PyPI archive
        (uri (git-reference
              (url "https://github.com/caleblareau/mgatk")
-             ;; There is no tag for 0.6.7, but this is the commit
-             ;; corresponding to the version bump.
-             (commit "2633903acb1fb406bb58c787f320c3641f446ee7")))
+             ;; There is no tag for 0.7.0, but this is the commit
+             ;; corresponding to the version bump, see
+             ;; <https://github.com/caleblareau/mgatk/issues/101>.
+             (commit "8ffeac8476564049ef51b4d4d40eed452ae2fc38")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "19iklfv1brwsfg1l5lrs3z8m343nskkn1998c1fs7fdn0lgrki2p"))))
+         "1qspzglj487bpyg8wpc29fjr8mj993q8w3jrdhylggiqpjx4l607"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; The md5 module has been removed in Python 3
-          (add-after 'unpack 'python3-compatibility
-            (lambda _
-              (substitute* "tests/test_cli.py"
-                (("import md5") "from hashlib import md5")
-                (("md5.new") "md5")
-                (("\\.digest") ".hexdigest")))))))
     (propagated-inputs
      (list python-biopython
            python-click
