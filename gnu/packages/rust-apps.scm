@@ -935,7 +935,7 @@ Features include:
 (define-public emacs-lsp-booster
   (package
     (name "emacs-lsp-booster")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -944,23 +944,12 @@ Features include:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xx32ms3mpi1clxf74mx7nanj0iw9qkmhi0a53fx8fkz0jw2fq8f"))))
+        (base32 "12vrgqyvm1841i9ld9b3axa9ybgqf3kr6nbfd0l4zdnhyljz3zxq"))))
     (build-system cargo-build-system)
     (arguments
-     (list
-      #:cargo-inputs `(("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-clap" ,rust-clap-4)
-                       ("rust-clap-verbosity-flag" ,rust-clap-verbosity-flag-2)
-                       ("rust-lazy-static" ,rust-lazy-static-1)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-smallvec" ,rust-smallvec-1)
-                       ("rust-env-logger" ,rust-env-logger-0.10))
-      #:cargo-development-inputs `(("rust-emacs" ,rust-emacs-0.18)
-                                   ("rust-tempfile" ,rust-tempfile-3))
-      #:install-source? #f))
+     (list #:install-source? #f))
     (native-inputs (list emacs))    ; Not emacs-minimal
+    (inputs (cargo-inputs 'emacs-lsp-booster))
     (home-page "https://github.com/blahgeek/emacs-lsp-booster")
     (synopsis "Emacs LSP performance booster")
     (description
