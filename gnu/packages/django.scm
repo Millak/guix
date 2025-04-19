@@ -1470,6 +1470,8 @@ forms using your favorite CSS framework, without writing template code.")
         ;; TODO: Report upstream.
         (add-after 'unpack 'add-missing-init-files
           (lambda _
+            (substitute* "setup.py"
+              (("package_data=.*,") "include_package_data=True,"))
             (call-with-output-file "compressor/templates/__init__.py"
               (const #t))
             (call-with-output-file "compressor/templates/compressor/__init__.py"
