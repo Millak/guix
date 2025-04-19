@@ -1467,60 +1467,6 @@ defaults for 80% of the use cases.")
 repositories.")
     (license (list license:expat license:asl2.0))))
 
-(define-public gitoxide-core
-  (package
-    (name "gitoxide-core")
-    (version "0.42.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gitoxide-core" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "190ry6gc9zmjw1qbh8w5k7pf0150cpwj5x3dvl46c7nicxv3mjnd"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-async-io" ,rust-async-io-2)
-                       ("rust-async-net" ,rust-async-net-2)
-                       ("rust-async-trait" ,rust-async-trait-0.1)
-                       ("rust-blocking" ,rust-blocking-1)
-                       ("rust-bytesize" ,rust-bytesize-1)
-                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
-                       ("rust-document-features" ,rust-document-features-0.2)
-                       ("rust-fs-err" ,rust-fs-err-2)
-                       ("rust-futures-io" ,rust-futures-io-0.3)
-                       ("rust-futures-lite" ,rust-futures-lite-2)
-                       ("rust-gix" ,rust-gix-0.67)
-                       ("rust-gix-archive" ,rust-gix-archive-0.16)
-                       ("rust-gix-fsck" ,rust-gix-fsck-0.7)
-                       ("rust-gix-pack" ,rust-gix-pack-0.54)
-                       ("rust-gix-status" ,rust-gix-status-0.14)
-                       ("rust-gix-transport" ,rust-gix-transport-0.43)
-                       ("rust-gix-url" ,rust-gix-url-0.28)
-                       ("rust-jwalk" ,rust-jwalk-0.8)
-                       ("rust-layout-rs" ,rust-layout-rs-0.1)
-                       ("rust-open" ,rust-open-5)
-                       ("rust-parking-lot" ,rust-parking-lot-0.12)
-                       ("rust-rusqlite" ,rust-rusqlite-0.32)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-smallvec" ,rust-smallvec-1)
-                       ("rust-sysinfo" ,rust-sysinfo-0.31)
-                       ("rust-tempfile" ,rust-tempfile-3)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-tracing" ,rust-tracing-0.1)
-                       ("rust-tracing-forest" ,rust-tracing-forest-0.1)
-                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
-    (home-page "https://github.com/GitoxideLabs/gitoxide")
-    (synopsis "The library implementing all capabilities of the gitoxide CLI")
-    (description
-     "This package provides the library implementing all capabilities of the
-gitoxide CLI.")
-    ;; Only used as an implementation detail for gitoxide.
-    (properties `((hidden? . #t)))
-    (license (list license:expat license:asl2.0))))
-
 (define-public gitui
   (package
     (name "gitui")
