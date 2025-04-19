@@ -45,6 +45,14 @@
        (sha256
         (base32
          "1yw8i8jv5iv1kkz1aqimskw7fpichjn6ww0fq0czbalwj290bw8s"))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-read-mode-in-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                (("'rU'") "'r'")))))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-mock
