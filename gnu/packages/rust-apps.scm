@@ -1335,28 +1335,15 @@ repositories.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1q8gkx7djrfdl8fykppsqkxiadsq47v0xhj612nxlrvjz8n77ygn"))))
-    (build-system cargo-build-system)
+    (build-system meson-build-system)
     (arguments
-     `(#:install-source? #f
-       #:vendor-dir "vendor"
-       #:cargo-inputs (("rust-glib" ,rust-glib-0.18)
-                       ("rust-libadwaita" ,rust-libadwaita-0.5)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-pipewire" ,rust-pipewire-0.7))
-       #:imported-modules (,@%meson-build-system-modules
-                           ,@%glib-or-gtk-build-system-modules
+     `(#:imported-modules (,@%meson-build-system-modules
                            ,@%cargo-build-system-modules)
-       #:modules ((guix build cargo-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                  ((guix build meson-build-system) #:prefix meson:)
+       #:modules (((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build meson-build-system)
                   (guix build utils))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
-           (assoc-ref glib-or-gtk:%standard-phases
-                      'generate-gdk-pixbuf-loaders-cache-file))
          (add-after 'unpack 'prepare-for-build
            (lambda _
              (substitute* "meson.build"
@@ -1365,30 +1352,22 @@ repositories.")
                (("update_desktop_database: true")
                 "update_desktop_database: false"))
              (delete-file "Cargo.lock")))
-         ;; Add meson-configure phase here and not before 'configure because
-         ;; the meson 'configure phase changes to a different directory and
+         ;; The meson 'configure phase changes to a different directory and
          ;; we need it created before unpacking the crates.
-         (add-before 'unpack-rust-crates 'meson-configure
+         (add-after 'configure 'prepare-cargo-build-system
            (lambda args
-             (apply (assoc-ref meson:%standard-phases 'configure)
-                    #:build-type "debugoptimized"
-                    #:configure-flags '()
-                    args)))
-         (replace 'build
-           (assoc-ref meson:%standard-phases 'build))
-         (replace 'check
-           (lambda args
-             (apply (assoc-ref meson:%standard-phases 'check)
-                    #:test-options '()
-                    args)))
-         (replace 'install
-           (assoc-ref meson:%standard-phases 'install))
-         (add-after 'install 'glib-or-gtk-compile-schemas
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (add-after 'install 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
-    (native-inputs (list clang pkg-config meson ninja))
-    (inputs (list glib gtk libadwaita pipewire))
+             (for-each
+              (lambda (phase)
+                (format #t "Running cargo phase: ~a~%" phase)
+                (apply (assoc-ref cargo:%standard-phases phase)
+                       #:vendor-dir "vendor"
+                       args))
+              '(unpack-rust-crates
+                configure
+                check-for-pregenerated-files
+                patch-cargo-checksums)))))))
+    (native-inputs (list clang pkg-config rust `(,rust "cargo")))
+    (inputs (cons* glib gtk libadwaita pipewire (cargo-inputs 'helvum)))
     (home-page "https://gitlab.freedesktop.org/pipewire/helvum")
     (synopsis "GTK patchbay for pipewire")
     (description "This package provides a GTK patchbay for pipewire.")
