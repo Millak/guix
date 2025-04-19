@@ -1081,34 +1081,6 @@ This package is the community maintained fork of @code{exa}.")
       '(list "--release" "--"
              "--skip=test_owner_root")
       #:install-source? #f
-      #:cargo-inputs
-      `(("rust-aho-corasick" ,rust-aho-corasick-1)
-        ("rust-anyhow" ,rust-anyhow-1)
-        ("rust-argmax" ,rust-argmax-0.3)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
-        ("rust-ctrlc" ,rust-ctrlc-3)
-        ("rust-etcetera" ,rust-etcetera-0.8)
-        ("rust-faccess" ,rust-faccess-0.2)
-        ("rust-globset" ,rust-globset-0.4)
-        ("rust-humantime" ,rust-humantime-2)
-        ("rust-ignore" ,rust-ignore-0.4)
-        ("rust-jemallocator" ,rust-jemallocator-0.5)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-lscolors" ,rust-lscolors-0.19)
-        ("rust-nix" ,rust-nix-0.29)
-        ("rust-normpath" ,rust-normpath-1)
-        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-regex-syntax" ,rust-regex-syntax-0.8)
-        ("rust-version-check" ,rust-version-check-0.9))
-      #:cargo-development-inputs
-      `(("rust-diff" ,rust-diff-0.1)
-        ("rust-filetime" ,rust-filetime-0.2)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-test-case" ,rust-test-case-3))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'override-jemalloc
@@ -1135,7 +1107,7 @@ This package is the community maintained fork of @code{exa}.")
                                 (string-append out "/share/zsh/site-functions"))
                   (rename-file (string-append out "/etc/bash_completion.d/fd.bash")
                                (string-append out "/etc/bash_completion.d/fd")))))))))
-     (inputs (list jemalloc))
+     (inputs (cons jemalloc (cargo-inputs 'fd)))
      (home-page "https://github.com/sharkdp/fd")
      (synopsis "Simple, fast and user-friendly alternative to find")
      (description
