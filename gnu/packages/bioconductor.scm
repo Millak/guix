@@ -4195,13 +4195,13 @@ can enrich this metadata with context-specific properties.")
 (define-public r-alabaster-ranges
   (package
     (name "r-alabaster-ranges")
-    (version "1.6.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "alabaster.ranges" version))
        (sha256
-        (base32 "06xky6gdwhvz09v6yafwr65lq3bj4s8qz5iqpp120m9nncfzf1f4"))))
+        (base32 "0xijg8rr7zq3jx0zp1pf9rkxlkgv0dg7n8dsn2aisy1lznz7l8cs"))))
     (properties `((upstream-name . "alabaster.ranges")))
     (build-system r-build-system)
     (propagated-inputs (list r-alabaster-base
@@ -4211,7 +4211,7 @@ can enrich this metadata with context-specific properties.")
                              r-iranges
                              r-rhdf5
                              r-s4vectors))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-jsonlite r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/alabaster.ranges")
     (synopsis "Load and save Ranges-related artifacts from file")
     (description
