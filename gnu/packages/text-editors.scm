@@ -162,53 +162,74 @@ extensions over the standard utility.")
     (license license:gpl3+)))
 
 (define-public micro
-  (package
-    (name "micro")
-    (version "2.0.14")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/zyedidia/micro")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1pcfsaq7k6q59vh3xgh8gy350apkv5rkc09d4fh15lx7m6bxbwka"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:install-source? #f
-      #:import-path "github.com/zyedidia/micro/cmd/micro"
-      #:unpack-path "github.com/zyedidia/micro"
-      ;; Step away from cmd/micro to test the whole project.
-      #:test-subdirs #~(list "../../...")))
-    (inputs
-     (list go-github-com-blang-semver
-           go-github-com-dustin-go-humanize
-           go-github-com-go-errors-errors
-           go-github-com-layeh-gopher-luar
-           go-github-com-mattn-go-isatty
-           go-github-com-mitchellh-go-homedir
-           go-github-com-sergi-go-diff
-           go-github-com-stretchr-testify
-           go-github-com-yuin-gopher-lua
-           go-github-com-zyedidia-clipper
-           go-github-com-zyedidia-glob
-           go-github-com-zyedidia-go-runewidth
-           go-github-com-zyedidia-go-shellquote
-           go-github-com-zyedidia-json5
-           go-github-com-zyedidia-tcell-v2
-           go-github-com-zyedidia-terminal
-           go-golang-org-x-text
-           go-gopkg-in-yaml-v2))
-    (home-page "https://github.com/zyedidia/micro")
-    (synopsis "Modern and intuitive terminal-based text editor")
-    (description
-     "@code{micro} is a terminal-based text editor that aims to be easy to use and
+  (let ((commit "04c577049ca898f097cd6a2dae69af0b4d4493e1")
+        (date "April 16, 2025"))
+    (package
+      (name "micro")
+      (version "2.0.14")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/zyedidia/micro")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1pcfsaq7k6q59vh3xgh8gy350apkv5rkc09d4fh15lx7m6bxbwka"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:install-source? #f
+        #:import-path "github.com/zyedidia/micro/v2/cmd/micro"
+        #:unpack-path "github.com/zyedidia/micro/v2"
+        #:build-flags
+        ;; Set value for variables in the `--version` flag
+        #~(list (format #f "-ldflags=~a ~a ~a"
+                        (string-append
+                         "-X github.com/zyedidia/micro/v2/internal/util.Version="
+                         #$version)
+                        (string-append
+                         "-X github.com/zyedidia/micro/v2/internal/util.CommitHash="
+                         (string-take #$commit 7))
+                        (format #f
+                         "-X 'github.com/zyedidia/micro/v2/internal/util.CompileDate=~a'"
+                         #$date)))
+        ;; Step away from cmd/micro to test the whole project.
+        #:test-subdirs
+        #~(list "../../...")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Generate syntax files.
+            (add-before 'build 'go-generate
+              (lambda _
+                (invoke "go" "generate" "-v" "-x"
+                        "github.com/zyedidia/micro/v2/runtime"))))))
+      (inputs (list go-github-com-blang-semver
+                    go-github-com-dustin-go-humanize
+                    go-github-com-go-errors-errors
+                    go-github-com-layeh-gopher-luar
+                    go-github-com-mattn-go-isatty
+                    go-github-com-mitchellh-go-homedir
+                    go-github-com-sergi-go-diff
+                    go-github-com-stretchr-testify
+                    go-github-com-yuin-gopher-lua
+                    go-github-com-zyedidia-clipper
+                    go-github-com-zyedidia-glob
+                    go-github-com-zyedidia-go-runewidth
+                    go-github-com-zyedidia-go-shellquote
+                    go-github-com-zyedidia-json5
+                    go-github-com-zyedidia-tcell-v2
+                    go-github-com-zyedidia-terminal
+                    go-golang-org-x-text
+                    go-gopkg-in-yaml-v2))
+      (home-page "https://github.com/zyedidia/micro")
+      (synopsis "Modern and intuitive terminal-based text editor")
+      (description
+       "@code{micro} is a terminal-based text editor that aims to be easy to use and
 intuitive, while also taking advantage of the capabilities of modern terminals.")
-    ;; The project lists licenses of all used sources in LICENSE-THIRD-PARTY
-    ;; file which are already included in Guix's package definition.
-    (license license:expat)))
+      ;; The project lists licenses of all used sources in LICENSE-THIRD-PARTY
+      ;; file which are already included in Guix's package definition.
+      (license license:expat))))
 
 (define-public lem
   (let ((commit "5fd512c8bab9de9a62709ac858fbb56337260cd5")
