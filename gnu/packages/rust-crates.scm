@@ -387,6 +387,10 @@
   (crate-source "assert_cmd" "2.0.16"
                 "0gdj0710k3lnvyjmpv8a4dgwrk9ib85l2wfw4n2xwy3qyavka66w"))
 
+(define rust-assert-cmd-2.0.17
+  (crate-source "assert_cmd" "2.0.17"
+                "0rhb6b0w23pbqcj1mkgdv8j3g9602d4jjmg45ql022lpnaj8klrb"))
+
 (define rust-assert-cmd-2.0.8
   (crate-source "assert_cmd" "2.0.8"
                 "0pjpsbhlg1b7ca94c3sn3gqyk8ylcximhc020553jx085v1gqd4q"))
@@ -16879,6 +16883,74 @@
                                    rust-winapi-i686-pc-windows-gnu-0.4.0
                                    rust-winapi-x86-64-pc-windows-gnu-0.4.0
                                    rust-winnow-0.5.15))
+                     (hexyl =>
+                            (list rust-aho-corasick-1.1.3
+                                  rust-anstream-0.6.18
+                                  rust-anstyle-1.0.10
+                                  rust-anstyle-parse-0.2.6
+                                  rust-anstyle-query-1.1.2
+                                  rust-anstyle-wincon-3.0.7
+                                  rust-anyhow-1.0.98
+                                  rust-assert-cmd-2.0.17
+                                  rust-autocfg-1.4.0
+                                  rust-bitflags-2.9.0
+                                  rust-bstr-1.12.0
+                                  rust-clap-4.5.37
+                                  rust-clap-builder-4.5.37
+                                  rust-clap-derive-4.5.32
+                                  rust-clap-lex-0.7.4
+                                  rust-colorchoice-1.0.3
+                                  rust-const-format-0.2.34
+                                  rust-const-format-proc-macros-0.2.34
+                                  rust-diff-0.1.13
+                                  rust-difflib-0.4.0
+                                  rust-doc-comment-0.3.3
+                                  rust-errno-0.3.11
+                                  rust-float-cmp-0.10.0
+                                  rust-heck-0.5.0
+                                  rust-is-ci-1.2.0
+                                  rust-is-terminal-polyfill-1.70.1
+                                  rust-libc-0.2.172
+                                  rust-linux-raw-sys-0.9.4
+                                  rust-memchr-2.7.4
+                                  rust-normalize-line-endings-0.3.0
+                                  rust-num-traits-0.2.19
+                                  rust-once-cell-1.21.3
+                                  rust-owo-colors-4.2.0
+                                  rust-predicates-3.1.3
+                                  rust-predicates-core-1.0.9
+                                  rust-predicates-tree-1.0.12
+                                  rust-pretty-assertions-1.4.1
+                                  rust-proc-macro2-1.0.95
+                                  rust-quote-1.0.40
+                                  rust-regex-1.11.1
+                                  rust-regex-automata-0.4.9
+                                  rust-regex-syntax-0.8.5
+                                  rust-rustix-1.0.5
+                                  rust-serde-1.0.219
+                                  rust-serde-derive-1.0.219
+                                  rust-strsim-0.11.1
+                                  rust-supports-color-3.0.2
+                                  rust-syn-2.0.100
+                                  rust-terminal-size-0.4.2
+                                  rust-termtree-0.5.1
+                                  rust-thiserror-1.0.69
+                                  rust-thiserror-impl-1.0.69
+                                  rust-unicode-ident-1.0.18
+                                  rust-unicode-xid-0.2.6
+                                  rust-utf8parse-0.2.2
+                                  rust-wait-timeout-0.2.1
+                                  rust-windows-sys-0.59.0
+                                  rust-windows-targets-0.52.6
+                                  rust-windows-aarch64-gnullvm-0.52.6
+                                  rust-windows-aarch64-msvc-0.52.6
+                                  rust-windows-i686-gnu-0.52.6
+                                  rust-windows-i686-gnullvm-0.52.6
+                                  rust-windows-i686-msvc-0.52.6
+                                  rust-windows-x86-64-gnu-0.52.6
+                                  rust-windows-x86-64-gnullvm-0.52.6
+                                  rust-windows-x86-64-msvc-0.52.6
+                                  rust-yansi-1.0.1))
                      (jless =>
                             (list rust-aho-corasick-1.1.3
                                   rust-anstream-0.6.18

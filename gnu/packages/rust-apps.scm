@@ -1376,30 +1376,17 @@ repositories.")
 (define-public hexyl
   (package
     (name "hexyl")
-    (version "0.15.0")
+    (version "0.16.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "hexyl" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "19i9g18nnyizas2af2s3ikivcpazmgfh3n71v5fmfm9ibnkjp1a2"))))
+         (base32 "1y2yrr8nh3idya5wviqqnvz57y4mvw1jx3gi57acddkj9386vma3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-const-format" ,rust-const-format-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-owo-colors" ,rust-owo-colors-4)
-        ("rust-supports-color" ,rust-supports-color-3)
-        ("rust-terminal-size" ,rust-terminal-size-0.4)
-        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-predicates" ,rust-predicates-3)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-1))
       #:phases
       (modify-phases %standard-phases
         (add-after 'install 'install-manual
@@ -1418,6 +1405,7 @@ repositories.")
      (if (supported-package? pandoc)
          (list pandoc)
          '()))
+    (inputs (cargo-inputs 'hexyl))
     (home-page "https://github.com/sharkdp/hexyl")
     (synopsis "Command-line hex viewer")
     (description
