@@ -992,49 +992,18 @@ console.")
 (define-public eza
   (package
     (name "eza")
-    (version "0.20.14")
+    (version "0.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "eza" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lk94dwala52hc7jfk89wjky0p5szfirm6v3awpwhw99928jsx4n"))))
+        (base32 "026i75pk4vnx1yz2iggkdin2xwbb58qwqm3rim7f4q905m8ar2jh"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:cargo-inputs `(("rust-ansi-width" ,rust-ansi-width-0.1)
-                       ("rust-backtrace" ,rust-backtrace-0.3)
-                       ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-dirs" ,rust-dirs-5)
-                       ("rust-git2" ,rust-git2-0.19)
-                       ("rust-glob" ,rust-glob-0.3)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-locale" ,rust-locale-0.2)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-natord" ,rust-natord-1)
-                       ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.50)
-                       ("rust-number-prefix" ,rust-number-prefix-0.4)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-palette" ,rust-palette-0.7)
-                       ("rust-path-clean" ,rust-path-clean-1)
-                       ("rust-percent-encoding" ,rust-percent-encoding-2)
-                       ("rust-phf" ,rust-phf-0.11)
-                       ("rust-plist" ,rust-plist-1)
-                       ("rust-proc-mounts" ,rust-proc-mounts-0.3)
-                       ("rust-rayon" ,rust-rayon-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-norway" ,rust-serde-norway-0.9)
-                       ("rust-terminal-size" ,rust-terminal-size-0.4)
-                       ("rust-timeago" ,rust-timeago-0.4)
-                       ("rust-unicode-width" ,rust-unicode-width-0.2)
-                       ("rust-uutils-term-grid" ,rust-uutils-term-grid-0.6)
-                       ("rust-uzers" ,rust-uzers-0.12)
-                       ("rust-windows-sys" ,rust-windows-sys-0.59)
-                       ("rust-zoneinfo-compiled" ,rust-zoneinfo-compiled-0.5))
-      #:cargo-development-inputs `(("rust-criterion" ,rust-criterion-0.5)
-                                   ("rust-trycmd" ,rust-trycmd-0.15))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'build 'build-manual
@@ -1079,7 +1048,7 @@ console.")
              (if (supported-package? pandoc)
                  (list pandoc)
                  '())))
-    (inputs (list libgit2-1.8 zlib))
+    (inputs (cons* libgit2-1.9 zlib (cargo-inputs 'eza)))
     (home-page "https://github.com/eza-community/eza")
     (synopsis "Modern replacement for ls")
     (description
@@ -1087,7 +1056,7 @@ console.")
 program @code{ls}.  It uses colours to distinguish file types and
 metadata.  It also knows about symlinks, extended attributes, and Git.
 This package is the community maintained fork of @code{exa}.")
-    (license license:expat)))
+    (license license:eupl1.2)))
 
 (define-public exa
   (deprecated-package "exa" eza))
