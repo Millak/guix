@@ -309,10 +309,10 @@ and many other languages.")
          (sha256
           (base32
            "1xk6w7q4xv4cj906xa5dwam5q51mc8bszbkkz7l8d3wjmsz73rwv"))))
-      (native-inputs (modify-inputs (package-native-inputs wxwidgets)
+      (native-inputs (modify-inputs (package-native-inputs wxwidgets-sans-egl)
                        (prepend nanosvg)))
       (arguments
-       (substitute-keyword-arguments (package-arguments wxwidgets)
+       (substitute-keyword-arguments (package-arguments wxwidgets-sans-egl)
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'copy-nanosvg-source
