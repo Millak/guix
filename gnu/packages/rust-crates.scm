@@ -255,6 +255,10 @@
   (crate-source "anyhow" "1.0.97"
                 "0kvspbiwncmmkdgrwjrimsmbmhzxc641p5ql99l2rjq6smmdbznw"))
 
+(define rust-anyhow-1.0.98
+  (crate-source "anyhow" "1.0.98"
+                "11ylvjdrcjs0q9jgk1af4r5cx1qppj63plxqkq595vmc24rjsvg1"))
+
 (define rust-aom-sys-0.3.3
   (crate-source "aom-sys" "0.3.3"
                 "0bc1dzl3c95s44q7c1i0vnj7fhiqf44in8w22nw5vmp1vgbpadk2"))
@@ -1310,6 +1314,10 @@
   (crate-source "clap" "4.5.36"
                 "011f220kg4qjmjzdsv5078zywphlhkswq62pjjlqml50r3c63y9d"))
 
+(define rust-clap-4.5.37
+  (crate-source "clap" "4.5.37"
+                "0wg01bc78ivsh76g1cixyhd2zw7ikvkaim40nd087lybar7hbjzc"))
+
 (define rust-clap-builder-4.5.35
   (crate-source "clap_builder" "4.5.35"
                 "1nczcw6cc49ap99nn3v3n0vrv7j74zin34palq6ji586vnrdn514"))
@@ -1317,6 +1325,10 @@
 (define rust-clap-builder-4.5.36
   (crate-source "clap_builder" "4.5.36"
                 "198ks2kqmsjir40vliwy1lpyza2229d9sj3a65w3hxdn1yjbsb8k"))
+
+(define rust-clap-builder-4.5.37
+  (crate-source "clap_builder" "4.5.37"
+                "18k293yx8g16si1k12lch3z6y4ay5ivd9jhz7dfjahw5mipldngg"))
 
 (define rust-clap-complete-4.5.47
   (crate-source "clap_complete" "4.5.47"
@@ -1353,6 +1365,10 @@
 (define rust-clap-mangen-0.2.26
   (crate-source "clap_mangen" "0.2.26"
                 "0fn1svjqm3znajji679nc2kfwm9lkyl73lzknf4rnkqlkgx44j3j"))
+
+(define rust-clap-verbosity-flag-2.2.3
+  (crate-source "clap-verbosity-flag" "2.2.3"
+                "1qp128iwwjymrqvpsb4kn8qpfsc4514dfkvqh8jzcmvm0ikpzirl"))
 
 (define rust-clipboard-0.5.0
   (crate-source "clipboard" "0.5.0"
@@ -2297,6 +2313,10 @@
 (define rust-emacs-0.11.0
   (crate-source "emacs" "0.11.0"
                 "1xn6nr8m3p24irlmv3i7c9n95yb10qc6aikwqv99qlmhbky5x0z7"))
+
+(define rust-emacs-0.18.0
+  (crate-source "emacs" "0.18.0"
+                "0r860i73b2680i2fhdl2l1wwvvmf2zksncpckgkksdcx310ak5v7"))
 
 (define rust-emacs-0.19.0
   (crate-source "emacs" "0.19.0"
@@ -6890,6 +6910,10 @@
 (define rust-proc-macro2-1.0.94
   (crate-source "proc-macro2" "1.0.94"
                 "114wxb56gdj9vy44q0ll3l2x9niqzcbyqikydmlb5f3h5rsp26d3"))
+
+(define rust-proc-macro2-1.0.95
+  (crate-source "proc-macro2" "1.0.95"
+                "0y7pwxv6sh4fgg6s715ygk1i7g3w02c0ljgcsfm046isibkfbcq2"))
 
 (define rust-proc-macro2-diagnostics-0.10.1
   (crate-source "proc-macro2-diagnostics" "0.10.1"
@@ -14589,6 +14613,91 @@
                                    rust-winapi-0.3.9
                                    rust-winapi-i686-pc-windows-gnu-0.4.0
                                    rust-winapi-x86-64-pc-windows-gnu-0.4.0))
+                     (emacs-lsp-booster =>
+                                        (list rust-aho-corasick-1.1.3
+                                         rust-anstream-0.6.18
+                                         rust-anstyle-1.0.10
+                                         rust-anstyle-parse-0.2.6
+                                         rust-anstyle-query-1.1.2
+                                         rust-anstyle-wincon-3.0.7
+                                         rust-anyhow-1.0.98
+                                         rust-bitflags-2.9.0
+                                         rust-cfg-if-1.0.0
+                                         rust-clap-4.5.37
+                                         rust-clap-verbosity-flag-2.2.3
+                                         rust-clap-builder-4.5.37
+                                         rust-clap-derive-4.5.32
+                                         rust-clap-lex-0.7.4
+                                         rust-colorchoice-1.0.3
+                                         rust-ctor-0.1.26
+                                         rust-darling-0.10.2
+                                         rust-darling-core-0.10.2
+                                         rust-darling-macro-0.10.2
+                                         rust-either-1.15.0
+                                         rust-emacs-0.18.0
+                                         rust-emacs-macros-0.17.0
+                                         rust-emacs-module-0.18.0
+                                         rust-env-logger-0.10.2
+                                         rust-errno-0.3.11
+                                         rust-fastrand-2.3.0
+                                         rust-fnv-1.0.7
+                                         rust-getrandom-0.3.2
+                                         rust-heck-0.5.0
+                                         rust-hermit-abi-0.5.0
+                                         rust-home-0.5.11
+                                         rust-humantime-2.2.0
+                                         rust-ident-case-1.0.1
+                                         rust-is-terminal-0.4.16
+                                         rust-is-terminal-polyfill-1.70.1
+                                         rust-itoa-1.0.15
+                                         rust-lazy-static-1.5.0
+                                         rust-libc-0.2.172
+                                         rust-linux-raw-sys-0.4.15
+                                         rust-linux-raw-sys-0.9.4
+                                         rust-log-0.4.27
+                                         rust-memchr-2.7.4
+                                         rust-once-cell-1.21.3
+                                         rust-proc-macro2-1.0.95
+                                         rust-quote-1.0.40
+                                         rust-r-efi-5.2.0
+                                         rust-regex-1.11.1
+                                         rust-regex-automata-0.4.9
+                                         rust-regex-syntax-0.8.5
+                                         rust-rustc-version-0.2.3
+                                         rust-rustix-0.38.44
+                                         rust-rustix-1.0.5
+                                         rust-ryu-1.0.20
+                                         rust-semver-0.9.0
+                                         rust-semver-parser-0.7.0
+                                         rust-serde-1.0.219
+                                         rust-serde-derive-1.0.219
+                                         rust-serde-json-1.0.140
+                                         rust-smallvec-1.15.0
+                                         rust-strsim-0.9.3
+                                         rust-strsim-0.11.1
+                                         rust-syn-1.0.109
+                                         rust-syn-2.0.100
+                                         rust-tempfile-3.19.1
+                                         rust-termcolor-1.4.1
+                                         rust-thiserror-1.0.69
+                                         rust-thiserror-impl-1.0.69
+                                         rust-unicode-ident-1.0.18
+                                         rust-utf8parse-0.2.2
+                                         rust-wasi-0.14.2+wasi-0.2.4
+                                         rust-which-6.0.3
+                                         rust-winapi-util-0.1.9
+                                         rust-windows-sys-0.59.0
+                                         rust-windows-targets-0.52.6
+                                         rust-windows-aarch64-gnullvm-0.52.6
+                                         rust-windows-aarch64-msvc-0.52.6
+                                         rust-windows-i686-gnu-0.52.6
+                                         rust-windows-i686-gnullvm-0.52.6
+                                         rust-windows-i686-msvc-0.52.6
+                                         rust-windows-x86-64-gnu-0.52.6
+                                         rust-windows-x86-64-gnullvm-0.52.6
+                                         rust-windows-x86-64-msvc-0.52.6
+                                         rust-winsafe-0.0.19
+                                         rust-wit-bindgen-rt-0.39.0))
                      (fish =>
                            (list rust-allocator-api2-0.2.21
                                  rust-autocfg-1.4.0
