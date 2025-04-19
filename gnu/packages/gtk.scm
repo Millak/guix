@@ -387,29 +387,33 @@ applications.")
 (define-public pango
   (package
     (name "pango")
-    (version "1.54.0")
+    (version "1.56.4")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/pango/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (patches (search-patches "pango-skip-libthai-test.patch"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/GNOME/pango")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1n0y5l5wfq2a86dimraazvz1v9dvqdjkmpqgzkbk9rqy09syv7la"))))
+                "0jnmydds9dmdah4fjj5rr5gmf1imxlxjc0w98if642n98vmsdf67"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'disable-cantarell-tests
-                    (lambda _
-                      (substitute* "tests/meson.build"
-                        ;; XXX FIXME: These tests require "font-abattis-cantarell", but
-                        ;; adding it here would introduce a circular dependency.
-                        (("\\[ 'test-layout'.*") "")
-                        (("\\[ 'test-itemize'.*") "")
-                        (("\\[ 'test-font'.*") "")
-                        (("\\[ 'test-harfbuzz'.*") "")))))))
+     (list
+      #:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
+      #:configure-flags (if (target-hurd?)
+                            #~(list)
+                            #~(list "-Dintrospection=enabled"))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'disable-cantarell-tests
+                     (lambda _
+                       (substitute* "tests/meson.build"
+                         ;; XXX FIXME: These tests require "font-abattis-cantarell", but
+                         ;; adding it here would introduce a circular dependency.
+                         (("\\[ 'test-layout'.*") "")
+                         (("\\[ 'test-itemize'.*") "")
+                         (("\\[ 'test-font(-data)?'.*") "")
+                         (("\\[ 'test-harfbuzz'.*") "")))))))
     (propagated-inputs
      ;; These are all in Requires or Requires.private of the '.pc' files.
      (list cairo
