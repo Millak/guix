@@ -1137,18 +1137,13 @@ environments.")
        (sha256
         (base32 "1aig9l676wc2sjb20y7rdqf0hfcfjhh92yfiy82mf7kfnv7rp3rk"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python3" "tests/tests.py")))))))
-    (propagated-inputs (list python-pyyaml))
-    (native-inputs (list python-poetry-core python-pytest))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (propagated-inputs
+     (list python-pyyaml))
     (home-page "https://github.com/koesterlab/conda-inject")
-    (synopsis
-     "Inject a conda environment into the current python environment")
+    (synopsis "Inject a conda environment into the current python environment")
     (description
      "This package provides helper functions for injecting a conda
 environment into the current python environment (by modifying @code{sys.path},
