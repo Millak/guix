@@ -4919,6 +4919,10 @@
   (crate-source "libc" "0.2.171"
                 "1mipla3dy3l59pfa9xy4iw2vdgn8n30dzf4vdnasjflxdqhkg6f1"))
 
+(define rust-libc-0.2.172
+  (crate-source "libc" "0.2.172"
+                "1ykz4skj7gac14znljm5clbnrhini38jkq3d60jggx3y5w2ayl6p"))
+
 (define rust-libc-stdhandle-0.1.0
   (crate-source "libc-stdhandle" "0.1.0"
                 "0lbmg42kncl3yjgzx48d2sa3p78w4fmhs9c21dg4r4r8virj9b3d"))
@@ -14569,6 +14573,22 @@
                                     rust-windows-x86-64-msvc-0.48.5
                                     rust-windows-x86-64-msvc-0.52.6
                                     rust-wit-bindgen-rt-0.39.0))
+                     (dutree =>
+                             (list rust-aho-corasick-1.1.3
+                                   rust-getopts-0.2.21
+                                   rust-libc-0.2.172
+                                   rust-memchr-2.7.4
+                                   rust-regex-1.11.1
+                                   rust-regex-automata-0.4.9
+                                   rust-regex-syntax-0.8.5
+                                   rust-signal-hook-0.1.17
+                                   rust-signal-hook-registry-1.4.2
+                                   rust-terminal-size-0.1.17
+                                   rust-unicode-segmentation-1.12.0
+                                   rust-unicode-width-0.1.14
+                                   rust-winapi-0.3.9
+                                   rust-winapi-i686-pc-windows-gnu-0.4.0
+                                   rust-winapi-x86-64-pc-windows-gnu-0.4.0))
                      (fish =>
                            (list rust-allocator-api2-0.2.21
                                  rust-autocfg-1.4.0

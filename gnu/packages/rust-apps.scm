@@ -915,14 +915,8 @@ Ansible syntax.  Benchmark files can be written in YAML.")
          (base32 "1611h27i8fm3jndscd6w65z8z7w09nnrm61vdgs9kb8ln57gqm8x"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-getopts" ,rust-getopts-0.2)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-signal-hook" ,rust-signal-hook-0.1)
-        ("rust-terminal-size" ,rust-terminal-size-0.1)
-        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))))
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'dutree))
     (home-page "https://ownyourbits.com/2018/03/25/analyze-disk-usage-with-dutree/")
     (synopsis "Command line tool to analyze disk usage")
     (description
