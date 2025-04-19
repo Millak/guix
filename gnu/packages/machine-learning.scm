@@ -2174,43 +2174,41 @@ computing environments.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0pdd508c9540x9qimq83b8kspb6mb98w7w7i7lnb1jqj7rijal6f"))))
+        (base32 "0pdd508c9540x9qimq83b8kspb6mb98w7w7i7lnb1jqj7rijal6f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "-m" "not network"
-             "-k" (string-append
-                   ;; This test tries to access the internet.
-                   "not test_load_boston_alternative"
-                   ;; DID NOT RAISE <class 'ValueError'>
-                   " and not test_check_pandas_sparse_invalid"
-                   ))
+      #~(list "-m" "not network"
+              "-k" (string-append
+                    ;; This test tries to access the internet.
+                    "not test_load_boston_alternative"
+                    ;; DID NOT RAISE <class 'ValueError'>
+                    " and not test_check_pandas_sparse_invalid"))
       #:phases
-      '(modify-phases %standard-phases
-         (add-before 'build 'configure
-           (lambda _
-             (setenv "SKLEARN_BUILD_PARALLEL"
-                     (number->string (parallel-job-count)))))
-         (add-after 'build 'build-ext
-           (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace"
-                        "-j" (number->string (parallel-job-count)))))
-         (replace 'check
-           (lambda* (#:key tests? test-flags #:allow-other-keys)
-             (when tests?
-               ;; Restrict OpenBLAS threads to prevent segfaults while testing!
-               (setenv "OPENBLAS_NUM_THREADS" "1")
-
-               ;; Some tests require write access to $HOME.
-               (setenv "HOME" "/tmp")
-
-               ;; Step out of the source directory to avoid interference;
-               ;; we want to run the installed code with extensions etc.
-               (with-directory-excursion "/tmp"
-                 (apply invoke "pytest" "--pyargs" "sklearn"
-                        test-flags))))))))
-    (inputs (list openblas))
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure
+            (lambda _
+              (setenv "SKLEARN_BUILD_PARALLEL"
+                      (number->string (parallel-job-count)))))
+          (add-after 'build 'build-ext
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"
+                      "-j" (number->string (parallel-job-count)))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                ;; Restrict OpenBLAS threads to prevent segfaults while
+                ;; testing!
+                (setenv "OPENBLAS_NUM_THREADS" "1")
+                ;; Some tests require write access to $HOME.
+                (setenv "HOME" "/tmp")
+                ;; Step out of the source directory to avoid interference; we
+                ;; want to run the installed code with extensions etc.
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "--pyargs" "sklearn" test-flags))))))))
+    (inputs
+     (list openblas))
     (native-inputs
      (list python-cython-3
            python-pandas
@@ -2219,7 +2217,10 @@ computing environments.")
            python-setuptools
            python-wheel))
     (propagated-inputs
-     (list python-numpy python-threadpoolctl python-scipy python-joblib))
+     (list python-numpy
+           python-threadpoolctl
+           python-scipy
+           python-joblib))
     (home-page "https://scikit-learn.org/")
     (synopsis "Machine Learning in Python")
     (description
