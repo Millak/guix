@@ -1453,21 +1453,19 @@ forms using your favorite CSS framework, without writing template code.")
           (lambda _
             (substitute* "compressor/tests/test_filters.py"
               (("test_calmjs_filter") "_test_calmjs_filter"))))
-        ;; TODO: Report upstream.
-        (add-after 'unpack 'add-missing-init-files
+        ;; XXX: Reported upstream
+        ;; <https://github.com/django-compressor/django-compressor/pull/1294>.
+        (add-after 'unpack 'fix-setup.py
           (lambda _
             (substitute* "setup.py"
-              (("package_data=.*,") "include_package_data=True,"))
-            (call-with-output-file "compressor/templates/__init__.py"
-              (const #t))
-            (call-with-output-file "compressor/templates/compressor/__init__.py"
-              (const #t))))
+              (("package_data=.*,") "include_package_data=True,"))))
         (replace 'check
-          (lambda* (#:key tests? #:allow-other-keys)
+          (lambda* (#:key tests? inputs outputs #:allow-other-keys)
             (when tests?
-              (setenv "DJANGO_SETTINGS_MODULE" "compressor.test_settings")
-              (invoke "django-admin" "test"
-                      "--pythonpath=.")))))))
+              (with-directory-excursion (site-packages inputs outputs)
+                (setenv "DJANGO_SETTINGS_MODULE" "compressor.test_settings")
+                (invoke "django-admin" "test"
+                        "--pythonpath=."))))))))
     (propagated-inputs
      (list python-django
            python-django-appconf
