@@ -1137,9 +1137,10 @@ environments.")
        (sha256
         (base32 "1aig9l676wc2sjb20y7rdqf0hfcfjhh92yfiy82mf7kfnv7rp3rk"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; tests require setting up Conda
     (native-inputs
-     (list python-poetry-core
-           python-pytest))
+     (list python-poetry-core))
     (propagated-inputs
      (list python-pyyaml))
     (home-page "https://github.com/koesterlab/conda-inject")
