@@ -2518,6 +2518,15 @@
   (crate-source "evdev" "0.12.2"
                 "19qh6r1z4v8ja6qqigjbg9vckbhlycc6wkqgzfz9fcln7almaq5b"))
 
+(define rust-evdev-rs-0.6.1
+  (crate-source "evdev-rs" "0.6.1"
+                "1fkdw23kjjn8an3xjpi2g74yhdfkv89ngsrkjd2cxz5n1xwxa4lq"))
+
+(define rust-evdev-sys-0.2.5
+  (crate-source "evdev-sys" "0.2.5"
+                "0vgax74wjsm22nrx6ikh8m7bj3nggf83s961i5qd85bvahmx9shl"
+                #:snippet '(delete-file-recursively "libevdev")))
+
 (define rust-event-listener-2.5.3
   (crate-source "event-listener" "2.5.3"
                 "1q4w3pndc518crld6zsqvvpy9lkzwahp2zgza9kbzmmqh9gif1h2"))
@@ -4733,6 +4742,10 @@
   (crate-source "jiff" "0.2.6"
                 "1274a8wj5czbysk1nzgrk18prsq6c5cvviv28cb3ga5ybid18cqz"))
 
+(define rust-jiff-0.2.8
+  (crate-source "jiff" "0.2.8"
+                "18140w5m8bblbxaj3wpa55kj0808g6lr6a6wsi65xx8hj748gbg5"))
+
 (define rust-jiff-static-0.2.5
   (crate-source "jiff-static" "0.2.5"
                 "0k1v30mhbgh4zj2r9d7lfqlh5b20b5573cx0a4gip7rlkldf7pac"))
@@ -4740,6 +4753,10 @@
 (define rust-jiff-static-0.2.6
   (crate-source "jiff-static" "0.2.6"
                 "06aw1z5qj4hkcm0s37phcfr27wrdxshrfpb3ldbn35f61v217kj3"))
+
+(define rust-jiff-static-0.2.8
+  (crate-source "jiff-static" "0.2.8"
+                "019n229ygcx5fviby0s2j07mqwm6lhyc80izfkqfcbvy9avdaxnh"))
 
 (define rust-jiff-tzdb-0.1.4
   (crate-source "jiff-tzdb" "0.1.4"
@@ -14698,6 +14715,68 @@
                                          rust-windows-x86-64-msvc-0.52.6
                                          rust-winsafe-0.0.19
                                          rust-wit-bindgen-rt-0.39.0))
+                     (evremap =>
+                              (list rust-aho-corasick-1.1.3
+                                    rust-anstream-0.6.18
+                                    rust-anstyle-1.0.10
+                                    rust-anstyle-parse-0.2.6
+                                    rust-anstyle-query-1.1.2
+                                    rust-anstyle-wincon-3.0.7
+                                    rust-anyhow-1.0.98
+                                    rust-bitflags-1.3.2
+                                    rust-cc-1.2.19
+                                    rust-clap-4.5.37
+                                    rust-clap-builder-4.5.37
+                                    rust-clap-derive-4.5.32
+                                    rust-clap-lex-0.7.4
+                                    rust-colorchoice-1.0.3
+                                    rust-env-filter-0.1.3
+                                    rust-env-logger-0.11.8
+                                    rust-equivalent-1.0.2
+                                    rust-evdev-rs-0.6.1
+                                    rust-evdev-sys-0.2.5
+                                    rust-hashbrown-0.15.2
+                                    rust-heck-0.5.0
+                                    rust-indexmap-2.9.0
+                                    rust-is-terminal-polyfill-1.70.1
+                                    rust-jiff-0.2.8
+                                    rust-jiff-static-0.2.8
+                                    rust-libc-0.2.172
+                                    rust-log-0.4.27
+                                    rust-memchr-2.7.4
+                                    rust-once-cell-1.21.3
+                                    rust-pkg-config-0.3.32
+                                    rust-portable-atomic-1.11.0
+                                    rust-portable-atomic-util-0.2.4
+                                    rust-proc-macro2-1.0.95
+                                    rust-quote-1.0.40
+                                    rust-regex-1.11.1
+                                    rust-regex-automata-0.4.9
+                                    rust-regex-syntax-0.8.5
+                                    rust-serde-1.0.219
+                                    rust-serde-derive-1.0.219
+                                    rust-serde-spanned-0.6.8
+                                    rust-shlex-1.3.0
+                                    rust-strsim-0.11.1
+                                    rust-syn-2.0.100
+                                    rust-thiserror-1.0.69
+                                    rust-thiserror-impl-1.0.69
+                                    rust-toml-0.8.20
+                                    rust-toml-datetime-0.6.8
+                                    rust-toml-edit-0.22.24
+                                    rust-unicode-ident-1.0.18
+                                    rust-utf8parse-0.2.2
+                                    rust-windows-sys-0.59.0
+                                    rust-windows-targets-0.52.6
+                                    rust-windows-aarch64-gnullvm-0.52.6
+                                    rust-windows-aarch64-msvc-0.52.6
+                                    rust-windows-i686-gnu-0.52.6
+                                    rust-windows-i686-gnullvm-0.52.6
+                                    rust-windows-i686-msvc-0.52.6
+                                    rust-windows-x86-64-gnu-0.52.6
+                                    rust-windows-x86-64-gnullvm-0.52.6
+                                    rust-windows-x86-64-msvc-0.52.6
+                                    rust-winnow-0.7.6))
                      (fish =>
                            (list rust-allocator-api2-0.2.21
                                  rust-autocfg-1.4.0
