@@ -4159,13 +4159,13 @@ applications can enrich this metadata with context-specific properties.")
 (define-public r-alabaster-matrix
   (package
     (name "r-alabaster-matrix")
-    (version "1.6.1")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "alabaster.matrix" version))
        (sha256
-        (base32 "1cppp2p8gpynyngxlyyxmgzvd27650z4bi5akw8bzimqphxfap3f"))))
+        (base32 "176kmp9fgjdhsijh58zqsn9bmq28l1crgs7zqm9p4cga58549jaj"))))
     (properties
      '((upstream-name . "alabaster.matrix")
        (updater-extra-native-inputs . ("r-chihaya"))))
