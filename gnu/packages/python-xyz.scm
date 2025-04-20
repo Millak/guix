@@ -23605,22 +23605,6 @@ members = [
       '(list "--manifest-path=native/Cargo.toml"
              "--release"
              "--no-default-features")
-      #:cargo-inputs
-      (list rust-chic-1
-            rust-memchr-2
-            rust-paste-1
-            rust-peg-0.8
-            rust-pyo3-0.22
-            rust-quote-1
-            rust-regex-1
-            rust-syn-2
-            rust-thiserror-1)
-      #:cargo-development-inputs
-      (list rust-criterion-0.5
-            rust-difference-2
-            rust-itertools-0.13
-            rust-rayon-1
-            rust-trybuild-1)
       #:imported-modules `(,@%pyproject-build-system-modules
                            ,@%cargo-build-system-modules)
       #:modules `((guix build cargo-build-system)
@@ -23660,7 +23644,7 @@ members = [
            python-setuptools-rust
            python-setuptools-scm
            python-wheel))
-    (inputs (list maturin))
+    (inputs (cons maturin (cargo-inputs 'python-libcst)))
     (propagated-inputs
      (list python-pyyaml))
     (home-page "https://github.com/Instagram/LibCST")
