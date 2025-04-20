@@ -7512,6 +7512,10 @@
   (crate-source "pyo3" "0.19.2"
                 "0f1aqx947mzsrk05zdm9w2702lj5k9s97y9w9lxwkp2avk7sd0g6"))
 
+(define rust-pyo3-0.21.2
+  (crate-source "pyo3" "0.21.2"
+                "1n39y183jfqbyvimscqr0ysxxa6804pn46ivw048ww91lnb0pq55"))
+
 (define rust-pyo3-0.22.6
   (crate-source "pyo3" "0.22.6"
                 "110qrq9yibfv40zzind9p2i87617lhzs379ix0m2065b2qk0c0pl"))
@@ -7529,6 +7533,10 @@
   (crate-source "pyo3-build-config" "0.19.2"
                 "19bb7aqyvr4kmh8b2lnrmcv9251j8yxw7l7xyr77m3s3pk876v07"))
 
+(define rust-pyo3-build-config-0.21.2
+  (crate-source "pyo3-build-config" "0.21.2"
+                "0l0vxvnqsbjrpdmysnwaljf4q3zcr1kb526qq23svzgs6mcdz0vq"))
+
 (define rust-pyo3-build-config-0.22.6
   (crate-source "pyo3-build-config" "0.22.6"
                 "0f4w8waba9cyzllq0dpxpw7qmgic05wdf4k20p8nsi7znmsmfjxi"))
@@ -7544,6 +7552,10 @@
 (define rust-pyo3-ffi-0.19.2
   (crate-source "pyo3-ffi" "0.19.2"
                 "1nc4696k03ydyiy1f69l3ywknavjzxzag2mscrh2bgkywx1fwg75"))
+
+(define rust-pyo3-ffi-0.21.2
+  (crate-source "pyo3-ffi" "0.21.2"
+                "00vlp4gmzn76gz250pz1r3fydd5r41nwl7dd9nmidfb0vi1migh1"))
 
 (define rust-pyo3-ffi-0.22.6
   (crate-source "pyo3-ffi" "0.22.6"
@@ -7561,6 +7573,10 @@
   (crate-source "pyo3-macros" "0.19.2"
                 "1lggr5pnpmdj0cznlhw7ykm1qka3wlymwzfxqql6a4vyb6clrsyz"))
 
+(define rust-pyo3-macros-0.21.2
+  (crate-source "pyo3-macros" "0.21.2"
+                "0g65z9yj2iffjrkrkzan9hwhhj7rrchh7lfv64dy30h6zill1cvp"))
+
 (define rust-pyo3-macros-0.22.6
   (crate-source "pyo3-macros" "0.22.6"
                 "0lylczfabgylnfldns6m36vsw98m9sini0wn1gcfda83g64lvlhg"))
@@ -7576,6 +7592,10 @@
 (define rust-pyo3-macros-backend-0.19.2
   (crate-source "pyo3-macros-backend" "0.19.2"
                 "0dlm4pg29hjmlqx15gcy9cmnabvc8ycy60hcvjg8hm62flhw2zcl"))
+
+(define rust-pyo3-macros-backend-0.21.2
+  (crate-source "pyo3-macros-backend" "0.21.2"
+                "0p58yp8ajlc8bq56wghw1syrjszmadasasdfpsjy3d9dychhf9h8"))
 
 (define rust-pyo3-macros-backend-0.22.6
   (crate-source "pyo3-macros-backend" "0.22.6"
@@ -8410,6 +8430,10 @@
 (define rust-safe-arch-0.7.4
   (crate-source "safe_arch" "0.7.4"
                 "08sk47n1kcm5w2di6bpgi2hsw8r2caz2230pwqvbdqfv5pl2vc4n"))
+
+(define rust-safetensors-0.4.5
+  (crate-source "safetensors" "0.4.5"
+                "1djm1sz72da28xws6dlcpwgchvckc9m86v73djj30qba4c8hqmj4"))
 
 (define rust-salsa20-0.10.2
   (crate-source "salsa20" "0.10.2"
@@ -23368,6 +23392,50 @@
                                       rust-windows-x86-64-gnu-0.52.6
                                       rust-windows-x86-64-gnullvm-0.52.6
                                       rust-windows-x86-64-msvc-0.52.6))
+                     (python-safetensors =>
+                                         (list rust-autocfg-1.4.0
+                                          rust-bitflags-2.9.0
+                                          rust-cfg-if-1.0.0
+                                          rust-heck-0.4.1
+                                          rust-indoc-2.0.6
+                                          rust-itoa-1.0.15
+                                          rust-libc-0.2.172
+                                          rust-lock-api-0.4.12
+                                          rust-memchr-2.7.4
+                                          rust-memmap2-0.9.5
+                                          rust-memoffset-0.9.1
+                                          rust-once-cell-1.21.3
+                                          rust-parking-lot-0.12.3
+                                          rust-parking-lot-core-0.9.10
+                                          rust-portable-atomic-1.11.0
+                                          rust-proc-macro2-1.0.95
+                                          rust-pyo3-0.21.2
+                                          rust-pyo3-build-config-0.21.2
+                                          rust-pyo3-ffi-0.21.2
+                                          rust-pyo3-macros-0.21.2
+                                          rust-pyo3-macros-backend-0.21.2
+                                          rust-quote-1.0.40
+                                          rust-redox-syscall-0.5.11
+                                          rust-ryu-1.0.20
+                                          rust-safetensors-0.4.5
+                                          rust-scopeguard-1.2.0
+                                          rust-serde-1.0.219
+                                          rust-serde-derive-1.0.219
+                                          rust-serde-json-1.0.140
+                                          rust-smallvec-1.15.0
+                                          rust-syn-2.0.100
+                                          rust-target-lexicon-0.12.16
+                                          rust-unicode-ident-1.0.18
+                                          rust-unindent-0.2.4
+                                          rust-windows-targets-0.52.6
+                                          rust-windows-aarch64-gnullvm-0.52.6
+                                          rust-windows-aarch64-msvc-0.52.6
+                                          rust-windows-i686-gnu-0.52.6
+                                          rust-windows-i686-gnullvm-0.52.6
+                                          rust-windows-i686-msvc-0.52.6
+                                          rust-windows-x86-64-gnu-0.52.6
+                                          rust-windows-x86-64-gnullvm-0.52.6
+                                          rust-windows-x86-64-msvc-0.52.6))
                      (rav1e =>
                             (list rust-addr2line-0.24.2
                                   rust-adler2-2.0.0

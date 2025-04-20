@@ -1403,31 +1403,15 @@ storing tensors safely, named safetensors.  They aim to be safer than their
                (unless (member file '("." ".."))
                  (rename-file (string-append "bindings/python/" file)
                               file)))
-             (scandir "bindings/python"))))))
+             (scandir "bindings/python"))
+            (substitute* "Cargo.toml"
+              (("^path = .*") ""))))))
     (build-system cargo-build-system)
     (arguments
      (list
-      #:modules '((guix build cargo-build-system)
-                  (guix build utils)
-                  (ice-9 regex)
-                  (ice-9 textual-ports)
-                  (srfi srfi-26))
+      #:install-source? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack-rust-crates 'inject-safetensors
-            (lambda _
-              (substitute* "Cargo.toml"
-                (("\\[dependencies\\]")
-                 (format #f "[dependencies]~%safetensors = ~s"
-                         #$(package-version rust-safetensors))))
-              (call-with-input-file "Cargo.toml"
-                (lambda (port)
-                  (let* ((content (get-string-all port))
-                         (top-match (string-match
-                                     "\\[dependencies.safetensors"
-                                     content)))
-                    (call-with-output-file "Cargo.toml"
-                      (cut display (match:prefix top-match) <>)))))))
           (add-before 'check 'install-rust-library
             (lambda _
               (copy-file "target/release/libsafetensors_rust.so"
@@ -1457,14 +1441,9 @@ storing tensors safely, named safetensors.  They aim to be safer than their
                 (copy-file "PKG-INFO" (string-append info "/METADATA"))
                 (copy-recursively
                  "py_src/safetensors"
-                 (string-append lib "safetensors"))))))
-      #:cargo-inputs
-      `(("rust-pyo3" ,rust-pyo3-0.21)
-        ("rust-memmap2" ,rust-memmap2-0.9)
-        ("rust-safetensors" ,rust-safetensors)
-        ("rust-serde-json" ,rust-serde-json-1))))
+                 (string-append lib "safetensors"))))))))
     (inputs
-     (list rust-safetensors))
+     (cargo-inputs 'python-safetensors))
     (native-inputs
      (list python-h5py
            python-minimal
