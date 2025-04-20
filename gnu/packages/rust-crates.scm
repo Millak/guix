@@ -4619,6 +4619,10 @@
   (crate-source "grep-matcher" "0.1.7"
                 "00mcjar5b6y1pwf0gjdywzgh1fnp6jl612n9qznwyfm420d198s7"))
 
+(define rust-grep-pcre2-0.1.8
+  (crate-source "grep-pcre2" "0.1.8"
+                "0imybpfr9vpwna4qw30gxp9bs9j52f5152p06ak6x1sz0dp8cvyq"))
+
 (define rust-grep-printer-0.1.7
   (crate-source "grep-printer" "0.1.7"
                 "0sjsv4v7a88arckc880ns3mbn2y2p38mpnkh9dviznj9ixbm2ig1"))
@@ -7832,7 +7836,16 @@
   (crate-source "pciid-parser" "0.6.3"
                 "0d6pliaab6xs2m1vnialy1biaw3nv6g9s0ykdrracx2a5h1p4jdd"))
 
+(define rust-pcre2-0.2.9
+  (crate-source "pcre2" "0.2.9"
+                "0avb52h3ppw6kp9ynlw988c745am9j7px2cdsm0la10qmi1mrr9v"))
+
 (define rust-pcre2-0.2.9.85b7afb rust-pcre2-utf32-0.2)
+
+(define rust-pcre2-sys-0.2.9
+  (crate-source "pcre2-sys" "0.2.9"
+                "12hxy54i8amdnmcm034hqdc7iryd20n8aqg1hw5w540vzcc5s3sm"
+                #:snippet '(delete-file-recursively "upstream")))
 
 (define rust-pcre2-sys-0.2.9.85b7afb rust-pcre2-utf32-0.2)
 
@@ -27930,6 +27943,69 @@
                                   rust-zerofrom-derive-0.1.6
                                   rust-zerovec-0.10.4
                                   rust-zerovec-derive-0.10.3))
+                     (ripgrep =>
+                              (list rust-aho-corasick-1.1.3
+                                    rust-anyhow-1.0.98
+                                    rust-bitflags-2.9.0
+                                    rust-bstr-1.12.0
+                                    rust-cc-1.2.19
+                                    rust-cfg-if-1.0.0
+                                    rust-crossbeam-deque-0.8.6
+                                    rust-crossbeam-epoch-0.9.18
+                                    rust-crossbeam-utils-0.8.21
+                                    rust-encoding-rs-0.8.35
+                                    rust-encoding-rs-io-0.1.7
+                                    rust-getrandom-0.3.2
+                                    rust-globset-0.4.16
+                                    rust-grep-0.3.2
+                                    rust-grep-cli-0.1.11
+                                    rust-grep-matcher-0.1.7
+                                    rust-grep-pcre2-0.1.8
+                                    rust-grep-printer-0.2.2
+                                    rust-grep-regex-0.1.13
+                                    rust-grep-searcher-0.1.14
+                                    rust-ignore-0.4.23
+                                    rust-itoa-1.0.15
+                                    rust-jemalloc-sys-0.5.4+5.3.0-patched
+                                    rust-jemallocator-0.5.4
+                                    rust-jobserver-0.1.33
+                                    rust-lexopt-0.3.1
+                                    rust-libc-0.2.172
+                                    rust-log-0.4.27
+                                    rust-memchr-2.7.4
+                                    rust-memmap2-0.9.5
+                                    rust-pcre2-0.2.9
+                                    rust-pcre2-sys-0.2.9
+                                    rust-pkg-config-0.3.32
+                                    rust-proc-macro2-1.0.95
+                                    rust-quote-1.0.40
+                                    rust-r-efi-5.2.0
+                                    rust-regex-automata-0.4.9
+                                    rust-regex-syntax-0.8.5
+                                    rust-ryu-1.0.20
+                                    rust-same-file-1.0.6
+                                    rust-serde-1.0.219
+                                    rust-serde-derive-1.0.219
+                                    rust-serde-json-1.0.140
+                                    rust-shlex-1.3.0
+                                    rust-syn-2.0.100
+                                    rust-termcolor-1.4.1
+                                    rust-textwrap-0.16.2
+                                    rust-unicode-ident-1.0.18
+                                    rust-walkdir-2.5.0
+                                    rust-wasi-0.14.2+wasi-0.2.4
+                                    rust-winapi-util-0.1.9
+                                    rust-windows-sys-0.59.0
+                                    rust-windows-targets-0.52.6
+                                    rust-windows-aarch64-gnullvm-0.52.6
+                                    rust-windows-aarch64-msvc-0.52.6
+                                    rust-windows-i686-gnu-0.52.6
+                                    rust-windows-i686-gnullvm-0.52.6
+                                    rust-windows-i686-msvc-0.52.6
+                                    rust-windows-x86-64-gnu-0.52.6
+                                    rust-windows-x86-64-gnullvm-0.52.6
+                                    rust-windows-x86-64-msvc-0.52.6
+                                    rust-wit-bindgen-rt-0.39.0))
                      (rust-bindgen-cli =>
                                        (list rust-aho-corasick-1.1.3
                                         rust-annotate-snippets-0.11.5
