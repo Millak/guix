@@ -2094,15 +2094,8 @@ search tools like The Silver Searcher, @command{ack} and @command{grep}.")
                 "1bvb87sr9pkf6sj5ghgmga4nrp5kwiqnllzi672da5vs915xh8li"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-clap" ,rust-clap-3)
-        ("rust-glob" ,rust-glob-0.3)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-wayland-client" ,rust-wayland-client-0.31)
-        ("rust-wayland-protocols-wlr" ,rust-wayland-protocols-wlr-0.2))))
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'rot8))
     (home-page "https://github.com/efernau/rot8/")
     (synopsis "Automatic display rotation using built-in accelerometer")
     (description "@command{rot8} is a daemon that automates rotating screen and

@@ -28006,6 +28006,65 @@
                                     rust-windows-x86-64-gnullvm-0.52.6
                                     rust-windows-x86-64-msvc-0.52.6
                                     rust-wit-bindgen-rt-0.39.0))
+                     (rot8 =>
+                           (list rust-aho-corasick-1.1.3
+                                 rust-atty-0.2.14
+                                 rust-autocfg-1.4.0
+                                 rust-bitflags-1.3.2
+                                 rust-bitflags-2.9.0
+                                 rust-cc-1.2.19
+                                 rust-clap-3.2.25
+                                 rust-clap-lex-0.2.4
+                                 rust-downcast-rs-1.2.1
+                                 rust-errno-0.3.11
+                                 rust-glob-0.3.2
+                                 rust-hashbrown-0.12.3
+                                 rust-hermit-abi-0.1.19
+                                 rust-indexmap-1.9.3
+                                 rust-itoa-1.0.15
+                                 rust-libc-0.2.172
+                                 rust-linux-raw-sys-0.4.15
+                                 rust-memchr-2.7.4
+                                 rust-os-str-bytes-6.6.1
+                                 rust-pkg-config-0.3.32
+                                 rust-proc-macro2-1.0.95
+                                 rust-quick-xml-0.37.4
+                                 rust-quote-1.0.40
+                                 rust-regex-1.11.1
+                                 rust-regex-automata-0.4.9
+                                 rust-regex-syntax-0.8.5
+                                 rust-rustix-0.38.44
+                                 rust-ryu-1.0.20
+                                 rust-serde-1.0.219
+                                 rust-serde-derive-1.0.219
+                                 rust-serde-json-1.0.140
+                                 rust-shlex-1.3.0
+                                 rust-smallvec-1.15.0
+                                 rust-strsim-0.10.0
+                                 rust-syn-2.0.100
+                                 rust-termcolor-1.4.1
+                                 rust-textwrap-0.16.2
+                                 rust-unicode-ident-1.0.18
+                                 rust-wayland-backend-0.3.8
+                                 rust-wayland-client-0.31.8
+                                 rust-wayland-protocols-0.31.2
+                                 rust-wayland-protocols-wlr-0.2.0
+                                 rust-wayland-scanner-0.31.6
+                                 rust-wayland-sys-0.31.6
+                                 rust-winapi-0.3.9
+                                 rust-winapi-i686-pc-windows-gnu-0.4.0
+                                 rust-winapi-util-0.1.9
+                                 rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                 rust-windows-sys-0.59.0
+                                 rust-windows-targets-0.52.6
+                                 rust-windows-aarch64-gnullvm-0.52.6
+                                 rust-windows-aarch64-msvc-0.52.6
+                                 rust-windows-i686-gnu-0.52.6
+                                 rust-windows-i686-gnullvm-0.52.6
+                                 rust-windows-i686-msvc-0.52.6
+                                 rust-windows-x86-64-gnu-0.52.6
+                                 rust-windows-x86-64-gnullvm-0.52.6
+                                 rust-windows-x86-64-msvc-0.52.6))
                      (rust-bindgen-cli =>
                                        (list rust-aho-corasick-1.1.3
                                         rust-annotate-snippets-0.11.5
