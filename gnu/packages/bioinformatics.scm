@@ -2280,33 +2280,6 @@ Format (GFF) with Biopython integration.")
              ;; These test require a 84 GB file.
              "--skip=http_two"
              "--skip=http_cloud_urls_md_3")
-      #:cargo-inputs
-      (list rust-anyinput-0.1
-            rust-bytecount-0.6
-            rust-byteorder-1
-            rust-bytes-1
-            rust-cloud-file-0.2
-            rust-derive-builder-0.20
-            rust-dpc-pariter-0.4
-            rust-fetch-data-0.2
-            rust-futures-util-0.3
-            rust-itertools-0.13
-            rust-ndarray-0.16
-            rust-ndarray-npy-0.9
-            rust-num-traits-0.2
-            rust-numpy-0.22
-            rust-pyo3-0.22
-            rust-pyo3-build-config-0.22
-            rust-rayon-1
-            rust-statrs-0.17
-            rust-thiserror-1
-            rust-tokio-1)
-      #:cargo-development-inputs
-      (list rust-anyhow-1
-            rust-ndarray-rand-0.15
-            rust-rusoto-credential-0.48
-            rust-temp-testdir-0.2
-            rust-thousands-0.2)
       #:imported-modules
       (append %cargo-build-system-modules
               %pyproject-build-system-modules)
@@ -2418,7 +2391,7 @@ version = ~s
                          python-pytest-doctestplus
                          python-recommonmark
                          python-sphinx))
-    (inputs (list python-wrapper))
+    (inputs (cons python-wrapper (cargo-inputs 'python-bed-reader)))
     (propagated-inputs (list python-numpy python-pandas python-scipy))
     (home-page "https://fastlmm.github.io/")
     (synopsis "Read and write the PLINK BED format, simply and efficiently")
