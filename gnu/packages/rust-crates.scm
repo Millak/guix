@@ -2270,6 +2270,11 @@
   (crate-source "diff" "0.1.13"
                 "1j0nzjxci2zqx63hdcihkp0a4dkdmzxd7my4m7zk6cjyfy34j9an"))
 
+(define rust-difference-2.0.0
+  (crate-source "difference" "2.0.0"
+                "1621wx4k8h452p6xzmzzvm7mz87kxh4yqz0kzxfjj9xmjxlbyk2j"
+                #:snippet '(delete-file-recursively "assets")))
+
 (define rust-difflib-0.4.0
   (crate-source "difflib" "0.4.0"
                 "1s7byq4d7jgf2hcp2lcqxi2piqwl8xqlharfbi8kf90n8csy7131"))
@@ -7314,6 +7319,18 @@
   (crate-source "peeking_take_while" "0.1.2"
                 "16bhqr6rdyrp12zv381cxaaqqd0pwysvm1q8h2ygihvypvfprc8r"))
 
+(define rust-peg-0.8.5
+  (crate-source "peg" "0.8.5"
+                "0xr42lbgihlwbyfcmjggqv1s3a38agp4j077cd8yqdhv235cya4r"))
+
+(define rust-peg-macros-0.8.5
+  (crate-source "peg-macros" "0.8.5"
+                "0w8g53c75hz6iy3khc1ja2qm0idpnygjc0xsa9fmpyh2q82ap632"))
+
+(define rust-peg-runtime-0.8.5
+  (crate-source "peg-runtime" "0.8.5"
+                "1jkgfy5jkjqwqy7h11nn3bmm1qfyn9kq2wnxnlspp4ldhsdwlb8k"))
+
 (define rust-pem-3.0.5
   (crate-source "pem" "3.0.5"
                 "1wwfk8sbyi9l18fvvn6z9p2gy7v7q7wimbhvrvixxj8a8zl3ibrq"))
@@ -10003,6 +10020,10 @@
   (crate-source "target-lexicon" "0.13.2"
                 "16m6smfz533im9dyxfhnzmpi4af75g2iii36ylc4gfmqvf6gf0p5"))
 
+(define rust-target-triple-0.1.4
+  (crate-source "target-triple" "0.1.4"
+                "140p6rjx7ychv0sryndziia1w14cfjflmhh7ccjj57ar3wvsmj8s"))
+
 (define rust-tauri-winrt-notification-0.7.2
   (crate-source "tauri-winrt-notification" "0.7.2"
                 "1fd9gcllx1rkp9h1ppq976bhqppnil5xsy36li1zx2g4gph6c7hb"))
@@ -10621,6 +10642,10 @@
 (define rust-try-lock-0.2.5
   (crate-source "try-lock" "0.2.5"
                 "0jqijrrvm1pyq34zn1jmy2vihd4jcrjlvsh4alkjahhssjnsn8g4"))
+
+(define rust-trybuild-1.0.104
+  (crate-source "trybuild" "1.0.104"
+                "161qw9ajl3njzp3lq7wyxmn7bjkwf8hdhvbc1rpvjv85ikk8pq3a"))
 
 (define rust-trycmd-0.15.9
   (crate-source "trycmd" "0.15.9"
@@ -24096,6 +24121,109 @@
                                           rust-wit-bindgen-rt-0.39.0
                                           rust-zerocopy-0.8.24
                                           rust-zerocopy-derive-0.8.24))
+                     (python-libcst =>
+                                    (list rust-aho-corasick-1.1.3
+                                     rust-anes-0.1.6
+                                     rust-annotate-snippets-0.6.1
+                                     rust-anstyle-1.0.10
+                                     rust-autocfg-1.4.0
+                                     rust-bumpalo-3.17.0
+                                     rust-cast-0.3.0
+                                     rust-cfg-if-1.0.0
+                                     rust-chic-1.2.2
+                                     rust-ciborium-0.2.2
+                                     rust-ciborium-io-0.2.2
+                                     rust-ciborium-ll-0.2.2
+                                     rust-clap-4.5.37
+                                     rust-clap-builder-4.5.37
+                                     rust-clap-lex-0.7.4
+                                     rust-criterion-0.5.1
+                                     rust-criterion-plot-0.5.0
+                                     rust-crossbeam-deque-0.8.6
+                                     rust-crossbeam-epoch-0.9.18
+                                     rust-crossbeam-utils-0.8.21
+                                     rust-crunchy-0.2.3
+                                     rust-difference-2.0.0
+                                     rust-either-1.15.0
+                                     rust-equivalent-1.0.2
+                                     rust-glob-0.3.2
+                                     rust-half-2.6.0
+                                     rust-hashbrown-0.15.2
+                                     rust-heck-0.5.0
+                                     rust-hermit-abi-0.5.0
+                                     rust-indexmap-2.9.0
+                                     rust-indoc-2.0.6
+                                     rust-is-terminal-0.4.16
+                                     rust-itertools-0.10.5
+                                     rust-itertools-0.13.0
+                                     rust-itoa-1.0.15
+                                     rust-js-sys-0.3.77
+                                     rust-libc-0.2.172
+                                     rust-log-0.4.27
+                                     rust-memchr-2.7.4
+                                     rust-memoffset-0.9.1
+                                     rust-num-traits-0.2.19
+                                     rust-once-cell-1.21.3
+                                     rust-oorandom-11.1.5
+                                     rust-paste-1.0.15
+                                     rust-peg-0.8.5
+                                     rust-peg-macros-0.8.5
+                                     rust-peg-runtime-0.8.5
+                                     rust-plotters-0.3.7
+                                     rust-plotters-backend-0.3.7
+                                     rust-plotters-svg-0.3.7
+                                     rust-portable-atomic-1.11.0
+                                     rust-proc-macro2-1.0.95
+                                     rust-pyo3-0.22.6
+                                     rust-pyo3-build-config-0.22.6
+                                     rust-pyo3-ffi-0.22.6
+                                     rust-pyo3-macros-0.22.6
+                                     rust-pyo3-macros-backend-0.22.6
+                                     rust-quote-1.0.40
+                                     rust-rayon-1.10.0
+                                     rust-rayon-core-1.12.1
+                                     rust-regex-1.11.1
+                                     rust-regex-automata-0.4.9
+                                     rust-regex-syntax-0.8.5
+                                     rust-rustversion-1.0.20
+                                     rust-ryu-1.0.20
+                                     rust-same-file-1.0.6
+                                     rust-serde-1.0.219
+                                     rust-serde-derive-1.0.219
+                                     rust-serde-json-1.0.140
+                                     rust-serde-spanned-0.6.8
+                                     rust-syn-2.0.100
+                                     rust-target-lexicon-0.12.16
+                                     rust-target-triple-0.1.4
+                                     rust-termcolor-1.4.1
+                                     rust-thiserror-1.0.69
+                                     rust-thiserror-impl-1.0.69
+                                     rust-tinytemplate-1.2.1
+                                     rust-toml-0.8.20
+                                     rust-toml-datetime-0.6.8
+                                     rust-toml-edit-0.22.24
+                                     rust-trybuild-1.0.104
+                                     rust-unicode-ident-1.0.18
+                                     rust-unindent-0.2.4
+                                     rust-walkdir-2.5.0
+                                     rust-wasm-bindgen-0.2.100
+                                     rust-wasm-bindgen-backend-0.2.100
+                                     rust-wasm-bindgen-macro-0.2.100
+                                     rust-wasm-bindgen-macro-support-0.2.100
+                                     rust-wasm-bindgen-shared-0.2.100
+                                     rust-web-sys-0.3.77
+                                     rust-winapi-util-0.1.9
+                                     rust-windows-sys-0.59.0
+                                     rust-windows-targets-0.52.6
+                                     rust-windows-aarch64-gnullvm-0.52.6
+                                     rust-windows-aarch64-msvc-0.52.6
+                                     rust-windows-i686-gnu-0.52.6
+                                     rust-windows-i686-gnullvm-0.52.6
+                                     rust-windows-i686-msvc-0.52.6
+                                     rust-windows-x86-64-gnu-0.52.6
+                                     rust-windows-x86-64-gnullvm-0.52.6
+                                     rust-windows-x86-64-msvc-0.52.6
+                                     rust-winnow-0.7.6))
                      (python-nh3 =>
                                  (list rust-ammonia-4.0.0
                                        rust-autocfg-1.4.0
