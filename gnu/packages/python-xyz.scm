@@ -274,6 +274,7 @@
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages search)
@@ -32518,7 +32519,7 @@ but portable.")
 (define-public python-watchfiles
   (package
     (name "python-watchfiles")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -32528,44 +32529,51 @@ but portable.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kaxq0drjwlvcsg4in25w1bhjjgm1zlz06rr2macyi6s5x96g46h"))))
-    (build-system cargo-build-system)
+        (base32 "1b5rdj795xcbwg76bd8hs3skhgifd7a8zw2vj76nac2dhjlqg93b"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:install-source? #f
+      ;; Missing file in source.
+      #:test-flags ''("-k" "not test_docs_examples")
       #:imported-modules `(,@%cargo-build-system-modules
                            ,@%pyproject-build-system-modules)
-      #:modules '((guix build cargo-build-system)
-                  ((guix build pyproject-build-system) #:prefix py:)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'build
-            (assoc-ref py:%standard-phases 'build))
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
           (add-after 'build 'install-rust-library
             (lambda _
               (copy-file "target/release/lib_rust_notify.so"
-                         "watchfiles/_rust_notify.so")))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (if tests?
-                  ;; Missing file in source.
-                  (invoke "pytest" "-vv" "-k" "not test_docs_examples")
-                  (format #t "test suite not run~%"))))
-          (replace 'install
-            (assoc-ref py:%standard-phases 'install)))
-      #:cargo-inputs
-      (list rust-crossbeam-channel-0.5 rust-notify-7 rust-pyo3-0.23)))
+                         "watchfiles/_rust_notify.so"))))))
     (native-inputs
-     (list maturin
-           python-anyio
-           python-coverage
-           python-dirty-equals
-           python-pytest
-           python-pytest-cov
-           python-pytest-mock
-           python-pytest-timeout
-           python-wrapper))
+     (append
+      (list maturin
+            python-anyio
+            python-coverage
+            python-dirty-equals
+            python-pytest
+            python-pytest-cov
+            python-pytest-mock
+            python-pytest-timeout
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs (cargo-inputs 'python-watchfiles))
     (home-page "https://github.com/samuelcolvin/watchfiles")
     (synopsis "Simple, modern file watching and code reload in Python")
     (description

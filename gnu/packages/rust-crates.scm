@@ -6496,6 +6496,10 @@
   (crate-source "notify" "6.1.1"
                 "0bad98r0ilkhhq2jg3zs11zcqasgbvxia8224wpasm74n65vs1b2"))
 
+(define rust-notify-7.0.0
+  (crate-source "notify" "7.0.0"
+                "02a0a1n0raxqslwhfprwmz7w34v54r42006q0m8bmy89jz1v8cy5"))
+
 (define rust-notify-8.0.0
   (crate-source "notify" "8.0.0"
                 "0hz9ab68gsbkidms6kgl4v7capfqjyl40vpfdarcfsnnnc1q9vig"))
@@ -6511,6 +6515,10 @@
 (define rust-notify-rust-4.11.7
   (crate-source "notify-rust" "4.11.7"
                 "0024xqbn29z1k6cfbi8w7c1p73hscqwkpbwlwwa2bam5cn328hk4"))
+
+(define rust-notify-types-1.0.1
+  (crate-source "notify-types" "1.0.1"
+                "0x5idrpxzf70ng88rz28dqmgx1jyddf0vxx1x3csw09fw6skqpaq"))
 
 (define rust-notify-types-2.0.0
   (crate-source "notify-types" "2.0.0"
@@ -24738,6 +24746,61 @@
                                          rust-wit-bindgen-rt-0.39.0
                                          rust-zerocopy-0.8.24
                                          rust-zerocopy-derive-0.8.24))
+                     (python-watchfiles =>
+                                        (list rust-autocfg-1.4.0
+                                         rust-bitflags-1.3.2
+                                         rust-bitflags-2.9.0
+                                         rust-cc-1.2.19
+                                         rust-cfg-if-1.0.0
+                                         rust-crossbeam-channel-0.5.15
+                                         rust-crossbeam-utils-0.8.21
+                                         rust-filetime-0.2.25
+                                         rust-fsevent-sys-4.1.0
+                                         rust-heck-0.5.0
+                                         rust-indoc-2.0.6
+                                         rust-inotify-0.10.2
+                                         rust-inotify-sys-0.1.5
+                                         rust-instant-0.1.13
+                                         rust-kqueue-1.0.8
+                                         rust-kqueue-sys-1.0.4
+                                         rust-libc-0.2.172
+                                         rust-libredox-0.1.3
+                                         rust-log-0.4.27
+                                         rust-memoffset-0.9.1
+                                         rust-mio-1.0.3
+                                         rust-notify-7.0.0
+                                         rust-notify-types-1.0.1
+                                         rust-once-cell-1.21.3
+                                         rust-portable-atomic-1.11.0
+                                         rust-proc-macro2-1.0.95
+                                         rust-pyo3-0.24.1
+                                         rust-pyo3-build-config-0.24.1
+                                         rust-pyo3-ffi-0.24.1
+                                         rust-pyo3-macros-0.24.1
+                                         rust-pyo3-macros-backend-0.24.1
+                                         rust-python3-dll-a-0.2.13
+                                         rust-quote-1.0.40
+                                         rust-redox-syscall-0.5.11
+                                         rust-same-file-1.0.6
+                                         rust-shlex-1.3.0
+                                         rust-syn-2.0.100
+                                         rust-target-lexicon-0.13.2
+                                         rust-unicode-ident-1.0.18
+                                         rust-unindent-0.2.4
+                                         rust-walkdir-2.5.0
+                                         rust-wasi-0.11.0+wasi-snapshot-preview1
+                                         rust-winapi-util-0.1.9
+                                         rust-windows-sys-0.52.0
+                                         rust-windows-sys-0.59.0
+                                         rust-windows-targets-0.52.6
+                                         rust-windows-aarch64-gnullvm-0.52.6
+                                         rust-windows-aarch64-msvc-0.52.6
+                                         rust-windows-i686-gnu-0.52.6
+                                         rust-windows-i686-gnullvm-0.52.6
+                                         rust-windows-i686-msvc-0.52.6
+                                         rust-windows-x86-64-gnu-0.52.6
+                                         rust-windows-x86-64-gnullvm-0.52.6
+                                         rust-windows-x86-64-msvc-0.52.6))
                      (rav1e =>
                             (list rust-addr2line-0.24.2
                                   rust-adler2-2.0.0
