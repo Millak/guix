@@ -1098,7 +1098,7 @@ more.")
 (define-public iraf-community
   (package
     (name "iraf-community")
-    (version "2.18")
+    (version "2.18.1")
     (source
      (origin
        (method git-fetch)
@@ -1107,7 +1107,7 @@ more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cxf8s8gldx0zc9075x8ii0aadjagifw9gpdvnpqss0q21zwrpg2"))))
+        (base32 "1bp88lgciibkm83jbmv8nazz8mzcrl1vlmll853fib6pwiikd015"))))
     (build-system gnu-build-system)
     (arguments
      (list
