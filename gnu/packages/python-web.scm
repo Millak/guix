@@ -140,6 +140,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages rpc)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
@@ -5006,30 +5007,35 @@ and MAC network addresses.")
        (uri (pypi-uri "nh3" version))
        (sha256
         (base32 "1mcf3y5294glji9lhzh57wymw4srbvzdg0kcakm0p2pqgwnw81cp"))))
-    (build-system cargo-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:imported-modules `(,@%cargo-build-system-modules
                            ,@%pyproject-build-system-modules)
-      #:modules '((guix build cargo-build-system)
-                  ((guix build pyproject-build-system) #:prefix py:)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'build (assoc-ref py:%standard-phases 'build))
-          (replace 'install (assoc-ref py:%standard-phases 'install))
-          ;; cargo-build-system's %standard-phases has 'check before 'install.
-          (delete 'check)
-          (add-after 'install 'check
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-              (when tests?
-                (py:add-installed-pythonpath inputs outputs)
-                (invoke "pytest" "-vv" "tests")))))
-      #:cargo-inputs
-      `(("rust-ammonia" ,rust-ammonia-4)
-        ("rust-pyo3" ,rust-pyo3-0.23))
-      #:install-source? #false))
-    (native-inputs (list maturin python-pytest python-wrapper))
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
+    (native-inputs
+     (append
+      (list maturin python-pytest rust `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs (cargo-inputs 'python-nh3))
     (home-page "https://nh3.readthedocs.io")
     (synopsis "Python bindings to Ammonia HTML sanitization library")
     (description "This package provides Python bindings to Ammonia HTML

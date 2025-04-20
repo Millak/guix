@@ -183,6 +183,10 @@
   (crate-source "amd" "0.2.2"
                 "15ib7hhzdifb2m099561ip0fq627gaszw4sq36ys75snaw0y0yd6"))
 
+(define rust-ammonia-4.0.0
+  (crate-source "ammonia" "4.0.0"
+                "0nd432yg1cl9kj4i9c37a9hvwffayqh6zsvb4fmh31g5bsp9xf8s"))
+
 (define rust-android-activity-0.6.0
   (crate-source "android-activity" "0.6.0"
                 "0inh88x8x2fh62jg739s9hwyvdh8i920qf0qw7bhr802j9c7hsgg"))
@@ -23969,6 +23973,97 @@
                                           rust-wit-bindgen-rt-0.39.0
                                           rust-zerocopy-0.8.24
                                           rust-zerocopy-derive-0.8.24))
+                     (python-nh3 =>
+                                 (list rust-ammonia-4.0.0
+                                       rust-autocfg-1.4.0
+                                       rust-bitflags-2.9.0
+                                       rust-cc-1.2.19
+                                       rust-cfg-if-1.0.0
+                                       rust-displaydoc-0.2.5
+                                       rust-form-urlencoded-1.2.1
+                                       rust-futf-0.1.5
+                                       rust-heck-0.5.0
+                                       rust-html5ever-0.27.0
+                                       rust-icu-collections-1.5.0
+                                       rust-icu-locid-1.5.0
+                                       rust-icu-locid-transform-1.5.0
+                                       rust-icu-locid-transform-data-1.5.1
+                                       rust-icu-normalizer-1.5.0
+                                       rust-icu-normalizer-data-1.5.1
+                                       rust-icu-properties-1.5.1
+                                       rust-icu-properties-data-1.5.1
+                                       rust-icu-provider-1.5.0
+                                       rust-icu-provider-macros-1.5.0
+                                       rust-idna-1.0.3
+                                       rust-idna-adapter-1.2.0
+                                       rust-indoc-2.0.6
+                                       rust-libc-0.2.172
+                                       rust-litemap-0.7.5
+                                       rust-lock-api-0.4.12
+                                       rust-log-0.4.27
+                                       rust-mac-0.1.1
+                                       rust-maplit-1.0.2
+                                       rust-markup5ever-0.12.1
+                                       rust-memoffset-0.9.1
+                                       rust-new-debug-unreachable-1.0.6
+                                       rust-once-cell-1.21.3
+                                       rust-parking-lot-0.12.3
+                                       rust-parking-lot-core-0.9.10
+                                       rust-percent-encoding-2.3.1
+                                       rust-phf-0.11.3
+                                       rust-phf-codegen-0.11.3
+                                       rust-phf-generator-0.11.3
+                                       rust-phf-shared-0.11.3
+                                       rust-portable-atomic-1.11.0
+                                       rust-precomputed-hash-0.1.1
+                                       rust-proc-macro2-1.0.95
+                                       rust-pyo3-0.23.5
+                                       rust-pyo3-build-config-0.23.5
+                                       rust-pyo3-ffi-0.23.5
+                                       rust-pyo3-macros-0.23.5
+                                       rust-pyo3-macros-backend-0.23.5
+                                       rust-python3-dll-a-0.2.13
+                                       rust-quote-1.0.40
+                                       rust-rand-0.8.5
+                                       rust-rand-core-0.6.4
+                                       rust-redox-syscall-0.5.11
+                                       rust-scopeguard-1.2.0
+                                       rust-serde-1.0.219
+                                       rust-serde-derive-1.0.219
+                                       rust-shlex-1.3.0
+                                       rust-siphasher-1.0.1
+                                       rust-smallvec-1.15.0
+                                       rust-stable-deref-trait-1.2.0
+                                       rust-string-cache-0.8.9
+                                       rust-string-cache-codegen-0.5.4
+                                       rust-syn-2.0.100
+                                       rust-synstructure-0.13.1
+                                       rust-target-lexicon-0.12.16
+                                       rust-tendril-0.4.3
+                                       rust-tinystr-0.7.6
+                                       rust-unicode-ident-1.0.18
+                                       rust-unindent-0.2.4
+                                       rust-url-2.5.4
+                                       rust-utf-8-0.7.6
+                                       rust-utf16-iter-1.0.5
+                                       rust-utf8-iter-1.0.4
+                                       rust-windows-targets-0.52.6
+                                       rust-windows-aarch64-gnullvm-0.52.6
+                                       rust-windows-aarch64-msvc-0.52.6
+                                       rust-windows-i686-gnu-0.52.6
+                                       rust-windows-i686-gnullvm-0.52.6
+                                       rust-windows-i686-msvc-0.52.6
+                                       rust-windows-x86-64-gnu-0.52.6
+                                       rust-windows-x86-64-gnullvm-0.52.6
+                                       rust-windows-x86-64-msvc-0.52.6
+                                       rust-write16-1.0.0
+                                       rust-writeable-0.5.5
+                                       rust-yoke-0.7.5
+                                       rust-yoke-derive-0.7.5
+                                       rust-zerofrom-0.1.6
+                                       rust-zerofrom-derive-0.1.6
+                                       rust-zerovec-0.10.4
+                                       rust-zerovec-derive-0.10.3))
                      (python-rpds-py =>
                                      (list rust-archery-1.2.1
                                       rust-autocfg-1.4.0
