@@ -32,7 +32,9 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages python))
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages textutils))
 
 ;;;
 ;;; Cargo workspaces and Rust libraries requiring external inputs to unbundle.
@@ -421,6 +423,104 @@ will need, in a generic fashion.
 It supports the @code{wayland}, @code{wayland-protocols}, and some external
 extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
        (license license:expat)))))
+
+(define inspired-github-color-scheme-for-rust-syntect-5
+  (let ((version "1.3.0"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/sethlopez/InspiredGitHub.tmtheme")
+            (commit (string-append "v" version))))
+      (file-name "inspired-github-color-scheme-checkout")
+      (sha256
+       (base32
+        "0w2sswa2kid1jwqy28xqvjav17xzkza32i9vvyj67m1kfm3dd6ww")))))
+
+(define solarized-for-rust-syntect-5
+  (let ((version "1.5.11"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/braver/Solarized")
+            (commit version)))
+      (file-name "solarized-checkout")
+      (sha256
+       (base32
+        "05n8wq7zahydrnx36k7awqjz8svn13xsxcazyj0909h4akbsglj1")))))
+
+(define spacegray-for-rust-syntect-5
+  (let ((commit "2703e93f559e212ef3895edd10d861a4383ce93d"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/SublimeText/Spacegray")
+            (commit commit)))
+      (file-name "spacegray-checkout")
+      (sha256
+       (base32
+        "0vzs9i3sdh6f1b25vdbxwyphmxzbqixrnjlgws56fzfngy4my9dj")))))
+
+(define-public rust-syntect-5
+  (hidden-package
+   (package
+     (name "rust-syntect")
+     (version "5.2.0")
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/trishume/syntect")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "1wr5x6jy53s597j7kfyzhwph1d07a18qc45s47cx4f399f0xwk9l"))
+               (modules '((guix build utils)))
+               (snippet
+                '(begin
+                   (delete-file-recursively "scripts")
+                   (for-each
+                    (lambda (file)
+                      (delete-file file)
+                      (with-output-to-file file
+                        (const (display "\n"))))
+                    (find-files "assets" "dump$"))))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:cargo-package-crates ''("syntect")
+            #:phases
+            #~(modify-phases %standard-phases
+                (replace 'build
+                  (lambda _
+                    (substitute* "Makefile"
+                      (("git submodule.*") ""))
+                    (with-directory-excursion "testdata"
+                      (rmdir "InspiredGitHub.tmtheme")
+                      (copy-recursively
+                       #+(this-package-native-input
+                          "inspired-github-color-scheme-checkout")
+                       "InspiredGitHub.tmtheme")
+                      (rmdir "Solarized")
+                      (copy-recursively
+                       #+(this-package-native-input "solarized-checkout")
+                       "Solarized")
+                      (rmdir "spacegray")
+                      (copy-recursively
+                       #+(this-package-native-input "solarized-checkout")
+                       "spacegray"))
+                    (invoke "make" "assets"))))))
+     (native-inputs
+      (list pkg-config
+            inspired-github-color-scheme-for-rust-syntect-5
+            solarized-for-rust-syntect-5
+            spacegray-for-rust-syntect-5))
+     (inputs (cons oniguruma (cargo-inputs 'rust-syntect-5)))
+     (home-page "https://github.com/trishume/syntect")
+     (synopsis "Library for syntax highlighting and code intelligence")
+     (description
+      "This package provides a library for syntax highlighting and code
+intelligence.")
+     (license license:expat))))
 
 (define-public rust-web-view-for-alfis
   (let ((commit "82d7cbce6228b1a964673cc0f22944ad808eab42")
