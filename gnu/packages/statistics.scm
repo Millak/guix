@@ -1292,6 +1292,39 @@ main goal of this library is giving to specific applications all the
 functionalities needed to treat uncertainties in studies.")
     (license license:lgpl3+)))
 
+(define-public python-resample
+  (package
+    (name "python-resample")
+    (version "1.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "resample" version))
+       (sha256
+        (base32 "0p8valf472y5nx45ddk7w5nsmph1725zb0k3a2zs6zyacqczrpb2"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-scipy))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/scikit-hep/resample")
+    (synopsis "Resampling-based inference in Python")
+    (description "This package provides a resampling-based inference based on
+data resampling and permutation.
+
+Features:
+
+@itemize
+@item Bootstrap resampling: ordinary or balanced with optional stratification
+@item Extended bootstrap resampling: also varies sample size
+@item Parametric resampling: Gaussian, Poisson, gamma, etc.)
+@item Jackknife estimates of bias and variance of any estimator
+@item Compute bootstrap confidence intervals (percentile or BCa) for any
+estimator
+@item Permutation-based variants of traditional statistical tests (USP test of
+independence and others)
+@item Tools for working with empirical distributions (CDF, quantile, etc.)
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public r-rversions
   (package
     (name "r-rversions")
