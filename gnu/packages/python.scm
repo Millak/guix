@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2018, 2021, 2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2017, 2019 Eric Bavier <bavier@member.fsf.org>
@@ -728,9 +728,12 @@ def contents() -> str:
               ;; Disable runtime check failing if cross-compiling, see:
               ;; https://lists.yoctoproject.org/pipermail/poky/2013-June/008997.html
               #$@(if (%current-target-system)
-                     '("ac_cv_buggy_getaddrinfo=no"
-                       "ac_cv_file__dev_ptmx=no"
-                       "ac_cv_file__dev_ptc=no")
+                     #~("ac_cv_buggy_getaddrinfo=no"
+                        "ac_cv_file__dev_ptmx=no"
+                        "ac_cv_file__dev_ptc=no"
+                        (string-append "--with-build-python="
+                                       #+(this-package-native-input "python")
+                                       "/bin/python3"))
                      '())
               ;; -fno-semantic-interposition reinstates some
               ;; optimizations by gcc leading to around 15% speedup.
