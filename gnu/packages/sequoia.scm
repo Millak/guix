@@ -1186,21 +1186,6 @@ This Guix package is built to use the nettle cryptographic library.")
        #:features '(list "sequoia-openpgp/crypto-nettle")
        #:cargo-test-flags '(list "--" "--skip=gpg_trust_roots")
        #:install-source? #f
-       #:cargo-inputs
-       (list rust-anyhow-1
-             rust-chrono-0.4
-             rust-clap-4
-             rust-clap-complete-4
-             rust-clap-mangen-0.2
-             rust-dot-writer-0.1
-             rust-enumber-0.3
-             rust-sequoia-cert-store-0.6
-             rust-sequoia-openpgp-1
-             rust-sequoia-policy-config-0.7)
-       #:cargo-development-inputs
-       (list rust-assert-cmd-2
-             rust-predicates-3
-             rust-tempfile-3)
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'chdir
@@ -1229,7 +1214,7 @@ This Guix package is built to use the nettle cryptographic library.")
                                (string-append
                                  share "/zsh/site-functions"))))))))
     (inputs
-     (list nettle openssl sqlite))
+     (cons* nettle openssl sqlite (cargo-inputs 'sequoia-wot-tools)))
     (native-inputs
      (list clang pkg-config))
     (home-page "https://sequoia-pgp.org/")
