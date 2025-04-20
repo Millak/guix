@@ -2832,6 +2832,10 @@
   (crate-source "fancy-regex" "0.11.0"
                 "18j0mmzfycibhxhhhfja00dxd1vf8x5c28lbry224574h037qpxr"))
 
+(define rust-fancy-regex-0.13.0
+  (crate-source "fancy-regex" "0.13.0"
+                "1wjbqjsdj8fkq6z2i9llq25iaqzd9f208vxnwg8mdbr2ba1lc7jk"))
+
 (define rust-fancy-regex-0.14.0
   (crate-source "fancy-regex" "0.14.0"
                 "162j2qx2ikgl79grq12mawyflwkirnjzrvxh11a1xbmwjidcn93f"))
@@ -24434,6 +24438,38 @@
                                            rust-target-lexicon-0.12.16
                                            rust-unicode-ident-1.0.18
                                            rust-unindent-0.2.4))
+                     (python-tiktoken =>
+                                      (list rust-aho-corasick-1.1.3
+                                            rust-autocfg-1.4.0
+                                            rust-bit-set-0.5.3
+                                            rust-bit-vec-0.6.3
+                                            rust-bstr-1.12.0
+                                            rust-cfg-if-1.0.0
+                                            rust-fancy-regex-0.13.0
+                                            rust-heck-0.5.0
+                                            rust-indoc-2.0.6
+                                            rust-libc-0.2.172
+                                            rust-memchr-2.7.4
+                                            rust-memoffset-0.9.1
+                                            rust-once-cell-1.21.3
+                                            rust-portable-atomic-1.11.0
+                                            rust-proc-macro2-1.0.95
+                                            rust-pyo3-0.22.6
+                                            rust-pyo3-build-config-0.22.6
+                                            rust-pyo3-ffi-0.22.6
+                                            rust-pyo3-macros-0.22.6
+                                            rust-pyo3-macros-backend-0.22.6
+                                            rust-quote-1.0.40
+                                            rust-regex-1.11.1
+                                            rust-regex-automata-0.4.9
+                                            rust-regex-syntax-0.8.5
+                                            rust-rustc-hash-1.1.0
+                                            rust-serde-1.0.219
+                                            rust-serde-derive-1.0.219
+                                            rust-syn-2.0.100
+                                            rust-target-lexicon-0.12.16
+                                            rust-unicode-ident-1.0.18
+                                            rust-unindent-0.2.4))
                      (python-tokenizers =>
                                         (list rust-aho-corasick-1.1.3
                                          rust-anstream-0.6.18

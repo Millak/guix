@@ -12629,12 +12629,6 @@ numpy arrays to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
     (arguments
      (list
       #:install-source? #false
-      #:cargo-inputs
-      (list rust-pyo3-0.22
-            rust-fancy-regex-0.13
-            rust-regex-1
-            rust-rustc-hash-1
-            rust-bstr-1)
       #:imported-modules
       (append %pyproject-build-system-modules
               %cargo-build-system-modules)
@@ -12658,6 +12652,7 @@ numpy arrays to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
           (replace 'install
             (assoc-ref py:%standard-phases 'install)))))
     (propagated-inputs (list python-regex python-requests))
+    (inputs (cargo-inputs 'python-tiktoken))
     (native-inputs
      (list python-setuptools
            python-setuptools-rust
