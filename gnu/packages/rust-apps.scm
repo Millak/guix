@@ -2031,19 +2031,6 @@ decompressing files and directories.")
     (build-system cargo-build-system)
     (arguments
      (list
-      #:cargo-inputs `(("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-bstr" ,rust-bstr-1)
-                       ("rust-grep" ,rust-grep-0.3)
-                       ("rust-ignore" ,rust-ignore-0.4)
-                       ("rust-jemallocator" ,rust-jemallocator-0.5)
-                       ("rust-lexopt" ,rust-lexopt-0.3)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-termcolor" ,rust-termcolor-1)
-                       ("rust-textwrap" ,rust-textwrap-0.16))
-      #:cargo-development-inputs `(("rust-serde" ,rust-serde-1)
-                                   ("rust-serde-derive" ,rust-serde-derive-1)
-                                   ("rust-walkdir" ,rust-walkdir-2))
       #:install-source? #f
       ;; Note: the built target 'rg' binary is required for 'install-extras
       #:phases #~(modify-phases %standard-phases
@@ -2081,7 +2068,7 @@ decompressing files and directories.")
                              (lambda _
                                (invoke rg "--generate" "complete-fish")))))))
       #:features '(list "pcre2")))
-    (inputs (list pcre2))
+    (inputs (cons pcre2 (cargo-inputs 'ripgrep)))
     (native-inputs (cons* pkg-config (if (%current-target-system)
                                          (list this-package)
                                          '())))
