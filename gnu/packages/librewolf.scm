@@ -192,7 +192,8 @@
       (patches
        (search-patches
         "torbrowser-compare-paths.patch"
-        "librewolf-use-system-wide-dir.patch")))))
+        "librewolf-use-system-wide-dir.patch"
+        "librewolf-add-store-to-rdd-allowlist.patch")))))
 
 ;;; Define the versions of rust needed to build firefox, trying to match
 ;;; upstream.  See table at [0], `Uses' column for the specific version.
@@ -541,28 +542,11 @@
                               "pulseaudio"
                               "libpciaccess")))
 
-                     ;; VA-API is run in the RDD (Remote Data Decoder) sandbox
-                     ;; and must be explicitly given access to files it needs.
-                     ;; Rather than adding the whole store (as Nix had
-                     ;; upstream do, see
-                     ;; <https://github.com/NixOS/nixpkgs/pull/165964> and
-                     ;; linked upstream patches), we can just follow the
-                     ;; runpaths of the needed libraries to add everything to
-                     ;; LD_LIBRARY_PATH.  These will then be accessible in the
-                     ;; RDD sandbox.
-                     (rdd-whitelist
-                      (map (cut string-append <> "/")
-                           (delete-duplicates
-                            (append-map runpaths-of-input
-                                        '("mesa"
-                                          "ffmpeg"
-                                          "libpciaccess")))))
                      (gtk-share (string-append (assoc-ref inputs
                                                           "gtk+")
                                                "/share")))
                 (wrap-program (car (find-files lib "^librewolf$"))
-                  `("LD_LIBRARY_PATH" prefix
-                    (,@libs ,@rdd-whitelist))
+                  `("LD_LIBRARY_PATH" prefix ,libs)
                   `("XDG_DATA_DIRS" prefix
                     (,gtk-share))
                   `("MOZ_LEGACY_PROFILES" =
