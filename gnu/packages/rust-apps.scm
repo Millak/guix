@@ -2017,24 +2017,6 @@ decompressing files and directories.")
      "This package provides a sampling profiler for Python programs.")
     (license license:expat)))
 
-(define-public rust-py-spy-testdata-0.1
-  (hidden-package                       ; Uninteresting for users.
-   (package
-     (name "rust-py-spy-testdata")
-     (version "0.1.0")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "py-spy-testdata" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32 "18d880f2rjdd42828srh97vpvlrs9pg23j28gphw9qd2w3bp128q"))))
-     (build-system cargo-build-system)
-     (home-page "https://github.com/benfred/py-spy-testdata")
-     (synopsis "Python coredumps for testing py-spy")
-     (description "This package provides Python coredumps for testing py-spy.")
-     (license license:expat))))
-
 (define-public ripgrep
   (package
     (name "ripgrep")
