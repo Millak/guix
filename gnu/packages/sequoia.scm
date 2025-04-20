@@ -870,60 +870,6 @@ This Guix package is built to use the nettle cryptographic library.")
               "--skip=gpg::quick::generate_key_default_default_iso_date"
               "--skip=gpg::sign"
               "--skip=gpg::verify")
-       #:cargo-inputs
-       (list rust-anyhow-1
-             rust-base64-0.21
-             rust-buffered-reader-1
-             rust-chrono-0.4
-             rust-clap-4
-             rust-clap-complete-4
-             rust-clap-mangen-0.2
-             rust-daemonize-0.5
-             rust-dirs-5
-             rust-fd-lock-4
-             rust-filetime-0.2
-             rust-futures-0.3
-             rust-indexmap-2
-             rust-interprocess-2
-             rust-libc-0.2
-             rust-memchr-2
-             rust-openssh-keys-0.6
-             rust-percent-encoding-2
-             rust-rand-0.8
-             rust-rand-distr-0.4
-             rust-rayon-1
-             rust-reqwest-0.12
-             rust-roff-0.2
-             rust-rpassword-7
-             rust-rusqlite-0.31
-             rust-sequoia-cert-store-0.6
-             rust-sequoia-gpg-agent-0.5
-             rust-sequoia-ipc-0.35
-             rust-sequoia-net-0.29
-             rust-sequoia-openpgp-1
-             rust-sequoia-policy-config-0.7
-             rust-sequoia-wot-0.13
-             rust-serde-1
-             rust-serde-json-1
-             rust-shellexpand-3
-             rust-tempfile-3
-             rust-thiserror-2
-             rust-tokio-1)
-       #:cargo-development-inputs
-       (list rust-anyhow-1
-             rust-bzip2-0.4
-             rust-diff-0.1
-             rust-editdistancek-1
-             rust-histo-1
-             rust-interprocess-2
-             rust-ntest-0.9
-             rust-pty-process-0.4
-             rust-regex-1
-             rust-reqwest-0.12
-             rust-serde-with-3
-             rust-stfu8-0.2
-             rust-tar-0.4
-             rust-tempfile-3)
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'set-asset-out-dir
@@ -965,7 +911,7 @@ This Guix package is built to use the nettle cryptographic library.")
                  (install-file "target/assets/shell-completions/gpgv-sq.fish"
                                fish-completions-dir)))))))
     (inputs
-     (list nettle openssl sqlite))
+     (cons* nettle openssl sqlite (cargo-inputs 'sequoia-chameleon-gnupg)))
     (native-inputs
      (list clang gnupg pkg-config sequoia-sq))
     (home-page "https://sequoia-pgp.org/")
