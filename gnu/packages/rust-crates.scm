@@ -179,6 +179,10 @@
   (crate-source "alphanumeric-sort" "1.5.3"
                 "13vyx3cqpylvc0md4563rd42b7dvk3fv4wny0kpcc48gy72n0z6n"))
 
+(define rust-amd-0.2.2
+  (crate-source "amd" "0.2.2"
+                "15ib7hhzdifb2m099561ip0fq627gaszw4sq36ys75snaw0y0yd6"))
+
 (define rust-android-activity-0.6.0
   (crate-source "android-activity" "0.6.0"
                 "0inh88x8x2fh62jg739s9hwyvdh8i920qf0qw7bhr802j9c7hsgg"))
@@ -850,6 +854,14 @@
 (define rust-blakeout-0.3.0
   (crate-source "blakeout" "0.3.0"
                 "0dxcg3sjxd82mn7mq4ammrfpidqf9zsagvhfzgblsi8g4b2fgvw1"))
+
+(define rust-blas-0.22.0
+  (crate-source "blas" "0.22.0"
+                "1p1rs9y8fpxmrh9jj1rf4q517x5h960v4jf30f1gwnr1qdshz65f"))
+
+(define rust-blas-sys-0.7.1
+  (crate-source "blas-sys" "0.7.1"
+                "0h14zjycwc76v15h8qll9z1xiryvmpvsb5gam97pqpdjrrwv5c8k"))
 
 (define rust-block-0.1.6
   (crate-source "block" "0.1.6"
@@ -2025,6 +2037,10 @@
   (crate-source "darling" "0.10.2"
                 "0n7qsp6854wm3y1q1lvylhv15zvc87ibbac1nyfmcdbyv1snww0d"))
 
+(define rust-darling-0.14.4
+  (crate-source "darling" "0.14.4"
+                "0l1qrn805bsxa0iy7x8bmdwr8c10hlw0yiqs8ckv7lbz86rhqxbv"))
+
 (define rust-darling-0.20.11
   (crate-source "darling" "0.20.11"
                 "1vmlphlrlw4f50z16p4bc9p5qwdni1ba95qmxfrrmzs6dh8lczzw"))
@@ -2037,6 +2053,10 @@
   (crate-source "darling_core" "0.10.2"
                 "16sija1jv0l754x4aa6b6fy01d1kf8m0r4id3flqipm45np61jgh"))
 
+(define rust-darling-core-0.14.4
+  (crate-source "darling_core" "0.14.4"
+                "1w4b2ndxmkwghwq84yphk8x15jnpivm08w596g12ry5pwsk1r70h"))
+
 (define rust-darling-core-0.20.11
   (crate-source "darling_core" "0.20.11"
                 "0bj1af6xl4ablnqbgn827m43b8fiicgv180749f5cphqdmcvj00d"))
@@ -2048,6 +2068,10 @@
 (define rust-darling-macro-0.10.2
   (crate-source "darling_macro" "0.10.2"
                 "0wlv31cxkrjijz5gv13hvk55c9lmd781aj12c8n84sa9mksa5dfr"))
+
+(define rust-darling-macro-0.14.4
+  (crate-source "darling_macro" "0.14.4"
+                "13mlyd5w275c815k0ijf6g4c446hs8b3m2h4an5isqgpr7dv9am4"))
 
 (define rust-darling-macro-0.20.11
   (crate-source "darling_macro" "0.20.11"
@@ -2138,13 +2162,25 @@
   (crate-source "derive_arbitrary" "1.4.1"
                 "000839h4mbgs65x1f8540kbjk2ifw68c4d8r5b9f7q0jv4d2qm1h"))
 
+(define rust-derive-builder-0.11.2
+  (crate-source "derive_builder" "0.11.2"
+                "18q4jx8zvg2pkx2d1nmlklx8m48bwrghyg8rdg1irdwkw5xxyynh"))
+
 (define rust-derive-builder-0.20.2
   (crate-source "derive_builder" "0.20.2"
                 "0is9z7v3kznziqsxa5jqji3ja6ay9wzravppzhcaczwbx84znzah"))
 
+(define rust-derive-builder-core-0.11.2
+  (crate-source "derive_builder_core" "0.11.2"
+                "1i5gmf5lglbg7agj1khc6k9swf1clfs5fg6w0icw1w91m77x948z"))
+
 (define rust-derive-builder-core-0.20.2
   (crate-source "derive_builder_core" "0.20.2"
                 "1s640r6q46c2iiz25sgvxw3lk6b6v5y8hwylng7kas2d09xwynrd"))
+
+(define rust-derive-builder-macro-0.11.2
+  (crate-source "derive_builder_macro" "0.11.2"
+                "0s6xfgsybd9wbk39hbgqjcn7d1l36a33q6v7d0x5y17d5fvi80wg"))
 
 (define rust-derive-builder-macro-0.20.2
   (crate-source "derive_builder_macro" "0.20.2"
@@ -2534,6 +2570,10 @@
 (define rust-enum-as-inner-0.6.1
   (crate-source "enum-as-inner" "0.6.1"
                 "1g3cywc65d9w974l2xy86ij13njss3qjc7b0kfbzbws9qrjs5rm1"))
+
+(define rust-enum-dispatch-0.3.13
+  (crate-source "enum_dispatch" "0.3.13"
+                "1kby2jz173ggg7wk41vjsskmkdyx7749ll8lhqhv6mb5qqmww65a"))
 
 (define rust-enum-map-0.6.6
   (crate-source "enum-map" "0.6.6"
@@ -5256,6 +5296,20 @@
   (crate-source "language-tags" "0.3.2"
                 "124k6w9nx33q4xs8rpa9f7klshrsa0x4f7qngdwq890lpdj5jd6l"))
 
+(define rust-lapack-0.19.0
+  (crate-source "lapack" "0.19.0"
+                "01yja6fdjr7h6nqhlamn0mhqv5533735030av2gnmrzp9mmnlrxd"))
+
+(define rust-lapack-sys-0.14.0
+  (crate-source "lapack-sys" "0.14.0"
+                "1gmw6fn4zc6106pzpi88p79b260h7hav40b7sfisf45lbz45czs4"
+                #:snippet
+                '(begin
+                   (delete-file-recursively "lapack")
+                   (substitute* "bin/wrapper.h"
+                     (("\"../lapack/LAPACKE/include/lapack.h\"")
+                      "<lapack.h>")))))
+
 (define rust-layout-rs-0.1.2
   (crate-source "layout-rs" "0.1.2"
                 "1a6y7wjc0p7cbawdwa9gkvb1c518697nchbk5aj9r0vc7a5b5pl4"))
@@ -6564,6 +6618,10 @@
   (crate-source "num_cpus" "1.16.0"
                 "0hra6ihpnh06dvfvz9ipscys0xfqa9ca9hzp384d5m02ssvgqqa1"))
 
+(define rust-num-derive-0.2.5
+  (crate-source "num-derive" "0.2.5"
+                "1wnv7776fh4i40r3zfxcxcmm0dh029skx7gp4sjknz2kqm2hpzga"))
+
 (define rust-num-derive-0.3.3
   (crate-source "num-derive" "0.3.3"
                 "0gbl94ckzqjdzy4j8b1p55mz01g6n1l9bckllqvaj0wfz7zm6sl7"))
@@ -7702,6 +7760,10 @@
   (crate-source "pyo3" "0.19.2"
                 "0f1aqx947mzsrk05zdm9w2702lj5k9s97y9w9lxwkp2avk7sd0g6"))
 
+(define rust-pyo3-0.20.3
+  (crate-source "pyo3" "0.20.3"
+                "0cw2pgab0pq5gd98nhv18xgxvyigygspla6c8mfycmwisjbbpgak"))
+
 (define rust-pyo3-0.21.2
   (crate-source "pyo3" "0.21.2"
                 "1n39y183jfqbyvimscqr0ysxxa6804pn46ivw048ww91lnb0pq55"))
@@ -7732,6 +7794,10 @@
   (crate-source "pyo3-build-config" "0.19.2"
                 "19bb7aqyvr4kmh8b2lnrmcv9251j8yxw7l7xyr77m3s3pk876v07"))
 
+(define rust-pyo3-build-config-0.20.3
+  (crate-source "pyo3-build-config" "0.20.3"
+                "1ms83n1qa81989c6pakpznifalvxv5fiyyji23732lizvr2mgany"))
+
 (define rust-pyo3-build-config-0.21.2
   (crate-source "pyo3-build-config" "0.21.2"
                 "0l0vxvnqsbjrpdmysnwaljf4q3zcr1kb526qq23svzgs6mcdz0vq"))
@@ -7755,6 +7821,10 @@
 (define rust-pyo3-ffi-0.19.2
   (crate-source "pyo3-ffi" "0.19.2"
                 "1nc4696k03ydyiy1f69l3ywknavjzxzag2mscrh2bgkywx1fwg75"))
+
+(define rust-pyo3-ffi-0.20.3
+  (crate-source "pyo3-ffi" "0.20.3"
+                "1yja1npmzh4i73jn5dv2rnw7idif8bns51bf3zpx821ys0qjbd32"))
 
 (define rust-pyo3-ffi-0.21.2
   (crate-source "pyo3-ffi" "0.21.2"
@@ -7784,6 +7854,10 @@
   (crate-source "pyo3-macros" "0.19.2"
                 "1lggr5pnpmdj0cznlhw7ykm1qka3wlymwzfxqql6a4vyb6clrsyz"))
 
+(define rust-pyo3-macros-0.20.3
+  (crate-source "pyo3-macros" "0.20.3"
+                "0n61s98qb2qc1wlda3bz4r0wi0vsr9p4lj2yr5g0bf01z8hcf1bk"))
+
 (define rust-pyo3-macros-0.21.2
   (crate-source "pyo3-macros" "0.21.2"
                 "0g65z9yj2iffjrkrkzan9hwhhj7rrchh7lfv64dy30h6zill1cvp"))
@@ -7811,6 +7885,10 @@
 (define rust-pyo3-macros-backend-0.19.2
   (crate-source "pyo3-macros-backend" "0.19.2"
                 "0dlm4pg29hjmlqx15gcy9cmnabvc8ycy60hcvjg8hm62flhw2zcl"))
+
+(define rust-pyo3-macros-backend-0.20.3
+  (crate-source "pyo3-macros-backend" "0.20.3"
+                "11b1z7qnbdnd9hy74ds3xcjx3mjkz43mvpnan32ljccwpdl9nzkw"))
 
 (define rust-pyo3-macros-backend-0.21.2
   (crate-source "pyo3-macros-backend" "0.21.2"
@@ -23618,6 +23696,76 @@
                                      rust-winapi-0.3.9
                                      rust-winapi-i686-pc-windows-gnu-0.4.0
                                      rust-winapi-x86-64-pc-windows-gnu-0.4.0))
+                     (python-clarabel =>
+                                      (list rust-amd-0.2.2
+                                       rust-autocfg-1.4.0
+                                       rust-bitflags-2.9.0
+                                       rust-blas-0.22.0
+                                       rust-blas-sys-0.7.1
+                                       rust-cfg-if-1.0.0
+                                       rust-darling-0.14.4
+                                       rust-darling-core-0.14.4
+                                       rust-darling-macro-0.14.4
+                                       rust-derive-builder-0.11.2
+                                       rust-derive-builder-core-0.11.2
+                                       rust-derive-builder-macro-0.11.2
+                                       rust-either-1.15.0
+                                       rust-enum-dispatch-0.3.13
+                                       rust-fnv-1.0.7
+                                       rust-heck-0.4.1
+                                       rust-ident-case-1.0.1
+                                       rust-indoc-2.0.6
+                                       rust-itertools-0.11.0
+                                       rust-itoa-1.0.15
+                                       rust-lapack-0.19.0
+                                       rust-lapack-sys-0.14.0
+                                       rust-lazy-static-1.5.0
+                                       rust-libc-0.2.172
+                                       rust-lock-api-0.4.12
+                                       rust-memchr-2.7.4
+                                       rust-memoffset-0.9.1
+                                       rust-num-complex-0.4.6
+                                       rust-num-derive-0.2.5
+                                       rust-num-traits-0.2.19
+                                       rust-once-cell-1.21.3
+                                       rust-parking-lot-0.12.3
+                                       rust-parking-lot-core-0.9.10
+                                       rust-portable-atomic-1.11.0
+                                       rust-proc-macro2-0.4.30
+                                       rust-proc-macro2-1.0.95
+                                       rust-pyo3-0.20.3
+                                       rust-pyo3-build-config-0.20.3
+                                       rust-pyo3-ffi-0.20.3
+                                       rust-pyo3-macros-0.20.3
+                                       rust-pyo3-macros-backend-0.20.3
+                                       rust-quote-0.6.13
+                                       rust-quote-1.0.40
+                                       rust-redox-syscall-0.5.11
+                                       rust-ryu-1.0.20
+                                       rust-scopeguard-1.2.0
+                                       rust-serde-1.0.219
+                                       rust-serde-derive-1.0.219
+                                       rust-serde-json-1.0.140
+                                       rust-smallvec-1.15.0
+                                       rust-strsim-0.10.0
+                                       rust-syn-0.15.44
+                                       rust-syn-1.0.109
+                                       rust-syn-2.0.100
+                                       rust-target-lexicon-0.12.16
+                                       rust-thiserror-1.0.69
+                                       rust-thiserror-impl-1.0.69
+                                       rust-unicode-ident-1.0.18
+                                       rust-unicode-xid-0.1.0
+                                       rust-unindent-0.2.4
+                                       rust-windows-targets-0.52.6
+                                       rust-windows-aarch64-gnullvm-0.52.6
+                                       rust-windows-aarch64-msvc-0.52.6
+                                       rust-windows-i686-gnu-0.52.6
+                                       rust-windows-i686-gnullvm-0.52.6
+                                       rust-windows-i686-msvc-0.52.6
+                                       rust-windows-x86-64-gnu-0.52.6
+                                       rust-windows-x86-64-gnullvm-0.52.6
+                                       rust-windows-x86-64-msvc-0.52.6))
                      (python-cramjam =>
                                      (list rust-adler2-2.0.0
                                       rust-alloc-no-stdlib-2.0.4
