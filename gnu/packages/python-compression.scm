@@ -54,6 +54,7 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages sphinx))
 
@@ -183,61 +184,52 @@ were a single file.")
 (define-public python-cramjam
   (package
     (name "python-cramjam")
-    (version "2.7.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cramjam" version))
        (sha256
-        (base32 "1b69qlr0q7q3spa7zy55xc1dr5pjgsdavxx8ijhv2j60xqjbg7sp"))))
-    (build-system cargo-build-system)
+        (base32 "12kdwr313b8w8il4x1y9z366armd6lqv3hvpx4281bl4fd4ds8g8"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:imported-modules `(,@%cargo-build-system-modules
                            ,@%pyproject-build-system-modules)
-      #:modules '((guix build cargo-build-system)
-                  ((guix build pyproject-build-system)
-                   #:prefix py:)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
                   (guix build utils))
       #:phases #~(modify-phases %standard-phases
-                   ;; We use Maturin to build the project.
-                   (replace 'build
-                     (assoc-ref py:%standard-phases
-                                'build))
-                   ;; Before being able to run Python tests, we need to
-                   ;; install the module and add it to PYTHONPATH.
-                   (delete 'install)
-                   (add-after 'build 'install
-                     (assoc-ref py:%standard-phases
-                                'install))
-                   (add-after 'install 'add-install-to-pythonpath
-                     (assoc-ref py:%standard-phases
-                                'add-install-to-pythonpath))
-                   ;; Finally run the tests. Only Python tests are provided.
-                   (replace 'check
-                     (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-                       (when tests?
-                         ;; Without the CI variable, tests are run in "local"
-                         ;; mode, which sets a deadline for hypothesis.  For a
-                         ;; deterministic build, we need to set CI.
-                         (setenv "CI" "1")
-                         (invoke "pytest" "-vv" "tests")))))
-      #:cargo-inputs `(("rust-brotli" ,rust-brotli-3)
-                       ("rust-bzip2" ,rust-bzip2-0.4)
-                       ("rust-flate2" ,rust-flate2-1)
-                       ("rust-lz4" ,rust-lz4-1)
-                       ("rust-pyo3" ,rust-pyo3-0.18)
-                       ("rust-snap" ,rust-snap-1)
-                       ("rust-zstd" ,rust-zstd-0.11))
-      #:install-source? #f))
-    (native-inputs (list maturin
-                         pkg-config
-                         python-pytest
-                         python-pytest-xdist
-                         python-numpy
-                         python-hypothesis
-                         python-wrapper))
-    (inputs (list `(,zstd "lib")))
+                   (add-after 'unpack 'prepare-cargo-build-system
+                     (lambda args
+                       (for-each
+                        (lambda (phase)
+                          (format #t "Running cargo phase: ~a~%" phase)
+                          (apply (assoc-ref cargo:%standard-phases phase)
+                                 #:cargo-target #$(cargo-triplet)
+                                 args))
+                        '(unpack-rust-crates
+                          configure
+                          check-for-pregenerated-files
+                          patch-cargo-checksums)))))))
+    (native-inputs
+     (append
+      (list maturin
+            pkg-config
+            python-pytest
+            python-pytest-xdist
+            python-numpy
+            python-hypothesis
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs
+     (cons* libdeflate
+            lz4
+            `(,zstd "lib")
+            (cargo-inputs 'python-cramjam)))
     (home-page "https://github.com/milesgranger/cramjam")
     (synopsis "Python bindings to compression algorithms in Rust")
     (description
