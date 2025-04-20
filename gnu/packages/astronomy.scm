@@ -4959,36 +4959,15 @@ can be described by @acronym{WCS, World Coordinate System} translations.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))
+      #~(list "--pyargs" "photutils"
+              "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               ;; numpy>=1.24
-               ((">=1.24") ">=1.23"))))
-          ;; setup.py was removed in 36c3231ce5b80ad470fa78be2e96df859d2daf41
-          ;; for some unknown reason, which caused the package to fail to
-          ;; build. It is being recreated based on that commit.
-          (add-after 'unpack 'create-setup.py
-            (lambda _
-              (call-with-output-file "setup.py"
-                (lambda (port)
-                  (format port "from setuptools import setup
-from extension_helpers import get_extensions
-setup(ext_modules=get_extensions())")))))
-          ;; This file is opened in both install and check phases.
-          (add-before 'install 'writable-compiler
-            (lambda _ (make-file-writable "photutils/_compiler.c")))
-          (add-before 'check 'build-extensions
-            (lambda _
-              ;; Cython extensions have to be built before running
-              ;; the tests. If it's not build it fails with error:
-              ;;
-              ;; ModuleNotFoundError: No module named
-              ;; 'photutils.geometry.circular_overlap'
-              (make-file-writable "photutils/_compiler.c")
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-vv" test-flags))))))))
     (propagated-inputs
      (list python-astropy
            python-bottleneck
