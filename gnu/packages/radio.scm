@@ -2800,6 +2800,7 @@ voice formats.")
            hamlib
            hidapi
            libdab
+           libiio
            libusb
            mbelib
            opencv
@@ -2840,7 +2841,9 @@ voice formats.")
                 (string-append "-DSGP4_DIR="
                                #$(this-package-input "sgp4"))
                 (string-append "-DSOAPYSDR_DIR="
-                               #$(this-package-input "soapysdr")))
+                               #$(this-package-input "soapysdr"))
+                (string-append "-DIIO_DIR="
+                               #$(this-package-input "libiio")))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-unrecognized-compiler-option
