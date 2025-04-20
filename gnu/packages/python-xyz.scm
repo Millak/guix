@@ -11865,21 +11865,14 @@ a general image processing tool.")
 (define-public python-pillow-heif
   (package
     (name "python-pillow-heif")
-    (version "0.21.0")
+    (version "0.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pillow_heif" version))
        (sha256
-        (base32 "16xl2a51z4rjfy7y8vnn3w0ngcr1mr2sgsl9p7z62payy2zy3bh7"))))
+        (base32 "16mkap63d14f69105b3bm8pi64fvpdznncgn48vhgls0jf977m31"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k"
-              (string-append
-               "not test_heif_read_images[image_path25]"
-               " and not test_heif_read_images[image_path49]"))))
     (inputs (list libheif))
     (propagated-inputs (list python-pillow))
     (native-inputs (list opencv         ; for opencv-python
@@ -11888,9 +11881,10 @@ a general image processing tool.")
                          python-numpy
                          python-packaging
                          python-pre-commit
+                         python-pylint
                          python-pympler
-                         python-setuptools
                          python-pytest
+                         python-setuptools
                          python-wheel))
     (home-page "https://github.com/bigcat88/pillow_heif")
     (synopsis "Python interface for libheif library")
