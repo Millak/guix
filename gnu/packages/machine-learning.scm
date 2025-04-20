@@ -139,6 +139,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
@@ -5946,49 +5947,22 @@ tokenizers, with a focus on performances and versatility.")
                         (unless (member file '("." ".."))
                           (rename-file (string-append "bindings/python/" file) file)))
                       (scandir "bindings/python"))
-            (delete-file-recursively ".cargo")))))
+            (delete-file-recursively ".cargo")
+            (substitute* "Cargo.toml"
+              (("^path = .*")
+               (format #f "version = ~s~%" #$version)))))))
     (build-system cargo-build-system)
     (arguments
      (list
+      #:install-source? #f
       #:cargo-test-flags ''("--no-default-features")
       #:imported-modules `(,@%cargo-build-system-modules
                            ,@%pyproject-build-system-modules)
       #:modules '((guix build cargo-build-system)
                   ((guix build pyproject-build-system) #:prefix py:)
-                  (guix build utils)
-                  (ice-9 regex)
-                  (ice-9 textual-ports))
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack-rust-crates 'inject-tokenizers
-            (lambda _
-              (substitute* "Cargo.toml"
-                (("\\[dependencies\\]")
-                 (format #f "
-[dev-dependencies]
-tempfile = ~s
-pyo3 = { version = ~s, features = [\"auto-initialize\"] }
-
-[dependencies]
-tokenizers = ~s"
-                         #$(package-version rust-tempfile-3)
-                         #$(package-version rust-pyo3-0.21)
-                         #$(package-version rust-tokenizers))))
-              (let ((file-path "Cargo.toml"))
-                (call-with-input-file file-path
-                  (lambda (port)
-                    (let* ((content (get-string-all port))
-                           (top-match (string-match
-                                       "\\[dependencies.tokenizers" content)))
-                      (call-with-output-file file-path
-                        (lambda (out)
-                          (format out "~a" (match:prefix top-match))))))))))
-          (add-after 'patch-cargo-checksums 'loosen-requirements
-            (lambda _
-              (substitute* "Cargo.toml"
-                (("version = \"6.4\"")
-                 (format #f "version = ~s"
-                         #$(package-version rust-onig-6))))))
           (add-after 'check 'python-check
             (lambda _
               (copy-file "target/release/libtokenizers.so"
@@ -6011,23 +5985,11 @@ tokenizers = ~s"
                 (copy-file "PKG-INFO" (string-append info "/METADATA"))
                 (copy-recursively
                  "py_src/tokenizers"
-                 (string-append lib "tokenizers"))))))
-      #:cargo-inputs
-      `(("rust-rayon" ,rust-rayon-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-env-logger" ,rust-env-logger-0.11)
-        ("rust-pyo3" ,rust-pyo3-0.21)
-        ("rust-numpy" ,rust-numpy-0.21)
-        ("rust-ndarray" ,rust-ndarray-0.15)
-        ("rust-onig" ,rust-onig-6)
-        ("rust-itertools" ,rust-itertools-0.12)
-        ("rust-tokenizers" ,rust-tokenizers))
-      #:cargo-development-inputs
-      `(("rust-tempfile" ,rust-tempfile-3))))
+                 (string-append lib "tokenizers"))))))))
     (native-inputs
-     (list python-minimal python-pytest))
+     (list pkg-config python-minimal python-pytest))
+    (inputs
+     (cons oniguruma (cargo-inputs 'python-tokenizers)))
     (home-page "https://huggingface.co/docs/tokenizers")
     (synopsis "Implementation of various popular tokenizers")
     (description
