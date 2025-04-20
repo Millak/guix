@@ -273,26 +273,6 @@
                   ,@%default-gnu-imported-modules)
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-preferences
-            (lambda* (#:key inputs #:allow-other-keys)
-              (call-with-port (open-file "browser/app/profile/firefox.js" "a")
-                (lambda (port)
-                  (define (write-setting key value)
-                    (format port "~%pref(\"~a\", ~a);~%" key value)
-                    (format #t
-                            "fix-preferences: setting value of ~a to ~a~%" key
-                            value))
-
-                  ;; We should allow the sandbox to read the store directory,
-                  ;; because the sandbox has access to /usr on FHS distros.
-                  (write-setting
-                   "security.sandbox.content.read_path_whitelist"
-                   (string-append "\""
-                                  (%store-directory) "/\""))
-
-                  ;; XDG settings should be managed by Guix.
-                  (write-setting "browser.shell.checkDefaultBrowser"
-                                 "false")))))
           (add-after 'unpack 'fix-ffmpeg-runtime-linker
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((ffmpeg (assoc-ref inputs "ffmpeg"))
