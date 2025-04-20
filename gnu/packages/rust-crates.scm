@@ -4862,6 +4862,10 @@
   (crate-source "indicatif" "0.17.4"
                 "1y0f3lnr2dnacmpgh8q8dws26pvy6xyyvhxn35jlwigg6xzk2ifv"))
 
+(define rust-indoc-0.3.6
+  (crate-source "indoc" "0.3.6"
+                "1n2fd2wm1h005hd7pjgx4gv5ymyq4sxqn8z0ssw6xchgqs5ilx27"))
+
 (define rust-indoc-1.0.9
   (crate-source "indoc" "1.0.9"
                 "01l3b4ami6sck57yrn8n2z44jifph2m3jiivkws7w2njbvfrk9xz"))
@@ -4873,6 +4877,10 @@
 (define rust-indoc-2.0.6
   (crate-source "indoc" "2.0.6"
                 "1gbn2pkx5sgbd9lp05d2bkqpbfgazi0z3nvharh5ajah11d29izl"))
+
+(define rust-indoc-impl-0.3.6
+  (crate-source "indoc-impl" "0.3.6"
+                "1w58yg249kmzsn75kcj34qaxqh839l1hsaj3bzggy3q03wb6s16f"))
 
 (define rust-inflate-0.4.5
   (crate-source "inflate" "0.4.5"
@@ -7097,9 +7105,17 @@
   (crate-source "password-hash" "0.2.3"
                 "1rr4kd52ld978a2xhcvlc54p1d92yhxl9kvbajba7ia6rs5b5q3p"))
 
+(define rust-paste-0.1.18
+  (crate-source "paste" "0.1.18"
+                "10587zrlmzhq66yhd0z36fzglf32m1nlhi9bxxm6dgl0gp3j1jj5"))
+
 (define rust-paste-1.0.15
   (crate-source "paste" "1.0.15"
                 "02pxffpdqkapy292harq6asfjvadgp1s005fip9ljfsn9fvxgh2p"))
+
+(define rust-paste-impl-0.1.18
+  (crate-source "paste-impl" "0.1.18"
+                "1dlqzk05cx74522s4iyhyzzhszig4n401pp6r1qg6zmr02r7snnr"))
 
 (define rust-path-abs-0.5.1
   (crate-source "path_abs" "0.5.1"
@@ -7518,6 +7534,10 @@
   (crate-source "proc-macro-error2" "2.0.1"
                 "00lq21vgh7mvyx51nwxwf822w2fpww1x0z8z0q47p8705g2hbv0i"))
 
+(define rust-proc-macro-hack-0.5.20+deprecated
+  (crate-source "proc-macro-hack" "0.5.20+deprecated"
+                "0s402hmcs3k9nd6rlp07zkr1lz7yimkmcwcbgnly2zr44wamwdyw"))
+
 (define rust-proc-macro2-0.4.30
   (crate-source "proc-macro2" "0.4.30"
                 "0nd71fl24sys066jrha6j7i34nfkjv44yzw8yww9742wmc8j0gfg"))
@@ -7670,6 +7690,10 @@
   (crate-source "py_literal" "0.4.0"
                 "1qd8j3a9zlpq6rjaxabpc9sacw62dn1cr38p3y4x7fbdsjizfb8h"))
 
+(define rust-pyo3-0.15.2
+  (crate-source "pyo3" "0.15.2"
+                "0ljp3m1frg8y50al4cbadwxfwwrgsvslmljclp4cf20y4ykm07fl"))
+
 (define rust-pyo3-0.16.6
   (crate-source "pyo3" "0.16.6"
                 "1jn6nhp9a8i5kfwds6fzy3hzb938qim8bajp8gfkkcn9892c8802"))
@@ -7695,6 +7719,10 @@
   (crate-source "pyo3" "0.24.1"
                 "0abjav5868avfgb8fjfvz2dbpm916zmhm8xvxzfgns5hhq033nhp"
                 #:snippet '(delete-file-recursively "branding")))
+
+(define rust-pyo3-build-config-0.15.2
+  (crate-source "pyo3-build-config" "0.15.2"
+                "0414biclhrxv6y0bjm6s9fq9z6yah393ffkd8748pqdq83y3k4kp"))
 
 (define rust-pyo3-build-config-0.16.6
   (crate-source "pyo3-build-config" "0.16.6"
@@ -7744,6 +7772,10 @@
   (crate-source "pyo3-ffi" "0.24.1"
                 "1g5a5w7rsq2afb5zamz1jjx5834cnwlg4gig0qhb9xnvw4k0aa05"))
 
+(define rust-pyo3-macros-0.15.2
+  (crate-source "pyo3-macros" "0.15.2"
+                "0fmrzl185i00c6kdvy7icmhhc99c51pyha46incqggk4qvl4gch0"))
+
 (define rust-pyo3-macros-0.16.6
   (crate-source "pyo3-macros" "0.16.6"
                 "089z1x8fm7078kyhpjcsaipd6745jf2rp86rpbkppbam5504k1sn"))
@@ -7767,6 +7799,10 @@
 (define rust-pyo3-macros-0.24.1
   (crate-source "pyo3-macros" "0.24.1"
                 "0i2zrpazxwgfbpmzvrcqhdgg3j97l5i0q455b4rzdlx4d9lfag2w"))
+
+(define rust-pyo3-macros-backend-0.15.2
+  (crate-source "pyo3-macros-backend" "0.15.2"
+                "15bhc1xib9yz4l1sd2lk3nc7scbqsjfvgvlr3mj0xq0jqh92i32s"))
 
 (define rust-pyo3-macros-backend-0.16.6
   (crate-source "pyo3-macros-backend" "0.16.6"
@@ -23539,6 +23575,49 @@
                                          rust-zeroize-1.8.1
                                          rust-zerovec-0.10.4
                                          rust-zerovec-derive-0.10.3))
+                     (python-blake3 =>
+                                    (list rust-arrayref-0.3.9
+                                     rust-arrayvec-0.7.6
+                                     rust-autocfg-1.4.0
+                                     rust-bitflags-1.3.2
+                                     rust-blake3-1.8.1
+                                     rust-cc-1.2.19
+                                     rust-cfg-if-1.0.0
+                                     rust-constant-time-eq-0.3.1
+                                     rust-crossbeam-deque-0.8.6
+                                     rust-crossbeam-epoch-0.9.18
+                                     rust-crossbeam-utils-0.8.21
+                                     rust-either-1.15.0
+                                     rust-hex-0.4.3
+                                     rust-indoc-0.3.6
+                                     rust-indoc-impl-0.3.6
+                                     rust-instant-0.1.13
+                                     rust-libc-0.2.172
+                                     rust-lock-api-0.4.12
+                                     rust-once-cell-1.21.3
+                                     rust-parking-lot-0.11.2
+                                     rust-parking-lot-core-0.8.6
+                                     rust-paste-0.1.18
+                                     rust-paste-impl-0.1.18
+                                     rust-proc-macro-hack-0.5.20+deprecated
+                                     rust-proc-macro2-1.0.95
+                                     rust-pyo3-0.15.2
+                                     rust-pyo3-build-config-0.15.2
+                                     rust-pyo3-macros-0.15.2
+                                     rust-pyo3-macros-backend-0.15.2
+                                     rust-quote-1.0.40
+                                     rust-rayon-1.10.0
+                                     rust-rayon-core-1.12.1
+                                     rust-redox-syscall-0.2.16
+                                     rust-scopeguard-1.2.0
+                                     rust-shlex-1.3.0
+                                     rust-smallvec-1.15.0
+                                     rust-syn-1.0.109
+                                     rust-unicode-ident-1.0.18
+                                     rust-unindent-0.1.11
+                                     rust-winapi-0.3.9
+                                     rust-winapi-i686-pc-windows-gnu-0.4.0
+                                     rust-winapi-x86-64-pc-windows-gnu-0.4.0))
                      (python-cramjam =>
                                      (list rust-adler2-2.0.0
                                       rust-alloc-no-stdlib-2.0.4
