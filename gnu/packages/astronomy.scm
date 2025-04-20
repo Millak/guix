@@ -2107,20 +2107,16 @@ simulated Astronomical data in Python.")
 mining in astronomy.")
     (license license:bsd-2)))
 
-;; XXX: Upgrading to the latest version requires Python3.11+ and fresh
-;; versions of numpy, PyYAML, packaging, Pandas and matplotlib, see
-;; <https://github.com/astropy/astropy/blob/v7.0.0/CHANGES.rst
-;; #other-changes-and-additions>.
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "6.1.7")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "1vspagb4vbmkl6fm3mr78577dgdq992ggwkd5qawpdh6cccaq1d4"))
+        (base32 "0q74735xzrvxxpjv3sa8w68sfnziw1jilr70qba7qhxj8fsfwbrr"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2138,19 +2134,10 @@ mining in astronomy.")
      (list
       #:test-flags
       #~(list "--pyargs" "astropy"
-              "--numprocesses" (number->string (parallel-job-count))
-              "-k" (string-join
-                    ;; Skip tests that need remote data.
-                    (list "not remote_data"
-                          ;; ValueError: The truth value of an array with more than
-                          ;; one element is ambiguous. Use a.any() or a.all()
-                          "test_table_comp[t16-t26]"
-                          ;; UnboundLocalError: local variable 'ihd'
-                          ;; referenced before assignment
-                          "test_delay_doc_updates"
-                          ;; assert 13 == 1
-                          "test_skip_meta")
-                    " and not "))
+              ;; XXX: Tests are not thread save when they are more than 8.
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; Fails with  assert 13 == 1.
+              "-k" "not test_skip_meta")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
@@ -2174,6 +2161,7 @@ mining in astronomy.")
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
                 (setenv "HOME" "/tmp")
+                (setenv "OMP_NUM_THREADS" "1")
                 ;; Step out of the source directory to avoid interference; we
                 ;; want to run the installed code with extensions etc.
                 (with-directory-excursion #$output
@@ -2221,6 +2209,25 @@ mining in astronomy.")
 much of the core functionality and some common tools needed for performing
 astronomy and astrophysics.")
     (license license:bsd-3)))
+
+(define-public python-astropy-6
+  (package
+    (inherit python-astropy)
+    (name "python-astropy")
+    (version "6.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astropy" version))
+       (sha256
+        (base32 "1vspagb4vbmkl6fm3mr78577dgdq992ggwkd5qawpdh6cccaq1d4"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+           (with-directory-excursion "astropy/extern"
+             (for-each delete-file-recursively '("ply" "configobj")))
+           (with-directory-excursion "cextern"
+             (for-each delete-file-recursively '("expat" "wcslib")))))))))
 
 (define-public python-astropy-iers-data
   (package
@@ -4802,7 +4809,7 @@ files.")
            python-pytest-xdist
            python-requests-mock))
     (propagated-inputs
-     (list python-astropy
+     (list python-astropy-6
            python-matplotlib
            python-numpy
            python-pandas
@@ -5071,7 +5078,7 @@ self.colors = itertools.cycle(plt.rcParams[\"axes.prop_cycle\"].by_key()[\"color
            python-pytest-mpl
            python-pytest-mypy))
     (propagated-inputs
-     (list python-astropy
+     (list python-astropy-6
            python-astroquery
            python-czml3
            python-jplephem
