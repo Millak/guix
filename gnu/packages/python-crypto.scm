@@ -342,6 +342,7 @@ production use.  Include this module and use its backends at your own risk.")
     (build-system cargo-build-system)
     (arguments
      (list
+      #:install-source? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'build-python-module
@@ -389,14 +390,8 @@ exclude =
                                          "/site-packages")))
                 (mkdir-p site)
                 (copy-file "target/release/libblake3.so"
-                           (string-append site "/blake3.so"))))))
-      #:cargo-inputs
-      `(("rust-blake3" ,rust-blake3-1)
-        ("rust-hex" ,rust-hex-0.4)
-        ("rust-parking-lot" ,rust-parking-lot-0.11)
-        ("rust-pyo3" ,rust-pyo3-0.15)
-        ("rust-rayon" ,rust-rayon-1))))
-    (inputs (list rust-blake3-1))
+                           (string-append site "/blake3.so"))))))))
+    (inputs (cargo-inputs 'python-blake3))
     (native-inputs
      (list python-wrapper
            python-pypa-build
