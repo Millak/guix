@@ -4313,17 +4313,17 @@ structures.  This package re-uses the SRFI sample implementation.")
 (define-public guile-srfi-133
   (package
     (name "guile-srfi-133")
-    (version "0.0.1")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/scheme-requests-for-implementation/srfi-133")
-             (commit "db81a114cd3e23375f024baec15482614ec90453")))
+             (commit "4204de98b0945e7419975ed259803848de23cbf1")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0a7srl72291yah0aj6rwddhj041v2spximhknjj7hczlparsrm7f"))))
+         "1arnjbcxa126mcmdnyhgkbsbfqknzal0ynrnbgvdcfl2kfz93ng9"))))
     (build-system guile-build-system)
     (arguments
      (list
@@ -4332,7 +4332,7 @@ structures.  This package re-uses the SRFI sample implementation.")
           (add-after 'unpack 'move-create-and-delete-files
             (lambda _
               (rename-file "vectors" "srfi")
-              (rename-file "srfi/vectors-test.scm" "srfi/srfi-test.scm")
+              (rename-file "srfi/vectors-test.scm" "tests/tests.scm")
               (rename-file "srfi/vectors-impl.scm" "srfi/srfi-impl.scm")
               (with-output-to-file "srfi/srfi-133.scm"
                 (lambda ()
@@ -4369,11 +4369,13 @@ structures.  This package re-uses the SRFI sample implementation.")
             vector->string string->vector))
 
 (include \"srfi-impl.scm\")")))
-              (for-each (lambda (filename)
-                          (delete-file filename))
-                        '("tests/run.scm"
+              (for-each delete-file
+                        '("srfi/vectors.scm"
                           "srfi/vectors.sld"
-                          "srfi/vectors.scm")))))))
+                          "tests/run.scm"))))
+          (add-after 'build 'check
+            (lambda _
+              (invoke "guile" "tests/tests.scm"))))))
     (native-inputs
      (list guile-3.0))
     (home-page "https://github.com/scheme-requests-for-implementation/srfi-133")
