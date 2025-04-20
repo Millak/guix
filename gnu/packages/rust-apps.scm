@@ -1653,49 +1653,10 @@ more.")
        (uri (crate-uri "lsd" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06l0ynhny43q74dyb8m4r2j1w9xz29m0xrqmnpysm1f09bx3dzrj"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 ;; Don't depend on a specific minor version.
-                 (substitute* "Cargo.toml"
-                   (("([[:digit:]]\\.[[:digit:]]+)\\.\\*" _ version)
-                    version))))))
+        (base32 "06l0ynhny43q74dyb8m4r2j1w9xz29m0xrqmnpysm1f09bx3dzrj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-chrono-humanize" ,rust-chrono-humanize-0.2)
-                       ("rust-clap" ,rust-clap-4)
-                       ("rust-clap-complete" ,rust-clap-complete-4)
-                       ("rust-crossterm" ,rust-crossterm-0.27)
-                       ("rust-dirs" ,rust-dirs-5)
-                       ("rust-git2" ,rust-git2-0.18)
-                       ("rust-globset" ,rust-globset-0.4)
-                       ("rust-human-sort" ,rust-human-sort-0.2)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-lscolors" ,rust-lscolors-0.16)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-yaml" ,rust-serde-yaml-0.9)
-                       ("rust-sys-locale" ,rust-sys-locale-0.3)
-                       ("rust-term-grid" ,rust-term-grid-0.1)
-                       ("rust-terminal-size" ,rust-terminal-size-0.3)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1)
-                       ("rust-url" ,rust-url-2)
-                       ("rust-uzers" ,rust-uzers-0.11)
-                       ("rust-version-check" ,rust-version-check-0.9)
-                       ("rust-vsort" ,rust-vsort-0.2)
-                       ("rust-wild" ,rust-wild-2)
-                       ("rust-windows" ,rust-windows-0.43)
-                       ("rust-xattr" ,rust-xattr-1)
-                       ("rust-xdg" ,rust-xdg-2)
-                       ("rust-yaml-rust" ,rust-yaml-rust-0.4))
-       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2)
-                                   ("rust-assert-fs" ,rust-assert-fs-1)
-                                   ("rust-predicates" ,rust-predicates-3)
-                                   ("rust-serial-test" ,rust-serial-test-2)
-                                   ("rust-tempfile" ,rust-tempfile-3))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-shell-completion-dir
@@ -1722,6 +1683,7 @@ more.")
                          zlib
                          ;; for tests
                          git-minimal))
+    (inputs (cargo-inputs 'lsd))
     (home-page "https://github.com/lsd-rs/lsd")
     (synopsis "Mostly ls compatible command with pretty colors")
     (description
