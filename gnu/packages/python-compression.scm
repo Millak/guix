@@ -12,6 +12,7 @@
 ;;; Copyright © 2023 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -814,6 +815,33 @@ Python.")
     (description
      "This package provides a @code{pathlib}-compatible @code{Zipfile} object
 wrapper.  It provides a backport of the @code{Path} object.")
+    (license license:expat)))
+
+(define-public python-deflate
+  (package
+    (name "python-deflate")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "deflate" version))
+       (sha256
+        (base32 "0cgk118r3sglrjqirr22y7mr7fnhijhwd3v6isykjbf2m2dqyy41"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'libdeflate-prefix
+                     (lambda _
+                       (setenv "LIBDEFLATE_PREFIX"
+                               #$(this-package-input "libdeflate")))))))
+    ;; CMake >= 3.26 required.
+    (native-inputs (list cmake-next python-pytest python-scikit-build-core))
+    (inputs (list libdeflate))
+    (home-page "https://github.com/dcwatson/deflate")
+    (synopsis "Python wrapper for @code{libdeflate}")
+    (description "This package contains a very thin Python wrapper for
+@code{libdeflate}.")
     (license license:expat)))
 
 (define-public python-zipstream-ng
