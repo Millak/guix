@@ -300,7 +300,7 @@ services.")
 (define-public hetznercloud-cli
   (package
     (name "hetznercloud-cli")
-    (version "1.49.0")
+    (version "1.50.0")
     (source
      (origin
        (method git-fetch)
@@ -309,7 +309,7 @@ services.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mgd1rv0i18h7jbzl034ffpfxvnjirp60qwxsjpfy42jh1d8xbjm"))))
+        (base32 "1d0k2g1s5x77kd8wrx8py2g3bqhaxqnm5kgm0dlmzypmfyavssg4"))))
     (build-system go-build-system)
     (arguments
      (list
