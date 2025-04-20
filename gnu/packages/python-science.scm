@@ -542,26 +542,10 @@ written in C.")
             (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
             (assoc-ref py:%standard-phases 'install)))
-      #:cargo-inputs
-      `(("rust-amd" ,rust-amd-0.2)
-        ("rust-blas" ,rust-blas-0.22)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-derive-builder" ,rust-derive-builder-0.11)
-        ("rust-enum-dispatch" ,rust-enum-dispatch-0.3) ;0.3.8
-        ("rust-itertools" ,rust-itertools-0.11)
-        ("rust-lapack" ,rust-lapack-0.19)
-        ("rust-lazy-static" ,rust-lazy-static-1) ;1.4
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-num-derive" ,rust-num-derive-0.2)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-pyo3" ,rust-pyo3-0.20)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-thiserror" ,rust-thiserror-1))
       #:features '(list "python")
       #:install-source? #false))
     (inputs
-     (list maturin))
+     (cons maturin (cargo-inputs 'python-clarabel)))
     (native-inputs
      (list python-wrapper))
     (propagated-inputs (list python-numpy python-scipy))
