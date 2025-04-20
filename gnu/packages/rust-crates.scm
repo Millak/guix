@@ -271,6 +271,12 @@
   (crate-source "anstyle-wincon" "3.0.7"
                 "0kmf0fq4c8yribdpdpylzz1zccpy84hizmcsac3wrac1f7kk8dfa"))
 
+;; TODO: Adapt the build scirpt to Guile.
+;; https://github.com/anyascii/anyascii/blob/master/src/main/java/com/anyascii/build/gen/Rust.kt
+(define rust-any-ascii-0.3.2
+  (crate-source "any_ascii" "0.3.2"
+                "0b6c2vb3wlzcsd7s5l6s9fyq4r07a8yab9r7qvw474sbg95v2l7a"))
+
 (define rust-anyhow-1.0.75
   (crate-source "anyhow" "1.0.75"
                 "1rmcjkim91c5mw7h9wn8nv0k6x118yz0xg0z1q18svgn42mqqrm4"))
@@ -2630,6 +2636,10 @@
 (define rust-eml-parser-0.1.4
   (crate-source "eml-parser" "0.1.4"
                 "0bhgx1i952g2v7w0icnqkylvhfiyb2am2mbw89v8zq0jz0aqvnx7"))
+
+(define rust-emojis-0.6.4
+  (crate-source "emojis" "0.6.4"
+                "1x02bixi1f8kjk8g5qsrwpwznpya65yh5gy8p8wja7qq3zgz3qcr"))
 
 (define rust-ena-0.14.3
   (crate-source "ena" "0.14.3"
@@ -10883,6 +10893,38 @@
 (define rust-unarray-0.1.4
   (crate-source "unarray" "0.1.4"
                 "154smf048k84prsdgh09nkm2n0w0336v84jd4zikyn6v6jrqbspa"))
+
+(define rust-unic-char-property-0.9.0
+  (crate-source "unic-char-property" "0.9.0"
+                "08g21dn3wwix3ycfl0vrbahn0835nv2q3swm8wms0vwvgm07mid8"))
+
+(define rust-unic-char-range-0.9.0
+  (crate-source "unic-char-range" "0.9.0"
+                "1g0z7iwvjhqspi6194zsff8vy6i3921hpqcrp3v1813hbwnh5603"))
+
+(define rust-unic-common-0.9.0
+  (crate-source "unic-common" "0.9.0"
+                "1g1mm954m0zr497dl4kx3vr09yaly290zs33bbl4wrbaba1gzmw0"))
+
+(define rust-unic-segment-0.9.0
+  (crate-source "unic-segment" "0.9.0"
+                "08wgz2q6vrdvmbd23kf9pbg8cyzm5q8hq9spc4blzy2ppqk5vvg4"))
+
+(define rust-unic-ucd-block-0.9.0
+  (crate-source "unic-ucd-block" "0.9.0"
+                "1mzinqvb5qfjz2bmwp56264vd8bzdskaag05l4jm7lpcszr1cakb"))
+
+(define rust-unic-ucd-category-0.9.0
+  (crate-source "unic-ucd-category" "0.9.0"
+                "1h4ixzplc2s441vc8mc4zxliw6qfqh1ziaiv8pa1pzpwyn8lb38v"))
+
+(define rust-unic-ucd-segment-0.9.0
+  (crate-source "unic-ucd-segment" "0.9.0"
+                "0027lczcg0r401g6fnzm2bq9fxhgxvri1nlryhhv8192lqic2y90"))
+
+(define rust-unic-ucd-version-0.9.0
+  (crate-source "unic-ucd-version" "0.9.0"
+                "1i5hnzpfnxkp4ijfk8kvhpvj84bij575ybqx1b6hyigy6wi2zgcn"))
 
 (define rust-unicase-2.8.1
   (crate-source "unicase" "2.8.1"
@@ -25830,6 +25872,32 @@
                                           rust-winnow-0.7.4
                                           rust-wit-bindgen-rt-0.39.0
                                           rust-yansi-1.0.1))
+                     (rust-deunicode-1 =>
+                                       (list rust-any-ascii-0.3.2
+                                        rust-emojis-0.6.4
+                                        rust-itoa-1.0.15
+                                        rust-matches-0.1.10
+                                        rust-memchr-2.7.4
+                                        rust-phf-0.11.3
+                                        rust-phf-shared-0.11.3
+                                        rust-proc-macro2-1.0.95
+                                        rust-quote-1.0.40
+                                        rust-ryu-1.0.20
+                                        rust-serde-1.0.219
+                                        rust-serde-derive-1.0.219
+                                        rust-serde-json-1.0.140
+                                        rust-siphasher-1.0.1
+                                        rust-syn-2.0.100
+                                        rust-tinyvec-1.9.0
+                                        rust-tinyvec-macros-0.1.1
+                                        rust-unic-char-property-0.9.0
+                                        rust-unic-char-range-0.9.0
+                                        rust-unic-common-0.9.0
+                                        rust-unic-ucd-block-0.9.0
+                                        rust-unic-ucd-category-0.9.0
+                                        rust-unic-ucd-version-0.9.0
+                                        rust-unicode-ident-1.0.18
+                                        rust-unicode-normalization-0.1.24))
                      (rust-minisign =>
                                     (list rust-block-buffer-0.10.4
                                      rust-bumpalo-3.17.0
