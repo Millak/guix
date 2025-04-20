@@ -1706,23 +1706,6 @@ and some other stuff.")
     (arguments
      (list
       #:install-source? #f
-      #:cargo-inputs `(("rust-ansi-to-tui" ,rust-ansi-to-tui-7)
-                       ("rust-atty" ,rust-atty-0.2)
-                       ("rust-bytesize" ,rust-bytesize-1)
-                       ("rust-clap" ,rust-clap-4)
-                       ("rust-colored" ,rust-colored-2)
-                       ("rust-dirs" ,rust-dirs-5)
-                       ("rust-lazy-static" ,rust-lazy-static-1)
-                       ("rust-libmacchina" ,rust-libmacchina-8)
-                       ("rust-rand" ,rust-rand-0.8)
-                       ("rust-ratatui" ,rust-ratatui-0.29)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1)
-                       ("rust-shellexpand" ,rust-shellexpand-3)
-                       ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-toml" ,rust-toml-0.8)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1)
-                       ("rust-vergen" ,rust-vergen-8))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'install 'install-extras
                      (lambda* (#:key outputs #:allow-other-keys)
@@ -1732,7 +1715,7 @@ and some other stuff.")
                          (mkdir-p contrib)
                          (copy-recursively "contrib" contrib)))))))
     (native-inputs (list pkg-config))
-    (inputs (list libgit2 sqlite zlib))
+    (inputs (cons* libgit2 sqlite zlib (cargo-inputs 'macchina)))
     (home-page "https://github.com/Macchina-CLI/macchina")
     (synopsis "System information fetcher with an emphasis on performance")
     (description
