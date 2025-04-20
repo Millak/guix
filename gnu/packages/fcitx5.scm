@@ -34,6 +34,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages dictionaries)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -370,6 +371,42 @@ for Qt based application.")
     (description "Fcitx5-Anthy provides Japanese input support to Fcitx5 using
 the Anthy input method.")
     (license license:gpl2+)))
+
+(define-public fcitx5-skk
+  (package
+    (name "fcitx5-skk")
+    (version "5.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fcitx/fcitx5-skk")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "109fx80iaa896652lwhfdr8x9h4vmw6pc9fwns3cwp610p9x21yn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f      ; no tests
+           #:configure-flags
+           #~(list (string-append "-DSKK_DEFAULT_PATH="
+                                  #$(this-package-input "skk-jisyo")
+                                  "/share/skk/SKK-JISYO.L"))))
+    (native-inputs
+     (list extra-cmake-modules gobject-introspection
+           pkg-config gettext-minimal))
+    (inputs
+     (list libskk
+           fcitx5
+           fcitx5-qt
+           qtbase
+           skk-jisyo))
+    (home-page "https://github.com/fcitx/fcitx5-skk")
+    (synopsis "Input method engine for Fcitx5, which uses libskk as its backend")
+    (description
+     "fcitx5-skk is an input method engine for Fcitx5, which uses libskk as its
+backend.")
+    (license license:gpl3+)))
 
 (define-public fcitx5-chewing
   (package
