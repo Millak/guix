@@ -182,14 +182,14 @@ SQL, Key/Value, XML/XQuery or Java Object storage for their data model.")
 (define-public gdbm
   (package
     (name "gdbm")
-    (version "1.24")
+    (version "1.25")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gdbm/gdbm-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1gwd5cyp4jblwm1wkzm48dwiifgxdizbq41r2czm2qzpzlkrhpk9"))))
+                "1v4kycs1n9x0pczm9ny6m16gfgpmj8gwv0bvh7w7gn3fjb2v6bfh"))))
     (arguments `(#:configure-flags '("--enable-libgdbm-compat"
                                      "--disable-static")
                  ,@(if (target-loongarch64?)
