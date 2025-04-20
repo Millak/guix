@@ -1254,7 +1254,7 @@ standard astronomy libraries:
 (define-public libsep
   (package
     (name "libsep")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -1263,7 +1263,7 @@ standard astronomy libraries:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03a9v3g8bq5sqq0ckxzkk63vij2y6ljpmymdvvvvb72q175pzpkd"))))
+        (base32 "1ni02sf3pcg438mi26csdcwsbq1v5mnxlna2aiwxj0mhq2psb1rw"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -6370,6 +6370,11 @@ well as ephemerides services
       #:test-flags #~(list "test.py")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; numpy = "^1.26.4"
+                (("1.26.4") "1.26.2"))))
           (add-after 'unpack 'set-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
