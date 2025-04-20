@@ -1502,13 +1502,13 @@ bar.  It is also compatible with sway.")
 (define-public just
   (package
     (name "just")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "just" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "031yn8dijn89cdiwrlsh5l8ah83f2ci51j90z659aqrksflz44vw"))))
+               (base32 "03k9ifgxwxvx41f7xc9hv09h0w6j9k46cazfdxzynq56dly3kl7c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -1518,46 +1518,6 @@ bar.  It is also compatible with sway.")
          "--skip=functions::env_var_functions"
          "--skip=string::shebang_backtick")
        #:install-source? #f
-       #:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-blake3" ,rust-blake3-1)
-        ("rust-camino" ,rust-camino-1)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
-        ("rust-ctrlc" ,rust-ctrlc-3)
-        ("rust-derive-where" ,rust-derive-where-1)
-        ("rust-dirs" ,rust-dirs-5)
-        ("rust-dotenvy" ,rust-dotenvy-0.15)
-        ("rust-edit-distance" ,rust-edit-distance-2)
-        ("rust-heck" ,rust-heck-0.5)
-        ("rust-lexiclean" ,rust-lexiclean-0.0.1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-semver" ,rust-semver-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-sha2" ,rust-sha2-0.10)
-        ("rust-shellexpand" ,rust-shellexpand-3)
-        ("rust-similar" ,rust-similar-2)
-        ("rust-snafu" ,rust-snafu-0.8)
-        ("rust-strum" ,rust-strum-0.26)
-        ("rust-target" ,rust-target-2)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-typed-arena" ,rust-typed-arena-2)
-        ("rust-unicode-width" ,rust-unicode-width-0.2)
-        ("rust-uuid" ,rust-uuid-1))
-       #:cargo-development-inputs
-       (("rust-executable-path" ,rust-executable-path-1)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
-        ("rust-temptree" ,rust-temptree-0.2)
-        ("rust-which" ,rust-which-7))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'replace-hardcoded-paths
@@ -1612,7 +1572,7 @@ bar.  It is also compatible with sway.")
     (native-inputs (if (%current-target-system)
                        (list this-package)
                        '()))
-    (inputs (list bash-minimal coreutils-minimal))
+    (inputs (cons* bash-minimal coreutils-minimal (cargo-inputs 'just)))
     (home-page "https://github.com/casey/just")
     (synopsis "Command runner")
     (description "This package provides @code{just}, a command runner.
