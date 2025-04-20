@@ -7332,39 +7332,32 @@ and @code{astropy}.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "6.0.4")
+    (version "6.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "1x659wal84m00czkjjkvkawxivgc5d43m71m3q817zmpjkin7bma"))))
+        (base32 "1nqk5q4gd7w59zsps8gyzh6r1mmpzia0z5494za6na5vn2qsc2f6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              ;; Requires SpicePy not packed in Guix yet.
-              "--ignore=sunpy/coordinates/tests/test_spice.py")
+      #~(list "--pyargs" "sunpy"
+              "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
+          (add-after 'unpack 'remove-test-files
             (lambda _
-              (substitute* "pyproject.toml"
-                ;; packaging>=23.0
-                ((">=23.0") ">=21.3")
-                ;; numpy>=1.23.5
-                ((">=1.23.5") ">=1.23.2"))))
-          (add-before 'install 'writable-compiler
-            (lambda _
-              (make-file-writable "sunpy/_compiler.c")))
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              (setenv "HOME" "/tmp")
-              (call-with-output-file "pytest.ini"
-                (lambda (port)
-                  (format port "[pytest]
-python_files = test_*.py"))))))))
+              ;; Requires SpicePy wich is not packed in Guix yet and can't be
+              ;; ignored with Pytet options for some reason.
+              (delete-file "sunpy/coordinates/tests/test_spice.py")))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-vv" test-flags))))))))
     (native-inputs
      (list opencv ; For tests, includes OpenCV-Python
            python-aiohttp
@@ -7378,7 +7371,7 @@ python_files = test_*.py"))))))))
            python-pytest-mpl
            python-pytest-xdist
            python-setuptools
-           python-setuptools-scm
+           python-setuptools-scm-next
            python-wheel))
     (propagated-inputs
      (list parfive
@@ -7408,8 +7401,8 @@ python_files = test_*.py"))))))))
     (home-page "https://sunpy.org")
     (synopsis "Python library for Solar Physics")
     (description
-     "SunPy is package for solar physics and is meant to be a free alternative to the
-SolarSoft data analysis environment.")
+     "SunPy is package for solar physics and is meant to be a free alternative
+to the SolarSoft data analysis environment.")
     (license license:bsd-2)))
 
 (define-public python-tweakwcs
