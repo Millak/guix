@@ -1264,6 +1264,33 @@ its software deployment plugins.")
 Snakemake and its storage plugins.")
     (license license:expat)))
 
+(define-public python-uhi
+  (package
+    (name "python-uhi")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "uhi" version))
+       (sha256
+        (base32 "0753b7yw0zi06g4azafnk3w8i3q6js9i6wwg3pya464gygrbnncm"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-boost-histogram
+                         python-fastjsonschema
+                         python-hatch-vcs
+                         python-hatchling
+                         python-pytest))
+    (home-page "https://github.com/scikit-hep/uhi")
+    (synopsis "Universal Histogram Interface")
+    (description "This is a package meant primarily for documenting histogram
+indexing and the PlottableHistogram Protocol and any future cross-library
+standards.  It also contains the code for the PlottableHistogram Protocol, to
+be used in type checking libraries wanting to conform to the protocol.  It is
+not usually a runtime dependency, but only a type checking, testing, and/or
+docs dependency in support of other libraries.")
+    (license license:bsd-3)))
+
 (define-public python-tdda
   (package
     (name "python-tdda")
