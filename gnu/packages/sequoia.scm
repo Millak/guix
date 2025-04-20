@@ -1108,22 +1108,11 @@ gpg-agent, openpgp-card and softkeys keystore backends.")
           (base32 "0nizac02bwl5cdmcvn3vjjxdhcy431mnsijyswnq101p764dlkl2"))))
     (build-system cargo-build-system)
     (inputs
-     (list nettle openssl))
+     (cons* nettle openssl (cargo-inputs 'sequoia-sqv)))
     (native-inputs
      (list clang pkg-config))
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
-        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-        ("rust-sequoia-policy-config" ,rust-sequoia-policy-config-0.6))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-predicates" ,rust-predicates-3))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-asset-out-dir
