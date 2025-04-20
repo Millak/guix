@@ -2934,6 +2934,10 @@
   (crate-source "float-cmp" "0.9.0"
                 "1i799ksbq7fj9rm9m82g1yqgm6xi3jnrmylddmqknmksajylpplq"))
 
+(define rust-float-eq-1.0.1
+  (crate-source "float_eq" "1.0.1"
+                "0lxqxkvdy5zh3qsksavpcazg57cbyjy9p54m16x13bfq8lqhxa18"))
+
 (define rust-fluent-uri-0.1.4
   (crate-source "fluent-uri" "0.1.4"
                 "03ah2qajw5l1zbc81kh1n8g7n24mfxbg6vqyv9ixipg1vglh9iqp"))
@@ -24145,6 +24149,43 @@
                                           rust-windows-x86-64-gnu-0.52.6
                                           rust-windows-x86-64-gnullvm-0.52.6
                                           rust-windows-x86-64-msvc-0.52.6))
+                     (python-streamtracer =>
+                                          (list rust-autocfg-1.4.0
+                                           rust-cfg-if-1.0.0
+                                           rust-crossbeam-deque-0.8.6
+                                           rust-crossbeam-epoch-0.9.18
+                                           rust-crossbeam-utils-0.8.21
+                                           rust-either-1.15.0
+                                           rust-float-eq-1.0.1
+                                           rust-heck-0.5.0
+                                           rust-indoc-2.0.6
+                                           rust-libc-0.2.172
+                                           rust-matrixmultiply-0.3.9
+                                           rust-memoffset-0.9.1
+                                           rust-ndarray-0.16.1
+                                           rust-num-complex-0.4.6
+                                           rust-num-derive-0.4.2
+                                           rust-num-integer-0.1.46
+                                           rust-num-traits-0.2.19
+                                           rust-numpy-0.22.1
+                                           rust-once-cell-1.21.3
+                                           rust-portable-atomic-1.11.0
+                                           rust-portable-atomic-util-0.2.4
+                                           rust-proc-macro2-1.0.95
+                                           rust-pyo3-0.22.6
+                                           rust-pyo3-build-config-0.22.6
+                                           rust-pyo3-ffi-0.22.6
+                                           rust-pyo3-macros-0.22.6
+                                           rust-pyo3-macros-backend-0.22.6
+                                           rust-quote-1.0.40
+                                           rust-rawpointer-0.2.1
+                                           rust-rayon-1.10.0
+                                           rust-rayon-core-1.12.1
+                                           rust-rustc-hash-1.1.0
+                                           rust-syn-2.0.100
+                                           rust-target-lexicon-0.12.16
+                                           rust-unicode-ident-1.0.18
+                                           rust-unindent-0.2.4))
                      (python-tokenizers =>
                                         (list rust-aho-corasick-1.1.3
                                          rust-anstream-0.6.18
