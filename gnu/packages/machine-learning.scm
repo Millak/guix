@@ -81,11 +81,6 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cran)
-  #:use-module (gnu packages crates-check)
-  #:use-module (gnu packages crates-crypto)
-  #:use-module (gnu packages crates-io)
-  #:use-module (gnu packages crates-tls)
-  #:use-module (gnu packages crates-web)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dejagnu)
@@ -1352,34 +1347,6 @@ and not test_wmt22_references")
 and reproducible BLEU, chrF, and TER scores for natural language processing.")
     (license license:asl2.0)))
 
-(define-public rust-safetensors
-  (package
-    (name "rust-safetensors")
-    (version "0.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "safetensors" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1fbx56wikqcvqb4y0ym0cys68lj0v3cpanhsy5i13fkz5jr7dvcc"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.5)
-        ("rust-memmap2" ,rust-memmap2-0.9)
-        ("rust-proptest" ,rust-proptest-1))))
-    (home-page "https://github.com/huggingface/safetensors")
-    (synopsis "Simple and safe way to store and distribute tensors")
-    (description
-     "This package provides a fast (zero-copy) and safe (dedicated) format for
-storing tensors safely, named safetensors.  They aim to be safer than their
-@code{PyTorch} counterparts.")
-    (license license:asl2.0)))
-
 (define-public python-safetensors
   (package
     (name "python-safetensors")
@@ -1454,9 +1421,9 @@ storing tensors safely, named safetensors.  They aim to be safer than their
            python-pytorch))
     (home-page "https://huggingface.co/docs/safetensors")
     (synopsis "Simple and safe way to store and distribute tensors")
-    (description "This package provides a fast (zero-copy) and safe
-(dedicated) format for storing tensors safely.  This package builds upon
-@code{rust-safetensors} and provides Python bindings.")
+    (description
+     "This package provides a fast (zero-copy) and safe (dedicated) format for
+storing tensors safely.")
     (license license:asl2.0)))
 
 (define-public python-sentencepiece
@@ -5773,158 +5740,6 @@ definite approximations of Optimal Transport (Wasserstein) distances.
 @end itemize")
     (license license:expat)))
 
-(define-public rust-esaxx-rs-0.1
-  (package
-    (name "rust-esaxx-rs")
-    (version "0.1.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "esaxx-rs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1rm6vm5yr7s3n5ly7k9x9j6ra5p2l2ld151gnaya8x03qcwf05yq"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
-    (home-page "https://github.com/Narsil/esaxx-rs")
-    (synopsis "Wrapper for sentencepiece's esaxxx library")
-    (description
-     "This package provides a wrapper around sentencepiece's esaxxx library.")
-    (license license:asl2.0)))
-
-(define-public rust-spm-precompiled-0.1
-  (package
-    (name "rust-spm-precompiled")
-    (version "0.1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "spm_precompiled" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "09pkdk2abr8xf4pb9kq3rk80dgziq6vzfk7aywv3diik82f6jlaq"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.13)
-        ("rust-nom" ,rust-nom-7)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))
-    (home-page "https://github.com/huggingface/spm_precompiled")
-    (synopsis "Emulate sentencepiece's DoubleArray")
-    (description
-     "This crate aims to emulate
-@url{https://github.com/google/sentencepiece,sentencepiece}
-Dart::@code{DoubleArray} struct and it's Normalizer.  This crate is highly
-specialized and not intended for general use.")
-    (license license:asl2.0)))
-
-(define-public rust-hf-hub-0.3
-  (package
-    (name "rust-hf-hub")
-    (version "0.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "hf-hub" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0cnpivy9fn62lm1fw85kmg3ryvrx8drq63c96vq94gabawshcy1b"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f  ; require network connection
-       #:cargo-inputs
-       (("rust-dirs" ,rust-dirs-5)
-        ("rust-futures" ,rust-futures-0.3)
-        ("rust-indicatif" ,rust-indicatif-0.17)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-native-tls" ,rust-native-tls-0.2)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-reqwest" ,rust-reqwest-0.11)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tokio" ,rust-tokio-1)
-        ("rust-ureq" ,rust-ureq-2))
-       #:cargo-development-inputs
-       (("rust-hex-literal" ,rust-hex-literal-0.4)
-        ("rust-sha2" ,rust-sha2-0.10)
-        ("rust-tokio-test" ,rust-tokio-test-0.4))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list openssl))
-    (home-page "https://github.com/huggingface/hf-hub")
-    (synopsis "Interact with HuggingFace in Rust")
-    (description
-     "This crates aims ease the interaction with
-@url{https://huggingface.co/,huggingface}.  It aims to be compatible with
-@url{https://github.com/huggingface/huggingface_hub/,huggingface_hub}
-python package, but only implements a smaller subset of functions.")
-    (license license:asl2.0)))
-
-(define-public rust-tokenizers
-  (package
-    (name "rust-tokenizers")
-    (version "0.19.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tokenizers" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1zg6ffpllygijb5bh227m9p4lrhf0pjkysky68kddwrsvp8zl075"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(substitute* "Cargo.toml"
-            (("0.1.12") ; rust-monostate requires a rust-syn-2 update
-             "0.1.11")
-            (("version = \"6.4\"")  ; rust-onig
-             "version = \"6.1.1\"")))))
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:tests? #f  ; tests are relying on missing data.
-      #:cargo-inputs
-      `(("rust-aho-corasick" ,rust-aho-corasick-1)
-        ("rust-derive-builder" ,rust-derive-builder-0.20)
-        ("rust-esaxx-rs" ,rust-esaxx-rs-0.1)
-        ("rust-fancy-regex" ,rust-fancy-regex-0.13)
-        ("rust-getrandom" ,rust-getrandom-0.2)
-        ("rust-hf-hub" ,rust-hf-hub-0.3)
-        ("rust-indicatif" ,rust-indicatif-0.17)
-        ("rust-itertools" ,rust-itertools-0.12)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-macro-rules-attribute" ,rust-macro-rules-attribute-0.2)
-        ("rust-monostate" ,rust-monostate-0.1)
-        ("rust-onig" ,rust-onig-6)
-        ("rust-paste" ,rust-paste-1)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-rayon-cond" ,rust-rayon-cond-0.3)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-regex-syntax" ,rust-regex-syntax-0.8)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-spm-precompiled" ,rust-spm-precompiled-0.1)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-unicode-normalization-alignments" ,rust-unicode-normalization-alignments-0.1)
-        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-        ("rust-unicode-categories" ,rust-unicode-categories-0.1))
-      #:cargo-development-inputs
-      `(("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
-        ("rust-criterion" ,rust-criterion-0.5)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/huggingface/tokenizers")
-    (synopsis "Implementation of various popular tokenizers")
-    (description
-     "This package provides a Rust implementation of today's most used
-tokenizers, with a focus on performances and versatility.")
-    (license license:asl2.0)))
-
 (define-public python-tokenizers
   (package
     (name "python-tokenizers")
@@ -5993,8 +5808,8 @@ tokenizers, with a focus on performances and versatility.")
     (home-page "https://huggingface.co/docs/tokenizers")
     (synopsis "Implementation of various popular tokenizers")
     (description
-     "This package provides bindings to a Rust implementation of the most used
-tokenizers, @code{rust-tokenizers}.")
+     "This package provides an implementation of today’s most used tokenizers,
+with a focus on performance and versatility.")
     (license license:asl2.0)))
 
 (define-public python-transformers
