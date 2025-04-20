@@ -5213,6 +5213,10 @@
   (crate-source "jiff-tzdb-platform" "0.1.3"
                 "1s1ja692wyhbv7f60mc0x90h7kn1pv65xkqi2y4imarbmilmlnl7"))
 
+(define rust-jiter-0.7.1
+  (crate-source "jiter" "0.7.1"
+                "09fx71x93sh15028pd0f78flv9j4fkvg6lgi22y5gbv83c99mxh7"))
+
 (define rust-jni-0.19.0
   (crate-source "jni" "0.19.0"
                 "1v0pn0i1wb8zp4wns4l8hz9689hqsplv7iba7hylaznvwg11ipy6"))
@@ -5395,6 +5399,18 @@
 (define rust-levenshtein-1.0.5
   (crate-source "levenshtein" "1.0.5"
                 "0q0pa1prsjk3v28xkas5rf30ng9816mxpr2n3xls65dmgawss4yv"))
+
+(define rust-lexical-parse-float-0.8.5
+  (crate-source "lexical-parse-float" "0.8.5"
+                "0py0gp8hlzcrlvjqmqlpl2v1as65iiqxq2xsabxvhc01pmg3lfv8"))
+
+(define rust-lexical-parse-integer-0.8.6
+  (crate-source "lexical-parse-integer" "0.8.6"
+                "1sayji3mpvb2xsjq56qcq3whfz8px9a6fxk5v7v15hyhbr4982bd"))
+
+(define rust-lexical-util-0.8.5
+  (crate-source "lexical-util" "0.8.5"
+                "1z73qkv7yxhsbc4aiginn1dqmsj8jarkrdlyxc88g2gz2vzvjmaj"))
 
 (define rust-lexopt-0.3.1
   (crate-source "lexopt" "0.3.1"
@@ -9534,6 +9550,10 @@
 (define rust-spdx-0.10.8
   (crate-source "spdx" "0.10.8"
                 "14r1bl3gmx7cj91l5r1qr5wildjacmzflw9cahgzrqk7v9b97djq"))
+
+(define rust-speedate-0.15.0
+  (crate-source "speedate" "0.15.0"
+                "0dzryiwvdbdcz74x0hidb5g1c2aal4n9cxsdlqwxxrq79vgplpls"))
 
 (define rust-spin-0.9.8
   (crate-source "spin" "0.9.8"
@@ -24202,6 +24222,100 @@
                                           rust-target-lexicon-0.12.11
                                           rust-unicode-ident-1.0.11
                                           rust-version-check-0.9.4))
+                     (python-pydantic-core =>
+                                           (list rust-ahash-0.8.11
+                                            rust-aho-corasick-1.1.3
+                                            rust-autocfg-1.4.0
+                                            rust-base64-0.22.1
+                                            rust-bitvec-1.0.1
+                                            rust-cc-1.2.19
+                                            rust-cfg-if-1.0.0
+                                            rust-displaydoc-0.2.5
+                                            rust-enum-dispatch-0.3.13
+                                            rust-equivalent-1.0.2
+                                            rust-form-urlencoded-1.2.1
+                                            rust-funty-2.0.0
+                                            rust-getrandom-0.2.15
+                                            rust-hashbrown-0.15.2
+                                            rust-heck-0.5.0
+                                            rust-hex-0.4.3
+                                            rust-icu-collections-1.5.0
+                                            rust-icu-locid-1.5.0
+                                            rust-icu-locid-transform-1.5.0
+                                            rust-icu-locid-transform-data-1.5.1
+                                            rust-icu-normalizer-1.5.0
+                                            rust-icu-normalizer-data-1.5.1
+                                            rust-icu-properties-1.5.1
+                                            rust-icu-properties-data-1.5.1
+                                            rust-icu-provider-1.5.0
+                                            rust-icu-provider-macros-1.5.0
+                                            rust-idna-1.0.3
+                                            rust-idna-adapter-1.2.0
+                                            rust-indexmap-2.9.0
+                                            rust-indoc-2.0.6
+                                            rust-itoa-1.0.15
+                                            rust-jiter-0.7.1
+                                            rust-lexical-parse-float-0.8.5
+                                            rust-lexical-parse-integer-0.8.6
+                                            rust-lexical-util-0.8.5
+                                            rust-libc-0.2.172
+                                            rust-litemap-0.7.5
+                                            rust-memchr-2.7.4
+                                            rust-memoffset-0.9.1
+                                            rust-num-bigint-0.4.6
+                                            rust-num-integer-0.1.46
+                                            rust-num-traits-0.2.19
+                                            rust-once-cell-1.21.3
+                                            rust-percent-encoding-2.3.1
+                                            rust-portable-atomic-1.11.0
+                                            rust-proc-macro2-1.0.95
+                                            rust-pyo3-0.22.6
+                                            rust-pyo3-build-config-0.22.6
+                                            rust-pyo3-ffi-0.22.6
+                                            rust-pyo3-macros-0.22.6
+                                            rust-pyo3-macros-backend-0.22.6
+                                            rust-python3-dll-a-0.2.13
+                                            rust-quote-1.0.40
+                                            rust-radium-0.7.0
+                                            rust-regex-1.11.1
+                                            rust-regex-automata-0.4.9
+                                            rust-regex-syntax-0.8.5
+                                            rust-rustversion-1.0.20
+                                            rust-ryu-1.0.20
+                                            rust-serde-1.0.219
+                                            rust-serde-derive-1.0.219
+                                            rust-serde-json-1.0.140
+                                            rust-shlex-1.3.0
+                                            rust-smallvec-1.15.0
+                                            rust-speedate-0.15.0
+                                            rust-stable-deref-trait-1.2.0
+                                            rust-static-assertions-1.1.0
+                                            rust-strum-0.26.3
+                                            rust-strum-macros-0.26.4
+                                            rust-syn-2.0.100
+                                            rust-synstructure-0.13.1
+                                            rust-tap-1.0.1
+                                            rust-target-lexicon-0.12.16
+                                            rust-tinystr-0.7.6
+                                            rust-unicode-ident-1.0.18
+                                            rust-unindent-0.2.4
+                                            rust-url-2.5.4
+                                            rust-utf16-iter-1.0.5
+                                            rust-utf8-iter-1.0.4
+                                            rust-uuid-1.16.0
+                                            rust-version-check-0.9.5
+                                            rust-wasi-0.11.0+wasi-snapshot-preview1
+                                            rust-write16-1.0.0
+                                            rust-writeable-0.5.5
+                                            rust-wyz-0.5.1
+                                            rust-yoke-0.7.5
+                                            rust-yoke-derive-0.7.5
+                                            rust-zerocopy-0.7.35
+                                            rust-zerocopy-derive-0.7.35
+                                            rust-zerofrom-0.1.6
+                                            rust-zerofrom-derive-0.1.6
+                                            rust-zerovec-0.10.4
+                                            rust-zerovec-derive-0.10.3))
                      (python-rpds-py =>
                                      (list rust-archery-1.2.1
                                       rust-autocfg-1.4.0
