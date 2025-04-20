@@ -70,6 +70,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages machine-learning)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -8219,14 +8220,14 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
     (license license:gpl3+)))
 
 (define-public stellarium
-  ;; XXX fatal error: libs/indiclient/baseclient.h: No such file or directory
-  ;; <https://github.com/Stellarium/stellarium/issues/4019>, using the latest
+  ;; XXX: 25.1 does not provide option to build with system MD4C, see
+  ;; <https://github.com/Stellarium/stellarium/issues/4267>, using the latest
   ;; commit.
-  (let ((commit "60b6becd4147dd7c731ed0be790b1a30cdc0039b")
-        (revision "0"))
+  (let ((commit "8a3a53aa5d81c6b1b2cd10546c6d40a33204091a")
+        (revision "1"))
     (package
     (name "stellarium")
-    (version (git-version "24.4" revision commit))
+    (version (git-version "25.1" revision commit))
     (source
      (origin
        (method git-fetch)
@@ -8235,7 +8236,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i00f63pmyy55mwagab4pv419agzmg2c4075hc8cgbhhhfr6gm8d"))))
+        (base32 "0k9zf29x1nqj1i9qqp5mpn2z2i0izhxplyzcrlhl0i6c863rk5wx"))))
     (build-system qt-build-system)
     ;; TODO: Complete documentation build and split into dedicated outputs.
     (arguments
@@ -8261,6 +8262,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            gpsd
            indi-2.0
            libnova
+           md4c
            nlopt
            openssl
            qtbase-5
