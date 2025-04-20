@@ -20619,6 +20619,51 @@
                                    rust-wyz-0.5.1
                                    rust-x11rb-0.13.1
                                    rust-x11rb-protocol-0.13.1))
+                     (kibi =>
+                           (list rust-autocfg-1.4.0
+                                 rust-bitflags-1.3.2
+                                 rust-bitflags-2.9.0
+                                 rust-cfg-if-1.0.0
+                                 rust-errno-0.3.11
+                                 rust-fastrand-2.3.0
+                                 rust-getrandom-0.3.2
+                                 rust-instant-0.1.13
+                                 rust-lazy-static-1.5.0
+                                 rust-libc-0.2.172
+                                 rust-linux-raw-sys-0.9.4
+                                 rust-lock-api-0.4.12
+                                 rust-once-cell-1.21.3
+                                 rust-parking-lot-0.11.2
+                                 rust-parking-lot-core-0.8.6
+                                 rust-proc-macro2-1.0.95
+                                 rust-quote-1.0.40
+                                 rust-r-efi-5.2.0
+                                 rust-redox-syscall-0.2.16
+                                 rust-rustix-1.0.5
+                                 rust-scopeguard-1.2.0
+                                 rust-serial-test-0.5.1
+                                 rust-serial-test-derive-0.5.1
+                                 rust-smallvec-1.15.0
+                                 rust-syn-1.0.109
+                                 rust-tempfile-3.19.1
+                                 rust-unicode-ident-1.0.18
+                                 rust-unicode-width-0.1.14
+                                 rust-wasi-0.14.2+wasi-0.2.4
+                                 rust-winapi-0.3.9
+                                 rust-winapi-i686-pc-windows-gnu-0.4.0
+                                 rust-winapi-util-0.1.9
+                                 rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                 rust-windows-sys-0.59.0
+                                 rust-windows-targets-0.52.6
+                                 rust-windows-aarch64-gnullvm-0.52.6
+                                 rust-windows-aarch64-msvc-0.52.6
+                                 rust-windows-i686-gnu-0.52.6
+                                 rust-windows-i686-gnullvm-0.52.6
+                                 rust-windows-i686-msvc-0.52.6
+                                 rust-windows-x86-64-gnu-0.52.6
+                                 rust-windows-x86-64-gnullvm-0.52.6
+                                 rust-windows-x86-64-msvc-0.52.6
+                                 rust-wit-bindgen-rt-0.39.0))
                      (libchewing =>
                                  (list rust-anstream-0.6.18
                                   rust-anstyle-1.0.10

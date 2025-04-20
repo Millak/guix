@@ -1623,12 +1623,6 @@ Unicode.")
       #:install-source? #f
       #:cargo-test-flags `(list "--release" "--"
                                 "--skip=syntax::tests::syntax_d_files")
-      #:cargo-inputs `(("rust-libc" ,rust-libc-0.2)
-                       ("rust-unicode-width" ,rust-unicode-width-0.1)
-                       ("rust-winapi" ,rust-winapi-0.3)
-                       ("rust-winapi-util" ,rust-winapi-util-0.1))
-      #:cargo-development-inputs `(("rust-serial-test" ,rust-serial-test-0.5)
-                                   ("rust-tempfile" ,rust-tempfile-3))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'install 'install-extras
                      (lambda* (#:key outputs #:allow-other-keys)
@@ -1640,6 +1634,7 @@ Unicode.")
                          (copy-recursively "syntax.d" syntax.d)
                          (rename-file "config_example.ini" "config.ini")
                          (install-file "config.ini" etc)))))))
+    (inputs (cargo-inputs 'kibi))
     (home-page "https://github.com/ilai-deutel/kibi")
     (synopsis "Featureful text editor in less than 1024 lines of code")
     (description
