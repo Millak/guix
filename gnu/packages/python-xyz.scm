@@ -1124,15 +1124,6 @@ three consecutive points in a polyline or polygon
               (when tests?
                 (with-directory-excursion #$output
                   (invoke "pytest" "-vv"))))))
-      #:cargo-inputs
-      `(("rust-ndarray" ,rust-ndarray-0.16)
-        ("rust-numpy" ,rust-numpy-0.22)
-        ("rust-num-derive" ,rust-num-derive-0.4)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-rayon-1" ,rust-rayon-1))
-      #:cargo-development-inputs
-      `(("rust-float-eq" ,rust-float-eq-1)
-        ("rust-pyo3" ,rust-pyo3-0.22))
       #:install-source? #false))
     (native-inputs
      (list maturin
@@ -1142,6 +1133,7 @@ three consecutive points in a polyline or polygon
     (propagated-inputs
      (list python-numpy
            python-packaging))
+    (inputs (cargo-inputs 'python-streamtracer))
     (home-page "https://github.com/sunpy/streamtracer")
     (synopsis "Rapid streamline tracing in Python")
     (description
