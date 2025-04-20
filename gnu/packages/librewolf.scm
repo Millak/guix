@@ -466,11 +466,11 @@
                       (parallel-build? #t) #:allow-other-keys)
               (apply invoke "./mach" "build"
                      ;; mach will use parallel build if possible by default
-                     `(,@(if parallel-build?
-                             `(,(string-append
-                                 "-j" (number->string (parallel-job-count))))
-                             '("-j1"))
-                       ,@make-flags))))
+                     (string-append
+                      "-j" (if parallel-build?
+                               (number->string (parallel-job-count))
+                               "1"))
+                     make-flags)))
           (add-after 'build 'neutralise-store-references
             (lambda _
               ;; Mangle the store references to compilers &
