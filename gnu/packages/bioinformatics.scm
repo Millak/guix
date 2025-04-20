@@ -25332,13 +25332,6 @@ CSIv1, CSIv2 and FAI files.")
       #:install-source? #false
       #:features '(list "extension-module")
       #:cargo-test-flags '(list "--features=extension-module")
-      #:cargo-inputs
-      `(("rust-csv" ,rust-csv-1)
-        ("rust-itertools" ,rust-itertools-0.10)
-        ("rust-pyo3" ,rust-pyo3-0.16)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-serde" ,rust-serde-1))
       #:imported-modules
       (append %cargo-build-system-modules
               %pyproject-build-system-modules)
@@ -25404,7 +25397,7 @@ exclude =
                         ;; These tests need access to the internet
                         "-k" "not test_enrichr and not test_prerank")))))))
     (inputs
-     (list python-wrapper))
+     (cons python-wrapper (cargo-inputs 'python-gseapy)))
     (native-inputs
      (list python-pytest python-wheel))
     (propagated-inputs

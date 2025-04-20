@@ -7504,6 +7504,10 @@
   (crate-source "py_literal" "0.4.0"
                 "1qd8j3a9zlpq6rjaxabpc9sacw62dn1cr38p3y4x7fbdsjizfb8h"))
 
+(define rust-pyo3-0.16.6
+  (crate-source "pyo3" "0.16.6"
+                "1jn6nhp9a8i5kfwds6fzy3hzb938qim8bajp8gfkkcn9892c8802"))
+
 (define rust-pyo3-0.19.2
   (crate-source "pyo3" "0.19.2"
                 "0f1aqx947mzsrk05zdm9w2702lj5k9s97y9w9lxwkp2avk7sd0g6"))
@@ -7517,6 +7521,10 @@
                 "0wm8z6jgg18z2cgr99wc34mbkffhcnb50igmq5d1ff6ghpyvyy3p"
                 #:snippet '(delete-file-recursively "branding")))
 
+(define rust-pyo3-build-config-0.16.6
+  (crate-source "pyo3-build-config" "0.16.6"
+                "1hndr61lxc2kw7wnnggps3h08lnsqapwa3lxc0l5ji2rg0wrv0cw"))
+
 (define rust-pyo3-build-config-0.19.2
   (crate-source "pyo3-build-config" "0.19.2"
                 "19bb7aqyvr4kmh8b2lnrmcv9251j8yxw7l7xyr77m3s3pk876v07"))
@@ -7528,6 +7536,10 @@
 (define rust-pyo3-build-config-0.23.5
   (crate-source "pyo3-build-config" "0.23.5"
                 "1yqhw1k466k65rqvy2d4xz2shl0hzkry1xlxinciigzkdvlcpxll"))
+
+(define rust-pyo3-ffi-0.16.6
+  (crate-source "pyo3-ffi" "0.16.6"
+                "0pzpcmndak7y72p4rw494cki1bxh86diiqdzsw14gxammc1jg26a"))
 
 (define rust-pyo3-ffi-0.19.2
   (crate-source "pyo3-ffi" "0.19.2"
@@ -7541,6 +7553,10 @@
   (crate-source "pyo3-ffi" "0.23.5"
                 "13fxvxijl59vilv39akdzwqd1l7fb6c70f53n27irfy0672b9wg9"))
 
+(define rust-pyo3-macros-0.16.6
+  (crate-source "pyo3-macros" "0.16.6"
+                "089z1x8fm7078kyhpjcsaipd6745jf2rp86rpbkppbam5504k1sn"))
+
 (define rust-pyo3-macros-0.19.2
   (crate-source "pyo3-macros" "0.19.2"
                 "1lggr5pnpmdj0cznlhw7ykm1qka3wlymwzfxqql6a4vyb6clrsyz"))
@@ -7552,6 +7568,10 @@
 (define rust-pyo3-macros-0.23.5
   (crate-source "pyo3-macros" "0.23.5"
                 "1nm9i19aff7zn245v35qb0lbr3cxr19zdgcayq84fg7n509j1hpv"))
+
+(define rust-pyo3-macros-backend-0.16.6
+  (crate-source "pyo3-macros-backend" "0.16.6"
+                "1f0y9vxmyq1cidk544pwg3my30f6xfqfgf42grw4gx4q5pl687v1"))
 
 (define rust-pyo3-macros-backend-0.19.2
   (crate-source "pyo3-macros-backend" "0.19.2"
@@ -23253,6 +23273,64 @@
                                            rust-unicode-ident-1.0.18
                                            rust-unindent-0.2.4
                                            rust-vcpkg-0.2.15))
+                     (python-gseapy =>
+                                    (list rust-autocfg-1.4.0
+                                          rust-bitflags-2.9.0
+                                          rust-cfg-if-1.0.0
+                                          rust-crossbeam-deque-0.8.6
+                                          rust-crossbeam-epoch-0.9.18
+                                          rust-crossbeam-utils-0.8.21
+                                          rust-csv-1.3.1
+                                          rust-csv-core-0.1.12
+                                          rust-either-1.15.0
+                                          rust-getrandom-0.3.2
+                                          rust-indoc-1.0.9
+                                          rust-itertools-0.14.0
+                                          rust-itoa-1.0.15
+                                          rust-libc-0.2.172
+                                          rust-lock-api-0.4.12
+                                          rust-memchr-2.7.4
+                                          rust-once-cell-1.21.3
+                                          rust-parking-lot-0.12.3
+                                          rust-parking-lot-core-0.9.10
+                                          rust-ppv-lite86-0.2.21
+                                          rust-proc-macro2-1.0.95
+                                          rust-pyo3-0.16.6
+                                          rust-pyo3-build-config-0.16.6
+                                          rust-pyo3-ffi-0.16.6
+                                          rust-pyo3-macros-0.16.6
+                                          rust-pyo3-macros-backend-0.16.6
+                                          rust-quote-1.0.40
+                                          rust-r-efi-5.2.0
+                                          rust-rand-0.9.1
+                                          rust-rand-chacha-0.9.0
+                                          rust-rand-core-0.9.3
+                                          rust-rayon-1.10.0
+                                          rust-rayon-core-1.12.1
+                                          rust-redox-syscall-0.5.11
+                                          rust-ryu-1.0.20
+                                          rust-scopeguard-1.2.0
+                                          rust-serde-1.0.219
+                                          rust-serde-derive-1.0.219
+                                          rust-smallvec-1.15.0
+                                          rust-syn-1.0.109
+                                          rust-syn-2.0.100
+                                          rust-target-lexicon-0.12.16
+                                          rust-unicode-ident-1.0.18
+                                          rust-unindent-0.1.11
+                                          rust-wasi-0.14.2+wasi-0.2.4
+                                          rust-windows-targets-0.52.6
+                                          rust-windows-aarch64-gnullvm-0.52.6
+                                          rust-windows-aarch64-msvc-0.52.6
+                                          rust-windows-i686-gnu-0.52.6
+                                          rust-windows-i686-gnullvm-0.52.6
+                                          rust-windows-i686-msvc-0.52.6
+                                          rust-windows-x86-64-gnu-0.52.6
+                                          rust-windows-x86-64-gnullvm-0.52.6
+                                          rust-windows-x86-64-msvc-0.52.6
+                                          rust-wit-bindgen-rt-0.39.0
+                                          rust-zerocopy-0.8.24
+                                          rust-zerocopy-derive-0.8.24))
                      (python-rpds-py =>
                                      (list rust-archery-1.2.1
                                       rust-autocfg-1.4.0
