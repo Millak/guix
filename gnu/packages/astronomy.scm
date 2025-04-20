@@ -4948,13 +4948,13 @@ can be described by @acronym{WCS, World Coordinate System} translations.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "2.0.2")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "0lpah7a4wb3r7i8d4gc5bmb34bx3idg921220xhsgdplml77syzh"))))
+        (base32 "1h1bf8694pf9qdv9gf0934v6dk08d3ybrj858salqnfz6prnfnzb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
