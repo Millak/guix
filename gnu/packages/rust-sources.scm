@@ -66,6 +66,61 @@
         "This package provides a binary encoder and decoder for Rust.")
        (license (list license:expat license:asl2.0))))))
 
+(define gemoji-source-for-rust-deunicode-1
+  (let ((version "4.1.0"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/github/gemoji")
+            (commit (string-append "v" version))))
+      (file-name "gemoji-checkout")
+      (sha256
+       (base32
+        "1yhs9lj9gnzbvimv0y5f1a4my0slbvygkcjjkaxd4wkkyfvfbkxy")))))
+
+(define-public rust-deunicode-1
+  (hidden-package
+   (package
+     (name "rust-deunicode")
+     (version "1.6.1")
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/kornelski/deunicode")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "0bhbkfhh5qd4ygx47jj7j6h722i1skmkwashmj5wlh648f5gdmx4"))
+               (modules '((guix build utils)))
+               (snippet
+                '(for-each delete-file-recursively
+                           '("scripts/gemoji"
+                             "src/mapping.txt"
+                             "src/pointers.bin")))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:cargo-package-crates ''("deunicode")
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-before 'build 'compress-data
+                  (lambda _
+                    (with-directory-excursion "scripts"
+                      (copy-recursively
+                       #+(this-package-native-input "gemoji-checkout")
+                       "gemoji")
+                      (invoke "cargo" "run")))))))
+     (native-inputs (list gemoji-source-for-rust-deunicode-1))
+     ;; scripts/Cargo.lock
+     (inputs (cargo-inputs 'rust-deunicode-1))
+     (home-page "https://lib.rs/crates/deunicode")
+     (synopsis "Convert Unicode strings to pure ASCII")
+     (description
+      "This package converts Unicode strings to pure ASCII by intelligently
+transliterating them.  It supports Emoji and Chinese.")
+     (license license:bsd-3))))
+
 (define-public rust-pcre2-utf32-0.2
   (hidden-package
    (package
