@@ -2902,6 +2902,8 @@ various hardware.")
              glfw
              hackrf
              jack-2
+             libad9361
+             libiio
              libusb
              pulseaudio
              rtaudio
@@ -2912,7 +2914,7 @@ various hardware.")
       (arguments
        (list #:tests? #f ; No test suite.
              #:configure-flags #~(list "-DOPT_BUILD_BLADERF_SOURCE=ON"
-                                       "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
+                                       "-DOPT_BUILD_PLUTOSDR_SOURCE=ON"
                                        "-DOPT_BUILD_M17_DECODER=ON")
              #:phases
              #~(modify-phases %standard-phases
