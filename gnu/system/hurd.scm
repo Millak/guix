@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -90,7 +90,7 @@
                          `(("/bin/sh" ,(file-append bash "/bin/sh"))
                            ("/usr/bin/env" ,(file-append coreutils
                                                          "/bin/env"))))
-                (service syslog-service-type))
+                (service shepherd-system-log-service-type))
           (map (lambda (n)
                  (service hurd-getty-service-type
                           (hurd-getty-configuration
