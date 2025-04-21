@@ -3005,7 +3005,7 @@ common-sense defaults.")
 (define-public skim
   (package
     (name "skim")
-    (version "0.16.0")
+    (version "0.16.1")
     (source
      (origin
        ;; crates.io doesn't have everything needed.
@@ -3015,38 +3015,10 @@ common-sense defaults.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rwq635iin1vp0ad64qnlgg2pk8chk5p58vwv78f2qp1p3nc5sg9"))))
+        (base32 "00k487pqhifcf9jvx7acwyhag34g5zrn49hry7xiwdflpqq4x1cl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs (("rust-beef" ,rust-beef-0.5)
-                       ("rust-bitflags" ,rust-bitflags-1)
-                       ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-clap" ,rust-clap-4)
-                       ("rust-clap-complete" ,rust-clap-complete-4)
-                       ("rust-clap-complete-fig" ,rust-clap-complete-fig-4)
-                       ("rust-clap-complete-nushell" ,rust-clap-complete-nushell-4)
-                       ("rust-clap-mangen" ,rust-clap-mangen-0.2)
-                       ("rust-crossbeam" ,rust-crossbeam-0.8)
-                       ("rust-defer-drop" ,rust-defer-drop-1)
-                       ("rust-derive-builder" ,rust-derive-builder-0.20)
-                       ("rust-env-logger" ,rust-env-logger-0.11)
-                       ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
-                       ("rust-indexmap" ,rust-indexmap-2)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-nix" ,rust-nix-0.29)
-                       ("rust-rand" ,rust-rand-0.8)
-                       ("rust-rayon" ,rust-rayon-1)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-shell-quote" ,rust-shell-quote-0.7)
-                       ("rust-shlex" ,rust-shlex-1)
-                       ("rust-tempfile" ,rust-tempfile-3)
-                       ("rust-time" ,rust-time-0.3)
-                       ("rust-timer" ,rust-timer-0.2)
-                       ("rust-tuikit" ,rust-tuikit-0.5)
-                       ("rust-unicode-width" ,rust-unicode-width-0.2)
-                       ("rust-vte" ,rust-vte-0.14)
-                       ("rust-which" ,rust-which-7))
        #:phases (modify-phases %standard-phases
                   (replace 'install
                     (lambda* (#:key outputs #:allow-other-keys)
@@ -3102,6 +3074,7 @@ common-sense defaults.")
                         (copy-file "shell/key-bindings.fish"
                                    (string-append fish-vendor
                                                   "/skim-bindings.fish"))))))))
+    (inputs (cargo-inputs 'skim))
     (home-page "https://github.com/lotabout/skim")
     (synopsis "Fuzzy Finder in Rust")
     (description "This package provides a fuzzy finder in Rust.")
