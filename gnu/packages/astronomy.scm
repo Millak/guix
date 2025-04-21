@@ -7096,33 +7096,25 @@ orbit around the Earth.")
 (define-public python-stsci-stimage
   (package
     (name "python-stsci-stimage")
-    (version "0.2.10")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "stsci_stimage" version))
-              (sha256
-               (base32
-                "02qzblw11kfdw9rp2m26zbzlzl3w0dnrhncn383a3sw3dwjn9lpf"))))
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stsci_stimage" version))
+       (sha256
+        (base32 "10vhc2kfryis37k5jkg357z7lhlmyci4makzy50xgh08648ak7cd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:build-backend "setuptools.build_meta"
-      #:test-flags #~(list "test_c")
       #:phases
       #~(modify-phases %standard-phases
-          ;; Test steps are taken from GitHub Actions, see
-          ;; <https://github.com/spacetelescope/stsci.stimage/issues/27>
-          (add-before 'check 'waf-configure-build
+          (add-before 'check 'build-extensions
             (lambda _
-              (copy-file (string-append
-                          #$(this-package-native-input "python-waf") "/bin/waf")
-                         "waf")
-              (invoke "python" "waf" "configure" "build"))))))
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-pytest
            python-setuptools
            python-setuptools-scm
-           python-waf
            python-wheel))
     (propagated-inputs
      (list python-numpy))
