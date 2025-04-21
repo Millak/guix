@@ -1644,6 +1644,10 @@
                 "0dfwq9ag7x7lnd0znafpcn8h7k4nfr9gkzm0w7sc1lcj451pkk8h"
                 #:snippet '(delete-file-recursively "tests")))
 
+(define rust-chan-0.1.23
+  (crate-source "chan" "0.1.23"
+                "1n0y992mqfk5zpxzvrv14g9qivacmd4fiv4j1nmgyrg0vaimcjfi"))
+
 (define rust-chardetng-0.1.17
   (crate-source "chardetng" "0.1.17"
                 "1spikjcnblwa5n1nnk46fxkwn86yfiqxgs47h4yaw23vbfvg1f0l"))
@@ -2427,6 +2431,10 @@
 (define rust-csv-core-0.1.12
   (crate-source "csv-core" "0.1.12"
                 "0gfrjjlfagarhyclxrqv6b14iaxgvgc8kmwwdvw08racvaqg60kx"))
+
+(define rust-csv-index-0.1.6
+  (crate-source "csv-index" "0.1.6"
+                "01048y84y0bakqm0x4y1svjv6lzc753b9q598xp7xgcqrdgi6x7j"))
 
 (define rust-ct-codecs-1.1.3
   (crate-source "ct-codecs" "1.1.3"
@@ -3599,6 +3607,10 @@
 (define rust-filesize-0.2.0
   (crate-source "filesize" "0.2.0"
                 "0hvx4dfnara3a2dnhb9ci5bmm1m8s44h9l61s5djwkjx87i43mqj"))
+
+(define rust-filetime-0.1.15
+  (crate-source "filetime" "0.1.15"
+                "03xishfxzpr4nfz4g3r218d6b6g94rxsqw9pw96m6wa8wgrm6iki"))
 
 (define rust-filetime-0.2.25
   (crate-source "filetime" "0.2.25"
@@ -9705,6 +9717,10 @@
   (crate-source "quick-xml" "0.37.4"
                 "0s8krrf4ci10kcxfzdja7h7dz5kcp1mgndhgf0wghkrjvs48rkm4"))
 
+(define rust-quickcheck-0.6.2
+  (crate-source "quickcheck" "0.6.2"
+                "1dyazm2fcq0v9fscq1a7597zsvdl9f0j8c2bfj1jm2nlzz2sn6y0"))
+
 (define rust-quickcheck-1.0.3
   (crate-source "quickcheck" "1.0.3"
                 "1mjhkfqwrb8mdyxdqr4zzbj1rm5dfx25n9zcc25lb6fxwiw673sq"))
@@ -9780,6 +9796,14 @@
 (define rust-rancor-0.1.0
   (crate-source "rancor" "0.1.0"
                 "0iyr19x1aryadcyc2zwjbwmskkkjqfbvrjp4l37d3f9434bggxfa"))
+
+(define rust-rand-0.3.23
+  (crate-source "rand" "0.3.23"
+                "0v679h38pjjqj5h4md7v2slsvj6686qgcn7p9fbw3h43iwnk1b34"))
+
+(define rust-rand-0.4.6
+  (crate-source "rand" "0.4.6"
+                "14qjfv3gggzhnma20k0sc1jf8y6pplsaq7n1j9ls5c8kf2wl0a2m"))
 
 (define rust-rand-0.6.5
   (crate-source "rand" "0.6.5"
@@ -11686,6 +11710,10 @@
   (crate-source "streaming-stats" "0.1.29"
                 "09cbpj40g1wcmkz9bpm9yrqyrvqizn6kmwac1jpb2prq6gr2phyv"))
 
+(define rust-streaming-stats-0.2.3
+  (crate-source "streaming-stats" "0.2.3"
+                "0iz5dlq51w5hxjrv6a4hpf8rrj91kgvy0s9mhj0j12il9v771mmh"))
+
 (define rust-strength-reduce-0.2.4
   (crate-source "strength_reduce" "0.2.4"
                 "10jdq9dijjdkb20wg1dmwg447rnj37jbq0mwvbadvqi2gys5x2gy"))
@@ -12050,6 +12078,10 @@
 (define rust-tabled-0.17.0
   (crate-source "tabled" "0.17.0"
                 "02ji1rhr6kig7mhh3zlwbflqghadav6mj1g5gi13fccpyci94w66"))
+
+(define rust-tabwriter-1.4.1
+  (crate-source "tabwriter" "1.4.1"
+                "0ch4823i90iw35an0g000f3ii8cs8dkv5gnbddzgyzf81qpizsgw"))
 
 (define rust-take-mut-0.2.2
   (crate-source "take_mut" "0.2.2"
@@ -40905,6 +40937,51 @@
                                        rust-windows-x86-64-msvc-0.52.6
                                        rust-xenstore-rs-0.6.0
                                        rust-xenstore-sys-0.2.0))
+                     (xsv =>
+                          (list rust-aho-corasick-1.1.3
+                                rust-autocfg-1.4.0
+                                rust-byteorder-1.5.0
+                                rust-cfg-if-0.1.10
+                                rust-chan-0.1.23
+                                rust-csv-1.3.1
+                                rust-csv-core-0.1.12
+                                rust-csv-index-0.1.6
+                                rust-docopt-1.1.1
+                                rust-filetime-0.1.15
+                                rust-fuchsia-cprng-0.1.1
+                                rust-hermit-abi-0.3.9
+                                rust-itoa-1.0.15
+                                rust-lazy-static-1.5.0
+                                rust-libc-0.2.172
+                                rust-log-0.4.27
+                                rust-memchr-2.7.4
+                                rust-num-traits-0.2.19
+                                rust-num-cpus-1.16.0
+                                rust-proc-macro2-1.0.95
+                                rust-quickcheck-0.6.2
+                                rust-quote-1.0.40
+                                rust-rand-0.3.23
+                                rust-rand-0.4.6
+                                rust-rand-core-0.3.1
+                                rust-rand-core-0.4.2
+                                rust-rdrand-0.4.0
+                                rust-redox-syscall-0.1.57
+                                rust-regex-1.11.1
+                                rust-regex-automata-0.4.9
+                                rust-regex-syntax-0.8.5
+                                rust-ryu-1.0.20
+                                rust-serde-1.0.219
+                                rust-serde-derive-1.0.219
+                                rust-streaming-stats-0.2.3
+                                rust-strsim-0.10.0
+                                rust-syn-2.0.100
+                                rust-tabwriter-1.4.1
+                                rust-threadpool-1.8.1
+                                rust-unicode-ident-1.0.18
+                                rust-unicode-width-0.2.0
+                                rust-winapi-0.3.9
+                                rust-winapi-i686-pc-windows-gnu-0.4.0
+                                rust-winapi-x86-64-pc-windows-gnu-0.4.0))
                      (xwayland-satellite =>
                                          (list rust-aho-corasick-1.1.3
                                           rust-anstream-0.6.18
