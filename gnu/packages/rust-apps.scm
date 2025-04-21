@@ -3431,7 +3431,7 @@ tools.")
 (define-public git-absorb
   (package
     (name "git-absorb")
-    (version "0.6.16")
+    (version "0.7.0")
     (source
      (origin
        ;; crates.io does not include the manual page.
@@ -3441,24 +3441,10 @@ tools.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0az15qskgpbsbbm6sx7mqbka85n9j2xk3h2yir0d2wz6myp85475"))
-       (snippet
-        #~(begin (delete-file "Documentation/git-absorb.1")))))
+        (base32 "1cqz9m5w7sh7pgfcirvdpv6i7l7nfaqbgs88zx0wr5sqg5wk2zky"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-clap-complete-nushell" ,rust-clap-complete-nushell-4)
-        ("rust-git2" ,rust-git2-0.19)
-        ("rust-memchr" ,rust-memchr-2)
-        ("rust-slog" ,rust-slog-2)
-        ("rust-slog-async" ,rust-slog-async-2)
-        ("rust-slog-term" ,rust-slog-term-2))
-       #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-manual-page
@@ -3470,7 +3456,7 @@ tools.")
                          "--no-xmllint"
                          "--doctype=manpage"
                          "--format=manpage"
-                         "git-absorb.txt"))
+                         "git-absorb.adoc"))
                (install-file "Documentation/git-absorb.1" man))))
          (add-after 'install 'install-completions
            (lambda* (#:key native-inputs outputs #:allow-other-keys)
@@ -3501,9 +3487,9 @@ tools.")
        (if (%current-target-system)
            (list this-package)
            '())
-       (list asciidoc pkg-config)))
+       (list asciidoc git-minimal/pinned pkg-config)))
     (inputs
-     (list libgit2-1.8 zlib))
+     (cons* libgit2-1.9 zlib (cargo-inputs 'git-absorb)))
     (home-page "https://github.com/tummychow/git-absorb")
     (synopsis "Git tool for making automatic fixup commits")
     (description
