@@ -116,22 +116,23 @@ Firefox locales.")
 
 ;; We copy the official build id, which is defined at
 ;; tor-browser-build/rbm.conf (browser_release_date).
-(define %torbrowser-build-date "20250331180000")
+(define %torbrowser-build-date "20250414190325")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "14.0.9")
+(define %torbrowser-version "14.5")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "128.9.0esr-14.0-2-build2")
+(define %torbrowser-firefox-version "128.9.0esr-14.5-1-build4")
 
 ;; See tor-browser-build/rbm.conf for the list.
-(define %torbrowser-locales (list "ar" "ca" "cs" "da" "de" "el" "es-ES" "fa" "fi" "fr"
-                                  "ga-IE" "he" "hu" "id" "is" "it" "ja" "ka" "ko" "lt"
-                                  "mk" "ms" "my" "nb-NO" "nl" "pl" "pt-BR" "ro" "ru"
-                                  "sq" "sv-SE" "th" "tr" "uk" "vi" "zh-CN" "zh-TW"))
+(define %torbrowser-locales (list "ar" "be" "bg" "ca" "cs" "da" "de" "el" "es-ES" "fa"
+                                  "fi" "fr" "ga-IE" "he" "hu" "id" "is" "it" "ja" "ka"
+                                  "ko" "lt" "mk" "ms" "my" "nb-NO" "nl" "pl" "pt-BR"
+                                  "pt-PT" "ro" "ru" "sq" "sv-SE" "th" "tr" "uk" "vi"
+                                  "zh-CN" "zh-TW"))
 
 ;; See tor-browser-build/projects/translation/config.
 (define torbrowser-translation-base
@@ -139,11 +140,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "d687be19490caa48a46a3e2193bda95d57cbb96d")))
+          (commit "86442427facf038d5706644221de7e2fb733550b")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "0hb4v0d898h7zxg9iwjvxjzh776wa65inysh4wdla51r0ib91w1b"))))
+      "0s3zyz3hx88accvs31pnia4pq218hc8wvcyrym0525624iyqbld1"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define torbrowser-translation-specific
@@ -151,11 +152,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "95b60f2679611d39b035f2e45555c2c3d64d991f")))
+          (commit "2c0b448503d52c3b512d1e7a55ccc78ac19db146")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "1lvdy586v0p84lilvx1z0x5y6ng1yy6aw12lg3xphfh0kr1ygi16"))))
+      "08rdykhf98vcp5xflmkf15ax0zfn0nicdhp3zijjhfd0238rdjb9"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -171,14 +172,13 @@ Firefox locales.")
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "1s65fr8crhlmgx449686f0s5k28gjia9wdq6d5rhif3d3r696cx1"))))
+         "0v2nbw3glfp5597jpz190qi5rc6nd5j779jq1miv9c69ycs6cb61"))))
     (arguments
      (list
       #:install-plan
       ''(("Browser" "." #:include-regexp
           ("^\\./TorBrowser/Data/Tor/torrc-defaults"
-           "^\\./fonts/"
-           "^\\./fontconfig/fonts.conf")))))
+           "^\\./fonts/")))))
     (build-system copy-build-system)
     (home-page "https://www.torproject.org")
     (synopsis "Tor Browser assets")
@@ -187,8 +187,8 @@ Browser.")
     (license license:silofl1.1)))
 
 ;;; A LLD wrapper that can be used as a (near) drop-in replacement to GNU ld.
-(define lld-as-ld-wrapper-16
-  (make-lld-wrapper lld-16 #:lld-as-ld? #t))
+(define lld-as-ld-wrapper-18
+  (make-lld-wrapper lld-18 #:lld-as-ld? #t))
 
 (define* (make-torbrowser #:key
                           moz-app-name
@@ -213,7 +213,7 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "1jq6jaiwr2jk7ayylnaha7rqk9g14ryybld817zhcqpldr0xmvyr"))))
+         "1wns37fr9kbs2p2is3gc21r0ff69awryxwl25isr1fc2glksdlv7"))))
     (build-system mozilla-build-system)
     (inputs
      (list lyrebird
@@ -269,9 +269,9 @@ Browser.")
       rust
       `(,rust "cargo")
       rust-cbindgen-0.26
-      lld-as-ld-wrapper-16  ; for cargo rustc
-      llvm-16
-      clang-16
+      lld-as-ld-wrapper-18  ; for cargo rustc
+      llvm-18
+      clang-18
       perl
       node-lts
       python-wrapper
@@ -530,7 +530,7 @@ Browser.")
                   (for-each (lambda (flag)
                               (format #t "ac_add_options ~a~%" flag))
                             configure-flags)))))
-          ;; See tor-browser-build/projects/firefox/build.
+          ;; See tor-browser-build/projects/common/browser-localization.
           (add-before 'configure 'copy-firefox-locales
             (lambda _
               (let ((l10ncentral ".mozbuild/l10n-central")
@@ -545,7 +545,7 @@ Browser.")
             (lambda _
               (let ((l10ncentral ".mozbuild/l10n-central"))
                 ;; Temporary copy so that we can use ‘mv’ to mimic
-                ;; tor-browser-build/projects/firefox/build.
+                ;; tor-browser-build/projects/common/browser-localization
                 (copy-recursively #$translation-base
                                   "translation-base-browser")
                 (for-each
@@ -556,20 +556,13 @@ Browser.")
                          '("mv"
                            "translation-base-browser/~a/base-browser.ftl"
                            "~a/~a/toolkit/toolkit/global/"))
-                     lang l10ncentral lang))
-                   (system
-                    (format
-                     #f (string-join
-                         '("mv"
-                           "translation-base-browser/~a/*"
-                           "~a/~a/browser/chrome/browser/"))
                      lang l10ncentral lang)))
                  (list #$@locales)))))
           (add-after 'copy-basebrowser-locales 'copy-torbrowser-locales
             (lambda _
               (let ((l10ncentral ".mozbuild/l10n-central"))
                 ;; Temporary copy so that we can use ‘mv’ to mimic
-                ;; tor-browser-build/projects/firefox/build.
+                ;; tor-browser-build/projects/common/browser-localization
                 (copy-recursively #$translation-specific
                                   "translation-tor-browser")
                 (for-each
@@ -581,13 +574,31 @@ Browser.")
                            "translation-tor-browser/~a/tor-browser.ftl"
                            "~a/~a/toolkit/toolkit/global/"))
                      lang l10ncentral lang))
+                   (mkdir-p (string-append l10ncentral "/" lang
+                                           "/" #$branding-directory))
                    (system
                     (format
                      #f (string-join
                          '("mv"
-                           "translation-tor-browser/~a"
-                           "toolkit/torbutton/chrome/locale/"))
-                     lang))
+                           "translation-tor-browser/~a/branding/brand.ftl"
+                           "~a/~a/~a/"))
+                     lang l10ncentral lang #$branding-directory))
+                   (system
+                    (format
+                     #f (string-join
+                         '("mv"
+                           "translation-tor-browser/~a/brand.properties"
+                           "~a/~a/~a/"))
+                     lang l10ncentral lang #$branding-directory))
+                   (mkdir-p (string-append "toolkit/torbutton/chrome/locale/"
+                                           lang))
+                   (system
+                    (format
+                     #f (string-join
+                         '("mv"
+                           "translation-tor-browser/~a/*.properties"
+                           "toolkit/torbutton/chrome/locale/~a/"))
+                     lang lang))
                    (let ((port (open-file "toolkit/torbutton/jar.mn" "a")))
                      (format port "% locale torbutton ~a %locale/~a/~%"
                              lang lang)
@@ -645,7 +656,7 @@ Browser.")
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((gtk #$(this-package-input "gtk+"))
                      (gtk-share (string-append gtk "/share"))
-                     (fonts.conf (format #f "~a/lib/~a/fontconfig/fonts.conf"
+                     (fonts.conf (format #f "~a/lib/~a/fonts/fonts.conf"
                                          #$output #$moz-app-name))
                      (ld-libs '#$(cons
                                   (file-append
@@ -699,14 +710,12 @@ Browser.")
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((lib (string-append #$output "/lib/" #$moz-app-name)))
                 ;; Fonts
-                (copy-recursively (in-vicinity #$assets "fontconfig")
-                                  (in-vicinity lib "fontconfig"))
-                (substitute* (in-vicinity lib "fontconfig/fonts.conf")
-                  (("<dir prefix=\"cwd\">fonts</dir>")
-                   (format #f "<dir>~a</dir>" (in-vicinity lib "fonts"))))
                 (delete-file-recursively (in-vicinity lib "fonts"))
                 (copy-recursively (in-vicinity #$assets "fonts")
-                                  (in-vicinity lib "fonts")))))
+                                  (in-vicinity lib "fonts"))
+                (substitute* (in-vicinity lib "fonts/fonts.conf")
+                  (("<dir prefix=\"cwd\">fonts</dir>")
+                   (format #f "<dir>~a</dir>" (in-vicinity lib "fonts")))))))
           (add-after 'deploy-fonts 'deploy-tor-assets
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((lib (in-vicinity #$output "lib/torbrowser"))
