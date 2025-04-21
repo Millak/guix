@@ -34,6 +34,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -111,7 +112,8 @@
            python-mock
            python-pytest
            python-pytest-qt
-           python-pytest-xvfb))
+           python-pytest-xvfb
+           python-wheel))
     (inputs
      (list bash-minimal
            dbus
