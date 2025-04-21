@@ -121,8 +121,9 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
-  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
@@ -4382,25 +4383,42 @@ top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
 (define-public python-qtpy
   (package
     (name "python-qtpy")
-    (version "2.2.0")
+    (version "2.4.3")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "QtPy" version))
+       (uri (pypi-uri "qtpy" version))
        (sha256
-          (base32
-           "051rj10lbv2ny48lz34zhclcbdxxdbk4di2mdk91m9143w91npyq"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-packaging))
+        (base32 "1fzmrpjgchiiqsxnyg8ci553nazflfycr9lbas8dmlz669w4yx6v"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; Not all supported bindings are packaged. Especially PyQt4.
-       #:tests? #f))
+     (list
+      #:test-flags
+      ;; Fatal Python error: Aborted
+      #~(list "--ignore=qtpy/tests/test_compat.py"
+              "--ignore=qtpy/tests/test_qtcore.py"
+              "--ignore=qtpy/tests/test_qtgui.py"
+              "--ignore=qtpy/tests/test_qtprintsupport.py"
+              "--ignore=qtpy/tests/test_qtwidgets.py"
+              "--ignore=qtpy/tests/test_uic.py"
+              ;; ModuleNotFoundError: No module named 'PyQt5.QtTextToSpeech'
+              "-k" "not test_qttexttospeech")))
+    (native-inputs
+     (list python-pyqt
+           python-pyqt-6
+           python-pyside-2
+           python-pytest
+           python-pytest-cov
+           python-pytest-qt
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-packaging))
     (home-page "https://github.com/spyder-ide/qtpy")
-    (synopsis
-     "Qt bindings (PyQt5, PyQt4 and PySide) and additional custom QWidgets")
+    (synopsis "Uniform layer to support PyQt5, PySide2, PyQt6, PySide6")
     (description
-     "Provides an abstraction layer on top of the various Qt bindings
-(PyQt5, PyQt4 and PySide) and additional custom QWidgets.")
+     "Provides an abstraction layer on top of the various Qt bindings (PyQt5,
+PySide2, PyQt6, PySide6) and additional custom QWidgets.")
     (license license:expat)))
 
 (define-public python-qt.py
