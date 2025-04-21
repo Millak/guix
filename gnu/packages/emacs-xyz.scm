@@ -31137,6 +31137,14 @@ server with @code{M-x pinentry-start}.")
         (base32
          "06a76ajfqgz48yqvvyhi5b9zss9c6h4xz6acg98ibg0v99v9k5pz"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "make" "test")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-tests
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("tests\\.elc") "tests")))))))
     (home-page "https://www.emacswiki.org/emacs/SoLong")
     (synopsis "Improve performance in files with long lines")
     (description "This package improves the performance of Emacs when
