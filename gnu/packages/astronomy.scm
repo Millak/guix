@@ -4626,14 +4626,13 @@ milliarcsecond).")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.17.1")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jwst" version))
        (sha256
-        (base32
-         "0brlj2w0jjg9p4zwna05bk9l8nb7xkcss7p5rjdjaj3hxlskzfkq"))
+        (base32 "1r3gmlsirdf1l2m1z8sxzh6h668zvkjyr463zwp32f6wppcj286l"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -4658,10 +4657,6 @@ milliarcsecond).")
           (add-before 'build 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
-                ;; gwcs>=0.22.0,<0.23.0
-                ((">=0.22.0,<0.23.0") ">=0.22.0")
-                ;; numpy<2.0,>=1.25
-                ((">=1.25,<2.0") ">=1.24,<2.0")
                 ;; scipy>=1.14.1
                 (("1.14.1") "1.12.0")
                 ;; XXX: Can't detect opencv-python version. The input opencv
@@ -4669,8 +4664,9 @@ milliarcsecond).")
                 ((".*opencv-python-headless.*") "")
                 ;; Remove broken scripts, see
                 ;; <https://github.com/spacetelescope/jwst/issues/9401>.
-                (("csvconvert = .*") "")
-                (("asn_gather = .*") "")))))))
+                (("asn_gather = .*") "")
+                (("create_data = .*") "")
+                (("csvconvert = .*") "")))))))
     (native-inputs
      (list python-colorama
            python-pytest
