@@ -256,11 +256,11 @@
 
             ;; Build details
             "--disable-elf-hack"
+            "--enable-strip"
             ;; Don't attempt to download toolchains.  Upstream enables this,
             ;; adding the flag ensures we don't use network in the build
             ;; environment.
-            "--disable-bootstrap"
-            "--enable-strip"))
+            "--disable-bootstrap"))
       #:imported-modules %cargo-utils-modules
       #:modules `((ice-9 regex)
                   (ice-9 string-fun)
