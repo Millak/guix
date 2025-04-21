@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,7 @@
   #:use-module (guix memoization)
   #:export (elpa->guix-package
             guix-package->elpa-name
+            %elpa-archives
             %elpa-updater
             elpa-recursive-import))
 
@@ -81,15 +83,16 @@ NAMES (strings)."
         (string-downcase name)
         (string-append package-name-prefix (string-downcase name)))))
 
+(define %elpa-archives
+  '((gnu . "https://elpa.gnu.org/packages")
+    (gnu/http . "http://elpa.gnu.org/packages") ;for testing
+    (nongnu . "https://elpa.nongnu.org/nongnu")
+    (melpa-stable . "https://stable.melpa.org/packages")
+    (melpa . "https://melpa.org/packages")))
+
 (define* (elpa-url #:optional (repo 'gnu))
   "Retrieve the URL of REPO."
-  (let ((elpa-archives
-         '((gnu . "https://elpa.gnu.org/packages")
-           (gnu/http . "http://elpa.gnu.org/packages") ;for testing
-           (nongnu . "https://elpa.nongnu.org/nongnu")
-           (melpa-stable . "https://stable.melpa.org/packages")
-           (melpa . "https://melpa.org/packages"))))
-    (assq-ref elpa-archives repo)))
+  (assq-ref %elpa-archives repo))
 
 (define* (elpa-fetch-archive #:optional (repo 'gnu))
   "Retrieve the archive with the list of packages available from REPO."

@@ -4,6 +4,8 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2025 jgart <jgart@dismail.de>
+;;; Copyright © 2025 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +50,8 @@ Import the latest package named PACKAGE-NAME from an ELPA repository.\n"))
   (display (G_ "
   -a, --archive=ARCHIVE          specify the archive repository"))
   (display (G_ "
+  -l, --list-archives            list ELPA repositories supported by the importer"))
+  (display (G_ "
   -h, --help                     display this help and exit"))
   (display (G_ "
   -r, --recursive                generate package expressions for all Emacs packages that are not yet in Guix"))
@@ -69,6 +73,17 @@ Import the latest package named PACKAGE-NAME from an ELPA repository.\n"))
                  (lambda (opt name arg result)
                    (alist-cons 'repo (string->symbol arg)
                                (alist-delete 'repo result))))
+         (option '(#\l "list-archives") #f #f
+                 (lambda (opt name arg result)
+                   (display (G_ "The following archives are supported:\n"))
+                   (for-each (match-lambda
+                               ((sym . repo)
+                                (format #t "  ~a: ~a\n" sym repo)))
+                             %elpa-archives)
+                   (display
+                    (G_ "The argument to --archive should be one of these \
+symbols, e.g. gnu (the default).\n"))
+                   (exit 0)))
          (option '(#\r "recursive") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'recursive #t result)))
