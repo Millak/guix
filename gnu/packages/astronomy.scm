@@ -5741,13 +5741,13 @@ task}.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.11.1")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stcal" version))
        (sha256
-        (base32 "0xafli4b3wyimpaxmvb0h5bha5g5kg76s4hykk63wkxrjrd2m2vf"))))
+        (base32 "1wb1rvr0p00jhhpn2szqi9dn8vzmb8v12yb96h8x24mj08p5clwk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5756,12 +5756,13 @@ task}.")
               "-k" (string-join
                     ;; Tests requiring network access.
                     (list "not test_absolute_align"
-                          "test_relative_align[True]"
-                          "test_relative_align[False]"
-                          "test_get_catalog"
                           "test_create_catalog"
                           "test_create_catalog_graceful_failure"
-                          "test_parse_refcat")
+                          "test_get_catalog"
+                          "test_parse_refcat"
+                          "test_parse_sky_centroid"
+                          "test_relative_align[False]"
+                          "test_relative_align[True]")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
