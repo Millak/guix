@@ -7042,7 +7042,7 @@ pipelines.")
 (define-public python-skyfield
   (package
     (name "python-skyfield")
-    (version "1.52")
+    (version "1.53")
     (source
      (origin
        (method git-fetch) ; PyPI tarball lacks test data
@@ -7051,7 +7051,7 @@ pipelines.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08gg94fb4h5gjsywzy539h9znyghbi0rqnfsnajhwf5vq8wwhbzq"))))
+        (base32 "0jj0bjvzlfxr4qaq6mnybhwabhz9n70afi8sd6a26wl79s5bw1q9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
