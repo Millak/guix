@@ -3618,28 +3618,6 @@ Color generation may be constrained to obey ANSI color standards, meet
 minimum contrast levels, and more.")
     (license license:expat)))
 
-(define-public wallust-themes
-  (package
-    (name "wallust-themes")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "wallust_themes" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1kgkggdb78sxz81si3glhvqpxbxhz858p9wzqxd51drzlvwgi1m1"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://codeberg.org/explosion-mental/wallust-themes")
-    (synopsis "Built in colorschemes for Wallust")
-    (description "This package provides built-in colorschemes for Wallust.")
-    ;; Only used as an input for wallust.
-    (properties `((hidden? . #t)))
-    (license license:expat)))
-
 (define-public rust-xremap
   (package
     (name "rust-xremap")
