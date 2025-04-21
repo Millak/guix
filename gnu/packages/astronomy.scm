@@ -4023,13 +4023,13 @@ and the options
 (define-public python-sncosmo
   (package
     (name "python-sncosmo")
-    (version "2.12.0")
+    (version "2.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sncosmo" version))
        (sha256
-        (base32 "0n5ygpq888hgdy7d4b8zz3hbfdi4vn4lsdp9m9ii0a6ghh61f803"))))
+        (base32 "1jvrrrlb37pgsa0zd6519r07hih41nswa7ym3sh49i6bx0pmh4n5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4065,6 +4065,13 @@ and the options
             (lambda _
               (setenv "HOME" "/tmp")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list ;; python-iminuit ; not packed, optional
+           python-cython-3
+           python-pytest
+           python-pytest-astropy
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-extinction
@@ -4073,13 +4080,6 @@ and the options
            python-numpy
            python-pyyaml
            python-scipy))
-    (native-inputs
-     (list ;; python-iminuit ; not packed, optional
-           python-cython-3
-           python-pytest
-           python-pytest-astropy
-           python-setuptools
-           python-wheel))
     (home-page "https://sncosmo.readthedocs.org")
     (synopsis "Package for supernova cosmology based on astropy")
     (description
