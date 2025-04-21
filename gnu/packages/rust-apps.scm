@@ -2691,17 +2691,18 @@ older terminal emulators.")
 (define-public watchexec
   (package
     (name "watchexec")
-    (version "1.16.1")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "watchexec-cli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1wp424gzw1zmax5yy5gya15knl24rjx8gi9c7palvq807q3cnj65"))))
+        (base32 "1qqbcipx90q4hl1l39ijwqqndbd23kmkqha3wxpqn1b8dylfxgy2"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:phases
+     `(#:install-source? #f
+       #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-completions
            (lambda* (#:key outputs #:allow-other-keys)
@@ -2713,16 +2714,8 @@ older terminal emulators.")
                ;; completions.  But the GitHub source does not compile.
                ;;
                ;; (copy-file "completions/zsh" zsh)
-               (install-file "README.md" doc)))))
-       #:cargo-inputs
-       (("rust-clap" ,rust-clap-2)
-        ("rust-embed-resource" ,rust-embed-resource-1)
-        ("rust-env-logger" ,rust-env-logger-0.8)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-watchexec" ,rust-watchexec-1))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1)
-        ("rust-insta" ,rust-insta-1))))
+               (install-file "README.md" doc)))))))
+    (inputs (cargo-inputs 'watchexec))
     (home-page "https://github.com/watchexec/watchexec")
     (synopsis "Executes commands in response to file modifications")
     (description
