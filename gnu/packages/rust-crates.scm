@@ -36683,6 +36683,43 @@
                                      rust-windows-x86-64-msvc-0.48.5
                                      rust-windows-x86-64-msvc-0.52.6
                                      rust-winnow-0.7.6))
+                     (swaysome =>
+                               (list rust-anstream-0.6.18
+                                     rust-anstyle-1.0.10
+                                     rust-anstyle-parse-0.2.6
+                                     rust-anstyle-query-1.1.2
+                                     rust-anstyle-wincon-3.0.7
+                                     rust-byteorder-1.5.0
+                                     rust-clap-4.5.37
+                                     rust-clap-builder-4.5.37
+                                     rust-clap-derive-4.5.32
+                                     rust-clap-lex-0.7.4
+                                     rust-colorchoice-1.0.3
+                                     rust-heck-0.5.0
+                                     rust-is-terminal-polyfill-1.70.1
+                                     rust-itoa-1.0.15
+                                     rust-memchr-2.7.4
+                                     rust-once-cell-1.21.3
+                                     rust-proc-macro2-1.0.95
+                                     rust-quote-1.0.40
+                                     rust-ryu-1.0.20
+                                     rust-serde-1.0.219
+                                     rust-serde-derive-1.0.219
+                                     rust-serde-json-1.0.140
+                                     rust-strsim-0.11.1
+                                     rust-syn-2.0.100
+                                     rust-unicode-ident-1.0.18
+                                     rust-utf8parse-0.2.2
+                                     rust-windows-sys-0.59.0
+                                     rust-windows-targets-0.52.6
+                                     rust-windows-aarch64-gnullvm-0.52.6
+                                     rust-windows-aarch64-msvc-0.52.6
+                                     rust-windows-i686-gnu-0.52.6
+                                     rust-windows-i686-gnullvm-0.52.6
+                                     rust-windows-i686-msvc-0.52.6
+                                     rust-windows-x86-64-gnu-0.52.6
+                                     rust-windows-x86-64-gnullvm-0.52.6
+                                     rust-windows-x86-64-msvc-0.52.6))
                      (swww =>
                            (list rust-adler2-2.0.0
                                  rust-aho-corasick-1.1.3

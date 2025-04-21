@@ -3234,10 +3234,6 @@ daemon which executes them.")
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
-                       ("rust-clap" ,rust-clap-4)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-json" ,rust-serde-json-1))
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-more
@@ -3245,6 +3241,7 @@ daemon which executes them.")
              (let* ((out  (assoc-ref outputs "out"))
                     (man1 (string-append out "/share/man/man1")))
                (install-file "swaysome.1" man1)))))))
+    (inputs (cargo-inputs 'swaysome))
     (home-page "https://gitlab.com/hyask/swaysome")
     (synopsis "Manage your multiple outputs with the sway window manager")
     (description
