@@ -350,14 +350,14 @@ differences.")
 (define-public diffutils
   (package
    (name "diffutils")
-   (version "3.11")
+   (version "3.12")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/diffutils/diffutils-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "07hkwbws3nhxqrsvsf01h6gl2q4pcfhf8s3hv3vqbmbxwdgz0gm7"))))
+              "1zbxf8vv7z18ypddwqgzj51n426k959fiv4wxbyl34b0r2gpz2vw"))))
    (build-system gnu-build-system)
    (arguments
     (list
@@ -368,6 +368,12 @@ differences.")
                   (string=? (%current-system) "i586-gnu"))
              #~'("XFAIL_TESTS=test-year2038")
              #~'())
+
+     #:configure-flags
+     #~#$(if (%current-target-system)
+       ;; Fix for crosscompiling; on GNU system strcasecmp always works
+       #~'("ac_cv_func_strcasecmp=yes" "gl_cv_func_strcasecmp_works=yes")
+       #~'())
 
      #:phases (if (system-hurd?)
                   #~(modify-phases %standard-phases
