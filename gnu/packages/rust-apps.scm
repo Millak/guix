@@ -2238,47 +2238,18 @@ representations.")
 (define-public procs
   (package
     (name "procs")
-    (version "0.14.9")
+    (version "0.14.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "procs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0k56fky129r4wn3ifnhlyw42rk1ma3ipg6dc38lf757jx81x4g0y"))))
+        (base32 "1s2vnfsfrzkqamd0xn7p1gh9m6ja3riksc4waw89hvjph9wng8pn"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:cargo-inputs `(("rust-anyhow" ,rust-anyhow-1)
-                       ("rust-bsd-kvm" ,rust-bsd-kvm-0.1)
-                       ("rust-bsd-kvm-sys" ,rust-bsd-kvm-sys-0.2)
-                       ("rust-byte-unit" ,rust-byte-unit-5)
-                       ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-clap" ,rust-clap-4)
-                       ("rust-clap-complete" ,rust-clap-complete-4)
-                       ("rust-console" ,rust-console-0.15)
-                       ("rust-directories" ,rust-directories-6)
-                       ("rust-dockworker" ,rust-dockworker-0.5)
-                       ("rust-errno" ,rust-errno-0.3)
-                       ("rust-getch" ,rust-getch-0.3)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-libproc" ,rust-libproc-0.14)
-                       ("rust-minus" ,rust-minus-5)
-                       ("rust-nix" ,rust-nix-0.29)
-                       ("rust-once-cell" ,rust-once-cell-1)
-                       ("rust-pager" ,rust-pager-0.16)
-                       ("rust-procfs" ,rust-procfs-0.17)
-                       ("rust-regex" ,rust-regex-1)
-                       ("rust-serde" ,rust-serde-1)
-                       ("rust-serde-derive" ,rust-serde-derive-1)
-                       ("rust-termbg" ,rust-termbg-0.6)
-                       ("rust-tokio" ,rust-tokio-1)
-                       ("rust-toml" ,rust-toml-0.8)
-                       ("rust-unicode-width" ,rust-unicode-width-0.2)
-                       ("rust-uzers" ,rust-uzers-0.12)
-                       ("rust-which" ,rust-which-7)
-                       ("rust-windows-sys" ,rust-windows-sys-0.59))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'install 'install-manual-page
                      (lambda* (#:key outputs #:allow-other-keys)
@@ -2329,6 +2300,7 @@ representations.")
            (list this-package)
            '())
        (list asciidoc)))
+    (inputs (cargo-inputs 'procs))
     (home-page "https://github.com/dalance/procs")
     (synopsis "Modern replacement for @command{ps}")
     (description "This package provides a  modern replacement for @command{ps}
