@@ -3212,21 +3212,25 @@ astronomy-specific functionality")
 (define-public python-glue-core
   (package
     (name "python-glue-core")
-    (version "1.22.0")
+    (version "1.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "glue_core" version))
        (sha256
-        (base32 "0cx97zbi58fjl9j6wg8clygdiv6a95wgc2azw7ffg16y3qlqwkzs"))))
+        (base32 "1prw271rdv3alxdh5apkq45d037vmwl83ag8my081cmwfdfmnvn3"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-mpl
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-astrodendro
            python-astropy
            python-dill
            python-echo
            python-fast-histogram
-           python-h5py
            python-ipython
            python-matplotlib
            python-mpl-scatter-density
@@ -3241,11 +3245,6 @@ astronomy-specific functionality")
            python-shapely
            python-spectral-cube
            python-xlrd))
-    (native-inputs
-     (list python-pytest
-           python-pytest-mpl
-           python-setuptools-scm
-           python-wheel))
     (home-page "http://glueviz.org")
     (synopsis "Multidimensional data visualization project")
     (description
