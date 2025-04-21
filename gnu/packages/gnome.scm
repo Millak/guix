@@ -6032,7 +6032,7 @@ service via the system message bus.")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major version) "/"
+                                  (version-major+minor version) "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
