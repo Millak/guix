@@ -2955,9 +2955,8 @@ C-compatible) software.")
         (base32 "1r1b6fynkjnpj5p3k209sa13mjvh4k0ghzwnribm48dh9v7lfnnv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-memchr" ,rust-memchr-2))))
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'rtss))
     (home-page "https://github.com/Freaky/rtss")
     (synopsis "Annotate stdout/stderr with elapsed times")
     (description "@code{rtss} annotates its output with relative durations between
