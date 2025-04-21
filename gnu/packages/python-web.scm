@@ -5139,6 +5139,21 @@ supports url redirection and retries, and also gzip and deflate decoding.")
      (list python-hatchling
            python-hatch-vcs))))
 
+(define-public python-urllib3-1.25
+  (package
+    (inherit python-urllib3)
+    (version "1.25.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "urllib3" version))
+       (sha256
+        (base32
+         "09rmjqm5syhhc8fx3v06h3yv6cqy0b1081jg8wm5grpwpr72j61h"))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))))
+
 (define-public python-urllib3-1.26
   (package
     (inherit python-urllib3)
