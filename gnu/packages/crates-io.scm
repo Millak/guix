@@ -71389,37 +71389,6 @@ reading and writing BAM files.")
     (license (list license:asl2.0
                    license:expat))))
 
-(define-public rust-rustc-demangle-capi-0.1
-  (package
-    (name "rust-rustc-demangle-capi")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rustc-demangle-capi" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1s2g4z1yrh1sxl4qkmpd19ss3x2lr9115vbir7pnhgy63r1d63yv"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:cargo-inputs `(("rust-rustc-demangle" ,rust-rustc-demangle-0.1))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'install-c-library
-            (lambda _
-              (install-file
-               (car (find-files "." "^rustc_demangle\\.h$"))
-               (string-append #$output "/include"))
-              (install-file
-               (car (find-files "." "^librustc_demangle.so$"))
-               (string-append #$output "/lib")))))))
-    (home-page "https://github.com/alexcrichton/rustc-demangle")
-    (synopsis "C API for the @code{rustc-demangle} crate")
-    (description "This package provides a C API library for the
-@code{rustc-demangle} crate.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-rustc-hash-2
   (package
     (name "rust-rustc-hash")
