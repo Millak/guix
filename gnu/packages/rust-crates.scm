@@ -11793,6 +11793,10 @@
                 "002j0na1kfz4pgi43hdcz5baygzk6irnjd5lrmbqqfjldwn3sbx4"
                 #:snippet '(for-each delete-file-recursively '("fixtures" "tests"))))
 
+(define rust-swayipc-2.7.2
+  (crate-source "swayipc" "2.7.2"
+                "03r15c2sijyrxmpsyjgma4gz7zmdl1g8akjnjkw6hrml91d5dilj"))
+
 (define rust-swayipc-async-2.0.4
   (crate-source "swayipc-async" "2.0.4"
                 "12fb0fym5n2dn80bgmbi9jfdjgpbwsdjcrmjli9l4ymk7rvxsa4r"))
@@ -36403,6 +36407,42 @@
                                      rust-zerofrom-derive-0.1.6
                                      rust-zerovec-0.10.4
                                      rust-zerovec-derive-0.10.3))
+                     (swayhide =>
+                               (list rust-addr2line-0.24.2
+                                     rust-adler2-2.0.0
+                                     rust-backtrace-0.3.74
+                                     rust-cfg-if-1.0.0
+                                     rust-exitcode-1.1.2
+                                     rust-failure-0.1.8
+                                     rust-failure-derive-0.1.8
+                                     rust-gimli-0.31.1
+                                     rust-itoa-1.0.15
+                                     rust-libc-0.2.172
+                                     rust-memchr-2.7.4
+                                     rust-miniz-oxide-0.8.8
+                                     rust-object-0.36.7
+                                     rust-proc-macro2-1.0.95
+                                     rust-quote-1.0.40
+                                     rust-rustc-demangle-0.1.24
+                                     rust-ryu-1.0.20
+                                     rust-serde-1.0.219
+                                     rust-serde-derive-1.0.219
+                                     rust-serde-json-1.0.140
+                                     rust-swayipc-2.7.2
+                                     rust-syn-1.0.109
+                                     rust-syn-2.0.100
+                                     rust-synstructure-0.12.6
+                                     rust-unicode-ident-1.0.18
+                                     rust-unicode-xid-0.2.6
+                                     rust-windows-targets-0.52.6
+                                     rust-windows-aarch64-gnullvm-0.52.6
+                                     rust-windows-aarch64-msvc-0.52.6
+                                     rust-windows-i686-gnu-0.52.6
+                                     rust-windows-i686-gnullvm-0.52.6
+                                     rust-windows-i686-msvc-0.52.6
+                                     rust-windows-x86-64-gnu-0.52.6
+                                     rust-windows-x86-64-gnullvm-0.52.6
+                                     rust-windows-x86-64-msvc-0.52.6))
                      (swww =>
                            (list rust-adler2-2.0.0
                                  rust-aho-corasick-1.1.3
