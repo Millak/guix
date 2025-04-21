@@ -3252,7 +3252,7 @@ window manager.")
 (define-public tealdeer
   (package
     (name "tealdeer")
-    (version "1.7.1")
+    (version "1.7.2")
     (source
      (origin
        ;; Completions aren't in the release tarball.
@@ -3263,7 +3263,7 @@ window manager.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1qwg2xifazg39qxra5r7ficvgcprianzi02frz853s7dly7q10si"))))
+         "0yy0cvbw3n16whnqqycr54w18kiv6jlc3v0pl0276zvn9mc7p4qr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:phases
@@ -3295,31 +3295,11 @@ window manager.")
          "--skip=test_spaces_find_command"
          "--skip=test_autoupdate_cache"
          "--skip=test_update_cache"
-         "--skip=test_create_cache_directory_path")
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-app-dirs2" ,rust-app-dirs2-2)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-env-logger" ,rust-env-logger-0.11)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-pager" ,rust-pager-0.16)
-        ("rust-reqwest" ,rust-reqwest-0.12)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-toml" ,rust-toml-0.8)
-        ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-yansi" ,rust-yansi-1)
-        ("rust-zip" ,rust-zip-2))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-escargot" ,rust-escargot-0.5)
-        ("rust-filetime" ,rust-filetime-0.2)
-        ("rust-predicates" ,rust-predicates-3)
-        ("rust-tempfile" ,rust-tempfile-3))))
+         "--skip=test_create_cache_directory_path")))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list openssl))
+     (cons openssl (cargo-inputs 'tealdeer)))
     (home-page "https://github.com/dbrgn/tealdeer/")
     (synopsis "Fetch and show tldr help pages for many CLI commands")
     (description
