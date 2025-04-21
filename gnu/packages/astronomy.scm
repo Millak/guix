@@ -5153,19 +5153,20 @@ interest, and which require portability between platforms or ease of scripting."
 (define-public python-pyvo
   (package
     (name "python-pyvo")
-    (version "1.6.1")
+    (version "1.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyvo" version))
        (sha256
-        (base32 "0hfdsb6yqda6g987b96jqaw4kqj4qh9qz3am6inx0nl2m5y735pq"))))
+        (base32 "00kqgw0aaddlds1s47gxymp7rbxhgmgm8imzciavwf8clgr817pa"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags #~(list "--pyargs" "pyvo")))
     (native-inputs
      (list python-pytest-astropy
+           python-pytest-doctestplus
            python-requests-mock
            python-setuptools
            python-setuptools-scm
