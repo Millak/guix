@@ -30258,6 +30258,8 @@
                                  rust-windows-x86-64-gnu-0.52.6
                                  rust-windows-x86-64-gnullvm-0.52.6
                                  rust-windows-x86-64-msvc-0.52.6))
+                     (rtss =>
+                           (list rust-libc-0.2.172 rust-memchr-2.7.4))
                      (rust-bindgen-cli =>
                                        (list rust-aho-corasick-1.1.3
                                         rust-annotate-snippets-0.11.5
