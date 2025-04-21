@@ -7676,16 +7676,18 @@ analysis.  This package contains functionality for:
 (define-public python-zodipy
   (package
     (name "python-zodipy")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch) ;; no tests in the PyPI tarball
        (uri (git-reference
+             ;; XXX: Upstream is not stable with version style
+             ;; <https://github.com/Cosmoglobe/zodipy/issues/48>
              (url "https://github.com/Cosmoglobe/zodipy")
-             (commit (string-append "v." version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i7qdbxb9izsaciq4l3fz9irgxbsklxcfd33ap7w1spjk86mgv6x"))))
+        (base32 "0n51bism8irj2afj4xjyx438ylcc8f1dw2x0jy8xg90x7wdh30cm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7694,18 +7696,16 @@ analysis.  This package contains functionality for:
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
-                ;; numpy = "^1.26.4"
-                (("1.26.4") "1.23.2")
                 ;; scipy = "^1.13.0"
                 (("1.13.0") "1.12.0")))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
     (propagated-inputs
      (list python-astropy
            python-jplephem
            python-numpy
            python-scipy))
-    (native-inputs
-     (list python-poetry-core
-           python-pytest))
     (home-page "https://github.com/Cosmoglobe/zodipy")
     (synopsis "Zodiacal emission simulations")
     (description
