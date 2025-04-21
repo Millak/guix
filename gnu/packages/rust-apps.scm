@@ -3621,7 +3621,7 @@ minimum contrast levels, and more.")
 (define-public rust-xremap
   (package
     (name "rust-xremap")
-    (version "0.10.5")
+    (version "0.10.10")
     (source
      (origin
        (method url-fetch)
@@ -3629,34 +3629,11 @@ minimum contrast levels, and more.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1763bypr971qyy7lm0q0mg1alqzyzqgsq8ffkp8zfvhwsqipnfn7"))))
+         "00wi8xygkgj7niq4vky7jpg8yr02yrqlkvrhgnc6vbw87n7h5fmi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '()
        #:install-source? #f
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-derive-where" ,rust-derive-where-1)
-        ("rust-env-logger" ,rust-env-logger-0.10)
-        ("rust-evdev" ,rust-evdev-0.12)
-        ("rust-fork" ,rust-fork-0.2)
-        ("rust-hyprland" ,rust-hyprland-0.3)
-        ("rust-indoc" ,rust-indoc-2)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-nix" ,rust-nix-0.26)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-with" ,rust-serde-with-3)
-        ("rust-serde-yaml" ,rust-serde-yaml-0.9)
-        ("rust-toml" ,rust-toml-0.8)
-        ("rust-wayland-client" ,rust-wayland-client-0.30)
-        ("rust-wayland-protocols-wlr" ,rust-wayland-protocols-wlr-0.1)
-        ("rust-x11rb" ,rust-x11rb-0.13)
-        ("rust-zbus" ,rust-zbus-1))
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-completions
@@ -3680,6 +3657,7 @@ minimum contrast levels, and more.")
                (with-output-to-file
                  (string-append share "/elvish/lib/xremap")
                  (lambda _ (invoke xremap "--completions" "elvish")))))))))
+    (inputs (cargo-inputs 'rust-xremap))
     (home-page "https://github.com/k0kubun/xremap")
     (synopsis "Dynamic key remapper for X and Wayland")
     (description "This package provides dynamic key remapper for X and Wayland.")
