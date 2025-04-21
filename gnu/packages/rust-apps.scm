@@ -2529,53 +2529,6 @@ model.")
        #:install-source? #f
        #:features '(list "external-harfbuzz")
        #:cargo-test-flags '(list "--features" "external-harfbuzz")
-       #:cargo-inputs
-       (list rust-app-dirs2-2
-             rust-anyhow-1
-             rust-atty-0.2
-             rust-byte-unit-4
-             rust-byteorder-1
-             rust-cc-1
-             rust-cfg-if-1
-             rust-curl-0.4
-             rust-error-chain-0.12
-             rust-flate2-1
-             rust-fs2-0.4
-             rust-html-escape-0.2
-             rust-lazy-static-1
-             rust-libc-0.2
-             rust-md-5-0.10
-             rust-nom-7
-             rust-open-4
-             rust-percent-encoding-2
-             rust-pinot-0.1
-             rust-pkg-config-0.3
-             rust-quick-xml-0.28
-             rust-reqwest-0.11
-             rust-serde-1
-             rust-serde-json-1
-             rust-sha2-0.10
-             rust-structopt-0.3
-             rust-tempfile-3
-             rust-tera-1
-             rust-termcolor-1
-             rust-thiserror-1
-             rust-tokio-1
-             rust-toml-0.7
-             rust-url-2
-             rust-vcpkg-0.2
-             rust-watchexec-2
-             rust-watchexec-filterer-globset-1
-             rust-watchexec-signals-1
-             rust-zip-0.6)
-       #:cargo-development-inputs
-       (list rust-clap-2
-             rust-filetime-0.2
-             rust-futures-0.3
-             rust-headers-0.3
-             rust-hyper-0.14
-             rust-structopt-0.3
-             rust-tempfile-3)
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'install 'install-doc
@@ -2586,12 +2539,13 @@ model.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fontconfig
-           freetype
-           graphite2
-           harfbuzz
-           icu4c
-           openssl))
+     (cons* fontconfig
+            freetype
+            graphite2
+            harfbuzz
+            icu4c
+            openssl
+            (cargo-inputs 'tectonic)))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Complete, embeddable TeX/LaTeX engine")
     (description
