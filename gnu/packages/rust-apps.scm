@@ -2144,59 +2144,28 @@ browsers.")
 (define-public rust-cargo-edit
   (package
     (name "rust-cargo-edit")
-    (version "0.13.0")
+    (version "0.13.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "cargo-edit" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1mlzszj9sz0fy43xffrpram9nhyvlp4nx95jc5493jjmrqjrpfwz"))))
+                "1y3pa7qdq2r13ya9qfiw0lb8xm0qbs6q64pj548q6c0hdcxw2mdm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
        ;; Not all files included.
-       #:cargo-test-flags '("--" "--skip=::case")
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cargo-metadata" ,rust-cargo-metadata-0.15)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-clap-cargo" ,rust-clap-cargo-0.12)
-        ("rust-concolor-control" ,rust-concolor-control-0.0.7)
-        ("rust-dunce" ,rust-dunce-1)
-        ("rust-env-proxy" ,rust-env-proxy-0.4)
-        ("rust-hex" ,rust-hex-0.4)
-        ("rust-home" ,rust-home-0.5)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-pathdiff" ,rust-pathdiff-0.2)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-semver" ,rust-semver-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-subprocess" ,rust-subprocess-0.2)
-        ("rust-tame-index" ,rust-tame-index-0.13)
-        ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-toml" ,rust-toml-0.7)
-        ("rust-toml-edit" ,rust-toml-edit-0.19)
-        ("rust-url" ,rust-url-2))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-assert-fs" ,rust-assert-fs-1)
-        ("rust-cargo-test-macro" ,rust-cargo-test-macro-0.3)
-        ("rust-cargo-test-support" ,rust-cargo-test-support-0.3)
-        ("rust-predicates" ,rust-predicates-3)
-        ("rust-snapbox" ,rust-snapbox-0.6)
-        ("rust-trycmd" ,rust-trycmd-0.14)
-        ("rust-url" ,rust-url-2))))
+       #:cargo-test-flags '("--" "--skip=::case")))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list curl
-           libgit2-1.8
-           libssh2
-           openssl
-           zlib))
+     (cons* curl
+            libgit2-1.8
+            libssh2
+            openssl
+            zlib
+            (cargo-inputs 'rust-cargo-edit)))
     (home-page "https://github.com/killercup/cargo-edit")
     (synopsis "Add and remove dependencies from the command line")
     (description
