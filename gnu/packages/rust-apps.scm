@@ -2606,12 +2606,7 @@ revert and check changes.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kv07ghibifs6rnskg1na6a0hdb0f8vqfbpv5k8g09lc2075gjv1"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (substitute* "Cargo.toml"
-                   ;; rusty-hook provides a git hook for CI.
-                   ((".*rusty-hook.*") ""))))))
+        (base32 "0kv07ghibifs6rnskg1na6a0hdb0f8vqfbpv5k8g09lc2075gjv1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -2623,18 +2618,13 @@ revert and check changes.
                             "--skip=tests::test_cli_input_missing_file"
                             "--skip=tests::test_cli_input_stdin"
                             "--skip=tests::test_cli_missing_param_value")
-       #:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-no-color" ,rust-no-color-0.1))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-2))
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-more
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (install-file "hx.1" (string-append out "/share/man/man1"))))))))
+    (inputs (cargo-inputs 'hex))
     (home-page "https://github.com/sitkevij/hex")
     (synopsis "Hexadecimal colorized view of a file")
     (description
