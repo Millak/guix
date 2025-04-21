@@ -420,9 +420,10 @@ and vector graphics.")
 
 (define-public swftools
   ;; Last release of swftools was 0.9.2 on 2012-04-21 - it is really old and
-  ;; does not compile with what's available in guix, master on the other hand works.
-  (let ((commit "772e55a271f66818b06c6e8c9b839befa51248f4")
-        (revision "1"))
+  ;; does not compile with what's available in guix, master on the other hand
+  ;; works.
+  (let ((commit "c6a18ab0658286f98d6ed2b3d0419058e86a14a0")
+        (revision "2"))
     (package
       (name "swftools")
       (version (git-version "0.9.2" revision commit))
@@ -433,7 +434,7 @@ and vector graphics.")
                (url "https://github.com/matthiaskramm/swftools")
                (commit commit)))
          (sha256
-                 (base32 "0a8a29rn7gpxnba3spnvkpdgr7mdlssvr273mzw5b2wjvbzard3w"))
+                 (base32 "1hdfyprjjhhlba3gszaarf1rv3jynm4hs4v8kdys03qz4g8i53by"))
          (file-name (git-file-name name version))
          (modules '((guix build utils)))
          (snippet
@@ -453,7 +454,8 @@ and vector graphics.")
                (("inline (void bitpressure_strategy1)" _ f) f))))))
       (build-system gnu-build-system)
       (arguments
-       (list #:tests? #f)) ; no rule for check
+       (list #:tests? #f ; no rule for check
+             #:parallel-build? #f))
       (inputs (list zlib freetype giflib libjpeg-turbo lame))
       (native-inputs (list perl))
       (home-page "http://www.swftools.org")
