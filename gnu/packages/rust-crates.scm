@@ -187,6 +187,14 @@
   (crate-source "alphanumeric-sort" "1.5.3"
                 "13vyx3cqpylvc0md4563rd42b7dvk3fv4wny0kpcc48gy72n0z6n"))
 
+(define rust-alsa-0.9.1
+  (crate-source "alsa" "0.9.1"
+                "0hvxc447bsynyhzhmznw6w2kwbid83p712dls4h1x8w3pavp4xgd"))
+
+(define rust-alsa-sys-0.3.1
+  (crate-source "alsa-sys" "0.3.1"
+                "09qmmnpmlcj23zcgx2xsi4phcgm5i02g9xaf801y7i067mkfx3yv"))
+
 (define rust-amd-0.2.2
   (crate-source "amd" "0.2.2"
                 "15ib7hhzdifb2m099561ip0fq627gaszw4sq36ys75snaw0y0yd6"))
@@ -5845,6 +5853,10 @@
 (define rust-js-sys-0.3.77
   (crate-source "js-sys" "0.3.77"
                 "13x2qcky5l22z4xgivi59xhjjx4kxir1zg7gcj0f1ijzd4yg7yhw"))
+
+(define rust-json-0.12.4
+  (crate-source "json" "0.12.4"
+                "1z9vybaaz3xq95bwmyln2ijmn4dmzj61xlz06jsc9dnzmxg2i3h7"))
 
 (define rust-json5-0.4.1
   (crate-source "json5" "0.4.1"
@@ -33705,6 +33717,97 @@
                                       rust-windows-x86-64-msvc-0.48.5
                                       rust-windows-x86-64-msvc-0.52.6
                                       rust-winnow-0.7.6))
+                     (speakersafetyd =>
+                                     (list rust-alsa-0.9.1
+                                      rust-alsa-sys-0.3.1
+                                      rust-android-tzdata-0.1.1
+                                      rust-android-system-properties-0.1.5
+                                      rust-anstream-0.6.18
+                                      rust-anstyle-1.0.10
+                                      rust-anstyle-parse-0.2.6
+                                      rust-anstyle-query-1.1.2
+                                      rust-anstyle-wincon-3.0.7
+                                      rust-autocfg-1.4.0
+                                      rust-bitflags-2.9.0
+                                      rust-bumpalo-3.17.0
+                                      rust-cc-1.2.19
+                                      rust-cfg-if-1.0.0
+                                      rust-chrono-0.4.40
+                                      rust-clap-4.5.37
+                                      rust-clap-verbosity-flag-2.2.3
+                                      rust-clap-builder-4.5.37
+                                      rust-clap-derive-4.5.32
+                                      rust-clap-lex-0.7.4
+                                      rust-colorchoice-1.0.3
+                                      rust-colored-2.2.0
+                                      rust-configparser-3.1.0
+                                      rust-core-foundation-sys-0.8.7
+                                      rust-deranged-0.4.0
+                                      rust-equivalent-1.0.2
+                                      rust-hashbrown-0.15.2
+                                      rust-heck-0.5.0
+                                      rust-iana-time-zone-0.1.63
+                                      rust-iana-time-zone-haiku-0.1.2
+                                      rust-indexmap-2.9.0
+                                      rust-is-terminal-polyfill-1.70.1
+                                      rust-itoa-1.0.15
+                                      rust-js-sys-0.3.77
+                                      rust-json-0.12.4
+                                      rust-lazy-static-1.5.0
+                                      rust-libc-0.2.172
+                                      rust-log-0.4.27
+                                      rust-num-conv-0.1.0
+                                      rust-num-traits-0.2.19
+                                      rust-num-threads-0.1.7
+                                      rust-once-cell-1.21.3
+                                      rust-pkg-config-0.3.32
+                                      rust-powerfmt-0.2.0
+                                      rust-proc-macro2-1.0.95
+                                      rust-quote-1.0.40
+                                      rust-rustversion-1.0.20
+                                      rust-serde-1.0.219
+                                      rust-serde-derive-1.0.219
+                                      rust-shlex-1.3.0
+                                      rust-signal-hook-0.3.17
+                                      rust-signal-hook-registry-1.4.5
+                                      rust-simple-logger-4.3.3
+                                      rust-strsim-0.11.1
+                                      rust-syn-2.0.100
+                                      rust-time-0.3.41
+                                      rust-time-core-0.1.4
+                                      rust-time-macros-0.2.22
+                                      rust-unicode-ident-1.0.18
+                                      rust-utf8parse-0.2.2
+                                      rust-wasm-bindgen-0.2.100
+                                      rust-wasm-bindgen-backend-0.2.100
+                                      rust-wasm-bindgen-macro-0.2.100
+                                      rust-wasm-bindgen-macro-support-0.2.100
+                                      rust-wasm-bindgen-shared-0.2.100
+                                      rust-windows-core-0.61.0
+                                      rust-windows-implement-0.60.0
+                                      rust-windows-interface-0.59.1
+                                      rust-windows-link-0.1.1
+                                      rust-windows-result-0.3.2
+                                      rust-windows-strings-0.4.0
+                                      rust-windows-sys-0.48.0
+                                      rust-windows-sys-0.59.0
+                                      rust-windows-targets-0.48.5
+                                      rust-windows-targets-0.52.6
+                                      rust-windows-aarch64-gnullvm-0.48.5
+                                      rust-windows-aarch64-gnullvm-0.52.6
+                                      rust-windows-aarch64-msvc-0.48.5
+                                      rust-windows-aarch64-msvc-0.52.6
+                                      rust-windows-i686-gnu-0.48.5
+                                      rust-windows-i686-gnu-0.52.6
+                                      rust-windows-i686-gnullvm-0.52.6
+                                      rust-windows-i686-msvc-0.48.5
+                                      rust-windows-i686-msvc-0.52.6
+                                      rust-windows-x86-64-gnu-0.48.5
+                                      rust-windows-x86-64-gnu-0.52.6
+                                      rust-windows-x86-64-gnullvm-0.48.5
+                                      rust-windows-x86-64-gnullvm-0.52.6
+                                      rust-windows-x86-64-msvc-0.48.5
+                                      rust-windows-x86-64-msvc-0.52.6))
                      (starship =>
                                (list rust-adler2-2.0.0
                                      rust-ahash-0.8.11

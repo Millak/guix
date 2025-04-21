@@ -2479,16 +2479,6 @@ of the project is to be runnable on untrusted networks without crashing.")
     (arguments
      (list
       #:install-source? #f
-      #:cargo-inputs `(("rust-alsa" ,rust-alsa-0.9)
-                       ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-clap" ,rust-clap-4)
-                       ("rust-clap-verbosity-flag" ,rust-clap-verbosity-flag-2)
-                       ("rust-configparser" ,rust-configparser-3)
-                       ("rust-json" ,rust-json-0.12)
-                       ("rust-libc" ,rust-libc-0.2)
-                       ("rust-log" ,rust-log-0.4)
-                       ("rust-signal-hook" ,rust-signal-hook-0.3)
-                       ("rust-simple-logger" ,rust-simple-logger-4))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-paths
@@ -2506,7 +2496,7 @@ of the project is to be runnable on untrusted networks without crashing.")
               (setenv "SPEAKERSAFETYD_GROUP" "nixbld")
               (setenv "SPEAKERSAFETYD_USER" "nixbld")
               (invoke "make" "install"))))))
-    (inputs (list alsa-lib))
+    (inputs (cons alsa-lib (cargo-inputs 'speakersafetyd)))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/AsahiLinux/speakersafetyd/")
     (synopsis "Speaker protection daemon")
