@@ -2223,21 +2223,8 @@ rebase.")
     (build-system cargo-build-system)
     (arguments
      (list
-      #:install-source? #f
-      #:cargo-inputs
-      `(("rust-atty" ,rust-atty-0.2)
-        ("rust-clap" ,rust-clap-3)
-        ("rust-clap-complete" ,rust-clap-complete-3)
-        ("rust-nom" ,rust-nom-7)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-output-vt100" ,rust-output-vt100-0.1)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-regex" ,rust-regex-1))
-      #:cargo-development-inputs
-      `(("rust-approx" ,rust-approx-0.5)
-        ("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-criterion" ,rust-criterion-0.5)
-        ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.6))))
+      #:install-source? #f))
+    (inputs (cargo-inputs 'pastel))
     (home-page "https://github.com/sharkdp/pastel")
     (synopsis
      "Command-line tool to generate, analyze, convert and manipulate colors")
