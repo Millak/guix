@@ -232,20 +232,24 @@ making them easy to handle and incorporate into other protocols.")
 (define-public python-kerberos
   (package
     (name "python-kerberos")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "kerberos" version))
        (sha256
-        (base32
-         "19663qxmma0i8bfbjc2iwy5hgq0g4pfb75r023v5dps68zfvffgh"))))
-    (build-system python-build-system)
+        (base32 "0b0a8rrwgfjrslz3jd3r5l7vr7jx5bc17sq0dbwn002f58a4dl6d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; No tests in PyPI, provided in Git but all of them require networking.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (inputs
      (list mit-krb5))
     (home-page "https://github.com/apple/ccs-pykerberos")
-    (synopsis
-     "Python Kerberos library used by CalendarServer")
+    (synopsis "Python Kerberos library used by CalendarServer")
     (description
      "This Python package is a high-level wrapper for Kerberos (GSSAPI)
 operations.  The goal is to avoid having to build a module that wraps the
