@@ -2058,7 +2058,14 @@ compatible directories.")
                     (("if version") "if False"))))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f)) ; tests requires safefs
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("keyrings.alt>=3.1,<5")
+                "keyrings.alt>=3.1")))))))
     (propagated-inputs
      (list python-appdirs
            python-block-tracing
