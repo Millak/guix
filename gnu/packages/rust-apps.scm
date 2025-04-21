@@ -3509,12 +3509,7 @@ It will then write @code{fixup!} commits for each of those changes.")
        (uri (crate-uri "git-delta" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bmjan13lm1d6vcy8mh0iryl2rnvh39ml5y4alf6s728xdzc2yhj"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* "Cargo.toml"
-                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
-                   (string-append "\"^" version)))))))
+        (base32 "1bmjan13lm1d6vcy8mh0iryl2rnvh39ml5y4alf6s728xdzc2yhj"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -3532,41 +3527,6 @@ It will then write @code{fixup!} commits for each of those changes.")
              "--skip=wrapping::tests::test_alignment_1_line_vs_3_lines"
              "--skip=wrapping::tests::test_alignment_2_lines_vs_3_lines"
              "--skip=wrapping::tests::test_wrap_line_newlines")
-      #:cargo-inputs
-      `(("rust-ansi-colours" ,rust-ansi-colours-1)
-        ("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-anstyle-parse" ,rust-anstyle-parse-0.2)
-        ("rust-anyhow" ,rust-anyhow-1)
-        ("rust-bat" ,rust-bat-0.24)
-        ("rust-bitflags" ,rust-bitflags-2)
-        ("rust-box-drawing" ,rust-box-drawing-0.1)
-        ("rust-bytelines" ,rust-bytelines-2)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-chrono-humanize" ,rust-chrono-humanize-0.2)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-clap-complete" ,rust-clap-complete-4)
-        ("rust-console" ,rust-console-0.15)
-        ("rust-ctrlc" ,rust-ctrlc-3)
-        ("rust-dirs" ,rust-dirs-5)
-        ("rust-git2" ,rust-git2-0.18)
-        ("rust-grep-cli" ,rust-grep-cli-0.1)
-        ("rust-itertools" ,rust-itertools-0.10)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-palette" ,rust-palette-0.7)
-        ("rust-pathdiff" ,rust-pathdiff-0.2)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-shell-words" ,rust-shell-words-1)
-        ("rust-smol-str" ,rust-smol-str-0.1)
-        ("rust-syntect" ,rust-syntect-5)
-        ("rust-sysinfo" ,rust-sysinfo-0.29)
-        ("rust-terminal-colorsaurus" ,rust-terminal-colorsaurus-0.4)
-        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-xdg" ,rust-xdg-2))
-      #:cargo-development-inputs `(("rust-insta" ,rust-insta-1)
-                                   ("rust-rstest" ,rust-rstest-0.21))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-extras
@@ -3589,7 +3549,12 @@ It will then write @code{fixup!} commits for each of those changes.")
                 (copy-file "etc/completion/completion.fish"
                            (string-append fish-completions-dir "/delta.fish"))))))))
     (native-inputs (list git-minimal pkg-config))
-    (inputs (list libgit2-1.7 openssl zlib))
+    (inputs
+     (cons* libgit2-1.7
+            oniguruma
+            openssl
+            zlib
+            (cargo-inputs 'git-delta)))
     (home-page "https://github.com/dandavison/delta")
     (synopsis "Syntax-highlighting pager for git")
     (description
