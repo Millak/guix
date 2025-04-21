@@ -1620,6 +1620,11 @@
   (crate-source "chunked_transfer" "1.5.0"
                 "00a9h3csr1xwkqrzpz5kag4h92zdkrnxq4ppxidrhrx29syf6kbf"))
 
+(define rust-ci-info-0.10.2
+  (crate-source "ci_info" "0.10.2"
+                "0pn4lfq630bf6aki3kz41555b4fs8iyc1a69biwm6mwc1v3kixi4"
+                #:snippet '(delete-file-recursively "docs")))
+
 (define rust-ciborium-0.2.2
   (crate-source "ciborium" "0.2.2"
                 "03hgfw4674im1pdqblcp77m7rc8x2v828si5570ga5q9dzyrzrj2"))
@@ -3175,6 +3180,11 @@
   (crate-source "env_logger" "0.9.3"
                 "1rq0kqpa8my6i1qcyhfqrn1g9xr5fbkwwbd42nqvlzn9qibncbm1"))
 
+(define rust-envmnt-0.8.4
+  (crate-source "envmnt" "0.8.4"
+                "0na01z737h9yn5y8qj3qjzipirnprgyprbv199632qbw53y2ilx2"
+                #:snippet '(delete-file-recursively "docs")))
+
 (define rust-envy-0.4.2
   (crate-source "envy" "0.4.2"
                 "0rar459p7pl19v6pbx98q3hi2hxfl8q1ndxxw5d4zd9cgway0irz"))
@@ -3591,6 +3601,11 @@
 (define rust-fsevent-sys-4.1.0
   (crate-source "fsevent-sys" "4.1.0"
                 "1liz67v8b0gcs8r31vxkvm2jzgl9p14i78yfqx81c8sdv817mvkn"))
+
+(define rust-fsio-0.1.3
+  (crate-source "fsio" "0.1.3"
+                "1qs9i8blmbaxjl3csibn5sf0w27qf8dz2sgamvqz8fgpamr0izf1"
+                #:snippet '(delete-file-recursively "docs")))
 
 (define rust-fsio-0.4.1
   (crate-source "fsio" "0.4.1"
@@ -7295,6 +7310,10 @@
   (crate-source "nftables" "0.5.0"
                 "0mz6i4cm5qbc11zdrzghixvml2j9vxdf97nqjbkqc471kvg8hwkc"))
 
+(define rust-nias-0.5.0
+  (crate-source "nias" "0.5.0"
+                "1w0jrshjqr1dxd01kg12f1ic067hvwwqc9jxbf0m063gr11089db"))
+
 (define rust-nibble-vec-0.1.0
   (crate-source "nibble_vec" "0.1.0"
                 "0hsdp3s724s30hkqz74ky6sqnadhp2xwcj1n1hzy4vzkz4yxi9bp"))
@@ -7359,6 +7378,10 @@
   (crate-source "nix" "0.29.0"
                 "0ikvn7s9r2lrfdm3mx1h7nbfjvcc6s9vxdzw7j5xfkd2qdnp9qki"
                 #:snippet '(delete-file-recursively "test")))
+
+(define rust-no-color-0.1.0
+  (crate-source "no_color" "0.1.0"
+                "1m0x6i5q1jav2jgajkg4irrkfgv4lakpdvmj310b90wswdyy9xdx"))
 
 (define rust-no-panic-0.1.26
   (crate-source "no-panic" "0.1.26"
@@ -10132,6 +10155,10 @@
 (define rust-rusty-fork-0.3.0
   (crate-source "rusty-fork" "0.3.0"
                 "0kxwq5c480gg6q0j3bg4zzyfh2kwmc3v2ba94jw8ncjc8mpcqgfb"))
+
+(define rust-rusty-hook-0.11.2
+  (crate-source "rusty-hook" "0.11.2"
+                "18r1mh2br76b6zwkvch01xi9rhj9fknmh7l5vnx1qzmyc6zfkkln"))
 
 (define rust-rustyline-10.1.1
   (crate-source "rustyline" "10.1.1"
@@ -20659,6 +20686,64 @@
                                    rust-winapi-i686-pc-windows-gnu-0.4.0
                                    rust-winapi-x86-64-pc-windows-gnu-0.4.0
                                    rust-winnow-0.5.15))
+                     (hex =>
+                          (list rust-ansi-term-0.12.1
+                                rust-anstream-0.6.18
+                                rust-anstyle-1.0.10
+                                rust-anstyle-parse-0.2.6
+                                rust-anstyle-query-1.1.2
+                                rust-anstyle-wincon-3.0.7
+                                rust-assert-cmd-2.0.17
+                                rust-autocfg-1.4.0
+                                rust-bstr-1.12.0
+                                rust-ci-info-0.10.2
+                                rust-clap-4.5.37
+                                rust-clap-builder-4.5.37
+                                rust-clap-lex-0.7.4
+                                rust-colorchoice-1.0.3
+                                rust-difflib-0.4.0
+                                rust-doc-comment-0.3.3
+                                rust-envmnt-0.8.4
+                                rust-fsio-0.1.3
+                                rust-getopts-0.2.21
+                                rust-hashbrown-0.12.3
+                                rust-indexmap-1.9.3
+                                rust-is-terminal-polyfill-1.70.1
+                                rust-libc-0.2.172
+                                rust-memchr-2.7.4
+                                rust-nias-0.5.0
+                                rust-no-color-0.1.0
+                                rust-once-cell-1.21.3
+                                rust-predicates-3.1.3
+                                rust-predicates-core-1.0.9
+                                rust-predicates-tree-1.0.12
+                                rust-proc-macro2-1.0.95
+                                rust-quote-1.0.40
+                                rust-regex-automata-0.4.9
+                                rust-rusty-hook-0.11.2
+                                rust-serde-1.0.219
+                                rust-serde-derive-1.0.219
+                                rust-strsim-0.11.1
+                                rust-syn-2.0.100
+                                rust-termtree-0.5.1
+                                rust-toml-0.5.11
+                                rust-unicode-ident-1.0.18
+                                rust-unicode-width-0.1.14
+                                rust-utf8parse-0.2.2
+                                rust-wait-timeout-0.2.1
+                                rust-winapi-0.3.9
+                                rust-winapi-i686-pc-windows-gnu-0.4.0
+                                rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                rust-windows-sys-0.59.0
+                                rust-windows-targets-0.52.6
+                                rust-windows-aarch64-gnullvm-0.52.6
+                                rust-windows-aarch64-msvc-0.52.6
+                                rust-windows-i686-gnu-0.52.6
+                                rust-windows-i686-gnullvm-0.52.6
+                                rust-windows-i686-msvc-0.52.6
+                                rust-windows-x86-64-gnu-0.52.6
+                                rust-windows-x86-64-gnullvm-0.52.6
+                                rust-windows-x86-64-msvc-0.52.6))
                      (hexyl =>
                             (list rust-aho-corasick-1.1.3
                                   rust-anstream-0.6.18
