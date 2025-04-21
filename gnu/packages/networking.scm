@@ -4793,7 +4793,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
 (define-public yggtray
   (package
     (name "yggtray")
-    (version "0.1.9")
+    (version "0.1.10")
     (source
      (origin
        (method git-fetch)
@@ -4802,7 +4802,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mp3vbq3r2n478v51qq4bzprml12yhl1n6gk3jv7wrjdfa395m46"))))
+        (base32 "0gwpqlmbyq2kq3shinvrl9z22gvg5r3d5m6hyf4gl62jil9v239k"))))
     (build-system cmake-build-system)
     (arguments
      (list
