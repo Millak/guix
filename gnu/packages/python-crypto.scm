@@ -19,7 +19,7 @@
 ;;; Copyright © 2018, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2018 Nam Nguyen <namn@berkeley.edu>
-;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2025 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
@@ -1358,11 +1358,16 @@ with state-tracking and configuration abstractions.")
          "0lipygpzhwzzsq2k5imb1jgkmj8y4khxdwhzadjs3bd56g6bmkx9"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest python-pytest-runner))
+     (list python-cython python-pytest python-pytest-runner))
     (inputs
      (list keyutils))
     (arguments
-     '(#:tests? #f))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'regenerate-c-file
+                 (lambda _
+                   (invoke "cython" "keyutils/_keyutils.pyx"))))))
     (home-page "https://github.com/sassoftware/python-keyutils")
     (synopsis "Python bindings for keyutils")
     (description
