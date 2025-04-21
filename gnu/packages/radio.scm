@@ -264,6 +264,31 @@ use libiio natively on an embedded Linux target (local mode), or use libiio to
 communicate remotely to that same target from a host Linux, Windows or MAC
 over USB or Ethernet or Serial.")))
 
+(define-public libad9361
+  (package
+    (name "libad9361")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/analogdevicesinc/libad9361-iio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1inv39xfg8gqz1v7k1n2a7p9zzlb6gq98gcnnpdcr9fa5alvmvpm"))))
+    (inputs
+     (list libiio))
+    (build-system cmake-build-system)
+    (license license:lgpl2.1+)
+    (home-page "https://github.com/analogdevicesinc/libad9361-iio")
+    (synopsis
+     "IIO AD9361 library for filter design and handling, multi-chip sync, etc.")
+    (description
+     "This is a simple library used for userspace, which manages multi-chip
+sync (on platforms (FMCOMMS5) where multiple AD9361 devices are use) and can
+create AD9361 specific FIR filters on the fly.")))
+
 (define-public liquid-dsp
   (package
     (name "liquid-dsp")
