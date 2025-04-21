@@ -6804,13 +6804,13 @@ and the use of a modern programming language, techniques, and libraries
 (define-public python-rad
   (package
     (name "python-rad")
-    (version "0.23.1")
+    (version "0.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rad" version))
        (sha256
-        (base32 "14zl3nsqbzm28yrghf7n66qmhf369dyw5bqymmgcq515llm42428"))))
+        (base32 "0xja7dpbkgbcvgqz3c3i1j5yblccjqv8g0dga16iayzcf9ni9jbg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
