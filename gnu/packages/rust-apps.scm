@@ -2671,15 +2671,8 @@ blanks grouped by language.")
         (base32 "1xynznf7drvhjhhnwdxrbjgr6qgfa5lzwxxqdclnjvzwkbhl2i2q"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-ansi-colours" ,rust-ansi-colours-1)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-etcetera" ,rust-etcetera-0.8)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-rust-embed" ,rust-rust-embed-8)
-        ("rust-yaml-rust" ,rust-yaml-rust-0.4))
-       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2))))
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'vivid))
     (home-page "https://github.com/sharkdp/vivid")
     (synopsis "LS_COLORS environment variable manager")
     (description
