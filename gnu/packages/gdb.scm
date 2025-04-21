@@ -180,7 +180,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
 (define-public gdb-16
   (package
     (inherit gdb-14)
-    (version "16.2")
+    (version "16.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gdb/gdb-"
@@ -188,7 +188,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
               (patches (search-patches "gdb-16-hurd64.patch"))
               (sha256
                (base32
-                "0681906z34jy134jkn820jzf8b4l42ki6sjkj33kfp7l4dzwn0j0"))))))
+                "1i940b04404xr44xc66c4r4nk091czqz7zzrmhbpk64aaaax1z5w"))))))
 
 (define-public gdb
   ;; The "default" version.
