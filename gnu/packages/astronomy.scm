@@ -5504,7 +5504,7 @@ about the underlying principles, see
 (define-public python-spherical-geometry
   (package
     (name "python-spherical-geometry")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method git-fetch)
@@ -5513,7 +5513,7 @@ about the underlying principles, see
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0znzfy3bmnsncvahf8qdav0c9403fn99d1gp25lainhv7kxfk44c"))
+        (base32 "0r11wkwblpm5mljx26kwkipb40f5p7hhrbks6vc71ckhdhfy248h"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
