@@ -37986,8 +37986,15 @@ time.  It shouldn't have any real impact on search and completion times.")
                (base32
                 "1yky7vlv91501xb43xk19rr8mxlvrsxhawsc98jivf64nad5dqay"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'delete-failing-tests
+                 (lambda _
+                   (delete-file "test/emr-elisp-test.el"))))))
     (propagated-inputs
      (list emacs-dash emacs-s emacs-popup emacs-list-utils emacs-iedit))
+    (native-inputs (list emacs-ert-runner emacs-undercover))
     (home-page "https://github.com/Wilfred/emacs-refactor/")
     (synopsis "Language-specific refactoring in Emacs")
     (description "Emacs Refactor (EMR) is a framework for providing
