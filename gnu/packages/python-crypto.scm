@@ -302,38 +302,30 @@ password storage.")
 (define-public python-keyrings-alt
   (package
     (name "python-keyrings-alt")
-    (version "3.4.0")
+    (version "5.0.2")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "keyrings.alt" version))
+        (uri (pypi-uri "keyrings_alt" version))
         (sha256
-         (base32
-          "0gdjdqpq2hf770p6iwi891mil0vbsdhvy88x0v8b2w4y4b28lcli"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            (delete-file "keyrings/alt/_win_crypto.py")
-            ;; Rely on python-keyring>20:
-            ;; https://github.com/jaraco/keyrings.alt/issues/33
-            (substitute* '("keyrings/alt/tests/test_Gnome.py"
-                           "keyrings/alt/tests/test_Google.py"
-                           "keyrings/alt/tests/test_Windows.py"
-                           "keyrings/alt/tests/test_file.py"
-                           "keyrings/alt/tests/test_pyfs.py")
-              (("keyring.tests.test_backend") "keyring.testing.backend")
-              (("keyring.tests.util") "keyring.testing.util"))
-            #t))))
-    (build-system python-build-system)
+         (base32 "1yv9gnmkw6kpsjgnid0k1qcd49n9csqcvf02cl88bcf8knz7w2cg"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-keyring python-pytest python-setuptools-scm))
+     (list python-keyring
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-jaraco-classes
+           python-jaraco-context))
     (home-page "https://github.com/jaraco/keyrings.alt")
     (synopsis "Alternate keyring implementations")
-    (description "Keyrings in this package may have security risks or other
-implications.  These backends were extracted from the main keyring project to
-make them available for those who wish to employ them, but are discouraged for
-general production use.  Include this module and use its backends at your own
-risk.")
+    (description
+     "Keyrings in this package may have security risks or other implications.
+These backends were extracted from the main keyring project to make them
+available for those who wish to employ them, but are discouraged for general
+production use.  Include this module and use its backends at your own risk.")
     (license license:expat)))
 
 (define-public python-blake3
