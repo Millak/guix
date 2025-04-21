@@ -265,21 +265,22 @@ Browser.")
            zip
            zlib))
     (native-inputs
-     (list
-      rust
-      `(,rust "cargo")
-      rust-cbindgen-0.26
-      lld-as-ld-wrapper-18  ; for cargo rustc
-      llvm-18
-      clang-18
-      perl
-      node-lts
-      python-wrapper
-      yasm
-      nasm                         ; XXX FIXME: only needed on x86_64 and i686
-      pkg-config
-      m4
-      which))
+     (append
+      (list
+       rust
+       `(,rust "cargo")
+       rust-cbindgen-0.26
+       lld-as-ld-wrapper-18  ; for cargo rustc
+       llvm-18
+       clang-18
+       perl
+       node-lts
+       python-wrapper
+       yasm
+       pkg-config
+       m4
+       which)
+      (if (target-x86?) (list nasm) '())))
     (arguments
      (list
       #:tests? #f                       ;not worth the cost
@@ -524,12 +525,16 @@ Browser.")
               (setenv "MOZ_BUILD_DATE" #$build-date)))
           (add-before 'configure 'mozconfig
             (lambda* (#:key configure-flags #:allow-other-keys)
-              (with-output-to-file "mozconfig"
-                (lambda ()
-                  (format #t ". $topsrcdir/mozconfig-linux-x86_64~%")
-                  (for-each (lambda (flag)
-                              (format #t "ac_add_options ~a~%" flag))
-                            configure-flags)))))
+              (let ((arch (cond (#$(target-arm32?) "arm")
+                                (#$(target-aarch64?) "aarch64")
+                                (#$(target-x86-32?) "i686")
+                                (#$(target-x86-64?) "x86_64"))))
+                (with-output-to-file "mozconfig"
+                  (lambda ()
+                    (format #t ". $topsrcdir/mozconfig-linux-~a~%" arch)
+                    (for-each (lambda (flag)
+                                (format #t "ac_add_options ~a~%" flag))
+                              configure-flags))))))
           ;; See tor-browser-build/projects/common/browser-localization.
           (add-before 'configure 'copy-firefox-locales
             (lambda _
@@ -798,6 +803,8 @@ Browser.")
             (variable "ICECAT_SYSTEM_DIR")
             (separator #f)              ;single entry
             (files '("lib/icecat")))))
+    (supported-systems (list "x86_64-linux" "i686-linux"
+                             "aarch64-linux" "armhf-linux"))
     (home-page "https://www.torproject.org")
     (synopsis "Anonymous browser derived from Mozilla Firefox")
     (description
