@@ -12346,7 +12346,8 @@ to install Docker Tramp Emacs package.")
           (base32 "1gricygbs9f210z7bnzdhcmqpwnpzs4mwbw8rvabfplcbiw7sg6r"))))
       (build-system emacs-build-system)
       (arguments
-       (list #:include #~(cons "^anaconda-mode\\.py$" %default-include)))
+       (list #:include #~(cons "^anaconda-mode\\.py$" %default-include)
+             #:tests? #f))              ; no tests
       (propagated-inputs (list emacs-dash
                                emacs-f
                                emacs-pythonic
