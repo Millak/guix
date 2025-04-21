@@ -3144,9 +3144,6 @@ files.")
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-exitcode" ,rust-exitcode-1)
-        ("rust-swayipc" ,rust-swayipc-2))
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-completions
@@ -3162,6 +3159,7 @@ files.")
                (copy-file "completions/swayhide.zsh"
                           (string-append zsh "_swayhide"))
                (install-file "completions/swayhide.fish" fish)))))))
+    (inputs (cargo-inputs 'swayhide))
     (home-page "https://github.com/NomisIV/swayhide/")
     (synopsis "Swallow windows on swaywm")
     (description "swayhide hides the currently active terminal (by moving it
