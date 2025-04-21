@@ -5002,7 +5002,7 @@ time.")
 (define-public python-evdev
   (package
     (name "python-evdev")
-    (version "1.5.0")
+    (version "1.9.1")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -5011,7 +5011,7 @@ time.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cbakix48zxivbznzb02w7sbxmqfaiaahhvjnjz4yif4vyrdyjli"))))
+        (base32 "09p7pj0xhv23hqlpx865klrxrf7x6sw1bdsgs6pq900jvz92pl16"))))
     (build-system pyproject-build-system)
     (arguments
      (list
