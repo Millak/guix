@@ -4619,26 +4619,31 @@ milliarcsecond).")
   (package
     (name "python-jwst")
     (version "1.17.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "jwst" version))
-              (sha256
-               (base32
-                "0brlj2w0jjg9p4zwna05bk9l8nb7xkcss7p5rjdjaj3hxlskzfkq"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Replace reference to external configobj.
-                  (substitute* (find-files "." "\\.py$")
-                    (("from astropy.extern import configobj") "import configobj")
-                    (("from astropy.extern.configobj import validate") "import validate")
-                    (("from astropy.extern.configobj.configobj import ") "from configobj import ")
-                    (("from astropy.extern.configobj.validate import ") "from validate import "))))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jwst" version))
+       (sha256
+        (base32
+         "0brlj2w0jjg9p4zwna05bk9l8nb7xkcss7p5rjdjaj3hxlskzfkq"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Replace reference to external configobj.
+            (substitute* (find-files "." "\\.py$")
+              (("from astropy.extern import configobj")
+               "import configobj")
+              (("from astropy.extern.configobj import validate")
+               "import validate")
+              (("from astropy.extern.configobj.configobj import ")
+               "from configobj import ")
+              (("from astropy.extern.configobj.validate import ")
+               "from validate import "))))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Tests require access to https://jwst-crds-pub.stsci.edu server for
-      ;; getting data sets.
+      ;; XXX: Tests require access to https://jwst-crds-pub.stsci.edu server
+      ;; for getting data sets.
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
@@ -4654,59 +4659,59 @@ milliarcsecond).")
                 ;; XXX: Can't detect opencv-python version. The input opencv
                 ;; might not set the version correctly.
                 ((".*opencv-python-headless.*") "")
-                ;; jwst.csv_tools was removed.
+                ;; Remove broken scripts, see
+                ;; <https://github.com/spacetelescope/jwst/issues/9401>.
                 (("csvconvert = .*") "")
-                ;; ImportError: module 'jwst.scripts.asn_gather' has no
-                ;; attribute 'main'
                 (("asn_gather = .*") "")))))))
-    ;; opencv provides OpenCV-Python which is Listed as install requirement.
-    (propagated-inputs (list opencv
-                             python-asdf
-                             python-asdf-astropy
-                             python-astropy
-                             python-bayesicfitting
-                             python-crds
-                             python-drizzle
-                             python-gwcs
-                             python-importlib-metadata
-                             python-jplephem
-                             python-jsonschema
-                             python-numpy
-                             python-packaging
-                             python-photutils
-                             python-poppy
-                             python-psutil
-                             python-pyparsing
-                             python-pysiaf
-                             python-requests
-                             python-scikit-image
-                             python-scipy
-                             python-spherical-geometry
-                             python-stcal
-                             python-stdatamodels
-                             python-stpipe
-                             python-stsci-imagestats
-                             python-synphot
-                             python-tweakwcs
-                             python-wiimatch))
-    (native-inputs (list python-colorama
-                         python-pytest
-                         python-pytest-cov
-                         python-pytest-doctestplus
-                         python-pytest-openfiles
-                         python-requests-mock
-                         ;; python-ruff ; not packed yet in Guix
-                         python-setuptools
-                         python-setuptools-scm
-                         python-wheel))
+    (native-inputs
+     (list python-colorama
+           python-pytest
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-openfiles
+           python-requests-mock
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     ;; opencv provides OpenCV-Python which is Listed as install requirement.
+     (list opencv
+           python-asdf
+           python-asdf-astropy
+           python-astropy
+           python-bayesicfitting
+           python-crds
+           python-drizzle
+           python-gwcs
+           python-importlib-metadata
+           python-jplephem
+           python-jsonschema
+           python-numpy
+           python-packaging
+           python-photutils
+           python-poppy
+           python-psutil
+           python-pyparsing
+           python-pysiaf
+           python-requests
+           python-scikit-image
+           python-scipy
+           python-spherical-geometry
+           python-stcal
+           python-stdatamodels
+           python-stpipe
+           python-stsci-imagestats
+           python-synphot
+           python-tweakwcs
+           python-wiimatch))
     (home-page "https://jwst-pipeline.readthedocs.io/en/latest/")
-    (synopsis
-     "Python library for science observations from the James Webb Space Telescope")
+    (synopsis "Science observations from the James Webb Space Telescope")
     (description
      "This package provides an access to the JWST Science Calibration Pipeline
-processes data from all JWST instruments and observing modes by applying various
-science corrections sequentially, producing both fully-calibrated individual
-exposures and high-level data products (mosaics, extracted spectra, etc.).")
+processes data from all JWST instruments and observing modes by applying
+various science corrections sequentially, producing both fully-calibrated
+individual exposures and high-level data products (mosaics, extracted spectra,
+etc.).")
     (license license:bsd-3)))
 
 (define-public python-jwst-reffiles
