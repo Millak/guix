@@ -33880,6 +33880,7 @@ convenient to edit foreign files.")
                (base32
                 "1rndanc9gy62g3r0m4n56ad7nlb6smmm9fnfsv6mis69dxxbbk37"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (synopsis "Outline and code folding for indentation-based texts in Emacs")
     (description "This package provides a minor mode that enables code folding
 based on indentation levels for various indentation-based text files, such as
