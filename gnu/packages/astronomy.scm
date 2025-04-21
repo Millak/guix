@@ -7376,23 +7376,20 @@ to the SolarSoft data analysis environment.")
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
-    (version "0.8.9")
+    (version "0.8.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tweakwcs" version))
        (sha256
-        (base32 "0a1ygsar9l6jybji9qibz6ja3picv9aiw2jmdcsqdfqhrppknqp7"))))
+        (base32 "0iiq57aympd0jvri4kjrjyxg276kysq8kfwcxwgwc56pr5v097fy"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; 2 tests are not compatible with gwcs>=0.24, skip them for now
-      ;; and enable in the next release, see
-      ;; <https://github.com/spacetelescope/tweakwcs/pull/220>.
-      #~(list "-k" (string-append
-                    "not test_jwstgwcs_bad_pipelines_no_vacorr"
-                    " and not test_jwstgwcs_bad_pipelines_with_vacorr"))))
+    (native-inputs
+     (list python-pytest
+           python-scipy
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-astropy
            python-gwcs
@@ -7401,12 +7398,6 @@ to the SolarSoft data analysis environment.")
            python-spherical-geometry
            python-stsci-imagestats
            python-stsci-stimage))
-    (native-inputs
-     (list python-pytest
-           python-scipy
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
     (home-page "https://tweakwcs.readthedocs.io/en/latest/")
     (synopsis
      "Algorithms for matching and aligning catalogs and for tweaking the WCS")
