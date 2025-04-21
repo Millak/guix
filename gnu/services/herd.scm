@@ -74,7 +74,10 @@
 ;;; Code:
 
 (define %shepherd-socket-file
-  (make-parameter "/var/run/shepherd/socket"))
+  (let ((uid (getuid)))
+    (make-parameter (if (zero? uid)     ;root
+                        "/var/run/shepherd/socket"
+                        (format #f "/run/user/~a/shepherd/socket" uid)))))
 
 (define* (open-connection #:optional (file (%shepherd-socket-file)))
   "Open a connection to the daemon, using the Unix-domain socket at FILE, and
