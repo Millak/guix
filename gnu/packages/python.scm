@@ -785,6 +785,11 @@ def contents() -> str:
                                     " test_venv"               ;freeze
                                     " test_multiprocessing_forkserver" ;runs over 10min
                                     " test_multiprocessing_spawn" ;runs over 10min
+                                    " test_glob" ;did not finish in 10h
+                                    " test_site" ;Invalid argument
+                                    " test_termios" ;os.openpty() Operation not permitted
+                                    " test_tty" ;os.openpty() Operation not permitted
+                                    " test_sqlite3" ;; sqlite3.OperationalError: database is locked
                                     " test_builtin"
                                     " test_capi"
                                     " test_dbm_ndbm"
