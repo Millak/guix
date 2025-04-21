@@ -33102,6 +33102,9 @@
                                       rust-windows-x86-64-gnu-0.52.6
                                       rust-windows-x86-64-gnullvm-0.52.6
                                       rust-windows-x86-64-msvc-0.52.6))
+                     (rust-rustc-demangle-capi-0.1 =>
+                                                   (list
+                                                    rust-rustc-demangle-0.1.24))
                      (rust-smithay-for-niri =>
                                             (list rust-adler2-2.0.0
                                              rust-ahash-0.8.11
