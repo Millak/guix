@@ -2193,34 +2193,6 @@ by modifying your @file{Cargo.toml} file from the command line.")
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-bitflags" ,rust-bitflags-2)
-        ("rust-captur" ,rust-captur-0.1)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
-        ("rust-crossterm" ,rust-crossterm-0.27)
-        ("rust-git2" ,rust-git2-0.18)
-        ("rust-if-chain" ,rust-if-chain-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-num-format" ,rust-num-format-0.4)
-        ("rust-parking-lot" ,rust-parking-lot-0.12)
-        ("rust-pico-args" ,rust-pico-args-0.5)
-        ("rust-rustc-version" ,rust-rustc-version-0.4)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-uuid" ,rust-uuid-1)
-        ("rust-version-track" ,rust-version-track-0.1)
-        ("rust-xi-unicode" ,rust-xi-unicode-0.3))
-       #:cargo-development-inputs
-       (("rust-claims" ,rust-claims-0.7)
-        ("rust-itertools" ,rust-itertools-0.13)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-rstest" ,rust-rstest-0.19)
-        ("rust-serial-test" ,rust-serial-test-3)
-        ("rust-tempfile" ,rust-tempfile-3))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-release-variable
@@ -2229,7 +2201,7 @@ by modifying your @file{Cargo.toml} file from the command line.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libgit2-1.7 zlib))
+     (cons* libgit2-1.7 zlib (cargo-inputs 'git-interactive-rebase-tool)))
     (home-page "https://gitrebasetool.mitmaro.ca/")
     (synopsis "Terminal based sequence editor for git interactive rebase")
     (description
