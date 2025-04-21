@@ -7775,7 +7775,7 @@ for reading and writing.")
 (define-public scamp
   (package
     (name "scamp")
-    (version "2.13.1")
+    (version "2.14.0")
     (source
      (origin
        (method git-fetch)
@@ -7784,7 +7784,7 @@ for reading and writing.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05ka5a7llzlg8r9il8flbpz42sd9nbjma6imp09rfv81qyh6c5mj"))))
+        (base32 "1wva4c0gz7qrphq713hcnjv84hbwqix05fqmqjq5vypnkdg67p31"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -7822,21 +7822,21 @@ for reading and writing.")
     (synopsis "Compute astrometric solutions")
     (description
      "@acronym{Software for Calibrating AstroMetry and Photometry,SCAMP} is a
-software that computes astrometric projection parameters from source catalogues
-derived from @url{http://fits.gsfc.nasa.gov/,FITS} images.  The computed solution
-is expressed according to the
-@url{http://www.atnf.csiro.au/people/mcalabre/WCS/index.html,WCS} standard.  The
-main features of SCAMP are:
+software that computes astrometric projection parameters from source
+catalogues derived from @url{http://fits.gsfc.nasa.gov/,FITS} images.  The
+computed solution is expressed according to the
+@url{http://www.atnf.csiro.au/people/mcalabre/WCS/index.html,WCS} standard.
+The main features of SCAMP are:
 
 @itemize
 @item compatibility with @code{SExtractor} FITS or Multi-Extension FITS
 catalogue format in input
-@item generation of WCS-compliant and @code{SWarp}-compatible FITS image headers
-in output
+@item generation of WCS-compliant and @code{SWarp}-compatible FITS image
+headers in output
 @item automatic grouping of catalogues on the sky
 @item selectable on-line astrometric reference catalogue
-@item automatic determination of scale, position angle, flipping and coordinate
-shift using fast pattern-matching
+@item automatic determination of scale, position angle, flipping and
+coordinate shift using fast pattern-matching
 @item various astrometric calibration modes for single detectors and detector
 arrays
 @item combined astrometric solutions for multi-channel/instrument surveys
