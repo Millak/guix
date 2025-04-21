@@ -3094,13 +3094,13 @@ Python.")
 (define-public python-ginga
   (package
     (name "python-ginga")
-    (version "5.2.0")
+    (version "5.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ginga" version))
        (sha256
-        (base32 "0gdb4wkz3ivizyb15x86q3z9ms7mlhpakwksp417mgy1av85wssh"))))
+        (base32 "04ag7v2srpl0scd3x27bbzkpfih98rrxhqvrsxy03l84g3zzrj6k"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3108,17 +3108,18 @@ Python.")
       #:test-flags #~(list "-k" "not test_fwhm")
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.cfg"
-               ;; packaging>=23.1
-               ((">=23.1") ">=21.3"))))
-         (add-before 'check 'set-home
-           (lambda _
-             ;; Relax matplotlib warning: ... because the default path
-             ;; (/homeless-shelter/.config/matplotlib) is not a writable
-             ;; directory ...
-             (setenv "HOME" "/tmp"))))))
+          (add-before 'check 'set-home
+            (lambda _
+              ;; Relax matplotlib warning: ... because the default path
+              ;; (/homeless-shelter/.config/matplotlib) is not a writable
+              ;; directory ...
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-attrs
+           python-docutils
+           python-pytest-astropy
+           python-pytest-astropy-header
+           python-tornado))
     (propagated-inputs
      (list opencv
            python-astropy
@@ -3137,29 +3138,24 @@ Python.")
            python-qtpy
            python-scipy
            python-tomli))
-    (native-inputs
-     (list python-attrs
-           python-docutils
-           python-pytest-astropy
-           python-pytest-astropy-header
-           python-tornado))
     (home-page "https://ejeschke.github.io/ginga/")
     (synopsis "Scientific image viewer and toolkit for FITS files")
-    (description "Ginga is a toolkit designed for building viewers for
-scientific image data in Python, visualizing 2D pixel data in numpy arrays.  It
-can view astronomical data such as contained in files based on the
-FITS (Flexible Image Transport System) file format.  It is written and is
-maintained by software engineers at the National Astronomical Observatory of
-Japan (NAOJ), the Space Telescope Science Institute (STScI), and other
-contributing entities.
+    (description
+     "Ginga is a toolkit designed for building viewers for scientific image
+data in Python, visualizing 2D pixel data in numpy arrays.  It can view
+astronomical data such as contained in files based on the FITS (Flexible Image
+Transport System) file format.  It is written and is maintained by software
+engineers at the National Astronomical Observatory of Japan (NAOJ), the Space
+Telescope Science Institute (STScI), and other contributing entities.
 
-The Ginga toolkit centers around an image display object which supports zooming
-and panning, color and intensity mapping, a choice of several automatic cut
-levels algorithms and canvases for plotting scalable geometric forms.  In
-addition to this widget, a general purpose \"reference\" FITS viewer is
-provided, based on a plugin framework.  A fairly complete set of standard plugins
-are provided for features that we expect from a modern FITS viewer: panning and
-zooming windows, star catalog access, cuts, star pick/FWHM, thumbnails, etc.")
+The Ginga toolkit centers around an image display object which supports
+zooming and panning, color and intensity mapping, a choice of several
+automatic cut levels algorithms and canvases for plotting scalable geometric
+forms.  In addition to this widget, a general purpose \"reference\" FITS
+viewer is provided, based on a plugin framework.  A fairly complete set of
+standard plugins are provided for features that we expect from a modern FITS
+viewer: panning and zooming windows, star catalog access, cuts, star
+pick/FWHM, thumbnails, etc.")
 (license license:bsd-3)))
 
 (define-public ginga-qt5
