@@ -5815,13 +5815,13 @@ task}.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "2.2.0")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "14720438p245ncjgwh7j37s69jd91rdk39daab8zswk9lhfbq9dx"))))
+        (base32 "0gyv07cz5f5m5hg22cfa2lpdj9lzjg2isz8pjfg22gl311ys584i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5836,7 +5836,7 @@ task}.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-asdf-3
+     (list python-asdf
            python-asdf-astropy
            python-astropy
            python-numpy))
