@@ -2977,25 +2977,6 @@ consecutive lines and since program start.")
     (build-system cargo-build-system)
     (arguments
      (list
-      #:cargo-inputs
-      `(("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-clap" ,rust-clap-4)
-        ("rust-is-terminal" ,rust-is-terminal-0.4)
-        ("rust-memmap2" ,rust-memmap2-0.9)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-unescape" ,rust-unescape-0.1))
-      #:cargo-development-inputs
-      `(("rust-ansi-to-html" ,rust-ansi-to-html-0.1)
-        ("rust-anyhow" ,rust-anyhow-1)
-        ("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
-        ("rust-console" ,rust-console-0.15)
-        ("rust-insta" ,rust-insta-1)
-        ("rust-proptest" ,rust-proptest-1)
-        ("rust-regex-automata" ,rust-regex-automata-0.4))
       #:install-source? #f
       #:phases
       #~(modify-phases %standard-phases
@@ -3013,6 +2994,7 @@ consecutive lines and since program start.")
                   (mkdir-p elvish-dir)
                   (copy-file "sd.bash" (string-append bash-dir "sd"))
                   (copy-file "sd.elv" (string-append elvish-dir "sd")))))))))
+    (inputs (cargo-inputs 'sd))
     (home-page "https://github.com/chmln/sd")
     (synopsis "Intuitive find & replace CLI")
     (description "@code{sd} is an intuitive find & replace CLI with
