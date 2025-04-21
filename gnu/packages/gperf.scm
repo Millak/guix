@@ -25,7 +25,7 @@
 (define-public gperf
   (package
     (name "gperf")
-    (version "3.1")
+    (version "3.3")
     (source
      (origin
       (method url-fetch)
@@ -33,7 +33,7 @@
                           version ".tar.gz"))
       (sha256
        (base32
-        "1qispg6i508rq8pkajh26cznwimbnj06wq9sd85vg95v8nwld1aq"))))
+        "1n2ac3cxinbfbq41jdpb7mlz58q3vga6rzbshdaf0fp4lymy11zx"))))
     (build-system gnu-build-system)
     (arguments '(#:parallel-tests? #f))
     (home-page "https://www.gnu.org/software/gperf/")
