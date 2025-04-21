@@ -3172,34 +3172,21 @@ terminal won't have to take up any space.")
 (define-public swayr
   (package
    (name "swayr")
-   (version "0.27.4")
+   (version "0.28.1")
    (source
     (origin
      (method url-fetch)
      (uri (crate-uri "swayr" version))
      (file-name (string-append name "-" version ".tar.gz"))
      (sha256
-      (base32 "19p7pwcfbcbia8hbx7ql9krl2fcdib2db9xs57ylv6cfccgipv9q"))))
+      (base32 "1q3fim66q74pxsv9vhhcxgdnsjmkz08adsf4ng61sxxvf3hry3lf"))))
    (build-system cargo-build-system)
    (arguments
     `(#:cargo-test-flags
       '("--"
         "--skip=config::test_load_swayr_config")
-      #:install-source? #f
-      #:cargo-inputs
-      (("rust-clap" ,rust-clap-4)
-       ("rust-directories" ,rust-directories-5)
-       ("rust-env-logger" ,rust-env-logger-0.11)
-       ("rust-log" ,rust-log-0.4)
-       ("rust-once-cell" ,rust-once-cell-1)
-       ("rust-peg" ,rust-peg-0.8)
-       ("rust-rand" ,rust-rand-0.8)
-       ("rust-regex" ,rust-regex-1)
-       ("rust-rt-format" ,rust-rt-format-0.3)
-       ("rust-serde" ,rust-serde-1)
-       ("rust-serde-json" ,rust-serde-json-1)
-       ("rust-swayipc" ,rust-swayipc-3)
-       ("rust-toml" ,rust-toml-0.8))))
+      #:install-source? #f))
+   (inputs (cargo-inputs 'swayr))
    (home-page "https://sr.ht/~tsdh/swayr/")
    (synopsis "Window-switcher for the sway window manager")
    (description

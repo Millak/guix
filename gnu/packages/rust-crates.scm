@@ -10243,6 +10243,10 @@
   (crate-source "rstest_reuse" "0.7.0"
                 "057y4v1rh9br58n2m3xqvm8xyx8k96jpgibgls3sah78f93gpa5k"))
 
+(define rust-rt-format-0.3.1
+  (crate-source "rt-format" "0.3.1"
+                "1qjjwh9ny95xck1kp99gi6hfm9glrx54jx8npnj6yccxc7p7q225"))
+
 (define rust-rtnetlink-0.14.1
   (crate-source "rtnetlink" "0.14.1"
                 "19dbbky7bcrwk4jhgam148s8ykxc7pfrblxjvmciipyq8i9lg15n"))
@@ -11796,6 +11800,10 @@
 (define rust-swayipc-2.7.2
   (crate-source "swayipc" "2.7.2"
                 "03r15c2sijyrxmpsyjgma4gz7zmdl1g8akjnjkw6hrml91d5dilj"))
+
+(define rust-swayipc-3.0.3
+  (crate-source "swayipc" "3.0.3"
+                "0dn733vl3fhqvs1ljfhwcgxgdn7z3xwyydba0r98ps4q5v5m131b"))
 
 (define rust-swayipc-async-2.0.4
   (crate-source "swayipc-async" "2.0.4"
@@ -36443,6 +36451,92 @@
                                      rust-windows-x86-64-gnu-0.52.6
                                      rust-windows-x86-64-gnullvm-0.52.6
                                      rust-windows-x86-64-msvc-0.52.6))
+                     (swayr =>
+                            (list rust-aho-corasick-1.1.3
+                                  rust-anstream-0.6.18
+                                  rust-anstyle-1.0.10
+                                  rust-anstyle-parse-0.2.6
+                                  rust-anstyle-query-1.1.2
+                                  rust-anstyle-wincon-3.0.7
+                                  rust-bitflags-2.9.0
+                                  rust-cfg-if-1.0.0
+                                  rust-clap-4.5.37
+                                  rust-clap-builder-4.5.37
+                                  rust-clap-derive-4.5.32
+                                  rust-clap-lex-0.7.4
+                                  rust-colorchoice-1.0.3
+                                  rust-directories-6.0.0
+                                  rust-dirs-sys-0.5.0
+                                  rust-env-filter-0.1.3
+                                  rust-env-logger-0.11.8
+                                  rust-equivalent-1.0.2
+                                  rust-getrandom-0.2.15
+                                  rust-getrandom-0.3.2
+                                  rust-hashbrown-0.15.2
+                                  rust-heck-0.5.0
+                                  rust-indexmap-2.9.0
+                                  rust-is-terminal-polyfill-1.70.1
+                                  rust-itoa-1.0.15
+                                  rust-jiff-0.2.9
+                                  rust-jiff-static-0.2.9
+                                  rust-lazy-static-1.5.0
+                                  rust-libc-0.2.172
+                                  rust-libredox-0.1.3
+                                  rust-log-0.4.27
+                                  rust-memchr-2.7.4
+                                  rust-once-cell-1.21.3
+                                  rust-option-ext-0.2.0
+                                  rust-peg-0.8.5
+                                  rust-peg-macros-0.8.5
+                                  rust-peg-runtime-0.8.5
+                                  rust-portable-atomic-1.11.0
+                                  rust-portable-atomic-util-0.2.4
+                                  rust-ppv-lite86-0.2.21
+                                  rust-proc-macro2-1.0.95
+                                  rust-quote-1.0.40
+                                  rust-r-efi-5.2.0
+                                  rust-rand-0.9.1
+                                  rust-rand-chacha-0.9.0
+                                  rust-rand-core-0.9.3
+                                  rust-redox-users-0.5.0
+                                  rust-regex-1.11.1
+                                  rust-regex-automata-0.4.9
+                                  rust-regex-syntax-0.8.5
+                                  rust-rt-format-0.3.1
+                                  rust-ryu-1.0.20
+                                  rust-serde-1.0.219
+                                  rust-serde-derive-1.0.219
+                                  rust-serde-json-1.0.140
+                                  rust-serde-spanned-0.6.8
+                                  rust-strsim-0.11.1
+                                  rust-swayipc-3.0.3
+                                  rust-swayipc-types-1.4.1
+                                  rust-syn-2.0.100
+                                  rust-thiserror-1.0.69
+                                  rust-thiserror-2.0.12
+                                  rust-thiserror-impl-1.0.69
+                                  rust-thiserror-impl-2.0.12
+                                  rust-toml-0.8.20
+                                  rust-toml-datetime-0.6.8
+                                  rust-toml-edit-0.22.24
+                                  rust-unicode-ident-1.0.18
+                                  rust-utf8parse-0.2.2
+                                  rust-wasi-0.11.0+wasi-snapshot-preview1
+                                  rust-wasi-0.14.2+wasi-0.2.4
+                                  rust-windows-sys-0.59.0
+                                  rust-windows-targets-0.52.6
+                                  rust-windows-aarch64-gnullvm-0.52.6
+                                  rust-windows-aarch64-msvc-0.52.6
+                                  rust-windows-i686-gnu-0.52.6
+                                  rust-windows-i686-gnullvm-0.52.6
+                                  rust-windows-i686-msvc-0.52.6
+                                  rust-windows-x86-64-gnu-0.52.6
+                                  rust-windows-x86-64-gnullvm-0.52.6
+                                  rust-windows-x86-64-msvc-0.52.6
+                                  rust-winnow-0.7.6
+                                  rust-wit-bindgen-rt-0.39.0
+                                  rust-zerocopy-0.8.24
+                                  rust-zerocopy-derive-0.8.24))
                      (swww =>
                            (list rust-adler2-2.0.0
                                  rust-aho-corasick-1.1.3
