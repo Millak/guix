@@ -117,14 +117,14 @@
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
 (define firefox-l10n
-  (let ((commit "24e2602d2221646fbbe92e908bed0d605acd2e8a"))
+  (let ((commit "11220b79b5f69e3004bf51829ae432c2c617107e"))
     (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/mozilla-l10n/firefox-l10n.git")
             (commit commit)))
       (file-name (git-file-name "firefox-l10n" commit))
-      (sha256 (base32 "1xnldwgldls07m5hmm9wnln6g2vcar5w4k4918qkmakldaw6ang0")))))
+      (sha256 (base32 "0zryicbw498xz3y51bx4ysk70mppyjbcza0v104nhlmvyxynmfqy")))))
 
 (define* (make-librewolf-source #:key version firefox-hash librewolf-hash l10n)
   (let* ((ff-src (firefox-source-origin
