@@ -2064,7 +2064,7 @@ compatible directories.")
            python-block-tracing
            python-dropbox
            python-keyring
-           python-keyrings.alt
+           python-keyrings-alt
            python-privy
            python-userspacefs))
   (home-page "https://thelig.ht/code/dbxfs/")

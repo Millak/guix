@@ -213,7 +213,7 @@ GUI based workflow.  It is primarily used in the Orange framework.")
            python-httpx
            python-joblib
            python-keyring
-           python-keyrings.alt
+           python-keyrings-alt
            python-louvain
            python-matplotlib
            python-networkx

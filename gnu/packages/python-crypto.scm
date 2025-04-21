@@ -299,9 +299,9 @@ password storage.")
     ;; "MIT" and PSF dual license
     (license license:x11)))
 
-(define-public python-keyrings.alt
+(define-public python-keyrings-alt
   (package
-    (name "python-keyrings.alt")
+    (name "python-keyrings-alt")
     (version "3.4.0")
     (source
       (origin
