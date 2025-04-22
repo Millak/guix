@@ -680,41 +680,6 @@ Functions exposed by the standard library’s @code{time}, @code{datetime} and
 @code{date} modules are patched within the contexts exposed.")
     (license license:expat)))
 
-(define-public python-line-profiler
-  (package
-    (name "python-line-profiler")
-    (version "4.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "line_profiler" version))
-       (sha256
-        (base32 "15hs8pmv7pcilnhhp0l5pamjihmh7zlnvvpsnf046lbnz0jhzq89"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; XXX: Test can't compare the versions: AssertionError: Version
-      ;; Mismatch: kernprof and line_profiler must be in
-      ;; sync. kernprof.line_profiler = . kernprof.__version__ = 4.2.0.
-      #~(list "--deselect=tests/test_cli.py::test_version_agreement")))
-    (native-inputs
-     (list python-cython-3
-           python-pytest
-           python-setuptools
-           python-ubelt
-           python-wheel
-           python-xdoctest))
-    (home-page "https://github.com/pyutils/line_profiler")
-    (synopsis "Line-by-line profiler for Python")
-    (description
-     "This package provides @code{line_profiler} - a Python module for doing
-line-by-line profiling of functions.  @code{kernprof} is a convenient script
-for running either @code{line_profiler} or the Python standard library's
-cProfile or profile modules, depending on what is available.  It's a
-successor of @url{https://github.com/rkern/line_profiler}.")
-    (license license:bsd-3)))
-
 (define-public python-pytest-click
   (package
     (name "python-pytest-click")
@@ -839,6 +804,28 @@ be used to test that the value of an expression does not change
 unexpectedly.")
     (license license:expat)))
 
+(define-public python-httmock
+  (package
+    (name "python-httmock")
+    (version "1.3.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "httmock" version))
+        (sha256
+         (base32
+          "1zj1fcm0n6f0wr9mr0hmlqz9430fnr5cdwd5jkcvq9j44bnsrfz0"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f)); no tests
+    (propagated-inputs
+     (list python-requests))
+    (home-page "https://github.com/patrys/httmock")
+    (synopsis "Mocking library for requests")
+    (description "This package provides a library for replying fake data to
+Python software under test, when they make an HTTP query.")
+    (license license:asl2.0)))
+
 (define-public python-icontract
   (package
     (name "python-icontract")
@@ -885,6 +872,67 @@ respectively.  Additionally, it provides a class decorator, @code{invariant},
 to establish class invariants.")
     (license license:expat)))
 
+(define-public python-inline-snapshot
+  (package
+    (name "python-inline-snapshot")
+    (version "0.18.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "inline_snapshot" version))
+       (sha256
+        (base32 "09pqgz4phal2pjkv03wg3gvj7jr89rrb93rfw4hd2x9v8px4mqqv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Missing "freezer" fixture
+      '(list "--ignore=tests/test_external.py"
+             "--ignore=tests/test_pytest_plugin.py"
+             "-k"
+             (string-append
+              "not test_trailing_comma"
+              ;; Cannot use inline-snapshop when xdist is available.
+              " and not test_xdist"
+              " and not test_xdist_disabled"
+              " and not test_xdist_and_disable"
+              " and not test_typing"))))
+    (propagated-inputs (list python-asttokens
+                             python-black
+                             python-click
+                             python-executing
+                             python-mkdocs
+                             python-rich
+                             python-tomli
+                             python-typing-extensions))
+    (native-inputs
+     (list python-dirty-equals
+           python-freezegun
+           python-hatchling
+           python-pydantic
+           python-pytest
+           python-pytest-mock
+           python-pytest-subtests))
+    (home-page "https://pypi.org/project/inline-snapshot/")
+    (synopsis "Golden master/snapshot/approval testing library")
+    (description
+     "This package can be used for different things:
+
+@enumerate
+@item golden master/approval/snapshot testing.  The idea is that you have a
+  function with a currently unknown result and you want to write a tests, which
+  ensures that the result does not change during refactoring.
+@item Compare things which are complex like lists with lot of numbers or
+  complex data structures.
+@item Things which might change during the development like error messages.
+@end enumerate
+
+@code{inline-snapshot} automates the process of recording, storing and
+updating the value you want to compare with.  The value is converted with
+@code{repr()} and stored in the source file as argument of the
+@code{snapshot()} function.")
+    (license license:expat)))
+
 (define-public python-junit-xml
   ;; XXX: There are no tags or PyPI releases, so take the latest commit
   ;; and use the version defined in setup.py.
@@ -917,6 +965,41 @@ to establish class invariants.")
        "This package provides a Python module for creating JUnit XML test
 result documents that can be read by tools such as Jenkins or Bamboo.")
       (license license:expat))))
+
+(define-public python-line-profiler
+  (package
+    (name "python-line-profiler")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "line_profiler" version))
+       (sha256
+        (base32 "15hs8pmv7pcilnhhp0l5pamjihmh7zlnvvpsnf046lbnz0jhzq89"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: Test can't compare the versions: AssertionError: Version
+      ;; Mismatch: kernprof and line_profiler must be in
+      ;; sync. kernprof.line_profiler = . kernprof.__version__ = 4.2.0.
+      #~(list "--deselect=tests/test_cli.py::test_version_agreement")))
+    (native-inputs
+     (list python-cython-3
+           python-pytest
+           python-setuptools
+           python-ubelt
+           python-wheel
+           python-xdoctest))
+    (home-page "https://github.com/pyutils/line_profiler")
+    (synopsis "Line-by-line profiler for Python")
+    (description
+     "This package provides @code{line_profiler} - a Python module for doing
+line-by-line profiling of functions.  @code{kernprof} is a convenient script
+for running either @code{line_profiler} or the Python standard library's
+cProfile or profile modules, depending on what is available.  It's a
+successor of @url{https://github.com/rkern/line_profiler}.")
+    (license license:bsd-3)))
 
 (define-public python-pyinstrument
   (package
@@ -1160,6 +1243,31 @@ data arrays produced during tests, in particular in cases where the arrays
 are too large to conveniently hard-code them in the tests.")
     (license license:bsd-3)))
 
+(define-public python-pytest-benchmark
+  (package
+    (name "python-pytest-benchmark")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-benchmark" version))
+       (sha256
+        (base32
+         "1la802m5r49y1zqilmhqh0qvbnz139lw0qb3jmm9lngy7sw8a1zv"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:test-target "check"))
+    (propagated-inputs
+     (list python-py-cpuinfo))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/ionelmc/pytest-benchmark")
+    (synopsis "Pytest fixture for benchmarking code")
+    (description
+     "This package provides a pytest fixture that will group the tests into
+rounds that are calibrated to the chosen timer.")
+    (license license:bsd-2)))
+
 (define-public python-pytest-black
   (package
     (name "python-pytest-black")
@@ -1187,6 +1295,28 @@ are too large to conveniently hard-code them in the tests.")
      "This package provides a pytest plugin to enable format checking with the
 Python code formatter \"black\".")
     (license license:expat)))
+
+(define-public python-pytest-celery
+  (package
+    (name "python-pytest-celery")
+    (version "0.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-celery" version))
+       (sha256
+        (base32 "01pli108qqiiyrn8qsqqabcpazrzj27r7cji9wgglsk76by61l6g"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f ; no tests and circular dependency on python-celery
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'sanity-check)))) ; checks for celery
+    (home-page "https://github.com/graingert/pytest-celery")
+    (synopsis "Shim pytest plugin to enable @code{celery.contrib.pytest}")
+    (description
+     "This package provides a shim Pytest plugin to enable a Celery marker.")
+    (license license:bsd-3)))
 
 (define-public python-pytest-console-scripts
   (package
@@ -1436,6 +1566,31 @@ sub-package.")
      "This package provides fixture configuration utilities for the py.test
 testing framework.")
     (license license:expat)))
+
+(define-public python-pytest-flake8
+  (package
+    (name "python-pytest-flake8")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_flake8" version))
+       (sha256
+        (base32
+         "1rhz7mxcg7x9dbabfcjai3zxikfgw7az07m4ddf92bg35ib3byw8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-flake8))
+    (home-page "https://github.com/tholo/pytest-flake8")
+    (synopsis "Pytest plugin to check FLAKE8 requirements")
+    (description
+     "This package provides a pytest plugin for efficiently checking PEP8
+compliance.")
+    (license license:bsd-3)))
 
 (define-public python-pytest-freezer
   (package
@@ -1997,31 +2152,6 @@ friendly library for concurrency and async I/O in Python.")
     ;; Either license applies.
     (license (list license:expat license:asl2.0))))
 
-(define-public python-pytest-flake8
-  (package
-    (name "python-pytest-flake8")
-    (version "1.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_flake8" version))
-       (sha256
-        (base32
-         "1rhz7mxcg7x9dbabfcjai3zxikfgw7az07m4ddf92bg35ib3byw8"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-flake8))
-    (home-page "https://github.com/tholo/pytest-flake8")
-    (synopsis "Pytest plugin to check FLAKE8 requirements")
-    (description
-     "This package provides a pytest plugin for efficiently checking PEP8
-compliance.")
-    (license license:bsd-3)))
-
 (define-public python-pytest-isort
   (package
     (name "python-pytest-isort")
@@ -2156,31 +2286,6 @@ framework.")
     (description "This package provides a plugin to run @code{pycodestyle}
 for the @code{pytest} framework.")
     (license license:expat)))
-
-(define-public python-pytest-benchmark
-  (package
-    (name "python-pytest-benchmark")
-    (version "4.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-benchmark" version))
-       (sha256
-        (base32
-         "1la802m5r49y1zqilmhqh0qvbnz139lw0qb3jmm9lngy7sw8a1zv"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:test-target "check"))
-    (propagated-inputs
-     (list python-py-cpuinfo))
-    (native-inputs
-     (list python-pytest))
-    (home-page "https://github.com/ionelmc/pytest-benchmark")
-    (synopsis "Pytest fixture for benchmarking code")
-    (description
-     "This package provides a pytest fixture that will group the tests into
-rounds that are calibrated to the chosen timer.")
-    (license license:bsd-2)))
 
 (define-public python-pytest-xvfb
   (package
@@ -2395,28 +2500,6 @@ fixtures for testing Tornado (version 5.0 or newer) apps and easy handling of
 plain (undecoratored) native coroutine tests.")
     (license license:expat)))
 
-(define-public python-pytest-celery
-  (package
-    (name "python-pytest-celery")
-    (version "0.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-celery" version))
-       (sha256
-        (base32 "01pli108qqiiyrn8qsqqabcpazrzj27r7cji9wgglsk76by61l6g"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; no tests and circular dependency on python-celery
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'sanity-check)))) ; checks for celery
-    (home-page "https://github.com/graingert/pytest-celery")
-    (synopsis "Shim pytest plugin to enable @code{celery.contrib.pytest}")
-    (description
-     "This package provides a shim Pytest plugin to enable a Celery marker.")
-    (license license:bsd-3)))
-
 (define-public python-pytest-cython
   (package
     (name "python-pytest-cython")
@@ -2469,89 +2552,6 @@ plain (undecoratored) native coroutine tests.")
     (synopsis "Utility to check API integrity in Python libraries")
     (description "The pyux utility detects API changes in Python
 libraries.")
-    (license license:expat)))
-
-(define-public python-httmock
-  (package
-    (name "python-httmock")
-    (version "1.3.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "httmock" version))
-        (sha256
-         (base32
-          "1zj1fcm0n6f0wr9mr0hmlqz9430fnr5cdwd5jkcvq9j44bnsrfz0"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)); no tests
-    (propagated-inputs
-     (list python-requests))
-    (home-page "https://github.com/patrys/httmock")
-    (synopsis "Mocking library for requests")
-    (description "This package provides a library for replying fake data to
-Python software under test, when they make an HTTP query.")
-    (license license:asl2.0)))
-
-(define-public python-inline-snapshot
-  (package
-    (name "python-inline-snapshot")
-    (version "0.18.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "inline_snapshot" version))
-       (sha256
-        (base32 "09pqgz4phal2pjkv03wg3gvj7jr89rrb93rfw4hd2x9v8px4mqqv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Missing "freezer" fixture
-      '(list "--ignore=tests/test_external.py"
-             "--ignore=tests/test_pytest_plugin.py"
-             "-k"
-             (string-append
-              "not test_trailing_comma"
-              ;; Cannot use inline-snapshop when xdist is available.
-              " and not test_xdist"
-              " and not test_xdist_disabled"
-              " and not test_xdist_and_disable"
-              " and not test_typing"))))
-    (propagated-inputs (list python-asttokens
-                             python-black
-                             python-click
-                             python-executing
-                             python-mkdocs
-                             python-rich
-                             python-tomli
-                             python-typing-extensions))
-    (native-inputs
-     (list python-dirty-equals
-           python-freezegun
-           python-hatchling
-           python-pydantic
-           python-pytest
-           python-pytest-mock
-           python-pytest-subtests))
-    (home-page "https://pypi.org/project/inline-snapshot/")
-    (synopsis "Golden master/snapshot/approval testing library")
-    (description
-     "This package can be used for different things:
-
-@enumerate
-@item golden master/approval/snapshot testing.  The idea is that you have a
-  function with a currently unknown result and you want to write a tests, which
-  ensures that the result does not change during refactoring.
-@item Compare things which are complex like lists with lot of numbers or
-  complex data structures.
-@item Things which might change during the development like error messages.
-@end enumerate
-
-@code{inline-snapshot} automates the process of recording, storing and
-updating the value you want to compare with.  The value is converted with
-@code{repr()} and stored in the source file as argument of the
-@code{snapshot()} function.")
     (license license:expat)))
 
 (define-public python-memory-profiler
