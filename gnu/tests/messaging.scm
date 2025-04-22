@@ -32,6 +32,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages irc)
   #:use-module (gnu packages messaging)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages screen)
   #:use-module (gnu packages tls)
   #:use-module (guix gexp)
@@ -388,18 +389,17 @@
   (operating-system
     (inherit %simple-os)
     (packages
-     (append (specifications->packages
-              '("ii" "socat"
-                ;; Uncomment for debugging.
-                ;; "gdb"
-                ;; "gnutls"                ;for gnutls-cli
-                ;; "screen"
-                ;; "strace"
-                ;; "ngircd:debug"
-                ;; "pounce:debug"
-                ;; "libressl:debug"
-                ;; "gnutls:debug"
-                ))
+     (append (list ii socat)
+             ;; Uncomment for debugging.
+             ;; (specifications->packages
+             ;;  '("gdb"
+             ;;    "gnutls"                ;for gnutls-cli
+             ;;    "screen"
+             ;;    "strace"
+             ;;    "ngircd:debug"
+             ;;    "pounce:debug"
+             ;;    "libressl:debug"
+             ;;    "gnutls:debug"))
              %base-packages))
     (services
      (cons*
