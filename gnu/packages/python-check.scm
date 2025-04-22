@@ -680,26 +680,6 @@ Functions exposed by the standard library’s @code{time}, @code{datetime} and
 @code{date} modules are patched within the contexts exposed.")
     (license license:expat)))
 
-(define-public python-pytest-click
-  (package
-    (name "python-pytest-click")
-    (version "1.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (pypi-uri "pytest_click" version))
-       (sha256
-        (base32 "1rcv4m850rl7djzdgzz2zhjd8g5ih8w6l0sj2f9hsynymlsq82xl"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-click python-pytest))
-    (home-page "https://github.com/Stranger6667/pytest-click")
-    (synopsis "Py.test plugin for Click")
-    (description "This package provides a plugin to test Python click
-interfaces with pytest.")
-    (license license:expat)))
-
 (define-public python-pytest-csv
   (package
     (name "python-pytest-csv")
@@ -730,25 +710,6 @@ CSV output mode for Pytest.  It can be enabled via the @option{--csv} option
 it adds to the Pytest command line interface (CLI).")
     (license license:gpl3+)))
 
-(define-public python-pytest-flakefinder
-  (package
-    (name "python-pytest-flakefinder")
-    (version "1.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-flakefinder" version))
-       (sha256
-        (base32 "03iy80xlkpgzjs2kxa9rrj8dbnp9awyhpcl3hy8fgf5x40cjlhg2"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-wheel python-setuptools))
-    (propagated-inputs (list python-pytest))
-    (home-page "https://github.com/dropbox/pytest-flakefinder")
-    (synopsis "Pytest plugin for finding flaky tests")
-    (description "This package provides a Pytest plugin to run tests multiple
-times and detect flakyness.")
-    (license license:asl2.0)))
-
 (define-public python-pytest-shard
   (let ((commit "64610a08dac6b0511b6d51cf895d0e1040d162ad")
         (revision "0"))
@@ -773,36 +734,6 @@ times and detect flakyness.")
 tests at the granularity of individual test cases, which can be run in
 parallel and on multiple machines.")
       (license license:expat))))
-
-(define-public python-pytest-snapshot
-  (package
-    (name "python-pytest-snapshot")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-snapshot" version))
-       (sha256
-        (base32 "1wxp9pv5yqpj3fk450ld1mjhhdxyvssgi6gqxyghz1iyphx3q0f7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Skip failing test. Related upstream issue:
-      ;; <https://github.com/joseph-roitman/pytest-snapshot/issues/71>.
-      #:test-flags #~(list "-k" "not test_assert_match_failure_bytes")))
-    (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-pytest))
-    (home-page "https://github.com/joseph-roitman/pytest-snapshot")
-    (synopsis "Pytest plugin for snapshot testing")
-    (description
-     "This package provides a plugin for snapshot testing with pytest.  It can
-be used to test that the value of an expression does not change
-unexpectedly.")
-    (license license:expat)))
 
 (define-public python-httmock
   (package
@@ -999,6 +930,61 @@ line-by-line profiling of functions.  @code{kernprof} is a convenient script
 for running either @code{line_profiler} or the Python standard library's
 cProfile or profile modules, depending on what is available.  It's a
 successor of @url{https://github.com/rkern/line_profiler}.")
+    (license license:bsd-3)))
+
+(define-public python-memory-profiler
+  (package
+    (name "python-memory-profiler")
+    (version "0.61")
+    (source
+     (origin
+       ;; PyPi tarball lacks tests.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pythonprofilers/memory_profiler")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n6g47qqmnn7abh3v25535hd8bmfvhf9bnp72m7bkd89f715m7xh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: @profile is not loaded in some test files and there are 3
+          ;; tests fail, disable them for now.
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (with-directory-excursion "test"
+                (for-each delete-file
+                          '("test_as.py"
+                            "test_func.py"
+                            "test_gen.py"
+                            "test_loop.py"
+                            "test_loop_decorated.py"
+                            "test_mprofile.py"
+                            "test_nested.py"
+                            "test_precision_command_line.py"
+                            "test_unicode.py")))
+              (substitute* "test/test_attributes.py"
+                (("def test_with_profile") "def __off_test_with_profile"))
+              (substitute* "test/test_stream_unicode.py"
+                (("def test_unicode") "def __off_test_unicode"))
+              (substitute* "test/test_tracemalloc.py"
+                (("def test_memory_profiler")
+                 "def __off_test_memory_profiler")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-fixture-config
+           python-safety
+           python-setuptools
+           python-wheel))
+    (propagated-inputs (list python-psutil))
+    (home-page "https://github.com/pythonprofilers/memory_profiler")
+    (synopsis "Memory profiler for Python")
+    (description
+     "This package provides a module for monitoring the memory usage of a
+Python program.")
     (license license:bsd-3)))
 
 (define-public python-pyinstrument
@@ -1210,6 +1196,27 @@ wrapper above tools such as Pyflakes, pydocstyle, pycodestyle and McCabe,
 among others.")
     (license license:lgpl3+)))
 
+(define-public python-pytest-aiohttp
+  (package
+    (name "python-pytest-aiohttp")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-aiohttp" version))
+       (sha256
+        (base32
+         "0kx4mbs9bflycd8x9af0idcjhdgnzri3nw1qb0vpfyb3751qaaf9"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-aiohttp))
+    (home-page "https://github.com/aio-libs/pytest-aiohttp/")
+    (synopsis "Pytest plugin for aiohttp support")
+    (description "This package provides a pytest plugin for aiohttp support.")
+    (license license:asl2.0)))
+
 (define-public python-pytest-arraydiff
   (package
     (name "python-pytest-arraydiff")
@@ -1317,6 +1324,26 @@ Python code formatter \"black\".")
     (description
      "This package provides a shim Pytest plugin to enable a Celery marker.")
     (license license:bsd-3)))
+
+(define-public python-pytest-click
+  (package
+    (name "python-pytest-click")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (pypi-uri "pytest_click" version))
+       (sha256
+        (base32 "1rcv4m850rl7djzdgzz2zhjd8g5ih8w6l0sj2f9hsynymlsq82xl"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-click python-pytest))
+    (home-page "https://github.com/Stranger6667/pytest-click")
+    (synopsis "Py.test plugin for Click")
+    (description "This package provides a plugin to test Python click
+interfaces with pytest.")
+    (license license:expat)))
 
 (define-public python-pytest-console-scripts
   (package
@@ -1591,6 +1618,25 @@ testing framework.")
      "This package provides a pytest plugin for efficiently checking PEP8
 compliance.")
     (license license:bsd-3)))
+
+(define-public python-pytest-flakefinder
+  (package
+    (name "python-pytest-flakefinder")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-flakefinder" version))
+       (sha256
+        (base32 "03iy80xlkpgzjs2kxa9rrj8dbnp9awyhpcl3hy8fgf5x40cjlhg2"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-wheel python-setuptools))
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/dropbox/pytest-flakefinder")
+    (synopsis "Pytest plugin for finding flaky tests")
+    (description "This package provides a Pytest plugin to run tests multiple
+times and detect flakyness.")
+    (license license:asl2.0)))
 
 (define-public python-pytest-freezer
   (package
@@ -1957,6 +2003,36 @@ The main usage is to use the @code{qtbot} fixture, responsible for handling
 interaction, like key presses and mouse clicks.")
     (license license:expat)))
 
+(define-public python-pytest-snapshot
+  (package
+    (name "python-pytest-snapshot")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-snapshot" version))
+       (sha256
+        (base32 "1wxp9pv5yqpj3fk450ld1mjhhdxyvssgi6gqxyghz1iyphx3q0f7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Skip failing test. Related upstream issue:
+      ;; <https://github.com/joseph-roitman/pytest-snapshot/issues/71>.
+      #:test-flags #~(list "-k" "not test_assert_match_failure_bytes")))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-pytest))
+    (home-page "https://github.com/joseph-roitman/pytest-snapshot")
+    (synopsis "Pytest plugin for snapshot testing")
+    (description
+     "This package provides a plugin for snapshot testing with pytest.  It can
+be used to test that the value of an expression does not change
+unexpectedly.")
+    (license license:expat)))
+
 (define-public python-pytest-subtests
   (package
     (name "python-pytest-subtests")
@@ -2117,6 +2193,37 @@ of the project to ensure it renders properly.")
      "This package provides a py.test plugin providing fixtures and markers to
 simplify testing of asynchronous tornado applications.")
     (license license:asl2.0)))
+
+(define-public python-pytest-tornasync
+  (package
+    (name "python-pytest-tornasync")
+    (version "0.6.0.post2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-tornasync" version))
+       (sha256
+        (base32
+         "0pdyddbzppkfqwa7g17sdfl4w2v1hgsky78l8f4c1rx2a7cvd0fp"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #false ; TODO: fails at "from test import MESSAGE, PAUSE_TIME"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "--verbose")))))))
+    (propagated-inputs
+     (list python-pytest python-tornado-6))
+    (home-page "https://github.com/eukaryote/pytest-tornasync")
+    (synopsis "Pytest plugin for testing Tornado code")
+    (description
+     "This package provides a simple pytest plugin that provides some helpful
+fixtures for testing Tornado (version 5.0 or newer) apps and easy handling of
+plain (undecoratored) native coroutine tests.")
+    (license license:expat)))
 
 (define-public python-pytest-trio
   (package
@@ -2344,27 +2451,6 @@ for the @code{pytest} framework.")
 service processes for your tests with pytest.")
     (license license:expat)))
 
-(define-public python-pytest-aiohttp
-  (package
-    (name "python-pytest-aiohttp")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-aiohttp" version))
-       (sha256
-        (base32
-         "0kx4mbs9bflycd8x9af0idcjhdgnzri3nw1qb0vpfyb3751qaaf9"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-aiohttp))
-    (home-page "https://github.com/aio-libs/pytest-aiohttp/")
-    (synopsis "Pytest plugin for aiohttp support")
-    (description "This package provides a pytest plugin for aiohttp support.")
-    (license license:asl2.0)))
-
 (define-public python-nbmake
   (package
     (name "python-nbmake")
@@ -2469,37 +2555,6 @@ also ensuring that the notebooks are running without errors.")
      "This pytest plugin provides fixtures to simplify Flask app testing.")
     (license license:expat)))
 
-(define-public python-pytest-tornasync
-  (package
-    (name "python-pytest-tornasync")
-    (version "0.6.0.post2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-tornasync" version))
-       (sha256
-        (base32
-         "0pdyddbzppkfqwa7g17sdfl4w2v1hgsky78l8f4c1rx2a7cvd0fp"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #false ; TODO: fails at "from test import MESSAGE, PAUSE_TIME"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "--verbose")))))))
-    (propagated-inputs
-     (list python-pytest python-tornado-6))
-    (home-page "https://github.com/eukaryote/pytest-tornasync")
-    (synopsis "Pytest plugin for testing Tornado code")
-    (description
-     "This package provides a simple pytest plugin that provides some helpful
-fixtures for testing Tornado (version 5.0 or newer) apps and easy handling of
-plain (undecoratored) native coroutine tests.")
-    (license license:expat)))
-
 (define-public python-pytest-cython
   (package
     (name "python-pytest-cython")
@@ -2553,61 +2608,6 @@ plain (undecoratored) native coroutine tests.")
     (description "The pyux utility detects API changes in Python
 libraries.")
     (license license:expat)))
-
-(define-public python-memory-profiler
-  (package
-    (name "python-memory-profiler")
-    (version "0.61")
-    (source
-     (origin
-       ;; PyPi tarball lacks tests.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pythonprofilers/memory_profiler")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0n6g47qqmnn7abh3v25535hd8bmfvhf9bnp72m7bkd89f715m7xh"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: @profile is not loaded in some test files and there are 3
-          ;; tests fail, disable them for now.
-          (add-after 'unpack 'disable-failing-tests
-            (lambda _
-              (with-directory-excursion "test"
-                (for-each delete-file
-                          '("test_as.py"
-                            "test_func.py"
-                            "test_gen.py"
-                            "test_loop.py"
-                            "test_loop_decorated.py"
-                            "test_mprofile.py"
-                            "test_nested.py"
-                            "test_precision_command_line.py"
-                            "test_unicode.py")))
-              (substitute* "test/test_attributes.py"
-                (("def test_with_profile") "def __off_test_with_profile"))
-              (substitute* "test/test_stream_unicode.py"
-                (("def test_unicode") "def __off_test_unicode"))
-              (substitute* "test/test_tracemalloc.py"
-                (("def test_memory_profiler")
-                 "def __off_test_memory_profiler")))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-fixture-config
-           python-safety
-           python-setuptools
-           python-wheel))
-    (propagated-inputs (list python-psutil))
-    (home-page "https://github.com/pythonprofilers/memory_profiler")
-    (synopsis "Memory profiler for Python")
-    (description
-     "This package provides a module for monitoring the memory usage of a
-Python program.")
-    (license license:bsd-3)))
 
 (define-public python-mockito
   (package
@@ -3091,6 +3091,37 @@ eliminate flaky failures.")
        (sha256
         (base32 "16cin0chv59w4rvnd6r0fisp0s8avmp07rwn9da6yixw43jdncp1"))))))
 
+(define-public python-sybil
+  (package
+    (name "python-sybil")
+    (version "9.0.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/simplistix/sybil")
+              (commit version)))
+        (sha256
+         (base32 "0r491k91fi2nb0kdd6di8cb2kxcvsk1xzw3sgwsxhhg4qynsp3bi"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-mypy
+                         python-myst-parser
+                         python-pytest
+                         python-pytest-cov
+                         python-pyyaml
+                         python-seedir
+                         python-setuptools
+                         python-testfixtures
+                         python-wheel))
+    (home-page "https://github.com/simplistix/sybil")
+    (synopsis "Automated testing for examples in code and documentation")
+    (description
+      "This library provides a way to check examples in your code and
+documentation by parsing them from their source and evaluating the
+parsed examples as part of your normal test run.  Integration is
+provided for the main Python test runners.")
+    (license license:expat)))
+
 (define-public python-tappy
   (package
     (name "python-tappy")
@@ -3263,37 +3294,6 @@ tool.  It can be used to check that a package installs correctly with
 different Python versions and interpreters, or run tests in each type of
 supported environment, or act as a frontend to continuous integration
 servers.")
-    (license license:expat)))
-
-(define-public python-sybil
-  (package
-    (name "python-sybil")
-    (version "9.0.0")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/simplistix/sybil")
-              (commit version)))
-        (sha256
-         (base32 "0r491k91fi2nb0kdd6di8cb2kxcvsk1xzw3sgwsxhhg4qynsp3bi"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-mypy
-                         python-myst-parser
-                         python-pytest
-                         python-pytest-cov
-                         python-pyyaml
-                         python-seedir
-                         python-setuptools
-                         python-testfixtures
-                         python-wheel))
-    (home-page "https://github.com/simplistix/sybil")
-    (synopsis "Automated testing for examples in code and documentation")
-    (description
-      "This library provides a way to check examples in your code and
-documentation by parsing them from their source and evaluating the
-parsed examples as part of your normal test run.  Integration is
-provided for the main Python test runners.")
     (license license:expat)))
 
 (define-public python-pytest-parawtf
