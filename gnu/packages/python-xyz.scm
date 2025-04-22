@@ -23629,17 +23629,18 @@ in @file{pyproject.toml}-based projects.  It provides basic functionality to
 write tooling that generates distribution files from Python projects.")
     (license license:expat)))
 
-(define-public python-lark-parser
+(define-public python-lark
   (package
-    (name "python-lark-parser")
-    (version "0.9.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "lark-parser" version))
-              (sha256
-               (base32
-                "1kd61asrb3h9spgsj4bslfbgp8q4271sw3hblk6f2vbbblv8jxcy"))))
-    (build-system python-build-system)
+    (name "python-lark")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lark" version))
+       (sha256
+        (base32 "107d1w24b3ln4zwsw4yvkfhff6bk5n3cpvlgbbqww5ndc80pv06a"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/lark-parser/lark")
     (synopsis "Multi-language parser for Python")
     (description
@@ -23648,6 +23649,18 @@ resilience.  Lark can parse all context-free languages.  That means it is
 capable of parsing almost any programming language out there, and to
 some degree most natural languages too.")
     (license license:expat)))
+
+;; XXX: lark was renamed from lark_parser with major release 1
+(define-public python-lark-parser
+  (package/inherit python-lark
+    (name "python-lark-parser")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "lark-parser" version))
+              (sha256
+               (base32
+                "0f51jr7dvnd3rm7j5nkkgm2vxfa7a1s804avlvf16h11y6qpv5hm"))))))
 
 (define-public python-find-libpython
   (package
