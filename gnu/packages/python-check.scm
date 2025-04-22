@@ -1263,6 +1263,27 @@ __version_tuple__ = version_tuple = (~a)~%" version version-tuple)))))))))
 in an opinionated way.")
     (license license:expat)))
 
+(define-public python-pyannotate
+  (package
+    (name "python-pyannotate")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyannotate" version))
+       (sha256
+        (base32
+         "16bm0mf7wxvy0lgmcs1p8n1ji8pnvj1jvj8zk3am70dkp825iv84"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-mypy-extensions python-six))
+    (home-page
+     "https://github.com/dropbox/pyannotate")
+    (synopsis "Auto-generate PEP-484 annotations")
+    (description "This package, PyAnnotate, is used to auto-generate PEP-484
+annotations.")
+    (license license:asl2.0)))
+
 (define-public python-pycotap
   (package
     (name "python-pycotap")
@@ -2159,35 +2180,6 @@ isort.")
 access to test session metadata.")
     (license license:mpl2.0)))
 
-(define-public python-pytest-repeat
-  (package
-    (name "python-pytest-repeat")
-    (version "0.9.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-repeat" version))
-       (sha256
-        (base32 "0nxdbghjz6v4xidl5ky9wlx6z4has3vygj5r7va5ccdb8nbjilsw"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
-    (propagated-inputs
-     (list python-pytest))
-    (native-inputs
-     (list python-setuptools-scm))
-    (home-page "https://github.com/pytest-dev/pytest-repeat")
-    (synopsis "Pytest plugin for repeating tests")
-    (description "@code{pytest-repeat} is a plugin for Pytest that makes it
-enables repeating a single test, or multiple tests, a specific number of
-times.")
-    (license license:mpl2.0)))
-
 (define-public python-pytest-mockito
   (package
     (name "python-pytest-mockito")
@@ -2463,6 +2455,35 @@ developers to control unit tests that require access to data from the
 internet.")
     (license license:bsd-3)))
 
+(define-public python-pytest-repeat
+  (package
+    (name "python-pytest-repeat")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-repeat" version))
+       (sha256
+        (base32 "0nxdbghjz6v4xidl5ky9wlx6z4has3vygj5r7va5ccdb8nbjilsw"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (propagated-inputs
+     (list python-pytest))
+    (native-inputs
+     (list python-setuptools-scm))
+    (home-page "https://github.com/pytest-dev/pytest-repeat")
+    (synopsis "Pytest plugin for repeating tests")
+    (description "@code{pytest-repeat} is a plugin for Pytest that makes it
+enables repeating a single test, or multiple tests, a specific number of
+times.")
+    (license license:mpl2.0)))
+
 (define-public python-pytest-rerunfailures
   (package
     (name "python-pytest-rerunfailures")
@@ -2491,6 +2512,40 @@ eliminate flaky failures.")
        (uri (pypi-uri "pytest-rerunfailures" version))
        (sha256
         (base32 "16cin0chv59w4rvnd6r0fisp0s8avmp07rwn9da6yixw43jdncp1"))))))
+
+;; This is only used by python-sanic
+(define-public python-pytest-sanic
+  (package
+    (name "python-pytest-sanic")
+    (version "1.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pytest-sanic" version))
+              (sha256
+               (base32
+                "0shq1bqnydj0l3ipb73j1qh5kqcjvzkps30zk8grq3dwmh3wmnkr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Tests depend on python-sanic.
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
+    (native-inputs
+     (list python-poetry-core))
+    (propagated-inputs
+     (list python-httpx python-async-generator python-pytest
+           python-websockets))
+    (home-page "https://github.com/yunstanford/pytest-sanic")
+    (synopsis "Pytest plugin for Sanic")
+    (description "This package provides a pytest plugin for Sanic.  It helps
+you to test your code asynchronously.")
+    (license license:expat)))
 
 (define-public python-pytest-services
   (package
@@ -2540,6 +2595,48 @@ service processes for your tests with pytest.")
 tests at the granularity of individual test cases, which can be run in
 parallel and on multiple machines.")
       (license license:expat))))
+
+(define-public python-pytest-shutil
+  (package
+    (name "python-pytest-shutil")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-shutil" version))
+       (sha256
+        (base32
+         "18283zgs3z61paymzf0pp5x3di3hg3m91pvb3v7bmz3fggphdl5a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (mkdir "/tmp/bin")
+              (substitute* "tests/integration/test_cmdline_integration.py"
+                (("dirname = '/bin'")
+                 "dirname = '/tmp/bin'")
+                (("bindir = os.path.realpath\\('/bin'\\)")
+                 "bindir = os.path.realpath('/tmp/bin')")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-git
+           python-wheel))
+    (propagated-inputs
+     (list python-execnet
+           python-mock
+           python-path
+           python-six
+           python-termcolor))
+    (home-page "https://github.com/manahl/pytest-plugins")
+    (synopsis "Assorted shell and environment tools for py.test")
+    (description
+     "This package provides assorted shell and environment tools for the
+py.test testing framework.")
+    (license license:expat)))
 
 (define-public python-pytest-snapshot
   (package
@@ -2801,48 +2898,6 @@ friendly library for concurrency and async I/O in Python.")
     ;; Either license applies.
     (license (list license:expat license:asl2.0))))
 
-(define-public python-pytest-shutil
-  (package
-    (name "python-pytest-shutil")
-    (version "1.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-shutil" version))
-       (sha256
-        (base32
-         "18283zgs3z61paymzf0pp5x3di3hg3m91pvb3v7bmz3fggphdl5a"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-tests
-            (lambda _
-              (mkdir "/tmp/bin")
-              (substitute* "tests/integration/test_cmdline_integration.py"
-                (("dirname = '/bin'")
-                 "dirname = '/tmp/bin'")
-                (("bindir = os.path.realpath\\('/bin'\\)")
-                 "bindir = os.path.realpath('/tmp/bin')")))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-git
-           python-wheel))
-    (propagated-inputs
-     (list python-execnet
-           python-mock
-           python-path
-           python-six
-           python-termcolor))
-    (home-page "https://github.com/manahl/pytest-plugins")
-    (synopsis "Assorted shell and environment tools for py.test")
-    (description
-     "This package provides assorted shell and environment tools for the
-py.test testing framework.")
-    (license license:expat)))
-
 (define-public python-pytest-vcr
   ;; This commit fixes integration with pytest-5
   (let ((commit "4d6c7b3e379a6a7cba0b8f9d20b704dc976e9f05")
@@ -2975,27 +3030,6 @@ framework.")
     (description "The pyux utility detects API changes in Python
 libraries.")
     (license license:expat)))
-
-(define-public python-pyannotate
-  (package
-    (name "python-pyannotate")
-    (version "1.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyannotate" version))
-       (sha256
-        (base32
-         "16bm0mf7wxvy0lgmcs1p8n1ji8pnvj1jvj8zk3am70dkp825iv84"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-mypy-extensions python-six))
-    (home-page
-     "https://github.com/dropbox/pyannotate")
-    (synopsis "Auto-generate PEP-484 annotations")
-    (description "This package, PyAnnotate, is used to auto-generate PEP-484
-annotations.")
-    (license license:asl2.0)))
 
 (define-public python-re-assert
   (package
@@ -3148,40 +3182,6 @@ execute @code{unittest} test suites using multiple processes to split up
 execution of a test suite.  It will also store a history of all test runs to
 help in debugging failures and optimizing the scheduler to improve speed.")
     (license license:asl2.0)))
-
-;; This is only used by python-sanic
-(define-public python-pytest-sanic
-  (package
-    (name "python-pytest-sanic")
-    (version "1.9.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-sanic" version))
-              (sha256
-               (base32
-                "0shq1bqnydj0l3ipb73j1qh5kqcjvzkps30zk8grq3dwmh3wmnkr"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; Tests depend on python-sanic.
-     (list
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-poetry-core
-            (lambda _
-              ;; Patch to use the core poetry API.
-              (substitute* "pyproject.toml"
-                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
-    (native-inputs
-     (list python-poetry-core))
-    (propagated-inputs
-     (list python-httpx python-async-generator python-pytest
-           python-websockets))
-    (home-page "https://github.com/yunstanford/pytest-sanic")
-    (synopsis "Pytest plugin for Sanic")
-    (description "This package provides a pytest plugin for Sanic.  It helps
-you to test your code asynchronously.")
-    (license license:expat)))
 
 (define-public python-sybil
   (package
