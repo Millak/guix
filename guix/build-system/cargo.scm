@@ -430,7 +430,8 @@ any dependent crates. This can be a benefits:
 
                      ;; This provides a separate sysroot for the regular rustc
                      ,@(if target
-                         `(("rust-sysroot" ,(rust-sysroot target)))
+                         `((,(string-append "rust-sysroot-for-" target)
+                            ,(rust-sysroot target)))
                          '())))
     (outputs outputs)
     (build (if target cargo-cross-build cargo-build))

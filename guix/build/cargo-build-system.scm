@@ -157,7 +157,7 @@ libraries or executables."
          (format #t "error: Possible pre-generated file found: ~a~%" file)))
      (find-files "." (negate empty-file?)))))
 
-(define* (configure #:key source inputs
+(define* (configure #:key source inputs native-inputs
                     target system
                     (cargo-target #f)
                     (vendor-dir "guix-vendor")
@@ -194,9 +194,16 @@ libraries or executables."
   ;; For cross-building
   (when target
     (setenv "CARGO_BUILD_TARGET" cargo-target)
-    (setenv "RUSTFLAGS" (string-append
-                          (or (getenv "RUSTFLAGS") "")
-                          " --sysroot " (assoc-ref inputs "rust-sysroot")))
+    (setenv "RUSTFLAGS"
+            (string-append
+             (or (getenv "RUSTFLAGS") "")
+             " --sysroot "
+             (assoc-ref
+              (append inputs
+                      ;; Workaround for other build systems, as no interface
+                      ;; is available for target-inputs.
+                      (or native-inputs '()))
+              (string-append "rust-sysroot-for-" target))))
 
     (setenv "PKG_CONFIG" (string-append target "-pkg-config"))
 
