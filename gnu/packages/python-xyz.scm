@@ -17559,7 +17559,7 @@ list format (also known as ASCII plist), written in Cython.")
            (lambda _
              (substitute* "setup.py"
                (("lark-parser>=0.7.1,<0.8.0")
-                "lark-parser>=0.7.1"))))
+                "lark"))))
          (add-after 'unpack 'delete-unspported-tests
            ;; Some tests rely on the 'test' module of Python itself,
            ;; which is not available with the Python package in Guix;
@@ -17577,7 +17577,7 @@ list format (also known as ASCII plist), written in Cython.")
                            (filter (lambda (f) (grep "from test." f))
                                    test-files)))))))))
     (propagated-inputs
-     (list python-lark-parser))
+     (list python-lark))
     (native-inputs
      (list python-six))
     (home-page "https://github.com/vaidik/commentjson")
