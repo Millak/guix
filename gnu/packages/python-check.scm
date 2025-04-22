@@ -680,36 +680,6 @@ Functions exposed by the standard library’s @code{time}, @code{datetime} and
 @code{date} modules are patched within the contexts exposed.")
     (license license:expat)))
 
-(define-public python-pytest-csv
-  (package
-    (name "python-pytest-csv")
-    (version "3.0.0")
-    (source
-     (origin
-       (method git-fetch)               ;no tests in PyPI archive
-       (uri (git-reference
-             (url "https://github.com/nicoulaj/pytest-csv")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "17518f2fn5l98lyk9p8r7215c1whi61imzrh6ahrmcksr8w0zz04"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest-flake8
-           python-pytest-xdist
-           python-setuptools
-           python-tabulate
-           python-wheel))
-    (propagated-inputs
-     (list python-pytest python-six))
-    (home-page "https://github.com/nicoulaj/pytest-csv")
-    (synopsis "CSV reporter for Pytest")
-    (description "This package provides a plugin for Pytest that enables a
-CSV output mode for Pytest.  It can be enabled via the @option{--csv} option
-it adds to the Pytest command line interface (CLI).")
-    (license license:gpl3+)))
-
 (define-public python-pytest-shard
   (let ((commit "64610a08dac6b0511b6d51cf895d0e1040d162ad")
         (revision "0"))
@@ -987,6 +957,53 @@ successor of @url{https://github.com/rkern/line_profiler}.")
 Python program.")
     (license license:bsd-3)))
 
+(define-public python-nbval
+  (package
+    (name "python-nbval")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "nbval" version))
+       (sha256
+        (base32 "154h6xpf9h6spgg3ax6k79fd40j197ipwnfjmf5rc2kvc2bmgjbp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list
+        ;; This test fails because of a mismatch in the output of LaTeX
+        ;; equation environments.  Seems OK to skip.
+        "--ignore=tests/test_nbdime_reporter.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-test
+            (lambda _
+              ;; This test fails because of a mismatch in the output of LaTeX
+              ;; equation environments.  Seems OK to skip.
+              (delete-file
+               "tests/ipynb-test-samples/test-latex-pass-correctouput.ipynb"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-sympy
+           python-wheel))
+    (propagated-inputs
+     (list python-coverage
+           python-ipykernel
+           python-jupyter-client
+           python-nbformat
+           python-six))
+    (home-page "https://github.com/computationalmodelling/nbval")
+    (synopsis "Pytest plugin to validate Jupyter notebooks")
+    (description
+     "This plugin adds functionality to Pytest to recognise and collect Jupyter
+notebooks.  The intended purpose of the tests is to determine whether execution
+of the stored inputs match the stored outputs of the @file{.ipynb} file.  Whilst
+also ensuring that the notebooks are running without errors.")
+    (license license:bsd-3)))
+
 (define-public python-pyinstrument
   (package
     (name "python-pyinstrument")
@@ -1026,59 +1043,6 @@ Python program.")
     (description
      "Pyinstrument is a Python profiler to help you optimize your code.")
     (license license:bsd-3)))
-
-(define-public python-pytest-socket
-  (package
-    (name "python-pytest-socket")
-    (version "0.7.0")
-    (source
-     (origin
-       ;; There are no tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/miketheman/pytest-socket")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1m6s07gvljq82hiajzy1v123kpkciziiqdjqfnas169rmzg0bmnp"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-append
-                    ;; Disable test requiring network access.
-                    "not test_disable_socket_urllib"
-                    " and not test_parametrize_with_socket_enabled_and_allow_hosts"
-                    " and not test_global_disable_and_allow_host"
-                    " and not test_asynctest"
-                    " and not test_httpx_fails"
-                    " and not test_disabled_urllib_fails"
-                    " and not test_urllib_succeeds_by_default"
-                    " and not test_enabled_urllib_succeeds"
-                    " and not test_single_cli_arg_connect_disabled_hostname_resolved"))
-     #:phases
-       #~(modify-phases %standard-phases
-           ;; See <https://github.com/miketheman/pytest-socket/issues/308>
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* (list "tests/test_async.py"
-                                "tests/test_socket.py"
-                                "tests/test_precedence.py")
-               (("from tests.common import assert_socket_blocked")
-                "from common import assert_socket_blocked")))))))
-    (native-inputs (list python-httpx
-                         python-poetry-core
-                         python-pypa-build
-                         python-pytest
-                         python-pytest-httpbin
-                         python-pytest-randomly
-                         python-starlette))
-    (home-page "https://pypi.org/project/pytest-socket/")
-    (synopsis "Pytest plugin to disable socket calls during tests")
-    (description
-     "This package provides Pytest extension which disables all network calls flowing
-through Python's socket interface")
-    (license license:expat)))
 
 (define-public python-pytest-order
   (package
@@ -1127,37 +1091,6 @@ Python installation, and select dependencies in the header of the output when
 running pytest.  It can be used with packages that are not affiliated with the
 Astropy project, but is optimized for use with astropy-related projects.")
   (license license:bsd-3)))
-
-(define-public python-pytest-astropy
-  (package
-    (name "python-pytest-astropy")
-    (version "0.11.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-astropy" version))
-       (sha256
-        (base32 "1d9rcxnc57rjp96xag1gq725pwl11b3k5hdaz7c3w5lixncsmbjf"))))
-    (build-system python-build-system)
-    (arguments (list #:tests? #f)) ; there are no tests
-    (native-inputs
-     (list python-attrs python-pytest-mock python-setuptools-scm))
-    (propagated-inputs
-     (list python-hypothesis
-           python-pytest-arraydiff
-           python-pytest-astropy-header
-           python-pytest-cov
-           python-pytest-doctestplus
-           python-pytest-filter-subpackage
-           python-pytest-openfiles
-           python-pytest-remotedata))
-    (home-page "https://github.com/astropy/pytest-astropy")
-    (synopsis
-     "Metapackage for all the testing machinery used by the Astropy Project")
-    (description
-     "This is a meta-package that pulls in the dependencies that are used by
-astropy related packages.")
-    (license license:bsd-3)))
 
 (define-public python-pylama
   (package
@@ -1248,6 +1181,37 @@ among others.")
      "This is a py.test plugin to facilitate the generation and comparison of
 data arrays produced during tests, in particular in cases where the arrays
 are too large to conveniently hard-code them in the tests.")
+    (license license:bsd-3)))
+
+(define-public python-pytest-astropy
+  (package
+    (name "python-pytest-astropy")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-astropy" version))
+       (sha256
+        (base32 "1d9rcxnc57rjp96xag1gq725pwl11b3k5hdaz7c3w5lixncsmbjf"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f)) ; there are no tests
+    (native-inputs
+     (list python-attrs python-pytest-mock python-setuptools-scm))
+    (propagated-inputs
+     (list python-hypothesis
+           python-pytest-arraydiff
+           python-pytest-astropy-header
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-filter-subpackage
+           python-pytest-openfiles
+           python-pytest-remotedata))
+    (home-page "https://github.com/astropy/pytest-astropy")
+    (synopsis
+     "Metapackage for all the testing machinery used by the Astropy Project")
+    (description
+     "This is a meta-package that pulls in the dependencies that are used by
+astropy related packages.")
     (license license:bsd-3)))
 
 (define-public python-pytest-benchmark
@@ -1428,6 +1392,36 @@ applications.  @code{pytest-cram} tests Python command line applications by
 letting you write your Python API tests with pytest, and your command line
 tests in cram.")
     (license license:expat)))
+
+(define-public python-pytest-csv
+  (package
+    (name "python-pytest-csv")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/nicoulaj/pytest-csv")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "17518f2fn5l98lyk9p8r7215c1whi61imzrh6ahrmcksr8w0zz04"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-flake8
+           python-pytest-xdist
+           python-setuptools
+           python-tabulate
+           python-wheel))
+    (propagated-inputs
+     (list python-pytest python-six))
+    (home-page "https://github.com/nicoulaj/pytest-csv")
+    (synopsis "CSV reporter for Pytest")
+    (description "This package provides a plugin for Pytest that enables a
+CSV output mode for Pytest.  It can be enabled via the @option{--csv} option
+it adds to the Pytest command line interface (CLI).")
+    (license license:gpl3+)))
 
 (define-public python-pytest-datafiles
   (package
@@ -1755,6 +1749,28 @@ someone to import them in their actual tests to use them.")
 requests to be replied to with user provided responses.")
     (license license:expat)))
 
+(define-public python-pytest-isort
+  (package
+    (name "python-pytest-isort")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_isort" version))
+       (sha256
+        (base32 "0v0qa5l22y3v0nfkpvghbinzyj2rh4f54k871lrp992lbvf02y06"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f)) ; No tests in PyPi tarball.
+    (propagated-inputs
+     (list python-isort python-pytest))
+    (home-page "https://github.com/moccu/pytest-isort/")
+    (synopsis "Pytest plugin to check import ordering using isort")
+    (description
+     "This package provides a pytest plugin to check import ordering using
+isort.")
+    (license license:bsd-3)))
+
 (define-public python-pytest-metadata
   (package
     (name "python-pytest-metadata")
@@ -1941,6 +1957,34 @@ developers to detect whether any file handles or other file-like objects
 were inadvertently left open at the end of a unit test.")
     (license license:bsd-3)))
 
+(define-public python-pytest-parawtf
+  (package
+    (name "python-pytest-parawtf")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pytest-parawtf" version))
+              (sha256
+               (base32
+                "08s86hy58lvrd90cnayzydvac4slaflj0ph9yknakcc42anrm023"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 ;; https://github.com/flub/pytest-parawtf/issues/1
+                 (invoke "pytest" "-k" "not test_mark")))))))
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/flub/pytest-parawtf/")
+    (synopsis "Finally spell paramete?ri[sz]e correctly")
+    (description
+"@code{python-pytest} uses one of four different spellings of
+parametrize.  This plugin allows you to use all four.")
+    (license license:expat)))
+
 (define-public python-pytest-pydocstyle
   (package
     (name "python-pytest-pydocstyle")
@@ -2033,6 +2077,59 @@ be used to test that the value of an expression does not change
 unexpectedly.")
     (license license:expat)))
 
+(define-public python-pytest-socket
+  (package
+    (name "python-pytest-socket")
+    (version "0.7.0")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/miketheman/pytest-socket")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m6s07gvljq82hiajzy1v123kpkciziiqdjqfnas169rmzg0bmnp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Disable test requiring network access.
+                    "not test_disable_socket_urllib"
+                    " and not test_parametrize_with_socket_enabled_and_allow_hosts"
+                    " and not test_global_disable_and_allow_host"
+                    " and not test_asynctest"
+                    " and not test_httpx_fails"
+                    " and not test_disabled_urllib_fails"
+                    " and not test_urllib_succeeds_by_default"
+                    " and not test_enabled_urllib_succeeds"
+                    " and not test_single_cli_arg_connect_disabled_hostname_resolved"))
+     #:phases
+       #~(modify-phases %standard-phases
+           ;; See <https://github.com/miketheman/pytest-socket/issues/308>
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (substitute* (list "tests/test_async.py"
+                                "tests/test_socket.py"
+                                "tests/test_precedence.py")
+               (("from tests.common import assert_socket_blocked")
+                "from common import assert_socket_blocked")))))))
+    (native-inputs (list python-httpx
+                         python-poetry-core
+                         python-pypa-build
+                         python-pytest
+                         python-pytest-httpbin
+                         python-pytest-randomly
+                         python-starlette))
+    (home-page "https://pypi.org/project/pytest-socket/")
+    (synopsis "Pytest plugin to disable socket calls during tests")
+    (description
+     "This package provides Pytest extension which disables all network calls flowing
+through Python's socket interface")
+    (license license:expat)))
+
 (define-public python-pytest-subtests
   (package
     (name "python-pytest-subtests")
@@ -2058,41 +2155,6 @@ unexpectedly.")
     (description "This Pytest plugin provides unittest @code{subTest()}
 support and @code{subtests} fixture.")
     (license license:expat)))
-
-(define-public python-pytest-vcr
-  ;; This commit fixes integration with pytest-5
-  (let ((commit "4d6c7b3e379a6a7cba0b8f9d20b704dc976e9f05")
-        (revision "1"))
-    (package
-      (name "python-pytest-vcr")
-      (version (git-version "1.0.2" revision commit))
-      (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/ktosiek/pytest-vcr")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32
-            "1yk988zi0la6zpcm3fff0mxf942di2jiymrfqas19nyngj5ygaqs"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "tests/"))))))
-      (native-inputs
-       (list python-urllib3))
-      (propagated-inputs
-       (list python-pytest python-vcrpy))
-      (home-page "https://github.com/ktosiek/pytest-vcr")
-      (synopsis "Plugin for managing VCR.py cassettes")
-      (description
-       "Plugin for managing VCR.py cassettes.")
-      (license license:expat))))
 
 (define-public python-pytest-check
   (package
@@ -2259,28 +2321,6 @@ friendly library for concurrency and async I/O in Python.")
     ;; Either license applies.
     (license (list license:expat license:asl2.0))))
 
-(define-public python-pytest-isort
-  (package
-    (name "python-pytest-isort")
-    (version "3.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_isort" version))
-       (sha256
-        (base32 "0v0qa5l22y3v0nfkpvghbinzyj2rh4f54k871lrp992lbvf02y06"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; No tests in PyPi tarball.
-    (propagated-inputs
-     (list python-isort python-pytest))
-    (home-page "https://github.com/moccu/pytest-isort/")
-    (synopsis "Pytest plugin to check import ordering using isort")
-    (description
-     "This package provides a pytest plugin to check import ordering using
-isort.")
-    (license license:bsd-3)))
-
 (define-public python-pytest-shutil
   (package
     (name "python-pytest-shutil")
@@ -2322,6 +2362,41 @@ isort.")
      "This package provides assorted shell and environment tools for the
 py.test testing framework.")
     (license license:expat)))
+
+(define-public python-pytest-vcr
+  ;; This commit fixes integration with pytest-5
+  (let ((commit "4d6c7b3e379a6a7cba0b8f9d20b704dc976e9f05")
+        (revision "1"))
+    (package
+      (name "python-pytest-vcr")
+      (version (git-version "1.0.2" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/ktosiek/pytest-vcr")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "1yk988zi0la6zpcm3fff0mxf942di2jiymrfqas19nyngj5ygaqs"))))
+      (build-system python-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "tests/"))))))
+      (native-inputs
+       (list python-urllib3))
+      (propagated-inputs
+       (list python-pytest python-vcrpy))
+      (home-page "https://github.com/ktosiek/pytest-vcr")
+      (synopsis "Plugin for managing VCR.py cassettes")
+      (description
+       "Plugin for managing VCR.py cassettes.")
+      (license license:expat))))
 
 (define-public python-pytest-virtualenv
   (package
@@ -2483,53 +2558,6 @@ service processes for your tests with pytest.")
     (description "This package provides a Pytest plugin for testing Jupyter
 notebooks.")
     (license license:asl2.0)))
-
-(define-public python-nbval
-  (package
-    (name "python-nbval")
-    (version "0.11.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "nbval" version))
-       (sha256
-        (base32 "154h6xpf9h6spgg3ax6k79fd40j197ipwnfjmf5rc2kvc2bmgjbp"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list
-        ;; This test fails because of a mismatch in the output of LaTeX
-        ;; equation environments.  Seems OK to skip.
-        "--ignore=tests/test_nbdime_reporter.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'fix-test
-            (lambda _
-              ;; This test fails because of a mismatch in the output of LaTeX
-              ;; equation environments.  Seems OK to skip.
-              (delete-file
-               "tests/ipynb-test-samples/test-latex-pass-correctouput.ipynb"))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-sympy
-           python-wheel))
-    (propagated-inputs
-     (list python-coverage
-           python-ipykernel
-           python-jupyter-client
-           python-nbformat
-           python-six))
-    (home-page "https://github.com/computationalmodelling/nbval")
-    (synopsis "Pytest plugin to validate Jupyter notebooks")
-    (description
-     "This plugin adds functionality to Pytest to recognise and collect Jupyter
-notebooks.  The intended purpose of the tests is to determine whether execution
-of the stored inputs match the stored outputs of the @file{.ipynb} file.  Whilst
-also ensuring that the notebooks are running without errors.")
-    (license license:bsd-3)))
 
 (define-public python-pytest-flask
   (package
@@ -3294,34 +3322,6 @@ tool.  It can be used to check that a package installs correctly with
 different Python versions and interpreters, or run tests in each type of
 supported environment, or act as a frontend to continuous integration
 servers.")
-    (license license:expat)))
-
-(define-public python-pytest-parawtf
-  (package
-    (name "python-pytest-parawtf")
-    (version "1.0.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-parawtf" version))
-              (sha256
-               (base32
-                "08s86hy58lvrd90cnayzydvac4slaflj0ph9yknakcc42anrm023"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 ;; https://github.com/flub/pytest-parawtf/issues/1
-                 (invoke "pytest" "-k" "not test_mark")))))))
-    (propagated-inputs (list python-pytest))
-    (home-page "https://github.com/flub/pytest-parawtf/")
-    (synopsis "Finally spell paramete?ri[sz]e correctly")
-    (description
-"@code{python-pytest} uses one of four different spellings of
-parametrize.  This plugin allows you to use all four.")
     (license license:expat)))
 
 (define-public python-pycotap
