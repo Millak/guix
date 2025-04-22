@@ -19311,14 +19311,14 @@ Bioconductor.")
 (define-public r-motifstack
   (package
     (name "r-motifstack")
-    (version "1.50.0")
+    (version "1.52.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "motifStack" version))
        (sha256
         (base32
-         "0wkv0gjvk7p491c4zsg1hh61r3lhmjnif6nd2s63xwqm2qw6a4nx"))
+         "1gd8rhdci6cskhxz6g5hyjx9rdpd5b6pacy5i8nk5yvqmg2jqwrn"))
        (snippet
         '(delete-file "inst/htmlwidgets/lib/d3/d3.v4.min.js"))))
     (properties `((upstream-name . "motifStack")))
@@ -19342,7 +19342,9 @@ Bioconductor.")
            r-tfbstools
            r-xml))
     (native-inputs
-     (list esbuild r-knitr r-runit
+     (list esbuild
+           r-biocgenerics
+           r-knitr r-runit
            (origin
              (method url-fetch)
              (uri "https://web.archive.org/web/20230428092426id_/\
