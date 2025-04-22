@@ -56,7 +56,7 @@ list.")
 (define-public gnu-standards
   (package
     (name "gnu-standards")
-    (version "2020-11-25")
+    (version "2025-03-25")
     (source
      (origin
        (method cvs-fetch)
@@ -67,7 +67,7 @@ list.")
              (revision version)))
        (sha256
         (base32
-         "1xlwmgcnvp81ipgfir4ckpgl922mbckvxy1x758r0lksq5vrpglj"))
+         "0gwli6wz6zag6bj7nsr403j6r694q0vva9mqlpfqa71g1pglr2ag"))
        (file-name (string-append name "-" version "-checkout"))))
     (build-system trivial-build-system)
     (native-inputs `(("gzip" ,gzip)
