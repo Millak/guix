@@ -35528,14 +35528,14 @@ process.")
 (define-public python-gamera
   (package
     (name "python-gamera")
-    (version "4.0.1")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gamera.informatik.hsnr.de/download/"
                            "gamera-" version ".tar.gz"))
        (sha256
-        (base32 "1apgjqdlsm0kx05jlpaw4398b6i2317yrw3jd8wp83w3pqmg34ps"))
+        (base32 "1n3cwc97dq4sz244ybs9na8a73s9f8wa4cjswxz54sx6a7xcafps"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -35548,11 +35548,13 @@ process.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'disable-wx-support
+         (add-after 'unpack 'fix-build
            (lambda _
-             (substitute* "setup.py"
-               (("no_wx = False")
-                "no_wx = True"))))
+             ;; The script to make daily build artifacts fails to compile,
+             ;; but users don't need that, so ignore it.
+             (delete-file "misc/daily_build.py")
+             ;; Prepare tests
+             (mkdir-p "tests/tmp")))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
