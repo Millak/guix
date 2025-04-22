@@ -23634,24 +23634,31 @@ of commands is displayed in a handy popup.")
     (license license:gpl3+)))
 
 (define-public emacs-ws-butler
-  (package
-    (name "emacs-ws-butler")
-    (version "1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.nongnu.org/nongnu/ws-butler-" version
-                           ".tar"))
-       (sha256
-        (base32 "1vy7g2ryg1drcz9zpn011d36zcd9a5b5yny5hwpjrllqj5dg73jx"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.nongnu.org/nongnu/ws-butler.html")
-    (synopsis "Unobtrusively remove trailing whitespace")
-    (description
-     "ws-butler automatically trims trailing whitespace characters on save.
+  (let ((commit "9ee5a7657a22e836618813c2e2b64a548d27d2ff")
+        (revision "0"))
+    (package
+      (name "emacs-ws-butler")
+      (version (git-version "1.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.savannah.gnu.org/git/emacs/nongnu")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ivpgib2bxv7x6cp04mj8crc1a60d7c77jcc59sj14scq4jqbmjb"))))
+      (build-system emacs-build-system)
+      (arguments (list #:test-command
+                       #~(list "emacs" "--batch" "-L" "."
+                               "-l" "tests/run-test.el")))
+      (home-page "https://elpa.nongnu.org/nongnu/ws-butler.html")
+      (synopsis "Unobtrusively remove trailing whitespace")
+      (description
+       "ws-butler automatically trims trailing whitespace characters on save.
 In contrast with other whitespace cleanup solutions, only modified lines are
 trimmed.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-opencl-mode
   (package
