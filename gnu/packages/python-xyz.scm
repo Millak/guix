@@ -26171,37 +26171,38 @@ manipulation and interaction with formal grammars.")
 (define-public python-invoke
   (package
     (name "python-invoke")
-    (home-page "https://www.pyinvoke.org/")
     (version "1.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "invoke" version))
-              (sha256
-               (base32
-                "1lsql9daabfr31c7syva5myc5bka45k57ygs9fliv63qrwp1wk9p"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "invoke" version))
+       (sha256
+        (base32 "1lsql9daabfr31c7syva5myc5bka45k57ygs9fliv63qrwp1wk9p"))))
     (build-system python-build-system)
     (arguments
+     (list
      ;; XXX: Requires many dependencies that are not yet in Guix.
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-python2-code
-           (lambda _
-             (delete-file-recursively "invoke/vendor/yaml2")))
-         (add-after 'unpack 'fix-bash-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((bash (assoc-ref inputs "bash")))
-               (substitute* "invoke/config.py"
-                 (("shell = \"/bin/bash\"")
-                  (string-append "shell = \"" bash "/bin/bash\"")))))))))
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-python2-code
+            (lambda _
+              (delete-file-recursively "invoke/vendor/yaml2")))
+          (add-after 'unpack 'fix-bash-path
+            (lambda _
+              (let ((bash #$(this-package-input "bash-minimal")))
+                (substitute* "invoke/config.py"
+                  (("shell = \"/bin/bash\"")
+                   (string-append "shell = \"" bash "/bin/bash\"")))))))))
     (inputs
-     `(("bash" ,bash-minimal)))
+     (list bash-minimal))
+    (home-page "https://www.pyinvoke.org/")
     (synopsis "Pythonic task execution")
     (description
      "Invoke is a Python task execution tool and library, drawing inspiration
-     from various sources to arrive at a powerful and clean feature set.  It is
-     evolved from the Fabric project, but focuses on local and abstract concerns
-     instead of servers and network commands.")
+from various sources to arrive at a powerful and clean feature set.  It is
+evolved from the Fabric project, but focuses on local and abstract concerns
+instead of servers and network commands.")
     (license license:bsd-3)))
 
 (define-public python-automat
