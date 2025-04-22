@@ -1162,6 +1162,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/corefx-mono-5.4.0-patches.patch		\
   %D%/packages/patches/corefx-mono-pre-5.8.0-patches.patch	\
   %D%/packages/patches/coreutils-gnulib-tests.patch		\
+  %D%/packages/patches/corrosion-honor-CARGO_BUILD_TARGET.patch	\
   %D%/packages/patches/cppcheck-fix-basedir-test.patch	\
   %D%/packages/patches/cppdap-add-CPPDAP_USE_EXTERNAL_GTEST_PACKAGE.patch\
   %D%/packages/patches/cpulimit-with-glib-2.32.patch		\

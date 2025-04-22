@@ -508,7 +508,9 @@ format (either JSON or XML).
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1bylfjji4yw88r00hgb69nfl9lz73bhc7q3n64myif4alr4b8ypx"))))
+               (base32 "1bylfjji4yw88r00hgb69nfl9lz73bhc7q3n64myif4alr4b8ypx"))
+              (patches
+               (search-patches "corrosion-honor-CARGO_BUILD_TARGET.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
