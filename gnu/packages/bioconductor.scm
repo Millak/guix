@@ -5021,13 +5021,13 @@ sequencing data.")
 (define-public r-anf
   (package
     (name "r-anf")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ANF" version))
               (sha256
                (base32
-                "1v1lzd0lbg21z1gyca1p45p50akznjlq0b3999sny7hfh20954fr"))))
+                "17rw1sb6fvan37hvsiv21zbldq7ajkxaxaswynjp33klycqkxvaf"))))
     (properties `((upstream-name . "ANF")))
     (build-system r-build-system)
     ;; Tests attempt to download data files.
@@ -5038,7 +5038,7 @@ sequencing data.")
            r-mass
            r-rcolorbrewer
            r-survival))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-experimenthub r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/ANF")
     (synopsis "Affinity network fusion for complex patient clustering")
     (description
