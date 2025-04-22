@@ -5051,13 +5051,13 @@ network fusion.")
 (define-public r-annmap
   (package
     (name "r-annmap")
-    (version "1.48.0")
+    (version "1.50.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "annmap" version))
               (sha256
                (base32
-                "0rq8v5dfmmr43nyri3yr2q4wcq7p9c0ia3nfj4ry5xpkiyqj4n1x"))))
+                "0xw75x0zgl7nzl4frxqcnj2fyzw59i1xzlwfnvs32c04bjnzmx30"))))
     (properties `((upstream-name . "annmap")))
     (build-system r-build-system)
     (arguments
@@ -5078,7 +5078,6 @@ network fusion.")
            r-lattice
            r-rmysql
            r-rsamtools))
-    (native-inputs (list r-runit))
     (home-page "https://github.com/cruk-mi/annmap")
     (synopsis
      "Genome annotation and visualisation for Affymetrix arrays and NGS analysis")
