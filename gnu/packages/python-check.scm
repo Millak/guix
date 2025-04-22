@@ -932,6 +932,38 @@ successor of @url{https://github.com/rkern/line_profiler}.")
 Python program.")
     (license license:bsd-3)))
 
+(define-public python-mockito
+  (package
+    (name "python-mockito")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in pypi archive
+       (uri (git-reference
+             (url "https://github.com/kaste/mockito-python")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0fg8jflcf4c929gd4zbcrk73d08waaqjfjmdjrgnv54mzl35pjxl"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (native-inputs
+     (list python-numpy python-pytest))
+    (home-page "https://github.com/kaste/mockito-python")
+    (synopsis "Mocking library for Python")
+    (description "This package provides a Python implementation of the Java
+library of the same name.  It eases monkey patching, for example to stub out
+side effects when unit testing.")
+    (license license:expat)))
+
+
 (define-public python-mypy
   (package
     (name "python-mypy")
@@ -1017,6 +1049,39 @@ supported by the MyPy typechecker.")
       (list python-setuptools
             python-wheel)))))
 
+(define-public python-nbmake
+  (package
+    (name "python-nbmake")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/treebeardtech/nbmake")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06syl819kwqhmjwp34lri31f0pypwnxs9j03s5lbk12w42mihzdi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-ipykernel python-nbclient python-nbformat python-pygments))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-xdist
+           python-pyyaml))
+    (home-page "https://github.com/treebeardtech/nbmake")
+    (synopsis "Pytest plugin for testing notebooks")
+    (description "This package provides a Pytest plugin for testing Jupyter
+notebooks.")
+    (license license:asl2.0)))
+
 (define-public python-nbval
   (package
     (name "python-nbval")
@@ -1063,6 +1128,40 @@ notebooks.  The intended purpose of the tests is to determine whether execution
 of the stored inputs match the stored outputs of the @file{.ipynb} file.  Whilst
 also ensuring that the notebooks are running without errors.")
     (license license:bsd-3)))
+
+(define-public python-nox
+  (package
+    (name "python-nox")
+    (version "2024.10.09")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wntrblm/nox")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gvv6hcwmmmg1sgwar42061ahx5p773d5fzx3c7sq81wh3gp7lqr"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-argcomplete
+           python-colorlog
+           python-packaging
+           python-py
+           python-virtualenv))
+    (native-inputs
+     (list python-hatchling
+           python-jinja2
+           python-pytest
+           python-tox))
+    (home-page "https://nox.thea.codes/")
+    (synopsis "Flexible test automation")
+    (description
+     "@code{nox} is a command-line tool that automates testing in multiple
+Python environments, similar to @code{tox}.  Unlike tox, Nox uses a standard
+Python file for configuration.")
+    (license license:asl2.0)))
 
 (define-public python-nptyping
   (package
@@ -1162,6 +1261,35 @@ __version_tuple__ = version_tuple = (~a)~%" version version-tuple)))))))))
     (description
      "This package provides a @code{flake8} plugin to lint @code{pandas} code
 in an opinionated way.")
+    (license license:expat)))
+
+(define-public python-pycotap
+  (package
+    (name "python-pycotap")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pycotap" version))
+       (sha256
+        (base32 "1v69fxial9i5wlap6wc4igq3hydvxbak7dlgb7cikk8wjgafqf7r"))))
+    (build-system python-build-system)
+    (home-page "https://el-tramo.be/pycotap")
+    (synopsis "Tiny Python TAP test runner")
+    (description "This package provides a simple Python test runner for
+unittest that outputs Test Anything Protocol (TAP) results to standard
+output.  Contrary to other TAP runners for Python, pycotap...
+@itemize
+@item
+prints TAP (and only TAP) to standard output instead of to a separate file,
+allowing you to pipe it directly to TAP pretty printers and processors;
+@item only contains a TAP reporter, so no parsers, no frameworks, no
+dependencies, etc;
+@item
+is configurable: you can choose how you want the test output and test result
+diagnostics to end up in your TAP output (as TAP diagnostics, YAML blocks, or
+attachments).
+@end itemize")
     (license license:expat)))
 
 (define-public python-pyinstrument
@@ -1441,6 +1569,31 @@ Python code formatter \"black\".")
     (synopsis "Pytest plugin to allow multiple failures")
     (description "This package provides a pytest plugin that allows multiple
 failures per test.")
+    (license license:expat)))
+
+(define-public python-pytest-checkdocs
+  (package
+    (name "python-pytest-checkdocs")
+    (version "2.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-checkdocs" version))
+       (sha256
+        (base32 "1bn1wr3yz8avkwacffyh26za7mg20f9pajpakfk4cn7yvmgbhcrb"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f))      ;no tests in pypi archive
+    (propagated-inputs
+     (list python-docutils
+           python-importlib-metadata
+           python-pep517
+           python-pytest))
+    (native-inputs (list python-setuptools-scm))
+    (home-page "https://github.com/jaraco/pytest-checkdocs")
+    (synopsis "Check the README when running tests")
+    (description
+     "This package provides a pytest plugin that checks the long description
+of the project to ensure it renders properly.")
     (license license:expat)))
 
 (define-public python-pytest-click
@@ -2006,44 +2159,6 @@ isort.")
 access to test session metadata.")
     (license license:mpl2.0)))
 
-(define-public python-pytest-remotedata
-  (package
-    (name "python-pytest-remotedata")
-    (version "0.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-remotedata" version))
-       (sha256
-        (base32 "0ndvnj9zghfj17haphrygiri9iy38wb8lwq1xdkfvlfd73v8ph05"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              "-k" (string-join
-                    ;; Network access is required.
-                    (list "not test_internet_access"
-                          ;; Failed with assertion error.
-                          "test_default_behavior"
-                          "test_strict_with_decorator")
-                    " and not "))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-packaging))
-    (home-page "https://github.com/astropy/pytest-remotedata")
-    (synopsis "Pytest plugin for controlling remote data access")
-    (description
-     "This package provides a plugin for the Pytest framework that allows
-developers to control unit tests that require access to data from the
-internet.")
-    (license license:bsd-3)))
-
 (define-public python-pytest-repeat
   (package
     (name "python-pytest-repeat")
@@ -2310,6 +2425,44 @@ The main usage is to use the @code{qtbot} fixture, responsible for handling
 interaction, like key presses and mouse clicks.")
     (license license:expat)))
 
+(define-public python-pytest-remotedata
+  (package
+    (name "python-pytest-remotedata")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-remotedata" version))
+       (sha256
+        (base32 "0ndvnj9zghfj17haphrygiri9iy38wb8lwq1xdkfvlfd73v8ph05"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "-k" (string-join
+                    ;; Network access is required.
+                    (list "not test_internet_access"
+                          ;; Failed with assertion error.
+                          "test_default_behavior"
+                          "test_strict_with_decorator")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-packaging))
+    (home-page "https://github.com/astropy/pytest-remotedata")
+    (synopsis "Pytest plugin for controlling remote data access")
+    (description
+     "This package provides a plugin for the Pytest framework that allows
+developers to control unit tests that require access to data from the
+internet.")
+    (license license:bsd-3)))
+
 (define-public python-pytest-rerunfailures
   (package
     (name "python-pytest-rerunfailures")
@@ -2338,6 +2491,30 @@ eliminate flaky failures.")
        (uri (pypi-uri "pytest-rerunfailures" version))
        (sha256
         (base32 "16cin0chv59w4rvnd6r0fisp0s8avmp07rwn9da6yixw43jdncp1"))))))
+
+(define-public python-pytest-services
+  (package
+    (name "python-pytest-services")
+    (version "1.3.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "pytest-services" version))
+        (sha256
+         (base32
+          "0b2zfv04w6m3gp2v44ifdhx22vcji069qnn95ry3zcyxib7cjnq3"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f)) ; Tests not included in release tarball.
+    (propagated-inputs
+     (list python-psutil python-requests))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/pytest-dev/pytest-services")
+    (synopsis "Services plugin for pytest testing framework")
+    (description
+     "This plugin provides a set of fixtures and utility functions to start
+service processes for your tests with pytest.")
+    (license license:expat)))
 
 (define-public python-pytest-shard
   (let ((commit "64610a08dac6b0511b6d51cf895d0e1040d162ad")
@@ -2501,31 +2678,6 @@ through Python's socket interface")
     (synopsis "Unittest subTest() support and subtests fixture")
     (description "This Pytest plugin provides unittest @code{subTest()}
 support and @code{subtests} fixture.")
-    (license license:expat)))
-
-(define-public python-pytest-checkdocs
-  (package
-    (name "python-pytest-checkdocs")
-    (version "2.7.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-checkdocs" version))
-       (sha256
-        (base32 "1bn1wr3yz8avkwacffyh26za7mg20f9pajpakfk4cn7yvmgbhcrb"))))
-    (build-system python-build-system)
-    (arguments (list #:tests? #f))      ;no tests in pypi archive
-    (propagated-inputs
-     (list python-docutils
-           python-importlib-metadata
-           python-pep517
-           python-pytest))
-    (native-inputs (list python-setuptools-scm))
-    (home-page "https://github.com/jaraco/pytest-checkdocs")
-    (synopsis "Check the README when running tests")
-    (description
-     "This package provides a pytest plugin that checks the long description
-of the project to ensure it renders properly.")
     (license license:expat)))
 
 (define-public python-pytest-testmon
@@ -2804,63 +2956,6 @@ framework.")
      "This package provides a Pytest plugin to run Xvfb for tests.")
     (license license:expat)))
 
-(define-public python-pytest-services
-  (package
-    (name "python-pytest-services")
-    (version "1.3.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pytest-services" version))
-        (sha256
-         (base32
-          "0b2zfv04w6m3gp2v44ifdhx22vcji069qnn95ry3zcyxib7cjnq3"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f)) ; Tests not included in release tarball.
-    (propagated-inputs
-     (list python-psutil python-requests))
-    (native-inputs
-     (list python-pytest))
-    (home-page "https://github.com/pytest-dev/pytest-services")
-    (synopsis "Services plugin for pytest testing framework")
-    (description
-     "This plugin provides a set of fixtures and utility functions to start
-service processes for your tests with pytest.")
-    (license license:expat)))
-
-(define-public python-nbmake
-  (package
-    (name "python-nbmake")
-    (version "1.5.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/treebeardtech/nbmake")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "06syl819kwqhmjwp34lri31f0pypwnxs9j03s5lbk12w42mihzdi"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
-    (propagated-inputs
-     (list python-ipykernel python-nbclient python-nbformat python-pygments))
-    (native-inputs
-     (list python-poetry-core
-           python-pytest
-           python-pytest-xdist
-           python-pyyaml))
-    (home-page "https://github.com/treebeardtech/nbmake")
-    (synopsis "Pytest plugin for testing notebooks")
-    (description "This package provides a Pytest plugin for testing Jupyter
-notebooks.")
-    (license license:asl2.0)))
-
 (define-public python-pyux
   (package
     (name "python-pyux")
@@ -2879,37 +2974,6 @@ notebooks.")
     (synopsis "Utility to check API integrity in Python libraries")
     (description "The pyux utility detects API changes in Python
 libraries.")
-    (license license:expat)))
-
-(define-public python-mockito
-  (package
-    (name "python-mockito")
-    (version "1.2.2")
-    (source
-     (origin
-       (method git-fetch)               ;no tests in pypi archive
-       (uri (git-reference
-             (url "https://github.com/kaste/mockito-python")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0fg8jflcf4c929gd4zbcrk73d08waaqjfjmdjrgnv54mzl35pjxl"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
-    (native-inputs
-     (list python-numpy python-pytest))
-    (home-page "https://github.com/kaste/mockito-python")
-    (synopsis "Mocking library for Python")
-    (description "This package provides a Python implementation of the Java
-library of the same name.  It eases monkey patching, for example to stub out
-side effects when unit testing.")
     (license license:expat)))
 
 (define-public python-pyannotate
@@ -3187,40 +3251,6 @@ data in a standard way.")
 which make writing and running functional and integration tests easier.")
     (license license:asl2.0)))
 
-(define-public python-nox
-  (package
-    (name "python-nox")
-    (version "2024.10.09")
-    (source
-     (origin
-       ;; No tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/wntrblm/nox")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0gvv6hcwmmmg1sgwar42061ahx5p773d5fzx3c7sq81wh3gp7lqr"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-argcomplete
-           python-colorlog
-           python-packaging
-           python-py
-           python-virtualenv))
-    (native-inputs
-     (list python-hatchling
-           python-jinja2
-           python-pytest
-           python-tox))
-    (home-page "https://nox.thea.codes/")
-    (synopsis "Flexible test automation")
-    (description
-     "@code{nox} is a command-line tool that automates testing in multiple
-Python environments, similar to @code{tox}.  Unlike tox, Nox uses a standard
-Python file for configuration.")
-    (license license:asl2.0)))
-
 (define-public python-testfixtures
   (package
     (name "python-testfixtures")
@@ -3322,35 +3352,6 @@ tool.  It can be used to check that a package installs correctly with
 different Python versions and interpreters, or run tests in each type of
 supported environment, or act as a frontend to continuous integration
 servers.")
-    (license license:expat)))
-
-(define-public python-pycotap
-  (package
-    (name "python-pycotap")
-    (version "1.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pycotap" version))
-       (sha256
-        (base32 "1v69fxial9i5wlap6wc4igq3hydvxbak7dlgb7cikk8wjgafqf7r"))))
-    (build-system python-build-system)
-    (home-page "https://el-tramo.be/pycotap")
-    (synopsis "Tiny Python TAP test runner")
-    (description "This package provides a simple Python test runner for
-unittest that outputs Test Anything Protocol (TAP) results to standard
-output.  Contrary to other TAP runners for Python, pycotap...
-@itemize
-@item
-prints TAP (and only TAP) to standard output instead of to a separate file,
-allowing you to pipe it directly to TAP pretty printers and processors;
-@item only contains a TAP reporter, so no parsers, no frameworks, no
-dependencies, etc;
-@item
-is configurable: you can choose how you want the test output and test result
-diagnostics to end up in your TAP output (as TAP diagnostics, YAML blocks, or
-attachments).
-@end itemize")
     (license license:expat)))
 
 (define-public python-vcrpy
