@@ -52,6 +52,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -248,13 +249,16 @@ output in multiple windows in a terminal.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n6i8d5aycvp9n2zz2rz67s1y19cw9m5j3pk4719d3a5czh4267m"))))
+        (base32 "0n6i8d5aycvp9n2zz2rz67s1y19cw9m5j3pk4719d3a5czh4267m"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "include/spdlog/fmt/bundled"))))
     (build-system cmake-build-system)
     (outputs '("out" "bin"))
     (arguments
      (list #:configure-flags
            #~(list "-DSPDLOG_BUILD_BENCH=ON"
                    "-DSPDLOG_BUILD_SHARED=ON"
+                   "-DSPDLOG_FMT_EXTERNAL=ON"
                    #$@(if (%current-target-system)
                           '()
                           '("-DSPDLOG_BUILD_TESTS=ON")))
@@ -273,13 +277,12 @@ output in multiple windows in a terminal.")
                                    ")\n"))))))))
     (native-inputs (list catch2-3))
     (inputs (list googlebenchmark))
+    (propagated-inputs (list fmt-11))
     (home-page "https://github.com/gabime/spdlog")
     (synopsis "Fast C++ logging library")
     (description "Spdlog is a very fast header-only/compiled C++ logging
 library.")
-    ;; spdlog is under Expat license, but the bundled fmt library in
-    ;; "include/spdlog/fmt/bundled" is under BSD 2 clause license.
-    (license (list license:expat license:bsd-2))))
+    (license license:expat)))
 
 (define-public spdlog-1.13
   (package/inherit spdlog-1.15
@@ -292,7 +295,12 @@ library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name (package-name spdlog-1.15) version))
        (sha256
-        (base32 "0zgdmdgnp2y36jrlk85d4fiyjkjd6anly8pambyc3f3v6sg02zyy"))))))
+        (base32 "0zgdmdgnp2y36jrlk85d4fiyjkjd6anly8pambyc3f3v6sg02zyy"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "include/spdlog/fmt/bundled"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs spdlog-1.15)
+       (replace "fmt" fmt-9)))))
 
 (define-public spdlog-1.10
   (package
@@ -306,9 +314,15 @@ library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "spdlog" version))
        (sha256
-        (base32 "02xz017ba9fssm1rp1fcfld7h79awbr6fqai9dxaqp02akp3davk"))))))
+        (base32 "02xz017ba9fssm1rp1fcfld7h79awbr6fqai9dxaqp02akp3davk"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "include/spdlog/fmt/bundled"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs spdlog-1.15)
+       (replace "fmt" fmt-8)))))
 
-(define-public spdlog spdlog-1.15)
+;; Update when changing the pinned version of fmt.
+(define-public spdlog spdlog-1.13)
 
 (define-public rsyslog
   (package

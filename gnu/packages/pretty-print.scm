@@ -299,7 +299,7 @@ a fast alternative to @code{IOStreams}.")
        ("clang" ,clang-6)))))
 
 ;; Note: Updating fmt causes some 1000s of rebuilds, so let's have a pinned
-;; version.
+;; version. When changing also update the pinned version of spdlog.
 (define-public fmt fmt-9)
 
 (define-public source-highlight
