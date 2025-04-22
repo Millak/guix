@@ -441,7 +441,7 @@ cursor set.  This project aims at improving the cursor experience.")
            pango
            python-freetype-py
            python-jinja2
-           python-lark-parser
+           python-lark
            python-numpy
            python-pycairo
            python-pyglm
@@ -459,10 +459,6 @@ cursor set.  This project aims at improving the cursor experience.")
                   (ice-9 match))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'adjust-lark-requirement
-            (lambda _
-              (substitute* "setup.py"
-                (("lark") "lark-parser"))))
           (add-after 'install 'install-more
             (lambda _
               (let* ((datadir (string-append #$output "/share"))
