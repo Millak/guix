@@ -735,26 +735,6 @@ successor of @url{https://github.com/rkern/line_profiler}.")
 interfaces with pytest.")
     (license license:expat)))
 
-(define-public python-pytest-cram
-  (package
-    (name "python-pytest-cram")
-    (version "0.2.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-cram" version))
-              (sha256
-               (base32
-                "0405ymmrsv6ii2qhq35nxfjkb402sdb6d13xnk53jql3ybgmiqq0"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-cram python-pytest))
-    (home-page "https://github.com/tbekolay/pytest-cram")
-    (synopsis "Run cram tests with pytest")
-    (description "Cram tests command line applications; Pytest tests Python
-applications.  @code{pytest-cram} tests Python command line applications by
-letting you write your Python API tests with pytest, and your command line
-tests in cram.")
-    (license license:expat)))
-
 (define-public python-pytest-csv
   (package
     (name "python-pytest-csv")
@@ -1208,6 +1188,38 @@ are too large to conveniently hard-code them in the tests.")
 Python code formatter \"black\".")
     (license license:expat)))
 
+(define-public python-pytest-console-scripts
+  (package
+    (name "python-pytest-console-scripts")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-console-scripts" version))
+       (sha256
+        (base32
+         "1qsw3i2h3psyi5avwf14panx8wxqfik2z7294dy37w8ha415iwn7"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "--verbose"
+                       ;; This one test fails because of PATH assumptions
+                       "-k" "not test_elsewhere_in_the_path")))))))
+    (propagated-inputs
+     (list python-mock python-pytest))
+    (native-inputs
+     (list python-setuptools-scm))
+    (home-page "https://github.com/kvas-it/pytest-console-scripts")
+    (synopsis "Pytest plugin for testing console scripts")
+    (description
+     "This package provides a pytest plugin for testing console scripts.")
+    (license license:expat)))
+
 (define-public python-pytest-cookies
   (package
     (name "python-pytest-cookies")
@@ -1240,6 +1252,26 @@ your template is working as expected and takes care of cleaning up after
 running the tests.")
     (license license:expat)))
 
+(define-public python-pytest-cram
+  (package
+    (name "python-pytest-cram")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pytest-cram" version))
+              (sha256
+               (base32
+                "0405ymmrsv6ii2qhq35nxfjkb402sdb6d13xnk53jql3ybgmiqq0"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-cram python-pytest))
+    (home-page "https://github.com/tbekolay/pytest-cram")
+    (synopsis "Run cram tests with pytest")
+    (description "Cram tests command line applications; Pytest tests Python
+applications.  @code{pytest-cram} tests Python command line applications by
+letting you write your Python API tests with pytest, and your command line
+tests in cram.")
+    (license license:expat)))
+
 (define-public python-pytest-datafiles
   (package
     (name "python-pytest-datafiles")
@@ -1261,6 +1293,35 @@ running the tests.")
     (description
      "A pytest plugin to create a tmpdir containing a preconfigured set of
 files and/or directories.")
+    (license license:expat)))
+
+(define-public python-pytest-doctest-custom
+  (package
+    (name "python-pytest-doctest-custom")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-doctest-custom" version))
+       (sha256
+        (base32 "0kxkdd6q9c3h31kc88lbyfll4c45b0zjd24cbr4c083fcvcy7lip"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "test_pytest_doctest_custom.py")))))))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/danilobellini/pytest-doctest-custom")
+    (synopsis
+     "Pytest plugin to customize string representations of doctest results")
+    (description "This package provides a Pytest plugin for customizing string
+representations of doctest results.  It can change the display hook used by
+doctest to render the object representations.")
     (license license:expat)))
 
 (define-public python-pytest-doctestplus
@@ -1309,6 +1370,26 @@ files and/or directories.")
 advanced doctest support and enables the testing of reStructuredText files.")
     (license license:bsd-3)))
 
+(define-public python-pytest-env
+  (package
+    (name "python-pytest-env")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-env" version))
+       (sha256
+        (base32 "1hl0ln0cicdid4qjk7mv90lw9xkb0v71dlj7q7rn89vzxxm9b53y"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/MobileDynasty/pytest-env")
+    (synopsis "Pytest plugin that allows you to add environment variables")
+    (description
+     "This is a @code{py.test} plugin that enables you to set environment
+variables in the @file{pytest.ini} file.")
+    (license license:expat)))
+
 (define-public python-pytest-filter-subpackage
   (package
     (name "python-pytest-filter-subpackage")
@@ -1334,6 +1415,27 @@ advanced doctest support and enables the testing of reStructuredText files.")
 provides a shortcut to testing all code and documentation for a given
 sub-package.")
     (license license:bsd-3)))
+
+(define-public python-pytest-fixture-config
+  (package
+    (name "python-pytest-fixture-config")
+    (version "1.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-fixture-config" version))
+       (sha256
+        (base32
+         "13i1qpz22w3x4dmw8vih5jdnbqfqvl7jiqs0dg764s0zf8bp98a1"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools-git))
+    (home-page "https://github.com/manahl/pytest-plugins")
+    (synopsis "Fixture configuration utils for py.test")
+    (description
+     "This package provides fixture configuration utilities for the py.test
+testing framework.")
+    (license license:expat)))
 
 (define-public python-pytest-freezer
   (package
@@ -1421,6 +1523,37 @@ someone to import them in their actual tests to use them.")
      "This package provides a pytest plugin for generating HTML reports.")
     (license license:mpl2.0)))
 
+(define-public python-pytest-httpx
+  (package
+    (name "python-pytest-httpx")
+    (version "0.35.0")
+    (source
+     (origin
+       ;; pypi package doesn't include the tests
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Colin-b/pytest_httpx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w8qwhcaq1l63kfj4ncsi3355ln37ws6066mxr0b9646g68wp69v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: 261 failed, 170 errors
+      #:tests? #f))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-wheel))
+    (propagated-inputs (list python-httpx))
+    (home-page "https://colin-b.github.io/pytest_httpx/")
+    (synopsis "Pytest plugin to mock httpx")
+    (description "This package provides a pytest fixture to mock httpx
+requests to be replied to with user provided responses.")
+    (license license:expat)))
+
 (define-public python-pytest-metadata
   (package
     (name "python-pytest-metadata")
@@ -1443,32 +1576,6 @@ someone to import them in their actual tests to use them.")
      "@code{pytest-metadata} is a @command{pytest} plugin that provides
 access to test session metadata.")
     (license license:mpl2.0)))
-
-(define-public python-pytest-openfiles
-  (package
-    (name "python-pytest-openfiles")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_openfiles" version))
-       (sha256
-        (base32 "14x9f1l9a5ghf527i5qfcfa003mkrky1dhx2hfwq5nma9v1n0lgz"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-psutil))
-    (home-page "https://github.com/astropy/pytest-openfiles")
-    (synopsis "Pytest plugin for detecting inadvertent open file handles")
-    (description
-     "This package provides a plugin for the pytest framework that allows
-developers to detect whether any file handles or other file-like objects
-were inadvertently left open at the end of a unit test.")
-    (license license:bsd-3)))
 
 (define-public python-pytest-remotedata
   (package
@@ -1607,6 +1714,32 @@ framework and makes it easy to undo any monkey patching.  The fixtures are:
 in Pytest.")
     (license license:bsd-3)))
 
+(define-public python-pytest-openfiles
+  (package
+    (name "python-pytest-openfiles")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_openfiles" version))
+       (sha256
+        (base32 "14x9f1l9a5ghf527i5qfcfa003mkrky1dhx2hfwq5nma9v1n0lgz"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-psutil))
+    (home-page "https://github.com/astropy/pytest-openfiles")
+    (synopsis "Pytest plugin for detecting inadvertent open file handles")
+    (description
+     "This package provides a plugin for the pytest framework that allows
+developers to detect whether any file handles or other file-like objects
+were inadvertently left open at the end of a unit test.")
+    (license license:bsd-3)))
+
 (define-public python-pytest-pydocstyle
   (package
     (name "python-pytest-pydocstyle")
@@ -1730,35 +1863,6 @@ support and @code{subtests} fixture.")
        "Plugin for managing VCR.py cassettes.")
       (license license:expat))))
 
-(define-public python-pytest-doctest-custom
-  (package
-    (name "python-pytest-doctest-custom")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-doctest-custom" version))
-       (sha256
-        (base32 "0kxkdd6q9c3h31kc88lbyfll4c45b0zjd24cbr4c083fcvcy7lip"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "test_pytest_doctest_custom.py")))))))
-    (native-inputs
-     (list python-pytest))
-    (home-page "https://github.com/danilobellini/pytest-doctest-custom")
-    (synopsis
-     "Pytest plugin to customize string representations of doctest results")
-    (description "This package provides a Pytest plugin for customizing string
-representations of doctest results.  It can change the display hook used by
-doctest to render the object representations.")
-    (license license:expat)))
-
 (define-public python-pytest-check
   (package
     (name "python-pytest-check")
@@ -1801,38 +1905,6 @@ failures per test.")
     (description
      "This package provides a pytest plugin that checks the long description
 of the project to ensure it renders properly.")
-    (license license:expat)))
-
-(define-public python-re-assert
-  (package
-    (name "python-re-assert")
-    (version "1.1.0")
-    (source
-     (origin
-       ;; There are no tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/asottile/re-assert")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1rssq4wpqmx1c17hjfx5l3sn3zmnlz9jffddiqrs4f6h7m6cadai"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
-    (native-inputs
-     (list python-covdefaults python-coverage python-pytest))
-    (propagated-inputs
-     (list python-regex))
-    (home-page "https://github.com/asottile/re-assert")
-    (synopsis "Show where your regex match assertion failed")
-    (description
-     "@code{re-assert} provides a helper class to make assertions of regexes
-simpler.")
     (license license:expat)))
 
 (define-public python-pytest-testmon
@@ -2012,27 +2084,6 @@ isort.")
     (description
      "This package provides assorted shell and environment tools for the
 py.test testing framework.")
-    (license license:expat)))
-
-(define-public python-pytest-fixture-config
-  (package
-    (name "python-pytest-fixture-config")
-    (version "1.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-fixture-config" version))
-       (sha256
-        (base32
-         "13i1qpz22w3x4dmw8vih5jdnbqfqvl7jiqs0dg764s0zf8bp98a1"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools-git))
-    (home-page "https://github.com/manahl/pytest-plugins")
-    (synopsis "Fixture configuration utils for py.test")
-    (description
-     "This package provides fixture configuration utilities for the py.test
-testing framework.")
     (license license:expat)))
 
 (define-public python-pytest-virtualenv
@@ -2313,38 +2364,6 @@ also ensuring that the notebooks are running without errors.")
      "This pytest plugin provides fixtures to simplify Flask app testing.")
     (license license:expat)))
 
-(define-public python-pytest-console-scripts
-  (package
-    (name "python-pytest-console-scripts")
-    (version "1.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-console-scripts" version))
-       (sha256
-        (base32
-         "1qsw3i2h3psyi5avwf14panx8wxqfik2z7294dy37w8ha415iwn7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "--verbose"
-                       ;; This one test fails because of PATH assumptions
-                       "-k" "not test_elsewhere_in_the_path")))))))
-    (propagated-inputs
-     (list python-mock python-pytest))
-    (native-inputs
-     (list python-setuptools-scm))
-    (home-page "https://github.com/kvas-it/pytest-console-scripts")
-    (synopsis "Pytest plugin for testing console scripts")
-    (description
-     "This package provides a pytest plugin for testing console scripts.")
-    (license license:expat)))
-
 (define-public python-pytest-tornasync
   (package
     (name "python-pytest-tornasync")
@@ -2430,26 +2449,6 @@ plain (undecoratored) native coroutine tests.")
     (synopsis "Cython extension modules testing plugin")
     (description
      "This package provides a plugin for testing Cython extension modules.")
-    (license license:expat)))
-
-(define-public python-pytest-env
-  (package
-    (name "python-pytest-env")
-    (version "0.6.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-env" version))
-       (sha256
-        (base32 "1hl0ln0cicdid4qjk7mv90lw9xkb0v71dlj7q7rn89vzxxm9b53y"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
-    (home-page "https://github.com/MobileDynasty/pytest-env")
-    (synopsis "Pytest plugin that allows you to add environment variables")
-    (description
-     "This is a @code{py.test} plugin that enables you to set environment
-variables in the @file{pytest.ini} file.")
     (license license:expat)))
 
 (define-public python-pyux
@@ -2804,6 +2803,38 @@ dtypes and shapes of arrays for NumPy, extending @code{numpy.typing}.")
 annotations.")
     (license license:asl2.0)))
 
+(define-public python-re-assert
+  (package
+    (name "python-re-assert")
+    (version "1.1.0")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/asottile/re-assert")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rssq4wpqmx1c17hjfx5l3sn3zmnlz9jffddiqrs4f6h7m6cadai"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda _
+             (invoke "pytest" "-vv"))))))
+    (native-inputs
+     (list python-covdefaults python-coverage python-pytest))
+    (propagated-inputs
+     (list python-regex))
+    (home-page "https://github.com/asottile/re-assert")
+    (synopsis "Show where your regex match assertion failed")
+    (description
+     "@code{re-assert} provides a helper class to make assertions of regexes
+simpler.")
+    (license license:expat)))
+
 (define-public python-robber
   (package
     (name "python-robber")
@@ -3060,6 +3091,25 @@ eliminate flaky failures.")
        (sha256
         (base32 "16cin0chv59w4rvnd6r0fisp0s8avmp07rwn9da6yixw43jdncp1"))))))
 
+(define-public python-tappy
+  (package
+    (name "python-tappy")
+    (version "3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tap.py" version))
+       (sha256
+        (base32
+         "0w4w6pqjkv54j7rv6vdrpfxa72c5516bnlhpcqr3vrb4zpmyxvpm"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python-tap/tappy")
+    (synopsis "Tools for Test Anything Protocol")
+    (description "Tappy is a set of tools for working with the Test Anything
+Protocol (TAP) in Python.  TAP is a line based test protocol for recording test
+data in a standard way.")
+    (license license:bsd-3)))
+
 (define-public python-test-utils
   (package
     (name "python-test-utils")
@@ -3246,25 +3296,6 @@ parsed examples as part of your normal test run.  Integration is
 provided for the main Python test runners.")
     (license license:expat)))
 
-(define-public python-tappy
-  (package
-    (name "python-tappy")
-    (version "3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tap.py" version))
-       (sha256
-        (base32
-         "0w4w6pqjkv54j7rv6vdrpfxa72c5516bnlhpcqr3vrb4zpmyxvpm"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/python-tap/tappy")
-    (synopsis "Tools for Test Anything Protocol")
-    (description "Tappy is a set of tools for working with the Test Anything
-Protocol (TAP) in Python.  TAP is a line based test protocol for recording test
-data in a standard way.")
-    (license license:bsd-3)))
-
 (define-public python-pytest-parawtf
   (package
     (name "python-pytest-parawtf")
@@ -3291,37 +3322,6 @@ data in a standard way.")
     (description
 "@code{python-pytest} uses one of four different spellings of
 parametrize.  This plugin allows you to use all four.")
-    (license license:expat)))
-
-(define-public python-pytest-httpx
-  (package
-    (name "python-pytest-httpx")
-    (version "0.35.0")
-    (source
-     (origin
-       ;; pypi package doesn't include the tests
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Colin-b/pytest_httpx")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1w8qwhcaq1l63kfj4ncsi3355ln37ws6066mxr0b9646g68wp69v"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: 261 failed, 170 errors
-      #:tests? #f))
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio
-           python-setuptools
-           python-wheel))
-    (propagated-inputs (list python-httpx))
-    (home-page "https://colin-b.github.io/pytest_httpx/")
-    (synopsis "Pytest plugin to mock httpx")
-    (description "This package provides a pytest fixture to mock httpx
-requests to be replied to with user provided responses.")
     (license license:expat)))
 
 (define-public python-pycotap
