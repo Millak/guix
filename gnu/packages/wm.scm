@@ -2461,7 +2461,8 @@ and provides animations for switching between backgrounds.")
             (lambda _
               (substitute* "src/config.json.in"
                 (("@JSONPATH@")
-                 (string-append #$output "/etc/xdg/swaync/configSchema.json")))
+                 (string-append "\"" #$output
+                                "/etc/xdg/swaync/configSchema.json\"")))
               (substitute* "src/functions.vala"
                 (("/usr/local/etc/xdg/swaync")
                  (string-append #$output "/etc/xdg/swaync"))))))))
