@@ -4893,14 +4893,17 @@ data.")
 (define-public r-alpsnmr
   (package
     (name "r-alpsnmr")
-    (version "4.8.0")
+    (version "4.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AlpsNMR" version))
               (sha256
                (base32
-                "0aqf87i96fgbjkwkpa86k6kika0xz5f1jw6zs1sjq56q63xnd4bx"))))
-    (properties `((upstream-name . "AlpsNMR")))
+                "10d7q245crfvnx4rlsg879vchia35wnv9swsjbyqfbq3cvix4n0v"))))
+    (properties
+     '((upstream-name . "AlpsNMR")
+       ;; This is not needed for running tests.
+       (updater-ignored-native-inputs . ("r-chemospec"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-baseline
