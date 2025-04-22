@@ -2333,26 +2333,20 @@ version = ~s
           (add-after 'build-python-module 'install-python-module
             (assoc-ref py:%standard-phases 'install))
           (add-after 'install-python-module 'install-python-library
-            (lambda _
-              (let ((site (string-append #$output "/lib/python"
-                                         #$(version-major+minor
-                                            (package-version python))
-                                         "/site-packages/")))
-                (mkdir-p (string-append site "bed_reader"))
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((site (py:site-packages inputs outputs)))
+                (mkdir-p (string-append site "/bed_reader"))
                 (copy-file "target/release/libbed_reader.so"
-                           (string-append site "bed_reader/bed_reader.so")))))
+                           (string-append site "/bed_reader/bed_reader.so")))))
           (add-after 'install-python-library 'add-install-to-pythonpath
             (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
           (add-after 'add-install-to-pythonpath 'check-python
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
               (when tests?
-                (let ((site (string-append #$output "/lib/python"
-                                           #$(version-major+minor
-                                              (package-version python))
-                                           "/site-packages/"))
+                (let ((site (py:site-packages inputs outputs))
                       (data-dir "bed_reader/tests/data"))
                   (symlink (canonicalize-path data-dir)
-                           (string-append site data-dir))
+                           (string-append site "/" data-dir))
                   (invoke "pytest" "-v" #$output
                           ;; These test require a 84 GB file.
                           "-k" (string-join
@@ -2363,7 +2357,7 @@ version = ~s
                                       "test_optional_dependencies")
                                 " and not "))
                   (delete-file-recursively
-                   (string-append site "bed_reader/tests"))
+                   (string-append site "/bed_reader/tests"))
                   (delete-file-recursively
                    (string-append #$output "/.pytest_cache")))))))))
     (native-inputs (list python-pytest
