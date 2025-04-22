@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2021, 2025 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -38,6 +38,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
@@ -292,10 +293,10 @@ and white.")
 
 (define-public didjvu
   (let ((revision "0")
-        (commit "c792d61e85fbe5b6e678bc7d686b0208717c587b"))
+        (commit "43e2735d0b3575ca04e82a427dca88bc68fa4931"))
     (package
       (name "didjvu")
-      (version (git-version "0.9" revision commit))
+      (version (git-version "0.10.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -304,15 +305,13 @@ and white.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "09lwfwirmfl93062i2rvdcrgwp9fj95ny07059bxq7dl6z0z35qj"))))
-      (build-system gnu-build-system)
+                  "0ippf3hsjy13xj6pqnqr30dz8lsncsfcan2r1vbxfk1g602m3p4c"))))
+      (build-system python-build-system)
       (arguments
-       `(#:modules ((guix build gnu-build-system)
-                    ((guix build python-build-system) #:prefix python:)
-                    (guix build utils))
-         #:imported-modules (,@%default-gnu-imported-modules
-                             (guix build python-build-system))
-         #:test-target "test"
+       `(;; FIXME: Tests fail because they try to load the libxmp and pyexiv2
+         ;; modules that should not be enabled, as we only enable the gexiv2
+         ;; module.
+         #:tests? #f
          #:phases
          (modify-phases %standard-phases
            (delete 'configure)
@@ -320,26 +319,17 @@ and white.")
              (lambda _
                (substitute* "tests/test_ipc.py"
                  ;; test_wait_signal gets stuck forever
-                 (("yield self\\._test_signal, name")
+                 (("self\\._test_signal\\(name\\)")
                   "return True")
                  ;; test_path fails to find a file it should have created
-                 (("path = os\\.getenv\\('PATH'\\)\\.split\\(':'\\)")
+                 (("path = os\\.getenv\\('PATH'\\)")
                   "return True"))
                (substitute* "tests/test_timestamp.py"
                  ;; test_timezones fails with:
                  ;;   '2009-12-18T21:25:14Z' != '2009-12-18T22:25:14+01:00'
-                 (("@fork_isolation")
-                  "return True"))))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (invoke "make"
-                         "DESTDIR="
-                         (string-append "PREFIX=" out)
-                         "install"))))
-           (add-after 'install 'wrap-python
-             (assoc-ref python:%standard-phases 'wrap))
-           (add-after 'wrap-python 'wrap-path
+                 (("samples = \\[" all)
+                  (string-append "return True\n        " all)))))
+           (add-after 'install 'wrap-path
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let ((out (assoc-ref outputs "out"))
                      (djvulibre (assoc-ref inputs "djvulibre")))
@@ -349,9 +339,11 @@ and white.")
       (inputs
        (list bash-minimal
              djvulibre
+             gexiv2
              minidjvu
              python-gamera
              python-pillow
+             python-pygobject
              python-wrapper))
       (synopsis "DjVu encoder with foreground/background separation")
       (description
