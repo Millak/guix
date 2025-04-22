@@ -5155,84 +5155,98 @@ of @code{xmlfile}.")
     (license license:expat)))
 
 (define-public python-omero-py
-  (package
-    (name "python-omero-py")
-    (version "5.13.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/ome/omero-py")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0n94v5dpmh873hjqd9k9ky85iab4xh37ibmi13rqpclv01ibvvxa"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-m" "not broken" "-rf" "test" "-s"
-             ;; TestImport tries to download Java things; TestSessions
-             ;; and TestBuildQuery require networking.
-             "-k" "not TestImport and not TestSessions and not TestBuildQuery")
-      #:modules '((guix build pyproject-build-system)
-                  (guix build utils)
-                  (ice-9 match)
-                  (srfi srfi-1)
-                  (srfi srfi-26))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'find-artifacts
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((zip-file
-                     (match inputs
-                       (((labels . files) ...)
-                        (find (cut string-suffix? "omero-blitz-5.5.5-python.zip" <>)
-                              files)))))
-                (setenv "ZIP_FILE"
-                        (or zip-file (error "failed to find artifact file"))))))
-          ;; Some tests need this, such as TestTempFileManager
-          (add-after 'build 'set-HOME
-            (lambda _ (setenv "HOME" "/tmp")))
-          ;; The sanity check mistakes omero_model_TypeAnnotationI.py for a
-          ;; module to load.
-          (delete 'sanity-check)
-          ;; The argument parser is picky and interprets the "-real" part as
-          ;; the first argument.
-          (add-after 'wrap 'rename-executable
-            (lambda _
-              (with-directory-excursion (string-append #$output "/bin")
-                (rename-file ".omero-real" ".omero")
-                (substitute* "omero"
-                  (("bin/.omero-real") "bin/.omero"))))))))
-    (propagated-inputs
-     (list python-appdirs
-           python-future
-           python-numpy
-           python-pillow
-           python-pyyaml
-           python-requests
-           python-tables
-           python-zeroc-ice-3.6))
-    (native-inputs
-     (list python-mox3
-           python-pytest
-           python-pytest-rerunfailures
-           python-pytest-xdist
-           python-setuptools
-           python-wheel
-           unzip
-           (origin
-             (method url-fetch)
-             (uri "https://artifacts.openmicroscopy.org/artifactory/\
-ome.releases/org/openmicroscopy/omero-blitz/5.5.5/omero-blitz-5.5.5-python.zip")
-             (sha256
-              (base32 "0wyja1zv19c1r3m31gsp555jzj3cg2v2pl00zlybpw3qd36yffwc")))))
-    (home-page "https://github.com/ome/omero-py")
-    (synopsis "Python bindings to the OMERO.blitz server")
-    (description "This package provides Python bindings to the OMERO.blitz
+  (let ((omero-blitz-version "5.8.2"))
+    (package
+      (name "python-omero-py")
+      (version "5.20.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ome/omero-py")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02zsw1p35n6lkqh410qpgw7c4467dkbg0hxly3gjqrwdh349j47g"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        ;; #:tests? #f
+        #:test-flags
+        #~(list
+           "-m" "not broken" "-rf" "test" "-s"
+           ;; XXX: Failing collection because of Numpy compatibility.
+           "--ignore=test/unit/tablestest/test_hdfstorage.py"
+           "--ignore=test/unit/tablestest/test_servants.py"
+           ;; TestImport tries to download Java things; TestSessions
+           ;; and TestBuildQuery require networking.
+           "-k" "not TestImport and not TestSessions and not TestBuildQuery")
+        #:modules '((guix build pyproject-build-system)
+                    (guix build utils)
+                    (ice-9 match)
+                    (srfi srfi-1)
+                    (srfi srfi-26))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'find-artifacts
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((zip-file
+                       (match inputs
+                         (((labels . files) ...)
+                          (find (cut string-suffix?
+                                     (string-append "omero-blitz-"
+                                                    #$omero-blitz-version
+                                                    "-python.zip")
+                                     <>)
+                                files)))))
+                  (setenv "ZIP_FILE"
+                          (or zip-file (error "failed to find artifact file"))))))
+            ;; Some tests need this, such as TestTempFileManager
+            (add-after 'build 'set-HOME
+              (lambda _ (setenv "HOME" "/tmp")))
+            ;; The sanity check mistakes omero_model_TypeAnnotationI.py for a
+            ;; module to load.
+            (delete 'sanity-check)
+            ;; The argument parser is picky and interprets the "-real" part as
+            ;; the first argument.
+            (add-after 'wrap 'rename-executable
+              (lambda _
+                (with-directory-excursion (string-append #$output "/bin")
+                  (rename-file ".omero-real" ".omero")
+                  (substitute* "omero"
+                    (("bin/.omero-real") "bin/.omero"))))))))
+      (propagated-inputs
+       (list python-appdirs
+             python-future
+             python-numpy-2
+             python-pillow
+             python-pyyaml
+             python-requests
+             python-tables
+             python-zeroc-ice-3.6))
+      (native-inputs
+       (list python-portalocker
+             python-pytest
+             python-pytest-mock
+             python-pytest-rerunfailures
+             python-pytest-xdist
+             python-setuptools
+             python-wheel
+             unzip
+             (origin
+               (method url-fetch)
+               (uri (format #f "\
+https://artifacts.openmicroscopy.org/artifactory/ome.releases/org/\
+openmicroscopy/omero-blitz/~a/omero-blitz-~a-python.zip"
+                            omero-blitz-version
+                            omero-blitz-version))
+               (sha256
+                (base32 "1nb17xmx6n7i5vkcw661iq42yfgc3i0gmhz3x8iwcrhp8pajzm3l")))))
+      (home-page "https://github.com/ome/omero-py")
+      (synopsis "Python bindings to the OMERO.blitz server")
+      (description "This package provides Python bindings to the OMERO.blitz
 server.")
-    (license license:gpl2)))
+      (license license:gpl2))))
 
 (define-public python-openpyxl
   (package
