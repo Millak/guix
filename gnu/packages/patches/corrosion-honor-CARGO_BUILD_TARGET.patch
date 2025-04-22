@@ -1,0 +1,26 @@
+From 0a6f23a404d1b972b1c5f0cf1d38500276f3c9d1 Mon Sep 17 00:00:00 2001
+From: Hilton Chain <hako@ultrarare.space>
+Date: Tue, 22 Apr 2025 19:43:00 +0800
+Subject: [PATCH] Support Cargo target from environment variable.
+
+---
+ cmake/FindRust.cmake | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/cmake/FindRust.cmake b/cmake/FindRust.cmake
+index fccfac3..e888149 100644
+--- a/cmake/FindRust.cmake
++++ b/cmake/FindRust.cmake
+@@ -734,6 +734,9 @@ if (NOT Rust_CARGO_TARGET_CACHED)
+             set(Rust_CARGO_TARGET_CACHED "${_RUST_OHOS_TARGET}" CACHE STRING "Target triple")
+         endif()
+     endif()
++    if(DEFINED ENV{CARGO_BUILD_TARGET})
++        set(Rust_CARGO_TARGET_CACHED "$ENV{CARGO_BUILD_TARGET}")
++    endif()
+     # Fallback to the default host target
+     if(NOT Rust_CARGO_TARGET_CACHED)
+         if(CMAKE_CROSSCOMPILING)
+-- 
+2.49.0
+
