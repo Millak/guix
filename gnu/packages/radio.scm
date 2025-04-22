@@ -2129,7 +2129,7 @@ modes:
         (base32 "07mih8jgpnnq101yqwv82sihbfjqi47dkvni34minbp19676q1bw"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-cython python-setuptools-scm))
+     (list python-cython python-setuptools-scm python-wheel))
     (inputs
      (list python-numpy python-pyqt-6 python-pyserial python-scipy))
     (arguments
