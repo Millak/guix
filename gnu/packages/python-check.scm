@@ -289,57 +289,6 @@ Avocado machine readable outputs this one is streamlined (per test results).
 @end table")
     (license license:gpl2)))            ;some files are under GPLv2 only
 
-(define-public python-pytest-black
-  (package
-    (name "python-pytest-black")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_black" version))
-       (sha256
-        (base32
-         "04dmhv8dzh356qdxz6hrwfz3nk3mlc9shicgpns5r03rydap9dzc"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-black
-           python-pytest
-           python-toml))
-    ;; Project maintenance has been changed, see
-    ;; <https://github.com/shopkeep/pytest-black/issues/70>.
-    (home-page "https://github.com/coherent-oss/pytest-black")
-    (synopsis "Pytest plugin to enable format checking with black")
-    (description
-     "This package provides a pytest plugin to enable format checking with the
-Python code formatter \"black\".")
-    (license license:expat)))
-
-(define-public python-pytest-freezer
-  (package
-    (name "python-pytest-freezer")
-    (version "0.4.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_freezer" version))
-       (sha256
-        (base32 "0an8y6ri3bhij4137gphdw2yg6rq7if4nb1qjj7zjsy4kjy1dgr1"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-flit-core))
-    (propagated-inputs
-     (list python-freezegun
-           python-pytest))
-    (home-page "https://github.com/pytest-dev/pytest-freezer/")
-    (synopsis "Pytest plugin providing a fixture interface for spulec/freezegun")
-    (description
-     "Pytest plugin providing a fixture interface for
-@url{https://github.com/spulec/freezegun, freezegun}.")
-    (license license:expat)))
-
 (define-public python-beartype
   (package
     (name "python-beartype")
@@ -711,6 +660,26 @@ Built-in integration with @url{http://nedbatchelder.com/code/coverage/, coverage
 @end table")
     (license license:expat)))
 
+(define-public python-hiro
+  (package
+    (name "python-hiro")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hiro" version))
+       (sha256
+        (base32 "0s2xz72i7kbm0l75vr04cqq2war74p3p376wm76999f93npkjcys"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://hiro.readthedocs.io/")
+    (synopsis "Time manipulation utilities for testing in Python")
+    (description "Hiro provides context managers and utilities to either
+freeze, accelerate or decelerate and jump between different points in time.
+Functions exposed by the standard library’s @code{time}, @code{datetime} and
+@code{date} modules are patched within the contexts exposed.")
+    (license license:expat)))
+
 (define-public python-line-profiler
   (package
     (name "python-line-profiler")
@@ -888,29 +857,6 @@ parallel and on multiple machines.")
      "This package provides a plugin for snapshot testing with pytest.  It can
 be used to test that the value of an expression does not change
 unexpectedly.")
-    (license license:expat)))
-
-(define-public python-testfixtures
-  (package
-    (name "python-testfixtures")
-    (version "6.17.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "testfixtures" version))
-       (sha256
-        (base32 "1nlv2hz20czjp4a811ichl5kwg99rh84l0mw9wq4rk3idzfs1hsy"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))          ; PyTest-Django fails to build in master
-    (native-inputs
-     (list python-pytest python-pytest-cov
-           ;;("python-pytest-django" ,python-pytest-django)
-           python-twine python-wheel))
-    (synopsis "Tests components for Python")
-    (description "Testfixtures is a collection of helpers and mock objects that
-are useful when writing automated tests in Python.")
-    (home-page "https://testfixtures.readthedocs.io/en/latest/")
     (license license:expat)))
 
 (define-public python-icontract
@@ -1164,6 +1110,43 @@ Astropy project, but is optimized for use with astropy-related projects.")
 astropy related packages.")
     (license license:bsd-3)))
 
+(define-public python-pylama
+  (package
+    (name "python-pylama")
+    (version "8.4.1")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/klen/pylama")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x9cnyfnd574mj8ckd5hbfg2wy128zg0k2cd3zc7vdbnimksvqaq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Cycles with pylint: python-pylama -> python-isort -> python-pylint ->
+      ;; python-pylama
+      #:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-mypy-minimal
+           python-mccabe
+           python-pycodestyle
+           python-pydocstyle
+           python-pyflakes))
+    (home-page "https://github.com/klen/pylama")
+    (synopsis "Code audit tool for python")
+    (description
+     "Pylama is a code audit tool for Python and JavaScript to check for
+style, syntax and other code health metrics.  It is essentially a convenient
+wrapper above tools such as Pyflakes, pydocstyle, pycodestyle and McCabe,
+among others.")
+    (license license:lgpl3+)))
+
 (define-public python-pytest-arraydiff
   (package
     (name "python-pytest-arraydiff")
@@ -1196,6 +1179,34 @@ astropy related packages.")
 data arrays produced during tests, in particular in cases where the arrays
 are too large to conveniently hard-code them in the tests.")
     (license license:bsd-3)))
+
+(define-public python-pytest-black
+  (package
+    (name "python-pytest-black")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_black" version))
+       (sha256
+        (base32
+         "04dmhv8dzh356qdxz6hrwfz3nk3mlc9shicgpns5r03rydap9dzc"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-black
+           python-pytest
+           python-toml))
+    ;; Project maintenance has been changed, see
+    ;; <https://github.com/shopkeep/pytest-black/issues/70>.
+    (home-page "https://github.com/coherent-oss/pytest-black")
+    (synopsis "Pytest plugin to enable format checking with black")
+    (description
+     "This package provides a pytest plugin to enable format checking with the
+Python code formatter \"black\".")
+    (license license:expat)))
 
 (define-public python-pytest-cookies
   (package
@@ -1323,6 +1334,29 @@ advanced doctest support and enables the testing of reStructuredText files.")
 provides a shortcut to testing all code and documentation for a given
 sub-package.")
     (license license:bsd-3)))
+
+(define-public python-pytest-freezer
+  (package
+    (name "python-pytest-freezer")
+    (version "0.4.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_freezer" version))
+       (sha256
+        (base32 "0an8y6ri3bhij4137gphdw2yg6rq7if4nb1qjj7zjsy4kjy1dgr1"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core))
+    (propagated-inputs
+     (list python-freezegun
+           python-pytest))
+    (home-page "https://github.com/pytest-dev/pytest-freezer/")
+    (synopsis "Pytest plugin providing a fixture interface for spulec/freezegun")
+    (description
+     "Pytest plugin providing a fixture interface for
+@url{https://github.com/spulec/freezegun, freezegun}.")
+    (license license:expat)))
 
 (define-public python-pytest-helpers-namespace
   (package
@@ -1598,6 +1632,43 @@ in Pytest.")
 @command{pydocstyle}.")
     (license license:expat)))
 
+(define-public python-pytest-qt
+  (package
+    (name "python-pytest-qt")
+    (version "4.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-qt" version))
+       (sha256
+        (base32 "0i38qp2rqb44grbk9rn7zr5ffjvdlcl6k380759ji920m51632bn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;;#:test-target "pytest"
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'set-qpa
+           (lambda _ (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (propagated-inputs
+     (list python-pluggy python-pyqt python-pytest))
+    (native-inputs
+     (list python-pre-commit
+           python-setuptools
+           python-setuptools-scm
+           python-tox
+           python-wheel))
+    (home-page "https://github.com/pytest-dev/pytest-qt")
+    (synopsis "Pytest support for PyQt and PySide applications")
+    (description
+     "@code{pytest-qt} is a Pytest plugin that allows programmers to write
+tests for PyQt5 and PySide2 applications.
+
+The main usage is to use the @code{qtbot} fixture, responsible for handling
+@code{qApp} creation as needed and provides methods to simulate user
+interaction, like key presses and mouse clicks.")
+    (license license:expat)))
+
 (define-public python-pytest-subtests
   (package
     (name "python-pytest-subtests")
@@ -1789,6 +1860,36 @@ simpler.")
     (description
      "This plug-in auto-selects and reruns tests impacted by recent changes.")
     (license license:expat)))
+
+(define-public python-pytest-tornado
+  (package
+    (name "python-pytest-tornado")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)        ;no tests in pypi archive
+              (uri (git-reference
+                    (url "https://github.com/eugeniy/pytest-tornado")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05hgq1m9g35kpc01im7ci1wd85xi1rdxnyms9izjg65c9976zn6x"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-pytest python-setuptools python-tornado))
+    (home-page "https://github.com/eugeniy/pytest-tornado")
+    (synopsis "Pytest plugin to ease testing tornado applications")
+    (description
+     "This package provides a py.test plugin providing fixtures and markers to
+simplify testing of asynchronous tornado applications.")
+    (license license:asl2.0)))
 
 (define-public python-pytest-trio
   (package
@@ -2244,36 +2345,6 @@ also ensuring that the notebooks are running without errors.")
      "This package provides a pytest plugin for testing console scripts.")
     (license license:expat)))
 
-(define-public python-pytest-tornado
-  (package
-    (name "python-pytest-tornado")
-    (version "0.8.1")
-    (source (origin
-              (method git-fetch)        ;no tests in pypi archive
-              (uri (git-reference
-                    (url "https://github.com/eugeniy/pytest-tornado")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "05hgq1m9g35kpc01im7ci1wd85xi1rdxnyms9izjg65c9976zn6x"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
-    (propagated-inputs (list python-pytest python-setuptools python-tornado))
-    (home-page "https://github.com/eugeniy/pytest-tornado")
-    (synopsis "Pytest plugin to ease testing tornado applications")
-    (description
-     "This package provides a py.test plugin providing fixtures and markers to
-simplify testing of asynchronous tornado applications.")
-    (license license:asl2.0)))
-
 (define-public python-pytest-tornasync
   (package
     (name "python-pytest-tornasync")
@@ -2399,63 +2470,6 @@ variables in the @file{pytest.ini} file.")
     (synopsis "Utility to check API integrity in Python libraries")
     (description "The pyux utility detects API changes in Python
 libraries.")
-    (license license:expat)))
-
-(define-public python-pytest-qt
-  (package
-    (name "python-pytest-qt")
-    (version "4.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-qt" version))
-       (sha256
-        (base32 "0i38qp2rqb44grbk9rn7zr5ffjvdlcl6k380759ji920m51632bn"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;;#:test-target "pytest"
-      #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'set-qpa
-           (lambda _ (setenv "QT_QPA_PLATFORM" "offscreen"))))))
-    (propagated-inputs
-     (list python-pluggy python-pyqt python-pytest))
-    (native-inputs
-     (list python-pre-commit
-           python-setuptools
-           python-setuptools-scm
-           python-tox
-           python-wheel))
-    (home-page "https://github.com/pytest-dev/pytest-qt")
-    (synopsis "Pytest support for PyQt and PySide applications")
-    (description
-     "@code{pytest-qt} is a Pytest plugin that allows programmers to write
-tests for PyQt5 and PySide2 applications.
-
-The main usage is to use the @code{qtbot} fixture, responsible for handling
-@code{qApp} creation as needed and provides methods to simulate user
-interaction, like key presses and mouse clicks.")
-    (license license:expat)))
-
-(define-public python-hiro
-  (package
-    (name "python-hiro")
-    (version "1.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "hiro" version))
-       (sha256
-        (base32 "0s2xz72i7kbm0l75vr04cqq2war74p3p376wm76999f93npkjcys"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://hiro.readthedocs.io/")
-    (synopsis "Time manipulation utilities for testing in Python")
-    (description "Hiro provides context managers and utilities to either
-freeze, accelerate or decelerate and jump between different points in time.
-Functions exposed by the standard library’s @code{time}, @code{datetime} and
-@code{date} modules are patched within the contexts exposed.")
     (license license:expat)))
 
 (define-public python-httmock
@@ -2768,43 +2782,6 @@ them using any Python VM with basically no runtime overhead.")
     (description "This package provides extensive dynamic type checks for
 dtypes and shapes of arrays for NumPy, extending @code{numpy.typing}.")
     (license license:expat)))
-
-(define-public python-pylama
-  (package
-    (name "python-pylama")
-    (version "8.4.1")
-    (source
-     (origin
-       (method git-fetch)               ;no tests in PyPI archive
-       (uri (git-reference
-             (url "https://github.com/klen/pylama")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1x9cnyfnd574mj8ckd5hbfg2wy128zg0k2cd3zc7vdbnimksvqaq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Cycles with pylint: python-pylama -> python-isort -> python-pylint ->
-      ;; python-pylama
-      #:tests? #f))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-mypy-minimal
-           python-mccabe
-           python-pycodestyle
-           python-pydocstyle
-           python-pyflakes))
-    (home-page "https://github.com/klen/pylama")
-    (synopsis "Code audit tool for python")
-    (description
-     "Pylama is a code audit tool for Python and JavaScript to check for
-style, syntax and other code health metrics.  It is essentially a convenient
-wrapper above tools such as Pyflakes, pydocstyle, pycodestyle and McCabe,
-among others.")
-    (license license:lgpl3+)))
 
 (define-public python-pyannotate
   (package
@@ -3134,6 +3111,29 @@ which make writing and running functional and integration tests easier.")
 Python environments, similar to @code{tox}.  Unlike tox, Nox uses a standard
 Python file for configuration.")
     (license license:asl2.0)))
+
+(define-public python-testfixtures
+  (package
+    (name "python-testfixtures")
+    (version "6.17.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "testfixtures" version))
+       (sha256
+        (base32 "1nlv2hz20czjp4a811ichl5kwg99rh84l0mw9wq4rk3idzfs1hsy"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f))          ; PyTest-Django fails to build in master
+    (native-inputs
+     (list python-pytest python-pytest-cov
+           ;;("python-pytest-django" ,python-pytest-django)
+           python-twine python-wheel))
+    (synopsis "Tests components for Python")
+    (description "Testfixtures is a collection of helpers and mock objects that
+are useful when writing automated tests in Python.")
+    (home-page "https://testfixtures.readthedocs.io/en/latest/")
+    (license license:expat)))
 
 (define-public python-time-machine
   (package
