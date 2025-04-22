@@ -250,16 +250,29 @@ output in multiple windows in a terminal.")
        (sha256
         (base32 "0n6i8d5aycvp9n2zz2rz67s1y19cw9m5j3pk4719d3a5czh4267m"))))
     (build-system cmake-build-system)
-    ;; TODO run benchmark. Currently not possible, as adding
-    ;; (gnu packages benchmark) forms a dependency cycle
+    (outputs '("out" "bin"))
     (arguments
      (list #:configure-flags
-           #~(list "-DSPDLOG_BUILD_BENCH=OFF"
+           #~(list "-DSPDLOG_BUILD_BENCH=ON"
                    "-DSPDLOG_BUILD_SHARED=ON"
                    #$@(if (%current-target-system)
                           '()
-                          '("-DSPDLOG_BUILD_TESTS=ON")))))
+                          '("-DSPDLOG_BUILD_TESTS=ON")))
+           #:phases
+           #~(modify-phases %standard-phases
+             (add-after 'unpack 'patch
+               (lambda _
+                 (substitute* "bench/CMakeLists.txt"
+                   ;; Add install command for each benchmark program.
+                   (("add_executable\\(([^ ]+) .*$" all target)
+                    (string-append all
+                                   "install(TARGETS "
+                                   target
+                                   " DESTINATION "
+                                   #$output:bin "/bin"
+                                   ")\n"))))))))
     (native-inputs (list catch2-3))
+    (inputs (list googlebenchmark))
     (home-page "https://github.com/gabime/spdlog")
     (synopsis "Fast C++ logging library")
     (description "Spdlog is a very fast header-only/compiled C++ logging
