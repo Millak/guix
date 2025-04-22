@@ -2999,34 +2999,35 @@ use with virtualization provisioning tools")
 (define-public python-transient
   (package
     (name "python-transient")
-    (version "0.12")
+    (version "0.25")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "transient" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ALSchwalm/transient")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "148yiqrmcscsi6787y0f27i1y9cf0gcw3mqfv5frhpmsmv62mv5z"))))
+        (base32 "1c2v0z1amgfx747sqn8airq71bnp58syvsaqlazirahyn2yjg04d"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; Requires behave
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'fix-dependencies
-                    (lambda _
-                      (substitute* "setup.py"
-                        (("==")
-                         ">=")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-dependencies
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("(~|=)=") ">=")
+                     (("lark-parser>=[0-9.]*") "lark")))))))
     (native-inputs
-     (list python-black
-           python-mypy
-           python-pyhamcrest
+     (list python-pyhamcrest
+           python-pytest
            python-setuptools
-           python-twine
            python-wheel))
     (propagated-inputs
      (list python-beautifultable
            python-click
            python-importlib-resources
-           python-lark-parser
+           python-lark
            python-marshmallow
            python-progressbar2
            python-requests
