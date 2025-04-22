@@ -40606,7 +40606,10 @@ write text fast, and for various text generation, statistics, and modeling tasks
               (uri (pypi-uri "zeroc-ice" version))
               (sha256
                (base32
-                "0mikjfvq26kh8asnn9v55z41pap4c5ypymqnwwi4xkavc3mzyda2"))))))
+                "0mikjfvq26kh8asnn9v55z41pap4c5ypymqnwwi4xkavc3mzyda2"))
+              (patches
+               (search-patches
+                "python-zeroc-ice-3.6.5-python-3.11-support.patch"))))))
 
 (define-public python-whenever
   (package
