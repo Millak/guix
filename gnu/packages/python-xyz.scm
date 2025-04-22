@@ -26171,29 +26171,33 @@ manipulation and interaction with formal grammars.")
 (define-public python-invoke
   (package
     (name "python-invoke")
-    (version "1.6.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "invoke" version))
        (sha256
-        (base32 "1lsql9daabfr31c7syva5myc5bka45k57ygs9fliv63qrwp1wk9p"))))
-    (build-system python-build-system)
+        (base32 "1mbbixban0238bwkadgynw60n0jrq1ja5wl4zv3mka7i388bnv7f"))))
+    ;; TODO: invoke/vendor contains:
+    ;; - fluidity -> https://github.com/nsi-iff/fluidity   (14y old)
+    ;; - lexicon  -> https://github.com/bitprophet/lexicon (2y old)
+    ;; - yaml     -> https://github.com/yaml/pyyaml        (2y old)
+    (build-system pyproject-build-system)
     (arguments
      (list
      ;; XXX: Requires many dependencies that are not yet in Guix.
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'delete-python2-code
-            (lambda _
-              (delete-file-recursively "invoke/vendor/yaml2")))
           (add-after 'unpack 'fix-bash-path
             (lambda _
               (let ((bash #$(this-package-input "bash-minimal")))
                 (substitute* "invoke/config.py"
                   (("shell = \"/bin/bash\"")
                    (string-append "shell = \"" bash "/bin/bash\"")))))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (inputs
      (list bash-minimal))
     (home-page "https://www.pyinvoke.org/")
