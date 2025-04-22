@@ -236,7 +236,7 @@ commands, displaying the results via a web interface.")
 output in multiple windows in a terminal.")
     (license license:gpl2+)))
 
-(define-public spdlog
+(define-public spdlog-1.15
   (package
     (name "spdlog")
     (version "1.15.2")
@@ -282,7 +282,7 @@ library.")
     (license (list license:expat license:bsd-2))))
 
 (define-public spdlog-1.13
-  (package/inherit spdlog
+  (package/inherit spdlog-1.15
     (version "1.13.0")
     (source
      (origin
@@ -290,13 +290,13 @@ library.")
        (uri (git-reference
              (url "https://github.com/gabime/spdlog")
              (commit (string-append "v" version))))
-       (file-name (git-file-name (package-name spdlog) version))
+       (file-name (git-file-name (package-name spdlog-1.15) version))
        (sha256
         (base32 "0zgdmdgnp2y36jrlk85d4fiyjkjd6anly8pambyc3f3v6sg02zyy"))))))
 
 (define-public spdlog-1.10
   (package
-    (inherit spdlog)
+    (inherit spdlog-1.15)
     (version "1.10.0")
     (source
      (origin
@@ -307,6 +307,8 @@ library.")
        (file-name (git-file-name "spdlog" version))
        (sha256
         (base32 "02xz017ba9fssm1rp1fcfld7h79awbr6fqai9dxaqp02akp3davk"))))))
+
+(define-public spdlog spdlog-1.15)
 
 (define-public rsyslog
   (package
