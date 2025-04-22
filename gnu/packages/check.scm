@@ -2802,64 +2802,6 @@ look and feel of py.test, using a progress bar and showing failures and errors
 instantly.")
     (license license:bsd-3)))
 
-(define-public python-crosshair
-  (package
-    (name "python-crosshair")
-    (version "0.0.86")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "crosshair_tool" version))
-       (sha256
-        (base32 "19zrv6gsap0qwn4rrs1wwajg0gkq7ys8qijsilmjrhc73dylgl72"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              ;; check_examples_test.py contains failing tests that
-              ;; show what happens if a counterexample is found.
-              "--ignore=crosshair/examples/check_examples_test.py"
-              "--ignore=crosshair/lsp_server_test.py") ;requires pygls
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-dependencies
-            (lambda _
-              (substitute* "setup.py"
-                ;; pygls is only used by crosshair/lsp_server.py.
-                (("pygls>=1.0.0") "")
-                ;; 'sanity-check fails for z3-solver, although it is
-                ;; included in 'propagated-inputs.
-                (("z3-solver>=4.13.0.0") ""))))
-          (add-before 'check 'set-test-env
-            (lambda _
-              (setenv "PYTHONHASHSEED" "0")))))) ;tests rely on this value
-    (native-inputs
-     (list python-icontract ;optional
-           python-importlib-metadata
-           python-mypy
-           python-numpy
-           python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-importlib-metadata
-           python-packaging
-           ;; python-pygls
-           python-typeshed-client
-           python-typing-inspect
-           python-typing-extensions
-           z3))
-    (home-page "https://crosshair.readthedocs.io")
-    (synopsis "Analysis tool for Python using symbolic execution")
-    (description
-     "@code{crosshair} is an analysis tool for Python that works by repeatedly
-calling your functions with symbolic inputs.  It uses an @acronym{SMT,
-Satisfiability modulo theories} solver explore viable execution paths and find
-counterexamples for you.")
-    (license (list license:asl2.0 license:expat license:psfl))))
-
 (define-public python-hypothesis
   (package
     (name "python-hypothesis")

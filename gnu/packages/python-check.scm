@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2021-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
@@ -18,7 +18,7 @@
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
-;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024-2025 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Eric Bavier <bavier@posteo.net>
@@ -51,6 +51,7 @@
   #:use-module (gnu packages django)
   #:use-module (gnu packages docker)
   #:use-module (gnu packages jupyter)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python-build)
@@ -442,6 +443,64 @@ analysing code quality.")
 This package provides seamless integration with coverage.py (and thus pytest,
 nosetests, etc...) in Python projects.")
     (license license:expat)))
+
+(define-public python-crosshair
+  (package
+    (name "python-crosshair")
+    (version "0.0.86")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "crosshair_tool" version))
+       (sha256
+        (base32 "19zrv6gsap0qwn4rrs1wwajg0gkq7ys8qijsilmjrhc73dylgl72"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; check_examples_test.py contains failing tests that
+              ;; show what happens if a counterexample is found.
+              "--ignore=crosshair/examples/check_examples_test.py"
+              "--ignore=crosshair/lsp_server_test.py") ;requires pygls
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-dependencies
+            (lambda _
+              (substitute* "setup.py"
+                ;; pygls is only used by crosshair/lsp_server.py.
+                (("pygls>=1.0.0") "")
+                ;; 'sanity-check fails for z3-solver, although it is
+                ;; included in 'propagated-inputs.
+                (("z3-solver>=4.13.0.0") ""))))
+          (add-before 'check 'set-test-env
+            (lambda _
+              (setenv "PYTHONHASHSEED" "0")))))) ;tests rely on this value
+    (native-inputs
+     (list python-icontract ;optional
+           python-importlib-metadata
+           python-mypy
+           python-numpy
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-importlib-metadata
+           python-packaging
+           ;; python-pygls
+           python-typeshed-client
+           python-typing-inspect
+           python-typing-extensions
+           z3))
+    (home-page "https://crosshair.readthedocs.io")
+    (synopsis "Analysis tool for Python using symbolic execution")
+    (description
+     "@code{crosshair} is an analysis tool for Python that works by repeatedly
+calling your functions with symbolic inputs.  It uses an @acronym{SMT,
+Satisfiability modulo theories} solver explore viable execution paths and find
+counterexamples for you.")
+    (license (list license:asl2.0 license:expat license:psfl))))
 
 (define-public python-cucumber-tag-expressions
   (package
