@@ -680,31 +680,6 @@ Functions exposed by the standard library’s @code{time}, @code{datetime} and
 @code{date} modules are patched within the contexts exposed.")
     (license license:expat)))
 
-(define-public python-pytest-shard
-  (let ((commit "64610a08dac6b0511b6d51cf895d0e1040d162ad")
-        (revision "0"))
-    (package
-      (name "python-pytest-shard")
-      (version (git-version "0.1.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/AdamGleave/pytest-shard")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1h31m68igz670bzl307hazjrfbr8pk14mxflllar18ydmlrnl677"))))
-      (build-system pyproject-build-system)
-      (native-inputs (list python-setuptools python-wheel))
-      (propagated-inputs (list python-pytest))
-      (home-page "https://github.com/AdamGleave/pytest-shard")
-      (synopsis "Pytest plugin for sharding tests")
-      (description "This package provides a Pytest extension for sharding
-tests at the granularity of individual test cases, which can be run in
-parallel and on multiple machines.")
-      (license license:expat))))
-
 (define-public python-httmock
   (package
     (name "python-httmock")
@@ -957,6 +932,27 @@ successor of @url{https://github.com/rkern/line_profiler}.")
 Python program.")
     (license license:bsd-3)))
 
+(define-public python-mypy-extensions
+  (package
+    (name "python-mypy-extensions")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "mypy_extensions" version))
+              (sha256
+               (base32
+                "10h7mwjjfbwxzq7jzaj1pnv9g6laa1k0ckgw72j44160bnazinvm"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f)) ;no tests
+    (home-page "https://github.com/python/mypy_extensions")
+    (synopsis "Experimental extensions for MyPy")
+    (description
+     "The @code{python-mypy-extensions} module defines
+experimental extensions to the standard @code{typing} module that are
+supported by the MyPy typechecker.")
+    (license license:expat)))
+
 (define-public python-nbval
   (package
     (name "python-nbval")
@@ -1004,6 +1000,49 @@ of the stored inputs match the stored outputs of the @file{.ipynb} file.  Whilst
 also ensuring that the notebooks are running without errors.")
     (license license:bsd-3)))
 
+(define-public python-pandas-vet
+  (package
+    (name "python-pandas-vet")
+    (version "2023.8.2")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/deppen8/pandas-vet")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vkc9sa8x6vfmnd24pxp3gjlmbwx926h4y5alkdbbpb9x5h5ml3j"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^source = \"regex_commit\"") "")
+                (("^tag_sign.*") "")
+                (("\\[tool.hatch.version\\]") "")
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\"")))
+              (with-output-to-file "src/pandas_vet/__about__.py"
+                (let* ((version #$(package-version this-package) )
+                       (version-tuple (string-join (string-split version #\.) ", ")))
+                  (lambda ()
+                    (format #t
+                            "__version__ = version = '~a'
+__version_tuple__ = version_tuple = (~a)~%" version version-tuple)))))))))
+    (propagated-inputs (list python-attrs python-flake8))
+    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
+    (home-page "https://github.com/deppen8/pandas-vet")
+    (synopsis "Opionated @code{flake8} plugin for @code{pandas} code")
+    (description
+     "This package provides a @code{flake8} plugin to lint @code{pandas} code
+in an opinionated way.")
+    (license license:expat)))
+
 (define-public python-pyinstrument
   (package
     (name "python-pyinstrument")
@@ -1043,31 +1082,6 @@ also ensuring that the notebooks are running without errors.")
     (description
      "Pyinstrument is a Python profiler to help you optimize your code.")
     (license license:bsd-3)))
-
-(define-public python-pytest-order
-  (package
-    (name "python-pytest-order")
-    (version "1.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_order" version))
-       (sha256
-        (base32 "1pixy83l6hcg16gjc04vp4misk2w989alkd9msnw1s9y7pn8yq2i"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: 4 failed, 18 errors
-      #:tests? #f))
-    (native-inputs
-     (list python-pytest python-pytest-xdist
-           python-setuptools python-wheel))
-    (home-page "https://github.com/pytest-dev/pytest-order")
-    (synopsis "Pytest plugin to run your tests in a specific order")
-    (description
-     "This plugin defines Pytest markers to ensure that some tests, or groups
-of tests run in a specific order.")
-    (license license:expat)))
 
 (define-public python-pytest-astropy-header
 (package
@@ -1632,6 +1646,30 @@ compliance.")
 times and detect flakyness.")
     (license license:asl2.0)))
 
+(define-public python-pytest-flask
+  (package
+    (name "python-pytest-flask")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-flask" version))
+       (sha256
+        (base32 "0pm93xli1pvq9w053grndi84hxq087mr2xhagvac98qvnabirgjq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-flask))
+    (home-page "https://github.com/pytest-dev/pytest-flask")
+    (synopsis "Pytest fixtures to test Flask applications")
+    (description
+     "This pytest plugin provides fixtures to simplify Flask app testing.")
+    (license license:expat)))
+
 (define-public python-pytest-freezer
   (package
     (name "python-pytest-freezer")
@@ -1957,6 +1995,31 @@ developers to detect whether any file handles or other file-like objects
 were inadvertently left open at the end of a unit test.")
     (license license:bsd-3)))
 
+(define-public python-pytest-order
+  (package
+    (name "python-pytest-order")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_order" version))
+       (sha256
+        (base32 "1pixy83l6hcg16gjc04vp4misk2w989alkd9msnw1s9y7pn8yq2i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: 4 failed, 18 errors
+      #:tests? #f))
+    (native-inputs
+     (list python-pytest python-pytest-xdist
+           python-setuptools python-wheel))
+    (home-page "https://github.com/pytest-dev/pytest-order")
+    (synopsis "Pytest plugin to run your tests in a specific order")
+    (description
+     "This plugin defines Pytest markers to ensure that some tests, or groups
+of tests run in a specific order.")
+    (license license:expat)))
+
 (define-public python-pytest-parawtf
   (package
     (name "python-pytest-parawtf")
@@ -1983,6 +2046,32 @@ were inadvertently left open at the end of a unit test.")
     (description
 "@code{python-pytest} uses one of four different spellings of
 parametrize.  This plugin allows you to use all four.")
+    (license license:expat)))
+
+(define-public python-pytest-pycodestyle
+  (package
+    (name "python-pytest-pycodestyle")
+    (version "2.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_pycodestyle" version))
+       (sha256
+        (base32
+         "1jdm5arsh150fvph0960kycb1cwj728mksfwxb65bbbl4zaypkr7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: pytest failed to import 'py.io', while python can.
+      #:tests? #f))
+    (propagated-inputs
+     (list python-py python-pycodestyle python-pytest))
+    (native-inputs
+     (list python-pytest-isort python-setuptools python-wheel))
+    (home-page "https://github.com/henry0312/pytest-pycodestyle")
+    (synopsis "Pytest plugin to run pycodestyle")
+    (description "This package provides a plugin to run @code{pycodestyle}
+for the @code{pytest} framework.")
     (license license:expat)))
 
 (define-public python-pytest-pydocstyle
@@ -2046,6 +2135,31 @@ The main usage is to use the @code{qtbot} fixture, responsible for handling
 @code{qApp} creation as needed and provides methods to simulate user
 interaction, like key presses and mouse clicks.")
     (license license:expat)))
+
+(define-public python-pytest-shard
+  (let ((commit "64610a08dac6b0511b6d51cf895d0e1040d162ad")
+        (revision "0"))
+    (package
+      (name "python-pytest-shard")
+      (version (git-version "0.1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/AdamGleave/pytest-shard")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1h31m68igz670bzl307hazjrfbr8pk14mxflllar18ydmlrnl677"))))
+      (build-system pyproject-build-system)
+      (native-inputs (list python-setuptools python-wheel))
+      (propagated-inputs (list python-pytest))
+      (home-page "https://github.com/AdamGleave/pytest-shard")
+      (synopsis "Pytest plugin for sharding tests")
+      (description "This package provides a Pytest extension for sharding
+tests at the granularity of individual test cases, which can be run in
+parallel and on multiple machines.")
+      (license license:expat))))
 
 (define-public python-pytest-snapshot
   (package
@@ -2443,32 +2557,6 @@ py.test testing framework.")
 framework.")
     (license license:expat)))
 
-(define-public python-pytest-pycodestyle
-  (package
-    (name "python-pytest-pycodestyle")
-    (version "2.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_pycodestyle" version))
-       (sha256
-        (base32
-         "1jdm5arsh150fvph0960kycb1cwj728mksfwxb65bbbl4zaypkr7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: pytest failed to import 'py.io', while python can.
-      #:tests? #f))
-    (propagated-inputs
-     (list python-py python-pycodestyle python-pytest))
-    (native-inputs
-     (list python-pytest-isort python-setuptools python-wheel))
-    (home-page "https://github.com/henry0312/pytest-pycodestyle")
-    (synopsis "Pytest plugin to run pycodestyle")
-    (description "This package provides a plugin to run @code{pycodestyle}
-for the @code{pytest} framework.")
-    (license license:expat)))
-
 (define-public python-pytest-xvfb
   (package
     (name "python-pytest-xvfb")
@@ -2559,30 +2647,6 @@ service processes for your tests with pytest.")
 notebooks.")
     (license license:asl2.0)))
 
-(define-public python-pytest-flask
-  (package
-    (name "python-pytest-flask")
-    (version "1.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-flask" version))
-       (sha256
-        (base32 "0pm93xli1pvq9w053grndi84hxq087mr2xhagvac98qvnabirgjq"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-flask))
-    (home-page "https://github.com/pytest-dev/pytest-flask")
-    (synopsis "Pytest fixtures to test Flask applications")
-    (description
-     "This pytest plugin provides fixtures to simplify Flask app testing.")
-    (license license:expat)))
-
 (define-public python-pytest-cython
   (package
     (name "python-pytest-cython")
@@ -2666,27 +2730,6 @@ libraries.")
     (description "This package provides a Python implementation of the Java
 library of the same name.  It eases monkey patching, for example to stub out
 side effects when unit testing.")
-    (license license:expat)))
-
-(define-public python-mypy-extensions
-  (package
-    (name "python-mypy-extensions")
-    (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "mypy_extensions" version))
-              (sha256
-               (base32
-                "10h7mwjjfbwxzq7jzaj1pnv9g6laa1k0ckgw72j44160bnazinvm"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ;no tests
-    (home-page "https://github.com/python/mypy_extensions")
-    (synopsis "Experimental extensions for MyPy")
-    (description
-     "The @code{python-mypy-extensions} module defines
-experimental extensions to the standard @code{typing} module that are
-supported by the MyPy typechecker.")
     (license license:expat)))
 
 (define-public python-mypy
@@ -3045,49 +3088,6 @@ help in debugging failures and optimizing the scheduler to improve speed.")
     (synopsis "Pytest plugin for Sanic")
     (description "This package provides a pytest plugin for Sanic.  It helps
 you to test your code asynchronously.")
-    (license license:expat)))
-
-(define-public python-pandas-vet
-  (package
-    (name "python-pandas-vet")
-    (version "2023.8.2")
-    (source
-     (origin
-       ;; No tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/deppen8/pandas-vet")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0vkc9sa8x6vfmnd24pxp3gjlmbwx926h4y5alkdbbpb9x5h5ml3j"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("^source = \"regex_commit\"") "")
-                (("^tag_sign.*") "")
-                (("\\[tool.hatch.version\\]") "")
-                (("dynamic = \\[\"version\"\\]")
-                 (string-append "version = \"" #$version "\"")))
-              (with-output-to-file "src/pandas_vet/__about__.py"
-                (let* ((version #$(package-version this-package) )
-                       (version-tuple (string-join (string-split version #\.) ", ")))
-                  (lambda ()
-                    (format #t
-                            "__version__ = version = '~a'
-__version_tuple__ = version_tuple = (~a)~%" version version-tuple)))))))))
-    (propagated-inputs (list python-attrs python-flake8))
-    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
-    (home-page "https://github.com/deppen8/pandas-vet")
-    (synopsis "Opionated @code{flake8} plugin for @code{pandas} code")
-    (description
-     "This package provides a @code{flake8} plugin to lint @code{pandas} code
-in an opinionated way.")
     (license license:expat)))
 
 (define-public python-pytest-rerunfailures
