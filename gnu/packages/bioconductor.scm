@@ -5145,14 +5145,17 @@ structures: @code{ExpressionSet}, @code{AffyBatch}, @code{NChannelSet}.")
 (define-public r-arrayqualitymetrics
   (package
     (name "r-arrayqualitymetrics")
-    (version "3.62.0")
+    (version "3.64.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "arrayQualityMetrics" version))
               (sha256
                (base32
-                "04xc1kqz26l74hsrk6p5bj6c3i5pc19v7y1rwz46wszk40p1rln5"))))
-    (properties `((upstream-name . "arrayQualityMetrics")))
+                "1kz2d40wx2ksy9dz1z3wylcj7y7ad9z8xphsnz39j02m4g5mbvlp"))))
+    (properties
+     '((upstream-name . "arrayQualityMetrics")
+       ;; We don't need these.
+       (updater-ignored-native-inputs . ("r-allmll" "r-ccl4"))))
     (build-system r-build-system)
     (propagated-inputs (list r-affy
                              r-affyplm
