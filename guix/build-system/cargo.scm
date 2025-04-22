@@ -51,7 +51,8 @@
             crate-name->package-name
             crate-source
             define-cargo-inputs
-            cargo-inputs))
+            cargo-inputs
+            cargo-triplet))
 
 (define %crate-base-url
   (make-parameter "https://crates.io"))
@@ -118,7 +119,9 @@ unavailable."
   (let ((module (resolve-interface '(gnu packages rust))))
     (module-ref module 'make-rust-sysroot)))
 
-(define (cargo-triplet target)
+(define* (cargo-triplet #:optional
+                        (target (or (%current-target-system)
+                                    (%current-system))))
   (false-if-exception
     (platform-rust-target
       (lookup-platform-by-target-or-system target))))
