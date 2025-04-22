@@ -199,6 +199,19 @@ guidelines}.")
     (native-inputs
       (list python-openstackdocstheme python-sphinx python-subunit
             python-testrepository python-testtools))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-for-python-3.11'
+                 (lambda _
+                   ;; The getargspec function has been removed in python 3.11.
+                   (substitute* "mox3/mox.py"
+                     (("self\\._args, varargs, varkw, defaults = inspect\\.getargspec\\(method\\)")
+                      "inspect_result = inspect.getfullargspec(method)
+            self._args = inspect_result.args
+            varargs = inspect_result.varargs
+            varkw = inspect_result.varkw
+            defaults = inspect_result.defaults")))))))
     (home-page "https://www.openstack.org/")
     (synopsis "Mock object framework for Python")
     (description
