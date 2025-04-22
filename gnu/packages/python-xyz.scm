@@ -23650,18 +23650,6 @@ capable of parsing almost any programming language out there, and to
 some degree most natural languages too.")
     (license license:expat)))
 
-;; XXX: lark was renamed from lark_parser with major release 1
-(define-public python-lark-parser
-  (package/inherit python-lark
-    (name "python-lark-parser")
-    (version "0.12.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "lark-parser" version))
-              (sha256
-               (base32
-                "0f51jr7dvnd3rm7j5nkkgm2vxfa7a1s804avlvf16h11y6qpv5hm"))))))
-
 (define-public python-find-libpython
   (package
     (name "python-find-libpython")
