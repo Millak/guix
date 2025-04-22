@@ -396,6 +396,12 @@ and background layers of images, which can then be encoded into a DjVu file.")
         #:phases
         #~(modify-phases %standard-phases
             (delete 'configure)
+            (add-after 'unpack 'fix-for-python-3.11
+              (lambda _
+                (substitute* "lib/cli/ocrodjvu.py"
+                  ;; The getargspec function has been removed in python 3.11.
+                  (("init_args, _, _, _ = inspect.getargspec\\(cls.__init__\\)")
+                   "init_args = inspect.getfullargspec(cls.__init__).args"))))
             (add-before 'check 'disable-failing-test
               (lambda _
                 (substitute* "tests/test_ipc.py"
