@@ -2805,13 +2805,13 @@ instantly.")
 (define-public python-crosshair
   (package
     (name "python-crosshair")
-    (version "0.0.84")
+    (version "0.0.86")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "crosshair-tool" version))
+       (uri (pypi-uri "crosshair_tool" version))
        (sha256
-        (base32 "1j6icn5f206yld9871p7a3v45jg8d8v4bhxh09lq3kzi09gr7maz"))))
+        (base32 "19zrv6gsap0qwn4rrs1wwajg0gkq7ys8qijsilmjrhc73dylgl72"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2828,9 +2828,6 @@ instantly.")
               (substitute* "setup.py"
                 ;; pygls is only used by crosshair/lsp_server.py.
                 (("pygls>=1.0.0") "")
-                ;; Tests still pass with typing-inspect==0.6.0
-                ;; packaged by Guix.
-                (("typing-inspect>=0.7.1") "typing-inspect>=0.6.0")
                 ;; 'sanity-check fails for z3-solver, although it is
                 ;; included in 'propagated-inputs.
                 (("z3-solver>=4.13.0.0") ""))))
