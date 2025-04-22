@@ -3358,8 +3358,8 @@ satellites.")
     (license license:gpl3)))
 
 (define-public chirp
-  (let ((commit "1219bee0d39ca3778acdf5d7f0a92c1e8208bae9")
-        (revision "3"))
+  (let ((commit "bc27f6653aa804a5c55a3a1b2244ee43a174854b")
+        (revision "4"))
     (package
       (name "chirp")
       (version (git-version "0.4.0" revision commit))
@@ -3371,35 +3371,45 @@ satellites.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "19z3f05zppg8w4z4sdich8d173sd87501l0p8l1vn1awgky2q0r8"))))
-      (build-system python-build-system)
+          (base32 "15nly5j0f3h67pv6li6vrd56wmdnplanls867kf60r9vz0k4k0yd"))))
+      (build-system pyproject-build-system)
       (native-inputs
        (list python-mock
-             python-mox3
              python-pytest
              python-pytest-mock
              python-pyyaml
-             python-tox))
+             python-setuptools
+             python-wheel))
       (inputs
        (list python-future
              python-importlib-resources
-             python-lark-parser
+             python-lark
              python-pyserial
              python-requests
-             python-six
              python-suds
              python-wxpython
              python-yattag))
       (arguments
-       (list ;; FIXME: How to run the tests? The default way crashes.
-             #:tests? #f
-             #:phases
-             #~(modify-phases %standard-phases
-                 ;; FIXME: Why does sanity-check phase fail to find lark?
-                 (delete 'sanity-check)
-                 (add-after 'build 'set-home-for-tests
-                   (lambda _
-                     (setenv "HOME" "/tmp"))))))
+       (list
+        #:test-flags
+        #~(list ;; FIXME: These files error during collection.
+           "--ignore=tests/unit/test_csv.py"
+           "--ignore=tests/unit/test_wxui_radiothread.py"
+           ;; These tests are long and expensive.
+           "--ignore=tests/test_drivers.py"
+           ;; Ignore tests requiring network.
+           "-m" "not network"
+           "-k" (string-append
+                 ;; XXX: Tests likewise prefixed all have a RADIO_CLASS=None
+                 "not TestCase"
+                 " and not test_bitwise_errors"
+                 ;; XXX: Requires settings TLS certificates.
+                 " and not test_marc_works"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'build 'set-home-for-tests
+              (lambda _
+                (setenv "HOME" "/tmp"))))))
       (synopsis "Cross-radio programming tool")
       (description "Chirp is a cross-radio programming tool.  It supports a
 growing list of radios across several manufacturers and allows transferring of
