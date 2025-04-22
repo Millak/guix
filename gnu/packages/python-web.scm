@@ -10620,6 +10620,22 @@ and FastAPI.")
        (sha256
         (base32 "1byyg7b2ixpr8hc849a6dd0qn5daxqawz6lb3php8lrmsb1n5cc3"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; XXX: chirp expects suds instead of suds_community
+               (add-after 'install 'add-custom-dist-info
+                 (lambda _
+                   (for-each
+                    (lambda (dir)
+                      (with-directory-excursion (dirname dir)
+                        (symlink
+                         (basename dir)
+                         (string-append "suds-" #$version ".dist-info"))))
+                    (find-files #$output
+                                (lambda (file stat)
+                                  (string-suffix? ".dist-info" file))
+                                #:directories? #t)))))))
     (native-inputs
      (list python-pytest
            python-setuptools
