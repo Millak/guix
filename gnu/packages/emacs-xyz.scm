@@ -20475,6 +20475,7 @@ are common in Chromium-derived projects.")
         (base32 "08pqz0xfih761hmaq1hs3fzmkxn2jhzfbkqrkisl84ayla8shnrn"))))
     (build-system emacs-build-system)
     (arguments (list #:test-command #~(list "make" "test")
+                     #:emacs emacs      ; tests require built-in SQLite support
                      #:phases
                      #~(modify-phases %standard-phases
                          (add-before 'check 'set-home
