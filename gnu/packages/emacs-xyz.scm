@@ -237,6 +237,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-viewers)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages lisp)
@@ -23282,6 +23283,58 @@ settings).")
     (description "This package contains a minor mode that can be toggled.  It
 fetches weather information based on your location or on a given location from
 @uref{https://wttr.in} and then displays it on the mode line.")
+    (license license:gpl3+)))
+
+(define-public emacs-ffi
+  (package
+    (name "emacs-ffi")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emacs-ffi/emacs-ffi")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05crpgscpbzkg4k0ylbfjz2wyw2r8lki8q9w2kmdpljsqrpdrwl0"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? (not (%current-target-system))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-module-load
+            (lambda _
+              (make-file-writable "src/ffi.el")
+              (emacs-substitute-sexps "src/ffi.el"
+                ("(require 'ffi-module nil t)"
+                 `(module-load
+                   ,(string-append #$output "/lib/ffi-module.so"))))))
+          (add-before 'check 'build-emacs-module
+            (lambda _
+              ;; Compile the shared object file.
+              (invoke "make"
+                      #$(string-append "CC="
+                                       (cc-for-target)))
+              ;; Copy the build artifacts to root and let the install phase do
+              ;; its thing
+              (copy-recursively "build/lib" ".")
+              ;; Install the shared object file into /lib.
+              (install-file "build/lib/ffi-module.so"
+                            (string-append #$output "/lib"))))
+          (add-before 'install 'installinfo
+            (lambda _
+              (install-file "build/doc/emacs-ffi.info"
+                            (string-append #$output "/share/info")))))))
+    (inputs (list emacs-compat libltdl libffi))
+    (native-inputs (list texinfo))
+    (home-page "https://emacs-ffi.github.io/emacs-ffi/")
+    (synopsis "FFI for Emacs based on libffi")
+    (description
+     "This package provides an FFI for Emacs.  It is based on
+libffi and relies on the dynamic module support in order to be loaded into
+Emacs.  It is relatively full-featured, but for the time being low-level.")
     (license license:gpl3+)))
 
 (define-public emacs-free-keys
