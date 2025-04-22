@@ -932,6 +932,58 @@ successor of @url{https://github.com/rkern/line_profiler}.")
 Python program.")
     (license license:bsd-3)))
 
+(define-public python-mypy
+  (package
+    (name "python-mypy")
+    (version "1.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mypy" version))
+       (sha256
+        (base32
+         "0pl3plw815824z5gsncnjg3yn2v5wz0gqp20wdrncgmzdwdsd482"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; It tries to download hatchling and install aditional test
+      ;; dependencies.
+      #:test-flags #~(list "--ignore=mypy/test/testpep561.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; The directory '/homeless-shelter/.cache/pip' or its parent
+              ;; directory is not owned or is not writable by the current
+              ;; user.
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-attrs
+           python-lxml
+           python-psutil
+           python-pytest
+           python-pytest-forked
+           python-pytest-xdist
+           python-setuptools
+           python-virtualenv
+           python-wheel))
+    (propagated-inputs
+     (list python-mypy-extensions
+           python-tomli
+           python-typing-extensions))
+    (home-page "https://www.mypy-lang.org/")
+    (synopsis "Static type checker for Python")
+    (description "Mypy is an optional static type checker for Python that aims
+to combine the benefits of dynamic typing and static typing.  Mypy combines
+the expressive power and convenience of Python with a powerful type system and
+compile-time type checking.  Mypy type checks standard Python programs; run
+them using any Python VM with basically no runtime overhead.")
+    ;; Most of the code is under MIT license; Some files are under Python Software
+    ;; Foundation License version 2: stdlib-samples/*, mypyc/lib-rt/pythonsupport.h and
+    ;; mypyc/lib-rt/getargs.c
+    (license (list license:expat license:psfl))))
+
 (define-public python-mypy-extensions
   (package
     (name "python-mypy-extensions")
@@ -952,6 +1004,18 @@ Python program.")
 experimental extensions to the standard @code{typing} module that are
 supported by the MyPy typechecker.")
     (license license:expat)))
+
+;;; This variant exists to break a cycle between python-pylama and python-isort.
+(define-public python-mypy-minimal
+  (hidden-package
+   (package
+     (inherit python-mypy)
+     (name "python-mypy-minimal")
+     (arguments
+      `(#:tests? #f))
+     (native-inputs
+      (list python-setuptools
+            python-wheel)))))
 
 (define-public python-nbval
   (package
@@ -999,6 +1063,63 @@ notebooks.  The intended purpose of the tests is to determine whether execution
 of the stored inputs match the stored outputs of the @file{.ipynb} file.  Whilst
 also ensuring that the notebooks are running without errors.")
     (license license:bsd-3)))
+
+(define-public python-nptyping
+  (package
+    (name "python-nptyping")
+    (version "2.5.0")
+    (source (origin
+              (method git-fetch)        ;pypi only contains a binary wheel
+              (uri (git-reference
+                    (url "https://github.com/ramonhagenaars/nptyping")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0m6iq98qi9pl5hcc5k99bvy5w293vrlsdnimxl020i60rfnihgl7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; This one started failing with the last update of Numpy.
+         "--ignore=tests/test_beartype.py"
+         ;; Multiple failures due to undefined names (typing package must be
+         ;; too outdated, or perhaps they use a newer pandas).
+         "--ignore=tests/test_mypy.py"
+         "--ignore=tests/pandas_/test_mypy_dataframe.py"
+         "--ignore=tests/pandas_/test_fork_sync.py" ;requires connectivity
+         ;; This test requires 'python-pyright', not packaged.
+         "--ignore=tests/test_pyright.py"
+         ;; This one fails with "Unexpected argument of type <class 'tuple'>".
+         "--ignore=tests/test_typeguard.py"
+         ;; This one runs pip and fails.
+         "--ignore=tests/test_wheel.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-source-date-epoch
+            (lambda _
+              ;; Otherwise the wheel building test would fail with "ZIP does
+              ;; not support timestamps before 1980".
+              (setenv "SOURCE_DATE_EPOCH" "315532800"))))))
+    (native-inputs
+     (list python-beartype
+           python-feedparser
+           python-mypy
+           python-pandas
+           python-pytest
+           python-setuptools
+           python-typeguard
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy
+           python-typing-extensions
+           python-pandas-stubs))
+    (home-page "https://github.com/ramonhagenaars/nptyping")
+    (synopsis "Type hints for Numpy")
+    (description "This package provides extensive dynamic type checks for
+dtypes and shapes of arrays for NumPy, extending @code{numpy.typing}.")
+    (license license:expat)))
 
 (define-public python-pandas-vet
   (package
@@ -1082,29 +1203,6 @@ in an opinionated way.")
     (description
      "Pyinstrument is a Python profiler to help you optimize your code.")
     (license license:bsd-3)))
-
-(define-public python-pytest-astropy-header
-(package
-  (name "python-pytest-astropy-header")
-  (version "0.2.2")
-  (source
-    (origin
-      (method url-fetch)
-      (uri (pypi-uri "pytest-astropy-header" version))
-      (sha256
-        (base32 "046v4arinv8b5jz05pvhnc0n1aqqndwvhlsl635ahxabr40i32bp"))))
-  (build-system python-build-system)
-  (native-inputs
-   (list python-pytest python-setuptools-scm))
-  (home-page "https://www.astropy.org/")
-  (synopsis
-   "Pytest plugin adding diagnostic data to the header of the test output")
-  (description
-    "This plugin package provides a way to include information about the system,
-Python installation, and select dependencies in the header of the output when
-running pytest.  It can be used with packages that are not affiliated with the
-Astropy project, but is optimized for use with astropy-related projects.")
-  (license license:bsd-3)))
 
 (define-public python-pylama
   (package
@@ -1228,6 +1326,29 @@ are too large to conveniently hard-code them in the tests.")
 astropy related packages.")
     (license license:bsd-3)))
 
+(define-public python-pytest-astropy-header
+(package
+  (name "python-pytest-astropy-header")
+  (version "0.2.2")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (pypi-uri "pytest-astropy-header" version))
+      (sha256
+        (base32 "046v4arinv8b5jz05pvhnc0n1aqqndwvhlsl635ahxabr40i32bp"))))
+  (build-system python-build-system)
+  (native-inputs
+   (list python-pytest python-setuptools-scm))
+  (home-page "https://www.astropy.org/")
+  (synopsis
+   "Pytest plugin adding diagnostic data to the header of the test output")
+  (description
+    "This plugin package provides a way to include information about the system,
+Python installation, and select dependencies in the header of the output when
+running pytest.  It can be used with packages that are not affiliated with the
+Astropy project, but is optimized for use with astropy-related projects.")
+  (license license:bsd-3)))
+
 (define-public python-pytest-benchmark
   (package
     (name "python-pytest-benchmark")
@@ -1302,6 +1423,25 @@ Python code formatter \"black\".")
     (description
      "This package provides a shim Pytest plugin to enable a Celery marker.")
     (license license:bsd-3)))
+
+(define-public python-pytest-check
+  (package
+    (name "python-pytest-check")
+    (version "2.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_check" version))
+       (sha256
+        (base32 "0l7n2jhadbkmqr8kzja8zwclhjvhc87qsgr5v867zgsry37fy92j"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core))
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/okken/pytest-check")
+    (synopsis "Pytest plugin to allow multiple failures")
+    (description "This package provides a pytest plugin that allows multiple
+failures per test.")
+    (license license:expat)))
 
 (define-public python-pytest-click
   (package
@@ -1436,6 +1576,40 @@ tests in cram.")
 CSV output mode for Pytest.  It can be enabled via the @option{--csv} option
 it adds to the Pytest command line interface (CLI).")
     (license license:gpl3+)))
+
+(define-public python-pytest-cython
+  (package
+    (name "python-pytest-cython")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-cython" version))
+       (sha256
+        (base32 "0ma496dgmmrpgqd3zk6vin29dgajcplh63yqd8jh2a3ai954fr22"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "tests"
+              ;; FIXME: Failed: nomatch: '*sqr*PASSED*
+              "-k" (string-append
+                    "not test_wrap_cpp_ext_module[importlib]"
+                    " and not test_wrap_c_ext_module[importlib]"
+                    " and not test_cython_ext_module[importlib]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (with-directory-excursion "tests/example-project"
+                (invoke "python" "setup.py" "build_ext" "--inplace")))))))
+    (native-inputs (list python-cython-3 python-setuptools python-wheel))
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/lgpage/pytest-cython")
+    (synopsis "Cython extension modules testing plugin")
+    (description
+     "This package provides a plugin for testing Cython extension modules.")
+    (license license:expat)))
 
 (define-public python-pytest-datafiles
   (package
@@ -2136,6 +2310,35 @@ The main usage is to use the @code{qtbot} fixture, responsible for handling
 interaction, like key presses and mouse clicks.")
     (license license:expat)))
 
+(define-public python-pytest-rerunfailures
+  (package
+    (name "python-pytest-rerunfailures")
+    (version "10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-rerunfailures" version))
+       (sha256
+        (base32 "15v68kggjvkflbqr0vz8gp5yp3pcsk0rz05bpg2l4xp0a6nin7ly"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/pytest-dev/pytest-rerunfailures")
+    (synopsis "Pytest plugin to re-run flaky tests")
+    (description "This package provides a pytest plugin to re-run tests to
+eliminate flaky failures.")
+    (license license:mpl2.0)))
+
+(define-public python-pytest-rerunfailures-13
+  (package
+    (inherit python-pytest-rerunfailures)
+    (version "13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-rerunfailures" version))
+       (sha256
+        (base32 "16cin0chv59w4rvnd6r0fisp0s8avmp07rwn9da6yixw43jdncp1"))))))
+
 (define-public python-pytest-shard
   (let ((commit "64610a08dac6b0511b6d51cf895d0e1040d162ad")
         (revision "0"))
@@ -2244,6 +2447,36 @@ unexpectedly.")
 through Python's socket interface")
     (license license:expat)))
 
+(define-public python-pytest-subprocess
+  (package
+    (name "python-pytest-subprocess")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/aklajnert/pytest-subprocess")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1yb5y6dqzf6k5a07yzdpw8w50bm7zbsdvv06ii7c7vyg9wx5iw6y"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-anyio
+           python-docutils
+           python-pygments
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-rerunfailures
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/aklajnert/pytest-subprocess")
+    (synopsis "Fake subprocess for Pytest")
+    (description
+     "This package provides a plugin to fake subprocess for Pytest.")
+    (license license:expat)))
+
 (define-public python-pytest-subtests
   (package
     (name "python-pytest-subtests")
@@ -2268,25 +2501,6 @@ through Python's socket interface")
     (synopsis "Unittest subTest() support and subtests fixture")
     (description "This Pytest plugin provides unittest @code{subTest()}
 support and @code{subtests} fixture.")
-    (license license:expat)))
-
-(define-public python-pytest-check
-  (package
-    (name "python-pytest-check")
-    (version "2.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_check" version))
-       (sha256
-        (base32 "0l7n2jhadbkmqr8kzja8zwclhjvhc87qsgr5v867zgsry37fy92j"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-flit-core))
-    (propagated-inputs (list python-pytest))
-    (home-page "https://github.com/okken/pytest-check")
-    (synopsis "Pytest plugin to allow multiple failures")
-    (description "This package provides a pytest plugin that allows multiple
-failures per test.")
     (license license:expat)))
 
 (define-public python-pytest-checkdocs
@@ -2647,40 +2861,6 @@ service processes for your tests with pytest.")
 notebooks.")
     (license license:asl2.0)))
 
-(define-public python-pytest-cython
-  (package
-    (name "python-pytest-cython")
-    (version "0.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-cython" version))
-       (sha256
-        (base32 "0ma496dgmmrpgqd3zk6vin29dgajcplh63yqd8jh2a3ai954fr22"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "tests"
-              ;; FIXME: Failed: nomatch: '*sqr*PASSED*
-              "-k" (string-append
-                    "not test_wrap_cpp_ext_module[importlib]"
-                    " and not test_wrap_c_ext_module[importlib]"
-                    " and not test_cython_ext_module[importlib]"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              (with-directory-excursion "tests/example-project"
-                (invoke "python" "setup.py" "build_ext" "--inplace")))))))
-    (native-inputs (list python-cython-3 python-setuptools python-wheel))
-    (propagated-inputs (list python-pytest))
-    (home-page "https://github.com/lgpage/pytest-cython")
-    (synopsis "Cython extension modules testing plugin")
-    (description
-     "This package provides a plugin for testing Cython extension modules.")
-    (license license:expat)))
-
 (define-public python-pyux
   (package
     (name "python-pyux")
@@ -2730,127 +2910,6 @@ libraries.")
     (description "This package provides a Python implementation of the Java
 library of the same name.  It eases monkey patching, for example to stub out
 side effects when unit testing.")
-    (license license:expat)))
-
-(define-public python-mypy
-  (package
-    (name "python-mypy")
-    (version "1.13.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "mypy" version))
-       (sha256
-        (base32
-         "0pl3plw815824z5gsncnjg3yn2v5wz0gqp20wdrncgmzdwdsd482"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; It tries to download hatchling and install aditional test
-      ;; dependencies.
-      #:test-flags #~(list "--ignore=mypy/test/testpep561.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
-            (lambda _
-              ;; The directory '/homeless-shelter/.cache/pip' or its parent
-              ;; directory is not owned or is not writable by the current
-              ;; user.
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list nss-certs-for-test
-           python-attrs
-           python-lxml
-           python-psutil
-           python-pytest
-           python-pytest-forked
-           python-pytest-xdist
-           python-setuptools
-           python-virtualenv
-           python-wheel))
-    (propagated-inputs
-     (list python-mypy-extensions
-           python-tomli
-           python-typing-extensions))
-    (home-page "https://www.mypy-lang.org/")
-    (synopsis "Static type checker for Python")
-    (description "Mypy is an optional static type checker for Python that aims
-to combine the benefits of dynamic typing and static typing.  Mypy combines
-the expressive power and convenience of Python with a powerful type system and
-compile-time type checking.  Mypy type checks standard Python programs; run
-them using any Python VM with basically no runtime overhead.")
-    ;; Most of the code is under MIT license; Some files are under Python Software
-    ;; Foundation License version 2: stdlib-samples/*, mypyc/lib-rt/pythonsupport.h and
-    ;; mypyc/lib-rt/getargs.c
-    (license (list license:expat license:psfl))))
-
-;;; This variant exists to break a cycle between python-pylama and python-isort.
-(define-public python-mypy-minimal
-  (hidden-package
-   (package
-     (inherit python-mypy)
-     (name "python-mypy-minimal")
-     (arguments
-      `(#:tests? #f))
-     (native-inputs
-      (list python-setuptools
-            python-wheel)))))
-
-(define-public python-nptyping
-  (package
-    (name "python-nptyping")
-    (version "2.5.0")
-    (source (origin
-              (method git-fetch)        ;pypi only contains a binary wheel
-              (uri (git-reference
-                    (url "https://github.com/ramonhagenaars/nptyping")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0m6iq98qi9pl5hcc5k99bvy5w293vrlsdnimxl020i60rfnihgl7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         ;; This one started failing with the last update of Numpy.
-         "--ignore=tests/test_beartype.py"
-         ;; Multiple failures due to undefined names (typing package must be
-         ;; too outdated, or perhaps they use a newer pandas).
-         "--ignore=tests/test_mypy.py"
-         "--ignore=tests/pandas_/test_mypy_dataframe.py"
-         "--ignore=tests/pandas_/test_fork_sync.py" ;requires connectivity
-         ;; This test requires 'python-pyright', not packaged.
-         "--ignore=tests/test_pyright.py"
-         ;; This one fails with "Unexpected argument of type <class 'tuple'>".
-         "--ignore=tests/test_typeguard.py"
-         ;; This one runs pip and fails.
-         "--ignore=tests/test_wheel.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-source-date-epoch
-            (lambda _
-              ;; Otherwise the wheel building test would fail with "ZIP does
-              ;; not support timestamps before 1980".
-              (setenv "SOURCE_DATE_EPOCH" "315532800"))))))
-    (native-inputs
-     (list python-beartype
-           python-feedparser
-           python-mypy
-           python-pandas
-           python-pytest
-           python-setuptools
-           python-typeguard
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy
-           python-typing-extensions
-           python-pandas-stubs))
-    (home-page "https://github.com/ramonhagenaars/nptyping")
-    (synopsis "Type hints for Numpy")
-    (description "This package provides extensive dynamic type checks for
-dtypes and shapes of arrays for NumPy, extending @code{numpy.typing}.")
     (license license:expat)))
 
 (define-public python-pyannotate
@@ -3026,36 +3085,6 @@ execution of a test suite.  It will also store a history of all test runs to
 help in debugging failures and optimizing the scheduler to improve speed.")
     (license license:asl2.0)))
 
-(define-public python-pytest-subprocess
-  (package
-    (name "python-pytest-subprocess")
-    (version "1.5.3")
-    (source
-     (origin
-       (method git-fetch)               ;no tests in PyPI archive
-       (uri (git-reference
-             (url "https://github.com/aklajnert/pytest-subprocess")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1yb5y6dqzf6k5a07yzdpw8w50bm7zbsdvv06ii7c7vyg9wx5iw6y"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-anyio
-           python-docutils
-           python-pygments
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-rerunfailures
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/aklajnert/pytest-subprocess")
-    (synopsis "Fake subprocess for Pytest")
-    (description
-     "This package provides a plugin to fake subprocess for Pytest.")
-    (license license:expat)))
-
 ;; This is only used by python-sanic
 (define-public python-pytest-sanic
   (package
@@ -3089,35 +3118,6 @@ help in debugging failures and optimizing the scheduler to improve speed.")
     (description "This package provides a pytest plugin for Sanic.  It helps
 you to test your code asynchronously.")
     (license license:expat)))
-
-(define-public python-pytest-rerunfailures
-  (package
-    (name "python-pytest-rerunfailures")
-    (version "10.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-rerunfailures" version))
-       (sha256
-        (base32 "15v68kggjvkflbqr0vz8gp5yp3pcsk0rz05bpg2l4xp0a6nin7ly"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/pytest-dev/pytest-rerunfailures")
-    (synopsis "Pytest plugin to re-run flaky tests")
-    (description "This package provides a pytest plugin to re-run tests to
-eliminate flaky failures.")
-    (license license:mpl2.0)))
-
-(define-public python-pytest-rerunfailures-13
-  (package
-    (inherit python-pytest-rerunfailures)
-    (version "13.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-rerunfailures" version))
-       (sha256
-        (base32 "16cin0chv59w4rvnd6r0fisp0s8avmp07rwn9da6yixw43jdncp1"))))))
 
 (define-public python-sybil
   (package
