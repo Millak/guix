@@ -2283,14 +2283,7 @@ are both supported).")
            "--enable-otr"
            "--enable-pgp"
            "--enable-omemo"
-           "--enable-icons-and-clipboard")
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'patch-python-plugins
-             (lambda _
-               ;; Py_XDECREF is a macro in Python 3.10
-               (substitute* "src/plugins/python_plugins.c"
-                 (("Py_XDECREF") "_Py_XDECREF")))))))
+           "--enable-icons-and-clipboard")))
     (native-inputs
      (list autoconf
            autoconf-archive
