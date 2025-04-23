@@ -8637,15 +8637,20 @@ effort and encourages consistency.")
 (define-public r-bsgenome
   (package
     (name "r-bsgenome")
-    (version "1.74.0")
+    (version "1.76.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BSgenome" version))
               (sha256
                (base32
-                "0abcz2rpw9af2cfyssz6adbx36issjlwzf7ipj1vkcmia6j5f1ji"))))
+                "0xlfznvccvk6ymnk41bsdif4pgkh90xpsq9c67rsjrza71cl31f0"))))
     (properties
-     `((upstream-name . "BSgenome")))
+     `((upstream-name . "BSgenome")
+       ;; Avoid cycles.
+       (updater-ignored-native-inputs
+        . ("r-bsgenome-celegans-ucsc-ce2"
+           "r-bsgenome-hsapiens-ucsc-hg38-masked"
+           "r-hgu95av2probe"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics
@@ -8659,7 +8664,6 @@ effort and encourages consistency.")
            r-rtracklayer
            r-s4vectors
            r-xvector))
-    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/BSgenome")
     (synopsis "Infrastructure for Biostrings-based genome data packages")
     (description
