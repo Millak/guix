@@ -3031,8 +3031,9 @@ written in C++.")
       (license license:asl2.0))))
 
 (define kaldi-for-vosk
-  (let* ((commit "a25f216f5ce4eec5e45a6ab7651e20c9840a05cd")
-         (revision "0")
+  ;; Commit of branch "vosk"
+  (let* ((commit "bc5baf14231660bd50b7d05788865b4ac6c34481")
+         (revision "1")
          (openfst openfst-for-vosk))
     (package
       (inherit kaldi)
@@ -3046,7 +3047,9 @@ written in C++.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "16w90za8narkfi590cxj4p7vc1f5sdxc927g5hk6kh4l3mf6iisl"))))
+          (base32 "1y3d6918srr7cn5r72v5wvbdwz9p9j2bjw1x78sfis2r2k60lllw"))
+         (patches
+          (search-patches "kaldi-openblas-0.3.29-compatibility.patch"))))
       (inputs
        (list alsa-lib
              glib
