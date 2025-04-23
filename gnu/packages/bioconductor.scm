@@ -8167,15 +8167,26 @@ microarrays.")
 (define-public r-annotationdbi
   (package
     (name "r-annotationdbi")
-    (version "1.68.0")
+    (version "1.70.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AnnotationDbi" version))
               (sha256
                (base32
-                "13gqbmx7pqnl6g087kz1isnw61jbljq8pizzn5wf4hv9c76dlvpf"))))
+                "1nx9yrj76gwxqi2v7ynp8z6p4zm8gc3dqqpn62akflcymc213ppq"))))
     (properties
-     `((upstream-name . "AnnotationDbi")))
+     '((upstream-name . "AnnotationDbi")
+       (updater-ignored-native-inputs
+        . ("r-annotationforge"
+           "r-db"
+           "r-ensdb-hsapiens-v75"
+           "r-go-db"
+           "r-hgu95av2-db"
+           "r-org-at-tair-db"
+           "r-org-hs-eg-db"
+           "r-org-sc-sgd-db"
+           "r-reactome-db"
+           "r-txdb-hsapiens-ucsc-hg19-knowngene"))))
     (build-system r-build-system)
     ;; Tests require annotation packages that depend on this package.
     (arguments (list #:tests? #false))
@@ -8188,7 +8199,7 @@ microarrays.")
            r-rsqlite
            r-s4vectors))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/AnnotationDbi")
     (synopsis "Annotation database interface")
     (description
