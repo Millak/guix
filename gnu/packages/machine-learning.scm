@@ -3204,10 +3204,18 @@ automatically.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1iijq8jmgdxr7961inal1ggs496ymxradm51m4sqx8vl983x14y8"))))
+                  "1iijq8jmgdxr7961inal1ggs496ymxradm51m4sqx8vl983x14y8"))
+                ;; XXX: Tests are broken beyond repair and are mingled in the
+                ;; source directory.  Remove them to avoid installing them.
+                ;; See https://github.com/nicolas-graves/kaldi-gstreamer-server
+                ;; for a fork that tries to repair them, to no avail.
+                (snippet #~(for-each delete-file
+                                     '("kaldigstserver/test-buffer.py"
+                                       "kaldigstserver/decoder_test.py"
+                                       "kaldigstserver/decoder2_test.py")))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f ; there are no tests that can be run automatically
+       `(#:tests? #f
          #:modules ((guix build utils)
                     (guix build gnu-build-system)
                     (srfi srfi-26))
@@ -3215,7 +3223,11 @@ automatically.")
          (modify-phases %standard-phases
            (delete 'configure)
            (replace 'build
-             (lambda* (#:key outputs #:allow-other-keys)
+             (lambda _
+               ;; Migrate to Glib.MainLoop.
+               (substitute* (find-files "kaldigstserver" "\\.py")
+                 (("GObject\\.threads_init\\(\\)") "")
+                 (("GObject") "GLib"))
                ;; Disable hash randomization to ensure the generated .pycs
                ;; are reproducible.
                (setenv "PYTHONHASHSEED" "0")
@@ -3223,10 +3235,6 @@ automatically.")
                  ;; See https://github.com/alumae/kaldi-gstreamer-server/issues/232
                  (substitute* "master_server.py"
                    (("\\.replace\\('\\\\.*") ")"))
-
-                 ;; This is a Python 2 file
-                 (delete-file "decoder_test.py")
-                 (delete-file "test-buffer.py")
 
                  (for-each (lambda (file)
                              (apply invoke
@@ -3254,19 +3262,18 @@ automatically.")
                  (let* ((server (string-append bin "/kaldi-gst-server"))
                         (client (string-append bin "/kaldi-gst-client"))
                         (worker (string-append bin "/kaldi-gst-worker"))
-                        (PYTHONPATH (getenv "GUIX_PYTHONPATH"))
-                        (GST_PLUGIN_PATH (string-append
-                                          (assoc-ref inputs "gst-kaldi-nnet2-online")
-                                          "/lib/gstreamer-1.0:${GST_PLUGIN_PATH}"))
                         (wrap (lambda (wrapper what)
                                 (with-output-to-file wrapper
                                   (lambda _
-                                    (format #t
-                                            "#!~a
+                                    (format #t "#!~a
 export GUIX_PYTHONPATH=~a
-export GST_PLUGIN_PATH=~a
-exec ~a ~a/~a \"$@\"~%"
-                                            (which "bash") PYTHONPATH GST_PLUGIN_PATH
+export GI_TYPELIB_PATH=~a:${GI_TYPELIB_PATH}
+export GST_PLUGIN_SYSTEM_PATH=~a:${GST_PLUGIN_SYSTEM_PATH}
+exec ~a ~a~a \"$@\"~%"
+                                            (which "bash")
+                                            (getenv "GUIX_PYTHONPATH")
+                                            (getenv "GI_TYPELIB_PATH")
+                                            (getenv "GST_PLUGIN_SYSTEM_PATH")
                                             (which "python") share what)))
                                 (chmod wrapper #o555))))
                    (for-each wrap
@@ -3275,7 +3282,11 @@ exec ~a ~a/~a \"$@\"~%"
                                    "client.py"
                                    "worker.py")))))))))
       (inputs
-       (list gst-kaldi-nnet2-online
+       (list gstreamer
+             gst-kaldi-nnet2-online
+             gst-plugins-base
+             gst-plugins-good
+             kaldi
              python-wrapper
              python-pygobject
              python-pyyaml
