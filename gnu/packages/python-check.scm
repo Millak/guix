@@ -3150,34 +3150,52 @@ manipulating JSON Object.  You can manipulate your JSON object using JSONPath")
 (define-public python-stestr
   (package
     (name "python-stestr")
-    (version "3.2.1")
+    ;; XXX: The latest version needs flit-core=>3.12.
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stestr" version))
        (sha256
-        (base32
-         "1kg9gfdr4bj2m7s1r44z530a0ba4p17j4jlhcn1xha0j8jmyfgn2"))))
-    (build-system python-build-system)
+        (base32 "12p96kzanzzssr6z4hq6k62pdbsql4mf369ms69c4qyfxrlw6qaz"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                    ;to avoid circular dependencies
+     (list
+      #:test-flags
+      ;; Two tets fail.
+      #~(list "--exclude-regex" (string-join
+                                 (list "test_initialise_expands_user_directory"
+                                       "test_open_expands_user_directory")
+                                 "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: Implement in pypproject-build-system's  test-backends.
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (let ((stestr (string-append #$output "/bin/stestr")))
+                  (apply invoke stestr "run" test-flags))))))))
     (native-inputs
-     (list python-pbr))
+     (list python-ddt
+           python-iso8601
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-cliff
            python-fixtures
-           python-future
            python-pyyaml
            python-subunit
            python-testtools
+           python-tomlkit
            python-voluptuous))
     (home-page "https://stestr.readthedocs.io/en/latest/")
     (synopsis "Parallel Python test runner")
-    (description "This package provides the @command{stestr} command, a
-parallel Python test runner built around @code{subunit}.  It is designed to
-execute @code{unittest} test suites using multiple processes to split up
-execution of a test suite.  It will also store a history of all test runs to
-help in debugging failures and optimizing the scheduler to improve speed.")
+    (description
+     "This package provides the @command{stestr} command, a parallel Python
+test runner built around @code{subunit}.  It is designed to execute
+@code{unittest} test suites using multiple processes to split up execution of
+a test suite.  It will also store a history of all test runs to help in
+debugging failures and optimizing the scheduler to improve speed.")
     (license license:asl2.0)))
 
 (define-public python-sybil
