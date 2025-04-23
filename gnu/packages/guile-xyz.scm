@@ -3638,24 +3638,26 @@ interface for reading articles in any format.")
     (name "guile-redis")
     (version "2.2.0")
     (home-page "https://github.com/aconchillo/guile-redis")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url home-page)
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0cb31vj88f3hj93v1lzxcqjyz7ym2gmpk31gv5i2dqv721frnlyj"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cb31vj88f3hj93v1lzxcqjyz7ym2gmpk31gv5i2dqv721frnlyj"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags '("GUILE_AUTO_COMPILE=0")))
-    (native-inputs
-     (list autoconf automake pkg-config guile-3.0))
+     (list
+      #:make-flags
+      #~'("GUILE_AUTO_COMPILE=0")))
+    (native-inputs (list autoconf automake pkg-config guile-3.0))
     (synopsis "Redis client library for Guile")
-    (description "Guile-redis provides a Scheme interface to the Redis
-key-value cache and store.")
-    (license license:lgpl3+)))
+    (description
+     "Guile-redis provides a Scheme interface to the Redis key-value cache and
+store.")
+    (license license:gpl3+)))
 
 (define-public guile2.2-redis
   (package
