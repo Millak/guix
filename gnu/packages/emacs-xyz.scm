@@ -19807,6 +19807,25 @@ journaling.  While it is possible to use the generic @code{denote} command
 to streamline the journaling workflow.")
     (license license:gpl3+)))
 
+(define-public emacs-denote-markdown
+  (package
+    (name "emacs-denote-markdown")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/denote-markdown-"
+                           version ".tar"))
+       (sha256
+        (base32 "0ic8kqfw56xsm9s0rlq7cgnh0dzjsbbcx7kdk55dggpvxv67jj62"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-denote))
+    (home-page "https://github.com/protesilaos/denote-markdown")
+    (synopsis "Extensions that better integrate Denote with Markdown")
+    (description "This package provides some convenience functions to better
+integrate Markdown with Denote.")
+    (license license:gpl3+)))
+
 (define-public emacs-denote-silo
   (package
     (name "emacs-denote-silo")
