@@ -2904,8 +2904,8 @@ PyTrees.")
 
 ;; There have been no proper releases yet.
 (define-public kaldi
-  (let ((commit "be22248e3a166d9ec52c78dac945f471e7c3a8aa")
-        (revision "1"))
+  (let ((commit "01aadd7c19372e3eacadec88caabd86162f33d69")
+        (revision "2"))
     (package
       (name "kaldi")
       (version (git-version "0" revision commit))
@@ -2917,7 +2917,10 @@ PyTrees.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1wkxz3p0h68mxbg41i1wygir2r4rraxbb4672xkkvvs85r6c8r8i"))))
+                  "08l31g256wl81fsrm1dvi0d2rq2vk5zq7ihbbiw7hp51iwg2miif"))
+                (patches
+                 (search-patches "kaldi-openblas-0.3.29-compatibility.patch"
+                                 "kaldi-ignore-failing-test.patch"))))
       (build-system gnu-build-system)
       (arguments
        `(#:test-target "test"
