@@ -19885,6 +19885,27 @@ view your Denote directory.")
 Denote with Org mode.")
     (license license:gpl3+)))
 
+(define-public emacs-denote-sequence
+  (package
+    (name "emacs-denote-sequence")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/denote-sequence-"
+                           version ".tar"))
+       (sha256
+        (base32 "06s2k555in897rpr2iabzv29dr79lm6fkpjp3yssidr9irxymf0h"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-denote))
+    (home-page "https://github.com/protesilaos/denote-sequence")
+    (synopsis "Sequence notes or Folgezettel with Denote")
+    (description "This package provides an optional extension to denote for
+naming files with a sequencing scheme.  The idea is to establish hiearchical
+relationships between files, such that the contents of one logically follow or
+complement those of another.")
+    (license license:gpl3+)))
+
 (define-public emacs-denote-explore
   (package
     (name "emacs-denote-explore")
