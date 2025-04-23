@@ -17805,18 +17805,24 @@ the bridge between GEO and BioConductor.")
 (define-public r-illuminaio
   (package
     (name "r-illuminaio")
-    (version "0.48.0")
+    (version "0.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "illuminaio" version))
        (sha256
         (base32
-         "1czvan67l4ib0xw76a9qgcwa0x2vswv752nrslj9k9mhdav6syms"))))
+         "1azz7r90l9f7ns2p37qigwk45glq0p7rxkmgf939484iizkxq275"))))
+    (properties
+     ;; This is needed for vignettes.
+     '((updater-extra-native-inputs . ("r-biocstyle"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64))
-    (native-inputs (list r-biocstyle r-illuminadatatestfiles r-runit))
+    (native-inputs
+     (list r-biocstyle
+           r-illuminadatatestfiles
+           r-runit))
     (home-page "https://github.com/HenrikBengtsson/illuminaio/")
     (synopsis "Parse Illumina microarray output files")
     (description
