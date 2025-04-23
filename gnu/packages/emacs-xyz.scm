@@ -19866,6 +19866,25 @@ Denote files that goes beyond using the standard Dired Emacs command to
 view your Denote directory.")
     (license license:gpl3+)))
 
+(define-public emacs-denote-org
+  (package
+    (name "emacs-denote-org")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/denote-org-" version
+                           ".tar"))
+       (sha256
+        (base32 "0nwyyzx96d5k6dw4jb8bvni9fjr1plip57mdsyabrha19p6n282d"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-denote))
+    (home-page "https://github.com/protesilaos/denote-org")
+    (synopsis "Denote extensions for Org mode")
+    (description "This package contains extra features that better integrate
+Denote with Org mode.")
+    (license license:gpl3+)))
+
 (define-public emacs-denote-explore
   (package
     (name "emacs-denote-explore")
