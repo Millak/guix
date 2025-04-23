@@ -9822,22 +9822,46 @@ provide added flexibility for data combination and manipulation.")
 (define-public r-genomicranges
   (package
     (name "r-genomicranges")
-    (version "1.58.0")
+    (version "1.60.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicRanges" version))
               (sha256
                (base32
-                "1iccjn5gb8k2l1hw7nhi30w3dnlpdf8mh3xwf3x3dky3mhxw3j0h"))))
+                "082g27miaa13nyjbr6ygc3928kbn5nkmb4l3si4z85dj26k6xgs8"))))
     (properties
-     `((upstream-name . "GenomicRanges")))
+     `((upstream-name . "GenomicRanges")
+       (updater-extra-native-inputs . ("r-runit"))
+       (updater-ignored-native-inputs
+        . ("r-bsgenome"
+           "r-bsgenome-hsapiens-ucsc-hg38"
+           "r-bsgenome-mmusculus-ucsc-mm10"
+           "r-bsgenome-scerevisiae-ucsc-saccer2"
+           "r-deseq2"
+           "r-edger"
+           "r-genomicalignments"
+           "r-genomicfeatures"
+           "r-hgu95av2probe"
+           "r-kegggraph"
+           "r-keggrest"
+           "r-pasillabamsubset"
+           "r-rnaseqdata-hnrnpc-bam-chr14"
+           "r-rsamtools"
+           "r-txdb-athaliana-biomart-plantsmart22"
+           "r-txdb-dmelanogaster-ucsc-dm3-ensgene"
+           "r-txdb-hsapiens-ucsc-hg38-knowngene"
+           "r-txdb-mmusculus-ucsc-mm10-knowngene"
+           "r-txdbmaker"))))
     (build-system r-build-system)
     ;; The vignettes require more packages.
     (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-biocgenerics r-genomeinfodb r-iranges r-s4vectors r-xvector))
     (native-inputs
-     (list r-biostrings r-biocstyle r-knitr r-runit))
+     (list r-annotationhub
+           r-biostrings
+           r-knitr
+           r-runit))
     (home-page "https://bioconductor.org/packages/GenomicRanges")
     (synopsis "Representation and manipulation of genomic intervals")
     (description
