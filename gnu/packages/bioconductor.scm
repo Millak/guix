@@ -9999,15 +9999,18 @@ testing and other simple calculations.")
 (define-public r-gseabase
   (package
     (name "r-gseabase")
-    (version "1.68.0")
+    (version "1.70.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GSEABase" version))
        (sha256
         (base32
-         "0zd37jpx2zy9gxl3b2vkr7m2fq8xm1pcxk352dw3mlv1gadhsz9n"))))
-    (properties `((upstream-name . "GSEABase")))
+         "122akpdafm4kpbcjn4bnpfjr48rnmj2jmjrxzv184dp1gwdgqqw5"))))
+    (properties
+     '((upstream-name . "GSEABase")
+       (updater-extra-native-inputs
+        . ("r-go-db" "r-hgu95av2" "r-hgu95av2-db"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotate
@@ -10022,8 +10025,7 @@ testing and other simple calculations.")
            r-hgu95av2-db
            r-knitr
            r-org-hs-eg-db
-           r-runit
-           r-testthat))
+           r-runit))
     (home-page "https://bioconductor.org/packages/GSEABase")
     (synopsis "Gene set enrichment data structures and methods")
     (description
