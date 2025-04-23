@@ -6728,7 +6728,7 @@ linear algebra routines needed for structured matrices (or operators).")
          (kaldi kaldi-for-vosk))
     (package
       (name "vosk-api")
-      (version "0.3.43")
+      (version "0.3.50")
       (source
        (origin
          (method git-fetch)
@@ -6737,7 +6737,7 @@ linear algebra routines needed for structured matrices (or operators).")
                (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0xmp8i140c2hd3rj9dap8a2rnsvzb1k9hnqm12xzbaxrw73rkc29"))))
+          (base32 "0rm7c1n9iv4y9q6a860rqiy2bdawxjhbfd993lms1ly86vwyai8k"))))
       (build-system gnu-build-system)
       (arguments
        (list
