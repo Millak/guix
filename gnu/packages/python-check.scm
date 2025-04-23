@@ -28,6 +28,7 @@
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2025 Florent Pruvost <florent.pruvost@inria.fr>
+;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -649,6 +650,31 @@ valid Python syntax that are likely to be commented out code.")
 the initial expected value of a test can be automatically set by running the
 test itself.")
       (license license:expat))))
+
+(define-public python-flake8-builtins
+  (package
+    (name "python-flake8-builtins")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flake8_builtins" version))
+       (sha256
+        (base32 "19psav7pnqy3m5g4z1zah4ksbnk9bzx1jbbibs631xg44gc3vamx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "run_tests.py")))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-flake8))
+    (home-page "https://github.com/gforcada/flake8-builtins")
+    (synopsis "Check for python builtins being used as variables or parameters")
+    (description
+     "This package implements a functionality to check for python builtins
+being used as variables or parameters.")
+    (license license:gpl2)))
 
 (define-public python-gcovr
   (package
