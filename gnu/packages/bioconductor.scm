@@ -10531,13 +10531,13 @@ that are missing at random.")
 (define-public r-interactivedisplay
   (package
     (name "r-interactivedisplay")
-    (version "1.44.0")
+    (version "1.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "interactiveDisplay" version))
               (sha256
                (base32
-                "1gqn93j7ysa34qgwv1166a51n817zm1pcghx7i7wjaiazbs9rlv9"))
+                "0xx8rl1ifk631v39pmzi82zavi89m74p7pslgv2w40ms4fia9vgj"))
               (snippet
                '(for-each delete-file
                           '("inst/www/js/d3.v2.js"
@@ -10545,7 +10545,9 @@ that are missing at random.")
                             "inst/www/js/jquery.min.js"
                             "inst/www/js/jquery.dataTables.min.js"
                             "inst/www/js/jquery.dataTables.nightly.js")))))
-    (properties `((upstream-name . "interactiveDisplay")))
+    (properties
+     '((upstream-name . "interactiveDisplay")
+       (updater-extra-propagated-inputs . ("r-biocmanager"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -10596,7 +10598,6 @@ that are missing at random.")
     (native-inputs
      `(("esbuild" ,esbuild)
        ("r-knitr" ,r-knitr)
-       ("r-runit" ,r-runit)
        ;; D3 version 2.10.3
        ("js-d3-v2"
         ,(origin
