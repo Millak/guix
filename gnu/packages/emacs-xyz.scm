@@ -19786,6 +19786,27 @@ reference to any other metadata.  Denote basically streamlines the creation of
 such files while providing facilities to link between them.")
     (license license:gpl3+)))
 
+(define-public emacs-denote-journal
+  (package
+    (name "emacs-denote-journal")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/denote-journal-"
+                           version ".tar"))
+       (sha256
+        (base32 "0922hjzah7nz49z3q3qyq06n77yqxd7mxiw7fmawavjh920dv3fq"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-denote))
+    (home-page "https://github.com/protesilaos/denote-journal")
+    (synopsis "Convenience functions for daily journaling with Denote")
+    (description "The denote-journal package makes it easier to use Denote for
+journaling.  While it is possible to use the generic @code{denote} command
+(and related) to maintain a journal, this package defines extra functionality
+to streamline the journaling workflow.")
+    (license license:gpl3+)))
+
 (define-public emacs-denote-menu
   (package
     (name "emacs-denote-menu")
