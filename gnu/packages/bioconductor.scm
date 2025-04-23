@@ -13460,19 +13460,21 @@ Stephens (1990).")
 (define-public r-seqpattern
   (package
     (name "r-seqpattern")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "seqPattern" version))
               (sha256
                (base32
-                "01dslqflyk7i30wlb2455xqq2zpyz91fg44q4fq6bbp9kj1npazm"))))
+                "1sjjvp87p0l9kzj27w3bfsp0ms1jqgw2b1isay9l21lkxc1v8y7x"))))
     (properties
-     `((upstream-name . "seqPattern")))
+     `((upstream-name . "seqPattern")
+       (updater-extra-native-inputs . ("r-biocstyle"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biostrings r-genomicranges r-iranges r-kernsmooth r-plotrix))
-    (native-inputs (list r-biocstyle r-bsgenome-drerio-ucsc-danrer7 r-runit))
+    (native-inputs
+     (list r-biocgenerics r-biocstyle r-bsgenome-drerio-ucsc-danrer7 r-runit))
     (home-page "https://bioconductor.org/packages/seqPattern")
     (synopsis "Visualising oligonucleotide patterns and motif occurrences")
     (description
