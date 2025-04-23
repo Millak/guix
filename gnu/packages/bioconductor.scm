@@ -5705,17 +5705,16 @@ interest.")
 (define-public r-basespacer
   (package
     (name "r-basespacer")
-    (version "1.50.0")
+    (version "1.52.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BaseSpaceR" version))
               (sha256
                (base32
-                "1fbj41m9rqg1x6lmklk5zkq2hn5vvv2w693i5xv7nw0rprbjq5x3"))))
+                "10h6wq1b8lyh7dnxxwsjxy06y32r16k0r4knaj6zrij9d1in6yw0"))))
     (properties `((upstream-name . "BaseSpaceR")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcurl r-rjsonio))
-    (native-inputs (list r-runit))
     (home-page "https://bioconductor.org/packages/BaseSpaceR")
     (synopsis "R SDK for BaseSpace RESTful API")
     (description
