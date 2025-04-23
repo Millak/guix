@@ -12919,13 +12919,18 @@ pre-processed data.")
 (define-public r-rtracklayer
   (package
     (name "r-rtracklayer")
-    (version "1.66.0")
+    (version "1.68.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "rtracklayer" version))
               (sha256
                (base32
-                "0gh91rxahdh3ablngm094mnyrdrklm70cjlhwjwz2rydbr3a6dbg"))))
+                "07lj0frvqaw062y0d5h52abklyw2ydnk3311a6ykwhhp0mvdskd2"))))
+    (properties
+     '((updater-ignored-native-inputs
+        . ("r-bsgenome-hsapiens-ucsc-hg19"
+           "r-humanstemcell"
+           "r-microrna"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -12940,7 +12945,11 @@ pre-processed data.")
              (substitute* "NAMESPACE"
                (("import\\(zlibbioc\\)") "")))))))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           r-genefilter
+           r-hgu133plus2-db
+           r-limma
+           r-org-hs-eg-db))
     (inputs
      (list openssl zlib))
     (propagated-inputs
@@ -12957,8 +12966,7 @@ pre-processed data.")
            r-rsamtools
            r-s4vectors
            r-xml
-           r-xvector
-           r-zlibbioc))
+           r-xvector))
     (home-page "https://bioconductor.org/packages/rtracklayer")
     (synopsis "R interface to genome browsers and their annotation tracks")
     (description
