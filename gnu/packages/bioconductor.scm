@@ -8275,15 +8275,22 @@ databases.  Packages produced are intended to be used with AnnotationDbi.")
 (define-public r-annotationhub
   (package
     (name "r-annotationhub")
-    (version "3.14.0")
+    (version "3.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationHub" version))
        (sha256
         (base32
-         "1l0wjc6kapkvj047g11755ardsg12jmlmvb6bq3jvp34ida7j8in"))))
-    (properties `((upstream-name . "AnnotationHub")))
+         "02cbx21lnbayyi282f71z2rdcarcxghfmvy7hjw4jm7kyybxzzxd"))))
+    (properties
+     '((upstream-name . "AnnotationHub")
+       ;; Avoid dependency cycles.
+       (updater-ignored-native-inputs
+        . ("r-dbi"
+           "r-genomeinfodb"
+           "r-genomicranges"
+           "r-iranges"))))
     (build-system r-build-system)
     ;; Many tests try to download files.
     (arguments (list #:tests? #false))
@@ -8300,8 +8307,7 @@ databases.  Packages produced are intended to be used with AnnotationDbi.")
            r-rsqlite
            r-s4vectors
            r-yaml))
-    (native-inputs
-     (list r-knitr r-runit))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/AnnotationHub")
     (synopsis "Client to access AnnotationHub resources")
     (description
