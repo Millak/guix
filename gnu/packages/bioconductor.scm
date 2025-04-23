@@ -14188,14 +14188,17 @@ tools either included in speaq or available elsewhere on CRAN.")
 (define-public r-spectra
   (package
     (name "r-spectra")
-    (version "1.16.0")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Spectra" version))
               (sha256
                (base32
-                "00jsmbkcwndm82aj6gc3qn0b48niajx8aymijy7cpq3vh6hlxpyr"))))
-    (properties `((upstream-name . "Spectra")))
+                "1nkvgrczagwg3z97c55dlixvl87sanalmx0nkpfxd94cc4jbh1d1"))))
+    (properties
+     '((upstream-name . "Spectra")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-msdata"))))
     (build-system r-build-system)
     ;; FIXME Tests fail with: Error in mzR::openMSfile(x): File NA not found
     (arguments (list #:tests? #false))
@@ -14207,7 +14210,12 @@ tools either included in speaq or available elsewhere on CRAN.")
                              r-mscoreutils
                              r-protgenerics
                              r-s4vectors))
-    (native-inputs (list r-knitr r-mzr r-patrick r-testthat))
+    (native-inputs (list r-devtools
+                         r-knitr
+                         r-patrick
+                         r-rhdf5
+                         r-testthat
+                         r-vdiffr))
     (home-page "https://github.com/RforMassSpectrometry/Spectra")
     (synopsis "Spectra infrastructure for mass spectrometry data")
     (description
