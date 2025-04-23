@@ -13251,16 +13251,15 @@ different experiment.")
 (define-public r-screpertoire
   (package
     (name "r-screpertoire")
-    (version "2.2.1")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scRepertoire" version))
        (sha256
-        (base32 "0id62pkjyk48jxica8mfzb2mzwc5f1ijb7d5200grxzn453zsihm"))))
+        (base32 "1lywcwh7zbjnfad2lxma5xxq33ah0kai65nxahls0lfk0j4xibyw"))))
     (properties
-     '((upstream-name . "scRepertoire")
-       (updater-extra-native-inputs . ("r-seurat" "r-vdiffr"))))
+     '((upstream-name . "scRepertoire")))
     (build-system r-build-system)
     (arguments
      (list
@@ -13273,7 +13272,7 @@ different experiment.")
                ((".*clonalCluster works.*" m)
                 (string-append m "skip('guix')\n")))
              (substitute* "tests/testthat/test-loadContigs.R"
-               ((".*loadContigs works.*" m)
+               ((".*loadContigs.*works.*" m)
                 (string-append m "skip('guix')\n")))
              (substitute* "tests/testthat/test-combineContigs.R"
                ((".*combineBCR works.*" m)
@@ -13287,7 +13286,6 @@ different experiment.")
            r-ggdendro
            r-ggplot2
            r-ggraph
-           r-hash
            r-igraph
            r-inext
            r-lifecycle
@@ -13307,7 +13305,13 @@ different experiment.")
            r-tidygraph
            r-truncdist
            r-vgam))
-    (native-inputs (list r-knitr r-seurat r-testthat r-vdiffr))
+    (native-inputs (list r-devtools
+                         r-knitr
+                         r-seurat
+                         r-spelling
+                         r-testthat
+                         r-vdiffr
+                         r-withr))
     (home-page "https://bioconductor.org/packages/scRepertoire")
     (synopsis "Toolkit for single-cell immune receptor profiling")
     (description
