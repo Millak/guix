@@ -14367,15 +14367,16 @@ involving two separate genomic loci encoded as GRanges objects.")
 (define-public r-summarizedexperiment
   (package
     (name "r-summarizedexperiment")
-    (version "1.36.0")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SummarizedExperiment" version))
               (sha256
                (base32
-                "1kfkdn57crg9l00bpd2z4ads14nd9c2lh1m1lqbc6kszbxpq9185"))))
+                "0485ppw901n6k4bsp21gv38kd520jl67gc9z0xg96v68ilzbwczs"))))
     (properties
-     `((upstream-name . "SummarizedExperiment")))
+     `((upstream-name . "SummarizedExperiment")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -14399,7 +14400,7 @@ involving two separate genomic loci encoded as GRanges objects.")
            r-s4arrays
            r-s4vectors))
     (native-inputs
-     (list r-annotate r-digest r-hgu95av2-db r-knitr r-runit))
+     (list r-digest r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/SummarizedExperiment")
     (synopsis "Container for representing genomic ranges by sample")
     (description
