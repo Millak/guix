@@ -2923,78 +2923,79 @@ PyTrees.")
                                  "kaldi-ignore-failing-test.patch"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:test-target "test"
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'chdir
-             (lambda _ (chdir "src")))
-           (replace 'configure
-             (lambda* (#:key build system inputs outputs #:allow-other-keys)
-               (when (not (or (string-prefix? "x86_64" system)
-                              (string-prefix? "i686" system)))
-                 (substitute* "makefiles/linux_openblas.mk"
-                   (("-msse -msse2") "")))
-               (substitute* "makefiles/default_rules.mk"
-                 (("/bin/bash") (which "bash")))
-               (substitute* "Makefile"
-                 (("ext_depend: check_portaudio")
-                  "ext_depend:"))
-               (substitute* '("online/Makefile"
-                              "onlinebin/Makefile"
-                              "gst-plugin/Makefile")
-                 (("../../tools/portaudio/install")
-                  (assoc-ref inputs "portaudio")))
-               (substitute* "matrix/Makefile"     ;temporary test bypass
-                 (("matrix-lib-test sparse-matrix-test") ""))
+       (list
+        #:test-target "test"
+        #:configure-flags
+        (let ((fst (this-package-input "openfst")))
+          #~(list "--use-cuda=no"
+                  "--shared"
+                  (string-append "--openblas-root="
+                                 #$(this-package-input "openblas"))
+                  (string-append "--fst-root=" #$fst)
+                  (string-append "--fst-version=" #$(package-version fst))))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "src")))
+            (replace 'configure
+              (lambda* (#:key build system inputs configure-flags
+                        #:allow-other-keys)
+                (when (not (or (string-prefix? "x86_64" system)
+                               (string-prefix? "i686" system)))
+                  (substitute* "makefiles/linux_openblas.mk"
+                    (("-msse -msse2") "")))
+                (substitute* "makefiles/default_rules.mk"
+                  (("/bin/bash") (which "bash")))
+                (substitute* "Makefile"
+                  (("ext_depend: check_portaudio")
+                   "ext_depend:"))
+                (substitute* '("online/Makefile"
+                               "onlinebin/Makefile"
+                               "gst-plugin/Makefile")
+                  (("../../tools/portaudio/install")
+                   (assoc-ref inputs "portaudio")))
+                (substitute* "matrix/Makefile"     ;temporary test bypass
+                  (("matrix-lib-test sparse-matrix-test") ""))
 
-               ;; This `configure' script doesn't support variables passed as
-               ;; arguments, nor does it support "prefix".
-               (let ((out (assoc-ref outputs "out"))
-                     (openblas (assoc-ref inputs "openblas"))
-                     (openfst (assoc-ref inputs "openfst")))
-                 (substitute* "configure"
-                   (("check_for_slow_expf;") "")
-                   ;; This affects the RPATH and also serves as the installation
-                   ;; directory.
-                   (("KALDILIBDIR=`pwd`/lib")
-                    (string-append "KALDILIBDIR=" out "/lib")))
-                 (mkdir-p out) ; must exist
-                 (setenv "CONFIG_SHELL" (which "bash"))
-                 (setenv "OPENFST_VER" ,(package-version openfst))
-                 (invoke "./configure"
-                         "--use-cuda=no"
-                         "--shared"
-                         (string-append "--openblas-root=" openblas)
-                         (string-append "--fst-root=" openfst)))))
-           (add-after 'build 'build-ext-and-gstreamer-plugin
-             (lambda _
-               (invoke "make" "-C" "online" "depend")
-               (invoke "make" "-C" "online")
-               (invoke "make" "-C" "onlinebin" "depend")
-               (invoke "make" "-C" "onlinebin")
-               (invoke "make" "-C" "gst-plugin" "depend")
-               (invoke "make" "-C" "gst-plugin")))
-           ;; TODO: also install the executables.
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (inc (string-append out "/include"))
-                      (lib (string-append out "/lib")))
-                 (mkdir-p lib)
-                 ;; The build phase installed symlinks to the actual
-                 ;; libraries.  Install the actual targets.
-                 (for-each (lambda (file)
-                             (let ((target (readlink file)))
-                               (delete-file file)
-                               (install-file target lib)))
-                           (find-files lib "\\.so"))
-                 ;; Install headers
-                 (for-each (lambda (file)
-                             (let ((target-dir (string-append inc "/" (dirname file))))
-                               (install-file file target-dir)))
-                           (find-files "." "\\.h"))
-                 (install-file "gst-plugin/libgstonlinegmmdecodefaster.so"
-                               (string-append lib "/gstreamer-1.0"))))))))
+                ;; This `configure' script doesn't support variables passed as
+                ;; arguments, nor does it support "prefix".
+                (substitute* "configure"
+                  (("check_for_slow_expf;") "")
+                  ;; This affects the RPATH and also serves as the installation
+                  ;; directory.
+                  (("KALDILIBDIR=`pwd`/lib")
+                   (string-append "KALDILIBDIR=" #$output "/lib")))
+                (mkdir-p #$output) ; must exist
+                (setenv "CONFIG_SHELL" (which "bash"))
+                (apply invoke "./configure" configure-flags)))
+            (add-after 'build 'build-ext-and-gstreamer-plugin
+              (lambda _
+                (invoke "make" "-C" "online" "depend")
+                (invoke "make" "-C" "online")
+                (invoke "make" "-C" "onlinebin" "depend")
+                (invoke "make" "-C" "onlinebin")
+                (invoke "make" "-C" "gst-plugin" "depend")
+                (invoke "make" "-C" "gst-plugin")))
+            ;; TODO: also install the executables.
+            (replace 'install
+              (lambda _
+                (let* ((inc (string-append #$output "/include"))
+                       (lib (string-append #$output "/lib")))
+                  (mkdir-p lib)
+                  ;; The build phase installed symlinks to the actual
+                  ;; libraries.  Install the actual targets.
+                  (for-each (lambda (file)
+                              (let ((target (readlink file)))
+                                (delete-file file)
+                                (install-file target lib)))
+                            (find-files lib "\\.so"))
+                  ;; Install headers
+                  (for-each (lambda (file)
+                              (let ((target-dir (string-append inc "/" (dirname file))))
+                                (install-file file target-dir)))
+                            (find-files "." "\\.h"))
+                  (install-file "gst-plugin/libgstonlinegmmdecodefaster.so"
+                                (string-append lib "/gstreamer-1.0"))))))))
       (inputs
        (list alsa-lib
              `(,gfortran "lib")
