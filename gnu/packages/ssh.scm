@@ -15,7 +15,7 @@
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
@@ -158,16 +158,30 @@ file names.
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
-     `(#:configure-flags '("-DWITH_GCRYPT=ON"
-                           ,@(if (and (%current-target-system)
-                                      (not (target-64bit?)))
-                                 (list (string-append
-                                        "-DCMAKE_C_FLAGS=-g -O2"
-                                        " -Wno-incompatible-pointer-types"))
-                                 '()))
-
-       ;; TODO: Add 'CMockery' and '-DWITH_TESTING=ON' for the test suite.
-       #:tests? #f))
+     (list
+      #:configure-flags
+      #~(list "-DWITH_GCRYPT=ON"
+              "-DUNIT_TESTING=ON"
+              #$@(if (and (%current-target-system)
+                          (not (target-64bit?)))
+                     #~(list (string-append
+                              "-DCMAKE_C_FLAGS=-g -O2"
+                              " -Wno-incompatible-pointer-types"))
+                     #~()))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; XXX: There is no finer-grain control on skipping tests using
+              ;; cmocka, short of patching sources, which isn't trivial with
+              ;; substitute*/sed.
+              (substitute* "tests/unittests/CMakeLists.txt"
+                ;; Some torture tests fail due to assuming the user directory
+                ;; (from the passwd database) matches HOME, and other fail for
+                ;; unknown reasons (see:
+                ;; https://gitlab.com/libssh/libssh-mirror/-/issues/302).
+                (("^    torture_(config|misc|options).*$") "")))))))
+    (native-inputs (list cmocka))
     (inputs (list zlib libgcrypt mit-krb5))
     (synopsis "SSH client library")
     (description
