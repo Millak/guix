@@ -16022,15 +16022,18 @@ datasets.")
 (define-public r-riboprofiling
   (package
     (name "r-riboprofiling")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RiboProfiling" version))
        (sha256
         (base32
-         "1lw88kw3wqzqb5ahq6p9zchqbkq7f2hm8djngq1r81ydjdmnih3p"))))
-    (properties `((upstream-name . "RiboProfiling")))
+         "0yasqc6pqqxnhqfhwas1c9bm1820q716laq8fvdymah7l6x0gjb8"))))
+    (properties
+     '((upstream-name . "RiboProfiling")
+       (updater-extra-native-inputs
+        . ("r-txdb-hsapiens-ucsc-hg19-knowngene"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics
