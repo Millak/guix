@@ -8506,15 +8506,16 @@ only one command.")
 (define-public r-biocparallel
   (package
     (name "r-biocparallel")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocParallel" version))
               (sha256
                (base32
-                "1avnn7xpcabw73w75x66fxlx8wmlmv69p1zmr493gbgvy85plv1z"))))
+                "0f9jvx1z1qxa3z17x1a3jgf8rfcslqqk24absw9iw9hfs3b84z5d"))))
     (properties
-     `((upstream-name . "BiocParallel")))
+     '((upstream-name . "BiocParallel")
+       (updater-extra-native-inputs . ("r-batchtools"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -8546,7 +8547,12 @@ only one command.")
     (propagated-inputs
      (list r-bh r-codetools r-cpp11 r-futile-logger r-snow))
     (native-inputs
-     (list r-batchtools r-biocgenerics r-doparallel r-knitr r-runit))
+     (list r-batchtools
+           r-biocgenerics
+           r-doparallel
+           r-foreach
+           r-knitr
+           r-runit))
     (home-page "https://bioconductor.org/packages/BiocParallel")
     (synopsis "Bioconductor facilities for parallel evaluation")
     (description
