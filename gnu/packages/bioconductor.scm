@@ -11482,25 +11482,29 @@ package TeXshade.")
 (define-public r-msbackendsql
   (package
     (name "r-msbackendsql")
-    (version "1.6.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsBackendSql" version))
        (sha256
-        (base32 "0hs4nh3bij5jzscdjjfkq2agcpysyy7ziv40713z7p7ai6wkppyj"))))
-    (properties `((upstream-name . "MsBackendSql")))
+        (base32 "0ca8l2h7w7hhrnacd37b4bmqd3lmr01l08j3df78b0yf5fgbimb6"))))
+    (properties
+     '((upstream-name . "MsBackendSql")
+       (updater-extra-native-inputs . ("r-mzr"))))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
                              r-biocparallel
                              r-data-table
                              r-dbi
+                             r-fastmatch
                              r-iranges
                              r-mscoreutils
                              r-progress
                              r-protgenerics
                              r-s4vectors
-                             r-spectra))
+                             r-spectra
+                             r-stringi))
     (native-inputs (list r-knitr r-msdata r-mzr r-rsqlite r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/MsBackendSql")
     (synopsis "SQL-based mass spectrometry data backend")
