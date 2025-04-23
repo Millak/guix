@@ -17835,14 +17835,14 @@ Bayes Analyses of Microarrays} (EBAM).")
 (define-public r-bumphunter
   (package
     (name "r-bumphunter")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bumphunter" version))
        (sha256
         (base32
-         "185kxkx7lcnylfwp6c9hnnxarwa3rrwb1q45c5z6hl3wj7d74154"))))
+         "05dsx5a3xagq6jajkcg6dzd43w5b4nbjqhjkl1wvg5va3dx4hl5z"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -17871,9 +17871,12 @@ Bayes Analyses of Microarrays} (EBAM).")
            r-s4vectors))
     (native-inputs
      (list r-doparallel
+           r-genomicranges
+           r-rtracklayer
            r-runit
            r-testthat
-           r-txdb-hsapiens-ucsc-hg19-knowngene))
+           r-txdb-hsapiens-ucsc-hg19-knowngene
+           r-txdbmaker))
     (home-page "https://github.com/ririzarr/bumphunter")
     (synopsis "Find bumps in genomic data")
     (description
