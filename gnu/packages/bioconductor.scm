@@ -13930,15 +13930,17 @@ methylation data.")
 (define-public r-transcriptr
   (package
     (name "r-transcriptr")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "transcriptR" version))
        (sha256
-        (base32 "00b4wgfvn8785l01vyx6n05l5lpngpk4gp5y2hpkcxrh49q19b45"))))
+        (base32 "182wynhpzh0ri8hxxbia4lnsr416z9j02cy4wcmw6s6wwxi6rw10"))))
     (properties
      '((upstream-name . "transcriptR")
+       (updater-ignored-native-inputs
+        . ("r-knowngene"))
        (updater-extra-native-inputs
         . ("r-txdb-hsapiens-ucsc-hg19-knowngene"))))
     (build-system r-build-system)
