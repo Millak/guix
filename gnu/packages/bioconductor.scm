@@ -9738,15 +9738,18 @@ Commons RESTful service.")
 (define-public r-genomicfeatures
   (package
     (name "r-genomicfeatures")
-    (version "1.58.0")
+    (version "1.60.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicFeatures" version))
               (sha256
                (base32
-                "0ixc6hmfdh2dn985d92iwcmk2v5m1c2l3d27y76bzmw9whpd89i5"))))
+                "16j78sgjk0hrdbhcbwrwq03355bvgg4d3lzvy773ypg8pwg0jjid"))))
     (properties
-     `((upstream-name . "GenomicFeatures")))
+     `((upstream-name . "GenomicFeatures")
+       (updater-ignored-native-inputs
+        . ("r-txdb-dmelanogaster-ucsc-dm3-ensgene"
+           "r-txdb-hsapiens-ucsc-hg19-knowngene"))))
     (build-system r-build-system)
     ;; Test require r-txdbmaker, which depends on r-genomicfeatures.
     (arguments (list #:tests? #false))
@@ -9762,7 +9765,12 @@ Commons RESTful service.")
            r-s4vectors
            r-xvector))
     (native-inputs
-     (list r-knitr))
+     (list r-bsgenome-dmelanogaster-ucsc-dm3
+           r-bsgenome-hsapiens-ucsc-hg19
+           r-knitr
+           r-pasillabamsubset
+           r-rsamtools
+           r-runit))
     (home-page "https://bioconductor.org/packages/GenomicFeatures")
     (synopsis "Tools for working with transcript centric annotations")
     (description
