@@ -1,11 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
+;;; Copyright © 2018, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -288,6 +290,53 @@ Provides the basic TAP (Test Anything Protocol) results.  Unlike most existing
 Avocado machine readable outputs this one is streamlined (per test results).
 @end table")
     (license license:gpl2)))            ;some files are under GPLv2 only
+
+(define-public python-bandit
+  (package
+    (name "python-bandit")
+    (version "1.8.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bandit" version))
+       (sha256
+        (base32 "0fhr0rsvh44ix31dwxjw8aj0wklj95368djwk0i98c2dcpmpp17m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Two tets fail.
+      #~(list "--exclude-regex" "test_no_arguments|test_help_arg")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: Implement in pypproject-build-system's  test-backends.
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "stestr" "run" test-flags)))))))
+    (native-inputs
+     (list python-beautifulsoup4
+           python-fixtures
+           python-setuptools
+           python-stestr
+           python-testscenarios
+           python-testtools
+           python-wheel))
+    (propagated-inputs
+     (list python-gitpython
+           python-jschema-to-python
+           python-pyyaml
+           python-rich
+           python-sarif-om
+           python-stevedore))
+    (home-page "https://github.com/PyCQA/bandit")
+    (synopsis "Security oriented static analyser for python code")
+    (description
+     "Bandit is a tool designed to find common security issues in Python code.
+To do this Bandit processes each file, builds an AST from it, and runs
+appropriate plugins against the AST nodes.  Once Bandit has finished scanning
+all the files it generates a report.")
+    (license license:asl2.0)))
 
 (define-public python-beartype
   (package
