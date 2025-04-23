@@ -13984,17 +13984,17 @@ able to deal also with novel and case specific events.")
 (define-public r-trajectoryutils
   (package
     (name "r-trajectoryutils")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TrajectoryUtils" version))
        (sha256
         (base32
-         "10ldajw1a3naxy58w4zf9ri5ql93fd6r06cdwg2dyagsb8qg3l20"))))
+         "1mr9h5jp3945sdpyvv7y5kks3gbv77g5p25b867c55glqv7ncxrc"))))
     (properties
      '((upstream-name . "TrajectoryUtils")
-       (updater-extra-native-inputs . ("r-biocparallel"))))
+       (updater-extra-native-inputs . ("r-biocneighbors" "r-biocparallel"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-igraph r-matrix r-s4vectors r-singlecellexperiment
