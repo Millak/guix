@@ -13737,15 +13737,14 @@ away.")
   (hidden-package
    (package
      (name "python-ipyparallel-bootstrap")
-     (version "8.2.1")
+     (version "9.0.1")
      (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "ipyparallel" version))
         (sha256
-         (base32
-          "0wiwfd7870zbmczzn96jqxxjf2zcbcaxnsl1ddn8hspwa8y4frzj"))))
-     (build-system python-build-system)
+         (base32 "177jk2g8srsddgyb4djbyci93v766vzrnqzzpd7ski804anjqn9f"))))
+     (build-system pyproject-build-system)
      (arguments
       (list
        #:tests? #f
@@ -13753,6 +13752,8 @@ away.")
                     ;; The python-ipykernel is normally propagated but is
                     ;; removed from this package to break the cycle.
                     (delete 'sanity-check))))
+     (native-inputs
+      (list python-hatchling))
      (propagated-inputs
       (list python-dateutil
             python-decorator
@@ -13768,9 +13769,9 @@ away.")
      (home-page "https://ipython.org/")
      (synopsis "Interactive Parallel Computing with IPython")
      (description
-      "@code{ipyparallel} is a Python package and collection of CLI scripts for
-controlling clusters for Jupyter.  @code{ipyparallel} contains the following
-CLI scripts:
+      "@code{ipyparallel} is a Python package and collection of CLI scripts
+for controlling clusters for Jupyter.  @code{ipyparallel} contains the
+following CLI scripts:
 @enumerate
 @item ipcluster - start/stop a cluster
 @item ipcontroller - start a scheduler
@@ -13783,19 +13784,14 @@ CLI scripts:
     (inherit python-ipyparallel-bootstrap)
     (name "python-ipyparallel")
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda _
-              (invoke "pytest" "-vv"))))))
+     (list #:test-flags #~(list "--pyargs" "ipyparallel")))
     (native-inputs
-     (list python-ipython
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-cov
-           python-pytest-tornado
-           python-testpath))
+     (modify-inputs (package-native-inputs python-ipyparallel-bootstrap)
+       (append python-ipython
+               python-pytest
+               python-pytest-asyncio
+               python-pytest-tornado
+               python-testpath)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-ipyparallel-bootstrap)
        (replace "python-jupyter-client-bootstrap" python-jupyter-client)
