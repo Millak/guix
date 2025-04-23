@@ -8593,14 +8593,14 @@ biological sequences or sets of sequences.")
 (define-public r-biovizbase
   (package
     (name "r-biovizbase")
-    (version "1.54.0")
+    (version "1.56.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biovizBase" version))
        (sha256
         (base32
-         "0g4hh3ka9891yamf90y1964xn7qsgzqwnb3f0dsmqbmbryk8pyz6"))))
+         "14xlvcjf1w283rb3249hzh9k8c2w2z8fimh0qsjnzhm1l82dihga"))))
     (properties `((upstream-name . "biovizBase")))
     (build-system r-build-system)
     (propagated-inputs
@@ -8623,7 +8623,8 @@ biological sequences or sets of sequences.")
            r-scales
            r-summarizedexperiment
            r-variantannotation))
-    (native-inputs (list r-ensdb-hsapiens-v75 r-runit))
+    (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19 r-ensdb-hsapiens-v75
+                         r-rtracklayer r-runit))
     (home-page "https://bioconductor.org/packages/biovizBase")
     (synopsis "Basic graphic utilities for visualization of genomic data")
     (description
