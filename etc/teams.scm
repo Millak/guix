@@ -384,6 +384,7 @@ asdf-build-system."
   (team 'rust
         #:name "Rust"
         #:scope (list (make-regexp* "^gnu/packages/(crates|rust)(-.+|)\\.scm$")
+                      "gnu/packages/c2rust.scm"
                       "gnu/packages/sequoia.scm"
                       "guix/build/cargo-build-system.scm"
                       "guix/build/cargo-utils.scm"
