@@ -3666,25 +3666,6 @@ store.")
     (native-inputs (modify-inputs (package-native-inputs guile-redis)
                      (replace "guile" guile-2.2)))))
 
-(define-public guile2.0-redis
-  (package
-    (inherit guile-redis)
-    (name "guile2.0-redis")
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             ;; put-string is in (rnrs io ports) in guile2.0,
-             ;; not in (ice-9 textual-ports)
-             (substitute* "redis/utils.scm"
-               (("\\(ice-9 textual-ports\\)")
-                "(rnrs io ports)"))
-             #t)))
-       ,@(package-arguments guile-redis)))
-    (native-inputs (modify-inputs (package-native-inputs guile-redis)
-                     (replace "guile" guile-2.0)))))
-
 (define-public guile-commonmark
   (package
     (name "guile-commonmark")
