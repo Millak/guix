@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
@@ -90,6 +90,7 @@ and bits are set according to the default behaviour of 'mkdir'."
   ;; By combining O_NOFOLLOW and O_DIRECTORY, this procedure automatically
   ;; verifies that no components are symlinks.
   (define open-flags (logior O_CLOEXEC ; don't pass the port on to subprocesses
+                             O_RDONLY  ;needed on the Hurd, harmless on Linux
                              O_NOFOLLOW ; don't follow symlinks
                              O_DIRECTORY)) ; reject anything not a directory
 
