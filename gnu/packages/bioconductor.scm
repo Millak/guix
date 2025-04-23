@@ -14323,13 +14323,13 @@ large extend by the @code{ViennaRNA} package.")
 (define-public r-structuralvariantannotation
   (package
     (name "r-structuralvariantannotation")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "StructuralVariantAnnotation" version))
        (sha256
-        (base32 "1b96zv2ny4anlxpxkda86cg65v8z13mf8h241if6aiks8pq0z7kr"))))
+        (base32 "0g6h1d5kk499b46dijlvz6nfgx3ihxh3fm97ijnx6k37h5z49md3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
@@ -14348,7 +14348,11 @@ large extend by the @code{ViennaRNA} package.")
            r-summarizedexperiment
            r-variantannotation))
     (native-inputs
-     (list r-bsgenome-hsapiens-ucsc-hg19 r-knitr r-testthat r-tidyverse))
+     (list r-bsgenome-hsapiens-ucsc-hg19
+           r-knitr
+           r-testthat
+           r-tictoc
+           r-tidyverse))
     (home-page "https://bioconductor.org/packages/StructuralVariantAnnotation/")
     (synopsis "R package designed to simplify structural variant analysis")
     (description
