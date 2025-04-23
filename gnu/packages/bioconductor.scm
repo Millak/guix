@@ -6964,15 +6964,24 @@ fold changes mean and variability for each selected gene.")
 (define-public r-delayedarray
   (package
     (name "r-delayedarray")
-    (version "0.32.0")
+    (version "0.34.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DelayedArray" version))
               (sha256
                (base32
-                "12dbzjchx1f20i1va0fmh74xvn5pj84flnf0srmma2fma1i4rszy"))))
+                "053dhbbhnpcbxr2px7ffpfkqr8iyf8xxzh6qpwz0y9g6wvjzw99i"))))
     (properties
-     `((upstream-name . "DelayedArray")))
+     '((upstream-name . "DelayedArray")
+       ;; These are needed for tests, which we don't run, because we cannot
+       ;; add r-hdf5array anyway.
+       (updater-ignored-native-inputs
+        . ("r-airway"
+           "r-biocparallel"
+           "r-genefilter"
+           "r-hdf5array"
+           "r-lobstr"
+           "r-summarizedexperiment"))))
     (build-system r-build-system)
     ;; Tests require r-hdf5array, but adding it would lead to a dependency
     ;; cycle.
@@ -6985,8 +6994,7 @@ fold changes mean and variability for each selected gene.")
            r-s4arrays
            r-s4vectors
            r-sparsearray))
-    (native-inputs
-     (list r-knitr))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/DelayedArray")
     (synopsis "Delayed operations on array-like objects")
     (description
