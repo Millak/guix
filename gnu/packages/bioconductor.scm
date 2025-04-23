@@ -9650,15 +9650,23 @@ names in their natural, rather than lexicographic, order.")
 (define-public r-genomicalignments
   (package
     (name "r-genomicalignments")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicAlignments" version))
               (sha256
                (base32
-                "1ycawwp0b8gk9sccqdwklq4yh3rns9iw34qdx5ysw4nxksi4vf6y"))))
+                "048j2jr1jpgjckl18wx35q518ydv8b2bmdiyiaxjc65283b77614"))))
     (properties
-     `((upstream-name . "GenomicAlignments")))
+     `((upstream-name . "GenomicAlignments")
+       (updater-extra-native-inputs . ("r-runit"))
+       (updater-ignored-native-inputs
+        . ("r-bsgenome-dmelanogaster-ucsc-dm3"
+           "r-deseq2"
+           "r-edger"
+           "r-genomicfeatures"
+           "r-rtracklayer"
+           "r-txdb-dmelanogaster-ucsc-dm3-ensgene"))))
     (build-system r-build-system)
     ;; Vignettes require more packages.
     (arguments (list #:test-types '(list "tests")))
@@ -9672,7 +9680,9 @@ names in their natural, rather than lexicographic, order.")
            r-rsamtools
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr r-pasillabamsubset r-runit))
+    (native-inputs (list r-knitr
+                         r-pasillabamsubset
+                         r-runit))
     (home-page "https://bioconductor.org/packages/GenomicAlignments")
     (synopsis "Representation and manipulation of short genomic alignments")
     (description
