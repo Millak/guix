@@ -7931,24 +7931,19 @@ performing parallel computations on multicore machines.")
 (define-public r-affy
   (package
     (name "r-affy")
-    (version "1.84.0")
+    (version "1.86.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affy" version))
        (sha256
         (base32
-         "1x27cbqsip5m7lzv5nvffdfjp46cdqh53qb1xvi2rf0wfdnd7763"))))
+         "0pk7wvqk5xzlnwly7sbpij3waypwlnrli0bnxvjhbrlgc3pnks4g"))))
     (build-system r-build-system)
     ;; Some tests require r-affydata, causing a dependency cycle.
     (arguments (list #:tests? #false))
     (propagated-inputs
-     (list r-affyio
-           r-biobase
-           r-biocgenerics
-           r-biocmanager
-           r-preprocesscore
-           r-zlibbioc))
+     (list r-affyio r-biobase r-biocgenerics r-biocmanager r-preprocesscore))
     (inputs
      (list zlib))
     (home-page "https://bioconductor.org/packages/affy")
