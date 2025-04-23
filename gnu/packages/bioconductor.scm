@@ -8323,15 +8323,18 @@ by the user, helping with quick and reproducible access.")
 (define-public r-aroma-light
   (package
     (name "r-aroma-light")
-    (version "3.36.0")
+    (version "3.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "aroma.light" version))
        (sha256
         (base32
-         "0n92bmjm97kzv2lpkkc2d4lgs7nzqwrcijq2j4v53xawbcgdxcfd"))))
-    (properties `((upstream-name . "aroma.light")))
+         "0i6b5mp7m61dy00scqmb2aa63fl9a9pxaf1zw13sdxj5xhpns7wa"))))
+    (properties
+     '((upstream-name . "aroma.light")
+       ;; Needed for tests.
+       (updater-extra-native-inputs . ("r-princurve"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrixstats r-r-methodss3 r-r-oo r-r-utils))
