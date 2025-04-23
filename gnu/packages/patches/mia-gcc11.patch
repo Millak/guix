@@ -1,0 +1,106 @@
+Author: Gert Wollny <gewo@debian.org>
+Debian-Bug: https://bugs.debian.org/984233
+--- a/mia/2d/test_segframe.cc
++++ b/mia/2d/test_segframe.cc
+@@ -27,8 +27,9 @@
+ #include <mia/2d/transformfactory.hh>
+ #include <mia/core/xmlinterface.hh>
+ 
++using std::vector;
++using std::string; 
+ using namespace mia;
+-using namespace std;
+ using namespace ::boost::unit_test;
+ namespace bfs = boost::filesystem;
+ 
+--- a/mia/2d/test_segmentation.cc
++++ b/mia/2d/test_segmentation.cc
+@@ -31,8 +31,11 @@
+ 
+ 
+ NS_MIA_USE
+-using namespace std;
+ using namespace ::boost::unit_test;
++using std::vector;
++using std::string;
++using std::invalid_argument;
++using std::runtime_error;
+ 
+ const char *testpoint_init  =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<test><point x=\"10\" y=\"20\"/></test>\n";
+@@ -403,7 +406,7 @@
+               for ( string::const_iterator x = xmldoc.begin(), t = testdoc.begin();
+                     x != xmldoc.end() && t != testdoc.end(); ++x, ++t ) {
+                      if (*x != *t) {
+-                            cvfail() << "'" << *x << "' vs '" << *t << "'" << endl;
++			     cvfail() << "'" << *x << "' vs '" << *t << "'" << std::endl;
+                      }
+               }
+        }
+--- a/mia/3d/filter/test_mask.cc
++++ b/mia/3d/filter/test_mask.cc
+@@ -23,7 +23,6 @@
+ #include <mia/3d/filter/mask.hh>
+ 
+ NS_MIA_USE
+-using namespace std;
+ using namespace ::boost::unit_test;
+ using namespace mask_3dimage_filter;
+ 
+--- a/mia/3d/test_ica.cc
++++ b/mia/3d/test_ica.cc
+@@ -22,8 +22,9 @@
+ #include <mia/3d/ica.hh>
+ 
+ using namespace mia;
+-using namespace std;
+ using namespace boost::unit_test;
++using std::vector;
++using std::invalid_argument;
+ 
+ const size_t slices = 5;
+ const size_t nx = 2;
+--- a/mia/3d/test_imagedraw.cc
++++ b/mia/3d/test_imagedraw.cc
+@@ -102,7 +102,7 @@
+ 
+ 
+ struct compare_coordinate  {
+-       bool operator () (const C3DBounds& lhs, const C3DBounds& rhs)
++       bool operator () (const C3DBounds& lhs, const C3DBounds& rhs) const
+        {
+               return (lhs.z < rhs.z) ||
+                      ((lhs.z == rhs.z) && ((lhs.y < rhs.y) ||
+--- a/mia/mesh/filter/test_deltrianglesbynormal.cc
++++ b/mia/mesh/filter/test_deltrianglesbynormal.cc
+@@ -39,7 +39,7 @@
+ 
+ template <typename T>
+ struct compare_vertex_ordered  {
+-       bool operator () (const T3DVector<T>& lhs, const T3DVector<T>& rhs)
++       bool operator () (const T3DVector<T>& lhs, const T3DVector<T>& rhs) const
+        {
+               return (lhs.z < rhs.z) ||
+                      ((lhs.z == rhs.z) && ((lhs.y < rhs.y) ||
+--- a/mia/mesh/filter/test_selectbig.cc
++++ b/mia/mesh/filter/test_selectbig.cc
+@@ -39,7 +39,7 @@
+ 
+ template <typename T>
+ struct compare_vertex_ordered  {
+-       bool operator () (const T3DVector<T>& lhs, const T3DVector<T>& rhs)
++       bool operator () (const T3DVector<T>& lhs, const T3DVector<T>& rhs) const
+        {
+               return (lhs.z < rhs.z) ||
+                      ((lhs.z == rhs.z) && ((lhs.y < rhs.y) ||
+--- a/mia/mesh/triangularMesh.cc
++++ b/mia/mesh/triangularMesh.cc
+@@ -508,7 +508,7 @@
+ };
+ 
+ struct compare_vertex  {
+-       bool operator () (const VertexWithIndex& lhs, const VertexWithIndex& rhs)
++       bool operator () (const VertexWithIndex& lhs, const VertexWithIndex& rhs) const
+        {
+               return (lhs.v.z < rhs.v.z) ||
+                      ((lhs.v.z == rhs.v.z) && ((lhs.v.y < rhs.v.y) ||

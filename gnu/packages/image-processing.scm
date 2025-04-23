@@ -19,7 +19,7 @@
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2023 Cairn <cairn@pm.me>
@@ -219,6 +219,8 @@ licences similar to the Modified BSD licence."))))
                (base32
                 "0qpcd3n26q52dpyibm11f5l6cgscdr54p2jish39gc3p1f5h3ws1"))
               (patches (search-patches "mia-fix-boost-headers.patch"
+                                       "mia-gcc11.patch"
+                                       "mia-openexr3.patch"
                                        "mia-vtk9.patch"
                                        "mia-vtk92.patch"
                                        "mia-vtk-version.patch"))))
@@ -230,14 +232,14 @@ licences similar to the Modified BSD licence."))))
     (inputs
      (list boost
            dcmtk
-           doxygen
            eigen
            fftw
            fftwf
            gsl
            gts
-           hdf5
+           hdf5-1.10
            itpp
+           lapack
            libjpeg-turbo
            libpng
            libtiff
@@ -246,11 +248,12 @@ licences similar to the Modified BSD licence."))))
            maxflow
            niftilib
            nlopt
-           openexr-2
+           openexr
            python-lxml
            vtk))
     (native-inputs
-     (list pkg-config
+     (list doxygen
+           pkg-config
            python-wrapper))
     (home-page "https://mia.sourceforge.net")
     (synopsis "Toolkit for gray scale medical image analysis")

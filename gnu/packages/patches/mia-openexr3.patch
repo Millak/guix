@@ -1,0 +1,27 @@
+Description: Fix compilation with openexr 3.x
+Author: Mathieu Malaterre <malat@debian.org>
+Bug-Debian: https://bugs.debian.org/1017517
+
+--- mia-2.4.7.orig/addons/openexr/2dimgexr.cc
++++ mia-2.4.7/addons/openexr/2dimgexr.cc
+@@ -25,6 +25,9 @@
+ #include <ImfChannelList.h>
+ #include <ImfStringAttribute.h>
+ #include <ImfMatrixAttribute.h>
++#include <ImathBox.h>
++#include <ImfFrameBuffer.h>
++#include <ImfHeader.h>
+ 
+ #include <mia/core/file.hh>
+ #include <mia/core/filter.hh>
+--- mia-2.4.7.orig/addons/openexr/2dvfexr.cc
++++ mia-2.4.7/addons/openexr/2dvfexr.cc
+@@ -25,6 +25,8 @@
+ #include <ImfChannelList.h>
+ #include <ImfStringAttribute.h>
+ #include <ImfMatrixAttribute.h>
++#include <ImfHeader.h>
++#include <ImfFrameBuffer.h>
+ 
+ #include <mia/core/file.hh>
+ #include <mia/core/filter.hh>

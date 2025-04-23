@@ -1854,6 +1854,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/mercurial-hg-extension-path.patch	\
   %D%/packages/patches/mhash-keygen-test-segfault.patch		\
   %D%/packages/patches/mia-fix-boost-headers.patch		\
+  %D%/packages/patches/mia-gcc11.patch				\
+  %D%/packages/patches/mia-openexr3.patch			\
   %D%/packages/patches/mia-vtk9.patch				\
   %D%/packages/patches/mia-vtk92.patch				\
   %D%/packages/patches/mia-vtk-version.patch			\
