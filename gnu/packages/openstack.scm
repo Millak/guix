@@ -64,19 +64,39 @@
         (base32 "0fhr0rsvh44ix31dwxjw8aj0wklj95368djwk0i98c2dcpmpp17m"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; The tests are disabled to avoid a circular dependency with
-     ;; python-stestr.
-     `(#:tests? #f))
-    (propagated-inputs (list python-pyyaml python-rich python-stevedore))
-    (native-inputs (list python-beautifulsoup4
-                         python-setuptools
-                         python-wheel))
+     (list
+      #:test-flags
+      ;; Two tets fail.
+      #~(list "--exclude-regex" "test_no_arguments|test_help_arg")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: Implement in pypproject-build-system's  test-backends.
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "stestr" "run" test-flags)))))))
+    (native-inputs
+     (list python-beautifulsoup4
+           python-fixtures
+           python-setuptools
+           python-stestr
+           python-testscenarios
+           python-testtools
+           python-wheel))
+    (propagated-inputs
+     (list python-gitpython
+           python-jschema-to-python
+           python-pyyaml
+           python-rich
+           python-sarif-om
+           python-stevedore))
     (home-page "https://github.com/PyCQA/bandit")
     (synopsis "Security oriented static analyser for python code")
-    (description "Bandit is a tool designed to find common security issues in
-Python code.  To do this Bandit processes each file, builds an AST from it,
-and runs appropriate plugins against the AST nodes.  Once Bandit has finished
-scanning all the files it generates a report.")
+    (description
+     "Bandit is a tool designed to find common security issues in Python code.
+To do this Bandit processes each file, builds an AST from it, and runs
+appropriate plugins against the AST nodes.  Once Bandit has finished scanning
+all the files it generates a report.")
     (license asl2.0)))
 
 (define-public python-cliff
