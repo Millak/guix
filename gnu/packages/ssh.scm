@@ -275,16 +275,11 @@ a server that supports the SSH-2 protocol.")
             '()))
      #:phases
      #~(modify-phases %standard-phases
-         (add-after 'configure 'reset-/var/empty
-           (lambda _
-             (substitute* "Makefile"
-               (("PRIVSEP_PATH=/var/empty")
-                (string-append "PRIVSEP_PATH=" #$output "/var/empty")))))
          (add-after 'configure 'set-store-location
            (lambda _
              (substitute* "misc.c"
                (("@STORE_DIRECTORY@")
-                (string-append "\"" (%store-directory) "\"")))))
+                (string-append "\"" (%store-directory) "/\"")))))
          (add-before 'check 'patch-tests
            (lambda _
              (substitute* "regress/test-exec.sh"
@@ -297,9 +292,10 @@ a server that supports the SSH-2 protocol.")
                 (string-append pre post)))))
          (replace 'install
            (lambda* (#:key (make-flags '()) #:allow-other-keys)
-             ;; Install without host keys and system configuration files.  This
-             ;; will install /var/empty to the store, which is needed by the
-             ;; system openssh-service-type.
+             ;; Don't create /var/empty.
+             (substitute* "Makefile"
+               ((".*MKDIR_P.*PRIVSEP_PATH.*") ""))
+             ;; Install without host keys and system configuration files.
              (apply invoke "make" "install-nosysconf" make-flags)
              (with-directory-excursion "contrib"
                (chmod "ssh-copy-id" #o555)

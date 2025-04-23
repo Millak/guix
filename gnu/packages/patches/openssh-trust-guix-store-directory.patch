@@ -3,20 +3,20 @@ From: Alexey Abramov <levenson@mmer.org>
 Date: Fri, 22 Apr 2022 11:32:15 +0200
 Subject: [PATCH] Trust guix store directory
 
-To be able to execute binaries defined in OpenSSH configuration, we
-need to tell OpenSSH that we can trust Guix store objects. safe_path
-procedure takes a canonical path and for each component, walking
-upwards, checks ownership and permissions constrains which are: must
-be owned by root, not writable by group or others.
+To be able to execute binaries defined in OpenSSH configuration, we need to
+tell OpenSSH that we can trust Guix store objects. safe_path procedure is
+patched to assume files in Guix store to be safe. Additionally configuration
+file placed in Guix store is assumed to be safe to load.
 ---
- misc.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ misc.c     | 6 ++++++
+ readconf.c | 7 ++++---
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
 diff --git a/misc.c b/misc.c
-index 0134d69..7131d5e 100644
+index dd0bd032a..6b866464c 100644
 --- a/misc.c
 +++ b/misc.c
-@@ -2146,6 +2146,7 @@ int
+@@ -2254,6 +2254,7 @@ int
  safe_path(const char *name, struct stat *stp, const char *pw_dir,
      uid_t uid, char *err, size_t errlen)
  {
@@ -24,17 +24,42 @@ index 0134d69..7131d5e 100644
  	char buf[PATH_MAX], homedir[PATH_MAX];
  	char *cp;
  	int comparehome = 0;
-@@ -2178,6 +2179,10 @@ safe_path(const char *name, struct stat *stp, const char *pw_dir,
- 		}
- 		strlcpy(buf, cp, sizeof(buf));
- 
-+		/* If we are past the Guix store then we can stop */
-+		if (strcmp(guix_store, buf) == 0)
-+			break;
+@@ -2271,6 +2272,11 @@ safe_path(const char *name, struct stat *stp, const char *pw_dir,
+ 		snprintf(err, errlen, "%s is not a regular file", buf);
+ 		return -1;
+ 	}
++	// the file is trusted when it is located in guix store
++	if (strncmp(buf, guix_store, strlen(guix_store)) == 0) {
++		return 0;
++	}
 +
- 		if (stat(buf, &st) == -1 ||
- 		    (!platform_sys_dir_uid(st.st_uid) && st.st_uid != uid) ||
- 		    (st.st_mode & 022) != 0) {
+ 	if ((!platform_sys_dir_uid(stp->st_uid) && stp->st_uid != uid) ||
+ 	    (stp->st_mode & 022) != 0) {
+ 		snprintf(err, errlen, "bad ownership or modes for file %s",
+diff --git a/readconf.c b/readconf.c
+index 7cbe7d2c2..40a5f1ace 100644
+--- a/readconf.c
++++ b/readconf.c
+@@ -2566,6 +2566,7 @@ read_config_file_depth(const char *filename, struct passwd *pw,
+ {
+ 	FILE *f;
+ 	char *line = NULL;
++	char errmsg[512];
+ 	size_t linesize = 0;
+ 	int linenum;
+ 	int bad_options = 0;
+@@ -2581,9 +2582,9 @@ read_config_file_depth(const char *filename, struct passwd *pw,
+ 
+ 		if (fstat(fileno(f), &sb) == -1)
+ 			fatal("fstat %s: %s", filename, strerror(errno));
+-		if (((sb.st_uid != 0 && sb.st_uid != getuid()) ||
+-		    (sb.st_mode & 022) != 0))
+-			fatal("Bad owner or permissions on %s", filename);
++		if (safe_path(filename, &sb, pw->pw_dir, pw->pw_uid, errmsg, sizeof(errmsg)) != 0) {
++			fatal(errmsg);
++		}
+ 	}
+ 
+ 	debug("Reading configuration data %.200s", filename);
 -- 
-2.34.0
-
+2.49.0
