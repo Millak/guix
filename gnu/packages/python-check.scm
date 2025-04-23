@@ -1,10 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
+;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2018, 2020, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2018-2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
@@ -537,6 +538,32 @@ counterexamples for you.")
     (description
      "This package provides a tag-expression parser for Cucumber and
 @command{behave}.")
+    (license license:expat)))
+
+(define-public python-ddt
+  (package
+    (name "python-ddt")
+    (version "1.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ddt" version))
+       (sha256
+        (base32 "0jz0lglz5z5clsbralbpmd1hxs4ndb6ls7lvl7216c4nhfqdc5fj"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-aiounittest
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-pyyaml))
+    (home-page "https://github.com/datadriventests/ddt")
+    (synopsis "Data-Driven Tests")
+    (description
+     "Data-Driven Tests (@dfn{DDT}) allow you to multiply one test case by
+running it with different test data, and make it appear as multiple test
+cases.")
     (license license:expat)))
 
 (define-public python-doc8
