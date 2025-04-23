@@ -7330,13 +7330,13 @@ dynamic documents and vignettes.")
 (define-public r-escape
   (package
     (name "r-escape")
-    (version "2.2.3")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "escape" version))
        (sha256
-        (base32 "1n1pz7qvd9447b8v6wz0lfqkvkb099jgzcf882b3x9s7mzcjryh5"))))
+        (base32 "1vwahi1c89jhdnnfk2z2pf1aa5h4sd5a66kgyzx30z907x2bc37a"))))
     (properties `((upstream-name . "escape")))
     (build-system r-build-system)
     (arguments
@@ -7346,7 +7346,11 @@ dynamic documents and vignettes.")
          (add-after 'unpack 'delete-bad-tests
            (lambda _
              ;; This one test fails with accuracy errors.
-             (delete-file "tests/testthat/test-performPCA.R"))))))
+             (delete-file "tests/testthat/test-performPCA.R")
+             ;; This test uses experimenthub to download and cache things.
+             (substitute* "tests/testthat/test-getGeneSets.R"
+               ((".*Caching behavior works for a new species.*" m)
+                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs (list r-aucell
                              r-biocparallel
                              r-dplyr
@@ -7358,7 +7362,7 @@ dynamic documents and vignettes.")
                              r-gsva
                              r-matrix
                              r-matrixgenerics
-                             r-msigdbr
+                             r-msigdb
                              r-patchwork
                              r-reshape2
                              r-seuratobject
