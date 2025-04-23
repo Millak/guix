@@ -23,6 +23,7 @@
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
 ;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,6 +74,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ssh)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages web)
@@ -1544,6 +1546,28 @@ variants.")
     (license (list license:gpl3            ; According to COPYING.
                    license:lgpl2.1         ; Some style sheets.
                    license:cc-by-sa4.0)))) ; Some icons
+
+(define-public libmegapixels
+  (package
+    (name "libmegapixels")
+    (version "0.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/megapixels-org/libmegapixels")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06q6igyf5m6nd75jlihvr6f5hf0q2b2vb2dcjw91f65c6db5q9jk"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libconfig))
+    (home-page "https://gitlab.com/megapixels-org/libmegapixels")
+    (synopsis "Library for the Megapixels application")
+    (description "This package provides a device abstraction library for the
+Megapixels application.")
+    (license license:gpl3+)))
 
 (define-public postmarketos-theme
   (package
