@@ -3139,45 +3139,48 @@ written in C++.")
        (list
         #:tests? #f                    ; there are none
         #:make-flags
-        '(list (string-append "SHELL="
-                              (assoc-ref %build-inputs "bash") "/bin/bash")
-               (string-append "KALDI_ROOT="
-                              (assoc-ref %build-inputs "kaldi-src"))
-               (string-append "KALDILIBDIR="
-                              (assoc-ref %build-inputs "kaldi") "/lib")
-               "KALDI_FLAVOR=dynamic")
+        (let ((kaldi (this-package-input "kaldi"))
+              (bash (this-package-native-input "bash")))
+          #~(list (string-append "SHELL=" #$bash "/bin/bash")
+                  (string-append "KALDI_ROOT=" #$(package-source kaldi))
+                  (string-append "KALDILIBDIR=" #$kaldi "/lib")
+                  "KALDI_FLAVOR=dynamic"))
          #:phases
-         '(modify-phases %standard-phases
-            (add-after 'unpack 'chdir
-              (lambda _ (chdir "src")))
-            (replace 'configure
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let ((glib (assoc-ref inputs "glib")))
-                  (setenv "CXXFLAGS" "-fPIC")
-                  (setenv "CPLUS_INCLUDE_PATH"
-                          (string-append glib "/include/glib-2.0:"
-                                         glib "/lib/glib-2.0/include:"
-                                         (assoc-ref inputs "gstreamer")
-                                         "/include/gstreamer-1.0:"
-                                         (getenv "CPLUS_INCLUDE_PATH"))))
-                (substitute* "Makefile"
-                  (("include \\$\\(KALDI_ROOT\\)/src/kaldi.mk") "")
-                  (("\\$\\(error Cannot find") "#"))))
-            (add-before 'build 'build-depend
-              (lambda* (#:key make-flags #:allow-other-keys)
-                (apply invoke "make" "depend" make-flags)))
-            (replace 'install
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let* ((out (assoc-ref outputs "out"))
-                       (lib (string-append out "/lib/gstreamer-1.0")))
-                  (install-file "libgstkaldinnet2onlinedecoder.so" lib)))))))
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'chdir
+               (lambda _ (chdir "src")))
+             (replace 'configure
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let ((fst-version #$(package-version
+                                       (this-package-input "openfst"))))
+                   (setenv "CXXFLAGS"
+                           (string-append
+                            "-fPIC -DOPENFST_VER="
+                            (string-join (string-split fst-version #\.) "0")))
+                   (setenv "CPLUS_INCLUDE_PATH"
+                           (string-join
+                            (append (map (lambda (dir)
+                                           (search-input-directory inputs dir))
+                                         '("/include/glib-2.0"
+                                           "/lib/glib-2.0/include"
+                                           "/include/gstreamer-1.0"))
+                                    (list (getenv "CPLUS_INCLUDE_PATH")))
+                            ":")))
+                 (substitute* "Makefile"
+                   (("include \\$\\(KALDI_ROOT\\)/src/kaldi.mk") "")
+                   (("\\$\\(error Cannot find") "#"))))
+             (add-before 'build 'build-depend
+               (lambda* (#:key make-flags #:allow-other-keys)
+                 (apply invoke "make" "depend" make-flags)))
+             (replace 'install
+               (lambda _
+                 (install-file
+                  "libgstkaldinnet2onlinedecoder.so"
+                  (string-append #$output "/lib/gstreamer-1.0")))))))
       (inputs
        (list glib gstreamer jansson openfst kaldi))
       (native-inputs
-       `(("bash" ,bash)
-         ("glib:bin" ,glib "bin")       ; glib-genmarshal
-         ("kaldi-src" ,(package-source kaldi))
-         ("pkg-config" ,pkg-config)))
+       (list bash `(,glib "bin") pkg-config))
       (home-page "https://kaldi-asr.org/")
       (synopsis "Gstreamer plugin for decoding speech")
       (description "This package provides a GStreamer plugin that wraps
