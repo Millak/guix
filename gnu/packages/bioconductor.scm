@@ -7388,22 +7388,18 @@ across individual cells.")
 (define-public r-bluster
   (package
    (name "r-bluster")
-   (version "1.16.0")
+   (version "1.18.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "bluster" version))
             (sha256
              (base32
-              "1k8aj5zj297l5yf15f3xak9adcrxr79ax7ifwhz2jq23ifd4dmfs"))))
+              "0q51rpjj2m61ax2n192pcbaix26f3jxjl5pk09w5mcppr6cym0hi"))))
    (properties
     '((upstream-name . "bluster")
       (updater-extra-native-inputs
-       . ("r-apcluster"
-          "r-dirichletmultinomial"
-          "r-dynamictreecut"
-          "r-kohonen"
-          "r-mbkmeans"
-          "r-vegan"))))
+       . ("r-dirichletmultinomial"
+          "r-dynamictreecut"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-assorthead
@@ -7418,9 +7414,9 @@ across individual cells.")
     (list r-apcluster
           r-dirichletmultinomial
           r-dynamictreecut
+          r-knitr
           r-kohonen
           r-mbkmeans
-          r-knitr
           r-testthat
           r-vegan))
    (home-page "https://bioconductor.org/packages/bluster")
