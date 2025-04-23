@@ -8132,14 +8132,20 @@ structure.")
 (define-public r-annotate
   (package
     (name "r-annotate")
-    (version "1.84.0")
+    (version "1.86.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "annotate" version))
        (sha256
         (base32
-         "1m7cc5hawzdvm0b1il4fcilipnsv1n94zqvwhkbr3041rklf7l7y"))))
+         "1n5x0ia1138ghc3xii7cfxny3z1fxgbzj92p0qdprsf6m6fmn0i8"))))
+    (properties
+     '((updater-ignored-native-inputs
+        . ("r-hgu95av2-db"
+           "r-org-hs-eg-db"
+           "r-rae230a-db"
+           "r-rae230aprobe"))))
     (build-system r-build-system)
     ;; Tests require a number of annotation packages.
     (arguments (list #:tests? #false))
@@ -8151,9 +8157,8 @@ structure.")
            r-httr
            r-xml
            r-xtable))
-    (native-inputs (list r-knitr r-runit))
-    (home-page
-     "https://bioconductor.org/packages/annotate")
+    (native-inputs (list r-biostrings r-go-db r-knitr r-rgraphviz r-runit))
+    (home-page "https://bioconductor.org/packages/annotate")
     (synopsis "Annotation for microarrays")
     (description "This package provides R environments for the annotation of
 microarrays.")
