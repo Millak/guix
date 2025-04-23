@@ -1023,21 +1023,6 @@ matrices.")
 optimizing, and searching weighted finite-state transducers (FSTs).")
     (license license:asl2.0)))
 
-;; This is a temporary addition to bypass upstream issues with the kaldi
-;; package.
-(define-public openfst-1.7.3
-  (package (inherit openfst)
-    (version "1.7.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.openfst.org/twiki/pub/FST/"
-                                  "FstDownload/openfst-" version ".tar.gz"))
-              (sha256
-               (base32
-                "038a60w7y8qnbxmcrsim9rafz9mihsny8xv50jpzlr7rl166pp5q"))))
-    (arguments '(#:configure-flags '("--enable-ngram-fsts" "CXXFLAGS=-std=c++14")
-                 #:make-flags '("CXXFLAGS=-std=c++14")))))
-
 (define openfst-for-vosk
   (package
     (inherit openfst)
@@ -2920,8 +2905,7 @@ PyTrees.")
 ;; There have been no proper releases yet.
 (define-public kaldi
   (let ((commit "be22248e3a166d9ec52c78dac945f471e7c3a8aa")
-        (revision "1")
-        (openfst openfst-1.7.3)) ;; Temporary bypass for upstream issues
+        (revision "1"))
     (package
       (name "kaldi")
       (version (git-version "0" revision commit))
@@ -3184,7 +3168,7 @@ written in C++.")
                        (lib (string-append out "/lib/gstreamer-1.0")))
                   (install-file "libgstkaldinnet2onlinedecoder.so" lib)))))))
       (inputs
-       (list glib gstreamer jansson openfst-1.7.3 kaldi))
+       (list glib gstreamer jansson openfst kaldi))
       (native-inputs
        `(("bash" ,bash)
          ("glib:bin" ,glib "bin")       ; glib-genmarshal
