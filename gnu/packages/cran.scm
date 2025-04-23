@@ -23772,13 +23772,13 @@ implemented in bibutils.")
 (define-public r-rbiom
   (package
     (name "r-rbiom")
-    (version "2.0.13")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rbiom" version))
        (sha256
-        (base32 "1xdv38ad5bl3330jmx8yq3rr4m4ap5588vbchj2qqqgsykmqhsaf"))))
+        (base32 "1p7lh6ni8m9khwnp3iyzgdznyl09ckfyl84q4410p0lc5iqg21bh"))))
     (properties
      '((upstream-name . "rbiom")
        (updater-extra-native-inputs . ("r-testthat"))))
