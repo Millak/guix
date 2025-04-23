@@ -68,6 +68,7 @@
 ;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Luca Cirrottola <luca.cirrottola@inria.fr>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2223,35 +2224,34 @@ the resulting text.")
               (uri (string-append "mirror://sourceforge/itpp/itpp/"
                                   version "/itpp-"
                                   version ".tar.gz"))
-       (sha256
-        (base32
-         "14ddy2xnb6sgp4hiax9v5sv4pr4l4dd4ps76nfha3nrpr1ikhcqm"))))
+              (sha256
+               (base32
+                "14ddy2xnb6sgp4hiax9v5sv4pr4l4dd4ps76nfha3nrpr1ikhcqm"))))
     (build-system cmake-build-system)
-    (arguments `(#:tests? #f ; Tests require googletest *sources*
-                 #:phases
-                 (modify-phases %standard-phases
-                   (add-after 'install 'delete-formulas-log
-                     ;; Contains date and timing information which is unreproducible,
-                     ;; and should not be needed when using the package
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let ((out (assoc-ref outputs "out")))
-                         (delete-file (string-append out "/share/doc/itpp/html/_formulas.log")))))
-                   (add-after 'unpack 'set-man-page-date
-                     (lambda _
-                       (substitute* "itpp-config.1.cmake.in"
-                         ((".PACKAGE_DATE.") "2012-04-18"))))
-                   (add-before 'build 'set-force-source-date
-                     ;; for reproducible dates, texlive needs this to respect respect
-                     ;; SOURCE_DATE_EPOCH
-                     (lambda _
-                       (setenv "FORCE_SOURCE_DATE" "1"))))))
-    (inputs (list openblas fftw))
+    (arguments
+     (list
+      #:tests? #f                       ; Tests require googletest *sources*
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'delete-formulas-log
+            ;; Contains date and timing information which is unreproducible,
+            ;; and should not be needed when using the package
+            (lambda _
+              (delete-file
+               (string-append #$output "/share/doc/itpp/html/_formulas.log"))))
+          (add-after 'unpack 'set-man-page-date
+            (lambda _
+              (substitute* "itpp-config.1.cmake.in"
+                ((".PACKAGE_DATE.") "2012-04-18"))))
+          (add-before 'build 'set-force-source-date
+            ;; for reproducible dates, texlive needs this to respect respect
+            ;; SOURCE_DATE_EPOCH
+            (lambda _
+              (setenv "FORCE_SOURCE_DATE" "1"))))))
+    (inputs (list fftw lapack openblas))
     ;; FIXME: Even though the fonts are available dvips complains:
     ;; "Font cmmi10 not found; characters will be left blank."
-    (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg))
-       ("ghostscript" ,ghostscript)
-       ("doxygen" ,doxygen)))
+    (native-inputs (list (texlive-updmap.cfg) ghostscript doxygen))
     (home-page "https://itpp.sourceforge.net")
     (synopsis "C++ library of maths, signal processing and communication classes")
     (description "IT++ is a C++ library of mathematical, signal processing and
