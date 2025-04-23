@@ -8381,21 +8381,21 @@ paired-end data.")
 (define-public r-biobase
   (package
     (name "r-biobase")
-    (version "2.66.0")
+    (version "2.68.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Biobase" version))
               (sha256
                (base32
-                "1ndkvl44pxdsw39gka1ivlb8l89m1ix58nkji7b65qq9mj6dw31k"))))
+                "03vzsm6m8wbmrg997k3qczr6jfwin9qxfxmq3lal6l1yk9vk0fwr"))))
     (properties
-     `((upstream-name . "Biobase")))
+     '((upstream-name . "Biobase")
+       (updater-ignored-native-inputs . ("r-all"))))
     (build-system r-build-system)
     ;; One test depends on golubEsets, which depends on r-biobase.
     (arguments (list #:tests? #false))
-    (propagated-inputs
-     (list r-biocgenerics))
-    (native-inputs (list r-knitr))
+    (propagated-inputs (list r-biocgenerics))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/Biobase")
     (synopsis "Base functions for Bioconductor")
     (description
