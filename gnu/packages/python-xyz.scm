@@ -36213,7 +36213,7 @@ CMake.")
 (define-public python-screenkey
   (package
     (name "python-screenkey")
-    (version "1.4")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -36223,21 +36223,19 @@ CMake.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rfngmkh01g5192pi04r1fm7vsz6hg9k3qd313sn9rl9xkjgp11l"))))
+         "0j719kld4dr85d9lxn0d0b6156mcy09jm7arssfp2n3j6hmjssci"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-dlopen-paths
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let* ((x11 (assoc-ref inputs "libx11"))
-                   (xtst (assoc-ref inputs "libxtst")))
-              (substitute* "Screenkey/xlib.py"
-                           (("libX11.so.6")
-                            (string-append x11 "/lib/libX11.so.6")))
-              (substitute* "Screenkey/xlib.py"
-                           (("libXtst.so.6")
-                            (string-append xtst "/lib/libXtst.so.6"))))))
+          (lambda* (#:key inputs  #:allow-other-keys)
+            (substitute* "Screenkey/xlib.py"
+              (("libX11.so.6")
+               (search-input-file inputs "lib/libX11.so.6")))
+            (substitute* "Screenkey/xlib.py"
+              (("libXtst.so.6")
+               (search-input-file inputs "lib/libXtst.so.6")))))
           (add-after 'install 'wrap-screenkey
             (lambda* (#:key outputs #:allow-other-keys)
               (wrap-program
@@ -36247,15 +36245,16 @@ CMake.")
                   ":" prefix (,(getenv "GI_TYPELIB_PATH")))))))))
     (inputs
      (list bash-minimal
-           python-distutils-extra
-           python-tokenize-rt
+           gtk+
            libx11
            libxtst
-           gtk+
-           python-pygobject
+           python-babel
+           python-dbus-python
+           python-distutils-extra
            python-pycairo
+           python-pygobject
            python-setuptools-git
-           python-babel))
+           python-tokenize-rt))
     (home-page "https://www.thregr.org/~wavexx/software/screenkey/")
     (synopsis
       "Screencast tool to display pressed keys")
