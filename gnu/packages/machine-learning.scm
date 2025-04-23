@@ -1007,14 +1007,14 @@ matrices.")
 (define-public openfst
   (package
     (name "openfst")
-    (version "1.8.2")
+    (version "1.8.4")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://www.openfst.org/twiki/pub/FST/"
+              (uri (string-append "https://www.openfst.org/twiki/pub/FST/"
                                   "FstDownload/openfst-" version ".tar.gz"))
               (sha256
                (base32
-                "0hlbdmjjf1jgsvi3d2hwni5lz3l9a5bzj6ijpbawa8a7cbrpp66y"))))
+                "05l057mx1cmbm2jm99mrg75qgz4ca5r78n002mkpxl4j7mpvpsx8"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--enable-ngram-fsts")))
     (home-page "https://www.openfst.org")
