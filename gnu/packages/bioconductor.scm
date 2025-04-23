@@ -9338,14 +9338,16 @@ parameter configurations.")
 (define-public r-enmix
   (package
     (name "r-enmix")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ENmix" version))
               (sha256
                (base32
-                "1p0x2jq327r0lsnq1wdy19w5bsa4kvkhj5b6cr1dy1sgdxa7n4wr"))))
-    (properties `((upstream-name . "ENmix")))
+                "1x5f0hfbjnbxjjfr8n3hzxdi94fna7gan7fa9sm734mijvh6jmpz"))))
+    (properties
+     '((upstream-name . "ENmix")
+       (updater-extra-native-inputs . ("r-minfidata"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationhub
@@ -9368,7 +9370,7 @@ parameter configurations.")
            r-rpmm
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr r-minfidata r-runit))
+    (native-inputs (list r-biocgenerics r-knitr r-minfidata r-runit))
     (home-page "https://bioconductor.org/packages/release/bioc/html/ENmix.html")
     (synopsis
      "Quality control and analysis tools for Illumina DNA methylation BeadChip")
