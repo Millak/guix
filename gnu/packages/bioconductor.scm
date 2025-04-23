@@ -12332,14 +12332,16 @@ proteomics packages.")
 (define-public r-pwalign
   (package
     (name "r-pwalign")
-    (version "1.2.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pwalign" version))
        (sha256
-        (base32 "1i01xhg8sjz9gx5pqaq8wam9r13l8m9n9pf1aiavjif20gd0rz3b"))))
-    (properties `((upstream-name . "pwalign")))
+        (base32 "1v4iicyr37fb5whx8qrslqy7rvnydvvjb5dhf78vfq7q47497363"))))
+    (properties
+     '((upstream-name . "pwalign")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics r-biostrings r-iranges r-s4vectors
                              r-xvector))
