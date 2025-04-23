@@ -8233,16 +8233,22 @@ used by @code{ensembldb}, @code{Organism.dplyr}, and other packages.")
 (define-public r-annotationforge
   (package
     (name "r-annotationforge")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationForge" version))
        (sha256
         (base32
-         "1m3s3jkq43w94mr4g3cqfgndan7ihhhnx84ag4xm1rzmvdpsd0pp"))))
+         "1h0h9axlq9knw8hiyhay7d9wbxvlgg8378pd6zygbj74qvy60pp3"))))
     (properties
-     `((upstream-name . "AnnotationForge")))
+     '((upstream-name . "AnnotationForge")
+       (updater-extra-native-inputs . ("r-go-db" "r-runit"))
+       (updater-ignored-native-inputs
+        . ("r-db"
+           "r-hgu95av2-db"
+           "r-homo-sapiens"
+           "r-org-hs-eg-db"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
@@ -8254,7 +8260,11 @@ used by @code{ensembldb}, @code{Organism.dplyr}, and other packages.")
            r-s4vectors
            r-xml))
     (native-inputs
-     (list r-go-db r-knitr r-runit))
+     (list r-biocmanager
+           r-biostrings
+           r-go-db
+           r-knitr
+           r-runit))
     (home-page "https://bioconductor.org/packages/AnnotationForge")
     (synopsis "Code for building annotation database packages")
     (description
