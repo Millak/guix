@@ -16317,14 +16317,19 @@ information.")
 (define-public r-glmgampoi
   (package
     (name "r-glmgampoi")
-    (version "1.18.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "glmGamPoi" version))
               (sha256
                (base32
-                "141drlbgld05npk1bay7pcng7xmm43y26559qs8mxy9432cpzx9n"))))
-    (properties `((upstream-name . "glmGamPoi")))
+                "0mfwhlj3mli7c5iabd90gbdzc22cvqq2wh26l3bqxjv5im07hgmx"))))
+    (properties
+     '((upstream-name . "glmGamPoi")
+       (updater-ignored-native-inputs
+        . ("r-deseq2"
+           "r-distraltparam"
+           "r-einsum"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -16335,22 +16340,38 @@ information.")
              ;; This test needs r-deseq2, which depends on this package.
              (delete-file "tests/testthat/test-size_factors.R"))))))
     (propagated-inputs
-     (list r-beachmat
+     (list r-assorthead
+           r-beachmat
            r-biocgenerics
            r-delayedarray
            r-delayedmatrixstats
            r-hdf5array
+           r-matrix
            r-matrixgenerics
            r-matrixstats
            r-rcpp
            r-rcpparmadillo
            r-rlang
+           r-s4vectors
            r-singlecellexperiment
            r-sparsearray
            r-summarizedexperiment
            r-vctrs))
     (native-inputs
-     (list r-biocparallel r-knitr r-limma r-mass r-scran r-testthat r-zoo))
+     (list r-bench
+           r-biocparallel
+           r-edger
+           r-knitr
+           r-limma
+           r-mass
+           r-mockery
+           r-mockr
+           r-nloptr
+           r-pheatmap
+           r-sparsematrixstats
+           r-statmod
+           r-testthat
+           r-zoo))
     (home-page "https://github.com/const-ae/glmGamPoi")
     (synopsis "Fit a Gamma-Poisson Generalized Linear Model")
     (description
