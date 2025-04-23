@@ -17080,14 +17080,16 @@ coordinates.")
 (define-public r-lpsymphony
   (package
     (name "r-lpsymphony")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "lpsymphony" version))
        (sha256
         (base32
-         "0w4rwj2vprpayijjwlqrximxlr8dnc1zs9pmr2wil7r76zvxlf94"))))
+         "1p1527hk52ca1qrsz0my887m01fq8zbnzs2z9hllpfgq633vissq"))))
+    (properties
+     '((updater-extra-native-inputs . ("gfortran"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -17104,25 +17106,25 @@ coordinates.")
                  #~((add-after 'unpack 'update-config-files
                       (lambda* (#:key native-inputs inputs #:allow-other-keys)
                         (for-each
-                          (lambda (location)
-                            (for-each (lambda (file)
-                                        (install-file
-                                          (search-input-file
-                                            (or native-inputs inputs)
-                                            (string-append "/bin/" file))
-                                          (dirname location)))
-                                      '("config.guess" "config.sub")))
-                          (find-files "." "config\\.guess")))))
+                         (lambda (location)
+                           (for-each (lambda (file)
+                                       (install-file
+                                        (search-input-file
+                                         (or native-inputs inputs)
+                                         (string-append "/bin/" file))
+                                        (dirname location)))
+                                     '("config.guess" "config.sub")))
+                         (find-files "." "config\\.guess")))))
                  #~()))))
     (inputs
      (list zlib))
     (native-inputs
      (append
-       (list gfortran pkg-config r-knitr r-testthat)
-       (if (or (target-aarch64?)
-               (target-riscv64?))
-           (list config)
-           '())))
+      (list gfortran pkg-config r-knitr r-testthat)
+      (if (or (target-aarch64?)
+              (target-riscv64?))
+          (list config)
+          '())))
     (home-page "https://r-forge.r-project.org/projects/rsymphony")
     (synopsis "Symphony integer linear programming solver in R")
     (description
