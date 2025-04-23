@@ -9382,14 +9382,18 @@ visualization of Illumina DNA methylation array data.")
 (define-public r-ensembldb
   (package
     (name "r-ensembldb")
-    (version "2.30.0")
+    (version "2.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ensembldb" version))
        (sha256
         (base32
-         "1p7hlhyzirzcq1g0i62hr3l4k60fm4y04qb4k04lls8wynfxhy0a"))))
+         "0h7jhryn6f3gdr2189nm7d18n6kh7wgh95l93ng1rs1n20vsn1a4"))))
+    (properties
+     '((updater-ignored-native-inputs
+        ;; Avoid dependency cycle.
+        . ("r-ensdb-hsapiens-v86"))))
     (build-system r-build-system)
     ;; The tests require r-ensdb-hsapiens-v86, which depends on
     ;; this package.
@@ -9412,7 +9416,8 @@ visualization of Illumina DNA methylation array data.")
            r-rtracklayer
            r-s4vectors))
     (native-inputs
-     (list r-knitr))
+     (list r-bsgenome-hsapiens-ncbi-grch38 r-knitr
+           r-rcurl r-testthat))
     (home-page "https://github.com/jotsetung/ensembldb")
     (synopsis "Utilities to create and use Ensembl-based annotation databases")
     (description
