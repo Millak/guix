@@ -28669,7 +28669,7 @@ files, and Makefiles.")
 (define-public python-whatever
   (package
     (name "python-whatever")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method git-fetch)
@@ -28678,7 +28678,7 @@ files, and Makefiles.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q7ajgqjfivxqsqgnhp4lc4p6jxyh4zprcsdbpd6dw54inaf0av5"))))
+        (base32 "1x5b4r3fppp208v52hn8inf2988w4llbkw9kvfc3w81dhmrf5fvq"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-setuptools python-wheel))
