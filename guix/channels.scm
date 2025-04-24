@@ -250,7 +250,11 @@ could be found at DIRECTORY or one of its ancestors."
   "Return the \"reference\" for CHANNEL, an sexp suitable for
 'latest-repository-commit'."
   (match (channel-commit channel)
-    (#f      `(branch . ,(channel-branch channel)))
+    (#f      (let ((branch (channel-branch channel)))
+               (if (and (string? branch)
+                        (string-prefix? "refs/" branch))
+                   `(symref . ,branch)
+                   `(branch . ,branch))))
     (commit  `(tag-or-commit . ,(channel-commit channel)))))
 
 (define sexp->channel-introduction
