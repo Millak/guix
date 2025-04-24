@@ -2834,48 +2834,6 @@ seamlessly into your existing Python unit testing work flow.")
 (define-deprecated python-hypothesis-next python-hypothesis)
 (export python-hypothesis-next)
 
-(define-public python-hypothesmith
-  (package
-    (name "python-hypothesmith")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "hypothesmith" version))
-       (sha256
-        (base32 "08kr9p6hjm3ys87k1k3l79cmf936qbhn21ab8zadsvnp0gyv7dqg"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k"
-              (string-append
-               ;; XXX: hypothesis.errors.Unsatisfiable
-               "not test_source_code_from_libcst_node_type[MatchSingleton]"
-               ;; XXX: Python/Black versions not as expected.
-               " and not test_black_autoformatter_from_grammar"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-lark-dependency
-            (lambda _
-              (substitute* "setup.py"
-                (("lark-parser>=[0-9.]*") "lark")))))))
-    (propagated-inputs
-     (list python-hypothesis python-lark python-libcst-minimal))
-    (native-inputs
-     (list python-black
-           python-parso
-           python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/Zac-HD/hypothesmith")
-    (synopsis "Strategies for generating Python programs")
-    (description
-     "This package contains hypothesis strategies for generating Python
-programs, something like CSmith, a random generator of C programs.")
-    (license license:mpl2.0)))
-
 ;; WARNING: This package is a dependency of mesa.
 (define-public python-lit
   (package
