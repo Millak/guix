@@ -35207,26 +35207,25 @@ module patches @code{asyncio} to allow nested use of @code{asyncio.run} and
     (name "python-simpervisor")
     (version "1.0.0")
     (source
-      (origin
-        ;; Tests not included in release.
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/yuvipanda/simpervisor")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0drvqxbr6fpydb4d7z5dhn97d578gf39sd8cawyl6ksf1f4y8yzg"))))
+     (origin
+       ;; Tests not included in release.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yuvipanda/simpervisor")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0drvqxbr6fpydb4d7z5dhn97d578gf39sd8cawyl6ksf1f4y8yzg"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:test-flags '(list "-n" (number->string (parallel-job-count)))))
+     ;; See <https://github.com/jupyterhub/simpervisor/issues/57>
+     (list #:test-flags #~(list "--deselect=tests/test_ready.py::test_ready")))
     (native-inputs
      (list python-aiohttp
            python-hatchling
            python-psutil
            python-pytest
-           python-pytest-asyncio
-           python-pytest-xdist))
+           python-pytest-asyncio))
     (home-page "https://github.com/yuvipanda/simpervisor")
     (synopsis "Simple async process supervisor")
     (description
