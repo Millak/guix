@@ -5170,7 +5170,7 @@ implemented in ANSI C, and MPI for communications.")
 (define-public scotch
   (package
     (name "scotch")
-    (version "7.0.4")
+    (version "7.0.7")
     (source
      (origin
        (method git-fetch)
@@ -5179,7 +5179,7 @@ implemented in ANSI C, and MPI for communications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rbc51albpd2923dkirpkj8rfkic6rsvwqqnv1mmsk391zhk3amr"))
+        (base32 "0r46bmnz9xjlgcb3vvlx3sg2qh4gfgga89vs4vlbzz3s4lj48g46"))
        (patches (search-patches "scotch-cmake-remove-metis.patch"))
        (modules '((guix build utils)))
        (snippet
