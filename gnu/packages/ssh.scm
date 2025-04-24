@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2018-2022, 2024 Efraim Flashner <efraim@flashner.co.il>
@@ -164,9 +164,9 @@ file names.
               "-DUNIT_TESTING=ON"
               #$@(if (and (%current-target-system)
                           (not (target-64bit?)))
-                     #~(list (string-append
-                              "-DCMAKE_C_FLAGS=-g -O2"
-                              " -Wno-incompatible-pointer-types"))
+                     #~((string-append
+                         "-DCMAKE_C_FLAGS=-g -O2"
+                         " -Wno-incompatible-pointer-types"))
                      #~()))
       #:phases
       #~(modify-phases %standard-phases
