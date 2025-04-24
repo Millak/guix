@@ -2353,28 +2353,33 @@ Encryption} (JOSE) Web Standards.")
     (license license:expat)))
 
 (define-public python-pyscss
-  (package
-    (name "python-pyscss")
-    (version "1.4.0")
-    (source
-     (origin
-       (method git-fetch)               ; no tests in PyPI release
-       (uri (git-reference
-             (url "https://github.com/Kronuz/pyScss")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1vinddg8sbh3v9n1r1wmvjx6ydk8xp7scbvhb3csl4y9xz7vhk6g"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools python-wheel))
-    (inputs
-     (list pcre))
-    (home-page "https://github.com/Kronuz/pyScss")
-    (synopsis "Scss compiler for Python")
-    (description "@code{pyScss} is a compiler for Sass, a superset language of
+  ;; XXX: no fresh release supporting Python 3.11, use the latest commit, see
+  ;; <https://github.com/Kronuz/pyScss/issues/428>.
+  (let ((commit "73559d047706ccd4593cf6aa092de71f35164723")
+        (revision "0"))
+    (package
+      (name "python-pyscss")
+      (version (git-version "1.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)               ; no tests in PyPI release
+         (uri (git-reference
+               (url "https://github.com/Kronuz/pyScss")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "00msypxf5dm57gyfp3jxvjinigi4km84v33w83635pms9li2k3y7"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest python-pytest-cov python-setuptools python-wheel))
+      (inputs
+       (list pcre))
+      (home-page "https://github.com/Kronuz/pyScss")
+      (synopsis "Scss compiler for Python")
+      (description
+       "@code{pyScss} is a compiler for Sass, a superset language of
 CSS3 that adds programming capabilities and some other syntactic sugar.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-jsonpickle
   (package
