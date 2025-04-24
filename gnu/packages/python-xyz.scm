@@ -19564,34 +19564,57 @@ Jupyter kernels such as IJulia and IRKernel.")
 (define-public python-qtconsole
   (package
     (name "python-qtconsole")
-    (version "5.3.0")
+    (version "5.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qtconsole" version))
        (sha256
-        (base32 "09anp8g7vqi8z8wyi2lv21a2frd2dyhyrzvcrk2anijyqzyj0dcf"))))
-    (build-system python-build-system)
+        (base32 "1r8bznf8mlajh8rcrhikp694naq653nx4zw58f0yzlvmdiz1rbaw"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             (setenv "HOME" "/tmp")
-             ;; FIXME: skip a failing test.
-             (substitute* "qtconsole/tests/test_jupyter_widget.py"
-               (("def test_other_output") "def _test_other_output")))))))
-    (propagated-inputs
-     (list python-ipykernel python-ipython-genutils python-jupyter-client
-           python-jupyter-core python-pygments python-pyqt
-           python-pyzmq python-qtpy python-traitlets))
+     (list
+      #:test-flags
+      ;; All tests fail with error: This plugin does not support
+      ;; propagateSizeHints()
+      #~(list "--ignore=qtconsole/tests/test_00_console_widget.py"
+              ;; AssertionError: '<!DO[261 chars]size:12pt; font-weight:400;
+              ;; font-style:normal;[1218 chars]tml>' != '<!DO[261
+              ;; chars]size:9pt; font-weight:400; font-style:normal;"[1217
+              ;; chars]tml>'Diff is 1756 characters long. Set self.maxDiff to
+              ;; None to see it.
+              "-k" "not test_other_output")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "PYTEST_QT_API" "pyqt5")
+              (setenv "QT_LIB" "pyqt5")
+              (setenv "QT_QPA_PLATFORM" "offscreen")
+              (system "Xvfb :1 -screen 0 640x480x24 &")
+              (setenv "DISPLAY" ":1")
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-flaky python-pytest python-pytest-qt))
+     (list python-flaky
+           python-pyqt
+           python-pytest
+           python-pytest-qt
+           python-setuptools
+           python-wheel
+           xorg-server-for-tests))
+    (propagated-inputs
+     (list python-ipykernel
+           python-jupyter-client
+           python-jupyter-core
+           python-packaging
+           python-pygments
+           python-qtpy
+           python-traitlets))
     (home-page "https://jupyter.org")
     (synopsis "Jupyter Qt console")
-    (description "This package provides a Qt-based console for Jupyter with
-support for rich media output.")
+    (description
+     "This package provides a Qt-based console for Jupyter with support for
+rich media output.")
     (license license:bsd-3)))
 
 (define-public python-jsbeautifier
