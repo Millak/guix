@@ -26264,128 +26264,157 @@ seat management daemon.  The value for this service is a
 @code{<elogind-configuration>} object.
 @end defvar
 
-@c TODO: field descriptions. This is best done by refactoring
-@c elogind-configuration to use define-configuration which embeds the
-@c descriptions in the code and then use configuration->documentation.
+@c Auto-generated via (configuration->documentation 'elogind-configuration).
+@c %start of fragment
+
 @deftp {Data Type} elogind-configuration
-Data type representing the configuration of @command{elogind}.
+Available @code{elogind-configuration} fields are:
 
 @table @asis
 @item @code{elogind} (default: @code{elogind}) (type: file-like)
-...
+The elogind package to use.
 
-@item @code{kill-user-processes?} (default: @code{#f}) (type: boolean)
-...
-
-@item @code{kill-only-users} (default: @code{'()}) (type: list)
-...
-
-@item @code{kill-exclude-users} (default: @code{'("root")}) (type: list-of-string)
-...
-
-@item @code{inhibit-delay-max-seconds} (default: @code{5}) (type: integer)
-...
-
-@item @code{handle-power-key} (default: @code{'poweroff}) (type: symbol)
-...
-
-@item @code{handle-suspend-key} (default: @code{'suspend}) (type: symbol)
-...
-
-@item @code{handle-hibernate-key} (default: @code{'hibernate}) (type: symbol)
-...
-
-@item @code{handle-lid-switch} (default: @code{'suspend}) (type: symbol)
-...
-
-@item @code{handle-lid-switch-docked} (default: @code{'ignore}) (type: symbol)
-...
-
-@item @code{handle-lid-switch-external-power} (default: @code{*unspecified*}) (type: symbol)
-...
-
-@item @code{power-key-ignore-inhibited?} (default: @code{#f}) (type: boolean)
-...
-
-@item @code{suspend-key-ignore-inhibited?} (default: @code{#f}) (type: boolean)
-...
-
-@item @code{hibernate-key-ignore-inhibited?} (default: @code{#f}) (type: boolean)
-...
-
-@item @code{lid-switch-ignore-inhibited?} (default: @code{#t}) (type: boolean)
-...
-
-@item @code{holdoff-timeout-seconds} (default: @code{30}) (type: integer)
-...
-
-@item @code{idle-action} (default: @code{'ignore}) (type: symbol)
-...
-
-@item @code{idle-action-seconds} (default: @code{(* 30 60)}) (type: integer)
-...
-
-@item @code{runtime-directory-size-percent} (default: @code{10}) (type: integer)
-...
-
-@item @code{runtime-directory-size} (default: @code{#f}) (type: integer)
-...
-
-@item @code{remove-ipc?} (default: @code{#t}) (type: boolean)
-...
-
-@item @code{suspend-state} (default: @code{'("mem" "standby" "freeze")}) (type: list)
-...
-
-@item @code{suspend-mode} (default: @code{'()}) (type: list)
-...
-
-@item @code{hibernate-state} (default: @code{'("disk")}) (type: list)
-...
-
-@item @code{hibernate-mode} (default: @code{'("platform" "shutdown")}) (type: list)
-...
-
-@item @code{hybrid-sleep-state} (default: @code{'("disk")}) (type: list)
-...
-
-@item @code{hybrid-sleep-mode} (default: @code{'("suspend" "platform" "shutdown")}) (type: list)
-...
-
-@item @code{hibernate-delay-seconds} (default: @code{*unspecified*}) (type: integer)
-...
-
-@item @code{suspend-estimation-seconds} (default: @code{*unspecified*}) (type: integer)
-...
-
-@item @code{system-sleep-hook-files} (default: @code{'()}) (type: list)
+@item @code{system-sleep-hook-files} (default: @code{()}) (type: list-of-file-likes)
 A list of executables (file-like objects) that will be installed into
-the @file{/etc/elogind/system-sleep/} hook directory. For example:
+the @file{/etc/elogind/system-sleep} hook directory.  See `Hook
+directories' in the @samp{loginctl(1)} man page for more information.
 
-@lisp
-(elogind-configuration
- (system-sleep-hook-files
-  (list (local-file "sleep-script"))))
-@end lisp
-
-See `Hook directories' in the @code{loginctl(1)} man page for more information.
-
-@item @code{system-shutdown-hook-files} (default: @code{'()}) (type: list)
+@item @code{system-shutdown-hook-files} (default: @code{()}) (type: list-of-file-likes)
 A list of executables (file-like objects) that will be installed into
 the @file{/etc/elogind/system-shutdown/} hook directory.
 
-@item @code{allow-power-off-interrupts?} (default: @code{#f}) (type: boolean)
-@itemx @code{allow-suspend-interrupts?} (default: @code{#f}) (type: boolean)
+@item @code{allow-power-off-interrupts?} (default: @code{#f}) (type: maybe-boolean)
 Whether the executables in elogind's hook directories (see above) can
-cause a power-off or suspend action to be cancelled (interrupted) by
-printing an appropriate error message to stdout.
+cause a power-off action to be cancelled (interrupted) by printing an
+appropriate error message to stdout.
 
-@item @code{broadcast-power-off-interrupts?} (default: @code{#t}) (type: boolean)
-@itemx @code{broadcast-suspend-interrupts?} (default: @code{#t}) (type: boolean)
-Whether an interrupt of a power-off or suspend action is broadcasted.
+@item @code{allow-suspend-interrupts?} (default: @code{#f}) (type: maybe-boolean)
+Likewise as the @code{allow-power-off-interrupts?} option, but for the
+suspend action.
+
+@item @code{broadcast-power-off-interrupts?} (default: @code{#f}) (type: maybe-boolean)
+Whether an interrupt of a power-off action is broadcasted.
+
+@item @code{broadcast-suspend-interrupts?} (default: @code{#f}) (type: maybe-boolean)
+Whether an interrupt of a suspend action is broadcasted.
+
+@item @code{kill-user-processes?} (default: @code{#f}) (type: maybe-boolean)
+Whether the processes of a user should be killed when the user logs out.
+
+@item @code{kill-only-users} (type: maybe-list-of-user-names)
+Usernames whose processes should be killed, regardless the value of
+@code{kill-user-processes?}.
+
+@item @code{kill-exclude-users} (default: @code{("root")}) (type: maybe-list-of-user-names)
+Usernames whose processes should @emph{not} be killed, regardless the
+value of @code{kill-user-processes?}.
+
+@item @code{inhibit-delay-max-seconds} (default: @code{5}) (type: maybe-non-negative-integer)
+The maximum time a system shutdown or sleep request is delayed due to an
+inhibitor lock of type delay being active before the inhibitor is
+ignored and the operation executes anyway.
+
+@item @code{handle-power-key} (default: @code{poweroff}) (type: maybe-action)
+The action done when the power key is pressed.  The compiled default is
+@code{'poweroff}.
+
+@item @code{handle-suspend-key} (default: @code{suspend}) (type: maybe-action)
+The action done when the suspend key is pressed.  The
+
+@item @code{handle-hibernate-key} (default: @code{hibernate}) (type: maybe-action)
+The action done when the hibernate key is pressed.
+
+@item @code{handle-lid-switch} (default: @code{suspend}) (type: maybe-action)
+The action done when the lid is closed.
+
+@item @code{handle-lid-switch-docked} (default: @code{ignore}) (type: maybe-action)
+The action done when the lid is closed and the device docked.
+
+@item @code{handle-lid-switch-external-power} (default: @code{suspend}) (type: maybe-action)
+The action done when the lid is closed and the device is externally
+powered.
+
+@item @code{power-key-ignore-inhibited?} (default: @code{#f}) (type: maybe-boolean)
+Whether to ignore high-level inhibitor locks (shutdown, reboot, sleep or
+idle) when the power key is pressed.
+
+@item @code{suspend-key-ignore-inhibited?} (default: @code{#f}) (type: maybe-boolean)
+Whether to ignore high-level inhibitor locks (shutdown, reboot, sleep or
+idle) when the suspend key is pressed.
+
+@item @code{hibernate-key-ignore-inhibited?} (default: @code{#f}) (type: maybe-boolean)
+Whether to ignore high-level inhibitor locks (shutdown, reboot, sleep or
+idle) when the hibernate key is pressed.
+
+@item @code{lid-switch-ignore-inhibited?} (default: @code{#f}) (type: maybe-boolean)
+Whether to ignore high-level inhibitor locks (shutdown, reboot, sleep or
+idle) when the lid is closed.
+
+@item @code{holdoff-timeout-seconds} (default: @code{30}) (type: maybe-non-negative-integer)
+Specifies the number of seconds after system startup or system resume
+during which elogind will hold off on reacting to lid events.
+
+@item @code{idle-action} (default: @code{ignore}) (type: maybe-action)
+Action to take when the system is idle.
+
+@item @code{idle-action-seconds} (type: maybe-non-negative-integer)
+The delay after which the action configured in @code{idle-action} is
+taken after the system is idle.
+
+@item @code{runtime-directory-size-percent} (type: maybe-percent)
+Set the size limit, in percent, on the @env{XDG_RUNTIME_DIR} runtime
+directory for each user who logs in.  This specifies the per-user size
+limit relative to the amount of physical @acronym{RAM,read access
+memory}.  This value takes precedence over that specified via
+@code{runtime-directory-size}.
+
+@item @code{runtime-directory-size} (type: maybe-non-negative-integer)
+Set the size limit, in bytes, on the @env{XDG_RUNTIME_DIR} runtime
+directory for each user who logs in.
+
+@item @code{remove-ipc?} (default: @code{#t}) (type: maybe-boolean)
+Whether @acronym{IPC,inter-process communication} objects belonging to
+the user shall be removed when the user fully logs out.
+
+@item @code{suspend-state} (default: @code{(mem standby freeze)}) (type: maybe-list-of-suspend-states)
+The suspend state values to be write to @file{/sys/power/state} by
+elogind when suspending the system.  They will be tried in turn, until
+one is written without error.
+
+@item @code{suspend-mode} (type: maybe-list-of-suspend-modes)
+The suspend mode values to write to @file{/sys/power/mem_sleep} by
+elogind when suspending the system.
+
+@item @code{suspend-estimation-seconds} (default: @code{3600}) (type: maybe-non-negative-integer)
+Cause the RTC alarm to wake the system after the specified time span to
+measure the system battery capacity level and estimate the battery
+discharging rate, which is used for estimating the time span until the
+system battery charge level goes down to 5%.  This option is only used
+by elogind when using the @code{'suspend-then-hibernate} action.
+
+@item @code{hibernate-mode} (default: @code{(platform shutdown)}) (type: maybe-list-of-hibernation-modes)
+The hibernation mode values to write to @file{/sys/power/disk} by
+elogind when hibernating the system.
+
+@item @code{hibernate-delay-seconds} (type: maybe-non-negative-integer)
+The amount of time the system spends in suspend mode before the system
+is automatically put into hibernate mode.
+
+@item @code{hibernate-state} (type: maybe-list-of-strings)
+Deprecated option.
+
+@item @code{hybrid-sleep-state} (type: maybe-list-of-strings)
+Deprecated option.
+
+@item @code{hybrid-sleep-mode} (type: maybe-list-of-strings)
+Deprecated option.
 
 @end table
+
 @end deftp
+
+
+@c %end of fragment
 
 @defvar accountsservice-service-type
 Type for the service that runs AccountsService, a system service that can

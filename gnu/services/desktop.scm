@@ -37,6 +37,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services desktop)
+  #:use-module ((gnu home services utils) #:select (object->camel-case-string))
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services base)
@@ -228,6 +229,8 @@ is a list, it recursively searches it until it locates the last item of TREE."
           (loop (cdr tree)
                 (car (assoc-ref (package-direct-inputs package)
                                 (car tree))))))))
+(define (pascal-case text)
+  (object->camel-case-string text 'upper))
 
 
 ;;;
@@ -1025,173 +1028,367 @@ and many other) available for GIO applications.")
 ;;; Elogind login and seat management service.
 ;;;
 
-(define-record-type* <elogind-configuration> elogind-configuration
-  make-elogind-configuration
-  elogind-configuration?
-  (elogind                          elogind-package
-                                    (default elogind))
-  (kill-user-processes?             elogind-kill-user-processes?
-                                    (default #f))
-  (kill-only-users                  elogind-kill-only-users
-                                    (default '()))
-  (kill-exclude-users               elogind-kill-exclude-users
-                                    (default '("root")))
-  (inhibit-delay-max-seconds        elogind-inhibit-delay-max-seconds
-                                    (default 5))
-  (handle-power-key                 elogind-handle-power-key
-                                    (default 'poweroff))
-  (handle-suspend-key               elogind-handle-suspend-key
-                                    (default 'suspend))
-  (handle-hibernate-key             elogind-handle-hibernate-key
-                                    (default 'hibernate))
-  (handle-lid-switch                elogind-handle-lid-switch
-                                    (default 'suspend))
-  (handle-lid-switch-docked         elogind-handle-lid-switch-docked
-                                    (default 'ignore))
-  (handle-lid-switch-external-power elogind-handle-lid-switch-external-power
-                                    (default *unspecified*))
-  (power-key-ignore-inhibited?      elogind-power-key-ignore-inhibited?
-                                    (default #f))
-  (suspend-key-ignore-inhibited?    elogind-suspend-key-ignore-inhibited?
-                                    (default #f))
-  (hibernate-key-ignore-inhibited?  elogind-hibernate-key-ignore-inhibited?
-                                    (default #f))
-  (lid-switch-ignore-inhibited?     elogind-lid-switch-ignore-inhibited?
-                                    (default #t))
-  (holdoff-timeout-seconds          elogind-holdoff-timeout-seconds
-                                    (default 30))
-  (idle-action                      elogind-idle-action
-                                    (default 'ignore))
-  (idle-action-seconds              elogind-idle-action-seconds
-                                    (default (* 30 60)))
-  (runtime-directory-size-percent   elogind-runtime-directory-size-percent
-                                    (default 10))
-  (runtime-directory-size           elogind-runtime-directory-size
-                                    (default #f))
-  (remove-ipc?                      elogind-remove-ipc?
-                                    (default #t))
+;;; Elogind configuration types.
+(define-maybe boolean
+  (prefix elogind-))
 
-  (suspend-state                    elogind-suspend-state
-                                    (default '("mem" "standby" "freeze")))
-  (suspend-mode                     elogind-suspend-mode
-                                    (default '()))
-  (hibernate-state                  elogind-hibernate-state
-                                    (default '("disk")))
-  (hibernate-mode                   elogind-hibernate-mode
-                                    (default '("platform" "shutdown")))
-  (hybrid-sleep-state               elogind-hybrid-sleep-state
-                                    (default '("disk")))
-  (hybrid-sleep-mode                elogind-hybrid-sleep-mode
-                                    (default
-                                      '("suspend" "platform" "shutdown")))
-  (hibernate-delay-seconds          elogind-hibernate-delay-seconds
-                                    (default *unspecified*))
-  (suspend-estimation-seconds       elogind-suspend-estimation-seconds
-                                    (default *unspecified*))
-  (system-sleep-hook-files          elogind-system-sleep-hook-files
-                                    (default '()))
-  (system-shutdown-hook-files       elogind-system-shutdown-hook-files
-                                    (default '()))
-  (allow-power-off-interrupts?      elogind-allow-power-off-interrupts?
-                                    (default #f))
-  (allow-suspend-interrupts?        elogind-allow-suspend-interrupts?
-                                    (default #f))
-  (broadcast-power-off-interrupts?  elogind-broadcast-power-off-interrupts?
-                                    (default #t))
-  (broadcast-suspend-interrupts?    elogind-broadcast-suspend-interrupts?
-                                    (default #t)))
+(define (non-negative-integer? x)
+  (and (exact-integer? x)
+       (not (negative? x))))
 
-(define (elogind-configuration-file config)
-  (define (yesno x)
-    (match x
-      (#t "yes")
-      (#f "no")
-      (_ (error "expected #t or #f, instead got:" x))))
-  (define char-set:user-name
-    (string->char-set "abcdefghijklmnopqrstuvwxyz0123456789_-"))
-  (define (valid-list? l pred)
-    (and-map (lambda (x) (string-every pred x)) l))
-  (define (user-name-list users)
-    (unless (valid-list? users char-set:user-name)
-      (error "invalid user list" users))
-    (string-join users " "))
-  (define (enum val allowed)
-    (unless (memq val allowed)
-      (error "invalid value" val allowed))
-    (symbol->string val))
-  (define (non-negative-integer x)
-    (unless (exact-integer? x) (error "not an integer" x))
-    (when (negative? x) (error "negative number not allowed" x))
-    (number->string x))
-  (define (maybe-non-negative-integer x)
-    (or (and (unspecified? x) x)
-        (non-negative-integer x)))
-  (define handle-actions
-    '(ignore poweroff reboot halt kexec suspend hibernate hybrid-sleep suspend-then-hibernate lock))
-  (define (handle-action x)
-    (if (unspecified? x)
-        x                               ;let the unspecified value go through
-        (enum x handle-actions)))
-  (define (sleep-list tokens)
-    (unless (valid-list? tokens char-set:user-name)
-      (error "invalid sleep list" tokens))
-    (string-join tokens " "))
-  (define-syntax ini-file-clause
-    (syntax-rules ()
-      ;; Produce an empty line when encountering an unspecified value.  This
-      ;; is better than an empty string value, which can, in some cases, cause
-      ;; warnings such as "Failed to parse handle action setting".
-      ((_ config (prop (parser getter)))
-       (let ((value (parser (getter config))))
-         (if (unspecified? value)
-             ""
-             (string-append prop "=" value "\n"))))
-      ((_ config str)
-       (if (unspecified? str)
-           ""
-           (string-append str "\n")))))
-  (define-syntax-rule (ini-file config file clause ...)
-    (plain-file file (string-append (ini-file-clause config clause) ...)))
-  (ini-file
-   config "logind.conf"
-   "[Login]"
-   ("KillUserProcesses" (yesno elogind-kill-user-processes?))
-   ("KillOnlyUsers" (user-name-list elogind-kill-only-users))
-   ("KillExcludeUsers" (user-name-list elogind-kill-exclude-users))
-   ("InhibitDelayMaxSec" (non-negative-integer elogind-inhibit-delay-max-seconds))
-   ("HandlePowerKey" (handle-action elogind-handle-power-key))
-   ("HandleSuspendKey" (handle-action elogind-handle-suspend-key))
-   ("HandleHibernateKey" (handle-action elogind-handle-hibernate-key))
-   ("HandleLidSwitch" (handle-action elogind-handle-lid-switch))
-   ("HandleLidSwitchDocked" (handle-action elogind-handle-lid-switch-docked))
-   ("HandleLidSwitchExternalPower" (handle-action elogind-handle-lid-switch-external-power))
-   ("PowerKeyIgnoreInhibited" (yesno elogind-power-key-ignore-inhibited?))
-   ("SuspendKeyIgnoreInhibited" (yesno elogind-suspend-key-ignore-inhibited?))
-   ("HibernateKeyIgnoreInhibited" (yesno elogind-hibernate-key-ignore-inhibited?))
-   ("LidSwitchIgnoreInhibited" (yesno elogind-lid-switch-ignore-inhibited?))
-   ("HoldoffTimeoutSec" (non-negative-integer elogind-holdoff-timeout-seconds))
-   ("IdleAction" (handle-action elogind-idle-action))
-   ("IdleActionSec" (non-negative-integer elogind-idle-action-seconds))
-   ("RuntimeDirectorySize"
-    (identity
-     (lambda (config)
-       (match (elogind-runtime-directory-size-percent config)
-         (#f (non-negative-integer (elogind-runtime-directory-size config)))
-         (percent (string-append (non-negative-integer percent) "%"))))))
-   ("RemoveIPC" (yesno elogind-remove-ipc?))
-   "[Sleep]"
-   ("SuspendState" (sleep-list elogind-suspend-state))
-   ("SuspendMode" (sleep-list elogind-suspend-mode))
-   ("HibernateState" (sleep-list elogind-hibernate-state))
-   ("HibernateMode" (sleep-list elogind-hibernate-mode))
-   ("HybridSleepState" (sleep-list elogind-hybrid-sleep-state))
-   ("HybridSleepMode" (sleep-list elogind-hybrid-sleep-mode))
-   ("HibernateDelaySec" (maybe-non-negative-integer elogind-hibernate-delay-seconds))
-   ("SuspendEstimationSec" (maybe-non-negative-integer elogind-suspend-estimation-seconds))
-   ("AllowPowerOffInterrupts" (yesno elogind-allow-power-off-interrupts?))
-   ("AllowSuspendInterrupts" (yesno elogind-allow-suspend-interrupts?))
-   ("BroadcastPowerOffInterrupts" (yesno elogind-broadcast-power-off-interrupts?))
-   ("BroadcastSuspendInterrupts" (yesno elogind-broadcast-suspend-interrupts?))))
+(define-maybe non-negative-integer
+  (prefix elogind-))
+
+(define (percent? x)
+  (and (non-negative-integer? x)
+       (>= x 0)
+       (<= x 100)))
+
+(define-maybe percent
+  (prefix elogind-))
+
+(define char-set:user-name
+  (string->char-set "abcdefghijklmnopqrstuvwxyz0123456789_-"))
+
+(define (user-name? x)
+  (string-every char-set:user-name x))
+
+(define list-of-user-names?
+  (list-of user-name?))
+
+(define-maybe list-of-user-names
+  (prefix elogind-))
+
+(define %elogind-actions
+  '( ignore poweroff reboot halt kexec suspend hibernate hybrid-sleep
+     suspend-then-hibernate lock factory-reset))
+
+(define (action? x)
+  (member x %elogind-actions))
+
+(define-maybe action
+  (prefix elogind-))
+
+(define %linux-suspend-states
+  ;; The possible suspend states supported by the Linux kernel.
+  ;; See (info "(linux) Basic sysfs Interfaces for System Suspend and Hibernation").
+  '(disk standby freeze mem))
+
+(define (string->symbol/maybe x)
+  (if (string? x)
+      (string->symbol x)
+      x))
+
+(define (suspend-state? x)
+  (member (string->symbol/maybe x) %linux-suspend-states))
+
+(define list-of-suspend-states?
+  (list-of suspend-state?))
+
+(define-maybe list-of-suspend-states
+  (prefix elogind-))
+
+(define %linux-suspend-modes
+  ;; The possible suspend state variants supported by the Linux kernel.
+  ;; See (info "(linux) Basic sysfs Interfaces for System Suspend and Hibernation").
+  '(s2idle shallow deep))
+
+(define (suspend-mode? x)
+  (member (string->symbol/maybe x) %linux-suspend-modes))
+
+(define list-of-suspend-modes?
+  (list-of suspend-mode?))
+
+(define-maybe list-of-suspend-modes
+  (prefix elogind-))
+
+(define %linux-hibernation-modes
+  ;; The possible hibernation operating modes supported by the Linux kernel.
+  ;; See (info "(linux) Basic sysfs Interfaces for System Suspend and Hibernation").
+  '(platform shutdown reboot suspend test_resume))
+
+(define (hibernation-mode? x)
+  (member (string->symbol/maybe x) %linux-hibernation-modes))
+
+(define list-of-hibernation-modes?
+  (list-of hibernation-mode?))
+
+(define-maybe list-of-hibernation-modes
+  (prefix elogind-))
+
+(define (elogind-deprecated-empty-serializer name value)
+  (when (maybe-value-set? value)
+    (warn-about-deprecation name #f
+                            #:replacement #f))
+  "")
+
+(define list-of-file-likes?
+  (list-of file-like?))
+
+(define-maybe list-of-strings
+  (prefix elogind-))
+
+;;; Elogind serializers.
+(define (elogind-serialize-boolean name value)
+  (let* ((name-str (symbol->string name))
+         (name (if (string-suffix? "?" name-str)
+                   (string-drop-right name-str 1)
+                   name-str)))
+    (format #f "~a=~:[no~;yes~]~%" (pascal-case name) value)))
+
+(define (elogind-base-serializer name value)
+  (let* ((name-str (symbol->string name))
+         (name (if (string-suffix? "seconds" name-str)
+                   (string-drop-right name-str 4) ;seconds -> sec
+                   name-str)))
+    (format #f "~a=~a~%" (pascal-case name) value)))
+
+(define elogind-serialize-action elogind-base-serializer)
+(define elogind-serialize-non-negative-integer elogind-base-serializer)
+(define elogind-serialize-percent elogind-base-serializer)
+
+(define (elogind-list-serializer name value)
+  (format #f "~a=~{~a~^ ~}~%" (pascal-case name) value))
+
+(define elogind-serialize-list-of-strings elogind-list-serializer)
+(define elogind-serialize-list-of-user-names elogind-list-serializer)
+(define elogind-serialize-list-of-suspend-states elogind-list-serializer)
+(define elogind-serialize-list-of-suspend-modes elogind-list-serializer)
+(define elogind-serialize-list-of-hibernation-modes elogind-list-serializer)
+
+;;; XXX: For backward-compatible/historical reasons, the configuration object
+;;; is flat, containing the fields of both the logind.conf and sleep.conf
+;;; files.  The list below contains the fields that should be serialized to
+;;; sleep.conf.
+(define %elogind-configuration-sleep-fields
+  '( suspend-state suspend-mode suspend-estimation-seconds
+     hibernate-mode hibernate-delay-seconds hibernate-state
+     hybrid-sleep-state hybrid-sleep-mode))
+
+(define-configuration elogind-configuration
+  (elogind
+   (file-like elogind)
+   "The elogind package to use."
+   (serializer empty-serializer))
+
+  (system-sleep-hook-files
+   (list-of-file-likes '())
+   "A list of executables (file-like objects) that will be installed into the
+@file{/etc/elogind/system-sleep} hook directory.  See `Hook directories' in
+the @samp{loginctl(1)} man page for more information."
+   (serializer empty-serializer))
+
+  (system-shutdown-hook-files
+   (list-of-file-likes '())
+   "A list of executables (file-like objects) that will be installed into the
+@file{/etc/elogind/system-shutdown/} hook directory."
+   (serializer empty-serializer))
+
+  (allow-power-off-interrupts?
+   (maybe-boolean #f)
+   "Whether the executables in elogind's hook directories (see above) can
+  cause a power-off action to be cancelled (interrupted) by printing an
+  appropriate error message to stdout.")
+
+  (allow-suspend-interrupts?
+   (maybe-boolean #f)
+   "Likewise as the @code{allow-power-off-interrupts?} option, but for the
+  suspend action.")
+
+  (broadcast-power-off-interrupts?
+   (maybe-boolean #f)
+   "Whether an interrupt of a power-off action is broadcasted.")
+
+  (broadcast-suspend-interrupts?
+   (maybe-boolean #f)
+   "Whether an interrupt of a suspend action is broadcasted.")
+
+  ;; logind.conf options.
+  (kill-user-processes?
+   (maybe-boolean #f)
+   "Whether the processes of a user should be killed when the user logs
+  out.")
+
+  (kill-only-users
+   maybe-list-of-user-names
+   "Usernames whose processes should be killed, regardless the value of
+  @code{kill-user-processes?}.")
+
+  (kill-exclude-users
+   (maybe-list-of-user-names (list "root"))
+   "Usernames whose processes should @emph{not} be killed, regardless the
+  value of @code{kill-user-processes?}.")
+
+  (inhibit-delay-max-seconds
+   (maybe-non-negative-integer 5)
+   "The maximum time a system shutdown or sleep request is delayed due to an
+  inhibitor lock of type delay being active before the inhibitor is ignored and
+  the operation executes anyway.")
+
+  (handle-power-key
+   (maybe-action 'poweroff)
+   "The action done when the power key is pressed.  The compiled default is
+  @code{'poweroff}.")
+
+  (handle-suspend-key
+   (maybe-action 'suspend)
+   "The action done when the suspend key is pressed.  The ")
+
+  (handle-hibernate-key
+   (maybe-action 'hibernate)
+   "The action done when the hibernate key is pressed.")
+
+  (handle-lid-switch
+   (maybe-action 'suspend)
+   "The action done when the lid is closed.")
+
+  (handle-lid-switch-docked
+   (maybe-action 'ignore)
+   "The action done when the lid is closed and the device docked.")
+
+  (handle-lid-switch-external-power
+   (maybe-action 'suspend)
+   "The action done when the lid is closed and the device is externally
+  powered.")
+
+  (power-key-ignore-inhibited?
+   (maybe-boolean #f)
+   "Whether to ignore high-level inhibitor locks (shutdown, reboot, sleep or
+  idle) when the power key is pressed.")
+
+  (suspend-key-ignore-inhibited?
+   (maybe-boolean #f)
+   "Whether to ignore high-level inhibitor locks (shutdown, reboot, sleep or
+  idle) when the suspend key is pressed.")
+
+  (hibernate-key-ignore-inhibited?
+   (maybe-boolean #f)
+   "Whether to ignore high-level inhibitor locks (shutdown, reboot, sleep or
+  idle) when the hibernate key is pressed.")
+
+  (lid-switch-ignore-inhibited?
+   (maybe-boolean #f)
+   "Whether to ignore high-level inhibitor locks (shutdown, reboot, sleep or
+  idle) when the lid is closed.")
+
+  (holdoff-timeout-seconds
+   (maybe-non-negative-integer 30)
+   "Specifies the number of seconds after system startup or system resume
+during which elogind will hold off on reacting to lid events.")
+
+  (idle-action
+   (maybe-action 'ignore)
+   "Action to take when the system is idle.")
+
+  (idle-action-seconds
+   maybe-non-negative-integer
+   "The delay after which the action configured in @code{idle-action} is
+taken after the system is idle.")
+
+  ;; XXX: Perhaps deprecate in the future and handle all the accepted forms
+  ;; directly in 'runtime-directory-size' instead.
+  (runtime-directory-size-percent
+   maybe-percent
+   "Set the size limit, in percent, on the @env{XDG_RUNTIME_DIR} runtime
+directory for each user who logs in.  This specifies the per-user size limit
+relative to the amount of physical @acronym{RAM, read access memory}.  This
+value takes precedence over that specified via @code{runtime-directory-size}."
+   (serializer empty-serializer))       ;special cased at serialization time
+
+  (runtime-directory-size
+   maybe-non-negative-integer
+   "Set the size limit, in bytes, on the @env{XDG_RUNTIME_DIR} runtime
+directory for each user who logs in."
+   (serializer empty-serializer))       ;special cased at serialization time
+
+  (remove-ipc?
+   (maybe-boolean #t)
+   "Whether @acronym{IPC, inter-process communication} objects belonging to
+the user shall be removed when the user fully logs out.")
+
+  ;; sleep.conf options.
+  ;; CAUTION: all sleep.conf option names must be registered in the above
+  ;; %ELOGIND-CONFIGURATION-SLEEP-FIELDS variable: otherwise they will be
+  ;; serialized to logind.conf instead of sleep.conf!
+  (suspend-state
+   (maybe-list-of-suspend-states '(mem standby freeze))
+   "The suspend state values to be write to @file{/sys/power/state} by elogind
+  when suspending the system.  They will be tried in turn, until one is written
+  without error.")
+
+  (suspend-mode
+   (maybe-list-of-suspend-modes)
+   "The suspend mode values to write to @file{/sys/power/mem_sleep} by elogind
+  when suspending the system.")
+
+  (suspend-estimation-seconds
+   (maybe-non-negative-integer (* 60 60)) ;1 hour
+   "Cause the RTC alarm to wake the system after the specified time span to
+  measure the system battery capacity level and estimate the battery discharging
+  rate, which is used for estimating the time span until the system battery
+  charge level goes down to 5%.  This option is only used by elogind when using
+  the @code{'suspend-then-hibernate} action.")
+
+  (hibernate-mode
+   (maybe-list-of-hibernation-modes '(platform shutdown))
+   "The hibernation mode values to write to @file{/sys/power/disk} by elogind
+  when hibernating the system.")
+
+  (hibernate-delay-seconds
+   maybe-non-negative-integer
+   "The amount of time the system spends in suspend mode before the system is
+  automatically put into hibernate mode.")
+
+  ;; TODO: Remove in May 2026.
+  (hibernate-state
+   maybe-list-of-strings
+   "Deprecated option."
+   (serializer elogind-deprecated-empty-serializer))
+
+  ;; TODO: Remove in May 2026.
+  (hybrid-sleep-state
+   maybe-list-of-strings
+   "Deprecated option."
+   (serializer elogind-deprecated-empty-serializer))
+
+  ;; TODO: Remove in May 2026.
+  (hybrid-sleep-mode
+   maybe-list-of-strings
+   "Deprecated option."
+   (serializer elogind-deprecated-empty-serializer))
+
+  (prefix elogind-))
+
+(define (logind.conf config)
+  (let ((logind-fields (remove (lambda (field)
+                                 (memq (configuration-field-name field)
+                                       %elogind-configuration-sleep-fields))
+                               elogind-configuration-fields)))
+    (match-record config <elogind-configuration>
+                  (runtime-directory-size-percent runtime-directory-size)
+      ;; Handle the special-cased
+      ;; runtime-directory-size-percent/runtime-directory-size options pair.
+      (let ((runtime-directory-size
+             (if (maybe-value-set? runtime-directory-size-percent)
+                 (format #f "~a%~%" runtime-directory-size-percent) ;10 -> 10%
+                 runtime-directory-size)))
+        (mixed-text-file
+         "logind.conf"
+         "[Login]\n"
+         (if (maybe-value-set? runtime-directory-size)
+             (list "RuntimeDirectorySize=" runtime-directory-size)
+             "")
+         (serialize-configuration config logind-fields))))))
+
+(define (sleep.conf config)
+  (let ((sleep-fields (filter (lambda (field)
+                                (memq (configuration-field-name field)
+                                      %elogind-configuration-sleep-fields))
+                              elogind-configuration-fields)))
+    (mixed-text-file
+     "sleep.conf"
+     "[Sleep]\n"
+     (serialize-configuration config sleep-fields))))
 
 (define (elogind-etc-directory config)
   "Return the /etc/elogind directory for CONFIG."
@@ -1213,12 +1410,21 @@ and many other) available for GIO applications.")
              (chmod dest #o500)))
 
          (mkdir-p #$output)            ;in case neither directory gets created
+
+         ;; Symlink the main configuration files.
+         (with-directory-excursion #$output
+           (mkdir-p "logind.conf.d")
+           (symlink #$(logind.conf config) "logind.conf.d/logind.conf")
+           (mkdir-p "sleep.conf.d")
+           (symlink #$(sleep.conf config) "sleep.conf.d/sleep.conf"))
+
          (for-each (lambda (f)
                      (copy-script f sleep-directory))
-                   '#$(elogind-system-sleep-hook-files config))
+                   '#$(elogind-configuration-system-sleep-hook-files config))
          (for-each (lambda (f)
                      (copy-script f shutdown-directory))
-                   '#$(elogind-system-shutdown-hook-files config))))))
+                   '#$(elogind-configuration-system-shutdown-hook-files
+                       config))))))
 
 (define (elogind-dbus-service config)
   "Return a @file{org.freedesktop.login1.service} file that tells D-Bus how to
@@ -1231,7 +1437,7 @@ explain how to start elogind; instead, it spawns a wrapper that waits for the
   ;; <https://issues.guix.gnu.org/55444>.
 
   (define elogind
-    (elogind-package config))
+    (elogind-configuration-elogind config))
 
   (define wrapper
     (program-file "elogind-dbus-shepherd-sync"
@@ -1288,7 +1494,7 @@ seats.)"
   (define pam-elogind
     (pam-entry
      (control "required")
-     (module (file-append (elogind-package config)
+     (module (file-append (elogind-configuration-elogind config)
                           "/lib/security/pam_elogind.so"))))
 
   (list (pam-extension
@@ -1299,58 +1505,65 @@ seats.)"
              (session (cons pam-elogind (pam-service-session pam))))))
          (shepherd-requirements '(elogind)))))
 
+(define* (shepherd-configuration-action* files)
+  "Return a 'configuration' action to display FILES, which should be the names
+of the service's configuration files."
+  (shepherd-action
+   (name 'configuration)
+   (documentation "Display the names of this service's configuration files.")
+   (procedure #~(lambda (_)
+                  (format #t "~{~a~%~}" '#$files)
+                  '#$files))))
+
 (define (elogind-shepherd-service config)
   "Return a Shepherd service to start elogind according to @var{config}."
-  (define config-file
-    (elogind-configuration-file config))
-
   (list (shepherd-service
          (requirement '(user-processes dbus-system))
          (provision '(elogind))
          (start #~(make-forkexec-constructor
-                   (list #$(file-append (elogind-package config)
-                                        "/libexec/elogind/elogind"))
-                   #:environment-variables
-                   (list (string-append "ELOGIND_CONF_FILE="
-                                        #$config-file))))
+                   (list #$(file-append (elogind-configuration-elogind config)
+                                        "/libexec/elogind/elogind"))))
          (stop #~(make-kill-destructor))
-         (actions (list (shepherd-configuration-action config-file))))))
+         (actions (list (shepherd-configuration-action*
+                         (list (logind.conf config)
+                               (sleep.conf config))))))))
 
 (define elogind-service-type
-  (service-type (name 'elogind)
-                (extensions
-                 (list (service-extension dbus-root-service-type
-                                          elogind-dbus-service)
-                       (service-extension udev-service-type
-                                          (compose list elogind-package))
-                       (service-extension polkit-service-type
-                                          (compose list elogind-package))
+  (service-type
+   (name 'elogind)
+   (extensions
+    (list (service-extension dbus-root-service-type
+                             elogind-dbus-service)
+          (service-extension udev-service-type
+                             (compose list elogind-configuration-elogind))
+          (service-extension polkit-service-type
+                             (compose list elogind-configuration-elogind))
 
-                       ;; Start elogind from the Shepherd rather than waiting
-                       ;; for bus activation.  This ensures that it can handle
-                       ;; events like lid close, etc.
-                       (service-extension shepherd-root-service-type
-                                          elogind-shepherd-service)
+          ;; Start elogind from the Shepherd rather than waiting
+          ;; for bus activation.  This ensures that it can handle
+          ;; events like lid close, etc.
+          (service-extension shepherd-root-service-type
+                             elogind-shepherd-service)
 
-                       ;; Provide the 'loginctl' command.
-                       (service-extension profile-service-type
-                                          (compose list elogind-package))
+          ;; Provide the 'loginctl' command.
+          (service-extension profile-service-type
+                             (compose list elogind-configuration-elogind))
 
-                       ;; Extend PAM with pam_elogind.so.
-                       (service-extension pam-root-service-type
-                                          pam-extension-procedure)
+          ;; Extend PAM with pam_elogind.so.
+          (service-extension pam-root-service-type
+                             pam-extension-procedure)
 
-                       ;; Install sleep/shutdown hook files.
-                       (service-extension etc-service-type
-                                          (lambda (config)
-                                            `(("elogind"
-                                               ,(elogind-etc-directory config)))))
+          ;; Install sleep/shutdown hook files.
+          (service-extension etc-service-type
+                             (lambda (config)
+                               `(("elogind"
+                                  ,(elogind-etc-directory config)))))
 
-                       ;; We need /run/user, /run/systemd, etc.
-                       (service-extension file-system-service-type
-                                          (const %elogind-file-systems))))
-                (default-value (elogind-configuration))
-                (description "Run the @command{elogind} login and seat
+          ;; We need /run/user, /run/systemd, etc.
+          (service-extension file-system-service-type
+                             (const %elogind-file-systems))))
+   (default-value (elogind-configuration))
+   (description "Run the @command{elogind} login and seat
 management service.  The @command{elogind} service integrates with PAM to
 allow other system components to know the set of logged-in users as well as
 their session types (graphical, console, remote, etc.).  It can also clean up
