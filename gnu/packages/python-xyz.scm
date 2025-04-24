@@ -9935,7 +9935,7 @@ capabilities.")
   (package
     (inherit python-numpy)
     (name "python-numpy")
-    (version "2.2.2")
+    (version "2.2.5")
     (source
      (origin
        (method url-fetch)
@@ -9943,14 +9943,12 @@ capabilities.")
              "https://github.com/numpy/numpy/releases/download/v"
              version "/numpy-" version ".tar.gz"))
        (sha256
-        (base32
-         "13sdvwiqn85vw1dn1k1nd5ihadv82zhqm615imrqgmil33v0csgd"))))
+        (base32 "14f28cpmw3z8sk4lp5pylrk58220fclqnbkprfqr3n8cd2adkh59"))))
     (arguments
      (list
       #:modules '((guix build utils)
                   (guix build pyproject-build-system)
                   (ice-9 format))
-
       #:test-flags
       #~(list "-m" "not slow"
               "--numprocesses" (number->string (min 8 (parallel-job-count))))
