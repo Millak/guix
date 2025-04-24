@@ -556,7 +556,7 @@ values: the cache directory name, and the SHA1 commit (a string) corresponding
 to REF, and the relation of STARTING-COMMIT relative to the new commit (if
 provided) as returned by 'commit-relation'.
 
-REF is pair whose key is [branch | commit | tag | tag-or-commit ] and value
+REF is pair whose key is [branch | commit | symref | tag | tag-or-commit ] and value
 the associated data: [<branch name> | <sha1> | <tag name> | <string>].
 If REF is the empty list, the remote HEAD is used.
 
@@ -592,6 +592,11 @@ current settings unchanged."
                        (string-append "origin/" branch))))
       (_ ref)))
 
+  (define symref-list
+    (match ref
+      (('symref . symref) (list symref))
+      (_ '())))
+
   (with-libgit2
    (set-git-timeouts connection-timeout read-timeout)
    (let* ((cache-exists? (openable-repository? cache-directory))
@@ -606,7 +611,10 @@ current settings unchanged."
        (remote-fetch (remote-lookup repository "origin")
                      #:fetch-options (make-default-fetch-options
                                       #:verify-certificate?
-                                      verify-certificate?)))
+                                      verify-certificate?)
+                     ;; Symbolic references are not fetched from the remote by
+                     ;; default.
+                     #:refspecs symref-list))
      (when recursive?
        (update-submodules repository #:log-port log-port
                           #:fetch-options
