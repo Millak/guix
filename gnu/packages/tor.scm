@@ -43,6 +43,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
@@ -309,10 +310,12 @@ networks.")
             (lambda _
               ;; All tests passed, and the CLI is working in runtime, relax
               ;; Poetry way too strict requirements.
-              (substitute* "cli/pyproject.toml"
+              (substitute* (list "cli/pyproject.toml"
+                                 "desktop/pyproject.toml")
                 (("2.3.2") "^3.0.0")     ; flask = "2.3.2"
                 (("5.3.4") "5.5.1")      ; flask-socketio = "5.3.4"
                 (("23.9.1") "24.11.1")   ; gevent = "^23.9.1"
+                (("PySide6 = .*") "")    ; XXX: it's not found in sanity check
                 (("7.4.2") "8.0.0")      ; qrcode = "^7.4.2"
                 (("70.0.0") "67.6.1")    ; setuptools = ">=70.0.0"
                 (("1.8.1") "^1.8.1")     ; stem = "1.8.1"
@@ -387,7 +390,8 @@ OnionShare.")
                   (apply invoke "xvfb-run" "pytest" "-vv"
                          (find-files "tests" "^test_gui.*\\.py$")))))))))
     (native-inputs
-     (list python-pytest xvfb-run))
+     (modify-inputs (package-native-inputs onionshare-cli)
+       (prepend xvfb-run)))
     (inputs
      ;; The desktop client uses onionshare-cli like a python module.  But
      ;; propagating onionshare-cli's inputs is not great, since a user would
@@ -395,9 +399,10 @@ OnionShare.")
      ;; standalone utility.  So add onionshare-cli's inputs here.
      (modify-inputs (package-inputs onionshare-cli)
        (prepend onionshare-cli          ;TODO: package obfs4proxy
-                python-shiboken-2
-                python-pyside-2
+                python-gnupg
+                python-pyside-6
                 python-qrcode
+                python-shiboken-2
                 xdg-utils)))
     (description "OnionShare lets you securely and anonymously share files,
 host websites, and chat with friends using the Tor network.")))
