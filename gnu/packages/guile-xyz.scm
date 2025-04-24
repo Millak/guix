@@ -5499,6 +5499,33 @@ NetworkManager, Pulseaudio, systemd (including logind and resolved), Polkit,
 gnome-keyring, and many more.")
     (license license:expat)))
 
+(define-public guile-slugify
+  (package
+    (name "guile-slugify")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ayys/guile-slugify")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xg6dhcnd6m5z9d7yzsa2vzdhzgifyk92gkfb6md8rbc8dilp2rh"))
+       (snippet #~(for-each delete-file
+                            '("guix.scm" "test.scm")))))
+    (build-system guile-build-system)
+    (native-inputs (list guile-3.0))
+    (home-page "https://github.com/ayys/guile-slugify")
+    (synopsis "Convert arbitrary string to URL-friendly identifier in Guile")
+    (description
+     "This package provides a procedure for converting strings into
+URL-friendly slugs.  A slug is a simplified version of a string, often used in
+URLs, that contains only lowercase letters, digits, and hyphens.  This package
+is inspired by the @code{slugify} function in the Django web framework.  It is
+useful for generating human-readable identifiers from arbitrary text.")
+    (license license:gpl3+)))
+
 (define-public guile-webutils
   (let ((commit "d309d65a85247e4f3cea63a17defd1e6d35d821f")
         (revision "1"))
