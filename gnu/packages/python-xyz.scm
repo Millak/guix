@@ -2913,6 +2913,10 @@ configuration file.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; Tests do not support linux-i686 system: Exception: Unknown
+      ;; architecture 'linux-i686' for a native Linux.
+      #:tests? (not (or (%current-target-system)
+                             (target-x86-32?)))
       #:test-flags
       #~(list "tests/unit"
               "-k" (string-join
