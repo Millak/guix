@@ -238,38 +238,32 @@ launching and using Jupyter kernels.")
 (define-public python-jupyter-kernel-test
   (package
     (name "python-jupyter-kernel-test")
-    (version "0.3")
-    (home-page "https://github.com/jupyter/jupyter_kernel_test")
-    (source (origin
-              ;; PyPI has a ".whl" file but not a proper source release.
-              ;; Thus, fetch code from Git.
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "00iy74i4i8is6axb9vlsm0b9wxkvyyxnbl8r0i4gaj3xd788jm83"))))
-    (build-system python-build-system)
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jupyter/jupyter_kernel_test")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xp8496kr79rvb5b2m7kgwzdppfcmn4mqc0anjkqk7d91hr1wssf"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; The repo doesn't contain a "setup.py" file so install files manually.
-     '(#:phases (modify-phases %standard-phases
-                  (delete 'build)
-                  (delete 'check)
-                  (replace 'install
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (version (python-version (assoc-ref inputs "python")))
-                             (pydir (string-append out "/lib/python"
-                                                   version "/site-packages/"
-                                                   "jupyter_kernel_test")))
-                        (for-each (lambda (file)
-                                    (install-file file pydir))
-                                  (find-files "jupyter_kernel_test"
-                                              "\\.py$"))
-                        #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "unittest" "-v")))))))
+    (native-inputs
+     (list python-hatchling
+           python-ipykernel))
     (propagated-inputs
-     (list python-jupyter-kernel-mgmt python-jupyter-protocol
-           python-jsonschema))
+     (list python-jsonschema
+           python-jupyter-client))
+    (home-page "https://github.com/jupyter/jupyter_kernel_test")
     (synopsis "Test Jupyter kernels")
     (description
      "@code{jupyter_kernel_test} is a tool for testing Jupyter kernels.  It
