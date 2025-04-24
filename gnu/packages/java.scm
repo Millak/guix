@@ -7354,7 +7354,7 @@ with the @code{org.eclipse.core.expressions} module.")
      (list java-eclipse-equinox-common java-eclipse-equinox-registry
            java-eclipse-equinox-preferences java-eclipse-core-runtime
            java-eclipse-osgi))
-    (home-page "https://www.eclipse.org/platform")
+    (home-page "https://projects.eclipse.org/projects/eclipse.platform")
     (synopsis "Eclipse core variables")
     (description "This package provides the Eclipse core variables module
 @code{org.eclipse.core.variables}.")
@@ -7386,7 +7386,7 @@ with the @code{org.eclipse.core.expressions} module.")
            java-eclipse-core-runtime
            java-eclipse-core-variables
            java-eclipse-osgi))
-    (home-page "https://www.eclipse.org/platform")
+    (home-page "https://projects.eclipse.org/projects/eclipse.platform")
     (synopsis "Ant build tool core libraries")
     (description "This package provides the ant build tool core libraries with
 the module @code{org.eclipse.ant.core}.")
@@ -7480,7 +7480,7 @@ module @code{org.eclipse.compare.core}.")
            java-eclipse-equinox-registry
            java-eclipse-equinox-preferences
            java-eclipse-osgi))
-    (home-page "https://www.eclipse.org/platform")
+    (home-page "https://projects.eclipse.org/projects/eclipse.platform")
     (synopsis "Eclipse team support core")
     (description "This package provides the Eclipse team support core module
 @code{org.eclipse.team.core}.")
@@ -7505,7 +7505,7 @@ module @code{org.eclipse.compare.core}.")
        #:jar-name "eclipse-core-commands.jar"))
     (inputs
      (list java-eclipse-equinox-common))
-    (home-page "https://www.eclipse.org/platform")
+    (home-page "https://projects.eclipse.org/projects/eclipse.platform")
     (synopsis "Eclipse core commands")
     (description "This package provides Eclipse core commands in the module
 @code{org.eclipse.core.commands}.")
@@ -7558,7 +7558,7 @@ module @code{org.eclipse.compare.core}.")
     (inputs
      (list java-eclipse-equinox-common java-eclipse-core-commands
            java-icu4j))
-    (home-page "https://www.eclipse.org/platform")
+    (home-page "https://projects.eclipse.org/projects/eclipse.platform")
     (synopsis "Eclipse text library")
     (description "Platform Text is part of the Platform UI project and
 provides the basic building blocks for text and text editors within Eclipse
