@@ -28878,42 +28878,6 @@ source bytes using the UTF-8 encoding and then rewrites Python 3.6 style
 @code{f} strings.")
     (license license:expat)))
 
-;; TODO: https://github.com/python/typed_ast/issues/179
-(define-public python-typed-ast
-  (package
-    (name "python-typed-ast")
-    (version "1.5.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/python/typed_ast")
-             (commit version)))
-       (sha256
-        (base32 "1xfcs5246c8v5600aaa8zs7ii4sxb62q6r3sb2fgazyjx97wrxd9"))
-       (file-name (git-file-name name version))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest))
-    (home-page "https://github.com/python/typed_ast")
-    (synopsis "Fork of Python @code{ast} modules with type comment support")
-    (description "This package provides a parser similar to the standard
-@code{ast} library.  Unlike @code{ast}, the parsers in @code{typed_ast}
-include PEP 484 type comments and are independent of the version of Python
-under which they are run.  The @code{typed_ast} parsers produce the standard
-Python AST (plus type comments), and are both fast and correct, as they are
-based on the CPython 2.7 and 3.7 parsers.")
-    ;; See the file "LICENSE" for the details.
-    (license (list license:psfl
-                   license:asl2.0
-                   license:expat))))    ;ast27/Parser/spark.py
-
 (define-public python-typer
   (package
     (name "python-typer")
