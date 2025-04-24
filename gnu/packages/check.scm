@@ -2831,8 +2831,21 @@ seamlessly into your existing Python unit testing work flow.")
     (home-page "https://hypothesis.works/")
     (license license:mpl2.0)))
 
-(define-deprecated python-hypothesis-next python-hypothesis)
-(export python-hypothesis-next)
+(define-public python-hypothesis-next
+  (package
+    (inherit python-hypothesis)
+    (name "python-hypothesis")
+    (version "6.131.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hypothesis" version))
+       (sha256
+        (base32 "1wx4ii5dxfp9gajfb5bqd3a2d1a38rbmvb620kj0cvlyvxkv5nk8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools-next
+           python-wheel))))
 
 ;; WARNING: This package is a dependency of mesa.
 (define-public python-lit
