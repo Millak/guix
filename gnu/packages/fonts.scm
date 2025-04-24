@@ -3206,7 +3206,7 @@ in small sizes, the text looks crisper.")
 (define-public font-juliamono
   (package
     (name "font-juliamono")
-    (version "0.043")
+    (version "0.060")
     (source
      (origin
        (method url-fetch)
@@ -3215,7 +3215,7 @@ in small sizes, the text looks crisper.")
              "v" version "/JuliaMono-ttf.tar.gz"))
        (sha256
         (base32
-         "0vb7n9yqgasnxzps13ckklay5bla6b0i79pzmfqvjms1r37079gh"))))
+         "10yc2rk6sksnad8l1rsc0i33103468qzw73w206x1y08hrb6kna6"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
