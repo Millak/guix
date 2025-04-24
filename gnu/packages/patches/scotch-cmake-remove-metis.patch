@@ -1,0 +1,24 @@
+Remove the CMake machinery for the Metis/Parmetis compatibility layer:
+it has zero users and complicates things due to the separate "metis"
+output.
+
+Notably, the assumption in 'SCOTCHConfig.cmake' is that *metisTargets.cmake
+are in the same directory, which is not the case here.  Furthermore,
+'*metisTargets-relwithdebuginfo.cmake' assumes 'libscotchmetis*.so*' is
+available under '_IMPORT_PREFIX', which is only the case when
+'libscotchmetis*.so' is installed in the same directory as 'libscotch.so'.
+
+diff --git a/cmake/SCOTCHConfig.cmake.in b/cmake/SCOTCHConfig.cmake.in
+index ec52ac5..4ce5c30 100644
+--- a/cmake/SCOTCHConfig.cmake.in
++++ b/cmake/SCOTCHConfig.cmake.in
+@@ -77,9 +77,3 @@ if(@BUILD_LIBESMUMPS@)
+     include("${CMAKE_CURRENT_LIST_DIR}/ptesmumpsTargets.cmake")
+   endif()
+ endif()
+-if(@BUILD_LIBSCOTCHMETIS@)
+-  include("${CMAKE_CURRENT_LIST_DIR}/scotchmetisTargets.cmake")
+-  if(@BUILD_PTSCOTCH@)
+-    include("${CMAKE_CURRENT_LIST_DIR}/ptscotchparmetisTargets.cmake")
+-  endif()
+-endif()

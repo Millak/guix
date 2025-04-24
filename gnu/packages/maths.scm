@@ -5180,6 +5180,7 @@ implemented in ANSI C, and MPI for communications.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0rbc51albpd2923dkirpkj8rfkic6rsvwqqnv1mmsk391zhk3amr"))
+       (patches (search-patches "scotch-cmake-remove-metis.patch"))
        (modules '((guix build utils)))
        (snippet
         #~(substitute* "src/libscotchmetis/library_parmetis.h"
@@ -5200,6 +5201,8 @@ implemented in ANSI C, and MPI for communications.")
        (modify-phases %standard-phases
          (add-after 'install 'install-metis
            (lambda* (#:key outputs #:allow-other-keys)
+             ;; Move the METIS compatibility library to a separate output to
+             ;; avoid a name clash on <metis.h>.
              (let* ((out    (assoc-ref outputs "out"))
                     (metis  (assoc-ref outputs "metis"))
                     (prefix (string-length out)))
