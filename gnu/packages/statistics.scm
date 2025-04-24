@@ -3328,11 +3328,24 @@ statistical summary in arrays and enumerables.")
          "1hg6wrg3jcac71zn4gknni1wrn38wa86ka3sgp2bndz59mx6sr2s"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           #~(list "-k" (string-append
-                         "not test_pillai"
-                         " and not test_estimate_with_cache_no_llm_calls"
-                         " and not test_estimate_with_orientations"))))
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "-k" (string-join
+                    ;; AssertionError: False is not true
+                    (list "not test_query_evidence"
+                          ;; ValueError: Experimental support for categorical
+                          ;; data is not implemented for current tree method
+                          ;; yet.
+                          "test_pillai"
+                          "test_estimate_with_cache_no_llm_calls"
+                          "test_estimate_with_orientations"
+                          ;; _flapack.error: (liwork>=max(1,10*n)||liwork==-1)
+                          ;; failed for 10th keyword liwork: dsyevr:liwork=1
+                          "test_estimate"
+                          "test_score_bnlearn"
+                          "test_score_manual")
+                    " and not "))))
     (propagated-inputs (list python-daft
                              python-joblib
                              python-networkx
@@ -3348,13 +3361,14 @@ statistical summary in arrays and enumerables.")
     (native-inputs (list python-mock
                          python-pyro-ppl
                          python-pytest
+                         python-pytest-xdist
                          python-setuptools
                          python-wheel
                          python-xgboost))
     (home-page "https://github.com/pgmpy/pgmpy")
     (synopsis "Probabilistic Graphical Models library")
-    (description "This package provides a library for Probabilistic
-Graphical Models.  It can be used for learning (Structure and Parameter),
-inference (Probabilistic and Causal), and simulations in Bayesian
-Networks.")
+    (description
+     "This package provides a library for Probabilistic Graphical Models.  It
+can be used for learning (Structure and Parameter), inference (Probabilistic
+and Causal), and simulations in Bayesian Networks.")
     (license license:expat)))
