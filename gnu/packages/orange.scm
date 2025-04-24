@@ -29,6 +29,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages graph)
+  #:use-module (gnu packages jupyter)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
