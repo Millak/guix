@@ -3091,14 +3091,14 @@ files into/from Pandas DataFrames.  It is a wrapper around the C library
       (name "xlispstat")
       (version (git-version "3.52.23" revision commit))
       (source (origin
-	        (method git-fetch)
-	        (uri (git-reference
-		      (url "https://github.com/jhbadger/xlispstat.git")
-		      (commit commit)))
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jhbadger/xlispstat.git")
+                      (commit commit)))
                 (file-name (git-file-name name version))
-	        (sha256
-	         (base32
-	          "1p0cmgy19kbkxia139cb5w9dnkp2cdqp5n3baag6cq3prn3n71mf"))))
+                (sha256
+                 (base32
+                  "1p0cmgy19kbkxia139cb5w9dnkp2cdqp5n3baag6cq3prn3n71mf"))))
       (build-system gnu-build-system)
       (arguments
        `(#:parallel-build? #f   ; Parallel builds are not supported
