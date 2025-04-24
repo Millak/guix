@@ -2764,16 +2764,16 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
 (define-public acpica
   (package
     (name "acpica")
-    (version "20240827")
+    (version "2025_04_04")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/acpica/acpica")
-             (commit (string-append "version-" version))))
+             (commit (string-append "R" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dzrdhdgmmr6kqm95avvhr295kj8xi6iwm510lfwaylxzh34ln26"))))
+        (base32 "0ihya8k5w9xv2q0vmsp5syf3xihwmv3jxczw5j94fkzdkp52xlzr"))))
     (build-system gnu-build-system)
     (native-inputs (list flex bison))
     (arguments
