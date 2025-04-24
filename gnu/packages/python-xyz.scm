@@ -2912,8 +2912,22 @@ configuration file.")
         (base32 "18psdd7033zknvw0hs93dryp39k9bjj5b9zza83wvyhjxvdwn05d"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)) ; requires recent versions of mypy and lxml
-    (native-inputs (list python-setuptools python-wheel))
+     (list
+      #:test-flags
+      #~(list "tests/unit"
+              "-k" (string-join
+                    ;; Tests checking in /usr/bin and /usr/bin/git paths.
+                    (list "not test_BinaryDirectory"
+                          "test_ExecutablePath"
+                          "test_VersionFlag")
+                    " and not "))))
+    (native-inputs
+     (list git-minimal/pinned
+           python-colorama
+           python-pytest
+           python-ruamel.yaml
+           python-setuptools
+           python-wheel))
     (home-page "https://pytooling.github.io/pyTooling/")
     (synopsis "Miscellaneous Python tools")
     (description
