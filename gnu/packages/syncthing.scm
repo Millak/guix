@@ -136,12 +136,11 @@ Protocol.")
     (license mpl2.0)))
 
 (define-public syncthing-gtk
-  ;; The commit used below corresponds to the latest commit of the
-  ;; python3-port branch maintained by Debian.  Upstream hasn't bothered
-  ;; porting to Python 3 (see:
-  ;; https://github.com/kozec/syncthing-gtk/issues/487).
-  (let ((revision "1")
-        (commit "c46fbd8ad1d12d409da8942702a2f119cf45514a"))
+  ;; The commit used below corresponds to the latest commit of the Python 3
+  ;; fork maintained by Debian.  Upstream hasn't bothered porting to Python 3
+  ;; (see: https://github.com/kozec/syncthing-gtk/issues/487).
+  (let ((revision "2")
+        (commit "1e84f332e413ba123bcd443443ffc2b435ffafd2"))
     (package
       (name "syncthing-gtk")
       (version (git-version "0.9.4.4" revision commit))
@@ -153,7 +152,7 @@ Protocol.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1x1c8snf0jpgjmyyidjw0015ksk5ishqn817wx8vs9i0lfgnnbbg"))))
+                  "1b77rdmx74zyz3lfhzzvdf3rrm7lfc7246varnr5xi366z3410ha"))))
       (build-system python-build-system)
       (arguments
        `(#:phases
