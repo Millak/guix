@@ -23604,17 +23604,17 @@ structures.")
 (define-public r-fmcsr
   (package
     (name "r-fmcsr")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
       (origin
         (method url-fetch)
         (uri (bioconductor-uri "fmcsR" version))
         (sha256
-          (base32 "1zd5frijcxyv9k3v5irzrzx7wvhlwx6c395r2pai37pxzdxr1m4a"))))
+          (base32 "0js75zd5hp53lvmlidj14mb28mj7mvy34mmwvn2md5na41dns5ny"))))
     (properties `((upstream-name . "fmcsR")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biocgenerics r-chemminer r-runit))
+     (list r-biocgenerics r-chemminer))
     (native-inputs (list r-knitr r-runit))
     (home-page "https://github.com/girke-lab/fmcsR")
     (synopsis "Mismatch tolerant maximum common substructure searching")
