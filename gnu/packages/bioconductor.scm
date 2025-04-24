@@ -23545,15 +23545,21 @@ add-on package rather than used directly.")
 (define-public r-chemminer
   (package
     (name "r-chemminer")
-    (version "3.58.0")
+    (version "3.60.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ChemmineR" version))
        (sha256
         (base32
-         "0gydxqchyhgx1jq4p3658dvhiqpmwhynngcmpkac9sim9ym968db"))))
-    (properties `((upstream-name . "ChemmineR")))
+         "0kvg14g4mj8dsyw1ksmgqf5a0dx791px0vf61fmbi5sx67ncirf6"))))
+    (properties
+     '((upstream-name . "ChemmineR")
+       ;; Needed for tests.
+       ;; Snow is needed because of a test dependency on "makeSOCKcluster".
+       (updater-extra-native-inputs . ("r-chemmineob" "r-rsqlite" "r-snow"))
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-fmcsr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64enc
@@ -23572,7 +23578,14 @@ add-on package rather than used directly.")
            r-rsvg
            r-stringi))
     (native-inputs
-     (list r-knitr r-chemmineob r-rsqlite r-runit r-snow))
+     (list r-chemmineob
+           r-gplots
+           r-knitr
+           r-rgl
+           r-runit
+           r-rsqlite
+           r-scatterplot3d
+           r-snow))
     (home-page "https://github.com/girke-lab/ChemmineR")
     (synopsis "Cheminformatics toolkit for R")
     (description
