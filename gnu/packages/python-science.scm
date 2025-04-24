@@ -3396,8 +3396,9 @@ computing in Python.  It extends both the @code{concurrent.futures} and
     (arguments
      (list
       #:test-flags
-      ;; These four tests fail because an expected error is not raised.
-      '(list "-k" "not test_binary_bad_broadcast")
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; These four tests fail because an expected error is not raised.
+              "-k" "not test_binary_bad_broadcast")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'loosen-requirements
@@ -3424,7 +3425,6 @@ computing in Python.  It extends both the @code{concurrent.futures} and
            python-s3fs))
     (native-inputs
      (list python-boto3
-           python-coverage
            python-jinja2
            python-lxml
            python-matplotlib
