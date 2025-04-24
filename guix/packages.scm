@@ -438,7 +438,7 @@ from forcing GEXP-PROMISE."
   ;; XXX: MIPS is unavailable in CI:
   ;; <https://lists.gnu.org/archive/html/guix-devel/2017-03/msg00790.html>.
   (fold delete %supported-systems '("mips64el-linux" "powerpc-linux"
-                                    "riscv64-linux" "x86_64-gnu")))
+                                    "x86_64-gnu")))
 
 (define (maybe-add-input-labels inputs)
   "Add labels to INPUTS unless it already has them."
