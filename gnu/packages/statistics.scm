@@ -124,21 +124,20 @@
     (version "2.0.1")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/pspp/pspp-"
-                          version ".tar.gz"))
-      (sha256
-       (base32
-        "002c08rxym056mn7a73jwjmcazqd4gh5j1cyml603y4ckvqb1nwf"))))
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/pspp/pspp-" version ".tar.gz"))
+       (sha256
+        (base32
+         "002c08rxym056mn7a73jwjmcazqd4gh5j1cyml603y4ckvqb1nwf"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-test-suite
-		 (lambda _
-		   (substitute* "tests/output/tex.at"
-		     (("AT_CHECK\\(\\[LC_ALL=C.UTF-8 pspp")
-		      "AT_CHECK([LC_ALL=en_US.UTF-8 pspp"))))
+                 (lambda _
+                   (substitute* "tests/output/tex.at"
+                     (("AT_CHECK\\(\\[LC_ALL=C.UTF-8 pspp")
+                      "AT_CHECK([LC_ALL=en_US.UTF-8 pspp"))))
                (add-before 'check 'prepare-tests
                  ;; Prevent irrelevant errors that cause test output mismatches:
                  ;; ‘Fontconfig error: No writable cache directories’
