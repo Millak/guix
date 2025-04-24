@@ -9947,18 +9947,24 @@ capabilities.")
          "13sdvwiqn85vw1dn1k1nd5ihadv82zhqm615imrqgmil33v0csgd"))))
     (arguments
      (list
-      ;; TODO: Tests fail on setup, there is some issue with vendored-meson.
-      #:tests? #f 
       #:modules '((guix build utils)
                   (guix build pyproject-build-system)
                   (ice-9 format))
+
+      #:test-flags
+      #~(list "-m" "not slow"
+              "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-executable-paths
             (lambda _
               (substitute* "numpy/distutils/exec_command.py"
                 (("'/bin/sh'")
-                 (format #f "~s" (which "bash"))))))
+                 (format #f "~s" (which "bash"))))
+              (substitute* "numpy/meson.build"
+                ;; Relay on python from the PATH instead of full reference
+                ;; stored in built wheel.
+                (("'py.full_path\\(\\)'") "'python'"))))
           (add-before 'build 'parallelize-build
             (lambda _
               (setenv "OMP_NUM_THREAD"
@@ -9985,7 +9991,12 @@ capabilities.")
                           "[openblas]
 libraries = openblas
 library_dirs = ~a/lib
-include_dirs = ~:*~a/include~%" #$(this-package-input "openblas")))))))))
+include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion #$output
+                  (apply invoke "pytest" test-flags))))))))
     (native-inputs
      (list gfortran
            meson-python
