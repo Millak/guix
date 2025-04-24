@@ -5195,24 +5195,25 @@ implemented in ANSI C, and MPI for communications.")
      (list flex bison gfortran))
     (outputs '("out" "metis"))
     (arguments
-     `(#:configure-flags '("-DBUILD_SHARED_LIBS=YES" "-DINTSIZE=64"
-                           "-DBUILD_PTSCOTCH=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-metis
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Move the METIS compatibility library to a separate output to
-             ;; avoid a name clash on <metis.h>.
-             (let* ((out    (assoc-ref outputs "out"))
-                    (metis  (assoc-ref outputs "metis"))
-                    (prefix (string-length out)))
-               (for-each (lambda (file)
-                           (let ((target (string-append
-                                          metis
-                                          (string-drop file prefix))))
-                             (mkdir-p (dirname target))
-                             (rename-file file target)))
-                         (find-files out "metis"))))))))
+     (list #:configure-flags #~'("-DBUILD_SHARED_LIBS=YES" "-DINTSIZE=64"
+                                 "-DBUILD_PTSCOTCH=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-metis
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Move the METIS compatibility library to a separate output to
+                   ;; avoid a name clash on <metis.h>.
+                   (let* ((out (assoc-ref outputs "out"))
+                          (metis (assoc-ref outputs "metis"))
+                          (prefix (string-length out)))
+                     (for-each (lambda (file)
+                                 (let ((target
+                                        (string-append metis
+                                                       (string-drop file
+                                                                    prefix))))
+                                   (mkdir-p (dirname target))
+                                   (rename-file file target)))
+                               (find-files out "metis"))))))))
     (home-page "https://www.labri.fr/perso/pelegrin/scotch/")
     (properties
      `((release-monitoring-url
@@ -5236,9 +5237,8 @@ bio-chemistry.")
     (name "scotch32")
     (arguments
      (substitute-keyword-arguments (package-arguments scotch)
-       ((#:configure-flags flags ''())
-        ''("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=OFF"
-           "-DINTSIZE=32"))))
+       ((#:configure-flags flags #~'())
+        #~'("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=OFF" "-DINTSIZE=32"))))
     (synopsis
      "Programs and libraries for graph algorithms (32-bit integers)")))
 
@@ -5250,13 +5250,12 @@ bio-chemistry.")
      (list openmpi))                              ;headers include MPI headers
     (arguments
      (substitute-keyword-arguments (package-arguments scotch)
-       ((#:configure-flags flags ''())
-        ''("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=ON"
-           "-DINTSIZE=64"))
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-before 'check 'mpi-setup
-             ,%openmpi-setup)))))
+       ((#:configure-flags flags #~'())
+        #~'("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=ON" "-DINTSIZE=64"))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'mpi-setup
+              #$%openmpi-setup)))))
     (synopsis "Programs and libraries for graph algorithms (with MPI)")))
 
 (define-public pt-scotch32
@@ -5267,9 +5266,8 @@ bio-chemistry.")
      (list openmpi))                     ;headers include MPI headers
     (arguments
      (substitute-keyword-arguments (package-arguments pt-scotch)
-       ((#:configure-flags flags ''())
-        ''("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=ON"
-           "-DINTSIZE=32"))))
+       ((#:configure-flags flags #~'())
+        #~'("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=ON" "-DINTSIZE=32"))))
     (synopsis
      "Programs and libraries for graph algorithms (with MPI and 32-bit integers)")))
 
