@@ -161,7 +161,9 @@ file names.
      (list
       #:configure-flags
       #~(list "-DWITH_GCRYPT=ON"
-              "-DUNIT_TESTING=ON"
+              #$@(if (%current-target-system)
+                     #~()
+                     #~("-DUNIT_TESTING=ON"))
               #$@(if (and (%current-target-system)
                           (not (target-64bit?)))
                      #~((string-append
