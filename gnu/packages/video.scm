@@ -844,33 +844,29 @@ mpv's powerful playback capabilities.")
 (define-public liba52
   (package
     (name "liba52")
-    (version "0.7.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    ;; A mirror://sourceforge URI doesn't work, presumably
-                    ;; because the SourceForge project is misconfigured.
-                    "http://liba52.sourceforge.net/files/a52dec-" version
-                    ".tar.gz"))
-              (sha256
-               (base32
-                "0czccp4fcpf2ykp16xcrzdfmnircz1ynhls334q374xknd5747d2"))
-              (patches (search-patches "liba52-enable-pic.patch"
-                                       "liba52-set-soname.patch"
-                                       "liba52-use-mtune-not-mcpu.patch"
-                                       "liba52-link-with-libm.patch"))))
+    (version "0.8.0")
+    (source
+     (origin (method git-fetch)
+             (uri (git-reference
+                   (url "https://git.adelielinux.org/community/a52dec")
+                   (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32 "0k1y7irz1hqfzs6yqv4brgwpa04biv50z05gc584h9md0y5y52k7"))
+             (modules '((guix build utils)))
+             (snippet
+              #~(begin (substitute* "liba52/Makefile.am"
+                         ;; Set so name to liba52-$(VERSION).so
+                         (("liba52_la_LDFLAGS = -no-undefined" all)
+                          (string-append all " -release @VERSION@")))
+                       (substitute* "liba52/configure.incl"
+                         ;; Don't avoid -fPIC
+                         (("^.+-prefer-non-pic.*$") ""))
+                       (substitute* "configure.ac" (("-mcpu") "-mtune"))))))
     (build-system gnu-build-system)
-    ;; XXX We need to run ./bootstrap because of the build system fixes above.
-    (native-inputs
-     (list autoconf automake libtool))
-    (arguments `(#:configure-flags '("--enable-shared")
-                 #:phases
-                 (modify-phases %standard-phases
-                   ;; XXX We need to run ./bootstrap because of the build
-                   ;; system fixes above.
-                   (replace 'bootstrap
-                     (lambda _ (invoke "sh" "bootstrap"))))))
-    (home-page "https://liba52.sourceforge.net/")
+    (native-inputs (list autoconf automake libtool))
+    (arguments (list #:configure-flags #~(list "--enable-shared")))
+    (home-page "https://git.adelielinux.org/community/a52dec/")
     (synopsis "ATSC A/52 audio stream decoder")
     (description "liba52 is a library for decoding ATSC A/52 audio streams.
 The A/52 standard is used in a variety of applications, including digital
