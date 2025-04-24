@@ -17590,7 +17590,7 @@ similar to the Python standard library's @code{json} module.")
 (define-public python-resolvelib
   (package
     (name "python-resolvelib")
-    (version "1.1.0b1")
+    (version "1.1.0")
     (source
      (origin
        ;; Tests are missing from the PyPI release.
@@ -17600,16 +17600,18 @@ similar to the Python standard library's @code{json} module.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0y0b4qd1aai50w33szz34kqj8ls42k9shkpp3lvy0jrvzgackp9p"))))
+        (base32 "0pw99897mm2y7pa2g35z0f7vcmgh42xglz5szbrvigczvwa605sh"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-commentjson python-packaging python-pytest
-           python-setuptools python-wheel))
+     (list python-packaging
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/sarugaku/resolvelib")
     (synopsis "Abstract dependencies resolver")
-    (description "The ResolveLib library provides a @code{Resolver} class that
-includes dependency resolution logic.")
+    (description
+     "The ResolveLib library provides a @code{Resolver} class that includes
+dependency resolution logic.")
     (license license:isc)))
 
 (define-public python-commonmark
