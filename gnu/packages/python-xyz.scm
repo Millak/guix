@@ -2900,7 +2900,7 @@ configuration file.")
 (define-public python-pytooling
   (package
     (name "python-pytooling")
-    (version "8.2.0")
+    (version "8.4.1")
     (source
      (origin
        (method git-fetch)
@@ -2909,7 +2909,7 @@ configuration file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w4am69n07dhim6ddxm9k30hr5zjbxd84rgqp54mppp8fmh7iyq9"))))
+        (base32 "18psdd7033zknvw0hs93dryp39k9bjj5b9zza83wvyhjxvdwn05d"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f)) ; requires recent versions of mypy and lxml
