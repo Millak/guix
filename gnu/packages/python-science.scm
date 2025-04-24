@@ -1995,6 +1995,8 @@ idea of the remaining amount of computation to be done.")
 (define-public python-pandera
   (package
     (name "python-pandera")
+    ;; FIXME: The latest version requires hypothesis >= 6.92.7, which can't be
+    ;; picked from python-hypothesis-next for some reason.
     (version "0.18.0")
     (source
      (origin
@@ -2005,34 +2007,43 @@ idea of the remaining amount of computation to be done.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14b5aij5zjkwvsimg0v00qvp59mhhq7ljim4qghcn432vkg9gh47"))
-       (modules '((guix build utils)))
-       ;; These tests require PySpark and Modin. We need to remove the entire
-       ;; directory, since the conftest.py in these directories contain
-       ;; imports.  (See: https://github.com/pytest-dev/pytest/issues/7452)
-       (snippet '(begin
-                   (delete-file-recursively "tests/pyspark")
-                   (delete-file-recursively "tests/modin")))))
+        (base32 "14b5aij5zjkwvsimg0v00qvp59mhhq7ljim4qghcn432vkg9gh47"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags '(list "-k"
-                          (string-append
-                           ;; Mypy functionality is experimental and relying
-                           ;; on pandas-stubs can lead to false
-                           ;; positives. These tests currently fail.
-                           "not test_python_std_list_dict_generics"
-                           " and not test_python_std_list_dict_empty_and_none"
-                           " and not test_pandas_modules_importable"
-                           " and not test_check_groups"
-                           ;; This is a test failure due to unexpected error
-                           ;; message format.  It is harmless.
-                           " and not test_pandas_stubs_false_positives"))))
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "--ignore=tests/pyspark"
+              "-k" (string-join
+                    ;; Failed: DID NOT RAISE <class 'pandera.errors.SchemaError'>
+                    (list "not test_from_records_validates_the_schema"
+                          "test_init_pandas_dataframe_errors"
+                          "test_schema_dtype_crs_without_coerce"
+                          "test_schema_from_dataframe"
+                          "test_schema_model"
+                          "test_validate_coerce_on_init"
+                          ;; multimethod.DispatchError: ('str_length: 0
+                          ;; methods found', (<class
+                          ;; 'pandas.core.series.Series'>, <class 'NoneType'>,
+                          ;; <class 'int'>), [])
+                          "test_succeeding"
+                          "test_failing"
+                          "test_failing_with_none"
+                          ;; pandera.errors.SchemaError: Error while executing
+                          ;; check function: KeyError("foo")
+                          "test_check_groups"
+                          ;; [pandas_series.py-plugin_mypy.ini-expected_errors13]
+                          ;; - assert 1 == 2
+                          "test_pandas_stubs_false_positives"
+                          ;; TypeError: type 'Series' is not subscriptable
+                          "test_pandas_modules_importable")
+                    " and not "))))
     ;; Pandera comes with a lot of extras. We test as many as possible, but do
     ;; not include all of them in the propagated-inputs. Currently, we have to
     ;; skip the pyspark and io tests due to missing packages python-pyspark
     ;; and python-frictionless.
-    (propagated-inputs (list python-hypothesis ;strategies extra
+    (propagated-inputs (list python-hypothesis-next ;strategies extra
+                             python-modin
                              python-multimethod
                              python-numpy
                              python-packaging
@@ -2049,6 +2060,7 @@ idea of the remaining amount of computation to be done.")
                          python-pyarrow ;needed to run fastapi tests
                          python-pytest
                          python-pytest-asyncio
+                         python-pytest-xdist
                          python-setuptools
                          python-sphinx
                          python-uvicorn ;needed to run fastapi tests
