@@ -5270,17 +5270,6 @@ bio-chemistry.")
     (synopsis
      "Programs and libraries for graph algorithms (with MPI and 32-bit integers)")))
 
-(define-public scotch-shared
-  ;; There used to be separate shared library variants while the default would
-  ;; provide .a files including PIC objects.  With the switch to CMake, .a
-  ;; files contain non-PIC objects, which breaks some users, and switching to
-  ;; shared libraries by default seems to make more sense, as discussed here:
-  ;; <https://issues.guix.gnu.org/47619#2>.
-  (deprecated-package "scotch-shared" scotch))
-
-(define-public pt-scotch-shared
-  (deprecated-package "pt-scotch-shared" pt-scotch))
-
 (define-public gklib
   (let ((commit "8bd6bad750b2b0d90800c632cf18e8ee93ad72d7")
         (revision "1"))
