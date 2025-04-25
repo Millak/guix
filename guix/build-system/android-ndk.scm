@@ -33,6 +33,16 @@
   `((guix build android-ndk-build-system)
     ,@%default-gnu-imported-modules))
 
+(define (default-android-build)
+  ;; Lazily resolve the binding to avoid a circular dependency.
+  (let ((android (resolve-interface '(gnu packages android))))
+    (module-ref android 'android-make-stub)))
+
+(define (default-android-googletest)
+  ;; Lazily resolve the binding to avoid a circular dependency.
+  (let ((android (resolve-interface '(gnu packages android))))
+    (module-ref android 'android-googletest)))
+
 (define* (android-ndk-build name inputs
                             #:key
                             source
@@ -100,8 +110,8 @@
 
                         ;; Keep the standard inputs of 'gnu-build-system'
                         ,@(standard-packages)))
-         (build-inputs `(("android-build" ,(module-ref (resolve-interface '(gnu packages android)) 'android-make-stub))
-                         ("android-googletest" ,(module-ref (resolve-interface '(gnu packages android)) 'android-googletest))
+         (build-inputs `(("android-build" ,(default-android-build))
+                         ("android-googletest" ,(default-android-googletest))
                          ,@native-inputs))
          (outputs outputs)
          (build android-ndk-build)
