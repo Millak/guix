@@ -16686,6 +16686,73 @@ This permits greater efficiency in common operations, most notably matrix
 multiplication.")
     (license license:gpl3)))
 
+(define-public r-scrapper
+  (package
+    (name "r-scrapper")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "scrapper" version))
+       (sha256
+        (base32 "1jy0fajpcfxjpl8r3m229k4vhzhplziifqnzb181cahlglck10ls"))))
+    (properties
+     '((upstream-name . "scrapper")
+       (updater-ignored-native-inputs . ("r-rigraphlib"))
+       (updater-extra-native-inputs
+        . ("pkg-config" "r-delayedmatrixstats" "r-sparsematrixstats"))
+       (updater-extra-inputs
+        . ("igraph-for-r-rigraphlib"))))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; I really don't like the trend on Bioconductor to repackage
+         ;; libraries as R packages, so we're patching this package to link
+         ;; with igraph directly instead of statically linking with a
+         ;; repackaged igraph with bundled dependencies in the Rigraphlib
+         ;; package.
+         (add-after 'unpack 'just-use-igraph
+           (lambda _
+             (substitute* "DESCRIPTION"
+               (("Rigraphlib, ") ""))
+             (substitute* "src/Makevars"
+               (("^RIGRAPH_FLAGS.*")
+                "RIGRAPH_FLAGS=`pkg-config --cflags igraph`\n")
+               (("^RIGRAPH_LIBS=.*")
+                "RIGRAPH_LIBS=`pkg-config --libs igraph`\n"))))
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             (with-directory-excursion "tests/testthat/"
+               ;; This attempts to fetch datasets from the Internet.
+               (delete-file "test-analyze.R")))))))
+    (inputs (list igraph-for-r-rigraphlib))
+    (propagated-inputs (list r-assorthead
+                             r-beachmat
+                             r-biocneighbors
+                             r-delayedarray
+                             r-rcpp))
+    (native-inputs (list pkg-config
+                         r-delayedmatrixstats
+                         r-igraph
+                         r-knitr
+                         r-matrix
+                         r-matrixgenerics
+                         r-scrnaseq
+                         r-sparsematrixstats
+                         r-testthat))
+    (home-page "https://bioconductor.org/packages/scrapper")
+    (synopsis "Bindings to C++ libraries for Single-Cell analysis")
+    (description
+     "This package implements R bindings to C++ code for analyzing single-cell
+(expression) data, mostly from various libscran libraries.  Each function
+performs an individual step in the single-cell analysis workflow, ranging from
+quality control to clustering and marker detection.  It is mostly intended for
+other Bioconductor package developers to build more user-friendly end-to-end
+workflows.")
+    (license license:expat)))
+
 (define-public r-treeio
   (package
     (name "r-treeio")
