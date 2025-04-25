@@ -14914,15 +14914,16 @@ describing each of the graphs.")
 (define-public r-xvector
   (package
     (name "r-xvector")
-    (version "0.46.0")
+    (version "0.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "XVector" version))
               (sha256
                (base32
-                "0dpnsvam6971b19xqlv1zniwjznya22jmffjpl4shz4sv8zin9nf"))))
+                "0mwv82k50jmqgmjwdlsjk5pviszvblidg3447g5381zj8489g9r3"))))
     (properties
-     `((upstream-name . "XVector")))
+     '((upstream-name . "XVector")
+       (updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -14937,7 +14938,7 @@ describing each of the graphs.")
      (list zlib))
     (native-inputs (list r-runit))
     (propagated-inputs
-     (list r-biocgenerics r-iranges r-s4vectors r-zlibbioc))
+     (list r-biocgenerics r-iranges r-s4vectors))
     (home-page "https://bioconductor.org/packages/XVector")
     (synopsis "Representation and manpulation of external sequences")
     (description
