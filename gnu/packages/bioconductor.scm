@@ -45,6 +45,7 @@
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages chemistry)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
@@ -5955,6 +5956,37 @@ tracking data.  The required data is formed by samples and tag abundances in
 matrix form, usually from cellular barcoding experiments, integration site
 retrieval analyses, or similar technologies.")
     (license license:cc0)))
+
+(define-public r-biocmake
+  (package
+    (name "r-biocmake")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "biocmake" version))
+       (sha256
+        (base32 "136djx32fbny228jpmpqqa5r0dbzgyw4ymmi0wnpx34s4qgr6k2x"))))
+    (properties
+     '((upstream-name . "biocmake")
+       (updater-extra-propagated-inputs . ("cmake"))))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _ (delete-file "tests/testthat/test-download.R"))))))
+    (propagated-inputs (list cmake r-dir-expiry))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/LTLA/biocmake")
+    (synopsis "CMake for Bioconductor")
+    (description
+     "This package manages the installation of CMake for building Bioconductor
+packages.  This avoids the need for end-users to manually install CMake on
+their system.  No action is performed if a suitable version of CMake is
+already available.")
+    (license license:expat)))
 
 (define-public r-biocversion
   (package
