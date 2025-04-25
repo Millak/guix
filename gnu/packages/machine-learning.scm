@@ -80,7 +80,6 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cran)
-  #:use-module (gnu packages curl)
   #:use-module (gnu packages crates-check)
   #:use-module (gnu packages crates-crypto)
   #:use-module (gnu packages crates-io)
@@ -643,7 +642,7 @@ Performance is achieved by using the LLVM JIT compiler.")
   (deprecated-package "guile-aiscm-next" guile-aiscm))
 
 (define-public llama-cpp
-  (let ((tag "b5013"))
+  (let ((tag "b4549"))
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -651,19 +650,19 @@ Performance is achieved by using the LLVM JIT compiler.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/ggml-org/llama.cpp")
+               (url "https://github.com/ggerganov/llama.cpp")
                (commit tag)))
          (file-name (git-file-name name tag))
          (sha256
-          (base32 "0s73dz871x53dr366lkzq19f677bwgma2ri8m5vhbfa9p8yp4p3r"))))
+          (base32 "1xf2579q0r8nv06kj8padi6w9cv30w58vdys65nq8yzm3dy452a1"))
+         (patches
+          (search-patches "llama-cpp-vulkan-optional.patch"))))
       (build-system cmake-build-system)
       (arguments
        (list
         #:configure-flags
-        #~(list #$(string-append "-DGGML_BUILD_NUMBER=" tag)
-                "-DBUILD_SHARED_LIBS=ON"
+        #~(list "-DBUILD_SHARED_LIBS=ON"
                 "-DGGML_VULKAN=ON"
-                "-DLLAMA_CURL=ON"
                 "-DGGML_BLAS=ON"
                 "-DGGML_BLAS_VENDOR=OpenBLAS"
                 (string-append "-DBLAS_INCLUDE_DIRS="
@@ -693,17 +692,32 @@ Performance is achieved by using the LLVM JIT compiler.")
                 (substitute* "ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp"
                  (("\"/bin/sh\"")
                   (string-append "\"" (search-input-file inputs "/bin/sh") "\"")))))
-            (add-after 'unpack 'fix-tests
+            (add-after 'unpack 'disable-unrunable-tests
               (lambda _
                 ;; test-eval-callback downloads ML model from network, cannot
                 ;; run in Guix build environment
                 (substitute* '("examples/eval-callback/CMakeLists.txt")
                   (("COMMAND llama-eval-callback")
-                   "COMMAND true llama-eval-callback"))
-                ;; Help it find the test files it needs
-                (substitute* "tests/test-chat.cpp"
-                  (("\"\\.\\./\"") "\"../source/\""))))
-            (add-after 'install 'wrap-python-scripts
+                   "COMMAND true llama-eval-callback"))))
+            (add-before 'install 'install-python-scripts
+              (lambda _
+                (let ((bin (string-append #$output "/bin/")))
+                  (define (make-script script)
+                    (let ((suffix (if (string-suffix? ".py" script) "" ".py")))
+                      (call-with-input-file
+                          (string-append "../source/" script suffix)
+                        (lambda (input)
+                          (call-with-output-file (string-append bin script)
+                            (lambda (output)
+                              (format output "#!~a/bin/python3\n~a"
+                                      #$(this-package-input "python")
+                                      (get-string-all input))))))
+                      (chmod (string-append bin script) #o555)))
+                  (mkdir-p bin)
+                  (make-script "convert_hf_to_gguf")
+                  (make-script "convert_llama_ggml_to_gguf")
+                  (make-script "convert_hf_to_gguf_update.py"))))
+            (add-after 'install-python-scripts 'wrap-python-scripts
               (assoc-ref python:%standard-phases 'wrap))
             (add-after 'install 'remove-tests
               (lambda* (#:key outputs #:allow-other-keys)
@@ -711,13 +725,12 @@ Performance is achieved by using the LLVM JIT compiler.")
                                        (string-append (assoc-ref outputs "out")
                                                       "/bin")
                                        "^test-")))))))
-      (inputs (list curl glslang python python-gguf-llama-cpp
-                    vulkan-headers vulkan-loader))
-      (native-inputs (list pkg-config shaderc bash-minimal))
+      (inputs (list python vulkan-headers vulkan-loader))
+      (native-inputs (list pkg-config shaderc bash))
       (propagated-inputs
        (list python-numpy python-pytorch python-sentencepiece openblas))
       (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
-      (home-page "https://github.com/ggml-org/llama.cpp")
+      (home-page "https://github.com/ggerganov/llama.cpp")
       (synopsis "Port of Facebook's LLaMA model in C/C++")
       (description "This package provides a port to Facebook's LLaMA collection
 of foundation language models.  It requires models parameters to be downloaded
