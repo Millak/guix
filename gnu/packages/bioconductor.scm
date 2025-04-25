@@ -26994,15 +26994,17 @@ interface to query the classifier.")
 (define-public r-dir-expiry
   (package
     (name "r-dir-expiry")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "dir.expiry" version))
        (sha256
         (base32
-         "1907n8q1y57qvrl754r888zb0vgrc0pdpvgxxki26h1x6x1y3nf8"))))
-    (properties `((upstream-name . "dir.expiry")))
+         "09hsmml075v0ccynq6mps24frjf79mj8nl7xbzykglvwbjbs9h7f"))))
+    (properties
+     '((upstream-name . "dir.expiry")
+       (updater-ignored-native-inputs . ("r-expiry"))))
     (build-system r-build-system)
     (propagated-inputs (list r-filelock))
     (native-inputs (list r-knitr r-testthat))
