@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2015, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,24 +89,25 @@ NAME and VERSION."
                                 (guix build utils))))
   "Build SOURCE using RUBY and INPUTS."
   (define build
-    #~(begin
-        (use-modules #$@(sexp->gexp modules))
+    (with-imported-modules imported-modules
+      #~(begin
+          (use-modules #$@(sexp->gexp modules))
 
-        #$(with-build-variables inputs outputs
-            #~(ruby-build #:name #$name
-                          #:source #+source
-                          #:system #$system
-                          #:gem-flags #$gem-flags
-                          #:test-target #$test-target
-                          #:tests? #$tests?
-                          #:phases #$(if (pair? phases)
-                                         (sexp->gexp phases)
-                                         phases)
-                          #:outputs %outputs
-                          #:search-paths '#$(sexp->gexp
-                                             (map search-path-specification->sexp
-                                                  search-paths))
-                          #:inputs %build-inputs))))
+          #$(with-build-variables inputs outputs
+              #~(ruby-build #:name #$name
+                            #:source #+source
+                            #:system #$system
+                            #:gem-flags #$gem-flags
+                            #:test-target #$test-target
+                            #:tests? #$tests?
+                            #:phases #$(if (pair? phases)
+                                           (sexp->gexp phases)
+                                           phases)
+                            #:outputs %outputs
+                            #:search-paths '#$(sexp->gexp
+                                               (map search-path-specification->sexp
+                                                    search-paths))
+                            #:inputs %build-inputs)))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
@@ -113,7 +115,6 @@ NAME and VERSION."
                       #:system system
                       #:target #f
                       #:graft? #f
-                      #:modules imported-modules
                       #:guile-for-build guile)))
 
 (define ruby-build-system
