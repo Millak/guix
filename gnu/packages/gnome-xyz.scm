@@ -25,6 +25,7 @@
 ;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,6 +87,29 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public adw-gtk3-theme
+  (package
+    (name "adw-gtk3-theme")
+    (version "5.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lassekongo83/adw-gtk3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19q180w1f9f35ldvl5r0kqfcxv1jaqf1dni5kfszagpg5f7qrrxi"))))
+    (build-system meson-build-system)
+    (native-inputs (list sassc))
+    (synopsis "Unofficial GTK 3 port of libadwaita")
+    (description
+     "adw is a port of the GTK 4 design for the GTK 3 version.  It enables
+color customization by using the same color names as the ones for
+@code{libadwaita}.")
+    (home-page "https://github.com/lassekongo83/adw-gtk3")
+    (license license:lgpl2.1+)))
 
 (define-public arc-icon-theme
   (package
