@@ -25597,27 +25597,20 @@ quality control.")
 (define-public r-scran
   (package
     (name "r-scran")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scran" version))
        (sha256
         (base32
-         "1gi5sv5bb7y8r95sr7cc01cy01j1ymc9piyjmriz0ybyh8flwyrv"))))
+         "0y2hcxri6w1jqg3hcmn5y3ys59q7nxxd0ynv1d66fwgblwbi856x"))))
     (properties
      '((updater-extra-native-inputs
         . ("r-dynamictreecut"
-           "r-residualmatrix"))))
+           "r-residualmatrix"))
+       (updater-ignored-native-inputs . ("r-boost" "r-range"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           ;; One test requires r-deseq2, which we cannot add because of a
-           ;; dependency cycle.
-           (lambda _ (delete-file "tests/testthat/test-convert.R"))))))
     (propagated-inputs
      (list r-beachmat
            r-bh
@@ -25642,6 +25635,7 @@ quality control.")
            r-summarizedexperiment))
     (native-inputs
      (list r-delayedmatrixstats
+           r-deseq2
            r-dynamictreecut
            r-hdf5array
            r-knitr
