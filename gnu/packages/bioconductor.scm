@@ -14738,14 +14738,17 @@ coding changes and predict coding outcomes.")
 (define-public r-vsn
   (package
     (name "r-vsn")
-    (version "3.74.0")
+    (version "3.76.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "vsn" version))
        (sha256
         (base32
-         "0i0fghcrdgivm5amyx2clzqqx4yb3fq7s24v85jmclbsr8fnzm5q"))))
+         "0nv4v8j0bc7mnmd4y344rsry4wmg6rynlaablka8hb7njnq6gkh6"))))
+    (properties
+     ;; This is needed for vignettes.
+     '((updater-extra-native-inputs . ("r-biocstyle"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-affy r-biobase r-ggplot2 r-lattice r-limma))
