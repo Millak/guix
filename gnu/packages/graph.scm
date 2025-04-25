@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
@@ -212,6 +212,27 @@ It can handle large graphs very well and provides functions for generating
 random and regular graphs, graph visualization, centrality methods and much
 more.")
     (license license:gpl2+)))
+
+;; This is not really for r-rigraphlib; it is rather to replace the need for
+;; r-rigraphlib, which is merely repackaging igraph as a static library for
+;; use with R packages.
+(define-public igraph-for-r-rigraphlib
+  (package
+    (inherit igraph)
+    (name "igraph")
+    (version "0.10.15")
+    (source
+     (origin
+       (inherit (package-source igraph))
+       (patches '())
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/igraph/igraph")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0z9jqvl65j4z6brrjlfyykba2bs10az6dx6m8g41snlfnx21a82d"))))))
 
 (define-public python-igraph
   ;; Temporarily use a precise commit, as there was a mistake in the last
