@@ -4364,39 +4364,35 @@ with the @code{psycopg} PostgreSQL driver.")
 database adapter for Python.")
     (license license:lgpl3+)))
 
+;; XXX: The latest version is from 2018, source was deleted from
+;; Bitbucket.org, consider to withdraw if it keeps failing.
 (define-public python-sadisplay
   (package
     (name "python-sadisplay")
     (version "0.4.9")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "sadisplay" version))
-      (sha256
-        (base32
-          "15jxwgla3q4xsp6rw8inqaiy1kdzc8l2cixj8amqcf0ji47icrxg"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sadisplay" version))
+       (sha256
+        (base32 "15jxwgla3q4xsp6rw8inqaiy1kdzc8l2cixj8amqcf0ji47icrxg"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (begin
-                            (setenv "PYTHONPATH"
-                                    (string-append ".:" (or (getenv "PYTHONPATH")
-                                                           "")))
-                            (invoke "pytest" "-vv"))
-                          (format #t "test suite not run~%")))))))
-    (propagated-inputs
-      (list python-sqlalchemy))
+     (list
+      #:test-flags
+      #~(list "--deselect=tests/test_describe.py::test_inherits"
+              "--deselect=tests/test_describe.py::test_single_mapper")))
     (native-inputs
-     ;; For tests.
-      (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-sqlalchemy))
     (home-page "https://bitbucket.org/estin/sadisplay")
     (synopsis "SQLAlchemy schema displayer")
-    (description "This package provides a program to build Entity
-Relationship diagrams from a SQLAlchemy model (or directly from the
-database).")
+    (description
+     "This package provides a program to build Entity Relationship diagrams
+from a SQLAlchemy model (or directly from the database).")
     (license license:bsd-3)))
 
 (define-public yoyo-migrations
