@@ -18229,14 +18229,17 @@ into account multi-gene associated probes.")
 (define-public r-methylumi
   (package
     (name "r-methylumi")
-    (version "2.52.0")
+    (version "2.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "methylumi" version))
        (sha256
         (base32
-         "15lc81qdvjk6mr74h59gr2bxq9alj1wjady2h0j7rhq0p7rim754"))))
+         "1vxmwbhqsqjqgscw13094nz9y4izmi1a78b3i8npjwnxn330l9jk"))))
+    (properties
+     '((updater-ignored-native-inputs
+        . ("r-tcgamethylation450k" "r-lumi"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotate
@@ -18259,7 +18262,12 @@ into account multi-gene associated probes.")
            r-scales
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-homo-sapiens
+           r-illuminahumanmethylation450kanno-ilmn12-hg19
+           r-knitr
+           r-limma
+           r-txdb-hsapiens-ucsc-hg19-knowngene
+           r-xtable))
     (home-page "https://bioconductor.org/packages/methylumi")
     (synopsis "Handle Illumina methylation data")
     (description
