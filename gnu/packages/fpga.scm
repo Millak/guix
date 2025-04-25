@@ -11,6 +11,7 @@
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -117,6 +118,25 @@ formal verification.")
       (license
        (license:non-copyleft
         "https://people.eecs.berkeley.edu/~alanmi/abc/copyright.htm")))))
+
+(define-public abc-yosyshq
+  (package
+    (inherit abc)
+    (name "abc-yosyshq")
+    (version "0.52")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/YosysHQ/abc/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "15a7nyk8iqpadp326icnr7rn5pwq44b9lvajqc35hcsvixz4gxsa"))))
+    (home-page "https://github.com/YosysHQ/abc/")
+    (description "ABC is a program for sequential logic synthesis and
+formal verification.  This is the Yosyshq fork of ABC.")
+    (license (license:non-copyleft "file:///copyright.txt"))))
 
 (define-public iverilog
   (package
