@@ -14613,16 +14613,16 @@ convenient formats.")
 (define-public r-tximport
   (package
     (name "r-tximport")
-    (version "1.34.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "tximport" version))
               (sha256
                (base32
-                "1rrnldicisjf2cjkvnynlsr91illi6v6wfyqn20xb10p947cyckl"))))
+                "1ds2h7kmzj0r3sbj7g4w4h6j2vz7j2srbvz5wribdlpa611amqly"))))
     (properties
      '((updater-extra-native-inputs
-        . ("r-matrix" "r-matrixstats" "r-rhdf5"))))
+        . ("r-matrix" "r-rhdf5"))))
     (build-system r-build-system)
     ;; One test fails because the "eds" package is missing, but there is no
     ;; such package.
