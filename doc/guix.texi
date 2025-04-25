@@ -13586,9 +13586,11 @@ the risks of incompatibility but cannot entirely eliminate them.  Choose
 @item --with-git-url=@var{package}=@var{url}
 @cindex Git, using the latest commit
 @cindex latest commit, building
-Build @var{package} from the latest commit of the @code{master} branch of the
-Git repository at @var{url}.  Git sub-modules of the repository are fetched,
-recursively.
+Build @var{package} from the latest commit of the @code{master} branch
+of the Git repository at @var{url}.  Git sub-modules of the repository
+are fetched, recursively, if @var{package} @code{source} is not a Git
+repository, otherwise it depends on the inherited value of
+@code{recursive?}.
 
 For example, the following command builds the NumPy Python library against the
 latest commit of the master branch of Python itself:

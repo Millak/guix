@@ -29,8 +29,13 @@
   #:use-module (guix profiles)
   #:use-module (guix diagnostics)
   #:autoload   (guix download) (download-to-store)
-  #:autoload   (guix git-download) (git-reference? git-reference-url)
-  #:autoload   (guix git) (git-checkout git-checkout? git-checkout-url)
+  #:autoload   (guix git-download) (git-reference?
+                                    git-reference-url
+                                    git-reference-recursive?)
+  #:autoload   (guix git) (git-checkout
+                           git-checkout?
+                           git-checkout-url
+                           git-checkout-recursive?)
   #:autoload   (guix upstream) (upstream-source
                                 package-latest-release
                                 preferred-upstream-source
@@ -234,15 +239,18 @@ current 'gnutls' package, after which version 3.5.4 is grafted onto them."
 (define %not-equal
   (char-set-complement (char-set #\=)))
 
-(define (package-git-url package)
-  "Return the URL of the Git repository for package, or raise an error if
-the source of PACKAGE is not fetched from a Git repository."
+(define (package-git-url+recursive? package)
+  "Return two values: the URL of the Git repository for package and a boolean
+indicating if the repository has to be recursively cloned, or raise an error if the
+source of PACKAGE is not fetched from a Git repository."
   (let ((source (package-source package)))
     (cond ((and (origin? source)
                 (git-reference? (origin-uri source)))
-           (git-reference-url (origin-uri source)))
+           (values (git-reference-url (origin-uri source))
+                   (git-reference-recursive? (origin-uri source))))
           ((git-checkout? source)
-           (git-checkout-url source))
+           (values (git-checkout-url source)
+                   (git-checkout-recursive? source)))
           (else
            (raise
             (formatted-message (G_ "the source of ~a is not a Git reference")
@@ -257,9 +265,9 @@ syntax, or if a package it refers to could not be found."
          (match (string-tokenize spec %not-equal)
            ((spec branch-or-commit)
             (define (replace old)
-              (let* ((source (package-source old))
-                     (url    (package-git-url old)))
-                (proc old url branch-or-commit)))
+              (let* ((source         (package-source old))
+                     (url recursive? (package-git-url+recursive? old)))
+                (proc old url branch-or-commit recursive?)))
 
             (cons spec replace))
            (_
@@ -273,7 +281,7 @@ syntax, or if a package it refers to could not be found."
 dependencies according to REPLACEMENT-SPECS.  REPLACEMENT-SPECS is a list of
 strings like \"guile-next=stable-3.0\" meaning that packages are built using
 'guile-next' from the latest commit on its 'stable-3.0' branch."
-  (define (replace old url branch)
+  (define (replace old url branch recursive?)
     (package
       (inherit old)
       (version (string-append "git." (string-map (match-lambda
@@ -281,7 +289,7 @@ strings like \"guile-next=stable-3.0\" meaning that packages are built using
                                                    (chr chr))
                                                  branch)))
       (source (git-checkout (url url) (branch branch)
-                            (recursive? #t)))))
+                            (recursive? recursive?)))))
 
   (let* ((replacements (evaluate-git-replacement-specs replacement-specs
                                                        replace))
@@ -315,12 +323,12 @@ on the given COMMIT."
 dependencies according to REPLACEMENT-SPECS.  REPLACEMENT-SPECS is a list of
 strings like \"guile-next=cabba9e\" meaning that packages are built using
 'guile-next' from commit 'cabba9e'."
-  (define (replace old url commit)
+  (define (replace old url commit recursive?)
     (package
       (inherit old)
       (version (commit->version-string commit))
       (source (git-checkout (url url) (commit commit)
-                            (recursive? #t)))))
+                            (recursive? recursive?)))))
 
   (let* ((replacements (evaluate-git-replacement-specs replacement-specs
                                                        replace))
@@ -341,10 +349,19 @@ a checkout of the Git repository at the given URL."
              ((spec url)
               (cons spec
                     (lambda (old)
-                      (package
-                        (inherit old)
-                        (source (git-checkout (url url)
-                                              (recursive? #t)))))))
+                      ;; Propagate RECURSIVE? from the package source when it is a
+                      ;; git-checkout or a git-reference, keeping TRUE as default in
+                      ;; other cases.
+                      (let* ((uri (and (origin? (package-source old))
+                                       (origin-uri (package-source old))))
+                             (recursive? (if (or (git-checkout? uri)
+                                                 (git-reference? uri))
+                                             (package-git-url+recursive? old)
+                                             #t)))
+                        (package
+                          (inherit old)
+                          (source (git-checkout (url url)
+                                                (recursive? recursive?))))))))
              (_
               (raise
                (formatted-message
