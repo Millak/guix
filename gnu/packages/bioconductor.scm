@@ -27172,21 +27172,23 @@ package, primarily for creation of the underlying Conda instance.")
 (define-public r-basilisk
   (package
     (name "r-basilisk")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "basilisk" version))
        (sha256
         (base32
-         "0ziyxi6qcsvs2ks28vh0sdfp3xilh1kfzyhy0qwa2fwn7j7dnhr3"))))
-    (properties `((upstream-name . "basilisk")))
+         "05j16g9bamd7k2h4j2mnmdlmvivwzsjmjjld0k67jvlza7lynayb"))))
+    (properties
+     '((upstream-name . "basilisk")
+       (updater-ignored-native-inputs . ("r-expiry"))))
     (build-system r-build-system)
     ;; Several tests attempt to install things with Conda.
     (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-basilisk-utils r-dir-expiry r-reticulate))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-callr r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/basilisk")
     (synopsis "Freeze Python dependencies inside Bioconductor packages")
     (description
