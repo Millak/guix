@@ -18596,15 +18596,19 @@ peak definition in combination with known profile characteristics.")
 (define-public r-varianttools
   (package
     (name "r-varianttools")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "VariantTools" version))
        (sha256
         (base32
-         "1wv3xklgggn6ajjf7l068ybr1x38n6dv0kkkxna7d39y7q2dfqxc"))))
-    (properties `((upstream-name . "VariantTools")))
+         "03x4q4siz32fcljzvxdvz58zly11pnvycv65kbzam1nb9vg312v2"))))
+    (properties
+     '((upstream-name . "VariantTools")
+       ;; This package is not needed for tests, which is great because we
+       ;; haven't packaged it.
+       (updater-ignored-native-inputs . ("r-gmapr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
@@ -18621,7 +18625,7 @@ peak definition in combination with known profile characteristics.")
            r-rtracklayer
            r-s4vectors
            r-variantannotation))
-    (native-inputs (list r-lungcancerlines r-runit))
+    (native-inputs (list r-lungcancerlines))
     (home-page "https://bioconductor.org/packages/VariantTools/")
     (synopsis "Tools for exploratory analysis of variant calls")
     (description
