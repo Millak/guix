@@ -438,7 +438,7 @@ other lower-level build files.")))
 (define-public scons
   (package
     (name "scons")
-    (version "4.5.0")
+    (version "4.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -448,7 +448,7 @@ other lower-level build files.")))
               (patches (search-patches "scons-test-environment.patch"))
               (sha256
                (base32
-                "1skz1kzhwsp54i71jrsg46rkxwicfici7pq6qmfhlqd5zhrg21zb"))))
+                "1h9653965bqf8zab4gbsilsmnhp6nxn5b5b9yvm6pf401qjx8n4x"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -461,11 +461,6 @@ other lower-level build files.")))
               (substitute* "SCons/Script/Main.py"
                 (("/usr/share/scons")
                  (string-append #$output "/share/scons")))))
-          (add-before 'build 'bootstrap
-            (lambda _
-              ;; XXX: Otherwise setup.py bdist_wheel fails.
-              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))
-              (invoke "python" "scripts/scons.py")))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
