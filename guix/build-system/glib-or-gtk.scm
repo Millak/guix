@@ -225,55 +225,55 @@
                                   disallowed-references)
   "Cross-build SOURCE with INPUTS.  See GNU-BUILD for more details."
   (define builder
-    #~(begin
-        (use-modules #$@(sexp->gexp modules))
+    (with-imported-modules imported-modules
+      #~(begin
+          (use-modules #$@(sexp->gexp modules))
 
-        (define %build-host-inputs
-          #+(input-tuples->gexp build-inputs))
+          (define %build-host-inputs
+            #+(input-tuples->gexp build-inputs))
 
-        (define %build-target-inputs
-          (append #$(input-tuples->gexp host-inputs)
-                  #+(input-tuples->gexp target-inputs)))
+          (define %build-target-inputs
+            (append #$(input-tuples->gexp host-inputs)
+                    #+(input-tuples->gexp target-inputs)))
 
-        (define %build-inputs
-          (append %build-host-inputs %build-target-inputs))
+          (define %build-inputs
+            (append %build-host-inputs %build-target-inputs))
 
-        (define %outputs
-          #$(outputs->gexp outputs))
+          (define %outputs
+            #$(outputs->gexp outputs))
 
-        (glib-or-gtk-build #:source #+source
-                           #:system #$system
-                           #:build #$build
-                           #:target #$target
-                           #:outputs %outputs
-                           #:inputs %build-target-inputs
-                           #:native-inputs %build-host-inputs
-                           #:search-paths '#$(sexp->gexp
-                                              (map search-path-specification->sexp
-                                                   search-paths))
-                           #:native-search-paths '#$(sexp->gexp
-                                                     (map search-path-specification->sexp
-                                                          native-search-paths))
-                           #:phases #$(if (pair? phases)
-                                          (sexp->gexp phases)
-                                          phases)
-                           #:glib-or-gtk-wrap-excluded-outputs
-                           #$glib-or-gtk-wrap-excluded-outputs
-                           #:configure-flags #$configure-flags
-                           #:make-flags #$make-flags
-                           #:out-of-source? #$out-of-source?
-                           #:tests? #$tests?
-                           #:test-target #$test-target
-                           #:parallel-build? #$parallel-build?
-                           #:parallel-tests? #$parallel-tests?
-                           #:validate-runpath? #$validate-runpath?
-                           #:make-dynamic-linker-cache? #$make-dynamic-linker-cache?
-                           #:patch-shebangs? #$patch-shebangs?
-                           #:strip-binaries? #$strip-binaries?
-                           #:strip-flags #$strip-flags
-                           #:strip-directories
-                           #$strip-directories)))
-
+          (glib-or-gtk-build #:source #+source
+                             #:system #$system
+                             #:build #$build
+                             #:target #$target
+                             #:outputs %outputs
+                             #:inputs %build-target-inputs
+                             #:native-inputs %build-host-inputs
+                             #:search-paths '#$(sexp->gexp
+                                                (map search-path-specification->sexp
+                                                     search-paths))
+                             #:native-search-paths '#$(sexp->gexp
+                                                       (map search-path-specification->sexp
+                                                            native-search-paths))
+                             #:phases #$(if (pair? phases)
+                                            (sexp->gexp phases)
+                                            phases)
+                             #:glib-or-gtk-wrap-excluded-outputs
+                             #$glib-or-gtk-wrap-excluded-outputs
+                             #:configure-flags #$configure-flags
+                             #:make-flags #$make-flags
+                             #:out-of-source? #$out-of-source?
+                             #:tests? #$tests?
+                             #:test-target #$test-target
+                             #:parallel-build? #$parallel-build?
+                             #:parallel-tests? #$parallel-tests?
+                             #:validate-runpath? #$validate-runpath?
+                             #:make-dynamic-linker-cache? #$make-dynamic-linker-cache?
+                             #:patch-shebangs? #$patch-shebangs?
+                             #:strip-binaries? #$strip-binaries?
+                             #:strip-flags #$strip-flags
+                             #:strip-directories
+                             #$strip-directories))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
@@ -281,7 +281,6 @@
                       #:system system
                       #:target target
                       #:graft? #f
-                      #:modules imported-modules
                       #:allowed-references allowed-references
                       #:disallowed-references disallowed-references
                       #:guile-for-build guile)))
