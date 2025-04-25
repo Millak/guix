@@ -1,0 +1,127 @@
+diff --git a/libncftp/lglob.c b/libncftp/lglob.c
+index e374f0c..2d74cd5 100644
+--- a/libncftp/lglob.c
++++ b/libncftp/lglob.c
+@@ -137,11 +137,11 @@ LazyUnixLocalGlob(FTPCIPtr cip, FTPLineListPtr fileList, const char *const patte
+ 	 * work for us.
+ 	 */
+ #ifdef HAVE_SNPRINTF
+-	(void) snprintf(cmd, sizeof(cmd) - 1, "%s -c \"%s %s %s\"", "/bin/sh", "/bin/ls",
++	(void) snprintf(cmd, sizeof(cmd) - 1, "%s -c \"%s %s %s\"", "sh", "ls",
+ 		"-d", pattern);
+ 	cmd[sizeof(cmd) - 1] = '\0';
+ #else
+-	(void) sprintf(cmd, "%s -c \"%s %s %s\"", "/bin/sh", "/bin/ls",
++	(void) sprintf(cmd, "%s -c \"%s %s %s\"", "sh", "ls",
+ 		"-d", pattern);
+ #endif
+ 	
+diff --git a/ncftp/cmds.c b/ncftp/cmds.c
+index 241c7c5..228fb0a 100644
+--- a/ncftp/cmds.c
++++ b/ncftp/cmds.c
+@@ -2031,7 +2031,7 @@ LocalListCmd(const int argc, char **const argv, const CommandPtr cmdp, const Arg
+ 	(void) fflush(stdin);
+ 	outfp = OpenPager();
+ 
+-	(void) STRNCPY(incmd, "/bin/ls");
++	(void) STRNCPY(incmd, "ls");
+ 	for (i=1, dashopts=0; i<argc; i++) {
+ 		(void) STRNCAT(incmd, " ");
+ 		if (argv[i][0] == '-')
+@@ -2040,7 +2040,7 @@ LocalListCmd(const int argc, char **const argv, const CommandPtr cmdp, const Arg
+ 	}
+ 
+ 	if (dashopts == 0) {
+-		(void) STRNCPY(incmd, "/bin/ls -CF");
++		(void) STRNCPY(incmd, "ls -CF");
+ 		for (i=1; i<argc; i++) {
+ 			(void) STRNCAT(incmd, " ");
+ 			(void) STRNCAT(incmd, argv[i]);
+@@ -2135,7 +2135,7 @@ void
+ LocalChmodCmd(const int argc, char **const argv, const CommandPtr cmdp, const ArgvInfoPtr aip)
+ {
+ 	ARGSUSED(gUnusedArg);
+-	Sys(argc, argv, aip, "/bin/chmod", 1);
++	Sys(argc, argv, aip, "chmod", 1);
+ }	/* LocalChmodCmd */
+ #endif
+ 
+@@ -2156,7 +2156,7 @@ LocalMkdirCmd(const int argc, char **const argv, const CommandPtr cmdp, const Ar
+ 	}
+ #else
+ 	ARGSUSED(gUnusedArg);
+-	Sys(argc, argv, aip, "/bin/mkdir", 0);
++	Sys(argc, argv, aip, "mkdir", 0);
+ #endif
+ }	/* LocalMkdirCmd */
+ 
+@@ -2185,7 +2185,7 @@ LocalRenameCmd(const int argc, char **const argv, const CommandPtr cmdp, const A
+ 	}
+ #else
+ 	ARGSUSED(gUnusedArg);
+-	Sys(argc, argv, aip, "/bin/mv", 1);
++	Sys(argc, argv, aip, "mv", 1);
+ #endif
+ }	/* LocalRenameCmd */
+ 
+@@ -2219,7 +2219,7 @@ LocalRmCmd(const int argc, char **const argv, const CommandPtr cmdp, const ArgvI
+ 	}
+ #else
+ 	ARGSUSED(gUnusedArg);
+-	Sys(argc, argv, aip, "/bin/rm", 1);
++	Sys(argc, argv, aip, "rm", 1);
+ #endif
+ }	/* LocalRmCmd */
+ 
+@@ -2253,7 +2253,7 @@ LocalRmdirCmd(const int argc, char **const argv, const CommandPtr cmdp, const Ar
+ 	}
+ #else
+ 	ARGSUSED(gUnusedArg);
+-	Sys(argc, argv, aip, "/bin/rmdir", 1);
++	Sys(argc, argv, aip, "rmdir", 1);
+ #endif
+ }	/* LocalRmdirCmd */
+ 
+diff --git a/ncftp/util.c b/ncftp/util.c
+index 70a0808..2ece1a2 100644
+--- a/ncftp/util.c
++++ b/ncftp/util.c
+@@ -503,7 +503,7 @@ InitUserInfo(void)
+ 
+ 		envp = getenv("SHELL");
+ 		if (envp == NULL)
+-			(void) STRNCPY(gShell, "/bin/sh");
++			(void) STRNCPY(gShell, "sh");
+ 		else
+ 			(void) STRNCPY(gShell, envp);
+ 	} else {
+diff --git a/sh_util/ncftpls.c b/sh_util/ncftpls.c
+index ccbd03b..812e670 100644
+--- a/sh_util/ncftpls.c
++++ b/sh_util/ncftpls.c
+@@ -226,7 +226,7 @@ Usage(void)
+   -R     Long list format, recurse subdirectories if server allows it.\n\
+   -g     Recursive and print one path per line; like \"/usr/bin/find . -print\"\n\
+   -gg    As above, but append a \"/\" character to directory pathnames.\n\
+-  -a     Show all files, if server allows it (as in \"/bin/ls -a\").\n\
++  -a     Show all files, if server allows it (as in \"ls -a\").\n\
+   -i XX  Filter the listing (if server supports it) with the wildcard XX.\n\
+   -x XX  List command flags to try on the remote server (without leading dash).\n");
+ 	(void) fprintf(fp, "\nFTP Flags:\n\
+diff --git a/win/bmed/util.c b/win/bmed/util.c
+index d573a40..6456102 100644
+--- a/win/bmed/util.c
++++ b/win/bmed/util.c
+@@ -385,7 +385,7 @@ InitUserInfo(void)
+ 
+ 		envp = getenv("SHELL");
+ 		if (envp == NULL)
+-			(void) STRNCPY(gShell, "/bin/sh");
++			(void) STRNCPY(gShell, "sh");
+ 		(void) STRNCPY(gShell, envp);
+ 	} else {
+ 		/* Copy home directory. */
+-- 
+2.49.0
+

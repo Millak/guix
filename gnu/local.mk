@@ -1898,6 +1898,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/nanosvg-prusa-slicer.patch		\
   %D%/packages/patches/nautilus-extension-search-path.patch	\
   %D%/packages/patches/ncompress-fix-softlinks.patch		\
+  %D%/packages/patches/ncftp-paths.patch				\
   %D%/packages/patches/ncftp-reproducible.patch			\
   %D%/packages/patches/netcdf-date-time.patch			\
   %D%/packages/patches/netdde-build-fix.patch			\
