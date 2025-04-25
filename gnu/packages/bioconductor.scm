@@ -27147,16 +27147,17 @@ input.")
 (define-public r-basilisk-utils
   (package
     (name "r-basilisk-utils")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "basilisk.utils" version))
        (sha256
         (base32
-         "0vq0188f6wz0j4w0yqyki4dcp47z3d7w7m19diw7bfgy4yprqdgk"))))
+         "12wfmyq2as6vfg94fnlw4hxi6y8gw45x27hbh99mkn496vqng575"))))
     (properties
-     `((upstream-name . "basilisk.utils")))
+     '((upstream-name . "basilisk.utils")
+       (updater-ignored-native-inputs . ("r-expiry"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dir-expiry))
