@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,22 +87,23 @@
   "Build SOURCE with INPUTS.  This assumes that SOURCE provides a 'waf' file
 as its build system."
   (define build
-    #~(begin
-        (use-modules #$@(sexp->gexp modules))
+    (with-imported-modules imported-modules
+      #~(begin
+          (use-modules #$@(sexp->gexp modules))
 
-        #$(with-build-variables inputs outputs
-            #~(waf-build #:name #$name
-                         #:source #+source
-                         #:configure-flags #$configure-flags
-                         #:system #$system
-                         #:test-target #$test-target
-                         #:tests? #$tests?
-                         #:phases #$phases
-                         #:outputs %outputs
-                         #:search-paths '#$(sexp->gexp
-                                            (map search-path-specification->sexp
-                                                 search-paths))
-                         #:inputs %build-inputs))))
+          #$(with-build-variables inputs outputs
+              #~(waf-build #:name #$name
+                           #:source #+source
+                           #:configure-flags #$configure-flags
+                           #:system #$system
+                           #:test-target #$test-target
+                           #:tests? #$tests?
+                           #:phases #$phases
+                           #:outputs %outputs
+                           #:search-paths '#$(sexp->gexp
+                                              (map search-path-specification->sexp
+                                                   search-paths))
+                           #:inputs %build-inputs)))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
