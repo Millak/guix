@@ -417,51 +417,6 @@ protocol} to be used by both clients and kernels.")
     (license license:bsd-3)
     (properties '((upstream-name . "jupyter_protocol")))))
 
-(define-public python-jupyter-kernel-mgmt
-  (package
-    (name "python-jupyter-kernel-mgmt")
-    (version "0.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "jupyter_kernel_mgmt" version))
-              (sha256
-               (base32
-                "0977ixfi1pzjgy84hl0zycg4wpllmid98fhzcpy0lxd322w4sl7x"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      ;; There are 8 test failures, most of them in 'test_client_loop.py'
-      ;; (see: https://github.com/takluyver/jupyter_kernel_mgmt/issues/48).
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                (invoke "pytest" "-vv" "jupyter_kernel_mgmt")))))))
-    (propagated-inputs
-     (list python-dateutil
-           python-entrypoints
-           python-jupyter-core
-           python-jupyter-protocol
-           python-pyzmq
-           python-tornado-6
-           python-traitlets))
-    (native-inputs
-     (list python-async-generator
-           python-ipykernel
-           python-ipython
-           python-pytest
-           python-pytest-asyncio))
-    (home-page "https://jupyter.org")
-    (synopsis "Discover, launch, and communicate with Jupyter kernels")
-    (description
-     "This package is an experimental refactoring of the machinery for
-launching and using Jupyter kernels.")
-    (license license:bsd-3)
-    (properties '((upstream-name . "jupyter_kernel_mgmt")))))
-
 (define-public python-jupyter-kernel-test
   (package
     (name "python-jupyter-kernel-test")
