@@ -389,34 +389,6 @@ JupyterLab (code navigation, hover suggestions, linters, autocompletion, and
 rename) using the Language Server Protocol.")
     (license license:bsd-3)))
 
-(define-public python-jupyter-protocol
-  (package
-    (name "python-jupyter-protocol")
-    (version "0.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "jupyter_protocol" version))
-              (sha256
-               (base32
-                "075vbaak6hlk9606lw61ldv72p6694k938jd1kvkm6spd0pczpmn"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-dateutil
-           python-ipython-genutils
-           python-jupyter-core
-           python-pyzmq
-           python-traitlets))
-    (native-inputs
-     (list python-ipykernel python-ipython python-mock python-pytest))
-    (home-page "https://jupyter.org")
-    (synopsis "Jupyter protocol implementation")
-    (description
-     "This Python library is an experimental implementation of the
-@uref{https://jupyter-client.readthedocs.io/en/latest/messaging.html, Jupyter
-protocol} to be used by both clients and kernels.")
-    (license license:bsd-3)
-    (properties '((upstream-name . "jupyter_protocol")))))
-
 (define-public python-jupyter-kernel-test
   (package
     (name "python-jupyter-kernel-test")
