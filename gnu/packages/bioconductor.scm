@@ -14886,16 +14886,18 @@ transcriptomic data).")
 (define-public r-xmapbridge
   (package
     (name "r-xmapbridge")
-    (version "1.64.0")
+    (version "1.66.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "xmapbridge" version))
        (sha256
-        (base32 "1r4n5lnps47qrl90m5mm0i3530l0r31hd7hsp2d004sgbmyak304"))))
-    (properties `((upstream-name . "xmapbridge")))
+        (base32 "1vhvagfpicc35vp25hrf9v56rlqz5yzb4zg5jr01yx1vrz3fikgj"))))
+    (properties
+     '((upstream-name . "xmapbridge")
+       (updater-extra-native-inputs . ("r-rcolorbrewer"))))
     (build-system r-build-system)
-    (native-inputs (list r-rcolorbrewer r-runit))
+    (native-inputs (list r-rcolorbrewer))
     (home-page "https://git.bioconductor.org/packages/xmapbridge")
     (synopsis "Display numeric data in the web based genome browser X:MAP")
     (description
