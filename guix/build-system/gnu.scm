@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -520,65 +521,65 @@ is one of `host' or `target'."
 cross-built inputs, and NATIVE-INPUTS are inputs that run on the build
 platform."
   (define builder
-    #~(begin
-        (use-modules #$@(sexp->gexp modules))
+    (with-imported-modules imported-modules
+      #~(begin
+          (use-modules #$@(sexp->gexp modules))
 
-        (define %build-host-inputs
-          #+(input-tuples->gexp build-inputs))
+          (define %build-host-inputs
+            #+(input-tuples->gexp build-inputs))
 
-        (define %build-target-inputs
-          (append #$(input-tuples->gexp host-inputs)
-                  #+(input-tuples->gexp target-inputs)))
+          (define %build-target-inputs
+            (append #$(input-tuples->gexp host-inputs)
+                    #+(input-tuples->gexp target-inputs)))
 
-        (define %build-inputs
-          (append %build-host-inputs %build-target-inputs))
+          (define %build-inputs
+            (append %build-host-inputs %build-target-inputs))
 
-        (define %outputs
-          #$(outputs->gexp outputs))
+          (define %outputs
+            #$(outputs->gexp outputs))
 
-        (gnu-build #:source #+source
-                   #:system #$system
-                   #:build #$build
-                   #:target #$target
-                   #:outputs %outputs
-                   #:inputs %build-target-inputs
-                   #:native-inputs %build-host-inputs
-                   #:search-paths '#$(sexp->gexp
-                                      (map search-path-specification->sexp
-                                           search-paths))
-                   #:native-search-paths '#$(sexp->gexp
-                                             (map
-                                              search-path-specification->sexp
-                                              native-search-paths))
-                   #:phases #$(if (pair? phases)
-                                  (sexp->gexp phases)
-                                  phases)
-                   #:locale #$locale
-                   #:separate-from-pid1? #$separate-from-pid1?
-                   #:bootstrap-scripts #$bootstrap-scripts
-                   #:configure-flags #$configure-flags
-                   #:make-flags #$make-flags
-                   #:out-of-source? #$out-of-source?
-                   #:tests? #$tests?
-                   #:test-target #$test-target
-                   #:parallel-build? #$parallel-build?
-                   #:parallel-tests? #$parallel-tests?
-                   #:patch-shebangs? #$patch-shebangs?
-                   #:license-file-regexp #$license-file-regexp
-                   #:strip-binaries? #$strip-binaries?
-                   #:validate-runpath? #$validate-runpath?
-                   #:make-dynamic-linker-cache? #$make-dynamic-linker-cache?
-                   #:license-file-regexp #$license-file-regexp
-                   #:strip-flags #$strip-flags
-                   #:strip-directories #$strip-directories)))
+          (gnu-build #:source #+source
+                     #:system #$system
+                     #:build #$build
+                     #:target #$target
+                     #:outputs %outputs
+                     #:inputs %build-target-inputs
+                     #:native-inputs %build-host-inputs
+                     #:search-paths '#$(sexp->gexp
+                                        (map search-path-specification->sexp
+                                             search-paths))
+                     #:native-search-paths '#$(sexp->gexp
+                                               (map
+                                                search-path-specification->sexp
+                                                native-search-paths))
+                     #:phases #$(if (pair? phases)
+                                    (sexp->gexp phases)
+                                    phases)
+                     #:locale #$locale
+                     #:separate-from-pid1? #$separate-from-pid1?
+                     #:bootstrap-scripts #$bootstrap-scripts
+                     #:configure-flags #$configure-flags
+                     #:make-flags #$make-flags
+                     #:out-of-source? #$out-of-source?
+                     #:tests? #$tests?
+                     #:test-target #$test-target
+                     #:parallel-build? #$parallel-build?
+                     #:parallel-tests? #$parallel-tests?
+                     #:patch-shebangs? #$patch-shebangs?
+                     #:license-file-regexp #$license-file-regexp
+                     #:strip-binaries? #$strip-binaries?
+                     #:validate-runpath? #$validate-runpath?
+                     #:make-dynamic-linker-cache? #$make-dynamic-linker-cache?
+                     #:license-file-regexp #$license-file-regexp
+                     #:strip-flags #$strip-flags
+                     #:strip-directories #$strip-directories))))
 
-  (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
+    (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
     (gexp->derivation name builder
                       #:system system
                       #:target target
                       #:graft? #f
-                      #:modules imported-modules
                       #:substitutable? substitutable?
                       #:allowed-references allowed-references
                       #:disallowed-references disallowed-references
