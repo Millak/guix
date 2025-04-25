@@ -467,31 +467,40 @@ simulator trace files (@dfn{FST}).")
     (license (list license:gpl2+ license:expat license:tcl/tk))))
 
 (define-public python-migen
-  (package
-    (name "python-migen")
-    (version "0.9.2")
-    (source
-     (origin
-       ;; Tests fail in the PyPI tarball due to missing files.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/m-labs/migen")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1kq11if64zj84gv4w1q7l16fp17xjxl2wv5hc9dibr1z3m1gy67l"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-colorama))
-    (home-page "https://m-labs.hk/gateware/migen/")
-    (synopsis "Python toolbox for building complex digital hardware")
-    (description
-     "Migen FHDL is a Python library that replaces the event-driven
-paradigm of Verilog and VHDL with the notions of combinatorial and
-synchronous statements, has arithmetic rules that make integers always
-behave like mathematical integers, and allows the design's logic to be
-constructed by a Python program.")
-    (license license:bsd-2)))
+  ;; XXX: The latest version tag (0.9.2) was placed in 2019, there are latest
+  ;; changes supporting Python 3.11 on master branch, see
+  ;; <https://github.com/m-labs/migen/issues/259>.
+  (let ((commit "2828df54594673653a641ab551caf6c6b1bfeee5")
+        (revision "0"))
+    (package
+      (name "python-migen")
+      (version (git-version "0.9.2" revision commit))
+      (source
+       (origin
+         ;; Tests fail in the PyPI tarball due to missing files.
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/m-labs/migen")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0my2jwrb64n39dfcipiw9s2cbg1r4s6zh4ybf4dwid9hk86fi6hs"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest
+             python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-colorama))
+      (home-page "https://m-labs.hk/gateware/migen/")
+      (synopsis "Python toolbox for building complex digital hardware")
+      (description
+       "Migen FHDL is a Python library that replaces the event-driven paradigm
+of Verilog and VHDL with the notions of combinatorial and synchronous
+statements, has arithmetic rules that make integers always behave like
+mathematical integers, and allows the design's logic to be constructed by a
+Python program.")
+      (license license:bsd-2))))
 
 (define-public python-myhdl
   (package
