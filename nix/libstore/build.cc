@@ -1854,7 +1854,7 @@ void DerivationGoal::startBuilder()
            view of the system (e.g., "id -gn"). */
         writeFile(chrootRootDir + "/etc/group",
             (format("nixbld:!:%1%:\n")
-                % (buildUser.enabled() ? buildUser.getGID() : getgid())).str());
+                % (buildUser.enabled() ? buildUser.getGID() : guestGID)).str());
 
         /* Create /etc/hosts with localhost entry. */
         if (!fixedOutput)

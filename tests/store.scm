@@ -445,6 +445,28 @@
 
 (unless (unprivileged-user-namespace-supported?)
   (test-skip 1))
+(test-equal "/etc/passwd and /etc/group"
+  '((name "nixbld")
+    (uid 30001)
+    (gid 30000)
+    (group-name "nixbld"))
+  (let ((d (build-expression->derivation
+            %store "passwd-group-check"
+            `(call-with-output-file %output
+               (lambda (port)
+                 ',(gettimeofday)
+                 (let ((pw (getpwuid (getuid)))
+                       (gr (getgrgid (getgid))))
+                   (write `((name ,(passwd:name pw))
+                            (uid ,(passwd:uid pw))
+                            (gid ,(passwd:gid pw))
+                            (group-name ,(group:name gr)))
+                          port)))))))
+    (build-derivations %store (list d))
+    (call-with-input-file (derivation->output-path d) read)))
+
+(unless (unprivileged-user-namespace-supported?)
+  (test-skip 1))
 (test-equal "inputs are read-only"
   "All good!"
   (let* ((input (plain-file (string-append "might-be-tampered-with-"
