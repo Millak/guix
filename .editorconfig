@@ -7,7 +7,7 @@ charset = utf-8
 trim_trailing_whitespace = true
 
 [*.{c,h,cpp,hpp,ac,am,m4,el,scm}{,.in}]
-max_line_length = 85
+max_line_length = 80
 
 [*.{c,h,cpp,hpp,ac,m4,el,scm}{,.in}]
 indent_style = space
