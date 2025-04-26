@@ -38,6 +38,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
@@ -45,6 +46,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages embedded)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -53,6 +55,7 @@
   #:use-module (gnu packages libftdi)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -65,6 +68,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages toolkits)
   #:use-module (gnu packages version-control))
@@ -414,6 +418,46 @@ such as:
 @item Reads FZ (with key), BRD, BRD2, BDV and BV* formats.
 @end itemize")
     (license license:expat)))
+
+(define-public opensta
+  ;; There are no releases, we use last commit.
+  (let ((commit "eb8d39a7dd81b5ca2582ad9bbce0fb6e094b3e0f")
+        (revision "0"))
+    (package
+      (name "opensta")
+      ;; The version string is taken from the CMakeLists.txt.
+      (version (git-version "2.6.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/parallaxsw/OpenSTA/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bpc7fj4pd5713yny2vrh542jbag1kj20g0ji01c9scqb9av5qw5"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "../source/test/regression")))))
+        #:configure-flags
+        #~(list
+           (string-append "-DCUDD_DIR=" #$(this-package-input "cudd"))
+           (string-append "-DBUILD_SHARED_LIBS=YES"))))
+      (native-inputs (list bison flex swig))
+      (inputs (list cudd eigen tcl tcllib zlib))
+      (synopsis "Parallax Static Timing Analyzer")
+      (description
+       "OpenSTA is a gate level static timing verifier.  As a stand-alone
+executable it can be used to verify the timing of a design using standard file
+formats.")
+      (home-page "https://github.com/parallaxsw/OpenSTA/")
+      (license license:gpl3+))))
 
 (define-public pulseview
   (package
