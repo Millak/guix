@@ -154,7 +154,8 @@ file names.
                     (string-append all "\n"
                                    "#ifndef PATH_MAX\n"
                                    "# define PATH_MAX 4096\n"
-                                   "#endif\n"))))))
+                                   "#endif\n"))))
+              (patches (search-patches "libssh-openssh-banner.patch"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -172,19 +173,25 @@ file names.
                      #~()))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-problematic-tests
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Runtime sources.
+              (substitute* '("src/config.c"
+                             "src/socket.c")
+                (("\"/bin/sh\"")
+                 (format #f "~s" (search-input-file inputs "/bin/sh"))))
+              ;; Test sources.
+              (substitute* '("tests/server/test_server/default_cb.c")
+                (("\"/bin/sh\"")
+                 (format #f "~s" (which "sh"))))))
+          (add-before 'check 'prepare-for-tests
+            ;; A few test rely on the assumption that HOME == user's pw_dir,
+            ;; which is not satisfied in Guix, where `pw_dir' is '/' while
+            ;; HOME is '/homeless-shelter'.
             (lambda _
-              ;; XXX: There is no finer-grain control on skipping tests using
-              ;; cmocka, short of patching sources, which isn't trivial with
-              ;; substitute*/sed.
-              (substitute* "tests/unittests/CMakeLists.txt"
-                ;; Some torture tests fail due to assuming the user directory
-                ;; (from the passwd database) matches HOME, and other fail for
-                ;; unknown reasons (see:
-                ;; https://gitlab.com/libssh/libssh-mirror/-/issues/302).
-                (("^    torture_(config|misc|options).*$") "")))))))
+              (setenv "HOME" "/"))))))
     (native-inputs (list cmocka))
-    (inputs (list zlib libgcrypt mit-krb5))
+    (inputs (list bash-minimal mit-krb5 libgcrypt zlib))
     (synopsis "SSH client library")
     (description
      "libssh is a C library implementing the SSHv2 and SSHv1 protocol for client

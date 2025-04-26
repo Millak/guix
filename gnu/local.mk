@@ -1765,6 +1765,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libsecret-fix-test-paths.patch		\
   %D%/packages/patches/libsepol-versioned-docbook.patch		\
   %D%/packages/patches/libskk-fix-invalid-escape.patch		\
+  %D%/packages/patches/libssh-openssh-banner.patch		\
   %D%/packages/patches/libtar-CVE-2013-4420.patch 		\
   %D%/packages/patches/libtar-CVE-2021-33643-CVE-2021-33644.patch	\
   %D%/packages/patches/libtar-CVE-2021-33645-CVE-2021-33646.patch	\
