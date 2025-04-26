@@ -161,8 +161,7 @@ file names.
     (arguments
      (list
       #:configure-flags
-      #~(list "-DWITH_GCRYPT=ON"
-              #$@(if (%current-target-system)
+      #~(list #$@(if (%current-target-system)
                      #~()
                      #~("-DUNIT_TESTING=ON"))
               #$@(if (and (%current-target-system)
@@ -191,7 +190,7 @@ file names.
             (lambda _
               (setenv "HOME" "/"))))))
     (native-inputs (list cmocka))
-    (inputs (list bash-minimal mit-krb5 libgcrypt zlib))
+    (inputs (list bash-minimal mit-krb5 openssl zlib))
     (synopsis "SSH client library")
     (description
      "libssh is a C library implementing the SSHv2 and SSHv1 protocol for client
