@@ -162,6 +162,7 @@
   #:use-module (gnu packages lirc)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages man)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages mpd)
@@ -4281,13 +4282,14 @@ websites such as Libre.fm.")
 (define-public beets
   (package
     (name "beets")
-    (version "2.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "beets" version))
-              (sha256
-               (base32
-                "1kzqn6f3iw30lav9cwf653w2ns1n09yrys54dqxf6a9ppjsp449v"))))
+    (version "2.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "beets" version))
+       (sha256
+        (base32
+         "04jp9mwfsh5qj0d9h6i720ji3b7q720rwgddsl39my2al4hqfnc7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4305,14 +4307,26 @@ websites such as Libre.fm.")
                     (types (getenv "GI_TYPELIB_PATH")))
                 (wrap-program prog
                   `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,plugins))
-                  `("GI_TYPELIB_PATH" ":" prefix (,types)))))))))
+                  `("GI_TYPELIB_PATH" ":" prefix (,types))))))
+          (add-after 'wrap 'install-completion
+            (lambda _
+              (let ((completion-path
+                     (string-append
+                      #$output "/share/bash-completion/completions/beet")))
+                (invoke "echo" completion-path)
+                (mkdir-p (dirname completion-path))
+                (with-output-to-file completion-path
+                  (lambda _ (invoke (string-append #$output "/bin/beet")
+                                    "completion")))))))))
     (native-inputs
      (list gobject-introspection
            python-flask
            python-mock
+           python-poetry-core
            python-py7zr
            python-pytest
            python-pytest-cov
+           python-pytest-flask
            python-setuptools
            python-responses
            python-wheel))
@@ -4323,9 +4337,11 @@ websites such as Libre.fm.")
            gstreamer
            python-confuse
            python-jellyfish
+           python-lap
            python-mediafile
            python-munkres
            python-musicbrainzngs
+           python-platformdirs
            python-pyyaml
            python-typing-extensions
            python-unidecode
