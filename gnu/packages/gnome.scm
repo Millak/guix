@@ -5542,7 +5542,7 @@ once.")
 (define-public gnome-sudoku
   (package
     (name "gnome-sudoku")
-    (version "42.0")
+    (version "48.1")
     (source
      (origin
        (method url-fetch)
@@ -5551,28 +5551,32 @@ once.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "13y2qphrj99b0lc7bh71is1f6i0jvyw8adfg8lv48sq2p3fv8bhx"))))
+         "1qy7y84wml7rn51k6y1yizl694zdnrg2a0pzjvb4r42r5bc3lwbr"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           (lambda _
-             (substitute* "build-aux/post_install.py"
-               (("gtk-update-icon-cache") (which "true"))))))))
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false")))))))
     (native-inputs
-     (list desktop-file-utils
+     (list blueprint-compiler
+           desktop-file-utils
            gettext-minimal
            `(,glib "bin")               ;for glib-compile-resources
            itstool
            libxml2
            pkg-config
-           python                       ;for 'build-aux/post_install.py'
            vala))
     (inputs
-     (list gtk+
+     (list gtk
            json-glib
+           libadwaita
            libgee
            (librsvg-for-system)
            qqwing))
