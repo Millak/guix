@@ -1216,6 +1216,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/elm-offline-package-registry.patch	\
   %D%/packages/patches/elm-reactor-static-files.patch		\
   %D%/packages/patches/emacs-all-the-icons-remove-duplicate-rs.patch	\
+  %D%/packages/patches/emacs-bash-completion-preserve-exit-code.patch	\
+  %D%/packages/patches/emacs-bash-completion-preserve-ps1.patch	\
   %D%/packages/patches/emacs-deferred-fix-number-of-arguments.patch	\
   %D%/packages/patches/emacs-elpy-dup-test-name.patch		\
   %D%/packages/patches/emacs-disable-jit-compilation.patch			\

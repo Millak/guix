@@ -24356,7 +24356,10 @@ Slack client.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0664dihdfvrbxqxy00fw0skdg454njm673ip54qrgkh38vyv5432"))))
+        (base32 "0664dihdfvrbxqxy00fw0skdg454njm673ip54qrgkh38vyv5432"))
+       (patches
+        (search-patches "emacs-bash-completion-preserve-ps1.patch"
+                        "emacs-bash-completion-preserve-exit-code.patch"))))
     (build-system emacs-build-system)
     (arguments
      (list

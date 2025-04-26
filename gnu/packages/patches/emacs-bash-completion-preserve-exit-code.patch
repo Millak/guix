@@ -1,0 +1,131 @@
+From a96525afd9077c06d781c59e78bfc6620e41be8f Mon Sep 17 00:00:00 2001
+From: Stephane Zermatten <szermatt@gmx.net>
+Date: Fri, 25 Apr 2025 18:08:01 +0300
+Subject: [PATCH] fix: Recover $? after completion.
+
+Before this change, the value of $? was lost when doing a completion as
+it required running a command, so $? became the status code of the
+completion command.
+
+So if you typed:
+
+> false
+> ech<TAB> $?
+
+You would get 0 instead of 1, set by false.
+
+This change stores the value of $? first thing before executing any
+command, then have __ebcret restore it. The status code that bash
+completion, the one that's embedded in the next prompt, remains the
+status code of the completion command, but $? is the status code of the
+last user command, before completion was run.
+
+issue #77
+---
+ bash-completion.el                       | 22 +++++++--------
+ test/bash-completion-integration-test.el | 34 ++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+), 11 deletions(-)
+
+diff --git a/bash-completion.el b/bash-completion.el
+index 130152f..5a7d9ff 100644
+--- a/bash-completion.el
++++ b/bash-completion.el
+@@ -294,7 +294,7 @@ Bash processes.")
+ (defconst bash-completion-special-chars "[ -$&-*,:-<>?[-^`{-}]"
+   "Regexp of characters that must be escaped or quoted.")
+ 
+-(defconst bash-completion--ps1 "'==emacs==ret=$?==.'"
++(defconst bash-completion--ps1 "'==emacs==ret=${__ebcret:-$?}==.'"
+   "Value for the special PS1 prompt set for completions, quoted.")
+ 
+ (eval-when-compile
+@@ -1532,12 +1532,12 @@ Return the status code of the command, as a number."
+             ;; single process, assume __ebcpre is already defined
+             ((not define-functions)
+              (concat
+-              "if type __ebcpre &>/dev/null; then "
++              "__ebcor=$?; if type __ebcpre &>/dev/null; then "
+               "  __ebcpre; %s; __ebcret $?; "
+               "else "
+               "  echo ==emacs==nopre=${BASH_VERSION}==.; "
+-              "  __ebcp=(\"$PS1\" \"$PROMPT_COMMAND\");"
+-              "  unset PS1 PROMPT_COMMAND;"
++              "  __ebcp=(\"$PS1\" \"$PROMPT_COMMAND\" $__ebcor);"
++              "  unset PS1 PROMPT_COMMAND __ebcor;"
+               "fi;\n"))
+             ;; single process, define __ebcpre
+             (t
+@@ -1549,23 +1549,23 @@ Return the status code of the command, as a number."
+                "  fi;"
+                "  history -d $c &>/dev/null || true;"
+                "} ; function __ebcret {"
+-               "  __ebcret=t;"
+-               "  return $1;"
++               "  __ebcret=$1;"
++               "  return ${__ebcp[2]};"
+                "} ; function __ebctrap {"
+-               " if [[ \"$__ebcret\" = \"t\" && ${#__ebcp[@]} -gt 0 ]]; then"
++               " if [[ -n \"$__ebcret\" && ${#__ebcp[@]} -gt 0 ]]; then"
+                "  PS1=\"${__ebcp[0]}\";"
+                "  PROMPT_COMMAND=\"${__ebcp[1]}\";"
+-               "  unset __ebcp;"
+-               "  unset __ebcret;"
++               "  unset __ebcp __ebcret;"
+                " fi;"
+                "} ; trap __ebctrap DEBUG ; function __ebcpre {"
++               "  __ebcor=${__ebcor:-$?}; "
+                "  set +x; set +o emacs; set +o vi;"
+                "  echo \"==emacs==bash=${BASH_VERSION}==.\";"
+                "  if [[ ${#__ebcp[@]} = 0 ]]; then "
+-               "    __ebcp=(\"$PS1\" \"$PROMPT_COMMAND\");"
++               "    __ebcp=(\"$PS1\" \"$PROMPT_COMMAND\" $__ebcor);"
+                "  fi;"
+                "  PS1=" bash-completion--ps1 ";"
+-               "  unset PROMPT_COMMAND;"
++               "  unset PROMPT_COMMAND __ebcor;"
+                "  __ebcnohistory 1;"
+                "} ; { __ebcpre; %s; __ebcret $?; }\n")))
+            commandline)))
+diff --git a/test/bash-completion-integration-test.el b/test/bash-completion-integration-test.el
+index f57ddc7..02c24ec 100644
+--- a/test/bash-completion-integration-test.el
++++ b/test/bash-completion-integration-test.el
+@@ -926,4 +926,38 @@ $ ")))))
+    (should (equal (bash-completion_test-buffer-string)
+                   "$ dummy dummy\n--$ --\n$ dummy dummy\n--$ --\n$ "))))
+ 
++(ert-deftest bash-completion-integration-recover-status-code ()
++  (bash-completion_test-with-shell-harness
++   (concat ; .bashrc
++    "function failwith { return $1; }\n"
++    "function dummy { echo $?; }\n"
++    "function _dummy {\n"
++    "    COMPREPLY=( dummy )\n"
++    "}\n"
++    "complete -F _dummy dummy\n"
++    "PS1='\$ '")
++   nil
++   ;; The first time initializes completion, the second time executes
++   ;; an already initialized completion. The two cases behave very
++   ;; differently, so we test both.
++   (dotimes (i 2)
++     (bash-completion_test-send (format "failwith %s" (+ 100 i)))
++     (should (equal
++              "dummy dummy "
++              (bash-completion_test-complete "dummy dum")))
++     (let ((start (line-beginning-position)))
++       (comint-send-input)
++       (bash-completion_test-wait-for-prompt start)))
++   ;; The status code printed by the dummy function should be the one
++   ;; from testfail, so 123, and not the one from the completion
++   ;; command executed to do completion for the dummy function.
++   (should (equal (bash-completion_test-buffer-string)
++                  (concat "$ failwith 100\n"
++                          "$ dummy dummy\n"
++                          "100\n"
++                          "$ failwith 101\n"
++                          "$ dummy dummy\n"
++                          "101\n"
++                          "$ ")))))
++
+ ;;; bash-completion-integration-test.el ends here
