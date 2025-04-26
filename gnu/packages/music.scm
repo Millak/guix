@@ -5118,20 +5118,20 @@ provide a very simple interface for editing and playing MIDI loops.")
 (define-public python-discogs-client
   (package
     (name "python-discogs-client")
-    (version "2.3.12")
+    (version "2.8")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "python3-discogs-client" version))
+              (uri (pypi-uri "python3_discogs_client" version))
               (sha256
                (base32
-                "1zmib0i9jicv9fyphgkcrk418qmpv3l4p38ibl31sh237ki5xqw9"))))
+                "0fxk8q8z5v5l961d9z2ywq49i2fz50h074p81zv6w6j9zzs7fb0g"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-dateutil python-oauthlib python-requests))
     (home-page "https://github.com/joalla/discogs_client")
     (synopsis "Python client for the Discogs API")
     (description "This is the continuation of the official Discogs API
-client for Python. It enables you to query the Discogs database for
+client for Python.  It enables you to query the Discogs database for
 information on artists, releases, labels, users, Marketplace listings,
 and more.  It also supports OAuth 1.0a authorization, which allows you to
 change user data such as profile information, collections and wantlists,
