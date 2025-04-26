@@ -20,7 +20,7 @@
 ;;; Copyright © 2020-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2024 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2020, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022, 2023, 2024, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
@@ -1518,11 +1518,13 @@ manage or manipulate PDFs.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list intltool python-distutils-extra))
+     (list intltool
+           python-distutils-extra))
     (inputs
-     (list bash-minimal gtk+ poppler))
-    (propagated-inputs
-     (list img2pdf
+     (list bash-minimal
+           gtk+
+           img2pdf
+           poppler
            python-dateutil
            python-pikepdf
            python-pycairo
