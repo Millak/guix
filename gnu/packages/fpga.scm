@@ -73,6 +73,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sphinx)
@@ -551,7 +552,7 @@ automated testing of HDL code.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.15.2")
+    (version "1.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -560,12 +561,11 @@ automated testing of HDL code.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r6ba5jw4ja0hv366686d8haakm57h3fl95w81hda8haq6g0dj0q"))))
+                "1hi1mqhjbj7r3wcdkjr6yazwpc7y9lqc0b8bj4ikfgdfsmakm3s4"))))
     (build-system gnu-build-system)
     (arguments
      (list #:out-of-source? #t
-           #:configure-flags #~(list "--enable-vhpi" "--enable-tcl" "--enable-gcov"
-                                     "--enable-llvm")
+           #:configure-flags #~(list "--enable-tcl" "--enable-llvm")
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'clean-up
                           (lambda _
@@ -573,16 +573,17 @@ automated testing of HDL code.")
     (native-inputs
      (list automake
            autoconf
+           check ; for the tests
            flex
            gettext-minimal
            libtool
            pkg-config
-           which
-           check)) ; for the tests
+           python
+           ruby
+           which))
     (inputs
-     (list elfutils
+     (list libffi
            llvm
-           libffi
            readline
            tcl
            `(,zstd "lib")))
