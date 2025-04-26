@@ -38062,19 +38062,22 @@ keyboard-friendly package.")
 (define-public python-pdoc3
   (package
     (name "python-pdoc3")
-    (version "0.10.0")
+    (version "0.11.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pdoc3" version))
        (sha256
-        (base32 "1dz4hw10ngidzg9cjvflc8nlrwrjbb3ijhmaw4w6f039p6yff8jz"))
-       (patches
-        (search-patches "python-pdoc3-tests.patch"))))
-    (build-system python-build-system)
+        (base32 "11z318lnvd7nxkpw2556hh6hvid6gi8mxgv4zf8x2m57hx5yi98y"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-git python-setuptools-scm))
-    (propagated-inputs (list python-mako python-markdown))
+     (list python-setuptools-git
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-mako
+           python-markdown))
     (home-page "https://pdoc3.github.io/pdoc/")
     (synopsis "Auto-generate API documentation for Python projects")
     (description

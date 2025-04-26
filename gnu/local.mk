@@ -2125,7 +2125,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-fixtures-remove-monkeypatch-test.patch	\
   %D%/packages/patches/python-hiredis-use-system-hiredis.patch	\
   %D%/packages/patches/python-online-judge-api-client-tests.patch \
-  %D%/packages/patches/python-pdoc3-tests.patch			\
   %D%/packages/patches/python-peachpy-determinism.patch	\
   %D%/packages/patches/python-pep8-stdlib-tokenize-compat.patch \
   %D%/packages/patches/python-piexif-fix-tests-with-pillow-7.2.patch	\
