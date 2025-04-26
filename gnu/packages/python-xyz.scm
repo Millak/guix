@@ -14874,19 +14874,33 @@ parsing (browser/HTTP) user agent strings.")
     (name "python-pydbus")
     (version "0.6.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pydbus" version))
-        (sha256
-          (base32 "0b0gipvz7vcfa9ddmwq2jrx16d4apb0hdnl5q4i3h8jlzwp1c1s2"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-pygobject))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydbus" version))
+       (sha256
+        (base32 "0b0gipvz7vcfa9ddmwq2jrx16d4apb0hdnl5q4i3h8jlzwp1c1s2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f ; no tests in PyPI, git tests require running DBus
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-comparability-with-pygobject
+                 (lambda _
+                   (substitute* "pydbus/_inspect3.py"
+                     (("getargspec")
+                      "getfullargspec")))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-pygobject))
     (home-page "https://github.com/LEW21/pydbus")
     (synopsis "Pythonic D-Bus library")
-    (description "Pydbus provides a pythonic interface to the D-Bus
-message bus system.  Pydbus can be used to access remote objects and
-also for object publication.  It is based on PyGI, the Python GObject
-Introspection bindings, which is the recommended way to use GLib from Python.")
+    (description
+     "Pydbus provides a pythonic interface to the D-Bus message bus system.
+Pydbus can be used to access remote objects and also for object publication.
+It is based on PyGI, the Python GObject Introspection bindings, which is the
+recommended way to use GLib from Python.")
     (license license:lgpl2.1+)))
 
 (define-public python-dbus
