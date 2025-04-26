@@ -3376,7 +3376,7 @@ the GNOME desktop environment.")
 (define-public blueprint-compiler
   (package
     (name "blueprint-compiler")
-    (version "0.14.0")
+    (version "0.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3386,7 +3386,7 @@ the GNOME desktop environment.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0day3ayf6nji86jxcimf1qgim3c7li08jsgbdh4ahbbv4g2d6im6"))))
+                "1y40kf9yfrjlfr5ax27j7ksv27fsznl7jhvvkzbfifdymjv10wqn"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3399,16 +3399,6 @@ the GNOME desktop environment.")
         (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-tests
-            (lambda _
-              (with-atomic-file-replacement
-               "tests/sample_errors/deprecations.err"
-               (lambda (in out)
-                 (dump-port in out)
-                 (newline out)
-                 (display
-                  "8,3,12,signal Gtk.Window::keys-changed () is deprecated\n"
-                  out)))))
           (add-before 'check 'pre-check
             (lambda _
               (system "Xvfb :1 &")
