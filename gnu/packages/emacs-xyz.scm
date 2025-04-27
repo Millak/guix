@@ -28356,6 +28356,9 @@ documentation.")
        (sha256
         (base32 "0vms7zz3ym53wf1zdrkbf2ky2xjr1v134ngsd0jr8azyi8siw84d"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "ert-runner")))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/yasuyk/web-beautify")
     (synopsis "Format HTML, CSS and JavaScript, JSON")
     (description "This package provides an Emacs functions to format HTML,
