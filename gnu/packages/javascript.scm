@@ -828,21 +828,19 @@ roots, or wrestle with obscure build systems.")
 (define-public quickjs
   (package
     (name "quickjs")
-    (version "2024-01-13")
+    (version "2025-04-26")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://bellard.org/quickjs/quickjs-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "00rf45l1bx0yhlv11gn3bbyfqw9724c153bc93mlp9dzjpwghjrw"))
+                "1gw39jazggpbrjmkkmkhsj2wn0mmaw6wb0gkh7vzcvhn4m60f81g"))
               (snippet
                #~(begin (use-modules (guix build utils))
                         (for-each delete-file
                                   '("doc/quickjs.pdf"
-                                    "doc/quickjs.html"
-                                    "doc/jsbignum.pdf"
-                                    "doc/jsbignum.html"))))))
+                                    "doc/quickjs.html"))))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
