@@ -6664,8 +6664,24 @@ Lisp developers who want to write macros with convenience.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rh1p9nlhkmhfqmp507rz8hwfgwrdvxx0zba41lxsd2admai90wv"))))
+        (base32 "0rh1p9nlhkmhfqmp507rz8hwfgwrdvxx0zba41lxsd2admai90wv"))
+       (snippet #~(begin
+                    (for-each delete-file
+                              '("makem.sh" "Makefile" "screencast.gif"))))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list #$(file-append (this-package-native-input "makem")
+                                  "/bin/makem.sh") "test")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-test
+                 (lambda _
+                   (substitute* "tests/noman-tests.el"
+                     (("#!/bin/bash")
+                      (string-append "#!" (which "bash")))))))))
+    (native-inputs
+     (list bash emacs-ert-runner emacs-f makem-minimal))
     (synopsis "Emacs package for browsing CLI command docs without man pages")
     (description
      "Noman is an Emacs package that parses command line help from flags like
