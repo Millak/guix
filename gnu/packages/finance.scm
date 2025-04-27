@@ -2215,6 +2215,16 @@ software Beancount with a focus on features and usability.")
          "01ivxgv1g0pkr0xi43366pghc3j3mmhk5bshis6kkn04bq04cx7f"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "make" "test")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'adjust-available-beancount-options
+                 (lambda _
+                   (substitute* "beancount.el"
+                     (("\"account_unrealized_gains\"") "")))))))
+    (native-inputs
+     (list beancount))
     (home-page "https://github.com/beancount/beancount-mode")
     (synopsis "Emacs mode for Beancount")
     (description
