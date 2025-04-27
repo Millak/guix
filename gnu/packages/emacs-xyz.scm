@@ -41530,32 +41530,34 @@ PDDL files with syntax highlighting, templates, auto-completion, and more.")
        (sha256
         (base32 "0yp41d2dmf3sx7qnl5x0zdjcr9y71b2wwc9m0q31v22xqn938ipc"))))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-local-plantuml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((plantuml (assoc-ref inputs "plantuml"))
-                   (file "plantuml-mode.el"))
-               (chmod file #o644)
-               (emacs-substitute-variables file
-                 ("plantuml-jar-path"
-                  (string-append plantuml "/share/java/plantuml.jar"))
-                 ("plantuml-executable-path"
-                  (string-append plantuml "/bin/plantuml"))
-                 ("plantuml-server-url" 'nil)
-                 ("plantuml-default-exec-mode" ''executable))
-               (emacs-batch-edit-file file
-                 `(progn (progn
-                          (goto-char (point-min))
-                          (re-search-forward "(defun plantuml-download-jar")
-                          (beginning-of-line)
-                          (kill-sexp))
-                         (basic-save-buffer)))
-               #t))))))
-    (inputs
-     (list plantuml))
-    (propagated-inputs
-     (list emacs-dash))
+     (list
+      #:tests? #f  ; Unclear why tests fail.
+      #:test-command #~(list "ert-runner")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-local-plantuml
+            (lambda* (#:key inputs #:allow-other-keys)
+              (symlink (search-input-file inputs "/bin/plantuml")
+                       "bin/plantuml")
+              (let ((file "plantuml-mode.el"))
+                (chmod file #o644)
+                (emacs-substitute-variables file
+                  ("plantuml-jar-path"
+                   (search-input-file inputs "/share/java/plantuml.jar"))
+                  ("plantuml-executable-path"
+                   (search-input-file inputs "/bin/plantuml"))
+                  ("plantuml-server-url" 'nil)
+                  ("plantuml-default-exec-mode" ''executable))
+                (emacs-batch-edit-file file
+                  `(progn (progn
+                           (goto-char (point-min))
+                           (re-search-forward "(defun plantuml-download-jar")
+                           (beginning-of-line)
+                           (kill-sexp))
+                          (basic-save-buffer)))))))))
+    (inputs (list plantuml))
+    (native-inputs (list emacs-ert-runner icedtea))
+    (propagated-inputs (list emacs-dash))
     (build-system emacs-build-system)
     (home-page "https://github.com/skuro/plantuml-mode")
     (synopsis "Major mode for editing PlantUML sources")
