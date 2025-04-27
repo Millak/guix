@@ -26932,8 +26932,12 @@ whenever saving an @code{org-mode} file.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1my0c6xmkh37lwi6l472lz9d86lf20h6xcllzlxm1lxa24rhva6v"))))
+                  "1my0c6xmkh37lwi6l472lz9d86lf20h6xcllzlxm1lxa24rhva6v"))
+                (snippet #~(begin
+                             (for-each delete-file
+                                       '("makem.sh" "Makefile"))))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))  ; No tests.
       (propagated-inputs
        (list emacs-org emacs-dash))
       (home-page "https://github.com/alphapapa/org-auto-expand")
