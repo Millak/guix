@@ -193,10 +193,20 @@ environment with the store shared with the host.  MAPPINGS is a list of
                      rest)))
     ;; The (QEMU-only) "cirrus" graphics driver is still expected by some
     ;; VPS with old QEMU versions.  See <https://bugs.gnu.org/36069>.
-    (initrd-modules (let ((modules (operating-system-initrd-modules os)))
-                      (if (member "cirrus" modules)
+    ;;
+    ;; XXX In 6.14, the kernel renamed the "cirrus" module to "cirrus-qemu", so
+    ;; we account for that here. The renaming was done in this commit:
+    ;; https://git.kernel.org/pub/scm/linux/kernel/git/sashal/linux-stable.git/commit/?id=5c3c99868aa2e0b68ac69f8050a6b9c994e73397
+    (initrd-modules (let* ((modules (operating-system-initrd-modules os))
+                           (kernel-version
+                             (package-version (operating-system-kernel os)))
+                           (cirrus-module
+                             (if (string< kernel-version "6.14")
+                               "cirrus"
+                               "cirrus-qemu")))
+                      (if (member cirrus-module modules)
                           modules
-                          (cons "cirrus" modules))))
+                          (cons cirrus-module modules))))
 
     ;; Disable swap.
     (swap-devices '())
