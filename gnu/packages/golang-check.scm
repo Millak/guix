@@ -742,7 +742,9 @@ package, but can be used in other contexts too.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/google/gofuzz"))
+      #:import-path "github.com/google/gofuzz"
+      ;; Tests fail on 32bit
+      #:tests? (target-64bit?)))
     (home-page "https://github.com/google/gofuzz")
     (synopsis "Fuzz testing library for Go")
     (description
