@@ -31517,6 +31517,7 @@ incompatible versions of it.")
       (build-system emacs-build-system)
       (arguments
        (list
+        #:tests? #f  ; No tests.
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'set-wget-location
