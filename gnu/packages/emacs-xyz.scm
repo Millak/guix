@@ -24465,7 +24465,8 @@ well as Github-style emojis like @code{:smile:}.  It provides a minor mode
            "0p6xhyinzzkrwzbpxqfm8hlii0ikvmmylya240bwsa77w0g1k6xq"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:include (cons "^recipes/" %default-include)))
+       `(#:tests? #f  ; No tests.
+         #:include (cons "^recipes/" %default-include)))
       (propagated-inputs
        (list emacs-ivy))
       (home-page "https://github.com/abo-abo/make-it-so")
