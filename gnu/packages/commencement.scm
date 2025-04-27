@@ -3701,6 +3701,9 @@ is the GNU Compiler Collection.")
 (define-public gcc-toolchain-14
   (make-gcc-toolchain gcc-14))
 
+(define-public gcc-toolchain-15
+  (make-gcc-toolchain gcc-15))
+
 ;; The default GCC
 (define-public gcc-toolchain
   (if (host-hurd64?)

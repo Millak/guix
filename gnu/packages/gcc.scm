@@ -13,7 +13,7 @@
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
@@ -856,6 +856,51 @@ It also includes runtime support libraries for these languages.")
         ("x86_64" ,@%gcc-14-x86_64-micro-architectures))
        ,@(package-properties gcc-11)))))
 
+(define-public gcc-15
+  (package
+    (inherit gcc-14)
+    (version "15.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gcc/gcc-"
+                                  version "/gcc-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1skcy1a3wwb8k25f9l1qy11nj8b5089f05dpzzn1zw302v19xc72"))
+              (patches (search-patches "gcc-12-strmov-store-file-names.patch"
+                                       "gcc-5.0-libvtv-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet gcc-canadian-cross-objdump-snippet)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments gcc-14)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'adjust-modules-file
+              ;; Avoid cycle dependencies
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((lib (assoc-ref outputs "lib"))
+                      (out (assoc-ref outputs "out")))
+                  (when lib
+                    (let ((modfile (string-append
+                                    lib "/lib/libstdc++.modules.json"))
+                          (origin (string-append out "/include/c++/bits"))
+                          (modpath (string-append lib "/include/c++/bits")))
+
+                      (for-each (lambda (file) (install-file file modpath))
+                                (find-files origin "\\.cc$"))
+                      (substitute* modfile
+                        ;; Relative path to out output
+                        (("\\.\\./\\.\\./.*/include")
+                         (string-append lib "/include"))))))))))))
+    (properties
+     `((compiler-cpu-architectures
+        ("aarch64" ,@%gcc-13-aarch64-micro-architectures)
+        ("armhf" ,@%gcc-13-armhf-micro-architectures)
+        ("i686" ,@%gcc-13-x86_64-micro-architectures)
+        ("powerpc64le" ,@%gcc-10-ppc64le-micro-architectures)
+        ("x86_64" ,@%gcc-14-x86_64-micro-architectures))
+       ,@(package-properties gcc-11)))))
+
 
 ;; Note: When changing the default gcc version, update
 ;;       the gcc-toolchain-* definitions.
@@ -1254,6 +1299,7 @@ misnomer.")))
 (define-public libgccjit-11 (make-libgccjit gcc-11))
 (define-public libgccjit-12 (make-libgccjit gcc-12))
 (define-public libgccjit-14 (make-libgccjit gcc-14))
+(define-public libgccjit-15 (make-libgccjit gcc-15))
 
 ;; This must match the 'gcc' variable, but it must also be 'eq?' to one of the
 ;; libgccjit-* packages above.
@@ -1353,6 +1399,10 @@ provides the GNU compiler for the Go programming language."))
 ;; Provides go-1.18
 (define-public gccgo-14
   (make-gccgo gcc-14))
+
+;; Provides go-1.18
+(define-public gccgo-15
+  (make-gccgo gcc-15))
 
 (define (make-libstdc++-doc gcc)
   "Return a package with the libstdc++ documentation for GCC."
