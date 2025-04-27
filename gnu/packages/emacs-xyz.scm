@@ -17013,8 +17013,13 @@ efficient tabs plugin for Emacs with a lot of customization options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0npw7niqjhxspnaw4f2wnrjz5wr7qfkib0865hcri3aq8ccd46xr"))))
+                "0npw7niqjhxspnaw4f2wnrjz5wr7qfkib0865hcri3aq8ccd46xr"))
+              (modules '((guix build utils)))
+              (snippet #~(begin (for-each delete-file-recursively
+                                          '("docs/resources" "resources"))))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))  ; No proper tests.
     (propagated-inputs (list emacs-org))
     (home-page "https://nobiot.github.io/org-remark/")
     (synopsis "Highlight & annotate text using Org mode")
