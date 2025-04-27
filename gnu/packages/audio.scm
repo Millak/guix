@@ -126,6 +126,7 @@
   #:use-module (gnu packages music)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -4106,6 +4107,83 @@ using Guix System.")
     (description "This package provides libshout plus IDJC extensions.")
     ;; GNU Library (not Lesser) General Public License.
     (license license:lgpl2.0+)))
+
+(define-public redumper
+  (package
+    (name "redumper")
+    (version "561")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/superg/redumper")
+                    (commit (string-append "build_" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r0wfi0fn3rq7s28p89rkgpgf567akd8z25l8r9sj7p4p3xp9m91"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:cmake cmake-next
+      #:build-type "Release"
+      ;; The build system uses CMake modules features that are only available
+      ;; when using Ninja.
+      #:configure-flags #~(list "-GNinja"
+                                "-DREDUMPER_CLANG_USE_LIBCPP=ON"
+                                (string-append "-DREDUMPER_VERSION_BUILD="
+                                               #$version)
+                                "-DCMAKE_BUILD_TYPE=Release")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              ;; The CMAKE_SYSTEM_VERSION is undefined when cross-compiling.
+              (substitute* "CMakeLists.txt"
+                (("\\$\\{CMAKE_SYSTEM_VERSION}")
+                 "\"${CMAKE_SYSTEM_VERSION}\""))))
+          (add-after 'unpack 'adjust-CPLUS_INCLUDE_PATH
+            ;; The libcxx include/c++/v1 directory is not exposed via
+            ;; CPLUS_INCLUDE_PATH by default, causing errors like
+            ;; "fatal error: 'format' file not found".
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (setenv "CPLUS_INCLUDE_PATH"
+                      (string-append
+                       (search-input-directory inputs
+                                               "/include/c++/v1")
+                       ":" (getenv "CPLUS_INCLUDE_PATH")))))
+          (replace 'build
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (invoke "cmake" "--build" "."
+                      "-j" (number->string
+                            (if parallel-build?
+                                (parallel-job-count)
+                                1)))))
+          (replace 'check
+            (lambda* (#:key build-type parallel-tests? tests?
+                      #:allow-other-keys)
+              (when tests?
+                (invoke "ctest" "-C" build-type
+                        "-j" (number->string
+                              (if parallel-tests?
+                                  (parallel-job-count)
+                                  1))))))
+          (replace 'install
+            (lambda _
+              ;; There is no CMake install target; manually install the
+              ;; binary.
+              (install-file "redumper"
+                            (string-append #$output "/bin")))))))
+    ;; As of GCC 14, the C++ modules feature is not complete enough, hence the
+    ;; use of Clang.
+    (native-inputs (list ninja clang-toolchain-19))
+    (inputs (list libcxx))
+    (home-page "https://github.com/superg/redumper")
+    (synopsis "Low-level CD/DVD dumper")
+    (description "@command{redumper} is a low-level byte perfect CD disc
+dumper.  It supports incremental dumps, advanced SCSI/C2 repair, intelligent
+audio CD offset detection, among other features.  @command{redumper} is also a
+general purpose DVD/HD-DVD/Blu-ray disc dumper.")
+    (license license:gpl3+)))
 
 (define-public resample
   (package
