@@ -3102,18 +3102,20 @@ replacement.")
       (license license:gpl3+))))
 
 (define-public emacs-haskell-mode
-  (package
+  (let ((commit "e9c356739310332afe59b10ffa2e6c3e76f124e3")
+        (revision "0"))
+    (package
     (name "emacs-haskell-mode")
-    (version "17.5")
+    (version (git-version "17.5" revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/haskell/haskell-mode")
-             (commit (string-append "v" version))))
+             (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ndi986rxq9gz61ss2vazadn7rn0niv1gnpk9nfq9sw3m336glsf"))))
+        (base32 "1mkp9b31ai1z6sccx8cff40viryamw7dm85acig3q82dwlbmxx98"))))
     (propagated-inputs
      (list emacs-dash))
     (native-inputs
@@ -3192,7 +3194,7 @@ replacement.")
     (description
      "This is an Emacs mode for editing, debugging and developing Haskell
 programs.")
-    (license license:gpl3+)))
+    (license license:gpl3+))))
 
 (define-public emacs-lean4-mode
   (package
@@ -12412,6 +12414,7 @@ generates it as a string.  Please see the homepage for usage examples.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:test-command #~(list "make" "test" "CASK=")
       #:imported-modules `(,@%emacs-build-system-modules
                            (guix build python-build-system))
       #:modules '((guix build emacs-build-system)
@@ -12420,6 +12423,11 @@ generates it as a string.  Please see the homepage for usage examples.")
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-server-installation-for-tests
+            (lambda _
+              (substitute* "Makefile"
+                (("env: .*$")
+                 (string-append "env: " #$output "/bin/jediepcserver\n")))))
           (add-after 'unpack 'ensure-no-mtimes-pre-1980
             (assoc-ref python:%standard-phases
                        'ensure-no-mtimes-pre-1980))
