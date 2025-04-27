@@ -65,6 +65,7 @@
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2023 Santiago Payà Miralta <santiagopim@gmail.com>
 ;;; Copyright © 2025 Kurome <hunt31999@gmail.com>
+;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2476,7 +2477,7 @@ programming.  Iosevka is completely generated from its source code.")
 (define-public font-aporetic
   (package
     (name "font-aporetic")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2485,7 +2486,7 @@ programming.  Iosevka is completely generated from its source code.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cihagy7vhw5pqznbihwv3pgb516i94iqfnvfm73njrx1a4dalz6"))))
+        (base32 "1bb7js8lxa4f5kcjjvn587m4hd92qkydr5dbcjmimq2r8mimn75j"))))
     (build-system font-build-system)
     (home-page "https://github.com/protesilaos/aporetic")
     (synopsis "Customised build of the Iosevka typeface")
