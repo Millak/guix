@@ -825,6 +825,48 @@ C++ template mechanisms, or worry about marking and unmarking garbage collection
 roots, or wrestle with obscure build systems.")
     (license license:isc)))
 
+(define-public quickjs
+  (package
+    (name "quickjs")
+    (version "2024-01-13")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://bellard.org/quickjs/quickjs-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "00rf45l1bx0yhlv11gn3bbyfqw9724c153bc93mlp9dzjpwghjrw"))
+              (snippet
+               #~(begin (use-modules (guix build utils))
+                        (for-each delete-file
+                                  '("doc/quickjs.pdf"
+                                    "doc/quickjs.html"
+                                    "doc/jsbignum.pdf"
+                                    "doc/jsbignum.html"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "PREFIX=" #$output)
+                   #$@(if (or (target-riscv64?)
+                              (target-ppc32?))
+                          '("LDFLAGS=-latomic")
+                          '()))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "make" "microbench")))))))
+    (home-page "https://bellard.org/quickjs/")
+    (synopsis "Small embeddable Javascript engine")
+    (description "QuickJS supports the ES2023 specification including modules,
+asynchronous generators, proxies, BigInt, BigDecimal, BigFloat and operator
+overloading.  It can compile Javascript sources to executables with no external
+dependency.  It includes a command line interpreter with contextual colorization
+implemented in Javascript and a small built-in standard library with C library
+wrappers.")
+    (license license:expat)))
+
 (define-public test262-source
   (origin
     (method git-fetch)
@@ -911,9 +953,6 @@ implemented in Javascript and a small built-in standard library with C library
 wrappers.")
     ;; 3-clause BSD license for test262
     (license (list license:expat license:bsd-3))))
-
-(define-public quickjs
-  (deprecated-package "quickjs" quickjs-ng))
 
 (define-public duktape
   (package
