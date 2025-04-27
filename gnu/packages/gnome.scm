@@ -3409,7 +3409,9 @@ the GNOME desktop environment.")
             (lambda _
               (let ((prog (string-append #$output "/bin/blueprint-compiler")))
                 (wrap-program prog
-                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
+                  `("GI_TYPELIB_PATH"
+                    suffix
+                    (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs (list gtk
                          libadwaita
                          python
