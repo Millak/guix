@@ -25418,16 +25418,15 @@ org header line at the top of the window--no matter how far down you scrolled.")
     (native-inputs
      (list texinfo))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (unless (invoke "makeinfo" "scratch.texi")
-               (error "makeinfo failed"))
-             (install-file "scratch.info"
-                           (string-append (assoc-ref outputs "out")
-                                          "/share/info"))
-             #t)))))
+     (list #:tests? #f ; No tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-doc
+                 (lambda _
+                   (unless (invoke "makeinfo" "scratch.texi")
+                     (error "makeinfo failed"))
+                   (install-file "scratch.info"
+                                 (string-append #$output "/share/info")))))))
     (home-page "https://codeberg.org/emacs-weirdware/scratch")
     (synopsis "Create scratch buffers with the same mode as current buffer")
     (description "Scratch is an extension to Emacs that enables one to create
