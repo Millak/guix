@@ -29443,10 +29443,15 @@ keep Parens and Indentation inline with one another.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:test-command #~(list "make" "test" "CASK=")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'configure
             (lambda* (#:key inputs #:allow-other-keys)
+              ;; Skip all non-necessary targets.
+              (substitute* "Makefile"
+                (("^test:.*$")
+                 "test:\n"))
               (let ((parinfer-lib
                      (string-append
                       (dirname
@@ -29462,6 +29467,7 @@ keep Parens and Indentation inline with one another.")
                   ("defcustom parinfer-rust-library-directory" parinfer-lib)
                   ("defconst parinfer-rust--lib-name"
                    "libparinfer_rust.so"))))))))
+    (native-inputs (list emacs-clojure-mode emacs-ert-runner emacs-paredit))
     (inputs (list parinfer-rust-emacs))
     (propagated-inputs (list emacs-track-changes))
     (home-page "https://github.com/justinbarclay/parinfer-rust-mode")
