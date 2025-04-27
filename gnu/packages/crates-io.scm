@@ -76540,7 +76540,7 @@ on verbosity specified.")
      "STFU-8 is a hacky text encoding/decoding protocol for files that
 partially uses UTF-8.  Its primary purpose is to allow a human to visualize and
 edit data that is mostly UTF-8.  It will encode all non-UTF8-compliant bytes as
-longform text (e.g., ESC becomes @code{r\x1B}) and tries to encode ill-formed
+longform text (e.g., ESC becomes @code{r\\x1B}) and tries to encode ill-formed
 UTF-8.")
     (license (list license:expat license:asl2.0))))
 
