@@ -72,6 +72,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages qt)
@@ -524,7 +525,7 @@ a hardware description and verification language.")
 (define-public python-vunit
   (package
     (name "python-vunit")
-    (version "4.7.0")
+    (version "5.0.0-dev.5") ;v4.7.0 dates back from 2 years ago.
     (source
      (origin
        (method git-fetch)
@@ -534,17 +535,32 @@ a hardware description and verification language.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s7j5bykbv34wgnxy5cl4zp6g0caidvzs8pd9yxjq341543xkjwm"))))
-    (build-system python-build-system)
+        (base32 "1sfnl1l6bgaqa8c2sk8k8f232bnq2drjg6rg7jvscmyz18yfih0b"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f))                ;XXX: requires setuptools_scm >= 2.0.0, <3
-    (propagated-inputs (list python python-colorama))
+     (list
+      #:test-flags
+      ;; Skip lint tests which require python-pycodestyle, python-pylint and
+      ;; python-mypy to reduce closoure size; some lint test fails, see
+      ;; <https://github.com/VUnit/vunit/issues/1111>.
+      ;;
+      ;; XXX: Acceptance tests take 10+ minutes to complete, hang on
+      ;; "test_external_run_scripts.py" and fail eventually, consider to
+      ;; improve them; ignore for now.
+      #~(list "tests/unit")))
+    (native-inputs
+     (list nvc
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-colorama))
     (home-page "https://vunit.github.io")
     (synopsis "Unit testing framework for VHDL/SystemVerilog")
     (description
      "VUnit features the functionality needed to realize continuous and
 automated testing of HDL code.")
-
     ;; According to 'LICENSE.rst', VUnit itself is under MPL but two
     ;; subdirectories are under ASL.
     (license (list license:mpl2.0 license:asl2.0))))
