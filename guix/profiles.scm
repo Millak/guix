@@ -1379,6 +1379,9 @@ icon theme.  It's used by GTK applications to speedup icons loading."
                          (srfi srfi-26)
                          (ice-9 ftw))
 
+            ;; Ensure output is still produced when no cache files are created.
+            (mkdir-p #$output)
+
             (let* ((destdir  (string-append #$output "/share/icons"))
                    (icondirs (filter file-exists?
                                      (map (cut string-append <> "/share/icons")
