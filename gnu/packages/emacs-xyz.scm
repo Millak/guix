@@ -221,6 +221,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages ibus)
+  #:use-module (gnu packages idris)
   #:use-module (gnu packages java)
   #:use-module (gnu packages julia-xyz)
   #:use-module (gnu packages ncurses)
@@ -24287,6 +24288,28 @@ key.  Optionally, a mouse pop-up can be added by binding
           (base32
            "1d1f7kx0fw632js7qd1sra5wbpwyamcqs5wpzhyynmr5ybb0vyl7"))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-tests
+                   (lambda _
+                     (substitute* "Makefile"
+                       (("^test(|2|3): getdeps build" all n)
+                        (string-append "test" n ":" )))))
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (if tests?
+                         (begin
+                           (setenv "HOME" (dirname (getcwd)))
+                           (invoke "make" "test")
+                           ;; XXX: History file not writable
+                           ;; (invoke "make" "test2")
+                           ;; XXX: Error reading from stdin
+                           ;; (invoke "make" "test3")
+                           )
+                         (format #t "test suite not run.~%")))))))
+      (native-inputs
+       (list idris))
       (propagated-inputs
        (list emacs-prop-menu))
       (home-page
