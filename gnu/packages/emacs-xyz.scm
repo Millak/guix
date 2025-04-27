@@ -13514,6 +13514,9 @@ extensive face definitions than the \"official\" Emacs variant.")
        (sha256
         (base32 "0nwyax9dikpw4fcplnk0az9k1pk02wnhkadvfp325s7rl2j8y23b"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f  ; Tests require a standard tty.
+           #:test-command #~(list "make" "run" "CASK=")))
     (propagated-inputs
      (list emacs-dash))
     (home-page "https://github.com/bbatsov/solarized-emacs")
