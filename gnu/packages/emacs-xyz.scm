@@ -16141,6 +16141,11 @@ ongoing operations.")
        (sha256
         (base32 "0hqp8r24wvzrkl630wbm0lynrcrnawv2yn2a3xgwqwwhwgva35rn"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f  ; XXX: Fails with wrong number of arguments.
+           #:test-command #~(list "ert-runner")))
+    (native-inputs
+     (list emacs-ert-runner))
     (propagated-inputs
      (list emacs-company))
     (home-page "https://github.com/ljos/sparql-mode")
