@@ -1500,28 +1500,31 @@ plugins are provided.")
 (define-public calf
   (package
     (name "calf")
-    (version "0.90.3")
+    (version "0.90.6")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://calf-studio-gear.org/files/calf-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/calf-studio-gear/calf")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "17x4hylgq4dn9qycsdacfxy64f5cv57n2qgkvsdp524gnqzw4az3"))))
-    (build-system gnu-build-system)
+                "0p4zqzr7spy3jjsmy6h7n5lsyqqyh23bswk1r3kims50b102xhxd"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #false)) ;there is no test target
     (inputs
      (list fluidsynth
            expat
            glib
            gtk+-2
            cairo
-           jack-1
+           jack-2
            lv2
            ladspa
            fftw))
     (native-inputs
      (list pkg-config))
-    (home-page "http://calf.sourceforge.net/")
+    (home-page "https://calf-studio-gear.org/")
     (synopsis "Audio plug-in pack for LV2 and JACK environments")
     (description
      "Calf Studio Gear is an audio plug-in pack for LV2 and JACK environments.
