@@ -16205,6 +16205,8 @@ unique file names you need this package here.")
        (sha256
         (base32 "1s1574q85lflik7w983v859qgxy1sn6i09hspa78smiawfva1855"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))  ; No tests.
     (home-page "https://github.com/m2ym/undohist-el")
     (synopsis "Save undo history between sessions")
     (description "This package allows persistent use of undo history for
