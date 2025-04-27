@@ -7395,6 +7395,8 @@ kmonad's configuration files (@file{.kbd}).")
        (sha256
         (base32 "130jfvy3pr3syqk6xaz910nignja32bzfnx342rr927jwa1vprfm"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "make" "check-declare")))
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/tarsius/keycast")
