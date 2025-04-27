@@ -2535,6 +2535,8 @@ displayed at the bottom or at the top.")
        (sha256
         (base32 "1byphhdp41cn2qs91la6fvgzrwgbyx4yaajknvwz8qxzgl2c4aq2"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "make" "check-declare")))
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/tarsius/moody")
