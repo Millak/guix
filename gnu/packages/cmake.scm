@@ -419,10 +419,10 @@ and workspaces that can be used in the compiler environment of your choice.")
                texinfo)))
     (properties (alist-delete 'hidden? (package-properties cmake-minimal)))))
 
-(define-public cmake-3.30
+(define-public cmake-next
   (package
     (inherit cmake)
-    (version "3.30.3")
+    (version "4.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://cmake.org/files/v"
@@ -430,7 +430,7 @@ and workspaces that can be used in the compiler environment of your choice.")
                                   "/cmake-" version ".tar.gz"))
               (sha256
                (base32
-                "1r48zym4dy4mvwzk704zh1vx9gb4a910f424ypvis28mcxdy2pbd"))))
+                "1q9119wg68vz3ki4g3yw3dkb90zpbr13vy2raar21rb31vhafc6n"))))
     (native-inputs
      (modify-inputs (package-native-inputs cmake)
        ;; Avoid circular dependency with (gnu packages debug).  Note: cppdap

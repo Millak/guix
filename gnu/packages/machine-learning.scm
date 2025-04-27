@@ -4865,7 +4865,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:cmake cmake-3.30
+      #:cmake cmake-next
       #:configure-flags
       ''("-DFBGEMM_LIBRARY_TYPE=shared")
       ;; Tests require AVX2 or AVX-512 instructions

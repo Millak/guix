@@ -257,7 +257,7 @@ command line, without displaying a keyboard at all.")
                 "01lmzmb5bzphichbyim7iy04405af5mqcqf8ki3if4wdxkdmbfn9"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:cmake cmake-3.30
+     (list #:cmake cmake-next
            ;; TODO: Figure out what's expected in the test environment.
            #:tests? #f))
     (native-inputs
@@ -3821,7 +3821,7 @@ This package is the fork of hsetroot by Hyriand.")
       (base32 "03ivr5nsjwiwvpdxpjnldwawy8sx8qgwhs57242xkb0zz0w0gvsk"))))
    (build-system cmake-build-system)
    (arguments
-    `(#:cmake ,cmake-3.30
+    `(#:cmake ,cmake-next
       #:phases
       (modify-phases %standard-phases
                      ;; remove when fixed
@@ -3873,7 +3873,7 @@ GPU-accelerated screen locking utility.")
    (build-system cmake-build-system)
    (arguments
     `(#:tests? #f ;; no test
-      #:cmake ,cmake-3.30))
+      #:cmake ,cmake-next))
    (native-inputs (list gcc-14 pkg-config))
    (inputs
     (list cairo

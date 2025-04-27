@@ -385,7 +385,7 @@ commands (lock/unlock/before-sleep) and inhibit.")
                 "19ip27hzaj2j2idaz33ypcslawkp9v5vpjx1gcm6ypqsip1s01h1"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:cmake cmake-3.30
+     (list #:cmake cmake-next
            #:tests? #f                  ;No tests.
            #:configure-flags #~'("-DNO_HYPRPM=True")
            #:phases

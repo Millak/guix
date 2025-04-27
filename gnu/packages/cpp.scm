@@ -896,7 +896,7 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
                 "14yfb8vl1bbldlv12cg3dhd6z9bdaxvlz7kx671dqpi9m8j3kd56"))))
     (build-system cmake-build-system)
     (native-inputs (list gcc-14 pkg-config))
-    (arguments (list #:cmake cmake-3.30))
+    (arguments (list #:cmake cmake-next))
     (inputs (list cairo
                   hyprutils
                   libjpeg-turbo
