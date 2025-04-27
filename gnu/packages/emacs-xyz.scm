@@ -27939,6 +27939,10 @@ without disturbing alignment.")
        (sha256
         (base32 "115g2mfpbfywp8xnag4gsb50klfvplqfh928a5mabb5s8v4a3582"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "emacs" "-Q" "-batch" "-L" "." "-l" "test/test-sourcemap.el"
+                   "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/syohex/emacs-sourcemap")
     (synopsis "Sourcemap parser")
     (description "Sourcemap parser")
