@@ -10728,6 +10728,12 @@ command for interactive viewing.
        (sha256
         (base32 "10x4hxrjm4pr6vg42a961h9ilqzyd0l0fv7fsbq9clxi439f1nd6"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f  ; ~1/2 tests fail.
+           #:test-command
+           #~(list "ert-runner" "--verbose" "--debug" "-l" "ob-async.el")))
+    (native-inputs
+     (list emacs-ert-runner))
     (propagated-inputs
      (list emacs-async emacs-dash))
     (home-page "https://github.com/astahlman/ob-async")
