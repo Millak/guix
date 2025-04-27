@@ -32255,7 +32255,9 @@ statistics with the help of @code{tokei}.")
       (inputs
        (list youtube-dl))
       (arguments
-       `(#:phases
+       `(#:tests? #f  ; Error : standard input is not a tty
+         #:test-command (list "make" "simulate")
+         #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'configure
              (lambda* (#:key inputs #:allow-other-keys)
