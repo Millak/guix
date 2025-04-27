@@ -13325,6 +13325,10 @@ overview of tasks in a subtree.")
         (base32
          "18y5zdjc7zh4jlwz6k1nl13i721rknqm0vp4mxfnmq0sc5a0qva0"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f  ; Old incompatible version of dash is used.
+           #:test-command #~(list "ert-runner")))
+    (native-inputs (list emacs-ert-runner emacs-undercover))
     (propagated-inputs
      (list emacs-dash
            emacs-deferred
