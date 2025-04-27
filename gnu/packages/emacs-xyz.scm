@@ -11901,6 +11901,7 @@ to a key in your preferred mode.")
       (build-system emacs-build-system)
       (arguments
        (list
+        #:tests? #f ; No tests.
         #:modules '((guix build emacs-build-system)
                     ((guix build cmake-build-system) #:prefix cmake:)
                     (guix build utils))
