@@ -350,132 +350,136 @@ powerful microcontroller board: Axoloti Core.  This package provides the
 patcher application.")))
 
 (define-public ksoloti-runtime
-  (package
-    (name "ksoloti-runtime")
-    (version "1.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ksoloti/ksoloti")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0lf4jqd1jwqmapp597zj33zgq7576i1fkww8aqckrpbknnmydrw5"))
-       (modules '((guix build utils)))
-       ;; Remove pre-built Java binaries.
-       (snippet
-        '(delete-file-recursively "lib/"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f ; no check target
-      #:modules '((guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-1)
-                  (srfi srfi-26)
-                  (ice-9 match)
-                  (ice-9 regex))
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'patch-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; Remove source of non-determinism in ChibiOS
-               (substitute* "chibios/os/various/shell.c"
-                 (("#ifdef __DATE__") "#if 0"))
+  (let ((revision "0")
+        (commit "b7ae4753b33532597db232285f4f3c1808f516b4"))
+    (package
+      (name "ksoloti-runtime")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ksoloti/ksoloti")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0pf8zpzfx6nibwqrxbagpp3qpypfabshs7mign84dwsl9qdal1cv"))
+         (modules '((guix build utils)))
+         ;; Remove pre-built Java binaries.
+         (snippet
+          '(delete-file-recursively "lib/"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                       ; no check target
+        #:modules '((guix build gnu-build-system)
+                    (guix build utils)
+                    (srfi srfi-1)
+                    (srfi srfi-26)
+                    (ice-9 match)
+                    (ice-9 regex))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Remove source of non-determinism in ChibiOS
+                (substitute* "chibios/os/various/shell.c"
+                  (("#ifdef __DATE__") "#if 0"))
 
-               (substitute* "firmware/compile_firmware_linux.sh"
-                 (("make -j16")
-                  "make USE_VERBOSE_COMPILE=yes"))
+                (substitute* "firmware/compile_firmware.sh"
+                  (("make -j8")
+                   (string-append "make USE_VERBOSE_COMPILE=yes -j"
+                                  (number->string (parallel-job-count)))))
 
-               ;; Patch shell paths
-               (substitute* '("src/main/java/qcmds/QCmdCompileFirmware.java"
-                              "src/main/java/qcmds/QCmdCompilePatch.java"
-                              "src/main/java/qcmds/QCmdFlashDFU.java")
-                 (("/bin/sh") (which "sh")))
+                ;; Patch shell paths
+                (substitute* '("src/main/java/qcmds/QCmdCompileFirmware.java"
+                               "src/main/java/qcmds/QCmdCompilePatch.java"
+                               "src/main/java/qcmds/QCmdFlashDFU.java")
+                  (("/bin/sh") (which "sh")))
 
-               ;; Override cross compiler base name
-               (substitute* '"firmware/Makefile.patch.mk"
-                 (("arm-none-eabi-(gcc|g\\+\\+|objcopy|objdump|size)" tool)
-                  (which tool)))
+                ;; Override cross compiler base name
+                (substitute* "firmware/Makefile.patch.mk"
+                  (("arm-none-eabi-(gcc|g\\+\\+|objcopy|objdump|size)" tool)
+                   (which tool)))
 
-               ;; XXX: for some reason the whitespace substitution does not
-               ;; work, so we disable it.
-               (substitute* "firmware/Makefile.patch.mk"
-                 (("^BUILDDIR=.*") "BUILDDIR=${axoloti_libraries}/build\n"))
+                ;; XXX: for some reason the whitespace substitution does not
+                ;; work, so we disable it.
+                (substitute* "firmware/Makefile.patch.mk"
+                  (("^CHIBIOS +=.*") "CHIBIOS=${axoloti_firmware}/../chibios\n")
+                  (("^BUILDDIR=.*") "BUILDDIR=${axoloti_libraries}/build\n"))
 
-               ;; Hardcode full path to compiler tools
-               (substitute* '("firmware/Makefile"
-                              "firmware/flasher/Makefile"
-                              "firmware/mounter/Makefile")
-                 (("TRGT =.*")
-                  (string-append "TRGT = "
-                                 (assoc-ref inputs "cross-toolchain")
-                                 "/bin/arm-none-eabi-\n")))
+                ;; Hardcode full path to compiler tools
+                (substitute* '("firmware/Makefile"
+                               "firmware/flasher/Makefile"
+                               "firmware/mounter/Makefile")
+                  (("TRGT =.*")
+                   (string-append "TRGT = "
+                                  (assoc-ref inputs "cross-toolchain")
+                                  "/bin/arm-none-eabi-\n")))
 
-               ;; Hardcode path to "make"
-               (substitute* '("firmware/compile_firmware_linux.sh"
-                              "firmware/compile_patch_linux.sh")
-                 (("make") (which "make")))
+                ;; Hardcode path to "make"
+                (substitute* '("firmware/compile_firmware.sh"
+                               "firmware/compile_patch.sh")
+                  (("make") (which "make")))
 
-               ;; Hardcode path to "dfu-util"
-               (substitute* "platform_linux/upload_fw_dfu.sh"
-                 (("-f \"\\$\\{platformdir\\}/bin/dfu-util\"") "-z \"\"")
-                 (("\\./dfu-util") (which "dfu-util")))))
-           (delete 'configure)
-           (replace 'build
-             ;; Build Axoloti firmware with cross-compiler
-             (lambda _
-               (with-directory-excursion "platform_linux"
-                 (substitute* "compile_firmware.sh"
-                   (("^\"\\$\\{axoloti.*_firmware\\}/compile_firmware_linux.sh" m)
-                    (string-append (which "bash") " " m)))
-                 (invoke "sh" "compile_firmware.sh" "BOARD_KSOLOTI_CORE")
-                 (invoke "sh" "compile_firmware.sh" "BOARD_AXOLOTI_CORE"))))
-           (replace 'install
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let* ((share (string-append #$output "/share/ksoloti/"))
-                      (doc   (string-append share "doc"))
-                      (dir   (getcwd))
-                      (pats  '("/doc/[^/]+$"
-                               "/patches/[^/]+/[^/]+$"
-                               "/objects/[^/]+/[^/]+$"
-                               "/firmware/.+"
-                               "/chibios/[^/]+$"
-                               "/chibios/boards/ST_STM32F4_DISCOVERY/[^/]+$"
-                               "/chibios/(ext|os|docs)/.+"
-                               "/CMSIS/[^/]+/[^/]+$"
-                               "/patch/[^/]+/[^/]+$"
-                               "/[^/]+\\.txt$"))
-                      (pattern (string-append
-                                "(" (string-join
-                                     (map (cut string-append dir <>)
-                                          pats)
-                                     "|") ")"))
-                      (files   (find-files dir
-                                           (lambda (file stat)
-                                             (and (eq? 'regular (stat:type stat))
-                                                  (string-match pattern file))))))
-                 (for-each (lambda (file)
-                             (install-file file
-                                           (string-append
-                                            share
-                                            (regexp-substitute
-                                             #f
-                                             (string-match dir (dirname file))
-                                             'pre  'post))))
-                           files)))))))
-    (inputs
-     `(;; for compiling patches
-       ("make" ,gnu-make)
-       ;; for compiling firmware
-       ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-9-2020-q2-update))
-       ;; for uploading compiled patches and firmware
-       ("dfu-util" ,dfu-util)))
-    (home-page "https://ksoloti.github.io/")
-    (synopsis "Audio development environment for the Ksoloti board")
-    (description
-     "Ksoloti is an environment for generating and processing digital audio.
+                ;; Hardcode path to "dfu-util"
+                (substitute* "firmware/upload_fw_dfu.sh"
+                  (("-f \"\\$\\{platformdir\\}/bin/dfu-util\"") "-z \"\"")
+                  (("\\./dfu-util") (which "dfu-util")))))
+            (delete 'configure)
+            (replace 'build
+              ;; Build Axoloti firmware with cross-compiler
+              (lambda _
+                (with-directory-excursion "firmware"
+                  (substitute* "compile_firmware.sh"
+                    (("`uname`") (string-append "`" (which "uname") "`")))
+                  (invoke "sh" "compile_firmware.sh" "BOARD_KSOLOTI_CORE")
+                  (invoke "sh" "compile_firmware.sh" "BOARD_AXOLOTI_CORE"))))
+            (replace 'install
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((share (string-append #$output "/share/ksoloti/"))
+                       (doc   (string-append share "doc"))
+                       (dir   (getcwd))
+                       (pats  '("/doc/[^/]+$"
+                                "/patches/[^/]+/[^/]+$"
+                                "/objects/[^/]+/[^/]+$"
+                                "/firmware/.+"
+                                "/platform_linux/.+"
+                                "/chibios/[^/]+$"
+                                "/chibios/boards/ST_STM32F4_DISCOVERY/[^/]+$"
+                                "/chibios/(ext|os|docs)/.+"
+                                "/CMSIS/[^/]+/[^/]+$"
+                                "/patch/[^/]+/[^/]+$"
+                                "/[^/]+\\.txt$"))
+                       (pattern (string-append
+                                 "(" (string-join
+                                      (map (cut string-append dir <>)
+                                           pats)
+                                      "|") ")"))
+                       (files   (find-files dir
+                                            (lambda (file stat)
+                                              (and (eq? 'regular (stat:type stat))
+                                                   (string-match pattern file))))))
+                  (for-each (lambda (file)
+                              (install-file file
+                                            (string-append
+                                             share
+                                             (regexp-substitute
+                                              #f
+                                              (string-match dir (dirname file))
+                                              'pre  'post))))
+                            files)))))))
+      (inputs
+       `( ;; for compiling patches
+         ("make" ,gnu-make)
+         ;; for compiling firmware
+         ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-9-2020-q2-update))
+         ;; for uploading compiled patches and firmware
+         ("dfu-util" ,dfu-util)))
+      (home-page "https://ksoloti.github.io/")
+      (synopsis "Audio development environment for the Ksoloti board")
+      (description
+       "Ksoloti is an environment for generating and processing digital audio.
 It can be a programmable virtual modular synthesizer, polysynth, drone box,
 sequencer, chord generator, multi effect, sample player, looper, granular
 sampler, MIDI generator/processor, CV or trigger generator, anything in
@@ -486,7 +490,7 @@ short, Ksoloti aims for maximum compatibility with the original Axoloti, but
 with some layout changes and added features.
 
 This package provides the runtime.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public ksoloti-patcher
   (package
@@ -615,8 +619,8 @@ This package provides the runtime.")
                                         " -Dsun.java2d.renderer=org.marlin.pisces.MarlinRenderingEngine"
                                         " -Dsun.java2d.d3d=false"
                                         " -Dsun.java2d.dpiaware=true"
-                                        " -Daxoloti_release=" runtime
-                                        " -Daxoloti_runtime=" runtime
+                                        " -Daxoloti_platform=" runtime "/platform_linux"
+                                        " -Daxoloti_firmware=" runtime "/firmware"
                                         " -jar " dir "/Ksoloti.jar")))))
                   (chmod target #o555)))))
           (add-after 'install 'strip-jar-timestamps
