@@ -1448,6 +1448,8 @@ comparing large files in batches.")
                (base32
                 "165gbrc1h1yj764kn3qq2y1551y04lqnklfa0k87gqgd38q5v985"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))  ; No tests.
     (home-page "https://github.com/melpa/package-build")
     (synopsis "Tools for assembling an Emacs package archive")
     (description "This package provides tools for assembling an @acronym{ELPA,
