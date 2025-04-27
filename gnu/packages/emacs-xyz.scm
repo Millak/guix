@@ -40954,6 +40954,10 @@ your left hand, and consonants are input with your right hand.")
           (base32
             "1s38d6bvggdk5p45ww1jb4gxifzgjwgw1m6ar920nlg0j4fgbcvr"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command
+           #~(list "emacs" "-Q" "-batch"
+                   "-l" "test/elpa.el" "-l" "test/make-test.el")))
     (home-page "https://github.com/clemera/objed")
     (synopsis "Navigate and edit text objects")
     (description
