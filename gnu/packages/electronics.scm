@@ -48,6 +48,7 @@
   #:use-module (gnu packages embedded)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages fpga)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graphviz)
@@ -57,6 +58,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages m4)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -71,7 +73,8 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages toolkits)
-  #:use-module (gnu packages version-control))
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages xml))
 
 (define-public comedilib
   (package
@@ -678,6 +681,79 @@ to enforce it.")
       (description "Fx2lafw is free firmware for Cypress FX2 chips which makes
 them usable as simple logic analyzer and/or oscilloscope hardware.")
       (license license:gpl2+))))
+
+(define-public symbiyosys
+  (package
+    (name "symbiyosys")
+    (version "0.52")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/YosysHQ/sby/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06nhkmnl9ymp1wxapc0lnj82knj5q43x0s2rmfshwvs4cijzqm7f"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:modules `((guix build gnu-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:imported-modules `(,@%cmake-build-system-modules
+                           (guix build python-build-system))
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'build)
+          ;; TODO: build docs, after furo-ys is packaged.
+          ;; (add-after 'install 'build-info
+          ;; (lambda _
+          ;; (invoke "make" "-C" "docs" "info")))
+          (add-before 'check 'git-init
+            (lambda _
+              (invoke "git" "init")))   ;check expects a git repo
+          (add-after 'git-init 'patch-/usr/bin/env
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "sbysrc/sby_core.py"
+                (("\"/usr/bin/env\", ")
+                 ""))
+              (substitute* "sbysrc/sby.py"
+                (("/usr/bin/env python")
+                 (search-input-file inputs "bin/python3")))))
+          ;; The tests related to abc (berkeley) binary used currently produce
+          ;; errors.  The abc-yosyshq fork would make the tests pass, but
+          ;; cannot be packaged due to the fork's non-free licensing (see the
+          ;; README, which specifies a non-commercial restriction).
+          (add-after 'patch-/usr/bin/env 'disable-abc-tests
+            (lambda _
+              (delete-file "tests/keepgoing/keepgoing_multi_step.sby")
+              (delete-file-recursively "docs/examples/demos")
+              (delete-file
+               "tests/regression/aim_vs_smt2_nonzero_start_offset.sby")))
+          (add-after 'install 'python:wrap
+            (assoc-ref python:%standard-phases 'wrap)))))
+    (inputs (list abc
+                  boolector
+                  git-minimal/pinned
+                  python
+                  python-click
+                  python-xmlschema
+                  z3
+                  yices
+                  yosys))
+    ;; TODO: see above build-info phase comment.
+    ;; (native-inputs (list
+    ;;                 python-sphinx python-sphinx-argparse texinfo))
+    (home-page "https://github.com/YosysHQ/sby/")
+    (synopsis "Formal hardware verification with yosys")
+    (description
+     "SimbyYosys is a front-end program for yosys-based formal hardware
+verification flows.")
+    (license license:isc)))
 
 (define-public uhdm
   (package
