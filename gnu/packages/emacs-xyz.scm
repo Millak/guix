@@ -12603,6 +12603,10 @@ output, as well as the Coveralls format produced by Undercover.")
         (base32
          "0c5q8qmbligzjsn05di4wh6ggpd3944j4yqb78vzd441b8ssq70i"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "make" "test" "CASK=")))
+    (native-inputs
+     (list emacs-ert-runner))
     (home-page "https://github.com/voxpupuli/puppet-mode")
     (synopsis "Emacs major mode for the Puppet configuration language")
     (description
