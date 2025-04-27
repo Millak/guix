@@ -572,7 +572,9 @@ packages.")
                           (map (cut search-input-file inputs <>)
                                (list "bin/find"
                                      "bin/grep"
-                                     "bin/sed")))))))))))
+                                     "bin/sed"
+                                     ;; for util-linux
+                                     "bin/uuidgen")))))))))))
     (native-inputs (list patch))
     (inputs
      (list coreutils-minimal grep sed util-linux))  ; for getopt
