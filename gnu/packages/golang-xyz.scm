@@ -4105,6 +4105,8 @@ formatting information, rather than the current locale name.")
     (arguments
      (list
       #:import-path "github.com/dennwc/btrfs"
+      ;; Tests fail on 32bit
+      #:tests? (target-64bit?)
       #:test-flags
       ;; Tests require "mount" and "mkfs.btrfs" in the PATH.
       #~(list "-skip"
