@@ -60,6 +60,9 @@
             string->license
             crate-recursive-import
             cargo-lock->expressions
+            cargo-inputs-from-lockfile
+            find-cargo-inputs-location
+            extract-cargo-inputs
             %crate-updater))
 
 
@@ -558,6 +561,49 @@ referencing all imported sources."
           `(,(string->symbol package-name) =>
             (list ,@(map second source-expressions)))))
     (values source-expressions cargo-inputs-entry)))
+
+(define* (cargo-inputs-from-lockfile #:optional (lockfile "Cargo.lock"))
+  "Given LOCKFILE (default to \"Cargo.lock\" in current directory), return a
+source list imported from it, to be used as package inputs.  This procedure
+can be used for adding a manifest file within the source tree of a Rust
+application."
+  (let ((source-expressions
+         cargo-inputs-entry
+         (cargo-lock->expressions lockfile "cargo-inputs-temporary")))
+    (eval-string
+     (call-with-output-string
+       (lambda (port)
+         (for-each
+          (cut pretty-print-with-comments port <>)
+          `((use-modules (guix build-system cargo))
+            ,@source-expressions
+            (define-cargo-inputs lookup-cargo-inputs ,cargo-inputs-entry)
+            (lookup-cargo-inputs 'cargo-inputs-temporary))))))))
+
+(define (find-cargo-inputs-location file)
+  "Search in FILE for a top-level definition of Cargo inputs.  Return the
+location if found, or #f otherwise."
+  (find-definition-location file 'lookup-cargo-inputs
+                            #:define-prefix 'define-cargo-inputs))
+
+(define* (extract-cargo-inputs file #:key exclude)
+  "Search in FILE for a top-level definition of Cargo inputs.  If found,
+return its entries excluding EXCLUDE, or an empty list otherwise."
+  (call-with-input-file file
+    (lambda (port)
+      (do ((syntax (read-syntax port)
+                   (read-syntax port)))
+          ((match (syntax->datum syntax)
+             (('define-cargo-inputs 'lookup-cargo-inputs _ ...) #t)
+             ((? eof-object?) #t)
+             (_ #f))
+           (or (and (not (eof-object? syntax))
+                    (match (syntax->datum syntax)
+                      (('define-cargo-inputs 'lookup-cargo-inputs inputs ...)
+                       (remove (lambda (cargo-input-entry)
+                                 (eq? exclude (first cargo-input-entry)))
+                               inputs))))
+               '()))))))
 
 
 ;;;
