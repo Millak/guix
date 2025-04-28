@@ -15064,14 +15064,14 @@ saving AnnData objects to disk.")
 (define-public r-oligoclasses
   (package
     (name "r-oligoclasses")
-    (version "1.68.0")
+    (version "1.70.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "oligoClasses" version))
        (sha256
         (base32
-         "01zcbrk1yxv6jzainw4hc2c20mzg4ji8l8svbyncch39f3n6agb7"))))
+         "04357ab8jx7vqj8k82q6j05z74pwayvgmxb8r1rw67zq6z6v6r02"))))
     (properties `((upstream-name . "oligoClasses")))
     (build-system r-build-system)
     ;; Some tests need pd.mapping50k.hind240, which needs this package.
@@ -15090,7 +15090,6 @@ saving AnnData objects to disk.")
            r-rsqlite
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-genomewidesnp6crlmm r-human370v1ccrlmm r-runit))
     (home-page "https://bioconductor.org/packages/oligoClasses/")
     (synopsis "Classes for high-throughput arrays")
     (description
