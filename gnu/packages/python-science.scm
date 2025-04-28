@@ -16,7 +16,8 @@
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
-;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
@@ -78,6 +79,7 @@
   #:use-module (gnu packages python-graphics)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages simulation)
   #:use-module (gnu packages sphinx)
@@ -4505,6 +4507,48 @@ series, a dozen datasets of local french data, numerous sources available on
 @url{insee.fr}, geographical limits of administrative areas taken from IGN as
 well as key metadata and SIRENE database containing data on all French
 compagnies.")
+    (license license:expat)))
+
+(define-public python-pyqtgraph
+  (package
+    (name "python-pyqtgraph")
+    (version "0.13.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyqtgraph" version))
+       (sha256
+        (base32 "1kiazyc8mqyx0479qdcvdclzq0g1hpp93dyq8444w1f72628s42q"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This test fails.  It suggests to disable assert rewriting in Pytest,
+     ;; but it still doesn't pass.
+     (list #:test-flags #~'("-k" "not test_reload")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-qpa
+                 (lambda _
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list qtbase-5))
+    (propagated-inputs
+     (list python-h5py
+           python-numpy
+           python-pyopengl
+           python-scipy
+           python-pyqt))
+    (home-page "https://www.pyqtgraph.org")
+    (synopsis "Scientific graphics and GUI library for Python")
+    (description
+     "PyQtGraph is a Pure-python graphics library for PyQt5, PyQt6, PySide2
+and PySide6.  It is intended for use in mathematics, scientific or engineering
+applications.")
     (license license:expat)))
 
 (define-public python-libneuroml

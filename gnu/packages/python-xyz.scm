@@ -21718,42 +21718,6 @@ ISO 8859, etc.).")
     (description "AnyQt is a PyQt4/PyQt5 compatibility layer.")
     (license license:gpl3)))
 
-(define-public python-pyqtgraph
-  (package
-    (name "python-pyqtgraph")
-    (version "0.13.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyqtgraph" version))
-       (sha256
-        (base32 "1kiazyc8mqyx0479qdcvdclzq0g1hpp93dyq8444w1f72628s42q"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; This test fails.  It suggests to disable assert rewriting in Pytest,
-     ;; but it still doesn't pass.
-     (list #:test-flags #~'("-k" "not test_reload")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'check 'set-qpa
-                 (lambda _
-                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
-    (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-xdist
-           python-setuptools python-wheel))
-    (inputs
-     (list qtbase-5))
-    (propagated-inputs
-     (list python-h5py python-numpy python-pyopengl python-scipy
-           python-pyqt))
-    (home-page "https://www.pyqtgraph.org")
-    (synopsis "Scientific graphics and GUI library for Python")
-    (description
-     "PyQtGraph is a Pure-python graphics library for PyQt5, PyQt6, PySide2
-and PySide6.  It is intended for use in mathematics, scientific or engineering
-applications.")
-    (license license:expat)))
-
 (define-public python-qasync
   (package
     (name "python-qasync")
