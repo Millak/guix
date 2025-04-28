@@ -19944,7 +19944,7 @@ config files.")
 (define-public python-omegaconf
   (package
     (name "python-omegaconf")
-    (version "2.2.3")
+    (version "2.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -19960,7 +19960,7 @@ config files.")
                              (("str\\(build_dir / \"bin\" / \"antlr.*\"\\),") ""))))
               (sha256
                (base32
-                "00rw1rkjycn0jdg3jmar6jdxb1pcb21jclm5g1921s9z8f5ii5dh"))))
+                "0cpkkzda919f24y9s04mi15v9zksvln95ics8cr31rcpi2wbh5j3"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -19973,11 +19973,17 @@ config files.")
                    ;; Ignore deprecation warnings.
                    (substitute* "pyproject.toml"
                      (("-Werror") "")))))))
-    (propagated-inputs (list java-antlr4-runtime-python
-                             python-pydevd
-                             python-pyyaml))
-    (native-inputs (list icedtea antlr4 python-pytest python-pytest-mock
-                         python-setuptools python-wheel))
+    (native-inputs
+     (list icedtea
+           antlr4
+           python-pytest
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list java-antlr4-runtime-python
+           python-pydevd
+           python-pyyaml))
     (home-page "https://github.com/omry/omegaconf")
     (synopsis "Flexible configuration system")
     (description "OmegaConf is a hierarchical configuration system and
