@@ -137,7 +137,12 @@ client.")
     (native-search-paths
      (list (search-path-specification
             (variable "FCITX_ADDON_DIRS")
-            (files '("lib/fcitx5")))))
+            (files '("lib/fcitx5")))
+           (search-path-specification
+            (variable "GUIX_GTK3_IM_MODULE_FILE")
+            (file-type 'regular)
+            (separator #f)
+            (files '("lib/gtk-3.0/3.0.0/immodules-gtk3.cache")))))
     (home-page "https://github.com/fcitx/fcitx5")
     (synopsis "Input method framework")
     (description "Fcitx 5 is a generic input method framework.")
