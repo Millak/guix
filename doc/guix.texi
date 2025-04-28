@@ -14895,6 +14895,11 @@ version instead instead of aborting.
 If a crate dependency is not (yet) packaged, make the corresponding
 input in @code{#:cargo-inputs} or @code{#:cargo-development-inputs} into
 a comment.
+@item --lockfile=@var{file}
+@itemx -f @var{file}
+When @option{--lockfile} is specified, the importer will ignore other options
+and won't output package expressions, instead importing source expressions
+from @var{file}, a @file{Cargo.lock} file.
 @end table
 
 @item elm
