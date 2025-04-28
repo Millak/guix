@@ -27774,7 +27774,7 @@ functionality like full case-folding for case-insensitive matches in Unicode.")
 (define-public python-pyopengl
   (package
     (name "python-pyopengl")
-    (version "3.1.6")
+    (version "3.1.9")
     (source
      (origin
        (method url-fetch)
@@ -27791,7 +27791,9 @@ functionality like full case-folding for case-insensitive matches in Unicode.")
                     (list "not test_get_read_fb_binding"
                           "test_get_version"
                           "test_glCallLists_twice2"
+                          "test_glmultidraw"
                           "test_lookupint"
+                          "test_numpyConversion"
                           "test_pointers")
                     " and not "))
       #:phases
@@ -27817,9 +27819,11 @@ functionality like full case-folding for case-insensitive matches in Unicode.")
               ;; Not providing libgle. It seems to be very old.
               )))))
     (native-inputs
-     (list python-pytest
-           python-setuptools
+     (list python-cython
+           python-numpy
            python-pygame
+           python-pytest
+           python-setuptools
            python-wheel))
     (inputs
      (list freeglut
