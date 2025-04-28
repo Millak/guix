@@ -676,6 +676,35 @@ test itself.")
 being used as variables or parameters.")
     (license license:gpl2)))
 
+(define-public python-flake8-comprehensions
+  (package
+    (name "python-flake8-comprehensions")
+    (version "3.16.0")
+    (source
+     (origin
+       (method git-fetch) ;; no tests in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/adamchainz/flake8-comprehensions")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w49k9hv77s5kq60j8j3pbvq7d79rfldqmghlqvn1xxkdkra1v7q"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-flake8-path
+           python-pytest-randomly
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-flake8))
+    (home-page "https://github.com/adamchainz/flake8-comprehensions")
+    (synopsis "List, set and dict comprehensions")
+    (description
+     "This package provides a flake8 plugin to help you write better
+list/set/dict comprehensions.")
+    (license license:expat)))
+
 (define-public python-flake8-deprecated
   (package
     (name "python-flake8-deprecated")
