@@ -21818,15 +21818,18 @@ for other R packages to compile and link against.")
 (define-public r-flowworkspace
   (package
     (name "r-flowworkspace")
-    (version "4.18.0")
+    (version "4.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowWorkspace" version))
        (sha256
         (base32
-         "0mjf3kzsmrrlg5asam96kjj8kqv12wn9xqbmf9pywgr5k6c045i7"))))
-    (properties `((upstream-name . "flowWorkspace")))
+         "1jrbi87zy11ls40d0c9gmdfd9ab53182ip3brg1gvgnr6sz930vx"))))
+    (properties
+     `((upstream-name . "flowWorkspace")
+       ;; Avoid dependency cycles.
+       (updater-ignored-native-inputs . ("r-cytoml" "r-opencyto"))))
     (build-system r-build-system)
     ;; Tests fail with: 'NA' is not a valid file
     (arguments (list #:tests? #false))
@@ -21852,7 +21855,7 @@ for other R packages to compile and link against.")
            r-scales
            r-xml))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-digest r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/flowWorkspace/")
     (synopsis "Infrastructure for working with cytometry data")
     (description
