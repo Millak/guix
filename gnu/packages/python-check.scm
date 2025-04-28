@@ -2147,6 +2147,32 @@ testing framework.")
 compliance.")
     (license license:bsd-3)))
 
+(define-public python-pytest-flake8-path
+  (package
+    (name "python-pytest-flake8-path")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/adamchainz/pytest-flake8-path")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k1lv34jmfirdwa2dpiim8803b6krqy3m7k2knc39fgmzbd6yc8z"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-flake8
+           python-pytest))
+    (home-page "https://github.com/adamchainz/pytest-flake8-path")
+    (synopsis "Pytest fixture for testing flake8 plugins")
+    (description
+     "This package provides a pytest fixture for testing flake8 plugins.")
+    (license license:expat)))
+
 (define-public python-pytest-flakefinder
   (package
     (name "python-pytest-flakefinder")
