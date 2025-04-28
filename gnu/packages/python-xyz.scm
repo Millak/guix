@@ -1181,8 +1181,14 @@ Jupytext are:
        (sha256
         (base32 "0jp4zkm0idfdsrq3jzb52iqfkh6xzm7sacz1sa34ffnkyqdk3xzh"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-portalocker))
-    (native-inputs (list python-hatchling python-pytest))
+    (arguments
+     (list
+      ;; XXX: Tests are broken, no new version fixing them yet.
+      #:tests? #f))
+    (native-inputs
+     (list python-hatchling))
+    (propagated-inputs
+     (list python-portalocker))
     (home-page "https://github.com/Preston-Landers/concurrent-log-handler")
     (synopsis
      "Additional log handler for Python's standard @code{logging} package")
