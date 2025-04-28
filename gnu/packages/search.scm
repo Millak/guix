@@ -15,6 +15,7 @@
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages ebook)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages file)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -82,7 +84,7 @@
 (define-public xapian
   (package
     (name "xapian")
-    (version "1.4.19")
+    (version "1.4.29")
     ;; Note: When updating Xapian, remember to update omega and
     ;; python-xapian-bindings below.
     (source (origin
@@ -90,7 +92,7 @@
               (uri (string-append "https://oligarchy.co.uk/xapian/" version
                                   "/xapian-core-" version ".tar.xz"))
               (sha256
-               (base32 "1hx92kbqdl38gsrwzvbqgf2jc4wwzsad2gd99g62cdfclvy4ijhz"))))
+               (base32 "1g11wps45rgh7a7z0zmsvk6vg2i1ih4cmbwf44nfrlrsc749np65"))))
     (build-system gnu-build-system)
     (inputs (list zlib
                   `(,util-linux "lib")))
@@ -129,10 +131,12 @@ rich set of boolean query operators.")
                            "/xapian-omega-" version ".tar.xz"))
        (sha256
         (base32
-         "136dsna6jvq48j4x4rr5y9nxmgrif9kvf4ybl5a6gpsmgqlfzcp4"))))
+         "0gpq1k1fanx2vpj0xrmkdafacn2r5qsf57201ax4skkb96flxfjg"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list pkg-config))
     (inputs
-     (list (list pcre "bin") perl xapian zlib))
+     (list file pcre2 perl xapian zlib))
     (home-page "https://xapian.org/")
     (synopsis "Search engine built on Xapian")
     (description
@@ -157,7 +161,7 @@ a CGI web search frontend.")
                                   "/xapian-bindings-" version ".tar.xz"))
               (sha256
                (base32
-                "0gc8l9cn8jdma0p73jl14z17yizp6dax5zsycvgprajii6j8bhwi"))))
+                "1kn8dw0zrlxvc417wmqmdkqz76kw3f5802wsv5kyyl38pckyjh0p"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~(list "--with-python3")
