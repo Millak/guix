@@ -1843,17 +1843,22 @@ archive' public keys, with GUIX."
 
   (with-imported-modules '((guix build utils))
     #~(begin
-        (use-modules (guix build utils))
+        (use-modules (guix build utils)
+                     (ice-9 match))
         (define acl-file #$%acl-file)
         ;; If the ACL already exists, move it out of the way.  Create a backup
         ;; if it's a regular file: it's likely that the user manually updated
         ;; it with 'guix archive --authorize'.
-        (if (file-exists? acl-file)
-            (if (and (symbolic-link? acl-file)
-                     (store-file-name? (readlink acl-file)))
-                (delete-file acl-file)
-                (rename-file acl-file (string-append acl-file ".bak")))
-            (mkdir-p (dirname acl-file)))
+        (match (and=> (false-if-exception (lstat acl-file)) stat:type)
+          (#f #f) ;file doesn't exist
+          ('symlink ;delete symlink pointing to store, backup otherwise.
+           (if (or (store-file-name? (readlink acl-file)) ;store symlink
+                   (not (file-exists? acl-file)))         ;dangling symlink
+               (delete-file acl-file)
+               (rename-file acl-file (string-append acl-file ".bak"))))
+          (_ ;backup
+           (rename-file acl-file (string-append acl-file ".bak"))))
+        (mkdir-p (dirname acl-file))
 
         ;; Installed the declared ACL.
         (symlink #+default-acl acl-file))))
