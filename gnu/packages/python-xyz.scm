@@ -27841,17 +27841,14 @@ library.")
   (package
     (inherit python-pyopengl)
     (name "python-pyopengl-accelerate")
-    (version "3.1.6")
+    (version "3.1.9")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "PyOpenGL-accelerate" version))
+       (uri (pypi-uri "pyopengl_accelerate" version))
        (sha256
         (base32
-         "1hydrpdn4p4z6mlczcg1y4s0z8si3rs6zq8x4ql558pcaq1312md"))))
-    (inputs
-     (list mesa python-numpy)) ; for cython module
-                                        ; numpy_formathandler, thus not propagated
+         "1ww6kbyj1hshxfi3gskkygv1w2f7klzj9jcyfpzihn4pfry7r5c5"))))
     (arguments
      `(#:tests? #f
        #:phases
