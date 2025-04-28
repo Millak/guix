@@ -6926,6 +6926,68 @@ managed by PipeWire.")
     (home-page "https://gitlab.freedesktop.org/rncbc/qpwgraph")
     (license license:gpl2)))
 
+(define-public raysession
+  (package
+    (name "raysession")
+    (version "0.14.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Houston4444/RaySession")
+             (commit (string-append "v" version))
+             (recursive? #true)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m44n6p192i5cvbj98jkmp4ywmm2bjzdbbipaa9xgg07x0jz1mcr"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;no test target
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:modules '((guix build gnu-build-system) (guix build qt-utils)
+                  (guix build utils))
+      #:imported-modules (cons '(guix build qt-utils)
+                               %default-gnu-imported-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              (substitute* "Makefile"
+                (("\\$\\(DESTDIR\\)/etc/xdg")
+                 "$(PREFIX)/etc/xdg"))))
+          (add-after 'install 'wrap-scripts
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion (string-append #$output "/share/raysession/src/bin")
+                (for-each (lambda (script)
+                            (wrap-script script
+                              #:guile (search-input-file inputs "bin/guile")
+                              `("PYTHONPATH" ":" prefix
+                                (,(string-append #$output "/share/raysession/src/gui")
+                                 ,(string-append #$output "/share/raysession/src/daemon")
+                                 ,(string-append #$output "/share/raysession/src/control")
+                                 ,(getenv "GUIX_PYTHONPATH")))))
+                          '("raysession"
+                            "ray_control"
+                            "ray-daemon"
+                            "ray-proxy")))))
+          (add-after 'wrap-scripts 'wrap-qt
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-all-qt-programs #:outputs outputs #:inputs inputs))))))
+    (native-inputs (list qtbase-5 qttools-5 which))
+    (inputs
+     (list guile-3.0 jack-2 pipewire python-pyliblo3 python-pyqt python-wrapper))
+    (home-page "https://github.com/Houston4444/RaySession")
+    (synopsis "Audio session manager")
+    (description "RaySession is a session manager for audio programs such as
+Ardour, Carla, QTractor, Guitarix, Patroneo, Jack Mixer, etc.  The principle
+is to load together audio programs, then be able to save or close all
+documents together.  Its main purpose is to manage NSM compatible programs,
+but it also helps for other programs.  It offers a patchbay for visualizing
+and editing connections.")
+    (license license:gpl2+)))
+
 (define-public streamripper
   (package
     (name "streamripper")
