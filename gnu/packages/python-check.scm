@@ -676,6 +676,33 @@ test itself.")
 being used as variables or parameters.")
     (license license:gpl2)))
 
+(define-public python-flake8-deprecated
+  (package
+    (name "python-flake8-deprecated")
+    (version "2.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flake8_deprecated" version))
+       (sha256
+        (base32 "18iazzh2l42fcjmkqdwncsl1h2s6sbi26vz4m0gmd80w3l0cm5pf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "run_tests.py")))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-flake8))
+    (home-page "https://github.com/gforcada/flake8-deprecated")
+    (synopsis "Warns about deprecated method calls in Python")
+    (description
+     "This flake8 plugin helps you keep up with method deprecations by
+providing hints about what deprecated methods should be replaced with.")
+    (license license:gpl2)))
+
 (define-public python-gcovr
   (package
     (name "python-gcovr")
