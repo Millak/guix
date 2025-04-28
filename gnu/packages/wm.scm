@@ -2087,7 +2087,7 @@ modules for building a Wayland compositor.")
 (define-public wl-mirror
   (package
     (name "wl-mirror")
-    (version "0.17.0")
+    (version "0.18.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2096,12 +2096,13 @@ modules for building a Wayland compositor.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1szzaahpq0ihpabjh4djkrmhlp0z3g39pdsmrcg7jdz6qw49pj8k"))))
+                "0n7i9jmij5vpnsas3j1namdrsncpp6q008nzny5kgbg96cq267ym"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;No tests.
            #:configure-flags
            #~(list "-DINSTALL_DOCUMENTATION=ON"
+                   "-DINSTALL_EXAMPLE_SCRIPTS=ON"
                    (string-append "-DWL_PROTOCOL_DIR="
                                   #$(this-package-input "wayland-protocols")
                                   "/share/wayland-protocols")
