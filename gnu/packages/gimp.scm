@@ -460,7 +460,10 @@ that is extensible via a plugin system.")
                    (for-each
                     (lambda (prog)
                       (wrap-program prog
-                        `("GI_TYPELIB_PATH" suffix
+                        ;; Ensure GI_TYPELIB_PATH is not extended from the
+                        ;; environment, as it could cause Gimp to crash (see
+                        ;; bug#77921).
+                        `("GI_TYPELIB_PATH" =
                           (,(getenv "GI_TYPELIB_PATH")))
                         `("GUIX_PYTHONPATH" suffix
                           (,(getenv "GUIX_PYTHONPATH")))))
