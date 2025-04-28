@@ -3104,16 +3104,20 @@ expression experiment from Mulvey et al. (2015).")
 (define-public r-hsmmsinglecell
   (package
     (name "r-hsmmsinglecell")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HSMMSingleCell" version 'experiment))
        (sha256
-        (base32 "1mcckdpz4i6azm2dmjrkbn6py4c7bhq1dqzpb3h9am49s1jhzgiw"))))
+        (base32 "04r3y0c3i5b6cz17d37pm2608mma71nrlaxnwiidi6yk982mk58p"))))
     (properties
-     `((upstream-name . "HSMMSingleCell")))
+     '((upstream-name . "HSMMSingleCell")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-monocle"))))
     (build-system r-build-system)
+    (native-inputs
+     (list r-biobase r-ggplot2 r-knitr r-reshape2))
     (home-page "https://www.bioconductor.org/packages/HSMMSingleCell/")
     (synopsis "Single-cell RNA-Seq for differentiating human skeletal muscle myoblasts (HSMM)")
     (description
