@@ -3029,7 +3029,7 @@ configuring CUPS.")
 (define-public hicolor-icon-theme
   (package
     (name "hicolor-icon-theme")
-    (version "0.17")
+    (version "0.18")
     (source
      (origin
       (method url-fetch)
@@ -3037,15 +3037,15 @@ configuring CUPS.")
                           "hicolor-icon-theme-" version ".tar.xz"))
       (sha256
        (base32
-        "1n59i3al3zx6p90ff0l43gzpzmlqnzm6hf5cryxqrlbi48sq8x1i"))))
-    (build-system gnu-build-system)
+        "1mw1rz1khlj30ywr1iiarx497zayyzwmrjnb8nxn9gx31al503nv"))))
+    (build-system meson-build-system)
     (arguments
      `(#:tests? #f)) ; no check target
     (home-page "https://icon-theme.freedesktop.org/releases/")
     (synopsis
      "Freedesktop icon theme")
     (description
-     "Freedesktop icon theme.")
+     "The default fallback theme used by XDG icon-theme implementations.")
     (license license:gpl2)))
 
 (define-public libnotify
