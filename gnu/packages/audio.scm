@@ -3338,6 +3338,31 @@ to send and receive OSC messages using a nice and simple Python API.  Also
 included are the command line utilities @code{send_osc} and @code{dump_osc}.")
     (license license:lgpl2.1+)))
 
+(define-public python-pyliblo3
+  (package
+    (name "python-pyliblo3")
+    (version "0.16.3")
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/gesellkammer/pyliblo3")
+                   (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "1rr2m8jxa5yxyb3pw6h93kvdxg7x0m6sxxxvgn34vq8k8mg1kz21"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-cython python-setuptools python-wheel))
+    (inputs (list liblo))
+    (home-page "https://github.com/gesellkammer/pyliblo3")
+    (synopsis "Python bindings for liblo")
+    (description
+     "Pyliblo is a Python wrapper for the liblo Open Sound Control (OSC)
+library.  It supports almost the complete functionality of liblo, allowing you
+to send and receive OSC messages using a nice and simple Python API.  Also
+included are the command line utilities @code{send_osc} and @code{dump_osc}.")
+    (license license:lgpl2.1+)))
+
 (define-public python-soundfile
   (package
     (name "python-soundfile")
