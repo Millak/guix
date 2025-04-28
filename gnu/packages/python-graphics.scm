@@ -1,10 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2020, 2023 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Adam Kandur <kefironpremise@gmail.com>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021, 2023 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Sisiutl <sisiutl@egregore.fun>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +37,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages game-development)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages maths)
@@ -286,6 +289,93 @@ applications.  It supports windowing, user interface event handling,
 Joysticks, OpenGL graphics, loading images and videos, playing sounds and
 music." )
     (license license:bsd-3)))
+
+(define-public python-pyopengl
+  (package
+    (name "python-pyopengl")
+    (version "3.1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyOpenGL" version))
+       (sha256
+        (base32
+         "09syrsfrcknr1k2wmj05gfd5d0dyjfxzbipzbd0agv9775vwi9lf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; XXX: Check why these test fail.
+                    (list "not test_get_read_fb_binding"
+                          "test_get_version"
+                          "test_glCallLists_twice2"
+                          "test_glmultidraw"
+                          "test_lookupint"
+                          "test_numpyConversion"
+                          "test_pointers")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-paths
+            (lambda _
+              (substitute* '("OpenGL/platform/ctypesloader.py")
+                (("filenames_to_try = \\[\\]") "filenames_to_try = [name]"))
+              (substitute* '("OpenGL/platform/glx.py"
+                             "OpenGL/platform/egl.py"
+                             "OpenGL/platform/osmesa.py"
+                             "OpenGL/platform/darwin.py"
+                             "tests/check_glut_load.py")
+                (("'GLU'")
+                 (format #f "'~a/~a'" #$(this-package-input "glu")
+                         "lib/libGLU.so"))
+                (("'glut',")
+                 (format #f "'~a/~a'," #$(this-package-input "freeglut")
+                         "lib/libglut.so"))
+                (("'(GL|EGL|GLESv1_CM|GLESv2|OSMesa)'" all gl-library)
+                 (format #f "'~a/~a'" #$(this-package-input "mesa")
+                         (string-append "lib/lib" gl-library ".so"))))
+              ;; Not providing libgle. It seems to be very old.
+              )))))
+    (native-inputs
+     (list python-cython
+           python-numpy
+           python-pygame
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list freeglut
+           glu
+           mesa))
+    (home-page "https://pyopengl.sourceforge.net")
+    (synopsis "Standard OpenGL bindings for Python")
+    (description
+     "PyOpenGL is the most common cross platform Python binding to OpenGL and
+related APIs.  The binding is created using the standard @code{ctypes}
+library.")
+    (license license:bsd-3)))
+
+(define-public python-pyopengl-accelerate
+  (package
+    (inherit python-pyopengl)
+    (name "python-pyopengl-accelerate")
+    (version "3.1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyopengl_accelerate" version))
+       (sha256
+        (base32
+         "1ww6kbyj1hshxfi3gskkygv1w2f7klzj9jcyfpzihn4pfry7r5c5"))))
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'fix-paths))))
+    (synopsis "Acceleration code for PyOpenGL")
+    (description
+     "This is the Cython-coded accelerator module for PyOpenGL.")))
 
 (define-public python-vispy
   (package

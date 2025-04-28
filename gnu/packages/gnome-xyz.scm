@@ -78,6 +78,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-graphics)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
