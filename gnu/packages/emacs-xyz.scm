@@ -129,7 +129,7 @@
 ;;; Copyright © 2023, 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2022-2023 Simon Josefsson <simon@josefsson.org>
-;;; Copyright © 2023 Fabio Natali <me@fabionatali.com>
+;;; Copyright © 2023, 2025 Fabio Natali <me@fabionatali.com>
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
@@ -31944,6 +31944,32 @@ a command that downloads the page, isolates the ``readable'' content with
 displays it in an Org mode buffer.  Another command does all of that but
 inserts it as an Org entry instead of displaying it in a new buffer.")
     (license license:gpl3+)))
+
+(define-public emacs-org-rss-publishing
+  (let ((commit "1b33dc252cfedfbb2107ea407266b168b71bebb1")
+        (revision "0"))
+    (package
+      (name "emacs-org-rss-publishing")
+      (version (git-version "0.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~taingram/org-publish-rss")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0axz3r8jw15imhfmbriljsiaxiiqhgrq77nad3kmmgpmvhhlk65f"))))
+      (build-system emacs-build-system)
+      (arguments `(#:tests? #false)) ;no tests
+      (home-page "https://git.sr.ht/~taingram/org-publish-rss")
+      (synopsis "RSS generator for Org Mode's built-in publishing system")
+      (description "This package adds new RSS generation options to the
+@code{org-publish-project-alist} variable (see the Org manual if you are new to
+the publishing options).  It adds @code{:auto-rss} and other options that work
+similar to the included @code{:auto-sitemap} functionality.  This should make it
+easy for users to add RSS feeds to existing Org-based websites.")
+      (license license:gpl3+))))
 
 (define-public emacs-blimp
   (let ((commit "e420763d6d18b5d1be552cdbc47f91418343db03"))
