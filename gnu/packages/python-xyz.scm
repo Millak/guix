@@ -3882,28 +3882,40 @@ concepts.")
     (license license:bsd-3)))
 
 (define-public python-hdf5storage
-  (package
-    (name "python-hdf5storage")
-    (version "0.1.19")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "hdf5storage" version))
-       (sha256
-        (base32 "11pgxsqap9l7jsf52649q9mpj8a0w6p9im929lpr9s26ynnnn6ks"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-h5py python-numpy))
-    (native-inputs (list python-nose python-setuptools python-wheel))
-    (home-page "https://github.com/frejanordsiek/hdf5storage")
-    (synopsis "Read and write Python data types from and to HDF5 files")
-    (description
-     "This Python package provides high-level utilities to read and write a
+  ;; Use the latest commit containing compatability with Pytest and Python
+  ;; 3.11, see <https://github.com/frejanordsiek/hdf5storage/issues/135>.
+  (let ((commit "7ee2a96de134b44beaa79c3a11c559f9ac87c5a6")
+        (revision "0"))
+    (package
+      (name "python-hdf5storage")
+      (version (git-version "0.1.19" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/frejanordsiek/hdf5storage")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xq0rg8vwk35yc3jvv2fyf7bl189viq0fywch53g57hxrahv5k02"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest
+             python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-h5py
+             python-numpy))
+      (home-page "https://github.com/frejanordsiek/hdf5storage")
+      (synopsis "Read and write Python data types from and to HDF5 files")
+      (description
+       "This Python package provides high-level utilities to read and write a
 variety of Python types from and to @acronym{HDF5, Hierarchical Data Format}
 formatted files.  This package also provides support for MATLAB MAT v7.3
 formatted files, which are HDF5 files with a different extension and some
 extra metadata.  Because HDF5 and MAT files might need to be read from
 untrusted sources, pickling is avoided in this package.")
-    (license license:bsd-2)))
+      (license license:bsd-2))))
 
 (define-public python-hjson
   ;; Using commit from master branch as the PyPI version does not contain
