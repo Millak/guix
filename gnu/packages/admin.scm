@@ -935,7 +935,7 @@ console.")
 (define-public btop
   (package
     (name "btop")
-    (version "1.4.0")
+    (version "1.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -944,9 +944,7 @@ console.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vgw6hwqh6zbzrvrn3i0xwi9ykm1qdvhqcyz3mjakd7w303lx603"))
-              (patches
-               (search-patches "btop-fix-segfault-on-intel-gpus.patch"))))
+                "08g4gbqc12is23nhrhqc5fhqicxs7dvy3alhyl66h6v35x7209vc"))))
     (build-system gnu-build-system)
     (native-inputs (list lowdown))
     (arguments

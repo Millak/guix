@@ -1053,7 +1053,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/bsd-games-number.c-and-test.patch	\
   %D%/packages/patches/bsd-games-prevent-name-collisions.patch	\
   %D%/packages/patches/bsd-games-stdio.h.patch			\
-  %D%/packages/patches/btop-fix-segfault-on-intel-gpus.patch	\
   %D%/packages/patches/beancount-disable-googleapis-fonts.patch	\
   %D%/packages/patches/beignet-correct-file-names.patch		\
   %D%/packages/patches/bidiv-update-fribidi.patch		\
