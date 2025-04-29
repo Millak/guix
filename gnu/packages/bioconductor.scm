@@ -17862,14 +17862,14 @@ distributions.")
 (define-public r-scone
   (package
     (name "r-scone")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scone" version))
        (sha256
         (base32
-         "0cmjyxkszidsjzhs6rqw5m7afmy4gw2rvajrm5wagnisk73bvz6i"))))
+         "16nh3xnplh1zqx976ffpb967wsk89h4lny2pz7r1y2zdzs74la0a"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-aroma-light
@@ -17893,10 +17893,11 @@ distributions.")
            r-rhdf5
            r-ruvseq
            r-singlecellexperiment
+           r-sparsearray
            r-sparsematrixstats
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-delayedarray r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/scone")
     (synopsis "Single cell overview of normalized expression data")
     (description
