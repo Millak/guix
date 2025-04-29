@@ -11002,13 +11002,13 @@ mixes commonly used in MS experiments.")
 (define-public r-metagenomeseq
   (package
     (name "r-metagenomeseq")
-    (version "1.48.1")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "metagenomeSeq" version))
        (sha256
-        (base32 "1x6ycxrhpl4wgpaih9wpp0w7phnq6crgvyh93hs1gfmgybwmmlhs"))))
+        (base32 "1xbyc6pd7q6pr6f86x0i5i3pfgd2i8z62zb4h1mpb3ypr12icacj"))))
     (properties `((upstream-name . "metagenomeSeq")))
     (build-system r-build-system)
     (arguments
