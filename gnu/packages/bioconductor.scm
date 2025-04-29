@@ -18819,13 +18819,13 @@ information about samples and features can be added to the plot.")
 (define-public r-helloranges
   (package
     (name "r-helloranges")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HelloRanges" version))
        (sha256
-        (base32 "11hmnqvmhd7rn5dcm20wg109sp8cmaq5k06x0cyaimi0dmf1psxv"))))
+        (base32 "1ihjcwrxsbfd0sv9fdk21vszi9wjw61fycqjxv276a7i1s9r0k37"))))
     (properties
      '((upstream-name . "HelloRanges")
        (updater-extra-native-inputs . ("r-biocstyle" "r-runit"))))
@@ -18848,10 +18848,8 @@ information about samples and features can be added to the plot.")
                              r-summarizedexperiment
                              r-variantannotation))
     (native-inputs
-     (list r-biocstyle
-           r-hellorangesdata
-           r-txdb-hsapiens-ucsc-hg19-knowngene
-           r-runit))
+     (list r-biocstyle r-hellorangesdata r-runit
+           r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "https://bioconductor.org/packages/HelloRanges")
     (synopsis "Introduce *Ranges to bedtools users")
     (description
