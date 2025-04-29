@@ -14286,13 +14286,13 @@ data sets ensuring a small memory footprint.")
 (define-public r-stager
   (package
     (name "r-stager")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "stageR" version))
        (sha256
-        (base32 "1rab6hcr8nwbpdlfy7c43dy66rwpj7vm0vvm95iislqrfjsc5pqi"))))
+        (base32 "0q4a26z6i3wvjjc0bhif9d3jf1h04bb091jg4and1ih7qfjvr89z"))))
     (properties `((upstream-name . "stageR")))
     (build-system r-build-system)
     (propagated-inputs (list r-summarizedexperiment))
