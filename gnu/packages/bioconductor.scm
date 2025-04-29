@@ -11743,14 +11743,14 @@ and irregular enzymatic cleavages, mass measurement accuracy, etc.")
 (define-public r-mzid
   (package
     (name "r-mzid")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "mzID" version))
        (sha256
         (base32
-         "0lf7w65v01mc7cawlsbjagbrhlh6jpy6ah7pbjgyvy5s0axlzgp2"))))
+         "0xsk7g3jyqw75lpfa3rw2gg2xg648acrb0klyksb9cac2mhpl4w2"))))
     (properties `((upstream-name . "mzID")))
     (build-system r-build-system)
     (propagated-inputs
