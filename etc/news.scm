@@ -38,6 +38,14 @@
 (channel-news
  (version 0)
 
+ (entry (commit "7e5913f90df916d8d9f5c509354d62324f54f481")
+        (title
+         (en "Linux-libre 6.14 now available"))
+        (body
+         (en "The 6.14 linux-libre kernel series is now available in GNU Guix.
+Soon, it will be made the default linux-libre package because the 6.13 is no
+longer supported upstream.")))
+
  (entry (commit "e2583b5a17bfdedc1d24b3bab2d752fbf8fa6db6")
         (title
          (en "Guix System can run @command{guix-daemon} without root
