@@ -2932,14 +2932,14 @@ methylation arrays.")
 (define-public r-minfidataepic
   (package
     (name "r-minfidataepic")
-    (version "1.32.0")
+    (version "1.33.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "minfiDataEPIC" version
                               'experiment))
        (sha256
-        (base32 "0xqciawmlfxcb0s60d0dk9mc9jga12dmm7qx3dqs1i6p69lmdbiy"))))
+        (base32 "1ig3vi1182c70msfkjmh0fk8697zw5cymm5ikk1zhjkwdr7d5l9b"))))
     (properties `((upstream-name . "minfiDataEPIC")))
     (build-system r-build-system)
     (propagated-inputs (list r-illuminahumanmethylationepicanno-ilm10b2-hg19
