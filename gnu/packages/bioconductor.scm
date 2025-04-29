@@ -15770,13 +15770,13 @@ a given recall, F-score for single and multiple classes are available.")
 (define-public r-pepsnmr
   (package
     (name "r-pepsnmr")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "PepsNMR" version))
               (sha256
                (base32
-                "03sipcga9gmcypryq3c0lhvdp1dzgbjfzxldrrp2ycyjwzwr9wzn"))))
+                "145a8979akhwd8j865j1x3fk81x64a5d5784hyi57cjsi5drgbk6"))))
     (properties `((upstream-name . "PepsNMR")))
     (build-system r-build-system)
     (propagated-inputs
