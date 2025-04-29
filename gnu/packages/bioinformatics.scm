@@ -22993,7 +22993,6 @@ frames with arbitrary sets of columns.")
              r-rtsne
              r-cluster
              r-abind
-             r-h5
              r-biocgenerics
              r-genomicalignments
              r-rsamtools
