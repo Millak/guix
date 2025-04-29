@@ -20367,14 +20367,14 @@ chips with the MAQC reference datasets.")
 (define-public r-quantro
   (package
     (name "r-quantro")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "quantro" version))
        (sha256
         (base32
-         "0hkrpg2x7w8kgw8hblw0q178h5kb09yir1rg4jji1irbl4g1drck"))))
+         "18yixnla95ch595phf2dr7zpzg049bra8dhciawj0731rj158i73"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
@@ -20385,7 +20385,7 @@ chips with the MAQC reference datasets.")
            r-minfi
            r-rcolorbrewer))
     (native-inputs
-     (list r-knitr r-runit))
+     (list r-biocgenerics r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/quantro/")
     (synopsis "Test for when to use quantile normalization")
     (description
