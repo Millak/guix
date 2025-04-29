@@ -24429,15 +24429,17 @@ analytics on packages.")
 (define-public r-biocset
   (package
     (name "r-biocset")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocSet" version))
        (sha256
         (base32
-         "1jl4q3r6zcn837kd627wfki6z42bxdfklrj97c4r3cr3bnbyxvk0"))))
-    (properties `((upstream-name . "BiocSet")))
+         "1lnk8j22v75vr5wq501976i2ny43jqd3ixwk4yfrb531acvz2yd7"))))
+    (properties
+     '((upstream-name . "BiocSet")
+       (updater-extra-native-inputs . ("r-gseabase"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -24461,11 +24463,9 @@ analytics on packages.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-gseabase r-knitr r-org-hs-eg-db r-testthat))
-    (home-page
-     "https://bioconductor.org/packages/BiocSet")
-    (synopsis
-     "Representing Different Biological Sets")
+     (list r-go-db r-gseabase r-knitr r-org-hs-eg-db r-testthat))
+    (home-page "https://bioconductor.org/packages/BiocSet")
+    (synopsis "Representing different biological sets")
     (description
      "BiocSet displays different biological sets in a triple tibble format.
 These three tibbles are @code{element}, @code{set}, and @code{elementset}.
