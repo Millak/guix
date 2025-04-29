@@ -5993,14 +5993,14 @@ already available.")
 (define-public r-biocversion
   (package
     (name "r-biocversion")
-    (version "3.20.0")
+    (version "3.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocVersion" version))
        (sha256
         (base32
-         "1ixn9pwzm15z79da90iqniv8c6x8w7k5wdwzpj9dm1ghwd04xqcx"))))
+         "1xvfcvlg8984mfb99nml8p8liyb7w6myznhp2kvr8cy8x7g60p4q"))))
     (properties `((upstream-name . "BiocVersion")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/BiocVersion/")
