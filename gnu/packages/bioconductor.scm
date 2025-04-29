@@ -19565,14 +19565,14 @@ fitting a three-component normal mixture on z-scores.")
 (define-public r-rgadem
   (package
     (name "r-rgadem")
-    (version "2.54.0")
+    (version "2.55.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "rGADEM" version))
        (sha256
         (base32
-         "0lcsw14n3acxljx6zsrfh0hp3s6y0638jzzrh2f2p0jc9mj29b8y"))))
+         "1fjqvkayam7xpvvbdlz6nafgsrw46vgmbkl96mfvm4szclrxzs8g"))))
     (properties `((upstream-name . "rGADEM")))
     (build-system r-build-system)
     (propagated-inputs
