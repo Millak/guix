@@ -24857,21 +24857,23 @@ array-like semantic.  It also provides:
 (define-public r-s4vectors
   (package
     (name "r-s4vectors")
-    (version "0.44.0")
+    (version "0.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "S4Vectors" version))
               (sha256
                (base32
-                "0wic4nri42yiasshal96ykxj8skrya5szffnawqzs1kmq2b8zail"))))
+                "0h3s32z6jxa118jifdyrhpj03fgjjh1fdnaq87ls38k7lg34jhn3"))))
     (properties
-     `((upstream-name . "S4Vectors")))
+     '((upstream-name . "S4Vectors")
+       (updater-ignored-native-inputs
+        . ("r-genomicranges" "r-graph" "r-iranges" "r-shortread"))))
     (build-system r-build-system)
     ;; Tests require r-iranges, which depends on this package.
     (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biocgenerics))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-matrix))
     (home-page "https://bioconductor.org/packages/S4Vectors")
     (synopsis "S4 implementation of vectors and lists")
     (description
