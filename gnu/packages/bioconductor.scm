@@ -2583,14 +2583,14 @@ of provenance unknown to the maintainer at present; it now employs
 (define-public r-gsvadata
   (package
     (name "r-gsvadata")
-    (version "1.42.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GSVAdata" version
                               'experiment))
        (sha256
-        (base32 "160k1vsxcbjqwpfkdkhd7dsvnaasjbs270gnfdwdbnl0c6d24348"))))
+        (base32 "15bx31s5w13asiwz4dsrr6ywpfjspxk0sz1vrdr9js87dd5bpqhx"))))
     (properties `((upstream-name . "GSVAdata")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-gseabase r-hgu95a-db
