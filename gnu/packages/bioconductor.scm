@@ -6338,13 +6338,13 @@ developed by the UCSC Genome Browser group.")
 (define-public r-csaw
   (package
     (name "r-csaw")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "csaw" version))
        (sha256
-        (base32 "02ajgkpwz5s7i72swnlix1djmnv8zmp7yl2ppwq4m60rs23d06wg"))))
+        (base32 "01mq34niz767qj91al556w1y6k7yail3bfi20y0pf5zshnn71cs9"))))
     (properties `((upstream-name . "csaw")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
@@ -6360,8 +6360,7 @@ developed by the UCSC Genome Browser group.")
                              r-rhtslib
                              r-rsamtools
                              r-s4vectors
-                             r-summarizedexperiment
-                             r-zlibbioc))
+                             r-summarizedexperiment))
     (native-inputs (list r-genomicalignments r-knitr r-org-mm-eg-db r-testthat
                          r-txdb-mmusculus-ucsc-mm10-knowngene))
     (home-page "https://bioconductor.org/packages/csaw")
