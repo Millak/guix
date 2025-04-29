@@ -12096,13 +12096,13 @@ structure (pcaRes) to provide a common interface to the PCA results.")
 (define-public r-pfamanalyzer
   (package
     (name "r-pfamanalyzer")
-    (version "1.6.0")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "pfamAnalyzeR" version))
               (sha256
                (base32
-                "1d14nhi4gndg8gr4fk4yvfnjcvin9rndram0xhnjrkia166p1msx"))))
+                "0q5gcq5rm6az62mlhpbg6rawszdpckc5w5kl53bda9gfdcl6bi4l"))))
     (properties `((upstream-name . "pfamAnalyzeR")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr r-magrittr r-readr r-stringr r-tibble))
