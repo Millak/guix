@@ -15025,13 +15025,13 @@ libraries for systems that do not have these available via other means.")
 (define-public r-zellkonverter
   (package
     (name "r-zellkonverter")
-    (version "1.16.0")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "zellkonverter" version))
        (sha256
-        (base32 "1y1z2vjw04aq139a9f43s4kwl8zbx734s593cm15g0yxjsdpcgxv"))))
+        (base32 "0w221y7mcn6i53lqrkvs00jl315z18hvvxrylg9rlvzmca9ac3ri"))))
     (properties `((upstream-name . "zellkonverter")))
     (build-system r-build-system)
     ;; This uses r-basilisk, which attempts to set up a Conda environment.
@@ -15045,7 +15045,15 @@ libraries for systems that do not have these available via other means.")
            r-s4vectors
            r-singlecellexperiment
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-biocfilecache
+                         r-hdf5array
+                         r-knitr
+                         r-pkgload
+                         r-scrnaseq
+                         r-spatialexperiment
+                         r-spelling
+                         r-testthat
+                         r-withr))
     (home-page "https://github.com/theislab/zellkonverter")
     (synopsis "Conversion between AnnData and single-cell experiments objects")
     (description
