@@ -14170,13 +14170,13 @@ scRNA-seq data computationally.")
 (define-public r-slingshot
   (package
    (name "r-slingshot")
-   (version "2.14.0")
+   (version "2.16.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "slingshot" version))
             (sha256
              (base32
-              "0r9hhc23a3x9rm1ippx39llxfcagwbv70zn67wnyzvfyn93gbi3c"))))
+              "17s9rmd5dsw65cl218sxz5wg1ysqbwqmvcs3vyffl48j5mmsvqgm"))))
    (properties
     '((updater-extra-native-inputs . ("r-delayedmatrixstats"))))
    (build-system r-build-system)
@@ -14189,7 +14189,7 @@ scRNA-seq data computationally.")
           r-summarizedexperiment
           r-trajectoryutils))
    (native-inputs
-    (list r-delayedmatrixstats r-knitr r-testthat))
+    (list r-clusterexperiment r-delayedmatrixstats r-knitr r-rgl r-testthat))
    (home-page "https://bioconductor.org/packages/slingshot")
    (synopsis "Tools for ordering single-cell sequencing")
    (description "This package provides functions for inferring continuous,
