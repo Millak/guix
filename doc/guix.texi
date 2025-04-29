@@ -43751,6 +43751,33 @@ How often to run the node cleaning job.  The default is once per day, at
 @end table
 @end deftp
 
+@defvar vmware-vmtoolsd-service-type
+@command{vmtoolsd} is a daemon from
+@url{https://github.com/vmware/open-vm-tools/, the VMWare open-vm-tools
+project} which provides for communication between the host and guest
+operating system. This service manages and runs that daemon.
+
+It takes a @code{vmware-vmtoolsd-configuration} object.
+@end defvar
+
+@deftp {Data Type} vmware-vmtoolsd-configuration
+
+@table @asis
+@item @code{pid-file} (default: @code{"/var/run/vmware-vmtoolsd.pid"})
+The @command{vmtoolsd} pid file.
+
+@item @code{requires-xorg?} (default: @code{#f})
+When @code{#t}, the @command{vmtoolsd} requires the xorg-server to be running
+before the command is started. This is the case for the @command{vmtoolsd}
+command from the @code{vmware-open-vm-tools-gtk} package.
+
+@item @code{vmware-open-vm-tools} (default: @code{vmware-open-vm-tools})
+The @code{vmware-open-vm-tools} package to use for the @command{vmtoolsd}
+command.
+
+@end table
+@end deftp
+
 @node Version Control Services
 @subsection Version Control Services
 

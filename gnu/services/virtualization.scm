@@ -9,6 +9,7 @@
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
+;;; Copyright © 2025 Douglas Deslauriers <Douglas.Deslauriers@vector.com>
 ;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -168,7 +169,14 @@
             xe-guest-utilities-configuration
             xe-guest-utilities-service-type
             xen-guest-agent-configuration
-            xen-guest-agent-service-type))
+            xen-guest-agent-service-type
+
+            vmware-vmtoolsd-configuration
+            vmware-vmtoolsd-configuration?
+            vmware-vmtoolsd-configuration-pid-file
+            vmware-vmtoolsd-configuration-requires-xorg?
+            vmware-vmtoolsd-configuration-vmware-open-vm-tools
+            vmware-vmtoolsd-service-type))
 
 (define (uglify-field-name field-name)
   (let ((str (symbol->string field-name)))
@@ -2050,3 +2058,45 @@ machines in /etc/guix/machines.scm."
    (description
     "Provide a virtual machine (VM) running GNU/Hurd, also known as a
 @dfn{childhurd}.")))
+
+(define-record-type* <vmware-vmtoolsd-configuration>
+                     vmware-vmtoolsd-configuration
+                     make-vmware-vmtoolsd-configuration
+  vmware-vmtoolsd-configuration?
+  ;; string
+  (pid-file vmware-vmtoolsd-configuration-pid-file
+            (default "/var/run/vmware-vmtoolsd.pid"))
+  ;; Boolean
+  (requires-xorg? vmware-vmtoolsd-configuration-requires-xorg?
+                  (default #f))
+  ;; file-like object
+  (vmware-open-vm-tools vmware-vmtoolsd-configuration-vmware-open-vm-tools
+                        (default vmware-open-vm-tools)))
+
+(define (vmware-vmtoolsd-shepherd-service config)
+  "Return a <shepherd-service> for VMWare's Open VM Tools vmtoolsd with CONFIG."
+  (let ((package
+          (vmware-vmtoolsd-configuration-vmware-open-vm-tools config))
+        (requires-xorg? (vmware-vmtoolsd-configuration-requires-xorg? config)))
+    (list (shepherd-service (documentation
+                             "Run the VMWare's Open VM Tools daemon (vmtoolsd)")
+                            (provision '(vmtoolsd))
+                            (requirement (if requires-xorg?
+                                             '(xorg-server)
+                                             '()))
+                            (start #~(make-forkexec-constructor (list #$(file-append
+                                                                         package
+                                                                         "/bin/vmtoolsd"))))
+                            (stop #~(make-kill-destructor))))))
+
+(define vmware-vmtoolsd-service-type
+  (service-type (name 'vmtoolsd)
+                (description
+                 "Run the VMWare Open VM Tools daemon, @command{vmtoolsd}.")
+                (extensions (list (service-extension
+                                   shepherd-root-service-type
+                                   vmware-vmtoolsd-shepherd-service)
+                                  (service-extension profile-service-type
+                                                     (compose list
+                                                      vmware-vmtoolsd-configuration-vmware-open-vm-tools))))
+                (default-value (vmware-vmtoolsd-configuration))))
