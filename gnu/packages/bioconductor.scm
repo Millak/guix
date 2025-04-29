@@ -2454,14 +2454,14 @@ associated with cell type.")
 (define-public r-flowsorted-blood-epic
   (package
     (name "r-flowsorted-blood-epic")
-    (version "2.10.0")
+    (version "2.12.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "FlowSorted.Blood.EPIC" version
                                      'experiment))
               (sha256
                (base32
-                "1zq5xbgr4r68mmzsszb16w11axkmgrxcrpl56dy33szs0ahk10xs"))))
+                "10px019pf3wcgwxi29xmh48smf9609caz0yvpy7pdmqf266vakkh"))))
     (properties `((upstream-name . "FlowSorted.Blood.EPIC")))
     (build-system r-build-system)
     ;; Tests require Internet access via ExperimentHub.
