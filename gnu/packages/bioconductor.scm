@@ -15358,13 +15358,13 @@ posterior for individual coefficients.")
 (define-public r-greylistchip
   (package
    (name "r-greylistchip")
-   (version "1.38.0")
+   (version "1.40.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "GreyListChIP" version))
             (sha256
              (base32
-              "0annhgzl4b5ykn0993zdqlcxppbrrn8rcxivfkjhdqmq41r4n4bm"))))
+              "1aykzjz3wg82k9ri4vc42dc3s93pjp5raxayq2ysf61v5j8qg17r"))))
    (properties `((upstream-name . "GreyListChIP")))
    (build-system r-build-system)
    (propagated-inputs
@@ -15376,7 +15376,7 @@ posterior for individual coefficients.")
           r-rsamtools
           r-rtracklayer
           r-summarizedexperiment))
-   (native-inputs (list r-biocstyle r-runit))
+   (native-inputs (list r-biocgenerics r-bsgenome-hsapiens-ucsc-hg19 r-runit))
    (home-page "https://bioconductor.org/packages/GreyListChIP")
    (synopsis "Greylist artefact regions based on ChIP inputs")
    (description "This package identifies regions of ChIP experiments with high
