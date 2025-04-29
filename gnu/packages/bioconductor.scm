@@ -17520,14 +17520,14 @@ the numbers of cells across batches.")
 (define-public r-mast
   (package
     (name "r-mast")
-    (version "1.32.0")
+    (version "1.33.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MAST" version))
        (sha256
         (base32
-         "0fn50b4yxsslgvw8l6zfbxr4bl8hd9rb7p3dggw040hfm8gadgl9"))
+         "00rpm0w3cndza5dbiss7bmx6vpy1fqxw1rci44yap2m7z482xbjg"))
        (snippet
         '(delete-file "docs/jquery.sticky-kit.min.js"))))
     (properties `((upstream-name . "MAST")))
@@ -17566,7 +17566,9 @@ the numbers of cells across batches.")
            (sha256
             (base32
              "17c3a1hqc3ybwj7hpw8prazajp2x98aq7nyfn71h6lzjvblq297g"))))
+       ("r-car" ,r-car)
        ("r-knitr" ,r-knitr)
+       ("r-reshape" ,r-reshape)
        ("r-testthat" ,r-testthat)))
     (home-page "https://github.com/RGLab/MAST/")
     (synopsis "Model-based analysis of single cell transcriptomics")
