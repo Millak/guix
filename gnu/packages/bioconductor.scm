@@ -12580,14 +12580,14 @@ described at
 (define-public r-regioner
   (package
     (name "r-regioner")
-    (version "1.38.0")
+    (version "1.39.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "regioneR" version))
        (sha256
         (base32
-         "1226wljfndqs11p61a79b0rm66jzwljzzi8w9lhx9g165jy3xxay"))))
+         "0fq8rcibsmh7vicw0p567w4847mpgj5wcc4gcsphym02hzl5ppqb"))))
     (properties `((upstream-name . "regioneR")))
     (build-system r-build-system)
     (arguments
@@ -12610,7 +12610,7 @@ described at
            r-rtracklayer
            r-s4vectors))
     (native-inputs
-     (list r-biocmanager r-knitr r-testthat))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/regioneR/")
     (synopsis "Association analysis of genomic regions")
     (description "This package offers a statistical framework based on
