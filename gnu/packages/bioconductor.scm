@@ -25536,15 +25536,17 @@ customizable visualzations with minimal effort.")
 (define-public r-motifmatchr
   (package
     (name "r-motifmatchr")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "motifmatchr" version))
        (sha256
         (base32
-         "0a2hd7fld7q22kpllpq6zb79ivpfrrq1vz1v4fariar18800fjc2"))))
-    (properties `((upstream-name . "motifmatchr")))
+         "0j0dx8v856l4bqz0v3n2kj4yvdq4ffkfr5vsh5mwj09vbacjqzgf"))))
+    (properties
+     '((upstream-name . "motifmatchr")
+       (updater-extra-native-inputs . ("r-bsgenome-hsapiens-ucsc-hg19"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biostrings
@@ -25559,7 +25561,8 @@ customizable visualzations with minimal effort.")
            r-s4vectors
            r-summarizedexperiment
            r-tfbstools))
-    (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19 r-knitr r-testthat))
+    (native-inputs
+     (list r-bsgenome-hsapiens-ucsc-hg19 r-knitr r-testthat r-tfmpvalue))
     (home-page "https://bioconductor.org/packages/motifmatchr")
     (synopsis "Fast motif matching in R")
     (description
