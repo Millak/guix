@@ -20016,14 +20016,14 @@ text files).")
 (define-public r-allelicimbalance
   (package
     (name "r-allelicimbalance")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AllelicImbalance" version))
        (sha256
         (base32
-         "1grjrbq15xd05m819j7804v3hzrjnmqj7jmdypc2wn53jxnbpqf5"))))
+         "0cfk0n33p0lv8i0i6nvwv8afv6i3p5xgr6qsmngafacql8klw2p5"))))
     (properties
      `((upstream-name . "AllelicImbalance")))
     (build-system r-build-system)
