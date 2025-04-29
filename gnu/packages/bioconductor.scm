@@ -3034,13 +3034,13 @@ along with the gene set in the @code{GeneSet} class object.")
 (define-public r-pasilla
   (package
     (name "r-pasilla")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pasilla" version 'experiment))
        (sha256
-        (base32 "1pa8s19q1n22nwjwdsdj9sla1x766wr87llxk5jywgfgl49317i7"))))
+        (base32 "0yasyw13pyizz6icr9knf5k52ig9vp6plmcshm01pif49ymqy43k"))))
     (build-system r-build-system)
     (propagated-inputs (list r-dexseq))
     (native-inputs (list r-knitr))
