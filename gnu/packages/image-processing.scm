@@ -206,65 +206,6 @@ demonstrative image storage and worklist servers.")
               "A union of the Apache 2.0 licence and various non-copyleft
 licences similar to the Modified BSD licence."))))
 
-(define-public mia
-  (package
-    (name "mia")
-    (version "2.4.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/mia/mia/"
-                                  (version-major+minor version)
-                                  "/mia-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0qpcd3n26q52dpyibm11f5l6cgscdr54p2jish39gc3p1f5h3ws1"))
-              (patches (search-patches "mia-fix-boost-headers.patch"
-                                       "mia-gcc11.patch"
-                                       "mia-openexr3.patch"
-                                       "mia-vtk9.patch"
-                                       "mia-vtk92.patch"
-                                       "mia-vtk-version.patch"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:configure-flags
-       (list "-DMIA_CREATE_NIPYPE_INTERFACES=OFF"
-             "-DCMAKE_CXX_FLAGS=-fpermissive")))
-    (inputs
-     (list boost
-           dcmtk
-           eigen
-           fftw
-           fftwf
-           gsl
-           gts
-           hdf5-1.10
-           itpp
-           lapack
-           libjpeg-turbo
-           libpng
-           libtiff
-           libxml2
-           libxml++
-           maxflow
-           niftilib
-           nlopt
-           openexr
-           python-lxml
-           vtk))
-    (native-inputs
-     (list doxygen
-           pkg-config
-           python-wrapper))
-    (home-page "https://mia.sourceforge.net")
-    (synopsis "Toolkit for gray scale medical image analysis")
-    (description "MIA provides a combination of command line tools, plug-ins,
-and libraries that make it possible run image processing tasks interactively
-in a command shell and to prototype using the shell's scripting language.  It
-is built around a plug-in structure that makes it easy to add functionality
-without compromising the original code base and it makes use of a wide variety
-of external libraries that provide additional functionality.")
-    (license license:gpl3+)))
-
 (define-public opencolorio
   (package
     (name "opencolorio")
