@@ -57,7 +57,8 @@ libutil_a_SOURCES =				\
   %D%/libutil/serialise.cc			\
   %D%/libutil/util.cc				\
   %D%/libutil/hash.cc				\
-  %D%/libutil/spawn.cc
+  %D%/libutil/spawn.cc				\
+  %D%/libutil/seccomp.cc
 
 libutil_headers =				\
   %D%/libutil/affinity.hh			\
@@ -66,7 +67,8 @@ libutil_headers =				\
   %D%/libutil/util.hh				\
   %D%/libutil/archive.hh			\
   %D%/libutil/types.hh				\
-  %D%/libutil/spawn.hh
+  %D%/libutil/spawn.hh				\
+  %D%/libutil/seccomp.hh
 
 libutil_a_CPPFLAGS =				\
   -I$(top_builddir)/nix				\

@@ -3,6 +3,9 @@
 #include <util.hh>
 #include <map>
 #include <stddef.h>
+#ifdef __linux__
+#include <linux/filter.h>
+#endif
 
 namespace nix {
 struct SpawnContext; /* Forward declaration */
@@ -57,6 +60,11 @@ struct SpawnContext {
     bool dropAmbientCapabilities = false; /* Whether to drop ambient
                                            * capabilities if on a system that
                                            * supports them. */
+    bool setNoNewPrivs = false;
+    bool addSeccompFilter = false;
+#if __linux__
+    std::vector<struct sock_filter> seccompFilter;
+#endif
     bool doChroot = false;
     Path chrootRootDir;
     void * extraData;  /* Extra user data */
@@ -118,6 +126,8 @@ Action closeMostFDsAction;
 Action setPersonalityAction;
 Action oomSacrificeAction;
 Action setIDsAction;
+Action setNoNewPrivsAction;
+Action addSeccompFilterAction;
 Action restoreSIGPIPEAction;
 Action setupSuccessAction;
 Action execAction;

@@ -85,6 +85,13 @@
 /* This header isn't documented in 'man netdevice', but there doesn't seem to
    be any other way to get 'struct in6_ifreq'... */
 #include <linux/ipv6.h>
+#include <linux/filter.h>
+#include <linux/seccomp.h>
+#include <seccomp.hh>
+
+/* Set to 1 to debug the seccomp filter.  */
+#define DEBUG_SECCOMP_FILTER 0
+
 #endif
 #endif
 
@@ -1815,6 +1822,7 @@ static void setupTap(int send_fd_socket, bool ipv6Enabled)
     sendFD(send_fd_socket, tapfd);
 }
 
+
 struct ChrootBuildSpawnContext : CloneSpawnContext {
     bool ipv6Enabled = false;
 };
@@ -1933,6 +1941,212 @@ static void remapIdsTo0Action(SpawnContext & sctx)
 }
 
 
+static std::vector<struct sock_filter> slirpSeccompFilter()
+{
+    std::vector<struct sock_filter> out;
+    struct sock_filter allow = BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW);
+    struct sock_filter deny = BPF_STMT(BPF_RET | BPF_K,
+                                       /* Could also use
+                                        * SECCOMP_RET_KILL_THREAD, but this
+                                        * gives nicer error messages. */
+                                       SECCOMP_RET_ERRNO | ENOSYS);
+    struct sock_filter silentDeny = BPF_STMT(BPF_RET | BPF_K,
+                                             SECCOMP_RET_ERRNO | 0);
+
+    /* instructions to check for AF_INET or AF_INET6 in the first argument */
+    std::vector<struct sock_filter> allowInet;
+    seccompMatchu64(allowInet,
+                    AF_INET,
+                    {allow},
+                    offsetof(struct seccomp_data, args[0]));
+    seccompMatchu64(allowInet,
+                    AF_INET6,
+                    {allow},
+                    offsetof(struct seccomp_data, args[0]));
+    /* ... and deny otherwise */
+    std::vector<struct sock_filter> denyNonInet;
+    denyNonInet.insert(denyNonInet.begin(), allowInet.begin(), allowInet.end());
+    denyNonInet.push_back(deny);
+
+    /* ... and silent variant. */
+    std::vector<struct sock_filter> silentDenyNonInet;
+
+    silentDenyNonInet.insert(silentDenyNonInet.begin(), allowInet.begin(), allowInet.end());
+    silentDenyNonInet.push_back(silentDeny);
+
+    /* accumulator <-- data.arch */
+    out.push_back(BPF_STMT(BPF_LD | BPF_W | BPF_ABS, (offsetof(struct seccomp_data, arch))));
+    /* Deny if non-native arch.  This simplifies checks as we can now just use
+     * the __NR_* syscall numbers. */
+    out.push_back(BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,
+                           AUDIT_ARCH_NATIVE,
+                           1,
+                           0));
+    out.push_back(deny);
+
+    std::vector<Uint32RangeAction> specialCaseActions;
+
+#ifdef __NR_socket
+    Uint32RangeAction socketAction;
+    socketAction.low = __NR_socket;
+    socketAction.high = __NR_socket;
+    socketAction.instructions = denyNonInet;
+    specialCaseActions.push_back(socketAction);
+#endif
+
+#ifdef __NR_socketpair
+    /* socketpair can be used to create unix sockets.  Presumably they can't
+     * be re-bound or reconnected to use the abstract unix socket namespace,
+     * since they're already connected, but let's not risk it - slirp4netns
+     * shouldn't have a reason to use any IPC anyway. */
+    Uint32RangeAction socketpairAction;
+    socketpairAction.low = __NR_socketpair;
+    socketpairAction.high = __NR_socketpair;
+    /* The silent variant is necessary for socketpair because slirp4netns
+       unconditionally creates a unix socket using socketpair for using setns
+       to exfiltrate a tapfd, despite not actually needing to do that at all
+       since we pass it the tapfd directly.  It will refuse to start if
+       socketpair returns anything but 0, so we have no choice but to do that.
+       The would-be-returned socket fds are never used. */
+    socketpairAction.instructions = silentDenyNonInet;
+    specialCaseActions.push_back(socketpairAction);
+#endif
+
+#ifdef __NR_socketcall
+    /* Some architectures include a system call "socketcall" for multiplexing
+     * all the socket-related calls.  This system call only accepts two
+     * arguments: a number to indicate which socket-related system call to
+     * invoke, and a pointer to an array holding the arguments for it.
+     * Seccomp can't inspect the contents of memory, only the raw bits passed
+     * to the kernel, so there's no way to only disallow certain invocations
+     * of a socket-related system call.  In the past decade, most linux
+     * architectures which relied on "socketcall" have since added dedicated
+     * system calls (socket, socketpair, connect, etc) that can be used
+     * instead of socketcall, and it was mostly uncommon architectures that
+     * relied on it in the first place, so we should be fine to just block it
+     * outright. */
+    Uint32RangeAction socketcallAction;
+    socketcallAction.low = __NR_socketcall;
+    socketcallAction.high = __NR_socketcall;
+    socketcallAction.instructions = {deny};
+    specialCaseActions.push_back(socketcallAction);
+#endif
+
+    /* Kernels before 4.8 allow a process to bypass seccomp restrictions by
+     * spawning another process to ptrace it and modify a system call after
+     * the seccomp check. */
+    Uint32RangeAction ptraceAction;
+    ptraceAction.low = __NR_ptrace;
+    ptraceAction.high = __NR_ptrace;
+    ptraceAction.instructions = { deny };
+    specialCaseActions.push_back(ptraceAction);
+
+    std::vector<struct sock_filter> specialCases =
+        rangeActionsToFilter(specialCaseActions);
+
+    /* accumulator <-- data.nr */
+    out.push_back(BPF_STMT(BPF_LD | BPF_W | BPF_ABS, (offsetof(struct seccomp_data, nr))));
+
+    out.insert(out.end(), specialCases.begin(), specialCases.end());
+
+    /* accumulator <-- data.nr again */
+    out.push_back(BPF_STMT(BPF_LD | BPF_W | BPF_ABS, (offsetof(struct seccomp_data, nr))));
+
+    std::vector<Uint32RangeAction> pinnedSyscallRanges = NATIVE_SYSCALL_RANGES;
+    if(pinnedSyscallRanges.size() != 0) {
+        for(auto & i : pinnedSyscallRanges) {
+            i.instructions.push_back(allow);
+        }
+        std::vector<struct sock_filter> pinnedWhitelist = rangeActionsToFilter(pinnedSyscallRanges);
+        out.insert(out.end(), pinnedWhitelist.begin(), pinnedWhitelist.end());
+        out.push_back(deny);
+    }
+    else {
+        /* Couldn't determine pinned system calls, resort to allowing by
+         * default. */
+        out.push_back(allow);
+    }
+    return out;
+}
+
+
+#if DEBUG_SECCOMP_FILTER
+
+/* Note: limited to only the subset we actually use, makes various
+ * assumptions, not general-purpose. */
+static void writeSeccompFilterDot(std::vector<struct sock_filter> filter, FILE *f)
+{
+    fprintf(f, "digraph filter { \n");
+    for(size_t j = 0; j < filter.size(); j++) {
+        switch(BPF_CLASS(filter[j].code)) {
+        case BPF_LD:
+            fprintf(f, "\"%zu\" [label=\"load into accumulator from offset %u\"];\n",
+                    j, filter[j].k);
+            fprintf(f, "\"%zu\" -> \"%zu\";\n", j, j + 1);
+            break;
+        case BPF_JMP:
+            switch(BPF_OP(filter[j].code)) {
+            case BPF_JA:
+                fprintf(f, "\"%zu\" [label=\"unconditional jump\"];\n", j);
+                fprintf(f, "\"%zu\" -> \"%zu\";\n", j, j + filter[j].k + 1);
+                break;
+            case BPF_JEQ:
+                fprintf(f, "\"%zu\" [label=\"jump if accumulator = %u\"];\n", j,
+                        filter[j].k);
+                fprintf(f, "\"%zu\" -> \"%zu\" [label=\"true\"];\n", j,
+                        j + filter[j].jt + 1);
+                fprintf(f, "\"%zu\" -> \"%zu\" [label=\"false\"];\n", j,
+                        j + filter[j].jf + 1);
+                break;
+            case BPF_JGT:
+                fprintf(f, "\"%zu\" [label=\"jump if accumulator > %u\"];\n", j,
+                        filter[j].k);
+                fprintf(f, "\"%zu\" -> \"%zu\" [label=\"true\"];\n", j,
+                        j + filter[j].jt + 1);
+                fprintf(f, "\"%zu\" -> \"%zu\" [label=\"false\"];\n", j,
+                        j + filter[j].jf + 1);
+                break;
+            case BPF_JGE:
+                fprintf(f, "\"%zu\" [label=\"jump if accumulator >= %u\"];\n", j,
+                        filter[j].k);
+                fprintf(f, "\"%zu\" -> \"%zu\" [label=\"true\"];\n", j,
+                        j + filter[j].jt + 1);
+                fprintf(f, "\"%zu\" -> \"%zu\" [label=\"false\"];\n", j,
+                        j + filter[j].jf + 1);
+                break;
+            default:
+                fprintf(stderr, "unrecognized jump operation at %zu: %d\n", j, BPF_OP(filter[j].code));
+            }
+            break;
+        case BPF_RET:
+            switch(filter[j].k & SECCOMP_RET_ACTION_FULL) {
+            case SECCOMP_RET_KILL_PROCESS:
+                fprintf(f, "\"%zu\" [label=\"kill the process\"];\n", j);
+                break;
+            case SECCOMP_RET_KILL_THREAD:
+                fprintf(f, "\"%zu\" [label=\"kill the thread\"];\n", j);
+                break;
+            case SECCOMP_RET_ERRNO:
+                fprintf(f, "\"%zu\" [label=\"return errno for \\\"%s\\\"\"];\n",
+                        j, strerror(filter[j].k & SECCOMP_RET_DATA));
+                break;
+            case SECCOMP_RET_ALLOW:
+                fprintf(f, "\"%zu\" [label=\"allow system call\"];\n", j);
+                break;
+            default:
+                fprintf(stderr, "unrecognized return operation at %zu: %d\n", j, filter[j].k);
+                break;
+            }
+            break;
+        default:
+            fprintf(stderr, "unrecognized bpf class at %zu: %d\n", j, BPF_CLASS(filter[j].code));
+        }
+    }
+    fprintf(f, "}\n");
+}
+
+#endif
+
 /* Spawn 'slirp4netns' in separate namespaces as the given user and group;
    'tapfd' must correspond to a /dev/net/tun connection.  Configure it to
    write to 'notifyReadyFD' once it's up and running.  */
@@ -2015,6 +2229,11 @@ static pid_t spawnSlirp4netns(int tapfd, int notifyReadyFD,
             throw SysError("cannot open `/dev/null'");
         slirpCtx.logFD = devNullFd;
     }
+
+#if DEBUG_SECCOMP_FILTER
+    writeSeccompFilterDot(slirpCtx.seccompFilter, stderr);
+    fflush(stderr);
+#endif
 
     addPhaseAfter(slirpCtx.phases,
                   "makeChrootSeparateFilesystem",

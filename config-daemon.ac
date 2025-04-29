@@ -152,6 +152,10 @@ if test "x$guix_build_daemon" = "xyes"; then
   AC_PATH_PROG([SLIRP4NETNS], [slirp4netns], [slirp4netns])
   AC_DEFINE_UNQUOTED([SLIRP4NETNS], ["$SLIRP4NETNS"],
     [Path to the slirp4netns program, if any.])
+
+  dnl needed for inspecting 64-bit system call arguments in seccomp's Berkeley
+  dnl Packet Filter VM, which only directly operates on 32-bit words.
+  AC_C_BIGENDIAN
 fi
 
 AM_CONDITIONAL([HAVE_LIBBZ2], [test "x$HAVE_LIBBZ2" = "xyes"])

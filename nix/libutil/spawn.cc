@@ -51,6 +51,8 @@
 
 #ifdef __linux__
 #include <sys/personality.h>
+#include <linux/seccomp.h>
+#include <linux/filter.h>
 #endif
 
 #if defined(SYS_pivot_root)
@@ -281,6 +283,36 @@ void setIDsAction(SpawnContext & ctx)
             throw SysError("setuid failed");
 }
 
+void setNoNewPrivsAction(SpawnContext & ctx)
+{
+  if(ctx.setNoNewPrivs)
+#if __linux__ && defined(PR_SET_NO_NEW_PRIVS)
+      if(prctl(PR_SET_NO_NEW_PRIVS, 0, 0, 0, 0) == -1)
+          throw SysError("setting PR_SET_NO_NEW_PRIVS");
+#else
+      throw Error("setting PR_SET_NO_NEW_PRIVS not supported on this system");
+#endif
+}
+
+void addSeccompFilterAction(SpawnContext & ctx)
+{
+    if(ctx.addSeccompFilter) {
+#if __linux__ && defined(PR_SET_SECCOMP) && defined(SECCOMP_MODE_FILTER)
+        /* We use no extra functionality from the seccomp system call, so
+         * just use prctl. */
+        if(ctx.seccompFilter.size() > USHRT_MAX)
+            throw Error("seccomp filter too large");
+        struct sock_fprog prog;
+        prog.len = (unsigned short) ctx.seccompFilter.size();
+        prog.filter = ctx.seccompFilter.data();
+        if(prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog) == -1)
+            throw SysError("installing seccomp filter");
+#else
+        throw Error("setting seccomp filter not supported on this system");
+#endif
+    }
+}
+
 
 void restoreSIGPIPEAction(SpawnContext & ctx)
 {
@@ -336,6 +368,8 @@ Phases getBasicSpawnPhases()
              { "setPersonality",          setPersonalityAction },
              { "oomSacrifice",            oomSacrificeAction },
              { "setIDs",                  setIDsAction },
+             { "setNoNewPrivs",           setNoNewPrivsAction },
+             { "addSeccompFilter",        addSeccompFilterAction },
              { "restoreSIGPIPE",          restoreSIGPIPEAction },
              { "setupSuccess",            setupSuccessAction },
              { "exec",                    execAction } };
@@ -773,6 +807,8 @@ Phases getCloneSpawnPhases()
                 CloneSpawnContext.lockMountsMapAll = true. */
              { "lockMounts",                   lockMountsAction                   },
              { "setIDs",                       setIDsAction                       },
+             { "setNoNewPrivs",                setNoNewPrivsAction                },
+             { "addSeccompFilter",             addSeccompFilterAction             },
              { "restoreSIGPIPE",               restoreSIGPIPEAction               },
              { "setupSuccess",                 setupSuccessAction                 },
              { "exec",                         execAction                         }};
