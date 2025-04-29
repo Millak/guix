@@ -4682,13 +4682,13 @@ to transform JSON responses to formats more amenable to manipulation in R.")
 (define-public r-anvilbase
   (package
     (name "r-anvilbase")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnVILBase" version))
        (sha256
-        (base32 "0cjik5yvbbpryyawkqb6y38h92in0jkkm46a4kisbsif42hwa2i5"))))
+        (base32 "1mia9qji8x8zs4h7m2vf3x4dhyarpxydn42zdfs0qmfiaq5lsrwk"))))
     (properties `((upstream-name . "AnVILBase")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr r-httr r-httr2 r-jsonlite r-tibble))
