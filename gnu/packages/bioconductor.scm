@@ -11549,13 +11549,13 @@ remote MS data sets.")
 (define-public r-msexperiment
   (package
     (name "r-msexperiment")
-    (version "1.8.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsExperiment" version))
        (sha256
-        (base32 "15vxwvgimliyzj0rb06s7rpm3wrz3gc1n0wdgs0jd4flwp152g9h"))))
+        (base32 "0wwwm4b1yp1d8ppzyricqa3859macffi8ncddmfaipiziglcc7l4"))))
     (properties
      `((upstream-name . "MsExperiment")
        (updater-extra-native-inputs . ("r-mzr"))))
@@ -11573,9 +11573,6 @@ remote MS data sets.")
                          r-msdata
                          r-mzr
                          r-rsqlite
-                         r-s4vectors
-                         r-spectra
-                         r-summarizedexperiment
                          r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/MsExperiment")
     (synopsis "Infrastructure for Mass Spectrometry experiments")
