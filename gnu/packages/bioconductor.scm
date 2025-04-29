@@ -11774,14 +11774,14 @@ specific parser.")
 (define-public r-mzr
   (package
     (name "r-mzr")
-    (version "2.40.0")
+    (version "2.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "mzR" version))
        (sha256
         (base32
-         "1vqd9arlhvhw58jk2r343x6dqbv85ckgzjk04hi3pb6w5z0yvks4"))
+         "0sm6scdrswxv67yz2kg5n4n4354j9pxxq0bzc6jgkh0y97k6vw9r"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "src/boost"))))
@@ -11812,7 +11812,7 @@ specific parser.")
            r-rcpp
            r-rhdf5lib))
     (native-inputs
-     (list r-codetools r-knitr r-msdata r-mzid r-runit r-xml))
+     (list r-knitr r-msdata r-mzid r-runit r-xml))
     (home-page "https://github.com/sneumann/mzR/")
     (synopsis "Parser for mass spectrometry data files")
     (description
