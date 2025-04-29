@@ -18220,13 +18220,13 @@ experiments.")
 (define-public r-milor
   (package
     (name "r-milor")
-    (version "2.2.0")
+    (version "2.4.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "miloR" version))
               (sha256
                (base32
-                "1x7p6zjbif8wc4z8wqc472z69j3wbrbqbfq9sldj7v6cgfcflifd"))))
+                "0sx0i92zbgrnhbx8df48xkv46vp5xmswvrmzwl6vvggjdvk9sg6r"))))
     (properties `((upstream-name . "miloR")))
     (build-system r-build-system)
     (propagated-inputs
