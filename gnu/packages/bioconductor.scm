@@ -9124,14 +9124,14 @@ distribution.")
 (define-public r-dexseq
   (package
     (name "r-dexseq")
-    (version "1.52.0")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DEXSeq" version))
        (sha256
         (base32
-         "05sjxxv5299m0i9hnhz037dz6f5q8qdb70vbvr28jjzc1jcv7ym8"))))
+         "18r880s9xzs22dpicj7cghzi4041n1izbdqfnmp7hfly2a4a0z71"))))
     (properties `((upstream-name . "DEXSeq")))
     (build-system r-build-system)
     ;; Tests require r-pasilla, which depends on this package.
@@ -9155,7 +9155,7 @@ distribution.")
            r-stringr
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-glmgampoi r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/DEXSeq")
     (synopsis "Inference of differential exon usage in RNA-Seq")
     (description
