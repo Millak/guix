@@ -21316,14 +21316,14 @@ datasets.")
 (define-public r-annotatr
   (package
     (name "r-annotatr")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "annotatr" version))
        (sha256
         (base32
-         "11j633mhm4b0ndl6mbqqwgz7rsggb7gzr3yhvamrnvag7l4wzvss"))))
+         "00d0q534apwnzal3xabgcgcd659zsg73xb3md756caipx7qlcam8"))))
     (build-system r-build-system)
     ;; 5 tests need internet access.
     (arguments (list #:tests? #false))
