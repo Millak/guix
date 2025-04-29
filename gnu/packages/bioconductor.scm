@@ -24963,14 +24963,14 @@ data manipulation and visualization.")
 (define-public r-rgraphviz
   (package
     (name "r-rgraphviz")
-    (version "2.50.0")
+    (version "2.52.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rgraphviz" version))
        (sha256
         (base32
-         "0jljp88rxdq16b1976g77ix5x61ajr60fjf20wp9j17x4q9h2c1p"))))
+         "14capi4azvrk8lfidp8akp9l3nml5c4c0rv1j0wwbw3gqqvi1daz"))))
     (properties `((upstream-name . "Rgraphviz")))
     (build-system r-build-system)
     (arguments
@@ -24989,7 +24989,7 @@ data manipulation and visualization.")
     (propagated-inputs
      (list r-graph))
     (native-inputs
-     (list pkg-config r-runit r-xml))
+     (list pkg-config r-biocgenerics r-runit r-xml))
     (home-page "https://bioconductor.org/packages/Rgraphviz")
     (synopsis "Plotting capabilities for R graph objects")
     (description
