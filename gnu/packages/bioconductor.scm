@@ -28019,14 +28019,14 @@ optimised for high performance.")
 (define-public r-biotip
   (package
     (name "r-biotip")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioTIP" version))
        (sha256
         (base32
-         "0p9f9i4snkc4xgb00nwd7cky4n8s7z99lkv2lahmggk2a53bzx13"))))
+         "0xrsni2gnzis5ids5c2xlm2qzhplr9ny54jc65a798r072v1yilc"))))
     (properties `((upstream-name . "BioTIP")))
     (build-system r-build-system)
     (propagated-inputs
