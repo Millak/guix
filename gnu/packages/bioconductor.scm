@@ -8767,13 +8767,13 @@ analysis.")
 (define-public r-champ
   (package
     (name "r-champ")
-    (version "2.36.0")
+    (version "2.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ChAMP" version))
               (sha256
                (base32
-                "0cbgzkza1gqrqyk32i9vy1s3qvvr0wx2j0fjwg1cqy42qdy24rax"))))
+                "1dza1kv7s7zjw56shr6bi79vqziabihad6qjrf92p24p0yzzfwsl"))))
     (properties `((upstream-name . "ChAMP")))
     (build-system r-build-system)
     (propagated-inputs
