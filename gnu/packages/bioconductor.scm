@@ -2005,12 +2005,12 @@ All datasets are restricted to protein coding genes.")
 (define-public r-adductdata
   (package
     (name "r-adductdata")
-    (version "1.22.0")
+    (version "1.23.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "adductData" version 'experiment))
               (sha256
-               (base32 "1s9vflcvsi1136ax0isc1zskbz64cis6mlhhd458jrsx34cf5hff"))))
+               (base32 "0nb9b09r7gamn4llb74jygjcry39m2bpvylkz8bjswkmpnigb132"))))
     (properties `((upstream-name . "adductData")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationhub r-experimenthub))
