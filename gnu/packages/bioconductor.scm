@@ -12784,13 +12784,13 @@ HDF5 datasets.")
 (define-public r-rnaagecalc
   (package
     (name "r-rnaagecalc")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RNAAgeCalc" version))
        (sha256
-        (base32 "1f4vvx56jfs3ag0z1d815ysg54ff5p5l13cqq2gl9xfq2glqv6qn"))))
+        (base32 "0jqy569c2z09xsczsp2iq9dphcv99giy99yxpqw198ps9dx59a7p"))))
     (properties `((upstream-name . "RNAAgeCalc")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationdbi
