@@ -16520,13 +16520,13 @@ genes or proteins in these datasets.")
 (define-public r-plyranges
   (package
     (name "r-plyranges")
-    (version "1.26.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "plyranges" version))
               (sha256
                (base32
-                "0ai6p7q4iva420wnm0008p1vivd72gc1anwhzzsmy14bxr52rwbx"))))
+                "08iif4rllnshp3xzsk8y08c3jnpk2k4bbnf6f7rsx2q4sgvnlcpn"))))
     (properties
      '((upstream-name . "plyranges")
        (updater-extra-native-inputs . ("r-helloranges"))))
@@ -16560,7 +16560,8 @@ genes or proteins in these datasets.")
                              r-rtracklayer
                              r-s4vectors
                              r-tidyselect))
-    (native-inputs (list r-helloranges r-knitr r-testthat))
+    (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19 r-helloranges r-knitr
+                         r-testthat))
     (home-page "https://bioconductor.org/packages/plyranges")
     (synopsis "Fluent interface for manipulating GenomicRanges")
     (description
