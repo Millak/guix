@@ -43564,8 +43564,8 @@ EasyPG and latest Emacs.")
 
 (define-public emacs-wanderlust
   ;; No release since Jan 15, 2010.
-  (let ((commit "891e223673c2c550efbe411885af860c909f0120")
-        (revision "834"))
+  (let ((commit "d6dcbad228cd5cf39a918181da7c4c4ed934bd81")
+        (revision "846"))
     (package
       (name "emacs-wanderlust")
       (version (git-version "2.15.9" revision commit))
@@ -43586,7 +43586,7 @@ EasyPG and latest Emacs.")
                            (("package-user-dir") "NONE"))))
                 (sha256
                  (base32
-                  "0w00na53zz2nlf9wcq8d8gdi6cgwwj08gi6rfsn9h71pdi98hmxc"))))
+                  "0120rgq1zf254q39jswykqk2i69f7wq5m0b5b5x80w7wfj9405lg"))))
       (build-system emacs-build-system)
       (arguments
        (list #:phases
