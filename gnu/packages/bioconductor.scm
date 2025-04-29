@@ -25659,14 +25659,14 @@ sequence (@code{DNAse-seq}) experiments.")
 (define-public r-singlecellexperiment
   (package
     (name "r-singlecellexperiment")
-    (version "1.28.1")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SingleCellExperiment" version))
        (sha256
         (base32
-         "1kaxlhfg2c2vdvd1bw24qrxh2ffzxrxmd51znrisrhpvjl7r53jx"))))
+         "0dx6zp4vg7h2b3a9m6h568prg78dbr13fv7qgp422vcl7zgh7na9"))))
     (properties
      `((upstream-name . "SingleCellExperiment")))
     (build-system r-build-system)
@@ -25674,7 +25674,7 @@ sequence (@code{DNAse-seq}) experiments.")
      (list r-biocgenerics r-delayedarray r-genomicranges r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-matrix r-testthat))
     (home-page "https://bioconductor.org/packages/SingleCellExperiment")
     (synopsis "S4 classes for single cell data")
     (description "This package defines an S4 class for storing data from
