@@ -6675,13 +6675,13 @@ mechanism based on the shared signatures.")
 (define-public r-decomptumor2sig
   (package
     (name "r-decomptumor2sig")
-    (version "2.22.0")
+    (version "2.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "decompTumor2Sig" version))
               (sha256
                (base32
-                "1ixasxw98ymj793sd2crm0jdg73jmy535xhss5dws156mhzl4y0f"))))
+                "13rhg8hcraiqkdyyj85maj5zk37wlx7n5m046r9s8l4cm1pmvgqp"))))
     (properties `((upstream-name . "decompTumor2Sig")))
     (build-system r-build-system)
     ;; This package installs Perl scripts: extractSpecColumns.pl,
