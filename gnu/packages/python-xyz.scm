@@ -7403,34 +7403,41 @@ modules.  It creates a special virtual environment such that @command{pip} or
 work on your part.")
     (license license:expat)))
 
+;; XXX: No new release since 2021, no updates on default branch since 2023, no
+;; users in Guix; consider to remove if it keeps failing to build.
 (define-public python-virtualenv-clone
   (package
     (name "python-virtualenv-clone")
     (version "0.5.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/edwardgeorge/virtualenv-clone")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0p0d1y3axvjfnxlgwjx2374gikc8bmc82g0m7yashihbikh7pcxa"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/edwardgeorge/virtualenv-clone")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p0d1y3axvjfnxlgwjx2374gikc8bmc82g0m7yashihbikh7pcxa"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (delete-file "tox.ini")
-                              (invoke "pytest" "-vvv" "tests")))))))
-    (native-inputs (list python-pytest
-                         python-tox
-                         python-virtualenv
-                         python-coverage
-                         python-wheel
-                         python-tomli
-                         python-hypothesis))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; UnicodeDecodeError: 'utf-8' codec can't decode byte
+                    ;; 0xba in position 10: invalid start byte
+                    (list "not test_clone_contents"
+                          ;;  AssertionError: All versions were skipped.
+                          "test_clone_syspath"
+                          "test_clone_version"
+                          "test_virtualenv_syspath"
+                          "test_virtualenv_versions")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-tomli
+           python-virtualenv
+           python-wheel))
     (home-page "https://github.com/edwardgeorge/virtualenv-clone")
     (synopsis "Clone a non-relocatable virtualenv cleanly")
     (description
