@@ -12499,13 +12499,13 @@ library implementing most of the pipeline's features.")
 (define-public r-rcy3
   (package
     (name "r-rcy3")
-    (version "2.26.0")
+    (version "2.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RCy3" version))
        (sha256
-        (base32 "17bclz2bv7xzzx2rgpd89d19vlkkv0i67vcrva0v0gxm1cf4zvs1"))))
+        (base32 "0y1vpyvaihh1cm7vxmsrh11i84mm9l60c1xgsqdvil17ycbnsagy"))))
     (properties `((upstream-name . "RCy3")))
     (build-system r-build-system)
     (propagated-inputs (list r-base64enc
@@ -12524,7 +12524,7 @@ library implementing most of the pipeline's features.")
                              r-stringi
                              r-uuid
                              r-xml))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://github.com/cytoscape/RCy3")
     (synopsis "Functions to access and control Cytoscape")
     (description
