@@ -19540,14 +19540,14 @@ further downstream analysis on its output.")
 (define-public r-bacon
   (package
     (name "r-bacon")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bacon" version))
        (sha256
         (base32
-         "1ihhxnz5b12r6mh9j4k9nzwxaiw9m3mgc740y4j6xz67csi0xih0"))))
+         "1af7186valdc32rgn2ab0vjsqmdwjvyryv1pqwpfsrr0q6lcrkih"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocparallel r-ellipse r-ggplot2))
