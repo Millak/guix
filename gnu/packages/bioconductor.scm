@@ -10508,13 +10508,13 @@ the @code{ProteomeXchange} consortium.")
 (define-public r-impute
   (package
     (name "r-impute")
-    (version "1.80.0")
+    (version "1.82.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "impute" version))
               (sha256
                (base32
-                "19w88r5c9c522jafl4bdxravphpxady3n8bkd17vngxvla9m257z"))))
+                "1pmhz101nwab2f0p1afmb87b16rgd62ym724x4q30ll6rv5nc85s"))))
     (native-inputs
      (list gfortran))
     (build-system r-build-system)
