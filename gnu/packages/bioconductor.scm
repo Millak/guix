@@ -18683,13 +18683,13 @@ published results; and a routine for graphical display.")
 (define-public r-tradeseq
   (package
    (name "r-tradeseq")
-   (version "1.20.0")
+   (version "1.22.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "tradeSeq" version))
             (sha256
              (base32
-              "1wfq76g6mqf0gkqi9jxqb5va8v59k4ivbdm8d3plmpb6rd23n2ha"))))
+              "1vfz17rl3x777ssp0dlxxg4wb94703n31ibvxg56xbn1qvb8n0s1"))))
    (properties
     '((updater-extra-native-inputs . ("r-clusterexperiment"))))
    (build-system r-build-system)
@@ -18715,11 +18715,7 @@ published results; and a routine for graphical display.")
           r-trajectoryutils
           r-viridis))
    (native-inputs
-    (list r-clusterexperiment
-          r-delayedmatrixstats
-          r-dplyr
-          r-knitr
-          r-testthat))
+    (list r-clusterexperiment r-knitr r-testthat))
    (home-page "https://statomics.github.io/tradeSeq/index.html")
    (synopsis "Trajectory-based differential expression analysis")
    (description
