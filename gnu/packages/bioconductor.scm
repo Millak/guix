@@ -24207,13 +24207,13 @@ access.")
 (define-public r-experimenthubdata
   (package
     (name "r-experimenthubdata")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ExperimentHubData" version))
        (sha256
-        (base32 "1bg11hpmia4gbzslvlawrq8z5ycyx0sby9sg678x881zkaf107fm"))))
+        (base32 "19n37gf7kz8jvm90f1lg0mc7izvbdy9wasp59qq3l89gifvj3ky6"))))
     (properties `((upstream-name . "ExperimentHubData")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationhubdata
@@ -24224,7 +24224,7 @@ access.")
                              r-experimenthub
                              r-httr
                              r-s4vectors))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/ExperimentHubData")
     (synopsis "Add resources to ExperimentHub")
     (description
