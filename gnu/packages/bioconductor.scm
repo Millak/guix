@@ -4058,17 +4058,17 @@ objects are used so that other packages could be used as well.")
 (define-public r-aims
   (package
     (name "r-aims")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AIMS" version))
               (sha256
                (base32
-                "04xch3ld6f9bwsp3v8m1klxppr52flaj0svk2fjak5m9dar5lg0b"))))
+                "0414w398wlr8rzcc9nyz3nq2xni5582p99i4d0bqydg35zdmzxr5"))))
     (properties `((upstream-name . "AIMS")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-e1071))
-    (native-inputs (list r-breastcancervdx r-hgu133a-db r-runit))
+    (native-inputs (list r-biocgenerics r-breastcancervdx r-hgu133a-db r-runit))
     (home-page "https://git.bioconductor.org/packages/AIMS")
     (synopsis
      "Absolute assignment of breast cancer intrinsic molecular subtype")
