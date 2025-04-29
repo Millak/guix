@@ -5530,13 +5530,13 @@ transcripts in an integrated manner.")
 (define-public r-atsnp
   (package
     (name "r-atsnp")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "atSNP" version))
               (sha256
                (base32
-                "04gawccjzgjbzrvb98djf9g07pb812rkdwwv3hhbr4sp02yr9hr1"))))
+                "0c7w0pf91hhwa33xcbf5qx39lln29hdmz1w1lqd0011jgkazsgsr"))))
     (properties `((upstream-name . "atSNP")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5550,7 +5550,7 @@ transcripts in an integrated manner.")
            r-rappdirs
            r-rcpp
            r-testthat))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/sunyoungshin/atSNP")
     (synopsis
      "Affinity test for identifying regulatory single nucleotide polymorphisms")
