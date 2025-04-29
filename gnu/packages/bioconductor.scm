@@ -27222,20 +27222,20 @@ information networks from data.")
 (define-public r-genetclassifier
   (package
     (name "r-genetclassifier")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "geNetClassifier" version))
        (sha256
         (base32
-         "1qfakvirq5k5ypia1dfq4fwfmp9p9294bqp3s5w2a73z6ypincp2"))))
+         "1x2q78nvinrj7j72z12cl9jx2cv3klpq7hrqr2r7jianjw6prhqc"))))
     (properties
      `((upstream-name . "geNetClassifier")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase r-e1071 r-ebarrays r-minet))
-    (native-inputs (list r-leukemiaseset r-runit))
+    (native-inputs (list r-biocgenerics r-leukemiaseset r-runit))
     (home-page "https://www.cicancer.org")
     (synopsis "Classify diseases and build gene networks using expression profiles")
     (description
