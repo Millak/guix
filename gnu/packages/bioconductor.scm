@@ -9993,14 +9993,14 @@ facilitate the use of this test for gene set testing of GO and KEGG terms.")
 (define-public r-gostats
   (package
     (name "r-gostats")
-    (version "2.72.0")
+    (version "2.74.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GOstats" version))
        (sha256
         (base32
-         "0zz2gmv2hg8cr0bxj4zb95p8cf8a19zx1v925cv5f4xh7m698bzj"))))
+         "0r7nxmd6lr68c2w1g6y85mx6nzc5ric8qji0nqcqixxcjh27c724"))))
     (properties `((upstream-name . "GOstats")))
     (build-system r-build-system)
     (propagated-inputs
