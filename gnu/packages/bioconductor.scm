@@ -27695,14 +27695,14 @@ the Bioconductor project.")
 (define-public r-biodb
   (package
     (name "r-biodb")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biodb" version))
        (sha256
         (base32
-         "1mkkj2x37n5j90g5ixh6jaz5gwd0fz35wqb4s1jlp4pvxhd8jyjj"))))
+         "1xja9fl4yskqj2b51smddnpqgzi5i3w4ap18rwlpw9ci07rafyk5"))))
     (properties `((upstream-name . "biodb")))
     (build-system r-build-system)
     ;; 83 tests fail; 1025 pass.  Some of the failing tests attempt to
@@ -27730,7 +27730,7 @@ the Bioconductor project.")
            r-withr
            r-xml
            r-yaml))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/biodb")
     (synopsis "Library for connecting to chemical and biological databases")
     (description
