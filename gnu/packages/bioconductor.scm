@@ -2431,14 +2431,14 @@ detected peaks in an @code{xcmsSet}.")
 (define-public r-flowsorted-blood-450k
   (package
     (name "r-flowsorted-blood-450k")
-    (version "1.44.0")
+    (version "1.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "FlowSorted.Blood.450k"
                                      version 'experiment))
               (sha256
                (base32
-                "1afjwjddx9nwg01png223zr9vcb3xq8i71wx8mj2cxdwsb0lyqsq"))))
+                "0g3rg40b8dq1yfd9vf1xdy4gd4v8br23narzmb7ig41bh3f02r3y"))))
     (properties `((upstream-name . "FlowSorted.Blood.450k")))
     (build-system r-build-system)
     (propagated-inputs (list r-minfi))
