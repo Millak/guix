@@ -10262,13 +10262,13 @@ interactions from 3C-seq assay.")
 (define-public r-r4rna
   (package
     (name "r-r4rna")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "R4RNA" version))
        (sha256
-        (base32 "0g0lrj5vs2dd3hgm5l0h91hrprzbg02cr5r3kyjqmmzfixr1rzqc"))))
+        (base32 "1a34bxsn668ir8j8vkyp7s5chsji9yyv3wz3nrqnfq1pdmv6avlk"))))
     (properties `((upstream-name . "R4RNA")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings))
