@@ -5273,13 +5273,13 @@ pairs.")
 (define-public r-aseb
   (package
     (name "r-aseb")
-    (version "1.50.0")
+    (version "1.52.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ASEB" version))
               (sha256
                (base32
-                "0ks9h4gzsjpjjwifscid9y175kdshqng22rqc129fq4ch17pd0bs"))))
+                "19cvciadpjn0zjlh2bcrhsvwn1vzfm0rcxx89z6rw29hk0j98xgk"))))
     (properties `((upstream-name . "ASEB")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/ASEB")
