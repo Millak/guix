@@ -25663,24 +25663,23 @@ libraries.")
 (define-public r-singler
   (package
     (name "r-singler")
-    (version "2.8.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SingleR" version))
        (sha256
-        (base32 "1dlawx0hxnbb955yhbq4ryxv5yi62hgzh5di9vrzx1pi14vnc5nk"))))
+        (base32 "0q5b8svzkif30ycpqdjibd04xzi3rj6nf8f9k2d339h711h0bmnf"))))
     (properties
      '((upstream-name . "SingleR")
        (updater-extra-native-inputs
-        . ("r-ggplot2" "r-pheatmap" "r-scran" "r-viridis"))))
+        . ("r-ggplot2" "r-scran" "r-viridis"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assorthead
            r-beachmat
            r-biocneighbors
            r-biocparallel
-           r-biocsingular
            r-delayedarray
            r-delayedmatrixstats
            r-matrix
@@ -25688,11 +25687,13 @@ libraries.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-ggplot2
+     (list r-biobase
+           r-ggplot2
            r-knitr
            r-pheatmap
-           r-scuttle
            r-scran
+           r-scuttle
+           r-scrapper
            r-singlecellexperiment
            r-testthat
            r-viridis))
