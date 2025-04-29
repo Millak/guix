@@ -21385,13 +21385,13 @@ and to both short and long sequence reads.")
 (define-public r-flames
   (package
     (name "r-flames")
-    (version "2.0.2")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "FLAMES" version))
        (sha256
-        (base32 "0yszsrnvs13h1vdv5gfja54g48f8b0dadlwd2h7n02pl8b569q38"))))
+        (base32 "0h3lxrdacmch21lpf91alnmjsnca9l4r80r093rvzqagrm002ji5"))))
     (properties `((upstream-name . "FLAMES")))
     (build-system r-build-system)
     (arguments
@@ -21407,7 +21407,8 @@ and to both short and long sequence reads.")
     (inputs
      (list minimap2 samtools zlib))
     (propagated-inputs
-     (list r-bambu
+     (list r-abind
+           r-bambu
            r-basilisk
            r-biocgenerics
            r-biocparallel
@@ -21428,6 +21429,7 @@ and to both short and long sequence reads.")
            r-igraph
            r-iranges
            r-jsonlite
+           r-magick
            r-magrittr
            r-matrix
            r-matrixgenerics
@@ -21444,6 +21446,7 @@ and to both short and long sequence reads.")
            r-scran
            r-scuttle
            r-singlecellexperiment
+           r-sparsearray
            r-spatialexperiment
            r-stringr
            r-summarizedexperiment
