@@ -14581,13 +14581,13 @@ annotation infrastructure.")
 (define-public r-topgo
   (package
     (name "r-topgo")
-    (version "2.58.0")
+    (version "2.59.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "topGO" version))
               (sha256
                (base32
-                "1468m14b4hvabg2h14cbaayw34v4zmscn3fmmm37r4abamk7nh0m"))))
+                "025hsqkjzs07s62dqnh4navqp0iwz0kb59ibz83iamclbyyyxzxq"))))
     (properties
      `((upstream-name . "topGO")))
     (build-system r-build-system)
