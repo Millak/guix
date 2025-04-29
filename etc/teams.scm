@@ -115,258 +115,12 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
               (quote (teams ...)))))
 
 
-(define-team python
-  (team 'python
-        #:name "Python team"
-        #:description
-        "Python, Python packages, the \"pypi\" importer, and the python-build-system."
-        #:scope
-        (list "gnu/packages/django.scm"
-              "gnu/packages/jupyter.scm"
-              (make-regexp* "^gnu/packages/python(-.+|)\\.scm$")
-              "gnu/packages/sphinx.scm"
-              "gnu/packages/tryton.scm"
-              "guix/build/pyproject-build-system.scm"
-              "guix/build-system/pyproject.scm"
-              "guix/build/python-build-system.scm"
-              "guix/build-system/python.scm"
-              "guix/import/pypi.scm"
-              "guix/scripts/import/pypi.scm"
-              "tests/pypi.scm")))
 
-(define-team haskell
-  (team 'haskell
-        #:name "Haskell team"
-        #:description
-        "GHC, Hugs, Haskell packages, the \"hackage\" and \"stackage\" importers, and
-the haskell-build-system."
-        #:scope
-        (list "gnu/packages/dhall.scm"
-              ;; Match haskell.scm and haskell-*.scm.
-              (make-regexp* "^gnu/packages/haskell(-.+|)\\.scm$")
-              "gnu/packages/purescript.scm"
-              "guix/build/haskell-build-system.scm"
-              "guix/build-system/haskell.scm"
-              "guix/import/cabal.scm"
-              "guix/import/hackage.scm"
-              "guix/import/stackage.scm"
-              "guix/scripts/import/hackage.scm")))
-
-(define-team qt
-  (team 'qt
-        #:name "Qt team"
-        #:description
-        "The Qt toolkit/library and the qt-build-system,
-as well as some packages using Qt."
-        #:scope (list "gnu/packages/qt.scm"
-                      "guix/build-system/qt.scm"
-                      "guix/build/qt-build-system.scm"
-                      "guix/build/qt-utils.scm")))
-
-(define-team r
-  (team 'r
-        #:name "R team"
-        #:description
-        "The R language, CRAN and Bioconductor repositories, the \"cran\" importer,
-and the r-build-system."
-        #:scope (list "gnu/packages/bioconductor.scm"
-                      "gnu/packages/cran.scm"
-                      "guix/build/r-build-system.scm"
-                      "guix/build-system/r.scm"
-                      "guix/import/cran.scm"
-                      "guix/scripts/import/cran.scm"
-                      "tests/cran.scm")))
-
-(define-team sugar
-  (team 'sugar
-        #:name "Sugar team"
-        #:description
-        "Everything related to the Sugar Desktop and learning environment."
-        #:scope (list "gnu/packages/sugar.scm")))
-
-(define-team sysadmin
-  (team 'sysadmin
-        #:name "Sysadmin team"
-        #:description
-        "Networking, server clustering, high availability."
-        #:scope (list "gnu/packages/admin.scm"
-                      "gnu/packages/acl.scm"
-                      "gnu/packages/adns.scm"
-                      "gnu/packages/antivirus.scm"
-                      "gnu/packages/apparmor.scm"
-                      "gnu/packages/authentication.scm"
-                      "gnu/packages/cluster.scm"
-                      "gnu/packages/configuration-management"
-                      "gnu/packages/databases.scm"
-                      "gnu/packages/distributed.scm"
-                      "gnu/packages/dns.scm"
-                      "gnu/packages/high-availability.scm"
-                      "gnu/packages/kerberos.scm"
-                      "gnu/packages/logging.scm"
-                      "gnu/packages/monitoring.scm"
-                      "gnu/packages/nfs.scm"
-                      "gnu/packages/openldap.scm"
-                      "gnu/packages/openstack.scm"
-                      "gnu/packages/prometheus.scm"
-                      "gnu/packages/selinux.scm"
-                      "gnu/packages/storage.scm"
-                      "gnu/packages/task-runners.scm"
-                      "gnu/packages/terraform.scm"
-                      "gnu/packages/virtualization.scm")))
-
-(define-team telephony
-  (team 'telephony
-        #:name "Telephony team"
-        #:description
-        "Telephony packages and services such as Jami, Linphone, etc."
-        #:scope (list "gnu/build/jami-service.scm"
-                      "gnu/packages/jami.scm"
-                      "gnu/packages/linphone.scm"
-                      "gnu/packages/telephony.scm"
-                      "gnu/services/telephony.scm"
-                      "gnu/tests/data/jami-dummy-account.dat"
-                      "gnu/tests/telephony.scm"
-                      "tests/services/telephony.scm")))
-
-(define-team tex
-  (team 'tex
-        #:name "TeX team"
-        #:description
-        "TeX, LaTeX, XeLaTeX, LuaTeX, TeXLive, the texlive-build-system, and
-the \"texlive\" importer."
-        #:scope (list "gnu/packages/tex.scm"
-                      "gnu/packages/texlive.scm"
-                      "guix/build/texlive-build-system.scm"
-                      "guix/build-system/texlive.scm"
-                      "guix/import/texlive.scm"
-                      "guix/scripts/import/texlive.scm"
-                      "tests/texlive.scm")))
-
-(define-team julia
-  (team 'julia
-        #:name "Julia team"
-        #:description
-        "The Julia language, Julia packages, and the julia-build-system."
-        #:scope (list (make-regexp* "^gnu/packages/julia(-.+|)\\.scm$")
-                      "guix/build/julia-build-system.scm"
-                      "guix/build-system/julia.scm")))
-
-(define-team ocaml
-  (team 'ocaml
-        #:name "OCaml and Dune team"
-        #:description
-        "The OCaml language, the Dune build system, OCaml packages, the \"opam\"
-importer, and the ocaml-build-system."
-        #:scope
-        (list "gnu/packages/ocaml.scm"
-              "gnu/packages/coq.scm"
-              "guix/build/ocaml-build-system.scm"
-              "guix/build/dune-build-system.scm"
-              "guix/build-system/ocaml.scm"
-              "guix/build-system/dune.scm"
-              "guix/import/opam.scm"
-              "guix/scripts/import/opam.scm"
-              "tests/opam.scm")))
-
-(define-team java
-  (team 'java
-        #:name "Java and Maven team"
-        #:description
-        "The JDK and JRE, the Maven build system, Java packages, the ant-build-system,
-and the maven-build-system."
-        #:scope
-        (list ;; Match java.scm and java-*.scm.
-              (make-regexp* "^gnu/packages/java(-.+|)\\.scm$")
-              ;; Match maven.scm and maven-*.scm
-              (make-regexp* "^gnu/packages/maven(-.+|)\\.scm$")
-              "guix/build/ant-build-system.scm"
-              "guix/build/java-utils.scm"
-              "guix/build/maven-build-system.scm"
-              ;; The maven directory
-              (make-regexp* "^guix/build/maven/")
-              "guix/build-system/ant.scm"
-              "guix/build-system/maven.scm")))
-
-(define-team javascript
-  (team 'javascript
-        #:name "JavaScript team"
-        #:description
-        "JavaScript/Node.js packages, the node build system."
-        #:scope (list "gnu/packages/node-xyz.scm"
-                      "gnu/packages/node.scm"
-                      "guix/build-system/node.scm"
-                      "guix/build/node-build-system.scm"
-                      "guix/import/npm-binary.scm"
-                      "guix/scripts/import/npm-binary.scm")))
-
-(define-team science
-  (team 'science
-        #:name "Science team"
-        #:description "The main science disciplines and fields related
-packages (e.g. Astronomy, Chemistry, Math, Physics etc.)"
-        #:scope (list "gnu/packages/algebra.scm"
-                      "gnu/packages/astronomy.scm"
-                      "gnu/packages/geo.scm"
-                      "gnu/packages/chemistry.scm"
-                      "gnu/packages/maths.scm")))
-
-(define-team emacs
-  (team 'emacs
-        #:name "Emacs team"
-        #:description "The extensible, customizable text editor and its
-ecosystem."
-        #:scope (list "gnu/packages/aux-files/emacs/guix-emacs.el"
-                      (make-regexp* "^gnu/packages/emacs(-.+|)\\.scm$")
-                      "gnu/packages/tree-sitter.scm"
-                      "guix/build/emacs-build-system.scm"
-                      "guix/build/emacs-utils.scm"
-                      "guix/build-system/emacs.scm"
-                      "guix/import/elpa.scm"
-                      "guix/scripts/import/elpa.scm"
-                      "tests/elpa.scm")))
-
-(define-team electronics
-  (team 'electronics
-        #:name "Electronics team"
-        #:description "Electronics and hardware related packages."
-        #:scope (list "gnu/packages/fpga.scm"
-                      "gnu/packages/electronics.scm"
-                      "gnu/packages/libftdi.scm"
-                      "gnu/packages/engineering.scm")))
-
-(define-team lisp
-  (team 'lisp
-        #:name "Lisp team"
-        #:description
-        "Common Lisp and similar languages, Common Lisp packages and the
-asdf-build-system."
-        #:scope (list (make-regexp* "^gnu/packages/lisp(-.+|)\\.scm$")
-                      "guix/build/asdf-build-system.scm"
-                      "guix/build/lisp-utils.scm"
-                      "guix/build-system/asdf.scm")))
-
-(define-team ruby
-  (team 'ruby
-        #:name "Ruby team"
-        #:scope (list "gnu/packages/ruby.scm"
-                      "guix/build/ruby-build-system.scm"
-                      "guix/build-system/ruby.scm"
-                      "guix/import/gem.scm"
-                      "guix/scripts/import/gem.scm"
-                      "tests/gem.scm")))
-
-(define-team go
-  (team 'go
-        #:name "Go team"
-        #:scope (list "gnu/packages/configuration-management.scm"
-                      (make-regexp* "gnu/packages/golang(-.+|)\\.scm$")
-                      "gnu/packages/syncthing.scm"
-                      "gnu/packages/terraform.scm"
-                      "guix/build-system/go.scm"
-                      "guix/build/go-build-system.scm"
-                      "guix/import/go.scm"
-                      "guix/scripts/import/go.scm"
-                      "tests/go.scm")))
+(define-team audio
+  (team 'audio
+        #:name "Audio team"
+        #:description "Audio related packages."
+        #:scope (list "gnu/packages/audio.scm")))
 
 (define-team bootstrap
   (team 'bootstrap
@@ -374,33 +128,18 @@ asdf-build-system."
         #:scope (list "gnu/packages/commencement.scm"
                       "gnu/packages/mes.scm")))
 
-(define-team embedded
-  (team 'embedded
-        #:name "Embedded"
-        #:scope (list "gnu/packages/bootloaders.scm"
-                      "gnu/packages/firmware.scm")))
-
-(define-team rust
-  (team 'rust
-        #:name "Rust"
-        #:scope (list (make-regexp* "^gnu/packages/(crates|rust)(-.+|)\\.scm$")
-                      "gnu/packages/c2rust.scm"
-                      "gnu/packages/sequoia.scm"
-                      "guix/build/cargo-build-system.scm"
-                      "guix/build/cargo-utils.scm"
-                      "guix/build-system/cargo.scm"
-                      "guix/import/crate.scm"
-                      "guix/scripts/import/crate.scm"
-                      "tests/crate.scm")))
-
-(define-team kernel
-  (team 'kernel
-        #:name "Linux-libre kernel team"
-        #:scope (list "gnu/build/linux-modules.scm"
-                      "gnu/packages/linux.scm"
-                      "gnu/tests/linux-modules.scm"
-                      "guix/build/linux-module-build-system.scm"
-                      "guix/build-system/linux-module.scm")))
+(define-team c++
+  (team 'c++
+        #:name "C/C++ team"
+        #:description
+        "C and C++ libraries and tools."
+        #:scope (list "gnu/build-system/cmake.scm"
+                      "gnu/build/cmake-build-system.scm"
+                      "gnu/packages/c.scm"
+                      "gnu/packages/cmake.scm"
+                      "gnu/packages/cpp.scm"
+                      "gnu/packages/ninja.scm"
+                      "gnu/packages/valgrind.scm")))
 
 (define-team core
   (team 'core
@@ -487,16 +226,6 @@ asdf-build-system."
               (make-regexp* "^guix/scripts/")
               (make-regexp* "^guix/store/"))))
 
-(define-team documentation
-  (team 'documentation
-        #:name "Documentation"
-        #:description "Documentation: the manual and cookbook."
-        #:scope (list (make-regexp* "\\.texi$")
-                      "doc/build.scm"
-                      "gnu/system/examples/bare-bones.tmpl"
-                      "gnu/system/examples/lightweight-desktop.tmpl"
-                      "gnu/system/examples/desktop.tmpl")))
-
 (define-team core-packages
   (team 'core-packages
         #:name "Core packages"
@@ -514,6 +243,46 @@ asdf-build-system."
                       "guix/build/utils.scm"
                       "guix/build-system/gnu.scm")))
 
+(define-team documentation
+  (team 'documentation
+        #:name "Documentation"
+        #:description "Documentation: the manual and cookbook."
+        #:scope (list (make-regexp* "\\.texi$")
+                      "doc/build.scm"
+                      "gnu/system/examples/bare-bones.tmpl"
+                      "gnu/system/examples/lightweight-desktop.tmpl"
+                      "gnu/system/examples/desktop.tmpl")))
+
+(define-team electronics
+  (team 'electronics
+        #:name "Electronics team"
+        #:description "Electronics and hardware related packages."
+        #:scope (list "gnu/packages/fpga.scm"
+                      "gnu/packages/electronics.scm"
+                      "gnu/packages/libftdi.scm"
+                      "gnu/packages/engineering.scm")))
+
+(define-team emacs
+  (team 'emacs
+        #:name "Emacs team"
+        #:description "The extensible, customizable text editor and its
+ecosystem."
+        #:scope (list "gnu/packages/aux-files/emacs/guix-emacs.el"
+                      (make-regexp* "^gnu/packages/emacs(-.+|)\\.scm$")
+                      "gnu/packages/tree-sitter.scm"
+                      "guix/build/emacs-build-system.scm"
+                      "guix/build/emacs-utils.scm"
+                      "guix/build-system/emacs.scm"
+                      "guix/import/elpa.scm"
+                      "guix/scripts/import/elpa.scm"
+                      "tests/elpa.scm")))
+
+(define-team embedded
+  (team 'embedded
+        #:name "Embedded"
+        #:scope (list "gnu/packages/bootloaders.scm"
+                      "gnu/packages/firmware.scm")))
+
 (define-team games
   (team 'games
         #:name "Games and Toys"
@@ -526,6 +295,143 @@ asdf-build-system."
                       "gnu/packages/motti.scm"
                       "guix/build/minetest-build-system.scm")))
 
+(define-team gnome
+  (team 'gnome
+        #:name "Gnome team"
+        #:description
+        "The Gnome desktop environment, along with core technologies such as
+GLib/GIO, GTK, GStreamer and Webkit."
+        #:scope (list "gnu/packages/glib.scm"
+                      "gnu/packages/gstreamer.scm"
+                      "gnu/packages/gtk.scm"
+                      "gnu/packages/gnome.scm"
+                      "gnu/packages/gnome-xyz.scm"
+                      "gnu/packages/webkit.scm"
+                      "gnu/services/desktop.scm"
+                      "guix/build/glib-or-gtk-build-system.scm"
+                      "guix/build/meson-build-system.scm")))
+
+(define-team go
+  (team 'go
+        #:name "Go team"
+        #:scope (list "gnu/packages/configuration-management.scm"
+                      (make-regexp* "gnu/packages/golang(-.+|)\\.scm$")
+                      "gnu/packages/syncthing.scm"
+                      "gnu/packages/terraform.scm"
+                      "guix/build-system/go.scm"
+                      "guix/build/go-build-system.scm"
+                      "guix/import/go.scm"
+                      "guix/scripts/import/go.scm"
+                      "tests/go.scm")))
+
+(define-team haskell
+  (team 'haskell
+        #:name "Haskell team"
+        #:description
+        "GHC, Hugs, Haskell packages, the \"hackage\" and \"stackage\" importers, and
+the haskell-build-system."
+        #:scope
+        (list "gnu/packages/dhall.scm"
+              ;; Match haskell.scm and haskell-*.scm.
+              (make-regexp* "^gnu/packages/haskell(-.+|)\\.scm$")
+              "gnu/packages/purescript.scm"
+              "guix/build/haskell-build-system.scm"
+              "guix/build-system/haskell.scm"
+              "guix/import/cabal.scm"
+              "guix/import/hackage.scm"
+              "guix/import/stackage.scm"
+              "guix/scripts/import/hackage.scm")))
+
+(define-team home
+  (team 'home
+        #:name "Team for \"Guix Home\""
+        #:scope (list (make-regexp* "^(gnu|guix/scripts)/home(\\.scm$|/)")
+                      "tests/guix-home.sh"
+                      "tests/home-import.scm"
+                      "tests/home-services.scm")))
+
+(define-team hurd
+  (team 'hurd
+        #:name "Team for the Hurd"
+        #:scope (list "gnu/system/hurd.scm"
+                      "gnu/system/images/hurd.scm"
+                      "gnu/build/hurd-boot.scm"
+                      "gnu/services/hurd.scm"
+                      "gnu/packages/hurd.scm")))
+
+(define-team installer
+  (team 'installer
+        #:name "Installer script and system installer"
+        #:scope (list (make-regexp* "^gnu/installer(\\.scm$|/)"))))
+
+(define-team java
+  (team 'java
+        #:name "Java and Maven team"
+        #:description
+        "The JDK and JRE, the Maven build system, Java packages, the ant-build-system,
+and the maven-build-system."
+        #:scope
+        (list ;; Match java.scm and java-*.scm.
+              (make-regexp* "^gnu/packages/java(-.+|)\\.scm$")
+              ;; Match maven.scm and maven-*.scm
+              (make-regexp* "^gnu/packages/maven(-.+|)\\.scm$")
+              "guix/build/ant-build-system.scm"
+              "guix/build/java-utils.scm"
+              "guix/build/maven-build-system.scm"
+              ;; The maven directory
+              (make-regexp* "^guix/build/maven/")
+              "guix/build-system/ant.scm"
+              "guix/build-system/maven.scm")))
+
+(define-team javascript
+  (team 'javascript
+        #:name "JavaScript team"
+        #:description
+        "JavaScript/Node.js packages, the node build system."
+        #:scope (list "gnu/packages/node-xyz.scm"
+                      "gnu/packages/node.scm"
+                      "guix/build-system/node.scm"
+                      "guix/build/node-build-system.scm"
+                      "guix/import/npm-binary.scm"
+                      "guix/scripts/import/npm-binary.scm")))
+
+(define-team julia
+  (team 'julia
+        #:name "Julia team"
+        #:description
+        "The Julia language, Julia packages, and the julia-build-system."
+        #:scope (list (make-regexp* "^gnu/packages/julia(-.+|)\\.scm$")
+                      "guix/build/julia-build-system.scm"
+                      "guix/build-system/julia.scm")))
+
+(define-team kde
+  (team 'kde
+        #:name "KDE team"
+        #:description
+        "The plasma desktop environment, and KDE Applications."
+        #:scope (list (make-regexp* "^gnu/packages/(kde)(-.+|)\\.scm$")
+                      "gnu/packages/education.scm")))
+
+(define-team kernel
+  (team 'kernel
+        #:name "Linux-libre kernel team"
+        #:scope (list "gnu/build/linux-modules.scm"
+                      "gnu/packages/linux.scm"
+                      "gnu/tests/linux-modules.scm"
+                      "guix/build/linux-module-build-system.scm"
+                      "guix/build-system/linux-module.scm")))
+
+(define-team lisp
+  (team 'lisp
+        #:name "Lisp team"
+        #:description
+        "Common Lisp and similar languages, Common Lisp packages and the
+asdf-build-system."
+        #:scope (list (make-regexp* "^gnu/packages/lisp(-.+|)\\.scm$")
+                      "guix/build/asdf-build-system.scm"
+                      "guix/build/lisp-utils.scm"
+                      "guix/build-system/asdf.scm")))
+
 (define-team localization
   (team 'localization
         #:name "Localization (l10n) team"
@@ -537,24 +443,11 @@ asdf-build-system."
                       "gnu/packages/fonts.scm"
                       "gnu/packages/ibus.scm")))
 
-(define-team translations
-  (team 'translations
-        #:name "Translations"
-        #:scope (list "etc/news.scm"
-                      (make-regexp* "^po/"))))
-
-(define-team installer
-  (team 'installer
-        #:name "Installer script and system installer"
-        #:scope (list (make-regexp* "^gnu/installer(\\.scm$|/)"))))
-
-(define-team home
-  (team 'home
-        #:name "Team for \"Guix Home\""
-        #:scope (list (make-regexp* "^(gnu|guix/scripts)/home(\\.scm$|/)")
-                      "tests/guix-home.sh"
-                      "tests/home-import.scm"
-                      "tests/home-services.scm")))
+(define-team lxqt
+  (team 'lxqt
+        #:name "LXQt team"
+        #:description "LXQt desktop environment."
+        #:scope (list "gnu/packages/lxqt.scm")))
 
 (define-team mentors
   (team 'mentors
@@ -574,6 +467,67 @@ and Firefox."
                       "gnu/packages/librewolf.scm"
                       "gnu/packages/tor-browsers.scm")))
 
+(define-team ocaml
+  (team 'ocaml
+        #:name "OCaml and Dune team"
+        #:description
+        "The OCaml language, the Dune build system, OCaml packages, the \"opam\"
+importer, and the ocaml-build-system."
+        #:scope
+        (list "gnu/packages/ocaml.scm"
+              "gnu/packages/coq.scm"
+              "guix/build/ocaml-build-system.scm"
+              "guix/build/dune-build-system.scm"
+              "guix/build-system/ocaml.scm"
+              "guix/build-system/dune.scm"
+              "guix/import/opam.scm"
+              "guix/scripts/import/opam.scm"
+              "tests/opam.scm")))
+
+(define-team python
+  (team 'python
+        #:name "Python team"
+        #:description
+        "Python, Python packages, the \"pypi\" importer, and the python-build-system."
+        #:scope
+        (list "gnu/packages/django.scm"
+              "gnu/packages/jupyter.scm"
+              (make-regexp* "^gnu/packages/python(-.+|)\\.scm$")
+              "gnu/packages/sphinx.scm"
+              "gnu/packages/tryton.scm"
+              "guix/build/pyproject-build-system.scm"
+              "guix/build-system/pyproject.scm"
+              "guix/build/python-build-system.scm"
+              "guix/build-system/python.scm"
+              "guix/import/pypi.scm"
+              "guix/scripts/import/pypi.scm"
+              "tests/pypi.scm")))
+
+(define-team qt
+  (team 'qt
+        #:name "Qt team"
+        #:description
+        "The Qt toolkit/library and the qt-build-system,
+as well as some packages using Qt."
+        #:scope (list "gnu/packages/qt.scm"
+                      "guix/build-system/qt.scm"
+                      "guix/build/qt-build-system.scm"
+                      "guix/build/qt-utils.scm")))
+
+(define-team r
+  (team 'r
+        #:name "R team"
+        #:description
+        "The R language, CRAN and Bioconductor repositories, the \"cran\" importer,
+and the r-build-system."
+        #:scope (list "gnu/packages/bioconductor.scm"
+                      "gnu/packages/cran.scm"
+                      "guix/build/r-build-system.scm"
+                      "guix/build-system/r.scm"
+                      "guix/import/cran.scm"
+                      "guix/scripts/import/cran.scm"
+                      "tests/cran.scm")))
+
 (define-team racket
   (team 'racket
         #:name "Racket team"
@@ -591,47 +545,116 @@ importer."
         "Reproducible Builds tooling and issues that affect any guix packages."
         #:scope (list "gnu/packages/diffoscope.scm")))
 
-(define-team gnome
-  (team 'gnome
-        #:name "Gnome team"
-        #:description
-        "The Gnome desktop environment, along with core technologies such as
-GLib/GIO, GTK, GStreamer and Webkit."
-        #:scope (list "gnu/packages/glib.scm"
-                      "gnu/packages/gstreamer.scm"
-                      "gnu/packages/gtk.scm"
-                      "gnu/packages/gnome.scm"
-                      "gnu/packages/gnome-xyz.scm"
-                      "gnu/packages/webkit.scm"
-                      "gnu/services/desktop.scm"
-                      "guix/build/glib-or-gtk-build-system.scm"
-                      "guix/build/meson-build-system.scm")))
+(define-team ruby
+  (team 'ruby
+        #:name "Ruby team"
+        #:scope (list "gnu/packages/ruby.scm"
+                      "guix/build/ruby-build-system.scm"
+                      "guix/build-system/ruby.scm"
+                      "guix/import/gem.scm"
+                      "guix/scripts/import/gem.scm"
+                      "tests/gem.scm")))
 
-(define-team kde
-  (team 'kde
-        #:name "KDE team"
+(define-team rust
+  (team 'rust
+        #:name "Rust"
+        #:scope (list (make-regexp* "^gnu/packages/(crates|rust)(-.+|)\\.scm$")
+                      "gnu/packages/c2rust.scm"
+                      "gnu/packages/sequoia.scm"
+                      "guix/build/cargo-build-system.scm"
+                      "guix/build/cargo-utils.scm"
+                      "guix/build-system/cargo.scm"
+                      "guix/import/crate.scm"
+                      "guix/scripts/import/crate.scm"
+                      "tests/crate.scm")))
+
+(define-team science
+  (team 'science
+        #:name "Science team"
+        #:description "The main science disciplines and fields related
+packages (e.g. Astronomy, Chemistry, Math, Physics etc.)"
+        #:scope (list "gnu/packages/algebra.scm"
+                      "gnu/packages/astronomy.scm"
+                      "gnu/packages/geo.scm"
+                      "gnu/packages/chemistry.scm"
+                      "gnu/packages/maths.scm")))
+
+(define-team sugar
+  (team 'sugar
+        #:name "Sugar team"
         #:description
-        "The plasma desktop environment, and KDE Applications."
-        #:scope (list (make-regexp* "^gnu/packages/(kde)(-.+|)\\.scm$")
-                      "gnu/packages/education.scm")))
+        "Everything related to the Sugar Desktop and learning environment."
+        #:scope (list "gnu/packages/sugar.scm")))
+
+(define-team sysadmin
+  (team 'sysadmin
+        #:name "Sysadmin team"
+        #:description
+        "Networking, server clustering, high availability."
+        #:scope (list "gnu/packages/admin.scm"
+                      "gnu/packages/acl.scm"
+                      "gnu/packages/adns.scm"
+                      "gnu/packages/antivirus.scm"
+                      "gnu/packages/apparmor.scm"
+                      "gnu/packages/authentication.scm"
+                      "gnu/packages/cluster.scm"
+                      "gnu/packages/configuration-management"
+                      "gnu/packages/databases.scm"
+                      "gnu/packages/distributed.scm"
+                      "gnu/packages/dns.scm"
+                      "gnu/packages/high-availability.scm"
+                      "gnu/packages/kerberos.scm"
+                      "gnu/packages/logging.scm"
+                      "gnu/packages/monitoring.scm"
+                      "gnu/packages/nfs.scm"
+                      "gnu/packages/openldap.scm"
+                      "gnu/packages/openstack.scm"
+                      "gnu/packages/prometheus.scm"
+                      "gnu/packages/selinux.scm"
+                      "gnu/packages/storage.scm"
+                      "gnu/packages/task-runners.scm"
+                      "gnu/packages/terraform.scm"
+                      "gnu/packages/virtualization.scm")))
+
+(define-team telephony
+  (team 'telephony
+        #:name "Telephony team"
+        #:description
+        "Telephony packages and services such as Jami, Linphone, etc."
+        #:scope (list "gnu/build/jami-service.scm"
+                      "gnu/packages/jami.scm"
+                      "gnu/packages/linphone.scm"
+                      "gnu/packages/telephony.scm"
+                      "gnu/services/telephony.scm"
+                      "gnu/tests/data/jami-dummy-account.dat"
+                      "gnu/tests/telephony.scm"
+                      "tests/services/telephony.scm")))
+
+(define-team tex
+  (team 'tex
+        #:name "TeX team"
+        #:description
+        "TeX, LaTeX, XeLaTeX, LuaTeX, TeXLive, the texlive-build-system, and
+the \"texlive\" importer."
+        #:scope (list "gnu/packages/tex.scm"
+                      "gnu/packages/texlive.scm"
+                      "guix/build/texlive-build-system.scm"
+                      "guix/build-system/texlive.scm"
+                      "guix/import/texlive.scm"
+                      "guix/scripts/import/texlive.scm"
+                      "tests/texlive.scm")))
+
+(define-team translations
+  (team 'translations
+        #:name "Translations"
+        #:scope (list "etc/news.scm"
+                      (make-regexp* "^po/"))))
 
 (define-team xfce
   (team 'xfce
         #:name "Xfce team"
         #:description "Xfce desktop environment."
         #:scope (list "gnu/packages/xfce.scm")))
-
-(define-team lxqt
-  (team 'lxqt
-        #:name "LXQt team"
-        #:description "LXQt desktop environment."
-        #:scope (list "gnu/packages/lxqt.scm")))
-
-(define-team audio
-  (team 'audio
-        #:name "Audio team"
-        #:description "Audio related packages."
-        #:scope (list "gnu/packages/audio.scm")))
 
 (define-team zig
   (team 'zig
@@ -641,28 +664,6 @@ GLib/GIO, GTK, GStreamer and Webkit."
                       "gnu/packages/zig-xyz.scm"
                       "guix/build/zig-build-system.scm"
                       "guix/build-system/zig.scm")))
-
-(define-team hurd
-  (team 'hurd
-        #:name "Team for the Hurd"
-        #:scope (list "gnu/system/hurd.scm"
-                      "gnu/system/images/hurd.scm"
-                      "gnu/build/hurd-boot.scm"
-                      "gnu/services/hurd.scm"
-                      "gnu/packages/hurd.scm")))
-
-(define-team c++
-  (team 'c++
-        #:name "C/C++ team"
-        #:description
-        "C and C++ libraries and tools."
-        #:scope (list "gnu/build-system/cmake.scm"
-                      "gnu/build/cmake-build-system.scm"
-                      "gnu/packages/c.scm"
-                      "gnu/packages/cmake.scm"
-                      "gnu/packages/cpp.scm"
-                      "gnu/packages/ninja.scm"
-                      "gnu/packages/valgrind.scm")))
 
 
 (define-member (person "Eric Bavier"
