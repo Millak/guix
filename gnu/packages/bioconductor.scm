@@ -12362,14 +12362,14 @@ batch correction and normalization.")
 (define-public r-protgenerics
   (package
     (name "r-protgenerics")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ProtGenerics" version))
        (sha256
         (base32
-         "0pg7rqz0ixaiihqybynm94qvdc5y953xzxzxvwv5gbmxdk9s3lmk"))))
+         "0a8niarfkb9jqamqj3ild5d2l6kc1amxgzn2aqk58w4whcip39i3"))))
     (properties `((upstream-name . "ProtGenerics")))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
