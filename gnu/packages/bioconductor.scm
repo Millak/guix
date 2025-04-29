@@ -19260,14 +19260,14 @@ expression data sets.")
 (define-public r-mlinterfaces
   (package
     (name "r-mlinterfaces")
-    (version "1.86.0")
+    (version "1.88.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MLInterfaces" version))
        (sha256
         (base32
-         "1r00hcisp4i2q7nki9rkp753ms3g7biw9h9hxfwajfjqlwpb3l5y"))))
+         "0vv29pfd75l8h7m3d4lax2a5wmpgy2sfdkdgzlw72xwfvhjvd8m7"))))
     (properties
      '((upstream-name . "MLInterfaces")
        (updater-extra-native-inputs . ("r-e1071"))))
@@ -19294,7 +19294,7 @@ expression data sets.")
            r-shiny
            r-summarizedexperiment
            r-threejs))
-    (native-inputs (list r-e1071 r-golubesets r-knitr r-testthat))
+    (native-inputs (list r-e1071 r-golubesets r-knitr r-snow r-testthat))
     (home-page "https://bioconductor.org/packages/MLInterfaces/")
     (synopsis "Interfaces to R machine learning procedures")
     (description
