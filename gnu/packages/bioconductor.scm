@@ -3554,13 +3554,13 @@ ranking by fold-change and visualization.")
 (define-public r-adacgh2
   (package
     (name "r-adacgh2")
-    (version "2.46.0")
+    (version "2.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ADaCGH2" version))
        (sha256
-        (base32 "1pzzbqh5wflhn9zqpdggx80y6zhdzg6i4xwgzjrh89bq90ibck04"))))
+        (base32 "1wxqwd8grmn900qib8xxfvmfb2g2r8ic6rmc6nbqlpzgfq0aa325"))))
     (properties
      `((upstream-name . "ADaCGH2")
        (updater-extra-inputs . ("python-wrapper"))))
@@ -3580,7 +3580,6 @@ ranking by fold-change and visualization.")
            r-cluster
            r-dnacopy
            r-ff
-           r-glad
            r-tilingarray
            r-waveslim))
     (home-page "https://github.com/rdiaz02/adacgh2")
