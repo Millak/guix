@@ -20099,14 +20099,14 @@ needed.")
 (define-public r-ebimage
   (package
     (name "r-ebimage")
-    (version "4.48.0")
+    (version "4.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "EBImage" version))
        (sha256
         (base32
-         "16p3bzs13ihfx36fav3y1dxfryhyj00wvcwqc6mzx5ln2a2jpdbv"))))
+         "05ndq0dwdwprl076g866zayjrk85ha3vihm9qh4dchwkmn2rm9hi"))))
     (properties `((upstream-name . "EBImage")))
     (build-system r-build-system)
     (propagated-inputs
@@ -20121,7 +20121,7 @@ needed.")
            r-rcurl
            r-tiff))
     (native-inputs
-     (list r-knitr)) ; for vignettes
+     (list r-digest r-knitr)) ; for vignettes
     (home-page "https://github.com/aoles/EBImage")
     (synopsis "Image processing and analysis toolbox for R")
     (description
