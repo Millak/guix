@@ -13063,13 +13063,13 @@ differential expression analysis, RNAseq data and related problems.")
 (define-public r-saturn
   (package
     (name "r-saturn")
-    (version "1.14.0")
+    (version "1.16.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "satuRn" version))
               (sha256
                (base32
-                "0rfh0zprl1gibcanjwp4sncjv5k660lhylbiaqwgri7n62jz7k9m"))))
+                "1vimbg778fph2rc95jq0z4ynz38d4cz9nj50iwrxz7j4arzndvg9"))))
     (properties `((upstream-name . "satuRn")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocparallel
@@ -13080,7 +13080,7 @@ differential expression analysis, RNAseq data and related problems.")
                              r-matrix
                              r-pbapply
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-delayedarray r-knitr r-testthat))
     (home-page "https://github.com/statOmics/satuRn")
     (synopsis
      "Analysis of differential transcript usage for scRNA-seq applications")
