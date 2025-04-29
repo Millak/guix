@@ -15469,13 +15469,13 @@ processing to visualization and annotation.")
 (define-public r-mbecs
   (package
     (name "r-mbecs")
-    (version "1.10.0")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MBECS" version))
        (sha256
-        (base32 "0b8apb9gybapl9dnc7h6f0kk4ra35wsypr9gr83hbjp85wwv8glc"))))
+        (base32 "01hjnbaxjzjrlygqajzjlahvdqbf42a8kisiqkk8a2vv93vg8xyj"))))
     (properties `((upstream-name . "MBECS")))
     (build-system r-build-system)
     (arguments
