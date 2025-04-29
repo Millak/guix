@@ -6070,13 +6070,13 @@ export of Strand-seq data.")
 (define-public r-cardelino
   (package
     (name "r-cardelino")
-    (version "1.8.0")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "cardelino" version))
               (sha256
                (base32
-                "1zglflqc53izs5rh8cdld0y129mdvwlhmv9pgbgrl4clcnnbiwac"))))
+                "1apnzwia944cclsdc3x8plp87id3sd0qyz6xg2m61cl18nq17wl7"))))
     (properties `((upstream-name . "cardelino")))
     (build-system r-build-system)
     (propagated-inputs (list r-combinat
@@ -6091,7 +6091,7 @@ export of Strand-seq data.")
                              r-snpstats
                              r-variantannotation
                              r-vcfr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-covr r-knitr r-testthat))
     (home-page "https://github.com/single-cell-genetics/cardelino")
     (synopsis "Clone identification from single cell data")
     (description
