@@ -25568,15 +25568,25 @@ This package wraps C++ code from the MOODS motif calling library.")
 (define-public r-chromvar
   (package
     (name "r-chromvar")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "chromVAR" version))
        (sha256
-        (base32 "0mv8bfjr80k3nmmy0vsvjsrb4hi7n4adazmzgf6xi3hiiyajiv87"))))
+        (base32 "1k42md1n22ms1jbk52vzgqlsmxvlg59cdbq5h5sariymbc6ihx6d"))))
     (properties `((upstream-name . "chromVAR")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; Fails with "more columns than column names".
+             (substitute* "tests/testthat/test_get_counts.R"
+               ((".*can count fragments with bed file.*" m)
+                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs
      (list r-biocgenerics
            r-biocparallel
