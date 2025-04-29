@@ -22796,13 +22796,13 @@ procedures that induce nucleotide substitutions (e.g. BisSeq).")
 (define-public r-tilingarray
   (package
     (name "r-tilingarray")
-    (version "1.84.0")
+    (version "1.86.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "tilingArray" version))
               (sha256
                (base32
-                "13n4myj46zfb7y42phqqy7rmavr8793qg4l8wr04b0634b3dv4jf"))))
+                "1j5b3400xfhzdffxrq08qk1sigr17r79v27f2iwpawn395vql9a2"))))
     (properties `((upstream-name . "tilingArray")))
     (build-system r-build-system)
     (propagated-inputs
