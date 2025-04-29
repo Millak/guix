@@ -27055,15 +27055,17 @@ real numbers.")
 (define-public r-bgeecall
   (package
     (name "r-bgeecall")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BgeeCall" version))
        (sha256
         (base32
-         "13lhps2dswd29rxr08yhpd9aqbdcvcgq5kfbymmrgr5ampl9dk29"))))
-    (properties `((upstream-name . "BgeeCall")))
+         "0fjqwnaq26dzca4n3d7nsq8psim2k8vq6l6gdz11psf805k60hdl"))))
+    (properties
+     '((upstream-name . "BgeeCall")
+       (updater-extra-propagated-inputs . ("kallisto"))))
     ;; Tests need internet access.
     (arguments (list #:tests? #false))
     (build-system r-build-system)
