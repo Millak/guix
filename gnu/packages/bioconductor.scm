@@ -2490,14 +2490,14 @@ https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110554.")
 (define-public r-flowworkspacedata
   (package
     (name "r-flowworkspacedata")
-    (version "3.18.0")
+    (version "3.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowWorkspaceData" version
                               'experiment))
        (sha256
-        (base32 "1bwykpv1y76iq0qhnn24snwymy0wirip7xwq1wqj1flbainzmv6g"))))
+        (base32 "1z0fdfczxnpw7glb30250andia4rq25akb6mg3vyhknx6lc7iy9g"))))
     (properties `((upstream-name . "flowWorkspaceData")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/flowWorkspaceData")
