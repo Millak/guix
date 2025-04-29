@@ -8906,14 +8906,14 @@ experiments.")
 (define-public r-complexheatmap
   (package
     (name "r-complexheatmap")
-    (version "2.22.0")
+    (version "2.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ComplexHeatmap" version))
        (sha256
         (base32
-         "1hab197h1d01p8960zqmb0vnhgw9bk68ibmappryhv1jb4ibmx60"))))
+         "0l1613dzggm15l8cxdrdrwdld9gfsg47rmq3w8z00pssdk95l09a"))))
     (properties
      `((upstream-name . "ComplexHeatmap")))
     (build-system r-build-system)
@@ -8932,7 +8932,12 @@ experiments.")
            r-png
            r-rcolorbrewer))
     (native-inputs
-     (list r-dendextend r-genomicranges r-gridtext r-knitr r-testthat))
+     (list r-dendextend
+           r-genomicranges
+           r-gplots
+           r-gridtext
+           r-knitr
+           r-testthat))
     (home-page
      "https://github.com/jokergoo/ComplexHeatmap")
     (synopsis "Making Complex Heatmaps")
