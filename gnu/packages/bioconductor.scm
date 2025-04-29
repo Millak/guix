@@ -5250,13 +5250,13 @@ quality assessment.")
 (define-public r-asafe
   (package
     (name "r-asafe")
-    (version "1.32.0")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ASAFE" version))
               (sha256
                (base32
-                "0q7rv3aasc8xdl0mamggncgs2cdyqyagq4rnskc0c3qccb7mvakg"))))
+                "1hx8zxsbva755y5kj5s9jvwjjf84w27m2p0798r1byi69c1rqigd"))))
     (properties `((upstream-name . "ASAFE")))
     (build-system r-build-system)
     (native-inputs (list r-knitr r-testthat))
