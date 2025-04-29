@@ -27909,14 +27909,14 @@ networks.")
 (define-public r-bionet
   (package
     (name "r-bionet")
-    (version "1.66.0")
+    (version "1.68.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioNet" version))
        (sha256
         (base32
-         "0s1mi4sjbhjs548a2bjqlj5bhslf7wzqkag80g9f2m86hxnmkxwc"))))
+         "0a0pd7bhmgxa8yl9qfk4ns1vbvfxvclb2gblslfwmp7blqayhva3"))))
     (properties `((upstream-name . "BioNet")))
     (build-system r-build-system)
     (propagated-inputs
