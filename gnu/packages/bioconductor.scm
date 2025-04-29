@@ -22310,14 +22310,14 @@ expression space.")
 (define-public r-cicero
   (package
     (name "r-cicero")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "cicero" version))
        (sha256
         (base32
-         "12j1j553pg5rd1ndg3xfjk9jgv2i72cck9pg74kylfhj5z2a1mfp"))))
+         "1vmmgvwscrag8dv5n4k70pdichfii11j2jiav3nv9l5pqby469na"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
@@ -22343,7 +22343,7 @@ expression space.")
            r-tidyr
            r-vgam))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-vdiffr))
     (home-page "https://bioconductor.org/packages/cicero/")
     (synopsis "Predict cis-co-accessibility from single-cell data")
     (description
