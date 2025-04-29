@@ -10712,13 +10712,13 @@ Shiny-based display methods for Bioconductor objects.")
 (define-public r-lea
   (package
     (name "r-lea")
-    (version "3.18.0")
+    (version "3.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "LEA" version))
               (sha256
                (base32
-                "0ayc6gqw426ygdj6fsixqfyq8br3szz3ghmn85rq4bizdabnkjpg"))))
+                "0n8mk1vgjlvrqasx1nsivypz76r4zl2k9d470s6973dyawzh2xxs"))))
     (properties `((upstream-name . "LEA")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
