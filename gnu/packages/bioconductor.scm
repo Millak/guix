@@ -21694,14 +21694,14 @@ change point detection.")
 (define-public r-ncdfflow
   (package
     (name "r-ncdfflow")
-    (version "2.52.1")
+    (version "2.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ncdfFlow" version))
        (sha256
         (base32
-         "1sqpifafyrnxln062pn3cvwxkmmxf9xzx5zsjb8i4bhxgkhrh7vh"))))
+         "0b4vriw7msvl0pv7m7wpx3gqg10pfdj6vnclawx2v3zarqbl2ny0"))))
     (properties
      `((upstream-name . "ncdfFlow")
        ;; Avoid dependency cycle.
