@@ -788,7 +788,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Gabriel Wicki"
                        "gabriel@erlikon.ch")
-  audio)
+  audio documentation electronics embedded)
 
 (define-member (person "Ekaitz Zarraga"
                        "ekaitz@elenq.tech")
