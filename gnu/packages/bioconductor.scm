@@ -3294,14 +3294,14 @@ containing 20k motifs and search space up to 10kbp around the TSS.")
 (define-public r-rnaseqdata-hnrnpc-bam-chr14
   (package
     (name "r-rnaseqdata-hnrnpc-bam-chr14")
-    (version "0.44.0")
+    (version "0.45.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RNAseqData.HNRNPC.bam.chr14" version
                               'experiment))
        (sha256
-        (base32 "1yhr798bbv3mc8wnalz4wag1np6kyq6akb0mbpvj47130ifi0wbx"))))
+        (base32 "0bv1k52y28vajdlywrmqgkr3vckf80vrccvf10sj0szcjky0lmlj"))))
     (properties `((upstream-name . "RNAseqData.HNRNPC.bam.chr14")))
     (build-system r-build-system)
     (home-page "https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-1147/")
