@@ -6997,13 +6997,13 @@ fold changes mean and variability for each selected gene.")
 (define-public r-delayedarray
   (package
     (name "r-delayedarray")
-    (version "0.34.0")
+    (version "0.34.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DelayedArray" version))
               (sha256
                (base32
-                "053dhbbhnpcbxr2px7ffpfkqr8iyf8xxzh6qpwz0y9g6wvjzw99i"))))
+                "09fx4gq0yx9k0qfxj6596dw4kn9h1wnzxwn142ld429vsn4gp3z7"))))
     (properties
      '((upstream-name . "DelayedArray")
        ;; These are needed for tests, which we don't run, because we cannot
