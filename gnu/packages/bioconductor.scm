@@ -9734,13 +9734,13 @@ alignments.")
 (define-public r-genomicdatacommons
   (package
     (name "r-genomicdatacommons")
-    (version "1.30.1")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicDataCommons" version))
               (sha256
                (base32
-                "08inzfvxxwnln5ssxw8q9bsqsi1qyglj7j3xzrw47vp5cfcv0hhw"))))
+                "07mpgsyi9gdb2jhkrdsxv09l1sncv214avpp68isdddk1mipk1w4"))))
     (properties `((upstream-name . "GenomicDataCommons")))
     (build-system r-build-system)
     (arguments
