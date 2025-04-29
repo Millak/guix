@@ -3,6 +3,7 @@
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,12 +66,14 @@
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
+                (implicit-inputs? #t) (implicit-cross-inputs? #t)
                 (cmake (default-cmake target))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
   (define private-keywords
     `(#:cmake #:inputs #:native-inputs
+      #:implicit-inputs? #:implicit-cross-inputs?
       ,@(if target '() '(#:target))))
 
   (bag
@@ -83,13 +86,15 @@
                     ,@`(("cmake" ,cmake))
                     ,@native-inputs
                     ,@(if target '() inputs)
-                    ,@(if target
+                    ,@(if (and target implicit-cross-inputs?)
                           ;; Use the standard cross inputs of
                           ;; 'gnu-build-system'.
                           (standard-cross-packages target 'host)
                           '())
                     ;; Keep the standard inputs of 'gnu-build-system'.
-                    ,@(standard-packages)))
+                    ,@(if implicit-inputs?
+                          (standard-packages system)
+                          '())))
     (host-inputs (if target inputs '()))
 
     ;; The cross-libc is really a target package, but for bootstrapping
@@ -97,7 +102,7 @@
     ;; native package, so it would end up using a "native" variant of
     ;; 'cross-libc' (built with 'gnu-build'), whereas all the other packages
     ;; would use a target variant (built with 'gnu-cross-build'.)
-    (target-inputs (if target
+    (target-inputs (if (and target implicit-cross-inputs?)
                        (standard-cross-packages target 'target)
                        '()))
     (outputs outputs)
