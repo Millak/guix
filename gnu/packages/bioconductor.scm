@@ -28093,20 +28093,21 @@ ensemble machine learning for the estimation of nuisance functions.")
 (define-public r-bsseq
   (package
     (name "r-bsseq")
-    (version "1.42.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bsseq" version))
        (sha256
         (base32
-         "0gxjx1x2rw07615f7p9fixf4j3ph9x9b36mcb4vwg4h0avq5wfdx"))))
+         "1sscy6q119g84malz2yq1fgf8q6izrq4ljh13ycyh4zhgmbqk4rl"))))
     (properties
      '((upstream-name . "bsseq")
        (updater-extra-native-inputs . ("r-batchtools"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-beachmat
+     (list r-assorthead
+           r-beachmat
            r-biobase
            r-biocgenerics
            r-biocparallel
@@ -28130,7 +28131,7 @@ ensemble machine learning for the estimation of nuisance functions.")
            r-scales
            r-summarizedexperiment))
     (native-inputs
-     (list r-batchtools r-knitr r-testthat))
+     (list r-batchtools r-doparallel r-knitr r-matrix r-testthat))
     (home-page "https://github.com/hansenlab/bsseq")
     (synopsis "Analyze, manage and store bisulfite sequencing data")
     (description
