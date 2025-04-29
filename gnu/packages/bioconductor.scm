@@ -2262,13 +2262,13 @@ cancer study published in Wang et al. 2005 and Minn et al 2007.")
 (define-public r-celldex
   (package
     (name "r-celldex")
-    (version "1.16.0")
+    (version "1.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "celldex" version 'experiment))
        (sha256
-        (base32 "0kn1mdnbiiag29n52gar2ymihx5q9hrjfjc6qssxm0m7ns9gm4hm"))))
+        (base32 "16dg342dlf3d9aj8ms2q0njzm5gqqhy6fffj0pv1jfl2plggjpfs"))))
     (properties `((upstream-name . "celldex")))
     (build-system r-build-system)
     ;; Tests access the internet via r-gypsum.
@@ -2289,7 +2289,7 @@ cancer study published in Wang et al. 2005 and Minn et al 2007.")
            r-rsqlite
            r-s4vectors
            r-summarizedexperiment))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-biocmanager r-knitr r-testthat))
     (home-page "https://github.com/LTLA/celldex")
     (synopsis "Reference index for cell types")
     (description
