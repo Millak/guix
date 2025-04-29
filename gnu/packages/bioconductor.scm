@@ -23117,14 +23117,14 @@ data.")
 (define-public r-universalmotif
   (package
     (name "r-universalmotif")
-    (version "1.24.2")
+    (version "1.26.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "universalmotif" version))
        (sha256
         (base32
-         "03wjwi3h6agdvp552cd8mlrlvjjb1wwi0z02yclh0jcxbrd7a90z"))))
+         "14jsb54hjmbmmckbyvrv5cxdmchddfn4imq5whynbq6js18px99m"))))
     (properties
      '((upstream-name . "universalmotif")
        (updater-extra-native-inputs . ("r-ape" "r-ggtree"))))
@@ -23149,7 +23149,7 @@ data.")
            r-s4vectors
            r-yaml))
     (native-inputs
-     (list r-ape r-ggtree r-knitr r-testthat))
+     (list r-ape r-ggtree r-knitr r-spelling r-testthat))
     (home-page
      "https://bioconductor.org/packages/universalmotif/")
     (synopsis
