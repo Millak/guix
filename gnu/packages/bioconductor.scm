@@ -4735,13 +4735,13 @@ this package should be minimal.")
 (define-public r-aldex2
   (package
     (name "r-aldex2")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ALDEx2" version))
               (sha256
                (base32
-                "1c22h27w852b5mbniw6266r8pxf28ii5czi8iki6ik9k3l4n6xzd"))))
+                "1dblf8cabwy2jwi70v6l5n2fjjfpnxy6qdszs4klq152g2wnx3sg"))))
     (properties `((upstream-name . "ALDEx2")))
     (build-system r-build-system)
     (propagated-inputs
