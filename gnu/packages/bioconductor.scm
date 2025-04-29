@@ -5852,13 +5852,13 @@ usage.")
 (define-public r-bandits
   (package
     (name "r-bandits")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BANDITS" version))
               (sha256
                (base32
-                "01ksk9wqzmg14pn0x0dch1fcrdwxw9qrfc592gkx9cy4sh8kdf3n"))))
+                "1xqi3gpsshnb6h1yyvxh4dqafzw691zmpy4mc40nd6skz3hqwls0"))))
     (properties
      '((upstream-name . "BANDITS")
        (updater-extra-native-inputs . ("r-tximport"))))
