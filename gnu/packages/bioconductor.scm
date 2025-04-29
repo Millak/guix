@@ -19362,14 +19362,14 @@ arrays.")
 (define-public r-a4classif
   (package
     (name "r-a4classif")
-    (version "1.54.0")
+    (version "1.56.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "a4Classif" version))
        (sha256
         (base32
-         "0h6i6nxfq2nnla8559bjinydaywwc8lzg0xs8z2adj4cr52r6h74"))))
+         "0yk5ww3f90fyy3jd2p93560708ii66sxij3mfqxpi0012mqlhlkh"))))
     (properties `((upstream-name . "a4Classif")))
     (build-system r-build-system)
     (propagated-inputs
