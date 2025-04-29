@@ -13921,13 +13921,13 @@ tissues.  Current functionalities include
 (define-public r-trackviewer
   (package
     (name "r-trackviewer")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "trackViewer" version))
               (sha256
                (base32
-                "0qvan15w36ysby5688iz4kdimri2k16w318jgkynijiyg42i8y71"))
+                "0x7048mf4i55sf6wr2b1ibpiw2jpw7bdd3w6n9m0dwirg0w487qf"))
               (snippet
                '(delete-file "inst/htmlwidgets/lib/d3/d3.v4.min.js"))))
     (properties `((upstream-name . "trackViewer")))
