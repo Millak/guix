@@ -9237,13 +9237,13 @@ originally made available by Holmes, Harris, and Quince, 2012, PLoS ONE 7(2):
 (define-public r-dittoseq
   (package
     (name "r-dittoseq")
-    (version "1.18.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "dittoSeq" version))
               (sha256
                (base32
-                "0c38wq57kpm7pjsca2kpyr2rmk37wak66d57mxsd6bwxmqzsys2r"))))
+                "013m2fhczxmq1jk05fjyih2aphaqylpmvfby7z8wk91g51221q48"))))
     (properties `((upstream-name . "dittoSeq")))
     (build-system r-build-system)
     (propagated-inputs
@@ -9259,14 +9259,7 @@ originally made available by Holmes, Harris, and Quince, 2012, PLoS ONE 7(2):
            r-singlecellexperiment
            r-summarizedexperiment))
     (native-inputs
-     (list r-complexheatmap
-           r-deseq2
-           r-edger
-           r-ggplot-multistats
-           r-ggrastr
-           r-knitr
-           r-plotly
-           r-testthat))
+     (list r-deseq2 r-edger r-knitr r-seurat r-testthat))
     (home-page "https://bioconductor.org/packages/dittoSeq")
     (synopsis "Single-cell and bulk RNA sequencing visualization")
     (description
