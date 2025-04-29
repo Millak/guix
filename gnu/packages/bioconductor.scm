@@ -22215,19 +22215,18 @@ data, to only emphasize the data that actually matters.")
 (define-public r-rcistarget
   (package
     (name "r-rcistarget")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RcisTarget" version))
        (sha256
         (base32
-         "0iggn3p3i36xgl79dbs0nf9nv9cyiap7mlgg2s5q1fx9mni501xw"))))
+         "1rfk1z9mnla8d8wj50ajvyr7bwnsl49ragjcbxdckzix6v276l9p"))))
     (properties
      '((upstream-name . "RcisTarget")
        (updater-extra-native-inputs
-        . ("r-doparallel"
-           "r-rcistarget-hg19-motifdbs-cisbponly-500bp"))))
+        . ("r-doparallel"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-arrow
