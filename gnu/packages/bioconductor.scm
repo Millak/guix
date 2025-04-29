@@ -20138,14 +20138,14 @@ visualization with image data.")
 (define-public r-yamss
   (package
     (name "r-yamss")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "yamss" version))
        (sha256
         (base32
-         "1rdqx69x4qqq6lnsk54rha8am51likxvlyqj4lk7rx5gg2390d5q"))))
+         "1kf7j77sws4al8xb4r9112k5cvix9xw70ikhyj2x49j8psg0y588"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics
