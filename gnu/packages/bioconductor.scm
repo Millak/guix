@@ -10104,19 +10104,19 @@ manner.")
 (define-public r-gypsum
   (package
     (name "r-gypsum")
-    (version "1.2.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "gypsum" version))
        (sha256
-        (base32 "1qyb90r5qji9r0hy986891dyjqmryyszjp2v27q054mimwbgwskk"))))
+        (base32 "1mjlhn0026nfx4z7s4mdxd27b26vp5rklfqm2fksjizlid34h8fx"))))
     (properties `((upstream-name . "gypsum")))
     (build-system r-build-system)
     ;; Some tests need internet access.
     (arguments (list #:tests? #false))
     (propagated-inputs (list r-filelock r-httr2 r-jsonlite r-rappdirs))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-dbi r-digest r-knitr r-rsqlite r-testthat))
     (home-page "https://github.com/ArtifactDB/gypsum-R")
     (synopsis "Interface to the gypsum REST API")
     (description
