@@ -10168,13 +10168,13 @@ at @url{https://github.com/kharchenkolab/hahmmr/}.")
 (define-public r-harshlight
   (package
     (name "r-harshlight")
-    (version "1.78.0")
+    (version "1.79.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Harshlight" version))
               (sha256
                (base32
-                "14fnbvrk7cdfnsdv47cv1k4krqlf9a8hiax0m7g8rw1y7qjkf0z4"))))
+                "1jm0ia06ls1m7dsbzp1hk68qi5wbqzhcf6x66534bj1kxdll17k7"))))
     (properties `((upstream-name . "Harshlight")))
     (build-system r-build-system)
     (propagated-inputs
