@@ -13540,13 +13540,13 @@ reference point and sorted by a user defined feature.")
 (define-public r-sesame
   (package
     (name "r-sesame")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "sesame" version))
               (sha256
                (base32
-                "0s7vybr0nd5wx1qjkmfqjkff4wp9qv5ibk2fckzpwlsd2jv3pzng"))))
+                "0kc5xs0cawxvp6qfrnppkaqx8s52j04cx6cypp05gykq8pyywpyn"))))
     (properties `((upstream-name . "sesame")))
     (build-system r-build-system)
     ;; Tests use ExperimentHub, so needs Internet access.
