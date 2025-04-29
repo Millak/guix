@@ -18150,13 +18150,13 @@ summarization.")
 (define-public r-microbiome
   (package
     (name "r-microbiome")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "microbiome" version))
               (sha256
                (base32
-                "1q78d71gpczgphv9adh8lz6lx1q0wbiv4pl59aqz6cvagx0kcza6"))))
+                "0l8538jg7rg8bag169ffbvhmb132y5rhn6s7a906jd2kf5fyx6ja"))))
     (properties `((upstream-name . "microbiome")))
     (build-system r-build-system)
     (propagated-inputs
