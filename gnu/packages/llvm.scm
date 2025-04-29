@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2020, 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020-2022, 2024-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
@@ -54,6 +54,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
@@ -1905,7 +1906,9 @@ which highly leverage existing libraries in the larger LLVM project.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #f
+      #:test-target "check-cxx"
+      #:tests? #f                       ;prohibitively expensive to run
+      #:implicit-inputs? #f             ;to avoid conflicting GCC headers
       #:configure-flags
       #~(list "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi;libunwind"
               "-DCMAKE_C_COMPILER=clang"
@@ -1920,23 +1923,14 @@ which highly leverage existing libraries in the larger LLVM project.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'enter-subdirectory
             (lambda _
-              (chdir "runtimes")))
-          (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((gcc (assoc-ref inputs  "gcc")))
-                ;; Hide GCC's C++ headers so that they do not interfere with
-                ;; the ones we are attempting to build.
-                (setenv "CPLUS_INCLUDE_PATH"
-                        (string-join (delete (string-append gcc "/include/c++")
-                                             (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                           #\:))
-                                     ":"))
-                (format #t
-                        "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                        (getenv "CPLUS_INCLUDE_PATH"))
-                #t))))))
+              (chdir "runtimes"))))))
     (native-inputs
-     (list clang-19 libunwind-headers llvm python))
+     (modify-inputs (standard-packages)
+       ;; Remove GCC from the build environment, to avoid its C++
+       ;; headers (include/c++), which would interfere and cause build
+       ;; failures.
+       (delete "gcc")
+       (prepend clang-19 python-minimal)))
     (home-page "https://libcxx.llvm.org")
     (synopsis "C++ standard library")
     (description
