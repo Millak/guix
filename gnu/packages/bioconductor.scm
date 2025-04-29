@@ -5806,13 +5806,13 @@ Various visual and textual types of output are available.")
 (define-public r-bambu
   (package
     (name "r-bambu")
-    (version "3.8.3")
+    (version "3.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "bambu" version))
               (sha256
                (base32
-                "05mydm8cxkv7qcpkpny4hjkyl7p5dmqj1fyvmqa6rj9rh4ccxsl7"))))
+                "0f2rznakgkbqd8i7zgmdgjwwmdz69hkh1fr8jv1n7d05yxyc2m6l"))))
     (properties `((upstream-name . "bambu")))
     (build-system r-build-system)
     ;; Tests require Internet access.
