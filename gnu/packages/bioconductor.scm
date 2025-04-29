@@ -6374,13 +6374,13 @@ proper FDR control.")
 (define-public r-cummerbund
   (package
     (name "r-cummerbund")
-    (version "2.48.0")
+    (version "2.50.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "cummeRbund" version))
               (sha256
                (base32
-                "13505rlzwczgqzqs9fcfgij8558iwzhcn29ai4xl96qqz4qwx00k"))))
+                "1i1zcrfizp4ix0bgx3gjbd4y4hj7dfs15j4ssh87kkx61y7x6yl8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
