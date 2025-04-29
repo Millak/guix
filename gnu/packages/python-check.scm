@@ -3360,6 +3360,50 @@ manipulating JSON Object.  You can manipulate your JSON object using JSONPath")
     ;; This is free and unencumbered software released into the public domain.
     (license license:unlicense)))
 
+(define-public python-scspell3k
+  (let ((commit "df550351f255c572c1a74852d233c83bbfbd49fb")
+        (revision "0"))
+    (package
+      (name "python-scspell3k")
+      (version (git-version "2.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/myint/scspell")
+               (commit commit)))
+         (sha256
+          (base32 "0d7yhja9hrw4w7vm10h56hm1dqyhrnwia7wzc3ap9f15ldkkp9cs"))
+         (file-name (git-file-name name version))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-project-license
+              (lambda _
+                (substitute* "pyproject.toml"
+                  (("\"GPL-2.0-only\"")
+                   "{ text = \"GPL-2.0-only\" }"))))
+            (add-before 'check 'pre-check
+              (lambda _
+                (setenv "HOME" "/tmp")))
+            (add-after 'check 'run-cram-tests
+              (lambda _
+                (invoke "cram" "--indent=4" "--verbose" "./test.cram"))))))
+      (native-inputs
+       (list python-cram
+             python-pytest
+             python-setuptools
+             python-wheel))
+      (home-page "https://github.com/myint/scspell")
+      (synopsis "Conservative interactive spell checker for source code")
+      (description
+       "This package implements a spell checker for source code that does not
+try to be particularly smart and instead does the simplest thing that can
+possibly work.")
+      (license license:gpl2))))
+
 (define-public python-slotscheck
   (package
     (name "python-slotscheck")
