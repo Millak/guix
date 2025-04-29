@@ -21536,14 +21536,14 @@ the quality control enables the detection and removal of anomalies.")
 (define-public r-consensusclusterplus
   (package
     (name "r-consensusclusterplus")
-    (version "1.70.0")
+    (version "1.72.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ConsensusClusterPlus" version))
        (sha256
         (base32
-         "06lrjjl7h9d3xyi1j9ciikrqjmpqxvw2d0z1yifwd1lwx6b6zsgb"))))
+         "0mxz03nyhprahlsban3l6k5wlgsrhg1z8a25y0ndwqfd6w2gvf2a"))))
     (properties
      `((upstream-name . "ConsensusClusterPlus")))
     (build-system r-build-system)
