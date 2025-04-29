@@ -16781,15 +16781,19 @@ workflows.")
 (define-public r-treeio
   (package
     (name "r-treeio")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "treeio" version))
        (sha256
         (base32
-         "0x1fd3422icp56ac01dn5nk5y04724sv80pb24fd993d426jj1xj"))))
-    (properties `((upstream-name . "treeio")))
+         "1fcr47cj4xqdscc6riyffw5a60iz5hrz87v0ajpi3nmbiab2xjpg"))))
+    (properties
+     '((upstream-name . "treeio")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-ggtree"))
+       (updater-extra-native-inputs . ("r-xml2"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -16812,7 +16816,7 @@ workflows.")
            r-tibble
            r-tidytree
            r-yulab-utils))
-    (native-inputs (list r-igraph r-knitr r-testthat r-xml2))
+    (native-inputs (list r-igraph r-knitr r-testthat r-tidyr r-xml2))
     (home-page "https://github.com/YuLab-SMU/treeio")
     (synopsis "Base classes and functions for Phylogenetic tree input and output")
     (description
