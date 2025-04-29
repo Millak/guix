@@ -27575,13 +27575,13 @@ posterior (3D array).")
 (define-public r-bbcanalyzer
   (package
     (name "r-bbcanalyzer")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BBCAnalyzer" version))
        (sha256
-        (base32 "1021srhg6j3p0lwkn3d777iylrjqm8rvspfvj73hphk8l828cd53"))))
+        (base32 "1qs25p1cj7k8j88w193c35fidgz3hfprsd8bsrk9nfvsg399g0py"))))
     (properties `((upstream-name . "BBCAnalyzer")))
     (build-system r-build-system)
     (propagated-inputs
