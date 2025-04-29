@@ -2242,14 +2242,14 @@ demonstrate functionalities of the @code{breakpointR} package.")
 (define-public r-breastcancervdx
   (package
     (name "r-breastcancervdx")
-    (version "1.44.0")
+    (version "1.45.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "breastCancerVDX" version
                               'experiment))
        (sha256
-        (base32 "1q248675kn2r0q7spw6wa8fhcihsk98diys3zfr36xba1pr3f8yy"))))
+        (base32 "1risf3l9xcd34sm8rbibd3h7z3a0v37nf5vfviw7n0szwq7i91q4"))))
     (properties `((upstream-name . "breastCancerVDX")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/breastCancerVDX")
