@@ -18280,14 +18280,14 @@ model.")
 (define-public r-minfi
   (package
     (name "r-minfi")
-    (version "1.52.1")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "minfi" version))
        (sha256
         (base32
-         "13bajbcsm0rkw92c8pz1pxn07af5nf51qfff5p0n9chdi01k78dk"))))
+         "0nvsirsc6i3wax3bn9bc8n2qw1wfdjkvalqpfkmi6l35ilkksqd5"))))
     (properties
      '((updater-ignored-native-inputs . ("r-minfidata"))))
     (build-system r-build-system)
