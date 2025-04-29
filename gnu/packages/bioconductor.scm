@@ -5435,13 +5435,13 @@ start codons as the forms of evidence.")
 (define-public r-asset
   (package
     (name "r-asset")
-    (version "2.24.0")
+    (version "2.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ASSET" version))
               (sha256
                (base32
-                "0lq07mq7ai51c1dkjkmjrafq3caw6wpzrpbfsbqa3dyjn3vp3c04"))))
+                "04xnggnfvi5v9mcc3sbjq8prwz4acnvzg44fc3a9sa1fv51y5v7b"))))
     (properties `((upstream-name . "ASSET")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass r-msm r-rmeta))
