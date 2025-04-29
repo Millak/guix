@@ -27023,14 +27023,14 @@ to annotation.")
 (define-public r-megadepth
   (package
     (name "r-megadepth")
-    (version "1.16.0")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "megadepth" version))
        (sha256
         (base32
-         "1cay30y7cc6lpikcp4ncx69zjg4kyn152z5b8fhw159n6cb1z19n"))))
+         "05b3vish9vx1a1pwqayc52hdqb5kimnpzn1kg8qv5979xjbs9s75"))))
     (properties
      `((upstream-name . "megadepth")
        (updater-extra-propagated-inputs . ("megadepth"))))
