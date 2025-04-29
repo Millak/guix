@@ -4508,13 +4508,13 @@ these biases and construct statistically consistent estimators.")
 (define-public r-animalcules
   (package
     (name "r-animalcules")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "animalcules" version))
               (sha256
                (base32
-                "02dbfx159b9ivlzgyhd1ikhw2ciq6q7f3b3sdq4hsp49yp6ps7nl"))))
+                "1i38rmggbblkv75kn5rc56zlkgm51slalqi3nvmh6y2ils68x1m6"))))
     (properties
      '((upstream-name . "animalcules")
        (updater-extra-native-inputs . ("r-glmnet"))))
