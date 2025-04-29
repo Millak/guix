@@ -3340,14 +3340,14 @@ package for the assembly hg19.")
 (define-public r-rtcga-rnaseq
   (package
     (name "r-rtcga-rnaseq")
-    (version "20151101.36.0")
+    (version "20151101.37.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RTCGA.rnaseq" version
                               'experiment))
        (sha256
-        (base32 "0yn89m988gvq4y5nv56581dlh6ydyhd6dkcx1clwalb453v390dz"))))
+        (base32 "11sxrwzf43xp0hh8nxpzsd9ylg2bbs1ygd501iijlv9iap4ax9p2"))))
     (properties `((upstream-name . "RTCGA.rnaseq")))
     (build-system r-build-system)
     (propagated-inputs (list r-rtcga))
