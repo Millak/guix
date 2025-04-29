@@ -12621,14 +12621,14 @@ region sets and other genomic features.")
 (define-public r-reportingtools
   (package
     (name "r-reportingtools")
-    (version "2.46.0")
+    (version "2.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ReportingTools" version))
        (sha256
         (base32
-         "1w749cn04lkicdb5p9xw4zs2i7i6810m8wm10lpvcby66lja1d7l"))
+         "153y3v6wwdwn93m361xg6xb1nfl0v6px55p2rs2g08x82l5awmaj"))
        (snippet
         '(delete-file "inst/extdata/jslib/jquery-1.8.0.min.js"))))
     (properties
