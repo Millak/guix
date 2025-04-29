@@ -13380,14 +13380,14 @@ powerTCR R packages.")
 (define-public r-scrnaseq
   (package
     (name "r-scrnaseq")
-    (version "2.20.0")
+    (version "2.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scRNAseq" version
                               'experiment))
        (sha256
-        (base32 "1vjww44d3w2rvvj1b2fdbcv0pwpsspqdhzbykwvsqmw559k9viz1"))))
+        (base32 "0x487kv698lxcp2rq7n9j1bik0n0w9m1n1bllm209cx8xh96dm8v"))))
     (properties `((upstream-name . "scRNAseq")))
     (build-system r-build-system)
     ;; Some tests require Internet access.
@@ -13412,7 +13412,7 @@ powerTCR R packages.")
                              r-singlecellexperiment
                              r-sparsearray
                              r-summarizedexperiment))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-biocmanager r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/scRNAseq")
     (synopsis "Collection of public single-cell RNA-seq datasets")
     (description
