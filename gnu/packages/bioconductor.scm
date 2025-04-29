@@ -24313,20 +24313,20 @@ rownames.")
 (define-public r-biocor
   (package
     (name "r-biocor")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioCor" version))
        (sha256
         (base32
-         "0f282cfs326xj0dib57wqclqj0gnllqxm8zcy0s23qx5kb4jzq08"))))
+         "0kb970wqdj1csgprfr4wdiz90vk1ibqc684kpnhlja8zh0s2p92n"))))
     (properties `((upstream-name . "BioCor")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocparallel r-gseabase r-matrix))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-reactome-db r-spelling r-testthat))
     (home-page "https://llrs.github.io/BioCor/")
     (synopsis "Functional similarities")
     (description
