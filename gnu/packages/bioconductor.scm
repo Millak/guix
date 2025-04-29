@@ -15827,14 +15827,14 @@ determining dependencies between variables, code improvement suggestions.")
 (define-public r-chippeakanno
   (package
     (name "r-chippeakanno")
-    (version "3.40.0")
+    (version "3.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ChIPpeakAnno" version))
        (sha256
         (base32
-         "0zzpmrni4la6d2zws8wxak51lnn9g2i9xbwj1f3micpyn1bxlsc9"))))
+         "0a2f36bwg287jif8yjhy9q6mr6ilwzm5r425g22sdhghfba8i2gh"))))
     (properties
      '((upstream-name . "ChIPpeakAnno")
        (updater-extra-native-inputs . ("r-seqinr"))))
@@ -15884,8 +15884,7 @@ determining dependencies between variables, code improvement suggestions.")
            r-universalmotif
            r-venndiagram))
     (native-inputs
-     (list r-biomart
-           r-bsgenome-celegans-ucsc-ce10
+     (list r-bsgenome-celegans-ucsc-ce10
            r-bsgenome-drerio-ucsc-danrer7
            r-bsgenome-hsapiens-ucsc-hg19
            r-ensdb-hsapiens-v79
