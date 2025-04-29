@@ -20971,14 +20971,14 @@ alignment tool.")
 (define-public r-sgseq
   (package
     (name "r-sgseq")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SGSeq" version))
        (sha256
         (base32
-         "1xchrzd384wzm81vzrcixyzn3mgnd343cp544yvfzfn2vxr4y1ij"))))
+         "0flrhlsw3l7xbjdl5sr2zlijcjzii8jbfygzgj5lyjr4wr51033g"))))
     (properties `((upstream-name . "SGSeq")))
     (build-system r-build-system)
     (arguments
@@ -21005,7 +21005,7 @@ alignment tool.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-bsgenome-hsapiens-ucsc-hg19 r-knitr r-runit))
+     (list r-bsgenome-hsapiens-ucsc-hg19 r-knitr))
     (home-page "https://bioconductor.org/packages/SGSeq/")
     (synopsis "Splice event prediction and quantification from RNA-seq data")
     (description
