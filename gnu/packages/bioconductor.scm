@@ -14309,13 +14309,13 @@ Biology at
 (define-public r-stringdb
   (package
     (name "r-stringdb")
-    (version "2.18.0")
+    (version "2.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "STRINGdb" version))
        (sha256
-        (base32 "118n30lq01xp7irdxffc5hmym7wini8pfsk2xszh8lwf9ii0l5z9"))))
+        (base32 "1dis3x4rx8g5wavgihbkhgvyb37cvjr6kdgyfi5lahnabxyyf6s8"))))
     (properties `((upstream-name . "STRINGdb")))
     (build-system r-build-system)
     ;; Tests attempt to connect to string-db.org website.
