@@ -20579,13 +20579,13 @@ data for high-throughput, untargeted analyte profiling.")
 (define-public r-wppi
   (package
     (name "r-wppi")
-    (version "1.14.0")
+    (version "1.16.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "wppi" version))
               (sha256
                (base32
-                "0vd90v88k1p5ljbdyd0s2qhsr4b2ja16w610ab41rxwpf62vmxgz"))))
+                "17rkfbhy0r22ayca4c7n8gr2kjgbj3r4gk1rh423cp566x0n7pcp"))))
     (properties `((upstream-name . "wppi")))
     (build-system r-build-system)
     ;; This is necessary because omnipathr attempts to write a configuration
@@ -20607,7 +20607,7 @@ data for high-throughput, untargeted analyte profiling.")
                              r-rlang
                              r-tibble
                              r-tidyr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/AnaGalhoz37/wppi")
     (synopsis "Weighting protein-protein interactions")
     (description
