@@ -12887,14 +12887,16 @@ tab-delimited (tabix) files.")
 (define-public r-rtcga
   (package
     (name "r-rtcga")
-    (version "1.36.0")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "RTCGA" version))
               (sha256
                (base32
-                "0x6fxfc75gkkvmp9ah7v0c0kg8v9m6jnysygvj76r62bkqziigr4"))))
-    (properties `((upstream-name . "RTCGA")))
+                "0s7wyp8i7nqwpcvrg5w92q8k24qfh7n8cn8rk5nyg0wpfy3594z7"))))
+    (properties
+     '((upstream-name . "RTCGA")
+       (updater-ignored-native-inputs . ("r-rtcga-rnaseq"))))
     (build-system r-build-system)
     ;; Tests need r-rtcga-rnaseq, which depends on this package.
     (arguments (list #:tests? #false))
@@ -12916,7 +12918,8 @@ tab-delimited (tabix) files.")
                              r-viridis
                              r-xml
                              r-xml2))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-biobase r-genomicranges r-knitr
+                         r-testthat))
     (home-page "https://rtcga.github.io/RTCGA/")
     (synopsis "The Cancer Genome Atlas data integration")
     (description
