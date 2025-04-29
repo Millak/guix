@@ -34,6 +34,7 @@
 ;;; Copyright © 2024-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 John Khoo <johnkhootf@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -172,6 +173,40 @@ handy front-end to the library.")
 an encoding detection library, and enca, a command line frontend, integrating
 libenca and several charset conversion libraries and tools.")
     (license license:gpl2)))
+
+;; Newer utf8proc depends on julia for tests.  Since julia also depends on
+;; utf8proc, a dependency cycle is created.  This bootstrap variant of utf8proc
+;; disables tests.
+(define-public utf8proc-bootstrap
+  (hidden-package
+   (package
+     (name "utf8proc-bootstrap")
+     (version "2.10.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/JuliaStrings/utf8proc")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1n1k67x39sk8xnza4w1xkbgbvgb1g7w2a7j2qrqzqaw1lyilqsy2"))))
+     (build-system gnu-build-system)
+     (arguments
+      (list #:tests? #f                 ;To break dependency cycle.
+            #:make-flags
+            #~(list (string-append "CC=" #$(cc-for-target))
+                    (string-append "prefix=" #$output))
+            #:phases
+            #~(modify-phases %standard-phases
+                ;; No configure script.
+                (delete 'configure))))
+     (home-page "https://juliastrings.github.io/utf8proc/")
+     (synopsis "C library for processing UTF-8 Unicode data")
+     (description
+      "@code{utf8proc} is a small C library that provides Unicode normalization,
+case-folding, and other operations for data in the UTF-8 encoding.")
+     (license license:expat))))
 
 (define-public utf8proc
   (package
