@@ -26286,14 +26286,14 @@ by Ernst and Kellis.")
 (define-public r-ggbio
   (package
     (name "r-ggbio")
-    (version "1.54.0")
+    (version "1.56.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ggbio" version))
        (sha256
         (base32
-         "1p9ja262rnvdf5gmbspkrkwvbdv4la0321m92c0l78wj3mc9y1zh"))))
+         "1vdnwcq90awh2g48xirgsha07w33kqvi73mz6f3c6896abmz7p9w"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -26334,7 +26334,12 @@ by Ernst and Kellis.")
            r-summarizedexperiment
            r-variantannotation))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-bsgenome-hsapiens-ucsc-hg19
+           r-ensdb-hsapiens-v75
+           r-homo-sapiens
+           r-knitr
+           r-testthat
+           r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "http://www.tengfei.name/ggbio/")
     (synopsis "Visualization tools for genomic data")
     (description
