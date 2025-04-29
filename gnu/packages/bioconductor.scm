@@ -24340,14 +24340,14 @@ gene selection, testing relationships, and so on.")
 (define-public r-biocpkgtools
   (package
     (name "r-biocpkgtools")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocPkgTools" version))
        (sha256
         (base32
-         "0d0acbhqm7x7813jmm90hw9fmv559zrahxnlm6smaw3jz74kb2q4"))
+         "19h0yq9q4gjwsa6b44187ifl1v5m3r5828i5gqgggnlnl37z6q1a"))
        (snippet
         '(for-each delete-file
                    '("inst/htmlwidgets/lib/bioc_explore/bootstrap.min.js"
@@ -24390,16 +24390,19 @@ gene selection, testing relationships, and so on.")
      (list r-biocfilecache
            r-biocmanager
            r-biocviews
+           r-curl
            r-dplyr
            r-dt
            r-gh
+           r-glue
            r-graph
            r-htmltools
            r-htmlwidgets
            r-httr
            r-igraph
            r-jsonlite
-           r-magrittr
+           r-lubridate
+           r-purrr
            r-rbgl
            r-readr
            r-rlang
@@ -24407,7 +24410,9 @@ gene selection, testing relationships, and so on.")
            r-rvest
            r-stringr
            r-tibble
-           r-xml2))
+           r-tidyr
+           r-xml2
+           r-yaml))
     (native-inputs
      `(("esbuild" ,esbuild)
        ("r-knitr" ,r-knitr)
