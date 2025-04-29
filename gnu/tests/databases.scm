@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -142,6 +143,8 @@
 
 (define %postgresql-os
   (simple-operating-system
+   (extra-special-file "/password"
+                       (plain-file "password" "hello"))
    (service postgresql-service-type
             (postgresql-configuration
              (postgresql postgresql)
@@ -158,6 +161,10 @@
              (roles
               (list (postgresql-role
                      (name "root")
+                     (create-database? #t))
+                    (postgresql-role
+                     (name "a_database")
+                     (password-file "/password")
                      (create-database? #t))))))))
 
 (define (run-postgresql-test)
@@ -230,17 +237,53 @@
             (marionette-eval
              '(begin
                 (use-modules (gnu services herd)
+                             (srfi srfi-1)
                              (ice-9 popen))
                 (current-output-port
                  (open-file "/dev/console" "w0"))
+                (every
+                 (lambda (role)
+                   (let* ((port (open-pipe*
+                                 OPEN_READ
+                                 #$(file-append postgresql "/bin/psql")
+                                 "-tA" "-c"
+                                 (string-append
+                                  "SELECT 1 FROM pg_database WHERE"
+                                  " datname='" role "'")))
+                          (output (get-string-all port)))
+                     (close-pipe port)
+                     (string-contains output "1")))
+                 '("root" "a_database")))
+             marionette))
+
+          (test-assert "database use fails without a password"
+            (marionette-eval
+             '(begin
+                (setgid (passwd:gid (getpwnam "alice")))
+                (setuid (passwd:uid (getpw "alice")))
+                (not (zero?
+                      (system* #$(file-append postgresql "/bin/psql")
+                               "-tA" "-h" "localhost" "-U" "a_database" "-c"
+                               (string-append "SELECT 1 FROM pg_database "
+                                              "WHERE datname='a_database'")))))
+             marionette))
+
+          (test-assert "database passwords are set"
+            (marionette-eval
+             '(begin
+                (use-modules (ice-9 popen))
+                (setgid (passwd:gid (getpwnam "alice")))
+                (setuid (passwd:uid (getpw "alice")))
+                (setenv "PGPASSWORD"
+                        (call-with-input-file "/password" get-string-all))
                 (let* ((port (open-pipe*
                               OPEN_READ
                               #$(file-append postgresql "/bin/psql")
-                              "-tA" "-c" "SELECT 1 FROM pg_database WHERE
- datname='root'"))
+                              "-U" "a_database" "-tA" "-h" "localhost" "-c"
+                              "SELECT 1 FROM pg_database WHERE datname='a_database'"))
                        (output (get-string-all port)))
                   (close-pipe port)
-                  (string-contains output "1")))
+                  (string=? output "1\n")))
              marionette))
 
           (test-end))))

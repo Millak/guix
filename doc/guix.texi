@@ -27745,9 +27745,10 @@ example:
 
 @lisp
 (service-extension postgresql-role-service-type
-                   (const (postgresql-role
-                           (name "alice")
-                           (create-database? #t))))
+                   (const (list
+                           (postgresql-role
+                            (name "alice")
+                            (create-database? #t)))))
 @end lisp
 @end defvar
 
@@ -27769,6 +27770,10 @@ The role permissions list.  Supported permissions are @code{bypassrls},
 
 @item @code{create-database?} (default: @code{#f})
 whether to create a database with the same name as the role.
+
+@item @code{password-file} (default: @code{#f})
+A string representing the path of a file that contains the password to be set
+for the role.
 
 @item @code{encoding} (default: @code{"UTF8"})
 The character set to use for storing text in the database.
@@ -27797,6 +27802,12 @@ The PostgreSQL host to connect to.
 
 @item @code{log} (default: @code{"/var/log/postgresql_roles.log"})
 File name of the log file.
+
+@item @code{shepherd-requirement} (default: @code{'(user-processes postgres)})
+
+The Shepherd services dependencies to use.  Add extra dependencies to
+@code{%default-postgresql-role-shepherd-requirement} to extend its
+value.
 
 @item @code{roles} (default: @code{'()})
 The initial PostgreSQL roles to create.
