@@ -26772,13 +26772,13 @@ methods based on resistant statistics.")
 (define-public r-pathview
   (package
     (name "r-pathview")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pathview" version))
        (sha256
-        (base32 "0j7r239qvcb36025if4lqqjzxajfdjggp3cdy0h7yqziijz12kq8"))))
+        (base32 "096nf0p69jyj5ih09r1azz3ia5dzjj2n871kfmmm80sdzi1qs04g"))))
     (properties `((upstream-name . "pathview")))
     (build-system r-build-system)
     ;; Vignettes attempt to connect to the internet.
@@ -26792,7 +26792,7 @@ methods based on resistant statistics.")
            r-png
            r-rgraphviz
            r-xml))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-biocgenerics r-gage r-runit))
     (home-page "https://pathview.uncc.edu/")
     (synopsis "Tool set for pathway based data integration and visualization")
     (description
