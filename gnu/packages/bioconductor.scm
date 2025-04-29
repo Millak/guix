@@ -7839,13 +7839,13 @@ mapping.")
 (define-public r-nebulosa
   (package
     (name "r-nebulosa")
-    (version "1.16.0")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Nebulosa" version))
               (sha256
                (base32
-                "15bdddc34y6i1j06fpi82p8xz07p4q07p2js657gssh4lwxkz5n1"))))
+                "0n2a8fhrqk9fsr3lc6mgl32iv3ydwj4ixv7p80v9xxi40fyxrzj2"))))
     (properties
      '((upstream-name . "Nebulosa")
        (updater-extra-native-inputs . ("r-seurat"))))
