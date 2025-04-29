@@ -25773,13 +25773,13 @@ of other packages.")
 (define-public r-scater
   (package
     (name "r-scater")
-    (version "1.34.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "scater" version))
               (sha256
                (base32
-                "1b4sc5gi2wjcrfm78y0w7df2bb5sw6spjswhsss47shxy6m2vhh1"))))
+                "12rbjzwbxs78z62p6lfpgb241ah3c5ks6l1vgfz8ysfv5x7j3hpv"))))
     (build-system r-build-system)
     (properties
      '((updater-extra-native-inputs
@@ -25813,8 +25813,12 @@ of other packages.")
            r-uwot
            r-viridis))
     (native-inputs
-     (list r-delayedmatrixstats r-robustbase r-scattermore r-sparsematrixstats
-           r-knitr r-testthat))
+     (list r-delayedmatrixstats
+           r-knitr
+           r-robustbase
+           r-scattermore
+           r-sparsematrixstats
+           r-testthat))
     (home-page "https://github.com/davismcc/scater")
     (synopsis "Single-cell analysis toolkit for gene expression data in R")
     (description "This package provides a collection of tools for doing
