@@ -25319,13 +25319,13 @@ matrices.")
 (define-public r-beachmat-hdf5
   (package
     (name "r-beachmat-hdf5")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "beachmat.hdf5" version))
        (sha256
-        (base32 "0jla4by5y8qalswfam348p2459lk191x4p057w24jqgcf98gbbhg"))))
+        (base32 "061x88pqi2nksxm8kfcn817ggk6i9256krf63cvfzj8why3w7sjj"))))
     (properties `((upstream-name . "beachmat.hdf5")))
     (build-system r-build-system)
     (propagated-inputs (list r-assorthead
@@ -25334,7 +25334,7 @@ matrices.")
                              r-hdf5array
                              r-rcpp
                              r-rhdf5lib))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-matrix r-rhdf5 r-testthat))
     (home-page "https://bioconductor.org/packages/beachmat.hdf5")
     (synopsis "beachmat bindings for HDF5-backed matrices")
     (description
