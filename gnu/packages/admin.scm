@@ -1589,14 +1589,14 @@ recursive runs on the generated subnets.  (also IPv6)
 (define-public prips
   (package
     (name "prips")
-    (version "1.2.0")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://devel.ringlet.net/files/sys/"
                            name "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1m29hfmrch4rmb408jz7yfbx2a9mkk0gjxla7h5hv8qrlsjxha6y"))))
+        (base32 "1cm0hmd4wz5k683fqa6a2f9m2ky8j8q0kdrknrl9y3ga36x11mzr"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
