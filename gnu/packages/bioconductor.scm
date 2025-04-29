@@ -24964,16 +24964,16 @@ objects from the @code{graph} package.")
 (define-public r-fishpond
   (package
     (name "r-fishpond")
-    (version "2.12.0")
+    (version "2.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "fishpond" version))
               (sha256
                (base32
-                "07qzplkpq1zbh671b44c1qa1k47jqqmyrrrdyixjz0fqj0ikw6ya"))))
+                "140p6xk45awb1a6x3d2am2mqn4m33fs5f8qpp5wdfl8arzvm38j9"))))
     (properties
      '((upstream-name . "fishpond")
-       (updater-extra-native-inputs . ("r-tximportdata"))))
+       (updater-extra-native-inputs . ("r-samr" "r-tximportdata"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind
@@ -24988,7 +24988,15 @@ objects from the @code{graph} package.")
            r-singlecellexperiment
            r-summarizedexperiment
            r-svmisc))
-    (native-inputs (list r-data-table r-deseq2 r-knitr r-samr r-testthat
+    (native-inputs (list r-annotationhub
+                         r-data-table
+                         r-deseq2
+                         r-ensembldb
+                         r-knitr
+                         r-samr
+                         r-scran
+                         r-testthat
+                         r-tximeta
                          r-tximportdata))
     (home-page "https://github.com/mikelove/fishpond")
     (synopsis "Downstream methods and tools for expression data")
