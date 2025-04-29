@@ -40,6 +40,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
@@ -357,6 +358,33 @@ For synthesis, the compiler generates netlists in the desired format.")
 Lattice iCE40 FPGAs and providing simple tools for analyzing and creating bitstream
 files.")
       (license license:isc))))
+
+(define-public libfst
+  ;; There are no release nor tags.
+  (let ((commit "6a52070cd62ec65c29832bc95e7db493504aa7ac")
+        (revision "0"))
+    (package
+      (name "libfst")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gtkwave/libfst/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0b1r660m5aib316jjl4nhs10y7vhhqy2mvxjip3ynahig3hpi46z"))))
+      (build-system meson-build-system)
+      (native-inputs (list gobject-introspection pkg-config))
+      (inputs (list bzip2))
+      (propagated-inputs (list zlib))  ;in Requires.private of libfst.pc
+      (synopsis "Fast Signal Trace (FST) format waveforms library")
+      (description "Libfst is a small library used to read and write
+@acronym{FST, Fast Signal Trace} format waveforms.")
+      (home-page "https://github.com/gtkwave/libfst/")
+      (license (list license:expat      ;libfst and fastlz-derived sources
+                     license:bsd-2))))) ;for lz4-derived sources
 
 (define-public nextpnr
   (package
