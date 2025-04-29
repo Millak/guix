@@ -16700,19 +16700,19 @@ achieved for all methods using the BiocParallel framework.")
 (define-public r-scaledmatrix
   (package
     (name "r-scaledmatrix")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ScaledMatrix" version))
        (sha256
         (base32
-         "1qkxwpxbcxqk2yifpbqgywrd1vsf53s8bckcfgj7zdh124xhwjwj"))))
+         "08q34yz58hcqjf4adnq0ihbrkiy04i3913bmmsr5giv0w6gywfx1"))))
     (properties `((upstream-name . "ScaledMatrix")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-delayedarray r-matrix r-s4vectors))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-s4arrays r-testthat))
     (home-page "https://github.com/LTLA/ScaledMatrix")
     (synopsis "Create a DelayedMatrix of scaled and centered values")
     (description
