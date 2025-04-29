@@ -16620,14 +16620,14 @@ modeling the rates that determines changes in mature mRNA levels.")
 (define-public r-dnabarcodes
   (package
     (name "r-dnabarcodes")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DNABarcodes" version))
        (sha256
         (base32
-         "0pppm937415xsmw0g39022lr07x3551ki6h11p8d7cpwbjmym44f"))))
+         "1v2snhg4bx9sdy75vipv5ik64r437kfb7bbi9cqncg4i81pgni1x"))))
     (properties `((upstream-name . "DNABarcodes")))
     (build-system r-build-system)
     (propagated-inputs
