@@ -1918,13 +1918,13 @@ data (chip hgu133plus2) assembled using data from public repositories.")
 (define-public r-pfam-db
   (package
     (name "r-pfam-db")
-    (version "3.20.0")
+    (version "3.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "PFAM.db" version 'annotation))
        (sha256
-        (base32 "0ibhdvb7vc2s70n6dq13357y9fgvkg0bdjxcq13n9rqajk6bmaw6"))))
+        (base32 "06qv66if25isw677gqlfsff7rr77vgdncrlf7jk3xh4r3406hwxa"))))
     (properties `((upstream-name . "PFAM.db")))
     (build-system r-build-system)
     (propagated-inputs
