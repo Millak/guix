@@ -5594,13 +5594,13 @@ transcriptionally-coordinated changes in gene expression.")
 (define-public r-awfisher
   (package
     (name "r-awfisher")
-    (version "1.20.0")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AWFisher" version))
               (sha256
                (base32
-                "040x6millcnii58q441zh99zkskl0v1s9g9cx54srhca25qywfnr"))))
+                "181zy3kzx2kwirlk7kv3c4xph7frxs5z1imj76sbzgc13nsbf668"))))
     (properties `((upstream-name . "AWFisher")))
     (build-system r-build-system)
     (propagated-inputs
