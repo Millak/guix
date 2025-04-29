@@ -2057,12 +2057,12 @@ PMID: 24926665.  GEO: GSE52778.")
 (define-public r-aneufinderdata
   (package
    (name "r-aneufinderdata")
-   (version "1.34.0")
+   (version "1.36.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "AneuFinderData" version 'experiment))
             (sha256
-             (base32 "039ymqwxr66hmkzig333gwjxczzxlc6jl1x27jw7agriynjbqmgx"))))
+             (base32 "0yz0rxkhrkq1na3vs6z4ayy5pxz9d48k9c160yi42xn8ag0mza8p"))))
    (build-system r-build-system)
    (home-page "https://bioconductor.org/packages/AneuFinderData/")
    (synopsis "Data package for @code{AneuFinder}")
