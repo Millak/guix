@@ -12433,13 +12433,13 @@ the graph algorithms contained in the Boost library.")
 (define-public r-rcas
   (package
     (name "r-rcas")
-    (version "1.32.0")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "RCAS" version))
               (sha256
                (base32
-                "0sg3ngb7jwh8gyhmmm7fkxn9ixj590j47rfcfdcnbbk9pwd9y07p"))))
+                "1p38q8qdbsy8aylv4m07srjs2zzblgmnyal55dd1bi7pxq2ifl2y"))))
     (properties `((upstream-name . "RCAS")))
     (build-system r-build-system)
     (arguments
@@ -12487,7 +12487,7 @@ the graph algorithms contained in the Boost library.")
            r-seqlogo
            r-txdbmaker))
     (native-inputs
-     (list r-biocmanager r-knitr r-testthat))
+     (list r-knitr r-testthat))
     (synopsis "RNA-centric annotation system")
     (description
      "RCAS aims to be a standalone RNA-centric annotation system that provides
