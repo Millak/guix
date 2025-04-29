@@ -8248,13 +8248,13 @@ annotation data packages using SQLite data storage.")
 (define-public r-annotationfilter
   (package
     (name "r-annotationfilter")
-    (version "1.30.0")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AnnotationFilter" version))
               (sha256
                (base32
-                "1a7ffcxdx95irbcr2sh7sph6x5lf7spnyq084pvx9qd18i6cif5n"))))
+                "1r642f9qh8gxj5fypkkdav738s875minsyaz1qw4gi2ckv2j8jks"))))
     (properties
      `((upstream-name . "AnnotationFilter")))
     (build-system r-build-system)
