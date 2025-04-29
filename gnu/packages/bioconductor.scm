@@ -4332,13 +4332,13 @@ in multi-layer WGCN using a continuous optimization approach.")
 (define-public r-amplican
   (package
     (name "r-amplican")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "amplican" version))
               (sha256
                (base32
-                "1xv392kxhzal2b8dp0kdjnny75311qm6vvbajx9hlb3k6v34dpqc"))))
+                "0y5bknkn6l32bk2ia0dv3c8pp2dx2n83iwhbqh0l13jajv8j1csd"))))
     (properties `((upstream-name . "amplican")))
     (build-system r-build-system)
     (propagated-inputs
@@ -4365,7 +4365,7 @@ in multi-layer WGCN using a continuous optimization approach.")
            r-shortread
            r-stringr
            r-waffle))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-devtools r-knitr r-testthat))
     (home-page "https://github.com/valenlab/amplican")
     (synopsis "Automated analysis of CRISPR experiments")
     (description
