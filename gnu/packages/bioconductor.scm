@@ -11681,14 +11681,14 @@ of mass spectrometry based proteomics data.")
 (define-public r-msnid
   (package
     (name "r-msnid")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MSnID" version))
        (sha256
         (base32
-         "1mdd7k71w8iiy9wkdaaq78y23547i7rcx5zn2rqzh09rgz68dnni"))))
+         "11w8x37pzhk0849152mdkl00bfacxrgbgrgzcca0qybd10vpfx5p"))))
     (properties `((upstream-name . "MSnID")))
     (build-system r-build-system)
     (arguments
@@ -11727,7 +11727,7 @@ of mass spectrometry based proteomics data.")
            r-stringr
            r-tibble
            r-xtable))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-digest))
     (home-page "https://bioconductor.org/packages/MSnID")
     (synopsis "Utilities for LC-MSn proteomics identifications")
     (description
