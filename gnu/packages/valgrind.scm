@@ -37,7 +37,7 @@
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages perl))
 
-(define-public valgrind
+(define valgrind/pinned
   (package
     (name "valgrind")
     (version "3.22.0")
@@ -93,10 +93,28 @@ also use Valgrind to build new tools.")
     ;; Hide this variant so end users get the "interactive" Valgrind below.
     (properties '((hidden? . #t)))))
 
+(define-public valgrind-next
+  (package
+    (inherit valgrind/pinned)
+    (version "3.25.0")
+    (source (origin
+              (method url-fetch)
+              (uri (list (string-append "https://sourceware.org/pub/valgrind"
+                                        "/valgrind-" version ".tar.bz2")
+                         (string-append "ftp://sourceware.org/pub/valgrind"
+                                        "/valgrind-" version ".tar.bz2")))
+              (sha256
+               (base32
+                "1k3fb1vyx1b3vvwyql0ckg9n2lyw9dilbrhw1kcw0r3b3lln0pr9"))))
+    (supported-systems (fold delete %supported-systems
+                             '("i586-gnu" "x86_64-gnu"
+                               "armhf-linux")))))
+
+(define-public valgrind valgrind/pinned)
+
 (define-public valgrind/interactive
-  (package/inherit
-   valgrind
-   (inputs
-    ;; GDB is needed to provide a sane default for `--db-command'.
-    (list gdb `(,(canonical-package (libc-for-target)) "debug")))
-   (properties '())))
+  (package/inherit valgrind-next
+    (inputs
+     ;; GDB is needed to provide a sane default for `--db-command'.
+     (list gdb `(,(canonical-package (libc-for-target)) "debug")))
+    (properties '())))
