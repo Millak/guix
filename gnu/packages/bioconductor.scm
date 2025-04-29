@@ -18972,13 +18972,13 @@ that protein levels remain constant despite fluctuating total mRNA levels.")
 (define-public r-fcscan
   (package
     (name "r-fcscan")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "fcScan" version))
        (sha256
-        (base32 "0llrp1q8py5rz9zd497yv3l0ranhdn6jmrwxam2byih2j35w8gbx"))))
+        (base32 "1sby20vm6pkrq3wwk9yhkp488w5m79mfdn0bbwnqfhlqhjacvpiy"))))
     (properties `((upstream-name . "fcScan")))
     (build-system r-build-system)
     (propagated-inputs
@@ -18990,7 +18990,7 @@ that protein levels remain constant despite fluctuating total mRNA levels.")
            r-rtracklayer
            r-summarizedexperiment
            r-variantannotation))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-biocgenerics r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/fcScan")
     (synopsis "Detect clusters of coordinates with user defined options")
     (description
