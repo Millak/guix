@@ -13703,13 +13703,13 @@ less than 2bp on both sides of indel region.")
 (define-public r-simona
   (package
     (name "r-simona")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "simona" version))
        (sha256
-        (base32 "13qkca6ch7ppdf1clgzgnygh9zb05163bm5a402pya7wbq2vkdzx"))))
+        (base32 "0d6zyjcrszyavpms883hjh68zwyq5hr0jh3lnhcy2zzkzlz857fd"))))
     (properties
      `((upstream-name . "simona")
        (updater-extra-native-inputs
