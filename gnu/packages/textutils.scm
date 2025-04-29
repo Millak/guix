@@ -244,6 +244,7 @@ case-folding, and other operations for data in the UTF-8 encoding.")
              ;; For tests.
              julia
              perl
+             ;; TODO Move to ruby@3 on the next rebuild cycle.
              ruby-2.7)))
     (arguments
      (strip-keyword-arguments
@@ -260,47 +261,6 @@ case-folding, and other operations for data in the UTF-8 encoding.")
                              "DerivedCoreProperties.txt")))))))))
     (properties
      (alist-delete 'hidden? (package-properties utf8proc-bootstrap)))))
-
-(define-public utf8proc-2.7.0
-  (package
-    (inherit utf8proc)
-    (name "utf8proc")
-    (version "2.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/JuliaStrings/utf8proc")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1wrsmnaigal94gc3xbzdrrm080zjhihjfdla5admllq2w5dladjj"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments utf8proc)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (replace 'check-data
-             (lambda* (#:key inputs native-inputs #:allow-other-keys)
-               (display native-inputs)
-               (for-each (lambda (i)
-                           (copy-file (assoc-ref (or native-inputs inputs) i)
-                                      (string-append "data/" i)))
-                         '("NormalizationTest.txt" "GraphemeBreakTest.txt"
-                           "DerivedCoreProperties.txt"))))))))
-    (native-inputs
-     (append
-      (package-native-inputs utf8proc)
-      (let ((UNICODE_VERSION "14.0.0"))
-        `(("DerivedCoreProperties.txt"
-           ,(origin
-              (method url-fetch)
-              (uri (string-append "https://www.unicode.org/Public/"
-                                  UNICODE_VERSION "/ucd/DerivedCoreProperties.txt"))
-              (sha256
-               (base32 "1g77s8g9443dd92f82pbkim7rk51s7xdwa3mxpzb1lcw8ryxvvg3"))))
-          ;; For tests
-          ;; TODO Move to ruby@3 on the next rebuild cycle.
-          ("ruby" ,ruby-2.7)))))))
 
 (define-public libconfuse
   (package
