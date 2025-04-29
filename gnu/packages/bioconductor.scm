@@ -12816,13 +12816,13 @@ transcriptional age calculation based on GTEx RNASeq data.")
 (define-public r-rsamtools
   (package
     (name "r-rsamtools")
-    (version "2.22.0")
+    (version "2.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Rsamtools" version))
               (sha256
                (base32
-                "0wqh1spqmf30cv3v0v5bawpjwfjrlnxz2n8cc0a11c2kbbdxrnr5"))))
+                "183pish6qf0b8c76lx09hgmxy8j9sw3hh5nv5n6klx7r1y95k5id"))))
     (properties
      `((upstream-name . "Rsamtools")))
     (build-system r-build-system)
@@ -12845,8 +12845,7 @@ transcriptional age calculation based on GTEx RNASeq data.")
            r-iranges
            r-rhtslib
            r-s4vectors
-           r-xvector
-           r-zlibbioc))
+           r-xvector))
     (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/release/bioc/html/Rsamtools.html")
     (synopsis "Interface to samtools, bcftools, and tabix")
