@@ -3055,14 +3055,14 @@ by Brooks et al., Genome Research 2011.")
 (define-public r-pasillabamsubset
   (package
     (name "r-pasillabamsubset")
-    (version "0.44.0")
+    (version "0.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pasillaBamSubset" version
                               'experiment))
        (sha256
-        (base32 "1i1z5vh0clvwrh2dlq0vw61k6nqvm9x7gzqxhm9wx4fxsgry6ncc"))))
+        (base32 "143ac828a3ixhv3l9nlv8ambk3w3g3djmmkmfqi5972iiyd9xhi0"))))
     (properties `((upstream-name . "pasillaBamSubset")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/pasillaBamSubset")
