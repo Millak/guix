@@ -21671,14 +21671,14 @@ with flow cytometry data.")
 (define-public r-flowmeans
   (package
     (name "r-flowmeans")
-    (version "1.66.0")
+    (version "1.68.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowMeans" version))
        (sha256
         (base32
-         "1sgk1x1cm2srrdv2bn312lvj1pcc8r9gaqlvr1fnngp98dhw5pb1"))))
+         "1jg9q3b0jkiiycd0zsc2jgmfdasrml8c9ri61bjmm7ps0wiq92il"))))
     (properties `((upstream-name . "flowMeans")))
     (build-system r-build-system)
     (propagated-inputs
