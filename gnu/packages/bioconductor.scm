@@ -12267,7 +12267,9 @@ chromosome.  Both tumor-normal paired and tumor-only analyses are supported.")
        (uri (bioconductor-uri "PSMatch" version))
        (sha256
         (base32 "1nz75m19g6jpvpm8ajx4hdyr03kg9h6yip5w4mjrnagyww4ksbkb"))))
-    (properties `((upstream-name . "PSMatch")))
+    (properties
+     '((upstream-name . "PSMatch")
+       (updater-extra-native-inputs . ("r-mzid" "r-mzr"))))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
                              r-biocparallel
@@ -12279,7 +12281,14 @@ chromosome.  Both tumor-normal paired and tumor-only analyses are supported.")
                              r-qfeatures
                              r-s4vectors
                              r-spectra))
-    (native-inputs (list r-devtools r-knitr r-msdata r-testthat r-vdiffr))
+    (native-inputs
+     (list r-devtools
+           r-knitr
+           r-msdata
+           r-mzid
+           r-mzr
+           r-testthat
+           r-vdiffr))
     (home-page "https://github.com/RforMassSpectrometry/PSM")
     (synopsis "Handling and managing peptide spectrum matches")
     (description
