@@ -13656,13 +13656,13 @@ ungapped alignment formats.")
 (define-public r-sictools
   (package
     (name "r-sictools")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SICtools" version))
        (sha256
-        (base32 "0jyycm82aw7xfx0h7ngd4nz4s8xfq7ky71nrvbj5m6jb3bkr4hjz"))))
+        (base32 "1f1dkrvnxqvcll1ywmckfi2glap0y2rilvw9y6s9qnlq21kcidy5"))))
     (properties
      `((upstream-name . "SICtools")
        (updater-extra-inputs . ("ncurses"))))
@@ -13687,7 +13687,7 @@ ungapped alignment formats.")
                              r-rsamtools
                              r-stringr))
     (inputs (list ncurses))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-biocgenerics r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/SICtools")
     (synopsis
      "Find SNV/Indel differences between two bam files with near relationship")
