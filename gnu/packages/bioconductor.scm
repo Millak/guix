@@ -2115,14 +2115,14 @@ dataset for the examples in package viper.")
 (define-public r-biotmledata
   (package
     (name "r-biotmledata")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biotmleData" version
                               'experiment))
        (sha256
-        (base32 "0bnjhn0xirv81lw83ymd4mcmllkrd19gya7fr4j7xq77hjrx1kl7"))))
+        (base32 "0a5qvbbmbb0gv1vh7b3xn3dn9f7ywf85wyahgiai61r4cxhyjl0m"))))
     (properties `((upstream-name . "biotmleData")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/biotmleData")
