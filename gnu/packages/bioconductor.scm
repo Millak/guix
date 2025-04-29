@@ -26502,14 +26502,16 @@ EMBL-EBI GWAS catalog.")
 (define-public r-gwastools
   (package
     (name "r-gwastools")
-    (version "1.52.0")
+    (version "1.54.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GWASTools" version))
               (sha256
                (base32
-                "12crhc552cypi8ffl12vskrf4qw5567ag6h84ngnrmbn2k1nvjy4"))))
-    (properties `((upstream-name . "GWASTools")))
+                "0b2jgaald2b1m2gz2s54ar0kyk0bbn6f50h9i13g2phpfanv3j1k"))))
+    (properties
+     '((upstream-name . "GWASTools")
+       (updater-ignored-native-inputs . ("r-gwasdata"))))
     (build-system r-build-system)
     ;; TODO: This needs the package GWASdata.
     (arguments (list #:tests? #false))
@@ -26525,7 +26527,12 @@ EMBL-EBI GWAS catalog.")
                              r-rsqlite
                              r-sandwich
                              r-survival))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-biocgenerics
+                         r-knitr
+                         r-ncdf4
+                         r-runit
+                         r-snprelate
+                         r-variantannotation))
     (home-page "https://github.com/smgogarten/GWASTools")
     (synopsis "Tools for Genome Wide Association Studies")
     (description
