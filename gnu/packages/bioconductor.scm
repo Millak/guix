@@ -2343,13 +2343,13 @@ for @code{FoxA1} in mouse liver cell lines aligned to the mm9 genome.")
 (define-public r-chromstardata
   (package
     (name "r-chromstardata")
-    (version "1.32.0")
+    (version "1.33.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "chromstaRData" version 'experiment))
        (sha256
-        (base32 "19kb4ya8p5shhm2zcdf8y172w8fsg409fjmkqlyagpncvcak0b04"))))
+        (base32 "1piz7jihay3zh3ynabyifvqp9v89fwaw19p6dgf6piqpzbj3k7zg"))))
     (properties `((upstream-name . "chromstaRData")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/chromstaRData/")
