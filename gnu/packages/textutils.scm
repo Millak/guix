@@ -80,6 +80,7 @@
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages julia)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages pcre)
@@ -97,7 +98,8 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:use-module (srfi srfi-1))
 
 (define-public dos2unix
   (package
@@ -210,20 +212,10 @@ case-folding, and other operations for data in the UTF-8 encoding.")
 
 (define-public utf8proc
   (package
+    (inherit utf8proc-bootstrap)
     (name "utf8proc")
-    (version "2.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/JuliaStrings/utf8proc")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1xlkazhdnja4lksn5c9nf4bln5gjqa35a8gwlam5r0728w0h83qq"))))
-    (build-system gnu-build-system)
     (native-inputs
-     (let ((UNICODE_VERSION "13.0.0"))  ; defined in data/Makefile
+     (let ((UNICODE_VERSION "16.0.0"))  ; defined in data/Makefile
        ;; Test data that is otherwise downloaded with curl.
        `(("NormalizationTest.txt"
           ,(origin
@@ -231,7 +223,7 @@ case-folding, and other operations for data in the UTF-8 encoding.")
              (uri (string-append "https://www.unicode.org/Public/"
                                  UNICODE_VERSION "/ucd/NormalizationTest.txt"))
              (sha256
-              (base32 "07g0ya4f6zfzvpp24ccxkb2yq568kh83gls85rjl950nv5fya3nn"))))
+              (base32 "1cffwlxgn6sawxb627xqaw3shnnfxq0v7cbgsld5w1z7aca9f4fq"))))
          ("GraphemeBreakTest.txt"
           ,(origin
              (method url-fetch)
@@ -239,37 +231,33 @@ case-folding, and other operations for data in the UTF-8 encoding.")
                                  UNICODE_VERSION
                                  "/ucd/auxiliary/GraphemeBreakTest.txt"))
              (sha256
-              (base32 "07f8rrvcsq4pibdz6zxggxy8w7zjjqyw2ggclqlhalyv45yv7prj"))))
-
+              (base32 "1d9w6vdfxakjpp38qjvhgvbl2qx0zv5655ph54dhdb3hs9a96azf"))))
+         ("DerivedCoreProperties.txt"
+          ,(origin
+             (method url-fetch)
+             (uri (string-append "https://www.unicode.org/Public/"
+                                 UNICODE_VERSION "/ucd/DerivedCoreProperties.txt"))
+             (sha256
+              (base32 "1gfsq4vdmzi803i2s8ih7mm4fgs907kvkg88kvv9fi4my9hm3lrr"))))
          ;; For tests.
-         ("perl" ,perl))))
+         ("julia" ,julia)
+         ("perl" ,perl)
+         ("ruby" ,ruby-2.7))))
     (arguments
-     `(#:make-flags (list ,(string-append "CC=" (cc-for-target))
-                          (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'check 'check-data
-           (lambda* (#:key ,@(if (%current-target-system)
-                                 '(native-inputs)
-                                 '())
-                     inputs #:allow-other-keys)
-             (for-each (lambda (i)
-                         (copy-file (assoc-ref ,@(if (%current-target-system)
-                                                     '((or native-inputs inputs))
-                                                     '(inputs)) i)
-                                    (string-append "data/" i)))
-                       '("NormalizationTest.txt" "GraphemeBreakTest.txt"))
-             (substitute* "data/GraphemeBreakTest.txt"
-               (("÷") "/")
-               (("×") "+"))
-             #t)))))
-    (home-page "https://juliastrings.github.io/utf8proc/")
-    (synopsis "C library for processing UTF-8 Unicode data")
-    (description "utf8proc is a small C library that provides Unicode
-normalization, case-folding, and other operations for data in the UTF-8
-encoding, supporting Unicode version 9.0.0.")
-    (license license:expat)))
+     (strip-keyword-arguments
+      '(#:tests?)
+      (substitute-keyword-arguments (package-arguments utf8proc-bootstrap)
+        ((#:phases phases '%standard-phases)
+         #~(modify-phases #$phases
+             (add-before 'check 'check-data
+               (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                 (for-each (lambda (i)
+                             (copy-file (assoc-ref (or native-inputs inputs) i)
+                                        (string-append "data/" i)))
+                           '("NormalizationTest.txt" "GraphemeBreakTest.txt"
+                             "DerivedCoreProperties.txt")))))))))
+    (properties
+     (alist-delete 'hidden? (package-properties utf8proc-bootstrap)))))
 
 (define-public utf8proc-2.7.0
   (package
