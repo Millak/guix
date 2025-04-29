@@ -23987,16 +23987,16 @@ microarray data.")
 (define-public r-biocbaseutils
   (package
     (name "r-biocbaseutils")
-    (version "1.8.0")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocBaseUtils" version))
               (sha256
                (base32
-                "10xzfxyl12zkcx8l0b5hnmcnq6bdr1gg1dp64indvrnwwqpdjqjp"))))
+                "1ssva33zg6n6j8k6v3cnl6nrllm371jp7l20wh00mj70garaizkw"))))
     (properties `((upstream-name . "BiocBaseUtils")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-tinytest))
     (home-page "https://bioconductor.org/packages/BiocBaseUtils")
     (synopsis "General utility functions for developing Bioconductor packages")
     (description
