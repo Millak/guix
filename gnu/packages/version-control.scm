@@ -4328,7 +4328,7 @@ for historians.")
 (define-public diff-so-fancy
   (package
     (name "diff-so-fancy")
-    (version "1.4.3")
+    (version "1.4.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4337,7 +4337,7 @@ for historians.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11vkq5njjlvjipic7db44ga875n61drszw1qrdzwxmmfmnz425zz"))))
+                "0ck9v9dc9zm3wr1vdq96zwvv9szsbimyxvnd76q5l4vcb4iqnpy8"))))
     (inputs
      (list bash-minimal perl ncurses))
     (build-system copy-build-system)
