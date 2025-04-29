@@ -10868,21 +10868,18 @@ datasets (coinertia analysis).")
 (define-public r-makecdfenv
   (package
     (name "r-makecdfenv")
-    (version "1.82.0")
+    (version "1.84.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "makecdfenv" version))
               (sha256
                (base32
-                "08d33iqbgczw4w63s5nrjzwy059mqzgcr9s1g59irgplr9szjiar"))))
+                "1wjlqh7q46slgnpzvij6gajgkcp4acqs146z365l22ywkm7b90q5"))))
     (properties `((upstream-name . "makecdfenv")))
     (build-system r-build-system)
     (inputs (list zlib))
     (propagated-inputs
-     (list r-affy
-           r-affyio
-           r-biobase
-           r-zlibbioc))
+     (list r-affy r-affyio r-biobase))
     (home-page "https://bioconductor.org/packages/makecdfenv")
     (synopsis "Chip description file environment maker")
     (description
