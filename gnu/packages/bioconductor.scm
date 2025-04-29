@@ -6887,13 +6887,13 @@ targeted by a kinase.")
 (define-public r-deepsnv
   (package
     (name "r-deepsnv")
-    (version "1.52.0")
+    (version "1.54.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "deepSNV" version))
               (sha256
                (base32
-                "1prxiffyj2b7b7q5h2cc0w7ibzclm2wldqn0kcd66hqrmmcs7ypa"))))
+                "04m9k8gq7iv45srg8sa778dpc15qiq98rr9j3n1y5z11ghj15ijw"))))
     (properties `((upstream-name . "deepSNV")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6905,7 +6905,7 @@ targeted by a kinase.")
            r-variantannotation
            r-vgam))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-rcolorbrewer r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "https://github.com/gerstung-lab/deepSNV/")
     (synopsis "Detection of subclonal SNVs in deep sequencing data")
     (description
