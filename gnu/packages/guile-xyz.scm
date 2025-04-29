@@ -1061,7 +1061,13 @@ is not available for Guile 2.0.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0kmsbdcpw2qdl20ihjsdcbw3nlii9f6zpkhhrwqmlyqi46hyq9xl")))))))
+                  "0kmsbdcpw2qdl20ihjsdcbw3nlii9f6zpkhhrwqmlyqi46hyq9xl"))))
+      (inputs
+       (modify-inputs (package-inputs guile-fibers)
+         (replace "guile" guile-next)))
+      (native-inputs
+       (modify-inputs (package-native-inputs guile-fibers)
+         (replace "guile" guile-next))))))
 
 (define-public guile-filesystem
   (package
