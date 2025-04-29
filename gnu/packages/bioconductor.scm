@@ -12410,19 +12410,19 @@ matrix for a set of strings.")
 (define-public r-rbgl
   (package
     (name "r-rbgl")
-    (version "1.82.0")
+    (version "1.84.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RBGL" version))
        (sha256
         (base32
-         "04sy7kgsjvwlzr6r3lnyrk6l7d9jqfqqzlfcs0b90ciq8gldxlw8"))))
+         "0mp3xk2v7kf5c2pil6rjdz6s5adla9xrgk008hyj331gpgh6rq22"))))
     (properties `((upstream-name . "RBGL")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh r-graph))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-biocgenerics r-knitr r-runit))
     (home-page "https://www.bioconductor.org/packages/RBGL")
     (synopsis "Interface to the Boost graph library")
     (description
