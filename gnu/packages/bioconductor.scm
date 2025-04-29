@@ -15251,14 +15251,14 @@ on the location of the probe, and other useful tools.")
 (define-public r-qvalue
   (package
     (name "r-qvalue")
-    (version "2.38.0")
+    (version "2.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "qvalue" version))
        (sha256
         (base32
-         "0q9iafir09xnk2qgdaqhryd3y5kzcxcw9l0la1pnpanxdz2hl3i1"))))
+         "1ylmqdlsixwz3d31l6pwbifczadh98s5j7ff5gpps8k8wv8bbnlm"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-reshape2))
