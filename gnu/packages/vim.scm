@@ -79,6 +79,7 @@
   #:use-module (gnu packages shells)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages text-editors)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages xdisorg)
@@ -799,7 +800,7 @@ is based on Vim's builtin plugin support.")
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.9.5")
+    (version "0.11.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -808,7 +809,7 @@ is based on Vim's builtin plugin support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j3z7jay0m6g06v04falrzr062g07xr4svbrc3hywlqi2h6rrvk5"))))
+                "0arypdiycmss5g9wav21hfdc384v1ly82jnsc32zincl2y3f628q"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f
@@ -867,6 +868,7 @@ is based on Vim's builtin plugin support.")
                   libtermkey
                   libvterm
                   unibilium
+                  utf8proc
                   jemalloc
                   (if (member (if (%current-target-system)
                                   (gnu-triplet->nix-system (%current-target-system))
