@@ -14529,14 +14529,14 @@ unmodeled, or latent sources of noise.")
 (define-public r-systempiper
   (package
     (name "r-systempiper")
-    (version "2.12.0")
+    (version "2.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "systemPipeR" version))
        (sha256
         (base32
-         "1f27vb03x1vmhi9nmizfzrvkyczhgrsgmc5fcf5xnyfmmhs97cnr"))))
+         "05zrcj46z3305hn6p2744w0ilsg7r2xxgm4y33pra0397ga43a13"))))
     (properties `((upstream-name . "systemPipeR")))
     (build-system r-build-system)
     ;; Tests fail because genWorkenvir fails to set up the environment.
@@ -14556,7 +14556,14 @@ unmodeled, or latent sources of noise.")
            r-summarizedexperiment
            r-yaml))
     (native-inputs
-     (list r-knitr r-systempiperdata r-testthat))
+     (list r-biomart
+           r-chippeakanno
+           r-knitr
+           r-rsubread
+           r-rtracklayer
+           r-systempiperdata
+           r-testthat
+           r-txdbmaker))
     (home-page "https://github.com/tgirke/systemPipeR")
     (synopsis "Next generation sequencing workflow and reporting environment")
     (description
