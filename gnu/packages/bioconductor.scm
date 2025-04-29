@@ -20935,14 +20935,14 @@ Gaussian distributions.")
 (define-public r-rbowtie
   (package
     (name "r-rbowtie")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rbowtie" version))
        (sha256
         (base32
-         "0cbdg469796ij1n8l42mp1c30y2r28j7as6q7add38rpfrmj57b7"))))
+         "0jcj8z1p2k993ngwyndv60gqm7kwsmc0wsazllgi1y68dxcawwav"))))
     (properties `((upstream-name . "Rbowtie")))
     (build-system r-build-system)
     (arguments
@@ -20957,7 +20957,7 @@ Gaussian distributions.")
                (add-after 'unpack 'patch-sources
                  (lambda _
                    (setenv "POPCNT_CAPABILITY" "0")))))))
-    (inputs (list zlib))
+    (inputs (list))
     (native-inputs
      (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/Rbowtie/")
