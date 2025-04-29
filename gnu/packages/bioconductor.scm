@@ -25994,19 +25994,18 @@ memory usage and processing time is minimized.")
 (define-public r-mscoreutils
   (package
     (name "r-mscoreutils")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsCoreUtils" version))
        (sha256
         (base32
-         "0d1n5mib93rw4x4iimz7scgxw1929m7g3cnbyfrj6iqxrp721an1"))))
+         "0xlnlgqmg8mzha8g6a6zhy735ia3dmnrrsyvlgv62n6bspcrh1g4"))))
     (properties
      '((upstream-name . "MsCoreUtils")
        (updater-extra-native-inputs . ("r-impute"
                                        "r-imputelcmd"
-                                       "r-matrix"
                                        "r-missforest"
                                        "r-norm"
                                        "r-pcamethods"
@@ -26016,7 +26015,8 @@ memory usage and processing time is minimized.")
     (propagated-inputs
      (list r-clue r-mass r-rcpp r-s4vectors))
     (native-inputs
-     (list r-impute
+     (list r-hdf5array
+           r-impute
            r-imputelcmd
            r-knitr
            r-matrix
