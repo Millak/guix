@@ -19038,14 +19038,14 @@ to multiple hypothesis correction.")
 (define-public r-dose
   (package
     (name "r-dose")
-    (version "4.0.0")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DOSE" version))
        (sha256
         (base32
-         "1x0dnlbgx2wsiki7l7c8np7v8kh4m5f30yjnavfzg9pjy3j98myq"))))
+         "1hs3f7mhzc3pf2f8xyp38430l4zqq2vkjx52zwavnk1dqpp8cbdh"))))
     (properties `((upstream-name . "DOSE")))
     (build-system r-build-system)
     ;; Tests attempt to download data from the Internet via r-gosemsim.
