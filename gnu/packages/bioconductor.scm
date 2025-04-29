@@ -26786,17 +26786,19 @@ segmented data for individual and multiple arrays.")
 (define-public r-snprelate
   (package
     (name "r-snprelate")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SNPRelate" version))
               (sha256
                (base32
-                "00zspm09zxp52kkivhv1pixndz7gfzb6p7rp5xvkq89qx7a9hsnn"))))
-    (properties `((upstream-name . "SNPRelate")))
+                "01lxwm9a1vzk1cmf3bcpgad60kgj49xwryzmjdgmvhjl3pckwdha"))))
+    (properties
+     '((upstream-name . "SNPRelate")
+       (updater-extra-native-inputs . ("r-matrix"))))
     (build-system r-build-system)
     (propagated-inputs (list r-gdsfmt))
-    (native-inputs (list r-biocgenerics r-matrix r-knitr r-runit))
+    (native-inputs (list r-biocgenerics r-knitr r-matrix r-runit))
     (home-page "https://github.com/zhengxwen/SNPRelate")
     (synopsis
      "Toolset for relatedness and Principal Component Analysis of SNP data")
