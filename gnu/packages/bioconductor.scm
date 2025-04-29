@@ -15119,15 +15119,17 @@ packages.")
 (define-public r-oligo
   (package
     (name "r-oligo")
-    (version "1.70.0")
+    (version "1.72.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "oligo" version))
        (sha256
         (base32
-         "0z7y8sicap04alkqrzqdjiq7jnmk5mf9h1ki4622hw5wf0gjiark"))))
-    (properties `((upstream-name . "oligo")))
+         "1f57jzfsrz3fx3z0w97pgipcrjspw08y32v4r7r22yiywlxbksa2"))))
+    (properties
+     '((upstream-name . "oligo")
+       (updater-ignored-native-inputs . ("r-oligodata"))))
     (build-system r-build-system)
     ;; Tests require r-oligodata, which depends on this package.
     (arguments (list #:tests? #false))
@@ -15138,12 +15140,12 @@ packages.")
            r-biobase
            r-biocgenerics
            r-biostrings
+           r-bit
            r-dbi
            r-ff
            r-oligoclasses
            r-preprocesscore
-           r-rsqlite
-           r-zlibbioc))
+           r-rsqlite))
     (native-inputs
      (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/oligo/")
