@@ -9535,6 +9535,16 @@ Applied Statistics with S\" (4th edition, 2002) by Venables and Ripley.")
        ;; Needed for vignettes.
        (updater-extra-native-inputs . ("r-mass"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      (if (or (target-x86-32?) (target-arm32?))
+          '(modify-phases %standard-phases
+             (add-after 'unpack 'disable-bad-tests
+               (lambda _
+                 ;; Some of these tests fail on 32 bit architectures.
+                 (delete-file "tests/matprod.R"))))
+          '%standard-phases)))
     (propagated-inputs
      (list r-lattice))
     (native-inputs (list r-codetools r-mass r-sfsmisc r-sparsem))
