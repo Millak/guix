@@ -14112,13 +14112,13 @@ additional column data sets.")
 (define-public r-trnadbimport
   (package
     (name "r-trnadbimport")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "tRNAdbImport" version))
        (sha256
-        (base32 "10w0grspgd0781z84fpiam6h92j1mvlplpg9arrhlax1fkk4xbyj"))))
+        (base32 "0ldrn67kjzjzndjyx3zx3a0s1dglkz2g57yrm5f9wg9gjdgqy44n"))))
     (properties `((upstream-name . "tRNAdbImport")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings
@@ -14131,7 +14131,7 @@ additional column data sets.")
                              r-structstrings
                              r-trna
                              r-xml2))
-    (native-inputs (list r-httptest r-knitr r-testthat))
+    (native-inputs (list r-biocgenerics r-httptest r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/tRNAdbImport")
     (synopsis "Importing from tRNAdb and mitotRNAdb as GRanges objects")
     (description
