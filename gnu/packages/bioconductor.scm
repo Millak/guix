@@ -10416,13 +10416,13 @@ of other R packages who wish to make use of HTSlib.")
 (define-public r-rnbeads
   (package
     (name "r-rnbeads")
-    (version "2.24.0")
+    (version "2.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RnBeads" version))
        (sha256
-        (base32 "006kmfg1lysa9z9cbc507l54xh1apslrxxk41w65zp7bqkhs2zj9"))
+        (base32 "15vp5c40g1xlqvbwivc9zgiqm9ra5capbj37xpk0kjn8vl0qwa9x"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "inst/bin"))))
