@@ -3795,38 +3795,51 @@ compositions like @code{XOR} and @code{NAND} are emulated on top of them.
 Expressions are constructed from parsed strings or directly in Python.")
     (license license:bsd-2)))
 
-(define-public python-hdf4
+(define-public python-pyhdf
   (package
-   (name "python-hdf4")
-   (version "0.9.2")
-   (source
-    (origin
-      (method url-fetch)
-      (uri (pypi-uri name version))
-      (sha256
-       (base32
-        "00sxppysk3w620g1jdskjzkybvpf8dkpzjfj3wlw5khpzw1g0hq5"))))
-   (build-system pyproject-build-system)
-   (arguments
-    (list
-     #:phases
-     '(modify-phases %standard-phases
-        (add-before 'check 'build-extensions
-          (lambda _
-            ;; Extensions have to be built before running the tests.
-            (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-   (native-inputs (list python-pytest python-setuptools python-wheel))
-   (propagated-inputs (list python-numpy))
+    (name "python-pyhdf")
+    (version "0.11.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyhdf" version))
+       (sha256
+        (base32 "0nlcz7p3mcqa0s161iqnnfgwgx0np8rhz8p924g5hlcn1bfy6vcz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "pyhdf")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'run-example-tests
+            (lambda _
+              (invoke "python" "examples/runall.py"))))))
+    (native-inputs
+     (list python-numpy
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
    (inputs
-    (list hdf4 libjpeg-turbo zlib))
-   (home-page "https://github.com/fhs/python-hdf4")
-   (synopsis "Python interface to the NCSA HDF4 library")
-   (description
-    "Python-HDF4 is a python wrapper around the NCSA HDF version 4 library,
+    (list hdf4
+          libjpeg-turbo
+          zlib))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/fhs/pyhdf")
+    (synopsis "Python interface to the NCSA HDF4 library")
+    (description
+     "PYHDF4 is a python wrapper around the NCSA HDF version 4 library,
 which implements the SD (Scientific Dataset), VS (Vdata) and V (Vgroup) API’s.
-NetCDF files can also be read and modified.  Python-HDF4 is a fork of
-@url{http://hdfeos.org/software/pyhdf.php,pyhdf}.")
-   (license license:expat)))
+NetCDF files can also be read and modified.  It is a successor of Python-HDF4
+which is a fork of @url{http://hdfeos.org/software/pyhdf.php,pyhdf}.")
+    (license license:expat)))
+
+;; Version 0.9.x was called python-hdf4 in PyPI because at that time upstream
+;; didn't have access to the pyhdf package in PyPI. For version 0.10.0 and
+;; onward, please install pyhdf instead of python-hdf4.
+(define-public python-hdf4
+  (deprecated-package "python-hdf4" python-pyhdf))
 
 (define-public python-h5netcdf
   (package
