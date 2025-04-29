@@ -6747,13 +6747,13 @@ single expression profiles.")
 (define-public r-decontam
   (package
     (name "r-decontam")
-    (version "1.26.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "decontam" version))
               (sha256
                (base32
-                "0incm0dadkyn9n1k53cs19zgs3qc7y8hvfyq75vhqg670h4zyxkz"))))
+                "1xn071m88gd2dzqkz6avdwj04lwngfhmmx3v6rwn8dp7lmqlpxyb"))))
     (properties `((upstream-name . "decontam")))
     (build-system r-build-system)
     (propagated-inputs
