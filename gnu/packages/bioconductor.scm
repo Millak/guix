@@ -21470,13 +21470,13 @@ for manual execution.")
 (define-public r-flowai
   (package
     (name "r-flowai")
-    (version "1.36.0")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "flowAI" version))
               (sha256
                (base32
-                "1g2bjfdrmglxb2b3h3j2d37nq7k4hy2ff3qp5jy1arjrblq45qfm"))))
+                "1w28hcfychhws8s5vkv27zssyvngrsrflnqc12y7f895f3lp72s1"))))
     (properties `((upstream-name . "flowAI")))
     (build-system r-build-system)
     (propagated-inputs
@@ -21489,7 +21489,7 @@ for manual execution.")
            r-reshape2
            r-rmarkdown
            r-scales))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/flowAI")
     (synopsis
      "Automatic and interactive quality control for flow cytometry data")
