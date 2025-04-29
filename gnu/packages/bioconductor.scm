@@ -23196,13 +23196,13 @@ of @dfn{tumor cells} (cells with divergent segments).")
 (define-public r-acgh
   (package
     (name "r-acgh")
-    (version "1.84.0")
+    (version "1.86.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "aCGH" version))
               (sha256
                (base32
-                "1z9phvx461s64i251rvxwr9x62mm18pc0qlifzr8z4ybmlrbyazi"))))
+                "0md1dpwvhpmb21j2l0n5vkc7k0iw1mviksja0yxmwpjvcbhdwg7v"))))
     (properties `((upstream-name . "aCGH")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-cluster r-multtest r-survival))
