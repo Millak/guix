@@ -17651,17 +17651,17 @@ qPCR data, but could be used with other types as well.")
 (define-public r-sangerseqr
   (package
     (name "r-sangerseqr")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "sangerseqR" version))
               (sha256
                (base32
-                "1xvwlnyrs5w3aiapbiiq8dx71hf7803fywbqhg7nvqkdbls5iljd"))))
+                "116adlm2a82c5jsljpicsfq34yyks9jcnmn9qjbfb4s8arvq14fw"))))
     (properties `((upstream-name . "sangerseqR")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings r-pwalign r-shiny r-stringr))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-biocgenerics r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/sangerseqR")
     (synopsis "Tools for Sanger Sequencing data in R")
     (description
