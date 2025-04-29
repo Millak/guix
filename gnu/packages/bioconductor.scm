@@ -6151,13 +6151,13 @@ for clusters.")
 (define-public r-cellid
   (package
     (name "r-cellid")
-    (version "1.14.0")
+    (version "1.16.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "CelliD" version))
               (sha256
                (base32
-                "0qgkyl57ggkx9577a6lvpxb3vcqhjgi5r1l56xbxniphjcq41cpy"))))
+                "169cvjjbzqn6q1v3m5kg1k40klwdrv7jbsmsabmqjf30xd2wjlrr"))))
     (properties `((upstream-name . "CelliD")))
     (build-system r-build-system)
     (propagated-inputs
