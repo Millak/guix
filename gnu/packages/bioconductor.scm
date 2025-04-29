@@ -2977,13 +2977,13 @@ each provided as @code{Fast5Summary} objects.")
 (define-public r-msdata
   (package
     (name "r-msdata")
-    (version "0.46.0")
+    (version "0.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "msdata" version 'experiment))
        (sha256
-        (base32 "10b8anw0ygbsq95p89agjhs3qvgj9xrlrblg75cdbgmlzks2jhdl"))))
+        (base32 "1p8clsmsdlgjxw6lwifx6awwnskj7ygfidv3zp9al98m28jfflpc"))))
     (properties `((upstream-name . "msdata")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/msdata")
