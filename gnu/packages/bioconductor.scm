@@ -7081,13 +7081,13 @@ heterogeneity in the original high-dimensional space.")
 (define-public r-derfinder
   (package
     (name "r-derfinder")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "derfinder" version))
               (sha256
                (base32
-                "0qg1klbb4g8nw7v50xb0p022barlspwaisdymyk12a04vd9q4i79"))))
+                "083y2qsy1ix7ikz8ppf4b49ya4ipf18sxc3gznisybx807nsk4zs"))))
     (properties `((upstream-name . "derfinder")))
     (build-system r-build-system)
     (arguments
