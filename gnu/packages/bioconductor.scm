@@ -10661,14 +10661,14 @@ visualizations and interfaces for working with Bioconductor data.")
 (define-public r-interactivedisplaybase
   (package
     (name "r-interactivedisplaybase")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "interactiveDisplayBase" version))
        (sha256
         (base32
-         "1w39vn00armnka9sbgczc0madwc3hmcn4awcyl1xbq86q8danx11"))))
+         "1xnllqanpfc8dghbzcd63dsycdagb1q8bvqpqv2isal9gpycw6q8"))))
     (properties
      `((upstream-name . "interactiveDisplayBase")))
     (build-system r-build-system)
