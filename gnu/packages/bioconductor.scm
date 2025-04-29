@@ -25946,13 +25946,13 @@ data in the column sparse format.")
 (define-public r-spatialexperiment
   (package
     (name "r-spatialexperiment")
-    (version "1.16.0")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SpatialExperiment" version))
               (sha256
                (base32
-                "02lsz2yag9h94ylwsdbqwvlsdgx6ijz9702hg5prz122jqv7x9l3"))))
+                "0m8wk3mz2sfk1lh255m1w5kqwcjplbhyqf2jvjcqy7lp29lp36hm"))))
     (properties `((upstream-name . "SpatialExperiment")))
     (build-system r-build-system)
     (arguments
@@ -25970,7 +25970,7 @@ data in the column sparse format.")
                              r-s4vectors
                              r-singlecellexperiment
                              r-summarizedexperiment))
-    (native-inputs (list r-dropletutils r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/drighelli/SpatialExperiment")
     (synopsis "S4 class for spatially resolved -omics data")
     (description
