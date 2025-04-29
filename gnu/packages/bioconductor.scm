@@ -15985,13 +15985,15 @@ the @code{arrayCGH} packages.")
 (define-public r-qdnaseq
   (package
     (name "r-qdnaseq")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "QDNAseq" version))
               (sha256
-               (base32 "06ips85m2yrp7iwqm1l9hxkr3d5ny3myhjr8dkyhmw819gvdfhq8"))))
-    (properties `((upstream-name . "QDNAseq")))
+               (base32 "0zkdfs6axmw4qwr11q8mv8rdji1k64004r8w7ml789wn0chzdk4p"))))
+    (properties
+     '((upstream-name . "QDNAseq")
+       (updater-extra-native-inputs . ("r-biocstyle"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
@@ -16004,7 +16006,11 @@ the @code{arrayCGH} packages.")
            r-matrixstats
            r-r-utils
            r-rsamtools))
-    (native-inputs (list r-biocstyle))
+    (native-inputs
+     (list r-biocstyle
+           r-bsgenome-hsapiens-ucsc-hg19
+           r-future
+           r-parallelly))
     (home-page "https://bioconductor.org/packages/QDNAseq")
     (synopsis "Quantitative DNA sequencing for chromosomal aberrations")
     (description "The genome is divided into non-overlapping fixed-sized bins,
