@@ -25117,13 +25117,13 @@ memory-efficient as possible.")
 (define-public r-hitc
   (package
     (name "r-hitc")
-    (version "1.50.0")
+    (version "1.52.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "HiTC" version))
               (sha256
                (base32
-                "0y5qlr36pj7mrgs70v4zf9s19rpa11mzyagmpxs77n0pl9nrhgwj"))))
+                "0y0srz1w6yp9dkk0zyij7lq18413651z7svv9ydfyimr8gqjb2a9"))))
     (properties `((upstream-name . "HiTC")))
     (build-system r-build-system)
     (propagated-inputs
