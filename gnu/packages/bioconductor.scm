@@ -7344,13 +7344,13 @@ Beta-Binomial distributions.")
 (define-public r-dyndoc
   (package
     (name "r-dyndoc")
-    (version "1.84.0")
+    (version "1.86.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DynDoc" version))
               (sha256
                (base32
-                "0pz2sz99p5dqprfwhnh22mw9j8895jk1gm3ffqysq7afim2fla5m"))))
+                "08dlkhm9nw5xbc1qi4chknx0lalwnnv69w9jgsmr7qf554xvq54q"))))
     (properties `((upstream-name . "DynDoc")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/DynDoc")
