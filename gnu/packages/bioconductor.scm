@@ -20871,14 +20871,14 @@ Infinium HumanMethylation 450k assay.")
 (define-public r-biocfilecache
   (package
     (name "r-biocfilecache")
-    (version "2.14.0")
+    (version "2.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocFileCache" version))
        (sha256
         (base32
-         "08j0589rwylirna6r4bwk5vb965fp4zpj0msk0mlhppngqzlc2kc"))))
+         "182liy633q2aln2578saxhr83f5c64v3140g89yzblbyh4hnvql4"))))
     (properties `((upstream-name . "BiocFileCache")))
     (build-system r-build-system)
     ;; Tests require internet access.
@@ -20892,7 +20892,7 @@ Infinium HumanMethylation 450k assay.")
            r-httr
            r-rsqlite))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/BiocFileCache/")
     (synopsis "Manage files across sessions")
     (description
