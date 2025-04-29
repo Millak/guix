@@ -5647,13 +5647,13 @@ artifacts.")
 (define-public r-baalchip
   (package
     (name "r-baalchip")
-    (version "1.32.0")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BaalChIP" version))
               (sha256
                (base32
-                "0zhxsw1sbk6kmxm9ypw211ybdn29lid5r2cjz7j855822afgg0l4"))))
+                "05l8n7yff1gkfcbv6d4j4sa4fyx8d99j87k0hdi9mi903l0kwidi"))))
     (properties `((upstream-name . "BaalChIP")))
     (build-system r-build-system)
     (inputs (list)) ; extra/get.overlaps.v2_chrXY.perl
@@ -5670,7 +5670,7 @@ artifacts.")
            r-reshape2
            r-rsamtools
            r-scales))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-biocgenerics r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/BaalChIP")
     (synopsis
      "Analysis of allele-specific transcription factor binding in cancer genomes")
