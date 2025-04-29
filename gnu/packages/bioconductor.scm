@@ -4380,13 +4380,13 @@ problems.")
 (define-public r-amaretto
   (package
     (name "r-amaretto")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AMARETTO" version))
               (sha256
                (base32
-                "0lk7rd4ipwgx2mzwwy9kc4ngd9849p804499xdwy2j4ygq01zrkq"))))
+                "0njf8xm4z4s9gyyv8zybi9w4hzvv52i6wkspd7pd71k4m0xnpd33"))))
     (properties `((upstream-name . "AMARETTO")))
     (build-system r-build-system)
     (propagated-inputs
