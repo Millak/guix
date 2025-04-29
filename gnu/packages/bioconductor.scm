@@ -27176,19 +27176,19 @@ anatomical terms, mapped to genes by expression patterns.")
 (define-public r-biobtreer
   (package
     (name "r-biobtreer")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biobtreeR" version))
        (sha256
         (base32
-         "1kzlssv731qlpjrqa4l72bw2fwjzdxc5045arydnggfvcksfr2q6"))))
+         "0fdim4k0s5f70xbbf4cbr7idha8w4sfv327l94cfmzh5k3zxdm1a"))))
     (properties `((upstream-name . "biobtreeR")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-httpuv r-httr r-jsonlite r-stringi))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/tamerh/biobtreeR")
     (synopsis "Use biobtree tool from R")
     (description
