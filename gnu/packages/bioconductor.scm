@@ -6229,13 +6229,13 @@ languages and analysis frameworks.")
 (define-public r-coregx
   (package
     (name "r-coregx")
-    (version "2.10.0")
+    (version "2.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "CoreGx" version))
        (sha256
-        (base32 "0lw1fby6jxkz6bcbvlz8yqa8p00k85bay59lsr2qk5qlbsgz894a"))))
+        (base32 "1lqqk19vi8332qrg1iwr5zalhqba5inlgdmywgql3hahak4qhwxx"))))
     (properties `((upstream-name . "CoreGx")))
     (build-system r-build-system)
     (arguments
