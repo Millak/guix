@@ -7748,6 +7748,7 @@ set.")
            (texlive-local-tree
             (list texlive-adjustbox
                   texlive-alphalph
+                  texlive-booktabs
                   texlive-capt-of
                   texlive-caption
                   texlive-changepage
@@ -7755,7 +7756,6 @@ set.")
                   texlive-courier
                   texlive-enumitem
                   texlive-etoc
-                  texlive-etoolbox
                   texlive-fancyvrb
                   texlive-float
                   texlive-fncychap
