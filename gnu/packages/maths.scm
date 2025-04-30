@@ -2363,11 +2363,12 @@ similar to MATLAB, GNU Octave or SciPy.")
        (patches (search-patches "netcdf-date-time.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list m4 doxygen graphviz))
+     (list doxygen graphviz m4))
     (inputs
      (list curl
            hdf4-alt
            hdf5
+           libaec
            libjpeg-turbo
            libxml2
            unzip
