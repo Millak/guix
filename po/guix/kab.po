@@ -1,31 +1,27 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the GNU guix package.
-# Nikolay Korotkiy <sikmir@disroot.org>, 2021.
-# Jan Kuparinen <copper_fin@hotmail.com>, 2021, 2022, 2023.
-# Ricky Tigg <ricky.tigg@gmail.com>, 2023, 2024, 2025.
-# Florian Pelz <pelzflorian@pelzflorian.de>, 2024, 2025.
-# Jussi Timperi <jussi.timperi@iki.fi>, 2025.
+# ButterflyOfFire <butterflyoffire@users.noreply.translate.fedoraproject.org>, 2025.
 #: guix/diagnostics.scm:159 guix/import/composer.scm:182
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-04-29 03:18+0000\n"
-"PO-Revision-Date: 2025-04-03 15:54+0000\n"
-"Last-Translator: Ricky Tigg <ricky.tigg@gmail.com>\n"
-"Language-Team: Finnish <https://translate.fedoraproject.org/projects/guix/guix/fi/>\n"
-"Language: fi\n"
+"PO-Revision-Date: 2025-04-19 19:29+0000\n"
+"Last-Translator: ButterflyOfFire <butterflyoffire@users.noreply.translate.fedoraproject.org>\n"
+"Language-Team: Kabyle <https://translate.fedoraproject.org/projects/guix/guix/kab/>\n"
+"Language: kab\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.4\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.11\n"
 
 #: gnu.scm:81
 #, scheme-format
 msgid "module ~a not found"
-msgstr "moduulia ~a ei löydy"
+msgstr ""
 
 #: gnu.scm:99
 msgid ""
@@ -34,15 +30,11 @@ msgid ""
 "If you get the line @code{location: gnu/packages/bar.scm:174:2},\n"
 "add @code{bar} to the @code{use-package-modules} form."
 msgstr ""
-"Voit käyttää @command{guix package --show=foo | grep location}\n"
-"etsiäksesi paketin @code{foo} sijainnille.\n"
-"Jos saat rivin @code{location: gnu/packages/bar.scm:174:2},\n"
-"lisää @code{bar} @code{use-package-modules} -lomakkeeseen."
 
 #: gnu.scm:107
 #, scheme-format
 msgid "Try adding @code{(use-package-modules ~a)}."
-msgstr "Yritä lisätä @code{(use-package-modules ~a)}."
+msgstr ""
 
 #: gnu.scm:122
 #, scheme-format
@@ -56,51 +48,51 @@ msgstr ""
 #: gnu.scm:131
 #, scheme-format
 msgid "Try adding @code{(use-service-modules ~a)}."
-msgstr "Yritä lisätä @code{(use-service-modules ~a)}."
+msgstr ""
 
 #: gnu/packages.scm:103
 #, scheme-format
 msgid "~a: patch not found"
-msgstr "~a: korjausta ei löydy"
+msgstr ""
 
 #: gnu/packages.scm:515 gnu/packages.scm:556
 #, scheme-format
 msgid "ambiguous package specification `~a'~%"
-msgstr "epäselvä pakettimääritys`~a'~%"
+msgstr ""
 
 #: gnu/packages.scm:516 gnu/packages.scm:557
 #, scheme-format
 msgid "choosing ~a@~a from ~a~%"
-msgstr "valitaan ~a@~a ~a~%:sta"
+msgstr ""
 
 #: gnu/packages.scm:521 guix/scripts/package.scm:224
 #, scheme-format
 msgid "package '~a' has been superseded by '~a'~%"
-msgstr "paketti '~a' on korvattu '~a'~%:lla"
+msgstr ""
 
 #: gnu/packages.scm:528 gnu/packages.scm:545
 #, scheme-format
 msgid "~A: package not found for version ~a~%"
-msgstr "~A: pakettia ei löydy versiolle ~a~%"
+msgstr ""
 
 #: gnu/packages.scm:529 gnu/packages.scm:546
 #, scheme-format
 msgid "~A: unknown package~%"
-msgstr "~A: tuntematon paketti~%"
+msgstr ""
 
 #: gnu/packages.scm:585
 #, scheme-format
 msgid "package `~a' lacks output `~a'~%"
-msgstr "paketilta `~a' puuttuu lähtö `~a'~%"
+msgstr ""
 
 #: gnu/services.scm:278
 #, scheme-format
 msgid "~a: no value specified for service of type '~a'"
-msgstr "~a: '~a':-tyypin palvelulle ei ole määritetty arvoa"
+msgstr ""
 
 #: gnu/services.scm:308
 msgid "This is a simple service."
-msgstr "Tämä on yksinkertainen palvelu."
+msgstr ""
 
 #: gnu/services.scm:348
 #, scheme-format
@@ -131,46 +123,35 @@ msgid ""
 "itself: the channels used when building the system, and its configuration\n"
 "file, when available."
 msgstr ""
-"Tallenna järjestelmän alkuperätiedot itse järjestelmään:\n"
-"järjestelmän rakentamisessa käytetyt kanavat ja sen\n"
-"konfiguraatiotiedosto, jos saatavilla."
 
 #: gnu/services.scm:684
 msgid ""
 "Delete files from @file{/tmp}, @file{/var/run}, and other\n"
 "temporary locations at boot time."
 msgstr ""
-"Poista tiedostot @file{/tmp}-, @file{/var/run}- ja muista\n"
-"väliaikaisista paikoista käynnistyksen yhteydessä."
 
 #: gnu/services.scm:748
 msgid ""
 "Run @dfn{activation} code at boot time and upon\n"
 "@command{guix system reconfigure} completion."
 msgstr ""
-"Suorita @dfn{activation}-koodi käynnistyksen yhteydessä\n"
-"ja kun @command{guix system reconfigure} on valmis."
 
 #: gnu/services.scm:820
 msgid ""
 "This service creates an @file{rc} script in the\n"
 "system; that script is responsible for booting the Hurd."
 msgstr ""
-"Tämä palvelu luo @file{rc}-komentosarjan järjestelmään;\n"
-"tuo komentosarja on vastuussa Hurdin käynnistämisestä."
 
 #: gnu/services.scm:838
 msgid ""
 "Add special files to the root file system---e.g.,\n"
 "@file{/usr/bin/env}."
 msgstr ""
-"Lisää erityistiedostoja juuritiedostojärjestelmään\n"
-"-- esim. @file{/usr/bin/env}."
 
 #: gnu/services.scm:861
 #, scheme-format
 msgid "duplicate '~a' entry for /etc"
-msgstr "kaksoiskappale '~a' /etc:ta varten"
+msgstr ""
 
 #: gnu/services.scm:890
 msgid "Populate the @file{/etc} directory."
@@ -197,9 +178,6 @@ msgid ""
 "@file{/run/current-system/profile}.  It contains packages that the sysadmin\n"
 "wants to be globally available to all the system users."
 msgstr ""
-"Tämä on @dfn{system profile}, saatavilla nimellä @file{/run/current-system/profile}.\n"
-"Se sisältää paketteja, jotka sysadmin haluaa olla maailmanlaajuisesti kaikkien\n"
-"järjestelmän käyttäjien saatavilla."
 
 #: gnu/services.scm:998
 msgid ""
@@ -207,17 +185,12 @@ msgid ""
 "kernel.  Firmware may then be uploaded to some of the machine's devices, such\n"
 "as Wifi cards."
 msgstr ""
-"Tee \"firmware\"-tiedostoista käyttöjärjestelmän ytimen ladattavia.\n"
-"Laiteohjelmisto voidaan sitten ladata joihinkin laitteen laitteisiin,\n"
-"kuten Wi-Fi-kortteihin."
 
 #: gnu/services.scm:1029
 msgid ""
 "Register garbage-collector roots---i.e., store items that\n"
 "will not be reclaimed by the garbage collector."
 msgstr ""
-"Rekisteröi roskankeräilijän juuret --- eli säilytä tavaroita,\n"
-"joita roskankeräilijä ei kierrätä."
 
 #: gnu/services.scm:1087
 msgid ""
@@ -226,10 +199,6 @@ msgid ""
 "with a function that accepts the current configuration and returns a new\n"
 "configuration."
 msgstr ""
-"Kokoaa linux-libre-ytimen profiilin, joka sisältää itse ytimenja\n"
-"kaikki Linuxilla ladattavat ydinmoduulit. Tätä voidaan laajentaa\n"
-"funktiolla, joka hyväksyy nykyisen kokoonpanon ja palauttaa\n"
-"uuden kokoonpanon."
 
 #: gnu/services.scm:1109
 msgid ""
@@ -237,24 +206,21 @@ msgid ""
 "included in the booted linux-libre profile.  Other services can extend this\n"
 "service type to add particular modules to the set of linux-loadable modules."
 msgstr ""
-"Lisää paketteja ja pakettien ulostuloja moduuleina, jotka sisältyvät käynnistettyyn\n"
-"Linux-libre-profiiliin. Muut palvelut voivat laajentaa tätä palvelutyyppiä lisäämään\n"
-"tiettyjä moduuleja linux-ladattavien moduulien joukkoon."
 
 #: gnu/services.scm:1136
 #, scheme-format
 msgid "no target of type '~a' for service '~a'"
-msgstr "ei kohdetta tyyppiä \"~a\" palvelulle \"~a\""
+msgstr ""
 
 #: gnu/services.scm:1162 gnu/services.scm:1281
 #, scheme-format
 msgid "more than one target service of type '~a'"
-msgstr "useampi kuin yksi kohdepalvelu tyyppiä '~a'"
+msgstr ""
 
 #: gnu/services.scm:1271
 #, scheme-format
 msgid "service of type '~a' not found"
-msgstr "palvelua tyyppiä '~a' ei löydy"
+msgstr ""
 
 #: gnu/services.scm:1316
 msgid "'services' field must contain a list of services"
@@ -263,7 +229,7 @@ msgstr ""
 #: gnu/system.scm:227
 #, scheme-format
 msgid "the 'hosts-file' field is deprecated, please use 'hosts-service-type' instead~%"
-msgstr "\"hosts-file\"-kenttä on vanhentunut, käytä sen sijaan \"hosts-service-type\" ~%"
+msgstr ""
 
 #: gnu/system.scm:346
 #, scheme-format
@@ -273,17 +239,17 @@ msgstr ""
 #: gnu/system.scm:441
 #, scheme-format
 msgid "unrecognized uuid ~a at '~a'~%"
-msgstr "tunnistamaton uuid ~a kohdassa '~a'~%"
+msgstr ""
 
 #: gnu/system.scm:529
 #, scheme-format
 msgid "unrecognized crypto-devices ~S at '~a'~%"
-msgstr "tunnistamattomat kryptolaitteet ~S kohdassa '~a'~%"
+msgstr ""
 
 #: gnu/system.scm:549
 #, scheme-format
 msgid "unrecognized boot parameters at '~a'~%"
-msgstr "tunnistamattomat käynnistysparametrit kohdassa '~a'~%"
+msgstr ""
 
 #: gnu/system.scm:552
 #, scheme-format
@@ -296,63 +262,55 @@ msgid ""
 "guix pull\n"
 "@end example"
 msgstr ""
-"Tämä tarkoittaa luultavasti sitä, että tämä Guix-versio on\n"
-"vanhempi kuin se, joka loi tiedoston @file{~a}. Tämän korjaamiseksi\n"
-"sinun on päivitettävä Guix:\n"
-"\n"
-"@example\n"
-"guix pull\n"
-"@end example"
 
 #: gnu/system.scm:689
 #, scheme-format
 msgid "mapped device '~a' may be ignored by bootloader~%"
-msgstr "Käynnistyslatain ~% saattaa jättää huomioimatta yhdistetyn laitteen '~a'"
+msgstr ""
 
 #: gnu/system.scm:709
 #, scheme-format
 msgid "List elements of the field 'swap-devices' should now use the <swap-space> record, as the old method is deprecated. See \"(guix) operating-system Reference\" for more details.~%"
-msgstr "Swap-devices-kentän luetteloelementtien tulisi nyt käyttää <swap-space>-tietuetta, koska vanha menetelmä on vanhentunut. Katso lisätietoja \"(guix) operating-system Reference\".~%"
+msgstr ""
 
 #: gnu/system.scm:1210
 #, scheme-format
 msgid "using a string for file '~a' is deprecated; use 'plain-file' instead~%"
-msgstr "merkkijonon käyttö tiedostolle '~a' on vanhentunutta; käytä 'plain-file' sen sijaan ~%"
+msgstr ""
 
 #: gnu/system.scm:1226
 #, scheme-format
 msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
-msgstr "monadisen arvon käyttö '~a':lle on vanhentunut; käytä 'plain-file' sen sijaan ~%"
+msgstr ""
 
 #: gnu/system.scm:1359
 msgid "missing root file system"
-msgstr "puuttuva juuritiedostojärjestelmä"
+msgstr ""
 
 #: gnu/system.scm:1435
 #, scheme-format
 msgid "~a: invalid locale name"
-msgstr "~a: virheellinen kielialuenimi"
+msgstr ""
 
 #: gnu/services/audio.scm:223
-#, fuzzy, scheme-format
-#| msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
+#, scheme-format
 msgid "string value for '~a' is deprecated, use integer instead~%"
-msgstr "monadisen arvon käyttö '~a':lle on vanhentunut; käytä 'plain-file' sen sijaan ~%"
+msgstr ""
 
 #: gnu/services/audio.scm:234
 #, scheme-format
 msgid "string value for 'user' is deprecated, use user-account instead~%"
-msgstr "merkkijonon arvo \"user\":lle on vanhentunut; käytä sen sijaan user-accountia~%"
+msgstr ""
 
 #: gnu/services/audio.scm:245
 #, scheme-format
 msgid "string value for 'group' is deprecated, use user-group instead~%"
-msgstr "merkkijonon arvo \"group\":lle on vanhentunut, käytä sen sijaan user-groupia~%"
+msgstr ""
 
 #: gnu/services/audio.scm:373
 #, scheme-format
 msgid "symbol value for 'mixer-type' is deprecated, use string instead~%"
-msgstr "symbolin arvo 'mixer-type':lle on vanhentunut; käytä sen sijaan merkkijonoa~%"
+msgstr ""
 
 #: gnu/services/audio.scm:663
 msgid "Run the Music Player Daemon (MPD)."
@@ -361,12 +319,12 @@ msgstr ""
 #: gnu/services/audio.scm:710
 #, scheme-format
 msgid "string value for 'user' is not supported, use user-account instead~%"
-msgstr "merkkijonon arvoa 'user':lle ei tueta, käytä sen sijaan user-accountia~%"
+msgstr ""
 
 #: gnu/services/audio.scm:721
 #, scheme-format
 msgid "string value for 'group' is not supported, use user-group instead~%"
-msgstr "merkkijonon arvoa 'group':lle ei tueta, käytä sen sijaan user-groupia~%"
+msgstr ""
 
 #: gnu/services/audio.scm:732
 #, scheme-format
@@ -388,16 +346,12 @@ msgid ""
 "Take care of syncing the root file\n"
 "system and of remounting it read-only when the system shuts down."
 msgstr ""
-"Huolehdi juuritiedostojärjestelmän synkronoinnista ja sen\n"
-"uudelleenasentamisesta vain luku -tilassa, kun järjestelmä sammuu."
 
 #: gnu/services/base.scm:596
 msgid ""
 "Provide Shepherd services to mount and unmount the given\n"
 "file systems, as well as corresponding @file{/etc/fstab} entries."
 msgstr ""
-"Tarjoa Shepherd-palveluita tiettyjen tiedostojärjestelmien liittämiseksi\n"
-"ja poistamiseksi sekä vastaavat @file{/etc/fstab}-merkinnät."
 
 #: gnu/services/base.scm:695
 msgid ""
@@ -405,22 +359,17 @@ msgid ""
 "generator (RNG) with the value recorded when the system was last shut\n"
 "down."
 msgstr ""
-"Täytä @file{/dev/urandom} pseudosatunnaislukugeneraattoriin\n"
-"(RNG)-arvolla, joka tallennettiin, kun järjestelmä viimeksi\n"
-"sammutettiin."
 
 #: gnu/services/base.scm:730
 msgid ""
 "Run the @command{rngd} random number generation daemon to\n"
 "supply entropy to the kernel's pool."
 msgstr ""
-"Suorita @command{rngd} satunnaislukujen luontidemoni entropian\n"
-"toimittamiseksi ytimen altaaseen."
 
 #: gnu/services/base.scm:759
 #, scheme-format
 msgid "host name '~a' contains invalid characters"
-msgstr "isäntänimi '~a' sisältää virheellisiä merkkejä"
+msgstr ""
 
 #: gnu/services/base.scm:809
 msgid "Populate the @file{/etc/hosts} file."
@@ -428,11 +377,11 @@ msgstr ""
 
 #: gnu/services/base.scm:827
 msgid "Initialize the machine's host name."
-msgstr "Alusta koneen isäntänimi."
+msgstr ""
 
 #: gnu/services/base.scm:858
 msgid "Ensure the Linux virtual terminals run in UTF-8 mode."
-msgstr "Varmista, että Linuxin virtuaalipäätteet toimivat UTF-8-tilassa."
+msgstr ""
 
 #: gnu/services/base.scm:917
 msgid ""
@@ -451,20 +400,6 @@ msgid ""
 "                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
 "@end example\n"
 msgstr ""
-"Asenna annetut fontit määritettyihin ttyihin (fontit ovat virtuaalikonsolikohtaisia\n"
-"GNU/Linuxissa). Tämän palvelun arvo on luettelo tty/fontti-pareista. Fontti voi olla\n"
-"@code{kbd}-paketin tarjoaman kirjasimen nimi tai mikä tahansa kelvollinen\n"
-"argumentti comand{setfont}:lle, kuten tässä esimerkissä:\n"
-"\n"
-"@example\n"
-"`((\"tty1\" . \"LatGrkCyr-8x16\")\n"
-"  (\"tty2\" . ,(file-append\n"
-"                 font-tamzen\n"
-"                 \"/share/kbd/consolefonts/TamzenForPowerline10x20.psf\"))\n"
-"  (\"tty3\" . ,(file-append\n"
-"                 font-terminus\n"
-"                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
-"@end example\n"
 
 #: gnu/services/base.scm:961
 msgid ""
@@ -492,24 +427,18 @@ msgid ""
 msgstr ""
 
 #: gnu/services/base.scm:1680
-#, fuzzy
-#| msgid "Service transmission-daemon has been asked to reload its settings file."
 msgid "Service syslog has been asked to reload its settings file."
-msgstr "Palvelunsiirto-demonia on pyydetty lataamaan asetusten tiedostonsa uudelleen."
+msgstr ""
 
 #: gnu/services/base.scm:1682
-#, fuzzy
-#| msgid "Service transmission-daemon is not running."
 msgid "Service syslog is not running."
-msgstr "Palvelunsiirto-demoni ei ole käynnissä."
+msgstr ""
 
 #: gnu/services/base.scm:1709
 msgid ""
 "Run the syslog daemon, @command{syslogd}, which is\n"
 "responsible for logging system messages."
 msgstr ""
-"Suorita syslog-demoni @command{syslogd}, joka\n"
-"vastaa järjestelmäviestien kirjaamisesta."
 
 #: gnu/services/base.scm:1747
 #, scheme-format
@@ -536,8 +465,6 @@ msgid ""
 "Add a Shepherd service running @command{guix publish}, a\n"
 "command that allows you to share pre-built binaries with others over HTTP."
 msgstr ""
-"Lisää Shepherd-palvelu, joka suorita @command{guix publish}-komentoa, jonka\n"
-"avulla voit jakaa valmiita binaaritiedostoja muiden kanssa HTTP:n välityksellä."
 
 #: gnu/services/base.scm:2803
 msgid ""
@@ -548,17 +475,15 @@ msgstr ""
 
 #: gnu/services/base.scm:2832
 msgid "This service adds udev rules."
-msgstr "Tämä palvelu lisää udev-sääntöjä."
+msgstr ""
 
 #: gnu/services/base.scm:2845
-#, fuzzy
-#| msgid "This service adds udev rules."
 msgid "This service adds udev hardware files."
-msgstr "Tämä palvelu lisää udev-sääntöjä."
+msgstr ""
 
 #: gnu/services/base.scm:2940
 msgid "Turn on the virtual memory swap area."
-msgstr "Ota virtuaalimuistin sivutusalue käyttöön."
+msgstr ""
 
 #: gnu/services/base.scm:2982
 msgid ""
@@ -567,28 +492,22 @@ msgid ""
 "notably to select, copy, and paste text.  The default options use the\n"
 "@code{ps2} protocol, which works for both USB and PS/2 mice."
 msgstr ""
-"Suorita GPM, yleiskäyttöinen hiiren demoni, annetuilla komentorivivaihtoehdoilla.\n"
-"GPM:n avulla käyttäjät voivat käyttää hiirtä konsolissa erityisesti tekstin valitsemiseen,\n"
-"kopioimiseen ja liittämiseen. Oletusasetukset käyttävät @code{ps2}-protokollaa, joka\n"
-"toimii sekä USB- että PS/2-hiirillä."
 
 #: gnu/services/base.scm:3063
 msgid ""
 "Start the @command{kmscon} virtual terminal emulator for the\n"
 "Linux @dfn{kernel mode setting} (KMS)."
 msgstr ""
-"Käynnistä @command{kmscon} virtuaalipääteemulaattori\n"
-"Linuxin @dfn{kernel mode setting} (KMS):lle."
 
 #: gnu/services/base.scm:3080
 #, scheme-format
 msgid "address '~a' lacks a network mask"
-msgstr "osoitteesta '~a' puuttuu verkkopeite"
+msgstr ""
 
 #: gnu/services/base.scm:3086
 #, scheme-format
 msgid "Write, say, @samp{\"~a/24\"} for a 24-bit network mask."
-msgstr "Kirjoita vaikkai @samp{\"~a/24\"} 24-bittistä verkkopeitettä varten."
+msgstr ""
 
 #: gnu/services/base.scm:3102
 #, scheme-format
@@ -603,22 +522,22 @@ msgstr ""
 #: gnu/services/base.scm:3200
 #, scheme-format
 msgid "network links are currently ignored on GNU/Hurd~%"
-msgstr "verkkolinkit ohitetaan tällä hetkellä GNU/Hurd:lla~%"
+msgstr ""
 
 #: gnu/services/base.scm:3225
 #, scheme-format
 msgid "ignoring network route for '~a'~%"
-msgstr "jätetään huomioimatta verkkoreitti kohteelle '~a'~%"
+msgstr ""
 
 #: gnu/services/base.scm:3343
 #, scheme-format
 msgid "Interface with name '~a' not found~%"
-msgstr "Liitäntää nimellä '~a' ei löytynyt~%"
+msgstr ""
 
 #: gnu/services/base.scm:3350
 #, scheme-format
 msgid "Interface with mac-address '~a' not found~%"
-msgstr "Liitäntää mac-osoitteella \"~a\" ei löytynyt~%"
+msgstr ""
 
 #: gnu/services/base.scm:3504
 msgid ""
@@ -627,10 +546,6 @@ msgid ""
 "services of this type is a list of @code{static-networking} objects, one per\n"
 "network interface."
 msgstr ""
-"Ota määritetyt verkkoliitännät käyttöön käynnistettäessä antamalla\n"
-"IP-osoite, yhdyskäytävä, verkkopeite ja niin edelleen. Tämän tyyppisten\n"
-"palveluiden arvo on luettelo @code{static-networking}-objekteista,\n"
-"yksi verkkoliitäntää kohti."
 
 #: gnu/services/base.scm:4083
 msgid ""
@@ -639,10 +554,6 @@ msgid ""
 "mount/unmount /run/user/<uid> directory for user and @code{greetd}\n"
 "login manager daemon."
 msgstr ""
-"Tarjoaa tarvittavan infrastruktuurin järjestelmään sisäänkirjautumiseen sisältäen\n"
-"@code{greetd} PAM-palvelun, @code{pam-mount}-moduulin /run/user/<uid>\n"
-"-hakemiston liittämiseksi/poistamiseksi käyttäjälle ja @code{greetd}\n"
-"-kirjautumishallinta-demonin."
 
 #: gnu/services/certbot.scm:377
 msgid ""
@@ -650,14 +561,11 @@ msgid ""
 "Encrypt} HTTPS certificates by adjusting the nginx web server configuration\n"
 "and periodically invoking @command{certbot}."
 msgstr ""
-"Uusi @url{https://letsencrypt.org, Let'sEncrypt} HTTPS-varmenteet\n"
-"automaattisesti säätämällä nginx-verkkopalvelimen asetuksia ja\n"
-"kutsumalla ajoittain @command{certbot}."
 
 #: gnu/services/configuration.scm:109
 #, scheme-format
 msgid "invalid value ~s for field '~a'"
-msgstr "virheellinen arvo ~s kentässä ~a"
+msgstr ""
 
 #: gnu/services/configuration.scm:247
 #, scheme-format
@@ -754,23 +662,23 @@ msgstr ""
 
 #: gnu/services/desktop.scm:1932
 msgid "Run the GNOME desktop environment."
-msgstr "Suorita GNOME-työpöytäympäristö."
+msgstr ""
 
 #: gnu/services/desktop.scm:1965
 msgid "Run the MATE desktop environment."
-msgstr "Suorita MATE-työpöytäympäristö."
+msgstr ""
 
 #: gnu/services/desktop.scm:2000
 msgid "Run the Xfce desktop environment."
-msgstr "Suorita Xfce-työpöytäympäristö."
+msgstr ""
 
 #: gnu/services/desktop.scm:2030
 msgid "Run LXQt desktop environment."
-msgstr "Suorita LXQt-työpöytäympäristö."
+msgstr ""
 
 #: gnu/services/desktop.scm:2062
 msgid "Run the Sugar desktop environment."
-msgstr "Suorita Sugar-työpöytäympäristö."
+msgstr ""
 
 #: gnu/services/desktop.scm:2090
 msgid ""
@@ -789,7 +697,7 @@ msgstr ""
 
 #: gnu/services/desktop.scm:2207
 msgid "Run the KDE Plasma desktop environment."
-msgstr "Suorita KDE Plasma-työpöytäympäristö."
+msgstr ""
 
 #: gnu/services/desktop.scm:2264
 msgid ""
@@ -867,19 +775,19 @@ msgstr ""
 #: gnu/services/file-sharing.scm:74
 #, scheme-format
 msgid "salt value must be a string of ~d characters"
-msgstr "suola-arvon on oltava ~d-merkkien pituinen merkkijono"
+msgstr ""
 
 #: gnu/services/file-sharing.scm:666
 msgid "Service transmission-daemon has been asked to reload its settings file."
-msgstr "Palvelunsiirto-demonia on pyydetty lataamaan asetusten tiedostonsa uudelleen."
+msgstr ""
 
 #: gnu/services/file-sharing.scm:668
 msgid "Service transmission-daemon is not running."
-msgstr "Palvelunsiirto-demoni ei ole käynnissä."
+msgstr ""
 
 #: gnu/services/file-sharing.scm:766
 msgid "Share files using the BitTorrent protocol."
-msgstr "Jaa tiedostoja BitTorrent-protokollaa käyttäen."
+msgstr ""
 
 #: gnu/services/lightdm.scm:332
 #, scheme-format
@@ -977,7 +885,7 @@ msgstr ""
 
 #: gnu/services/networking.scm:339
 msgid "Add a list of known Facebook hosts to @file{/etc/hosts}"
-msgstr "Lisää luettelo tunnetuista Facebook-isännistä @file{/etc/hosts}:een"
+msgstr ""
 
 #: gnu/services/networking.scm:426
 #, scheme-format
@@ -1136,10 +1044,9 @@ msgid ""
 msgstr ""
 
 #: gnu/services/rsync.scm:63
-#, fuzzy, scheme-format
-#| msgid "the 'hosts-file' field is deprecated, please use 'hosts-service-type' instead~%"
+#, scheme-format
 msgid "the 'share-path' and 'share-comment' fields is deprecated, please use 'modules' instead~%"
-msgstr "\"hosts-file\"-kenttä on vanhentunut, käytä sen sijaan \"hosts-service-type\" ~%"
+msgstr ""
 
 #: gnu/services/rsync.scm:315
 msgid ""
@@ -1158,7 +1065,7 @@ msgstr ""
 
 #: gnu/services/samba.scm:266
 msgid "Web Service Discovery Daemon"
-msgstr "Verkkopalvelun etsintädemoni"
+msgstr ""
 
 #: gnu/services/security.scm:109
 #, scheme-format
@@ -1392,9 +1299,9 @@ msgid "Set the environment variables."
 msgstr ""
 
 #: gnu/home/services.scm:338
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "duplicate '~a' entry for files/"
-msgstr "kaksoiskappale \"~a\" tiedostoille/"
+msgstr ""
 
 #: gnu/home/services.scm:365
 #, scheme-format
@@ -1616,7 +1523,7 @@ msgstr ""
 #: gnu/home/services/ssh.scm:111
 #, scheme-format
 msgid "~s: invalid address family value"
-msgstr "~s: virheellinen osoitteen perhearvo"
+msgstr ""
 
 #: gnu/home/services/ssh.scm:292
 msgid "define either 'name' or 'match-criteria', not both"
@@ -1652,7 +1559,7 @@ msgstr ""
 #: gnu/home/services/symlink-manager.scm:140
 #: gnu/home/services/symlink-manager.scm:203
 msgid " done\n"
-msgstr " valmis\n"
+msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:124
 #, scheme-format
@@ -1698,7 +1605,7 @@ msgstr ""
 #: gnu/home/services/symlink-manager.scm:217
 #, scheme-format
 msgid "failed to create directory ~a: ~s~%"
-msgstr "hakemiston luonti epäonnistui ~a: ~s~%"
+msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:240
 msgid ""
@@ -1765,12 +1672,12 @@ msgstr ""
 #: gnu/system/image.scm:395
 #, scheme-format
 msgid "unsupported image type: ~a"
-msgstr "ei tuettu levykuvatyyppi: ~a"
+msgstr ""
 
 #: gnu/system/image.scm:414 gnu/system/image.scm:437
 #, scheme-format
 msgid "unsupported partition type: ~a"
-msgstr "ei tuettu osion tyyppi: ~a"
+msgstr ""
 
 #: gnu/system/image.scm:547
 msgid "EFI bootloader required with GPT partitioning"
@@ -1779,7 +1686,7 @@ msgstr ""
 #: gnu/system/image.scm:1051
 #, scheme-format
 msgid "~a: unsupported image format"
-msgstr "~a: levykuvaformaattia ei tueta"
+msgstr ""
 
 #: gnu/system/image.scm:1081
 #, scheme-format
@@ -1991,20 +1898,20 @@ msgstr ""
 #: gnu/image.scm:113
 #, scheme-format
 msgid "unsupported partition flag(s): ~a ~%"
-msgstr "ei-tuetut osion liput: ~a ~%"
+msgstr ""
 
 #: gnu/image.scm:152
 #, scheme-format
 msgid "~s: invalid '~a' value"
-msgstr "~s: epäkelvollinen '~a'-arvo"
+msgstr ""
 
 #: gnu/installer.scm:239
 msgid "Locale"
-msgstr "Maa-asetus"
+msgstr ""
 
 #: gnu/installer.scm:257 gnu/installer/newt/timezone.scm:58
 msgid "Timezone"
-msgstr "Aikavyöhyke"
+msgstr "Tamnaḍt tasragant"
 
 #: gnu/installer.scm:274
 msgid "Keyboard mapping selection"
@@ -2012,11 +1919,11 @@ msgstr ""
 
 #: gnu/installer.scm:285 gnu/installer/newt/hostname.scm:26
 msgid "Hostname"
-msgstr "Koneen nimi"
+msgstr ""
 
 #: gnu/installer.scm:294
 msgid "Network selection"
-msgstr "Verkon valinta"
+msgstr ""
 
 #: gnu/installer.scm:303 gnu/installer/newt/substitutes.scm:31
 msgid "Substitute server discovery"
@@ -2025,7 +1932,7 @@ msgstr ""
 #: gnu/installer.scm:312 gnu/installer/newt/user.scm:70
 #: gnu/installer/newt/user.scm:217
 msgid "User creation"
-msgstr "Käyttäjän luominen"
+msgstr ""
 
 #: gnu/installer.scm:321 gnu/installer/newt/kernel.scm:30
 msgid "Kernel"
@@ -2033,15 +1940,15 @@ msgstr ""
 
 #: gnu/installer.scm:332
 msgid "Services"
-msgstr "Palvelut"
+msgstr ""
 
 #: gnu/installer.scm:343
 msgid "Partitioning"
-msgstr "Osiointi"
+msgstr ""
 
 #: gnu/installer.scm:352 gnu/installer/newt/final.scm:54
 msgid "Configuration file"
-msgstr "Asetustiedosto"
+msgstr ""
 
 #: gnu/installer.scm:366
 #, scheme-format
@@ -2061,7 +1968,7 @@ msgstr ""
 #: gnu/installer/hardware.scm:88
 #, scheme-format
 msgid "~a ~a (networking device)"
-msgstr "~a ~a (verkkolaite)"
+msgstr ""
 
 #: gnu/installer/kernel.scm:32
 msgid ";; \"noide\" disables the gnumach IDE driver, enabling rumpdisk.\n"
@@ -2096,7 +2003,7 @@ msgstr ""
 #: gnu/installer/newt/timezone.scm:63 gnu/installer/newt/user.scm:216
 #: gnu/installer/newt/wifi.scm:206
 msgid "Exit"
-msgstr "Lopeta"
+msgstr ""
 
 #: gnu/installer/newt.scm:87
 #, scheme-format
@@ -2128,12 +2035,12 @@ msgstr ""
 #: gnu/installer/newt.scm:136
 #, scheme-format
 msgid "External command ~s terminated by signal ~a"
-msgstr "Ulkoinen komento ~s pysäytetty signaalilla ~a"
+msgstr ""
 
 #: gnu/installer/newt.scm:139
 #, scheme-format
 msgid "External command ~s stopped by signal ~a"
-msgstr "Ulkoinen komento ~s pysäytetty signaalilla ~a"
+msgstr ""
 
 #: gnu/installer/newt.scm:141
 msgid "External command error"
@@ -2162,12 +2069,12 @@ msgstr ""
 
 #: gnu/installer/newt/final.scm:69
 msgid "Installation complete"
-msgstr "Asennus valmistui"
+msgstr ""
 
 #: gnu/installer/newt/final.scm:70 gnu/installer/newt/parameters.scm:44
 #: gnu/installer/newt/welcome.scm:197
 msgid "Reboot"
-msgstr "Käynnistä uudelleen"
+msgstr ""
 
 #: gnu/installer/newt/final.scm:71
 msgid "Congratulations!  Installation is now complete.  You may remove the device containing the installation image and press the button to reboot."
@@ -2175,11 +2082,11 @@ msgstr ""
 
 #: gnu/installer/newt/final.scm:85
 msgid "Installation failed"
-msgstr "Asennus epäonnistui"
+msgstr ""
 
 #: gnu/installer/newt/final.scm:86
 msgid "Resume"
-msgstr "Jatka"
+msgstr ""
 
 #: gnu/installer/newt/final.scm:87
 msgid "Restart the installer"
@@ -2222,7 +2129,7 @@ msgstr ""
 #: gnu/installer/newt/locale.scm:78 gnu/installer/newt/locale.scm:92
 #: gnu/installer/newt/partition.scm:613 gnu/installer/newt/timezone.scm:64
 msgid "Back"
-msgstr "Takaisin"
+msgstr ""
 
 #: gnu/installer/newt/hostname.scm:25
 msgid "Please enter the system hostname."
@@ -2236,7 +2143,7 @@ msgstr ""
 
 #: gnu/installer/newt/keymap.scm:38
 msgid "Layout"
-msgstr "Asettelu"
+msgstr ""
 
 #: gnu/installer/newt/keymap.scm:43
 msgid "Please choose your keyboard layout. It will only be used during the installation process. Non-Latin layouts can be toggled with Alt+Shift."
@@ -2249,7 +2156,7 @@ msgstr ""
 #: gnu/installer/newt/keymap.scm:55 gnu/installer/newt/network.scm:64
 #: gnu/installer/newt/page.scm:315 gnu/installer/newt/welcome.scm:164
 msgid "Continue"
-msgstr "Jatka"
+msgstr ""
 
 #: gnu/installer/newt/keymap.scm:65
 msgid "Variant"
@@ -2346,7 +2253,7 @@ msgstr ""
 
 #: gnu/installer/newt/network.scm:155 gnu/installer/newt/wifi.scm:108
 msgid "Connection error"
-msgstr "Yhteysvirhe"
+msgstr ""
 
 #: gnu/installer/newt/page.scm:205
 #, scheme-format
@@ -2359,7 +2266,7 @@ msgstr ""
 
 #: gnu/installer/newt/page.scm:225 gnu/installer/newt/user.scm:62
 msgid "Show"
-msgstr "Näytä"
+msgstr ""
 
 #: gnu/installer/newt/page.scm:232 gnu/installer/newt/page.scm:679
 #: gnu/installer/newt/page.scm:763 gnu/installer/newt/partition.scm:476
@@ -2367,7 +2274,7 @@ msgstr "Näytä"
 #: gnu/installer/newt/partition.scm:717 gnu/installer/newt/user.scm:68
 #: gnu/installer/newt/user.scm:215
 msgid "OK"
-msgstr "Hyvä on"
+msgstr ""
 
 #: gnu/installer/newt/page.scm:258
 msgid "Please enter a non empty input."
@@ -2379,11 +2286,11 @@ msgstr ""
 
 #: gnu/installer/newt/page.scm:766
 msgid "Edit"
-msgstr "Muokkaa"
+msgstr ""
 
 #: gnu/installer/newt/page.scm:826
 msgid "Ok"
-msgstr "Hyvä on"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:47
 msgid "Everything is one partition"
@@ -2426,7 +2333,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:88
 msgid "Disk"
-msgstr "Levy"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:102
 #, scheme-format
@@ -2439,7 +2346,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:117
 msgid "Partition table"
-msgstr "Osiotaulukko"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:137
 msgid "Please select a partition type."
@@ -2447,7 +2354,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:138
 msgid "Partition type"
-msgstr "Osion tyyppi"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:148
 msgid "Please select the file-system type for this partition."
@@ -2455,7 +2362,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:149
 msgid "File-system type"
-msgstr "Tiedostojärjestelmän tyyppi"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:168
 msgid "Primary partitions count exceeded."
@@ -2481,7 +2388,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:194 gnu/installer/newt/wifi.scm:92
 msgid "Password required"
-msgstr "Salasana vaaditaan"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:199
 #, scheme-format
@@ -2506,7 +2413,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:301
 msgid "Partition name"
-msgstr "Osion nimi"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:331
 msgid "Please enter the encrypted label"
@@ -2608,7 +2515,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:709
 msgid "Manual partitioning"
-msgstr "Manuaalinen osiointi"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:734
 msgid "No root mount point found."
@@ -2637,7 +2544,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:779
 msgid "Manual"
-msgstr "Käsikirja"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:781
 msgid "Please select a partitioning method."
@@ -2657,7 +2564,7 @@ msgstr ""
 
 #: gnu/installer/newt/services.scm:44
 msgid "Desktop environment"
-msgstr "Työpöytäympäristö"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:59
 msgid "You can now select networking services to run on your system."
@@ -2665,7 +2572,7 @@ msgstr ""
 
 #: gnu/installer/newt/services.scm:61
 msgid "Network service"
-msgstr "Verkkopalvelut"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:77
 msgid "You can now select the CUPS printing service to run on your system."
@@ -2677,7 +2584,7 @@ msgstr ""
 
 #: gnu/installer/newt/services.scm:96
 msgid "Console services"
-msgstr "Konsolipalvelut"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:97
 msgid "Select miscellaneous services to run on your non-graphical system."
@@ -2696,11 +2603,11 @@ msgstr ""
 
 #: gnu/installer/newt/substitutes.scm:32
 msgid "Enable"
-msgstr "Ota käyttöön"
+msgstr ""
 
 #: gnu/installer/newt/substitutes.scm:32
 msgid "Disable"
-msgstr "Poista käytöstä"
+msgstr ""
 
 #: gnu/installer/newt/substitutes.scm:33
 msgid ""
@@ -2715,19 +2622,19 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:47
 msgid "Name"
-msgstr "Nimi"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:49
 msgid "Real name"
-msgstr "Oikea nimi"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:51
 msgid "Home directory"
-msgstr "Kotihakemisto"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:53
 msgid "Password"
-msgstr "Salasana"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:124
 msgid "Empty inputs are not allowed."
@@ -2739,7 +2646,7 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:129
 msgid "Root account"
-msgstr "Root-tili"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:171
 msgid "Please confirm the password."
@@ -2761,11 +2668,11 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:206
 msgid "Add"
-msgstr "Lisää"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:207
 msgid "Delete"
-msgstr "Poista"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:267
 msgid "Please create at least one user."
@@ -2804,7 +2711,7 @@ msgstr ""
 
 #: gnu/installer/newt/welcome.scm:163
 msgid "Previous installation failed"
-msgstr "Edellinen asennus epäonnistui"
+msgstr ""
 
 #: gnu/installer/newt/welcome.scm:166
 msgid "It seems that the previous installation exited unexpectedly and generated a core dump.  Do you want to continue or to report the failure first?"
@@ -2884,7 +2791,7 @@ msgstr ""
 
 #: gnu/installer/parted.scm:512 gnu/installer/parted.scm:549
 msgid "Free space"
-msgstr "Vapaa tila"
+msgstr ""
 
 #: gnu/installer/parted.scm:638
 #, scheme-format
@@ -2894,7 +2801,7 @@ msgstr ""
 #: gnu/installer/parted.scm:639 gnu/installer/parted.scm:685
 #: gnu/installer/services.scm:62
 msgid "None"
-msgstr "Ei mitään"
+msgstr ""
 
 #: gnu/installer/parted.scm:644
 #, scheme-format
@@ -2984,7 +2891,7 @@ msgstr ""
 
 #: gnu/installer/services.scm:156
 msgid "Static networking service."
-msgstr "Staattinen verkkopalvelu."
+msgstr ""
 
 #: gnu/installer/services.scm:166
 msgid ";; Fill-in your IP.\n"
@@ -3085,10 +2992,8 @@ msgid "no signing key '~a'. Have you run 'guix archive --generate-key'?"
 msgstr ""
 
 #: gnu/machine/hetzner.scm:175
-#, fuzzy
-#| msgid "missing root file system"
 msgid "could not determine root file system type"
-msgstr "puuttuva juuritiedostojärjestelmä"
+msgstr ""
 
 #: gnu/machine/hetzner.scm:289
 msgid "Hetzner Cloud access token was not provided. This may be fixed by setting the environment variable GUIX_HETZNER_API_TOKEN to one procured from https://docs.hetzner.com/cloud/api/getting-started/generating-api-token"
@@ -3117,13 +3022,12 @@ msgstr ""
 #: gnu/machine/hetzner.scm:561
 #, scheme-format
 msgid "failed to run script '~a' on machine, exit code: '~a'"
-msgstr "komentosarjan '~a' suorittaminen koneella epäonnistui, poistumiskoodi: '~a'"
+msgstr ""
 
 #: gnu/machine/hetzner.scm:632
-#, fuzzy, scheme-format
-#| msgid "unsupported partition type: ~a"
+#, scheme-format
 msgid "unsupported root file system type '~a'"
-msgstr "ei tuettu osion tyyppi: ~a"
+msgstr ""
 
 #: gnu/machine/hetzner.scm:683
 #, scheme-format
@@ -3151,10 +3055,9 @@ msgid "expected at least one action id, but got '~a'"
 msgstr ""
 
 #: gnu/machine/hetzner/http.scm:584
-#, fuzzy, scheme-format
-#| msgid "service of type '~a' not found"
+#, scheme-format
 msgid "server action '~a' not found"
-msgstr "palvelua tyyppiä '~a' ei löydy"
+msgstr ""
 
 #: gnu/machine/hetzner/http.scm:588
 #, scheme-format
@@ -3169,7 +3072,7 @@ msgstr ""
 #: gnu/machine/ssh.scm:131
 #, scheme-format
 msgid "~a: unknown system type"
-msgstr "~a: tuntematon järjestelmätyyppi"
+msgstr ""
 
 #: gnu/machine/ssh.scm:137 guix/ui.scm:2299
 #, scheme-format
@@ -3301,7 +3204,7 @@ msgstr ""
 #: guix/scripts.scm:138
 #, scheme-format
 msgid "invalid argument: ~a~%"
-msgstr "virheellinen argumentti: ~a~%"
+msgstr ""
 
 #: guix/scripts.scm:170 guix/scripts/system.scm:1473
 #: guix/scripts/system/edit.scm:42 guix/scripts/home/edit.scm:43
@@ -3736,7 +3639,7 @@ msgstr ""
 #: gnu/bootloader.scm:122
 #, scheme-format
 msgid "invalid menu-entry: ~a"
-msgstr "epäkelvollinen valikkokohta: ~a"
+msgstr ""
 
 #: gnu/bootloader.scm:125
 msgid ""
@@ -3751,10 +3654,9 @@ msgid ""
 msgstr ""
 
 #: gnu/bootloader.scm:251
-#, fuzzy, scheme-format
-#| msgid "the 'hosts-file' field is deprecated, please use 'hosts-service-type' instead~%"
+#, scheme-format
 msgid "the 'target' field is deprecated, please use 'targets' instead~%"
-msgstr "\"hosts-file\"-kenttä on vanhentunut, käytä sen sijaan \"hosts-service-type\" ~%"
+msgstr ""
 
 #: gnu/bootloader.scm:327
 #, scheme-format
@@ -3778,7 +3680,7 @@ msgstr ""
 #: gnu/compression.scm:70
 #, scheme-format
 msgid "~a: compressor not found~%"
-msgstr "~a: kompressoria ei löydy~%"
+msgstr ""
 
 #: guix/ci.scm:343
 #, scheme-format
@@ -3803,11 +3705,11 @@ msgstr ""
 #. "~a" is a placeholder for that phrase.
 #: guix/diagnostics.scm:158
 msgid "warning: "
-msgstr "varoitus: "
+msgstr ""
 
 #: guix/diagnostics.scm:160
 msgid "error: "
-msgstr "virhe: "
+msgstr ""
 
 #: guix/diagnostics.scm:263
 msgid "<unknown location>"
@@ -3875,7 +3777,7 @@ msgstr ""
 #: guix/gnupg.scm:235
 #, scheme-format
 msgid "invalid key-download policy: ~a"
-msgstr "epäkelvollinen avainten latauskäytäntö: ~a"
+msgstr ""
 
 #: guix/gnupg.scm:258
 #, scheme-format
@@ -3885,7 +3787,7 @@ msgstr ""
 #: guix/graph.scm:381
 #, scheme-format
 msgid "~a: unknown graph backend"
-msgstr "~a: tuntematon graafinen taustaohjelma"
+msgstr ""
 
 #. TRANSLATORS: 'modify-phases' is a Scheme syntax
 #. and should not be translated.
@@ -3919,7 +3821,7 @@ msgstr ""
 
 #: guix/lint.scm:394
 msgid "description should not be empty"
-msgstr "Kuvaus ei saa olla tyhjä"
+msgstr ""
 
 #: guix/lint.scm:405
 msgid "Texinfo markup in description is invalid"
@@ -4177,7 +4079,7 @@ msgstr ""
 #: guix/lint.scm:1577
 #, scheme-format
 msgid "failed to get list of CVE vulnerabilities from '~a': ~a (~a)~%"
-msgstr "CVE-haavoittuvuuksien luettelon saaminen '~a':sta epäonnistui: ~a (~a)~%"
+msgstr ""
 
 #: guix/lint.scm:1628
 #, scheme-format
@@ -4738,7 +4640,7 @@ msgstr ""
 #: guix/scripts/package.scm:1045
 #, scheme-format
 msgid "nothing to do~%"
-msgstr "Ei mitään tehtävää~%"
+msgstr ""
 
 #: guix/scripts/package.scm:1067
 msgid "manage packages and profiles"
@@ -4753,7 +4655,7 @@ msgstr ""
 
 #: guix/scripts/install.scm:71
 msgid "install packages"
-msgstr "asenna paketteja"
+msgstr ""
 
 #: guix/scripts/remove.scm:30
 msgid ""
@@ -5030,10 +4932,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/git/authenticate.scm:192
-#, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
+#, scheme-format
 msgid "installed hooks '~a' and '~a'~%"
-msgstr "\"~a\":n lataaminen epäonnistui: ~a~%"
+msgstr ""
 
 #: guix/scripts/git/authenticate.scm:194
 #, scheme-format
@@ -5483,7 +5384,7 @@ msgstr ""
 #: guix/scripts/authenticate.scm:86
 #, scheme-format
 msgid "invalid signature: ~a"
-msgstr "virheellinen allekirjoitus: ~a"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:89
 #, scheme-format
@@ -6070,12 +5971,12 @@ msgstr ""
 
 #: guix/scripts/system/search.scm:107 guix/ui.scm:1630 guix/ui.scm:1648
 msgid "unknown"
-msgstr "tuntematon"
+msgstr ""
 
 #: guix/scripts/system/reconfigure.scm:260
 #, scheme-format
 msgid "failed to load operating system for kexec: ~a~%"
-msgstr "käyttöjärjestelmän lataaminen kexecille epäonnistui: ~a~%"
+msgstr ""
 
 #: guix/scripts/system/reconfigure.scm:378
 #, scheme-format
@@ -6181,10 +6082,8 @@ msgid "database size:\t~9h MiB~%"
 msgstr ""
 
 #: guix/scripts/locate.scm:389
-#, fuzzy
-#| msgid "install packages"
 msgid "indexing ~h packages"
-msgstr "asenna paketteja"
+msgstr ""
 
 #: guix/scripts/locate.scm:467
 #, scheme-format
@@ -6247,10 +6146,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/locate.scm:591 guix/scripts/locate.scm:646
-#, fuzzy, scheme-format
-#| msgid "~a: unknown styling~%"
+#, scheme-format
 msgid "~a: unknown indexing method~%"
-msgstr "~a: tuntematon muotoilu~%"
+msgstr ""
 
 #: guix/scripts/locate.scm:604
 msgid "search for packages providing a given file"
@@ -6444,7 +6342,7 @@ msgstr ""
 #: guix/scripts/edit.scm:98
 #, scheme-format
 msgid "failed to launch '~a': ~a~%"
-msgstr "\"~a\":n käynnistäminen epäonnistui: ~a~%"
+msgstr ""
 
 #: guix/scripts/edit.scm:104
 msgid "view and edit package definitions"
@@ -6466,7 +6364,7 @@ msgstr ""
 
 #: guix/scripts/size.scm:92
 msgid "total"
-msgstr "yhteensä"
+msgstr ""
 
 #: guix/scripts/size.scm:92
 msgid "self"
@@ -6660,7 +6558,7 @@ msgstr[1] ""
 #: guix/scripts/challenge.scm:325
 #, scheme-format
 msgid "failed to delete '~a': ~a~%"
-msgstr "\"~a\":n poistaminen epäonnistui: ~a~%"
+msgstr ""
 
 #: guix/scripts/challenge.scm:406
 #, scheme-format
@@ -7089,10 +6987,9 @@ msgid "computing ~h package derivations for ~a...~%"
 msgstr ""
 
 #: guix/scripts/weather.scm:182
-#, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
+#, scheme-format
 msgid "could not read '~a': ~a~%"
-msgstr "\"~a\":n lataaminen epäonnistui: ~a~%"
+msgstr ""
 
 #: guix/scripts/weather.scm:184
 #, scheme-format
@@ -7456,10 +7353,9 @@ msgid "successfully deployed ~a~%"
 msgstr ""
 
 #: guix/scripts/deploy.scm:210 guix/scripts/deploy.scm:214
-#, fuzzy, scheme-format
-#| msgid "failed to launch '~a': ~a~%"
+#, scheme-format
 msgid "failed to roll back ~a: ~a~%"
-msgstr "\"~a\":n käynnistäminen epäonnistui: ~a~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:222
 #, scheme-format
@@ -7530,7 +7426,7 @@ msgstr[1] ""
 #: guix/gnu-maintenance.scm:527
 #, scheme-format
 msgid "failed to download '~a': ~a (~a)~%"
-msgstr "'~a':n lataaminen epäonnistui: ~a (~a)~%"
+msgstr ""
 
 #: guix/gnu-maintenance.scm:910
 msgid "Updating to a specific version is not yet implemented for SourceForge."
@@ -7611,7 +7507,7 @@ msgstr ""
 #: guix/scripts/container/exec.scm:90
 #, scheme-format
 msgid "no command specified~%"
-msgstr "ei komentoa määritetty~%"
+msgstr ""
 
 #: guix/scripts/container/exec.scm:93
 #, scheme-format
@@ -7621,17 +7517,17 @@ msgstr ""
 #: guix/scripts/container/exec.scm:108 guix/scripts/home.scm:467
 #, scheme-format
 msgid "process terminated with signal ~a~%"
-msgstr "prosessi päättyi signaalilla ~a~%"
+msgstr ""
 
 #: guix/scripts/container/exec.scm:110 guix/scripts/home.scm:469
 #, scheme-format
 msgid "process stopped with signal ~a~%"
-msgstr "prosessi pysäytetty signaalilla ~a~%"
+msgstr ""
 
 #: guix/scripts/container/exec.scm:113
 #, scheme-format
 msgid "process exited with status ~d~%"
-msgstr "prosessi lopetettiin tilatiedolla ~d~%"
+msgstr ""
 
 #: guix/transformations.scm:167
 #, scheme-format
@@ -7886,7 +7782,7 @@ msgstr ""
 #: guix/upstream.scm:569
 #, scheme-format
 msgid "updater failed to find release ~a@~a~%"
-msgstr "päivitys ei löytänyt julkaisua ~a@~a~%"
+msgstr ""
 
 #: guix/upstream.scm:571
 #, scheme-format
@@ -7958,7 +7854,7 @@ msgstr ""
 #: guix/ui.scm:408 guix/ui.scm:459 guix/ui.scm:467 guix/ui.scm:471
 #, scheme-format
 msgid "failed to load '~a': ~a~%"
-msgstr "\"~a\":n lataaminen epäonnistui: ~a~%"
+msgstr ""
 
 #: guix/ui.scm:417
 #, scheme-format
@@ -7989,7 +7885,7 @@ msgstr ""
 #: guix/ui.scm:443 guix/ui.scm:481
 #, scheme-format
 msgid "failed to load '~a':~%"
-msgstr "\"~a\":n lataaminen epäonnistui: ~%"
+msgstr ""
 
 #: guix/ui.scm:478
 #, scheme-format
@@ -8382,7 +8278,7 @@ msgstr ""
 
 #: guix/ui.scm:1575
 msgid "documentation"
-msgstr "documentation"
+msgstr ""
 
 #: guix/ui.scm:1576
 msgid "shared libraries"
@@ -8402,7 +8298,7 @@ msgstr ""
 
 #: guix/ui.scm:1614
 msgid "everything"
-msgstr "kaikki"
+msgstr ""
 
 #: guix/ui.scm:1998
 #, scheme-format
@@ -8674,7 +8570,7 @@ msgstr ""
 
 #: guix/nar.scm:182
 msgid "invalid signature"
-msgstr "virheellinen allekirjoitus"
+msgstr ""
 
 #: guix/nar.scm:186
 msgid "invalid hash"
@@ -8983,10 +8879,9 @@ msgid "indexing objects"
 msgstr ""
 
 #: guix/git.scm:190
-#, fuzzy, scheme-format
-#| msgid "ignoring network route for '~a'~%"
+#, scheme-format
 msgid "ignoring invalid certificate for '~a'~%"
-msgstr "jätetään huomioimatta verkkoreitti kohteelle '~a'~%"
+msgstr ""
 
 #: guix/git.scm:381
 #, scheme-format
@@ -9675,7 +9570,7 @@ msgstr ""
 #: guix/scripts/style.scm:441
 #, scheme-format
 msgid "unsupported argument style; bailing out~%"
-msgstr "ei-tuettu argumentointityyli; pelastaminen~%"
+msgstr ""
 
 #: guix/scripts/style.scm:447
 #, scheme-format
@@ -9690,7 +9585,7 @@ msgstr ""
 #: guix/scripts/style.scm:590
 #, scheme-format
 msgid "~a: unknown styling~%"
-msgstr "~a: tuntematon muotoilu~%"
+msgstr ""
 
 #: guix/scripts/style.scm:597
 #, scheme-format
@@ -9699,7 +9594,7 @@ msgstr ""
 
 #: guix/scripts/style.scm:615
 msgid "Available styling rules:\n"
-msgstr "Saatavilla olevat muotoilusäännöt:\n"
+msgstr ""
 
 #: guix/scripts/style.scm:616
 msgid "- format: Format the given package definition(s)\n"
@@ -9768,10 +9663,9 @@ msgid "'--styling' option has no effect in whole-file mode~%"
 msgstr ""
 
 #: guix/scripts/style.scm:686
-#, fuzzy, scheme-format
-#| msgid "nothing to do~%"
+#, scheme-format
 msgid "no files specified, nothing to do~%"
-msgstr "Ei mitään tehtävää~%"
+msgstr ""
 
 #: guix/scripts/home/import.scm:177
 #, scheme-format
@@ -9996,10 +9890,9 @@ msgid "This package lacks a synopsis.  Run \"info '(guix) Synopses and Descripti
 msgstr ""
 
 #: guix/import/composer.scm:262 guix/import/stackage.scm:158
-#, fuzzy, scheme-format
-#| msgid "failed to load '~a':~%"
+#, scheme-format
 msgid "failed to parse ~a~%"
-msgstr "\"~a\":n lataaminen epäonnistui: ~%"
+msgstr ""
 
 #: guix/import/composer.scm:268
 msgid "Updater for Composer packages"
@@ -10035,7 +9928,7 @@ msgstr ""
 #: guix/scripts/import/stackage.scm:130 guix/scripts/import/texlive.scm:101
 #, scheme-format
 msgid "too few arguments~%"
-msgstr "Liian vähän argumentteja~%"
+msgstr ""
 
 #: guix/scripts/import/cpan.scm:103 guix/scripts/import/cran.scm:137
 #: guix/scripts/import/crate.scm:134 guix/scripts/import/egg.scm:108
@@ -10048,7 +9941,7 @@ msgstr "Liian vähän argumentteja~%"
 #: guix/scripts/import/texlive.scm:103
 #, scheme-format
 msgid "too many arguments~%"
-msgstr "Liian monta argumenttia~%"
+msgstr ""
 
 #: guix/import/cpan.scm:336 guix/import/elpa.scm:433
 #: guix/import/minetest.scm:498 guix/import/opam.scm:425
@@ -10171,10 +10064,9 @@ msgid "~A: using existing version ~a, which was yanked~%"
 msgstr ""
 
 #: guix/import/crate.scm:397
-#, fuzzy, scheme-format
-#| msgid "~A: package not found for version ~a~%"
+#, scheme-format
 msgid "~A: no version found for requirement ~a~%"
-msgstr "~A: pakettia ei löydy versiolle ~a~%"
+msgstr ""
 
 #: guix/import/crate.scm:399
 #, scheme-format
@@ -10184,7 +10076,7 @@ msgstr ""
 #: guix/import/crate.scm:409
 #, scheme-format
 msgid "~A: version ~a not found~%"
-msgstr "~A: versiota ~a ei löydy~%"
+msgstr ""
 
 #: guix/import/crate.scm:528
 msgid "Updater for crates.io packages"
@@ -10326,7 +10218,7 @@ msgstr ""
 #: guix/import/gnome.scm:96
 #, scheme-format
 msgid "failed to download from '~a': ~a (~s)~%"
-msgstr "lataaminen '~a':sta epäonnistui: ~a (~s)~%"
+msgstr ""
 
 #: guix/import/gnome.scm:135
 msgid "Updater for GNOME packages"
@@ -10421,7 +10313,7 @@ msgstr ""
 #: guix/import/go.scm:573
 #, scheme-format
 msgid "failed to check out ~s from Git repository at '~a': ~a~%"
-msgstr "~s:n tarkastaminen Git-tietovarastosta '~a':ssa epäonnistui: ~a~%"
+msgstr ""
 
 #: guix/import/go.scm:635
 #, scheme-format
@@ -10761,10 +10653,9 @@ msgid "LTS release version not found: ~a"
 msgstr ""
 
 #: guix/import/stackage.scm:126
-#, fuzzy, scheme-format
-#| msgid "~a: patch not found"
+#, scheme-format
 msgid "~a: Stackage package not found"
-msgstr "~a: korjausta ei löydy"
+msgstr ""
 
 #: guix/import/stackage.scm:185
 msgid "Updater for Stackage LTS packages"
@@ -10779,7 +10670,7 @@ msgstr ""
 #: guix/import/texlive.scm:250
 #, scheme-format
 msgid "failed to run command: '~a'"
-msgstr "komennon suorittaminen epäonnistui: '~a'"
+msgstr ""
 
 #: guix/import/texlive.scm:812
 msgid "Updater for TeX Live packages"
@@ -10969,7 +10860,7 @@ msgstr ""
 #: guix/scripts/perform-download.scm:168
 #, scheme-format
 msgid "~a: unknown builtin builder"
-msgstr "~a: tuntematon sisäänrakennettu rakentaja"
+msgstr ""
 
 #: guix/scripts/perform-download.scm:174
 #, scheme-format
@@ -10982,10 +10873,9 @@ msgid "fixed-output derivation and output file name expected~%"
 msgstr ""
 
 #: guix/scripts/refresh.scm:90
-#, fuzzy, scheme-format
-#| msgid "invalid argument: ~a~%"
+#, scheme-format
 msgid "invalid module: ~a~%"
-msgstr "virheellinen argumentti: ~a~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:93
 #, scheme-format
@@ -11100,7 +10990,7 @@ msgstr ""
 #: guix/scripts/refresh.scm:341
 #, scheme-format
 msgid "Available updaters:~%"
-msgstr "Saatavilla olevat päivitykset:~%"
+msgstr ""
 
 #. TRANSLATORS: The parenthetical expression here is rendered
 #. like "(42% coverage)" and denotes the fraction of packages
@@ -11275,7 +11165,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:96
 msgid "SYSTEM"
-msgstr "JÄRJESTELMÄ"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:97
 msgid "assume SYSTEM as the current system type"
@@ -11283,7 +11173,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:98 nix/nix-daemon/guix-daemon.cc:101
 msgid "N"
-msgstr "N"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:99
 msgid "use N CPU cores to build each derivation; 0 means as many as available"
@@ -11311,7 +11201,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:109
 msgid "DIR"
-msgstr "HAKEMISTO"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:110
 msgid "add DIR to the build chroot"
@@ -11398,28 +11288,3 @@ msgid "socket-activated with %1% socket"
 msgid_plural "socket-activated with %1% sockets"
 msgstr[0] ""
 msgstr[1] ""
-
-#, scheme-format
-#~ msgid "Wait period expired; killing transmission-daemon (pid ~a).~%"
-#~ msgstr "Odotusaika umpeutunut; siirto-demonin tappaminen (pid ~a).~%"
-
-#~ msgid ""
-#~ "(If you see this message regularly, you may need to increase the value\n"
-#~ "of 'stop-wait-period' in the service configuration.)\n"
-#~ msgstr ""
-#~ "(Jos näet tämän viestin säännöllisesti, saatat joutua korostamaan\n"
-#~ "'stop-wait-period' -arvoa palvelun kokoonpanossa.)\n"
-
-#, scheme-format
-#~ msgid "representing setuid programs with file-like objects is deprecated; use 'setuid-program' instead~%"
-#~ msgstr "setuid-ohjelmien esittäminen tiedostomaisilla objekteilla on vanhentunutta; käytä sen sijaan 'setuid-program'~%"
-
-#, scheme-format
-#~ msgid "~a may need to be run~%"
-#~ msgstr "~a saattaa olla tarpeen suorittaa~%"
-
-#~ msgid "unsupported source type"
-#~ msgstr "lähdetyyppi ei tuettu"
-
-#~ msgid "Please select a disk."
-#~ msgstr "Valitse levyasema."

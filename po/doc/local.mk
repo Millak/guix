@@ -29,6 +29,7 @@ DOC_PO_FILES =					\
 
 DOC_COOKBOOK_PO_FILES =				\
   %D%/guix-cookbook.de.po			\
+  %D%/guix-cookbook.es.po			\
   %D%/guix-cookbook.fr.po			\
   %D%/guix-cookbook.ko.po			\
   %D%/guix-cookbook.pt_BR.po			\
