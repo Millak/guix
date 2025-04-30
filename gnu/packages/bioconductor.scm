@@ -2561,14 +2561,14 @@ downloaded from Encode.")
 (define-public r-golubesets
   (package
     (name "r-golubesets")
-    (version "1.49.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "golubEsets" version
                               'experiment))
        (sha256
-        (base32 "0mchxhzaymrhvgim2ghanq6s29366pi5aljszwa1lkkkky0vpwip"))))
+        (base32 "1qgh3c3yq7f8nqqgwzgykcl3qxjjb9xfgybq55hqqa8s3125nxgs"))))
     (properties `((upstream-name . "golubEsets")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase))
