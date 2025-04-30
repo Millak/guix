@@ -4,6 +4,7 @@
 ;;; Copyright © 2017, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
+;;; Copyright © 2025 Lee Thompson <lee.p.thomp@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,10 +23,12 @@
 
 (define-module (gnu packages apl)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix build-system font)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages bash)
@@ -123,6 +126,26 @@ single line drawing characters, as well as the full Unicode APL range,
 including both uppercase and lowercase underscored alphabets, as-of-yet unused
 symbols, and almost all Latin-1 accented letters.")
       (license license:unlicense))))
+
+(define-public font-apl385
+  (package
+    (name "font-apl385")
+    ;; No version number or release, unzipping source and checking file times
+    ;; shows the font file was last modified on 2016-08-21.
+    (version "20160821")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://apl385.com/fonts/" "apl385.zip"))
+       (sha256
+        (base32 "132qfsnx0v6qf8x8iy3flivv449nz42nnpkwjysmz65w6wqxpk1g"))))
+    (build-system font-build-system)
+    (home-page "https://apl385.com/fonts/index.htm")
+    (synopsis "Monospaced APL font inspired by Comic Sans Serif")
+    (description
+     "Adrian Smith's monospaced APL font developed with APL software vendors
+in the late 1980s.")
+    (license license:public-domain)))
 
 (define-public dzaima-apl
   (package
