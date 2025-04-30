@@ -768,6 +768,7 @@ the OpenCV-Python library.")
            (list glib "bin")
            hdf5
            imagemagick
+           imath
            lcms
            libexif
            libgsf
@@ -779,7 +780,7 @@ the OpenCV-Python library.")
            libwebp
            matio
            niftilib
-           openexr-2
+           openexr
            orc
            pango
            poppler))
