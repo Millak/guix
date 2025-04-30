@@ -2513,13 +2513,13 @@ as three @code{GatingSets} for testing the @code{flowWorkspace},
 (define-public r-genelendatabase
   (package
     (name "r-genelendatabase")
-    (version "1.43.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "geneLenDataBase" version 'experiment))
        (sha256
-        (base32 "08k6mh6w8f3vj0x0f94dqq4lqjxn7rcysh9c5bwmxm8ihmypbkia"))))
+        (base32 "0chmz1xl08cf9gvr8shk3jx8xaw4iqw53p0l2bblii7qlrxkympa"))))
     (properties
      `((upstream-name . "geneLenDataBase")))
     (build-system r-build-system)
