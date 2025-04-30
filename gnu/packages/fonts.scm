@@ -929,6 +929,43 @@ OpenType/CFF Collection (OTC), it includes 70 font instances covering seven
 weights, five languages, and two styles.")
     (license license:silofl1.1)))
 
+(define-public font-adobe-source-han-code-jp
+  (package
+    (name "font-adobe-source-han-code-jp")
+    (version "2.012")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/adobe-fonts/source-han-code-jp")
+             (commit (string-append version "R"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "090q34h01ij77c7n9i6sbyfkyzdg90cwfy83z0ixc4wsy3bvycwn"))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Install Only OTC (OpenType Collection), which contains all variations
+          ;; within a single file.
+          (add-before 'install 'chdir
+            (lambda _
+              (chdir "OTC")))
+          (add-after 'install 'chdir-back
+            (lambda _
+              (chdir ".."))))))
+    (home-page
+     "https://ccjktype.fonts.adobe.com/2015/06/source-han-code-jp.html")
+    (synopsis "Monospaced font for mixed Latin and Japanese text")
+    (description "This package provides Source Han Code JP, a derivative of
+Source Han Sans that replaces its proportional Latin glyphs with fixed-width
+667-unit glyphs from Source Code Pro.  The Latin glyphs are scaled to match the
+Japanese kana and kanji, making the font suitable for use in programming,
+terminal applications, and user interfaces that involve both Latin and Japanese
+text.")
+    (license license:silofl1.1)))
+
 (define-public font-cns11643
   ;; Since upstream doesn't provide any version numbers, the date of the last
   ;; edit is used, taken from https://data.gov.tw/dataset/5961
