@@ -2108,7 +2108,7 @@ Swath).")
 (define-public hdf5-blosc
   (package
     (name "hdf5-blosc")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -2117,7 +2117,7 @@ Swath).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nj2bm1v6ymm3fmyvhbn6ih5fgdiapavlfghh1pvbmhw71cysyqs"))))
+        (base32 "0kq09w2mz8i735p3zfnsdqdvay0086ls0cb621ckfxq42pr3gkm4"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
