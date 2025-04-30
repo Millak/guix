@@ -1973,33 +1973,24 @@ extremely large and complex data collections.")
     (license (license:x11-style
               "https://support.hdfgroup.org/ftp/HDF5/releases/COPYING.html"))))
 
-;; Keep this in sync with the current hdf5 package.
-(define-public hdf-java
+(define-public hdf5-java
   (package
-    (name "hdf-java")
-    (version "1.14.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/HDFGroup/hdf5")
-             (commit (string-append "hdf5-"
-                                    (string-map
-                                     (lambda (c) (if (char=? c #\.) #\_ c))
-                                     version)))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0lw9f62zxyjiv7vx9nvnashjj39i44j8d626i7b788zkxw58csvs"))
-       (modules '((guix build utils)))
-       (snippet     ; Make sure we don't use the bundled sources and binaries.
-        '(for-each delete-file
-                   (find-files "java/lib" "\\.jar$")))))
-    (build-system gnu-build-system)
+    (name "hdf5-java")
+    (version (package-version hdf5))
+    (source (package-source hdf5))
+    (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list "--enable-java"
-              "--disable-tools")
+      #~(list "-DHDF5_BUILD_JAVA=ON"
+              "-DHDF5_BUILD_TOOLS=OFF")
+      #:modules
+      '((guix build cmake-build-system)
+        ((guix build ant-build-system) #:prefix ant:)
+        (guix build utils))
+      #:imported-modules
+      `((guix build ant-build-system)
+        ,@%cmake-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'unbundle
@@ -2010,27 +2001,35 @@ extremely large and complex data collections.")
                     (api
                      (search-input-file
                       inputs "/lib/m2/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar"))
+                    (nop
+                     (search-input-file
+                      inputs "/lib/m2/org/slf4j/slf4j-nop/1.7.25/slf4j-nop-1.7.25.jar"))
                     (junit
                      (search-input-file
                       inputs "/lib/m2/junit/junit/4.12/junit-4.12.jar"))
                     (hamcrest
                      (search-input-file
                       inputs "/lib/m2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar")))
-                (substitute* (append (find-files "java" "Makefile.am")
-                                     (find-files "java" "Makefile.in"))
-                  (("\\$\\(top_srcdir\\)/java/lib/ext/slf4j-simple-2.0.6.jar")
-                   simple)
-                  (("\\$\\(top_srcdir\\)/java/lib/slf4j-api-2.0.6.jar")
-                   api)
-                  (("\\$\\(top_srcdir\\)/java/lib/junit.jar")
+                (substitute* "CMakeLists.txt"
+                  (("(set *\\(HDF5_JAVA_LOGGING_JAR ).*" _ orig)
+                   (string-append orig api ")\n"))
+                  (("(set *\\(HDF5_JAVA_LOGGING_NOP_JAR ).*" _ orig)
+                   (string-append orig nop ")\n"))
+                  (("(set *\\(HDF5_JAVA_LOGGING_SIMPLE_JAR ).*" _ orig)
+                   (string-append orig simple ")\n")))
+                ;; Do not install copies of external libraries
+                (substitute* "java/CMakeLists.txt"
+                  ((".*HDF5_JAVA_LOGGING.*_JAR.*") ""))
+                (substitute* "java/test/CMakeLists.txt"
+                  (("\\$\\{HDF5_JAVA_LIB_DIR\\}/junit\\.jar")
                    junit)
-                  (("\\$\\(top_srcdir\\)/java/lib/hamcrest-core.jar")
+                  (("\\$\\{HDF5_JAVA_LIB_DIR\\}/hamcrest-core\\.jar")
                    hamcrest))
                 (substitute* '("java/test/junit.sh.in"
-                               "java/examples/datatypes/JavaDatatypeExample.sh.in"
-                               "java/examples/datasets/JavaDatasetExample.sh.in"
-                               "java/examples/intro/JavaIntroExample.sh.in"
-                               "java/examples/groups/JavaGroupExample.sh.in")
+                               "HDF5Examples/JAVA/H5D/JavaDatasetExample.sh.in"
+                               "HDF5Examples/JAVA/H5G/JavaGroupExample.sh.in"
+                               "HDF5Examples/JAVA/H5T/JavaDatatypeExample.sh.in"
+                               "HDF5Examples/JAVA/TUTR/runExample.sh.in")
                   (("^LIST_JAR_TESTFILES=\"" m)
                    (string-append m hamcrest "\n"
                                   junit "\n"
@@ -2050,30 +2049,44 @@ extremely large and complex data collections.")
                   (("/usr/bin/uname")
                    (search-input-file inputs "/bin/uname")))
                 (substitute* (find-files "java/test/testfiles/" ".*\\.txt$")
-                  (("JUnit version 4.11")
-                   "JUnit version 4.12-SNAPSHOT"))))))))
+                  (("JUnit version 4.13.2")
+                   "JUnit version 4.12-SNAPSHOT")))))
+          (add-after 'unpack 'patch-trace-shebang
+            (lambda _
+              (for-each patch-shebang
+                        (find-files "bin" (lambda (file stat)
+                                            (executable-file? file))))))
+          (add-after 'unpack 'generate-flexbison
+            (lambda _
+              (invoke "bash" "bin/genparser" "hl/src")))
+          (add-after 'unpack 'generate-headers
+            (lambda _
+              (invoke "perl" "bin/make_err" "src/H5err.txt")
+              (invoke "perl" "bin/make_vers" "src/H5vers.txt")
+              (invoke "perl" "bin/make_overflow" "src/H5overflow.txt")))
+          (add-after 'install 'strip-jar-timestamps
+            (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
     (native-inputs
-     (list `(,icedtea "jdk")
-           ;; For tests:
-           java-hamcrest-core
-           java-junit
-           java-slf4j-simple))
+     (modify-inputs (package-native-inputs hdf5)
+       (prepend `(,icedtea "jdk"))
+       (prepend java-hamcrest-core)
+       (prepend java-junit)
+       (prepend java-slf4j-nop)
+       (prepend java-slf4j-simple)
+       (prepend (@ (gnu packages compression) zip))
+       (delete "gfortran")))
     (inputs
-     (list hdf4
-           hdf5
-           java-slf4j-api
+     (list java-slf4j-api
            libjpeg-turbo
            zlib))
     (home-page "https://www.hdfgroup.org")
-    (synopsis "Java interface for the HDF4 and HDF5 libraries")
-    (description "Java HDF Interface (JHI) and Java HDF5 Interface (JHI5) use
-the Java Native Interface to wrap the HDF4 and HDF5 libraries, which are
-implemented in C.")
+    (synopsis "Java interface for the HDF5 library")
+    (description "The Java HDF5 Interface (JHI5) uses the Java Native
+Interface to wrap the HDF5 library, which is implemented in C.")
+    (license (package-license hdf5))))
 
-    ;; BSD-style license:
-    (license (license:x11-style
-              "https://support.hdfgroup.org/ftp/HDF5/hdf-java\
-/current/src/unpacked/COPYING.html"))))
+(define-public hdf-java
+  (deprecated-package "hdf-java" hdf5-java))
 
 (define-public hdf-eos2
   (package
