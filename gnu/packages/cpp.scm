@@ -1279,7 +1279,7 @@ intuitive syntax and trivial integration.")
                   ;; NOTE: remove strict versioning.
                   (substitute* "styles.tex"
                     (("lst@CheckVersion\\{1.6\\}")
-                     "lst@CheckVersion{1.10}"))
+                     "lst@CheckVersion{1.10c}"))
                   (invoke "pdflatex" "std")
                   (invoke "pdflatex" "std")))) ;Rerun to update references.
             (replace 'install
