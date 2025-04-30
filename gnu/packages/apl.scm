@@ -127,6 +127,25 @@ including both uppercase and lowercase underscored alphabets, as-of-yet unused
 symbols, and almost all Latin-1 accented letters.")
       (license license:unlicense))))
 
+(define-public font-apl333
+  (package
+    (name "font-apl333")
+    ;; Version number as for apl-385, last modified 2013-04-20.
+    (version "20130420")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://apl385.com/fonts/" "apl333.zip"))
+       (sha256
+        (base32 "0yn0ha7d14vp4ma3lxbc9kpyrn20m7brjisr6w55c9mi24w9v3a5"))))
+    (build-system font-build-system)
+    (home-page "https://apl385.com/fonts/index.htm")
+    (synopsis "Variable-width APL font inspired by Comic Sans Serif")
+    (description
+     "Variable-width version of Adrian Smith's APL385 font developed with APL
+software vendors in the late 1980s.")
+    (license license:public-domain)))
+
 (define-public font-apl385
   (package
     (name "font-apl385")
