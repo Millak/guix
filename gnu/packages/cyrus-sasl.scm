@@ -45,9 +45,11 @@
                                   "/cyrus-sasl-" version ".tar.gz"))
               (sha256
                (base32
-                "135kbgyfpa1mwqp5dm223yr6ddzi4vjm7cr414d7rmhys2mwdkvw"))))
+                "135kbgyfpa1mwqp5dm223yr6ddzi4vjm7cr414d7rmhys2mwdkvw"))
+              (patches (search-patches "cyrus-sasl-fix-time-h.patch"))))
     (build-system gnu-build-system)
     (inputs (list gdbm libxcrypt mit-krb5 openssl))
+    (native-inputs (list autoconf automake libtool))
     (arguments
      (list
       #:configure-flags #~(list (string-append
@@ -62,7 +64,11 @@
                                 #$@(if (%current-target-system)
                                        '("ac_cv_gssapi_supports_spnego=yes")
                                        '()))
-
+      #:phases
+        #~(modify-phases %standard-phases
+          (add-before 'configure 'autoreconf
+            (lambda _
+              (invoke "autoreconf" "-vfi"))))
       ;; The 'plugins' directory has shared source files, such as
       ;; 'plugin_common.c'.  When building the shared libraries there, libtool
       ;; ends up doing "ln -s plugin_common.lo plugin_common.o", which can
