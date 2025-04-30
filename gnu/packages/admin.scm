@@ -6768,7 +6768,7 @@ backup directories or just finding duplicate files.")
 (define-public sshguard
   (package
     (name "sshguard")
-    (version "2.4.3")
+    (version "2.5.1")
     (source
      (origin
        (method git-fetch)
@@ -6777,7 +6777,7 @@ backup directories or just finding duplicate files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dkijr287zpwdz1bjdchxzmwf1sk6vzpkycz1skm25lkaba6nd9r"))))
+        (base32 "1wpxvqwk4k40liq6x5ada6zy77mnp319zz1w0cs2wyq3a5ilpnvr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake bison flex python-docutils))
