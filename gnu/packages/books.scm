@@ -81,6 +81,7 @@
                   texlive-glossaries-extra
                   texlive-koma-script
                   texlive-lilyglyphs
+                  texlive-lineno
                   texlive-minted
                   texlive-multirow
                   texlive-pgf
@@ -92,7 +93,8 @@
                   texlive-transparent
                   texlive-trimspaces
                   texlive-upquote
-                  texlive-xetex))
+                  texlive-xetex
+                  texlive-xstring))
            which))
     (inputs (list font-liberation git))
     (arguments
