@@ -508,14 +508,13 @@ avoid potential infinite waits blocking libvirt."))
 
 (define (/etc/qemu/firmware config)
   (let ((firmwares (libvirt-configuration-firmwares config)))
-    `(("qemu"
+    `(("qemu/firmware"
        ,(computed-file
          "etc-qemu-firmware"
          (with-imported-modules '((guix build union))
            #~(begin
                (use-modules (guix build union) (srfi srfi-26))
-               (mkdir #$output)
-               (union-build (string-append #$output "/firmware")
+               (union-build #$output
                             (map (cut string-append <> "/share/qemu/firmware")
                                  (list #$@firmwares))))))))))
 
