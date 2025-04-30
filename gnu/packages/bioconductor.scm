@@ -2848,14 +2848,14 @@ data can be use as a background data set in the interactive application.")
 (define-public r-methylclockdata
   (package
     (name "r-methylclockdata")
-    (version "1.15.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "methylclockData" version
                               'experiment))
        (sha256
-        (base32 "0apvvidw6cwr2mfglysad5sfam5wj9ipjns5jsspmhwbg7wz1kxp"))))
+        (base32 "1ycbf8qagcx02xhcjya3a4841ggyn0cmbhkm81hd7yxjmk094m4c"))))
     (properties `((upstream-name . "methylclockData")))
     (build-system r-build-system)
     (propagated-inputs (list r-experimenthub r-experimenthubdata))
