@@ -40,11 +40,15 @@
 
  (entry (commit "7e5913f90df916d8d9f5c509354d62324f54f481")
         (title
-         (en "Linux-libre 6.14 now available"))
+         (en "Linux-libre 6.14 now available")
+         (de "Linux-libre 6.14 jetzt verfügbar"))
         (body
          (en "The 6.14 linux-libre kernel series is now available in GNU Guix.
 Soon, it will be made the default linux-libre package because the 6.13 is no
-longer supported upstream.")))
+longer supported upstream.")
+         (de "Die Kernel-Versionsreihe 6.14 von Linux-libre ist ab jetzt in
+GNU Guix verfügbar.  Bald wird sie zum vorgegebenen Linux-libre-Paket, weil
+6.13 vom Anbieter nicht mehr unterstützt wird.")))
 
  (entry (commit "e2583b5a17bfdedc1d24b3bab2d752fbf8fa6db6")
         (title
