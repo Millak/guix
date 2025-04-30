@@ -11040,25 +11040,23 @@ expression parsing and evaluation.")
     (license license:expat)))
 
 (define-public highs
-  (let ((commit "v1.10.0")
-        (revision "1"))
-    (package
-      (name "highs")
-      (version (git-version "1.10.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/ERGO-Code/HiGHS")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "19q99nkk6r6k91gxp8a5rjil1399qyfgfc6jqlg2gd82vpcw8c8b"))))
-      (build-system cmake-build-system)
-      (home-page "https://highs.dev")
-      (synopsis "High performance software for linear optimization")
-      (description
-       "HiGHS provides serial and parallel solvers for large-scale
-sparse linear programming (LP), mixed-integer programming (MIP), and quadratic
+  (package
+    (name "highs")
+    (version "1.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ERGO-Code/HiGHS")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19q99nkk6r6k91gxp8a5rjil1399qyfgfc6jqlg2gd82vpcw8c8b"))))
+    (build-system cmake-build-system)
+    (home-page "https://highs.dev")
+    (synopsis "High performance software for linear optimization")
+    (description
+     "HiGHS provides serial and parallel solvers for large-scale sparse
+linear programming (LP), mixed-integer programming (MIP), and quadratic
 programming (QP) models")
-      (license license:expat))))
+    (license license:expat)))
