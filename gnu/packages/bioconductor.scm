@@ -2954,14 +2954,14 @@ GM12878 from the EPIC methylation array.")
 (define-public r-minionsummarydata
   (package
     (name "r-minionsummarydata")
-    (version "1.37.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "minionSummaryData" version
                               'experiment))
        (sha256
-        (base32 "1n62qzlcfsy9shqxv0ykhpg45cabbl4m7df0lg7664wn7vaah1xx"))))
+        (base32 "0gzgl18nrwijw0zd8s04v8pk3m744aypcww47ssh1bpxn4af02lv"))))
     (properties `((upstream-name . "minionSummaryData")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
