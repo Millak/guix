@@ -181,6 +181,7 @@ ROOT directory to populate the image."
              ;; The maximum number of co-routines is 16.
              "-m" (number->string (min 16 (parallel-job-count)))
              "-O" "qcow2"
+             "-o" "compression_type=zstd"
              image output))
     (else
      (copy-file image output))))
