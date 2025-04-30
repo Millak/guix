@@ -3887,7 +3887,7 @@ library.")
                       (setenv "HDF5_DIR"
                               (assoc-ref inputs "hdf5")))))))
     (propagated-inputs (list python-six python-numpy))
-    (inputs (list hdf5-1.10))
+    (inputs (list hdf5))
     (native-inputs (list pkg-config python-cython python-ipython
                          python-pkgconfig python-pytest))
     (home-page "https://www.h5py.org/")
