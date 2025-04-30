@@ -3349,7 +3349,22 @@ Navigation Satellite System.")
            volk
            (list zstd "lib")))
     (arguments
-     (list #:tests? #f)) ; No test suite
+     (list
+      #:tests? #f ; No test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The RUNPATH of this shared library is missing the
+          ;; .../lib/satdump/plugins directory, which fails the
+          ;; 'validate-runpath' phase.
+          (add-after 'unpack 'fix-runpath
+            (lambda _
+              (substitute* "plugins/official_products_support/CMakeLists.txt"
+                (("add_library\\(official_products_loader_support.*" orig)
+                 (string-append
+                  orig "\n" "set_target_properties("
+                  "official_products_loader_support"
+                  " PROPERTIES INSTALL_RPATH \""
+                  #$output "/lib:" #$output "/lib/satdump/plugins\")\n"))))))))
     (home-page "https://www.satdump.org/")
     (synopsis "Satellite data processing software")
     (description "SatDump is a generic satellite data processing software.
