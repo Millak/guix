@@ -31,6 +31,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages plotutils)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -53,7 +54,7 @@
         (base32 "1bb3nin3qrzx2dwdk08vffp4bblrcpv6vv1ybaj499qhqcpqpc12"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list python python-numpy))
+     (list pkg-config python python-numpy))
     (inputs
      (list eccodes
            eigen
