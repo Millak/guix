@@ -11579,6 +11579,25 @@ from the standard @code{query-replace} tool.  The provided commands prompt for
 substitute text and perform the substitution outright.")
     (license license:gpl3+)))
 
+(define-public emacs-sudoku
+  (package
+    (name "emacs-sudoku")
+    (version "20191015.1315")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zevlg/sudoku.el.git")
+             (commit "b1924fd244a5fa284de9d67b66fbd69164b37318")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19i3rrz4qnc9i845j0bbmps69372rry7gadcyj06gvq2hf9dy3nh"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/zevlg/sudoku.el")
+    (synopsis "Simple sudoku game in Emacs")
+    (description "This package provides a simple sudoku game in Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-typo
   (package
     (name "emacs-typo")
