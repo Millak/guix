@@ -2457,7 +2457,7 @@ sharing of scientific data.")
                            "FFLAGS=-fallow-argument-mismatch")
        #:parallel-tests? #f))
     (inputs
-     (list netcdf))
+     (list libaec hdf5 netcdf))
     (native-inputs
      (list gfortran))
     (synopsis "Fortran interface for the netCDF library")
