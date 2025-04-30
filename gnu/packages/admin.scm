@@ -6743,6 +6743,16 @@ backup directories or just finding duplicate files.")
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake bison flex python-docutils))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; patch sshguard to find configuration through
+               ;; environment variable
+               (add-after 'unpack 'patch-sshguard
+                 (lambda _
+                   (substitute* "src/sshguard.in"
+                     (("^config=.*$")
+                      "config=${SSHGUARD_CONFIG_FILE:-@sysconfdir@/sshguard.conf}\n")))))))
     (home-page "https://sshguard.net/")
     (synopsis "Daemon to blocks SSH brute-force attacks")
     (description
