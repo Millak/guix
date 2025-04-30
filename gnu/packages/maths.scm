@@ -62,7 +62,7 @@
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
-;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2023, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -139,6 +139,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
+  #:use-module (gnu packages geo)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
@@ -1836,44 +1837,141 @@ extremely large and complex data collections.")
         (base32 "14gih7kmjx4h3lc7pg4fwcl28hf1qqkf2x7rljpxqvzkjrqbxi00"))
        (patches (search-patches "hdf5-config-date.patch"))))))
 
-;; When updating this package, please also update hdf-java.
 (define-public hdf5
   (package
-    (inherit hdf5-1.8)
-    (version "1.14.3")
+    (name "hdf5")
+    (version "1.14.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (list (string-append "https://support.hdfgroup.org/ftp/HDF5/releases/"
-                                 "hdf5-" (version-major+minor version)
-                                 "/hdf5-" version "/src/hdf5-"
-                                 version ".tar.bz2")
-                  (string-append "https://support.hdfgroup.org/ftp/HDF5/"
-                                 "current"
-                                 (apply string-append
-                                        (take (string-split version #\.) 2))
-                                 "/src/hdf5-" version ".tar.bz2")))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/HDFGroup/hdf5")
+             (commit (string-append "hdf5_" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "05zr11y3bivfwrbvzbky1q2gjf6r7n92cvvdnh5jilbmxljg49cl"))
-       (patches (search-patches "hdf5-config-date.patch"))))
+        (base32
+         "1f7yv0xra465c3qy8c79fzddib653wzj5dsakb0bs02nwp3xm54q"))
+       (modules '((guix build utils)))
+       (snippet
+        '(for-each
+          delete-file
+          (append
+           (find-files "." "Makefile\\.in$")
+           (find-files "java/lib" "\\.jar$")
+           (list "aclocal.m4"
+                 "bin/compile"
+                 "bin/config.guess"
+                 "bin/config.sub"
+                 "bin/depcomp"
+                 "bin/install-sh"
+                 "bin/ltmain.sh"
+                 "bin/missing"
+                 "bin/test-driver"
+                 "configure"
+                 "HDF5Examples/aclocal.m4"
+                 "HDF5Examples/compile"
+                 "HDF5Examples/configure"
+                 "HDF5Examples/depcomp"
+                 "HDF5Examples/missing"
+                 "HDF5Examples/test-driver"
+                 "hl/src/H5LTanalyze.c"
+                 "hl/src/H5LTparse.c"
+                 "hl/src/H5LTparse.h"
+                 "hl/tools/gif2h5/testfiles/ex_image2.h5"
+                 "hl/tools/gif2h5/testfiles/h52giftst.h5"
+                 "m4/ax_prog_doxygen.m4"
+                 "m4/libtool.m4"
+                 "m4/lt~obsolete.m4"
+                 "m4/ltoptions.m4"
+                 "m4/ltsugar.m4"
+                 "m4/ltversion.m4"
+                 "src/H5config.h.in"
+                 "src/H5Edefin.h"
+                 "src/H5Einit.h"
+                 "src/H5Epubgen.h"
+                 "src/H5Eterm.h"
+                 "src/H5overflow.h"
+                 "src/H5version.h"))))
+       (patches (search-patches "hdf5-config-dependencies.patch"))))
+    (build-system cmake-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments hdf5-1.8)
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (add-after 'configure 'skip-version-test
-              (lambda _
-                ;; Skip test_check_version since the 'patch-settings' phase
-                ;; modifies the test reference.
-                (substitute* "test/test_check_version.sh.in"
-                  (("TESTING\\(\\).*" all)
-                   (string-append all "\nSKIP; exit 0\n")))))
-            (add-after 'patch-configure 'patch-configure-build-settings
-              (lambda _
-                (substitute* "src/H5build_settings.autotools.c.in"
-                  ;; Don't record the build-time kernel version to make the
-                  ;; library file reproducible.
-                  (("@UNAME_INFO@")
-                   "Linux"))))))))))
+     (list
+      ;; Some of the users, notably Flann, need the C++ interface.
+      #:configure-flags
+      #~(list
+         (string-append "-DHDF5_INSTALL_CMAKE_DIR=" #$output "/lib/cmake")
+         "-DHDF5_BUILD_CPP_LIB=ON"
+         "-DHDF5_BUILD_FORTRAN=ON"
+         ;; Build a thread-safe library.  Unfortunately, CMakeLists.txt
+         ;; invites you to either turn off C++, Fortran, and the high-level
+         ;; interface (HL), or to enable 'ALLOW_UNSUPPORTED'.  Debian
+         ;; packagers chose to pass '--enable-unsupported' to the 'configure'
+         ;; script and we follow their lead here.
+         "-DHDF5_ENABLE_THREADSAFE=ON"
+         "-DALLOW_UNSUPPORTED=ON"
+         "-DHDF5_BUILD_DOC=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: src/H5private.h includes <fenv.h> and fails to find the
+          ;; stdlib types when the gfortran header is used.  Remove gfortran
+          ;; from CPLUS_INCLUDE_PATH as a workaround.
+          (add-after 'set-paths 'hide-gfortran
+            (lambda _
+              (let ((gfortran #$(this-package-native-input "gfortran")))
+                (setenv "CPLUS_INCLUDE_PATH"
+                        (string-join
+                         (delete (string-append gfortran "/include/c++")
+                                 (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                         ":")))))
+          (add-after 'unpack 'make-gen-deterministic
+            (lambda _
+              (substitute* "bin/make_err"
+                (("keys %major" all)
+                 (string-append "sort " all))
+                (("while.*each \\(%section\\).*")
+                 (string-append
+                  "foreach $sect_name (sort keys %section) {\n"
+                  "        $sect_desc = $section{$sect_name};\n")))))
+          (add-after 'unpack 'generate-flexbison
+            (lambda _
+              (invoke "bash" "bin/genparser" "hl/src")))
+          (add-after 'unpack 'patch-trace-shebang
+            (lambda _
+              (for-each patch-shebang
+                        (find-files "bin" (lambda (file stat)
+                                            (executable-file? file))))))
+          ;; This is a known issue on i686, see
+          ;; https://github.com/HDFGroup/hdf5/issues/4926
+          (add-after 'unpack 'fix-fortran-i686-test
+            (lambda _
+              (substitute* "fortran/test/tH5R.F90"
+                (((string-append
+                   "CALL h5rget_obj_name_f\\(C_LOC\\(ref_ptr\\(2\\)\\),"
+                   " \"\", error, name_len=buf_size \\)"))
+                 (string-append
+                  "CALL h5rget_obj_name_f(C_LOC(ref_ptr(2)),"
+                  " \"xxxxxxxxxxxxxx\", error, name_len=buf_size)")))))
+          (add-after 'unpack 'generate-headers
+            (lambda _
+              (invoke "perl" "bin/make_err" "src/H5err.txt")
+              (invoke "perl" "bin/make_vers" "src/H5vers.txt")
+              (invoke "perl" "bin/make_overflow" "src/H5overflow.txt"))))))
+    (inputs (list libaec zlib))
+    (native-inputs
+     (list bison
+           doxygen
+           flex
+           gfortran
+           graphviz
+           ;; Needed to generate some headers and for tests
+           perl
+           which))
+    (home-page "https://www.hdfgroup.org")
+    (synopsis "Management suite for extremely large and complex data")
+    (description "HDF5 is a suite that makes possible the management of
+extremely large and complex data collections.")
+    (license (license:x11-style
+              "https://support.hdfgroup.org/ftp/HDF5/releases/COPYING.html"))))
 
 ;; Keep this in sync with the current hdf5 package.
 (define-public hdf-java
@@ -2077,32 +2175,19 @@ Swath).")
 (define-public hdf5-parallel-openmpi
   (package/inherit hdf5
     (name "hdf5-parallel-openmpi")
-    (inputs
-     `(("mpi" ,openmpi)
-       ,@(package-inputs hdf5)))
+    (inputs (modify-inputs (package-inputs hdf5)
+              (prepend openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments hdf5)
-       ((#:configure-flags flags)
-        #~(cons "--enable-parallel"
-                (delete "--enable-cxx"
-                        (delete "--enable-threadsafe" #$flags))))
+       ((#:configure-flags _ #f)
+        ''("-DHDF5_ENABLE_THREADSAFE=OFF"
+           "-DHDF5_ENABLE_PARALLEL=ON"
+           "-DHDF5_BUILD_CPP_LIB=OFF"
+           "-DHDF5_BUILD_DOC=ON"))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'build 'mpi-setup
-              #$%openmpi-setup)
-            (add-before 'check 'patch-tests
-              (lambda _
-                ;; OpenMPI's mpirun will exit with non-zero status if it
-                ;; detects an "abnormal termination", i.e. any process not
-                ;; calling MPI_Finalize().  Since the test is explicitly
-                ;; avoiding MPI_Finalize so as not to have at_exit and thus
-                ;; H5C_flush_cache from being called, mpirun will always
-                ;; complain, so turn this test off.
-                (substitute* "testpar/Makefile"
-                  (("(^TEST_PROG_PARA.*)t_pflush1(.*)" front back)
-                   (string-append front back "\n")))
-                (substitute* "tools/test/h5diff/testph5diff.sh"
-                  (("/bin/sh") (which "sh")))))))))
+              #$%openmpi-setup)))))
     (synopsis "Management suite for data with parallel IO support")))
 
 (define-public hdf5-blosc
