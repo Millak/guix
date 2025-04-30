@@ -2262,13 +2262,13 @@ cancer study published in Wang et al. 2005 and Minn et al 2007.")
 (define-public r-celldex
   (package
     (name "r-celldex")
-    (version "1.17.0")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "celldex" version 'experiment))
        (sha256
-        (base32 "16dg342dlf3d9aj8ms2q0njzm5gqqhy6fffj0pv1jfl2plggjpfs"))))
+        (base32 "1xy670b0gfgk7yp11dywqj2036669z0df38xwfzkxwnkgx76wnm9"))))
     (properties `((upstream-name . "celldex")))
     (build-system r-build-system)
     ;; Tests access the internet via r-gypsum.
