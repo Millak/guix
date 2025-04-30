@@ -276,7 +276,7 @@ BUFR and WMO GTS abbreviated header formats.")
            ;; Some tests can fail on machines with many threads.
            #:parallel-tests? #f))
     (inputs
-     (list curl eccodes fftw hdf5 libxml2 netcdf proj udunits))
+     (list curl eccodes fftw hdf5 libaec libxml2 netcdf proj udunits))
     (native-inputs
      (list pkg-config python-wrapper))
     (home-page "https://code.mpimet.mpg.de/projects/cdo")
