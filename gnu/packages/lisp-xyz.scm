@@ -28209,10 +28209,8 @@ editor.")
 (define-public cl-micros
   (sbcl-package->cl-source-package sbcl-micros))
 
-;; TODO: Enable when the following issue is fixed:
-;; https://github.com/lem-project/micros/issues/17
-;; (define-public ecl-micros
-;;   (sbcl-package->ecl-package sbcl-micros))
+(define-public ecl-micros
+  (sbcl-package->ecl-package sbcl-micros))
 
 (define-public sbcl-slynk
   ;; Update together with emacs-sly.
