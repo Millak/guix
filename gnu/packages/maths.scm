@@ -2135,7 +2135,7 @@ Swath).")
                (("ExternalProject_Add\\(project_blosc") "message("))
              #t)))))
     (inputs
-     (list c-blosc hdf5-1.10))
+     (list c-blosc hdf5))
     (home-page "https://github.com/Blosc/hdf5-blosc")
     (synopsis "Filter for HDF5 using the Blosc compressor")
     (description "This is a filter for HDF5 that uses the Blosc compressor; by
