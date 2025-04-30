@@ -28183,8 +28183,8 @@ definition.")
   (sbcl-package->ecl-package sbcl-slot-extra-options))
 
 (define-public sbcl-micros
-  (let ((commit "af94fe5d6688f67a092f604765fb706ebae44e99")
-        (revision "1"))
+  (let ((commit "7dc9b46d3aad13661468863dc21ea1b599890487")
+        (revision "2"))
     (package
       (name "sbcl-micros")
       (version (git-version "0.0.0" revision commit))
@@ -28195,7 +28195,7 @@ definition.")
                (url "https://github.com/lem-project/micros")
                (commit commit)))
          (sha256
-          (base32 "1xn85zif10qkwnw4a1s584whnyvmjwn5sik949v1pwxykhq96qjy"))
+          (base32 "1qj7p6snz67jr2js22mmlz2w8jc9yrf0jqi1jzj9nw3ws2kc7dqb"))
          (file-name (git-file-name "micros" version))))
       (build-system asdf-build-system/sbcl)
       (native-inputs (list sbcl-rove))
