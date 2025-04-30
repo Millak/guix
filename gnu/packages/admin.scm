@@ -4485,7 +4485,7 @@ becomes gUwUix.")
 (define-public screenfetch
   (package
     (name "screenfetch")
-    (version "3.9.1")
+    (version "3.9.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4494,7 +4494,7 @@ becomes gUwUix.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04l8aqr474pb115nagn9f6y48jw92n1qfszgw7dbhgl4mpn95lcr"))))
+                "0fly580235wmrqxgpf2mlblj587q05mikpsgaw1qq7z1nl44rmjh"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
