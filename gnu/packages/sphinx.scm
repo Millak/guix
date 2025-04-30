@@ -268,7 +268,7 @@ sources.")
            python-flit-core
            python-pytest
            (texlive-local-tree
-            (list texlive-cm-super texlive-tex-gyre))))))
+            (list texlive-anyfontsize texlive-cm-super texlive-tex-gyre))))))
 
 (define-public python-sphinxcontrib-apidoc
   (package
