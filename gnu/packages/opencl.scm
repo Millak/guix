@@ -19,25 +19,30 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages opencl)
-  #:use-module (guix build-system gnu)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
-  #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
-  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gnupg)
-  #:use-module (gnu packages compression)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages video)
@@ -402,25 +407,35 @@ A lexer, @code{pytools.lex}.
 (define-public python-pyopencl
   (package
     (name "python-pyopencl")
-    (version "2021.2.6")
+    (version "2025.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/inducer/pyopencl.git")
-             (commit (string-append "v" version))
-             (recursive? #t)))
+             (url "https://github.com/inducer/pyopencl")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1s2cls7avxvf753zzpx422ikslaxdnm8rz58zg7mal15yak0wv2x"))))
-    (build-system python-build-system)
+        (base32 "02lvb286p8101sf3385lzv9ymz70vzjqnmfagmcy0fj912mx2svf"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)) ; Tests cannot find pygpu_language_opencl.cpp
+     (list
+      ;; FIXME: See <https://github.com/inducer/pyopencl/issues/784>, tests
+      ;; require some special set up according to <.github/workflows/ci.yml>.
+      #:tests? #f))
+    (native-inputs
+     (list cmake-minimal
+           pybind11
+           python-nanobind
+           python-scikit-build-core))
     (inputs
-     (list opencl-headers pybind11 opencl-icd-loader))                     ;libOpenCL
+     (list opencl-headers
+           ocl-icd))
     (propagated-inputs
-     (list python-appdirs python-numpy python-pytools python-mako))
+     (list python-mako
+           python-numpy
+           python-platformdirs
+           python-pytools))
     (home-page "https://mathema.tician.de/software/pyopencl")
     (synopsis "Python wrapper for OpenCL")
     (description
