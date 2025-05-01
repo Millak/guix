@@ -5,6 +5,7 @@
 ;;; Copyright © 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2025 Felix Lechner <felix.lechner@lease-up.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -150,6 +151,24 @@ parsers to allow execution with Guile as extension languages.")))
     (propagated-inputs '())
 
     (inputs (list guile-3.0))))
+
+(define-public nyacc-2.01
+  (package
+    (inherit nyacc-1.00.2)
+    (version "2.01.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://savannah/nyacc/nyacc-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0dp1439j7db3zhpyqiah3vf3s193y4ip8mh7mc5lz0abgml3x3vg"))
+              (modules '((guix build utils)))
+              (snippet
+               '(substitute* "configure"
+                  (("GUILE_GLOBAL_SITE=\\$prefix.*")
+                   "GUILE_GLOBAL_SITE=\
+$prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n")))))))
 
 (define-public mes
   (package
