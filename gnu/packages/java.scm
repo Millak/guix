@@ -1820,8 +1820,13 @@ blacklisted.certs.pem"
              ;; https://issues.guix.gnu.org/54654)
              (patches '())))))
 
+(define-public openjdk24
+  (make-openjdk
+   openjdk23 "24.0.1"
+   "0h6sbzbjyqg85iml41pswdh2z3d7h2hhb0sd5yll37r1mj5lsxmx"))
+
 ;;; Convenience alias to point to the latest version of OpenJDK.
-(define-public openjdk openjdk21)
+(define-public openjdk openjdk24)
 
 
 ;; This version of JBR is here in order to be able to build custom
