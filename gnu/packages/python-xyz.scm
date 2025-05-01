@@ -3872,24 +3872,41 @@ library.")
 (define-public python-h5py
   (package
     (name "python-h5py")
-    (version "3.8.0")
+    (version "3.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "h5py" version))
        (sha256
-        (base32 "0pyr6z4h2xqbp49yx2i1401gl6yqh03h771zslwcy0201hpxiskg"))))
-    (build-system python-build-system)
+        (base32 "1hq5f5mnkv2138xsq7k7qncf6b7zc0cmm2fhhpd2603j31jy8w0q"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'fix-hdf5-paths
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (setenv "HDF5_DIR"
-                              (assoc-ref inputs "hdf5")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-hdf5-paths
+            (lambda _
+              (setenv "HDF5_DIR" #$(this-package-input "hdf5"))))
+          ;; The tests only work after being installed.
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+              (when tests?
+                (setenv "H5PY_TEST_CHECK_FILTERS" "1")
+                (with-directory-excursion (site-packages inputs outputs)
+                  (invoke "pytest" "-vv"))))))))
     (propagated-inputs (list python-six python-numpy))
     (inputs (list hdf5))
-    (native-inputs (list pkg-config python-cython python-ipython
-                         python-pkgconfig python-pytest))
+    (native-inputs
+     (list pkg-config
+           python-cython
+           python-ipython
+           python-pkgconfig
+           python-pytest
+           ;; Required to run tests, but the MPI tests are skipped anyway.
+           python-pytest-mpi
+           python-setuptools
+           python-wheel))
     (home-page "https://www.h5py.org/")
     (synopsis "Read and write HDF5 files from Python")
     (description
