@@ -2916,7 +2916,7 @@ more stress mechanisms.")
 (define-public detox
   (package
     (name "detox")
-    (version "1.4.5")
+    (version "2.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2925,21 +2925,10 @@ more stress mechanisms.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "116bgpbkh3c96h6vq0880rmnpb5kbnnlvvkpsrcib6928bj8lfvi"))))
+                "0qix3ipvj5sn66id57k6gzilnz4f19jgwn4d72hj1jzi3m9f9k1h"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake flex))
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'delete-configure
-                    ;; The "configure" script is present, but otherwise the
-                    ;; project is not bootstrapped: missing install-sh and
-                    ;; Makefile.in, so delete it so the bootstrap phase will
-                    ;; take over.
-                    (lambda _ (delete-file "configure") #t))
-                  (replace 'check
-                    (lambda _
-                      (invoke "./tests/test.sh" "src/detox"))))))
+     (list autoconf automake bison flex pkg-config))
     (home-page "https://github.com/dharple/detox")
     (synopsis "Clean up file names")
     (description
