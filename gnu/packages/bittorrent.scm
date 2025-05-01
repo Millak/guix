@@ -585,7 +585,7 @@ the following features:
 (define-public deluge
   (package
     (name "deluge")
-    (version "2.1.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
@@ -594,7 +594,7 @@ the following features:
              (version-major+minor version) "/deluge-" version ".tar.xz"))
        (sha256
         (base32
-         "1xyz8bscwqmd7d8b43svxl42w54pnisvwkkrndx46hifh0cx73bn"))))
+         "1kbac1qjbddcib0bldqaf0dcq5mqi9i2jv2fd4fayam4bcmjgfmr"))))
     (build-system python-build-system)
     (inputs (list bash-minimal))
     (propagated-inputs
@@ -629,13 +629,6 @@ the following features:
      `(#:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-deluge-console
-           (lambda _
-             ;; Backport patch for: https://dev.deluge-torrent.org/ticket/3582
-             ;; Should be removed for release 2.1.1.
-             (substitute* "deluge/ui/console/__init__.py"
-               (("    return Console\\(\\).start\\(\\)")
-                "    Console().start()"))))
          (add-after 'install 'wrap
            (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
