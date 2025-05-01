@@ -4775,7 +4775,7 @@ it sees on a network interface.  This is a fork of Steve Benson’s tcptrack.")
 (define-public masscan
   (package
     (name "masscan")
-    (version "1.0.5")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -4784,25 +4784,24 @@ it sees on a network interface.  This is a fork of Steve Benson’s tcptrack.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q0c7bsf0pbl8napry1qyg0gl4pd8wn872h4mz9b56dx4rx90vqg"))))
+        (base32 "1y0ka1y01afmzcad8rw4jgkmlc17yccc30wk8xldj00hdbz84wcs"))))
     (build-system gnu-build-system)
     (inputs
      (list libpcap))
     (arguments
-     `(#:test-target "regress"
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no ./configure script
-         (add-after 'unpack 'patch-path
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (pcap (assoc-ref inputs "libpcap")))
-               (substitute* "src/rawsock-pcap.c"
-                 (("libpcap.so") (string-append pcap "/lib/libpcap.so")))
-               #t))))))
+     (list #:test-target "regress"
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)            ; no ./configure script
+               (add-after 'unpack 'patch-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((pcap (assoc-ref inputs "libpcap")))
+                     (substitute* "src/stub-pcap.c"
+                       (("libpcap.so")
+                        (string-append pcap "/lib/libpcap.so")))))))))
     (synopsis "TCP port scanner")
     (description "MASSCAN is an asynchronous TCP port scanner.  It can detect
 open ports, and also complete the TCP connection and interact with the remote
