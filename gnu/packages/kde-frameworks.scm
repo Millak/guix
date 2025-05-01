@@ -3573,35 +3573,6 @@ started on demand.")
            kservice-5
            qtbase-5))))
 
-(define-public kdesignerplugin
-  (package
-    (name "kdesignerplugin")
-    (version "5.114.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/portingAids/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0zlvkayv6zl5rp1076bscmdzyw93y7sxqb5848w11vs0g9amcj9n"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules kdoctools qttools-5))
-    (inputs
-     (list kconfig
-           kcoreaddons
-           kdoctools
-           qtbase-5))
-    (home-page "https://community.kde.org/Frameworks")
-    (synopsis "Integrating KDE frameworks widgets with Qt Designer")
-    (description "This framework provides plugins for Qt Designer that allow it
-to display the widgets provided by various KDE frameworks, as well as a utility
-(kgendesignerplugin) that can be used to generate other such plugins from
-ini-style description files.")
-    (license license:lgpl2.1+)))
-
 (define-public kdesu
   (package
     (name "kdesu")
