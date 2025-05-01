@@ -298,6 +298,31 @@ services.")
     (license license:public-domain)
     (home-page "https://cr.yp.to/daemontools.html")))
 
+(define-public detox
+  (package
+    (name "detox")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dharple/detox")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qix3ipvj5sn66id57k6gzilnz4f19jgwn4d72hj1jzi3m9f9k1h"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake bison flex pkg-config))
+    (home-page "https://github.com/dharple/detox")
+    (synopsis "Clean up file names")
+    (description
+     "Detox is a program that renames files to make them easier to work with
+under Unix and related operating systems.  Spaces and various other unsafe
+characters (such as \"$\") get replaced with \"_\".  ISO 8859-1 (Latin-1)
+characters can be replaced as well, as can UTF-8 characters.")
+    (license license:bsd-3)))
+
 (define-public hetznercloud-cli
   (package
     (name "hetznercloud-cli")
@@ -2912,31 +2937,6 @@ additional options such as the number of bogo operations to run, execution
 metrics, verification of memory and computational operations, and considerably
 more stress mechanisms.")
     (license license:gpl2+)))
-
-(define-public detox
-  (package
-    (name "detox")
-    (version "2.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/dharple/detox")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0qix3ipvj5sn66id57k6gzilnz4f19jgwn4d72hj1jzi3m9f9k1h"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake bison flex pkg-config))
-    (home-page "https://github.com/dharple/detox")
-    (synopsis "Clean up file names")
-    (description
-     "Detox is a program that renames files to make them easier to work with
-under Unix and related operating systems.  Spaces and various other unsafe
-characters (such as \"$\") get replaced with \"_\".  ISO 8859-1 (Latin-1)
-characters can be replaced as well, as can UTF-8 characters.")
-    (license license:bsd-3)))
 
 (define-public tree
   (package
