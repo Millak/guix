@@ -217,7 +217,7 @@
    "Libvirt package.")
   (qemu
    (file-like qemu)
-   "Qemu package.")
+   "The QEMU package to use.")
   (firmwares
    (list-of-file-likes (list ovmf-x86-64))
    "List of UEFI/BIOS firmware packages to make available.  Each firmware
@@ -227,313 +227,244 @@ firmware metadata file."
   (listen-tls?
    (boolean #t)
    "Flag listening for secure TLS connections on the public TCP/IP port.
-must set @code{listen} for this to have any effect.
-
-It is necessary to setup a CA and issue server certificates before
-using this capability.")
+must set @code{listen} for this to have any effect.  It is necessary to setup
+a CA and issue server certificates before using this capability.")
   (listen-tcp?
    (boolean #f)
    "Listen for unencrypted TCP connections on the public TCP/IP port.
-must set @code{listen} for this to have any effect.
-
-Using the TCP socket requires SASL authentication by default. Only
-SASL mechanisms which support data encryption are allowed. This is
-DIGEST_MD5 and GSSAPI (Kerberos5)")
+must set @code{listen} for this to have any effect.  Using the TCP socket
+requires SASL authentication by default.  Only SASL mechanisms which support
+data encryption are allowed.  This is DIGEST_MD5 and GSSAPI (Kerberos5).")
   (tls-port
    (string "16514")
    "Port for accepting secure TLS connections This can be a port number,
-or service name")
+or service name.")
   (tcp-port
    (string "16509")
    "Port for accepting insecure TCP connections This can be a port number,
-or service name")
+or service name.")
   (listen-addr
    (string "0.0.0.0")
    "IP address or hostname used for client connections.")
   (mdns-adv?
    (boolean #f)
-   "Flag toggling mDNS advertisement of the libvirt service.
-
-Alternatively can disable for all services on a host by
-stopping the Avahi daemon.")
+   "Flag toggling mDNS advertisement of the libvirt service.")
   (mdns-name
    (string (string-append "Virtualization Host " (gethostname)))
-   "Default mDNS advertisement name. This must be unique on the
+   "Default mDNS advertisement name.  This must be unique on the
 immediate broadcast network.")
   (unix-sock-group
    (string "libvirt")
-   "UNIX domain socket group ownership. This can be used to
-allow a 'trusted' set of users access to management capabilities
-without becoming root.")
+   "UNIX domain socket group ownership.  This can be used to allow a trusted
+set of users access to management capabilities without becoming root.")
   (unix-sock-ro-perms
    (string "0777")
-   "UNIX socket permissions for the R/O socket. This is used
-for monitoring VM status only.")
+   "UNIX socket permissions for the R/O socket.  This is used for monitoring
+VM status only.")
   (unix-sock-rw-perms
    (string "0770")
-   "UNIX socket permissions for the R/W socket. Default allows
-only root. If PolicyKit is enabled on the socket, the default
-will change to allow everyone (eg, 0777)")
+   "UNIX socket permissions for the R/W socket.  Default allows only root.  If
+PolicyKit is enabled on the socket, the default will change to allow
+everyone (e.g., @code{\"0777\"}).")
   (unix-sock-admin-perms
    (string "0777")
-   "UNIX socket permissions for the admin socket. Default allows
-only owner (root), do not change it unless you are sure to whom
-you are exposing the access to.")
+   "UNIX socket permissions for the admin socket.  Default allows only
+owner (root), do not change it unless you are sure to whom you are exposing
+the access to.")
   (unix-sock-dir
    (string "/var/run/libvirt")
    "The directory in which sockets will be found/created.")
   (auth-unix-ro
    (string "polkit")
-   "Authentication scheme for UNIX read-only sockets. By default
-socket permissions allow anyone to connect")
+   "Authentication scheme for UNIX read-only sockets.  By default socket
+permissions allow anyone to connect.")
   (auth-unix-rw
    (string "polkit")
-   "Authentication scheme for UNIX read-write sockets. By default
-socket permissions only allow root. If PolicyKit support was compiled
-into libvirt, the default will be to use 'polkit' auth.")
+   "Authentication scheme for UNIX read-write sockets.  By default socket
+permissions only allow root.  If PolicyKit support was compiled into libvirt,
+the default will be to use 'polkit' auth.")
   (auth-tcp
    (string "sasl")
-   "Authentication scheme for TCP sockets. If you don't enable SASL,
-then all TCP traffic is cleartext. Don't do this outside of a dev/test
-scenario.")
+   "Authentication scheme for TCP sockets.  If you don't enable SASL,
+then all TCP traffic is cleartext.  Don't do this outside of a
+development/test scenario.")
   (auth-tls
    (string "none")
-   "Authentication scheme for TLS sockets. TLS sockets already have
-encryption provided by the TLS layer, and limited authentication is
-done by certificates.
-
-It is possible to make use of any SASL authentication mechanism as
-well, by using 'sasl' for this option")
+   "Authentication scheme for TLS sockets.  TLS sockets already have
+encryption provided by the TLS layer, and limited authentication is done by
+certificates.  It is possible to make use of any SASL authentication mechanism
+as well, by using @code{\"sasl\"} for this option")
   (access-drivers
    (optional-list '())
-   "API access control scheme.
-
-By default an authenticated user is allowed access to all APIs. Access
-drivers can place restrictions on this.")
+   "API access control scheme.  By default an authenticated user is allowed
+access to all APIs.  Access drivers can place restrictions on this.")
   (key-file
    (string "")
-   "Server key file path. If set to an empty string, then no private key
-is loaded.")
+   "Server key file path.  If set to an empty string, then no private key is
+loaded.")
   (cert-file
    (string "")
-   "Server key file path. If set to an empty string, then no certificate
-is loaded.")
+   "Server key file path.  If set to an empty string, then no certificate is
+loaded.")
   (ca-file
    (string "")
-   "Server key file path. If set to an empty string, then no CA certificate
+   "Server key file path.  If set to an empty string, then no CA certificate
 is loaded.")
   (crl-file
    (string "")
-   "Certificate revocation list path. If set to an empty string, then no
-CRL is loaded.")
+   "Certificate revocation list path.  If set to an empty string, then no CRL
+is loaded.")
   (tls-no-sanity-cert
    (boolean #f)
-   "Disable verification of our own server certificates.
-
-When libvirtd starts it performs some sanity checks against its own
+   "Disable verification of our own server certificates.  When
+@command{libvirtd} starts it performs some sanity checks against its own
 certificates.")
   (tls-no-verify-cert
    (boolean #f)
-   "Disable verification of client certificates.
-
-Client certificate verification is the primary authentication mechanism.
-Any client which does not present a certificate signed by the CA
-will be rejected.")
+   "Disable verification of client certificates.  Client certificate
+verification is the primary authentication mechanism.  Any client which does
+not present a certificate signed by the CA will be rejected.")
   (tls-allowed-dn-list
    (optional-list '())
    "Whitelist of allowed x509 Distinguished Name.")
   (sasl-allowed-usernames
    (optional-list '())
-   "Whitelist of allowed SASL usernames. The format for username
-depends on the SASL authentication mechanism.")
+   "Whitelist of allowed SASL usernames.  The format for username depends on
+the SASL authentication mechanism.")
   (tls-priority
    (string "NORMAL")
-   "Override the compile time default TLS priority string. The
-default is usually \"NORMAL\" unless overridden at build time.
-Only set this is it is desired for libvirt to deviate from
-the global default settings.")
+   "Override the compile time default TLS priority string.  The default is
+usually \"NORMAL\" unless overridden at build time.  Only set this if it is
+desired for libvirt to deviate from the global default settings.")
   (max-clients
    (integer 5000)
-   "Maximum number of concurrent client connections to allow
-over all sockets combined.")
+   "Maximum number of concurrent client connections to allow over all sockets
+combined.")
   (max-queued-clients
    (integer 1000)
-   "Maximum length of queue of connections waiting to be
-accepted by the daemon. Note, that some protocols supporting
-retransmission may obey this so that a later reattempt at
-connection succeeds.")
+   "Maximum length of queue of connections waiting to be accepted by the
+daemon.  Note, that some protocols supporting re-transmission may obey this so
+that a later reattempt at connection succeeds.")
   (max-anonymous-clients
    (integer 20)
-   "Maximum length of queue of accepted but not yet authenticated
-clients. Set this to zero to turn this feature off")
+   "Maximum length of queue of accepted but not yet authenticated clients.
+Set this to zero to turn this feature off.")
   (min-workers
    (integer 5)
    "Number of workers to start up initially.")
   (max-workers
    (integer 20)
-   "Maximum number of worker threads.
-
-If the number of active clients exceeds @code{min-workers},
-then more threads are spawned, up to max_workers limit.
-Typically you'd want max_workers to equal maximum number
-of clients allowed.")
+   "Maximum number of worker threads.  If the number of active clients exceeds
+@code{min-workers}, then more threads are spawned, up to @code{max_workers}
+limit.  Typically you'd want @code{max_workers} to equal maximum number of
+clients allowed.")
   (prio-workers
    (integer 5)
-   "Number of priority workers. If all workers from above
-pool are stuck, some calls marked as high priority
-(notably domainDestroy) can be executed in this pool.")
+   "Number of priority workers.  If all workers from above pool are stuck,
+some calls marked as high priority (notably domainDestroy) can be executed in
+this pool.")
   (max-requests
-    (integer 20)
-    "Total global limit on concurrent RPC calls.")
+   (integer 20)
+   "Total global limit on concurrent RPC calls.")
   (max-client-requests
-    (integer 5)
-    "Limit on concurrent requests from a single client
-connection. To avoid one client monopolizing the server
-this should be a small fraction of the global max_requests
-and max_workers parameter.")
+   (integer 5)
+   "Limit on concurrent requests from a single client connection.  To avoid
+one client monopolizing the server this should be a small fraction of the
+global max_requests and max_workers parameter.")
   (admin-min-workers
-    (integer 1)
-    "Same as @code{min-workers} but for the admin interface.")
+   (integer 1)
+   "Same as @code{min-workers} but for the admin interface.")
   (admin-max-workers
-     (integer 5)
-    "Same as @code{max-workers} but for the admin interface.")
+   (integer 5)
+   "Same as @code{max-workers} but for the admin interface.")
   (admin-max-clients
-    (integer 5)
-    "Same as @code{max-clients} but for the admin interface.")
+   (integer 5)
+   "Same as @code{max-clients} but for the admin interface.")
   (admin-max-queued-clients
-    (integer 5)
-    "Same as @code{max-queued-clients} but for the admin interface.")
+   (integer 5)
+   "Same as @code{max-queued-clients} but for the admin interface.")
   (admin-max-client-requests
-    (integer 5)
-    "Same as @code{max-client-requests} but for the admin interface.")
+   (integer 5)
+   "Same as @code{max-client-requests} but for the admin interface.")
   (log-level
-    (integer 3)
-    "Logging level. 4 errors, 3 warnings, 2 information, 1 debug.")
+   (integer 3)
+   "Semi-deprecated option for the logging level: using the @code{log-filters}
+option instead is recommend, as it provides finer control.  The log level can
+be set to @code{4} for errors, @code{3} for warnings, @code{2} for information
+or @code{1} for debug.  Note that since @code{log-filters} and
+@code{log-outputs} take precedence over this option, you will need to also
+adjust their logging levels to avoid filtering out messages.")
   (log-filters
-    (string "3:remote 4:event")
-    "Logging filters.
-
-A filter allows selecting a different logging level for a given category
-of logs
-The format for a filter is one of:
-@itemize
-@item x:name
-
-@item x:+name
-@end itemize
-
-where @code{name} is a string which is matched against the category
-given in the @code{VIR_LOG_INIT()} at the top of each libvirt source
-file, e.g., \"remote\", \"qemu\", or \"util.json\" (the name in the
-filter can be a substring of the full category name, in order
-to match multiple similar categories), the optional \"+\" prefix
-tells libvirt to log stack trace for each message matching
-name, and @code{x} is the minimal level where matching messages should
-be logged:
-
-@itemize
-@item 1: DEBUG
-@item 2: INFO
-@item 3: WARNING
-@item 4: ERROR
-@end itemize
-
-Multiple filters can be defined in a single filters statement, they just
-need to be separated by spaces.")
+   (string "3:remote 4:event")
+   "Logging filters.  A filter allows selecting a different logging level for
+a given category of logs.  The format for a filter is either
+@samp{@var{x}:@var{name}} or @samp{@var{x}:+@var{name}}, where name is a
+string which is matched against the category given in the
+@code{VIR_LOG_INIT()} at the top of each libvirt source file, e.g.,
+@samp{\"remote\"}, @samp{\"qemu\"}, or @samp{\"util.json\"}.  @var{name} can
+be a substring of the full category name, in order to match multiple similar
+categories.  The optional @samp{+} prefix tells libvirt to log stack traces
+for each message matching @var{name}.  @var{x} is the log level value used to
+filter the associated message category.  @var{x} can be set to @samp{4} for
+errors, @samp{3} for warnings, @samp{2} for information, or @samp{1} for
+debug.  Multiple filters can be defined in a single filters statement, as
+space-separated values.  Since @code{log-outputs} also include a level filter,
+you may need to also adjust its value to see all the filtered messages.")
   (log-outputs
-    (string "3:syslog:libvirtd")
-    "Logging outputs.
-
-An output is one of the places to save logging information
-The format for an output can be:
-
-@table @code
-@item x:stderr
-output goes to stderr
-
-@item x:syslog:name
-use syslog for the output and use the given name as the ident
-
-@item x:file:file_path
-output to a file, with the given filepath
-
-@item x:journald
-output to journald logging system
-@end table
-
-In all case the x prefix is the minimal level, acting as a filter
-
-@itemize
-@item 1: DEBUG
-@item 2: INFO
-@item 3: WARNING
-@item 4: ERROR
-@end itemize
-
-Multiple outputs can be defined, they just need to be separated by spaces.")
+   (string "3:syslog:libvirtd")
+   "Logging outputs.  An output is one of the places to save logging
+information.  The format for an output has the form
+@code{\"@var{x}:var{output}\"}, where @var{output} can be @samp{stderr},
+@samp{syslog:@var{name}}, where @var{name} is the syslog @code{ident} value to
+use, or @samp{file:@var{file_name}}, where @var{file_name} is the file name of
+the file to output to.  @var{x} is the minimal level, which acts as a filter.
+@var{x} can be set to @var{x} can be set to @samp{4} for errors, @samp{3} for
+warnings, @samp{2} for information, or @samp{1} for debug.  Multiple filters
+can be defined in a single filters statement, as space-separated values.")
   (audit-level
-    (integer 1)
-    "Allows usage of the auditing subsystem to be altered
-
-@itemize
-@item 0: disable all auditing
-@item 1: enable auditing, only if enabled on host
-@item 2: enable auditing, and exit if disabled on host.
-@end itemize
-")
+   (integer 1)
+   "Modify the behavior of the auditing subsystem.  @samp{0} disables all
+auditing, samp{1} enables auditing only if enabled on thehost and @samp{2}
+enables auditing but exits if it is disabled on the host.")
   (audit-logging
-    (boolean #f)
-    "Send audit messages via libvirt logging infrastructure.")
+   (boolean #f)
+   "Send audit messages via libvirt logging infrastructure.")
   (host-uuid
-    (optional-string "")
-    "Host UUID. UUID must not have all digits be the same.")
+   (optional-string "")
+   "Host UUID. UUID must not have all digits be the same.")
   (host-uuid-source
-    (string "smbios")
-    "Source to read host UUID.
-
-@itemize
-
-@item @code{smbios}: fetch the UUID from @code{dmidecode -s system-uuid}
-
-@item @code{machine-id}: fetch the UUID from @code{/etc/machine-id}
-
-@end itemize
-
-If @code{dmidecode} does not provide a valid UUID a temporary UUID
-will be generated.")
+   (string "smbios")
+   "Source to read host UUID.  Use @code{\"smbios\"} to fetch the UUID via
+@code{dmidecode -s system-uuid}, or @code{\"machine-id\"} to fetch the UUID
+from @code{/etc/machine-id}.  If @code{dmidecode} does not provide a valid
+UUID a temporary UUID will be generated.")
   (keepalive-interval
-    (integer 5)
-    "A keepalive message is sent to a client after
-@code{keepalive_interval} seconds of inactivity to check if
-the client is still responding. If set to -1, libvirtd will
-never send keepalive requests; however clients can still send
-them and the daemon will send responses.")
+   (integer 5)
+   "A keepalive message is sent to a client after @code{keepalive_interval}
+seconds of inactivity to check if the client is still responding.  If set to
+@code{-1}, libvirtd won't send keepalive requests; however clients can still
+send them and the daemon will send responses.")
   (keepalive-count
-    (integer 5)
-    "Maximum number of keepalive messages that are allowed to be sent
-to the client without getting any response before the connection is
-considered broken.
-
-In other words, the connection is automatically
-closed approximately after
-@code{keepalive_interval * (keepalive_count + 1)} seconds since the last
-message received from the client. When @code{keepalive-count} is
-set to 0, connections will be automatically closed after
-@code{keepalive-interval} seconds of inactivity without sending any
-keepalive messages.")
+   (integer 5)
+   "Maximum number of keepalive messages that are allowed to be sent to the
+client without getting any response before the connection is considered
+broken.  In other words, the connection is automatically closed approximately
+after @samp{keepalive_interval * (keepalive_count + 1)} seconds since the last
+message received from the client.  When @code{keepalive-count} is set to
+@code{0}, connections will be automatically closed after
+@code{keepalive-interval} seconds of inactivity without sending any keepalive
+messages.")
   (admin-keepalive-interval
-    (integer 5)
-    "Same as above but for admin interface.")
+   (integer 5)
+   "Same as above but for admin interface.")
   (admin-keepalive-count
-    (integer 5)
-    "Same as above but for admin interface.")
+   (integer 5)
+   "Same as above but for admin interface.")
   (ovs-timeout
-    (integer 5)
-    "Timeout for Open vSwitch calls.
-
-The @code{ovs-vsctl} utility is used for the configuration and
-its timeout option is set by default to 5 seconds to avoid
-potential infinite waits blocking libvirt."))
+   (integer 5)
+   "Timeout for Open vSwitch calls.  The @code{ovs-vsctl} utility is used for
+the configuration and its timeout option is set by default to 5 seconds to
+avoid potential infinite waits blocking libvirt."))
 
 (define* (libvirt-conf-file config)
   "Return a libvirtd config file."
