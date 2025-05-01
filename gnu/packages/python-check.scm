@@ -23,7 +23,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2024-2025 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
-;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
@@ -2445,6 +2445,24 @@ framework and makes it easy to undo any monkey patching.  The fixtures are:
 @item spy2
 @end itemize")
     (license license:expat)))
+
+(define-public python-pytest-mpi
+  (package
+    (name "python-pytest-mpi")
+    (version "0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-mpi" version))
+       (sha256
+        (base32 "1a954cai5lr327np5f38mg8gw91p4akx8m2z416wvwzq24swvcq9"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pytest))
+    (home-page "https://pytest-mpi.readthedocs.io")
+    (synopsis "Pytest plugin for working with MPI")
+    (description "This plugin for Pytest provides tools for running Python
+tests with MPI and for testing code using MPI.")
+    (license license:bsd-3)))
 
 (define-public python-pytest-mpl
   (package
