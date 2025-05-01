@@ -218,20 +218,21 @@
 (define-public aide
   (package
     (name "aide")
-    (version "0.18.8")
+    (version "0.19")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/aide/aide/releases/download/v"
                            version "/aide-" version ".tar.gz"))
        (sha256
-        (base32 "0q1sp0vwrwbmw6ymw1kwd4i8walijwppa0dq61b2qzni6b32srhn"))))
+        (base32 "1r55mf4nl6ydb7zwzkz4689j9v9kaabz5gsrcgbrj4p09chs1yz7"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~(list "--with-posix-acl"
                                      "--with-selinux"
                                      "--with-xattr"
-                                     "--with-config-file=/etc/aide.conf")))
+                                     "--with-config-file=/etc/aide.conf"
+                                     "--without-fstype")))
     (native-inputs
      (list bison flex pkg-config))
     (inputs
@@ -239,8 +240,8 @@
            attr
            libgcrypt
            libgpg-error
-           libmhash
            libselinux
+           nettle
            pcre2
            `(,zlib "static")
            zlib))
