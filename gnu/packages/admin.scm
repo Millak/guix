@@ -1919,7 +1919,7 @@ message.  These messages are required for IPv6 stateless autoconfiguration.")
 (define-public ndppd
   (package
     (name "ndppd")
-    (version "0.2.5")
+    (version "0.2.6")
     (source
      (origin
        (method git-fetch)
@@ -1928,7 +1928,7 @@ message.  These messages are required for IPv6 stateless autoconfiguration.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0niri5q9qyyyw5lmjpxk19pv3v4srjvmvyd5k6ks99mvqczjx9c0"))))
+        (base32 "1b0xda2cr4yq2pj8zch9gvfxqvz1n5rjl4nyqn70jyrincvsi8qn"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ; There are no tests
