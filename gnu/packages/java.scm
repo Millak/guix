@@ -13,7 +13,7 @@
 ;;; Copyright © 2019, 2020, 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -1792,6 +1792,20 @@ blacklisted.certs.pem"
                ;; 'blacklisted' was renamed back to 'blocked'.
                (substitute* "src/java.base/share/data/blockedcertsconverter/blocked.certs.pem"
                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))))
+
+(define-public openjdk22
+  (make-openjdk
+   openjdk21 "22.0.2"
+   "1nj414yj6v9qrlm48yv5llr4jmgj9g20v6zsd39xrdx4x4x4p3b6"
+   (arguments
+    (substitute-keyword-arguments (package-arguments base)
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (add-after 'unpack 'do-not-disable-new-dtags
+             (lambda _
+               ;; Our validate-runpath phases checks for RUNPATH, not RPATH.
+               (substitute* "make/autoconf/flags-cflags.m4"
+                 ((" -Wl,--disable-new-dtags") ""))))))))))
 
 ;;; Convenience alias to point to the latest version of OpenJDK.
 (define-public openjdk openjdk21)
