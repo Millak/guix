@@ -4536,53 +4536,51 @@ everyone's screenshots nowadays.")
     (license license:gpl3)))
 
 (define-public ufetch
-  (let ((commit "12b68fa35510a063582d626ccd1abc48f301b6b1")
-        (revision "0"))
-    (package
-      (name "ufetch")
-      (version "0.3")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.com/jschx/ufetch.git")
-                      (commit (string-append "v" version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0sv17zmvhp0vfdscs8yras7am10ah7rpfyfia608sx74k845bfyl"))))
-      (build-system trivial-build-system)
-      (inputs
-       `(("bash" ,bash)
-         ("tput" ,ncurses)))
-      (arguments
-       `(#:modules ((guix build utils))
-         #:builder
-         (begin
-           (use-modules (guix build utils))
-           (let* ((source (assoc-ref %build-inputs "source"))
-                  (output (assoc-ref %outputs "out"))
-                  (bindir (string-append output "/bin"))
-                  (docdir (string-append output "/share/doc/ufetch-" ,version))
-                  (tput   (search-input-file %build-inputs "/bin/tput")))
-             (install-file (string-append source "/LICENSE") docdir)
-             (setenv "PATH" (string-append (assoc-ref %build-inputs "bash") "/bin"))
-             (mkdir-p bindir)
-             (for-each (lambda (src)
-                         (let ((dst (string-append bindir "/" (basename src))))
-                           (copy-file src dst)
-                           (patch-shebang dst)
-                           (substitute* dst (("tput") tput))))
-                       (find-files source "ufetch-[[:alpha:]]*$"))
-             ;; Note: the `ufetch` we create below will only work if run under
-             ;; the Guix System.  I.e. a user trying to run `ufetch` on a
-             ;; foreign distro will not get great results.  The `screenfetch`
-             ;; program does actual runtime detection of the operating system,
-             ;; and would be a better choice in such a situation.
-             (symlink "ufetch-guix" (string-append bindir "/ufetch"))))))
-      (home-page "https://gitlab.com/jschx/ufetch")
-      (synopsis "Tiny system info")
-      (description "This package provides a tiny system info utility.")
-      (license license:expat))))
+  (package
+    (name "ufetch")
+    (version "0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/jschx/ufetch.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0858hq9lannyh4ipvrlk3syc576r2x6f6hr08n0hfsn3x3ndzjl9"))))
+    (build-system trivial-build-system)
+    (inputs
+     `(("bash" ,bash)
+       ("tput" ,ncurses)))
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let* ((source (assoc-ref %build-inputs "source"))
+                (output (assoc-ref %outputs "out"))
+                (bindir (string-append output "/bin"))
+                (docdir (string-append output "/share/doc/ufetch-" ,version))
+                (tput   (search-input-file %build-inputs "/bin/tput")))
+           (install-file (string-append source "/LICENSE") docdir)
+           (setenv "PATH" (string-append (assoc-ref %build-inputs "bash") "/bin"))
+           (mkdir-p bindir)
+           (for-each (lambda (src)
+                       (let ((dst (string-append bindir "/" (basename src))))
+                         (copy-file src dst)
+                         (patch-shebang dst)
+                         (substitute* dst (("tput") tput))))
+                     (find-files source "ufetch-[[:alpha:]]*$"))
+           ;; Note: the `ufetch` we create below will only work if run under
+           ;; the Guix System.  I.e. a user trying to run `ufetch` on a
+           ;; foreign distro will not get great results.  The `screenfetch`
+           ;; program does actual runtime detection of the operating system,
+           ;; and would be a better choice in such a situation.
+           (symlink "ufetch-guix" (string-append bindir "/ufetch"))))))
+    (home-page "https://gitlab.com/jschx/ufetch")
+    (synopsis "Tiny system info")
+    (description "This package provides a tiny system info utility.")
+    (license license:expat)))
 
 (define-public pfetch
   (let ((commit "a906ff89680c78cec9785f3ff49ca8b272a0f96b")
