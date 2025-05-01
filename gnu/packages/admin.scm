@@ -4228,15 +4228,15 @@ in order to be able to find it.
 (define-public xfel
   (package
     (name "xfel")
-    (version "1.2.9")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/xboot/xfel.git")
+              (url "https://github.com/xboot/xfel")
               (commit (string-append "v" version))))
        (sha256
-         (base32 "0gs37w5zjfmyadm49hdalq6vr6gidc683agz3shncgj93x2hxx02"))
+        (base32 "1x69lh0dhr3kkkrcv9wziz7m19apj4ygvss95rdb82wnl27gwrvy"))
        (file-name (git-file-name name version))))
     (native-inputs
      (list pkg-config))
@@ -4244,20 +4244,12 @@ in order to be able to find it.
      (list libusb))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; No tests exist
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-installation-target
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "Makefile"
-                (("/usr/local") out)
-                (("/usr") out)
-                (("/etc/udev/rules.d")
-                 (string-append out "/lib/udev/rules.d"))
-                (("udevadm control --reload") ; next version will remove this
-                  "")))))
-         (delete 'configure))))
+     (list #:tests? #f ; No tests exist
+           #:make-flags #~(list "PREFIX="
+                                (string-append "DESTDIR=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (home-page "https://github.com/xboot/xfel")
     (synopsis "Remote debugging tool for Allwinner devices")
     (description "This package contains a debugging tool for Allwinner devices
