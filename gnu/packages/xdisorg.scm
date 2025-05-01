@@ -675,6 +675,28 @@ X11 (yet).")
                (base32
                 "05z08rpa464x8myjxddhix7jp9jcmakd7xrybx4hz8dwpg2123sn"))))))
 
+(define-public libxkbcommon-1.8
+  (package
+    (inherit libxkbcommon)
+    (version "1.8.1")
+    (source (origin
+              (inherit (package-source libxkbcommon))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xkbcommon/libxkbcommon")
+                    (commit (string-append "xkbcommon-" version))))
+              (file-name (git-file-name (package-name libxkbcommon) version))
+              (sha256
+               (base32
+                "0fz6mf99lyp7x6g6v33210hhpykbg32fjmckyvxfpd805cza0xrj"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libxkbcommon)
+       ((#:configure-flags flags #~(list))
+        #~(cons "-Denable-docs=true" #$flags))))
+    (native-inputs (modify-inputs (package-native-inputs libxkbcommon)
+                     (append xorg-server  ;; Xvfb for tests
+                             xkbcomp)))))   ;; xkbcomp for tests
+
 (define-public libfakekey
   (package
     (name "libfakekey")
