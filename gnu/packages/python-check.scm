@@ -3614,6 +3614,51 @@ supported environment, or act as a frontend to continuous integration
 servers.")
     (license license:expat)))
 
+(define-public python-validate-pyproject
+  (package
+    (name "python-validate-pyproject")
+    (version "0.24.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "validate_pyproject" version))
+       (sha256
+        (base32 "0wbbksrfaxc2c7y305wjinkk4y1jxdnc0vzfbf79ipaa6m8zr0p1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; TODO: Full test suite requires schemas from
+      ;; <https://json.schemastore.org/pyproject.json> and obtained during CI
+      ;; just before running tests, figure out how to get schema files to
+      ;; cover all test cases, see <tools/cache_urls_for_tests.py> and
+      ;; <.github/workflows/ci.yml>.
+      #~(list "--ignore=tests/test_examples.py"
+              "--ignore=tests/test_pre_compile.py"
+              "-k" (string-join
+                    (list "not test_downloaded"
+                          "test_valid_download_only_once"
+                          "test_cache_open_url")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-packaging
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm
+           python-trove-classifiers
+           python-wheel))
+    (propagated-inputs
+     (list python-fastjsonschema))
+    (home-page "https://github.com/abravalheri/validate-pyproject/")
+    (synopsis "Validation library for simple check on @code{pyproject.toml}")
+    (description
+     "Validation library and CLI tool for checking on @code{pyproject.toml}
+files using JSON Schema.")
+    (license (list license:mpl2.0
+                   license:expat
+                   license:bsd-3))))
+
 (define-public python-vcrpy
   (package
     (name "python-vcrpy")
