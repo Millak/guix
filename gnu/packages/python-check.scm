@@ -57,6 +57,7 @@
   #:use-module (gnu packages docker)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python-build)
@@ -2515,12 +2516,21 @@ framework and makes it easy to undo any monkey patching.  The fixtures are:
        (uri (pypi-uri "pytest-mpi" version))
        (sha256
         (base32 "1a954cai5lr327np5f38mg8gw91p4akx8m2z416wvwzq24swvcq9"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-pytest))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; See <https://github.com/aragilar/pytest-mpi/issues/4>.
+     (list #:test-flags #~(list "-p" "pytester")))
+    (native-inputs
+     (list openmpi
+           python-pytest
+           python-setuptools
+           python-sybil
+           python-wheel))
     (home-page "https://pytest-mpi.readthedocs.io")
-    (synopsis "Pytest plugin for working with MPI")
-    (description "This plugin for Pytest provides tools for running Python
-tests with MPI and for testing code using MPI.")
+    (synopsis "Pytest plugin to collect information from tests")
+    (description
+     "@code{pytest_mpi} is a plugin for pytest providing some useful tools
+when running tests under MPI, and testing MPI-related code.")
     (license license:bsd-3)))
 
 (define-public python-pytest-mpl
