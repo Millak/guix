@@ -1807,6 +1807,19 @@ blacklisted.certs.pem"
                (substitute* "make/autoconf/flags-cflags.m4"
                  ((" -Wl,--disable-new-dtags") ""))))))))))
 
+(define-public openjdk23
+  (make-openjdk
+   openjdk22 "23.0.2"
+   "0kxllznzhgqfn8b97krg2yp1ag41g4phmgqahrvzafd2bq6zclnf"
+   (source (origin
+             (inherit (package-source base))
+             ;; The 'openjdk-21-fix-rpath.patch' no longer applies, and it
+             ;; appears not needed anymore.  The
+             ;; 'openjdk-15-xcursor-no-dynamic.patch' doesn't apply anymore;
+             ;; the fix should be pursued in libx11 (see:
+             ;; https://issues.guix.gnu.org/54654)
+             (patches '())))))
+
 ;;; Convenience alias to point to the latest version of OpenJDK.
 (define-public openjdk openjdk21)
 
