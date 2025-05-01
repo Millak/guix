@@ -5026,16 +5026,16 @@ support forum.  It runs with the @code{/exec} command in most IRC clients.")
 (define-public pscircle
   (package
     (name "pscircle")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/mildlyparallel/pscircle.git")
+             (url "https://gitlab.com/mildlyparallel/pscircle")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sm99423hh90kr4wdjqi9sdrrpk65j2vz2hzj65zcxfxyr6khjci"))))
+        (base32 "0vdllrv2hxw71zhi1xrchkqvq0si4xas1qcsbqmgld8wvc2d19kf"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
