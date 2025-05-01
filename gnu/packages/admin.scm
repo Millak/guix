@@ -5551,19 +5551,14 @@ Netgear devices.")
 (define-public atop
   (package
     (name "atop")
-    (version "2.11.0")
+    (version "2.11.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.atoptool.nl/download/atop-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "083fckjn2s3276fqyjb3rcwqrws7qc3fgk1f82zzgzrfc1kcd54v"))
-              (snippet
-               ;; The 'mkdate' script generates a new 'versdate.h' header
-               ;; containing the build date.  That makes builds
-               ;; non-reproducible so remove it.
-               #~(delete-file "mkdate"))))
+                "0m2ij25byrw7sn61pqjdpclmlmwlk2217hbdcvsvd273z5whyrbp"))))
     (build-system gnu-build-system)
     (arguments
      (list
