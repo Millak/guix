@@ -10756,6 +10756,9 @@ protocol.")
     (arguments
      (list
       #:go go-1.22
+      #:build-flags #~(list (string-append "-ldflags="
+                                           "-X main.lyrebirdVersion="
+                                           #$version " -s -w"))
       #:install-source? #f
       #:unpack-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
       #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird/cmd/lyrebird"))
