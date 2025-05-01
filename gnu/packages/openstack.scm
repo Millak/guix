@@ -220,38 +220,6 @@ with mox as possible, but small enhancements have been made.")
 to docs.openstack.org and developer.openstack.org.")
     (license asl2.0)))
 
-(define-public python-os-client-config
-  (package
-    (name "python-os-client-config")
-    (version "1.12.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "os-client-config" version))
-        (sha256
-          (base32
-           "1vjn7667pswnmpqv6ngwyqm2xn46w90hi5b4pv2grwfz751cn1lf"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ;; Circular dependency with python-oslotest
-    (propagated-inputs
-      (list python-appdirs python-pyyaml))
-    (native-inputs
-      (list python-pbr
-            python-fixtures
-            python-mimeparse
-            python-testrepository
-            python-testscenarios
-            python-testtools))
-    (home-page "https://www.openstack.org/")
-    (synopsis
-      "OpenStack Client Configuration Library")
-    (description
-      "The OpenStack Client Configuration Library is a library for collecting
-  client configuration for using an OpenStack cloud in a consistent and
-  comprehensive manner.")
-    (license asl2.0)))
-
 (define-public python-os-service-types
   (package
     (name "python-os-service-types")
