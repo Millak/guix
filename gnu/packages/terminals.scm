@@ -852,7 +852,7 @@ eye-candy, customizable, and reasonably lightweight.")
 (define-public foot
   (package
     (name "foot")
-    (version "1.21.0")
+    (version "1.22.3")
     (home-page "https://codeberg.org/dnkl/foot")
     (source
      (origin
@@ -862,7 +862,7 @@ eye-candy, customizable, and reasonably lightweight.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19hkw4g2l00wasmk5dn34rf3bhqh6zbwwhvz98bdcv90p761jws4"))))
+        (base32 "1l5liw4dgv7hxdimyk5qycmkfjgimdrx51rjvdizpcfmdlkvg518"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -886,7 +886,7 @@ eye-candy, customizable, and reasonably lightweight.")
      (list (search-path-specification
             (variable "TERMINFO_DIRS")
             (files '("share/terminfo")))))
-    (inputs (list fcft libxkbcommon wayland wayland-protocols-next))
+    (inputs (list fcft libxkbcommon-1.8 wayland wayland-protocols-next))
     (synopsis "Wayland-native terminal emulator")
     (description
      "@command{foot} is a terminal emulator for systems using the Wayland
