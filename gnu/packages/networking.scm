@@ -281,7 +281,7 @@ protocols.")
 (define-public lcrq
   (package
     (name "lcrq")
-    (version "0.2.3")
+    (version "0.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -290,7 +290,7 @@ protocols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13nnx8izfzcy2k6y5njc8p9b196hpn2v90pmiysbiwp8qwnzczih"))))
+                "1d2mk3ii189462dmkksjsaqybj7cizn9vm9c8plml881brlz8a2n"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -310,7 +310,7 @@ protocols.")
               (invoke "make" "-C" "test" "speedtest"
                       (string-append "CC=" #$(cc-for-target))))))
       #:test-target "test"))
-    (home-page "https://librecast.net/lcrq.html")
+    (home-page "https://www.librecast.net/lcrq.html")
     (synopsis "Librecast RaptorQ library")
     (description
      "C library implementation of RaptorQ Forward Error Correction for
