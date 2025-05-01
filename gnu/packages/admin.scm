@@ -4795,7 +4795,7 @@ application, collecting the information received.")
 (define-public hungrycat
   (package
     (name "hungrycat")
-    (version "0.4.1")
+    (version "0.4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/jwilk/hungrycat/"
@@ -4803,12 +4803,14 @@ application, collecting the information received.")
                                   "hungrycat-" version ".tar.gz"))
               (sha256
                (base32
-                "03fc1zsrf99lvxa7b4ps6pbi43304wbxh1f6ci4q0vkal370yfwh"))))
+                "0xy9l4hky85h3rgdmqmhcnx0q1hq0brskr8lzw2lz6lh7pxlxmyw"))))
     (build-system gnu-build-system)
     (native-inputs
      ;; For tests.
      `(("python" ,python-wrapper)
-       ("python-nose" ,python-nose)))
+       ("python-nose" ,python-nose)
+       ("perl" ,perl)
+       ("perl-ipc-run" ,perl-ipc-run)))
     (arguments
      `(#:test-target "test"))
     (synopsis "Single tool that combines @command{cat} & @command{rm}")
