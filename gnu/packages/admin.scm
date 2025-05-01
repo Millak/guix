@@ -370,6 +370,40 @@ for interacting with the @url{https://www.hetzner.com/,Hetzner Cloud}
 service.")
     (license license:expat)))
 
+(define-public hungrycat
+  (package
+    (name "hungrycat")
+    (version "0.4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/jwilk/hungrycat/"
+                                  "releases/download/" version "/"
+                                  "hungrycat-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0xy9l4hky85h3rgdmqmhcnx0q1hq0brskr8lzw2lz6lh7pxlxmyw"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     ;; For tests.
+     `(("python" ,python-wrapper)
+       ("python-nose" ,python-nose)
+       ("perl" ,perl)
+       ("perl-ipc-run" ,perl-ipc-run)))
+    (arguments
+     `(#:test-target "test"))
+    (synopsis "Single tool that combines @command{cat} & @command{rm}")
+    (description
+     "hungrycat prints the contents of a file to standard output, while
+simultaneously freeing the disk space it occupied.  It is useful if you need
+to process a large file, don't have enough space to store both the input and
+output files, and don't need the input file afterwards.
+While similar in principle to running @command{cat} immediately followed by
+@command{rm}, @command{hungrycat} actually frees blocks as soon as they are
+printed instead of after the entire file has been read, which is often too
+late.")
+    (home-page "https://jwilk.net/software/hungrycat")
+    (license license:expat)))
+
 ;; This package uses su instead of sudo (because of SpaceFM).
 (define-public ktsuss
   (package
@@ -4791,40 +4825,6 @@ application, collecting the information received.")
     ;; 'src/siphash24.c' is the SipHash reference implementation, which
     ;; bears a CC0 Public Domain Dedication.
     (license license:agpl3+)))
-
-(define-public hungrycat
-  (package
-    (name "hungrycat")
-    (version "0.4.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/jwilk/hungrycat/"
-                                  "releases/download/" version "/"
-                                  "hungrycat-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0xy9l4hky85h3rgdmqmhcnx0q1hq0brskr8lzw2lz6lh7pxlxmyw"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     ;; For tests.
-     `(("python" ,python-wrapper)
-       ("python-nose" ,python-nose)
-       ("perl" ,perl)
-       ("perl-ipc-run" ,perl-ipc-run)))
-    (arguments
-     `(#:test-target "test"))
-    (synopsis "Single tool that combines @command{cat} & @command{rm}")
-    (description
-     "hungrycat prints the contents of a file to standard output, while
-simultaneously freeing the disk space it occupied.  It is useful if you need
-to process a large file, don't have enough space to store both the input and
-output files, and don't need the input file afterwards.
-While similar in principle to running @command{cat} immediately followed by
-@command{rm}, @command{hungrycat} actually frees blocks as soon as they are
-printed instead of after the entire file has been read, which is often too
-late.")
-    (home-page "https://jwilk.net/software/hungrycat")
-    (license license:expat)))
 
 (define-public launchmon
   (package
