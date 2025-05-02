@@ -4448,13 +4448,16 @@ addition it can convert any categorical axis into a combination matrix axis.")
 (define-public r-git2r
   (package
     (name "r-git2r")
-    (version "0.35.0")
+    (version "0.36.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "git2r" version))
               (sha256
                (base32
-                "0i76pf7nfdf989fwdhx233kp3qqimqqjhdj4r4jx6yx1bklg06i9"))))
+                "1b6ccsvaab63vyb04jszs352fk03hazg6cav4wv8h1f4al2z1m4c"))))
+    (properties
+     '((updater-extra-native-inputs . ("tzdata-for-tests"))
+       (updater-ignored-native-inputs . ("openssh" "openssl" "pcre2"))))
     (build-system r-build-system)
     (inputs
      (list libgit2 zlib))
