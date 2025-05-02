@@ -6067,14 +6067,17 @@ by R (also native code).")
 (define-public r-proj4
   (package
     (name "r-proj4")
-    (version "1.0-14")
+    (version "1.0-15")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "proj4" version))
               (sha256
                (base32
-                "1dh059lhw32vn0hxlp6sxb6m8hjdgmm01djq6vfncrhkjbd73mfk"))))
-    (properties `((upstream-name . "proj4")))
+                "056ki0z22wqsp5d89ihrsb3xf2h1jiabgy420vc51qcikl27vk7f"))))
+    (properties
+     '((upstream-name . "proj4")
+       (updater-extra-inputs . ("proj-7"))
+       (updater-ignored-inputs . ("curl" "openssh" "openssl"))))
     (build-system r-build-system)
     (inputs (list proj-7 zlib))
     (native-inputs (list pkg-config))
