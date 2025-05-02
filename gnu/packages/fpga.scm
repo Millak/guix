@@ -254,7 +254,7 @@ For synthesis, the compiler generates netlists in the desired format.")
                          pkg-config
                          python
                          tcl)) ;tclsh for the tests
-    (inputs (list abc
+    (inputs (list abc-yosyshq
                   bash-minimal
                   graphviz
                   gtkwave
