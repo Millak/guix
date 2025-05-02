@@ -4282,7 +4282,7 @@ in order to be able to find it.
 (define-public sedsed
   (package
     (name "sedsed")
-    (version "1.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4291,35 +4291,32 @@ in order to be able to find it.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05cl35mwljdb9ynbbsfa8zx6ig8r0xncbg2cir9vwn5manndjj18"))))
+        (base32 "0sy26d60j89fw4z2bfvc7zblb7r1ras5q7f06gaqfg2058z5wj8m"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-sed-in
-           (lambda _
-             (substitute* "sedsed.py"
-               (("sedbin = 'sed'")
-                (string-append "sedbin = '" (which "sed") "'")))
-             #t))
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               ;; Just one file to copy around
-               (install-file "sedsed.py" bin)
-               #t)))
-         (add-after 'wrap 'symlink
-           ;; Create 'sedsed' symlink to "sedsed.py".
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (sed (string-append bin "/sedsed"))
-                    (sedpy (string-append bin "/sedsed.py")))
-               (symlink sedpy sed)
-               #t))))))
+     (list #:tests? #f                      ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-sed-in
+                 (lambda _
+                   (substitute* "sedsed.py"
+                     (("sedbin = 'sed'")
+                      (string-append "sedbin = '" (which "sed") "'")))))
+               (delete 'build)
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin")))
+                     ;; Just one file to copy around
+                     (install-file "sedsed.py" bin))))
+               (add-after 'wrap 'symlink
+                 ;; Create 'sedsed' symlink to "sedsed.py".
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin"))
+                          (sed (string-append bin "/sedsed"))
+                          (sedpy (string-append bin "/sedsed.py")))
+                     (symlink sedpy sed)))))))
     (home-page "https://aurelio.net/projects/sedsed")
     (synopsis "Sed sed scripts")
     (description
