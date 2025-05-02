@@ -506,6 +506,8 @@ cache."
   ;; Properly handle SIGINT, so pressing C-c in an interactive terminal
   ;; application works.
   (sigaction SIGINT SIG_DFL)
+  ;; Restore original action for SIGPIPE.
+  (sigaction SIGPIPE SIG_DFL)
   (load-profile profile manifest
                 #:pure? pure? #:white-list-regexps white-list)
 
