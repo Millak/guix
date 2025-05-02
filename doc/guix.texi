@@ -298,6 +298,7 @@ Channels
 * Specifying Additional Channels::  Extending the package collection.
 * Using a Custom Guix Channel::  Using a customized Guix.
 * Replicating Guix::            Running the @emph{exact same} Guix.
+* Customizing the System-Wide Guix::  Default channels on Guix System.
 * Channel Authentication::      How Guix verifies what it fetches.
 * Channels with Substitutes::   Using channels with available substitutes.
 * Creating a Channel::          How to write your custom channel.
@@ -5374,7 +5375,7 @@ account security concerns and deal with authenticated updates.
 * Specifying Additional Channels::  Extending the package collection.
 * Using a Custom Guix Channel::  Using a customized Guix.
 * Replicating Guix::            Running the @emph{exact same} Guix.
-* Customizing the System-Wide Guix:: Default channels on Guix System.
+* Customizing the System-Wide Guix::  Default channels on Guix System.
 * Channel Authentication::      How Guix verifies what it fetches.
 * Channels with Substitutes::   Using channels with available substitutes.
 * Creating a Channel::          How to write your custom channel.
