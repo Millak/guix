@@ -1305,7 +1305,15 @@ with a ksysguardd daemon, which may also run on a remote system.")
     (arguments
      (list
       #:qtbase qtbase
-      #:tests? #f)) ;no tests
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'fix-socat-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (string-append #$output
+                                          "/libexec/pam_kwallet_init")
+                (("socat")
+                 (search-input-file inputs "bin/socat"))))))))
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list linux-pam kwallet libgcrypt socat))
     (synopsis "PAM Integration with KWallet")
