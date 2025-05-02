@@ -3651,7 +3651,7 @@ read and write, and compatible with JSON.")
 (define-public labwc
   (package
     (name "labwc")
-    (version "0.8.3")
+    (version "0.8.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3660,7 +3660,7 @@ read and write, and compatible with JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wbg3r4l7l4x94p8hl4zrjlmiqipg8p6gisi52nq1vgp1sz8zr48"))))
+                "1wbza00y2xf2zn34q5c8g5k2dn2xjzbbqmsnjv6c90mh2bbk1q95"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config gettext-minimal scdoc))
