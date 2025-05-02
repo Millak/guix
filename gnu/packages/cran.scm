@@ -21107,38 +21107,6 @@ dendrograms.")
     ;; Either version of the license.
     (license (list license:gpl2 license:gpl3))))
 
-(define-public r-h5
-  (package
-    (name "r-h5")
-    (version "0.9.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "h5" version))
-       (sha256
-        (base32
-         "14p7i1sj24ky87kd7qr3n9fc9l64s0bp0rwbyl6i2x69xn75gpsx"))))
-    (build-system r-build-system)
-    ;; 7/381 tests fail with "Embedded NUL in string."  r-h5 has been removed
-    ;; from CRAN already, but we'll keep it here for a while longer.
-    (arguments (list #:tests? #false))
-    (inputs
-     (list zlib hdf5-1.10))
-    (native-inputs
-     (list r-knitr r-testthat which))
-    (propagated-inputs
-     (list r-rcpp))
-    (home-page "https://github.com/mannau/h5")
-    (synopsis "Interface to the HDF5 Library")
-    (description
-     "This package provides an S4 interface to the HDF5 library supporting
-fast storage and retrieval of R-objects like vectors, matrices and arrays to
-binary files in a language independent format.  The HDF5 format can therefore
-be used as an alternative to R's save/load mechanism.  Since h5 is able to
-access only subsets of stored data it can also handle data sets which do not
-fit into memory.")
-    (license license:bsd-2)))
-
 (define-public r-cgdsr
   (package
     (name "r-cgdsr")
