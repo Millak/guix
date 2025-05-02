@@ -4248,46 +4248,6 @@ in order to be able to find it.
 @end enumerate")
     (license license:gpl2+)))
 
-(define-public xfel
-  (package
-    (name "xfel")
-    (version "1.3.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/xboot/xfel")
-              (commit (string-append "v" version))))
-       (sha256
-        (base32 "15xlqkj7lf3xszgfyci32lrwdjhqmmm9clmwlp1qn6hywal3d2p4"))
-       (file-name (git-file-name name version))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libusb))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:tests? #f ; No tests exist
-           #:make-flags #~(list "PREFIX="
-                                (string-append "DESTDIR=" #$output))
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure)
-               (add-after 'unpack 'patch-makefile
-                 (lambda _
-                   (substitute* "Makefile"
-                     (("/usr/local")
-                      #$output)
-                     (("/usr/share")
-                      (string-append #$output "/share/"))
-                     (("/etc/udev/rules.d")
-                      (string-append #$output "/lib/udev/rules.d"))))))))
-    (home-page "https://github.com/xboot/xfel")
-    (synopsis "Remote debugging tool for Allwinner devices")
-    (description "This package contains a debugging tool for Allwinner devices
-(connects via USB OTG).")
-    (license license:expat)))
-
 (define-public sedsed
   (package
     (name "sedsed")
@@ -6849,4 +6809,44 @@ several firewall backends.")
 communicate with which other processes.  It provides more usable versions
 of ps, top and pstree.")
     (home-page "https://github.com/walles/px")
+    (license license:expat)))
+
+(define-public xfel
+  (package
+    (name "xfel")
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/xboot/xfel")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32 "15xlqkj7lf3xszgfyci32lrwdjhqmmm9clmwlp1qn6hywal3d2p4"))
+       (file-name (git-file-name name version))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libusb))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ; No tests exist
+           #:make-flags #~(list "PREFIX="
+                                (string-append "DESTDIR=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'patch-makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("/usr/local")
+                      #$output)
+                     (("/usr/share")
+                      (string-append #$output "/share/"))
+                     (("/etc/udev/rules.d")
+                      (string-append #$output "/lib/udev/rules.d"))))))))
+    (home-page "https://github.com/xboot/xfel")
+    (synopsis "Remote debugging tool for Allwinner devices")
+    (description "This package contains a debugging tool for Allwinner devices
+(connects via USB OTG).")
     (license license:expat)))
