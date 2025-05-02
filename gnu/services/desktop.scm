@@ -20,6 +20,7 @@
 ;;; Copyright © 2024 45mg <45mg.writes@gmail.com>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -196,6 +197,10 @@
             gnome-keyring-configuration
             gnome-keyring-configuration?
             gnome-keyring-service-type
+
+            kwallet-configuration
+            kwallet-configuration?
+            kwallet-service-type
 
             seatd-configuration
             seatd-service-type
@@ -2148,6 +2153,64 @@ profile, and extends dbus with the ability for @code{efl} to generate
 thumbnails and privileges the programs which enlightenment needs to function
 as expected.")))
 
+
+;;;
+;;; kwallet-service-type.
+;;;
+
+(define-record-type* <kwallet-configuration> kwallet-configuration
+  make-kwallet-configuration
+  kwallet-configuration?
+  (wallet kwallet-package (default kwallet-pam))
+  (pam-services kwallet-pam-services (default '(("sddm" . login)
+                                                ("passwd" . passwd)))))
+
+(define (pam-kwallet config)
+  "Return a PAM extension for KWallet."
+  (match config
+    (#f '())                          ;explicitly disabled by user
+    (_
+     (define (%pam-keyring-entry . arguments)
+       (pam-entry
+        (control "optional")
+        (module (file-append (kwallet-package config)
+                             "/lib/security/pam_kwallet5.so"))
+        (arguments arguments)))
+
+     (list
+      (pam-extension
+       (transformer
+        (lambda (service)
+          (case (assoc-ref (kwallet-pam-services config)
+                           (pam-service-name service))
+            ((login)
+             (pam-service
+              (inherit service)
+              (auth (append (pam-service-auth service)
+                            (list (%pam-keyring-entry))))
+              (session (append (pam-service-session service)
+                               (list (%pam-keyring-entry "auto_start"))))))
+            ((passwd)
+             (pam-service
+              (inherit service)
+              (password (append (pam-service-password service)
+                                (list (%pam-keyring-entry))))))
+            (else service)))))))))
+
+;; TODO: consider integrating service in `<plasma-desktop-configuration>' as
+;; done in `<gnome-desktop-configuration>'. This requires rewritting the
+;; `<plasma-desktop-service-type>' as done for `<gnome-desktop-service-type>'.
+(define kwallet-service-type
+  (service-type
+   (name 'kwallet)
+   (extensions (list
+                (service-extension pam-root-service-type pam-kwallet)))
+   (default-value (kwallet-configuration))
+   (description "Return a service that extends PAM with entries using
+@code{pam_kwallet5.so}, unlocking the user's login keyring when they log in or
+setting its password with @command{passwd}.")))
+
+
 ;;;
 ;;; KDE Plasma desktop service.
 ;;;

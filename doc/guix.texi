@@ -138,6 +138,7 @@ Copyright @copyright{} 2024 45mg@*
 Copyright @copyright{} 2025 Sören Tempel@*
 Copyright @copyright{} 2025 Rostislav Svoboda@*
 Copyright @copyright{} 2025 Zacchaeus@*
+Copyright @copyright{} 2025 Sergio Pastor Pérez@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -27132,6 +27133,46 @@ without arguments.
 
 By default, this field contains ``gdm-password'' with the value @code{login}
 and ``passwd'' is with the value @code{passwd}.
+@end table
+@end deftp
+
+@defvar kwallet-service-type
+This is the type of the service that adds the
+@uref{https://invent.kde.org/plasma/kwallet-pam, KWallet keyring}.  Its
+value is a @code{kwallet-configuration} object (see below).  Note that,
+contrary to @code{gnome-desktop-service-type}, which includes the
+respective keyring for that service, @code{gnome-keyring-service-type},
+@code{plasma-desktop-service-type} does not include
+@code{kwallet-service-type}.
+
+This service adds the @code{kwallet-pam} package to the system profile
+and extends PAM with entries using @code{pam_kwallet5.so}.  It can
+unlock the user's login keyring or set their password with
+@command{passwd} at the time they log in.
+@end defvar
+
+@deftp {Data Type} kwallet-configuration
+Configuration record for the KWallet Keyring service.
+
+@table @asis
+@item @code{keyring} (default: @code{kwallet-pam})
+The KWallet keyring package to use.
+
+@item @code{pam-services}
+A list of @code{(@var{service} . @var{kind})} pairs denoting PAM
+services to extend, where @var{service} is the name of an existing
+service to extend and @var{kind} is one of @code{login} or @code{passwd}
+symbols.
+
+If @code{login} is given, it adds an optional
+@code{pam_kwallet5.so} to the auth block without arguments and to
+the session block with @code{auto_start}.  If @code{passwd} is given, it
+adds an optional @code{pam_kwallet5.so} to the password block
+without arguments.
+
+By default, it takes for value an alist associating the @code{"sddm"}
+key with the @code{'login} value, and the @code{"passwd"} key with the
+@code{'passwd} value.
 @end table
 @end deftp
 
