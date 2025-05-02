@@ -1696,7 +1696,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.3.1")
+    (version "2.3.2")
     (outputs '("out" "module" "src"))
     (source
      (origin
@@ -1705,7 +1705,7 @@ with the included @command{xfstests-check} helper.")
                            "/download/zfs-" version
                            "/zfs-" version ".tar.gz"))
        (sha256
-        (base32 "01lh3yxzh271hzzlgn4b5rj3wb4ckbhx08kfcgf0p4l6jdwk6ch5"))))
+        (base32 "12kmp23qs6ss8m0paa7bija0cxqn1r2if1j1pxak7v23jn565nl0"))))
     (build-system linux-module-build-system)
     (arguments
      (list
