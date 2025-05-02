@@ -5077,7 +5077,7 @@ cache of unix and unix-like systems.")
 (define-public solaar
   (package
     (name "solaar")
-    (version "1.1.13")
+    (version "1.1.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5086,7 +5086,7 @@ cache of unix and unix-like systems.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fz3qgjx3ygr4clgh7iryxgvvjy510rgy8ixr2xld2wr0xa6p0mi"))))
+                "000700waw4z6ab40naycapjgqz8yvz9ny1px94ni4pwf8f3kh0vh"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -5103,6 +5103,7 @@ cache of unix and unix-like systems.")
            ;; For GUI.
            python-pyyaml
            python-psutil
+           python-typing-extensions
            python-xlib
            gtk+
            python-pygobject))
