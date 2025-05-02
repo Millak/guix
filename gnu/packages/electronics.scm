@@ -724,19 +724,9 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
               (substitute* "sbysrc/sby.py"
                 (("/usr/bin/env python")
                  (search-input-file inputs "bin/python3")))))
-          ;; The tests related to abc (berkeley) binary used currently produce
-          ;; errors.  The abc-yosyshq fork would make the tests pass, but
-          ;; cannot be packaged due to the fork's non-free licensing (see the
-          ;; README, which specifies a non-commercial restriction).
-          (add-after 'patch-/usr/bin/env 'disable-abc-tests
-            (lambda _
-              (delete-file "tests/keepgoing/keepgoing_multi_step.sby")
-              (delete-file-recursively "docs/examples/demos")
-              (delete-file
-               "tests/regression/aim_vs_smt2_nonzero_start_offset.sby")))
           (add-after 'install 'python:wrap
             (assoc-ref python:%standard-phases 'wrap)))))
-    (inputs (list abc
+    (inputs (list abc-yosyshq
                   boolector
                   git-minimal/pinned
                   python
