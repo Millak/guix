@@ -6,6 +6,7 @@
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,7 +56,9 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xiph)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
@@ -598,6 +601,65 @@ autoloading of subtitle files for use while playing video.")
 camera.  Use it to take pictures and make videos to share.")
     (license ;; GPL for programs, LGPL for libraries
      (list license:gpl2+ license:lgpl2.0+))))
+
+(define-public kasts
+  (package
+    (name "kasts")
+    (version "25.03.90")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://invent.kde.org/multimedia/kasts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "094q0yc8ljpkryd0vwwh4ljvk101qr63siwxacm1dgmhyi95262k"))))
+    (build-system qt-build-system)
+    (native-inputs (list pkg-config extra-cmake-modules))
+    (inputs (list bash-minimal
+                  breeze-icons
+                  gstreamer
+                  kcolorscheme
+                  kcoreaddons
+                  kcrash
+                  kdbusaddons
+                  ki18n
+                  kiconthemes
+                  kirigami
+                  kirigami-addons
+                  kwindowsystem
+                  libxkbcommon
+                  python
+                  qqc2-desktop-style
+                  qtdeclarative
+                  qtkeychain-qt6
+                  qtmultimedia
+                  qtsvg
+                  sonnet
+                  syndication
+                  taglib
+                  threadweaver
+                  vlc
+                  vulkan-headers
+                  vulkan-loader))
+    (arguments
+     (list
+      #:qtbase qtbase))
+    (home-page "https://apps.kde.org/kasts/")
+    (synopsis "Convergent podcast client")
+    (description
+     "Kasts is a convergent podcast application that looks good on
+desktop and mobile.
+
+Its main features are:
+- Episode management through play queue
+- Sync playback positions with other clients through gpodder.net or
+  gpodder-nextcloud
+- Variable playback speed
+- Search for podcasts
+- Full system integration: e.g. inhibit system suspend while listening")
+    (license (list license:gpl2+ license:lgpl2.1+))))
 
 (define-public kmix
   (package
