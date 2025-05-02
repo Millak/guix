@@ -531,8 +531,15 @@ Definition Facility.")
         (base32 "0k2dmgl0miz3767iks4p0mvp6xw0ysyxhjpklyh11j010rmh6hqb"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list cl-asdf))
-    (inputs (list libffcall ncurses readline libsigsegv))
+     (list
+      cl-asdf
+      coreutils)) ;to use "cat" in a test
+    (inputs
+     (list
+      libffcall
+      ncurses
+      readline
+      libsigsegv))
     (arguments
      `(#:configure-flags '(,@(if (string-prefix? "armhf-linux"
                                                  (or (%current-system)
