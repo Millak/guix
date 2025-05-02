@@ -870,6 +870,10 @@ the \"texlive\" importer."
 (define-member (person "Noé Lopez"
                        "noelopez@free.fr")
   gnome)
+
+(define-member (person "Ashvith Shetty"
+                       "ashvithshetty0010@zohomail.in")
+  go javascript)
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
