@@ -20861,13 +20861,13 @@ document.")
 (define-public python-symengine
   (package
     (name "python-symengine")
-    (version "0.14.0")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "symengine" version))
        (sha256
-        (base32 "1np271qg2bnn32h52p0b102ybamjn9vaxpmsycx345zik327dp6r"))))
+        (base32 "1w7hwavbxgikljy9m3p89k3x2zdhv81h9bh330aw4wb3qm74p7jf"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -20881,7 +20881,7 @@ document.")
                     (invoke "nosetests" "-v" "symengine.tests"))
                   (format #t "test suite not run~%")))))))
     (native-inputs
-     (list cmake python-cython-3 python-nose))
+     (list cmake-minimal python-cython-3 python-nose))
     (inputs
      (list symengine))
     (home-page "https://github.com/symengine/symengine.py")
