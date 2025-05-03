@@ -759,16 +759,13 @@ the OpenCV-Python library.")
         (base32 "0qy3vsh8mrkdbmdyfandydfp0miqqqiisqfagp1mnwd5xvwyqwm2"))))
     (build-system meson-build-system)
     (native-inputs
-     (list gobject-introspection pkg-config))
+     (list gobject-introspection `(,glib "bin") pkg-config))
     (inputs
+     (list glib hdf5 imagemagick poppler))
+    ;; Propagated to satisfy vips.pc.
+    (propagated-inputs
      (list expat
            fftw
-           giflib
-           glib
-           (list glib "bin")
-           hdf5
-           imagemagick
-           imath
            lcms
            libexif
            libgsf
@@ -779,11 +776,9 @@ the OpenCV-Python library.")
            libxml2
            libwebp
            matio
-           niftilib
            openexr
            orc
-           pango
-           poppler))
+           pango))
     (home-page "https://www.libvips.org/")
     (synopsis "Multithreaded image processing system with low memory needs")
     (description
