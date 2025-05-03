@@ -16,7 +16,7 @@
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
 ;;; Copyright © 2019-2025 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
-;;; Copyright © 2020, 2024 Konrad Hinsen <konrad.hinsen@fastmail.net>
+;;; Copyright © 2020, 2024, 2025 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Adam Kandur <rndd@tuta.io>
@@ -11850,7 +11850,14 @@ Closure Templates.")
   (sbcl-package->cl-source-package sbcl-closure-template))
 
 (define-public ecl-closure-template
-  (sbcl-package->ecl-package sbcl-closure-template))
+  (let ((pkg (sbcl-package->ecl-package sbcl-closure-template)))
+    (package
+      (inherit pkg)
+      ;; The test suite fails under ecl because the function
+      ;;    LIFT::GET-BACKTRACE-AS-STRING
+      ;; (from ecl-lift) is undefined. Lift's support for ecl
+      ;; seems to be incomplete.
+      (arguments (list #:tests? #false)))))
 
 (define-public sbcl-clsql
   (package
