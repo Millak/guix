@@ -692,15 +692,31 @@ ACTIVATION-SCRIPT-TYPE."
 (define (activation-script gexps)
   "Return the system's activation script, which evaluates GEXPS."
   (define actions
-    (map (cut program-file "activate-service.scm" <>) gexps))
+    ;; TODO: Instead of importing modules here, let users of activation service
+    ;; add them explicitly.  See <https://issues.guix.gnu.org/76698>.
+    (map (lambda (action)
+           (program-file "activate-service.scm"
+                         (with-imported-modules (source-module-closure
+                                                 '((gnu build activation)
+                                                   (guix build utils)))
+                           #~(begin
+                               (use-modules (gnu build activation)
+                                            (guix build utils))
+                               #$action))))
+         gexps))
 
   (program-file "activate.scm"
                 (with-imported-modules (source-module-closure
                                         '((gnu build activation)
-                                          (guix build utils)))
+                                          (guix build utils)
+                                          (guix diagnostics)
+                                          (guix i18n)))
                   #~(begin
                       (use-modules (gnu build activation)
-                                   (guix build utils))
+                                   (guix build utils)
+                                   (guix diagnostics)
+                                   (guix i18n)
+                                   (srfi srfi-34))
 
                       (mkdir-p "/var/run")
                       ;; Make sure the user accounting database exists.  If it
@@ -720,7 +736,22 @@ ACTIVATION-SCRIPT-TYPE."
 
                       ;; Run the services' activation snippets.
                       ;; TODO: Use 'load-compiled'.
-                      (for-each primitive-load '#$actions)))))
+                      (for-each (lambda (action)
+                                  ;; Don't block activation process when one
+                                  ;; action fails.
+                                  (guard (condition
+                                          (else
+                                           (format (current-error-port) "~a~%"
+                                                   condition)
+                                           (warning
+                                            (G_ "failed to activate '~a'~%")
+                                            action)))
+                                    (save-module-excursion
+                                     (lambda ()
+                                       (set-current-module
+                                        (make-fresh-user-module))
+                                       (primitive-load action)))))
+                                '#$actions)))))
 
 (define (gexps->activation-gexp gexps)
   "Return a gexp that runs the activation script containing GEXPS."
