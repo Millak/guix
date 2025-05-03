@@ -1717,6 +1717,7 @@ on top of Baloo.")
                              kde-cli-tools
                              kdecoration
                              kde-gtk-config
+                             kded
                              kdeplasma-addons
                              kglobalaccel
                              kglobalacceld
