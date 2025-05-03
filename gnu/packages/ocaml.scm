@@ -1459,6 +1459,17 @@ Knuth’s LR(1) parser construction technique.")
        (sha256
         (base32 "1szfqb6rj19w2jdyaxdgy3plhgr7picijf7l4k5qq80kna2h0zm8"))))
     (build-system dune-build-system)
+    (arguments
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'install 'wrap-programs
+                  (lambda _
+                    (let ((ocamlpath
+                            `(,(string-append #$output "/lib/ocaml/site-lib")
+                               ,@(search-path-as-string->list (getenv "OCAMLPATH")))))
+                      (wrap-program (string-append #$output "/bin/" "binsec")
+                                    `("OCAMLPATH" ":" prefix ,ocamlpath))))))))
+    (inputs (list bash-minimal))
     (native-inputs (list gmp ocaml-qcheck ocaml-ounit2))
     (propagated-inputs (list dune-site
                              ocaml-base
