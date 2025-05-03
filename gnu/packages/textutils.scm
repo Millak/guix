@@ -217,32 +217,34 @@ case-folding, and other operations for data in the UTF-8 encoding.")
     (native-inputs
      (let ((UNICODE_VERSION "16.0.0"))  ; defined in data/Makefile
        ;; Test data that is otherwise downloaded with curl.
-       `(("NormalizationTest.txt"
-          ,(origin
-             (method url-fetch)
-             (uri (string-append "https://www.unicode.org/Public/"
-                                 UNICODE_VERSION "/ucd/NormalizationTest.txt"))
-             (sha256
-              (base32 "1cffwlxgn6sawxb627xqaw3shnnfxq0v7cbgsld5w1z7aca9f4fq"))))
-         ("GraphemeBreakTest.txt"
-          ,(origin
-             (method url-fetch)
-             (uri (string-append "https://www.unicode.org/Public/"
-                                 UNICODE_VERSION
-                                 "/ucd/auxiliary/GraphemeBreakTest.txt"))
-             (sha256
-              (base32 "1d9w6vdfxakjpp38qjvhgvbl2qx0zv5655ph54dhdb3hs9a96azf"))))
-         ("DerivedCoreProperties.txt"
-          ,(origin
-             (method url-fetch)
-             (uri (string-append "https://www.unicode.org/Public/"
-                                 UNICODE_VERSION "/ucd/DerivedCoreProperties.txt"))
-             (sha256
-              (base32 "1gfsq4vdmzi803i2s8ih7mm4fgs907kvkg88kvv9fi4my9hm3lrr"))))
-         ;; For tests.
-         ("julia" ,julia)
-         ("perl" ,perl)
-         ("ruby" ,ruby-2.7))))
+       (list (origin
+               (method url-fetch)
+               (uri (string-append
+                     "https://www.unicode.org/Public/"
+                     UNICODE_VERSION "/ucd/NormalizationTest.txt"))
+               (sha256
+                (base32
+                 "1cffwlxgn6sawxb627xqaw3shnnfxq0v7cbgsld5w1z7aca9f4fq")))
+             (origin
+               (method url-fetch)
+               (uri (string-append
+                     "https://www.unicode.org/Public/"
+                     UNICODE_VERSION "/ucd/auxiliary/GraphemeBreakTest.txt"))
+               (sha256
+                (base32
+                 "1d9w6vdfxakjpp38qjvhgvbl2qx0zv5655ph54dhdb3hs9a96azf")))
+             (origin
+               (method url-fetch)
+               (uri (string-append
+                     "https://www.unicode.org/Public/"
+                     UNICODE_VERSION "/ucd/DerivedCoreProperties.txt"))
+               (sha256
+                (base32
+                 "1gfsq4vdmzi803i2s8ih7mm4fgs907kvkg88kvv9fi4my9hm3lrr")))
+             ;; For tests.
+             julia
+             perl
+             ruby-2.7)))
     (arguments
      (strip-keyword-arguments
       '(#:tests?)
