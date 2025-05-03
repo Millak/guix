@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020-2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023, 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Kiran Shila <me@kiranshila.com>
@@ -2304,22 +2304,21 @@ to return meaningful clusters (if there are any).")
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
-    (version "0.5.11")
+    (version "0.5.13")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynndescent" version))
        (sha256
-        (base32 "0l5dpdsk5vg7rpay81bncp04119hnl5z7zxjv63jrnm9spcwwi3g"))))
+        (base32 "1yq0k15964klz7135gpa7rcpixywzs4zxmcp8p4fw7haxv058hnp"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools python-wheel))
-    (propagated-inputs
-     (list python-importlib-metadata
-           python-joblib
-           python-llvmlite
-           python-numba
-           python-scikit-learn
-           python-scipy))
+    (propagated-inputs (list python-importlib-metadata
+                             python-joblib
+                             python-llvmlite
+                             python-numba
+                             python-scikit-learn
+                             python-scipy))
     (home-page "https://github.com/lmcinnes/pynndescent")
     (synopsis "Nearest neighbor descent for approximate nearest neighbors")
     (description
