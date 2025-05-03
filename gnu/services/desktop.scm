@@ -369,7 +369,10 @@ users are allowed."
 (define %standard-geoclue-applications
   (list (geoclue-application "gnome-datetime-panel" #:system? #t)
         (geoclue-application "epiphany" #:system? #f)
-        (geoclue-application "firefox" #:system? #f)))
+        (geoclue-application "firefox" #:system? #f)
+        (geoclue-application "librewolf" #:system? #f)
+        (geoclue-application "icecat" #:system? #f)
+        (geoclue-application "redshift" #:system? #f)))
 
 ;; TODO: Use define-configuration and export accessors.
 (define-record-type* <geoclue-configuration>
