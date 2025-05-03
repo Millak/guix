@@ -1037,6 +1037,37 @@ interactive development.")
 (define-public ecl-stefil
   (sbcl-package->ecl-package sbcl-stefil))
 
+(define-public sbcl-trivial-coverage
+  (let ((commit "b409ac34ebbd798cd645de853cc5e43510a81244")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-coverage")
+      (version (git-version "0.0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/ediethelm/trivial-coverage")
+               (commit commit)))
+         (file-name (git-file-name "trivial-coverage" version))
+         (sha256
+          (base32 "1ak4mjcvzdjsjjh7j89zlnwgaamfrspxmjh2i9kg67kqn36prbsp"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-lquery))
+      (home-page "https://gitlab.com/ediethelm/trivial-coverage")
+      (synopsis "Print out the code coverage collected")
+      (description
+       "This package provides a simple Common Lisp library to print out the
+code coverage collected.")
+      (license license:expat))))
+
+(define-public cl-trivial-coverage
+  (sbcl-package->cl-source-package sbcl-trivial-coverage))
+
+(define-public ecl-trivial-coverage
+  (sbcl-package->ecl-package sbcl-trivial-coverage))
+
 (define-public sbcl-try
   (let ((commit "cf2a8887d091bf297b72ef69e15012e7e849ba3b")
         (revision "2"))
