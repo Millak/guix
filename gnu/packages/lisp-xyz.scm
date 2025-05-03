@@ -5701,7 +5701,7 @@ Common Lisp.")
 (define-public sbcl-cl-fast-ecs
   (package
     (name "sbcl-cl-fast-ecs")
-    (version "0.7.1")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -5710,12 +5710,13 @@ Common Lisp.")
              (commit version)))
        (file-name (git-file-name "cl-fast-ecs" version))
        (sha256
-        (base32 "068xc4ncxc9crg8b9x4abv1l8biq89d2fxm1i4m3jrbfx4adiqr5"))))
+        (base32 "09fv58pgfa1byplzzh4mzriwwnnn5i2ib8z19dbnbl7y8zy568hi"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list graphviz-minimal
            sbcl-cl-mock
-           sbcl-parachute))
+           sbcl-parachute
+           sbcl-trivial-coverage))
     (inputs
      (list sbcl-alexandria
            sbcl-closer-mop
@@ -5738,11 +5739,7 @@ built at runtime.")
   (sbcl-package->cl-source-package sbcl-cl-fast-ecs))
 
 (define-public ecl-cl-fast-ecs
-  (package
-    (inherit (sbcl-package->ecl-package sbcl-cl-fast-ecs))
-    (arguments
-     ;; FIXME: Calling some subprocesses during tests fails.
-     (list #:tests? #f))))
+    (sbcl-package->ecl-package sbcl-cl-fast-ecs))
 
 (define-public sbcl-cl-fastcgi
   (let ((commit "de8b49b26de9863996ec18db28af8ab7e8ac4e20")
