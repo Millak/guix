@@ -2341,13 +2341,13 @@ videoformats depend on the configuration flags of ffmpeg.")
 (define-public ffmpeg-progress-yield
   (package
     (name "ffmpeg-progress-yield")
-    (version "0.11.3")
+    (version "0.12.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "ffmpeg_progress_yield" version))
               (sha256
                (base32
-                "14kmlvslnkd60c3v50ifzm46n26vaadwymxwh2br5pz1zqcn89pb"))))
+                "09xwd1cigm5qhn5jcy16iw1nfvjcvph72jmq1kq3yzxqz351ylwd"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Not sure if the test file actually does anything.
