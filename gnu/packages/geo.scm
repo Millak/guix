@@ -963,13 +963,13 @@ projections.")
 (define-public python-obspy
   (package
     (name "python-obspy")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "obspy" version))
        (sha256
-        (base32 "0izpsfcgjzdj0ja0lip86agp1gfxpw3c00w77603vr1xw067pwww"))))
+        (base32 "0z1rf1m8dlcwrrc6bwncc6mgdph7vybg0ldm6xwhbgijv9ya34yx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
