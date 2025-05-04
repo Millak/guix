@@ -6185,6 +6185,15 @@ alias cysdig=sudo csysdig --modern-bpf
               (modules '((guix build utils)))
               (snippet
                '(begin
+                  ;; Replacing those by our own paths-guix.conf
+                  (with-directory-excursion "config"
+                    (for-each delete-file
+                              '("paths-arch.conf"
+                                "paths-debian.conf"
+                                "paths-fedora.conf"
+                                "paths-freebsd.conf"
+                                "paths-opensuse.conf"
+                                "paths-osx.conf")))
                   ;; Get rid of absolute file names.
                   (substitute* "setup.py"
                     (("/etc/fail2ban")
@@ -6248,14 +6257,6 @@ alias cysdig=sudo csysdig --modern-bpf
                     (lambda* (#:key inputs #:allow-other-keys)
                       ;; deleting things that are not feasible to fix
                       ;; or won't be used any way
-                      (with-directory-excursion "config"
-                        (for-each delete-file
-                                  '("paths-arch.conf"
-                                    "paths-debian.conf"
-                                    "paths-fedora.conf"
-                                    "paths-freebsd.conf"
-                                    "paths-opensuse.conf"
-                                    "paths-osx.conf")))
                       (with-directory-excursion "config/action.d"
                         (for-each delete-file
                                   '("apf.conf"
