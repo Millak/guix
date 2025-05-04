@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015-2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2020-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
@@ -230,14 +230,18 @@ when jobs finish.")
                   (mkdir "contribs")
                   (rename-file "tmp-pmi" "contribs/pmi")
                   (rename-file "tmp-pmi2" "contribs/pmi2")))))
-    (inputs (list freeipmi
-                  `(,hwloc-2 "lib")
-                  json-c
-                  linux-pam
-                  openpmix
-                  munge
-                  numactl
-                  readline))
+    (inputs
+     (append
+       (list freeipmi
+             `(,hwloc-2 "lib")
+             json-c
+             linux-pam)
+       (if (supported-package? openpmix)
+           (list openpmix)
+           '())
+       (list munge
+             numactl
+             readline)))
     (native-inputs
      (list autoconf expect perl pkg-config python-wrapper))
     (build-system gnu-build-system)
