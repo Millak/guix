@@ -1480,7 +1480,7 @@ re-coloring and on-disk caching.")
 (define-public ksyntaxhighlighting
   (package
     (name "ksyntaxhighlighting")
-    (version "6.10.0")
+    (version "6.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1489,7 +1489,7 @@ re-coloring and on-disk caching.")
                     "syntax-highlighting-" version ".tar.xz"))
               (sha256
                (base32
-                "168ni5iji3dcdpyffc2qhdgjkczwdmhdal80psamrg17zx1y7ddm"))))
+                "03a50rl86flg3av4wxjk690sr7fc9vqrfd413ljwgqfnhsw9pwfn"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules perl qttools))
