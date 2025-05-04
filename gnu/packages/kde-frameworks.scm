@@ -1304,7 +1304,7 @@ of applications that follow the Kirigami Human Interface Guidelines.")
 (define-public kitemmodels
   (package
     (name "kitemmodels")
-    (version "6.10.0")
+    (version "6.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1313,7 +1313,7 @@ of applications that follow the Kirigami Human Interface Guidelines.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "01q07cxiqqrfn1f1qa1z053yifac4qi58clki9v5xgv7xr59m1c3"))))
+                "1rjqmcgxywmk0404wbf00cbmdysifnz8zb8xks84z34ix694fv21"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
