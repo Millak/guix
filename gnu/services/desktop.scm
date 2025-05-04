@@ -2255,7 +2255,6 @@ rules."
            "kwalletmanager"
            "powerdevil"
            "bluedevil"
-           "kded"
            "kwallet"
            "plasma-firewall"))))
 
