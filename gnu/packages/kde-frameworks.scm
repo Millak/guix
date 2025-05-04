@@ -2003,7 +2003,7 @@ feel.")
 (define-public solid
   (package
     (name "solid")
-    (version "6.10.0")
+    (version "6.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2012,7 +2012,7 @@ feel.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "134f67pwy3wv54ybzq4f7maa5i9mfss89lyv34spazq4lf0jx294"))))
+                "07q5ci22w75spf2489pw2d9zn79vpv91pdz2m1v5qpd4m4cg26al"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison dbus extra-cmake-modules flex pkg-config qttools))
