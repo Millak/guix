@@ -1131,6 +1131,17 @@ export DICPATH=\"$HOME/.guix-profile/share/hunspell:/run/current-system/profile/
 # Allow GStreamer-based applications to find plugins.
 export GST_PLUGIN_PATH=\"$HOME/.guix-profile/lib/gstreamer-1.0\"
 
+for i in /etc/profile.d/*.sh; do
+    if [ -r \"$i\" ]; then
+        if [ \"${-#*i}\" != \"$-\" ]; then
+            . \"$i\"
+        else
+            . \"$i\" >/dev/null
+        fi
+    fi
+done
+unset i
+
 if [ -n \"$BASH_VERSION\" -a -f /etc/bashrc ]
 then
   # Load Bash-specific initialization code.
