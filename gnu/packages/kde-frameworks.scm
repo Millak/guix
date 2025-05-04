@@ -3879,7 +3879,7 @@ consumption.")
 (define-public kio
   (package
     (name "kio")
-    (version "6.10.0")
+    (version "6.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3888,7 +3888,7 @@ consumption.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "17391dh5kalb2s3ckrrawg7kwgkynqkdbfy32gapx7hlix1m9d3y"))
+                "00x2q9pf52khllnh86h4zcmqxhhfry6y5qkxvg25gws0nz8545a3"))
               (patches (search-patches "kio-search-smbd-on-PATH.patch"))))
     (build-system cmake-build-system)
     (propagated-inputs
@@ -3953,6 +3953,10 @@ consumption.")
                          "|kpasswdservertest"
                          "|kiowidgets-kfileitemactionstest"
                          "|kiofilewidgets-kfileplacesmodeltest"
+                         ;; This test requires '/etc/passwd' owned by root.
+                         "|testtrash"
+                         ;; This test requires 'HOME=/home/$USER'.
+                         "|kiofilewidgets-knewfilemenutest"
                          ;; The following tests fail or are flaky (see:
                          ;; https://bugs.kde.org/show_bug.cgi?id=440721).
                          "|kiocore-jobtest"
