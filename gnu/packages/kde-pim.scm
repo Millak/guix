@@ -1769,11 +1769,7 @@ kwebengineviewer.")
                (add-after 'unpack 'fix-test-case
                  (lambda* (#:key inputs tests? #:allow-other-keys)
                    (when tests?
-                     (with-output-to-file "autotests/BLACKLIST"
-                       (lambda _
-                         (for-each
-                          (lambda (name) (display (string-append "[" name "]\n*\n")))
-                          (list "testFancyFormat"))))
+                     (setenv "LC_ALL" "C.utf8") ;for 'testFancyFormat'
                      (setenv "TZDIR" (search-input-directory
                                       inputs "share/zoneinfo"))))))))
     (home-page "https://api.kde.org/stable/kdepimlibs-apidocs/")
