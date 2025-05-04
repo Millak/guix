@@ -4928,7 +4928,12 @@ the passwords on KDE work spaces.")
                 "1rhdfp9dalw1l4ya0x33bjdnp8iw1w7jwm5mxvyplpxi7cnlh1p1"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     (list kconfig kconfigwidgets))
+     (list
+      ;; Required by KF6XmlGuiConfig.cmake.
+      kconfig
+      kconfigwidgets
+      kguiaddons
+      qtbase))
     (native-inputs
      (list extra-cmake-modules qttools))
     (inputs
@@ -4938,14 +4943,12 @@ the passwords on KDE work spaces.")
            kcolorscheme
            kcoreaddons
            kglobalaccel
-           kguiaddons
            kiconthemes
            kitemviews
            ki18n
            ktextwidgets
            kwidgetsaddons
            kwindowsystem
-           qtbase
            qtdeclarative
            sonnet))
     (arguments
