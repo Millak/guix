@@ -6172,7 +6172,7 @@ alias cysdig=sudo csysdig --modern-bpf
 (define-public fail2ban
   (package
     (name "fail2ban")
-    (version "0.11.2")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6181,7 +6181,7 @@ alias cysdig=sudo csysdig --modern-bpf
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00d9q8m284q2wy6q462nipzszplfbvrs9fhgn0y3imwsc24kv1db"))
+                "0lfakna6ad2xwz95sjxzkavipcsxiy7ybavkdkf9zzmspf2ws4yk"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -6194,20 +6194,16 @@ alias cysdig=sudo csysdig --modern-bpf
                                 "paths-freebsd.conf"
                                 "paths-opensuse.conf"
                                 "paths-osx.conf")))))
-              (patches (search-patches
-                        "fail2ban-0.11.2_fix-setuptools-drop-2to3.patch"
-                        "fail2ban-python310-server-action.patch"
-                        "fail2ban-python310-server-actions.patch"
-                        "fail2ban-python310-server-jails.patch"
-                        "fail2ban-0.11.2_fix-test-suite.patch"
-                        "fail2ban-0.11.2_CVE-2021-32749.patch"
-                        "fail2ban-paths-guix-conf.patch"))))
-    (build-system python-build-system)
+              (patches (search-patches "fail2ban-paths-guix-conf.patch"))))
+    (build-system pyproject-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
-                  (add-before 'build 'invoke-2to3
+                  (add-after 'unpack 'avoid-external-binary-in-/bin
                     (lambda _
-                      (invoke "./fail2ban-2to3")))
+                      (delete-file "fail2ban/setup.py")
+                      (substitute* '("bin/fail2ban-testcases"
+                                     "setup.py")
+                        ((".*updatePyExec.*") ""))))
                   (add-after 'unpack 'patch-setup.py
                     (lambda _
                       ;; Get rid of absolute file names.
@@ -6225,7 +6221,7 @@ alias cysdig=sudo csysdig --modern-bpf
                   (add-after 'unpack 'disable-some-tests
                     (lambda _
                       (define (make-suite str)
-                        (string-append "tests.addTest.unittest.makeSuite." str ".."))
+                        (string-append "tests.addTest\\(loadTests\\(" str "\\)\\)"))
                       ;; disable tests performing unacceptable side-effects
                       (substitute* "fail2ban/tests/utils.py"
                         (((make-suite "actiontestcase.CommandActionTest"))
@@ -6242,7 +6238,7 @@ alias cysdig=sudo csysdig --modern-bpf
                          "")
                         (((make-suite "servertestcase.ServerConfigReaderTests"))
                          ""))))
-                  (add-before 'install 'fix-default-config
+                  (add-before 'build 'fix-default-config
                     (lambda* (#:key outputs #:allow-other-keys)
                       (substitute* '("config/paths-common.conf"
                                      "fail2ban/tests/utils.py"
@@ -6327,7 +6323,7 @@ alias cysdig=sudo csysdig --modern-bpf
                           (("_whois = whois")
                            (string-append "_whois = " (bin "whois")))))
                       (substitute* "config/jail.conf"
-                        (("before = paths-debian.conf")
+                        (("before = paths-debian\\.conf")
                          "before = paths-guix.conf"))))
                   (add-after 'install 'copy-man-pages
                     (lambda* (#:key outputs #:allow-other-keys)
@@ -6351,6 +6347,8 @@ alias cysdig=sudo csysdig --modern-bpf
                                       "fail2ban-testcases"))
                           (for-each install-man5
                                     '("jail.conf")))))))))
+    (native-inputs
+     (list python-setuptools python-wheel))
     (inputs (list gawk
                   coreutils-minimal
                   curl

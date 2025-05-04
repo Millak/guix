@@ -1260,13 +1260,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/expat-CVE-2024-45492.patch	\
   %D%/packages/patches/extempore-unbundle-external-dependencies.patch	\
   %D%/packages/patches/extundelete-e2fsprogs-1.44.patch		\
-  %D%/packages/patches/fail2ban-0.11.2_CVE-2021-32749.patch	\
-  %D%/packages/patches/fail2ban-0.11.2_fix-setuptools-drop-2to3.patch	\
-  %D%/packages/patches/fail2ban-0.11.2_fix-test-suite.patch	\
   %D%/packages/patches/fail2ban-paths-guix-conf.patch		\
-  %D%/packages/patches/fail2ban-python310-server-action.patch	\
-  %D%/packages/patches/fail2ban-python310-server-actions.patch	\
-  %D%/packages/patches/fail2ban-python310-server-jails.patch	\
   %D%/packages/patches/faiss-tests-CMakeLists-find-googletest.patch	\
   %D%/packages/patches/falcosecurity-libs-shared-build.patch	\
   %D%/packages/patches/farstream-gupnp.patch                         \
