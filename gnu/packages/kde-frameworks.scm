@@ -3594,7 +3594,7 @@ started on demand.")
 (define-public kdesu
   (package
     (name "kdesu")
-    (version "6.10.0")
+    (version "6.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3603,7 +3603,7 @@ started on demand.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0bn2a47gc4gfcq6y73hjhvgpk06qnfi9cys3pfc5gjw5ramr7fas"))))
+                "0qha716gkqkry9wrzl2xmcrysfwwcdkr5wg4yhhjbfqj36r1xsbb"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kpty))
