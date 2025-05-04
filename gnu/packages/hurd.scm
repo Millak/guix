@@ -57,7 +57,7 @@
                  version ".tar.gz"))
 
 (define-public gnumach-headers
-  (let ((commit "v1.8+git20240714"))
+  (let ((commit "v1.8+git20250304"))
     (package
       (name "gnumach-headers")
       (version (string-drop commit 1))
@@ -70,7 +70,7 @@
          (patches (search-patches "gnumach-version.patch"))
          (file-name (git-file-name "gnumach" version))
          (sha256
-          (base32 "0ykav1kx0bgxcxw04bpcsh5s4531fzdkahjgrlsfs2h3w3vfkga0"))))
+          (base32 "0sq15n7x05qk3rjx5c0dbiijysyvk4gqqqfkc6gjkpsy3mx7a9q0"))))
       (build-system gnu-build-system)
       (arguments
        `(#:phases
@@ -81,7 +81,7 @@
            (delete 'build))
          #:tests? #f))
       (native-inputs
-       (list autoconf automake-1.16.5 texinfo))
+       (list autoconf automake texinfo))
       (supported-systems %hurd-systems)
       (home-page "https://www.gnu.org/software/hurd/microkernel/mach/gnumach.html")
       (synopsis "GNU Mach kernel headers")
@@ -270,7 +270,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
                   (install-file "gnumach.gz" boot))))))))
     (native-inputs
      (list autoconf
-           automake-1.16.5
+           automake
            (if (%current-target-system)
                (cross-mig (%current-target-system))
                mig)
