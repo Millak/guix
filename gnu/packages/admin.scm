@@ -6218,23 +6218,19 @@ alias cysdig=sudo csysdig --modern-bpf
                  "'usr/share/doc/fail2ban'"))))
           (add-after 'unpack 'disable-some-tests
             (lambda _
-              (define (make-suite str)
-                (string-append "tests.addTest\\(loadTests\\(" str "\\)\\)"))
+              (define (make-suite-regex tests)
+                (string-append "tests.addTest\\(loadTests\\(("
+                               (string-join tests "|")
+                               ")\\)\\)"))
               ;; disable tests performing unacceptable side-effects
               (substitute* "fail2ban/tests/utils.py"
-                (((make-suite "actiontestcase.CommandActionTest"))
-                 "")
-                (((make-suite "misctestcase.SetupTest"))
-                 "")
-                (((make-suite "filtertestcase.DNSUtilsNetworkTests"))
-                 "")
-                (((make-suite "filtertestcase.IgnoreIPDNS"))
-                 "")
-                (((make-suite "filtertestcase.GetFailures"))
-                 "")
-                (((make-suite "fail2banclienttestcase.Fail2banServerTest"))
-                 "")
-                (((make-suite "servertestcase.ServerConfigReaderTests"))
+                (((make-suite-regex (list "actiontestcase.CommandActionTest"
+                                          "misctestcase.SetupTest"
+                                          "filtertestcase.DNSUtilsNetworkTests"
+                                          "filtertestcase.IgnoreIPDNS"
+                                          "filtertestcase.GetFailures"
+                                          "fail2banclienttestcase.Fail2banServerTest"
+                                          "servertestcase.ServerConfigReaderTests")))
                  ""))))
           (add-before 'build 'fix-default-config
             (lambda _
