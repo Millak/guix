@@ -4181,7 +4181,7 @@ specification.")
 (define-public knotifyconfig
   (package
     (name "knotifyconfig")
-    (version "6.10.0")
+    (version "6.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4190,7 +4190,7 @@ specification.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0p6h6mm9ipmps88pvnfy7qkhx6ci081qiv8554qdivzdb1x49fph"))))
+                "1d1rz0p270fwx84870kj7nih40kkxnpl3963mf52zs0xzkmkk6xb"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -4202,6 +4202,7 @@ specification.")
            kconfig
            kconfigwidgets
            kcoreaddons
+           kguiaddons
            kio
            kitemviews
            ki18n
