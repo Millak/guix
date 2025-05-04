@@ -131,8 +131,8 @@ communication.")
     (license gpl2+)))
 
 (define-public hurd-headers
-  (let ((revision "3")
-        (commit "v0.9.git20240714"))
+  (let ((revision "4")
+        (commit "v0.9.git20250420"))
     (package
       (name "hurd-headers")
       (version (string-drop commit 1))
@@ -143,7 +143,7 @@ communication.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0wvzil3llmrjg7ymwqs86d11bm5fl771jwncv7kk679lsvqca0ll"))
+                  "09z9gj1z11wswmxy7jdzrbjmlplpy0fpbc6gaj09hh34j4y6yr91"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (native-inputs
@@ -596,7 +596,7 @@ exec ${system}/rc \"$@\"
                     mig))
        ("pkg-config" ,pkg-config)
        ("perl" ,perl)
-       ("texinfo" ,texinfo-4)
+       ("texinfo" ,texinfo)
        ("dde-sources" ,dde-sources)))
     (supported-systems %hurd-systems)
     (home-page "https://www.gnu.org/software/hurd/hurd.html")
