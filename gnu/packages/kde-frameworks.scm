@@ -339,7 +339,7 @@ Phonon-VLC is a backend based on the VLC multimedia library.")
 (define-public attica
   (package
     (name "attica")
-    (version "6.10.0")
+    (version "6.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -348,7 +348,7 @@ Phonon-VLC is a backend based on the VLC multimedia library.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0idz9b0kv7nvz54hs5gihrfpr7zc9ca2axczdq1hi35dpjn2wv7k"))))
+                "11wav5mimd82v0gax3r6pazwgl3p2ys83lzzlpx23r71cbzvgk5c"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
