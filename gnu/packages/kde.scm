@@ -753,13 +753,27 @@ KDSoap.")
                 "0h720wcgsdx9h5vlr4flxrd3djmhwvlwkrf0yzwsf4amcb9wds8r"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (setenv "HOME" (getcwd))
-                              (setenv "TMPDIR" (getcwd))
-                              (invoke "ctest" "-E" "(thumbnailtest|testkioarchive)")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                   (setenv "HOME" (getcwd))
+                   (setenv "TMPDIR" (getcwd))
+                   (invoke "ctest" "-E"
+                           "(thumbnailtest|testkioarchive)"))))
+               (add-after 'install 'fix-kiod-path
+                 (lambda _
+                   (let* ((kio #$(this-package-input "kio"))
+                          (kf-version
+                           #$(version-major
+                              (package-version (this-package-input "kio")))))
+                     (substitute* (string-append #$output
+                                                 "/share/dbus-1/services/"
+                                                 "org.kde.kmtpd5.service")
+                       (("Exec=.*$")
+                        (string-append "Exec=" kio "/libexec/kf" kf-version
+                                       "/kiod" kf-version "\n")))))))))
     (native-inputs (list extra-cmake-modules dbus kdoctools pkg-config qttools))
     ;; TODO: libappimage
     (inputs (list gperf
