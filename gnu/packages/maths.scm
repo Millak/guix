@@ -8289,6 +8289,42 @@ operations.")
       (home-page "https://github.com/martin-cs/symfpu")
       (license license:gpl3+))))
 
+(define-public bitwuzla
+  (package
+    (name "bitwuzla")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bitwuzla/bitwuzla")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fpd1kgb5xdbcjiqbbc6j0b8g2ly9bp9m3la78fiayl4qlmsvh2b"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags '("-Dtesting=enabled" "-Ddefault_library=shared"
+                           "-Dkissat=true")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'make-git-optional
+                    (lambda _
+                      (substitute* "src/meson.build"
+                        (("run_command\\('git',")
+                         "run_command('sh', '-c', 'git',")))))))
+    (native-inputs (list googletest pkg-config))
+    (inputs (list cadical
+                  gmp
+                  kissat
+                  symfpu))
+    (synopsis "SMT solver optimized for the theory of bit-vectors")
+    (description
+     "Bitwuzla is a @acronym{SMT, Satisfiability Modulo Theories} solver
+for the theories of fixed-size bit-vectors, floating-point arithmetic,
+arrays, uninterpreted functions and their combinations.")
+    (home-page "https://bitwuzla.github.io/")
+    (license license:expat)))
+
 (define-public z3
   (package
     (name "z3")
