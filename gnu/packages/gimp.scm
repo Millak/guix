@@ -273,7 +273,7 @@ provided, as well as a framework to add new color models and data types.")
            libtiff
            libwebp
            maxflow
-           openexr-2
+           openexr
            pango
            poppler
            sdl2))
