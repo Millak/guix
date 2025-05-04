@@ -4342,7 +4342,7 @@ methodxs at scale on CPU or GPU.")
 (define-public python-umap-learn
   (package
     (name "python-umap-learn")
-    (version "0.5.6")
+    (version "0.5.8")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi release
@@ -4351,8 +4351,7 @@ methodxs at scale on CPU or GPU.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0rb0nx0zwi5gddiqil20ssqwb45a8w9fk65bnam001kp7vqjb9ky"))))
+        (base32 "0pdlb6qn9vnvabksiabxmcj30j8ff7526mz1qszrbdl5kh2sl7sm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4376,9 +4375,10 @@ methodxs at scale on CPU or GPU.")
            python-tqdm))
     (home-page "https://github.com/lmcinnes/umap")
     (synopsis "Uniform Manifold Approximation and Projection")
-    (description "Uniform Manifold Approximation and Projection is a dimension
-reduction technique that can be used for visualization similarly to t-SNE, but
-also for general non-linear dimension reduction.")
+    (description
+     "Uniform Manifold Approximation and Projection is a dimension reduction
+technique that can be used for visualization similarly to t-SNE, but also for
+general non-linear dimension reduction.")
     (license license:bsd-3)))
 
 ;; Requires AVX2 on x86_64-linux.
