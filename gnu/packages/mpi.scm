@@ -4,7 +4,7 @@
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
-;;; Copyright © 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -564,14 +564,14 @@ arrays) that expose a buffer interface.")
 (define-public mpich
   (package
     (name "mpich")
-    (version "4.2.2")
+    (version "4.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.mpich.org/static/downloads/"
                                   version "/mpich-" version ".tar.gz"))
               (sha256
                (base32
-                "0h8xg1wi2d88hnfmj3xydf1hj78r7fh05jljhk5jgxmbmsrmngw8"))))
+                "0qyc3c99dzx88y8gzadh4inmmvxms9r61xskrjwwm0xdhhli612y"))))
     (build-system gnu-build-system)
     (inputs
      `(,zlib
@@ -589,18 +589,17 @@ arrays) that expose a buffer interface.")
        (list "--disable-silent-rules"             ;let's see what's happening
              "--enable-debuginfo"
 
-             ;; Default to "ch4", as will be the case in 3.4.  It also works
-             ;; around issues when running test suites of packages that use
-             ;; MPICH: <https://issues.guix.gnu.org/39588#15>.
-             "--with-device=ch4:ucx" ; --with-device=ch4:ofi segfaults in tests
-
              (string-append "--with-hwloc-prefix="
                             (assoc-ref %build-inputs "hwloc"))
 
              ,@(if (assoc "ucx" (package-inputs this-package))
                    `((string-append "--with-ucx="
-                                    (assoc-ref %build-inputs "ucx")))
-                   '()))
+                                    (assoc-ref %build-inputs "ucx"))
+
+                     ;; Default to using ucx when built with ucx as an input.
+                     "--with-device=ch4:ucx")
+                   '(;; Fallback to ch4 with autodetect at configure time.
+                     "--with-device=ch4")))
 
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'patch-sources
@@ -617,6 +616,11 @@ arrays) that expose a buffer interface.")
                         (("/usr/bin/env") (which "env")))
                       (substitute* (find-files "." "\\.sh$")
                         (("/bin/sh") (which "sh")))))
+                  ;; Move 'check after 'install.  Some tests try to call
+                  ;; #$output/bin/mpicc.
+                  (delete 'check)
+                  (add-after 'install 'post-install-check
+                    (assoc-ref %standard-phases 'check))
                   (add-before 'configure 'fix-makefile
                     (lambda _
                       ;; Remove "@hwloclib@" from 'pmpi_convenience_libs'.
