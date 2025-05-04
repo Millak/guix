@@ -1902,7 +1902,7 @@ which are used in DBus communication.")
 (define-public prison
   (package
     (name "prison")
-    (version "6.10.0")
+    (version "6.13.0")
     (source
      (origin
        (method url-fetch)
@@ -1910,7 +1910,7 @@ which are used in DBus communication.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0yrcc1ry5qlabaja82d7m6qm6d3qci3b0mh6is7q2355xjaz785l"))))
+        (base32 "1q8303vnh02b8s3x2p5lxazw1d91qsypl4c31k5xmw97khl6xi13"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
