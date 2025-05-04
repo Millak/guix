@@ -2419,7 +2419,7 @@ a JACK session.")
 (define-public mixxx
   (package
     (name "mixxx")
-    (version "2.5.0")
+    (version "2.5.1")
     (source
      (origin
        (method git-fetch)
@@ -2428,7 +2428,7 @@ a JACK session.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wxv79rax77jhyjfbc65pjby9bxll77l43p2sgg9nw8sbj2kd4fm"))
+        (base32 "0fn0qwmcdwp04z4wmgs8b9dwlxp67lw9dw8hph50z006qfnrgbmk"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete libraries that we already have or don't need.
