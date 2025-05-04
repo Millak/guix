@@ -5670,7 +5670,7 @@ subgroups.")
 (define-public python-muon
   (package
     (name "python-muon")
-    (version "0.1.6")
+    (version "0.1.7")
     (source
      (origin
        ;; The tarball from PyPi doesn't include tests.
@@ -5681,14 +5681,20 @@ subgroups.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1kd3flgy41dc0sc71wfnirh8vk1psxgyjxkbx1zx9yskkh6anbgw"))))
+         "0lahc3r0sqqkifibjm090dpkwila3jfh967hldw2nm8wgj81ak82"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; Even providing a random seed, scipy.sparse.rand produces inconsistent
-      ;; results across scipy versions.
-      '(list "-k" "not test_tfidf")
+      '(list "-k" (string-join
+                   ;; Even providing a random seed, scipy.sparse.rand produces
+                   ;; inconsistent results across scipy versions.
+                   (list"not test_tfidf"
+                        ;; Tests fails with error: FileNotFoundError: [Errno
+                        ;; 2] No such file or directory.
+                        "test_filter_obs_with_obsm_obsp"
+                        "test_filter_var_with_varm_varp")
+                   " and not "))
       #:phases
       '(modify-phases %standard-phases
          ;; Numba needs a writable dir to cache functions.
