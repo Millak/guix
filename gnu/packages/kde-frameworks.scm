@@ -2348,7 +2348,7 @@ integrated it into your application's other widgets.")
 (define-public kcontacts
   (package
     (name "kcontacts")
-    (version "6.10.0")
+    (version "6.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2359,7 +2359,7 @@ integrated it into your application's other widgets.")
                (search-patches "kcontacts-incorrect-country-name.patch"))
               (sha256
                (base32
-                "0vdld4d8z1zvnppj6v5b8wf11m6x7xqymgzh5jw4yn15340ss8mn"))))
+                "0vshaz0dp4qyyr0c4k5j7i168zwj6fy6yb3bbjzawahzwkwqkwy3"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules
                          ;; for test
