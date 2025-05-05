@@ -1666,7 +1666,7 @@ on top of Baloo.")
 (define-public qqc2-breeze-style
   (package
     (name "qqc2-breeze-style")
-    (version "6.2.5")
+    (version "6.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1674,7 +1674,7 @@ on top of Baloo.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "03yis5fsy5dr3qs9g9gnwwl3y69navh1iijraqk2c8fajqvbc31q"))))
+                "1ipra7srk3xdq8b1jls46jkhbn1dcyadbl5gjm0lxqlivr49j87f"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
