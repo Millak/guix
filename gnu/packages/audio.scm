@@ -6541,7 +6541,7 @@ currently operate on IEEE-754 single-precision floating-point numbers.")
         (base32 "1jpvr7bra8srz8jvnlbmhf8andbaavq5v01qjnp2f61za93rzwba"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list bc octave valgrind))
+     (list bc octave valgrind/pinned))
     (arguments
      `(#:tests? #f ; TODO: Fix tests (paths, graphic toolkit, octave modules).
        #:phases

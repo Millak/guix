@@ -5370,7 +5370,7 @@ can receive input from a MIDI keyboard.")
            python-wavefile
            python-yq
            rubberband
-           valgrind
+           valgrind/pinned
 
            stargate-sbsms
            stargate-soundtouch))

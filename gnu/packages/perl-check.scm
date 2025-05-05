@@ -1409,7 +1409,7 @@ reported, and the tests skipped.")
     (native-inputs
      (list perl-module-build))
     (propagated-inputs
-     (list perl-path-tiny perl-test-trap valgrind))
+     (list perl-path-tiny perl-test-trap valgrind/pinned))
     (home-page "https://metacpan.org/release/Test-RunValgrind")
     (synopsis "Tests that an external program is valgrind-clean")
     (description "Test::RunValgind checks weather Valgrind does not detect

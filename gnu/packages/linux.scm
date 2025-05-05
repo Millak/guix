@@ -6444,7 +6444,7 @@ arrays when needed.")
                       (string-append "-Wl,-rpath=" #$output "/lib")))))))
 
     (native-inputs
-     (list perl pkg-config valgrind
+     (list perl pkg-config valgrind/pinned
            ;; For tests.
            cmocka))
     (inputs

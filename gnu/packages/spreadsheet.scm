@@ -87,7 +87,7 @@
         (list bash-minimal
               bison
               pkg-config
-              valgrind
+              valgrind/pinned
               which))
       (synopsis "Spreadsheet program with vim-like keybindings")
       (description

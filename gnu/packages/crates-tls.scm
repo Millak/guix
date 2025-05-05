@@ -1763,7 +1763,7 @@ PEM-encodings commonly used to store keys and certificates at rest.")
     (arguments
      `(#:cargo-inputs (("rust-web-time" ,rust-web-time-1))
        #:cargo-development-inputs (("rust-crabgrind" ,rust-crabgrind-0.1))))
-    (native-inputs (list valgrind))
+    (native-inputs (list valgrind/pinned))
     (home-page "https://github.com/rustls/pki-types")
     (synopsis "Shared types for the rustls PKI ecosystem")
     (description

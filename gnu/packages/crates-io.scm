@@ -16325,7 +16325,7 @@ to the @code{is_x86_feature_detected!} macro.")
                             "--skip=tests::test_run_mode_under_valgrind"
                             "--skip=tests::wrong_monitor_command")
        #:cargo-inputs (("rust-cc" ,rust-cc-1))))
-    (inputs (list valgrind))
+    (inputs (list valgrind/pinned))
     (home-page "https://github.com/2dav/crabgrind")
     (synopsis "Rust bindings to \"Valgrind Client Request\" interface")
     (description

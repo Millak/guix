@@ -196,8 +196,8 @@ it.")
     (build-system gnu-build-system)
     (native-inputs
      (append
-       (if (supported-package? valgrind)
-           (list valgrind)
+       (if (supported-package? valgrind/pinned)
+           (list valgrind/pinned)
            '())
        (list xxd)))
     (inputs

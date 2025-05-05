@@ -111,7 +111,7 @@ hundred times faster than real-time.")
                                             debug " " flag)))))))))
       (native-inputs
        (list pkg-config
-             valgrind                             ;for tests
+             valgrind/pinned                      ;for tests
              `(,(canonical-package glibc) "debug")))
       (inputs
        (list dashel

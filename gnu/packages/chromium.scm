@@ -924,7 +924,7 @@
            snappy
            speech-dispatcher
            eudev
-           valgrind
+           valgrind/pinned
            vulkan-headers
            vulkan-loader
            wayland

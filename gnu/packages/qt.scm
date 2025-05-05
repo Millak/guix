@@ -3390,7 +3390,7 @@ linux/libcurl_wrapper.h")
            re2
            snappy
            eudev
-           valgrind
+           valgrind/pinned
            vulkan-headers
            xcb-util))
     (propagated-inputs
@@ -6164,7 +6164,7 @@ including @i{fix-its} for automatic refactoring.")
             qtshadertools
             qtsvg
             yaml-cpp
-            valgrind
+            valgrind/pinned
             vulkan-loader
             `(,zstd "lib"))
       (if (supported-package? rust-rustc-demangle-capi-0.1)

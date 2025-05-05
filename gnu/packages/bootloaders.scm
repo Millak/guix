@@ -742,8 +742,8 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
             python-setuptools-scm
             swig
             which)
-      (if (member (%current-system) (package-supported-systems valgrind))
-          (list valgrind)
+      (if (member (%current-system) (package-supported-systems valgrind/pinned))
+          (list valgrind/pinned)
           '())))
     (inputs
      (list python))

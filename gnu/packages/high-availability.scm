@@ -414,7 +414,7 @@ lost.
                          pkg-config
                          rsync
                          util-linux
-                         valgrind))
+                         valgrind/pinned))
     (inputs (list dbus
                   corosync
                   glib

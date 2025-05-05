@@ -5244,7 +5244,7 @@ PyTorch.")
            python-hypothesis
            python-types-dataclasses
            shaderc
-           valgrind))
+           valgrind/pinned))
     (inputs
      (append
       (list asmjit

@@ -13292,8 +13292,8 @@ It uses pandoc as back-end for parsing Markdown.")
     (native-inputs
      (append
        (list check pkg-config swig)
-       (if (member (%current-system) (package-supported-systems valgrind))
-         (list valgrind)
+       (if (member (%current-system) (package-supported-systems valgrind/pinned))
+         (list valgrind/pinned)
          '())))
     (inputs
      `(("bash" ,bash-minimal) ; for wrap-program
@@ -14627,7 +14627,7 @@ GNU Privacy Guard built with libadwaita.")
            libxslt                      ;for xsltproc
            pkg-config
            sysprof
-           valgrind))
+           valgrind/pinned))
     (inputs
      (list appstream
            flatpak

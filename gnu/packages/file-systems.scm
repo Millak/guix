@@ -219,7 +219,7 @@ large and/or frequently changing (network) environment.")
     (native-inputs
        ;; Native inputs to run the tests
        ;; ("ruby" ,ruby)
-       ;; ("valgrind" ,valgrind)
+       ;; ("valgrind" ,valgrind/pinned)
        ;; ("which" ,which)
      (list pkg-config))
     (inputs

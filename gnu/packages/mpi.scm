@@ -231,7 +231,7 @@ bind processes, and much more.")
                (if-supported psm)
                (if-supported psm2)
                (if-supported ucx)
-               (if-supported valgrind)
+               (if-supported valgrind/pinned)
                (list rdma-core
                      slurm))))         ;for PMI support (launching via "srun")
     (native-inputs
