@@ -451,12 +451,16 @@ therefore it works well when executed from tty."
                        (eq? 'socket (stat:type (stat sock-file)))))
                   (determine-unused-display (+ n 1))
                   (format #f ":~a" n))))
-          (define (determine-vty)
+
+          (define (vty-from-fd0)
             (let ((fd0 (readlink "/proc/self/fd/0"))
                   (pref "/dev/tty"))
               (if (string-prefix? pref fd0)
-                  (string-append "vt" (substring fd0 (string-length pref)))
+                  (substring fd0 (string-length pref))
                   (error (format #f "Cannot determine VT from: ~a" fd0)))))
+
+          (define (determine-vty)
+            (string-append "vt" (or (getenv "XDG_VTNR") (vty-from-fd0))))
 
           (define (enable-xauth server-auth-file display)
             ;; Configure and enable X authority
