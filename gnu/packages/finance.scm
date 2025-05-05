@@ -2158,17 +2158,20 @@ from account statements and other documents and for managing documents.")
 (define-public fava
   (package
     (name "fava")
-    (version "1.27")
+    (version "1.30.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fava" version))
        (sha256
-        (base32 "0cw3pmyrknsw0h4w3v9vyk6wrii68zwkywsyyvjzyl2qz3xq8srk"))))
+        (base32 "110ah1xsapiabjssl6lzp0s7nl5ypszpmqndgfqw4pifpgzp3kdf"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list beancount
+     (list beancount-3
+           beanquery
            python-babel
+           python-anyio
+           python-beangulp
            python-cheroot
            python-click
            python-flask
@@ -2177,6 +2180,7 @@ from account statements and other documents and for managing documents.")
            python-markdown2
            python-ply
            python-simplejson
+           python-watchfiles
            python-werkzeug))
     (native-inputs
      (list python-babel
