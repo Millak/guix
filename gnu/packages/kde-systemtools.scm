@@ -380,65 +380,6 @@ This package is part of the KDE administration module.")
      "This package provides a tool to manage passwords on @code{kwallet}.")
     (license license:gpl2+)))
 
-(define-public spectacle
-  (package
-    (name "spectacle")
-    (version "24.12.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/spectacle-" version ".tar.xz"))
-       (sha256
-        (base32 "16dr9h4inh2z9j1lm8f4yx9m7n0vxf1sm80afslk6lgixc1hwwfz"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:qtbase qtbase
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "ctest" "-E"
-                             "filename_test")))))))
-    (native-inputs
-     (list extra-cmake-modules kdoctools))
-    (inputs
-     (list kconfig
-           kcoreaddons
-           kcrash
-           kdbusaddons
-           kglobalaccel
-           kguiaddons
-           ki18n
-           kio
-           kirigami
-           knotifications
-           kpipewire
-           kstatusnotifieritem
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
-           opencv
-           purpose
-           layer-shell-qt
-           prison
-           qtdeclarative
-           qtimageformats
-           qtmultimedia
-           qtwayland
-           wayland
-           wayland-protocols
-           plasma-wayland-protocols
-           xcb-util
-           xcb-util-cursor
-           xcb-util-image
-           libxkbcommon))
-    (home-page "https://apps.kde.org/spectacle/")
-    (synopsis "Screenshot capture utility for KDE")
-    (description "Spectacle is a screenshot taking utility for the KDE.")
-    (license license:gpl2+)))
-
 (define-public spectacle-ocr-screenshot
   (package
     (name "spectacle-ocr-screenshot")
