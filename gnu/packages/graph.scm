@@ -715,14 +715,14 @@ of millions of nodes (as long as they can fit in memory).")
 (define-public python-leidenalg
   (package
     (name "python-leidenalg")
-    (version "0.9.1")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "leidenalg" version))
        (sha256
         (base32
-         "1wvmi6ca9kf8pbxg6b18n64h82wr9a6wcdazyn82pww0dwxzwp3y"))))
+         "0k1f35bmgff8vc5fcyqa2dqfa1x17rb0vqzwkdqlm0sr5fllfh8g"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f                      ;tests are not included
@@ -739,19 +739,14 @@ of millions of nodes (as long as they can fit in memory).")
     (native-inputs
      (list pkg-config python-setuptools-scm))
     (inputs
-     (list igraph))
+     (list igraph libleidenalg))
     (propagated-inputs
      (list python-igraph))
     (home-page "https://github.com/vtraag/leidenalg")
     (synopsis "Community detection in large networks")
-    (description
-     "Leiden is a general algorithm for methods of community detection in
-large networks.  This package implements the Leiden algorithm in C++ and
-exposes it to Python.  Besides the relative flexibility of the implementation,
-it also scales well, and can be run on graphs of millions of nodes (as long as
-they can fit in memory).  The core function is @code{find_partition} which
-finds the optimal partition using the Leiden algorithm, which is an extension
-of the Louvain algorithm, for a number of different methods.")
+    (description "Leiden is a general algorithm for methods of community
+detection in large networks and is an extension of the Louvain algorithm. This
+packages provides a Python wrapper to the C++ implementation.")
     (license license:gpl3+)))
 
 (define-public edge-addition-planarity-suite
