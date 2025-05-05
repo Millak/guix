@@ -421,7 +421,7 @@ then
     guix build -m <(echo '(specifications->manifest (list "guile"))') -n
 fi
 
-# Build a scheme->file object via multiple expressions, and validate it
+# Build a scheme-file object via multiple expressions, and validate it
 # produces the correct result when evaluated.
 scheme_file=$(guix build -e \
      "(use-modules (guix gexp)) \
