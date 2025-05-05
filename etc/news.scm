@@ -38,6 +38,17 @@
 (channel-news
  (version 0)
 
+ (entry (commit "ce363c1dc7bd63a74dcf7788d340819f6d5db89f")
+        (title
+         (en "@command{guix shell --container} provides a read-only root by
+default"))
+        (body
+         (en "The @command{guix shell --container} command now provides a
+read-only root file system by default.  You can restore the previous behavior
+by passing the @option{--writable-root} flag.
+
+Run @command{info \"(guix) Invoking guix shell\"} for more information.")))
+
  (entry (commit "7e5913f90df916d8d9f5c509354d62324f54f481")
         (title
          (en "Linux-libre 6.14 now available")
