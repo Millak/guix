@@ -6503,7 +6503,7 @@ and reverb.")
 (define-public lsp-plugins
   (package
     (name "lsp-plugins")
-    (version "1.2.15")
+    (version "1.2.21")
     (source
       (origin
         (method url-fetch)
@@ -6511,7 +6511,7 @@ and reverb.")
                             "/releases/download/" version
                             "/lsp-plugins-src-" version ".tar.gz"))
         (sha256
-         (base32 "1bpkbmy8djz304rlsf9zp7bkyc874gnpfihkigqg4fj667x2xfcj"))))
+         (base32 "1n8jdvbkd8kgr50s8alw75g2k8202837k9sl3lvlbmkyap8a2bdf"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -6530,7 +6530,7 @@ and reverb.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (invoke ".build/host/lsp-plugin-fw/lsp-plugins-test" "utest"))))
+                (invoke ".build/target/lsp-plugin-fw/lsp-plugins-test" "utest"))))
           (add-after 'install 'move-large-subdirs
             (lambda _
               (define (move-to-output output path)
