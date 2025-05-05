@@ -234,51 +234,46 @@ more.")
          "0z9jqvl65j4z6brrjlfyykba2bs10az6dx6m8g41snlfnx21a82d"))))))
 
 (define-public python-igraph
-  ;; Temporarily use a precise commit, as there was a mistake in the last
-  ;; release that was fixed by it (see:
-  ;; https://github.com/igraph/python-igraph/issues/632).
-  (let ((revision "0")
-        (commit "b6ebd8eb277fc1d0e33340a6624629a10c638992"))
-    (package
-      (inherit igraph)
-      (name "python-igraph")
-      (version (git-version "0.10.4" revision commit))
-      (source (origin
-                (method git-fetch)
-                ;; The PyPI archive lacks tests.
-                (uri (git-reference
-                      (url "https://github.com/igraph/python-igraph")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0dhrz5a6pi6vs94fm8q4nmkh6v1nmpw1sk482xls213zcbbh67hd"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'specify-libigraph-location
-              (lambda _
-                (let ((igraph #$(this-package-input "igraph")))
-                  (substitute* "setup.py"
-                    (("(LIBIGRAPH_FALLBACK_INCLUDE_DIRS = ).*" _ var)
-                     (string-append
-                      var (format #f "[~s]~%"
-                                  (string-append igraph "/include/igraph"))))
-                    (("(LIBIGRAPH_FALLBACK_LIBRARY_DIRS = ).*" _ var)
-                     (string-append
-                      var (format #f "[~s]~%"
-                                  (string-append igraph "/lib")))))))))))
-      (inputs (list igraph))
-      (propagated-inputs
-       (list python-texttable))
-      (native-inputs
-       (list python-pytest
-             python-setuptools
-             python-wheel))
-      (home-page "https://igraph.org/python/")
-      (synopsis "Python bindings for the igraph network analysis library"))))
+  (package
+    (inherit igraph)
+    (name "python-igraph")
+    (version "0.11.8")
+    (source (origin
+              (method git-fetch)
+              ;; The PyPI archive lacks tests.
+              (uri (git-reference
+                    (url "https://github.com/igraph/python-igraph")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1c73nypzm2apqqwzqxxhbh692h4ri2x8q4i8f7q2kwczz156v19k"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'specify-libigraph-location
+            (lambda _
+              (let ((igraph #$(this-package-input "igraph")))
+                (substitute* "setup.py"
+                  (("(LIBIGRAPH_FALLBACK_INCLUDE_DIRS = ).*" _ var)
+                   (string-append
+                    var (format #f "[~s]~%"
+                                (string-append igraph "/include/igraph"))))
+                  (("(LIBIGRAPH_FALLBACK_LIBRARY_DIRS = ).*" _ var)
+                   (string-append
+                    var (format #f "[~s]~%"
+                                (string-append igraph "/lib")))))))))))
+    (inputs (list igraph))
+    (propagated-inputs
+     (list python-texttable))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://igraph.org/python/")
+    (synopsis "Python bindings for the igraph network analysis library")))
 
 (define-public r-rbiofabric
   (let ((commit "666c2ae8b0a537c006592d067fac6285f71890ac")
