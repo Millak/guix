@@ -72,6 +72,7 @@
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2024 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
+;;; Copyright © 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1211,6 +1212,52 @@ Callback Hell.
 @item Web-server has middlewares and pluggable routing.
 @end itemize")
     (license license:asl2.0)))
+
+(define-public python-aiohttp-client-cache
+  (package
+    (name "python-aiohttp-client-cache")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiohttp_client_cache" version))
+       (sha256
+        (base32 "0lrq8fh94whvfmfr9ncfizq2ssa2fp1v1izd1y7f3gmd80ixcp6w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Run unit tests only which not require networking or additional setup.
+      #~(list "--ignore=test/integration")))
+    (native-inputs
+     (list python-poetry-core
+           ;; TODO: Missing packages: pytest-clarity,
+           ;; nox-poetry, types-aiofiles.
+           python-async-timeout
+           python-brotli
+           python-faker
+           python-pytest
+           python-pytest-aiohttp
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-aiofiles
+           python-aiohttp
+           python-aiosqlite
+           python-attrs
+           python-itsdangerous
+           python-redis
+           python-url-normalize))
+    (home-page "https://github.com/requests-cache/aiohttp-client-cache")
+    (synopsis "Persistent cache for aiohttp requests")
+    (description
+     "This package is an asynchronous persistent caching library specifically
+designed for @samp{aiohttp} requests in Python.  With support for various
+storage backends, it offers flexibility in how and where the cache is stored.
+Please note that MongoDB and DynamoDB backends are not currently supported due
+to the absence of the @samp{motor} and @samp{aioboto3} package dependencies.")
+    (license license:expat)))
 
 (define-public python-aiohttp-cors
   (package
