@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017, 2022 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
@@ -3314,14 +3314,14 @@ library.")
 (define-public guile-lib
   (package
     (name "guile-lib")
-    (version "0.2.8")
+    (version "0.2.8.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/guile-lib/guile-lib-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1nb7swbliw9vx1ivhgd2m0r0p7nlkszw6s41zcgfwb5v1kp05sb4"))
+                "1ca95g15a88l7rpqcnzmhj1kyxc7gyfbvnni1hckv8z677cc4x0k"))
               (patches (search-patches "guile-lib-fix-tests-for-guile2.2.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -3338,11 +3338,11 @@ library.")
                 "godir = \
 $(libdir)/guile/@GUILE_EFFECTIVE_VERSION@/site-ccache\n")))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("guile" ,guile-3.0)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           gettext-minimal
+           guile-3.0
+           pkg-config))
     (inputs
      (list guile-3.0))           ;for cross-compilation
     (home-page "https://www.nongnu.org/guile-lib/")
@@ -3425,6 +3425,9 @@ available:
   (package
     (inherit guile-lib)
     (name "guile2.0-lib")
+    (arguments
+     ;; This test uses (ice-9 textual-ports), which does not exist on 2.0.
+     (list #:make-flags #~(list "XFAIL_TESTS=logging.logger.scm")))
     (native-inputs
      (alist-replace "guile" (list guile-2.0)
                     (package-native-inputs guile-lib)))
