@@ -139,14 +139,14 @@
 (define-public breeze
   (package
     (name "breeze")
-    (version "6.2.5")
+    (version "6.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "09afs2x33mgv4by2v1r0wrsjkzsipr95hpdc2d52gkdp3d4d8fqx"))))
+                "1b0mxnsx0nmj7wskvvrvi275xbj7xf8pysa1ywis9bkffh757bwp"))))
     (build-system qt-build-system)
     ;; TODO: Check whether is makes sence splitting into several outputs.
     (native-inputs
@@ -163,7 +163,8 @@
            kiconthemes
            kpackage
            kwindowsystem
-           kcolorscheme))
+           kcolorscheme
+           qtsvg))
     (arguments (list #:qtbase qtbase
                      #:configure-flags #~(list "-DBUILD_QT5=OFF")))
     (home-page "https://invent.kde.org/plasma/breeze")
