@@ -679,6 +679,39 @@ contains supporting code for evaluation and parameter tuning.")
 clustering of dense vectors.  This package provides Python bindings to the
 Faiss library.")))
 
+(define-public libleidenalg
+  (package
+    (name "libleidenalg")
+    (version "0.11.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vtraag/libleidenalg")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fqy79yrgnrifhyc2lys5jv84siq01ph6038qyz7qagl1yq5gdw8"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+       #:tests? #f                      ;tests are not included
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'version-file
+             (lambda _
+               (let ((port (open-file "VERSION" "w")))
+                 (display #$version port)
+                 (close port)))))))
+    (inputs (list igraph))
+    (home-page "https://github.com/vtraag/libleidenalg")
+    (synopsis "Community detection in large networks")
+    (description "Leiden is a general algorithm for methods of community
+detection in large networks and is an extension of the Louvain algorithm.
+This package implements the Leiden algorithm in C++ and can be run on graphs
+of millions of nodes (as long as they can fit in memory).")
+    (license license:gpl3+)))
+
 (define-public python-leidenalg
   (package
     (name "python-leidenalg")
