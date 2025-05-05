@@ -140,7 +140,7 @@ available for each configured user."))
     (rootless-podman-configuration-group-name config))
   (program-file "cgroups2-fs-owner-entrypoint"
                 #~(system*
-                   (string-append #+bash-minimal "/bin/bash") "-c"
+                   (string-append #+bash-minimal "/bin/bash") "-l" "-c"
                    (string-append "echo Setting /sys/fs/cgroup "
                                   "group ownership to " #$group " && chown -v "
                                   "root:" #$group " /sys/fs/cgroup && "
