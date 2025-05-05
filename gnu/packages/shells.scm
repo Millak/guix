@@ -973,14 +973,17 @@ JavaScript users who avoid shell.")
 (define-public gash
   (package
     (name "gash")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
+     ;; Use a copy built from the unofficial 'EBADF-fixes' branch,
+     ;; <https://codeberg.org/civodul/gash/commit/7c9bf2110cfe85424fba0cd14445d5f0926c3fbd>.
+     ;; See <https://issues.guix.gnu.org/75658>.
      (origin (method url-fetch)
-             (uri (string-append "mirror://savannah/gash/gash-"
+             (uri (string-append "mirror://gnu/guix/mirror/gash-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1af2jz4a6rzsshi379wzw4b8d04zvfamdhfzip2pgmk821lyqsjl"))))
+               "069wizkfkkifij9n0r6fkwbgcnjyr6xvnjid11ckppx0waixc0s7"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
