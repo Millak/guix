@@ -171,6 +171,9 @@
               (substitute* "settings.cc"
                 (("defaultPDFViewer=\"acroread\"")
                  "defaultPDFViewer=\"gv\""))))
+          (add-before 'build 'setenv
+            (lambda _
+              (setenv "TEXMFVAR" "/tmp"))) ;for font shapes generation
           (add-before 'check 'set-HOME
             ;; Some tests require write access to $HOME, otherwise leading to
             ;; "failed to create directory /homeless-shelter/.asy" error.
