@@ -11897,10 +11897,12 @@ terminate a paragraph.  Paragraphs may also be denoted by bulleting, numbering,
 or quoting (see the following sections).")
     (license license:perl-license)))
 
+;; This module is part of perl--but if you really really want a newer version,
+;; you can use this package instead.
 (define-public perl-text-balanced
   (package
     (name "perl-text-balanced")
-    (version "2.03")
+    (version "2.06")
     (source
      (origin
        (method url-fetch)
@@ -11908,7 +11910,7 @@ or quoting (see the following sections).")
                            "Text-Balanced-" version ".tar.gz"))
        (sha256
         (base32
-         "1j4jjw6bg6ik8cn1mimw54rvg4h0qf4hm9k63y9572sny3w56xq5"))))
+         "1bcjw05s1gcw1xjrnbw9rjmrn9bhzwlbmrnfckv2rjy0447hygkp"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Text-Balanced")
     (synopsis "Extract delimited text sequences from strings")
