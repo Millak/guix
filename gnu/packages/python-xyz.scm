@@ -5931,6 +5931,37 @@ Parsley is an implementation of OMeta, an object-oriented pattern-matching
 language.")
     (license license:expat)))
 
+(define-public python-petl
+  (package
+    (name "python-petl")
+    (version "1.7.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "petl" version))
+       (sha256
+        (base32 "0ll7xcc9yrvrz9p9im6m8p69cwrqwmqx91px43hlbnjrv1jflbww"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-setuptools-scm python-wheel
+                         python-pytest))
+    (home-page "https://github.com/petl-developers/petl")
+    (synopsis "Framework for writing @acronym{ETL, Extract Transform Load} data
+processing pipelines.")
+    (description
+     "This package provides a library for extracting, transforming and loading
+tables of data.  It can read from and write to databases or files in multiple
+formats, including:
+@itemize @bullet
+@item python objects
+@item delimited files
+@item pickle files
+@item text/XML/JSON/HTML files
+@item python I/O streams
+@item Excel XLS/XLSX files
+@item HDF5 files
+@end itemize")
+    (license license:expat)))
+
 (define-public python-polib
   (package
     (name "python-polib")
