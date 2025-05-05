@@ -189,14 +189,14 @@ document meta data file.")
 (define-public konsole
   (package
     (name "konsole")
-    (version "24.12.1")
+    (version "25.04.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konsole-" version ".tar.xz"))
        (sha256
-        (base32 "0g6b69x5x41gb83rp4g983jz2f65cc58vw0jvd0c7pgwnx0cmpj3"))))
+        (base32 "1lbr7bkmm5lz0am9z70z06y7cf6kl7ganszd6181wcqpgfjxn9nk"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools zlib))
