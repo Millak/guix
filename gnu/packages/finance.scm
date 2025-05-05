@@ -79,7 +79,9 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -92,6 +94,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -118,6 +121,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
@@ -2033,6 +2037,55 @@ that allows you to run services and through them access the Bitcoin Cash network
            python-oauth2client
            python-ply
            python-requests))
+    (home-page "https://beancount.github.io/")
+    (synopsis "Command-line double-entry accounting tool")
+    (description
+     "Beancount is a double-entry bookkeeping computer language that lets you
+define financial transaction records in a text file, read them in memory,
+generate a variety of reports from them, and provides a web interface.")
+    (license license:gpl2)))
+
+(define-public beancount-3
+  (package
+    (name "beancount")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch) ; Pypi archive doesn't contain the test suite.
+       (uri (git-reference
+             (url "https://github.com/beancount/beancount")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pzbhlsvch4n48rqkbff1v1rbk3gm05w0fbd2p97vdmrmlxaa33d"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "pyproject.toml"
+                    (("regex >=2022.9.13")
+                     "regex >=2022.1.18")))))
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; run tests against the built library
+         "--pyargs" "beancount"
+         ;; disable tests supposed to run from the source repo
+         "-k" "not test_export_basic and not test_example_files")))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list bison
+           flex
+           gnupg
+           meson
+           ninja
+           python-meson-python
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-bottle
+           python-click
+           python-dateutil
+           python-regex))
     (home-page "https://beancount.github.io/")
     (synopsis "Command-line double-entry accounting tool")
     (description
