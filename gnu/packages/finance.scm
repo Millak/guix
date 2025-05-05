@@ -2094,6 +2094,35 @@ define financial transaction records in a text file, read them in memory,
 generate a variety of reports from them, and provides a web interface.")
     (license license:gpl2)))
 
+(define-public beanquery
+  (package
+    (name "beanquery")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "beanquery" version))
+       (sha256
+        (base32 "0b6dhj9lcf3b347rsjb0k25qgsmqf9jnd0yizv3kad00745bawid"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "pyproject.toml"
+                    (("tatsu-lts")
+                     "tatsu")))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list beancount-3
+           python-click
+           python-dateutil
+           python-tatsu))
+    (native-inputs (list python-setuptools python-wheel python-pytest))
+    (home-page "https://github.com/beancount/beanquery")
+    (synopsis "Interactive interpreter for the Beancount Query Language")
+    (description "A specialized SQL-like query client for Beancount ledger
+files.  It can run interactively or in batch mode.  By providing a specialized
+query engine that takes advantage of the structure of double-entry transactions,
+it can easily generate custom reports specific to accounting purposes.")
+    (license license:gpl2)))
+
 (define-public fava
   (package
     (name "fava")
