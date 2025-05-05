@@ -69,6 +69,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Luca Cirrottola <luca.cirrottola@inria.fr>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Sören Tempel <soeren@soeren-tempel.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8234,6 +8235,59 @@ solver, that can compute Craig interpolants for various theories.")
 theories} problems.  It can process input in SMT-LIB format or its own
 s-expression-based format.")
    (license license:gpl3+)))
+
+(define-public symfpu
+  (let ((commit "22d993d880f66b2e470c3928e0e61bdf61419702")
+        (revision "0"))
+    (package
+      (name "symfpu")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/martin-cs/symfpu")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1h20zzkyi225290kc6mzg8i4dwkj0p1vlwfgc9ycs61snlyd8gr8"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~`(("symfpu.pc" "lib/pkgconfig/symfpu.pc")
+            ("core" "include/symfpu/core")
+            ("utils" "include/symfpu/utils"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'build-pkgconfig
+              (lambda* (#:key outputs #:allow-other-keys)
+                (with-output-to-file "symfpu.pc"
+                  (lambda _
+                    (format #t
+                     "prefix=~a~@
+                      exec_prefix=${prefix}~@
+                      includedir=${prefix}/include~@
+                      ~@
+                      ~@
+                      Name: symfpu~@
+                      Version: ~a~@
+                      Description: library for IEEE-754 floats~@
+                      Cflags: -I${includedir}~%"
+                     (assoc-ref outputs "out")
+                     #$version))))))))
+      (synopsis
+       "Concrete and symbolic implementation of IEEE-754 floating-point numbers")
+      (description
+       "SoftFPU is a C++ library implementing concrete and symbolic
+semantics for floating point numbers as defined in the IEEE-764 Standard
+for Floating-Point Arithmetic.  It is templated in terms of the
+bit-vectors, propositions, floating-point formats and rounding mode types
+used.  This allow the same code to be executed as an arbitrary precision
+library or to be used to build symbolic representations of floating-point
+operations.")
+      (home-page "https://github.com/martin-cs/symfpu")
+      (license license:gpl3+))))
 
 (define-public z3
   (package
