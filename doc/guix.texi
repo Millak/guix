@@ -47663,6 +47663,22 @@ In this example, the effect would be to add an @file{/etc/issue} file
 pointing to the given file.
 @end defvar
 
+@defvar etc-profile-d-service-type
+The type of the @file{/etc/profile.d} service.  This service is used to
+create files under @file{/etc/profile.d}.  It takes as value a list of
+file-like objects, as can be produced with @code{local-file},
+@code{plain-file}, etc.  Note that provided files whose file names do
+not end with @file{.sh} are @emph{not} added to @file{/etc/profile.d/}
+and are silently dropped.  Package objects can also be provided directly
+to have their @file{etc/profile.d/*.sh} prefixed files added.  A simple
+usage may look like:
+
+@example
+(simple-service 'my-important-profile-file etc-profile-d-service-type
+                (list (plain-file "youppi.sh" "HOW_IMPORTANT=very")))
+@end example
+@end defvar
+
 @defvar privileged-program-service-type
 Type for the ``privileged-program service''.  This service collects lists of
 executable file names, passed as gexps, and adds them to the set of

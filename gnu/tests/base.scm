@@ -170,6 +170,14 @@ grep --version
 info --version")
                                     marionette)))
 
+          (test-assert "/etc/profile.d is sourced"
+            (zero? (marionette-eval '(system "
+. /etc/profile
+set -e -x
+test -f /etc/profile.d/test_profile_d.sh
+test \"$PROFILE_D_OK\" = yes")
+                                    marionette)))
+
           (test-equal "special files"
             '#$special-files
             (marionette-eval
@@ -576,7 +584,16 @@ functionality tests, using the given KERNEL.")
     (let* ((os  (marionette-operating-system
                  (operating-system
                    (inherit %simple-os)
-                   (kernel kernel))
+                   (kernel kernel)
+                   (services (cons (service
+                                    etc-profile-d-service-type
+                                    (list (plain-file
+                                           "test_profile_d.sh"
+                                           "export PROFILE_D_OK=yes\n")
+                                          (plain-file
+                                           "invalid-name"
+                                           "not a POSIX script -- ignore me")))
+                                   %base-services)))
                  #:imported-modules '((gnu services herd)
                                       (guix combinators))))
            (vm  (virtual-machine os)))
