@@ -416,42 +416,6 @@ subplots, multiple-axes, polar charts, and bubble charts.")
 algorithm for community detection in large networks.")
     (license license:bsd-3)))
 
-(define-public python-vtraag-louvain
-  (package
-    (name "python-vtraag-louvain")
-    (version "0.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "louvain" version))
-              (sha256
-               (base32
-                "16l2zi4jwc3vpvpnz32jv7xy0g5087dp9y57wxplj1xa9r312x0i"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'do-not-use-bundled-igraph
-           (lambda _
-             (substitute* "setup.py"
-               (("self.external = False")
-                "self.external = True")
-               (("self.use_pkgconfig = False")
-                "self.use_pkgconfig = True")))))))
-    (inputs (list igraph))
-    (propagated-inputs (list python-igraph python-setuptools))
-    (native-inputs
-     (list pkg-config
-           python-ddt
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://github.com/vtraag/louvain")
-    (synopsis "Community detection in large networks")
-    (description
-     "Louvain is a general algorithm for methods of community detection in
-large networks.")
-    (license license:gpl3+)))
-
 (define-public python-graphtools
   (package
     (name "python-graphtools")
@@ -555,6 +519,9 @@ millions of nodes (as long as they can fit in memory).  The core function is
 @code{find_partition} which finds the optimal partition using the louvain
 algorithm for a number of different methods.")
     (license license:gpl3+)))
+
+(define-public python-vtraag-louvain
+  (deprecated-package "python-vtraag-louvain" python-louvain-igraph))
 
 (define-public python-pygsp
   (package
