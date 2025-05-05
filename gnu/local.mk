@@ -1996,6 +1996,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/password-store-tree-compat.patch		\
   %D%/packages/patches/pciutils-hurd64.patch			\
   %D%/packages/patches/pdl-2.019-glut-bitmap-fonts.patch	\
+  %D%/packages/patches/pdl-2.100-reproducibility.patch	\
   %D%/packages/patches/petri-foo-0.1.87-fix-recent-file-not-exist.patch			\
   %D%/packages/patches/plasma-framework-fix-KF5PlasmaMacros.cmake.patch \
   %D%/packages/patches/plasp-fix-normalization.patch \

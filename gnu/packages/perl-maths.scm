@@ -20,7 +20,9 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix build-system perl)
   #:use-module (gnu packages)
   #:use-module (gnu packages gcc)
@@ -148,6 +150,60 @@ using a list of (X, Y) pairs.")
                          perl-test-deep
                          perl-test-exception
                          perl-test-warn))
+    (propagated-inputs (list perl-file-map
+                             perl-file-which
+                             perl-inline
+                             perl-inline-c
+                             perl-list-moreutils
+                             perl-opengl
+                             perl-pgplot
+                             perl-pod-parser
+                             perl-sys-sigaction
+                             perl-termreadkey))
+    (home-page "https://metacpan.org/release/PDL")
+    (synopsis "Perl Data Language")
+    (description "This package provides a library and simple REPL for the
+Perl Data Language.")
+    (license license:perl-license)))
+
+;; The project has split out several packages.
+(define-public perl-pdl
+  (package
+    (inherit perl-pdl-2.019)
+    (version "2.100")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PDLPorters/pdl.git")
+             (commit version)))
+       (sha256
+        (base32 "0nkvjb4l8r2l2piz0s9jifpm0kr6g7fy9krky130s82vq8bz19sc"))
+       (patches
+        (search-patches "pdl-2.100-reproducibility.patch"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+         (add-after 'unpack 'patch-includes
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "lib/PDL/Core/Dev.pm"
+              ;; This would cause an underflow (1 - 120 < 0)--so prevent it.
+              (("utime [$]mtime - 120, [$]mtime - 120, [$]pmfile; # so is out of date")
+               "utime $mtime - 1, $mtime - 1, $pmfile; # so is out of date")))))))
+    (inputs (list gd gsl mesa glu))
+    (native-inputs (list perl-capture-tiny ; for a test
+                         perl-devel-checklib
+                         perl-extutils-depends
+                         perl-extutils-f77
+                         gfortran
+                         perl-file-which
+                         perl-pod-parser
+                         perl-test-deep
+                         perl-test-exception
+                         perl-test-warn
+                         perl-text-balanced)) ; our perl is too old, so...
     (propagated-inputs (list perl-file-map
                              perl-file-which
                              perl-inline
