@@ -60,6 +60,7 @@
   #:use-module (gnu packages hardware)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
@@ -1781,11 +1782,8 @@ on top of Baloo.")
                               (resolve-interface
                                '(gnu packages kde-systemtools))
                               'kwalletmanager)
-                             (module-ref
-                              (resolve-interface
-                               '(gnu packages kde-systemtools))
-                              'spectacle)))
-                             ;; plasma-thunderbolt ;waiting for bolt
+                             spectacle))
+    ;; plasma-thunderbolt ;waiting for bolt
     (synopsis "The KDE Plasma desktop environment")
     (home-page "https://kde.org/plasma-desktop/")
     (description
@@ -2985,6 +2983,64 @@ UI for Plasma")
     (description "This package provides the power consumption settings
 of a Plasma shell.")
     (home-page "https://invent.kde.org/plasma/powerdevil")
+    (license license:gpl2+)))
+
+(define-public spectacle
+  (package
+    (name "spectacle")
+    (version "6.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/plasma/" version
+                           "/spectacle-" version ".tar.xz"))
+       (sha256
+        (base32 "1yncpas09gzg92314rjrvl99mczcc5nv2ryclg3mvgnsb56rbvjj"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E"
+                             "filename_test")))))))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kconfig
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           kglobalaccel
+           kguiaddons
+           ki18n
+           kio
+           kirigami
+           knotifications
+           kpipewire
+           kstatusnotifieritem
+           kwidgetsaddons
+           kwindowsystem
+           kxmlgui
+           opencv
+           prison
+           purpose
+           layer-shell-qt
+           qtdeclarative
+           qtmultimedia
+           qtwayland
+           wayland
+           wayland-protocols
+           plasma-wayland-protocols
+           xcb-util
+           xcb-util-cursor
+           xcb-util-image
+           libxkbcommon))
+    (home-page "https://apps.kde.org/spectacle/")
+    (synopsis "Screenshot capture utility for KDE")
+    (description "Spectacle is a screenshot taking utility for the KDE.")
     (license license:gpl2+)))
 
 (define-public system-settings
