@@ -15,7 +15,7 @@
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
@@ -926,13 +926,18 @@ similar."
       module)))
 
 (define (read/eval str)
-  "Read and evaluate STR, raising an error if something goes wrong."
-  (let ((exp (catch #t
-               (lambda ()
-                 (call-with-input-string str read))
-               (lambda args
-                 (leave (G_ "failed to read expression ~s: ~s~%")
-                        str args)))))
+  "Read and evaluate STR, which can also be a port, raising an error if
+something goes wrong.  STR may contain one or more expressions; the return
+value is that of the last evaluated expression."
+  (define (read/safe port)
+    (catch #t
+      (lambda ()
+        (read port))
+      (lambda args
+        (leave (G_ "failed to read expression ~s: ~s~%")
+               str args))))
+
+  (define (eval/safe exp)
     (catch #t
       (lambda ()
         (eval exp (force %guix-user-module)))
@@ -956,7 +961,19 @@ similar."
           ((error args ...)
            (apply display-error #f (current-error-port) args))
           (what? #f))
-        (exit 1)))))
+        (exit 1))))
+
+  (let ((call-with-port-or-string (if (port? str)
+                                      call-with-port
+                                      call-with-input-string)))
+    (call-with-port-or-string
+     str
+     (lambda (port)
+       (let loop ((exp (read/safe port))
+                  (result #f))
+         (if (eof-object? exp)
+             result
+             (loop (read/safe port) (eval/safe exp))))))))
 
 (define (read/eval-package-expression str)
   "Read and evaluate STR and return the package it refers to, or exit an

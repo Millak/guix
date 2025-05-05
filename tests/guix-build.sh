@@ -2,6 +2,7 @@
 # Copyright © 2012-2014, 2016-2025 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
+# Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -419,6 +420,22 @@ then
     # handy Bash-specific construct.
     guix build -m <(echo '(specifications->manifest (list "guile"))') -n
 fi
+
+# Build a scheme->file object via multiple expressions, and validate it
+# produces the correct result when evaluated.
+scheme_file=$(guix build -e \
+     "(use-modules (guix gexp)) \
+      (scheme-file \"mathematics\" \
+       '(begin \
+         (define add +) \
+         (define multiply *) \
+         (add 5 (multiply 2 10)))
+       #:guile (@@ (gnu packages bootstrap) %bootstrap-guile))")
+guile -c \
+     "(begin \
+       (use-modules (guix ui) (rnrs base) (srfi srfi-26)) \
+       (assert (= 25 (call-with-input-file \"$scheme_file\" \
+                      (cut read/eval <>)))))"
 
 # Using 'GUIX_BUILD_OPTIONS'.
 GUIX_BUILD_OPTIONS="--dry-run --no-grafts"
