@@ -35,6 +35,11 @@
   #:use-module ((guix packages) #:select (package-version supported-package?))
   #:use-module (guix platform)
   #:use-module (guix utils)
+  #:use-module (guix packages)
+  #:use-module ((guix channels)
+                #:select (%default-guix-channel
+                          channel
+                          channel-commit))
   #:use-module (gnu installer)
   #:use-module (gnu system locale)
   #:use-module (gnu services avahi)
@@ -392,7 +397,14 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
 
                      ;; Install and run the current Guix rather than an older
                      ;; snapshot.
-                     (guix (current-guix))))
+                     (guix (let ((guix (current-guix)))
+                             (package
+                               (inherit guix)
+                               ;; Do not leak the local checkout URL.
+                               (source (channel
+                                        (inherit %default-guix-channel)
+                                        (commit (channel-commit
+                                                 (package-source guix))))))))))
 
            ;; Start udev so that useful device nodes are available.
            ;; Use device-mapper rules for cryptsetup & co; enable the CRDA for
