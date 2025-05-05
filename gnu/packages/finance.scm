@@ -2123,6 +2123,38 @@ query engine that takes advantage of the structure of double-entry transactions,
 it can easily generate custom reports specific to accounting purposes.")
     (license license:gpl2)))
 
+(define-public python-beangulp
+  (package
+    (name "python-beangulp")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch) ; Pypi archive doesn't contain the test suite.
+       (uri (git-reference
+             (url "https://github.com/beancount/beangulp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zlanw88dq7czgsdvqwz2fgxamyrfnx15ymv4d7fnjrj04glpg47"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list beancount-3
+           python-beautifulsoup4
+           python-chardet
+           python-petl
+           python-click
+           python-lxml
+           python-magic))
+    (native-inputs
+     (list python-setuptools
+           python-wheel
+           python-pytest))
+    (home-page "https://github.com/beancount/beangulp")
+    (synopsis "Library to facilitate importing data into a Beancount ledger.")
+    (description "A framework for importing transactions into a Beancount ledger
+from account statements and other documents and for managing documents.")
+    (license license:gpl2)))
+
 (define-public fava
   (package
     (name "fava")
