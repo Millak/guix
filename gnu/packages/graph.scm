@@ -479,7 +479,7 @@ graphs in Python.")
 (define-public python-louvain-igraph
   (package
     (name "python-louvain-igraph")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -489,7 +489,7 @@ graphs in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1j2ybihvvzggwjb9zvm829aqb5b94q10h8bw6v0h42xd9w75z9sv"))))
+         "1aab6rnsnssi6wib939zy4vdzz3s2gcwwingn2dfjrijk05zjapv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
