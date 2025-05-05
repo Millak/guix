@@ -1115,14 +1115,14 @@ an elegant and intuitive experience for your tasks and plasmoids.")
 (define-public kscreenlocker
   (package
     (name "kscreenlocker")
-    (version "6.2.5")
+    (version "6.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/kscreenlocker-" version ".tar.xz"))
               (sha256
                (base32
-                "0klficp9is0nmx22rrslr9m188j0dhmdsp7j1jlc4k9r838d4gis"))))
+                "0ip9q0j8cdg39b9idmpjbq3q8zjabazm3wjadfjl1m3xmhzyyrs6"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f ;TODO: make tests pass
