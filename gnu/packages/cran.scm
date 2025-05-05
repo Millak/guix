@@ -45566,14 +45566,14 @@ including means, variances, intervals, and highest density regions.")
 (define-public r-posterior
   (package
     (name "r-posterior")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "posterior" version))
        (sha256
         (base32
-         "037l1cav2vglcd2pgp8n89apfpsb3822mhzmdsxf7a0mzcwjlq9l"))))
+         "16d7gfg8mfx89gz365a6cjc5zl0vs0wbr2gcn8n597sc7yyxf1z5"))))
     (properties `((upstream-name . "posterior")))
     (build-system r-build-system)
     (propagated-inputs
@@ -45587,7 +45587,7 @@ including means, variances, intervals, and highest density regions.")
            r-tibble
            r-vctrs))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-dplyr r-ggplot2 r-knitr r-testthat r-tidyr))
     (home-page "https://mc-stan.org/posterior/")
     (synopsis "Tools for working with posterior distributions")
     (description
