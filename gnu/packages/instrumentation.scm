@@ -286,6 +286,32 @@ interactive SVGs out of traces genated from various tracing tools.  It comes
 with the script @command{flamegraph.pl} and many stackcollapse scripts.")
       (license license:cddl1.0))))
 
+(define-public jacquesctf
+  (let ((commit "f65127be0af2a4a3b36779f769e142e37d6a62ca")
+        (revision "0"))
+    (package
+      (name "jacquesctf")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/eepp/jacquesctf")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "07p4xflgp6vb5fa3m78p2lxxcvardnp1m8k7mq7lpradpcxwx4rj"))))
+      (build-system cmake-build-system)
+      (arguments `(#:tests? #f))
+      (inputs (list yactfr ncurses))
+      (native-inputs (list boost))
+      (home-page "https://github.com/eepp/jacquesctf")
+      (synopsis "CTF inspection tool")
+      (description "Like Jacques Cartier, Jacques CTF can explore the sea of
+bits of a @acronym{CTF, Common Trace Format} data stream file and discover
+unsuspected lands of problems within packets.")
+      (license license:expat))))
+
 (define-public libpatch
   (package
     (name "libpatch")
