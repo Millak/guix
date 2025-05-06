@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2023 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Adam Kandur <kefironpremise@gmail.com>
+;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021, 2023 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2022 Ryan Prior <rprior@protonmail.com>
@@ -40,11 +41,15 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages game-development)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages simulation)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xorg))
@@ -211,6 +216,59 @@ ModernGL on multiple platforms.")
     (description
      "This package provides Python bindings for @url{http://www.glfw.org/,
 GLFW} OpenGL application development library.")
+    (license license:expat)))
+
+(define-public python-kivy
+  (package
+    (name "python-kivy")
+    (version "2.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Kivy" version))
+       (sha256
+        (base32 "1ngrnkrp6xgfl4x32i2nv3bml13l8qwa87cwrymv9k826ng98cq8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:tests? #f              ; Tests require many optional packages
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-generated-file-shebangs 'set-sdl-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "KIVY_SDL2_PATH"
+                     (search-input-directory inputs "/include/SDL2"))))
+         (add-before 'build 'set-home
+           (lambda _
+             ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
+             (setenv "HOME" (getcwd)))))))
+    (native-inputs
+     (list pkg-config
+           python-cython
+           ;; Not packaged yet, for tests.
+           ;; python-kivy-deps-glew
+           ;; python-kivy-deps-glew-dev
+           ;; python-kivy-deps-gstreamer
+           ;; python-kivy-deps-gstreamer-dev
+           ;; python-kivy-deps-sdl2
+           ;; python-kivy-deps-sdl2-dev
+           python-packaging
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list gstreamer
+           mesa
+           (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
+    (propagated-inputs
+     (list python-docutils
+           python-filetype
+           python-kivy-garden
+           python-pygments
+           python-requests))
+    (home-page "https://kivy.org")
+    (synopsis "Multitouch application framework")
+    (description
+     "Kivy is a software library for rapid development of hardware-accelerated
+multitouch applications.")
     (license license:expat)))
 
 (define-public python-kivymd

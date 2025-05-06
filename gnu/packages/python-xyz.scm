@@ -24618,59 +24618,6 @@ UE9 and U12 LabJack data acquisition (DAQ) modules.")
 for Kivy, the multitouch application platform.")
     (license license:expat)))
 
-(define-public python-kivy
-  (package
-    (name "python-kivy")
-    (version "2.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Kivy" version))
-       (sha256
-        (base32 "1ngrnkrp6xgfl4x32i2nv3bml13l8qwa87cwrymv9k826ng98cq8"))))
-    (build-system pyproject-build-system)
-    (arguments
-     `(#:tests? #f              ; Tests require many optional packages
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-generated-file-shebangs 'set-sdl-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "KIVY_SDL2_PATH"
-                     (search-input-directory inputs "/include/SDL2"))))
-         (add-before 'build 'set-home
-           (lambda _
-             ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
-             (setenv "HOME" (getcwd)))))))
-    (native-inputs
-     (list pkg-config
-           python-cython
-           ;; Not packaged yet, for tests.
-           ;; python-kivy-deps-glew
-           ;; python-kivy-deps-glew-dev
-           ;; python-kivy-deps-gstreamer
-           ;; python-kivy-deps-gstreamer-dev
-           ;; python-kivy-deps-sdl2
-           ;; python-kivy-deps-sdl2-dev
-           python-packaging
-           python-setuptools
-           python-wheel))
-    (inputs
-     (list gstreamer
-           mesa
-           (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
-    (propagated-inputs
-     (list python-docutils
-           python-filetype
-           python-kivy-garden
-           python-pygments
-           python-requests))
-    (home-page "https://kivy.org")
-    (synopsis "Multitouch application framework")
-    (description
-     "Kivy is a software library for rapid development of hardware-accelerated
-multitouch applications.")
-    (license license:expat)))
-
 (define-public python-async-lru
   (package
     (name "python-async-lru")
