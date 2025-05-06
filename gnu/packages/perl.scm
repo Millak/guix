@@ -8145,30 +8145,29 @@ Moose and is optimised for rapid startup.")
   (package
     (inherit perl-moo)
     (name "perl-moo-2")
-    (version "2.003006")
+    (version "2.005005")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/H/HA/HAARG/"
                            "Moo-" version ".tar.gz"))
        (sha256
-        (base32 "0wi4gyp5kn4lbags0hrax3c9jj9spxg4d11fbrdh0ican4m0kcmw"))))
+        (base32
+          "025iyjqyjw0p1is374bkhyispim90j0bf87jfdrx1blzci92jnpv"))))
+    (inputs
+      (list perl-class-method-modifiers
+            perl-scalar-list-utils))
     (propagated-inputs
      `(("perl-role-tiny" ,perl-role-tiny-2)
-       ("perl-sub-name" ,perl-sub-name)
        ("perl-sub-quote" ,perl-sub-quote)
-       ("perl-strictures" ,perl-strictures-2)
-       ,@(alist-delete "perl-strictures"
-                       (alist-delete "perl-role-tiny"
-                                     (package-propagated-inputs perl-moo)))))
+       ,@(alist-delete "perl-role-tiny"
+                                     (package-propagated-inputs perl-moo))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'configure 'set-perl-search-path
            (lambda _
-             ;; Use perl-strictures for testing.
-             (setenv "MOO_FATAL_WARNINGS" "=1")
-             #t)))))))
+             (setenv "MOO_FATAL_WARNINGS" "=1"))))))))
 
 (define-public perl-moose
   (package
