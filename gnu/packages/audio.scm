@@ -2163,11 +2163,14 @@ object library.")
        (sha256
         (base32 "1lgasyk8j4cl9178vci1dph63nks3cgwhf8y1d04z9dc8gg15dyn"))))
     (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DBUILD_STATIC_LIBRARY=ON"))) ; required to build tests
     (native-inputs
      (list bison flex gettext-minimal zlib))
     (inputs
      (list alsa-lib
            boost
+           cunit
            jack-1
            ladspa
            liblo
