@@ -47700,6 +47700,21 @@ like so:
 @end example
 @end defvar
 
+@defvar vte-integration-service-type
+This services adds the @file{/etc/bashrc.d/vte.sh} to your system, which
+improves the Bash and Zsh experience when using VTE-powered terminal
+emulators.  This causes for example the current directory to be
+displayed in the terminal emulator's tab title, and the current
+directory to be preserved when creating a new tab, among other features.
+The value of the service is the @code{vte} package to use.
+
+@example
+(use-package-modules gnome)     ;for the `vte' package
+
+(service vte-integration-service-type vte)
+@end example
+@end defvar
+
 @defvar privileged-program-service-type
 Type for the ``privileged-program service''.  This service collects lists of
 executable file names, passed as gexps, and adds them to the set of

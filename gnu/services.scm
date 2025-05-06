@@ -47,6 +47,7 @@
   #:use-module (guix deprecation)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages linux)
   #:use-module (gnu system privilege)
@@ -138,6 +139,7 @@
             linux-builder-configuration-kernel
             linux-builder-configuration-modules
             linux-loadable-module-service-type
+            vte-integration-service-type
 
             %boot-service
             %activation-service
@@ -1026,6 +1028,19 @@ log in.")))
 scripts having the @file{.sh} file extension, to be sourced by interactive
 Bash shells.")
    (default-value %default-etc-bashrc-d-files)))
+
+(define vte-integration-service-type
+  (service-type
+   (name 'vte-integration)
+   (extensions
+    (list (service-extension etc-bashrc-d-service-type
+                             (lambda (vte)
+                               (list (file-append
+                                      vte "/etc/profile.d/vte.sh"))))))
+   (default-value vte)                  ;the vte package to use
+   (description "A service for adding the @file{/etc/bashrc.d/vte.sh} script
+to your system, which improves the Bash and Zsh experience when using
+VTE-powered terminal emulators.")))
 
 (define (privileged-program->activation-gexp programs)
   "Return an activation gexp for privileged-program from PROGRAMS."
