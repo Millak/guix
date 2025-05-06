@@ -2,7 +2,7 @@
 ;;; Copyright © 2014-2016, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2022-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -1207,7 +1207,12 @@ interface standards, such as:
                    license:bsd-2)))) ; libfdt
 
 (define-public arm-trusted-firmware-sun50i-a64
-  (make-arm-trusted-firmware "sun50i_a64"))
+  (let ((base (make-arm-trusted-firmware "sun50i_a64")))
+    (package
+      (inherit base)
+      (native-inputs (modify-inputs (package-native-inputs base)
+                       ;; Needs at least gcc-13.
+                       (prepend gcc-14))))))
 
 (define-public arm-trusted-firmware-sun50i-h616
   (make-arm-trusted-firmware "sun50i_h616"))
