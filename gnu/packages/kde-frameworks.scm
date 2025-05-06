@@ -121,9 +121,10 @@
      (if (and (not (%current-target-system))
               (string=? (%current-system) "armhf-linux"))
          '()
-         (list qtbase-5)))               ;for tests (needs qmake)
+         (list qtbase python-minimal)))  ;for tests (needs qmake)
     (arguments
      (list
+      #:configure-flags #~'("-DQT_MAJOR_VERSION=6")
       #:tests? (and (not (%current-target-system))
                     (not (null? (package-native-inputs this-package))))
       #:phases
