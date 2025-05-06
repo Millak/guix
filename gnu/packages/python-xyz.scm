@@ -35732,48 +35732,6 @@ implementations.")
 used to retry a function a given number of times.")
     (license license:asl2.0)))
 
-(define-public python-pivy
-  (package
-    (name "python-pivy")
-    (version "0.6.8")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/coin3d/pivy")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "00l4r06dwmgn8h29nrl3g3yv33cfyizyylk28x1j95qyj36sggfb"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      ;; The test suite fails due to an import cycle between 'pivy' and '_coin'
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-cmake-include-dirs
-            (lambda _
-              ;; Patch buildsystem to respect Coin3D include directory
-              (substitute* "CMakeLists.txt"
-                (("\\$\\{SoQt_INCLUDE_DIRS}")
-                 "${Coin_INCLUDE_DIR};${SoQt_INCLUDE_DIRS}")))))))
-    (native-inputs
-      (list cmake swig))
-    (inputs
-      (list python-wrapper
-            qtbase-5
-            libxi
-            libice
-            glew
-            coin3d))
-    (home-page "https://github.com/coin3d/pivy")
-    (synopsis "Python bindings to Coin3D")
-    (description
-      "Pivy provides python bindings for Coin, a 3D graphics library with an
-Application Programming Interface based on the Open Inventor 2.1 API.")
-    (license license:isc)))
-
 (define-public python-crayons
   (package
     (name "python-crayons")

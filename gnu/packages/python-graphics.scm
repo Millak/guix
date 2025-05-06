@@ -1,12 +1,15 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2023 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Adam Kandur <kefironpremise@gmail.com>
+;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021, 2023 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Sisiutl <sisiutl@egregore.fun>
 ;;;
@@ -27,8 +30,8 @@
 
 (define-module (gnu packages python-graphics)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -37,20 +40,25 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages game-development)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages simulation)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xorg))
 
@@ -338,6 +346,48 @@ multitouch applications.")
      "This package provides Kivy widgets that approximate Google's Material
 Design spec without sacrificing ease of use or application performance.")
     (license license:expat)))
+
+(define-public python-pivy
+  (package
+    (name "python-pivy")
+    (version "0.6.8")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/coin3d/pivy")
+               (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "00l4r06dwmgn8h29nrl3g3yv33cfyizyylk28x1j95qyj36sggfb"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      ;; The test suite fails due to an import cycle between 'pivy' and '_coin'
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake-include-dirs
+            (lambda _
+              ;; Patch buildsystem to respect Coin3D include directory
+              (substitute* "CMakeLists.txt"
+                (("\\$\\{SoQt_INCLUDE_DIRS}")
+                 "${Coin_INCLUDE_DIR};${SoQt_INCLUDE_DIRS}")))))))
+    (native-inputs
+      (list cmake swig))
+    (inputs
+      (list python-wrapper
+            qtbase-5
+            libxi
+            libice
+            glew
+            coin3d))
+    (home-page "https://github.com/coin3d/pivy")
+    (synopsis "Python bindings to Coin3D")
+    (description
+      "Pivy provides python bindings for Coin, a 3D graphics library with an
+Application Programming Interface based on the Open Inventor 2.1 API.")
+    (license license:isc)))
 
 (define-public python-pyglet
   (package
