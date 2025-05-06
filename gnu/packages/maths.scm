@@ -2193,8 +2193,11 @@ Swath).")
     (arguments
      (substitute-keyword-arguments (package-arguments hdf5)
        ((#:configure-flags _ #f)
-        ''("-DHDF5_ENABLE_THREADSAFE=OFF"
+        #~(list
+           (string-append "-DHDF5_INSTALL_CMAKE_DIR=" #$output "/lib/cmake")
+           "-DHDF5_ENABLE_THREADSAFE=OFF"
            "-DHDF5_ENABLE_PARALLEL=ON"
+           "-DHDF5_BUILD_FORTRAN=ON"
            "-DHDF5_BUILD_CPP_LIB=OFF"
            "-DHDF5_BUILD_DOC=ON"))
        ((#:phases phases)
