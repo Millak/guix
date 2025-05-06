@@ -123,6 +123,7 @@
             extra-special-file
             etc-service-type
             etc-profile-d-service-type
+            etc-bashrc-d-service-type
             etc-directory
             privileged-program-service-type
             setuid-program-service-type ; deprecated
@@ -987,6 +988,19 @@ two-elements list suitable for extending `etc-service-type'."
    (description "A service for populating @file{/etc/profile.d/} with POSIX
 scripts having the @file{.sh} file extension, to be sourced when users
 log in.")))
+
+(define files->bashrc-d-directory
+  (make-files->etc-directory "bashrc.d"))
+
+(define etc-bashrc-d-service-type
+  (service-type
+   (inherit etc-profile-d-service-type)
+   (name 'etc-bashrc-d)
+   (extensions (list (service-extension etc-service-type
+                                        files->bashrc-d-directory)))
+   (description "A service for populating @file{/etc/bashrc.d/} with Bash
+scripts having the @file{.sh} file extension, to be sourced by interactive
+Bash shells.")))
 
 (define (privileged-program->activation-gexp programs)
   "Return an activation gexp for privileged-program from PROGRAMS."

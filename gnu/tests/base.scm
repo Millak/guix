@@ -178,6 +178,19 @@ test -f /etc/profile.d/test_profile_d.sh
 test \"$PROFILE_D_OK\" = yes")
                                     marionette)))
 
+          (test-assert "/etc/bashrc.d is sourced"
+            (zero? (marionette-eval
+                    '(system* "bash"
+                              ;; Ensure Bash runs interactively.
+                              "--init-file"
+                              #$(plain-file "test_bashrc_d.sh"
+                                            "\
+. /etc/bashrc
+set -e -x
+test -f /etc/bashrc.d/test_bashrc_d.sh
+test \"$BASHRC_D_OK\" = yes"))
+                    marionette)))
+
           (test-equal "special files"
             '#$special-files
             (marionette-eval
@@ -585,15 +598,23 @@ functionality tests, using the given KERNEL.")
                  (operating-system
                    (inherit %simple-os)
                    (kernel kernel)
-                   (services (cons (service
-                                    etc-profile-d-service-type
-                                    (list (plain-file
-                                           "test_profile_d.sh"
-                                           "export PROFILE_D_OK=yes\n")
-                                          (plain-file
-                                           "invalid-name"
-                                           "not a POSIX script -- ignore me")))
-                                   %base-services)))
+                   (services (cons* (service
+                                     etc-profile-d-service-type
+                                     (list (plain-file
+                                            "test_profile_d.sh"
+                                            "export PROFILE_D_OK=yes\n")
+                                           (plain-file
+                                            "invalid-name"
+                                            "not a POSIX script -- ignore me")))
+                                    (service
+                                     etc-bashrc-d-service-type
+                                     (list (plain-file
+                                            "test_bashrc_d.sh"
+                                            "export BASHRC_D_OK=yes\n")
+                                           (plain-file
+                                            "invalid-name"
+                                            "not a Bash script -- ignore me")))
+                                    %base-services)))
                  #:imported-modules '((gnu services herd)
                                       (guix combinators))))
            (vm  (virtual-machine os)))

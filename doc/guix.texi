@@ -47679,6 +47679,24 @@ usage may look like:
 @end example
 @end defvar
 
+@defvar etc-bashrc-d-service-type
+The type of the @file{/etc/bashrc.d} service.  This service is used to
+create files under @file{/etc/bashrc.d}.  It takes as value a list of
+file-like objects, as can be produced with @code{local-file},
+@code{plain-file}, etc.  Note that provided files whose file names do
+not end with @file{.sh} are @emph{not} added to @file{/etc/profile.d/}
+and are silently dropped.  Package objects can also be provided directly
+to have their @file{etc/bashrc.d/*.sh} prefixed files added.  An example
+usage may look like:
+
+@example
+(use-package-modules gnome)     ;for the `vte' package
+
+(simple-service 'vte-integration etc-bashrc-d-service-type
+                (list (file-append vte "/etc/profile.d/vte.sh")))
+@end example
+@end defvar
+
 @defvar privileged-program-service-type
 Type for the ``privileged-program service''.  This service collects lists of
 executable file names, passed as gexps, and adds them to the set of
