@@ -24592,21 +24592,23 @@ UE9 and U12 LabJack data acquisition (DAQ) modules.")
 (define-public python-kivy-garden
   (package
     (name "python-kivy-garden")
-    (version "0.1.4")
+    (version "0.1.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "kivy-garden" version))
+       (method git-fetch)  ; source was removed from PyPI
+       (uri (git-reference
+             (url "https://github.com/kivy-garden/garden")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0wkcpr2zc1q5jb0bi7v2dgc0vs5h1y7j42mviyh764j2i0kz8mn2"))))
-    (build-system python-build-system)
+        (base32 "1pvjblaljrcmjkq6hsa89zkh9ggdval58d2lwzd69vlma8y03qy4"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'install 'remove-bat-file
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (delete-file
-                         (string-append out "/bin/garden.bat"))))))))
+     (list
+      #:tests? #f)) ; no tests in PyPI or Git distributions
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-requests))
     (home-page "https://github.com/kivy-garden/garden")
