@@ -24674,25 +24674,64 @@ multitouch applications.")
 (define-public python-kivymd
   (package
     (name "python-kivymd")
-    (version "0.104.2")
+    (version "1.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "kivymd" version))
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/kivymd/KivyMD")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "04lwy6j0agrdwa4a6dl6qs97nx9ysmscmm8psvdzjpyj8aa1zg4p"))))
-    (build-system python-build-system)
+        (base32 "1nprldcm54qybbwf7zlb32fkmz375j8i3k3g41d6ykc6vasq3w5j"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                                ;tests require network
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'sanity-check 'set-home
-           (lambda _
-             ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
-             (setenv "HOME" (getcwd)))))))
-    (native-inputs (list python-docutils))
+     (list
+      #:test-flags
+      ;; <https://github.com/pyinstaller/pyinstaller> is not packaged yet in
+      ;; Guix.
+      #~(list "--ignore=kivymd/tests/pyinstaller"
+              "-k" (string-join
+                    ;; FIXME: Only some tests passed, the most fail with err:
+                    ;; ValueError: KivyMD: App object must be initialized
+                    ;; before loading root widget.
+                    (list "not test_backdrop_raw_app"
+                          "test_bottom_navigation_m3_style_raw_app"
+                          "test_card_m3_style_raw_app"
+                          "test_chip_raw_app"
+                          "test_imagelist_raw_app"
+                          "test_list_raw_app"
+                          "test_navigationdrawer_raw_app"
+                          "test_tab_raw_app"
+                          "test_textfield_raw_app")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-modules
+            (lambda _
+              (substitute* "setup.py"
+                ;; If excluded, sanity check fails with error:
+                ;; ModuleNotFoundError: No module named 'kivymd.tools.release'
+                (("\"kivymd.tools.release\"") ""))
+              ;; Check phase fails struggling to find tests module.
+              (with-output-to-file "kivymd/tests/__init__.py"
+                (lambda _ (display "")))))
+          (add-before 'check 'set-home
+            (lambda _
+              ;; FileNotFoundError: [Errno 2] No such file or directory:
+              ;; '/homeless-shelter/.kivy'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-docutils
+           python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-kivy python-pillow python-pygments python-kivy-garden))
+     (list python-kivy
+           python-pillow
+           python-pygments
+           python-kivy-garden))
     (home-page "https://github.com/kivymd/KivyMD")
     (synopsis "Material Design compliant widgets for use with Kivy")
     (description
