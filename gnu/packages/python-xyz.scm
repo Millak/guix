@@ -7692,7 +7692,7 @@ Mako, and Tornado.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               (substitute* "sdl2/dll.py"
                 ;; Disable pysdl2-dll. It can't be packaged on GNU Guix
                 ;; as it duplicates an existing package (sdl2).
@@ -7702,34 +7702,24 @@ Mako, and Tornado.")
                 (("postpath = os\\.getenv\\('PYSDL2_DLL_PATH'\\)")
                  "postpath = \"system\"")
                 (("DLL\\(.*, os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)\\)")
-                 (string-append
-                  "DLL(\"SDL2\", [\"SDL2\", \"SDL2-2.0\", \"SDL2-2.0.0\"], \""
-                  (dirname (search-input-file inputs "/lib/libSDL2.so"))
-                  "\")")))
+                 (format #f "DLL('SDL2', ['SDL2', 'SDL2-2.0', 'SDL2-2.0.0'], '~a/lib')"
+                         #$(this-package-input "sdl2"))))
               (substitute* "sdl2/sdlimage.py"
                 (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
-                 (string-append
-                  "\""
-                  (dirname (search-input-file inputs "/lib/libSDL2_image.so"))
-                  "\"")))
+                 (format #f "'~a/~a'" #$(this-package-input "sdl2-image")
+                         "lib/libSDL2_image.so")))
               (substitute* "sdl2/sdlgfx.py"
                 (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
-                 (string-append
-                  "\""
-                  (dirname (search-input-file inputs "/lib/libSDL2_gfx.so"))
-                  "\"")))
+                 (format #f "'~a/~a'" #$(this-package-input "sdl2-gfx")
+                         "lib/libSDL2_gfx.so")))
               (substitute* "sdl2/sdlmixer.py"
                 (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
-                 (string-append
-                  "\""
-                  (dirname (search-input-file inputs "/lib/libSDL2_mixer.so"))
-                  "\"")))
+                 (format #f "'~a/~a'" #$(this-package-input "sdl2-mixer")
+                         "lib/libSDL2_mixer.so")))
               (substitute* "sdl2/sdlttf.py"
                 (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
-                 (string-append
-                  "\""
-                  (dirname (search-input-file inputs "/lib/libSDL2_ttf.so"))
-                  "\""))))))))
+                 (format #f "'~a/~a'" #$(this-package-input "sdl2-ttf")
+                         "lib/libSDL2_ttf.so"))))))))
     (inputs
      (list sdl2 sdl2-image sdl2-gfx sdl2-mixer sdl2-ttf))
     (home-page "https://github.com/py-sdl/py-sdl2")
