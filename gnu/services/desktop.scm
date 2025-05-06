@@ -2463,6 +2463,10 @@ applications needing access to be root.")
          ;; to avoid GDM stale cache and permission issues.
          gdm-file-system-service
 
+         ;; Provides a nicer experience for VTE-using terminal emulators such
+         ;; as GNOME Console, Xfce Terminal, etc.
+         (service vte-integration-service-type)
+
          ;; The global fontconfig cache directory can sometimes contain
          ;; stale entries, possibly referencing fonts that have been GC'd,
          ;; so mount it read-only.
