@@ -24818,7 +24818,7 @@ pytest-fixtures-style dependency injection.")
     (propagated-inputs
      (list python-kivy
            python-asyncgui))
-    (home-page "https://github.com/gottadiveintopython/asynckivy")
+    (home-page "https://github.com/asyncgui/asynckivy")
     (synopsis "Async library for Kivy")
     (description
      "This package provides async versions of Kivy functions to avoid the
