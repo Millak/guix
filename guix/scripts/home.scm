@@ -353,7 +353,12 @@ immediately.  Return the exit status of the process in the container."
    #:namespaces (if network?
                     (delq 'net %namespaces)       ; share host network
                     %namespaces)
-   #:mounts (list (file-system
+   #:mounts (list (file-system                    ;writable /tmp
+                    (device "none")
+                    (mount-point "/tmp")
+                    (type "tmpfs")
+                    (check? #f))
+                  (file-system
                     (device "none")
                     (mount-point
                      (in-vicinity "/run/user"     ;for shepherd & co.

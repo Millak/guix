@@ -195,6 +195,11 @@ guix environment --bootstrap --container --ad-hoc guile-bootstrap	\
      --writable-root							\
      -- guile -c '(mkdir "/whatever")'
 
+# /tmp itself is always writable.
+guix environment --bootstrap --container --ad-hoc guile-bootstrap \
+     -- guile -c '(mkdir "/tmp/foo")'
+
+
 # Check the exit code.
 
 abnormal_exit_code="
