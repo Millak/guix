@@ -10,6 +10,7 @@
 ;;; Copyright © 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -137,6 +138,7 @@ number/base32-hash tuples, directly usable in the 'patch-series' form."
          (version "5.1"))
     (package
       (name "bash")
+      (replacement bash-fixed)
       (source (origin
                 (method url-fetch)
                 (uri (string-append
@@ -253,6 +255,24 @@ aliases, and job control while still allowing most sh scripts to be run
 without modification.")
       (license license:gpl3+)
       (home-page "https://www.gnu.org/software/bash/"))))
+
+(define bash-fixed
+  (package
+    (inherit bash)
+    (arguments
+     (substitute-keyword-arguments (package-arguments bash)
+       ((#:modules modules '%default-gnu-modules)
+        (append '((ice-9 receive)
+                  (srfi srfi-1)
+                  (srfi srfi-26))
+                modules))
+       ((#:configure-flags flags)
+        #~(receive (cppflags flags)
+              (partition (cut string-prefix? "CPPFLAGS" <>)
+                         #$flags)
+            (cons (string-append (first cppflags)
+                                 " -DSYS_BASHRC='\"/etc/bashrc\"'")
+                  flags)))))))
 
 (define-public bash-minimal
   ;; A stripped-down Bash for non-interactive use.
