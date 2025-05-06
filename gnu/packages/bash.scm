@@ -136,123 +136,123 @@ number/base32-hash tuples, directly usable in the 'patch-series' form."
                "/lib")))
          (version "5.1"))
     (package
-     (name "bash")
-     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://gnu/bash/bash-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1alv68wplnfdm6mh39hm57060xgssb9vqca4yr1cyva0c342n0fc"))
-              (patch-flags '("-p0"))
-              (patches (cons (search-patch "bash-linux-pgrp-pipe.patch")
-                             %patch-series-5.1))))
-     (version (string-append version "." (number->string (length %patch-series-5.1))))
-     (build-system gnu-build-system)
+      (name "bash")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append
+                      "mirror://gnu/bash/bash-" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "1alv68wplnfdm6mh39hm57060xgssb9vqca4yr1cyva0c342n0fc"))
+                (patch-flags '("-p0"))
+                (patches (cons (search-patch "bash-linux-pgrp-pipe.patch")
+                               %patch-series-5.1))))
+      (version (string-append version "." (number->string (length %patch-series-5.1))))
+      (build-system gnu-build-system)
 
-     (outputs '("out"
-                "doc"                         ;1.7 MiB of HTML and extra files
-                "include"))                   ;headers used by extensions
-     (native-inputs (if (target-loongarch64?)
-                        (list config)
-                        '()))
-     (inputs (list readline ncurses))             ;TODO: add texinfo
-     (arguments
-      `(;; When cross-compiling, `configure' incorrectly guesses that job
-        ;; control is missing.
-        #:configure-flags ,(if (%current-target-system)
-                               `(cons* "bash_cv_job_control_missing=no"
-                                       ,configure-flags)
-                               configure-flags)
+      (outputs '("out"
+                 "doc"                  ;1.7 MiB of HTML and extra files
+                 "include"))            ;headers used by extensions
+      (native-inputs (if (target-loongarch64?)
+                         (list config)
+                         '()))
+      (inputs (list readline ncurses))  ;TODO: add texinfo
+      (arguments
+       `( ;; When cross-compiling, `configure' incorrectly guesses that job
+         ;; control is missing.
+         #:configure-flags ,(if (%current-target-system)
+                                `(cons* "bash_cv_job_control_missing=no"
+                                        ,configure-flags)
+                                configure-flags)
 
-        ;; Bash is reportedly not parallel-safe.  See, for instance,
-        ;; <http://patches.openembedded.org/patch/32745/> and
-        ;; <http://git.buildroot.net/buildroot/commit/?h=79e2d802a>.
-        #:parallel-build? #f
-        #:parallel-tests? #f
+         ;; Bash is reportedly not parallel-safe.  See, for instance,
+         ;; <http://patches.openembedded.org/patch/32745/> and
+         ;; <http://git.buildroot.net/buildroot/commit/?h=79e2d802a>.
+         #:parallel-build? #f
+         #:parallel-tests? #f
 
-        ;; XXX: The tests have a lot of hard-coded paths, so disable them
-        ;; for now.
-        #:tests? #f
+         ;; XXX: The tests have a lot of hard-coded paths, so disable them
+         ;; for now.
+         #:tests? #f
 
-        #:modules ((srfi srfi-26)
-                   (guix build utils)
-                   (guix build gnu-build-system))
+         #:modules ((srfi srfi-26)
+                    (guix build utils)
+                    (guix build gnu-build-system))
 
-        #:phases
-        (modify-phases %standard-phases
-          ,@(if (and (target-hurd?) (not (system-hurd?)))
-                `((add-after 'configure 'create-pipesize.h
-                    ;; The Bash Makefile mentions how PIPESIZE calculation is
-                    ;; "technically wrong" when cross-compiling, and offers no
-                    ;; way to override it.  On the 64bit Hurd, it can make
-                    ;; bash hang.
-                    (lambda _
-                      (with-directory-excursion "builtins"
-                        (with-output-to-file "psize.aux"
-                          (lambda _ (display "dummy to pacify make\n")))
-                        (with-output-to-file "pipesize.h"
-                          (lambda _ (display "#define PIPESIZE 16384\n")))))))
-                '())
+         #:phases
+         (modify-phases %standard-phases
+           ,@(if (and (target-hurd?) (not (system-hurd?)))
+                 `((add-after 'configure 'create-pipesize.h
+                     ;; The Bash Makefile mentions how PIPESIZE calculation is
+                     ;; "technically wrong" when cross-compiling, and offers no
+                     ;; way to override it.  On the 64bit Hurd, it can make
+                     ;; bash hang.
+                     (lambda _
+                       (with-directory-excursion "builtins"
+                         (with-output-to-file "psize.aux"
+                           (lambda _ (display "dummy to pacify make\n")))
+                         (with-output-to-file "pipesize.h"
+                           (lambda _ (display "#define PIPESIZE 16384\n")))))))
+                 '())
 
-          (add-after 'install 'install-sh-symlink
-            (lambda* (#:key outputs #:allow-other-keys)
-              ;; Add a `sh' -> `bash' link.
-              (let ((out (assoc-ref outputs "out")))
-                (with-directory-excursion (string-append out "/bin")
-                  (symlink "bash" "sh")
-                  #t))))
+           (add-after 'install 'install-sh-symlink
+             (lambda* (#:key outputs #:allow-other-keys)
+               ;; Add a `sh' -> `bash' link.
+               (let ((out (assoc-ref outputs "out")))
+                 (with-directory-excursion (string-append out "/bin")
+                   (symlink "bash" "sh")
+                   #t))))
 
-          (add-after 'install 'move-development-files
-            (lambda* (#:key outputs #:allow-other-keys)
-              ;; Move 'Makefile.inc' and 'bash.pc' to "include" to avoid
-              ;; circular references among the outputs.
-              (let ((out     (assoc-ref outputs "out"))
-                    (include (assoc-ref outputs "include"))
-                    (lib     (cut string-append <> "/lib/bash")))
-                (mkdir-p (lib include))
-                (rename-file (string-append (lib out)
-                                            "/Makefile.inc")
-                             (string-append (lib include)
-                                            "/Makefile.inc"))
-                (rename-file (string-append out "/lib/pkgconfig")
-                             (string-append include
-                                            "/lib/pkgconfig"))
+           (add-after 'install 'move-development-files
+             (lambda* (#:key outputs #:allow-other-keys)
+               ;; Move 'Makefile.inc' and 'bash.pc' to "include" to avoid
+               ;; circular references among the outputs.
+               (let ((out     (assoc-ref outputs "out"))
+                     (include (assoc-ref outputs "include"))
+                     (lib     (cut string-append <> "/lib/bash")))
+                 (mkdir-p (lib include))
+                 (rename-file (string-append (lib out)
+                                             "/Makefile.inc")
+                              (string-append (lib include)
+                                             "/Makefile.inc"))
+                 (rename-file (string-append out "/lib/pkgconfig")
+                              (string-append include
+                                             "/lib/pkgconfig"))
 
-                ;; Don't capture the absolute file name of 'install' to avoid
-                ;; retaining a dependency on Coreutils.
-                (substitute* (string-append (lib include)
-                                            "/Makefile.inc")
-                  (("^INSTALL =.*")
-                   "INSTALL = install -c\n"))
-                #t)))
-          ,@(if (target-loongarch64?)
-                `((add-after 'unpack 'update-config-scripts
-                    (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                      ;; Replace outdated config.guess and config.sub.
-                      (for-each (lambda (file)
-                                  (install-file
-                                   (search-input-file
-                                    (or native-inputs inputs)
-                                    (string-append "/bin/" file)) "./support"))
-                                '("config.guess" "config.sub")))))
-                '()))))
+                 ;; Don't capture the absolute file name of 'install' to avoid
+                 ;; retaining a dependency on Coreutils.
+                 (substitute* (string-append (lib include)
+                                             "/Makefile.inc")
+                   (("^INSTALL =.*")
+                    "INSTALL = install -c\n"))
+                 #t)))
+           ,@(if (target-loongarch64?)
+                 `((add-after 'unpack 'update-config-scripts
+                     (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                       ;; Replace outdated config.guess and config.sub.
+                       (for-each (lambda (file)
+                                   (install-file
+                                    (search-input-file
+                                     (or native-inputs inputs)
+                                     (string-append "/bin/" file)) "./support"))
+                                 '("config.guess" "config.sub")))))
+                 '()))))
 
-     (native-search-paths
-      (list (search-path-specification            ;new in 4.4
-             (variable "BASH_LOADABLES_PATH")
-             (files '("lib/bash")))))
+      (native-search-paths
+       (list (search-path-specification ;new in 4.4
+              (variable "BASH_LOADABLES_PATH")
+              (files '("lib/bash")))))
 
-     (synopsis "The GNU Bourne-Again SHell")
-     (description
-      "Bash is the shell, or command-line interpreter, of the GNU system.  It
+      (synopsis "The GNU Bourne-Again SHell")
+      (description
+       "Bash is the shell, or command-line interpreter, of the GNU system.  It
 is compatible with the Bourne Shell, but it also integrates useful features
 from the Korn Shell and the C Shell and new improvements of its own.  It
 allows command-line editing, unlimited command history, shell functions and
 aliases, and job control while still allowing most sh scripts to be run
 without modification.")
-     (license license:gpl3+)
-     (home-page "https://www.gnu.org/software/bash/"))))
+      (license license:gpl3+)
+      (home-page "https://www.gnu.org/software/bash/"))))
 
 (define-public bash-minimal
   ;; A stripped-down Bash for non-interactive use.
