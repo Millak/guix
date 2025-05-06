@@ -652,20 +652,29 @@ for animated scrolling maps for your new or existing game.")
   (package
     (name "python-pytmx")
     (version "3.32")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "PyTMX" version))
-              (sha256
-               (base32
-                "1jh9b0pjqbjdv72v5047p5d769ic084g013njvky0zcfiwrxi3w5"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyTMX" version))
+       (sha256
+        (base32 "1jh9b0pjqbjdv72v5047p5d769ic084g013njvky0zcfiwrxi3w5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; XXX: no tests in PyPI, there are in Git
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-pygame python-pysdl2 python-pyglet))
-  (home-page "https://github.com/bitcraft/PyTMX")
-  (synopsis "Python library to read Tiled Map Editor's TMX maps")
-  (description "@code{pytmx} is a map loader for python/pygame designed for games.
+     (list python-pygame
+           python-pysdl2
+           python-pyglet))
+    (home-page "https://github.com/bitcraft/PyTMX")
+    (synopsis "Python library to read Tiled Map Editor's TMX maps")
+    (description
+     "@code{pytmx} is a map loader for python/pygame designed for games.
 It provides smart tile loading with a fast and efficient storage base.")
-  (license license:lgpl3+)))
+    (license license:lgpl3+)))
 
 (define-public python-tmx
   (package
