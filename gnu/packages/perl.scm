@@ -4282,27 +4282,71 @@ arbitrary parameters.")
        (sha256
         (base32 "0s9w8ws2ckv0mbvns2irq4npmvj6chf6iyy3z0pspaz3izcfp1vw"))))
     (build-system perl-build-system)
+    (arguments
+      (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'wrap-with-perl-libs
+              ;; Wrap the re.pl script with required libs to reduce runtime
+              ;; propagated-inputs
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((bindir (string-append #$output "/bin"))
+                       (binaries (find-files bindir))
+                       (wrap.pl (lambda (scripts keys)
+                                  (for-each
+                                    (lambda (script)
+                                        (wrap-program script
+                                          `("PERL5LIB" ":" prefix
+                                             ,(cons*
+                                                (getenv "PERL5LIB")
+                                                (string-append #$output
+                                                               "/lib/perl5/site_perl")
+                                                (map
+                                                  (lambda (key)
+                                                    (string-append
+                                                      (assoc-ref inputs key)
+                                                      "/lib/perl5/site_perl"))
+                                                 keys)))))
+                                        scripts))))
+
+                        (wrap.pl binaries
+                               (list "perl-app-nopaste"
+                                     "perl-b-keywords"
+                                     "perl-data-dump-streamer"
+                                     "perl-data-dumper-concise"
+                                     "perl-file-next"
+                                     "perl-lexical-persistence"
+                                     "perl-module-refresh"
+                                     "perl-module-runtime"
+                                     "perl-moose"
+                                     "perl-moosex-getopt"
+                                     "perl-moosex-object-pluggable"
+                                     "perl-namespace-autoclean"
+                                     "perl-ppi"
+                                     "perl-ppi-xs"
+                                     "perl-sys-sigaction"
+                                     "perl-task-weaken"))))))))
     (native-inputs (list perl-test-fatal))
-    (propagated-inputs (list perl-app-nopaste
-                             perl-b-keywords
-                             perl-data-dump-streamer
-                             perl-data-dumper-concise
-                             perl-file-next
-                             perl-lexical-persistence
-                             perl-module-refresh
-                             perl-module-runtime
-                             perl-moose
-                             perl-moosex-getopt
-                             perl-moosex-object-pluggable
-                             perl-namespace-autoclean
-                             perl-ppi
-                             perl-ppi-xs
-                             perl-sys-sigaction
-                             perl-task-weaken))
+    (inputs (list bash-minimal
+                  perl-app-nopaste
+                  perl-b-keywords
+                  perl-data-dump-streamer
+                  perl-data-dumper-concise
+                  perl-file-next
+                  perl-lexical-persistence
+                  perl-module-refresh
+                  perl-module-runtime
+                  perl-moose
+                  perl-moosex-getopt
+                  perl-moosex-object-pluggable
+                  perl-namespace-autoclean
+                  perl-ppi
+                  perl-ppi-xs
+                  perl-sys-sigaction
+                  perl-task-weaken))
     (home-page "https://metacpan.org/release/Devel-REPL")
-    (synopsis "Modern Perl interactive shell.")
-    (description "@code{Devel::REPL} is a modern Perl interactive
-shell.")
+    (synopsis "Modern Perl interactive shell")
+    (description "@code{Devel::REPL} is a modern Perl interactive shell.")
     (license license:perl-license)))
 
 (define-public perl-devel-stacktrace
