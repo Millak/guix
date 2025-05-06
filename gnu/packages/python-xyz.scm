@@ -7678,14 +7678,14 @@ Mako, and Tornado.")
 (define-public python-pysdl2
   (package
     (name "python-pysdl2")
-    (version "0.9.11")
+    (version "0.9.17")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PySDL2" version))
        (sha256
         (base32 "19id1qswgcj4v4j5kn49shq1xxx3slhjpm0102w87mczsdbi1rck"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f ;; Requires /dev/dri, OpenGL module, etc.
@@ -7720,6 +7720,9 @@ Mako, and Tornado.")
                 (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
                  (format #f "'~a/~a'" #$(this-package-input "sdl2-ttf")
                          "lib/libSDL2_ttf.so"))))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
     (inputs
      (list sdl2 sdl2-image sdl2-gfx sdl2-mixer sdl2-ttf))
     (home-page "https://github.com/py-sdl/py-sdl2")
