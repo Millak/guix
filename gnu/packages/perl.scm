@@ -10405,14 +10405,14 @@ and @code{deserialize_regexp}.")
 (define-public perl-role-tiny-2
   (package
     (inherit perl-role-tiny)
-    (version "2.001004")
+    (version "2.002004")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/H/HA/HAARG/"
                            "Role-Tiny-" version ".tar.gz"))
        (sha256
-        (base32 "11qn516352yhi794www3ykwa9xv2gxpfnhn9jcn10x0ahl95gflj"))))))
+        (base32 "0i9b4jd4vd6w8nldyhk6y5zsiga4ari83afhaam86kwa2fgfxgfp"))))))
 
 (define-public perl-safe-hole
   (package
