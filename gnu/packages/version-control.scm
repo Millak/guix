@@ -65,6 +65,7 @@
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2312,6 +2313,45 @@ clobbering each other or interfering otherwise.  By default, all Git
 repositories maintained via vcsh store the actual files in @code{$HOME},
 though this can be overridden.")
     (license license:gpl2+)))
+
+(define-public vcstool
+  (package
+    (name "vcstool")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vcstool" version))
+       (sha256
+        (base32 "0b7f68q25x9nxqa3xcg32js3qgp4jg99anwy2c7nd1jkw5iskcq4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; network access is required
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'wrap-script
+            (lambda _
+              (wrap-program (string-append #$output "/bin/vcs")
+                `("PATH" ":" prefix
+                  ,(list (string-append #$git "/bin")
+                         (string-append #$breezy "/bin")
+                         (string-append #$subversion "/bin")))))))))
+    (native-inputs
+     (list python-pyyaml
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list bash-minimal
+           breezy
+           git
+           subversion))
+    (home-page "https://github.com/dirk-thomas/vcstool")
+    (synopsis "Multiple VCS repository managing tool")
+    (description
+     "This package enables manipulating multiple version control repositories
+with one command.")
+    (license license:asl2.0)))
 
 (define-public git-test-sequence
   (let ((commit "48e5a2f5a13a5f30452647237e23362b459b9c76"))
