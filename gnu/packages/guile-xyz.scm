@@ -113,6 +113,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages noweb)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages package-management)
@@ -4039,7 +4040,7 @@ from @code{tree-il}.")
 (define-public guile-hoot
   (package
     (name "guile-hoot")
-    (version "0.6.0")
+    (version "0.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://spritely.institute/files/releases"
@@ -4047,15 +4048,18 @@ from @code{tree-il}.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0miq9bv09xvzdrcvzdrca9vychsznpzi4jj87f5r1mwz0xxpvxjb"))))
+                "0bpcni900sh2rp8j8ixjs0cipmvgygh1srnli686vf12n61hw0kz"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags '("GUILE_AUTO_COMPILE=0"
-                      "WASM_HOST=hoot")))
+     '(#:make-flags '("GUILE_AUTO_COMPILE=0")))
     (native-inputs
-     (list autoconf automake pkg-config texinfo))
+     (list autoconf automake node pkg-config texinfo))
     (inputs
      (list guile-next))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "HOOT_LOAD_PATH")
+            (files (list "share/guile-hoot/site")))))
     (synopsis "WebAssembly compiler backend for Guile")
     (description "Guile Hoot is a WebAssembly compiler backend for GNU Guile
 and standalone WASM toolchain.")
