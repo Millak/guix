@@ -24834,7 +24834,7 @@ callback-heavy mode of interaction typical in some Kivy applications.")
     (native-inputs
      (list python-poetry-core
            python-pytest))
-    (home-page "https://github.com/gottadiveintopython/asyncgui")
+    (home-page "https://github.com/asyncgui/asyncgui")
     (synopsis "Enables async/await without an event loop")
     (description
      "This package provides support for async/await applications without
