@@ -7675,66 +7675,6 @@ any @file{.pug} source into different template languages: Django, Jinja2,
 Mako, and Tornado.")
     (license license:expat))) ;; MIT
 
-(define-public python-pysdl2
-  (package
-    (name "python-pysdl2")
-    (version "0.9.17")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "PySDL2" version))
-       (sha256
-        (base32 "19id1qswgcj4v4j5kn49shq1xxx3slhjpm0102w87mczsdbi1rck"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f ;; Requires /dev/dri, OpenGL module, etc.
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-paths
-            (lambda _
-              (substitute* "sdl2/dll.py"
-                ;; Disable pysdl2-dll. It can't be packaged on GNU Guix
-                ;; as it duplicates an existing package (sdl2).
-                (("prepath = os\\.getenv\\('PYSDL2_DLL_PATH'\\)")
-                 "prepath = \"system\"")
-                (("^import sdl2dll$") "")
-                (("postpath = os\\.getenv\\('PYSDL2_DLL_PATH'\\)")
-                 "postpath = \"system\"")
-                (("DLL\\(.*, os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)\\)")
-                 (format #f "DLL('SDL2', ['SDL2', 'SDL2-2.0', 'SDL2-2.0.0'], '~a/lib')"
-                         #$(this-package-input "sdl2"))))
-              (substitute* "sdl2/sdlimage.py"
-                (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
-                 (format #f "'~a/~a'" #$(this-package-input "sdl2-image")
-                         "lib/libSDL2_image.so")))
-              (substitute* "sdl2/sdlgfx.py"
-                (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
-                 (format #f "'~a/~a'" #$(this-package-input "sdl2-gfx")
-                         "lib/libSDL2_gfx.so")))
-              (substitute* "sdl2/sdlmixer.py"
-                (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
-                 (format #f "'~a/~a'" #$(this-package-input "sdl2-mixer")
-                         "lib/libSDL2_mixer.so")))
-              (substitute* "sdl2/sdlttf.py"
-                (("os\\.getenv\\(\"PYSDL2_DLL_PATH\"\\)")
-                 (format #f "'~a/~a'" #$(this-package-input "sdl2-ttf")
-                         "lib/libSDL2_ttf.so"))))))))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (inputs
-     (list sdl2 sdl2-image sdl2-gfx sdl2-mixer sdl2-ttf))
-    (home-page "https://github.com/py-sdl/py-sdl2")
-    (synopsis "Python bindings around the SDL2 game development library")
-    (description
-     "PySDL2 is a pure Python wrapper around the
-@code{SDL2},@code{SDL2_mixer}, @code{SDL2_image}, @code{SDL2_ttf}, and
-@code{SDL2_gfx} libraries.  Instead of relying on C code, it uses the built-in
-ctypes module to interface with SDL2, and provides simple Python classes and
-wrappers for common SDL2 functionality.")
-    (license license:cc0)))
-
 (define-public python-pystache
   (package
     (name "python-pystache")
