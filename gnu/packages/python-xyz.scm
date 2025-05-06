@@ -24621,16 +24621,14 @@ for Kivy, the multitouch application platform.")
 (define-public python-kivy
   (package
     (name "python-kivy")
-    (version "2.1.0")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Kivy" version))
-       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1cq4djfn7h8560mvz94dydsldg2jpp5w9rby7nafgmbh7fxg65is"))))
-    (build-system python-build-system)
+        (base32 "1ngrnkrp6xgfl4x32i2nv3bml13l8qwa87cwrymv9k826ng98cq8"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f              ; Tests require many optional packages
        #:phases
@@ -24644,14 +24642,27 @@ for Kivy, the multitouch application platform.")
              ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
              (setenv "HOME" (getcwd)))))))
     (native-inputs
-     (list pkg-config python-cython))
+     (list pkg-config
+           python-cython
+           ;; Not packaged yet, for tests.
+           ;; python-kivy-deps-glew
+           ;; python-kivy-deps-glew-dev
+           ;; python-kivy-deps-gstreamer
+           ;; python-kivy-deps-gstreamer-dev
+           ;; python-kivy-deps-sdl2
+           ;; python-kivy-deps-sdl2-dev
+           python-packaging
+           python-setuptools
+           python-wheel))
     (inputs
      (list gstreamer
            mesa
            (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))
            python-docutils
+           python-filetype
            python-kivy-garden
-           python-pygments))
+           python-pygments
+           python-requests))
     (home-page "https://kivy.org")
     (synopsis "Multitouch application framework")
     (description
