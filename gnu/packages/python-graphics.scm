@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Adam Kandur <kefironpremise@gmail.com>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021, 2023 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
+;;; Copyright © 2022 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -57,6 +58,41 @@
 ;;;
 ;;; Code:
 
+(define-public python-asynckivy
+  (package
+    (name "python-asynckivy")
+    (version "0.8.1")
+    (source
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/asyncgui/asynckivy")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gjddv6d7bbjymvly2x5zaay1gyihls1c4bh7y1ppbvz15152lkj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (propagated-inputs
+     (list python-kivy
+           python-asyncgui))
+    (home-page "https://github.com/asyncgui/asynckivy")
+    (synopsis "Async library for Kivy")
+    (description
+     "This package provides async versions of Kivy functions to avoid the
+callback-heavy mode of interaction typical in some Kivy applications.")
+    (license license:expat)))
+
 (define-public python-glcontext
   (let (;; Upstream is known for abusing mutable tag, hence pinpoint the
         ;; relevant commit.
