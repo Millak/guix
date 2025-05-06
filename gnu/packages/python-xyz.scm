@@ -24657,8 +24657,9 @@ for Kivy, the multitouch application platform.")
     (inputs
      (list gstreamer
            mesa
-           (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))
-           python-docutils
+           (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
+    (propagated-inputs
+     (list python-docutils
            python-filetype
            python-kivy-garden
            python-pygments
