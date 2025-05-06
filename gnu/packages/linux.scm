@@ -2236,47 +2236,49 @@ of a binary file.")
       (license license:gpl3))))
 
 (define-public ddcci-driver-linux
-  (package
-    (name "ddcci-driver-linux")
-    (version "0.4.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://gitlab.com/ddcci-driver-linux/ddcci-driver-linux.git")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0j2bgzadrbcyf3k4zplv7p5yqb9pw2ca6wzkqjhhidaah2722vlf"))))
-    (build-system linux-module-build-system)
-    (arguments
-     (list #:tests? #f                  ; no tests
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'build
-                 (lambda args
-                   (for-each
-                    (lambda (module)
-                      (with-directory-excursion module
-                        (apply (assoc-ref %standard-phases 'build) args)))
-                    '("ddcci" "ddcci-backlight"))))
-               (replace 'install
-                 (lambda args
-                   (for-each
-                    (lambda (module)
-                      (with-directory-excursion module
-                        (apply (assoc-ref %standard-phases 'install) args)))
-                    '("ddcci" "ddcci-backlight")))))))
-    (home-page "https://gitlab.com/ddcci-driver-linux/ddcci-driver-linux")
-    (synopsis "Pair of Linux kernel drivers for DDC/CI monitors")
-    (description "This package provides two Linux kernel drivers, ddcci and
+  (let ((revision "0")
+        (commit "7f8f8e6c221a286d57a643c2909109a54e084eed"))
+    (package
+      (name "ddcci-driver-linux")
+      (version (git-version "0.4.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://gitlab.com/ddcci-driver-linux/ddcci-driver-linux.git")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0sgldghd8n4qjm5nv9dgxjibj1hg4kkk1811wndf3vx3dacsmkl9"))))
+      (build-system linux-module-build-system)
+      (arguments
+       (list #:tests? #f                  ; no tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'build
+                   (lambda args
+                     (for-each
+                      (lambda (module)
+                        (with-directory-excursion module
+                          (apply (assoc-ref %standard-phases 'build) args)))
+                      '("ddcci" "ddcci-backlight"))))
+                 (replace 'install
+                   (lambda args
+                     (for-each
+                      (lambda (module)
+                        (with-directory-excursion module
+                          (apply (assoc-ref %standard-phases 'install) args)))
+                      '("ddcci" "ddcci-backlight")))))))
+      (home-page "https://gitlab.com/ddcci-driver-linux/ddcci-driver-linux")
+      (synopsis "Pair of Linux kernel drivers for DDC/CI monitors")
+      (description "This package provides two Linux kernel drivers, ddcci and
 ddcci-backlight, that allows the control of DDC/CI monitors through the sysfs
 interface.  The ddcci module creates a character device for each DDC/CI
 monitors in @file{/dev/bus/ddcci/[I²C busnumber]}.  While the ddcci-backlight
 module allows the control of the backlight level or luminance property when
 supported under @file{/sys/class/backlight/}.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public v4l2loopback-linux-module
   (package
