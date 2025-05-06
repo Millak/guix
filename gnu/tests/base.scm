@@ -227,7 +227,7 @@ info --version")
                marionette)))
 
           (test-equal "/var/log/messages is not world-readable"
-            #o640                                ;<https://bugs.gnu.org/40405>
+            #o640                       ;<https://bugs.gnu.org/40405>
             (begin
               (wait-for-file "/var/log/messages" marionette
                              #:read 'get-u8)
@@ -448,7 +448,7 @@ info --version")
                              marionette))
 
           (test-equal "nscd invalidate action"
-            '(#t)                                 ;one value, #t
+            '(#t)                       ;one value, #t
             (marionette-eval '(with-shepherd-action 'nscd ('invalidate "hosts")
                                                     result
                                 result)
@@ -458,7 +458,7 @@ info --version")
           ;; code of 'nscd' so skip this test.
           (test-skip 1)
           (test-equal "nscd invalidate action, wrong table"
-            '(#f)                                 ;one value, #f
+            '(#f)                       ;one value, #f
             (marionette-eval '(with-shepherd-action 'nscd ('invalidate "xyz")
                                                     result
                                 result)
@@ -509,7 +509,7 @@ info --version")
                              marionette))
 
           (test-equal "guix-daemon set-http-proxy action"
-            '(#t)                                 ;one value, #t
+            '(#t)                       ;one value, #t
             (marionette-eval '(with-shepherd-action 'guix-daemon
                                   ('set-http-proxy "http://localhost:8118")
                                   result
@@ -517,7 +517,7 @@ info --version")
                              marionette))
 
           (test-equal "guix-daemon set-http-proxy action, clear"
-            '(#t)                                 ;one value, #t
+            '(#t)                       ;one value, #t
             (marionette-eval '(with-shepherd-action 'guix-daemon
                                   ('set-http-proxy)
                                   result
