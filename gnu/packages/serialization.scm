@@ -70,28 +70,34 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages time))
 
-(define-public avro-cpp-1.9
+(define-public avro-cpp
   (package
     (name "avro-cpp")
-    (version "1.9.2")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://archive.apache.org/dist/avro/avro-" version
+                    "mirror://apache/avro/avro-" version
                     "/avro-src-" version ".tar.gz"))
               (sha256
-               (base32 "0i3fpm7r72yw397qc8yw9ybzk2mxjkv0yk5hnn00ylc1wbd0np73"))))
+               (base32 "0ywg7s7m7ngiddcg78hwb34c49yjzal6glcckinvcik2fr9nmg88"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "lang/c++"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'chdir
+                 (lambda _ (chdir "lang/c++")))
+               (add-after 'chdir 'fix-dependencies
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("^FetchContent_MakeAvailable\\(fmt\\)")
+                      "find_package(fmt REQUIRED)")))))))
     (inputs
-     (list boost snappy))
+     (list boost fmt snappy))
     (home-page "https://avro.apache.org/")
     (synopsis "Data serialization system")
     (description "Apache Avro is a data serialization system.  Avro provides:
@@ -109,8 +115,16 @@ implement RPC protocols.")
 
 (define-public avro-cpp-1.9-for-irods
   (package
-    (inherit avro-cpp-1.9)
+    (inherit avro-cpp)
     (properties `((hidden? . #true)))
+    (version "1.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://apache/avro/avro-" version
+                    "/avro-src-" version ".tar.gz"))
+              (sha256
+               (base32 "0i3fpm7r72yw397qc8yw9ybzk2mxjkv0yk5hnn00ylc1wbd0np73"))))
     (arguments
      `(#:configure-flags
        '("-DCMAKE_CXX_COMPILER=clang++"
