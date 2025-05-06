@@ -24790,30 +24790,6 @@ completes.")
 pytest-fixtures-style dependency injection.")
     (license license:asl2.0)))
 
-(define-public python-asyncgui
-  (package
-    (name "python-asyncgui")
-    (version "0.8.0")
-    (source
-     (origin
-       (method git-fetch)               ; no tests in PyPI release
-       (uri (git-reference
-             (url "https://github.com/asyncgui/asyncgui")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1b074msb580wify2wag3swm3s21x23kckxpw974y6dibsmrfr5n3"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-poetry-core
-           python-pytest))
-    (home-page "https://github.com/asyncgui/asyncgui")
-    (synopsis "Enables async/await without an event loop")
-    (description
-     "This package provides support for async/await applications without
-requiring an event loop, useful for creative responsive GUIs.")
-    (license license:expat)))
-
 (define-public python-binaryornot
   (package
     (name "python-binaryornot")
