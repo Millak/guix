@@ -4007,8 +4007,10 @@ buffers, and audio capture.")
               (patches (search-patches "alure-dumb-2.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ;no tests
-       #:configure-flags '("-DMODPLUG=ON")))
+     (list
+      #:cmake cmake-3.25
+      #:tests? #f ;no tests
+      #:configure-flags #~(list "-DMODPLUG=ON")))
     (native-inputs (list pkg-config))
     (inputs (list dumb
                   flac
