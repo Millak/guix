@@ -1944,30 +1944,6 @@ It supports sub-pixel resolutions and anti-aliasing.  It is also a library for
 rendering @acronym{SVG, Scalable Vector Graphics}.")
     (license license:gpl2+)))
 
-(define-public python-pastel
-  (package
-    (name "python-pastel")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pastel" version))
-       (sha256
-        (base32
-         "0dnaw44ss10i10z4ksy0xljknvjap7rb7g0b8p6yzm5x4g2my5a6"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _ (invoke "pytest" "pastel" "tests/"))))))
-    (native-inputs
-     (list python-pytest))
-    (home-page "https://github.com/sdispater/pastel")
-    (synopsis "Library to colorize strings in your terminal")
-    (description "Pastel is a simple library to help you colorize strings in
-your terminal.")
-    (license license:expat)))
-
 (define-public facedetect
   (let ((commit "5f9b9121001bce20f7d87537ff506fcc90df48ca")
         (revision "0"))

@@ -56,6 +56,7 @@
 ;;; Copyright © 2018 Luther Thompson <lutheroto@gmail.com>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2015, 2018 Pjotr Prins <pjotr.guix@thebird.nl>
+;;; Copyright © 2019 tlecarrour@easter-eggs.com <tlecarrour@easter-eggs.com>
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019 Sam <smbaines8@gmail.com>
 ;;; Copyright © 2019, 2023 Jack Hill <jackhill@jackhill.us>
@@ -792,6 +793,30 @@ comparison operators, as defined in the original
     (description
      "This package provides a functionality to view output of multiple
 processes, in parallel, in the console, with an interactive TUI.")
+    (license license:expat)))
+
+(define-public python-pastel
+  (package
+    (name "python-pastel")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pastel" version))
+       (sha256
+        (base32
+         "0dnaw44ss10i10z4ksy0xljknvjap7rb7g0b8p6yzm5x4g2my5a6"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda _ (invoke "pytest" "pastel" "tests/"))))))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/sdispater/pastel")
+    (synopsis "Library to colorize strings in your terminal")
+    (description "Pastel is a simple library to help you colorize strings in
+your terminal.")
     (license license:expat)))
 
 (define-public python-pyxdameraulevenshtein
