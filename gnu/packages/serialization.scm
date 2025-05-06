@@ -570,27 +570,34 @@ character limit for implicit keys.")
     (license license:expat)))
 
 (define-public yaml-cpp
-  (package
-    (name "yaml-cpp")
-    (version "0.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jbeder/yaml-cpp")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0whdn6pqa56532ml20h89p6rchcrrazdrvi5fz6zpmrkl15yiki7"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:configure-flags '("-DYAML_BUILD_SHARED_LIBS=ON")))
-    (native-inputs
-     (list python))
-    (home-page "https://github.com/jbeder/yaml-cpp")
-    (synopsis "YAML parser and emitter in C++")
-    (description "YAML parser and emitter in C++ matching the YAML 1.2 spec.")
-    (license license:bsd-3)))
+  (let ((commit "2f86d13775d119edbb69af52e5f566fd65c6953b")
+        (revision "0"))
+    (package
+      (name "yaml-cpp")
+      (version (git-version "0.8.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jbeder/yaml-cpp")
+               (commit commit)))
+         (modules '((guix build utils)))
+         (snippet #~(delete-file-recursively "test/googletest-1.13.0"))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12ncx2hlsl5vp9yfja6myxalg85j0kgxwbargn37yiwi8rn17m8s"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:configure-flags '("-DYAML_BUILD_SHARED_LIBS=ON"
+                             "-DYAML_CPP_BUILD_TESTS=ON"
+                             "-DYAML_USE_SYSTEM_GTEST=ON")))
+      (native-inputs
+       (list python))
+      (inputs (list googletest))
+      (home-page "https://github.com/jbeder/yaml-cpp")
+      (synopsis "YAML parser and emitter in C++")
+      (description "YAML parser and emitter in C++ matching the YAML 1.2 spec.")
+      (license license:bsd-3))))
 
 (define-public jsoncpp
   (package
