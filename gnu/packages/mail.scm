@@ -2614,25 +2614,25 @@ header.")
 (define-public perl-email-sender
   (package
     (name "perl-email-sender")
-    (version "1.300035")
+    (version "2.601")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/R/RJ/RJBS/"
                            "Email-Sender-" version ".tar.gz"))
        (sha256
-        (base32 "0yfssp3rqdx1dmgvnygarzgkpkhqm28r5sd0gh87ksk8yxndhjql"))))
+        (base32 "0380bm2rnkralqy34ym0pzz4s7id2xi5abln9h8aas59c8ypibfy"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-capture-tiny))
+     (list perl-capture-tiny perl-test-mockobject perl-sub-override))
     (propagated-inputs
      (list perl-email-abstract
-           perl-email-address
+           perl-email-address-xs
            perl-email-simple
-           perl-list-moreutils
            perl-module-runtime
-           perl-moo
+           perl-moo-2
            perl-moox-types-mooselike
+           perl-scalar-list-utils
            perl-sub-exporter
            perl-throwable
            perl-try-tiny))
