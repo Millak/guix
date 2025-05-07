@@ -321,8 +321,7 @@ without modification.")
                     #t))))))))))
 
 (define-public bash-with-syslog
-  (package
-    (inherit bash)
+  (package/inherit bash
     (name "bash-with-syslog")
     (arguments
      (substitute-keyword-arguments (package-arguments bash)
