@@ -10426,12 +10426,7 @@ resources using Web Application Description Language (WADL) files as guides.")
            python-requests-toolbelt))
     (native-inputs
      (list nss-certs-for-test
-           python-coverage
-           python-flake8
-           python-flake8-blind-except
-           python-flake8-debugger
            python-freezegun
-           python-isort
            python-pretend
            python-pytest
            python-pytest-asyncio
