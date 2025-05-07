@@ -2605,7 +2605,7 @@ header.")
 (define-public perl-email-mime-encodings
   (package
     (name "perl-email-mime-encodings")
-    (version "1.315")
+    (version "1.317")
     (source
      (origin
        (method url-fetch)
@@ -2613,10 +2613,11 @@ header.")
                            "Email-MIME-Encodings-" version ".tar.gz"))
        (sha256
         (base32
-         "0p5b8g9gh35m8fqrpx60g4bp98rvwd02n5b0vm9wh7mk0xah8wac"))))
+          "1bqbxbmy5agch7dnwlk2c94a6gshm4cy86r4vb2085cx39kl36ja"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-capture-tiny))
+     (list perl-capture-tiny
+           perl-mime-base64))
     (home-page "https://metacpan.org/release/Email-MIME-Encodings")
     (synopsis "Unified interface to MIME encoding and decoding")
     (description "This module wraps MIME::Base64 and MIME::QuotedPrint.")
