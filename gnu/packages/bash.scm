@@ -304,8 +304,7 @@ without modification.")
   ;; Statically-linked Bash that contains nothing but the 'bash' binary and
   ;; 'sh' symlink, without any reference.
   (let ((bash (static-package bash-minimal)))
-    (package
-      (inherit bash)
+    (package/inherit bash
       (name "bash-static")
       (arguments
        (substitute-keyword-arguments
