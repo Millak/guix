@@ -41,13 +41,22 @@
  (entry (commit "ce363c1dc7bd63a74dcf7788d340819f6d5db89f")
         (title
          (en "@command{guix shell --container} provides a read-only root by
-default"))
+default")
+         (de "@command{guix shell --container} stellt als Vorgabe ein
+nur lesbares Wurzeldateisystem bereit"))
         (body
          (en "The @command{guix shell --container} command now provides a
 read-only root file system by default.  You can restore the previous behavior
 by passing the @option{--writable-root} flag.
 
-Run @command{info \"(guix) Invoking guix shell\"} for more information.")))
+Run @command{info \"(guix) Invoking guix shell\"} for more information.")
+         (de "Über den Befehl @command{guix shell --container} bekommt man in
+der Vorgabeeinstellung jetzt ein nur lesbares Wurzeldateisystem zur Verfügung
+gestellt.  Wenn Sie das vorherige Verhalten möchten, können Sie die
+Befehlszeilenoption @option{--writable-root} übergeben.
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix shell\"} aus, um mehr
+zu erfahren.")))
 
  (entry (commit "7e5913f90df916d8d9f5c509354d62324f54f481")
         (title
