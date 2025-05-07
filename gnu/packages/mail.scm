@@ -2551,7 +2551,7 @@ identify a message uniquely.")
 (define-public perl-email-mime
   (package
     (name "perl-email-mime")
-    (version "1.946")
+    (version "1.954")
     (source
      (origin
        (method url-fetch)
@@ -2559,8 +2559,10 @@ identify a message uniquely.")
                            "Email-MIME-" version ".tar.gz"))
        (sha256
         (base32
-         "0z1k3i0lzp2k421gc8f3wq0jbqflkbw2xqd2k7n7pmv56417kvk8"))))
+          "1ly47kxcwhdjg9g54sj4xd0pdf0clxa9hk9mqpn5lr2v8c0rpmkd"))))
     (build-system perl-build-system)
+    (native-inputs
+      (list perl-email-address-xs))
     (propagated-inputs
      (list perl-email-address
            perl-email-messageid
