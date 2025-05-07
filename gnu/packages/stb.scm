@@ -60,12 +60,16 @@
                 #f                     ; (invoke "make" "-C" "tests" "CC=gcc")
                 ))
             (replace 'install
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let ((out (assoc-ref outputs "out"))
-                      (files (make-regexp "\\.(c|h|md)$")))
-                  (for-each (lambda (file)
-                              (install-file file out))
-                            (scandir "." (cut regexp-exec files <>)))
+              (lambda _
+                (let* ((files-rx (make-regexp "\\.(c|h|md)$"))
+                       (include-file? (cut regexp-exec files-rx <>))
+                       (deprecated-output (string-append #$output "/deprecated")))
+                  (for-each (cut install-file <> #$output)
+                            (scandir "." include-file?))
+                  (mkdir-p deprecated-output)
+                  (with-directory-excursion "deprecated"
+                    (for-each (cut install-file <> deprecated-output)
+                              (scandir "." include-file?)))
                   #t))))))
       (synopsis "Single file libraries for C/C++")
       (description
@@ -74,7 +78,7 @@ the C programming language.")
       ;; The user can choose either license.
       (license (list expat public-domain)))))
 
-(define (make-stb-header-package name version description)
+(define* (make-stb-header-package name version description #:key deprecated?)
   (package
     (inherit stb)
     (name name)
@@ -88,19 +92,20 @@ the C programming language.")
       #:builder
       #~(begin
           (use-modules (guix build utils))
-          (let ((stb #$(this-package-input "stb"))
+          (let ((headers-dir #$(file-append (this-package-input "stb")
+                                            (if deprecated? "/deprecated" "")))
                 (lib (string-join (string-split #$name #\-) "_"))
                 (out #$output))
-            (install-file (string-append stb "/" lib ".h")
+            (install-file (string-append headers-dir "/" lib ".h")
                           (string-append out "/include"))
             #t))))
     (description description)))
 
 (define-syntax define-stb-header-package
   (syntax-rules (description)
-    ((_ symbol name version (description text))
+    ((_ symbol name version (description text) rest ...)
      (define-public symbol
-       (make-stb-header-package name version text)))))
+       (make-stb-header-package name version text rest ...)))))
 
 (define-stb-header-package stb-image
   "stb-image" "2.30"
