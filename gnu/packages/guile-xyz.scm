@@ -1658,7 +1658,18 @@ the Guile compiler tower to generate the DSL from AWS JSON specifications.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:make-flags #~(list "GUILE_AUTO_COMPILE=0")))
+      #:make-flags
+      #~(list "GUILE_AUTO_COMPILE=0")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-extension-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "module/ffi/mosquitto.scm"
+                (("list #f \"libmosquitto\"")
+                 (string-append
+                  "list #f \""
+                  (search-input-file inputs "/lib/libmosquitto.so")
+                  "\""))))))))
     (native-inputs (list guile-3.0 pkg-config))
     (inputs (list mosquitto))
     (home-page "https://github.com/mdjurfeldt/guile-mqtt")
