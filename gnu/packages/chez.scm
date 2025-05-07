@@ -503,7 +503,7 @@ version of Chez Scheme.")
     (name "chez-scheme")
     ;; The version should match `(scheme-version-number #t)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "10.1.0")
+    (version "10.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -511,7 +511,7 @@ version of Chez Scheme.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0y07n2has2592g41zgl275as2wbw1fqd2y7a34llpbqnfpc7923s"))
+                "14iv4kfkyvrkigr1n2prf71n2l3vs0sf0549rvh6y4x2faa2l329"))
               (file-name (git-file-name name version))
               (patches (search-patches "chez-scheme-bin-sh.patch"))
               (snippet #~(begin
