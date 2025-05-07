@@ -1082,16 +1082,37 @@ safety and thread safety guarantees.")
       (source
        (origin
          (inherit (package-source base-rust))
-         (patches '()))))))
+         (patches '())))
+      (arguments
+       (if (supported-package? rust-bootstrap-1.74)
+           (substitute-keyword-arguments (package-arguments base-rust)
+             ((#:phases phases)
+              `(modify-phases ,phases
+                 (add-after 'unpack 'add-cc-shim-to-path
+                   (lambda _
+                     (mkdir-p "/tmp/bin")
+                     (symlink (which "gcc") "/tmp/bin/cc")
+                     (setenv "PATH" (string-append "/tmp/bin:" (getenv "PATH"))))))))
+           (package-arguments base-rust)))
+      (native-inputs
+       (if (supported-package? rust-bootstrap-1.74)
+           (modify-inputs (package-native-inputs base-rust)
+             (replace "cargo-bootstrap" (list rust-bootstrap-1.74 "cargo"))
+             (replace "rustc-bootstrap" rust-bootstrap-1.74))
+           (package-native-inputs base-rust)))
+      (inputs (modify-inputs (package-inputs base-rust)
+                (replace "llvm" llvm-17))))))
 
 (define-public rust-1.76
   (let ((base-rust (rust-bootstrapped-package rust-1.75 "1.76.0"
                     "08f06shp6l72qrv5fwg1is7yzr6kwj8av0l9h5k243bz781zyp4y")))
     (package
       (inherit base-rust)
-      ;; Need llvm >= 16.0
-      (inputs (modify-inputs (package-inputs base-rust)
-                             (replace "llvm" llvm-17))))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (delete 'add-cc-shim-to-path))))))))
 
 (define-public rust-1.77
   (let ((base-rust (rust-bootstrapped-package rust-1.76 "1.77.1"
