@@ -2465,20 +2465,27 @@ write simple, representation-independent mail handling code.")
 (define-public perl-email-address
   (package
     (name "perl-email-address")
-    (version "1.912")
+    (version "1.913")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/R/RJ/RJBS/"
                            "Email-Address-" version ".tar.gz"))
        (sha256
-        (base32 "1vzr0vx4zsw4zbc9xdffc31wnkc1raqmyfiyws06fbyck197i8qg"))))
+        (base32
+          "1bx51i0w4r1z6z2ipkisz6irayldw4d3cbb4yz63bdgndlgm9yva"))))
     (build-system perl-build-system)
+    (native-inputs
+      (list
+            ;; dependency cycle if perl-email-mime is added
+            perl-pathtools
+            perl-test-simple
+            perl-time-hires))
     (home-page "https://metacpan.org/release/Email-Address")
     (synopsis "Email address parsing and creation")
     (description "Email::Address implements a regex-based RFC 2822 parser that
 locates email addresses in strings and returns a list of Email::Address
-objects found.  Alternatively you may construct objects manually.")
+objects found.  It is recommended to use Email::Address::XS instead.")
     (license license:perl-license)))
 
 (define-public perl-email-address-xs
