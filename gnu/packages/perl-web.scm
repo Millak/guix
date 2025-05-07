@@ -24,13 +24,19 @@
   #:use-module (gnu packages)
   #:use-module (guix packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages dbm)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages perl-compression)
+  #:use-module (gnu packages re2c)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
@@ -493,7 +499,7 @@ associated with individual signatures.")
 (define-public spamassassin
   (package
     (name "spamassassin")
-    (version "4.0.0")
+    (version "4.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -501,18 +507,18 @@ associated with individual signatures.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0djgm04kvgq0iab4hhv66gxhl2bhyhj1lfpjcdsw7qq3s6krv5v5"))
+                 "1rfmsr0vbhh68m5p2r8jbrw91k65zzhh8vc1fsig21c4w4ib4ssw"))
               (modules '((guix build utils)))
               (snippet #~(delete-file "spamc/configure"))))
     (build-system perl-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
+     (list
+       #:phases #~(modify-phases %standard-phases
                         (add-before 'configure 'setup
                           (lambda _
-                            (delete-file "t/debug.t") ;hangs
-                            (delete-file "t/dnsbl_subtests.t") ;6 failures
-                            (delete-file "t/spamc_x_e.t") ;3 failures
                             (setenv "CONFIG_SHELL" (which "sh"))
+                            (substitute* "t/spamc_x_e.t" (("/bin/echo" all) (which "echo")))
+                            (substitute* "build/parse-rules-for-masses" (("date" all) (which "date")))
                             (with-directory-excursion "spamc"
                               (invoke "autoreconf" "-vif"))))
                         (add-after 'install 'fix-lib-path
@@ -537,35 +543,53 @@ associated with individual signatures.")
                                       "sa-update" "spamassassin")))))))))
     (native-inputs (list autoconf
                          automake
-                         perl-devel-cycle
-                         perl-net-dns
                          perl-critic
                          perl-critic-policy-perlsecret
-                         perl-test-most
+                         perl-data-dumper
+                         perl-devel-cycle
                          perl-test-pod
                          perl-text-diff))
-    (propagated-inputs (list perl-archive-zip
-                             perl-bsd-resource
-                             perl-dbd-sqlite
-                             perl-dbi
-                             perl-email-address-xs
-                             perl-encode-detect
-                             perl-geo-ip
-                             perl-html-parser
-                             perl-io-socket-inet6
-                             perl-io-socket-ssl
-                             perl-io-string
-                             perl-libwww
-                             perl-mail-dkim
-                             perl-mail-dmarc
-                             perl-mail-spf
-                             perl-net-cidr-lite
-                             perl-net-dns
-                             perl-net-ip
-                             perl-net-libidn
-                             perl-net-patricia
-                             perl-netaddr-ip
-                             perl-razor2-client-agent))
+    (inputs
+      (list
+            coreutils
+            curl
+            gnupg
+            openssl
+            re2c
+            zlib))
+    (propagated-inputs
+      (list perl-archive-zip
+            perl-bsd-resource
+            perl-dbd-sqlite
+            perl-db-file
+            perl-dbi
+            perl-email-address-xs
+            perl-encode-detect
+            perl-geo-ip
+            perl-html-parser
+            perl-io-compress
+            perl-io-socket-inet6
+            perl-io-socket-ip
+            perl-io-socket-ssl
+            perl-io-string
+            perl-io-zlib
+            perl-libwww
+            perl-lwp-protocol-https
+            perl-mail-dkim
+            perl-mail-dmarc
+            perl-mail-spf
+            perl-mime-base64
+            perl-net-cidr-lite
+            perl-net-dns
+            perl-net-libidn
+            perl-pathtools
+            perl-net-patricia
+            perl-net-smtps
+            perl-netaddr-ip
+            perl-razor2-client-agent
+            perl-sys-hostname-long
+            perl-time-hires
+            perl-time-local))
     (home-page "https://metacpan.org/release/Mail-SpamAssassin")
     (synopsis
      "Extensible email filter used to identify spam")
