@@ -2506,7 +2506,7 @@ from Dovecot IMAP server.")
 (define-public perl-email-date-format
   (package
     (name "perl-email-date-format")
-    (version "1.005")
+    (version "1.008")
     (source
      (origin
        (method url-fetch)
@@ -2514,7 +2514,7 @@ from Dovecot IMAP server.")
                            "Email-Date-Format-" version ".tar.gz"))
        (sha256
         (base32
-         "012ivfwpnbl3wr50f9c6f4azhdlxnm31pdn72528g79v61z6372p"))))
+          "0kwb4nycnhr8s87bk3a1cfjc3bkkqmbm4gq053qrlx48zy1pqas3"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Email-Date-Format")
     (synopsis "Produce RFC 2822 date strings")
