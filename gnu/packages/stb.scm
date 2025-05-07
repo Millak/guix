@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,6 +19,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages stb)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
@@ -44,25 +46,27 @@
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
-       `(#:modules ((ice-9 ftw)
+       (list
+        #:modules `((ice-9 ftw)
                     (ice-9 regex)
                     (srfi srfi-26)
                     ,@%default-gnu-modules)
-         #:phases (modify-phases %standard-phases
-                    (delete 'configure)
-                    (delete 'build)
-                    (replace 'check
-                      (lambda _
-                        #f ; (invoke "make" "-C" "tests" "CC=gcc")
-                        ))
-                    (replace 'install
-                      (lambda* (#:key outputs #:allow-other-keys)
-                        (let ((out (assoc-ref outputs "out"))
-                              (files (make-regexp "\\.(c|h|md)$")))
-                          (for-each (lambda (file)
-                                      (install-file file out))
-                                    (scandir "." (cut regexp-exec files <>)))
-                          #t))))))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (delete 'build)
+            (replace 'check
+              (lambda _
+                #f                     ; (invoke "make" "-C" "tests" "CC=gcc")
+                ))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((out (assoc-ref outputs "out"))
+                      (files (make-regexp "\\.(c|h|md)$")))
+                  (for-each (lambda (file)
+                              (install-file file out))
+                            (scandir "." (cut regexp-exec files <>)))
+                  #t))))))
       (synopsis "Single file libraries for C/C++")
       (description
        "This package contains a variety of small independent libraries for
@@ -79,15 +83,17 @@ the C programming language.")
     (inputs (list stb))
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder (begin
-                   (use-modules (guix build utils))
-                   (let ((stb (assoc-ref %build-inputs "stb"))
-                         (lib (string-join (string-split ,name #\-) "_"))
-                         (out (assoc-ref %outputs "out")))
-                     (install-file (string-append stb "/" lib ".h")
-                                   (string-append out "/include"))
-                     #t))))
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let ((stb #$(this-package-input "stb"))
+                (lib (string-join (string-split #$name #\-) "_"))
+                (out #$output))
+            (install-file (string-append stb "/" lib ".h")
+                          (string-append out "/include"))
+            #t))))
     (description description)))
 
 ;; TODO: These descriptions are not translatable!  They should be
