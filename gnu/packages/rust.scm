@@ -128,9 +128,9 @@
 
 ;;; Note: mrustc's only purpose is to be able to bootstap Rust; it's designed
 ;;; to be used in source form.
-(define %mrustc-commit "5e01a76097265f4bb27b18885b9af3f2778180f9")
+(define %mrustc-commit "06b87d1af49d2db3bd850fdee8888055dd540dd1")
 (define %mrustc-source
-  (let* ((version "0.11.0")
+  (let* ((version "0.11.2")
          (commit %mrustc-commit)
          (revision "1")
          (name "mrustc"))
@@ -141,7 +141,7 @@
             (commit %mrustc-commit)))
       (file-name (git-file-name name (git-version version revision commit)))
       (sha256
-       (base32 "1yyjfl1z6d5r9sv7zl90kqyjw1lqd2cqzwh2syi7yvrpslhihrhy"))
+       (base32 "1m6ya3d653b5z0ygvr4y8hay1445gww9s8vyk8h0jdi42zkhzqkf"))
       (patches (search-patches "mrustc-patches.patch"))
       (modules '((guix build utils)))
       (snippet
@@ -151,8 +151,10 @@
           (substitute* (find-files "." "Makefile")
             (("LINKFLAGS := -g") "LINKFLAGS :=")
             (("-g ") ""))
-          ;; Don't use the vendored openssl sources.
           (substitute* "minicargo.mk"
+            ;; Don't assume tarball with gzip compression.
+            (("-xzf") "-xf")
+            ;; Don't use the vendored openssl sources.
             (("--features vendored-openssl") "")))))))
 
 ;;; Rust 1.54 is special in that it is built with mrustc, which shortens the
