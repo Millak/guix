@@ -941,8 +941,6 @@ of PROVENANCE-SERVICE-TYPE to its services."
 
         guile-3.0-latest
 
-        ;; The packages below are also in %FINAL-INPUTS, so take them from
-        ;; there to avoid duplication.
         (list bash coreutils findutils grep sed
               diffutils patch gawk tar
               gzip bzip2 lzip xz zstd)))
