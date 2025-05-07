@@ -113,6 +113,14 @@ the C programming language.")
    "stb-image is a small and self-contained library for image loading or
 decoding from file or memory.  A variety of formats are supported."))
 
+(define-stb-header-package stb-image-resize
+  "stb-image-resize" "0.97"
+  (description
+   "stb-image-resize is a library that supports scaling and translation of
+images.  This library is deprecated; @code{stb-image-resize2} should be used
+instead.")
+  #:deprecated? #t)
+
 (define-stb-header-package stb-image-resize2
   "stb-image-resize2" "2.12"
   (description
