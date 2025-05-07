@@ -36147,47 +36147,40 @@ and Learning to Rank measures (LambdaMart).")
 (define-public r-threejs
   (package
     (name "r-threejs")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "threejs" version))
        (sha256
         (base32
-         "1711h351nzxfkbbdwvfzyhciyvi9c6wx3jq1g97lzcqgnb45kivn"))))
+         "115ldv4df276312bsfigkz28mp2d0xk2izxwvghiw182hzbsasqw"))))
     (build-system r-build-system)
     (arguments
-     `(#:modules ((guix build utils)
-                  (guix build r-build-system)
-                  (srfi srfi-1)
-                  (ice-9 popen))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'process-javascript
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "inst"
-               (call-with-values
-                   (lambda ()
-                     (unzip2
-                      `((,(assoc-ref inputs "js-jquery")
-                         "htmlwidgets/lib/jquery/jquery.min.js")
-                        (,(assoc-ref inputs "js-threejs-111")
-                         "htmlwidgets/lib/threejs-111/three.min.js"))))
-                 (lambda (sources targets)
-                   (for-each (lambda (source target)
-                               (format #t "Processing ~a --> ~a~%"
-                                       source target)
-                               (delete-file target)
-                               (let ((minified (open-pipe* OPEN_READ "uglifyjs" source)))
-                                 (call-with-output-file target
-                                   (lambda (port)
-                                     (dump-port minified port)))))
-                             sources targets))))
-             #t)))))
+     (list
+      #:modules '((guix build r-build-system)
+                  (guix build minify-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules `(,@%r-build-system-modules
+                           (guix build minify-build-system))
+      #:phases
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst"
+                (for-each
+                 (match-lambda
+                   ((source . target)
+                    (minify source #:target target)))
+                 `((,(assoc-ref inputs "js-jquery")
+                     . "htmlwidgets/lib/jquery/jquery.min.js")
+                   (,(assoc-ref inputs "js-threejs-111")
+                    . "htmlwidgets/lib/threejs-111/three.min.js")))))))))
     (propagated-inputs
      (list r-base64enc r-crosstalk r-htmlwidgets r-igraph))
     (native-inputs
-     `(("uglifyjs" ,node-uglify-js)
+     `(("esbuild" ,esbuild)
        ("js-jquery"
         ,(origin
            (method url-fetch)
