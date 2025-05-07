@@ -124,6 +124,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)               ;FIXME: for pcb
@@ -3183,104 +3184,130 @@ ontinuous-time and discret-time expressions.")
     (license license:lgpl2.1+)))
 
 (define-public openscad
-  (package
-    (name "openscad")
-    (version "2021.01")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://files.openscad.org/openscad-" version
-                           ".src.tar.gz"))
-       (sha256
-        (base32
-         "0n83szr88h8snccjrslr96mgw3f65x3sq726n6x5vxp5wybw4f6r"))
-       (patches
-        ;; Upstream patches to make version 2021.01 build with recent versions
-        ;; of boost and cgal.
-        (search-patches "openscad-with-cgal-5.3.patch"
-                        "openscad-with-cgal-5.4.patch"
-                        "openscad-fix-boost-join.patch"))))
-    (build-system cmake-build-system)
-    (inputs
-     (list boost
-           cgal
-           double-conversion
-           eigen
-           fontconfig
-           glew
-           gmp
-           harfbuzz
-           lib3mf
-           libxml2
-           libzip
-           mpfr
-           opencsg
-           qscintilla
-           qtbase-5
-           qtmultimedia-5))
-    (native-inputs
-     (list bison
-           flex
-           gettext-minimal
-           pkg-config
-           which
-           ;; the following are only needed for tests
-           imagemagick
-           procps
-           python
-           xorg-server-for-tests))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "qmake"
-                     (string-append "PREFIX=" (assoc-ref outputs "out")))))
-         (replace 'check
-           (lambda _
-             (with-directory-excursion "tests"
-               (invoke "cmake" ".")
-               (invoke "make")
-               (invoke "ctest" "--exclude-regex"
-                       (string-join
-                        (list
-                         "astdumptest_allexpressions"
-                         "echotest_function-literal-compare"
-                         "echotest_function-literal-tests"
-                         "echotest_allexpressions"
-                         "lazyunion-*"
-                         "pdfexporttest_centered"
-                         "pdfexporttest_simple-pdf"
+  (let ((commit "d1351d6282abfd239cdd0c657f755d8c4a123ff8")
+        (version "2025.05.02")
+        (revision "0"))
+    (package
+      (name "openscad")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/openscad/openscad")
+               (commit commit)
+               (recursive? #t)))
+         (sha256
+          (base32 "0cgls75dk9hjfym8rp0vpnnlz1fdawd746nnw3343gvhljqv36cn"))
+         (file-name (git-file-name name version))))
+      (build-system qt-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DCMAKE_BUILD_TYPE=Release"
+                "-DUSE_BUILTIN_OPENCSG=ON"
+                "-DMANIFOLD_PYBIND=OFF"
+                "-DMANIFOLD_TEST=OFF"
+                "-DENABLE_TESTS=OFF"
+                "-DEXPERIMENTAL=ON"
+                "-DSNAPSHOT=ON"
+                "-DUSE_BUILTIN_CLIPPER2=OFF"
+                (string-append "-DOPENSCAD_VERSION="
+                               #$version)
+                (string-append "-DOPENSCAD_COMMIT="
+                               #$commit)
+                "-DENABLE_EGL=ON"
+                "-DENABLE_GLX=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'check)
+            (add-after 'unpack 'patch-source
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; <https://github.com/openscad/openscad/issues/5877>
+                (substitute* "cmake/Modules/FindLib3MF.cmake"
+                  (("PC_LIB3MF_INCLUDE_DIRS")
+                   "PC_LIB3MF_INCLUDEDIR"))
+                (substitute* "CMakeLists.txt"
+                  ;; <https://github.com/openscad/openscad/issues/5880>
+                  (("target_link_libraries\\(OpenSCAD PRIVATE OpenGL::EGL\\)")
+                   "      find_package(ECM REQUIRED NO_MODULE)
+      list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+      find_package(EGL REQUIRED)
+      target_link_libraries(OpenSCAD PRIVATE EGL::EGL)")
+                  ;; Use the system sanitizers-cmake module.
+                  (("\\$\\{CMAKE_SOURCE_DIR\\}/submodules/sanitizers-cmake/cmake")
+                   (string-append (assoc-ref inputs "sanitizers-cmake")
+                                  "/share/sanitizers-cmake/cmake"))))))))
+      (inputs (list boost
+                    cairomm
+                    cgal
+                    clipper2
+                    double-conversion
+                    eigen
+                    egl-wayland
+                    fontconfig
+                    freetype
+                    glew
+                    glib
+                    gmp
+                    harfbuzz
+                    hidapi
+                    lib3mf
+                    libcanberra
+                    libspnav
+                    libxml2
+                    libzip
+                    manifold
+                    mesa ; or libglvnd if we had mesa-glvnd, too
+                    mimalloc
+                    mpfr
+                    opencsg
+                    qscintilla
+                    qtbase-5
+                    qtmultimedia-5
+                    qtsvg-5
+                    qtwayland-5
+                    sanitizers-cmake
+                    tbb))
+      (native-inputs (list bison
+                           extra-cmake-modules
+                           flex
+                           gettext-minimal
+                           pkg-config
+                           which
+                           xvfb-run
+                           ;; the following are only needed for tests
+                           imagemagick
+                           ghostscript
+                           procps
+                           python-numpy
+                           python-pillow
+                           python
+                           xorg-server-for-tests))
+      (synopsis "Script-based 3D modeling application")
+      (description
+       "OpenSCAD is a software for creating solid 3D CAD objects.  It is free
+software and available for Linux/UNIX, MS Windows and macOS.
+Unlike most free software for creating 3D models (such as the famous
+application Blender), OpenSCAD focuses on the CAD aspects rather than the
+artistic aspects of 3D modeling.  Thus this might be the application you are
+looking for when you are planning to create 3D models of machine parts but
+probably not the tool for creating computer-animated movies.
+OpenSCAD is not an interactive modeler.  Instead it is more like a 3D-compiler
+that reads a script file that describes the object and renders the 3D model
+from this script file.  This gives you, the designer, complete control over the
+modeling process and enables you to easily change any step in the modeling
+process or make designs that are defined by configurable parameters.
+OpenSCAD provides two main modeling techniques: First there is constructive
+solid geometry (aka CSG) and second there is extrusion of 2D outlines.  As the
+data exchange format for these 2D outlines Autocad DXF files are used.  In
+addition to 2D paths for extrusion it is also possible to read design
+parameters from DXF files.  Besides DXF files OpenSCAD can read and create 3D
+models in the STL and OFF file formats.")
+      (home-page "https://openscad.org/")
+      (license license:gpl2+))))
 
-                         ;; Broken due since cgal@5.2 +
-                         ;; https://github.com/CGAL/cgal/pull/5371 (security)
-                         ;; FIXME: Investigate or wait for future releases to
-                         ;; fix it.
-                         ;; Unsure if wrong test-suite or wrong security
-                         ;; patch.
-                         "cgalpngtest_nef3_broken"
-                         "opencsgtest_nef3_broken"
-                         "csgpngtest_nef3_broken"
-                         "throwntogethertest_nef3_broken"
 
-                         ;; FIXME: Tests probably broken by the patches allowing
-                         ;; to build with recent cgal versions.
-                         "cgalpngtest_polyhedron-nonplanar-tests"
-                         "csgpngtest_polyhedron-nonplanar-tests"
-                         "monotonepngtest_polyhedron-nonplanar-tests"
-                         "cgalstlcgalpngtest_polyhedron-nonplanar-tests"
-                         "cgalbinstlcgalpngtest_polyhedron-nonplanar-tests")
-                        "|")))
-             ;; strip python test files since lib dir ends up in out/share
-             (for-each delete-file
-                       (find-files "libraries/MCAD" ".*\\.py")))))))
-    (synopsis "Script-based 3D modeling application")
-    (description
-     "OpenSCAD is a 3D Computer-aided Design (CAD) application.  Unlike an
-interactive modeler, OpenSCAD generates 3D models from a script, giving you
-full programmatic control over your models.")
-    (home-page "https://www.openscad.org/")
-    (license license:gpl2+)))
 
 (define-public emacs-scad-mode
   (package
