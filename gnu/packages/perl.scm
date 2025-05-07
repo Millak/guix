@@ -12552,7 +12552,7 @@ system.")
 (define-public perl-throwable
   (package
     (name "perl-throwable")
-    (version "0.200013")
+    (version "1.001")
     (source
      (origin
        (method url-fetch)
@@ -12560,12 +12560,16 @@ system.")
                            "Throwable-" version ".tar.gz"))
        (sha256
         (base32
-         "184gdcwxqwnkrx5md968v1ny70pq6blzpkihccm3bpdxnpgd11wr"))))
+          "0lacvvfv9znkj7dcs3c58g5fli9sm1bziv3fqln0zmq6gnfmxjyh"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-devel-stacktrace))
+     (list perl-devel-stacktrace
+           perl-test-simple))
+    (inputs
+      (list perl-scalar-list-utils
+            perl-sub-quote))
     (propagated-inputs
-     (list perl-devel-stacktrace perl-module-runtime perl-moo))
+     (list perl-devel-stacktrace perl-module-runtime perl-moo-2))
     (home-page "https://metacpan.org/release/Throwable")
     (synopsis "Role for classes that can be thrown")
     (description "Throwable is a role for classes that are meant to be thrown
