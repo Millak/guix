@@ -415,7 +415,7 @@ such as conferencing.")
        (sha256
         (base32 "1hzbrj1ny3lr9sql0lrxggc48sqv5j2yvbpnrdnph88pwzrdnbn5"))))
     (build-system cmake-build-system)
-    (outputs '("out""tester"
+    (outputs '("out" "tester"
                "doc"))                  ;1.5 MiB of HTML doc
     (arguments
      (list

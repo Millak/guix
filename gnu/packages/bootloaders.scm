@@ -1535,7 +1535,7 @@ grub-efi-netboot-removable-bootloader.")
                        #:append-description %u-boot-rpi-efi-description-32-bit))
 
 (define-public u-boot-rpi-arm64-efi
-  (make-u-boot-package "rpi_arm64""aarch64-linux-gnu"
+  (make-u-boot-package "rpi_arm64" "aarch64-linux-gnu"
                        #:name-suffix "-efi"
                        #:configs %u-boot-rpi-efi-configs
                        #:append-description (string-append
