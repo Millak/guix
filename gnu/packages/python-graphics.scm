@@ -623,7 +623,7 @@ library.")
        (method url-fetch)
        (uri (pypi-uri "pysdl2" version))
        (sha256
-        (base32 "19id1qswgcj4v4j5kn49shq1xxx3slhjpm0102w87mczsdbi1rck"))))
+        (base32 "0axm6m3wj8x643zg65g60xdpaxanaqdilvp4yysks4pblh0yzij8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
