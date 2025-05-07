@@ -2484,7 +2484,7 @@ objects found.  Alternatively you may construct objects manually.")
 (define-public perl-email-address-xs
   (package
     (name "perl-email-address-xs")
-    (version "1.04")
+    (version "1.05")
     (source
     (origin
       (method url-fetch)
@@ -2492,7 +2492,7 @@ objects found.  Alternatively you may construct objects manually.")
                           "Email-Address-XS-" version ".tar.gz"))
       (sha256
        (base32
-        "0gjrrl81z3sfwavgx5kwjd87gj44mlnbbqsm3dgdv1xllw26spwr"))))
+         "05palicpx8mwdfscv97dxmawmvi6dffjrljhrlvi08371pqvf40m"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Email-Address-XS")
     (synopsis "Parse and format RFC 5322 email addresses and groups")
