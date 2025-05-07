@@ -96,39 +96,43 @@ the C programming language.")
             #t))))
     (description description)))
 
-;; TODO: These descriptions are not translatable!  They should be
-;; converted to macros as outlined in <https://bugs.gnu.org/32155>.
-(define-public stb-image
-  (make-stb-header-package
-   "stb-image" "2.30"
+(define-syntax define-stb-header-package
+  (syntax-rules (description)
+    ((_ symbol name version (description text))
+     (define-public symbol
+       (make-stb-header-package name version text)))))
+
+(define-stb-header-package stb-image
+  "stb-image" "2.30"
+  (description
    "stb-image is a small and self-contained library for image loading or
 decoding from file or memory.  A variety of formats are supported."))
 
-(define-public stb-image-resize2
-  (make-stb-header-package
-   "stb-image-resize2" "2.12"
+(define-stb-header-package stb-image-resize2
+  "stb-image-resize2" "2.12"
+  (description
    "stb-image-resize2 is a library that supports scaling and translation of
 images."))
 
-(define-public stb-image-write
-  (make-stb-header-package
-   "stb-image-write" "1.16"
+(define-stb-header-package stb-image-write
+  "stb-image-write" "1.16"
+  (description
    "stb-image-write is a small library for writing image files to the
 C@tie{}@code{stdio} interface."))
 
-(define-public stb-rect-pack
-  (make-stb-header-package
-   "stb-rect-pack" "1.01"
+(define-stb-header-package stb-rect-pack
+  "stb-rect-pack" "1.01"
+  (description
    "stb-rect-pack is a small rectangle packing library useful for, e.g., packing
 rectangular textures into an atlas.  It does not do rotation."))
 
-(define-public stb-sprintf
-  (make-stb-header-package
-   "stb-sprintf" "1.10"
+(define-stb-header-package stb-sprintf
+  "stb-sprintf" "1.10"
+  (description
    "stb-sprintf implements fast @code{sprintf}, @code{snprintf} for C/C++."))
 
-(define-public stb-truetype
-  (make-stb-header-package
-   "stb-truetype" "1.26"
+(define-stb-header-package stb-truetype
+  "stb-truetype" "1.26"
+  (description
    "stb-truetype is a library for parsing, decoding, and rasterizing
 characters from TrueType fonts."))
