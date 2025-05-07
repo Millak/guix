@@ -5023,7 +5023,7 @@ the easy construction of interactive matplotlib widget based animations.")
            python-scipy
            python-setuptools
            python-setuptools-scm-next
-           python-sunpy
+           python-sunpy-minimal
            python-wheel))
     (home-page "https://docs.sunpy.org/projects/ndcube/")
     (synopsis "Multi-dimensional contiguous and non-contiguous coordinate aware arrays")
@@ -7485,6 +7485,26 @@ and @code{astropy}.")
 to the SolarSoft data analysis environment.")
     (license license:bsd-2)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-sunpy-minimal
+  (hidden-package
+   (package/inherit python-sunpy
+     (name "python-sunpy-minimal")
+     (arguments
+      (substitute-keyword-arguments (package-arguments python-sunpy)
+        ((#:tests? _ #t) #f)))
+     (native-inputs
+      (list python-setuptools
+            python-setuptools-scm-next
+            python-wheel))
+     (propagated-inputs
+      (list parfive
+            python-astropy-minimal
+            python-fsspec
+            python-mpl-animators
+            python-pyerfa)))))
+
 (define-public python-sunraster
   (package
     (name "python-sunraster")
@@ -7524,7 +7544,7 @@ to the SolarSoft data analysis environment.")
            python-pytest-astropy
            python-setuptools
            python-setuptools-scm
-           python-sunpy
+           python-sunpy-minimal
            python-wheel))
     (propagated-inputs
      (list python-astropy
