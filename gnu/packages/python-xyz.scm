@@ -37105,27 +37105,21 @@ pythonic way.")
 (define-public python-tablib
   (package
     (name "python-tablib")
-    (version "3.0.0")
+    (version "3.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tablib" version))
        (sha256
-       (base32 "03f1z6jq6rf67gwhbm9ma4rydm8h447a5nh5lcs5l8jg8l4aqg7q"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "GUIX_PYTHONPATH"
-                       (string-append (getcwd) "/build/lib:"
-                                      (getenv "GUIX_PYTHONPATH")))
-               (invoke "pytest")))))))
+        (base32 "0ayv93q7kpii6z3n57i6b78mpr1ibwd70nvd981a05d7cpfbrn4l"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pandas ;; required for test-suite
-           python-pytest python-pytest-cov python-setuptools-scm))
+     (list python-pandas
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-markuppy
            python-odfpy
@@ -37136,7 +37130,8 @@ pythonic way.")
            python-xlwt))
     (home-page "https://tablib.readthedocs.io")
     (synopsis "Format agnostic tabular data library")
-    (description "@code{tablib} is a format-agnostic tabular dataset library,
+    (description
+     "@code{tablib} is a format-agnostic tabular dataset library,
 written in Python.  Supported output formats are Excel (Sets + Books),
 JSON (Sets + Books), YAML (Sets + Books), HTML (Sets), Jira (Sets),
 TSV (Sets), ODS (Sets), CSV (Sets), and DBF (Sets).
