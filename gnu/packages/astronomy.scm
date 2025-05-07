@@ -1097,35 +1097,6 @@ more.")
   ;; Default version of INDI..
   indi-1.9)
 
-(define-public java-cds-healpix
-  ;; XXX: Upstream bundles java-commons-math3 available in Guix, find out how
-  ;; to use the system package instead of it.
-  (package
-    (name "java-cds-healpix")
-    (version "0.30.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cds-astro/cds-healpix-java")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1wi5ni6j0rvjyhz80g1gglxdimf7gnfa1kx8a3c2przzbwya0j8d"))))
-    (build-system ant-build-system)
-    (arguments
-     (list
-      #:jar-name "cdshealpix.jar"
-      #:source-dir "src/main/java/cds/healpix"
-      #:test-dir "src/test"))
-    (home-page "https://github.com/cds-astro/cds-healpix-java")
-    (synopsis "CDS HEALPix library in Java")
-    (description
-     "This package provides a @acronym{Centre de Données astronomiques de
-Strasbourg, CDS} implementation in Java of the @acronym{Hierarchical Equal
-Area isoLatitude Pixelization of a sphere , HEALPix} tesselation.")
-    (license license:bsd-3)))
-
 (define-public iraf-community
   (package
     (name "iraf-community")
@@ -1196,6 +1167,35 @@ release from 2013.")
     ;; checked with upstream, see
     ;; <https://github.com/iraf-community/iraf/issues/403>.
     (license license:expat)))
+
+(define-public java-cds-healpix
+  ;; XXX: Upstream bundles java-commons-math3 available in Guix, find out how
+  ;; to use the system package instead of it.
+  (package
+    (name "java-cds-healpix")
+    (version "0.30.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cds-astro/cds-healpix-java")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wi5ni6j0rvjyhz80g1gglxdimf7gnfa1kx8a3c2przzbwya0j8d"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:jar-name "cdshealpix.jar"
+      #:source-dir "src/main/java/cds/healpix"
+      #:test-dir "src/test"))
+    (home-page "https://github.com/cds-astro/cds-healpix-java")
+    (synopsis "CDS HEALPix library in Java")
+    (description
+     "This package provides a @acronym{Centre de Données astronomiques de
+Strasbourg, CDS} implementation in Java of the @acronym{Hierarchical Equal
+Area isoLatitude Pixelization of a sphere , HEALPix} tesselation.")
+    (license license:bsd-3)))
 
 (define-public libnova
   (package
@@ -2137,6 +2137,87 @@ simulated Astronomical data in Python.")
 mining in astronomy.")
     (license license:bsd-2)))
 
+(define-public python-astroplan
+  (package
+    (name "python-astroplan")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astroplan" version))
+       (sha256
+        (base32 "0nb97fz0mlypdlvs09wyh0z7mxw0d6aqqkd9yfzhlqz1fwrprn9r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "astroplan/tests"
+              "-k" (string-append
+                    ;; Test requiring newer python-pytz
+                    "not test_timezone"
+                    ;; Disable tests requiring remote data.
+                    " and not test_FixedTarget_from_name"
+                    " and not test_altitude_constraint"
+                    " and not test_at_night_basic"
+                    " and not test_caches_shapes"
+                    " and not test_compare_airmass_constraint_and_observer"
+                    " and not test_compare_altitude_constraint_and_observer"
+                    " and not test_docs_example"
+                    " and not test_eclipses"
+                    " and not test_eq_observer"
+                    " and not test_event_observable"
+                    " and not test_galactic_plane_separation"
+                    " and not test_get_skycoord"
+                    " and not test_hash_observer"
+                    " and not test_is_night"
+                    " and not test_local_time_constraint_hawaii_tz"
+                    " and not test_local_time_constraint_utc"
+                    " and not test_moon_illumination"
+                    " and not test_moon_separation"
+                    " and not test_observability_table"
+                    " and not test_observer_lon_lat_el"
+                    " and not test_regression_airmass_141"
+                    " and not test_regression_shapes"
+                    " and not test_sun_separation"
+                    " and not test_tonight")
+              "--ignore=astroplan/tests/test_scheduling.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest-astropy
+           python-pytest-mpl
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-astroquery
+           python-matplotlib
+           python-numpy
+           python-pytz))
+    (home-page "https://github.com/astropy/astroplan")
+    (synopsis "Observation planning package for astronomers")
+    (description
+     "This package provides a flexible toolbox for observation planning and
+scheduling.  When complete, the goal is to be easy for Python beginners and new
+observers to to pick up, but powerful enough for observatories preparing nightly
+and long-term schedules.
+
+Features:
+@itemize
+@item calculate rise/set/meridian transit times, alt/az positions for targets at
+observatories anywhere on Earth
+@item built-in plotting convenience functions for standard observation planning
+plots (airmass, parallactic angle, sky maps)
+@item determining observability of sets of targets given an arbitrary set of
+constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
+@end itemize")
+      (license license:bsd-3)))
+
 (define-public python-astropy
   (package
     (name "python-astropy")
@@ -2258,6 +2339,45 @@ astronomy and astrophysics.")
              (for-each delete-file-recursively '("ply" "configobj")))
            (with-directory-excursion "cextern"
              (for-each delete-file-recursively '("expat" "wcslib")))))))))
+
+(define-public python-astropy-healpix
+  (package
+    (name "python-astropy-healpix")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astropy_healpix" version))
+       (sha256
+        (base32 "1r362081aj5jqxshcxw0bpzn4qvqnra52k94ghskpv1n5bqisrq3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.cfg"
+                ;; numpy>=1.25
+                ((">=1.25") ">=1.24"))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion #$output
+                  (apply invoke "pytest" "-vv" test-flags))))))))
+    (native-inputs
+     (list python-extension-helpers
+           python-hypothesis
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy python-numpy))
+    (home-page "https://github.com/astropy/astropy-healpix")
+    (synopsis "HEALPix for Astropy")
+    (description "This package provides HEALPix to the Astropy project.")
+    (license license:bsd-3)))
 
 (define-public python-astropy-iers-data
   (package
@@ -4522,126 +4642,6 @@ instruments.")
     (license (list license:bsd-3     ; licenses/LICENSE.rst, same as python-astropy
                    license:expat)))) ; licenses/KOSMOS_LICENSE
 
-(define-public python-astropy-healpix
-  (package
-    (name "python-astropy-healpix")
-    (version "1.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "astropy_healpix" version))
-       (sha256
-        (base32 "1r362081aj5jqxshcxw0bpzn4qvqnra52k94ghskpv1n5bqisrq3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "setup.cfg"
-                ;; numpy>=1.25
-                ((">=1.25") ">=1.24"))))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion #$output
-                  (apply invoke "pytest" "-vv" test-flags))))))))
-    (native-inputs
-     (list python-extension-helpers
-           python-hypothesis
-           python-pytest-astropy
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy python-numpy))
-    (home-page "https://github.com/astropy/astropy-healpix")
-    (synopsis "HEALPix for Astropy")
-    (description "This package provides HEALPix to the Astropy project.")
-    (license license:bsd-3)))
-
-(define-public python-astroplan
-  (package
-    (name "python-astroplan")
-    (version "0.10.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "astroplan" version))
-       (sha256
-        (base32 "0nb97fz0mlypdlvs09wyh0z7mxw0d6aqqkd9yfzhlqz1fwrprn9r"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "astroplan/tests"
-              "-k" (string-append
-                    ;; Test requiring newer python-pytz
-                    "not test_timezone"
-                    ;; Disable tests requiring remote data.
-                    " and not test_FixedTarget_from_name"
-                    " and not test_altitude_constraint"
-                    " and not test_at_night_basic"
-                    " and not test_caches_shapes"
-                    " and not test_compare_airmass_constraint_and_observer"
-                    " and not test_compare_altitude_constraint_and_observer"
-                    " and not test_docs_example"
-                    " and not test_eclipses"
-                    " and not test_eq_observer"
-                    " and not test_event_observable"
-                    " and not test_galactic_plane_separation"
-                    " and not test_get_skycoord"
-                    " and not test_hash_observer"
-                    " and not test_is_night"
-                    " and not test_local_time_constraint_hawaii_tz"
-                    " and not test_local_time_constraint_utc"
-                    " and not test_moon_illumination"
-                    " and not test_moon_separation"
-                    " and not test_observability_table"
-                    " and not test_observer_lon_lat_el"
-                    " and not test_regression_airmass_141"
-                    " and not test_regression_shapes"
-                    " and not test_sun_separation"
-                    " and not test_tonight")
-              "--ignore=astroplan/tests/test_scheduling.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              (setenv "HOME" "/tmp")
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (native-inputs
-     (list python-pytest-astropy
-           python-pytest-mpl
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-astroquery
-           python-matplotlib
-           python-numpy
-           python-pytz))
-    (home-page "https://github.com/astropy/astroplan")
-    (synopsis "Observation planning package for astronomers")
-    (description
-     "This package provides a flexible toolbox for observation planning and
-scheduling.  When complete, the goal is to be easy for Python beginners and new
-observers to to pick up, but powerful enough for observatories preparing nightly
-and long-term schedules.
-
-Features:
-@itemize
-@item calculate rise/set/meridian transit times, alt/az positions for targets at
-observatories anywhere on Earth
-@item built-in plotting convenience functions for standard observation planning
-plots (airmass, parallactic angle, sky maps)
-@item determining observability of sets of targets given an arbitrary set of
-constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
-@end itemize")
-      (license license:bsd-3)))
-
 (define-public python-astroquery
   (package
     (name "python-astroquery")
@@ -5656,72 +5656,6 @@ non-parametric morphological diagnostics of galaxy images (e.g., Gini-M_{20}
 and CAS statistics), as well as fitting 2D Sérsic profiles.")
     (license license:bsd-3)))
 
-(define-public python-stsci-image
-  (package
-    (name "python-stsci-image")
-    (version "2.3.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "stsci_image" version))
-       (sha256
-        (base32 "0w7s93jsz61ccbhj7irl28q4jgiwa7y9k8pfj24q8vc9zvs530pj"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy
-           python-scipy))
-    (home-page "https://github.com/spacetelescope/stsci.image")
-    (synopsis "Image array manipulation functions")
-    (description
-     "This package provides a Python module to various @acronym{STScI, Space
-Telescope Science Institute} image array manipulation functions.")
-    (license license:bsd-3)))
-
-(define-public python-stsci-imagestats
-  (package
-    (name "python-stsci-imagestats")
-    (version "1.8.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "stsci.imagestats" version))
-              (sha256
-               (base32
-                "1nmya85bf2747c9ggya6my5b1slk6g2a7bk16rdv8r5a4ah9hda5"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list python-pytest python-setuptools python-wheel
-                         python-setuptools-scm))
-    (home-page "https://stsciimagestats.readthedocs.io/en/latest/")
-    (synopsis "Compute sigma-clipped statistics on data arrays")
-    (description
-     "@code{stsci.imagestats} is a package designed to compute various
-statistics on image data using sigma-clipping iterations.  It is designed to
-replicate core behaviour of the IRAF's
-@url{http://stsdas.stsci.edu/cgi-bin/gethelp.cgi?imstatistics, imstatistics
-task}.")
-    (license license:bsd-3)))
-
 (define-public python-stcal
   (package
     (name "python-stcal")
@@ -6351,64 +6285,6 @@ well as ephemerides services
 library with bug fixtures.")
     (license (list license:expat license:lgpl3+ license:bsd-3))))
 
-(define-public python-suntime
-  (package
-    (name "python-suntime")
-    (version "1.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "suntime" version))
-       (sha256
-        (base32 "1kyd1r6zcs0jmh5gq74adrnb1h7dfr1mzjq4k4vbngfiga8gfd28"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-dateutil))
-    (home-page "https://github.com/SatAgro/suntime")
-    (synopsis "Sunset and sunrise time calculation python library")
-    (description
-     "Python library doing sunrise and sunset time calculation.  Takes a
-WGS84 (GPS) latitude/longitude as input as well as an UTC or local datetime
-object.")
-    (license license:lgpl3+)))
-
-(define-public python-synphot
-  (package
-    (name "python-synphot")
-    (version "1.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "synphot" version))
-       (sha256
-        (base32 "0xifg0fbh2rj3jn5i504c0qh51dlzgr1l2k962nh38synjhq9csc"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "--pyargs" "synphot")))
-    (native-inputs
-     (list python-pytest
-           python-pytest-astropy
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-dust-extinction
-           python-numpy
-           python-scipy
-           python-specutils ))
-    (home-page "https://github.com/spacetelescope/synphot_refactor")
-    (synopsis "Synthetic photometry using Astropy")
-    (description
-     "This package provides a replacement for IRAF STSDAS SYNPHOT and ASTROLIB
-PYSYNPHOT, utilizing Astropy and covering the non-instrument specific portions
-of the old packages.")
-    (license license:bsd-3)))
-
 (define-public python-asdf-standard
   (package
     (name "python-asdf-standard")
@@ -7015,6 +6891,72 @@ pipelines.")
 orbit around the Earth.")
     (license license:expat)))
 
+(define-public python-stsci-image
+  (package
+    (name "python-stsci-image")
+    (version "2.3.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stsci_image" version))
+       (sha256
+        (base32 "0w7s93jsz61ccbhj7irl28q4jgiwa7y9k8pfj24q8vc9zvs530pj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy))
+    (home-page "https://github.com/spacetelescope/stsci.image")
+    (synopsis "Image array manipulation functions")
+    (description
+     "This package provides a Python module to various @acronym{STScI, Space
+Telescope Science Institute} image array manipulation functions.")
+    (license license:bsd-3)))
+
+(define-public python-stsci-imagestats
+  (package
+    (name "python-stsci-imagestats")
+    (version "1.8.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsci.imagestats" version))
+              (sha256
+               (base32
+                "1nmya85bf2747c9ggya6my5b1slk6g2a7bk16rdv8r5a4ah9hda5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-pytest python-setuptools python-wheel
+                         python-setuptools-scm))
+    (home-page "https://stsciimagestats.readthedocs.io/en/latest/")
+    (synopsis "Compute sigma-clipped statistics on data arrays")
+    (description
+     "@code{stsci.imagestats} is a package designed to compute various
+statistics on image data using sigma-clipping iterations.  It is designed to
+replicate core behaviour of the IRAF's
+@url{http://stsdas.stsci.edu/cgi-bin/gethelp.cgi?imstatistics, imstatistics
+task}.")
+    (license license:bsd-3)))
+
 (define-public python-stsci-skypac
   (package
     (name "python-stsci-skypac")
@@ -7556,6 +7498,64 @@ to the SolarSoft data analysis environment.")
      "sunraster is an Python library that provides the tools to read in and
 analyze spectrogram data.")
     (license license:bsd-2)))
+
+(define-public python-suntime
+  (package
+    (name "python-suntime")
+    (version "1.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "suntime" version))
+       (sha256
+        (base32 "1kyd1r6zcs0jmh5gq74adrnb1h7dfr1mzjq4k4vbngfiga8gfd28"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-dateutil))
+    (home-page "https://github.com/SatAgro/suntime")
+    (synopsis "Sunset and sunrise time calculation python library")
+    (description
+     "Python library doing sunrise and sunset time calculation.  Takes a
+WGS84 (GPS) latitude/longitude as input as well as an UTC or local datetime
+object.")
+    (license license:lgpl3+)))
+
+(define-public python-synphot
+  (package
+    (name "python-synphot")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "synphot" version))
+       (sha256
+        (base32 "0xifg0fbh2rj3jn5i504c0qh51dlzgr1l2k962nh38synjhq9csc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "synphot")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-dust-extinction
+           python-numpy
+           python-scipy
+           python-specutils ))
+    (home-page "https://github.com/spacetelescope/synphot_refactor")
+    (synopsis "Synthetic photometry using Astropy")
+    (description
+     "This package provides a replacement for IRAF STSDAS SYNPHOT and ASTROLIB
+PYSYNPHOT, utilizing Astropy and covering the non-instrument specific portions
+of the old packages.")
+    (license license:bsd-3)))
 
 (define-public python-tweakwcs
   (package
