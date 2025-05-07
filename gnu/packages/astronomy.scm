@@ -7415,18 +7415,27 @@ and @code{astropy}.")
      (list
       #:test-flags
       #~(list "--pyargs" "sunpy"
-              "--numprocesses" (number->string (min 8 (parallel-job-count))))
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; Test introduces a time bomb and fails with error: ValueError:
+              ;; interpolating from IERS_Auto using predictive values that are
+              ;; more than 30.0 days old.
+              "-k" "not test_print_params")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-test-files
+            ;; Requires SpicePy wich is not packed in Guix yet and can't be
+            ;; ignored with Pytet options for some reason.
             (lambda _
-              ;; Requires SpicePy wich is not packed in Guix yet and can't be
-              ;; ignored with Pytet options for some reason.
               (delete-file "sunpy/coordinates/tests/test_spice.py")))
+          (add-before 'check 'pre-check
+            ;; It requires during sanity check as well to prevent error like:
+            ;; PermissionError: [Errno 13] Permission denied:
+            ;; '/homeless-shelter'
+            (lambda _
+              (setenv "HOME" "/tmp")))
           (replace 'check
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
-                (setenv "HOME" "/tmp")
                 (with-directory-excursion "/tmp"
                   (apply invoke "pytest" "-vv" test-flags))))))))
     (native-inputs
