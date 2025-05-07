@@ -621,7 +621,7 @@ library.")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "PySDL2" version))
+       (uri (pypi-uri "pysdl2" version))
        (sha256
         (base32 "19id1qswgcj4v4j5kn49shq1xxx3slhjpm0102w87mczsdbi1rck"))))
     (build-system pyproject-build-system)
