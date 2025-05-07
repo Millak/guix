@@ -1554,6 +1554,9 @@ practise.")
     (arguments
      (list
       #:tests? #f                       ;no tests
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
@@ -1563,6 +1566,8 @@ practise.")
                  #$output))
               (invoke "qmake" "DoomRunner.pro" "-spec" "linux-g++"
                       "\"CONFIG+=release\"")))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install))
           (add-after 'install 'install-xdg
             (lambda _
               (with-directory-excursion "Install/XDG"
@@ -7183,6 +7188,9 @@ colors, pictures, and sounds.")
     (arguments
      (list
       #:tests? #f ;no test suite
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
@@ -7198,7 +7206,9 @@ colors, pictures, and sounds.")
                 (("    h264bitstream.*\n") "")
                 (("    app \\\\") "    app")
                 (("app.depends") "INCLUDEPATH +="))
-              (invoke "qmake" (string-append "PREFIX=" #$output)))))))
+              (invoke "qmake" (string-append "PREFIX=" #$output))))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (native-inputs (list pkg-config qttools-5))
     (inputs (list ffmpeg
                   h264bitstream
@@ -11831,12 +11841,17 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
     (arguments
      (list
       #:tests? #f
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
             (lambda _
               (invoke "qmake"
-                      (string-append "PREFIX=" #$output)))))))
+                      (string-append "PREFIX=" #$output))))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (inputs (list qtbase-5 qtsvg-5))
     (home-page "https://portnov.github.io/qcheckers/")
     (synopsis "Qt-based checkers boardgame")
@@ -12023,35 +12038,36 @@ and chess engines.")
     (inputs
      (list qtbase-5 qtmultimedia-5 qtspeech-5 qtsvg-5 zlib))
     (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "chessx.pro"
-               (("\\$\\$\\[QT_INSTALL_BINS\\]/lrelease")
-                (search-input-file inputs "/bin/lrelease")))))
-         (add-after 'fix-paths 'make-qt-deterministic
-           (lambda _
-             (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")
-             #t))
-         (add-after 'make-qt-deterministic 'disable-versioncheck
-           (lambda _
-             (substitute* "src/database/settings.cpp"
-               (("\"/General/onlineVersionCheck\", true")
-                "\"/General/onlineVersionCheck\", false"))
-             #t))
-         (replace 'configure
-           (lambda _
-             (invoke "qmake")
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "release/chessx" (string-append out "/bin"))
-               (install-file "unix/chessx.desktop"
-                             (string-append out "/share/applications")))
-             #t)))))
+     (list
+      #:tests? #f
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "chessx.pro"
+                (("\\$\\$\\[QT_INSTALL_BINS\\]/lrelease")
+                 (search-input-file inputs "/bin/lrelease")))))
+          (add-after 'fix-paths 'make-qt-deterministic
+            (lambda _
+              (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")))
+          (add-after 'make-qt-deterministic 'disable-versioncheck
+            (lambda _
+              (substitute* "src/database/settings.cpp"
+                (("\"/General/onlineVersionCheck\", true")
+                 "\"/General/onlineVersionCheck\", false"))))
+          (replace 'configure
+            (lambda _
+              (invoke "qmake")))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (install-file "release/chessx" (string-append out "/bin"))
+                (install-file "unix/chessx.desktop"
+                              (string-append out "/share/applications"))))))))
     (synopsis "Chess game database")
     (description
      "ChessX is a chess database.  With ChessX you can operate on your
@@ -12425,6 +12441,9 @@ game.")  ;thanks to Debian for description
     (arguments
      (list
       #:tests? #f                       ; No test suite
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-paths
@@ -12447,7 +12466,9 @@ game.")  ;thanks to Debian for description
           (replace 'configure
             (lambda _
               (invoke "qmake" "pokerth.pro" "CONFIG+=client"
-                      (string-append "PREFIX=" #$output)))))))
+                      (string-append "PREFIX=" #$output))))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (home-page "https://www.pokerth.net")
     (synopsis "Texas holdem poker game")
     (description

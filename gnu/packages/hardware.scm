@@ -1149,6 +1149,9 @@ technology, such as head mounted displays with built in head tracking.")
        #:tests? #f ; doesn't have tests
        #:make-flags
        #~(list (string-append "INSTALL_ROOT=" #$output ))
+       #:modules '((guix build qt-build-system)
+                   ((guix build gnu-build-system) #:prefix gnu:)
+                   (guix build utils))
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'unbundle
@@ -1167,7 +1170,9 @@ technology, such as head mounted displays with built in head tracking.")
                                                "/bin/chmod")))))
            ;; Call qmake instead of configure to create a Makefile.
            (replace 'configure
-             (lambda _ (invoke "qmake" "PREFIX=/" "OpenRGB.pro"))))))
+             (lambda _ (invoke "qmake" "PREFIX=/" "OpenRGB.pro")))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (inputs
      (list coreutils
            hidapi

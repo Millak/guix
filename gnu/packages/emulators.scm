@@ -873,39 +873,44 @@ emulate a serial nullmodem over TCP/IP.")
                 "1fal7a8y5g0rqqjrk795jh1l50ihz01ppjnrfjrk9vkjbd59szbp"))))
     (build-system qt-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "qmake"
-                     (string-append "PREFIX=" (assoc-ref outputs "out"))
-                     "qtmips.pro")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (substitute* "tests/test.sh"
-               (("qtchooser.*") ""))
-             (substitute* '("tests/cpu_trap/test.sh"
-                            "tests/registers/test.sh")
-               (("sub-qtmips_cli") "qtmips_cli"))
-             (if tests?
-               (invoke "tests/run-all.sh")
-               #t)))
-         (replace 'install
-           ;; There is no install target.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (apps (string-append out "/share/applications"))
-                    (icons (string-append out "/share/icons/hicolor")))
-               (install-file "qtmips_gui/qtmips_gui" bin)
-               (install-file "qtmips_cli/qtmips_cli" bin)
-               (install-file "data/qtmips.desktop" apps)
-               (install-file "data/icons/qtmips_gui.svg"
-                             (string-append icons "/scalable/apps"))
-               (install-file "data/icons/qtmips_gui.png"
-                             (string-append icons "/48x48/apps"))
-               #t))))
-       #:tests? #f))    ; test suite wants mips toolchain
+     (list
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "qmake"
+                      (string-append "PREFIX=" (assoc-ref outputs "out"))
+                      "qtmips.pro")))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (substitute* "tests/test.sh"
+                (("qtchooser.*") ""))
+              (substitute* '("tests/cpu_trap/test.sh"
+                             "tests/registers/test.sh")
+                (("sub-qtmips_cli") "qtmips_cli"))
+              (if tests?
+                (invoke "tests/run-all.sh")
+                #t)))
+          (replace 'install
+            ;; There is no install target.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin"))
+                     (apps (string-append out "/share/applications"))
+                     (icons (string-append out "/share/icons/hicolor")))
+                (install-file "qtmips_gui/qtmips_gui" bin)
+                (install-file "qtmips_cli/qtmips_cli" bin)
+                (install-file "data/qtmips.desktop" apps)
+                (install-file "data/icons/qtmips_gui.svg"
+                              (string-append icons "/scalable/apps"))
+                (install-file "data/icons/qtmips_gui.png"
+                              (string-append icons "/48x48/apps"))
+                #t))))
+        #:tests? #f))    ; test suite wants mips toolchain
     (inputs
      (list elfutils qtbase-5 qtwayland-5))
     (home-page "https://github.com/cvut/QtMips")

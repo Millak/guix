@@ -2288,13 +2288,19 @@ NanoVNA vector network analyzers.")
            qtbase-5
            v4l-utils))
     (arguments
-     `(#:tests? #f  ; No test suite.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "qmake"
-                     (string-append "PREFIX=" (assoc-ref outputs "out"))))))))
+     (list
+      #:tests? #f  ; No test suite.
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "qmake"
+                      (string-append "PREFIX=" (assoc-ref outputs "out")))))
+                (replace 'build (assoc-ref gnu:%standard-phases 'build))
+                (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (home-page "http://users.telenet.be/on4qz/qsstv/")
     (synopsis "Program for receiving and transmitting SSTV and HAMDRM")
     (description
@@ -2650,34 +2656,40 @@ sinks and sources.")
            speexdsp
            zlib))
     (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "dream.pro"
-               (("target\\.path = /usr/bin")
-                (string-append "target.path = "
-                               (assoc-ref outputs "out") "/bin"))
-               (("documentation\\.path = /usr/share/man/man1")
-                (string-append "documentation.path = "
-                               (assoc-ref outputs "out")
-                               "/share/man/man1"))
-               (("/usr/include/pulse")
-                (search-input-directory inputs "/include/pulse"))
-               (("/usr/include/sndfile\\.h")
-                (search-input-file inputs "/include/sndfile.h"))
-               (("/usr/include/opus")
-                (search-input-directory inputs "/include/opus"))
-               (("/usr/include/speex")
-                (search-input-directory inputs "/include/speex"))
-               (("/usr/include/qwt")
-                (search-input-directory inputs "/include/qwt"))
-               (("\\$\\$OUT_PWD/include/neaacdec\\.h")
-                (search-input-file inputs "/include/neaacdec.h")))))
-         (replace 'configure
-           (lambda _
-             (invoke "qmake"))))))
+     (list
+      #:tests? #f
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "dream.pro"
+                (("target\\.path = /usr/bin")
+                 (string-append "target.path = "
+                                (assoc-ref outputs "out") "/bin"))
+                (("documentation\\.path = /usr/share/man/man1")
+                 (string-append "documentation.path = "
+                                (assoc-ref outputs "out")
+                                "/share/man/man1"))
+                (("/usr/include/pulse")
+                 (search-input-directory inputs "/include/pulse"))
+                (("/usr/include/sndfile\\.h")
+                 (search-input-file inputs "/include/sndfile.h"))
+                (("/usr/include/opus")
+                 (search-input-directory inputs "/include/opus"))
+                (("/usr/include/speex")
+                 (search-input-directory inputs "/include/speex"))
+                (("/usr/include/qwt")
+                 (search-input-directory inputs "/include/qwt"))
+                (("\\$\\$OUT_PWD/include/neaacdec\\.h")
+                 (search-input-file inputs "/include/neaacdec.h")))))
+          (replace 'configure
+            (lambda _
+              (invoke "qmake")))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (home-page "https://sourceforge.net/projects/drm/")
     (synopsis "Digital Radio Mondiale receiver")
     (description
@@ -3166,6 +3178,9 @@ software-defined radio receivers.")
     (arguments
      (list
       #:tests? #f  ; No test suite.
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-paths
@@ -3190,7 +3205,9 @@ software-defined radio receivers.")
               (chdir "build")
               (invoke "qmake"
                       (string-append "PREFIX=" #$output)
-                      "../wfview.pro"))))))
+                      "../wfview.pro")))
+           (replace 'build (assoc-ref gnu:%standard-phases 'build))
+           (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (inputs
      (list eigen
            eudev

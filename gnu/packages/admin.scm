@@ -2689,16 +2689,20 @@ command.")
     (build-system qt-build-system)
     (arguments
      (list
+      #:tests? #f ; no tests
       ;; Make sure the (rarely updated) package 'imagemagick/stable'
       ;; does not end up in the closure.
       #:disallowed-references (list imagemagick/stable)
-      #:test-target "check"
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
             (lambda _ (chdir "wpa_supplicant/wpa_gui-qt4")))
           (replace 'configure
             (lambda _ (invoke "qmake" "wpa_gui.pro")))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
           (add-after 'build 'build-icons
             (lambda _
               ;; Inkscape complains (but works) without a writable $HOME.

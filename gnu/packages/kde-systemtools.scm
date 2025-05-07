@@ -402,11 +402,15 @@ This package is part of the KDE administration module.")
     (arguments
      (list #:qtbase qtbase
            #:tests? #f ;no tests
+           #:modules '((guix build qt-build-system)
+                       ((guix build gnu-build-system) #:prefix gnu:)
+                       (guix build utils))
            #:phases
            #~(modify-phases %standard-phases
                (replace 'configure
                  (lambda _
                    (invoke "qmake" (string-append "PREFIX=" #$output))))
+               (replace 'build (assoc-ref gnu:%standard-phases 'build))
                (replace 'install
                  (lambda _
                    (install-file "spectacle-ocr-screenshot"

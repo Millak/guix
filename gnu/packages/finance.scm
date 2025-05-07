@@ -1359,8 +1359,10 @@ agent.")
     (inputs (list libzip qtsvg qtwebengine qt5compat))
     (arguments
      (list #:tests? #f           ; tests do not even build with Qt6 anymore
-           #:test-target "check"
            #:qtbase qtbase       ; use Qt6
+           #:modules '((guix build qt-build-system)
+                       ((guix build gnu-build-system) #:prefix gnu:)
+                       (guix build utils))
            #:phases
            #~(modify-phases %standard-phases
                (replace 'configure
@@ -1372,6 +1374,7 @@ agent.")
                    (substitute* "kitsasproject.pro"
                      ((" *(unittest|testit).*") "")
                      (("\\\\") ""))))
+               (replace 'build (assoc-ref gnu:%standard-phases 'build))
                (replace 'install
                  (lambda* _
                    (install-file "kitsas/kitsas"

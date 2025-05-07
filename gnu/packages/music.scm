@@ -8249,13 +8249,19 @@ Renoise, VCV Rack, or SuperCollider.")
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f ;no tests
+           #:modules '((guix build qt-build-system)
+                       ((guix build gnu-build-system) #:prefix gnu:)
+                       (guix build utils))
            #:phases #~(modify-phases %standard-phases
                         (replace 'configure
                           (lambda _
                             (substitute* "samplebrain.pro"
                               (("\\/usr")
                                #$output))
-                            (invoke "qmake"))))))
+                            (invoke "qmake")))
+                        (replace 'build (assoc-ref gnu:%standard-phases 'build))
+                        (replace 'check (assoc-ref gnu:%standard-phases 'check))
+                        (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (inputs (list fftw liblo libsndfile portaudio))
     (home-page "https://thentrythis.org/projects/samplebrain/")
     (synopsis "Sample mashing synthesizer designed by Aphex Twin")

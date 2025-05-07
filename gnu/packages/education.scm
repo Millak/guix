@@ -514,6 +514,9 @@ specialized device.")
     (arguments
      (list
       #:tests? #f                       ;no tests
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-initial-values
@@ -542,6 +545,7 @@ specialized device.")
           (replace 'configure
             (lambda _
               (invoke "qmake" "OpenBoard.pro")))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
           (replace 'install
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((share (string-append #$output "/share"))

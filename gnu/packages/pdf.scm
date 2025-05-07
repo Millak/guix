@@ -1066,13 +1066,18 @@ program capable of converting PDF into other formats.")
            qtsvg-5))
     (arguments
      (list #:tests? #f ; no tests
+           #:modules '((guix build qt-build-system)
+                       ((guix build gnu-build-system) #:prefix gnu:)
+                       (guix build utils))
            #:phases
            #~(modify-phases %standard-phases
                (replace 'configure
                  (lambda _
                    (substitute* "qpdfview.pri"
                      (("/usr") #$output))
-                   (invoke "qmake" "qpdfview.pro"))))))
+                   (invoke "qmake" "qpdfview.pro")))
+               (replace 'build (assoc-ref gnu:%standard-phases 'build))
+               (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (home-page "https://launchpad.net/qpdfview")
     (synopsis "Tabbed document viewer")
     (description "@command{qpdfview} is a document viewer for PDF, PS and DJVU
@@ -1853,9 +1858,12 @@ Keywords: html2pdf, htmltopdf")
       (build-system cmake-build-system)
       (arguments
        (list
+        #:tests? #f ; no tests
         #:configure-flags
         #~(list (string-append "PREFIX=" #$output))
-        #:test-target "check"
+        #:modules '((guix build cmake-build-system)
+                    ((guix build gnu-build-system) #:prefix gnu:)
+                    (guix build utils))
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-paths
@@ -1868,7 +1876,9 @@ Keywords: html2pdf, htmltopdf")
             (replace 'configure
               (lambda* (#:key configure-flags #:allow-other-keys)
                 (apply invoke "qmake" configure-flags)))
-            (add-after 'install 'instal-man-page
+            (replace 'build (assoc-ref gnu:%standard-phases 'build))
+            (replace 'install (assoc-ref gnu:%standard-phases 'install))
+            (add-after 'install 'install-man-page
               (lambda _
                 (install-file "resources/sioyek.1"
                               (string-append #$output "/share/man/man1")))))))

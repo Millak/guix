@@ -2833,9 +2833,14 @@ projects while introducing many more.")
      (list #:tests? #false              ; no tests
            #:make-flags #~(list (string-append "PREFIX=" #$output)
                                 (string-append "CC=" #+(cc-for-target)))
+           #:modules '((guix build qt-build-system)
+                       ((guix build gnu-build-system) #:prefix gnu:)
+                       (guix build utils))
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure)
+               (replace 'build (assoc-ref gnu:%standard-phases 'build))
+               (replace 'install (assoc-ref gnu:%standard-phases 'install))
                (add-after 'install 'wrap-executable
                  (lambda* (#:key inputs outputs #:allow-other-keys)
                    (let* ((out (assoc-ref outputs "out"))

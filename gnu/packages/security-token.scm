@@ -888,6 +888,9 @@ an unprivileged user.")
     (arguments
      (list
       #:tests? #f                       ;no test suite
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
@@ -898,6 +901,8 @@ an unprivileged user.")
           (replace 'configure
             (lambda _
               (invoke "qmake")))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install))
           (add-after 'install 'install-desktop-resources
             (lambda _
               (let ((datadir (string-append #$output "/share")))

@@ -1809,11 +1809,17 @@ wrapper for disk usage querying and visualisation.")
     (build-system qt-build-system)
     (arguments
      (list
+      #:tests? #f
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
             (lambda _
               (system* "qmake" (string-append "INSTALL_PREFIX=" #$output))))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install))
           (add-after 'install 'wrap
             (lambda _
               (wrap-program (string-append #$output

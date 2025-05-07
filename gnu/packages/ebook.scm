@@ -405,6 +405,9 @@ accessing and converting various ebook file formats.")
       #:tests? #f                      ; no test suite
       #:make-flags
       #~(list (string-append "PREFIX=" #$output))
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'prefix-opt
@@ -414,7 +417,9 @@ accessing and converting various ebook file formats.")
                 #$output))))
          (replace 'configure
            (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke (cons "qmake" make-flags)))))))
+             (apply invoke (cons "qmake" make-flags))))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (native-inputs
      (list qtbase-5))
     (synopsis "EBook reader")

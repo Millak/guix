@@ -18821,6 +18821,9 @@ Thus the per-base error rate is similar to the raw input reads.")
     (build-system qt-build-system)
     (arguments
      (list
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       ;; TODO: Once <https://issues.guix.gnu.org/47475> is fixed,
       ;; consider uncommenting the following:
       ;;
@@ -18841,6 +18844,7 @@ Thus the per-base error rate is similar to the raw input reads.")
                 (with-directory-excursion "tests"
                   (setenv "XDG_RUNTIME_DIR" (getcwd))
                   (invoke "./bandage_command_line_tests.sh")))))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
           (replace 'install
             (lambda _
               (install-file "Bandage" (string-append #$output "/bin")))))))

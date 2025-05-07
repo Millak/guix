@@ -9602,7 +9602,7 @@ grepping the list.")
 (define-public libzim
   (package
     (name "libzim")
-    (version "8.2.1")
+    (version "9.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9610,7 +9610,7 @@ grepping the list.")
                     (commit version)))
               (sha256
                (base32
-                "1g735aqw0vlxqgyjv02lvq24dr5shydp4y8mqianf8720s5fs73f"))
+                "1il1vc1hs954s3vnwhr337165dxbykvrldrvbilp5jxbkmwqb60d"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
@@ -9636,7 +9636,7 @@ for ZIM files.")
 (define-public kiwix-lib
   (package
     (name "kiwix-lib")
-    (version "13.0.0")
+    (version "14.0.0")
     (home-page "https://github.com/kiwix/kiwix-lib/")
     (source (origin
               (method git-fetch)
@@ -9645,7 +9645,7 @@ for ZIM files.")
                     (commit version)))
               (sha256
                (base32
-                "0mvlppbj0mqn4ka3cfaaj1pvn062cxbgz01c0nq04x0mzq1xwh5w"))
+                "099arjsx1wgz5jhvzn49859wh0v8n3ya33kmnqaw69h55mjvgza0"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
@@ -9681,7 +9681,7 @@ It contains the code shared by all Kiwix ports.")
 (define-public kiwix-desktop
   (package
     (name "kiwix-desktop")
-    (version "2.3.1")
+    (version "2.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -9690,18 +9690,23 @@ It contains the code shared by all Kiwix ports.")
                     ".tar.gz"))
               (sha256
                (base32
-                "0hlk05gcb3fmnxhwj6gan51v98rdq3iv2lklwbpmm1bazmz8i7br"))
-              (patches (search-patches "kiwix-desktop-newer-libkiwix.patch"))))
+                "1vkmk9j2jii7ri4lcayr0dr5b2w3dc24lyqmm3g4234834b1f4wl"))))
     (build-system qt-build-system)
     (arguments
-     `(#:test-target "check"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "qmake"
-                     (string-append "PREFIX="
-                                    (assoc-ref outputs "out"))))))))
+     (list
+      #:tests? #f ; no tests
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "qmake"
+                      (string-append "PREFIX="
+                                     (assoc-ref outputs "out")))))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (inputs
      (list bash-minimal
            curl
@@ -9730,14 +9735,14 @@ offline (such as Wikipedia), without any access to Internet.")
 (define-public kiwix-tools
   (package
     (name "kiwix-tools")
-    (version "3.5.0")
+    (version "3.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.kiwix.org/release/"
                                   "kiwix-tools/kiwix-tools-" version ".tar.xz"))
               (sha256
                (base32
-                "0q6b7viy1jr212q0glqid2hqxnsd2mxsx5gzcalkc4gb0bzgj32d"))))
+                "032lzzgn3hicai4lx701cs6h731cs29x1h59j9gggcgrp1n4wxks"))))
     (build-system meson-build-system)
     (inputs
      (list curl

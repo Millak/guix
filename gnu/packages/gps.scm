@@ -220,6 +220,9 @@ coordinates as well as partial support for adjustments in global coordinate syst
      (list
       #:qtbase qtbase
       #:tests? #f                     ; no tests
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases #~(modify-phases %standard-phases
                    (replace 'configure
                      ;; Use lrelease to convert TS translation files into QM files.
@@ -227,7 +230,9 @@ coordinates as well as partial support for adjustments in global coordinate syst
                        (apply invoke "lrelease"
                               (find-files "lang" "\\.ts"))
                        (invoke "qmake"
-                               (string-append "PREFIX=" #$output)))))))
+                               (string-append "PREFIX=" #$output))))
+                   (replace 'build (assoc-ref gnu:%standard-phases 'build))
+                   (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (inputs (list libxkbcommon qtbase qtpositioning qtserialport qtsvg))
     (native-inputs (list qttools))
     (home-page "https://www.gpxsee.org")

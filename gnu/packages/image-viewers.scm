@@ -822,6 +822,9 @@ Poppler-Qt5 binding, PDF documents.")
      (list
       #:qtbase qtbase
       #:tests? #f ; test code doesn't compile
+      #:modules '((guix build qt-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
@@ -836,7 +839,9 @@ Poppler-Qt5 binding, PDF documents.")
             (lambda _
               (substitute* "src/qvaboutdialog.cpp"
                 (("qvApp->checkUpdates\\(\\);") "")
-                (("updateText\\(\\);") "")))))))
+                (("updateText\\(\\);") ""))))
+          (replace 'build (assoc-ref gnu:%standard-phases 'build))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (native-inputs
      (list qttools))
     (inputs

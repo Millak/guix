@@ -4221,6 +4221,9 @@ link REQUIRED)"))))))
               "-DFORTIFY=ON"
               "-DLIBSCSYNTH=ON"
               "-DSC_EL=OFF")      ;scel is packaged individually as emacs-scel
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           ;; HOME must be defined otherwise supercollider throws a "ERROR:
@@ -4248,6 +4251,7 @@ link REQUIRED)"))))))
             (lambda _
               (system "Xvfb &")
               (setenv "DISPLAY" ":0")))
+          (replace 'install (assoc-ref gnu:%standard-phases 'install))
           (add-before 'install 'install-ide
             (lambda _
               (let* ((ide #$output:ide)

@@ -267,6 +267,9 @@ execution, and libreadline support.")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'patch-source-shebangs 'patch-cmake-shell
@@ -282,6 +285,10 @@ execution, and libreadline support.")
               (substitute* "doc/man7/CMakeLists.txt"
                 (("\\$\\{CMAKE_CURRENT_BINARY_DIR\\}")
                  "${CMAKE_CURRENT_SOURCE_DIR}"))))
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "test" args)))
           (add-after 'install 'install-completions
             (lambda _
               (let ((bash-completion-install-dir
