@@ -3601,6 +3601,101 @@ semi-analytic models, to cosmological hydrodynamic simulations, and even
 observationally-derived galaxy merger catalogs.")
     (license license:expat)))
 
+(define-public python-jwst
+  (package
+    (name "python-jwst")
+    (version "1.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jwst" version))
+       (sha256
+        (base32 "1r3gmlsirdf1l2m1z8sxzh6h668zvkjyr463zwp32f6wppcj286l"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Replace reference to external configobj.
+            (substitute* (find-files "." "\\.py$")
+              (("from astropy.extern import configobj")
+               "import configobj")
+              (("from astropy.extern.configobj import validate")
+               "import validate")
+              (("from astropy.extern.configobj.configobj import ")
+               "from configobj import ")
+              (("from astropy.extern.configobj.validate import ")
+               "from validate import "))))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require access to https://jwst-crds-pub.stsci.edu server
+      ;; for getting data sets.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; scipy>=1.14.1
+                (("1.14.1") "1.12.0")
+                ;; XXX: Can't detect opencv-python version. The input opencv
+                ;; might not set the version correctly.
+                ((".*opencv-python-headless.*") "")
+                ;; Remove broken scripts, see
+                ;; <https://github.com/spacetelescope/jwst/issues/9401>.
+                (("asn_gather = .*") "")
+                (("create_data = .*") "")
+                (("csvconvert = .*") "")))))))
+    (native-inputs
+     (list python-colorama
+           python-pytest
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-openfiles
+           python-requests-mock
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     ;; opencv provides OpenCV-Python which is Listed as install requirement.
+     (list opencv
+           python-asdf
+           python-asdf-astropy
+           python-astropy
+           python-bayesicfitting
+           python-crds
+           python-drizzle
+           python-gwcs
+           python-importlib-metadata
+           python-jplephem
+           python-jsonschema
+           python-numpy
+           python-packaging
+           python-photutils
+           python-poppy
+           python-psutil
+           python-pyparsing
+           python-pysiaf
+           python-requests
+           python-scikit-image
+           python-scipy
+           python-spherical-geometry
+           python-stcal
+           python-stdatamodels
+           python-stpipe
+           python-stsci-imagestats
+           python-synphot
+           python-tweakwcs
+           python-wiimatch))
+    (home-page "https://jwst-pipeline.readthedocs.io/en/latest/")
+    (synopsis "Science observations from the James Webb Space Telescope")
+    (description
+     "This package provides an access to the JWST Science Calibration Pipeline
+processes data from all JWST instruments and observing modes by applying
+various science corrections sequentially, producing both fully-calibrated
+individual exposures and high-level data products (mosaics, extracted spectra,
+etc.).")
+    (license license:bsd-3)))
+
 (define-public python-libstempo
   (package
     (name "python-libstempo")
@@ -3781,6 +3876,45 @@ on:
 @item effect of gaussian beam convolution
 @end itemize")
     (license license:bsd-2)))
+
+(define-public python-mpl-animators
+  (package
+    (name "python-mpl-animators")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mpl_animators" version))
+       (sha256
+        (base32 "1jscdgx1ynqvidh0kc6jxhjlp7lxhilwnp5pb6ddi7nb10as90kz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; Relax matplotlib warning: ... because the default path
+              ;; (/homeless-shelter/.config/matplotlib) is not a writable
+              ;; directory ...
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-doctestplus
+           python-pytest-mpl
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy))
+    (home-page "https://sunpy.org")
+    (synopsis "Interactive animations with matplotlib")
+    (description
+     "The @code{mpl_animators} package provides a set of classes which allow
+the easy construction of interactive matplotlib widget based animations.")
+    (license license:bsd-3)))
 
 (define-public python-naima
   (package
@@ -4388,52 +4522,6 @@ instruments.")
     (license (list license:bsd-3     ; licenses/LICENSE.rst, same as python-astropy
                    license:expat)))) ; licenses/KOSMOS_LICENSE
 
-(define-public python-sunkit-image
-  (package
-    (name "python-sunkit-image")
-    (version "0.6.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sunkit_image" version))
-       (sha256
-        (base32 "0x8w87vwdr78vcq0zha2y7xyfy16amc5aym4v8127xvphq1ff4v3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              ;; One test fails with assertion, probably in NumPy array
-              ;; precision calculation: np.allclose and
-              ;; sunpy.map.mapbase.GenericMap are not matched.
-              "--deselect=sunkit_image/tests/test_radial.py::test_fnrgf")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
-            (lambda _
-              ;; For tests: Permission denied: '/homeless-shelter'
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-dask
-           python-pytest-astropy
-           python-pytest-mpl
-           python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm-next
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-matplotlib
-           python-numpy
-           python-scikit-image
-           python-scipy
-           python-sunpy))
-    (home-page "https://github.com/sunpy/sunkit-image/")
-    (synopsis "Solar Physics image processing toolbox")
-    (description
-     "This package provides an image processing toolbox for Solar Physics.")
-    (license license:bsd-2)))
-
 (define-public python-astropy-healpix
   (package
     (name "python-astropy-healpix")
@@ -4721,101 +4809,6 @@ Astronomical Almanac to within 0.0005 arcseconds (half a @emph{mas} or
 milliarcsecond).")
     (license license:expat)))
 
-(define-public python-jwst
-  (package
-    (name "python-jwst")
-    (version "1.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "jwst" version))
-       (sha256
-        (base32 "1r3gmlsirdf1l2m1z8sxzh6h668zvkjyr463zwp32f6wppcj286l"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Replace reference to external configobj.
-            (substitute* (find-files "." "\\.py$")
-              (("from astropy.extern import configobj")
-               "import configobj")
-              (("from astropy.extern.configobj import validate")
-               "import validate")
-              (("from astropy.extern.configobj.configobj import ")
-               "from configobj import ")
-              (("from astropy.extern.configobj.validate import ")
-               "from validate import "))))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: Tests require access to https://jwst-crds-pub.stsci.edu server
-      ;; for getting data sets.
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; scipy>=1.14.1
-                (("1.14.1") "1.12.0")
-                ;; XXX: Can't detect opencv-python version. The input opencv
-                ;; might not set the version correctly.
-                ((".*opencv-python-headless.*") "")
-                ;; Remove broken scripts, see
-                ;; <https://github.com/spacetelescope/jwst/issues/9401>.
-                (("asn_gather = .*") "")
-                (("create_data = .*") "")
-                (("csvconvert = .*") "")))))))
-    (native-inputs
-     (list python-colorama
-           python-pytest
-           python-pytest-cov
-           python-pytest-doctestplus
-           python-pytest-openfiles
-           python-requests-mock
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     ;; opencv provides OpenCV-Python which is Listed as install requirement.
-     (list opencv
-           python-asdf
-           python-asdf-astropy
-           python-astropy
-           python-bayesicfitting
-           python-crds
-           python-drizzle
-           python-gwcs
-           python-importlib-metadata
-           python-jplephem
-           python-jsonschema
-           python-numpy
-           python-packaging
-           python-photutils
-           python-poppy
-           python-psutil
-           python-pyparsing
-           python-pysiaf
-           python-requests
-           python-scikit-image
-           python-scipy
-           python-spherical-geometry
-           python-stcal
-           python-stdatamodels
-           python-stpipe
-           python-stsci-imagestats
-           python-synphot
-           python-tweakwcs
-           python-wiimatch))
-    (home-page "https://jwst-pipeline.readthedocs.io/en/latest/")
-    (synopsis "Science observations from the James Webb Space Telescope")
-    (description
-     "This package provides an access to the JWST Science Calibration Pipeline
-processes data from all JWST instruments and observing modes by applying
-various science corrections sequentially, producing both fully-calibrated
-individual exposures and high-level data products (mosaics, extracted spectra,
-etc.).")
-    (license license:bsd-3)))
-
 (define-public python-jwst-reffiles
   (package
     (name "python-jwst-reffiles")
@@ -4930,45 +4923,6 @@ operations (PrecisionContext)
 @item collection of mathematical models used for all kinds of geocentric
 astronomical tables
 @end itemize")
-    (license license:bsd-3)))
-
-(define-public python-mpl-animators
-  (package
-    (name "python-mpl-animators")
-    (version "1.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "mpl_animators" version))
-       (sha256
-        (base32 "1jscdgx1ynqvidh0kc6jxhjlp7lxhilwnp5pb6ddi7nb10as90kz"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
-            (lambda _
-              ;; Relax matplotlib warning: ... because the default path
-              ;; (/homeless-shelter/.config/matplotlib) is not a writable
-              ;; directory ...
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-doctestplus
-           python-pytest-mpl
-           python-setuptools
-           python-setuptools-scm-next
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-matplotlib
-           python-numpy))
-    (home-page "https://sunpy.org")
-    (synopsis "Interactive animations with matplotlib")
-    (description
-     "The @code{mpl_animators} package provides a set of classes which allow
-the easy construction of interactive matplotlib widget based animations.")
     (license license:bsd-3)))
 
 (define-public python-ndcube
@@ -5424,71 +5378,6 @@ predictions of the standard distribution of the algorithm.  This error is far
 less than the 1–3 km/day by which satellites themselves deviate from the ideal
 orbits described in TLE files.")
     (license license:expat)))
-
-(define-public python-sunpy-soar
-  (package
-    (name "python-sunpy-soar")
-    (version "1.11.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sunpy_soar" version))
-       (sha256
-        (base32 "04zdfxb0y7m94lna6bikdc4rwa8n11wh42jyha0fxc604xhy2b3l"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Disable tests requiring network access to download test data from
-      ;; <http://soar.esac.esa.int> and <http://docs.virtualsolar.org>.
-      #~(list "-k" (string-join
-                    (list "not test_distance_out_of_bounds_warning"
-                          "test_distance_search_insitu"
-                          "test_distance_search_remote_sensing"
-                          "test_distance_time_search"
-                          "test_download_path"
-                          "test_insitu_search"
-                          "test_invalid_detector"
-                          "test_no_instrument"
-                          "test_no_results"
-                          "test_search"
-                          "test_search_detector_instrument_dimension_2"
-                          "test_search_detector_instrument_dimension_4"
-                          "test_search_low_latency"
-                          "test_search_soop"
-                          "test_search_wavelength_detector_column"
-                          "test_wavelength_column_wavelength_exists"
-                          "test_wavelength_range"
-                          "test_wavelength_single"
-                          "test_when_sdac_provider_passed"
-                          "test_when_soar_provider_passed"
-                          "test_when_wrong_provider_passed")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home-env
-            (lambda _
-              ;; Tests require HOME to be set.
-              ;;  Permission denied: '/homeless-shelter'
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-doctestplus
-           python-responses
-           python-setuptools
-           python-setuptools-scm-next
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-matplotlib
-           python-requests
-           python-sunpy))
-    (home-page "https://docs.sunpy.org/projects/soar")
-    (synopsis "Solar Orbiter Archive plugin for SunPy")
-    (description
-     "This package provides a @code{sunpy} FIDO plugin for accessing data in the
-@acronym{Solar Orbiter Archive, SOAR}.")
-    (license license:bsd-2)))
 
 (define-public python-spectral-cube
   (package
@@ -5995,46 +5884,6 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
      "This package provides base classes and command-line tools for
 implementing calibration pipeline software.")
     ;; LICENSE Association of Universities for Research in Astronomy (AURA)
-    (license license:bsd-3)))
-
-(define-public python-stsynphot
-  (package
-    (name "python-stsynphot")
-    (version "1.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "stsynphot" version))
-       (sha256
-        (base32 "02xaglg1kv3mk6gqjcs1283mmy9b42fgsga8g2z8768lkgwmmg9j"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: Tests fails on missing file, it might need to be downloaded,
-      ;; disable them for now.  astropy.utils.exceptions.AstropyUserWarning:
-      ;; Failed to load Vega spectrum from
-      ;; /grp/redcat/trds/calspec/alpha_lyr_stis_010.fits;
-      #:tests? #f))
-    (native-inputs
-     (list python-pytest
-           python-pytest-astropy
-           python-pytest-astropy-header
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-beautifulsoup4
-           python-matplotlib
-           python-numpy
-           python-scipy
-           python-synphot))
-    (home-page "https://github.com/spacetelescope/stsynphot_refactor")
-    (synopsis "Synthetic photometry using Astropy for HST and JWST")
-    (description
-     "This package provides a replacement for IRAF STSDAS SYNPHOT and ASTROLIB
-PYSYNPHOT, utilizing Astropy covering instrument specific portions of the old
-packages for HST.")
     (license license:bsd-3)))
 
 (define-public python-pyerfa
@@ -7270,6 +7119,46 @@ processing functions: @code{xyxymatch}, @code{geomap}.")
 Institute, STScI} utility functions.")
     (license license:bsd-3)))
 
+(define-public python-stsynphot
+  (package
+    (name "python-stsynphot")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stsynphot" version))
+       (sha256
+        (base32 "02xaglg1kv3mk6gqjcs1283mmy9b42fgsga8g2z8768lkgwmmg9j"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests fails on missing file, it might need to be downloaded,
+      ;; disable them for now.  astropy.utils.exceptions.AstropyUserWarning:
+      ;; Failed to load Vega spectrum from
+      ;; /grp/redcat/trds/calspec/alpha_lyr_stis_010.fits;
+      #:tests? #f))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-pytest-astropy-header
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-beautifulsoup4
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-synphot))
+    (home-page "https://github.com/spacetelescope/stsynphot_refactor")
+    (synopsis "Synthetic photometry using Astropy for HST and JWST")
+    (description
+     "This package provides a replacement for IRAF STSDAS SYNPHOT and ASTROLIB
+PYSYNPHOT, utilizing Astropy covering instrument specific portions of the old
+packages for HST.")
+    (license license:bsd-3)))
+
 (define-public python-stwcs
   (package
     (name "python-stwcs")
@@ -7340,6 +7229,52 @@ Institute, STScI} utility functions.")
 transformation for the imaging instruments on the @acronym{Hubble Space
 Telescope, HST}).")
     (license license:bsd-3)))
+
+(define-public python-sunkit-image
+  (package
+    (name "python-sunkit-image")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sunkit_image" version))
+       (sha256
+        (base32 "0x8w87vwdr78vcq0zha2y7xyfy16amc5aym4v8127xvphq1ff4v3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; One test fails with assertion, probably in NumPy array
+              ;; precision calculation: np.allclose and
+              ;; sunpy.map.mapbase.GenericMap are not matched.
+              "--deselect=sunkit_image/tests/test_radial.py::test_fnrgf")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; For tests: Permission denied: '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-dask
+           python-pytest-astropy
+           python-pytest-mpl
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scikit-image
+           python-scipy
+           python-sunpy))
+    (home-page "https://github.com/sunpy/sunkit-image/")
+    (synopsis "Solar Physics image processing toolbox")
+    (description
+     "This package provides an image processing toolbox for Solar Physics.")
+    (license license:bsd-2)))
 
 (define-public python-sunkit-magex
   (package
@@ -7504,6 +7439,71 @@ to the SolarSoft data analysis environment.")
             python-fsspec
             python-mpl-animators
             python-pyerfa)))))
+
+(define-public python-sunpy-soar
+  (package
+    (name "python-sunpy-soar")
+    (version "1.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sunpy_soar" version))
+       (sha256
+        (base32 "04zdfxb0y7m94lna6bikdc4rwa8n11wh42jyha0fxc604xhy2b3l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Disable tests requiring network access to download test data from
+      ;; <http://soar.esac.esa.int> and <http://docs.virtualsolar.org>.
+      #~(list "-k" (string-join
+                    (list "not test_distance_out_of_bounds_warning"
+                          "test_distance_search_insitu"
+                          "test_distance_search_remote_sensing"
+                          "test_distance_time_search"
+                          "test_download_path"
+                          "test_insitu_search"
+                          "test_invalid_detector"
+                          "test_no_instrument"
+                          "test_no_results"
+                          "test_search"
+                          "test_search_detector_instrument_dimension_2"
+                          "test_search_detector_instrument_dimension_4"
+                          "test_search_low_latency"
+                          "test_search_soop"
+                          "test_search_wavelength_detector_column"
+                          "test_wavelength_column_wavelength_exists"
+                          "test_wavelength_range"
+                          "test_wavelength_single"
+                          "test_when_sdac_provider_passed"
+                          "test_when_soar_provider_passed"
+                          "test_when_wrong_provider_passed")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home-env
+            (lambda _
+              ;; Tests require HOME to be set.
+              ;;  Permission denied: '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-doctestplus
+           python-responses
+           python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-requests
+           python-sunpy))
+    (home-page "https://docs.sunpy.org/projects/soar")
+    (synopsis "Solar Orbiter Archive plugin for SunPy")
+    (description
+     "This package provides a @code{sunpy} FIDO plugin for accessing data in the
+@acronym{Solar Orbiter Archive, SOAR}.")
+    (license license:bsd-2)))
 
 (define-public python-sunraster
   (package
