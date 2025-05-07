@@ -4391,6 +4391,50 @@ robust, and Bayesian versions of t-test/ANOVA, correlation analyses,
 contingency table analysis, meta-analysis, and regression analyses.")
     (license license:gpl3)))
 
+(define-public r-ggsurvfit
+  (package
+    (name "r-ggsurvfit")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggsurvfit" version))
+       (sha256
+        (base32 "0c3qv9gii3ndqip3nxs08bx7lvh6sm46mxz8nyi627zbgqmhwrr5"))))
+    (properties
+     '((upstream-name . "ggsurvfit")
+       (updater-ignored-native-inputs . ("r-tidycmprsk"))))
+    (build-system r-build-system)
+    ;; Some 20 tests require tidycmprsk, which pulls in React.  So I'm happy
+    ;; to ignore the tests.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list r-broom
+                             r-cli
+                             r-dplyr
+                             r-ggplot2
+                             r-glue
+                             r-gtable
+                             r-patchwork
+                             r-rlang
+                             r-survival
+                             r-tidyr))
+    (native-inputs (list r-knitr
+                         r-scales
+                         r-spelling
+                         r-testthat
+                         r-vdiffr
+                         r-withr))
+    (home-page "https://github.com/pharmaverse/ggsurvfit")
+    (synopsis "Flexible time-to-event figures")
+    (description
+     "This package is meant to ease the creation of
+time-to-event (i.e. survival) endpoint figures.  The modular functions create
+figures ready for publication.  Each of the functions that add to or modify
+the figure are written as proper ggplot2 @code{geoms} or @code{stat} methods,
+allowing the functions from this package to be combined with any function or
+customization from ggplot2 and other ggplot2 extension packages.")
+    (license license:expat)))
+
 (define-public r-ggthemes
   (package
     (name "r-ggthemes")
