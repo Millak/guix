@@ -256,7 +256,7 @@ without modification.")
 
 (define-public bash-minimal
   ;; A stripped-down Bash for non-interactive use.
-  (package (inherit bash)
+  (package/inherit bash
     (name "bash-minimal")
     (inputs '())                                ; no readline, no curses
 
