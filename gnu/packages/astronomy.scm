@@ -1013,7 +1013,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
 32-bit floating-point.")
     (license license:gpl3+)))
 
-(define-public indi-2.0
+(define-public indi
   (package
     (name "indi")
     (version "2.1.3")
@@ -1079,9 +1079,9 @@ more.")
                    license:lgpl2.0+
                    license:lgpl2.1+))))
 
-(define-public indi-1.9
+(define-public indi-1
   (package
-    (inherit indi-2.0)
+    (inherit indi)
     (version "1.9.9")
     (source
      (origin
@@ -1092,10 +1092,6 @@ more.")
        (file-name (git-file-name "indi" version))
        (sha256
         (base32 "1vfcas59nlw8v7n6qhxhcm4isf5wk0crip5rmsallq3bsv3zznfr"))))))
-
-(define-public indi
-  ;; Default version of INDI..
-  indi-1.9)
 
 (define-public iraf-community
   (package
@@ -1520,7 +1516,7 @@ R. Seaman's protocol}
            curl
            eigen
            gtk+
-           indi
+           indi-1
            libnova
            libusb
            wxwidgets
@@ -8403,7 +8399,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
     (inputs
      (list calcmysky-qt5
            gpsd
-           indi-2.0
+           indi
            libnova
            md4c
            nlopt
