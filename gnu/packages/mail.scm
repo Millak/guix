@@ -2580,7 +2580,7 @@ message.  Headers are decoded from MIME encoding.")
 (define-public perl-email-mime-contenttype
   (package
     (name "perl-email-mime-contenttype")
-    (version "1.022")
+    (version "1.028")
     (source
      (origin
        (method url-fetch)
@@ -2588,10 +2588,12 @@ message.  Headers are decoded from MIME encoding.")
                            "Email-MIME-ContentType-" version ".tar.gz"))
        (sha256
         (base32
-         "042kxhs3bp1ab9z0mbr1wy21ld4lxd6v2a2mmrashqnsn2075fws"))))
+          "1i25h7sp1hwg064ikarwgh9l28qggqig4kgxwk1xcziz8d3055g7"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-capture-tiny))
+    (propagated-inputs
+      (list perl-text-unidecode))
     (home-page "https://metacpan.org/release/Email-MIME-ContentType")
     (synopsis "Parse MIME Content-Type headers")
     (description "Email::MIME::ContentType parses a MIME Content-Type
