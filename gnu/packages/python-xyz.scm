@@ -16322,13 +16322,13 @@ application monitoring and error tracking software.")
 (define-public python-pep8-naming
   (package
     (name "python-pep8-naming")
-    (version "0.14.1")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pep8-naming" version))
+       (uri (pypi-uri "pep8_naming" version))
        (sha256
-        (base32 "0dlapswhvzkkyw9gmjngc4rbzasdxnpxwj8mdkmmfmc7h2p2iwhy"))))
+        (base32 "0acxcg4z43kkddlvjbcbbh1jp8rx5z0cq9hz7jlyvpm2mfcs9x7n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
