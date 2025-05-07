@@ -2532,7 +2532,7 @@ from Dovecot IMAP server.")
 (define-public perl-email-messageid
   (package
     (name "perl-email-messageid")
-    (version "1.406")
+    (version "1.408")
     (source
      (origin
        (method url-fetch)
@@ -2540,7 +2540,7 @@ from Dovecot IMAP server.")
                            "Email-MessageID-" version ".tar.gz"))
        (sha256
         (base32
-         "1f22sdnfq169qw1l0lg7y74pmiam7j9v95bggjnf3q4mygdmshpc"))))
+          "0g34qmnz052d9536a0snjnn0pkdd6zxiihy7kagb7ixiy17mng8z"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Email-MessageID")
     (synopsis "Generate world unique message-ids")
