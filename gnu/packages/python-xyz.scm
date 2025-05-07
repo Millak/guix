@@ -16319,37 +16319,6 @@ you do not want to store entirely on disk or on memory.")
 application monitoring and error tracking software.")
     (license license:bsd-2)))
 
-(define-public python-pep8-naming
-  (package
-    (name "python-pep8-naming")
-    (version "0.15.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pep8_naming" version))
-       (sha256
-        (base32 "0acxcg4z43kkddlvjbcbbh1jp8rx5z0cq9hz7jlyvpm2mfcs9x7n"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "run_tests.py")))))))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-flake8))
-    (home-page "https://github.com/PyCQA/pep8-naming")
-    (synopsis "Check PEP-8 naming conventions")
-    (description
-     "This package provides the @code{pep8-naming} Python module, a plugin for
-flake8 to check PEP-8 naming conventions.")
-    (license license:expat)))
-
 (define-public python-pep440
   (package
     (name "python-pep440")
