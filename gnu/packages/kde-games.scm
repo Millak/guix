@@ -1691,7 +1691,7 @@ This package is part of the KDE games module.")
 (define-public kde-games
   (package
     (name "kde-games")
-    (version "24.12.3")
+    (version "25.04.0")
     (source #f)
     (build-system trivial-build-system)
     (arguments
