@@ -1,10 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2016, 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2022 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
-;;; Copyright © 2021-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
+;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -106,6 +109,91 @@ on top of the new Jupyter Server backend, it can coexist with other frontends
 like JupyterLab and Notebook 7 in the same installation.  NbClassic preserves
 the custom classic notebook experience under a new set of URL endpoints, under
 the namespace @code{/nbclassic/}.")
+    (license license:bsd-3)))
+
+(define-public python-notebook
+  (package
+    (name "python-notebook")
+    (version "6.5.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "notebook" version))
+              (sha256
+               (base32
+                "1r38fwr0r4xgkz8y27w3xyz2dk97ih5azba28jylyqxcvw8r1sq4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k" (string-append
+                   ;; TODO: This tests fails because nbconvert does not
+                   ;; list "python" as a format.
+                   "not test_list_formats"
+                   ;; AssertionError: Lists differ:
+                   " and not test_disable"
+                   " and not test_enable"
+                   " and not test_merge_config"
+                   " and not test_load_ordered"
+                   " and not test_list_running_sock_servers"
+                   " and not test_run")
+        ;; These tests require a browser.
+        "--ignore=notebook/tests/selenium")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'use-our-home-for-tests
+           (lambda _
+             ;; The 'get_patch_env' function in this file reads:
+             ;;   'HOME': cls.home_dir
+             ;; but for some reason, that definition of HOME is not what the
+             ;; GLib/GIO trash mechanism honors, which would cause test
+             ;; failures.  Instead, set 'HOME' here to an existing directory
+             ;; and let the tests honor it.
+             (substitute* "notebook/tests/launchnotebook.py"
+               (("'HOME': .*," all)
+                (string-append "# " all "\n")))
+             (setenv "HOME" (getcwd))))
+         ;; Because python-jsonschema has an old python-webcolor.  Remove this
+         ;; when python-team branch is merged.
+         (delete 'sanity-check)
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Interferes with test expectations.
+             (unsetenv "JUPYTER_CONFIG_PATH")
+             ;; Some tests do not expect all files to be installed in the
+             ;; same directory, but JUPYTER_PATH contains multiple entries.
+             (unsetenv "JUPYTER_PATH"))))))
+    (propagated-inputs
+     (list python-argon2-cffi
+           python-ipykernel
+           python-ipython-genutils
+           python-jinja2
+           python-jupyter-client
+           python-jupyter-core
+           python-nest-asyncio
+           python-nbclassic
+           python-nbconvert
+           python-nbformat
+           python-prometheus-client
+           python-pyzmq
+           python-send2trash
+           python-terminado
+           python-tornado-6
+           python-traitlets))
+    (native-inputs
+     (list python-coverage
+           python-jupyter-server
+           python-nbval
+           python-pytest
+           python-pytest-cov
+           python-requests
+           python-requests-unixsocket2
+           python-setuptools
+           python-wheel))
+    (home-page "https://jupyter.org/")
+    (synopsis "Web-based notebook environment for interactive computing")
+    (description
+     "The Jupyter HTML notebook is a web-based notebook environment for
+interactive computing.")
     (license license:bsd-3)))
 
 (define-public python-notebook-shim

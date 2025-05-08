@@ -41,6 +41,7 @@
   #:use-module (gnu packages gd)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages jupyter)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages maths)
