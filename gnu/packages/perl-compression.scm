@@ -110,22 +110,23 @@ interface to the zlib compression library.")
 (define-public perl-io-compress
   (package
     (name "perl-io-compress")
-    (version "2.204")
+    (version "2.213")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/P/PM/PMQS/"
                            "IO-Compress-" version ".tar.gz"))
        (sha256
-        (base32 "067hdan6hbyj9n0h0bzkjjsfhda7nxkzq60v6j0qcxs3hp5q8xv1"))))
+        (base32
+          "0ld8p4f0yj79zyiwafxdf45p5qii8vkp61gvyb2nhiafayp02kdf"))))
     (build-system perl-build-system)
     (propagated-inputs
      ;; These two packages should be updated to this one's version first.
      (list perl-compress-raw-zlib perl-compress-raw-bzip2))
     (home-page "https://metacpan.org/release/IO-Compress")
     (synopsis "IO Interface to compressed files/buffers")
-    (description "IO-Compress provides a Perl interface to allow reading and
-writing of compressed data created with the zlib and bzip2 libraries.")
+    (description "Perl's @code{IO::Compress} module provides an interface for
+reading and writing compressed data created with the zlib and bzip2 libraries.")
     (license license:perl-license)))
 
 (define-public perl-perlio-gzip
