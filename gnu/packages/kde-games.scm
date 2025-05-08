@@ -721,14 +721,14 @@ This package is part of the KDE games module.")
 (define-public kdiamond
   (package
     (name "kdiamond")
-    (version "24.12.3")
+    (version "25.04.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdiamond-" version ".tar.xz"))
        (sha256
-        (base32 "1ljyjpar1g937xk70cb0ignpyljy3zxk1037zy3w68nil48823mi"))))
+        (base32 "1a2fgdfckmsz3ycrlbiddfd2vfhlhx8zn47zg5f2ic00jpp8wch4"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
@@ -741,6 +741,7 @@ This package is part of the KDE games module.")
            kcrash
            kdbusaddons
            ki18n
+           kiconthemes
            knotifications
            knotifyconfig
            kwidgetsaddons
