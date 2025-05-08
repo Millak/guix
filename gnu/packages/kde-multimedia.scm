@@ -607,7 +607,7 @@ camera.  Use it to take pictures and make videos to share.")
 (define-public kasts
   (package
     (name "kasts")
-    (version "25.03.90")
+    (version "25.04.0")
     (source
      (origin
        (method git-fetch)
@@ -616,7 +616,7 @@ camera.  Use it to take pictures and make videos to share.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "094q0yc8ljpkryd0vwwh4ljvk101qr63siwxacm1dgmhyi95262k"))))
+        (base32 "0qzm89z1amw48kghdrp09l36djvvfmgrsy4wabblxvz05phbih8n"))))
     (build-system qt-build-system)
     (native-inputs (list pkg-config extra-cmake-modules))
     (inputs (list bash-minimal
