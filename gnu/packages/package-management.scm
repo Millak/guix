@@ -233,8 +233,7 @@
                             ;; To avoid problems with the length of shebangs,
                             ;; choose a fixed-width and short directory name
                             ;; for tests.
-                            "ac_cv_guix_test_root=/tmp/guix-tests"
-                            ,@(if (target-hurd?) '("--with-courage") '()))
+                            "ac_cv_guix_test_root=/tmp/guix-tests")
          #:parallel-tests? #f         ;work around <http://bugs.gnu.org/21097>
 
          #:modules ((guix build gnu-build-system)
