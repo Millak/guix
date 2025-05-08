@@ -36129,6 +36129,9 @@ value if you intend to run several @command{dnsmasq} instances.
 Likewise, @code{shepherd-requirement} is a list of Shepherd service names
 (symbols) that this service will depend on.
 
+@item @code{pid-file} (default: @code{"/run/dnsmasq.pid"})
+Specify an alternate path for dnsmasq to record its process-id in.
+
 @item @code{no-hosts?} (default: @code{#f})
 When true, don't read the hostnames in /etc/hosts.
 
@@ -36248,6 +36251,16 @@ append the MAC address instead, using lowercase zero padded digits
 separated by dashes, e.g.: @samp{01-02-03-04-aa-bb}.  Note that
 resolving MAC addresses is only possible if the client is in the local
 network or obtained a DHCP lease from dnsmasq.
+
+@item @code{conf-file} (default: @code{'()})
+File names of configuration files to use.  Strings and file-like objects
+are accepted.
+
+@item @code{conf-dir} (default: @code{#f})
+Read all the files in the given directory as configuration files.
+Support for @command{dnsmasq} field extensions is not implemented; users
+can use @code{computed-file} to build a directory of files instead.  The
+configuration files are loaded in alphabetical order of file name.
 
 @item @code{extra-options} (default: @code{'()})
 This option provides an ``escape hatch'' for the user to provide arbitrary
