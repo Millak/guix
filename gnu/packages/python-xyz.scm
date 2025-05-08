@@ -1702,16 +1702,16 @@ using a dot syntax, for example: @code{dictionary['deeply.nested.key']}.")
 (define-public python-adjusttext
   (package
     (name "python-adjusttext")
-    (version "0.8")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "adjustText" version))
+              (uri (pypi-uri "adjusttext" version))
               (sha256
                (base32
-                "05zf0xn7ab40dan213fwbp1z4rybih8dphf9mzb2ddmbafxq41mv"))))
+                "18dw5kqxan4m8kvw3w1lm0p69gj95i7rcgmcfs485x1s8pa5rdsa"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #false)) ;there are none
-    (propagated-inputs (list python-matplotlib python-numpy))
+    (propagated-inputs (list python-matplotlib python-numpy python-scipy))
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/Phlya/adjustText")
     (synopsis "Adjust text position in matplotlib plots to minimize overlaps")
