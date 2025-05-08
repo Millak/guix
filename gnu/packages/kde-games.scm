@@ -962,14 +962,14 @@ This package is part of the KDE games module.")
 (define-public ksirk
   (package
     (name "ksirk")
-    (version "24.12.3")
+    (version "25.04.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ksirk-" version ".tar.xz"))
        (sha256
-        (base32 "182rvi085jl5rdvfzrkd8pymvbadkwk12p8ymljn9fcpij4jx6jd"))))
+        (base32 "0n19nhzzh1acgkia0b5s827rpzxvkp2acl3v2qjsr9kzk43cf7bb"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
