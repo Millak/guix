@@ -1,8 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2014 Danny Milosavljevic <dannym@friendly-machines.com>
+;;; Copyright © 2016, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
-;;; Copyright © 2019, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2022 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -97,6 +100,102 @@ share documents that contain live code, equations, visualizations and
 explanatory text.  Uses include: data cleaning and transformation, numerical
 simulation, statistical modeling, machine learning and much more.")
     (license license:bsd-3)))
+
+(define-public python-ipykernel
+  (package
+    (name "python-ipykernel")
+    (version "6.29.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ipykernel" version))
+       (sha256
+        (base32 "0p5g897pq6k9nr44ihlk4hp5s46zz8ih2xib1715lizrc000fi1x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:modules '((guix build pyproject-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:test-flags
+      ;; XXX: probably not good that this fails
+      '(list "-k" "not test_copy_to_globals" "-Wignore::DeprecationWarning")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-a-bit
+            (lambda _
+              ;; I'm sure nobody will notice.
+              (substitute* "pyproject.toml"
+                (("debugpy>=1.6.5") "debugpy>=1.6.0"))))
+          ;; The deprecation warnings break the tests.
+          (add-after 'unpack 'hide-deprecation-warnings
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"ignore:There is no current event loop:DeprecationWarning\"" m)
+                 (string-append m ",
+\"ignore:the imp module is deprecated:DeprecationWarning\",
+\"ignore:pytest-asyncio detected an unclosed event loop:DeprecationWarning\",
+\"ignore:make_current is deprecated.*:DeprecationWarning\",
+\"ignore:zmq.eventloop.ioloop.*:DeprecationWarning\",
+\"ignore:zmq.tests.BaseZMQTestCase.*:DeprecationWarning\"")))))
+           (add-before 'check 'pre-check
+             (lambda _
+               ;; jupyter-core demands this be set.
+               (setenv "JUPYTER_PLATFORM_DIRS" "1")
+               (setenv "HOME" "/tmp")))
+          (add-after 'install 'set-python-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Record the absolute file name of the 'python' executable in
+              ;; 'kernel.json'.
+              (substitute* (string-append #$output "/share/jupyter"
+                                          "/kernels/python3/kernel.json")
+                (("\"python\"")
+                 (format #f "~s" (search-input-file inputs
+                                                    "/bin/python3")))))))))
+    (propagated-inputs
+     (list python-comm
+           python-debugpy
+           python-ipython
+           python-jupyter-client
+           python-jupyter-core
+           python-matplotlib-inline
+           python-nest-asyncio
+           python-packaging
+           python-psutil
+           python-pyzmq
+           python-tornado-6
+           python-traitlets))
+    (inputs (list python))              ;for cross compilation
+    (native-inputs
+     (list python-flaky
+           python-hatchling
+           python-ipyparallel-bootstrap
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-timeout))
+    (home-page "https://ipython.org")
+    (synopsis "IPython Kernel for Jupyter")
+    (description "This package provides the IPython kernel for Jupyter.")
+    (license license:bsd-3)))
+
+;; Bootstrap variant of ipykernel, which uses the bootstrap jupyter-client to
+;; break the cycle between ipykernel and jupyter-client.
+(define-public python-ipykernel-bootstrap
+  (let ((parent python-ipykernel))
+    (hidden-package
+      (package
+        (inherit parent)
+        (name "python-ipykernel-bootstrap")
+        (arguments (list #:tests? #f
+                         ;; The package should normally propagate ipykernel,
+                         ;; left out here to break the cycle.
+                         #:phases #~(modify-phases %standard-phases
+                                      (delete 'sanity-check))))
+        (native-inputs (list python-hatchling))
+        (propagated-inputs
+         (modify-inputs (package-propagated-inputs parent)
+           (replace "python-jupyter-client" python-jupyter-client-bootstrap)))))))
 
 (define-public python-nbclassic
   (package
