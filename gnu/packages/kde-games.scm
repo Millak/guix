@@ -800,14 +800,14 @@ This package is part of the KDE games module.")
 (define-public kblackbox
   (package
     (name "kblackbox")
-    (version "24.12.3")
+    (version "25.04.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kblackbox-" version ".tar.xz"))
        (sha256
-        (base32 "1vsgs6frnhxif7s9lnlpj6vf6m7szqavwciycwn8mbv39hpj8mjl"))))
+        (base32 "1bj181is31hci056qxvf0wcqzggxxlszn65npm16038wa3bh95lw"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
@@ -820,6 +820,7 @@ This package is part of the KDE games module.")
            kcrash
            kdbusaddons
            ki18n
+           kiconthemes
            ktextwidgets
            kxmlgui
            libkdegames
