@@ -4066,6 +4066,63 @@ perform MCMC fitting of radiative models to X-ray, GeV, and TeV spectra using
 Carlo.")
     (license license:bsd-3)))
 
+(define-public python-petrofit
+  (package
+    (name "python-petrofit")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/PetroFit/petrofit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07dri6r6ws82nn379gqvg899g576n8skhgp5fjg3qq38rp8dgl0k"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-pytest-randomly
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list jupyter
+           python-astropy
+           python-cython
+           python-extension-helpers
+           python-ipywidgets
+           python-matplotlib
+           python-notebook
+           python-numpy
+           python-photutils
+           python-pytest-astropy-header
+           python-pyyaml
+           python-regions
+           python-scikit-image
+           python-scikit-learn
+           python-scipy))
+    (home-page "https://github.com/PetroFit/petrofit")
+    (synopsis "Petrosian properties and fitting galaxy light profiles calculation")
+    (description
+     "PetroFit is a package for calculating Petrosian properties,
+such as radii and concentration indices, as well as fitting galaxy light
+profiles.  In particular, PetroFit includes tools for performing accurate
+photometry, segmentations, Petrosian profiling, and Sérsic fitting.")
+    (license license:bsd-3)))
+
 (define-public python-pixell
   (package
     (name "python-pixell")
