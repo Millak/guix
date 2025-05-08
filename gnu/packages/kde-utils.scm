@@ -264,14 +264,14 @@ well as CD-ROM images.")
 (define-public filelight
   (package
     (name "filelight")
-    (version "24.12.3")
+    (version "25.04.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/filelight-" version ".tar.xz"))
               (sha256
                (base32
-                "1sc7n533fqmf4ckfiwikxraj2mgk470gkypiwnxw1kwqpd2l6fpc"))))
+                "1jfa59yw6miq21wrid20845ba2kd7xr8pyg3d413f6kll0il3kzy"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcrash
