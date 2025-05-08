@@ -378,14 +378,14 @@ This package is part of the KDE games module.")
 (define-public kbreakout
   (package
     (name "kbreakout")
-    (version "24.12.3")
+    (version "25.04.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kbreakout-" version ".tar.xz"))
        (sha256
-        (base32 "0jzyw0bpx8q7kp5wg1nj5bzmidvjw6az3v8qnfbmfbw7zw95hf8y"))))
+        (base32 "00qbyv7awf70dxid2m71izsl39mfvjgzrfqdpfgkgisfvrwwnw90"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
@@ -398,6 +398,7 @@ This package is part of the KDE games module.")
            kcrash
            kdbusaddons
            ki18n
+           kiconthemes
            kwidgetsaddons
            kxmlgui
            libkdegames
