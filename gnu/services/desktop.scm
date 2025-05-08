@@ -6,7 +6,7 @@
 ;;; Copyright © 2017, 2020, 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
@@ -2453,6 +2453,11 @@ applications needing access to be root.")
                          (map file-like->setuid-program
                               (list (file-append nfs-utils "/sbin/mount.nfs")
                                (file-append ntfs-3g "/sbin/mount.ntfs-3g"))))
+
+         ;; Add some of the artwork niceties for the desktop.
+         (simple-service 'guix-artwork
+                         profile-service-type
+                         %base-packages-artwork)
 
          ;; This is a volatile read-write file system mounted at /var/lib/gdm,
          ;; to avoid GDM stale cache and permission issues.

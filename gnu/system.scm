@@ -982,8 +982,7 @@ of PROVENANCE-SERVICE-TYPE to its services."
 (define %base-packages
   ;; Default set of packages globally visible.  It should include anything
   ;; required for basic administrator tasks.
-  (append %base-packages-artwork
-          %base-packages-interactive
+  (append %base-packages-interactive
           %base-packages-linux
           %base-packages-networking
           %base-packages-utils))
