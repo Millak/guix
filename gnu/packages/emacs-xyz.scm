@@ -2221,8 +2221,8 @@ leveraging built-in functionality.")
       (license license:gpl3+))))
 
 (define-public emacs-fzf
-  (let ((commit "21912ebc7e1084aa88c9d8b7715e782a3978ed23")
-        (revision "0"))
+  (let ((commit "641aef33c88df3733f13d559bcb2acc548a4a0c3")
+        (revision "1"))
     (package
       (name "emacs-fzf")
       (version (git-version "0.2" revision commit))
@@ -2234,7 +2234,7 @@ leveraging built-in functionality.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0gdqjh8996hb06bnnyhi94k69mjfrzyfgq00a9s4wwagv28sqmkj"))))
+                  "1nyvam5jg4gih0x2rvwr4jn97lyhaic3adpdxpdfx682ckj1k2vp"))))
       (build-system emacs-build-system)
       (arguments
        (list
