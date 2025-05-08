@@ -969,7 +969,6 @@ of PROVENANCE-SERVICE-TYPE to its services."
         nvi
         man-db
         info-reader                     ;the standalone Info reader (no Perl)
-        bash-completion
         kbd
         ;; The 'sudo' command is already in %SETUID-PROGRAMS, but we also
         ;; want the other commands and the man pages (notably because
@@ -1154,15 +1153,6 @@ fi
 
 # Provide a default prompt.  The user's ~/.bashrc can override it.
 PS1='\\u@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '
-
-# The 'bash-completion' package.
-if [ -f /run/current-system/profile/etc/profile.d/bash_completion.sh ]
-then
-  # Bash-completion sources ~/.bash_completion.  It installs a dynamic
-  # completion loader that searches its own completion files as well
-  # as those in ~/.guix-profile and /run/current-system/profile.
-  source /run/current-system/profile/etc/profile.d/bash_completion.sh
-fi
 
 for i in /etc/bashrc.d/*.sh; do
     [[ -r $i ]] && source \"$i\"

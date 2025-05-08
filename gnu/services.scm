@@ -124,6 +124,7 @@
             etc-service-type
             etc-profile-d-service-type
             etc-bashrc-d-service-type
+            %default-etc-bashrc-d-files
             etc-directory
             privileged-program-service-type
             setuid-program-service-type ; deprecated
@@ -992,6 +993,10 @@ log in.")))
 (define files->bashrc-d-directory
   (make-files->etc-directory "bashrc.d"))
 
+(define %default-etc-bashrc-d-files
+  (list (file-append bash-completion
+                     "/etc/profile.d/bash_completion.sh")))
+
 (define etc-bashrc-d-service-type
   (service-type
    (inherit etc-profile-d-service-type)
@@ -1000,7 +1005,8 @@ log in.")))
                                         files->bashrc-d-directory)))
    (description "A service for populating @file{/etc/bashrc.d/} with Bash
 scripts having the @file{.sh} file extension, to be sourced by interactive
-Bash shells.")))
+Bash shells.")
+   (default-value %default-etc-bashrc-d-files)))
 
 (define (privileged-program->activation-gexp programs)
   "Return an activation gexp for privileged-program from PROGRAMS."
