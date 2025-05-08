@@ -33041,10 +33041,10 @@ content models.")
             python-pyjwt
             python-cryptography
             python-nose))
+    (home-page "https://developers.docusign.com/")
     (synopsis "DocuSign Python Client")
     (description "The Official DocuSign Python Client Library used to interact
  with the eSign REST API.  Send, sign, and approve documents using this client.")
-    (home-page "https://www.docusign.com/devcenter")
     (license license:expat)))
 
 (define-public python-xattr
