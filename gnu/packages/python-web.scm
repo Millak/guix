@@ -6035,7 +6035,7 @@ S3.")
            python-pytest
            python-setuptools
            python-wheel))
-    (home-page "https://www.github.com/flask-restful/flask-restful/")
+    (home-page "https://github.com/flask-restful/flask-restful/")
     (synopsis "Flask module for creating REST APIs")
     (description
      "This package contains a Flask module for creating REST APIs.")
