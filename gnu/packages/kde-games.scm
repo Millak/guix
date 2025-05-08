@@ -268,14 +268,14 @@ This package is part of the KDE games module.")
 (define-public kshisen
   (package
     (name "kshisen")
-    (version "24.12.3")
+    (version "25.04.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/kshisen-" version ".tar.xz"))
        (sha256
-        (base32 "042a1nx1bvhk13jb6ijb2g9cs0mi9p79pgi439mkf6yfzq8hrcxa"))))
+        (base32 "12rw0wqzr8z2khy6yim6khlfgyxrhx5mx5f41xq8hmsd4125z0sz"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules
@@ -288,6 +288,7 @@ This package is part of the KDE games module.")
            kcrash
            kdbusaddons
            ki18n
+           kiconthemes
            kxmlgui
            libkdegames
            libkmahjongg
