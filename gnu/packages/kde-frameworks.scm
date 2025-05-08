@@ -3804,6 +3804,11 @@ window does not need focus for them to be activated.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'enable-testing
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("if \\(BUILD_TESTING\\)" all)
+                      (string-append all "\n    enable_testing()")))))
                (add-before 'check 'check-setup
                  (lambda* (#:key inputs #:allow-other-keys)
                    (setenv "HOME" (getcwd))
