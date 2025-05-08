@@ -634,7 +634,7 @@ and enhance them.")
     (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"
                          "riscv64-linux"))
     (properties
-     '((release-monitoring-url . "https://github.com/darktable-org/darktable/releases")))
+     '((release-monitoring-url . "https://www.darktable.org/install/")))
     (license (list license:gpl3+        ;Darktable itself
                    license:lgpl2.1+)))) ;Rawspeed library
 
