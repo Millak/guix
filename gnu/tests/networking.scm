@@ -27,6 +27,7 @@
   #:use-module (gnu system vm)
   #:use-module (gnu services)
   #:use-module (gnu services base)
+  #:use-module (gnu services dns)
   #:use-module (gnu services networking)
   #:use-module (guix gexp)
   #:use-module (guix store)
@@ -46,6 +47,7 @@
             %test-openvswitch
             %test-dhcpd
             %test-dhcpcd
+            %test-dnsmasq
             %test-tor
             %test-iptables
             %test-ipfs))
@@ -674,6 +676,102 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
    (name "dhcpd")
    (description "Test a running DHCP daemon configuration.")
    (value (run-dhcpd-test))))
+
+
+
+;;;
+;;; dnsmasq tests.
+;;;
+
+
+(define dnsmasq-os-configuration
+  (dnsmasq-configuration))
+
+(define %dnsmasq-os
+  (simple-operating-system
+   (service dhcp-client-service-type)
+   (service dnsmasq-service-type
+            (dnsmasq-configuration
+             (extra-options
+              (list "--log-facility=/tmp/dnsmasq.log"))))))
+
+
+(define (run-dnsmasq-test)
+  (define os
+    (marionette-operating-system %dnsmasq-os
+                                 #:imported-modules '((gnu services herd))))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (srfi srfi-64))
+
+          (define marionette
+            (make-marionette (list #$(virtual-machine os))))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "dnsmasq")
+
+          (test-assert "dnsmasq is alive"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (wait-for-service 'dnsmasq))
+             marionette))
+
+          (test-assert "pid file exists"
+            (wait-for-file
+             '#$(dnsmasq-configuration-pid-file dnsmasq-os-configuration)
+             marionette))
+
+          (test-assert "send SIGHUP"
+            (positive?
+             (marionette-eval
+              '(begin
+                 (use-modules (ice-9 rdelim))
+                 (system* "sync")
+                 (let* ((port (open-input-file "/tmp/dnsmasq.log")))
+                   (seek port 0 SEEK_END)
+                   (system* "herd" "reload" "dnsmasq")
+                   (system* "sync")
+                   (let ((line (read-line port)))
+                     (close-port port)
+                     (string-contains line "read /etc/hosts"))))
+              marionette)))
+
+          (test-assert "send SIGUSR1"
+            (positive?
+             (marionette-eval
+              '(begin
+                 (use-modules (ice-9 rdelim))
+                 (system* "sync")
+                 (let* ((port (open-input-file "/tmp/dnsmasq.log")))
+                   (seek port 0 SEEK_END)
+                   (system* "herd" "stats" "dnsmasq")
+                   (system* "sync")
+                   (let ((line (read-line port)))
+                     (close-port port)
+                     (string-contains-ci line "time"))))
+              marionette)))
+
+          (test-assert "dnsmasq is alive"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (wait-for-service 'dnsmasq))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "dnsmasq-test" test))
+
+(define %test-dnsmasq
+  (system-test
+   (name "dnsmasq")
+   (description "Test a running dnsmasq daemon configuration.")
+   (value (run-dnsmasq-test))))
+
 
 
 ;;;

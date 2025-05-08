@@ -36111,6 +36111,61 @@ This is the type of the dnsmasq service, whose value should be a
            (no-resolv? #t)
            (servers '("192.168.1.1"))))
 @end lisp
+
+@code{dnsmasq-service-type} provides two actions:
+
+@table @code
+@item reload
+Send a @code{SIGHUP} signal to @command{dnsmasq} to clear cache and
+reload hosts files which triggers the following actions:
+
+@itemize @bullet
+@item
+Clear the DNS cache
+@item
+Reload @file{/etc/hosts} and @file{/etc/ethers}
+@item
+Reload files specified by @option{--dhcp-hostsfile}, @option{--dhcp-hostsdir},
+@option{--dhcp-optsfile}, @option{--dhcp-optsdir}, @option{--addn-hosts},
+or @option{--hostsdir}
+@item
+Execute DHCP lease change scripts for all existing leases
+@item
+Reread @file{/etc/resolv.conf} (only if @option{--no-poll} is
+configured).
+@end itemize
+
+@quotation Note
+The @code{SIGHUP} signal does not trigger a reload of the main
+configuration file.
+@end quotation
+
+Example usage:
+@example
+herd reload dnsmasq
+@end example
+
+@item stats
+When @command{dnsmasq} receives a @code{SIGUSR1} signal, it writes
+statistics to the system log including:
+
+@itemize @bullet
+@item
+Cache size and number of evicted entries
+@item
+Cache hits, misses, and authoritative queries answered
+@item
+For each upstream server: queries sent and errors received
+@item
+TCP connection fork statistics.
+@end itemize
+
+Example usage:
+@example
+herd stats dnsmasq
+@end example
+@end table
+
 @end defvar
 
 @deftp {Data Type} dnsmasq-configuration

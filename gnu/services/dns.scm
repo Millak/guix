@@ -874,6 +874,8 @@ cache.size = 100 * MB
      (provision (or provision shepherd-provision))
      (requirement shepherd-requirement)
      (documentation "Run the dnsmasq DNS server.")
+     (actions (list (dnsmasq-service-reload-action config)
+                    (dnsmasq-service-stats-action config)))
      (start #~(make-forkexec-constructor
                (list
                 #$(file-append package "/sbin/dnsmasq")
@@ -964,6 +966,26 @@ cache.size = 100 * MB
       (use-modules (guix build utils))
       ;; create directory to store dnsmasq lease file
       (mkdir-p "/var/lib/misc")))
+
+(define (dnsmasq-service-reload-action config)
+  (match-record config <dnsmasq-configuration> ()
+    (shepherd-action
+     (name 'reload)
+     (documentation "Send a @code{SIGHUP} signal to @command{dnsmasq} to clear
+cache and reload hosts files.")
+     (procedure #~(lambda (running)
+                    (let ((pid (process-id running)))
+                      (kill pid SIGHUP)))))))
+
+(define (dnsmasq-service-stats-action config)
+  (match-record config <dnsmasq-configuration> ()
+    (shepherd-action
+     (name 'stats)
+     (documentation "Send a @code{SIGUSR1} to write statistics to the system
+log.")
+     (procedure #~(lambda (running)
+                    (let ((pid (process-id running)))
+                      (kill pid SIGUSR1)))))))
 
 (define dnsmasq-service-type
   (service-type
