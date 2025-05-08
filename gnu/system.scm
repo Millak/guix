@@ -11,7 +11,7 @@
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <jannek@gnu.org>
-;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
@@ -930,7 +930,8 @@ of PROVENANCE-SERVICE-TYPE to its services."
 
 (define %base-packages-artwork
   ;; Default set of artwork packages.
-  (list guix-icons))
+  (list guix-backgrounds
+        guix-icons))
 
 (define %base-packages-utils
   ;; Default set of  utilities packages.
