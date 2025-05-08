@@ -180,6 +180,37 @@ scientific codes by steering the implementation towards usability and
 maintainability.")
     (license license:bsd-3)))
 
+(define-public python-adjusttext
+  (package
+    (name "python-adjusttext")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "adjusttext" version))
+       (sha256
+        (base32 "18dw5kqxan4m8kvw3w1lm0p69gj95i7rcgmcfs485x1s8pa5rdsa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #false)) ;there are none
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/Phlya/adjustText")
+    (synopsis "Adjust text position in matplotlib plots to minimize overlaps")
+    (description
+     "Often when we want to label multiple points on a graph the text will
+start heavily overlapping with both other labels and data points.  This can be
+a major problem requiring manual solution.  However this can be largely
+automated by smart placing of the labels (difficult) or iterative adjustment
+of their positions to minimize overlaps (relatively easy).  This library
+implements the latter option to help with matplotlib graphs.")
+    (license license:expat)))
+
 (define-public python-algopy
   (package
     (name "python-algopy")
