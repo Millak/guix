@@ -88,21 +88,22 @@ compression library.")
 (define-public perl-compress-raw-zlib
   (package
     (name "perl-compress-raw-zlib")
-    (version "2.204")
+    (version "2.213")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/P/PM/PMQS/"
                            "Compress-Raw-Zlib-" version ".tar.gz"))
        (sha256
-        (base32 "0gyifrl5r7m1cqld62qpsg6cakvqa5csg5mhr1wyvnzsgqlz8qgi"))))
+        (base32
+          "0idg0shi0rz4z2cdrm6x8f8zqh9zm9fx0kd7frw7yfisrfcircjn"))))
     (build-system perl-build-system)
     (inputs
      (list zlib))
     (home-page "https://metacpan.org/release/Compress-Raw-Zlib")
     (synopsis "Low-level interface to zlib compression library")
-    (description "This module provides a Perl interface to the zlib
-compression library.")
+    (description "The @code{Compress::Raw::Zlib} module provides a Perl
+interface to the zlib compression library.")
     (license license:perl-license)))
 
 (define-public perl-io-compress
