@@ -773,8 +773,8 @@ to an FPGA.")
     (license license:asl2.0)))
 
 (define-public python-hdlmake
-  (let ((commit "3cb248fdad601c579b59fd7c194402871209bc54")
-        (revision "0"))
+  (let ((commit "9338e3e7a8784e63d16496a3fa8234d9e5aa7621")
+        (revision "1"))
     (package
       (name "python-hdlmake")
       (version (git-version "3.3" revision commit))
@@ -782,17 +782,19 @@ to an FPGA.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://ohwr.org/project/hdl-make")
+               (url "https://gitlab.com/ohwr/project/hdl-make/")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "08ivnhxyp44agmifqb4pjbxj23p43qqcg73s2y2z1hqk2six3fdx"))))
+          (base32 "13d0zvpch0k758r2c2vq3vhd9nbydy01jnv2ddfvb6d3xpb4wzrj"))))
       (build-system pyproject-build-system)
-      (arguments
-       `(#:tests? #f))
-      (native-inputs (list python-setuptools python-wheel))
+      (arguments (list #:phases #~(modify-phases %standard-phases
+                                    (add-before 'check 'chdir
+                                      (lambda _
+                                        (chdir "testsuite"))))))
+      (native-inputs (list python-pytest python-setuptools python-wheel))
       (propagated-inputs (list python-six))
-      (home-page "https://ohwr.org/projects/hdl-make")
+      (home-page "https://gitlab.com/ohwr/project/hdl-make/")
       (synopsis "Generate multi-purpose makefiles for HDL projects")
       (description
        "Hdlmake helps manage and share @acronym{HDL, hardware description
