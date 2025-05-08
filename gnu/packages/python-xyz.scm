@@ -1746,25 +1746,27 @@ transformation of the plane.")
 
 (define-public python-argopt
   (package
-   (name "python-argopt")
-   (version "0.7.0")
-   (source (origin
-            (method url-fetch)
-            (uri (pypi-uri "argopt" version))
-            (sha256
-             (base32
-              "0ybs7kkp0cpl8zn1lvf7481xhssg1bbhh5la2cjzdm5yibashyxa"))))
-   (build-system python-build-system)
-   (native-inputs
-    (list python-coverage python-nose python-setuptools ; Won't build without this.
-          python-setuptools-scm))
-   (propagated-inputs
-    (list python-toml python-flake8))
-   (home-page "https://github.com/casperdcl/argopt")
-   (synopsis "Generate a command-line interface from a docstring")
-   (description "This package provides tools to define a command line interface
+    (name "python-argopt")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "argopt" version))
+       (sha256
+        (base32 "03kpzdz8ib3szq8dpbr63jv0za4rpwal9iwpr3xhyqpzyiwhcy19"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-timeout
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/casperdcl/argopt")
+    (synopsis "Generate a command-line interface from a docstring")
+    (description
+     "This package provides tools to define a command line interface
 from a docstring rather than the other way around.")
-   (license license:mpl2.0)))
+    (license license:mpl2.0)))
 
 (define-public python-array-api-compat
   (package
