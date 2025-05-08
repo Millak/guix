@@ -91,6 +91,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
   #:use-module (gnu packages javascript)
+  #:use-module (gnu packages jupyter)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages machine-learning)
@@ -33578,6 +33579,7 @@ Jupyter front-ends (e.g. Jupyter Notebook).  It is designed to be used from a
 running IRkernel session.")
     (license license:expat)))
 
+;; XXX: Maybe move to jupyter module.
 (define-public r-irkernel
   (package
     (name "r-irkernel")

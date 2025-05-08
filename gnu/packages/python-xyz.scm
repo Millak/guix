@@ -19462,42 +19462,6 @@ Jupyter kernels such as IJulia and IRKernel.")
 popular online obfuscators.")
     (license license:expat)))
 
-(define-public jupyter
-  (package
-    (name "jupyter")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "jupyter" version))
-       (sha256
-        (base32
-         "0pwf3pminkzyzgx5kcplvvbvwrrzd3baa7lmh96f647k30rlpp6r"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;there are none.
-      #:phases
-      ;; Because python-jsonschema has an old python-webcolor.  Remove this
-      ;; when python-team branch is merged.
-      '(modify-phases %standard-phases
-         (delete 'sanity-check))))
-    (propagated-inputs
-     (list python-ipykernel
-           python-ipywidgets
-           python-jupyter-console
-           python-nbconvert
-           python-notebook
-           python-qtconsole))
-    (home-page "https://jupyter.org")
-    (synopsis "Web application for interactive documents")
-    (description
-     "The Jupyter Notebook is a web application that allows you to create and
-share documents that contain live code, equations, visualizations and
-explanatory text.  Uses include: data cleaning and transformation, numerical
-simulation, statistical modeling, machine learning and much more.")
-    (license license:bsd-3)))
-
 (define-public python-chardet
   (package
     (name "python-chardet")

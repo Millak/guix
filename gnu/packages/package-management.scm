@@ -85,6 +85,7 @@
   #:use-module (gnu packages hardware)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages jupyter)
   #:use-module (gnu packages less)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
@@ -1772,6 +1773,7 @@ outputs of those builds.
 
 This package just includes the agent component.")))
 
+;; XXX: Maybe move to jupyter module.
 (define-public guix-jupyter
   (package
     (name "guix-jupyter")

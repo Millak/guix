@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2022 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
@@ -60,6 +61,42 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xorg))
+
+(define-public jupyter
+  (package
+    (name "jupyter")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyter" version))
+       (sha256
+        (base32
+         "0pwf3pminkzyzgx5kcplvvbvwrrzd3baa7lmh96f647k30rlpp6r"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;there are none.
+      #:phases
+      ;; Because python-jsonschema has an old python-webcolor.  Remove this
+      ;; when python-team branch is merged.
+      '(modify-phases %standard-phases
+         (delete 'sanity-check))))
+    (propagated-inputs
+     (list python-ipykernel
+           python-ipywidgets
+           python-jupyter-console
+           python-nbconvert
+           python-notebook
+           python-qtconsole))
+    (home-page "https://jupyter.org")
+    (synopsis "Web application for interactive documents")
+    (description
+     "The Jupyter Notebook is a web application that allows you to create and
+share documents that contain live code, equations, visualizations and
+explanatory text.  Uses include: data cleaning and transformation, numerical
+simulation, statistical modeling, machine learning and much more.")
+    (license license:bsd-3)))
 
 (define-public python-nbclassic
   (package
