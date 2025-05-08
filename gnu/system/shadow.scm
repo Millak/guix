@@ -147,8 +147,11 @@
 
 (define %default-bashrc
   (plain-file "bashrc" "\
-# Bash initialization for interactive non-login shells and
-# for remote shells (info \"(bash) Bash Startup Files\").
+# Bash-specific initialization, including for non-login and remote
+# shells (info \"(bash) Bash Startup Files\").
+
+# Provide a default prompt.
+PS1='\\u@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '
 
 # Export 'SHELL' to child processes.  Programs such as 'screen'
 # honor it and otherwise use /bin/sh.
@@ -165,10 +168,11 @@ then
     return
 fi
 
-alias ls='ls -p --color=auto'
-alias ll='ls -l'
-alias grep='grep --color=auto'
-alias ip='ip -color=auto'\n"))
+for i in /etc/bashrc.d/*.sh; do
+    [[ -r $i ]] && source \"$i\"
+done
+unset i
+"))
 
 (define %default-bash-profile
   (plain-file "bash_profile" "\
@@ -289,12 +293,10 @@ home-config"))
 'useradd' in the home directory of newly created user accounts."
 
   (let ((profile   %default-bash-profile)
-        (bashrc    %default-bashrc)
         (zprofile  %default-zprofile)
         (xdefaults %default-xdefaults)
         (gdbinit   %default-gdbinit))
     `((".bash_profile" ,profile)
-      (".bashrc" ,bashrc)
       ;; Zsh sources ~/.zprofile before ~/.zshrc, and it sources ~/.zlogin
       ;; after ~/.zshrc.  To avoid interfering with any customizations a user
       ;; may have made in their ~/.zshrc, put this in .zprofile, not .zlogin.

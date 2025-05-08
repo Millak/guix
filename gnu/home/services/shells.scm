@@ -20,6 +20,7 @@
 
 (define-module (gnu home services shells)
   #:use-module (gnu services configuration)
+  #:use-module ((gnu services) #:select (%default-bash-aliases))
   #:autoload   (gnu system shadow) (%default-bashrc %default-zprofile)
   #:use-module (gnu home services utils)
   #:use-module (gnu home services)
@@ -333,9 +334,12 @@ another process for example)."))
    (package bash)
    "The Bash package to use.")
   (guix-defaults?
+   ;; TODO: Set to #f when the target system is determined to be Guix System.
    (boolean #t)
-   "Add sane defaults like reading @file{/etc/bashrc} and coloring the output of
-@command{ls} to the top of the @file{.bashrc} file.")
+   "Add sane defaults like setting @env{PS1}, @env{SHELL}, and ensuring
+@file{/etc/profile} is sourced for non-interactive SSH shells.  If you use
+Guix System, is it safe to set this to @code{#f}, as in this case this is
+already taken care of by the globally installed @file{/etc/bashrc}.")
   (environment-variables
    (alist '())
    "Association list of environment variables to set for the Bash session.  The
@@ -344,7 +348,7 @@ here (@pxref{Essential Home Services}).  The contents of this field will be
 added after the contents of the @code{bash-profile} field."
    (serializer serialize-posix-env-vars))
   (aliases
-   (alist '())
+   (alist %default-bash-aliases)
    "Association list of aliases to set for the Bash session.  The aliases will be
 defined after the contents of the @code{bashrc} field has been put in the
 @file{.bashrc} file.  The alias will automatically be quoted, so something line
@@ -423,10 +427,6 @@ if [ -f ~/.bashrc ]; then source ~/.bashrc; fi
               'bashrc
               (if (home-bash-configuration-guix-defaults? config)
                   (list (plain-file-content %default-bashrc) "\n"
-                        ;; The host distro might provide a bad 'PS1'
-                        ;; default--e.g., not taking $GUIX_ENVIRONMENT into
-                        ;; account.  Provide a good default here when asked.
-                        "PS1='\\u@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '\n"
                         (serialize-field 'aliases))
                   (list (serialize-field 'aliases))))
              (file-if-not-empty 'bash-logout)))))

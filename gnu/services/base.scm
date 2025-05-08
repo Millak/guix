@@ -4138,7 +4138,10 @@ login manager daemon.")
         (service mingetty-service-type (mingetty-configuration
                                          (tty "tty5")))
         (service mingetty-service-type (mingetty-configuration
-                                         (tty "tty6")))
+                                        (tty "tty6")))
+
+        ;; Extra Bash configuration including Bash completion and aliases.
+        (service etc-bashrc-d-service-type)
 
         (service static-networking-service-type
                  (list %loopback-static-networking))

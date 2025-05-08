@@ -125,6 +125,7 @@
             etc-profile-d-service-type
             etc-bashrc-d-service-type
             %default-etc-bashrc-d-files
+            %default-bash-aliases
             etc-directory
             privileged-program-service-type
             setuid-program-service-type ; deprecated
@@ -993,9 +994,27 @@ log in.")))
 (define files->bashrc-d-directory
   (make-files->etc-directory "bashrc.d"))
 
+;;; Use an alist to be compatible with <home-bash-configuration>.
+(define %default-bash-aliases
+  '(("ls" . "ls -p --color=auto")
+    ("ll" . "ls -l")
+    ("grep" . "grep --color=auto")
+    ("ip" . "ip -color=auto")))
+
+;;; ... but avoid the full blown bash-serialize-aliases, which depends on
+;;; other 'guix home' definitions such as `shell-double-quote'.
+(define %default-bashrc-d-aliases
+  (plain-file "aliases.sh"
+              (string-join
+               (map (match-lambda
+                      ((alias . value)
+                       (format #f "~a=~s~%" alias value)))
+                    %default-bash-aliases)
+               "")))
+
 (define %default-etc-bashrc-d-files
-  (list (file-append bash-completion
-                     "/etc/profile.d/bash_completion.sh")))
+  (list (file-append bash-completion "/etc/profile.d/bash_completion.sh")
+        %default-bashrc-d-aliases))
 
 (define etc-bashrc-d-service-type
   (service-type

@@ -187,6 +187,8 @@ test \"$PROFILE_D_OK\" = yes")
                                             "\
 . /etc/bashrc
 set -e -x
+test -f /etc/bashrc.d/bash_completion.sh
+test -f /etc/bashrc.d/aliases.sh
 test -f /etc/bashrc.d/test_bashrc_d.sh
 test \"$BASHRC_D_OK\" = yes"))
                     marionette)))
@@ -606,14 +608,15 @@ functionality tests, using the given KERNEL.")
                                            (plain-file
                                             "invalid-name"
                                             "not a POSIX script -- ignore me")))
-                                    (service
+                                    (simple-service
+                                     'extra-bashrc-d-files
                                      etc-bashrc-d-service-type
-                                     (list (plain-file
-                                            "test_bashrc_d.sh"
-                                            "export BASHRC_D_OK=yes\n")
-                                           (plain-file
-                                            "invalid-name"
-                                            "not a Bash script -- ignore me")))
+                                     (list  (plain-file
+                                             "test_bashrc_d.sh"
+                                             "export BASHRC_D_OK=yes\n")
+                                            (plain-file
+                                             "invalid-name"
+                                             "not a Bash script -- ignore me")))
                                     %base-services)))
                  #:imported-modules '((gnu services herd)
                                       (guix combinators))))

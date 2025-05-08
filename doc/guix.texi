@@ -47688,8 +47688,9 @@ not end with @file{.sh} are @emph{not} added to @file{/etc/profile.d/}
 and are silently dropped.  The default value is made available via the
 @var{%default-etc-bashrc-d-files} variable for users to extended.
 Package objects can also be provided directly to have their
-@file{etc/bashrc.d/*.sh} prefixed files added.  An example usage may
-look like:
+@file{etc/bashrc.d/*.sh} prefixed files added.  Since the service is
+part @code{%base-services}, it can be extended via @code{simple-service}
+like so:
 
 @example
 (use-package-modules gnome)     ;for the `vte' package
@@ -49322,8 +49323,11 @@ Available @code{home-bash-configuration} fields are:
 The Bash package to use.
 
 @item @code{guix-defaults?} (default: @code{#t}) (type: boolean)
-Add sane defaults like reading @file{/etc/bashrc} and coloring the output of
-@command{ls} to the top of the @file{.bashrc} file.
+Add sane defaults like setting @env{PS1}, @env{SHELL}, and ensuring
+@file{/etc/profile} is sourced for non-interactive SSH shells.  If you
+use Guix System, is it safe to set this to @code{#f}, as in this case
+this is already taken care of by the globally installed
+@file{/etc/bashrc}.
 
 @item @code{environment-variables} (default: @code{'()}) (type: alist)
 Association list of environment variables to set for the Bash session.  The
@@ -49331,7 +49335,7 @@ rules for the @code{home-environment-variables-service-type} apply
 here (@pxref{Essential Home Services}).  The contents of this field will be
 added after the contents of the @code{bash-profile} field.
 
-@item @code{aliases} (default: @code{'()}) (type: alist)
+@item @code{aliases} (default: @code{%default-bash-aliases}) (type: alist)
 Association list of aliases to set for the Bash session.  The aliases
 will be defined after the contents of the @code{bashrc} field has been
 put in the @file{.bashrc} file.  The alias will automatically be quoted,

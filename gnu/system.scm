@@ -1141,23 +1141,13 @@ for i in /etc/profile.d/*.sh; do
 done
 unset i
 
-if [ -n \"$BASH_VERSION\" -a -f /etc/bashrc ]
-then
-  # Load Bash-specific initialization code.
-  . /etc/bashrc
+if [ -n \"$BASH_VERSION\" -a -f /etc/bashrc ]; then
+  # Load Bash-specific initialization code, taking care to not source
+  # /etc/bashrc when invoked from a non-interactive SSH shell,
+  # to avoid recursion (/etc/bashrc also sources /etc/profile
+  # in the non-login, non-interactive SSH case).
+  [[ $- != *i* && -n $SSH_CLIENT ]] || source /etc/bashrc
 fi
-"))
-
-        (bashrc    (plain-file "bashrc" "\
-# Bash-specific initialization.
-
-# Provide a default prompt.  The user's ~/.bashrc can override it.
-PS1='\\u@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '
-
-for i in /etc/bashrc.d/*.sh; do
-    [[ -r $i ]] && source \"$i\"
-done
-unset i
 ")))
     (service etc-service-type
      `(("os-release" ,os-release)
@@ -1168,7 +1158,7 @@ unset i
        ("issue" ,issue)
        ,@(if nsswitch `(("nsswitch.conf" ,nsswitch)) '())
        ("profile" ,profile)
-       ("bashrc" ,bashrc)
+       ("bashrc" ,%default-bashrc)
        ;; Write the operating-system-host-name to /etc/hostname to prevent
        ;; NetworkManager from changing the system's hostname when connecting
        ;; to certain networks.  Some discussion at
