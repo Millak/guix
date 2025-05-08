@@ -33020,36 +33020,6 @@ content models.")
     (home-page "https://geopython.github.io/OWSLib/")
     (license license:bsd-3)))
 
-(define-public python-docusign-esign
-  (package
-    (name "python-docusign-esign")
-    (version "5.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "docusign-esign" version))
-       (sha256
-        (base32 "18n9szjxbmsccz4vlvsl4xa73jn0y16l0c344m83gil25v2amn69"))))
-    (build-system pyproject-build-system)
-    ;; Testing requires undocumented setup changes with network access to
-    ;; <demo.docusign.net>, and so testing is disabled here.
-    (arguments `(#:tests? #f))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-certifi
-           python-dateutil
-           python-urllib3
-           python-pyjwt
-           python-cryptography))
-    (home-page "https://developers.docusign.com/")
-    (synopsis "DocuSign Python Client")
-    (description
-     "The Official DocuSign Python Client Library used to interact with the
-eSign REST API.  Send, sign, and approve documents using this client.")
-    (license license:expat)))
-
 (define-public python-xattr
   (package
     (name "python-xattr")

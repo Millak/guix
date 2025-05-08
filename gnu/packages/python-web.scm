@@ -32,6 +32,7 @@
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
+;;; Copyright © 2020 Josh Marshall <josh.marshall@jax.org>
 ;;; Copyright © 2020 Evan Straw <evan.straw99@gmail.com>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Holger Peters <holger.peters@posteo.de>
@@ -320,6 +321,36 @@ server process.")
     (synopsis "Pypi.org caching server")
     (description "This package implements a reliable private and pypi.org
 caching server.")
+    (license license:expat)))
+
+(define-public python-docusign-esign
+  (package
+    (name "python-docusign-esign")
+    (version "5.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "docusign-esign" version))
+       (sha256
+        (base32 "18n9szjxbmsccz4vlvsl4xa73jn0y16l0c344m83gil25v2amn69"))))
+    (build-system pyproject-build-system)
+    ;; Testing requires undocumented setup changes with network access to
+    ;; <demo.docusign.net>, and so testing is disabled here.
+    (arguments `(#:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-certifi
+           python-dateutil
+           python-urllib3
+           python-pyjwt
+           python-cryptography))
+    (home-page "https://developers.docusign.com/")
+    (synopsis "DocuSign Python Client")
+    (description
+     "The Official DocuSign Python Client Library used to interact with the
+eSign REST API.  Send, sign, and approve documents using this client.")
     (license license:expat)))
 
 (define-public python-domain-connect
