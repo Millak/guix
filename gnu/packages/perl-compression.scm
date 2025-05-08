@@ -129,6 +129,27 @@ interface to the zlib compression library.")
 reading and writing compressed data created with the zlib and bzip2 libraries.")
     (license license:perl-license)))
 
+(define-public perl-io-zlib
+  (package
+    (name "perl-io-zlib")
+    (version "1.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/T/TO/TOMHUGHES/"
+                           "IO-Zlib-" version ".tar.gz"))
+       (sha256
+        (base32
+          "0cpzxcr5ir3iqw5k8gq39as8kxy5hds3w6k8ckykzk1p5rwqgn3s"))))
+    (build-system perl-build-system)
+    (propagated-inputs
+     (list perl-compress-raw-zlib))
+    (home-page "https://metacpan.org/dist/IO-Zlib")
+    (synopsis "Perl IO style interface to @code{Compress:Zlib}")
+    (description "The @code{IO::Zlib} module is a Perl IO style interface
+to @code{Compress:Zlib} that simplifies reading and writing compressed data.")
+    (license license:perl-license)))
+
 (define-public perl-perlio-gzip
   (package
     (name "perl-perlio-gzip")
