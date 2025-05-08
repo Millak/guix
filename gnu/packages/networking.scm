@@ -310,7 +310,7 @@ protocols.")
               (invoke "make" "-C" "test" "speedtest"
                       (string-append "CC=" #$(cc-for-target))))))
       #:test-target "test"))
-    (home-page "https://www.librecast.net/lcrq.html")
+    (home-page "https://librecast.net/lcrq.html")
     (synopsis "Librecast RaptorQ library")
     (description
      "C library implementation of RaptorQ Forward Error Correction for
