@@ -1105,14 +1105,14 @@ This package is part of the KDE games module.")
 (define-public kigo
   (package
     (name "kigo")
-    (version "24.12.3")
+    (version "25.04.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kigo-" version ".tar.xz"))
        (sha256
-        (base32 "0nwkslvww3ic1ki86shpmf03ppdid612qqi68r7cixmfdcbykx8i"))))
+        (base32 "1gj9srz5rakkb2hjkd8awg2ra9acnizk2v4a4ldv11imxmx2fx1q"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -1135,6 +1135,7 @@ This package is part of the KDE games module.")
            kcrash
            kdbusaddons
            ki18n
+           kiconthemes
            kio
            knewstuff
            ktextwidgets
