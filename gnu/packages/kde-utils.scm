@@ -529,14 +529,14 @@ drive, USB stick, etc
 (define-public kcalc
   (package
     (name "kcalc")
-    (version "24.12.3")
+    (version "25.04.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kcalc-" version ".tar.xz"))
               (sha256
                (base32
-                "0lcp6ppvifa92s8dcp9hmxg1y1769bh35ysm5amrpvkpa5kbm8xv"))))
+                "07krdvryflwzli2rhzz31638fml7cp209hws1gi9kxb2hnhlwim3"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules kdoctools))
@@ -549,6 +549,7 @@ drive, USB stick, etc
                   ki18n
                   knotifications
                   kxmlgui
+                  mpc
                   mpfr))
     (home-page "https://apps.kde.org/kcalc/")
     (synopsis "Scientific calculator")
