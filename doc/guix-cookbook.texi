@@ -4018,8 +4018,8 @@ guests connected to this virtual network switch:
 (service dnsmasq-service-type
          (dnsmasq-configuration
           ;; You can have multiple instances of `dnsmasq-service-type` as long
-          ;; as each one has a different provision.
-          (provision '(dnsmasq-virbr0))
+          ;; as each one has a different shepherd-provision.
+          (shepherd-provision '(dnsmasq-virbr0))
           (extra-options (list
                           ;; Only bind to the virtual bridge. This
                           ;; avoids conflicts with other running

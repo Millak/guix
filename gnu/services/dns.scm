@@ -27,6 +27,7 @@
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages dns)
+  #:use-module (guix deprecation)
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (guix gexp)
@@ -742,8 +743,13 @@ cache.size = 100 * MB
   dnsmasq-configuration?
   (package          dnsmasq-configuration-package
                     (default dnsmasq))  ;file-like
-  (provision        dnsmasq-provision
-                    (default '(dnsmasq)))
+  (provision        dnsmasq-configuration-provision ; deprecated
+                    (default #f)
+                    (sanitize warn-deprecated-dnsmasq-configuration-provision))
+  (shepherd-provision           dnsmasq-configuration-shepherd-provision
+                                (default '(dnsmasq)))
+  (shepherd-requirement         dnsmasq-configuration-shepherd-requirement
+                                (default '(user-processes networking)))
   (no-hosts?        dnsmasq-configuration-no-hosts?
                     (default #f))       ;boolean
   (port             dnsmasq-configuration-port
@@ -799,9 +805,19 @@ cache.size = 100 * MB
   (tftp-unique-root dnsmasq-tftp-unique-root
                     (default #f)))      ;"" or "ip" or "mac"
 
+(define (warn-deprecated-dnsmasq-configuration-provision value)
+  (when (pair? value)
+    (warn-about-deprecation
+     'provision #f
+     #:replacement 'shepherd-provision))
+  value)
+
 (define (dnsmasq-shepherd-service config)
   (match-record config <dnsmasq-configuration>
     (package
+     provision
+     shepherd-provision
+     shepherd-requirement
      no-hosts?
      port local-service? listen-addresses
      resolv-file no-resolv?
@@ -815,8 +831,8 @@ cache.size = 100 * MB
      tftp-lowercase? tftp-port-range
      tftp-root tftp-unique-root extra-options)
     (shepherd-service
-     (provision (dnsmasq-provision config))
-     (requirement '(user-processes networking))
+     (provision (or provision shepherd-provision))
+     (requirement shepherd-requirement)
      (documentation "Run the dnsmasq DNS server.")
      (start #~(make-forkexec-constructor
                (list

@@ -36120,9 +36120,14 @@ Data type representing the configuration of dnsmasq.
 @item @code{package} (default: @var{dnsmasq})
 Package object of the dnsmasq server.
 
-@item @code{provision} (default: @code{'(dnsmasq)})
-A list of symbols for the Shepherd service corresponding to this dnsmasq
-configuration.
+@item @code{shepherd-provision} (default: @code{'(dnsmasq)})
+@itemx @code{shepherd-requirement} (default: @code{'(user-processes networking)})
+This option can be used to provide a list of Shepherd service names
+(symbols) provided by this service.  You might want to change the default
+value if you intend to run several @command{dnsmasq} instances.
+
+Likewise, @code{shepherd-requirement} is a list of Shepherd service names
+(symbols) that this service will depend on.
 
 @item @code{no-hosts?} (default: @code{#f})
 When true, don't read the hostnames in /etc/hosts.
