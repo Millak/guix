@@ -354,14 +354,14 @@ your computer.")
 (define-public kamera
   (package
     (name "kamera")
-    (version "24.12.3")
+    (version "25.04.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kamera-" version ".tar.xz"))
               (sha256
                (base32
-                "1jvd5lhjpfl9zs53qg69440awqxxhzdkjni0pqk80y953kfsghx0"))))
+                "1448kiykab4lm2xkimapj11m7iqj6x7y2ly5mrw3c1092p56kvs2"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
