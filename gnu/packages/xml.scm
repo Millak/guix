@@ -128,8 +128,7 @@ the entire document.")
 (define-public expat
   (package
     (name "expat")
-    (version "2.5.0")
-    (replacement expat/fixed)
+    (version "2.7.1")
     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
               (origin
                 (method url-fetch)
@@ -141,7 +140,7 @@ the entire document.")
                             "/expat-" version ".tar.xz")))
                 (sha256
                  (base32
-                  "1gnwihpfz4x18rwd6cbrdggmfqjzwsdfh1gpmc0ph21c4gq2097g")))))
+                  "0c3w446jrrnss3ccgx9z590lpwbpxiqdbxv2a0p036cg9da54i9m")))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -164,17 +163,6 @@ the entire document.")
 stream-oriented parser in which an application registers handlers for
 things the parser might find in the XML document (like start tags).")
     (license license:expat)))
-
-(define-public expat/fixed
- (hidden-package
-  (package
-    (inherit expat)
-    (replacement expat/fixed)
-    (source (origin
-              (inherit (package-source expat))
-              (patches (search-patches "expat-CVE-2024-45490.patch"
-                                       "expat-CVE-2024-45491.patch"
-                                       "expat-CVE-2024-45492.patch")))))))
 
 (define-public libebml
   (package
