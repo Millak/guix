@@ -38,6 +38,14 @@
 (channel-news
  (version 0)
 
+ (entry (commit "6e8ffdf3c5afac265e540027c2332573b25461ae")
+        (title
+         (en "Linux-libre 6.13 removed from Guix"))
+        (body
+         (en "The 6.13 linux-libre kernel series has been removed from GNU Guix,
+because it is no longer supported upstream.  The 6.14 kernel series is now the
+default.")))
+
  (entry (commit "ce363c1dc7bd63a74dcf7788d340819f6d5db89f")
         (title
          (en "@command{guix shell --container} provides a read-only root by
