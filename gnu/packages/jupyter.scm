@@ -1,10 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2019, 2022 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2019, 2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2021-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
+;;; Copyright © 2021-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +31,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
@@ -47,6 +49,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages tls)
@@ -271,6 +274,34 @@ tests kernels for successful code execution and conformance with the
 @uref{https://jupyter-client.readthedocs.io/en/latest/messaging.html, Jupyter
 Messaging Protocol}.")
     (license license:bsd-3)))
+
+(define-public python-pari-jupyter
+  (package
+    (name "python-pari-jupyter")
+    (version "1.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pari-jupyter" version))
+       (sha256
+        (base32 "178v8y3sj3lh3y8i7krbmjqvmv7549bg535fqq1q6axr0lfjknbw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; there are no proper tests
+    (native-inputs
+     (list python-cython
+           python-jupyter-kernel-test
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list pari-gp
+           readline))
+    (propagated-inputs
+     (list python-ipykernel))
+    (home-page "https://github.com/sagemath/pari-jupyter")
+    (synopsis "Jupyter kernel for PARI/GP")
+    (description "The package provides a PARI/GP kernel for Jupyter.")
+    (license license:gpl3+)))
 
 (define-public python-pytest-jupyter
   (package

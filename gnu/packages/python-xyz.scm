@@ -14253,34 +14253,6 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
          (modify-inputs (package-propagated-inputs parent)
            (replace "python-jupyter-client" python-jupyter-client-bootstrap)))))))
 
-(define-public python-pari-jupyter
-  (package
-    (name "python-pari-jupyter")
-    (version "1.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pari-jupyter" version))
-       (sha256
-        (base32 "178v8y3sj3lh3y8i7krbmjqvmv7549bg535fqq1q6axr0lfjknbw"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ; there are no proper tests
-    (native-inputs
-     (list python-cython
-           python-jupyter-kernel-test
-           python-setuptools
-           python-wheel))
-    (inputs
-     (list pari-gp
-           readline))
-    (propagated-inputs
-     (list python-ipykernel))
-    (home-page "https://github.com/sagemath/pari-jupyter")
-    (synopsis "Jupyter kernel for PARI/GP")
-    (description "The package provides a PARI/GP kernel for Jupyter.")
-    (license license:gpl3+)))
-
 (define-public python-backcall
   (package
     (name "python-backcall")
