@@ -698,7 +698,6 @@ different data arrays similar to those available in the numdiff software.")
            ;; TODO: add gstreamer
            gtk+
            hdf5
-           ilmbase
            imath                        ;should be propagated by openexr
            jasper
            libgphoto2
