@@ -28,7 +28,7 @@
 (define-public re2c
   (package
     (name "re2c")
-    (version "2.2")
+    (version "4.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://github.com/skvadrik/" name
@@ -36,7 +36,7 @@
                                  name "-" version ".tar.xz"))
              (sha256
               (base32
-               "1nkbv3bxz1kwwql1pdlnj3lxy5h2vsaif393ivb5b9d8610mxi0g"))))
+                "07ysqgdm0h566a8lwnpdgycp93vz7zskzihsgah3bla0ycj2pp69"))))
     (build-system gnu-build-system)
     (home-page "https://re2c.org/")
     (native-inputs
@@ -44,9 +44,9 @@
     (synopsis "Lexer generator for C/C++")
     (description
      "@code{re2c} generates minimalistic hard-coded state machine (as opposed
-to full-featured table-based lexers).  Flexible API allows generated code
-to be wired into virtually any environment.  Instead of exposing traditional
+to full-featured table-based lexers).  A flexible API allows generated code
+to be wired into virtually any environment.  Instead of exposing a traditional
 @code{yylex()} style API, re2c exposes its internals.  Be sure to take a look
-at examples, they cover a lot of real-world cases and shed some light on dark
-corners of re2c API.")
+at the examples, as they cover a lot of real-world cases and shed some light on
+dark corners of the re2c API.")
     (license public-domain)))
