@@ -320,6 +320,8 @@ Accounting.")
 home.  The seeks to be lightweight, simple and easy to use.  It brings
 features that allow you to analyze your finances in a detailed way instantly
 and dynamically with report tools based on filtering and graphical charts.")
+    (properties
+     '((release-monitoring-url . "https://www.gethomebank.org/en/downloads.php")))
     (license license:gpl2+)))
 
 (define-public ledger
