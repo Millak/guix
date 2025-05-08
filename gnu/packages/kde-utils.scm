@@ -753,14 +753,14 @@ with support for QR scanning.")
 (define-public kontrast
   (package
     (name "kontrast")
-    (version "24.12.1")
+    (version "25.04.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kontrast-" version ".tar.xz"))
               (sha256
                (base32
-                "106zga72ln52qnb5jrq9d842ph0djbj9h3s6c34k11vjcy2vaag5"))))
+                "031jsvk060y9w0mh1ylq7cz9nzmikz7vm098nrb10m9bx2x4h13d"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules kdoctools python-minimal))
