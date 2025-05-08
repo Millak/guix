@@ -542,20 +542,14 @@ the terminal.")
 (define-public codeberg-cli
   (package
     (name "codeberg-cli")
-    (version "0.4.9")
+    (version "0.4.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "codeberg-cli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0b06jz5nh8pcgpbsfbgw1cjkpn1px3snj9p3k63gxcdp05cy0zgw"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 ;; Edition 2024 isn't supported until rust-1.85.
-                 ;; This was reverted upstream.
-                 (substitute* "Cargo.toml"
-                   (("2024") "2021"))))))
+        (base32 "1l0pi9va2jdja3qxzxii0jf0hjph4f0rn04dcb6j2qpbmdmg8jr0"))))
     (build-system cargo-build-system)
     (arguments
      (list
