@@ -42146,14 +42146,17 @@ It also provides a small number of bug fixes to the original code.")
 (define-public r-torch
   (package
     (name "r-torch")
-    (version "0.14.1")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "torch" version))
        (sha256
-        (base32 "13jaz11dj0nhq7015riyb07lxv05lp8xpzyv0f48jl80xxxid44c"))))
-    (properties `((upstream-name . "torch")))
+        (base32 "1j0wgxr25h91c7x48svmgd0pbjl2ljn8rv6rsgw5a56vdgr992nb"))))
+    (properties
+     '((upstream-name . "torch")
+       (updater-ignored-native-inputs . ("r-aten"))
+       (updater-extra-inputs . ("python-pytorch-for-r-torch" "liblantern"))))
     (build-system r-build-system)
     (arguments
      (list
