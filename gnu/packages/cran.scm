@@ -29357,14 +29357,17 @@ for evolution along a phylogenetic tree.")
 (define-public r-fmesher
   (package
     (name "r-fmesher")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fmesher" version))
        (sha256
-        (base32 "17cpq6yxpa4jwwq8s4s5nd1lvh4jqyxnnqz7bay63vq53g0b4c12"))))
-    (properties `((upstream-name . "fmesher")))
+        (base32 "1l860v9mr66y7181pi9954hrz9hgfh9yrq8w379asmgi8dm6v400"))))
+    (properties
+     '((upstream-name . "fmesher")
+       ;; Don't have it, don't need it.
+       (updater-ignored-native-inputs . ("r-inlabru"))))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr
                              r-lifecycle
@@ -29374,7 +29377,7 @@ for evolution along a phylogenetic tree.")
                              r-sf
                              r-tibble
                              r-withr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-ggplot2 r-knitr r-sp r-testthat))
     (home-page "https://inlabru-org.github.io/fmesher/")
     (synopsis "Triangle meshes and related geometry tools")
     (description
