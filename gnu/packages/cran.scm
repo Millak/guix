@@ -175,14 +175,14 @@ transformations.")
 (define-public r-ade4
   (package
     (name "r-ade4")
-    (version "1.7-22")
+    (version "1.7-23")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ade4" version))
        (sha256
         (base32
-         "1d4knc1c1hha4gwcakbllzmff4g0mh56y058dn6wp9m2hd7gaz80"))))
+         "0zv7fsa3b7j0y84hc99m0r32m1irp51pyh47hg14zwk8iykcb4ih"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-pixmap r-rcpp r-rcpparmadillo r-sp))
