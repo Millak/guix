@@ -600,6 +600,63 @@ resolution in a Python script without any changes to the hosts file or the use
 of a fake DNS resolver.")
     (license license:asl2.0)))
 
+(define-public python-httpretty
+  (package
+    (name "python-httpretty")
+    (version "1.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "httpretty" version))
+       (sha256
+        (base32 "0s1vjdaf3pk2xd0hvi5f7p3jm2rgwpbc734jdp9r50m1smfhxpi0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Only run Unit tests.
+      #~(list "--ignore=tests/bugfixes"
+              "--ignore=tests/functional"
+              "--ignore=tests/pyopenssl"
+              "-k" (string-join
+                    ;; Tests pattern failing with one of these errors:
+                    ;; AttributeError: '(str|bool|bytes|list|tuple)' object
+                    ;; has no attribute 'should'
+                    ;; AttributeError: 'function' object has no attribute
+                    ;; 'when'
+                    ;; AttributeError: 'AssertionBuilder' object has no
+                    ;; attribute 'should_not'
+                    (list "not fake_socket_passes_through"
+                          "fakesock_socket"
+                          "request_parse_body_when"
+                          "test_Entry_class_normalizes_headers"
+                          "test_has_request"
+                          "test_httpretty_should_raise_proper"
+                          "test_parse_request_line_connect"
+                          "test_request_parse_querystring"
+                          "test_request_string_representation"
+                          "test_request_stubs_internals")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv"EVENTLET_NO_GREENDNS" "yes"))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-freezegun
+           python-mock
+           python-pytest
+           python-setuptools
+           python-sure
+           python-wheel))
+    (home-page "https://httpretty.readthedocs.io")
+    (synopsis "HTTP client mock for Python")
+    (description
+     "@code{httpretty} is a helper for faking web requests,inspired by Ruby's
+@code{fakeweb}.")
+    (license license:expat)))
+
 (define-public python-huggingface-hub
   (package
     (name "python-huggingface-hub")
