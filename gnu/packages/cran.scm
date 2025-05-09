@@ -38969,19 +38969,21 @@ in pipelines.")
 (define-public r-parameters
   (package
     (name "r-parameters")
-    (version "0.24.1")
+    (version "0.25.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parameters" version))
        (sha256
         (base32
-         "1ljlfyvq0xapgqrrdp8b0bndsmj5rwbwgnnpbdzm3yglkx751hdp"))))
+         "0q3vn40flhbby3niz9zfy6hnwdbrpv6y13n5272a647n6rj99j25"))))
     (properties `((upstream-name . "parameters")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bayestestr r-datawizard r-insight))
     (native-inputs
+     ;; There are dozens of packages that the importer detects for tests, but
+     ;; they don't actually seem to be required.
      (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/parameters")
     (synopsis "Processing of model parameters")
