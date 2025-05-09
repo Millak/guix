@@ -354,6 +354,37 @@ buffer, a file on your disk, or a string from the kill ring.")
        "AC Ispell is an Ispell and Aspell completion source for Auto Complete.")
       (license license:gpl3+))))
 
+(define-public emacs-elisp-autofmt
+  (let ((commit "5b1fdc2761a80674123769ebf8a43fe312c0fa3f")
+        (revision "0"))
+    (package
+     (name "emacs-elisp-autofmt")
+     (version (git-version "0.0.0" revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/ideasman42/emacs-elisp-autofmt")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09wxrrqzccq3wv51n0blcln1zggmlm4fzrnj0svv8gir5q5g6l3h"))))
+     (build-system emacs-build-system)
+     (inputs (list python))
+     (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+                        (add-after 'install 'install-python-module
+                                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                                            (let ((destination (elpa-directory (assoc-ref outputs "out"))))
+                                              (install-file "elisp-autofmt.py" destination)
+                                              (install-file "elisp-autofmt.overrides.json" destination)))))))
+     (home-page "https://codeberg.org/ideasman42/emacs-elisp-autofmt")
+     (synopsis "Auto-format Emacs lisp")
+     (description "This is a package to auto-format Emacs lisp.")
+     (license license:gpl3+))))
+
 (define-public emacs-ac-php
   (package
     (name "emacs-ac-php")
