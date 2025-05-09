@@ -44631,17 +44631,18 @@ techniques to average Bayesian predictive distributions.")
 (define-public r-rstan
   (package
     (name "r-rstan")
-    (version "2.32.6")
+    (version "2.32.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rstan" version))
        (sha256
         (base32
-         "0w0si8sd26c4nivqh85y0imil14sp4vy97yikmrv1lxvj40x141k"))))
+         "0jhpf9dsbizhizsrgb1wamanzy088nxljg105jb2yrq1zdvwycar"))))
     (properties
      '((upstream-name . "rstan")
-       (updater-extra-native-inputs . ("tzdata-for-tests"))))
+       (updater-extra-native-inputs . ("tzdata-for-tests"))
+       (updater-ignored-native-inputs . ("r-io"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -44654,7 +44655,10 @@ techniques to average Bayesian predictive distributions.")
                      (search-input-directory inputs
                                              "share/zoneinfo")))))))
     (native-inputs
-     (list r-knitr r-testthat tzdata-for-tests))
+     (list r-knitr
+           r-matrix
+           r-testthat
+           tzdata-for-tests))
     (propagated-inputs
      (list r-bh
            r-ggplot2
