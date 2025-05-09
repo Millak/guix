@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024-2025 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
@@ -3587,6 +3588,41 @@ test runner built around @code{subunit}.  It is designed to execute
 a test suite.  It will also store a history of all test runs to help in
 debugging failures and optimizing the scheduler to improve speed.")
     (license license:asl2.0)))
+
+(define-public python-sure
+  ;; No release for 2y but the master branch has fresh changes, use the latest
+  ;; commit for now, see <https://github.com/gabrielfalcao/sure/issues/184>,
+  ;; <https://github.com/gabrielfalcao/sure/issues/182>.
+  (let ((commit "acf823a2e240a2efe93360316d3816e90366439a")
+        (revision "0"))
+    (package
+      (name "python-sure")
+      (version (git-version "2.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gabrielfalcao/sure")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12qd3as4ixhwvf8ppx1dwhghda2kcb85ygd4x3ci9mbvkh25fs01"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-mock
+             python-pytest
+             python-pytest-cov
+             python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-couleur))
+      (home-page "https://github.com/gabrielfalcao/sure")
+      (synopsis "Automated testing library in python for python")
+      (description
+       "Sure is a python library that leverages a DSL for writing
+assertions. Sure is heavily inspired by @code{RSpec Expectations} and
+@code{should.js}.")
+      (license license:gpl3+))))
 
 (define-public python-sybil
   (package
