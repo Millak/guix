@@ -23068,18 +23068,20 @@ those searches and pull data into their R sessions.")
 (define-public r-renv
   (package
     (name "r-renv")
-    (version "1.1.1")
+    (version "1.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "renv" version))
        (sha256
         (base32
-         "04fz5x54fyzswgagqr8bpwyisircshzx7bswclkym8lrl7a3zrjl"))))
+         "1lwhcdjqqnv78cw88g3qvdmz89w5i0ll4z2rricikvbfsnmgw778"))))
     (properties `((upstream-name . "renv")))
     (build-system r-build-system)
     ;; Tests attempt to install packages.
     (arguments (list #:tests? #false))
+    ;; Since we are not running the tests, we don't need any of the many, many
+    ;; test inputs.
     (native-inputs (list r-knitr))
     (home-page "https://rstudio.github.io/renv")
     (synopsis "Project environments")
