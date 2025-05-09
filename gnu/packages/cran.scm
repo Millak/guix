@@ -38054,14 +38054,16 @@ the current document.")
 (define-public r-xgboost
   (package
     (name "r-xgboost")
-    (version "1.7.8.1")
+    (version "1.7.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xgboost" version))
        (sha256
         (base32
-         "1s8vpj0rwyvzq6q4bby0szxwsj34z26mkrm7qx4pbs9g1g86yk9r"))))
+         "0zljn17jb19an689dm5ij7v4kr0kfh389jm01g7zzx7g9vv4vyrx"))))
+    (properties
+     '((updater-ignored-native-inputs . ("r-titanic"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -38078,7 +38080,7 @@ the current document.")
     (propagated-inputs
      (list r-data-table r-jsonlite r-matrix))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat  r-vcd))
     (home-page "https://github.com/dmlc/xgboost")
     (synopsis "Extreme gradient boosting")
     (description
