@@ -51157,21 +51157,21 @@ text but not always easily handled by analysis algorithms.  The
 (define-public r-ndjson
   (package
     (name "r-ndjson")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "ndjson" version))
         (sha256
           (base32
-            "18j5bibranvbv84hvbsg6glmvhfancdsf2w6j99n3nw53bcgb12d"))
+            "0l5d24f0n0h2jbrisp8xpr9hsbzjryc62h961lmhp4kqnqrvw423"))
         (modules '((guix build utils)))
         (snippet
-         '(begin
-            ;; unvendor gzstream
-            (for-each delete-file '("src/gzstream.cpp" "src/gzstream.h"))
-            #t))))
-    (properties `((upstream-name . "ndjson")))
+         ;; unvendor gzstream
+         '(for-each delete-file '("src/gzstream.cpp" "src/gzstream.h")))))
+    (properties
+     '((upstream-name . "ndjson")
+       (updater-extra-inputs . ("gzstream"))))
     (build-system r-build-system)
     (arguments
      '(#:phases
@@ -51180,9 +51180,8 @@ text but not always easily handled by analysis algorithms.  The
            (lambda* (#:key inputs #:allow-other-keys)
             (substitute* "src/Makevars"
              (("PKG_LIBS = " all)
-              (string-append all "-lgzstream ")))
-             #t)))))
-    (inputs (list zlib gzstream))
+              (string-append all "-lgzstream "))))))))
+    (inputs (list gzstream zlib))
     (propagated-inputs
       (list r-data-table r-rcpp r-tibble))
     (home-page "https://gitlab.com/hrbrmstr/ndjson")
