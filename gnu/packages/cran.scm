@@ -1828,17 +1828,20 @@ queues, stacks, deques, dicts and ordered dicts.")
 (define-public r-correlation
   (package
     (name "r-correlation")
-    (version "0.8.6")
+    (version "0.8.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "correlation" version))
               (sha256
                (base32
-                "0sss7xr9k31kyxgbwbg8gk5bqxyvpb29pjvah0kg9i75sqqvnpms"))))
+                "0r0mvhmywzic3dfx49y1z9pbkwm3mwy9k6f04ywidi04sk759za0"))))
     (properties `((upstream-name . "correlation")))
     (build-system r-build-system)
     (propagated-inputs (list r-bayestestr r-datawizard r-insight r-parameters))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs
+     ;; The importer/updater adds a lot of optional inputs, that we can
+     ;; happily do without.
+     (list r-knitr r-testthat))
     (home-page "https://easystats.github.io/correlation/")
     (synopsis "Methods for correlation analysis")
     (description
