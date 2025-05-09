@@ -36916,17 +36916,16 @@ matched.")
 (define-public r-ggnewscale
   (package
     (name "r-ggnewscale")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggnewscale" version))
        (sha256
         (base32
-         "0bfzqjaxg5r9qzi6hav0m6rcw1cr90h8pwwjklbv930finrxrw5p"))))
+         "14kf0app8gfylky1vd6gvqdihxm1k4lfgpawx04z1ckb82gifl6d"))))
     (properties
-     `((upstream-name . "ggnewscale")
-       (updater-extra-native-inputs . ("r-vdiffr"))))
+     `((upstream-name . "ggnewscale")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2))
