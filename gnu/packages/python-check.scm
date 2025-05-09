@@ -32,6 +32,7 @@
 ;;; Copyright © 2025 Florent Pruvost <florent.pruvost@inria.fr>
 ;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2725,6 +2726,30 @@ for the @code{pytest} framework.")
     (synopsis "Pytest plugin to run @command{pydocstyle}")
     (description "This package provides a Pytest plugin to run
 @command{pydocstyle}.")
+    (license license:expat)))
+
+(define-public python-pytest-pylint
+  (package
+    (name "python-pytest-pylint")
+    (version "0.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-pylint" version))
+       (sha256
+        (base32 "0gjm9qy1rsngvli042szqc45y0q5zk1crq28ja01iyjw3n74nxl8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-pylint))
+    (home-page "https://github.com/carsongee/pytest-pylint")
+    (synopsis "Pytest plugin to check source code with Pylint")
+    (description
+     "This plugin allows running Pylint with Pytest and have configurable rule
+types (i.e. Convention, Warn, and Error) fail the build.")
     (license license:expat)))
 
 (define-public python-pytest-qt
