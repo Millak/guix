@@ -853,6 +853,9 @@ in userland processes thanks to the DDE layer.")
                            " -DNUSB_DMA=1"
                            " -DPAE")
                      "-V" (string-append
+                           "HOST_CFLAGS=-O"
+                           " -Wno-error=implicit-function-declaration")
+                     "-V" (string-append
                            "CWARNFLAGS="
                            " -Wno-error=maybe-uninitialized"
                            " -Wno-error=address-of-packed-member"
