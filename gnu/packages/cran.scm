@@ -34560,14 +34560,17 @@ information about geometries.")
 (define-public r-sf
   (package
     (name "r-sf")
-    (version "1.0-19")
+    (version "1.0-20")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sf" version))
        (sha256
         (base32
-         "0rr77mxmdbxra52xf7kwa9vgjshlz2d6nxs46jxkz0rzl4hqb168"))))
+         "1vppa52in4f6mnvwys96z95ya3ksb32m11d3c55f5c00lqjajddk"))))
+    (properties
+     ;; We don't have this package
+     '((updater-ignored-native-inputs . ("r-geom"))))
     (build-system r-build-system)
     (inputs
      (list curl
@@ -34587,7 +34590,19 @@ information about geometries.")
            r-s2
            r-units))
     (native-inputs
-     (list pkg-config r-knitr r-testthat r-tibble))
+     (list pkg-config
+           r-blob
+           r-dplyr
+           r-knitr
+           r-maps
+           r-raster
+           r-rpostgres
+           r-rpostgresql
+           r-sp
+           r-testthat
+           r-tibble
+           r-tidyr
+           r-vctrs))
     (home-page "https://github.com/r-spatial/sf/")
     (synopsis "Simple features for R")
     (description
