@@ -54666,6 +54666,30 @@ calculate a dimension's unknown value from other dimensions' measurements.")
 Sub-National Geospatial Data Archive System.")
     (license license:gpl2)))
 
+(define-public r-zigg
+  (package
+    (name "r-zigg")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "zigg" version))
+       (sha256
+        (base32 "1v1c11ajdjycp24z9afv7mysmih55jaj1r7vh36xxd7m9b2pr93c"))))
+    (properties `((upstream-name . "zigg")))
+    (build-system r-build-system)
+    (home-page "https://github.com/eddelbuettel/zigg")
+    (synopsis
+     "Lightweight interfaces to the Ziggurat pseudo random number generator")
+    (description
+     "The Ziggurat pseudo-random number generator (or PRNG) offers a
+lightweight and very fast PRNG for the normal, exponential, and uniform
+distributions.  It is provided here in a small zero-dependency package.  It
+can be used from R as well as from C/C++ code in other packages as is
+demonstrated by four included sample packages using four distinct methods to
+use the PRNG presented here in client package.")
+    (license license:gpl2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
