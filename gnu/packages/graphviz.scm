@@ -181,7 +181,7 @@ visualization tool suite.")
 (define-public python-pygraphviz
   (package
     (name "python-pygraphviz")
-    (version "1.10")
+    (version "1.14")
     (source
      (origin
        (method git-fetch)
@@ -190,20 +190,25 @@ visualization tool suite.")
              (commit (string-append "pygraphviz-" version))))
        (file-name (string-append "pygraphviz-" version "-checkout"))
        (sha256
-        (base32
-         "1yrzjp5n86ynlj32p5dj1aj67md6bzkk8hac74j5y3mbl94m259g"))))
-    (build-system python-build-system)
+        (base32 "03q6k030nvrl30a86bgnjqjh1csh8zpw8dkgajkn33v3cx7jc9a7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "pygraphviz")))
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-setuptools
+           python-wheel))
     (inputs
      (list graphviz))
-    (native-inputs
-     (list python-nose python-mock python-pytest
-           python-doctest-ignore-unicode))
     (home-page "https://pygraphviz.github.io")
     (synopsis "Python interface to Graphviz")
-    (description "PyGraphviz is a Python interface to the Graphviz graph
-layout and visualization package.  With PyGraphviz you can create, edit, read,
-write, and draw graphs using Python to access the Graphviz graph data
-structure and layout algorithms.")
+    (description
+     "PyGraphviz is a Python interface to the Graphviz graph layout and
+visualization package.  With PyGraphviz you can create, edit, read, write, and
+draw graphs using Python to access the Graphviz graph data structure and
+layout algorithms.")
     (license license:bsd-3)))
 
 (define-public python-uqbar
