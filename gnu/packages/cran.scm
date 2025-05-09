@@ -36427,14 +36427,16 @@ ranking performance.")
 (define-public r-mlogit
   (package
     (name "r-mlogit")
-    (version "1.1-1")
+    (version "1.1-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlogit" version))
        (sha256
-        (base32 "0hyi6gi03n895iydrfr1ba2ifbsd6lyjyhkq62d95ghhniysjgkg"))))
-    (properties `((upstream-name . "mlogit")))
+        (base32 "1i8wiz4gkq369mk8scz5c8b1nsnxyrzpk89v7aj56rmw3x53k6l9"))))
+    (properties
+     '((upstream-name . "mlogit")
+       (updater-extra-native-inputs . ("r-aer"))))
     (build-system r-build-system)
     (propagated-inputs (list r-dfidx
                              r-formula
