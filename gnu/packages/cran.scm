@@ -23947,16 +23947,16 @@ references and Rd files.")
 (define-public r-officer
   (package
     (name "r-officer")
-    (version "0.6.7")
+    (version "0.6.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "officer" version))
        (sha256
         (base32
-         "1a9bv5qryivi84f56plz2xaffy2sapviwgwdgzxq9mys7bzsybzh"))))
+         "02m3hisk5jbpnli4s64aqapvlrln0v8wpjp5j0qy10d75by2djza"))))
     (properties
-     '((updater-extra-native-inputs . ("r-ggplot2" "r-magick"))))
+     '((updater-extra-native-inputs . ("r-magick"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -23966,7 +23966,13 @@ references and Rd files.")
            r-uuid
            r-xml2
            r-zip))
-    (native-inputs (list r-ggplot2 r-magick r-testthat))
+    (native-inputs (list r-gdtools
+                         r-ggplot2
+                         r-knitr
+                         r-magick
+                         r-rmarkdown
+                         r-testthat
+                         r-withr))
     (home-page "https://davidgohel.github.io/officer")
     (synopsis "Manipulation of Word and PowerPoint documents")
     (description
