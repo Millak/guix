@@ -19147,13 +19147,13 @@ All the visualization methods are developed based on ggplot2 graphics.")
 (define-public r-classdiscovery
   (package
     (name "r-classdiscovery")
-    (version "3.4.5")
+    (version "3.4.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ClassDiscovery" version))
               (sha256
                (base32
-                "0k70s7nlmxymxw84174ikqx854hi0pizd9acpr7ky8fb30fyxg31"))))
+                "1vkbcgjisqgis1l9kiw9q79mi0nsipb4ai2jjfynjccs46il3nsg"))))
     (properties `((upstream-name . "ClassDiscovery")))
     (build-system r-build-system)
     (propagated-inputs
