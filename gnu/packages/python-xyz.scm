@@ -23057,25 +23057,34 @@ classes can also be supported by manually registering converters.")
        (method url-fetch)
        (uri (pypi-uri "cachy" version))
        (sha256
-        (base32
-         "1cb9naly8ampzlky7h74n5wj628l7jkpsh0c0jz0namlrvs82r8q"))))
-    (build-system python-build-system)
+        (base32 "1cb9naly8ampzlky7h74n5wj628l7jkpsh0c0jz0namlrvs82r8q"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             ;; Make it compatible with python-flexmock 0.12.
-             (substitute* (find-files "tests" "\\.py$")
-              (("from flexmock import flexmock, flexmock_teardown")
-               "from flexmock import flexmock; from flexmock._api import flexmock_teardown"))
-             (invoke "pifpaf" "run" "memcached" "--port" "11211" "--"
-                     "pytest"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Make it compatible with python-flexmock 0.12.
+                (substitute* (find-files "tests" "\\.py$")
+                  (("from flexmock import flexmock, flexmock_teardown")
+                   (string-append "from flexmock import flexmock\n"
+                                  "from flexmock._api import flexmock_teardown")))
+                (invoke "pifpaf" "run" "memcached" "--port" "11211" "--"
+                        "pytest")))))))
     (native-inputs
-     (list memcached python-fakeredis python-flexmock python-pifpaf
-           python-pytest))
+     (list memcached
+           python-fakeredis
+           python-flexmock
+           python-pifpaf
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-memcached python-msgpack python-redis))
+     (list python-memcached
+           python-msgpack
+           python-redis))
     (home-page "https://github.com/sdispater/cachy")
     (synopsis "Simple yet effective caching library")
     (description
