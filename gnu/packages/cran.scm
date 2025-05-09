@@ -17271,15 +17271,17 @@ to access PostgreSQL database systems.")
 (define-public r-rpostgres
   (package
     (name "r-rpostgres")
-    (version "1.4.7")
+    (version "1.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RPostgres" version))
        (sha256
         (base32
-         "0939ysl9m35aknnh3xk92xxymk1g0xqnjb2khq55m8nq7gcg3l9x"))))
-    (properties `((upstream-name . "RPostgres")))
+         "19382zfy9mqxkw3iksmcsiknrffkxpr6c2pcykf96x9qxsd84v0c"))))
+    (properties
+     '((upstream-name . "RPostgres")
+       (updater-extra-inputs . ("postgresql"))))
     (build-system r-build-system)
     (inputs (list openssl postgresql))
     (propagated-inputs
@@ -17292,7 +17294,12 @@ to access PostgreSQL database systems.")
            r-plogr
            r-withr))
     (native-inputs
-     (list pkg-config r-knitr r-testthat))
+     (list pkg-config
+           r-callr
+           r-dbitest
+           r-knitr
+           r-rlang
+           r-testthat))
     (home-page "https://rpostgres.r-dbi.org")
     (synopsis "Rcpp Interface to PostgreSQL")
     (description
