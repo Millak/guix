@@ -11016,14 +11016,16 @@ the embedded @code{RapidXML} C++ library.")
 (define-public r-rearrr
   (package
     (name "r-rearrr")
-    (version "0.3.4")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rearrr" version))
        (sha256
-        (base32 "1inx1gikiqxaf6a8g10b02l1qs2y0zxs2yrxn6dyx9n6xlra3rnr"))))
-    (properties `((upstream-name . "rearrr")))
+        (base32 "0iwzb2l3vqs8c76d44qpkfk8hsglm9fg2y75prm6fr4n88xr82bp"))))
+    (properties
+     '((upstream-name . "rearrr")
+       (updater-ignored-native-inputs . ("r-xpectr"))))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate
                              r-dplyr
@@ -11033,7 +11035,7 @@ the embedded @code{RapidXML} C++ library.")
                              r-r6
                              r-rlang
                              r-tibble))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-covr r-testthat))
     (home-page "https://github.com/ludvigolsen/rearrr")
     (synopsis "Rearranging data by a set of methods")
     (description
