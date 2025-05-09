@@ -12217,13 +12217,13 @@ analysis of TCR repertoire libraries based on theoretical model fits.")
 (define-public r-pscbs
   (package
     (name "r-pscbs")
-    (version "0.67.0")
+    (version "0.68.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PSCBS" version))
        (sha256
-        (base32 "1gnd2nkh587dqpnbk5fsai7hx261vm405550rhlxffvs366x3596"))))
+        (base32 "1xsy4glg60iqbkvnyfwvyyjz5hnqzci45g5w17h9dva94qb62wc7"))))
     (properties `((upstream-name . "PSCBS")))
     (build-system r-build-system)
     (arguments
@@ -12237,15 +12237,13 @@ analysis of TCR repertoire libraries based on theoretical model fits.")
      (list r-aroma-light
            r-dnacopy
            r-future
-           r-listenv
            r-matrixstats
            r-r-cache
            r-r-methodss3
            r-r-oo
            r-r-utils))
     (native-inputs
-     (list r-r-rsp                      ;used to build vignettes
-           r-r-devices))
+     (list r-r-rsp))
     (home-page "https://github.com/HenrikBengtsson/PSCBS")
     (synopsis "Analysis of parent-specific DNA copy numbers")
     (description
