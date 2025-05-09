@@ -912,7 +912,10 @@ makeinfo OPTIONS."
                      sed
                      tar
                      texinfo
-                     (texlive-local-tree
+                     ;; This deprecated symbol should not be updated, as the
+                     ;; build farm's Guix (that comes from the guix-daemon
+                     ;; package) doesn't know about it yet.
+                     (texlive-updmap.cfg
                       (list texlive-epsf texlive-texinfo)))))))
 
   (define build
