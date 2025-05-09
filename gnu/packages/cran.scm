@@ -26770,13 +26770,13 @@ were influenced by the drake R package by Will Landau (2018)
 (define-public r-targets
   (package
     (name "r-targets")
-    (version "1.10.1")
+    (version "1.11.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "targets" version))
               (sha256
                (base32
-                "0fjmbqw71scmhjxn94x083jxnwsv7yggm49333pjp0dvzf46i5i0"))))
+                "0ahzfd22k1la6zbgqdqvidqihgfpc5lmzd2aam9cgy31rql0l1qv"))))
     (properties `((upstream-name . "targets")))
     (build-system r-build-system)
     (propagated-inputs (list r-base64url
@@ -26786,6 +26786,7 @@ were influenced by the drake R package by Will Landau (2018)
                              r-data-table
                              r-igraph
                              r-knitr
+                             r-prettyunits
                              r-ps
                              r-r6
                              r-rlang
@@ -26794,6 +26795,8 @@ were influenced by the drake R package by Will Landau (2018)
                              r-tidyselect
                              r-vctrs
                              r-yaml))
+    ;; The importer adds a large number of test inputs, but we really don't
+    ;; need to add them.
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/targets/")
     (synopsis "Dynamic function-oriented Make-like declarative pipelines")
