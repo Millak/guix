@@ -1913,13 +1913,13 @@ period, tests of population rhythm differences and more.")
 (define-public r-countrycode
   (package
     (name "r-countrycode")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "countrycode" version))
        (sha256
-        (base32 "1dix4prcavwbi7l7ifw1frvpmqqdcrvk4c45xl7ckg6068713nzr"))))
+        (base32 "051j7va5qv46qf9543nscinxibk2mz3sxgbfpniwi9qyjh3878s5"))))
     (properties `((upstream-name . "countrycode")))
     (build-system r-build-system)
     (native-inputs (list r-testthat r-tibble r-utf8))
