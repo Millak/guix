@@ -52943,15 +52943,17 @@ of known occurrences of a species.")
 (define-public r-paws-common
   (package
     (name "r-paws-common")
-    (version "0.8.1")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.common" version))
        (sha256
         (base32
-         "034mw1gngkrcsyn4rihdr4v8akfq88gd45vjbngl6dx9snqdgn92"))))
-    (properties `((upstream-name . "paws.common")))
+         "0sz5nbrp4dan0ng1v08f4lpwn2rlvnsyz1migx17cnqcyb4irwvr"))))
+    (properties
+     '((upstream-name . "paws.common")
+       (updater-ignored-native-inputs . ("r-iam"))))
     (build-system r-build-system)
     (arguments
      (list
