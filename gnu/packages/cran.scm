@@ -48666,20 +48666,24 @@ analysis using @code{dplyr}, @code{ggplot2}, and other Tidy tools.")
 (define-public r-parsnip
   (package
     (name "r-parsnip")
-    (version "1.2.1")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parsnip" version))
        (sha256
         (base32
-         "04l5368f8cda3bl80mczmszx65ihgm6wy018kvc7hplrrrpyv2iy"))))
-    (properties `((upstream-name . "parsnip")))
+         "1wmw2p3nx32pzf1lp0sp3glay1n3n1cxpiv0bfd1l8bgikxi8ims"))))
+    (properties
+     '((upstream-name . "parsnip")
+       ;; We don't need them.  Do you really want a package depending on
+       ;; tensorflow anyway?
+       (updater-ignored-native-inputs
+        . ("r-keras" "r-sparklyr" "r-tensorflow"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
            r-dplyr
-           r-earth
            r-generics
            r-ggplot2
            r-globals
@@ -48691,14 +48695,19 @@ analysis using @code{dplyr}, @code{ggplot2}, and other Tidy tools.")
            r-prettyunits
            r-purrr
            r-rlang
+           r-sparsevctrs
            r-tibble
            r-tidyr
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-dials
+     (list r-bench
+           r-dials
+           r-kernlab
            r-kknn
            r-knitr
+           r-matrix
+           r-mgcv
            r-modeldata
            r-rpart
            r-survival
