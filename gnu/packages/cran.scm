@@ -11733,13 +11733,16 @@ Notation (JSON) using the rapidjsonr library.")
 (define-public r-jsonlite
   (package
     (name "r-jsonlite")
-    (version "1.8.9")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "jsonlite" version))
               (sha256
                (base32
-                "1c4hdsdcn8iphd901nk7lv8g7sxm29vlxmgc3p02hcqnw7h31wc9"))))
+                "0bf87agviacnk2ff6jif4d61bzvvz2h9sxwly0ryql5kh8693svm"))))
+    (properties
+     '((updater-ignored-native-inputs
+        . ("r-reshape2" "r-sf" "r-testthat"))))
     (build-system r-build-system)
     ;; Tests depend on r-testthat, which depends indirectly on r-jsonlite.
     (arguments (list #:tests? #false))
