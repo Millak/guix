@@ -25402,24 +25402,24 @@ console.")
 (define-public python-ansi2html
   (package
     (name "python-ansi2html")
-    (version "1.2.0")
+    (version "1.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ansi2html" version))
        (sha256
-        (base32
-         "1wa00zffprb78w1mqq90dk47czz1knanys2a40zbw2vyapd5lp9y"))))
-    (build-system python-build-system)
+        (base32 "19f0ap4w66b35csmx4k97pnb9fkdfnmgliajn0kvhdsxaf3vylrl"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-mock python-nose))
-    (propagated-inputs
-     (list python-six))
+     (list python-mock
+           python-pytest
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/ralphbean/ansi2html")
     (synopsis "Convert ANSI-decorated console output to HTML")
     (description
      "@command{ansi2html} is a Python library and command line utility for
-     converting text with ANSI color codes to HTML or LaTeX.")
+converting text with ANSI color codes to HTML or LaTeX.")
     (license license:gpl3+)))
 
 (define-public python-easy-ansi
