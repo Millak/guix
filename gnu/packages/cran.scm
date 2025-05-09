@@ -11525,18 +11525,26 @@ that can be distributed without access to a live server.")
 (define-public r-httpuv
   (package
     (name "r-httpuv")
-    (version "1.6.15")
+    (version "1.6.16")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httpuv" version))
               (sha256
                (base32
-                "1l2y435i3dvq7fnalpvc7h5wh0sc5clygdvcvghz77d34cvfsvay"))
+                "0r1gxmxscw1znda2mjp9wl1rxkbdsn3mq826qjs13529z6p43wsi"))
               (modules '((guix build utils)))
               ;; Cannot unbundle http-parser, because it contains local
               ;; modifications.
               (snippet
                '(delete-file-recursively "src/libuv"))))
+    (properties
+     '((updater-ignored-native-inputs
+        . ("r-callr"
+           "r-close"
+           "r-fe80"
+           "r-httprequest"
+           "r-status"
+           "r-websocket"))))
     (build-system r-build-system)
     (inputs
      (list libuv-for-r-httpuv zlib))
