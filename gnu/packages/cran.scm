@@ -42231,15 +42231,17 @@ Johnson-Graybill, LBI, Tusell and modified Tukey non-additivity tests.")
 (define-public r-flexclust
   (package
     (name "r-flexclust")
-    (version "1.4-2")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flexclust" version))
        (sha256
         (base32
-         "0massgyn8vdzp40dz5l02qqzjynw1lgyw9psvb792q73j7b20iqc"))))
-    (properties `((upstream-name . "flexclust")))
+         "18sz94pvsnnx8nhr08q04p3gzls9grdvbrnv1hqlsnwb6cn5zyzh"))))
+    (properties
+     '((upstream-name . "flexclust")
+       (updater-extra-native-inputs . ("r-ellipse"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-class r-lattice r-modeltools))
