@@ -41669,19 +41669,21 @@ known drivers.")
 (define-public r-activitycounts
   (package
     (name "r-activitycounts")
-    (version "0.1.2")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "activityCounts" version))
        (sha256
         (base32
-         "0zgxr2sk3a8kmygfxx1p5hnrfwdkxx7php6jlrhm8wv6052ck8jz"))))
+         "1m3pihq6xm4fvcvc44s06yil3l9iw9nhnh98jxky63ny1s8c75fq"))))
     (properties
-     `((upstream-name . "activityCounts")))
+     '((upstream-name . "activityCounts")
+       (updater-extra-native-inputs . ("r-knitr" "r-testthat"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lubridate r-magrittr r-seewave r-signal r-tibble))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/walkabillylab/activityCounts")
     (synopsis "Generate ActiLife counts")
     (description
