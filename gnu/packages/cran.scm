@@ -7064,14 +7064,16 @@ k-nearest neighbour, Learning Vector Quantization and Self-Organizing Maps.")
 (define-public r-climaemet
   (package
     (name "r-climaemet")
-    (version "1.4.0")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "climaemet" version))
               (sha256
                (base32
-                "1h17lf5mkahgx9zqqbnadjc9jr8y0jis7lvla8r6ifr0vpccy7wg"))))
-    (properties `((upstream-name . "climaemet")))
+                "0pf4xck985hin5qsvg3yyh4sqainjm47ml19fla6z08l3q1qvyx7"))))
+    (properties
+     '((upstream-name . "climaemet")
+       (updater-ignored-native-inputs . ("r-mapspain"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -7085,7 +7087,7 @@ k-nearest neighbour, Learning Vector Quantization and Self-Organizing Maps.")
            r-tibble
            r-tidyr
            r-xml2))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-sf r-terra r-testthat))
     (home-page "https://ropenspain.github.io/climaemet/")
     (synopsis "Climate AEMET Tools")
     (description
