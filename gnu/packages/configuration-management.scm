@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +21,7 @@
 (define-module (gnu packages configuration-management)
   #:use-module (gnu packages)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (gnu packages golang)
@@ -28,6 +30,8 @@
   #:use-module (gnu packages golang-vcs)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages textutils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -117,3 +121,53 @@
     (description "This package helps to manage personal configuration files
 across multiple machines.")
     (license license:expat)))
+
+(define-public konsave
+  (package
+    (name "konsave")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Prayag2/konsave")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j5nszy41j4fd6b5w7188gphfk2s0dj44rs7fg55a4izvm0brbx9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ; no tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-package-data
+            ;; Fix detection of default configuration files without which the
+            ;; programs fails to invoke.
+            (lambda _
+              (substitute* "setup.py"
+                ((" package_data=.*")
+                 " package_data = {'': ['*.yaml']},\n"))))
+          (add-before 'sanity-check 'set-home-directory
+            ;; sanity-check requires a home directory since importing the
+            ;; `const.py' module creates a directory to save configurations.
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (inputs
+     (list python-pyyaml))
+    (home-page "https://github.com/prayag2/konsave")
+    (synopsis "Dotfiles manager")
+    (description
+     "Konsave is @acronym{CLI, Command Line Program} that lets you backup your
+dotfiles and switch to other ones.
+Features:
+@itemize
+@item storing configurations in profiles
+@item exporting profiles to '.knsv' files
+@item import profiles from '.knsv' files
+@item official support for KDE Plasma
+@end itemize")
+    (license license:gpl3)))
