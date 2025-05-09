@@ -8396,13 +8396,15 @@ available as companion packages.")
 (define-public r-scales
   (package
     (name "r-scales")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scales" version))
        (sha256
-        (base32 "122qyd88qr8cc8h3k46xpygm00inqpm55zdy0b7535958imhygmk"))))
+        (base32 "1vnfhg4bg328vmvja6rzhwbsn8s70a27b8ngjmx2srcjikqgapnm"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-stringi" "tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -8422,12 +8424,11 @@ available as companion packages.")
            r-glue
            r-labeling
            r-lifecycle
-           r-munsell
            r-r6
            r-rcolorbrewer
            r-rlang
            r-viridislite))
-    (native-inputs (list r-hms r-stringi r-testthat tzdata-for-tests))
+    (native-inputs (list r-bit64 r-hms r-stringi r-testthat tzdata-for-tests))
     (home-page "https://github.com/hadley/scales")
     (synopsis "Scale functions for visualization")
     (description
