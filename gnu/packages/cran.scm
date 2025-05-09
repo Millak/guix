@@ -17682,14 +17682,18 @@ provides a one-row summary of model-level statistics.")
 (define-public r-recipes
   (package
     (name "r-recipes")
-    (version "1.1.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "recipes" version))
        (sha256
         (base32
-         "0v9063w4ahdc0xnwry3knykl4k2656df6jxv5f0p40k8piv8ip65"))))
+         "1lrdy7nqqssdfpk25k85qzzn70544c9knbkikqmv2glr80b6zdyl"))))
+    (properties
+     ;; Avoid dependency cycle as r-workflows depends on r-recipes.  r-disp is
+     ;; not packaged, but we don't seem to need it.
+     '((updater-ignored-native-inputs . ("r-disp" "r-workflows"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -17706,6 +17710,7 @@ provides a one-row summary of model-level statistics.")
            r-matrix
            r-purrr
            r-rlang
+           r-sparsevctrs
            r-tibble
            r-tidyr
            r-tidyselect
@@ -17713,7 +17718,16 @@ provides a one-row summary of model-level statistics.")
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-ddalpha
+           r-dials
+           r-kernlab
+           r-knitr
+           r-modeldata
+           r-parsnip
+           r-rpart
+           r-rsample
+           r-splines2
+           r-testthat))
     (home-page "https://github.com/topepo/recipes")
     (synopsis "Preprocessing tools to create design matrices")
     (description
