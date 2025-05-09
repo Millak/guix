@@ -43169,15 +43169,17 @@ Raftery, Appl.Statistics, 1989); it includes inference and basic methods.")
 (define-public r-forecast
   (package
     (name "r-forecast")
-    (version "8.23.0")
+    (version "8.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "forecast" version))
        (sha256
         (base32
-         "100qi8cgr5dz3qskrgrsjn77m7szs5rfpgqfdwlgp67l708x9hzz"))))
-    (properties `((upstream-name . "forecast")))
+         "0ihnsrxz6y1ms4059ppdxyg854jdwvlvq7kaklvxzqx3pzqz22zv"))))
+    (properties
+     '((upstream-name . "forecast")
+       (updater-ignored-native-inputs . ("r-seasonal"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-colorspace
@@ -43195,7 +43197,7 @@ Raftery, Appl.Statistics, 1989); it includes inference and basic methods.")
            r-withr
            r-zoo))
     (native-inputs
-     (list r-knitr r-testthat))           ; needed for vignettes
+     (list r-knitr))
     (home-page "https://pkg.robjhyndman.com/forecast/")
     (synopsis "Forecasting functions for time series and linear models")
     (description
