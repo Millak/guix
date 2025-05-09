@@ -43759,19 +43759,18 @@ least squares.")
 (define-public r-semtools
   (package
     (name "r-semtools")
-    (version "0.5-6")
+    (version "0.5-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "semTools" version))
        (sha256
         (base32
-         "1wnakz76c4mgkwvx3iycmvgrzqys860jg9zpkba0ln5c08ycw8pm"))))
+         "1c76advnxh2vhnlr32ad590paixfk72vjsbnypyrnirzxq25xjrr"))))
     (properties `((upstream-name . "semTools")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lavaan r-pbivnorm))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/simsem/semTools/wiki")
     (synopsis "Useful tools for structural equation modeling")
     (description
