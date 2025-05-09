@@ -43942,13 +43942,13 @@ league, the Bundesliga.  It contains data from 1964 to 2016.")
 (define-public r-butcher
   (package
     (name "r-butcher")
-    (version "0.3.4")
+    (version "0.3.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "butcher" version))
               (sha256
                (base32
-                "027j48n0izwzlg63gml5wkx19kpmd5crbdkmg7p366lpbhhvbs0d"))))
+                "1pdl2ckrj3l6ya8dgyz9832xvzbsvakas74v7am96zmmnvmnl2pf"))))
     (properties `((upstream-name . "butcher")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
@@ -43957,6 +43957,7 @@ league, the Bundesliga.  It contains data from 1964 to 2016.")
                              r-rlang
                              r-tibble
                              r-vctrs))
+    ;; The importer adds lots of inputs that we don't actually need.
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://butcher.tidymodels.org/")
     (synopsis "Model butcher")
