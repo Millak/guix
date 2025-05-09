@@ -11590,17 +11590,17 @@ functions make it easy to control additional request components.")
 (define-public r-httr2
   (package
     (name "r-httr2")
-    (version "1.1.0")
+    (version "1.1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httr2" version))
               (sha256
                (base32
-                "0ahd0gkw9a6rygyz8jr15ms72mwqi60icwmdh6sb2j2rrifjmz2n"))))
+                "17bzggypradnfgrmswjlj5fd0vcvi2nhx28frfy8cr17fj15102r"))))
     (properties
      `((upstream-name . "httr2")
-       ;; This package doesn't exist.
-       (updater-ignored-native-inputs . ("r-common"))
+       ;; r-common doesn't exist, and r-nanonext isn't needed.
+       (updater-ignored-native-inputs . ("r-common" "r-nanonext"))
        (updater-extra-native-inputs . ("r-docopt" "r-httpuv" "r-xml2"))))
     (build-system r-build-system)
     (arguments
@@ -11608,8 +11608,16 @@ functions make it easy to control additional request components.")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'delete-bad-tests
-           ;; This one test fails because it fails to open a connection.
-           (lambda _ (delete-file "tests/testthat/test-oauth.R"))))))
+           (lambda _
+             ;; These tests need Internet access.
+             (with-directory-excursion "tests/testthat/"
+               (delete-file "test-oauth.R")
+               (substitute* "test-req-auth-aws.R"
+                 ((".*can correctly sign a request with dummy credentials.*" m)
+                  (string-append m "skip('skip');\n")))
+               (substitute* "test-req-body.R"
+                 ((".*can send file.*" m)
+                  (string-append m "skip('skip');\n")))))))))
     (propagated-inputs
      (list r-cli
            r-curl
@@ -11622,11 +11630,10 @@ functions make it easy to control additional request components.")
            r-rlang
            r-vctrs
            r-withr))
-    (native-inputs (list r-bench
-                         r-clipr
+    (native-inputs (list r-clipr
                          r-docopt
-                         r-httr
                          r-httpuv
+                         r-httr
                          r-jsonlite
                          r-knitr
                          r-later
