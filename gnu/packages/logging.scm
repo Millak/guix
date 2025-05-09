@@ -240,7 +240,7 @@ output in multiple windows in a terminal.")
 (define-public spdlog-1.15
   (package
     (name "spdlog")
-    (version "1.15.2")
+    (version "1.15.3")
     (source
      (origin
        (method git-fetch)
@@ -249,7 +249,7 @@ output in multiple windows in a terminal.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n6i8d5aycvp9n2zz2rz67s1y19cw9m5j3pk4719d3a5czh4267m"))
+        (base32 "12m46hh59rgamr3qg3jyvxf5mkfj0c91ym4v0l79xqcqdps93cyj"))
        (modules '((guix build utils)))
        (snippet #~(delete-file-recursively "include/spdlog/fmt/bundled"))))
     (build-system cmake-build-system)
