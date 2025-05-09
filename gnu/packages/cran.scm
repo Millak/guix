@@ -34009,14 +34009,14 @@ whole genome approach to detecting significant QTL in linkage maps.")
 (define-public r-bedr
   (package
     (name "r-bedr")
-    (version "1.0.7")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bedr" version))
        (sha256
         (base32
-         "0zpqvyjgwyqawxm8qrhcv8zq2b3yxgcqkkc87br29yrl7sjb8h6j"))))
+         "1mxscr02n81jcwmw4rzmixwvcipjv018gdaqigyvis0p7y0iras7"))))
     (build-system r-build-system)
     ;; FIXME Tests fail with: could not find function "context"
     (arguments (list #:tests? #false))
@@ -34028,9 +34028,9 @@ whole genome approach to detecting significant QTL in linkage maps.")
            r-yaml
            bedops
            bedtools
-           htslib)) ; for tabix
+           htslib)) ;for tabix
     (native-inputs
-     (list r-knitr r-testthat)) ; for vignettes
+     (list r-testthat r-knitr))
     (home-page "https://cran.r-project.org/web/packages/bedr")
     (synopsis "Genomic region processing")
     (description
