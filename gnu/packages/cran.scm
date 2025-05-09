@@ -695,15 +695,17 @@ binomial experiment via several parameterizations")
 (define-public r-bit
   (package
     (name "r-bit")
-    (version "4.5.0.1")
+    (version "4.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bit" version))
        (sha256
         (base32
-         "0wl8s9z54wb2l56sgdyz7rrjzydmjv3cy8q3fmbsinh435l2yhd0"))))
+         "026y8la4g4nyflh4w8zvlwqwdh4m8c3n1ssyd56p4yscs32j3zj8"))))
     (build-system r-build-system)
+    ;; Tests require r-ff, which depends on this package.
+    (arguments (list #:tests? #false))
     (native-inputs
      (list r-knitr r-rmarkdown r-testthat))
     (home-page "https://ff.r-forge.r-project.org")
