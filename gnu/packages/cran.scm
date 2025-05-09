@@ -39290,58 +39290,47 @@ tools for help in data interpretation.")
 (define-public r-networkd3
   (package
     (name "r-networkd3")
-    (version "0.4")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "networkD3" version))
        (sha256
         (base32
-         "02wxki67drppgfka1is1ykg1f2rxf0x0657c0crj7ipfy62jbf1k"))
+         "0kpn4n4n4b2myzdv9cnsn8a0gvyvy85cajd1ab6v28ipvnjnmqsv"))
        (snippet
-        '(begin
-           (delete-file "inst/htmlwidgets/lib/d3-4.5.0/d3.min.js")
-           #t))))
+        '(delete-file "inst/htmlwidgets/lib/d3-4.9.1/d3.min.js"))))
     (properties `((upstream-name . "networkD3")))
     (build-system r-build-system)
     (arguments
-     `(#:modules ((guix build utils)
-                  (guix build r-build-system)
-                  (srfi srfi-1)
-                  (ice-9 popen))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'process-javascript
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "inst/htmlwidgets/lib/"
-               (call-with-values
-                   (lambda ()
-                     (unzip2
-                      `((,(assoc-ref inputs "d3.v4.js")
-                         "d3-4.5.0/d3.min.js"))))
-                 (lambda (sources targets)
-                   (for-each (lambda (source target)
-                               (format #t "Processing ~a --> ~a~%"
-                                       source target)
-                               (let ((minified (open-pipe* OPEN_READ "uglifyjs" source)))
-                                 (call-with-output-file target
-                                   (lambda (port)
-                                     (dump-port minified port)))))
-                             sources targets))))
-             #t)))))
+     (list
+      #:modules '((guix build r-build-system)
+                  (guix build minify-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules `(,@%r-build-system-modules
+                           (guix build minify-build-system))
+      #:phases
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst/htmlwidgets/lib/"
+                (minify (assoc-ref inputs "d3.v4.js")
+                        #:target
+                        "d3-4.9.1/d3.min.js")))))))
     (native-inputs
-     `(("uglifyjs" ,node-uglify-js)
+     `(("esbuild" ,esbuild)
        ;; NOTE: Make sure that this version of d3 is still valid when
        ;; upgrading the package.
        ("d3.v4.js"
         ,(origin
            (method url-fetch)
-           (uri "https://d3js.org/d3.v4.js")
+           (uri "https://web.archive.org/web/20170701121514id_/https://d3js.org/d3.v4.js")
            (sha256
             (base32
-             "0y7byf6kcinfz9ac59jxc4v6kppdazmnyqfav0dm4h550fzfqqlg"))))))
+             "176a0n73rqqcsrjbp39c2jsl7hmprpwwggfm2skn9qywwyb79hp7"))))))
     (propagated-inputs
-     (list r-htmlwidgets r-igraph r-magrittr))
+     (list r-data-tree r-htmlwidgets r-igraph r-jsonlite r-magrittr))
     (home-page "https://cran.r-project.org/package=networkD3")
     (synopsis "D3 JavaScript network graphs from R")
     (description
