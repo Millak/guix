@@ -22950,27 +22950,6 @@ useful to combine multiple data objects as one.")
 interfaces.")
     (license license:expat)))
 
-(define-public python-msgpack-python
-  (package
-    (name "python-msgpack-python")
-    (version "0.5.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "msgpack-python" version))
-       (sha256
-        (base32
-         "16wh8qgybmfh4pjp8vfv78mdlkxfmcasg78lzlnm6nslsfkci31p"))))
-    (build-system python-build-system)
-    (home-page "https://msgpack.org/")
-    (synopsis "Package to deserialize messages in MessagePack binary format")
-    (description
-     "MessagePack is an efficient binary serialization format.  It lets you
-exchange data among multiple languages like JSON.  But it's faster and
-smaller.  Small integers are encoded into a single byte, and typical short
-strings require only one extra byte in addition to the strings themselves.")
-    (license license:asl2.0)))
-
 (define-public python-cattrs
   (package
     (name "python-cattrs")
@@ -23096,7 +23075,7 @@ classes can also be supported by manually registering converters.")
      (list memcached python-fakeredis python-flexmock python-pifpaf
            python-pytest))
     (propagated-inputs
-     (list python-memcached python-msgpack-python python-redis))
+     (list python-memcached python-msgpack python-redis))
     (home-page "https://github.com/sdispater/cachy")
     (synopsis "Simple yet effective caching library")
     (description
