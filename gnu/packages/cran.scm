@@ -17244,17 +17244,18 @@ similar to finite mixture models.")
 (define-public r-rpostgresql
   (package
     (name "r-rpostgresql")
-    (version "0.7-7")
+    (version "0.7-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RPostgreSQL" version))
        (sha256
         (base32
-         "073xdjcbpsy9j68migxrp6p51lw6rn3rx1l4z7bygayb4niklngh"))))
+         "0g4ny3l6dl4grk99nvpm9fw3052f051bnz7h31hfacr5zrpsn5gj"))))
     (properties
      '((upstream-name . "RPostgreSQL")
-       (updater-extra-inputs . ("postgresql"))))
+       (updater-extra-inputs . ("postgresql"))
+       (updater-ignored-inputs . ("openssl" "zlib"))))
     (build-system r-build-system)
     (inputs (list postgresql))
     (propagated-inputs (list r-dbi))
