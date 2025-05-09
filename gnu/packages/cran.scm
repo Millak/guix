@@ -27973,14 +27973,17 @@ repositories.")
 (define-public r-fs
   (package
     (name "r-fs")
-    (version "1.6.5")
+    (version "1.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fs" version))
        (sha256
         (base32
-         "0d0bqwi4a0kpday3kbvaawhqfh7lcx4jx2hm5nspgvjv4504sfqf"))))
+         "02l5ymh77c3yfm3vbi23zryl6ank0y7d20crzvk2iv1g9s2a1lsp"))))
+    (properties
+     '((updater-ignored-native-inputs
+        . ("r-testthat" "r-spelling" "r-vctrs" "r-withr"))))
     (build-system r-build-system)
     ;; Tests require r-testthat, which indirectly depends on this package.
     (arguments (list #:tests? #false))
