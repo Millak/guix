@@ -15699,36 +15699,35 @@ rectangular layout tree built by ggtree with the grammar of ggplot2.")
 (define-public r-ggpicrust2
   (package
     (name "r-ggpicrust2")
-    (version "1.7.3")
+    (version "2.1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpicrust2" version))
               (sha256
                (base32
-                "0zjlsvzl2f74fvqw4ijnai23qwhlcpgd5p8z9dclnwnsgdbm6hcq"))))
+                "15l3hryw3jz9d7pxvwnsl2h0xms63kyw5fcw2bw8b22w956xj2v9"))))
     (properties `((upstream-name . "ggpicrust2")))
     (build-system r-build-system)
-    (propagated-inputs (list r-aldex2
-                             r-aplot
-                             r-circlize
-                             r-deseq2
+    (propagated-inputs (list r-aplot
                              r-dplyr
-                             r-edger
-                             r-ggally
                              r-ggh4x
                              r-ggplot2
+                             r-ggplotify
                              r-ggprism
-                             r-lefser
-                             r-limma
-                             r-maaslin2
-                             r-metagenomeseq
-                             r-microbiomestat
+                             r-ggraph
+                             r-magrittr
                              r-patchwork
+                             r-progress
                              r-readr
-                             r-summarizedexperiment
                              r-tibble
+                             r-tidygraph
                              r-tidyr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-fgsea
+                         r-ggvenndiagram
+                         r-knitr
+                         r-mockery
+                         r-testthat
+                         r-upsetr))
     (home-page "https://github.com/cafferychen777/ggpicrust2")
     (synopsis "Make PICRUSt2 output analysis and visualization easier")
     (description
