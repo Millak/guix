@@ -10542,14 +10542,16 @@ indexed series, which are compatible with FAME frequencies.")
 (define-public r-tkrplot
   (package
     (name "r-tkrplot")
-    (version "0.0-27")
+    (version "0.0-29")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tkrplot" version))
        (sha256
-        (base32 "19bj4wn1fs4wrx5k4gakhpz4q59fgx0584wyaw7hnh0ljj8i34n9"))))
-    (properties `((upstream-name . "tkrplot")))
+        (base32 "0abp1q4iky5gg37nb5lwvnj6iv3qjchqrfa8169cj9dsv6v0gzcz"))))
+    (properties
+     '((upstream-name . "tkrplot")
+       (updater-extra-inputs . ("libx11"))))
     (build-system r-build-system)
     (inputs (list libx11))
     (home-page "https://cran.r-project.org/package=tkrplot")
