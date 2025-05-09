@@ -2485,13 +2485,13 @@ other packages.")
 (define-public r-desctools
   (package
     (name "r-desctools")
-    (version "0.99.59")
+    (version "0.99.60")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DescTools" version))
        (sha256
-        (base32 "1xiw8741brv3771vf18clj240i8p0wn8367fv1f6vwxwxlqrclkr"))))
+        (base32 "1g5wffssvbsqkzh6r5fcing2vxk0lx3dbmls0vhphqnwkmbxh81c"))))
     (properties `((upstream-name . "DescTools")))
     (build-system r-build-system)
     (arguments
@@ -2506,12 +2506,14 @@ other packages.")
            r-data-table
            r-exact
            r-expm
+           r-fs
            r-gld
            r-haven
            r-httr
            r-mass
            r-mvtnorm
            r-rcpp
+           r-readr
            r-readxl
            r-rstudioapi
            r-withr))
