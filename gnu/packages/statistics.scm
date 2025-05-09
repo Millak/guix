@@ -2285,14 +2285,14 @@ regression methodology including model selections and multivariate statistics.")
 (define-public r-rrcov
   (package
     (name "r-rrcov")
-    (version "1.7-6")
+    (version "1.7-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rrcov" version))
        (sha256
         (base32
-         "1pj8w4w4yd730qy7bl8h3z7d5xj05avnq0fbj2gnxrz489yc18mq"))))
+         "1xbhrpmb3bn4h83kr214jmhr0rx5mgjrf396iz70mnq3g425lbqb"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice r-mvtnorm r-pcapp r-robustbase))
