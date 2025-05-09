@@ -64,20 +64,10 @@
 ;;; Code:
 
 (define %hurd-default-operating-system-kernel
-  (if (system-hurd?)
-      gnumach
-      ;; A cross-built GNUmach does not work
-      (with-parameters ((%current-system "i686-linux")
-                        (%current-target-system #f))
-        gnumach)))
+  gnumach)
 
 (define %hurd64-default-operating-system-kernel
-  (if (system-hurd?)
-      gnumach
-      ;; A cross-built GNUmach does not work
-      (with-parameters ((%current-system "x86_64-linux")
-                        (%current-target-system #f))
-        gnumach)))
+  %hurd-default-operating-system-kernel)
 
 (define %base-packages/hurd
   ;; Note: the Shepherd comes before the Hurd, not just because its duty is to
