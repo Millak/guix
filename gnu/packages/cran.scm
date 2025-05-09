@@ -52520,15 +52520,17 @@ package.")
 (define-public r-qs
   (package
     (name "r-qs")
-    (version "0.27.2")
+    (version "0.27.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qs" version))
        (sha256
         (base32
-         "00dbkxzc2ysrcfs8774b5hdadsssg1716hf13kn8jwpk4zpfn9zd"))))
-    (properties `((upstream-name . "qs")))
+         "0s24sggs2nxxdsfa1snd7bz2cmncxarv5s4v59a8r0i419fkf2vf"))))
+    (properties
+     '((upstream-name . "qs")
+       (updater-extra-native-inputs . ("r-data-table" "r-dplyr"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -52542,7 +52544,7 @@ package.")
     (propagated-inputs
      (list r-bh r-rapiserialize r-rcpp r-stringfish))
     (native-inputs
-     (list pkg-config r-dplyr r-data-table r-knitr r-testthat))
+     (list pkg-config r-data-table r-dplyr r-knitr r-testthat))
     (home-page "https://github.com/traversc/qs")
     (synopsis "Quick serialization of R objects")
     (description
