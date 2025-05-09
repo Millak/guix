@@ -37198,21 +37198,24 @@ offers access to an XPath \"interpreter\".")
 (define-public r-xml2
   (package
     (name "r-xml2")
-    (version "1.3.6")
+    (version "1.3.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xml2" version))
        (sha256
         (base32
-         "13rhvmrjdqwc5psn501vz9jfmqwlf4rc30w6vrnn3wxzk7zr26g8"))))
+         "01qhmlr5rhsn25ddb8cm3vl9vyqk5c5cgpc6c0krs9wccd1j4pbj"))))
+    (properties
+     ;; Avoid dependency cycle.
+     '((updater-ignored-native-inputs . ("r-httr"))))
     (build-system r-build-system)
     (inputs
      (list libxml2 zlib))
     (propagated-inputs
      (list r-cli r-rlang))
     (native-inputs
-     (list pkg-config r-knitr r-testthat))
+     (list pkg-config r-knitr r-mockery r-testthat))
     (home-page "https://github.com/hadley/xml2")
     (synopsis "Parse XML with R")
     (description
