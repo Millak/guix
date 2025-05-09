@@ -48597,15 +48597,18 @@ consistent interface, and the package is built on the @code{stringi} and
 (define-public r-hunspell
   (package
     (name "r-hunspell")
-    (version "3.0.5")
+    (version "3.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hunspell" version))
        (sha256
         (base32
-         "0fpwj1ymccxqasm34x5cnhc2c72nrkagk5c63kz7zj7mjkdavkmw"))))
-    (properties `((upstream-name . "hunspell")))
+         "0dbmg015m7ab17s7dqlw8d0pj7xkqk6fr8ggaan1w22fxwpdy8s0"))))
+    (properties
+     '((upstream-name . "hunspell")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-spelling"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-digest r-rcpp))
