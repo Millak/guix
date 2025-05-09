@@ -40877,23 +40877,27 @@ forest) is fit on the kernel matrix of a subset of the training data.")
 (define-public r-duckdb
   (package
     (name "r-duckdb")
-    (version "1.1.3-2")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "duckdb" version))
        (sha256
-        (base32 "1d4racr5b6v4jrs6yppf6adzscfbj6qzl5xha59spx3smrxr91wj"))
+        (base32 "161zxianyssvsrd2345v4bi1m2z7wj614z8343jb73vhlk6s9yyi"))
        ;; This package bundles the duckdb sources and builds a custom variant
        ;; of duckdb.  I'd be happy to link it with our duckdb library instead,
        ;; but it does not seem possible to do that.
        #;
        (snippet
         '(delete-file "src/duckdb.tar.xz"))))
-    (properties `((upstream-name . "duckdb")))
+    (properties
+     '((upstream-name . "duckdb")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))
+       ;; We don't seem to need this and I don't want to package it now.
+       (updater-ignored-native-inputs . ("r-dblog"))))
     (build-system r-build-system)
     (propagated-inputs (list r-dbi))
-    (native-inputs (list tzdata-for-tests
+    (native-inputs (list r-adbcdrivermanager
                          r-arrow
                          r-bit64
                          r-callr
@@ -40906,7 +40910,8 @@ forest) is fit on the kernel matrix of a subset of the training data.")
                          r-testthat
                          r-tibble
                          r-vctrs
-                         r-withr))
+                         r-withr
+                         tzdata-for-tests))
     (home-page "https://r.duckdb.org/")
     (synopsis "DBI package for the DuckDB database management system")
     (description
