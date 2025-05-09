@@ -3295,13 +3295,13 @@ computation, bagged clustering, naive Bayes classifier, and more.")
 (define-public r-eaf
   (package
     (name "r-eaf")
-    (version "2.5.1")
+    (version "2.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "eaf" version))
        (sha256
-        (base32 "03039hjrpkgh9kzasd0q8x4k6nnzkmhyrf39psg1zizfdfdh2y4p"))))
+        (base32 "14mfcc7lacaghfxiq3x7zmbvk2ink3xkkbiky1bfv9dgwbmic8dr"))))
     (properties `((upstream-name . "eaf")))
     (build-system r-build-system)
     (inputs (list gsl))
