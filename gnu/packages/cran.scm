@@ -1458,19 +1458,21 @@ times.")
 (define-public r-clubsandwich
   (package
     (name "r-clubsandwich")
-    (version "0.5.11")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clubSandwich" version))
        (sha256
         (base32
-         "1y9iy86w2440y22279is7vgi9m9v876p5954nhq5lg9ghpzbwzdq"))))
+         "025njaxmf0pa3lzrxkffj219rs3wyfp59q52h1v6hwbxa48gh7hg"))))
     (properties `((upstream-name . "clubSandwich")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lifecycle r-sandwich))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs
+     ;; There are lots of optional test inputs, but these two are enough.
+     (list r-knitr r-testthat))
     (home-page "https://github.com/jepusto/clubSandwich")
     (synopsis
      "Cluster-robust (Sandwich) variance estimators with small-sample corrections")
