@@ -11938,17 +11938,18 @@ LaTeX.")
 (define-public r-curl
   (package
     (name "r-curl")
-    (version "6.2.0")
+    (version "6.2.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "curl" version))
               (sha256
                (base32
-                "0d8nxfshpx6cp32ak82w283if4bnr7w5y5m7lb91mwymr9mvp683"))))
+                "0ffwfv9f3wlih4j9yxzjqx3lf9vrgrilm0h9ng2ymf6gfaqds5xd"))))
     (properties
      `((upstream-name . "curl")
        (updater-extra-inputs . ("curl"))
-       (updater-ignored-native-inputs . ("r-webutils"))))
+       (updater-ignored-inputs . ("openssh" "openssl"))
+       (updater-ignored-native-inputs . ("r-db8" "r-webutils"))))
     (build-system r-build-system)
     (inputs
      (list curl zlib))
