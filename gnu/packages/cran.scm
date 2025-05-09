@@ -27716,18 +27716,20 @@ effects models and Bayesian models.")
 (define-public r-ggeffects
   (package
     (name "r-ggeffects")
-    (version "2.2.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggeffects" version))
        (sha256
         (base32
-         "1j0nn6rsbni0q4dmxr0hxv19jsm0iqmx9zljr2rzhqxd27jmqyhw"))))
+         "1q616qzqpxjrlswhcam34j24nqvajvhi7c8n2ca088jl22szvp2i"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-datawizard r-insight))
     (native-inputs
+     ;; The importer/updater generates a massive list of inputs for running
+     ;; tests, but we actually don't need them.
      (list r-knitr r-testthat))
     (home-page "https://github.com/strengejacke/ggeffects")
     (synopsis "Create tidy data frames of marginal effects for ggplot")
