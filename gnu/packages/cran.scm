@@ -38470,18 +38470,18 @@ on graphs of millions of nodes (as long as they can fit in memory).")
 (define-public r-leidenbase
   (package
     (name "r-leidenbase")
-    (version "0.1.32")
+    (version "0.1.35")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leidenbase" version))
        (sha256
-        (base32 "1464zpp5m22i6z47bbzggnjdiqm4lq5dvnhsvslph3ka3wyhnxr2"))))
+        (base32 "0zc0kzycv4446jq38w1aii2rfmhc37cframh4b1fqvbvjvxf2f83"))))
     (properties `((upstream-name . "leidenbase")))
     (build-system r-build-system)
     (inputs (list libxml2 zlib))
     (propagated-inputs (list r-igraph))
-    (native-inputs (list r-devtools gfortran r-knitr pkg-config r-testthat))
+    (native-inputs (list gfortran pkg-config r-devtools r-knitr r-testthat))
     (home-page "https://github.com/cole-trapnell-lab/leidenbase")
     (synopsis
      "R and C/C++ wrappers to run Leiden community detection algorithm")
