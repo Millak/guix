@@ -742,7 +742,7 @@ Latin script and other languages.")
 (define-public direnv
   (package
     (name "direnv")
-    (version "2.35.0")
+    (version "2.36.0")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -751,35 +751,34 @@ Latin script and other languages.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0l9pziv5nxlq6dxbsqrfl6z4ibq171wfx6wmjs392cdn5w2n908b"))))
+               "0p6n9zi3p9frj3ndnpdc1cz51hq0nkyjc9b1rqg7967l8vhdr8f6"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/direnv/direnv"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-manpages
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man/man1")))
-               (mkdir-p man)
-               (with-directory-excursion "src/github.com/direnv/direnv"
-                 (install-file "man/direnv.1" man)
-                 (install-file "man/direnv-stdlib.1" man)
-                 (install-file "man/direnv.toml.1" man)))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp")
-               (with-directory-excursion "src/github.com/direnv/direnv"
-                 ;; The following file needs to be writable so it can be
-                 ;; modified by the testsuite.
-                 (make-file-writable "test/scenarios/base/.envrc")
-                 ;; We need to manually run test because make test
-                 ;; tries to use go modules
-                 (invoke "go" "test" "./...")
-                 ;; Clean up from the tests, especially so that the extra
-                 ;; direnv executable that's generated is removed.
-                 (invoke "make" "clean"))))))))
+     (list #:import-path "github.com/direnv/direnv"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-manpages
+                 (lambda _
+                   (let* ((man (string-append #$output "/share/man/man1")))
+                     (mkdir-p man)
+                     (with-directory-excursion "src/github.com/direnv/direnv"
+                       (install-file "man/direnv.1" man)
+                       (install-file "man/direnv-stdlib.1" man)
+                       (install-file "man/direnv.toml.1" man)))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" "/tmp")
+                     (with-directory-excursion "src/github.com/direnv/direnv"
+                       ;; The following file needs to be writable so it can be
+                       ;; modified by the testsuite.
+                       (make-file-writable "test/scenarios/base/.envrc")
+                       ;; We need to manually run test because make test
+                       ;; tries to use go modules
+                       (invoke "go" "test" "./...")
+                       ;; Clean up from the tests, especially so that the extra
+                       ;; direnv executable that's generated is removed.
+                       (invoke "make" "clean"))))))))
     (native-inputs
      (list go-github-com-burntsushi-toml
            go-github-com-mattn-go-isatty
