@@ -16450,16 +16450,16 @@ also supported.")
 (define-public r-littler
   (package
     (name "r-littler")
-    (version "0.3.20")
+    (version "0.3.21")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "littler" version))
               (sha256
                (base32
-                "0nh6bgnxgryygfzxcwci9gm53adq9r0837apvnpq51w7f6jwq44q"))))
+                "11a0wrsrp0na5lwy33njskdgjlnzmm69aigqgb61xwvym6nfg2wy"))))
     (properties
      `((upstream-name . "littler")
-       (updater-extra-inputs . ("icu4c" "zlib"))))
+       (updater-extra-inputs . ("icu4c" "libdeflate" "zlib"))))
     (build-system r-build-system)
     (arguments
      (list
