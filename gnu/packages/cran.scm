@@ -2058,17 +2058,17 @@ dplyr for backward compatibility.")
 (define-public r-cubist
   (package
     (name "r-cubist")
-    (version "0.4.4")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Cubist" version))
        (sha256
-        (base32 "140m4if4g4v74dwhzdp4bgdgy4zzcyplxqd311gfg7dn0kqzzmai"))))
+        (base32 "0m3jwhpa6kmaiqknms49rh0mjsrmh1cimy06gfdyjx5kcv1an4kw"))))
     (properties `((upstream-name . "Cubist")))
     (build-system r-build-system)
     (propagated-inputs (list r-lattice r-reshape2))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-modeldata r-testthat))
     (home-page "https://topepo.github.io/Cubist/")
     (synopsis "Rule- and instance-based regression modeling")
     (description
