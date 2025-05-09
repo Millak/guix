@@ -23759,28 +23759,6 @@ YAML-serialized data.")
 environment variables in YAML files.")
     (license license:expat)))
 
-(define-public python-backpack
-  (package
-    (name "python-backpack")
-    (version "0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "backpack" version))
-       (sha256
-        (base32
-         "14rq1mvm0jda90lcx9gyyby9dvq4x3js2cmxvd6vl4686ixwyqh1"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest python-nose python-toml))
-    (propagated-inputs
-     (list python-simplejson))
-    (home-page "https://github.com/sdispater/backpack")
-    (synopsis "Utilities for working with Python collections")
-    (description "Backpack provides some useful utilities for working with
-collections of data.")
-    (license license:expat)))
-
 (define-public python-prompt-toolkit
   (package
     (name "python-prompt-toolkit")
