@@ -21706,14 +21706,17 @@ It also includes interpolation functions.")
 (define-public r-simdesign
   (package
     (name "r-simdesign")
-    (version "2.18")
+    (version "2.19.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SimDesign" version))
        (sha256
-        (base32 "0xvqpi3pfpx80aldb6g0iyw4rzspdfy65n1q2hk0agmm1dpy4qsm"))))
-    (properties `((upstream-name . "SimDesign")))
+        (base32 "1pcmkkvlg4qabl06s0k2bmpi2andqf4wfpr3vnb9fmcy9dfdf7dw"))))
+    (properties
+     '((upstream-name . "SimDesign")
+       ;; Not packaged, but also not required.
+       (updater-ignored-native-inputs . ("r-dompi"))))
     (build-system r-build-system)
     (propagated-inputs (list r-beepr
                              r-dplyr
@@ -21723,11 +21726,9 @@ It also includes interpolation functions.")
                              r-pbapply
                              r-progressr
                              r-r-utils
-                             r-rpushbullet
                              r-sessioninfo
-                             r-snow
                              r-testthat))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-httr r-knitr r-mockery))
     (home-page "http://philchalmers.github.io/SimDesign/")
     (synopsis "Structure for organizing Monte Carlo simulation designs")
     (description
