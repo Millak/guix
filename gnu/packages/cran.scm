@@ -51359,17 +51359,19 @@ parallel programming style, which is intended for batch parallel execution.")
 (define-public r-pdftools
   (package
     (name "r-pdftools")
-    (version "3.4.1")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pdftools" version))
        (sha256
         (base32
-         "1g8w5456iy8zv77yc96vgf9da7apsszvn88k347a57klb1bdzh9i"))))
-    (properties `((upstream-name . "pdftools")))
+         "03k3l016hvzmzp4aknsn4j95kw818jhwr1yyhdk3wl0pyiz09gvc"))))
+    (properties
+     '((upstream-name . "pdftools")
+       (updater-extra-inputs . ("poppler"))))
     (build-system r-build-system)
-    (inputs (list zlib poppler))
+    (inputs (list poppler zlib))
     (propagated-inputs (list r-qpdf r-rcpp))
     (native-inputs (list pkg-config r-testthat))
     (home-page "https://docs.ropensci.org/pdftools/")
