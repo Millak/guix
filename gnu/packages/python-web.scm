@@ -72,6 +72,7 @@
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2024 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
+;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1209,6 +1210,32 @@ Its main features are:
 Callback Hell.
 @item Web-server has middlewares and pluggable routing.
 @end itemize")
+    (license license:asl2.0)))
+
+(define-public python-aiohttp-cors
+  (package
+    (name "python-aiohttp-cors")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiohttp_cors" version))
+       (sha256
+        (base32 "00qlzc2y65bkl1a5f5v83mmjlrhzmx3a2ngq2pm3jjdnhk5zkb6c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; network access is required to run tests
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-aiohttp))
+    (home-page "https://github.com/aio-libs/aiohttp-cors")
+    (synopsis "CORS support for aiohttp")
+    (description
+     "This library implements @acronym{CORS, Cross Origin Resource Sharing}
+support for aiohttp asyncio-powered asynchronous HTTP server.")
     (license license:asl2.0)))
 
 (define-public python-aiohttp-socks
