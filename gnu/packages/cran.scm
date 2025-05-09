@@ -3762,14 +3762,14 @@ published by the statistics blog FiveThirtyEight.")
 (define-public r-flexmix
   (package
     (name "r-flexmix")
-    (version "2.3-19")
+    (version "2.3-20")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flexmix" version))
        (sha256
         (base32
-         "1s8jpii6ws6hra8w11fn3x84wrdrrlycnrhn5ijy6ibdpc6a9xdd"))))
+         "1s160zi8bsdwk2vq0f0a3cbki1j42zk14dp2abxbpfjzhxyl7621"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice r-modeltools r-nnet))
