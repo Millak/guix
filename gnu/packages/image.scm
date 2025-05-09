@@ -537,13 +537,13 @@ Features:
 (define-public ijg-libjpeg
   (package
    (name "libjpeg")
-   (version "9d")
+   (version "9f")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://www.ijg.org/files/jpegsrc.v"
                    version ".tar.gz"))
             (sha256 (base32
-                     "0spshb0126m70xpgkqwxic8rw1z6ywlrv2kfx3h37ibczfnac0r3"))))
+                     "0nsn6bwc31clb2j435kff0a4k0xzsyiznwgvg6m9qimj1h8mqw04"))))
    (build-system gnu-build-system)
    (synopsis "Library for handling JPEG files")
    (description
