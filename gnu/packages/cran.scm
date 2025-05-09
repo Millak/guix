@@ -551,20 +551,22 @@ closely-packed, non-overlapping points.")
 (define-public r-betareg
   (package
     (name "r-betareg")
-    (version "3.2-1")
+    (version "3.2-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "betareg" version))
        (sha256
-        (base32 "1izp7nirsziwx8803ckbgwyj4r1vf4ixgx5nlin7d5pkjy13c9mv"))))
-    (properties `((upstream-name . "betareg")))
+        (base32 "1d21zrqkvj4c1lr3qap5rvb4l7zd9srknfvcskb4mp59hcblwjpj"))))
+    (properties
+     '((upstream-name . "betareg")
+       (updater-extra-native-inputs . ("r-partykit"))))
     (build-system r-build-system)
     ;; Vignettes need r-quarto.
     (arguments (list #:test-types '(list "tests")))
     (propagated-inputs (list r-flexmix r-formula r-lmtest r-modeltools
                              r-sandwich))
-    (native-inputs (list r-partykit))
+    (native-inputs (list r-partykit r-quarto))
     (home-page "https://topmodels.R-Forge.R-project.org/betareg/")
     (synopsis "Beta regression")
     (description
