@@ -50807,14 +50807,14 @@ in output to the equivalent HTML.")
 (define-public r-pkgdown
   (package
     (name "r-pkgdown")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgdown" version))
        (sha256
         (base32
-         "1phcdh1a178m60164613p6z9cqz379wp3d6b62k4ss64z1sc7qf7"))))
+         "1ycmd5xk6hwz92dlvrb8avvcwa2h1asmmhn5xs409pp8a0hwmsfp"))))
     (properties `((upstream-name . "pkgdown")))
     (build-system r-build-system)
     ;; Many tests require internet access.  Some need r-quarto.  This causes
@@ -50827,7 +50827,6 @@ in output to the equivalent HTML.")
            r-callr
            r-cli
            r-desc
-           r-digest
            r-downlit
            r-fontawesome
            r-fs
@@ -50844,6 +50843,7 @@ in output to the equivalent HTML.")
            r-xml2
            r-yaml))
     (native-inputs
+     ;; The updater adds lots of extra inputs that we actually don't need.
      (list r-knitr r-htmlwidgets r-testthat))
     (home-page "https://pkgdown.r-lib.org")
     (synopsis "Make static HTML documentation for an R package")
