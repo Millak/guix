@@ -1699,14 +1699,14 @@ or a given luminosity.")
 (define-public r-commonmark
   (package
     (name "r-commonmark")
-    (version "1.9.2")
+    (version "1.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "commonmark" version))
        (sha256
         (base32
-         "1sw6nizfbb88358r6mafiqiqdwd49cvf507g5cqggf72x3xxqshx"))))
+         "0radgpdvpzhw3615jmjac7vhqnq0j6dfi9avhw4q4zz12vwrdgzs"))))
     (properties
      ;; We can't have r-testthat among the inputs here to avoid a dependency
      ;; cycle.
