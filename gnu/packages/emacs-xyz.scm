@@ -3110,6 +3110,15 @@ programs.")
                 "1i4l614n0hs02y0a4xfnzc4xkilkp6bzx28pys4jkp96vp2ivf0c"))))
     (build-system emacs-build-system)
     ;; TODO: Just emacs-magit-section instead of emacs-magit would be enough.
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-data
+            (lambda _
+              (let ((data (string-append (elpa-directory #$output) "/data")))
+                (mkdir-p data)
+                (copy-recursively "data" data)))))))
     (propagated-inputs
      (list emacs-compat emacs-lsp-mode emacs-dash emacs-magit))
     (synopsis "Lean 4 major mode for Emacs")
