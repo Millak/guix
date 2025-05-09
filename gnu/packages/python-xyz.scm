@@ -26541,37 +26541,39 @@ conversion: Gamut A, B, and C.")
     (license license:expat)))
 
 (define-public python-sure
-  (package
-    (name "python-sure")
-    (version "2.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sure" version))
-       (sha256
-        (base32
-         "1jmrskj399idw1czx6dvy2zfaijnwi02b55vx979ixp7q2mnzz68"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'remove-rednose-dependency
-           (lambda _
-             (substitute* "setup.py"
-               (("'rednose'") ""))
-             (substitute* '("requirements.txt" "setup.cfg")
-               (("rednose.*") "")))))))
-    (propagated-inputs
-     (list python-mock python-six))
-    (native-inputs
-     (list python-nose))
-    (home-page "https://github.com/gabrielfalcao/sure")
-    (synopsis "Automated testing library in python for python")
-    (description
-     "Sure is a python library that leverages a DSL for writing assertions.
-     Sure is heavily inspired by @code{RSpec Expectations} and @code{should.js}.")
-    (license license:gpl3+)))
+  ;; No release for 2y but the master branch has fresh changes, use the latest
+  ;; commit for now, see <https://github.com/gabrielfalcao/sure/issues/184>,
+  ;; <https://github.com/gabrielfalcao/sure/issues/182>.
+  (let ((commit "acf823a2e240a2efe93360316d3816e90366439a")
+        (revision "0"))
+    (package
+      (name "python-sure")
+      (version (git-version "2.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gabrielfalcao/sure")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12qd3as4ixhwvf8ppx1dwhghda2kcb85ygd4x3ci9mbvkh25fs01"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-mock
+             python-pytest
+             python-pytest-cov
+             python-setuptools
+             python-wheel))
+      (propagated-inputs
+       (list python-couleur))
+      (home-page "https://github.com/gabrielfalcao/sure")
+      (synopsis "Automated testing library in python for python")
+      (description
+       "Sure is a python library that leverages a DSL for writing
+assertions. Sure is heavily inspired by @code{RSpec Expectations} and
+@code{should.js}.")
+      (license license:gpl3+))))
 
 (define-public python-misaka
   (package
