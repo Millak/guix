@@ -23,6 +23,7 @@
 (define-module (gnu services dns)
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
+  #:use-module (gnu services dbus)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)
@@ -993,6 +994,8 @@ log.")
    (extensions
     (list (service-extension shepherd-root-service-type
                              (compose list dnsmasq-shepherd-service))
+          (service-extension dbus-root-service-type
+                             (compose list dnsmasq-configuration-package))
           (service-extension activation-service-type
                              dnsmasq-activation)))
    (default-value (dnsmasq-configuration))

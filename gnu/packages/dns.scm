@@ -310,7 +310,13 @@ prompt the user with the option to go with insecure DNS only.")
      (list dbus))
     (arguments
      `(#:phases
-       (modify-phases %standard-phases (delete 'configure))
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-after 'install 'install-dbus
+           (lambda _
+             (install-file "dbus/dnsmasq.conf"
+                           (string-append %output "/etc/dbus-1/system.d")))))
+
        #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
                           (string-append "CC=" ,(cc-for-target))
                           (string-append "PKG_CONFIG=" ,(pkg-config-for-target))
