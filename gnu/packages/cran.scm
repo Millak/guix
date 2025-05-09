@@ -273,13 +273,13 @@ models} (GLMM).")
 (define-public r-asioheaders
   (package
     (name "r-asioheaders")
-    (version "1.22.1-2")
+    (version "1.30.2-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "AsioHeaders" version))
        (sha256
-        (base32 "192qxayrpvi02wrqq2h5cjc92aaxrsgw7z32r8qk5imqg3mc0a8n"))))
+        (base32 "0cdbw8w9mj2a6syqvhb11pyhjdrjg3yb8wsn9gw4ww6cli43pr0v"))))
     (properties `((upstream-name . "AsioHeaders")))
     (build-system r-build-system)
     (home-page "https://github.com/eddelbuettel/asioheaders")
