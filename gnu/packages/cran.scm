@@ -38842,25 +38842,26 @@ emphasize hidden group structures in networks or focus on specific nodes.")
 (define-public r-terra
   (package
     (name "r-terra")
-    (version "1.8-21")
+    (version "1.8-42")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "terra" version))
        (sha256
         (base32
-         "0zqxap11hqils2a8hljkawr1mi4j0ci3nbhhpr0gaa7lyf7aqmba"))))
-    (properties `((upstream-name . "terra")))
+         "0bilsjjgp0cl3cvday098av2dhzpcq7plj4a0321qhn9rgkhqnfl"))))
+    (properties
+     '((upstream-name . "terra")
+       (updater-ignored-inputs . ("openssh" "openssl"))))
     (build-system r-build-system)
     (inputs
      (list curl
            gdal
            geos
-           openssh
-           openssl
            pcre2
            proj
            sqlite
+           tbb
            zlib))
     (propagated-inputs
      (list r-rcpp))
