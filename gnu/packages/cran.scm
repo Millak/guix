@@ -34348,14 +34348,16 @@ classes.")
 (define-public r-clarabel
   (package
     (name "r-clarabel")
-    (version "0.9.0.1")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clarabel" version))
        (sha256
-        (base32 "1qfchpxd0hnw4vcs6vbkkrf0rqrrjr85j1hvpka466aqpdsl2qsa"))))
-    (properties `((upstream-name . "clarabel")))
+        (base32 "075xzmalrfihrc8sd8clvym9skf2m694ki9d0cn8sf5ly44dim14"))))
+    (properties
+     '((upstream-name . "clarabel")
+       (updater-extra-native-inputs . ("r-matrix" "rust"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -34364,7 +34366,8 @@ classes.")
           (add-after 'unpack 'set-variables-for-rust
             (lambda _
               (setenv "CC" #$(cc-for-target)))))))
-    (native-inputs (list r-knitr rust `(,rust "cargo")))
+    (native-inputs (list r-knitr r-matrix r-tinytest
+                         rust `(,rust "cargo")))
     (home-page "https://oxfordcontrol.github.io/clarabel-r/")
     (synopsis "Interior point conic optimization solver")
     (description
