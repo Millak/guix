@@ -4,6 +4,7 @@
 ;;; Copyright © 2015, 2017-2020, 2022-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <contact@parouby.fr>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -187,7 +188,15 @@
             quassel-service-type
 
             snuik-configuration
-            snuik-service-type))
+            snuik-service-type
+
+            mosquitto-configuration
+            mosquitto-configuration?
+            mosquitto-configuration-package
+            mosquitto-configuration-config-file
+            mosquitto-configuration-user
+            mosquitto-configuration-group
+            mosquitto-service-type))
 
 ;;; Commentary:
 ;;;
@@ -2104,6 +2113,67 @@ the IRC bouncer.")))
                  "Run @url{https://quassel-irc.org/,quasselcore}, the backend
 for the distributed IRC client quassel, which allows you to connect from
 multiple machines simultaneously.")))
+
+
+;;;
+;;; Mosquitto.
+;;;
+
+(define-record-type* <mosquitto-configuration>
+  mosquitto-configuration
+  make-mosquitto-configuration
+  mosquitto-configuration?
+  (package     mosquitto-configuration-package
+               (default mosquitto))
+  (config-file mosquitto-configuration-config-file
+               (default #f))
+  (user        mosquitto-configuration-user
+               (default "mosquitto"))
+  (group       mosquitto-configuration-group
+               (default "mosquitto")))
+
+(define (mosquitto-accounts config)
+  (match-record config <mosquitto-configuration>
+                (user group)
+    (filter identity
+            (list
+             (and (equal? group "mosquitto")
+                  (user-group
+                   (name "mosquitto")
+                   (system? #t)))
+             (and (equal? user "mosquitto")
+                  (user-account
+                   (name "mosquitto")
+                   (group group)
+                   (system? #t)
+                   (comment "bzzz")
+                   (home-directory "/var/empty")
+                   (shell (file-append shadow "/sbin/nologin"))))))))
+
+(define (mosquitto-shepherd-service config)
+  (match-record config <mosquitto-configuration>
+                (package config-file user group)
+    (list (shepherd-service
+           (documentation "Run the Mosquitto MQTT broker.")
+           (provision '(mosquitto))
+           (requirement '(networking syslogd user-processes))
+           (start #~(make-forkexec-constructor
+                     (list #$(file-append package "/sbin/mosquitto")
+                           #$@(if config-file
+                                  (list "-c" config-file)
+                                  '()))
+                     #:user #$user
+                     #:group #$group))
+           (stop #~(make-kill-destructor))))))
+
+(define mosquitto-service-type
+  (service-type
+   (description "Run the Mosquitto MQTT broker.")
+   (name 'mosquitto)
+   (extensions
+    (list (service-extension account-service-type mosquitto-accounts)
+          (service-extension shepherd-root-service-type mosquitto-shepherd-service)))
+   (default-value (mosquitto-configuration))))
 
 
 ;;;
