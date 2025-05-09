@@ -48287,15 +48287,17 @@ for creating, simulating, or validating values for such parameters.")
 (define-public r-tune
   (package
     (name "r-tune")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tune" version))
        (sha256
         (base32
-         "1qb4ncadq10pzy8xhkpgg06raahbv6n8002wdjdh4jlv73hsk6ki"))))
-    (properties `((upstream-name . "tune")))
+         "11qq1i2bacls43lmq5m9dp96sb2dwzfdl3ih6909rbbazrdfq4qi"))))
+    (properties
+     '((upstream-name . "tune")
+       (updater-ignored-native-inputs . ("r-censored"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -48322,7 +48324,7 @@ for creating, simulating, or validating values for such parameters.")
            r-withr
            r-workflows
            r-yardstick))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-modeldata r-spelling r-testthat))
     (home-page "https://github.com/tidymodels/tune")
     (synopsis "Tidy tuning tools")
     (description
