@@ -19993,17 +19993,19 @@ nonlinear mixed-effects models.")
 (define-public r-nloptr
   (package
     (name "r-nloptr")
-    (version "2.1.1")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nloptr" version))
        (sha256
         (base32
-         "1snqvav2pxjhssn1nld49mjj89cn2zv7gjn2y8ch22gbzmfzbnjc"))))
+         "1x6pmqh3k5ckjbzkallndpqnlx61y02rwv58sqd8np271dsl1fkn"))))
+    (properties
+     '((updater-extra-inputs . ("nlopt"))))
     (build-system r-build-system)
     (native-inputs
-     (list gfortran pkg-config r-knitr))
+     (list pkg-config r-knitr r-tinytest))
     (inputs (list nlopt))
     (home-page "https://cran.r-project.org/web/packages/nloptr")
     (synopsis "R interface to NLopt")
