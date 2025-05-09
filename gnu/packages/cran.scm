@@ -1032,13 +1032,13 @@ automatically pruning objects to maintain the constraints.")
 (define-public r-caic4
   (package
     (name "r-caic4")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cAIC4" version))
        (sha256
-        (base32 "1qg73g0g029wkzpmp0fgvyfz8p1k3x38yqx0404cpb3dxj4n4hcg"))))
+        (base32 "0ixkhnsbpqx5pw0r3dvrwymbwr2k7xlv5gwp7cyd2rxafsqrp5m9"))))
     (properties `((upstream-name . "cAIC4")))
     (build-system r-build-system)
     (propagated-inputs (list r-lme4
