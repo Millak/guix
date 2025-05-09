@@ -47948,14 +47948,14 @@ model.")
          "1vdkg9d7h0qs6agrxdpma3z7xjgx74369gaw3bymbqyjr41d9kpx"))))
     (properties
      `((upstream-name . "igraph")
-       (updater-extra-native-inputs . ("which"))))
+       (updater-extra-native-inputs . ("which"))
+       (updater-ignored-native-inputs . ("r-graph"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran
            pkg-config
            r-callr
            r-digest
-           ;r-graph
            r-knitr
            r-testthat
            r-vdiffr
