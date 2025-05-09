@@ -27620,17 +27620,18 @@ data using:
 (define-public r-bayestestr
   (package
     (name "r-bayestestr")
-    (version "0.15.2")
+    (version "0.15.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bayestestR" version))
        (sha256
         (base32
-         "11daalpnminlrb2dydyd2igk49qfwap8ix0bb4dkvjc41c6rrljh"))))
+         "0dkqain8ja9fr5qgp6caqhc32i7f96kdswqhnxyvkkx6j3pmw2rx"))))
     (properties
      '((upstream-name . "bayestestR")
-       (updater-extra-native-inputs . ("r-logspline"))))
+       (updater-extra-native-inputs . ("r-logspline"))
+       (updater-ignored-native-inputs . ("r-modelbased"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-datawizard r-insight))
