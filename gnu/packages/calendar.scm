@@ -12,6 +12,8 @@
 ;;; Copyright © 2020 Peng Mei Yu <pengmeiyu@riseup.net>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +40,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
@@ -56,6 +59,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sphinx)
@@ -64,6 +68,41 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml)
   #:use-module (srfi srfi-26))
+
+(define-public adl-submit
+  (let ((commit "f38c7ad161fbe6ec72ecc725edbd624f5c627ea9")
+        (revision "0"))
+    (package
+      (name "adl-submit")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://framagit.org/agenda-libre/adl-submit.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zi5s8xpbm253mjdlcc1j13qqz5q7s9zavk3h0m2gfgb52xy2avp"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:tests? #f)) ; no tests provided
+      (native-inputs
+       (list python-setuptools
+             python-wheel))
+      (inputs
+       (list python python-pycurl))
+      (home-page "https://www.agendadulibre.org")
+      (synopsis "Submit events to the Agenda Du Libre")
+      (description
+       "adl-submit is a tool that can be used to submit events to any instance
+of the Agenda Du Libre (a web calendar originally meant for free software
+events).  Users can set fields through the command line or create an XML that
+can be submitted with the adl-submit tool.  While the Agenda Du Libre web
+application is available in multiple languages, most of the events on
+https://www.agendadulibre.org are in French and the adl-submit tool is only
+available in French.")
+      (license license:gpl2))))
 
 (define-public date
   ;; We make the same choice as the Arch package maintainer by choosing a
