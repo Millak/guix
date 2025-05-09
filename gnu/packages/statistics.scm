@@ -1453,13 +1453,13 @@ disk (or a connection).")
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
-    (version "14.2.3-1")
+    (version "14.4.2-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppArmadillo" version))
               (sha256
                (base32
-                "1pr6a84h6c415ac43fadv77k3dazi8138q92gn7mj3qw7v2wn74k"))))
+                "1d6075xz3k8g0lm0y2kzylb5jwh04vm5flb4jlz89rrik6ddc68x"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
     (propagated-inputs
