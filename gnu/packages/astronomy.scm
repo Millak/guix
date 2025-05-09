@@ -7330,6 +7330,63 @@ and @code{astropy}.")
     ;; license. See the licenses folder for more information.
     (license (list license:gpl3+ license:bsd-3))))
 
+(define-public python-sunkit-spex
+  (package
+    (name "python-sunkit-spex")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch) ; not published on PyPI
+       (uri (git-reference
+             (url "https://github.com/sunpy/sunkit-spex")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fa4n7vkg2az4f07i21a7plssqgz770vfhf6k9qngi6f8bkib83w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; TODO: tests require some remove data, findout how to run bare minmal
+      ;; unit tests withou it.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; PermissionError: [Errno 13] Permission denied:
+              ;; '/homeless-shelter'
+              (setenv "HOME" "/tmp")))
+          ;; The module tries to load remote data during sanity check:
+          ;; WARNING: SunpyUserWarning: <urlopen error [Errno -3] Temporary
+          ;; failure in name resolution> [sunpy.data.data_manager.cache]
+          (delete 'sanity-check))))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm-next
+           python-wheel))
+    (propagated-inputs
+     (list python-corner
+           python-emcee
+           python-matplotlib
+           python-ndim
+           python-nestle
+           python-numdifftools
+           python-orthopy
+           python-parfive
+           python-quadpy
+           python-scipy
+           python-sunpy
+           python-xarray))
+    (home-page "https://github.com/sunpy/sunkit-spex")
+    (synopsis "Solar X-ray spectroscopy tool")
+    (description
+     "This package provides a tooling for solar X-ray spectroscopy based on
+SunPy.")
+    (license license:bsd-3)))
+
 (define-public python-sunpy
   (package
     (name "python-sunpy")
