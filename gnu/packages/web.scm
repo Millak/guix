@@ -1901,7 +1901,7 @@ other systems that want to manipulate WebAssembly files.")
 (define-public wasm-micro-runtime
   (package
     (name "wasm-micro-runtime")
-    (version "1.2.3")
+    (version "2.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1910,7 +1910,7 @@ other systems that want to manipulate WebAssembly files.")
               (file-name (git-file-name "WAMR" version))
               (sha256
                (base32
-                "1s7r8vfxixf737jp12cf7as68fd63lrmqdxj7fiqdla2wk89ly3f"))))
+                "0nhhsvy4a9al4lnxdkmyy63a7qd0x33s5wpcsdvl93kj6klzc6a6"))))
     (build-system cmake-build-system)
     (arguments
      (list
