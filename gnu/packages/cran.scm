@@ -50322,13 +50322,15 @@ implemented as @code{R6} classes.")
 (define-public r-mlr3
   (package
     (name "r-mlr3")
-    (version "0.22.1")
+    (version "0.23.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3" version))
               (sha256
                (base32
-                "1h2rp8l9cinxaza2nny2y0hv1m0jf5viw0mi7gh2xl26g1ly71lj"))))
+                "1av2v4kdn5klbgr2wmqd671ggzaspyw5pgsjcq2aq9cbpr407dv3"))))
+    (properties
+     '((updater-ignored-native-inputs . ("r-distr6"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -50355,7 +50357,6 @@ implemented as @code{R6} classes.")
            r-uuid))
     (native-inputs (list r-callr
                          r-codetools
-                         ;r-distr6
                          r-matrix
                          r-progressr
                          r-rpart
