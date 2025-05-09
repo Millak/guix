@@ -951,13 +951,13 @@ files and provide more explicit control over line endings.")
 (define-public r-broom-helpers
   (package
     (name "r-broom-helpers")
-    (version "1.19.0")
+    (version "1.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "broom.helpers" version))
        (sha256
-        (base32 "0fj4czsg8m4cr8s6j5m1gagyl2bzm6qaiygrvyya3x79f7g9jjy2"))))
+        (base32 "1b3zk163fwkba8bfa08wrailapnh7iqvr02pv2nlwkyzk710rzja"))))
     (properties `((upstream-name . "broom.helpers")))
     (build-system r-build-system)
     ;; Tests require gtsummary, which cannot be packaged due to massive
@@ -973,7 +973,8 @@ files and provide more explicit control over line endings.")
                              r-rlang
                              r-stringr
                              r-tibble
-                             r-tidyr))
+                             r-tidyr
+                             r-tidyselect))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://larmarange.github.io/broom.helpers/")
     (synopsis "Helpers for Model Coefficients Tibbles")
