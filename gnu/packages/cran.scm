@@ -27392,19 +27392,31 @@ correlation, censored, ordered and multivariate problems.")
 (define-public r-bayesplot
   (package
     (name "r-bayesplot")
-    (version "1.11.1")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bayesplot" version))
        (sha256
         (base32
-         "0c1q1znp9vd0w6l35xa208bgiwr5f2w8j2c97v6ml4z0j5rycwag"))))
+         "1savil71px6p6nsz01jj4fapzccz62aqbb80fman5ysk5slyaqxi"))))
+    (properties
+     ;; Avoid dependency cycle.
+     '((updater-ignored-native-inputs . ("r-rstanarm"))))
     (build-system r-build-system)
     (inputs
      (list pandoc))
     (native-inputs
-     (list r-gridextra r-knitr r-rstantools r-testthat))
+     (list r-cmdstanr
+           r-devtools
+           r-gridextra
+           r-knitr
+           r-loo
+           r-rcolorbrewer
+           r-rstan
+           r-rstantools
+           r-testthat
+           r-vdiffr))
     (propagated-inputs
      (list r-dplyr
            r-ggplot2
@@ -27414,6 +27426,7 @@ correlation, censored, ordered and multivariate problems.")
            r-reshape2
            r-rlang
            r-tibble
+           r-tidyr
            r-tidyselect))
     (home-page "https://mc-stan.org/bayesplot")
     (synopsis "Plotting for Bayesian models")
