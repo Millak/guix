@@ -1170,14 +1170,16 @@ and creating new Analysis Results Data objects.")
 (define-public r-cardx
   (package
     (name "r-cardx")
-    (version "0.2.2")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cardx" version))
        (sha256
-        (base32 "0jsqldsmpfgm9hvsrb833l119xsmkm8nqwdbsl7p1vhn2km0f5dv"))))
-    (properties `((upstream-name . "cardx")))
+        (base32 "1qbfa2kbxbc7lnrajj79dgz2nkjf4616ngha1yk9fl6f10qmsk24"))))
+    (properties
+     '((upstream-name . "cardx")
+       (updater-ignored-native-inputs . ("r-mixed"))))
     (build-system r-build-system)
     (propagated-inputs (list r-cards
                              r-cli
@@ -1190,10 +1192,10 @@ and creating new Analysis Results Data objects.")
                          r-effectsize
                          r-emmeans
                          r-geepack
+                         r-ggsurvfit
                          r-lme4
                          r-parameters
                          r-smd
-                         r-spelling
                          r-survey
                          r-survival
                          r-testthat
