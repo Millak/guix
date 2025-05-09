@@ -553,6 +553,27 @@ using NumPy-like idioms.")
 line drawing algorithm}.")
     (license license:expat)))
 
+(define-public python-couleur
+  (package
+    (name "python-couleur")
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "couleur" version))
+       (sha256
+        (base32 "1fk175k6l8isx43jmh7n7xyzb18ysdixzr74dxqqhpyd5sbsb5hy"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (home-page "https://github.com/gabrielfalcao/couleur")
+    (synopsis "ANSI terminal tool for Python")
+    (description
+     "This package provides an ANSI terminal tool for Python, colored shell
+and other handy fancy features.")
+    (license license:lgpl3+)))
+
 (define-public python-crc
   (package
     (name "python-crc")
