@@ -54504,20 +54504,23 @@ API.")
 (define-public r-spacetime
   (package
     (name "r-spacetime")
-    (version "1.3-2")
+    (version "1.3-3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "spacetime" version))
               (sha256
                (base32
-                "01dvih9f7m7vmjv057d1lls5kyxq5h87mmxaby566r9b2svrx0fn"))))
-    (properties `((upstream-name . "spacetime")))
+                "1bl1lpprq9hbvgmh0bhp76y8brymk06hwxi12bjngh0hdqkw8pi1"))))
+    (properties
+     '((upstream-name . "spacetime")
+       ;; rgdal no longer exists.
+       (updater-ignored-native-inputs . ("r-rgdal"))))
     (build-system r-build-system)
     ;; Vignettes fail on file jss816.R with:
     ;; object 'nc' not found
     (arguments (list #:test-types '(list "tests")))
     (propagated-inputs (list r-intervals r-lattice r-sp r-xts r-zoo))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-rcolorbrewer r-rpostgresql r-sf))
     (home-page "https://github.com/edzer/spacetime/")
     (synopsis "Classes and methods for spatio-temporal data")
     (description
