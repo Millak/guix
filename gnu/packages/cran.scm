@@ -28337,14 +28337,16 @@ quick reporting.")
 (define-public r-pander
   (package
     (name "r-pander")
-    (version "0.6.5")
+    (version "0.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pander" version))
        (sha256
         (base32
-         "144zkq5w7v6fpzk3x40i0baybbp0y6x2ckh4b9qljryas9mhgp9a"))))
+         "1piad5aq9wjpss5diw89nwfgw8q833di22h26mpjh4h21jsfchc0"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -28359,7 +28361,7 @@ quick reporting.")
     (propagated-inputs
      (list r-digest r-rcpp))
     (native-inputs
-     (list pandoc r-knitr r-lattice r-testthat))
+     (list pandoc r-knitr r-testthat))
     (home-page "https://rapporter.github.io/pander")
     (synopsis "Render R objects into Pandoc's markdown")
     (description
