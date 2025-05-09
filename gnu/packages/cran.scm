@@ -36961,17 +36961,20 @@ colored by the number of neighboring points.  This is useful to visualize the
 (define-public r-arrow
   (package
     (name "r-arrow")
-    (version "19.0.1")
+    (version "19.0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "arrow" version))
        (sha256
         (base32
-         "0w1r87kh8j9vq657qnhbmwwc7mmyrra8622mrc76c2cym1rv1zhn"))))
+         "0shq0d27sd1xrr9yi8r740835js1fwi3di0n64i1g6rd4s3ml4pj"))))
     (properties
      `((upstream-name . "arrow")
-       (updater-ignored-native-inputs . ("r-duckdb"))))
+       (updater-ignored-native-inputs . ("r-duckdb"))
+       (updater-ignored-inputs . ("openssh" "openssl"))
+       (updater-extra-native-inputs
+        . ("glibc-utf8-locales" "tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
