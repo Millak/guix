@@ -13180,13 +13180,13 @@ comprehensive scDblFinder method.")
 (define-public r-scgate
   (package
     (name "r-scgate")
-    (version "1.6.2")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scGate" version))
        (sha256
-        (base32 "0zlbrvr6lxcihspfqgpvv5kyrzqqpy3451j0kpnqc0n93bbs4cqk"))))
+        (base32 "0wsp7q7m0v0ijzgcim0ixa770055n4j5hj0aypx62kchni5p8cjn"))))
     (properties `((upstream-name . "scGate")))
     (build-system r-build-system)
     (propagated-inputs
